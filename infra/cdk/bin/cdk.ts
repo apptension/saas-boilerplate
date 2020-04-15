@@ -14,5 +14,5 @@ const getStackName = (baseName: string, envName?: string) => {
 }
 
 const app = new cdk.App();
-new GlobalStack(app, getStackName('GlobalStack'));
+new GlobalStack(app, getStackName('GlobalStack'), envSettings);
 app.synth();
