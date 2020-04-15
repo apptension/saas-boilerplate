@@ -3,8 +3,8 @@
 set -e
 
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
-NGINX_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROJECT_NAME-nginx-$STAGE
-BACKEND_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROJECT_NAME-backend-$STAGE
+NGINX_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROJECT_NAME-nginx
+BACKEND_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PROJECT_NAME-backend
 
 IMAGE_TAG=${COMMIT_HASH:=latest}
 IMAGE_TAG=$(echo "$IMAGE_TAG" | sed 's/\.//g')
