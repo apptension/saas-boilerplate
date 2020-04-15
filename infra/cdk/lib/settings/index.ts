@@ -2,18 +2,21 @@ import './environment';
 
 export interface EnvironmentSettings {
     projectName: string
+    projectEnvName: string
     envStage: string
 }
 
 export function loadEnvSettings(): EnvironmentSettings {
-    const settings = {
-        projectName: process.env.PROJECT_NAME,
-        envStage: process.env.ENV_STAGE,
-    }
+    const projectName = process.env.PROJECT_NAME;
+    const envStage = process.env.ENV_STAGE;
 
-    if (!settings.envStage) {
+    if (!envStage) {
         throw new Error('Environmental variable ENV_STAGE is undefined!')
     }
 
-    return settings
+    return {
+        projectName: projectName,
+        projectEnvName: `${projectName}-${envStage}`,
+        envStage: process.env.ENV_STAGE,
+    }
 }
