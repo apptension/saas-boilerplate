@@ -1,0 +1,18 @@
+version: '3.4'
+
+volumes:
+  web_backend_db_data:
+    external:
+      name: "${PROJECT_NAME}-web-backend-db-data"
+  web_backend_staticfiles: {}
+
+services:
+  db:
+    volumes:
+      - web_backend_db_data:/var/lib/postgresql/data
+
+  backend:
+    volumes:
+      - ./services/backend/:/app
+    env_file:
+      - ./services/backend/.env

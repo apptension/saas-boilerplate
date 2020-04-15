@@ -1,0 +1,4 @@
+.idea
+.DS_Store
+.local.env
+__pycache__/

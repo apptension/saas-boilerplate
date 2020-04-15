@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:10.6
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=backend
+      - POSTGRES_PASSWORD=backend
+      - POSTGRES_DB=backend
+
+  backend:
+    build:
+      context: ./services/backend
+      target: backend
+    command: sh /app/scripts/run_local.sh
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - mailcatcher
+    restart: unless-stopped
+    links:
+      - db
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+
+  backend-nginx:
+    build:
+      context: ./services/backend
+      target: nginx
+    command: sh /scripts/run_nginx.sh
+    depends_on:
+      - backend
+    links:
+      - backend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - NGINX_SERVER_NAME=localhost
+      - NGINX_BACKEND_HOST=backend
+    env_file:
+      - ./services/backend/.env
+
+  mailcatcher:
+    build: ./tools/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    restart: always
