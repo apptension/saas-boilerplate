@@ -1,7 +1,7 @@
 PWD ?= pwd_unknown
 
 export PROJECT_NAME = pz-$(notdir $(PWD))
-export STAGE := dev
+export ENV_STAGE ?= dev
 export AWS_DEFAULT_REGION := eu-west-1
 export COMMIT_HASH := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
@@ -59,14 +59,15 @@ help:
 	@echo 'user=:	make shell user=root (no need to set uid=0)'
 	@echo 'uid=:	make shell user=dummy uid=4000 (defaults to 0 if user= set)'
 
-install-global:
+install-infra:
 	npm install -g aws-cdk
+	$(MAKE) -C infra/cdk install
 
 install-local:
 	# Install all service dependencies
 	$(MAKE) -C services/backend install
 
-setup: install-global install-local
+setup: install-infra install-local
 	# setup project
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
 
@@ -111,7 +112,7 @@ makemigrations:
 migrate:
 	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py migrate"
 
-setup-infra: install-global
+setup-infra: install-infra
 	chmod +x ./scripts/*.sh
 	$(AWS_VAULT) scripts/cdk-bootstrap.sh
 
@@ -123,4 +124,4 @@ update-infra-global:
 update-infra-stage:
 	cd infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) cdk deploy;
+	$(AWS_VAULT) cdk deploy *EnvMainStack;
