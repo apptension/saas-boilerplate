@@ -1,10 +1,11 @@
 PWD ?= pwd_unknown
 
-PROJECT_NAME = $(notdir $(PWD))
+export PROJECT_NAME = pz-$(notdir $(PWD))
+export STAGE := dev
+export AWS_DEFAULT_REGION := eu-west-1
 
-STAGE := dev
-SERVICE_TARGET := backend
-AWS_DEFAULT_REGION := eu-west-2
+AWS_VAULT_PROFILE := aws-workshops
+
 COMMIT_HASH := $(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
 ifeq ($(user),)
@@ -26,15 +27,17 @@ export HOST_USER
 export HOST_UID
 
 .PHONY: shell help build rebuild service login test clean prune
-.EXPORT_ALL_VARIABLES:
+
+COMPOSE_BACKEND_SHELL = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend
+AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 
 shell:
 ifeq ($(CMD_ARGUMENTS),)
 	# no command is given, default to shell
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm $(SERVICE_TARGET) sh
+	$(COMPOSE_BACKEND_SHELL) sh
 else
 	# run the command
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm $(SERVICE_TARGET) sh -c "$(CMD_ARGUMENTS)"
+	$(COMPOSE_BACKEND_SHELL) sh -c "$(CMD_ARGUMENTS)"
 endif
 
 help:
@@ -59,16 +62,18 @@ help:
 
 install-local:
 	# Install all service dependencies
+	npm install -g aws-cdk
 	$(MAKE) -C services/backend install
 
-setup-local: install-local
+setup: install-local
 	# setup project
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
-	$(MAKE) migrate
+	chmod +x ./scripts/*.sh
+	$(AWS_VAULT) scripts/cdk-bootstrap.sh
 
 up:
 	# run as a (background) service
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) up --build --force-recreate
+	$(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID) up --build --force-recreate
 
 down:
 	# run as a (background) service
@@ -82,7 +87,6 @@ build-backend:
 	$(MAKE) -C services/backend build
 
 build: build-backend
-	#
 
 clean:
 	# remove created images
@@ -96,12 +100,17 @@ prune:
 
 test:
 	# here it is useful to add your own customised tests
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm $(SERVICE_TARGET) sh -c '\
+	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend sh -c '\
 		echo "I am `whoami`. My uid is `id -u`." && echo "Docker runs!"' \
 	&& echo success
 
 makemigrations:
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm $(SERVICE_TARGET) sh -c "python ./manage.py makemigrations"
+	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py makemigrations"
 
 migrate:
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm $(SERVICE_TARGET) sh -c "python ./manage.py migrate"
+	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py migrate"
+
+update-infra:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy;
