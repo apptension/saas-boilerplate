@@ -3,10 +3,9 @@ PWD ?= pwd_unknown
 export PROJECT_NAME = pz-$(notdir $(PWD))
 export STAGE := dev
 export AWS_DEFAULT_REGION := eu-west-1
+export COMMIT_HASH := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
 AWS_VAULT_PROFILE := aws-workshops
-
-COMMIT_HASH := $(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
 ifeq ($(user),)
 # USER retrieved from env, UID from shell.
@@ -84,9 +83,11 @@ login: up
 	docker exec -it $(PROJECT_NAME)_$(HOST_UID) sh
 
 build-backend:
-	$(MAKE) -C services/backend build
+	$(AWS_VAULT) $(MAKE) -C services/backend build
 
-build: build-backend
+build:
+	@echo Build version: $(COMMIT_HASH)
+	$(MAKE) build-backend
 
 clean:
 	# remove created images
