@@ -60,16 +60,16 @@ help:
 	@echo 'user=:	make shell user=root (no need to set uid=0)'
 	@echo 'uid=:	make shell user=dummy uid=4000 (defaults to 0 if user= set)'
 
+install-global:
+	npm install -g aws-cdk
+
 install-local:
 	# Install all service dependencies
-	npm install -g aws-cdk
 	$(MAKE) -C services/backend install
 
-setup: install-local
+setup: install-global install-local
 	# setup project
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
-	chmod +x ./scripts/*.sh
-	$(AWS_VAULT) scripts/cdk-bootstrap.sh
 
 up:
 	# run as a (background) service
@@ -110,7 +110,16 @@ makemigrations:
 migrate:
 	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py migrate"
 
-update-infra:
+setup-infra: install-global
+	chmod +x ./scripts/*.sh
+	$(AWS_VAULT) scripts/cdk-bootstrap.sh
+
+update-infra-global:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *GlobalStack;
+
+update-infra-stage:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy;

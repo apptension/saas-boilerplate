@@ -8,6 +8,6 @@ export interface EnvironmentSettings {
 
 export function loadEnvSettings(): EnvironmentSettings {
     return {
-        projectName: camelize(process.env.PROJECT_NAME),
+        projectName: process.env.PROJECT_NAME,
     }
 }
