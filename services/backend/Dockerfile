@@ -97,4 +97,4 @@ COPY --from=backend /app/static /static
 RUN mkdir -p /scripts/
 COPY ./scripts /scripts
 
-CMD /bin/chamber exec $CHAMBER_SERVICE_NAME -- sh /scripts/run_nginx.sh
+CMD sh /scripts/run_nginx.sh

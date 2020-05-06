@@ -3,7 +3,7 @@ PWD ?= pwd_unknown
 export PROJECT_NAME = pz-$(notdir $(PWD))
 export ENV_STAGE ?= dev
 export AWS_DEFAULT_REGION := eu-west-1
-export COMMIT_HASH := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
 AWS_VAULT_PROFILE := aws-workshops
 
@@ -86,9 +86,14 @@ login: up
 build-backend:
 	$(AWS_VAULT) $(MAKE) -C services/backend build
 
-build:
-	@echo Build version: $(COMMIT_HASH)
+build-all:
+	@echo Build version: $(VERSION)
 	$(MAKE) build-backend
+
+deploy-admin-panel:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *AdminPanelStack;
 
 clean:
 	# remove created images
@@ -121,7 +126,14 @@ update-infra-global:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *GlobalStack;
 
-update-infra-stage:
+update-infra-main:
 	cd infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) cdk deploy *EnvMainStack;
+	$(AWS_VAULT) cdk deploy *MainStack;
+
+update-infra-components:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *ComponentsStack;
+
+update-infra-stage: update-infra-main update-infra-components

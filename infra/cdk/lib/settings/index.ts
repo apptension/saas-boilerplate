@@ -1,9 +1,10 @@
-import './environment';
+import './types';
 
 export interface EnvironmentSettings {
     projectName: string
     projectEnvName: string
     envStage: string
+    version: string
 }
 
 export function loadEnvSettings(): EnvironmentSettings {
@@ -18,5 +19,6 @@ export function loadEnvSettings(): EnvironmentSettings {
         projectName: projectName,
         projectEnvName: `${projectName}-${envStage}`,
         envStage: process.env.ENV_STAGE,
-    }
+        version: process.env.VERSION,
+    };
 }

@@ -6,6 +6,7 @@ declare global {
         interface ProcessEnv {
             PROJECT_NAME: string;
             ENV_STAGE: string;
+            VERSION: string;
         }
     }
 }

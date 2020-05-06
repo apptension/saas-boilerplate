@@ -1,12 +1,16 @@
 import * as core from '@aws-cdk/core';
 import {GlobalResources} from './resources';
-import {EnvironmentSettings} from '../../settings';
+import {EnvConstructProps} from "../../types";
+
+export interface GlobalStackProps extends core.StackProps, EnvConstructProps {
+}
 
 export class GlobalStack extends core.Stack {
-    constructor(scope: core.App, id: string, envSettings: EnvironmentSettings, props?: core.StackProps) {
+    resources: GlobalResources;
+
+    constructor(scope: core.App, id: string, props: GlobalStackProps) {
         super(scope, id, props);
 
-        const resources = new GlobalResources(this, envSettings);
-
+        this.resources = new GlobalResources(this, "GlobalResources", {envSettings: props.envSettings});
     }
 }

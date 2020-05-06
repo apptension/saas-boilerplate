@@ -1,12 +1,14 @@
-import * as core from '@aws-cdk/core';
-
-import {EnvironmentSettings} from "../../../settings";
+import {Construct} from "@aws-cdk/core";
 import {GlobalECR} from './ecr';
+import {EnvConstructProps} from '../../../types'
 
-export class GlobalResources {
+
+export class GlobalResources extends Construct {
     ecr: GlobalECR;
 
-    constructor(scope: core.Construct, envSettings: EnvironmentSettings) {
-        this.ecr = new GlobalECR(scope, envSettings)
+    constructor(scope: Construct, id: string, props: EnvConstructProps) {
+        super(scope, id);
+
+        this.ecr = new GlobalECR(this, "ECRGlobal", props)
     }
 }

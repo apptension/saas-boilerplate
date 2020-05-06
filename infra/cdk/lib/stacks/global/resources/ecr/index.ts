@@ -1,18 +1,30 @@
-import * as core from '@aws-cdk/core';
 import {Repository} from '@aws-cdk/aws-ecr';
-import {EnvironmentSettings} from "../../../../settings";
+import {Construct} from "@aws-cdk/core";
 
-export class GlobalECR {
+import {EnvironmentSettings} from "../../../../settings";
+import {EnvConstructProps} from "../../../../types";
+
+export class GlobalECR extends Construct {
     nginxRepository: Repository;
     backendRepository: Repository;
 
-    constructor(scope: core.Construct, envSettings: EnvironmentSettings) {
-        this.nginxRepository = new Repository(scope, "ECRNginxRepository", {
-            repositoryName: `${envSettings.projectName}-nginx`
-        })
+    static getNginxRepositoryName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectName}-nginx`;
+    }
 
-        this.backendRepository = new Repository(scope, "ECRBackendRepository", {
-            repositoryName: `${envSettings.projectName}-backend`
-        })
+    static getBackendRepositoryName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectName}-backend`;
+    }
+
+    constructor(scope: Construct, id: string, props: EnvConstructProps) {
+        super(scope, id);
+
+        this.nginxRepository = new Repository(this, "ECRNginxRepository", {
+            repositoryName: GlobalECR.getNginxRepositoryName(props.envSettings),
+        });
+
+        this.backendRepository = new Repository(this, "ECRBackendRepository", {
+            repositoryName: GlobalECR.getBackendRepositoryName(props.envSettings),
+        });
     }
 }
