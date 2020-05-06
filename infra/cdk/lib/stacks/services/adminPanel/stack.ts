@@ -63,6 +63,8 @@ export class AdminPanelStack extends core.Stack {
                     environment: {
                         "CHAMBER_SERVICE_NAME": `${envSettings.projectEnvName}-admin-panel`,
                         "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
+                        "DJANGO_ALLOWED_HOSTS": `${resources.publicLoadBalancer.loadBalancerDnsName},`,
+                        "DJANGO_ALLOWED_CIDR_NETS": "10.0.1.0/24"
                     },
                     secrets: {
                         "DB_CONNECTION": EcsSecret.fromSecretsManager(

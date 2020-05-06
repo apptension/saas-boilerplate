@@ -7,8 +7,10 @@ verify_ssl = true
 
 [packages]
 django = "*"
+django-allow-cidr = "*"
 django-environ = "*"
 psycopg2-binary = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"
