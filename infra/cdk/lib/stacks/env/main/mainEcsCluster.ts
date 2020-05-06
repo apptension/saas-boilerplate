@@ -3,10 +3,10 @@ import {Cluster} from '@aws-cdk/aws-ecs';
 import {Peer, Port, SecurityGroup, SubnetType} from "@aws-cdk/aws-ec2";
 import {ApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
 
-import {EnvironmentSettings} from "../../../../settings";
-import {EnvConstructProps} from "../../../../types";
-import {MainVpc} from "../mainVpc";
-import {ApplicationMultipleTargetGroupsFargateService} from "@aws-cdk/aws-ecs-patterns";
+import {EnvironmentSettings} from "../../../settings";
+import {EnvConstructProps} from "../../../types";
+import {MainVpc} from "./mainVpc";
+
 
 export interface MainECSClusterProps extends EnvConstructProps {
     mainVpc: MainVpc,
@@ -67,7 +67,6 @@ export class MainECSCluster extends Construct {
     }
 
     private createPublicLoadBalancer() {
-        ApplicationMultipleTargetGroupsFargateService
         this.loadBalancerSecurityGroup = new SecurityGroup(this, "ECSMainALBSecurityGroup", {
             vpc: this.mainVpc.vpc,
         });

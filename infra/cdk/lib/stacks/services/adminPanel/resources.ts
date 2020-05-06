@@ -7,7 +7,7 @@ import {ApplicationLoadBalancer, IApplicationLoadBalancer} from "@aws-cdk/aws-el
 import {EnvConstructProps} from "../../../types";
 import {MainVpc} from '../../env/main/mainVpc';
 import {GlobalECR} from "../../global/resources/ecr";
-import {MainECSCluster} from "../../env/main/mainECSCluster";
+import {MainECSCluster} from "../../env/main/mainEcsCluster";
 import {EnvironmentSettings} from "../../../settings";
 
 

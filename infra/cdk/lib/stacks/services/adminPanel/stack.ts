@@ -1,11 +1,15 @@
 import * as core from '@aws-cdk/core';
-import {ContainerImage} from "@aws-cdk/aws-ecs";
+import {Fn} from '@aws-cdk/core';
+import {ContainerImage, Secret as EcsSecret} from "@aws-cdk/aws-ecs";
 import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
+import {Secret} from "@aws-cdk/aws-secretsmanager";
 
 import {EnvConstructProps} from "../../../types";
 import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
-import {AdminPanelResources} from "./resources";
 import {MainKmsKey} from "../../env/main/mainKmsKey";
+import {MainDatabase} from "../../env/main/mainDatabase";
+import {AdminPanelResources} from "./resources";
+
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
 }
@@ -32,6 +36,8 @@ export class AdminPanelStack extends core.Stack {
             resources: ["*"]
         }));
 
+        const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
+
         new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
             serviceName: `${props.envSettings.projectEnvName}-admin-panel`,
             cluster: resources.mainCluster,
@@ -48,15 +54,6 @@ export class AdminPanelStack extends core.Stack {
                     environment: {
                         "NGINX_BACKEND_HOST": "localhost",
                         "NGINX_SERVER_NAME": resources.publicLoadBalancer.loadBalancerDnsName
-                    },
-                    secrets: {
-                        // "DB_CONNECTION": aws_ecs.Secret.from_secrets_manager(
-                        //     aws_secretsmanager.Secret.from_secret_arn(
-                        //         scope,
-                        //         "DbSecret",
-                        //         secret_arn=core.Fn.import_value(f"resources:{environment_name}:WebBackendDbSecretArn"),
-                        //     )
-                        // )
                     }
                 },
                 {
@@ -67,14 +64,9 @@ export class AdminPanelStack extends core.Stack {
                         "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
                     },
                     secrets: {
-                        // "DB_CONNECTION": aws_ecs.Secret.from_secrets_manager(
-                        //     aws_secretsmanager.Secret.from_secret_arn(
-                        //         scope,
-                        //         "DbSecret",
-                        //         secret_arn=core.Fn.import_value(f"resources:{environment_name}:WebBackendDbSecretArn"),
-                        //     )
-                        // )
-                    }
+                        "DB_CONNECTION": EcsSecret.fromSecretsManager(
+                            Secret.fromSecretArn(this, "DbSecret", dbSecretArn))
+                    },
                 }
             ],
             loadBalancers: [

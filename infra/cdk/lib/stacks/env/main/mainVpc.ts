@@ -1,8 +1,8 @@
 import {SubnetType, Vpc} from "@aws-cdk/aws-ec2";
 import {CfnOutput, Construct} from "@aws-cdk/core";
 
-import {EnvironmentSettings} from "../../../../settings";
-import {EnvConstructProps} from "../../../../types";
+import {EnvironmentSettings} from "../../../settings";
+import {EnvConstructProps} from "../../../types";
 
 export interface MainVpcProps extends EnvConstructProps {
 }
