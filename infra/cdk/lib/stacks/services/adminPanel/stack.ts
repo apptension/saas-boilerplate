@@ -39,6 +39,7 @@ export class AdminPanelStack extends core.Stack {
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
 
         new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
+            securityGroup: resources.fargateContainerSecurityGroup,
             serviceName: `${props.envSettings.projectEnvName}-admin-panel`,
             cluster: resources.mainCluster,
             cpu: 512,
@@ -54,7 +55,7 @@ export class AdminPanelStack extends core.Stack {
                     environment: {
                         "NGINX_BACKEND_HOST": "localhost",
                         "NGINX_SERVER_NAME": resources.publicLoadBalancer.loadBalancerDnsName
-                    }
+                    },
                 },
                 {
                     containerName: 'backend',

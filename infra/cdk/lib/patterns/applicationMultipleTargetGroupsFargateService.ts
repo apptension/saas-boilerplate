@@ -1,16 +1,20 @@
 import {FargateService, FargateTaskDefinition} from '@aws-cdk/aws-ecs';
 import {ApplicationTargetGroup} from '@aws-cdk/aws-elasticloadbalancingv2';
 import {Construct} from '@aws-cdk/core';
+import {IRole} from "@aws-cdk/aws-iam";
+import {ISecurityGroup} from "@aws-cdk/aws-ec2";
+
 import {
     ApplicationMultipleTargetGroupsServiceBase,
     ApplicationMultipleTargetGroupsServiceBaseProps
 } from './applicationMultipleTargetGroupsFargateServiceBase';
-import {IRole} from "@aws-cdk/aws-iam";
+
 
 /**
  * The properties for the ApplicationMultipleTargetGroupsFargateService service.
  */
 export interface ApplicationMultipleTargetGroupsFargateServiceProps extends ApplicationMultipleTargetGroupsServiceBaseProps {
+    securityGroup: ISecurityGroup;
     /**
      * The task definition to use for tasks in the service. Only one of TaskDefinition or TaskImageOptions must be specified.
      *
@@ -178,6 +182,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
             propagateTags: props.propagateTags,
             enableECSManagedTags: props.enableECSManagedTags,
             cloudMapOptions: props.cloudMapOptions,
+            securityGroup: props.securityGroup,
         });
     };
 }

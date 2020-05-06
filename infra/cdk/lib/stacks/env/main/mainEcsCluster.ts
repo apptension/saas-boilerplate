@@ -16,10 +16,6 @@ export class MainECSCluster extends Construct {
     cluster: Cluster;
     fargateContainerSecurityGroup: SecurityGroup;
     publicLoadBalancer: ApplicationLoadBalancer;
-    loadBalancerSecurityGroup: SecurityGroup;
-
-    private readonly mainVpc: MainVpc;
-    private readonly envSettings: EnvironmentSettings;
 
     static getClusterName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-main`;
@@ -37,64 +33,71 @@ export class MainECSCluster extends Construct {
         return `${envSettings.projectEnvName}-publicLBSecurityGroupId`;
     }
 
+    static getFargateContainerSecurityGroupIdOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-fargateContainerSecurityGroupId`;
+    }
+
     constructor(scope: Construct, id: string, props: MainECSClusterProps) {
         super(scope, id);
 
-        this.mainVpc = props.mainVpc;
-        this.envSettings = props.envSettings;
-
-        this.createCluster();
-        this.createFargateSecurityGroup();
-        this.createPublicLoadBalancer();
-        this.createOutputs();
+        this.cluster = this.createCluster(props);
+        this.fargateContainerSecurityGroup = this.createFargateSecurityGroup(props);
+        this.publicLoadBalancer = this.createPublicLoadBalancer(props);
     }
 
-    private createCluster() {
-        this.cluster = new Cluster(this, "ECSMainCluster", {
-            clusterName: MainECSCluster.getClusterName(this.envSettings),
-            vpc: this.mainVpc.vpc,
+    private createCluster(props: MainECSClusterProps): Cluster {
+        return new Cluster(this, "ECSMainCluster", {
+            vpc: props.mainVpc.vpc,
+            clusterName: MainECSCluster.getClusterName(props.envSettings),
         });
     }
 
-    private createFargateSecurityGroup() {
-        this.fargateContainerSecurityGroup = new SecurityGroup(this, "EC2FargateContainerSecurityGroup", {
-            vpc: this.mainVpc.vpc,
+    private createFargateSecurityGroup(props: MainECSClusterProps): SecurityGroup {
+        const sg = new SecurityGroup(this, "EC2FargateContainerSecurityGroup", {
+            vpc: props.mainVpc.vpc,
             allowAllOutbound: true,
-            description: `${this.envSettings.projectName} Fargate container security group`,
-        })
+            description: `${props.envSettings.projectName} Fargate container security group`,
+        });
 
-        this.fargateContainerSecurityGroup.addIngressRule(this.fargateContainerSecurityGroup, Port.allTcp())
+        sg.addIngressRule(sg, Port.allTcp());
+
+        new CfnOutput(this, "FargateContainerSecurityGroupIdOutput", {
+            exportName: MainECSCluster.getFargateContainerSecurityGroupIdOutputExportName(props.envSettings),
+            value: sg.securityGroupId,
+        });
+
+        return sg;
     }
 
-    private createPublicLoadBalancer() {
-        this.loadBalancerSecurityGroup = new SecurityGroup(this, "ECSMainALBSecurityGroup", {
-            vpc: this.mainVpc.vpc,
+    private createPublicLoadBalancer(props: MainECSClusterProps): ApplicationLoadBalancer {
+        const securityGroup = new SecurityGroup(this, "ECSMainALBSecurityGroup", {
+            vpc: props.mainVpc.vpc,
         });
-        this.loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.allTraffic());
+        securityGroup.addIngressRule(Peer.anyIpv4(), Port.allTraffic());
 
-        this.publicLoadBalancer = new ApplicationLoadBalancer(this, "ECSMainALB", {
-            vpc: this.mainVpc.vpc,
+        const publicLoadBalancer = new ApplicationLoadBalancer(this, "ECSMainALB", {
+            vpc: props.mainVpc.vpc,
             internetFacing: true,
-            securityGroup: this.loadBalancerSecurityGroup,
+            securityGroup: securityGroup,
             idleTimeout: Duration.seconds(30),
             vpcSubnets: {subnetType: SubnetType.PUBLIC, onePerAz: true},
         });
-    }
 
-    private createOutputs() {
+        new CfnOutput(this, "PublicLoadBalancerSecurityGroupIdOutput", {
+            exportName: MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(props.envSettings),
+            value: securityGroup.securityGroupId,
+        });
+
         new CfnOutput(this, "PublicLoadBalancerDnsNameOutput", {
-            exportName: MainECSCluster.getLoadBalancerDnsNameOutput(this.envSettings),
-            value: this.publicLoadBalancer.loadBalancerDnsName,
+            exportName: MainECSCluster.getLoadBalancerDnsNameOutput(props.envSettings),
+            value: publicLoadBalancer.loadBalancerDnsName,
         });
 
         new CfnOutput(this, "PublicLoadBalancerArnOutput", {
-            exportName: MainECSCluster.getLoadBalancerArnOutputExportName(this.envSettings),
-            value: this.publicLoadBalancer.loadBalancerArn,
-        })
+            exportName: MainECSCluster.getLoadBalancerArnOutputExportName(props.envSettings),
+            value: publicLoadBalancer.loadBalancerArn,
+        });
 
-        new CfnOutput(this, "PublicLoadBalancerSecurityGroupIdOutput", {
-            exportName: MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(this.envSettings),
-            value: this.loadBalancerSecurityGroup.securityGroupId,
-        })
+        return publicLoadBalancer;
     }
 }

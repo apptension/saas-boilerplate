@@ -1,5 +1,5 @@
 import {Construct, Fn, Stack} from "@aws-cdk/core";
-import {IVpc, Vpc} from "@aws-cdk/aws-ec2";
+import {ISecurityGroup, IVpc, SecurityGroup, Vpc} from "@aws-cdk/aws-ec2";
 import {Cluster, ICluster} from "@aws-cdk/aws-ecs";
 import {IRepository, Repository} from "@aws-cdk/aws-ecr";
 import {ApplicationLoadBalancer, IApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
@@ -17,6 +17,7 @@ export class AdminPanelResources extends Construct {
     nginxRepository: IRepository;
     backendRepository: IRepository;
     publicLoadBalancer: IApplicationLoadBalancer;
+    fargateContainerSecurityGroup: ISecurityGroup;
 
     private envSettings: EnvironmentSettings;
 
@@ -25,16 +26,18 @@ export class AdminPanelResources extends Construct {
 
         this.envSettings = props.envSettings;
 
-        this.retrieveMainVpc();
-        this.retrieveMainCluster();
-        this.retrievePublicLoadBalancer();
-        this.retrieveECRRepositories();
+        this.mainVpc = this.retrieveMainVpc();
+        this.fargateContainerSecurityGroup = this.retrieveFargateContainerSecurityGroup();
+        this.mainCluster = this.retrieveMainCluster(this.mainVpc);
+        this.publicLoadBalancer = this.retrievePublicLoadBalancer(this.mainVpc);
+        this.nginxRepository = this.retrieveNginxECRRepositories();
+        this.backendRepository = this.retrieveBackendECRRepositories();
     }
 
     private retrieveMainVpc() {
         const stack = Stack.of(this);
 
-        this.mainVpc = Vpc.fromVpcAttributes(this, "EC2MainVpc", {
+        return Vpc.fromVpcAttributes(this, "EC2MainVpc", {
             vpcId: Fn.importValue(MainVpc.getVpcArnOutputExportName(this.envSettings)),
             publicSubnetIds: [
                 Fn.importValue(MainVpc.getPublicSubnetOneIdOutputExportName(this.envSettings)),
@@ -47,34 +50,42 @@ export class AdminPanelResources extends Construct {
         });
     }
 
-    private retrieveMainCluster() {
-        this.mainCluster = Cluster.fromClusterAttributes(this, "ECSMainCluster", {
-            vpc: this.mainVpc,
+    private retrieveFargateContainerSecurityGroup() {
+        return SecurityGroup.fromSecurityGroupId(this, "FargateContainerSecurityGroup",
+            Fn.importValue(MainECSCluster.getFargateContainerSecurityGroupIdOutputExportName(this.envSettings)));
+    }
+
+    private retrieveMainCluster(vpc: IVpc) {
+        return Cluster.fromClusterAttributes(this, "ECSMainCluster", {
+            vpc,
             securityGroups: [],
             clusterName: MainECSCluster.getClusterName(this.envSettings),
         });
     }
 
-    private retrievePublicLoadBalancer() {
+    private retrievePublicLoadBalancer(vpc: IVpc) {
         const securityGroupId = Fn.importValue(
             MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(this.envSettings));
         const loadBalancerArn = Fn.importValue(MainECSCluster.getLoadBalancerArnOutputExportName(this.envSettings));
         const loadBalancerDnsName = Fn.importValue(MainECSCluster.getLoadBalancerDnsNameOutput(this.envSettings));
 
-        this.publicLoadBalancer = ApplicationLoadBalancer.fromApplicationLoadBalancerAttributes(this,
+        return ApplicationLoadBalancer.fromApplicationLoadBalancerAttributes(this,
             "MainPublicLoadBalancer", {
-                vpc: this.mainVpc,
+                vpc,
                 loadBalancerArn,
                 securityGroupId,
                 loadBalancerDnsName,
             })
     }
 
-    private retrieveECRRepositories() {
-        this.nginxRepository = Repository.fromRepositoryName(this, "ECRNginxRepository",
+    private retrieveNginxECRRepositories() {
+        return Repository.fromRepositoryName(this, "ECRNginxRepository",
             GlobalECR.getNginxRepositoryName(this.envSettings));
 
-        this.backendRepository = Repository.fromRepositoryName(this, "ECRBackendRepository",
+    }
+
+    private retrieveBackendECRRepositories() {
+        return Repository.fromRepositoryName(this, "ECRBackendRepository",
             GlobalECR.getBackendRepositoryName(this.envSettings));
     }
 }
