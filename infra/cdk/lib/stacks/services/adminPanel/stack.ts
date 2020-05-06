@@ -5,6 +5,7 @@ import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 import {EnvConstructProps} from "../../../types";
 import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
 import {AdminPanelResources} from "./resources";
+import {MainKmsKey} from "../../env/main/mainKmsKey";
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
 }
@@ -35,6 +36,7 @@ export class AdminPanelStack extends core.Stack {
             serviceName: `${props.envSettings.projectEnvName}-admin-panel`,
             cluster: resources.mainCluster,
             cpu: 512,
+            memoryLimitMiB: 1024,
             desiredCount: 1,
             taskRole,
             assignPublicIp: true,
@@ -45,7 +47,7 @@ export class AdminPanelStack extends core.Stack {
                     image: ContainerImage.fromEcrRepository(resources.nginxRepository, envSettings.version),
                     environment: {
                         "NGINX_BACKEND_HOST": "localhost",
-                        "NGINX_SERVER_NAME": "<add-domain-name-here>"
+                        "NGINX_SERVER_NAME": resources.publicLoadBalancer.loadBalancerDnsName
                     },
                     secrets: {
                         // "DB_CONNECTION": aws_ecs.Secret.from_secrets_manager(
@@ -61,8 +63,8 @@ export class AdminPanelStack extends core.Stack {
                     containerName: 'backend',
                     image: ContainerImage.fromEcrRepository(resources.backendRepository, envSettings.version),
                     environment: {
-                        "CHAMBER_SERVICE_NAME": "",
-                        "CHAMBER_KMS_KEY_ALIAS": "",
+                        "CHAMBER_SERVICE_NAME": `${envSettings.projectEnvName}-admin-panel`,
+                        "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
                     },
                     secrets: {
                         // "DB_CONNECTION": aws_ecs.Secret.from_secrets_manager(
