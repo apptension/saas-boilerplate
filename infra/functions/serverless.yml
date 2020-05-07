@@ -1,0 +1,38 @@
+service: "${env:PROJECT_NAME}-functions"
+
+custom:
+  migrationsStateMachineArn: arn:aws:states:#{AWS::Region}:#{AWS::AccountId}:stateMachine:${env:PROJECT_NAME}-${opt:stage}-migrations
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: "${env:AWS_DEFAULT_REGION}"
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "ServerlessDeploymentBucket" } ] ]  }
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - "Ref": "ServerlessDeploymentBucket"
+            - "/*"
+    - Effect: "Allow"
+      Action:
+        - "states:StartExecution"
+      Resource:
+        - ${self:custom.migrationsStateMachineArn}
+
+functions:
+  TriggerMigrationsJob:
+    handler: deployment/triggerMigrationsJob.handler
+    environment:
+      STATE_MACHINE_ARN: ${self:custom.migrationsStateMachineArn}
+
+plugins:
+  - serverless-pseudo-parameters

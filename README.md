@@ -2,3 +2,8 @@
 - run `make setup`
 - set NGINX_SERVER_NAME and NGINX_BACKEND_HOST variables
 - set parameter store variables
+    * admin-panel/DJANGO_DEBUG
+    * admin-panel/DJANGO_SECRET
+    
+TODO: 
+- add slack notifications

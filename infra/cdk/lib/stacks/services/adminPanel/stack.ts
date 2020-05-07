@@ -8,18 +8,20 @@ import {EnvConstructProps} from "../../../types";
 import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
 import {MainKmsKey} from "../../env/main/mainKmsKey";
 import {MainDatabase} from "../../env/main/mainDatabase";
-import {AdminPanelResources} from "./resources";
+import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
 
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
 }
 
 export class AdminPanelStack extends core.Stack {
+    fargateService: ApplicationMultipleTargetGroupsFargateService;
+
     constructor(scope: core.App, id: string, props: AdminPanelStackProps) {
         super(scope, id, props);
 
         const {envSettings} = props;
-        const resources = new AdminPanelResources(this, "AdminPanelResources", props);
+        const resources = new FargateServiceResources(this, "AdminPanelResources", props);
 
         const taskRole = new Role(this, "AdminPanelTaskIAMRole", {
             assumedBy: new ServicePrincipal('ecs-tasks'),
@@ -38,7 +40,7 @@ export class AdminPanelStack extends core.Stack {
 
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
 
-        new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
+        this.fargateService = new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
             securityGroup: resources.fargateContainerSecurityGroup,
             serviceName: `${props.envSettings.projectEnvName}-admin-panel`,
             cluster: resources.mainCluster,

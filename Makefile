@@ -60,8 +60,9 @@ help:
 	@echo 'uid=:	make shell user=dummy uid=4000 (defaults to 0 if user= set)'
 
 install-infra:
-	npm install -g aws-cdk
+	npm install -g aws-cdk serverless
 	$(MAKE) -C infra/cdk install
+	$(MAKE) -C infra/funtions install
 
 install-local:
 	# Install all service dependencies
@@ -89,11 +90,6 @@ build-backend:
 build-all:
 	@echo Build version: $(VERSION)
 	$(MAKE) build-backend
-
-deploy-admin-panel:
-	cd infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) cdk deploy *AdminPanelStack;
 
 clean:
 	# remove created images
@@ -136,4 +132,23 @@ update-infra-components:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *ComponentsStack;
 
-update-infra-stage: update-infra-main update-infra-components
+update-infra-functions:
+	cd infra/functions;\
+	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+
+
+update-infra-stage: update-infra-main update-infra-components update-infra-functions
+
+deploy-admin-panel:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *AdminPanelStack;
+
+deploy-migrations:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *MigrationsStack;
+
+	cd infra/functions;\
+	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
+

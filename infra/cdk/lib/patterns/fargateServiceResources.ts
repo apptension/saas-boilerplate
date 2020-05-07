@@ -4,14 +4,14 @@ import {Cluster, ICluster} from "@aws-cdk/aws-ecs";
 import {IRepository, Repository} from "@aws-cdk/aws-ecr";
 import {ApplicationLoadBalancer, IApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
 
-import {EnvConstructProps} from "../../../types";
-import {MainVpc} from '../../env/main/mainVpc';
-import {GlobalECR} from "../../global/resources/ecr";
-import {MainECSCluster} from "../../env/main/mainEcsCluster";
-import {EnvironmentSettings} from "../../../settings";
+import {MainVpc} from '../stacks/env/main/mainVpc';
+import {GlobalECR} from "../stacks/global/resources/ecr";
+import {MainECSCluster} from "../stacks/env/main/mainEcsCluster";
+import {EnvConstructProps} from "../types";
+import {EnvironmentSettings} from "../settings";
 
 
-export class AdminPanelResources extends Construct {
+export class FargateServiceResources extends Construct {
     mainVpc: IVpc;
     mainCluster: ICluster;
     nginxRepository: IRepository;
@@ -19,7 +19,7 @@ export class AdminPanelResources extends Construct {
     publicLoadBalancer: IApplicationLoadBalancer;
     fargateContainerSecurityGroup: ISecurityGroup;
 
-    private envSettings: EnvironmentSettings;
+    private readonly envSettings: EnvironmentSettings;
 
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
@@ -75,7 +75,7 @@ export class AdminPanelResources extends Construct {
                 loadBalancerArn,
                 securityGroupId,
                 loadBalancerDnsName,
-            })
+            });
     }
 
     private retrieveNginxECRRepositories() {
