@@ -1,5 +1,5 @@
 import * as core from '@aws-cdk/core';
-import {Fn} from '@aws-cdk/core';
+import {Fn, Stack} from '@aws-cdk/core';
 import {ContainerImage, Secret as EcsSecret} from "@aws-cdk/aws-ecs";
 import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 import {Secret} from "@aws-cdk/aws-secretsmanager";
@@ -9,6 +9,8 @@ import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/a
 import {MainKmsKey} from "../../env/main/mainKmsKey";
 import {MainDatabase} from "../../env/main/mainDatabase";
 import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
+import {MigrationsStackProps} from "../migrations/stack";
+import {EnvironmentSettings} from "../../../settings";
 
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
@@ -22,21 +24,7 @@ export class AdminPanelStack extends core.Stack {
 
         const {envSettings} = props;
         const resources = new FargateServiceResources(this, "AdminPanelResources", props);
-
-        const taskRole = new Role(this, "AdminPanelTaskIAMRole", {
-            assumedBy: new ServicePrincipal('ecs-tasks'),
-        });
-
-        taskRole.addToPolicy(new PolicyStatement({
-            actions: [
-                "kms:*",
-                "ssm:*",
-                "sqs:*",
-                "cloudformation:DescribeStacks",
-                "events:*",
-            ],
-            resources: ["*"]
-        }));
+        const taskRole = this.createTaskRole(props);
 
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
 
@@ -63,7 +51,7 @@ export class AdminPanelStack extends core.Stack {
                     containerName: 'backend',
                     image: ContainerImage.fromEcrRepository(resources.backendRepository, envSettings.version),
                     environment: {
-                        "CHAMBER_SERVICE_NAME": `${envSettings.projectEnvName}-admin-panel`,
+                        "CHAMBER_SERVICE_NAME": this.getChamberServiceName(envSettings),
                         "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
                         "DJANGO_ALLOWED_HOSTS": `${resources.publicLoadBalancer.loadBalancerDnsName},`,
                         "DJANGO_ALLOWED_CIDR_NETS": "10.0.1.0/24"
@@ -88,5 +76,49 @@ export class AdminPanelStack extends core.Stack {
                 }
             ],
         });
+    }
+
+    protected createTaskRole(props: MigrationsStackProps): Role {
+        const stack = Stack.of(this);
+        const chamberServiceName = this.getChamberServiceName(props.envSettings);
+
+        const taskRole = new Role(this, "AdminPanelTaskRole", {
+            assumedBy: new ServicePrincipal('ecs-tasks'),
+        });
+
+        taskRole.addToPolicy(new PolicyStatement({
+            actions: ["sqs:*", "cloudformation:DescribeStacks", "events:*"],
+            resources: ["*"],
+        }));
+
+        taskRole.addToPolicy(new PolicyStatement({
+            actions: [
+                "kms:Get*",
+                "kms:Describe*",
+                "kms:List*",
+                "kms:Decrypt",
+            ],
+            resources: [
+                Fn.importValue(MainKmsKey.getMainKmsOutputExportName(props.envSettings)),
+            ],
+        }));
+
+        taskRole.addToPolicy(new PolicyStatement({
+            actions: ["ssm:DescribeParameters"],
+            resources: ["*"],
+        }));
+
+        taskRole.addToPolicy(new PolicyStatement({
+            actions: ["ssm:GetParameters*"],
+            resources: [
+                `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
+            ],
+        }));
+
+        return taskRole;
+    }
+
+    protected getChamberServiceName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-admin-panel`;
     }
 }

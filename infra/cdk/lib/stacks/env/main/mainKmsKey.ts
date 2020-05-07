@@ -1,4 +1,4 @@
-import {Construct} from "@aws-cdk/core";
+import {CfnOutput, Construct} from "@aws-cdk/core";
 import {Key} from "@aws-cdk/aws-kms";
 import {AccountRootPrincipal, PolicyStatement} from "@aws-cdk/aws-iam";
 
@@ -15,6 +15,10 @@ export class MainKmsKey extends Construct {
 
     static getKeyAlias(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-main`;
+    }
+
+    static getMainKmsOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-mainKmsKeyArn`;
     }
 
     constructor(scope: Construct, id: string, props: MainKmsKeyProps) {
@@ -34,5 +38,10 @@ export class MainKmsKey extends Construct {
             principals: [new AccountRootPrincipal()],
             resources: ["*"],
         }));
+
+        new CfnOutput(this, "MainKmsKeyArnOutput", {
+            exportName: MainKmsKey.getMainKmsOutputExportName(this.envSettings),
+            value: this.key.keyArn,
+        });
     }
 }
