@@ -5,7 +5,7 @@ export ENV_STAGE ?= dev
 export AWS_DEFAULT_REGION := eu-west-1
 export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
-AWS_VAULT_PROFILE := aws-workshops
+AWS_VAULT_PROFILE := aws-boilerplate
 
 ifeq ($(user),)
 # USER retrieved from env, UID from shell.
@@ -152,3 +152,7 @@ deploy-migrations:
 	cd infra/functions;\
 	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
 
+deploy-workers:
+	cd services/workers;\
+	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);\
+	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f hello --log;

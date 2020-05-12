@@ -1,15 +1,14 @@
 import {CfnOutput, Construct, Duration} from "@aws-cdk/core";
 import {Cluster} from '@aws-cdk/aws-ecs';
-import {Peer, Port, SecurityGroup, SubnetType} from "@aws-cdk/aws-ec2";
+import {Peer, Port, SecurityGroup, SubnetType, Vpc} from "@aws-cdk/aws-ec2";
 import {ApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";
-import {MainVpc} from "./mainVpc";
 
 
 export interface MainECSClusterProps extends EnvConstructProps {
-    mainVpc: MainVpc,
+    vpc: Vpc,
 }
 
 export class MainECSCluster extends Construct {
@@ -47,14 +46,14 @@ export class MainECSCluster extends Construct {
 
     private createCluster(props: MainECSClusterProps): Cluster {
         return new Cluster(this, "ECSMainCluster", {
-            vpc: props.mainVpc.vpc,
+            vpc: props.vpc,
             clusterName: MainECSCluster.getClusterName(props.envSettings),
         });
     }
 
     private createFargateSecurityGroup(props: MainECSClusterProps): SecurityGroup {
         const sg = new SecurityGroup(this, "EC2FargateContainerSecurityGroup", {
-            vpc: props.mainVpc.vpc,
+            vpc: props.vpc,
             allowAllOutbound: true,
             description: `${props.envSettings.projectName} Fargate container security group`,
         });
@@ -71,12 +70,12 @@ export class MainECSCluster extends Construct {
 
     private createPublicLoadBalancer(props: MainECSClusterProps): ApplicationLoadBalancer {
         const securityGroup = new SecurityGroup(this, "ECSMainALBSecurityGroup", {
-            vpc: props.mainVpc.vpc,
+            vpc: props.vpc,
         });
         securityGroup.addIngressRule(Peer.anyIpv4(), Port.allTraffic());
 
         const publicLoadBalancer = new ApplicationLoadBalancer(this, "ECSMainALB", {
-            vpc: props.mainVpc.vpc,
+            vpc: props.vpc,
             internetFacing: true,
             securityGroup: securityGroup,
             idleTimeout: Duration.seconds(30),

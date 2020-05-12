@@ -1,0 +1,43 @@
+service: "${env:PROJECT_NAME}-workers"
+
+provider:
+  name: aws
+  runtime: python3.8
+  versionFunctions: false
+  region: "${env:AWS_DEFAULT_REGION}"
+  environment:
+    DB_SECRET_ARN: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn' }
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - "secretsmanager:GetRandomPassword"
+        - "secretsmanager:CreateSecret"
+        - "secretsmanager:ListSecrets"
+      Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - "secretsmanager:*"
+      Resource: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn' }
+
+functions:
+  hello:
+    handler: handler.hello
+    timeout: 6
+    memorySize: 256
+    vpc:
+      securityGroupIds:
+        - Fn::ImportValue: '${self:custom.projectEnvName}-lambdaSecurityGroupId'
+      subnetIds:
+        - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
+        - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
+  pythonRequirements:
+    dockerizePip: true
+    useDownloadCache: true
+    useStaticCache: true
