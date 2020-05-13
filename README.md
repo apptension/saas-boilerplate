@@ -6,4 +6,5 @@
     * admin-panel/DJANGO_SECRET
     
 TODO: 
+- add lambda layers for requirements
 - add slack notifications

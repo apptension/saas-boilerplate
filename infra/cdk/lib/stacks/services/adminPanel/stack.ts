@@ -3,6 +3,7 @@ import {Fn, Stack} from '@aws-cdk/core';
 import {ContainerImage, Secret as EcsSecret} from "@aws-cdk/aws-ecs";
 import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 import {Secret} from "@aws-cdk/aws-secretsmanager";
+import {ApplicationProtocol} from "@aws-cdk/aws-elasticloadbalancingv2";
 
 import {EnvConstructProps} from "../../../types";
 import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
@@ -68,7 +69,8 @@ export class AdminPanelStack extends core.Stack {
                     listeners: [
                         {
                             name: 'AdminPanelNginxHTTP',
-                            port: 80,
+                            port: 443,
+                            protocol: ApplicationProtocol.HTTPS,
                         }
                     ],
                     // domainName: '',

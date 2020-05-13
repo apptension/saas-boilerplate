@@ -117,27 +117,34 @@ setup-infra: install-infra
 	chmod +x ./scripts/*.sh
 	$(AWS_VAULT) scripts/cdk-bootstrap.sh
 
-update-infra-global:
+#
+# Infrastructure deployment
+#
+
+deploy-infra-global:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *GlobalStack;
 
-update-infra-main:
+deploy-infra-main:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *MainStack;
 
-update-infra-components:
+deploy-infra-components:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *ComponentsStack;
 
-update-infra-functions:
+deploy-infra-functions:
 	cd infra/functions;\
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
+deploy-infra-stage: deploy-infra-main deploy-infra-components deploy-infra-functions
 
-update-infra-stage: update-infra-main update-infra-components update-infra-functions
+#
+# Services deployment
+#
 
 deploy-admin-panel:
 	cd infra/cdk;\
@@ -154,5 +161,11 @@ deploy-migrations:
 
 deploy-workers:
 	cd services/workers;\
-	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);\
-	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f hello --log;
+	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+
+deploy-web-app:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *WebAppStack;
+
+deploy-stage: deploy-admin-panel deploy-migrations deploy-workers deploy-web-app
