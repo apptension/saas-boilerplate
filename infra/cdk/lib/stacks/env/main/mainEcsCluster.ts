@@ -32,6 +32,10 @@ export class MainECSCluster extends Construct {
         return `${envSettings.projectEnvName}-publicLBSecurityGroupId`;
     }
 
+    static getLoadBalancerCanonicalHostedZoneIdOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-publicLBCanonicalHostedZoneId`;
+    }
+
     static getFargateContainerSecurityGroupIdOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-fargateContainerSecurityGroupId`;
     }
@@ -45,14 +49,14 @@ export class MainECSCluster extends Construct {
     }
 
     private createCluster(props: MainECSClusterProps): Cluster {
-        return new Cluster(this, "ECSMainCluster", {
+        return new Cluster(this, "Cluster", {
             vpc: props.vpc,
             clusterName: MainECSCluster.getClusterName(props.envSettings),
         });
     }
 
     private createFargateSecurityGroup(props: MainECSClusterProps): SecurityGroup {
-        const sg = new SecurityGroup(this, "EC2FargateContainerSecurityGroup", {
+        const sg = new SecurityGroup(this, "FargateContainerSecurityGroup", {
             vpc: props.vpc,
             allowAllOutbound: true,
             description: `${props.envSettings.projectName} Fargate container security group`,
@@ -69,12 +73,12 @@ export class MainECSCluster extends Construct {
     }
 
     private createPublicLoadBalancer(props: MainECSClusterProps): ApplicationLoadBalancer {
-        const securityGroup = new SecurityGroup(this, "ECSMainALBSecurityGroup", {
+        const securityGroup = new SecurityGroup(this, "ALBSecurityGroup", {
             vpc: props.vpc,
         });
         securityGroup.addIngressRule(Peer.anyIpv4(), Port.allTraffic());
 
-        const publicLoadBalancer = new ApplicationLoadBalancer(this, "ECSMainALB", {
+        const publicLoadBalancer = new ApplicationLoadBalancer(this, "ALB", {
             vpc: props.vpc,
             internetFacing: true,
             securityGroup: securityGroup,
@@ -95,6 +99,11 @@ export class MainECSCluster extends Construct {
         new CfnOutput(this, "PublicLoadBalancerArnOutput", {
             exportName: MainECSCluster.getLoadBalancerArnOutputExportName(props.envSettings),
             value: publicLoadBalancer.loadBalancerArn,
+        });
+
+        new CfnOutput(this, "PublicLoadBalancerCanonicalHostedZoneIdOutput", {
+            exportName: MainECSCluster.getLoadBalancerCanonicalHostedZoneIdOutputExportName(props.envSettings),
+            value: publicLoadBalancer.loadBalancerCanonicalHostedZoneId,
         });
 
         return publicLoadBalancer;

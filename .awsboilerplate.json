@@ -1,0 +1,18 @@
+{
+  "projectName": "aws-boilerplate",
+  "defaultStage": "dev",
+  "aws": {
+    "profile": "aws-boilerplate",
+    "region": "eu-west-1"
+  },
+  "hostedZone": {
+    "id": "Z00186483IY7RFDXZHUCI",
+    "name": "apptoku.com"
+  },
+  "certificate": "arn:aws:acm:eu-west-1:075678138205:certificate/70bed90f-cd5a-48b6-a900-60aac69ac274",
+  "domains": {
+    "dev": {
+      "adminPanel": "admin.awsboilerplate.dev.apptoku.com"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "projectName": "{{ projectName }}",
+  "defaultStage": "{{ defaultStage }}",
+  "aws": {
+    "profile": "{{ awsProfile }}",
+    "region": "{{ awsRegion }}"
+  },
+  "hostedZone": {
+    "id": "{{ hostedZoneId }}",
+    "name": "{{ hostedZoneName }}"
+  },
+  "certificate": {{ certificate }},
+  "domains": {
+    "{{ defaultStage }}": {
+      "adminPanel": "admin.{{ defaultStage }}.{{ appDomain }}"
+    }
+  }
+}

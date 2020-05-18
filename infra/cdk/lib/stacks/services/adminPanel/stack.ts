@@ -12,6 +12,8 @@ import {MainDatabase} from "../../env/main/mainDatabase";
 import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
 import {MigrationsStackProps} from "../migrations/stack";
 import {EnvironmentSettings} from "../../../settings";
+import {PublicHostedZone} from "@aws-cdk/aws-route53";
+import {Certificate} from "@aws-cdk/aws-certificatemanager";
 
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
@@ -28,6 +30,11 @@ export class AdminPanelStack extends core.Stack {
         const taskRole = this.createTaskRole(props);
 
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
+        const certificate = Certificate.fromCertificateArn(this, "Cert", envSettings.certificateArn);
+        const domainZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
+            hostedZoneId: envSettings.hostedZone.id,
+            zoneName: envSettings.hostedZone.name,
+        });
 
         this.fargateService = new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
             securityGroup: resources.fargateContainerSecurityGroup,
@@ -65,17 +72,18 @@ export class AdminPanelStack extends core.Stack {
             ],
             loadBalancers: [
                 {
+                    domainZone,
+                    domainName: envSettings.domains.adminPanel,
                     loadBalancer: resources.publicLoadBalancer,
                     listeners: [
                         {
-                            name: 'AdminPanelNginxHTTP',
+                            name: 'AdminPanelNginxHTTPS',
                             port: 443,
                             protocol: ApplicationProtocol.HTTPS,
+                            certificate,
                         }
                     ],
-                    // domainName: '',
-                    // domainZone: '',
-                }
+                },
             ],
         });
     }

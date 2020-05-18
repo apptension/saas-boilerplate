@@ -68,6 +68,8 @@ export class FargateServiceResources extends Construct {
             MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(this.envSettings));
         const loadBalancerArn = Fn.importValue(MainECSCluster.getLoadBalancerArnOutputExportName(this.envSettings));
         const loadBalancerDnsName = Fn.importValue(MainECSCluster.getLoadBalancerDnsNameOutput(this.envSettings));
+        const loadBalancerCanonicalHostedZoneId = Fn.importValue(
+            MainECSCluster.getLoadBalancerCanonicalHostedZoneIdOutputExportName(this.envSettings));
 
         return ApplicationLoadBalancer.fromApplicationLoadBalancerAttributes(this,
             "MainPublicLoadBalancer", {
@@ -75,6 +77,7 @@ export class FargateServiceResources extends Construct {
                 loadBalancerArn,
                 securityGroupId,
                 loadBalancerDnsName,
+                loadBalancerCanonicalHostedZoneId
             });
     }
 

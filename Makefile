@@ -1,11 +1,21 @@
 PWD ?= pwd_unknown
 
-export PROJECT_NAME = pz-$(notdir $(PWD))
+CONFIG_FILE ?= .awsboilerplate.json
+define GetFromCfg
+$(shell node -p "require('./$(CONFIG_FILE)').$(1)")
+endef
+
 export ENV_STAGE ?= dev
-export AWS_DEFAULT_REGION := eu-west-1
 export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
-AWS_VAULT_PROFILE := aws-boilerplate
+export PROJECT_NAME := $(call GetFromCfg,projectName)
+export AWS_DEFAULT_REGION := $(call GetFromCfg,aws.region)
+export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
+export HOSTED_ZONE_NAME := $(call GetFromCfg,hostedZone.name)
+export CERTIFICATE_ARN := $(call GetFromCfg,certificate)
+export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).adminPanel)
+
+AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 
 ifeq ($(user),)
 # USER retrieved from env, UID from shell.
@@ -59,18 +69,21 @@ help:
 	@echo 'user=:	make shell user=root (no need to set uid=0)'
 	@echo 'uid=:	make shell user=dummy uid=4000 (defaults to 0 if user= set)'
 
-install-infra:
+install:
 	npm install -g aws-cdk serverless
 	$(MAKE) -C infra/cdk install
-	$(MAKE) -C infra/funtions install
-
-install-local:
-	# Install all service dependencies
+	$(MAKE) -C infra/functions install
 	$(MAKE) -C services/backend install
+	$(MAKE) -C services/workers install
 
-setup: install-infra install-local
-	# setup project
+setup-infra:
+	chmod +x ./scripts/*.sh
+	$(AWS_VAULT) scripts/cdk-bootstrap.sh
+
+setup-docker:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
+
+setup: install setup-infra setup-docker
 
 up:
 	# run as a (background) service
@@ -113,15 +126,11 @@ makemigrations:
 migrate:
 	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py migrate"
 
-setup-infra: install-infra
-	chmod +x ./scripts/*.sh
-	$(AWS_VAULT) scripts/cdk-bootstrap.sh
-
 #
 # Infrastructure deployment
 #
 
-deploy-infra-global:
+deploy-global-infra:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *GlobalStack;
@@ -140,7 +149,7 @@ deploy-infra-functions:
 	cd infra/functions;\
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
-deploy-infra-stage: deploy-infra-main deploy-infra-components deploy-infra-functions
+deploy-stage-infra: deploy-infra-main deploy-infra-components deploy-infra-functions
 
 #
 # Services deployment
@@ -168,4 +177,4 @@ deploy-web-app:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *WebAppStack;
 
-deploy-stage: deploy-admin-panel deploy-migrations deploy-workers deploy-web-app
+deploy-stage-app: deploy-admin-panel deploy-migrations deploy-workers deploy-web-app

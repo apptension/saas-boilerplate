@@ -1,10 +1,10 @@
 import {CfnOutput, Construct} from "@aws-cdk/core";
 import {DatabaseInstance, DatabaseInstanceEngine} from "@aws-cdk/aws-rds";
 import {InstanceClass, InstanceSize, InstanceType, Port, Protocol, SecurityGroup, Vpc} from "@aws-cdk/aws-ec2";
+import {Effect, PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";
-import {Effect, PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
 
 export interface MainDatabaseProps extends EnvConstructProps {
@@ -49,6 +49,30 @@ export class MainDatabase extends Construct {
         return sg;
     }
 
+    private createDbInstance(props: MainDatabaseProps) {
+        const securityGroup = this.createSecurityGroup(props);
+
+        const instance = new DatabaseInstance(this, "Instance", {
+            instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
+            vpc: props.vpc,
+            engine: DatabaseInstanceEngine.POSTGRES,
+            instanceClass: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
+            masterUsername: 'root',
+            databaseName: 'main',
+            securityGroups: [securityGroup],
+            deletionProtection: true,
+        });
+
+        if (instance.secret) {
+            new CfnOutput(this, "SecretOutput", {
+                exportName: MainDatabase.geDatabaseSecretArnOutputExportName(props.envSettings),
+                value: instance.secret.secretArn,
+            });
+        }
+
+        return instance;
+    }
+
     private createProxyRole(instance: DatabaseInstance, props: MainDatabaseProps) {
         const role = new Role(this, "DBProxyRole", {
             assumedBy: new ServicePrincipal('rds.amazonaws.com'),
@@ -76,29 +100,5 @@ export class MainDatabase extends Construct {
             exportName: MainDatabase.geDatabaseProxyRoleArnOutputExportName(props.envSettings),
             value: role.roleArn,
         });
-    }
-
-    private createDbInstance(props: MainDatabaseProps) {
-        const securityGroup = this.createSecurityGroup(props);
-
-        const instance = new DatabaseInstance(this, "Instance", {
-            instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
-            vpc: props.vpc,
-            engine: DatabaseInstanceEngine.POSTGRES,
-            instanceClass: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
-            masterUsername: 'root',
-            databaseName: 'main',
-            securityGroups: [securityGroup],
-            deletionProtection: true,
-        });
-
-        if (instance.secret) {
-            new CfnOutput(this, "SecretOutput", {
-                exportName: MainDatabase.geDatabaseSecretArnOutputExportName(props.envSettings),
-                value: instance.secret.secretArn,
-            });
-        }
-
-        return instance;
     }
 }

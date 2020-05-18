@@ -2,3 +2,4 @@
 .DS_Store
 .local.env
 __pycache__/
+.env
