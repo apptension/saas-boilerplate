@@ -12,7 +12,10 @@
   "certificate": "arn:aws:acm:eu-west-1:075678138205:certificate/70bed90f-cd5a-48b6-a900-60aac69ac274",
   "domains": {
     "dev": {
-      "adminPanel": "admin.awsboilerplate.dev.apptoku.com"
+      "adminPanel": "admin.awsboilerplate.dev.apptoku.com",
+      "api": "api.awsboilerplate.dev.apptoku.com",
+      "webApp": "app.awsboilerplate.dev.apptoku.com",
+      "www": "www.awsboilerplate.dev.apptoku.com"
     }
   }
 }

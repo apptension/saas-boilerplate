@@ -17,6 +17,7 @@ export class FargateServiceResources extends Construct {
     nginxRepository: IRepository;
     backendRepository: IRepository;
     publicLoadBalancer: IApplicationLoadBalancer;
+    publicLoadBalancerSecurityGroup: ISecurityGroup;
     fargateContainerSecurityGroup: ISecurityGroup;
 
     private readonly envSettings: EnvironmentSettings;
@@ -30,6 +31,7 @@ export class FargateServiceResources extends Construct {
         this.fargateContainerSecurityGroup = this.retrieveFargateContainerSecurityGroup();
         this.mainCluster = this.retrieveMainCluster(this.mainVpc);
         this.publicLoadBalancer = this.retrievePublicLoadBalancer(this.mainVpc);
+        this.publicLoadBalancerSecurityGroup = this.retrievePublicLoadBalancerSecurityGroup(props);
         this.nginxRepository = this.retrieveNginxECRRepositories();
         this.backendRepository = this.retrieveBackendECRRepositories();
     }
@@ -79,6 +81,12 @@ export class FargateServiceResources extends Construct {
                 loadBalancerDnsName,
                 loadBalancerCanonicalHostedZoneId
             });
+    }
+
+    private retrievePublicLoadBalancerSecurityGroup(props: EnvConstructProps): ISecurityGroup {
+        return SecurityGroup.fromSecurityGroupId(this, "LbSecurityGroup",
+            Fn.importValue(MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(props.envSettings)));
+
     }
 
     private retrieveNginxECRRepositories() {

@@ -16,17 +16,17 @@ import {EnvironmentSettings} from "../../../settings";
 import {MainECSCluster} from "../../env/main/mainEcsCluster";
 
 
-export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
+export interface ApiStackProps extends core.StackProps, EnvConstructProps {
 }
 
-export class AdminPanelStack extends core.Stack {
+export class ApiStack extends core.Stack {
     fargateService: ApplicationMultipleTargetGroupsFargateService;
 
-    constructor(scope: core.App, id: string, props: AdminPanelStackProps) {
+    constructor(scope: core.App, id: string, props: ApiStackProps) {
         super(scope, id, props);
 
         const {envSettings} = props;
-        const resources = new FargateServiceResources(this, "AdminPanelResources", props);
+        const resources = new FargateServiceResources(this, "ApiResources", props);
         const taskRole = this.createTaskRole(props);
 
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
@@ -35,15 +35,21 @@ export class AdminPanelStack extends core.Stack {
             zoneName: envSettings.hostedZone.name,
         });
 
+        const allowedHosts = [
+            envSettings.domains.api,
+            envSettings.domains.webApp,
+            envSettings.domains.www,
+        ].join(',');
+
         const httpsListener = ApplicationListener.fromApplicationListenerAttributes(this, "HttpsListener", {
             listenerArn: Fn.importValue(
                 MainECSCluster.getLoadBalancerHttpsListenerArnOutputExportName(props.envSettings)),
             securityGroup: resources.publicLoadBalancerSecurityGroup,
         });
 
-        this.fargateService = new ApplicationMultipleTargetGroupsFargateService(this, "AdminPanelService", {
+        this.fargateService = new ApplicationMultipleTargetGroupsFargateService(this, "ApiService", {
             securityGroup: resources.fargateContainerSecurityGroup,
-            serviceName: `${props.envSettings.projectEnvName}-admin-panel`,
+            serviceName: `${props.envSettings.projectEnvName}-api`,
             cluster: resources.mainCluster,
             cpu: 512,
             memoryLimitMiB: 1024,
@@ -57,7 +63,7 @@ export class AdminPanelStack extends core.Stack {
                     image: ContainerImage.fromEcrRepository(resources.nginxRepository, envSettings.version),
                     environment: {
                         "NGINX_BACKEND_HOST": "localhost",
-                        "NGINX_SERVER_NAME": envSettings.domains.adminPanel,
+                        "NGINX_SERVER_NAME": allowedHosts,
                     },
                 },
                 {
@@ -66,7 +72,7 @@ export class AdminPanelStack extends core.Stack {
                     environment: {
                         "CHAMBER_SERVICE_NAME": this.getChamberServiceName(envSettings),
                         "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
-                        "DJANGO_ALLOWED_HOSTS": `${envSettings.domains.adminPanel}`,
+                        "DJANGO_ALLOWED_HOSTS": allowedHosts,
                         "DJANGO_ALLOWED_CIDR_NETS": "10.0.1.0/16"
                     },
                     secrets: {
@@ -78,13 +84,13 @@ export class AdminPanelStack extends core.Stack {
             loadBalancers: [
                 {
                     domainZone,
-                    domainName: envSettings.domains.adminPanel,
+                    domainName: envSettings.domains.api,
                     loadBalancer: resources.publicLoadBalancer,
                     listeners: [httpsListener],
                 },
             ],
             targetGroups: [
-                {protocol: Protocol.TCP, containerPort: 80, priority: 1, hostHeader: envSettings.domains.adminPanel}
+                {protocol: Protocol.TCP, containerPort: 80, priority: 2, hostHeader: envSettings.domains.api}
             ],
         });
     }
@@ -93,7 +99,7 @@ export class AdminPanelStack extends core.Stack {
         const stack = Stack.of(this);
         const chamberServiceName = this.getChamberServiceName(props.envSettings);
 
-        const taskRole = new Role(this, "AdminPanelTaskRole", {
+        const taskRole = new Role(this, "ApiTaskRole", {
             assumedBy: new ServicePrincipal('ecs-tasks'),
         });
 
@@ -130,6 +136,6 @@ export class AdminPanelStack extends core.Stack {
     }
 
     protected getChamberServiceName(envSettings: EnvironmentSettings) {
-        return `env-${envSettings.projectEnvName}-admin-panel`;
+        return `env-${envSettings.projectEnvName}-api`;
     }
 }

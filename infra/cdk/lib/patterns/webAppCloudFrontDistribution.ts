@@ -1,4 +1,4 @@
-import {Construct, Duration, Fn} from "@aws-cdk/core";
+import {Construct, Duration} from "@aws-cdk/core";
 import {Bucket} from '@aws-cdk/aws-s3';
 import {
     CloudFrontAllowedMethods,
@@ -7,10 +7,10 @@ import {
     SourceConfiguration
 } from '@aws-cdk/aws-cloudfront';
 
-import {EnvConstructProps} from "../types";
-import {MainECSCluster} from "../stacks/env/main/mainEcsCluster";
-
-export interface WebAppCloudFrontDistributionProps extends EnvConstructProps {
+export interface WebAppCloudFrontDistributionProps {
+    domainName: string;
+    apiDomainName: string;
+    certificateArn: string;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
@@ -39,7 +39,13 @@ export class WebAppCloudFrontDistribution extends Construct {
             originConfigs: [
                 this.createStaticFilesSourceConfig(staticFilesBucket),
                 this.createApiProxySourceConfig(props),
-            ]
+            ],
+            viewerCertificate: {
+                aliases: [props.domainName],
+                props: {
+                    acmCertificateArn: props.certificateArn,
+                },
+            },
         });
     }
 
@@ -69,7 +75,7 @@ export class WebAppCloudFrontDistribution extends Construct {
                 maxTtl: Duration.seconds(0),
             }],
             customOriginSource: {
-                domainName: Fn.importValue(MainECSCluster.getLoadBalancerDnsNameOutput(props.envSettings)),
+                domainName: props.apiDomainName,
             },
         };
     }

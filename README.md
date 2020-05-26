@@ -2,8 +2,8 @@
 - run `make setup`
 - set NGINX_SERVER_NAME and NGINX_BACKEND_HOST variables
 - set parameter store variables
-    * admin-panel/DJANGO_DEBUG
-    * admin-panel/DJANGO_SECRET
+    * env-${envSettings.projectEnvName}-admin-panel/DJANGO_DEBUG
+    * env-${envSettings.projectEnvName}-admin-panel/DJANGO_SECRET
     
 TODO: 
 - add lambda layers for requirements

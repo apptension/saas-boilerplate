@@ -163,11 +163,6 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
         if (props.targetGroups) {
             this.addPortMappingForTargets(this.taskDefinition.defaultContainer, props.targetGroups);
             this.targetGroup = this.registerECSTargets(this.service, this.taskDefinition.defaultContainer, props.targetGroups);
-        } else {
-            this.targetGroup = this.listener.addTargets('ECS', {
-                targets: [this.service],
-                port: this.taskDefinition.defaultContainer.portMappings[0].containerPort
-            });
         }
     }
 

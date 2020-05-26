@@ -2,6 +2,9 @@ import './types';
 
 export interface EnvironmentSettingsDomains {
     adminPanel: string;
+    api: string;
+    webApp: string;
+    www: string;
 }
 
 export interface EnvironmentSettingsHostedZone {
@@ -39,6 +42,9 @@ export function loadEnvSettings(): EnvironmentSettings {
         },
         domains: {
             adminPanel: process.env.ADMIN_PANEL_DOMAIN,
+            api: process.env.API_DOMAIN,
+            webApp: process.env.WEB_APP_DOMAIN,
+            www: process.env.WWW_DOMAIN,
         },
     };
 }

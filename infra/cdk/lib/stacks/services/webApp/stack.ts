@@ -15,6 +15,10 @@ export class WebAppStack extends core.Stack {
 
         const {envSettings} = props;
 
-        this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(this, "WebApp", {envSettings});
+        this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(this, "WebApp", {
+            domainName: props.envSettings.domains.webApp,
+            apiDomainName: props.envSettings.domains.api,
+            certificateArn: props.envSettings.certificateArn,
+        });
     }
 }

@@ -13,10 +13,12 @@ import {
     Secret
 } from '@aws-cdk/aws-ecs';
 import {
-    ApplicationListener,
     ApplicationProtocol,
     ApplicationTargetGroup,
-    IApplicationLoadBalancer
+    IApplicationListener,
+    IApplicationLoadBalancer,
+    Protocol as ELBProtocol,
+    TargetType
 } from '@aws-cdk/aws-elasticloadbalancingv2';
 import {ARecord, IHostedZone, RecordTarget} from '@aws-cdk/aws-route53';
 import {CfnOutput, Construct, Duration} from '@aws-cdk/core';
@@ -227,7 +229,7 @@ export interface ApplicationLoadBalancerProps {
     /**
      * Listeners (at least one listener) attached to this load balancer.
      */
-    readonly listeners: ApplicationListenerProps[];
+    readonly listeners: IApplicationListener[];
     readonly loadBalancer: IApplicationLoadBalancer;
     /**
      * Name of the load balancer.
@@ -303,13 +305,13 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     /**
      * The default listener for the service (first added listener).
      */
-    readonly listener: ApplicationListener;
+    readonly listener: IApplicationListener;
     /**
      * The cluster that hosts the service.
      */
     readonly cluster: ICluster;
     protected logDriver?: LogDriver;
-    protected listeners: ApplicationListener[];
+    protected listeners: IApplicationListener[];
     protected targetGroups: ApplicationTargetGroup[];
     private readonly loadBalancers: IApplicationLoadBalancer[];
 
@@ -338,28 +340,10 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
 
             this.loadBalancers.push(lb);
 
-            const protocolType = new Set();
-            for (const listenerProps of lbProps.listeners) {
-                const protocol = this.createListenerProtocol(listenerProps.protocol, listenerProps.certificate);
-                if (listenerProps.certificate !== undefined && protocol !== undefined && protocol !== ApplicationProtocol.HTTPS) {
-                    throw new Error('The HTTPS protocol must be used when a certificate is given');
-                }
-                protocolType.add(protocol);
-                const listener = this.configListener(protocol, {
-                    certificate: listenerProps.certificate,
-                    domainName: lbProps.domainName,
-                    domainZone: lbProps.domainZone,
-                    listenerName: listenerProps.name,
-                    loadBalancer: lb,
-                    port: listenerProps.port
-                });
+            for (const listener of lbProps.listeners) {
                 this.listeners.push(listener);
             }
-            const domainName = this.createDomainName(lb, internetFacing, lbProps.domainName, lbProps.domainZone);
-            new CfnOutput(this, `LoadBalancerDNS${lb.node.id}`, {value: lb.loadBalancerDnsName});
-            // for (const protocol of protocolType) {
-            //     new CfnOutput(this, `ServiceURL${lb.node.id}${protocol.toLowerCase()}`, {value: protocol.toLowerCase() + '://' + domainName});
-            // }
+            this.createDomainName(lb, internetFacing, lbProps.domainName, lbProps.domainZone);
         }
         // set up default load balancer and listener.
         this.loadBalancer = this.loadBalancers[0];
@@ -370,7 +354,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         return new AwsLogDriver({streamPrefix: prefix});
     }
 
-    protected findListener(name?: string): ApplicationListener {
+    protected findListener(name?: string): IApplicationListener {
         if (!name) {
             return this.listener;
         }
@@ -384,18 +368,32 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
 
     protected registerECSTargets(service: BaseService, container: ContainerDefinition, targets: ApplicationTargetProps[]): ApplicationTargetGroup {
         for (const targetProps of targets) {
-            const targetGroup = this.findListener(targetProps.listener).addTargets(`ECSTargetGroup${container.containerName}${targetProps.containerPort}`, {
-                port: 80,
+            const targetGroup = new ApplicationTargetGroup(this, "TargetGroup", {
+                vpc: service.cluster.vpc,
+                port: targetProps.containerPort,
+                healthCheck: {
+                    path: '/lbcheck',
+                    protocol: ELBProtocol.HTTP,
+                    interval: Duration.seconds(6),
+                    timeout: Duration.seconds(5),
+                    healthyThresholdCount: 2,
+                    unhealthyThresholdCount: 2,
+                },
+                targetType: TargetType.IP,
                 targets: [
                     service.loadBalancerTarget({
                         containerName: container.containerName,
                         containerPort: targetProps.containerPort,
-                        protocol: targetProps.protocol
-                    })
+                        protocol: targetProps.protocol,
+                    }),
                 ],
+            });
+
+            this.findListener(targetProps.listener).addTargetGroups(`ECSTargetGroup${container.containerName}${targetProps.containerPort}`, {
                 hostHeader: targetProps.hostHeader,
                 pathPattern: targetProps.pathPattern,
-                priority: targetProps.priority
+                priority: targetProps.priority,
+                targetGroups: [targetGroup],
             });
             this.targetGroups.push(targetGroup);
         }

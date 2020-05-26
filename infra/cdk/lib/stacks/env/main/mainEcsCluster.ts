@@ -1,7 +1,13 @@
 import {CfnOutput, Construct, Duration} from "@aws-cdk/core";
 import {Cluster} from '@aws-cdk/aws-ecs';
 import {Peer, Port, SecurityGroup, SubnetType, Vpc} from "@aws-cdk/aws-ec2";
-import {ApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
+import {
+    ApplicationLoadBalancer,
+    ApplicationProtocol,
+    ApplicationTargetGroup,
+    ListenerCertificate,
+    TargetType
+} from "@aws-cdk/aws-elasticloadbalancingv2";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";
@@ -34,6 +40,10 @@ export class MainECSCluster extends Construct {
 
     static getLoadBalancerCanonicalHostedZoneIdOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-publicLBCanonicalHostedZoneId`;
+    }
+
+    static getLoadBalancerHttpsListenerArnOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-publicLBHttpsListenerArn`;
     }
 
     static getFargateContainerSecurityGroupIdOutputExportName(envSettings: EnvironmentSettings) {
@@ -86,6 +96,22 @@ export class MainECSCluster extends Construct {
             vpcSubnets: {subnetType: SubnetType.PUBLIC, onePerAz: true},
         });
 
+        const httpsListener = publicLoadBalancer.addListener("HttpsListener", {
+            protocol: ApplicationProtocol.HTTPS,
+            open: true,
+            port: 443,
+            defaultTargetGroups: [new ApplicationTargetGroup(this, 'DummyTargetGroup', {
+                vpc: props.vpc,
+                port: 80,
+                targetGroupName: `${props.envSettings.projectEnvName}-dtg`,
+                targetType: TargetType.IP,
+            })]
+        });
+
+        httpsListener.addCertificates("Certificate", [
+            ListenerCertificate.fromArn(props.envSettings.certificateArn),
+        ]);
+
         new CfnOutput(this, "PublicLoadBalancerSecurityGroupIdOutput", {
             exportName: MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(props.envSettings),
             value: securityGroup.securityGroupId,
@@ -105,6 +131,11 @@ export class MainECSCluster extends Construct {
             exportName: MainECSCluster.getLoadBalancerCanonicalHostedZoneIdOutputExportName(props.envSettings),
             value: publicLoadBalancer.loadBalancerCanonicalHostedZoneId,
         });
+
+        new CfnOutput(this, "PublicLoadBalancerHttpsListenerArn", {
+            exportName: MainECSCluster.getLoadBalancerHttpsListenerArnOutputExportName(props.envSettings),
+            value: httpsListener.listenerArn,
+        })
 
         return publicLoadBalancer;
     }

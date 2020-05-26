@@ -14,6 +14,9 @@ export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
 export HOSTED_ZONE_NAME := $(call GetFromCfg,hostedZone.name)
 export CERTIFICATE_ARN := $(call GetFromCfg,certificate)
 export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).adminPanel)
+export API_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).api)
+export WEB_APP_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).webApp)
+export WWW_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).www)
 
 AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 
@@ -160,6 +163,11 @@ deploy-admin-panel:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *AdminPanelStack;
 
+deploy-api:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *ApiStack;
+
 deploy-migrations:
 	cd infra/cdk;\
 	npm run build;\
@@ -177,4 +185,4 @@ deploy-web-app:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *WebAppStack;
 
-deploy-stage-app: deploy-admin-panel deploy-migrations deploy-workers deploy-web-app
+deploy-stage-app: deploy-admin-panel deploy-api deploy-migrations deploy-workers deploy-web-app
