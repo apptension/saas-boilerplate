@@ -21,7 +21,7 @@ import {
     TargetType
 } from '@aws-cdk/aws-elasticloadbalancingv2';
 import {ARecord, IHostedZone, RecordTarget} from '@aws-cdk/aws-route53';
-import {CfnOutput, Construct, Duration} from '@aws-cdk/core';
+import {Construct, Duration} from '@aws-cdk/core';
 import {LoadBalancerTarget} from "@aws-cdk/aws-route53-targets";
 
 /**
@@ -367,12 +367,14 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     }
 
     protected registerECSTargets(service: BaseService, container: ContainerDefinition, targets: ApplicationTargetProps[]): ApplicationTargetGroup {
-        for (const targetProps of targets) {
-            const targetGroup = new ApplicationTargetGroup(this, "TargetGroup", {
+
+        targets?.forEach((targetProps, index) => {
+            const idSuffix = index > 0 ? index : '';
+            const targetGroup = new ApplicationTargetGroup(this, `TargetGroup${idSuffix}`, {
                 vpc: service.cluster.vpc,
                 port: targetProps.containerPort,
                 healthCheck: {
-                    path: '/lbcheck',
+                    path: '/',
                     protocol: ELBProtocol.HTTP,
                     interval: Duration.seconds(6),
                     timeout: Duration.seconds(5),
@@ -389,14 +391,15 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
                 ],
             });
 
-            this.findListener(targetProps.listener).addTargetGroups(`ECSTargetGroup${container.containerName}${targetProps.containerPort}`, {
+            this.findListener(targetProps.listener).addTargetGroups(`ECSTargetGroup${idSuffix}${container.containerName}${targetProps.containerPort}`, {
                 hostHeader: targetProps.hostHeader,
                 pathPattern: targetProps.pathPattern,
                 priority: targetProps.priority,
                 targetGroups: [targetGroup],
             });
             this.targetGroups.push(targetGroup);
-        }
+        });
+
         if (this.targetGroups.length === 0) {
             throw new Error('At least one target group should be specified.');
         }

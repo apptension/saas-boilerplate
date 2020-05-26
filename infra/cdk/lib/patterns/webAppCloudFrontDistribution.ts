@@ -6,20 +6,26 @@ import {
     OriginProtocolPolicy,
     SourceConfiguration
 } from '@aws-cdk/aws-cloudfront';
+import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
+import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
 
 export interface WebAppCloudFrontDistributionProps {
+    domainZone: IHostedZone;
     domainName: string;
     apiDomainName: string;
     certificateArn: string;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
+    private distribution: CloudFrontWebDistribution;
+
     constructor(scope: Construct, id: string, props: WebAppCloudFrontDistributionProps) {
         super(scope, id);
 
         const staticFilesBucket = this.createStaticFilesBucket();
 
-        this.createCloudFrontWebDistribution(staticFilesBucket, props);
+        this.distribution = this.createCloudFrontWebDistribution(staticFilesBucket, props);
+        this.createDnsRecord(this.distribution, props);
     }
 
     protected createStaticFilesBucket() {
@@ -44,6 +50,7 @@ export class WebAppCloudFrontDistribution extends Construct {
                 aliases: [props.domainName],
                 props: {
                     acmCertificateArn: props.certificateArn,
+                    sslSupportMethod: 'sni-only',
                 },
             },
         });
@@ -76,7 +83,16 @@ export class WebAppCloudFrontDistribution extends Construct {
             }],
             customOriginSource: {
                 domainName: props.apiDomainName,
+                originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             },
         };
+    }
+
+    private createDnsRecord(distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
+        return new ARecord(this, `DNSRecord`, {
+            zone: props.domainZone,
+            recordName: props.domainName,
+            target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+        });
     }
 }

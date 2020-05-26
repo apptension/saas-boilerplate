@@ -46,7 +46,12 @@ module.exports = function (plop) {
         type: 'input',
         name: 'certificate',
         message: 'Certificate ARN',
-      }
+      },
+      {
+        type: 'input',
+        name: 'cloudFrontCertificate',
+        message: 'CloudFront Certificate ARN',
+      },
     ],
     actions: [{
       type: 'add',

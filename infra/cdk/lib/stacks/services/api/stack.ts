@@ -90,7 +90,9 @@ export class ApiStack extends core.Stack {
                 },
             ],
             targetGroups: [
-                {protocol: Protocol.TCP, containerPort: 80, priority: 2, hostHeader: envSettings.domains.api}
+                {protocol: Protocol.TCP, containerPort: 80, priority: 2, hostHeader: envSettings.domains.api},
+                {protocol: Protocol.TCP, containerPort: 80, priority: 3, hostHeader: envSettings.domains.webApp},
+                {protocol: Protocol.TCP, containerPort: 80, priority: 4, hostHeader: envSettings.domains.www},
             ],
         });
     }

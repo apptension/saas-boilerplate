@@ -10,6 +10,7 @@
     "name": "apptoku.com"
   },
   "certificate": "arn:aws:acm:eu-west-1:075678138205:certificate/70bed90f-cd5a-48b6-a900-60aac69ac274",
+  "cloudFrontCertificate": "arn:aws:acm:us-east-1:075678138205:certificate/9e3df42d-6101-43bb-85a5-be6c7c28fb44",
   "domains": {
     "dev": {
       "adminPanel": "admin.awsboilerplate.dev.apptoku.com",

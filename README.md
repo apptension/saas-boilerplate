@@ -4,6 +4,8 @@
 - set parameter store variables
     * env-${envSettings.projectEnvName}-admin-panel/DJANGO_DEBUG
     * env-${envSettings.projectEnvName}-admin-panel/DJANGO_SECRET
+    * env-${envSettings.projectEnvName}-api/DJANGO_DEBUG
+    * env-${envSettings.projectEnvName}-api/DJANGO_SECRET
     
 TODO: 
 - add lambda layers for requirements

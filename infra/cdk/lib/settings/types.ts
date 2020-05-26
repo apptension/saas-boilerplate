@@ -14,6 +14,7 @@ declare global {
             WEB_APP_DOMAIN: string;
             WWW_DOMAIN: string;
             CERTIFICATE_ARN: string;
+            CLOUD_FRONT_CERTIFICATE_ARN: string;
         }
     }
 }
