@@ -13,6 +13,7 @@ export interface EnvironmentSettingsHostedZone {
 }
 
 export interface EnvironmentSettings {
+    projectRootDir: string;
     projectName: string;
     projectEnvName: string;
     envStage: string;
@@ -32,6 +33,7 @@ export function loadEnvSettings(): EnvironmentSettings {
     }
 
     return {
+        projectRootDir: process.env.PROJECT_ROOT_DIR,
         projectName: projectName,
         projectEnvName: `${projectName}-${envStage}`,
         envStage: process.env.ENV_STAGE,

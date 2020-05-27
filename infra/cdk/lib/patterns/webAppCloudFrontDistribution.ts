@@ -8,8 +8,10 @@ import {
 } from '@aws-cdk/aws-cloudfront';
 import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
+import {BucketDeployment, CacheControl, ISource} from "@aws-cdk/aws-s3-deployment";
 
 export interface WebAppCloudFrontDistributionProps {
+    sources: ISource[],
     domainZone: IHostedZone;
     domainName: string;
     apiDomainName: string;
@@ -26,6 +28,17 @@ export class WebAppCloudFrontDistribution extends Construct {
 
         this.distribution = this.createCloudFrontWebDistribution(staticFilesBucket, props);
         this.createDnsRecord(this.distribution, props);
+        this.createDeployment(staticFilesBucket, this.distribution, props);
+    }
+
+    private createDeployment(staticFilesBucket: Bucket, distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
+        new BucketDeployment(this, 'DeployWebsite', {
+            distribution,
+            distributionPaths: ['/index.html'],
+            sources: props.sources,
+            destinationBucket: staticFilesBucket,
+            cacheControl: [CacheControl.setPublic(), CacheControl.maxAge(Duration.hours(1))],
+        });
     }
 
     protected createStaticFilesBucket() {

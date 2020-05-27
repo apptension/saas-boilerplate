@@ -1,4 +1,4 @@
-import {DnsValidatedCertificate, ICertificate} from '@aws-cdk/aws-certificatemanager';
+import {ICertificate} from '@aws-cdk/aws-certificatemanager';
 import {IVpc} from '@aws-cdk/aws-ec2';
 import {
     AwsLogDriver,
@@ -427,20 +427,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
                 ? this.createAWSLogDriver(this.node.id) : undefined;
     }
 
-    private configListener(protocol: ApplicationProtocol, props: any) {
-        const listener = this.createListener(props.listenerName, props.loadBalancer, protocol, props.port);
-        let certificate;
-        if (protocol === ApplicationProtocol.HTTPS) {
-            certificate = this.createListenerCertificate(props.listenerName, props.certificate, props.domainName, props.domainZone);
-        } else {
-            certificate = undefined;
-        }
-        if (certificate !== undefined) {
-            listener.addCertificateArns(`Arns${props.listenerName}`, [certificate.certificateArn]);
-        }
-        return listener;
-    }
-
     private validateInput(props: ApplicationMultipleTargetGroupsServiceBaseProps) {
         if (props.cluster && props.vpc) {
             throw new Error('You can only specify either vpc or cluster. Alternatively, you can leave both blank');
@@ -458,32 +444,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
                 }
             }
         }
-    }
-
-    private createListenerProtocol(listenerProtocol?: ApplicationProtocol, certificate?: ICertificate) {
-        return listenerProtocol !== undefined ? listenerProtocol : (certificate ? ApplicationProtocol.HTTPS : ApplicationProtocol.HTTP);
-    }
-
-    private createListenerCertificate(listenerName: string, certificate: ICertificate, domainName: string, domainZone: IHostedZone) {
-        if (typeof domainName === 'undefined' || typeof domainZone === 'undefined') {
-            throw new Error('A domain name and zone is required when using the HTTPS protocol');
-        }
-        if (certificate !== undefined) {
-            return certificate;
-        } else {
-            return new DnsValidatedCertificate(this, `Certificate${listenerName}`, {
-                domainName,
-                hostedZone: domainZone
-            });
-        }
-    }
-
-    private createListener(name: string, lb: IApplicationLoadBalancer, protocol: ApplicationProtocol, port: number) {
-        return lb.addListener(name, {
-            protocol,
-            open: true,
-            port,
-        });
     }
 
     private createDomainName(loadBalancer: IApplicationLoadBalancer, internetFacing: boolean, name?: string, zone?: IHostedZone) {

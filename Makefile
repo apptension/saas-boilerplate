@@ -1,6 +1,7 @@
 PWD ?= pwd_unknown
 
 CONFIG_FILE ?= .awsboilerplate.json
+
 define GetFromCfg
 $(shell node -p "require('./$(CONFIG_FILE)').$(1)")
 endef
@@ -8,6 +9,7 @@ endef
 export ENV_STAGE ?= dev
 export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
+export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 export PROJECT_NAME := $(call GetFromCfg,projectName)
 export AWS_DEFAULT_REGION := $(call GetFromCfg,aws.region)
 export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
@@ -104,9 +106,13 @@ login: up
 build-backend:
 	$(AWS_VAULT) $(MAKE) -C services/backend build
 
+build-webapp:
+	$(MAKE) -C services/webapp build
+
 build-all:
 	@echo Build version: $(VERSION)
 	$(MAKE) build-backend
+	$(MAKE) build-webapp
 
 clean:
 	# remove created images
