@@ -1,6 +1,8 @@
 import {Construct} from "@aws-cdk/core";
-import {GlobalECR} from './ecr';
+
 import {EnvConstructProps} from '../../../types'
+import {GlobalECR} from './globalECR';
+import {GlobalCodeCommit} from './globalCodeCommit';
 
 
 export class GlobalResources extends Construct {
@@ -9,6 +11,8 @@ export class GlobalResources extends Construct {
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
 
-        this.ecr = new GlobalECR(this, "ECRGlobal", props)
+        this.ecr = new GlobalECR(this, "ECRGlobal", props);
+
+        new GlobalCodeCommit(this, "CodeCommit", props);
     }
 }

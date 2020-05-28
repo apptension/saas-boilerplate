@@ -1,9 +1,9 @@
 import * as core from '@aws-cdk/core';
+import {PublicHostedZone} from "@aws-cdk/aws-route53";
+import {Source} from "@aws-cdk/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../../types";
 import {WebAppCloudFrontDistribution} from "../../../patterns/webAppCloudFrontDistribution";
-import {PublicHostedZone} from "@aws-cdk/aws-route53";
-import {Source} from "@aws-cdk/aws-s3-deployment";
 
 
 export interface WebAppStackProps extends core.StackProps, EnvConstructProps {
@@ -32,5 +32,4 @@ export class WebAppStack extends core.Stack {
             certificateArn: props.envSettings.cloudFrontCertificateArn,
         });
     }
-
 }

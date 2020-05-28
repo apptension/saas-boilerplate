@@ -25,6 +25,7 @@ export class AdminPanelStack extends core.Stack {
     constructor(scope: core.App, id: string, props: AdminPanelStackProps) {
         super(scope, id, props);
 
+
         const {envSettings} = props;
         const resources = new FargateServiceResources(this, "AdminPanelResources", props);
         const taskRole = this.createTaskRole(props);

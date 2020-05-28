@@ -1,8 +1,8 @@
 import {Repository} from '@aws-cdk/aws-ecr';
 import {Construct} from "@aws-cdk/core";
 
-import {EnvironmentSettings} from "../../../../settings";
-import {EnvConstructProps} from "../../../../types";
+import {EnvironmentSettings} from "../../../settings";
+import {EnvConstructProps} from "../../../types";
 
 export class GlobalECR extends Construct {
     nginxRepository: Repository;

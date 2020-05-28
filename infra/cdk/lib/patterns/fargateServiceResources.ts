@@ -5,7 +5,7 @@ import {IRepository, Repository} from "@aws-cdk/aws-ecr";
 import {ApplicationLoadBalancer, IApplicationLoadBalancer} from "@aws-cdk/aws-elasticloadbalancingv2";
 
 import {MainVpc} from '../stacks/env/main/mainVpc';
-import {GlobalECR} from "../stacks/global/resources/ecr";
+import {GlobalECR} from "../stacks/global/resources/globalECR";
 import {MainECSCluster} from "../stacks/env/main/mainEcsCluster";
 import {EnvConstructProps} from "../types";
 import {EnvironmentSettings} from "../settings";
