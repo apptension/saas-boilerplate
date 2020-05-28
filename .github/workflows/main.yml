@@ -9,10 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - shell: bash
         env:
           CODE_COMMIT_REPO: ${{ secrets.CODE_COMMIT_REPO }}
         run: |
           git remote add codecommit "$CODE_COMMIT_REPO"
-          git push codecommit ${GITHUB_REF##*/} --force
+          git push codecommit ${GITHUB_REF##*/}
