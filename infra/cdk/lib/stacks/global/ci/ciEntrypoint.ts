@@ -27,7 +27,9 @@ export class CiEntrypoint extends Construct {
     constructor(scope: Construct, id: string, props: CiEntrypointProps) {
         super(scope, id);
 
-        this.artifactsBucket = new Bucket(this, "ArtifactsBucket");
+        this.artifactsBucket = new Bucket(this, "ArtifactsBucket", {
+            versioned: true,
+        });
         this.codeBuildProject = this.createBuildProject(this.artifactsBucket, props);
 
         props.codeRepository.onCommit('OnMasterCommit', {
@@ -46,6 +48,7 @@ export class CiEntrypoint extends Construct {
                 identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
                 bucket: artifactsBucket,
                 name: CiEntrypoint.getArtifactsName(props.envSettings),
+                includeBuildId: false,
             }),
         });
     }
