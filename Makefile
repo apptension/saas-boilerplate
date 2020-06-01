@@ -23,7 +23,7 @@ export WWW_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).www)
 
 ifeq ($(CI),true)
 	AWS_VAULT =
-	VERSION := `cat $(PROJECT_ROOT_DIR)/VERSION`
+	VERSION := $(shell cat $(PROJECT_ROOT_DIR)/VERSION)
 else
 	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
