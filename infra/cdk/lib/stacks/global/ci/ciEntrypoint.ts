@@ -43,12 +43,13 @@ export class CiEntrypoint extends Construct {
             projectName: `${props.envSettings.projectName}`,
             buildSpec: this.createBuildSpec(),
             cache: Cache.local(LocalCacheMode.SOURCE),
-            source: Source.codeCommit({repository: props.codeRepository, branchOrRef: 'master'}),
+            source: Source.codeCommit({repository: props.codeRepository}),
             artifacts: Artifacts.s3({
                 identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
                 bucket: artifactsBucket,
                 name: CiEntrypoint.getArtifactsName(props.envSettings),
                 includeBuildId: false,
+                path: '',
             }),
         });
     }
