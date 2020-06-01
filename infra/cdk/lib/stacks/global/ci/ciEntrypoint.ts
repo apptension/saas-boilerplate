@@ -2,6 +2,7 @@ import {Construct} from "@aws-cdk/core";
 import {Bucket} from "@aws-cdk/aws-s3";
 import {IRepository} from "@aws-cdk/aws-codecommit";
 import {Artifacts, BuildSpec, Cache, LocalCacheMode, Project, Source} from "@aws-cdk/aws-codebuild";
+import * as targets from "@aws-cdk/aws-events-targets";
 
 import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
@@ -24,6 +25,11 @@ export class CiEntrypoint extends Construct {
 
         this.artifactsBucket = new Bucket(this, "ArtifactsBucket");
         this.codeBuildProject = this.createBuildProject(this.artifactsBucket, props);
+
+        props.codeRepository.onCommit('OnMasterCommit', {
+            branches: ['master'],
+            target: new targets.CodeBuildProject(this.codeBuildProject),
+        });
     }
 
     private createBuildProject(artifactsBucket: Bucket, props: CiEntrypointProps) {
