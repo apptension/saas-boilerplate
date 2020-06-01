@@ -7,6 +7,7 @@ import {EnvConstructProps} from "../../../types";
 
 
 export class GlobalCodeCommit extends Construct {
+    repository: Repository;
 
     static getCodeRepositoryName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectName}-code`;
@@ -15,7 +16,7 @@ export class GlobalCodeCommit extends Construct {
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
 
-        const repo = new Repository(this, 'CodeRepo', {
+        this.repository = new Repository(this, 'CodeRepo', {
             repositoryName: GlobalCodeCommit.getCodeRepositoryName(props.envSettings),
             description: `${props.envSettings.projectName} code mirror repository used to source CodePipeline`
         });
@@ -23,6 +24,6 @@ export class GlobalCodeCommit extends Construct {
         const user = new User(this, 'CodeRepoUser', {
             userName: `${props.envSettings.projectName}-code`
         });
-        repo.grantPullPush(user);
+        this.repository.grantPullPush(user);
     }
 }

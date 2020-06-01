@@ -7,12 +7,12 @@ import {GlobalCodeCommit} from './globalCodeCommit';
 
 export class GlobalResources extends Construct {
     ecr: GlobalECR;
+    codeCommit: GlobalCodeCommit;
 
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
 
         this.ecr = new GlobalECR(this, "ECRGlobal", props);
-
-        new GlobalCodeCommit(this, "CodeCommit", props);
+        this.codeCommit = new GlobalCodeCommit(this, "CodeCommit", props);
     }
 }

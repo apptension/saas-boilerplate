@@ -55,6 +55,9 @@ else
 	$(COMPOSE_BACKEND_SHELL) sh -c "$(CMD_ARGUMENTS)"
 endif
 
+version:
+	@echo $(VERSION)
+
 install:
 	npm install -g aws-cdk serverless
 	$(MAKE) -C infra/cdk install
