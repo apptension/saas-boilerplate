@@ -60,7 +60,6 @@ export class CiEntrypoint extends Construct {
             phases: {
                 build: {
                     commands: [
-                        'echo Build!',
                         'make version > VERSION',
                     ],
                 },

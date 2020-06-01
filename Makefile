@@ -10,8 +10,8 @@ export ENV_STAGE ?= dev
 export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 
 export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-export PROJECT_NAME := $(call GetFromCfg,projectName)
-export AWS_DEFAULT_REGION := $(call GetFromCfg,aws.region)
+export PROJECT_NAME ?= $(call GetFromCfg,projectName)
+export AWS_DEFAULT_REGION ?= $(call GetFromCfg,aws.region)
 export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
 export HOSTED_ZONE_NAME := $(call GetFromCfg,hostedZone.name)
 export CERTIFICATE_ARN := $(call GetFromCfg,certificate)
@@ -45,6 +45,10 @@ export HOST_UID
 
 COMPOSE_BACKEND_SHELL = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend
 AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
+
+ifeq ($(CI),true)
+AWS_VAULT =
+endif
 
 shell:
 ifeq ($(CMD_ARGUMENTS),)

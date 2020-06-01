@@ -1,12 +1,12 @@
 import {Construct} from "@aws-cdk/core";
 import {Artifact, Pipeline} from "@aws-cdk/aws-codepipeline";
-import {CodeBuildAction, S3SourceAction, S3Trigger} from "@aws-cdk/aws-codepipeline-actions";
+import {S3SourceAction, S3Trigger} from "@aws-cdk/aws-codepipeline-actions";
 import {Bucket} from "@aws-cdk/aws-s3";
-import {BuildSpec, Project} from "@aws-cdk/aws-codebuild";
 
 import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
 import {CiEntrypoint} from "./ciEntrypoint";
+import {BackendCiBuild} from "../../../ci/backendCi";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -14,6 +14,8 @@ export interface CiPipelineProps extends EnvConstructProps {
 }
 
 export class CiPipeline extends Construct {
+    buildStageName = 'Build';
+
     static getSourceOutputArtifact(envSettings: EnvironmentSettings) {
         return Artifact.artifact(`${envSettings.projectName}-source`)
     }
@@ -23,7 +25,28 @@ export class CiPipeline extends Construct {
 
         const sourceOutputArtifact = CiPipeline.getSourceOutputArtifact(props.envSettings);
 
-        const pipeline = new Pipeline(this, "Pipeline", {
+        const pipeline = this.createPipeline(props, sourceOutputArtifact);
+        const buildStage = this.selectBuildStage(pipeline, this.buildStageName);
+
+        new BackendCiBuild(this, 'Backend', {
+            envSettings: props.envSettings,
+            inputArtifact: sourceOutputArtifact,
+            stage: buildStage,
+        });
+    }
+
+    private selectBuildStage(pipeline: Pipeline, buildStageName: string) {
+        const buildStage = pipeline.stages.find(stage => stage.stageName === buildStageName);
+
+        if (!buildStage) {
+            throw Error('Build stage has to be defined!');
+        }
+
+        return buildStage;
+    }
+
+    private createPipeline(props: CiPipelineProps, sourceOutputArtifact: Artifact) {
+        return new Pipeline(this, "Pipeline", {
             pipelineName: `${props.envSettings.projectName}-ci`,
             stages: [{
                 stageName: "Source",
@@ -37,26 +60,8 @@ export class CiPipeline extends Construct {
                     }),
                 ],
             }, {
-                stageName: 'Build',
-                actions: [
-                    new CodeBuildAction({
-                        actionName: 'Dummy',
-                        input: sourceOutputArtifact,
-                        project: new Project(this, "DummyProject", {
-                            projectName: `${props.envSettings.projectName}-dummy`,
-                            buildSpec: BuildSpec.fromObject({
-                                version: '0.2',
-                                phases: {
-                                    build: {
-                                        commands: [
-                                            'echo Dummy'
-                                        ]
-                                    }
-                                }
-                            })
-                        })
-                    })
-                ],
+                stageName: this.buildStageName,
+                actions: [],
             }],
         });
     }
