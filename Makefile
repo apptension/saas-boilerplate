@@ -7,21 +7,29 @@ $(shell node -p "require('./$(CONFIG_FILE)').$(1)")
 endef
 
 export ENV_STAGE ?= dev
-export VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
-
-export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 export PROJECT_NAME ?= $(call GetFromCfg,projectName)
+export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 export AWS_DEFAULT_REGION ?= $(call GetFromCfg,aws.region)
+
 export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
 export HOSTED_ZONE_NAME := $(call GetFromCfg,hostedZone.name)
 export CERTIFICATE_ARN := $(call GetFromCfg,certificate)
 export CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,cloudFrontCertificate)
+
 export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).adminPanel)
 export API_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).api)
 export WEB_APP_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).webApp)
 export WWW_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).www)
 
-AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
+ifeq ($(CI),true)
+	AWS_VAULT =
+	VERSION := `cat $(PROJECT_ROOT_DIR)/VERSION`
+else
+	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
+	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
+	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+endif
+export VERSION
 
 ifeq ($(user),)
 # USER retrieved from env, UID from shell.
@@ -37,18 +45,13 @@ endif
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 CMD_ARGUMENTS ?= $(cmd)
 
-export PROJECT_NAME
 export HOST_USER
 export HOST_UID
 
-.PHONY: shell help build rebuild service login test clean prune
+.PHONY: shell help build rebuild service login test clean prune version
 
 COMPOSE_BACKEND_SHELL = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend
-AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 
-ifeq ($(CI),true)
-AWS_VAULT =
-endif
 
 shell:
 ifeq ($(CMD_ARGUMENTS),)
