@@ -7,10 +7,12 @@ import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
 import {CiEntrypoint} from "./ciEntrypoint";
 import {BackendCiBuild} from "../../../ci/backendCi";
+import {GlobalResources} from "../resources";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
     entrypointArtifactBucket: Bucket;
+    resources: GlobalResources;
 }
 
 export class CiPipeline extends Construct {
@@ -32,6 +34,8 @@ export class CiPipeline extends Construct {
             envSettings: props.envSettings,
             inputArtifact: sourceOutputArtifact,
             stage: buildStage,
+            backendRepository: props.resources.ecr.backendRepository,
+            nginxRepository: props.resources.ecr.nginxRepository,
         });
     }
 

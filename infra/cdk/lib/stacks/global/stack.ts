@@ -17,7 +17,7 @@ export class GlobalStack extends core.Stack {
         this.resources = new GlobalResources(this, "GlobalResources", {envSettings: props.envSettings});
         this.ci = new GlobalCi(this, 'GlobalCi', {
             envSettings: props.envSettings,
-            codeRepository: this.resources.codeCommit.repository,
+            resources: this.resources,
         });
     }
 }
