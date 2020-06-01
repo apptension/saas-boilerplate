@@ -18,3 +18,4 @@ jobs:
         run: |
           git remote add codecommit "$CODE_COMMIT_REPO"
           git push codecommit ${GITHUB_REF##*/}
+          git push codecommit --tags
