@@ -14,6 +14,7 @@ docker build --target nginx -t "$TASK_IMAGE_URI_NGINX" .
 
 # shellcheck disable=SC2091
 $(aws ecr get-login --no-include-email --region "$AWS_DEFAULT_REGION")
+#aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
 docker push "$TASK_IMAGE_URI_BACKEND"
 docker push "$TASK_IMAGE_URI_NGINX"

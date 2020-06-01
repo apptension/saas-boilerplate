@@ -130,20 +130,25 @@ deploy-infra-main:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *MainStack;
 
-deploy-infra-components:
+deploy-infra-ci:
 	cd infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) cdk deploy *ComponentsStack;
+	$(AWS_VAULT) cdk deploy *CiStack;
 
 deploy-infra-functions:
 	cd infra/functions;\
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
-deploy-stage-infra: deploy-infra-main deploy-infra-components deploy-infra-functions
+deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 #
 # Services deployment
 #
+
+deploy-components:
+	cd infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) cdk deploy *ComponentsStack;
 
 deploy-admin-panel:
 	cd infra/cdk;\
@@ -172,4 +177,4 @@ deploy-web-app:
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *WebAppStack;
 
-deploy-stage-app: deploy-admin-panel deploy-api deploy-migrations deploy-workers deploy-web-app
+deploy-stage-app: deploy-components deploy-admin-panel deploy-api deploy-migrations deploy-workers deploy-web-app
