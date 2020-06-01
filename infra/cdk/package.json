@@ -25,6 +25,8 @@
     "@aws-cdk/aws-codecommit": "1.41.0",
     "@aws-cdk/aws-events-targets": "1.41.0",
     "@aws-cdk/aws-codebuild": "1.41.0",
+    "@aws-cdk/aws-codepipeline": "1.41.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.41.0",
     "@aws-cdk/aws-s3": "1.41.0",
     "@aws-cdk/aws-s3-deployment": "1.41.0",
     "@aws-cdk/aws-elasticloadbalancingv2": "1.41.0",

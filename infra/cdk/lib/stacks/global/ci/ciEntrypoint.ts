@@ -20,6 +20,10 @@ export class CiEntrypoint extends Construct {
         return `${envSettings.projectName}-entrypoint`;
     }
 
+    static getArtifactsName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectName}-entrypoint`;
+    }
+
     constructor(scope: Construct, id: string, props: CiEntrypointProps) {
         super(scope, id);
 
@@ -41,7 +45,7 @@ export class CiEntrypoint extends Construct {
             artifacts: Artifacts.s3({
                 identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
                 bucket: artifactsBucket,
-                name: `${props.envSettings.projectName}-entrypoint`,
+                name: CiEntrypoint.getArtifactsName(props.envSettings),
             }),
         });
     }
