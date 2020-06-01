@@ -31,7 +31,7 @@ export class CiEntrypoint extends Construct {
             projectName: `${props.envSettings.projectName}`,
             buildSpec: this.createBuildSpec(),
             cache: Cache.local(LocalCacheMode.SOURCE),
-            source: Source.codeCommit({repository: props.codeRepository}),
+            source: Source.codeCommit({repository: props.codeRepository, branchOrRef: 'master'}),
             artifacts: Artifacts.s3({
                 identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
                 bucket: artifactsBucket,
@@ -47,10 +47,9 @@ export class CiEntrypoint extends Construct {
                 build: {
                     commands: [
                         'echo Build!',
-                        'make version'
-                    ]
+                        'make version > VERSION',
+                    ],
                 },
-
             },
             artifacts: {
                 files: ['**/*'],
