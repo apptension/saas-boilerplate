@@ -66,10 +66,16 @@ endif
 version:
 	@echo $(VERSION)
 
-install:
-	npm install -g aws-cdk serverless
+install-infra-cdk:
 	$(MAKE) -C infra/cdk install
+
+install-infra-functions:
+	npm install -g aws-cdk serverless
 	$(MAKE) -C infra/functions install
+
+install:
+	$(MAKE) install-infra-cdk
+	$(MAKE) install-infra-functions
 	$(MAKE) -C services/backend install
 	$(MAKE) -C services/workers install
 

@@ -76,10 +76,15 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
+                    preBuild: {commands: ['make install-infra-cdk']},
                     build: {commands: ['make deploy-api']},
+                },
+                cache: {
+                    paths: ['infra/cdk/node_modules/**/*'],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},
+            cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
         props.backendRepository.grantPullPush(project);
@@ -94,10 +99,15 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
+                    preBuild: {commands: ['make install-infra-cdk']},
                     build: {commands: ['make deploy-admin-panel']},
+                },
+                cache: {
+                    paths: ['infra/cdk/node_modules/**/*'],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},
+            cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
         props.backendRepository.grantPullPush(project);
