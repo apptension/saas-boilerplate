@@ -67,10 +67,11 @@ version:
 	@echo $(VERSION)
 
 install-infra-cdk:
+	npm install -g aws-cdk@1.41.0
 	$(MAKE) -C infra/cdk install
 
 install-infra-functions:
-	npm install -g aws-cdk serverless
+	npm install -g serverless
 	$(MAKE) -C infra/functions install
 
 install:

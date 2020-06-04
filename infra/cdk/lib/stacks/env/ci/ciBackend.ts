@@ -1,6 +1,6 @@
 import {Construct} from "@aws-cdk/core";
 import {BuildSpec, Cache, LocalCacheMode, Project} from "@aws-cdk/aws-codebuild";
-import {CodeBuildAction} from "@aws-cdk/aws-codepipeline-actions";
+import {CodeBuildAction, CodeBuildActionProps, LambdaInvokeAction} from "@aws-cdk/aws-codepipeline-actions";
 import {Artifact, IStage} from "@aws-cdk/aws-codepipeline";
 import {IRepository} from "@aws-cdk/aws-ecr";
 
@@ -20,21 +20,32 @@ export class BackendCiConfig extends ServiceCiConfig {
     constructor(scope: Construct, id: string, props: BackendCiConfigProps) {
         super(scope, id, {envSettings: props.envSettings});
 
-        const project = this.createBuildProject(props);
-        props.buildStage.addAction(this.createBuildAction('backend', project, props));
+        const buildProject = this.createBuildProject(props);
+        props.buildStage.addAction(this.createBuildAction('backend', {
+            project: buildProject,
+        }, props));
 
         const apiDeployProject = this.createApiDeployProject(props);
-        props.deployStage.addAction(this.createDeployAction('api', apiDeployProject, props));
+        props.deployStage.addAction(this.createDeployAction('api', {
+            project: apiDeployProject,
+        }, props));
 
         const adminPanelDeployProject = this.createAdminPanelDeployProject(props);
-        props.deployStage.addAction(this.createDeployAction('admin', adminPanelDeployProject, props));
+        props.deployStage.addAction(this.createDeployAction('admin', {
+            project: adminPanelDeployProject,
+        }, props));
+
+        const migrationsDeployProject = this.createMigrationsDeployProject(props);
+        props.deployStage.addAction(this.createDeployAction('migrations', {
+            project: migrationsDeployProject,
+        }, props));
     }
 
-    private createBuildAction(name: string, project: Project, props: BackendCiConfigProps) {
-        return new CodeBuildAction({
+    private createBuildAction(name: string, actionProps: Partial<CodeBuildActionProps>, props: BackendCiConfigProps) {
+        return new CodeBuildAction(<CodeBuildActionProps>{
             actionName: `${props.envSettings.projectName}-build-${name}`,
+            project: actionProps.project,
             input: props.inputArtifact,
-            project: project,
         });
     }
 
@@ -50,9 +61,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             environment: {
                 privileged: true,
             },
-            environmentVariables: {
-                ...this.defaultEnvVariables,
-            },
+            environmentVariables: {...this.defaultEnvVariables},
             cache: Cache.local(LocalCacheMode.DOCKER_LAYER),
         });
 
@@ -62,11 +71,12 @@ export class BackendCiConfig extends ServiceCiConfig {
         return project;
     }
 
-    private createDeployAction(name: string, project: Project, props: BackendCiConfigProps) {
-        return new CodeBuildAction({
+    private createDeployAction(name: string, actionProps: Partial<CodeBuildActionProps>, props: BackendCiConfigProps) {
+        return new CodeBuildAction(<CodeBuildActionProps>{
+            ...actionProps,
+            project: actionProps.project,
             actionName: `${props.envSettings.projectName}-deploy-${name}`,
             input: props.inputArtifact,
-            project: project,
         });
     }
 
@@ -76,7 +86,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    preBuild: {commands: ['make install-infra-cdk']},
+                    pre_build: {commands: ['make install-infra-cdk']},
                     build: {commands: ['make deploy-api']},
                 },
                 cache: {
@@ -87,8 +97,8 @@ export class BackendCiConfig extends ServiceCiConfig {
             cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
-        props.backendRepository.grantPullPush(project);
-        props.nginxRepository.grantPullPush(project);
+        props.backendRepository.grantPull(project);
+        props.nginxRepository.grantPull(project);
 
         return project;
     }
@@ -99,7 +109,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    preBuild: {commands: ['make install-infra-cdk']},
+                    pre_build: {commands: ['make install-infra-cdk']},
                     build: {commands: ['make deploy-admin-panel']},
                 },
                 cache: {
@@ -110,8 +120,31 @@ export class BackendCiConfig extends ServiceCiConfig {
             cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
-        props.backendRepository.grantPullPush(project);
-        props.nginxRepository.grantPullPush(project);
+        props.backendRepository.grantPull(project);
+        props.nginxRepository.grantPull(project);
+
+        return project;
+    }
+
+    private createMigrationsDeployProject(props: BackendCiConfigProps) {
+        const project = new Project(this, "MigrationsDeployProject", {
+            projectName: `${props.envSettings.projectName}-deploy-migrations`,
+            buildSpec: BuildSpec.fromObject({
+                version: '0.2',
+                phases: {
+                    pre_build: {commands: ['make install-infra-cdk']},
+                    build: {commands: ['make deploy-migrations']},
+                },
+                cache: {
+                    paths: ['infra/cdk/node_modules/**/*'],
+                },
+            }),
+            environmentVariables: {...this.defaultEnvVariables},
+            cache: Cache.local(LocalCacheMode.CUSTOM),
+        });
+
+        props.backendRepository.grantPull(project);
+        props.nginxRepository.grantPull(project);
 
         return project;
     }
