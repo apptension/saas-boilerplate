@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as core from '@aws-cdk/core';
 import {PublicHostedZone} from "@aws-cdk/aws-route53";
 import {Source} from "@aws-cdk/aws-s3-deployment";
@@ -22,14 +23,15 @@ export class WebAppStack extends core.Stack {
             zoneName: envSettings.hostedZone.name,
         });
 
-        this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(this, "WebApp", {
-            sources: [
-                Source.asset(`${props.envSettings.projectRootDir}/services/webapp/build`)
-            ],
-            domainZone,
-            domainName: props.envSettings.domains.webApp,
-            apiDomainName: props.envSettings.domains.api,
-            certificateArn: props.envSettings.cloudFrontCertificateArn,
-        });
+        const filesPath = `${props.envSettings.projectRootDir}/services/webapp/build`;
+        if (fs.existsSync(filesPath)) {
+            this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(this, "WebApp", {
+                sources: [Source.asset(filesPath)],
+                domainZone,
+                domainName: props.envSettings.domains.webApp,
+                apiDomainName: props.envSettings.domains.api,
+                certificateArn: props.envSettings.cloudFrontCertificateArn,
+            });
+        }
     }
 }
