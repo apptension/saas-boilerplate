@@ -22,8 +22,8 @@ new GlobalStack(app, getStackName('GlobalStack', envSettings.projectName), {envS
 
 // Environment (dev / qa / stage / prod) stacks
 new EnvMainStack(app, getStackName("MainStack", envSettings.projectEnvName), {envSettings});
-new EnvCiStack(app, getStackName("CiStack", envSettings.projectEnvName), {envSettings});
 new EnvComponentsStack(app, getStackName("ComponentsStack", envSettings.projectEnvName), {envSettings});
+new EnvCiStack(app, getStackName("CiStack", envSettings.projectEnvName), {envSettings});
 new AdminPanelStack(app, getStackName('AdminPanelStack', envSettings.projectEnvName), {envSettings});
 new ApiStack(app, getStackName('ApiStack', envSettings.projectEnvName), {envSettings});
 new MigrationsStack(app, getStackName('MigrationsStack', envSettings.projectEnvName), {envSettings});

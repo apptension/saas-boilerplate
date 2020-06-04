@@ -22,8 +22,8 @@ module.exports = function (plop) {
       },
       {
         type: 'input',
-        name: 'defaultStage',
-        message: 'Default stage',
+        name: 'defaultEnv',
+        message: 'Default Env',
         default: 'dev',
       },
       {

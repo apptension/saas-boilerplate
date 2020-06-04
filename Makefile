@@ -1,25 +1,26 @@
 PWD ?= pwd_unknown
 
-CONFIG_FILE ?= .awsboilerplate.json
+export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+CONFIG_FILE ?= $(PROJECT_ROOT_DIR)/.awsboilerplate.json
 
 define GetFromCfg
-$(shell node -p "require('./$(CONFIG_FILE)').$(1)")
+$(shell node -p "require('$(CONFIG_FILE)').$(1)")
 endef
 
-export ENV_STAGE ?= dev
+export ENV_STAGE ?= $(call GetFromCfg,defaultEnv)
 export PROJECT_NAME ?= $(call GetFromCfg,projectName)
-export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
 export AWS_DEFAULT_REGION ?= $(call GetFromCfg,aws.region)
 
-export HOSTED_ZONE_ID := $(call GetFromCfg,hostedZone.id)
-export HOSTED_ZONE_NAME := $(call GetFromCfg,hostedZone.name)
-export CERTIFICATE_ARN := $(call GetFromCfg,certificate)
-export CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,cloudFrontCertificate)
+export HOSTED_ZONE_ID := $(call GetFromCfg,envConfig.$(ENV_STAGE).hostedZone.id)
+export HOSTED_ZONE_NAME := $(call GetFromCfg,envConfig.$(ENV_STAGE).hostedZone.name)
+export CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).certificate)
+export CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).cloudFrontCertificate)
 
-export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).adminPanel)
-export API_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).api)
-export WEB_APP_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).webApp)
-export WWW_DOMAIN := $(call GetFromCfg,domains.$(ENV_STAGE).www)
+export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.adminPanel)
+export API_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.api)
+export WEB_APP_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.webApp)
+export WWW_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.www)
 
 ifeq ($(CI),true)
 	AWS_VAULT =

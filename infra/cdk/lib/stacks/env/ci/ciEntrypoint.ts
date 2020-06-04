@@ -17,11 +17,11 @@ export class CiEntrypoint extends Construct {
     private codeBuildProject: Project;
 
     static getArtifactsIdentifier(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectName}-entrypoint`;
+        return `${envSettings.projectEnvName}-entrypoint`;
     }
 
     static getArtifactsName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectName}-entrypoint`;
+        return `${envSettings.projectEnvName}-entrypoint`;
     }
 
     constructor(scope: Construct, id: string, props: CiEntrypointProps) {
@@ -40,7 +40,7 @@ export class CiEntrypoint extends Construct {
 
     private createBuildProject(artifactsBucket: Bucket, props: CiEntrypointProps) {
         return new Project(this, "Project", {
-            projectName: `${props.envSettings.projectName}`,
+            projectName: `${props.envSettings.projectEnvName}`,
             buildSpec: this.createBuildSpec(),
             cache: Cache.local(LocalCacheMode.SOURCE),
             source: Source.codeCommit({repository: props.codeRepository}),
