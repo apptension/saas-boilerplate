@@ -190,9 +190,9 @@ deploy-workers:
 	cd services/workers;\
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
-deploy-web-app:
+deploy-webapp:
 	cd infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *WebAppStack;
 
-deploy-stage-app: deploy-components deploy-admin-panel deploy-api deploy-migrations deploy-workers deploy-web-app
+deploy-stage-app: deploy-components deploy-admin-panel deploy-api deploy-migrations deploy-workers deploy-webapp

@@ -1,12 +1,12 @@
-import {Construct} from "@aws-cdk/core";
+import {Construct, Stack} from "@aws-cdk/core";
 import {BuildSpec, Cache, LocalCacheMode, Project} from "@aws-cdk/aws-codebuild";
-import {CodeBuildAction, CodeBuildActionProps, LambdaInvokeAction} from "@aws-cdk/aws-codepipeline-actions";
+import {CodeBuildAction, CodeBuildActionProps} from "@aws-cdk/aws-codepipeline-actions";
 import {Artifact, IStage} from "@aws-cdk/aws-codepipeline";
 import {IRepository} from "@aws-cdk/aws-ecr";
+import {Effect, PolicyStatement} from "@aws-cdk/aws-iam";
 
 import {EnvConstructProps} from "../../../types";
 import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
-
 
 interface BackendCiConfigProps extends EnvConstructProps {
     inputArtifact: Artifact;
@@ -81,6 +81,7 @@ export class BackendCiConfig extends ServiceCiConfig {
     }
 
     private createApiDeployProject(props: BackendCiConfigProps) {
+        const stack = Stack.of(this);
         const project = new Project(this, "ApiDeployProject", {
             projectName: `${props.envSettings.projectName}-deploy-api`,
             buildSpec: BuildSpec.fromObject({
@@ -97,13 +98,34 @@ export class BackendCiConfig extends ServiceCiConfig {
             cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
-        props.backendRepository.grantPull(project);
-        props.nginxRepository.grantPull(project);
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'cloudformation:*',
+                'route53:*'
+            ],
+            resources: [
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ApiStack/*`,
+                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
+            ],
+        }));
+
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'iam:*',
+                'ec2:*',
+                'ecs:*',
+            ],
+            resources: ['*'],
+        }));
 
         return project;
     }
 
     private createAdminPanelDeployProject(props: BackendCiConfigProps) {
+        const stack = Stack.of(this);
         const project = new Project(this, "AdminPanelDeployProject", {
             projectName: `${props.envSettings.projectName}-deploy-admin-panel`,
             buildSpec: BuildSpec.fromObject({
@@ -120,19 +142,40 @@ export class BackendCiConfig extends ServiceCiConfig {
             cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
-        props.backendRepository.grantPull(project);
-        props.nginxRepository.grantPull(project);
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'cloudformation:*',
+                'route53:*'
+            ],
+            resources: [
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-AdminPanelStack/*`,
+                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
+            ],
+        }));
+
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'iam:*',
+                'ec2:*',
+                'ecs:*',
+            ],
+            resources: ['*'],
+        }));
 
         return project;
     }
 
     private createMigrationsDeployProject(props: BackendCiConfigProps) {
+        const stack = Stack.of(this);
         const project = new Project(this, "MigrationsDeployProject", {
             projectName: `${props.envSettings.projectName}-deploy-migrations`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk']},
+                    pre_build: {commands: ['make install-infra-cdk', 'make install-infra-functions']},
                     build: {commands: ['make deploy-migrations']},
                 },
                 cache: {
@@ -143,8 +186,30 @@ export class BackendCiConfig extends ServiceCiConfig {
             cache: Cache.local(LocalCacheMode.CUSTOM),
         });
 
-        props.backendRepository.grantPull(project);
-        props.nginxRepository.grantPull(project);
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'cloudformation:*',
+                'route53:*',
+            ],
+            resources: [
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-MigrationsStack/*`,
+                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
+            ],
+        }));
+
+        project.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                'iam:*',
+                'ec2:*',
+                'ecs:*',
+                'states:*',
+                'lambda:*',
+            ],
+            resources: ['*'],
+        }));
 
         return project;
     }

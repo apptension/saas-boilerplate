@@ -8,6 +8,7 @@ import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
 import {CiEntrypoint} from "./ciEntrypoint";
 import {BackendCiConfig} from "./ciBackend";
+import {WebappCiConfig} from "./ciWebApp";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -43,6 +44,13 @@ export class CiPipeline extends Construct {
             inputArtifact: sourceOutputArtifact,
             backendRepository: props.backendRepository,
             nginxRepository: props.nginxRepository,
+        });
+
+        new WebappCiConfig(this, "WebAppConfig", {
+            envSettings: props.envSettings,
+            buildStage,
+            deployStage,
+            inputArtifact: sourceOutputArtifact,
         });
     }
 
