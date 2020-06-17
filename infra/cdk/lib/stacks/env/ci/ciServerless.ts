@@ -7,17 +7,18 @@ import {Effect, PolicyStatement} from "@aws-cdk/aws-iam";
 import {EnvConstructProps} from "../../../types";
 import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
 
-interface WebAppCiConfigProps extends EnvConstructProps {
+interface ServerlessCiConfigProps extends EnvConstructProps {
+    name: string;
     inputArtifact: Artifact;
     buildStage: IStage;
     deployStage: IStage;
 }
 
-export class WebappCiConfig extends ServiceCiConfig {
-    constructor(scope: Construct, id: string, props: WebAppCiConfigProps) {
+export class ServerlessCiConfig extends ServiceCiConfig {
+    constructor(scope: Construct, id: string, props: ServerlessCiConfigProps) {
         super(scope, id, {envSettings: props.envSettings});
 
-        const buildArtifact = Artifact.artifact(`${props.envSettings.projectEnvName}-webapp`);
+        const buildArtifact = Artifact.artifact(`${props.envSettings.projectEnvName}-${props.name}`);
 
         const buildProject = this.createBuildProject(props);
         props.buildStage.addAction(this.createBuildAction({
@@ -33,73 +34,75 @@ export class WebappCiConfig extends ServiceCiConfig {
         }, props));
     }
 
-    private createBuildAction(actionProps: Partial<CodeBuildActionProps>, props: WebAppCiConfigProps) {
+    private createBuildAction(actionProps: Partial<CodeBuildActionProps>, props: ServerlessCiConfigProps) {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
-            actionName: `${props.envSettings.projectEnvName}-build-webapp`,
+            actionName: `${props.envSettings.projectName}-build-${props.name}`,
         });
     }
 
-    private createBuildProject(props: WebAppCiConfigProps) {
-        return new Project(this, "WebAppBuildProject", {
-            projectName: `${props.envSettings.projectEnvName}-build-webapp`,
+    private createBuildProject(props: ServerlessCiConfigProps) {
+        return new Project(this, "BuildProject", {
+            projectName: `${props.envSettings.projectName}-build-${props.name}`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    build: {commands: ['make build-webapp']},
+                    preBuild: {commands: ['make install-serverless']},
+                    build: {commands: [`make build-${props.name}`]},
                 },
                 artifacts: {
                     files: [
                         '*',
                         'infra/**/*',
                         'scripts/**/*',
-                        'services/webapp/build/**/*',
+                        `services/${props.name}/**/*`,
                     ],
-                }
+                },
             }),
             environment: {
                 privileged: true,
             },
             environmentVariables: {...this.defaultEnvVariables},
-            cache: Cache.local(LocalCacheMode.DOCKER_LAYER),
+            cache: Cache.local(LocalCacheMode.CUSTOM),
         });
     }
 
-    private createDeployAction(actionProps: Partial<CodeBuildActionProps>, props: WebAppCiConfigProps) {
+    private createDeployAction(actionProps: Partial<CodeBuildActionProps>, props: ServerlessCiConfigProps) {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
-            actionName: `${props.envSettings.projectEnvName}-deploy-webapp`,
+            actionName: `${props.envSettings.projectName}-deploy-${props.name}`,
         });
     }
 
-    private createDeployProject(props: WebAppCiConfigProps) {
+    private createDeployProject(props: ServerlessCiConfigProps) {
         const stack = Stack.of(this);
-        const project = new Project(this, "WebAppDeployProject", {
-            projectName: `${props.envSettings.projectEnvName}-deploy-webapp`,
+        const project = new Project(this, "DeployProject", {
+            projectName: `${props.envSettings.projectName}-deploy-${props.name}`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk']},
-                    build: {commands: ['make deploy-webapp']},
+                    pre_build: {commands: ['make install-serverless']},
+                    build: {commands: [`make deploy-${props.name}`]},
                 },
                 cache: {
-                    paths: ['infra/cdk/node_modules/**/*'],
+                    paths: [
+                        'infra/cdk/node_modules/**/*',
+                        `services/${props.name}/node_modules/**/*`,
+                    ],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},
-            cache: Cache.local(LocalCacheMode.CUSTOM),
+            cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
         });
 
         project.addToRolePolicy(new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
                 'cloudformation:*',
-                'route53:*'
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
-                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-WebAppStack/*`,
-                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}*/*`,
             ],
         }));
 
@@ -109,7 +112,8 @@ export class WebappCiConfig extends ServiceCiConfig {
                 'iam:*',
                 'cloudfront:*',
                 's3:*',
-                'ecs:*',
+                'lambda:*',
+                'apigateway:*',
             ],
             resources: ['*'],
         }));

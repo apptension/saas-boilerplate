@@ -70,13 +70,13 @@ install-infra-cdk:
 	npm install -g aws-cdk@1.41.0
 	$(MAKE) -C infra/cdk install
 
-install-infra-functions:
+install-serverless:
 	npm install -g serverless
+
+install-infra-functions: install-serverless
 	$(MAKE) -C infra/functions install
 
-install:
-	$(MAKE) install-infra-cdk
-	$(MAKE) install-infra-functions
+install: install-infra-cdk install-infra-functions
 	$(MAKE) -C services/backend install
 	$(MAKE) -C services/workers install
 
@@ -107,10 +107,14 @@ build-backend:
 build-webapp:
 	$(MAKE) -C services/webapp build
 
+build-workers:
+	$(AWS_VAULT) $(MAKE) -C services/workers build
+
 build-all:
 	@echo Build version: $(VERSION)
 	$(MAKE) build-backend
 	$(MAKE) build-webapp
+	$(MAKE) build-workers
 
 clean:
 	# remove created images

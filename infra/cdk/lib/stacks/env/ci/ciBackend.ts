@@ -43,7 +43,7 @@ export class BackendCiConfig extends ServiceCiConfig {
 
     private createBuildAction(name: string, actionProps: Partial<CodeBuildActionProps>, props: BackendCiConfigProps) {
         return new CodeBuildAction(<CodeBuildActionProps>{
-            actionName: `${props.envSettings.projectName}-build-${name}`,
+            actionName: `${props.envSettings.projectEnvName}-build-${name}`,
             project: actionProps.project,
             input: props.inputArtifact,
         });
@@ -51,7 +51,7 @@ export class BackendCiConfig extends ServiceCiConfig {
 
     private createBuildProject(props: BackendCiConfigProps) {
         const project = new Project(this, "BackendBuildProject", {
-            projectName: `${props.envSettings.projectName}-build-backend`,
+            projectName: `${props.envSettings.projectEnvName}-build-backend`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
@@ -75,7 +75,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
             project: actionProps.project,
-            actionName: `${props.envSettings.projectName}-deploy-${name}`,
+            actionName: `${props.envSettings.projectEnvName}-deploy-${name}`,
             input: props.inputArtifact,
         });
     }
@@ -83,7 +83,7 @@ export class BackendCiConfig extends ServiceCiConfig {
     private createApiDeployProject(props: BackendCiConfigProps) {
         const stack = Stack.of(this);
         const project = new Project(this, "ApiDeployProject", {
-            projectName: `${props.envSettings.projectName}-deploy-api`,
+            projectName: `${props.envSettings.projectEnvName}-deploy-api`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
@@ -127,7 +127,7 @@ export class BackendCiConfig extends ServiceCiConfig {
     private createAdminPanelDeployProject(props: BackendCiConfigProps) {
         const stack = Stack.of(this);
         const project = new Project(this, "AdminPanelDeployProject", {
-            projectName: `${props.envSettings.projectName}-deploy-admin-panel`,
+            projectName: `${props.envSettings.projectEnvName}-deploy-admin-panel`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
@@ -171,7 +171,7 @@ export class BackendCiConfig extends ServiceCiConfig {
     private createMigrationsDeployProject(props: BackendCiConfigProps) {
         const stack = Stack.of(this);
         const project = new Project(this, "MigrationsDeployProject", {
-            projectName: `${props.envSettings.projectName}-deploy-migrations`,
+            projectName: `${props.envSettings.projectEnvName}-deploy-migrations`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {

@@ -9,6 +9,7 @@ import {EnvironmentSettings} from "../../../settings";
 import {CiEntrypoint} from "./ciEntrypoint";
 import {BackendCiConfig} from "./ciBackend";
 import {WebappCiConfig} from "./ciWebApp";
+import {ServerlessCiConfig} from "./ciServerless";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -47,6 +48,14 @@ export class CiPipeline extends Construct {
         });
 
         new WebappCiConfig(this, "WebAppConfig", {
+            envSettings: props.envSettings,
+            buildStage,
+            deployStage,
+            inputArtifact: sourceOutputArtifact,
+        });
+
+        new ServerlessCiConfig(this, "WorkersConfig", {
+            name: 'workers',
             envSettings: props.envSettings,
             buildStage,
             deployStage,
