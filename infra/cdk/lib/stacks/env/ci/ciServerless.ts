@@ -81,7 +81,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-serverless', `cd services/${props.name} && make install`]},
+                    pre_build: {commands: ['make install-serverless', `make -C services/${props.name} install`]},
                     build: {commands: [`make deploy-${props.name}`]},
                 },
                 cache: {
@@ -91,6 +91,9 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                     ],
                 },
             }),
+            environment: {
+                privileged: true,
+            },
             environmentVariables: {...this.defaultEnvVariables},
             cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
         });
@@ -102,7 +105,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
-                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}*/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectName}-${props.name}-${props.envSettings.envStage}/*`,
             ],
         }));
 
@@ -114,6 +117,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                 's3:*',
                 'lambda:*',
                 'apigateway:*',
+                'cloudformation:ValidateTemplate',
             ],
             resources: ['*'],
         }));
