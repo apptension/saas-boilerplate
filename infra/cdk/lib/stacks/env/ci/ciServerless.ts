@@ -47,7 +47,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    preBuild: {commands: ['make install-serverless']},
+                    pre_build: {commands: ['make install-serverless']},
                     build: {commands: [`make build-${props.name}`]},
                 },
                 artifacts: {
@@ -81,7 +81,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-serverless']},
+                    pre_build: {commands: ['make install-serverless', `cd services/${props.name} && make install`]},
                     build: {commands: [`make deploy-${props.name}`]},
                 },
                 cache: {
