@@ -13,12 +13,7 @@ plop config
 cd ../../
 git add "${CONFIG_FILENAME}"
 
-mkdir "${BACKEND_DIR}"
-cd "${BACKEND_DIR}"
-git clone https://github.com/apptension/django-restauth.git --branch feature/aws-boilerplate-sync --single-branch .
-rm -rf .git
-cd ../../
-git add "${BACKEND_DIR}"
+cp ${BACKEND_DIR}/.env.example ${BACKEND_DIR}/.env
 
 make setup
 rm setup.sh

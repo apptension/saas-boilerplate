@@ -99,7 +99,7 @@ down:
 
 login: up
 	# run as a service and attach to it
-	docker exec -it $(PROJECT_NAME)_$(HOST_UID) sh
+	docker exec -it $(PROJECT_NAME)_$(HOST_UID) bash
 
 build-backend:
 	$(AWS_VAULT) $(MAKE) -C services/backend build
