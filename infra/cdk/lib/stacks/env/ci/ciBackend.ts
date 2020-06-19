@@ -13,7 +13,6 @@ interface BackendCiConfigProps extends EnvConstructProps {
     buildStage: IStage;
     deployStage: IStage;
     backendRepository: IRepository;
-    nginxRepository: IRepository;
 }
 
 export class BackendCiConfig extends ServiceCiConfig {
@@ -66,7 +65,6 @@ export class BackendCiConfig extends ServiceCiConfig {
         });
 
         props.backendRepository.grantPullPush(project);
-        props.nginxRepository.grantPullPush(project);
 
         return project;
     }

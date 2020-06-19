@@ -15,7 +15,6 @@ import {ServerlessCiConfig} from "./ciServerless";
 export interface CiPipelineProps extends EnvConstructProps {
     entrypointArtifactBucket: Bucket;
     backendRepository: ecr.IRepository;
-    nginxRepository: ecr.IRepository
 }
 
 export class CiPipeline extends Construct {
@@ -44,7 +43,6 @@ export class CiPipeline extends Construct {
             envSettings: props.envSettings,
             inputArtifact: sourceOutputArtifact,
             backendRepository: props.backendRepository,
-            nginxRepository: props.nginxRepository,
         });
 
         new WebappCiConfig(this, "WebAppConfig", {

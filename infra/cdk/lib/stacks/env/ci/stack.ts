@@ -18,7 +18,6 @@ export class EnvCiStack extends core.Stack {
         super(scope, id, props);
 
         const backendRepository = this.retrieveBackendECRRepository(props);
-        const nginxRepository = this.retrieveNginxECRRepository(props);
         const codeRepository = this.retrieveCodeRepository(props);
 
         const entrypoint = new CiEntrypoint(this, "Entrypoint", {
@@ -29,7 +28,6 @@ export class EnvCiStack extends core.Stack {
         new CiPipeline(this, "PipelineConfig", {
             envSettings: props.envSettings,
             backendRepository,
-            nginxRepository,
             entrypointArtifactBucket: entrypoint.artifactsBucket,
         });
     }
@@ -37,12 +35,6 @@ export class EnvCiStack extends core.Stack {
     private retrieveCodeRepository(props: EnvCiStackProps) {
         return codeCommit.Repository.fromRepositoryName(this, "CodeRepository",
             GlobalCodeCommit.getCodeRepositoryName(props.envSettings));
-    }
-
-    private retrieveNginxECRRepository(props: EnvCiStackProps) {
-        return Repository.fromRepositoryName(this, "ECRNginxRepository",
-            GlobalECR.getNginxRepositoryName(props.envSettings));
-
     }
 
     private retrieveBackendECRRepository(props: EnvCiStackProps) {

@@ -374,7 +374,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
                 vpc: service.cluster.vpc,
                 port: targetProps.containerPort,
                 healthCheck: {
-                    path: '/',
+                    path: '/lbcheck',
                     protocol: ELBProtocol.HTTP,
                     interval: Duration.seconds(6),
                     timeout: Duration.seconds(5),

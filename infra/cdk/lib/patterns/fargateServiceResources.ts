@@ -14,7 +14,6 @@ import {EnvironmentSettings} from "../settings";
 export class FargateServiceResources extends Construct {
     mainVpc: IVpc;
     mainCluster: ICluster;
-    nginxRepository: IRepository;
     backendRepository: IRepository;
     publicLoadBalancer: IApplicationLoadBalancer;
     publicLoadBalancerSecurityGroup: ISecurityGroup;
@@ -32,7 +31,6 @@ export class FargateServiceResources extends Construct {
         this.mainCluster = this.retrieveMainCluster(this.mainVpc);
         this.publicLoadBalancer = this.retrievePublicLoadBalancer(this.mainVpc);
         this.publicLoadBalancerSecurityGroup = this.retrievePublicLoadBalancerSecurityGroup(props);
-        this.nginxRepository = this.retrieveNginxECRRepositories();
         this.backendRepository = this.retrieveBackendECRRepositories();
     }
 
@@ -86,12 +84,6 @@ export class FargateServiceResources extends Construct {
     private retrievePublicLoadBalancerSecurityGroup(props: EnvConstructProps): ISecurityGroup {
         return SecurityGroup.fromSecurityGroupId(this, "LbSecurityGroup",
             Fn.importValue(MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(props.envSettings)));
-
-    }
-
-    private retrieveNginxECRRepositories() {
-        return Repository.fromRepositoryName(this, "ECRNginxRepository",
-            GlobalECR.getNginxRepositoryName(this.envSettings));
 
     }
 
