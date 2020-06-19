@@ -54,7 +54,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    build: {commands: ['make build-backend']},
+                    build: {commands: ['make -C services/backend build']},
                 },
             }),
             environment: {
@@ -85,11 +85,11 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk']},
-                    build: {commands: ['make deploy-api']},
+                    pre_build: {commands: ['make -C services/backend install-deploy']},
+                    build: {commands: ['make -C services/backend deploy-api']},
                 },
                 cache: {
-                    paths: ['infra/cdk/node_modules/**/*'],
+                    paths: [...this.defaultCachePaths],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},
@@ -129,11 +129,11 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk']},
-                    build: {commands: ['make deploy-admin-panel']},
+                    pre_build: {commands: ['make -C services/backend install-deploy']},
+                    build: {commands: ['make -C services/backend deploy-admin-panel']},
                 },
                 cache: {
-                    paths: ['infra/cdk/node_modules/**/*'],
+                    paths: [...this.defaultCachePaths],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},
@@ -173,11 +173,11 @@ export class BackendCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk', 'make install-infra-functions']},
-                    build: {commands: ['make deploy-migrations']},
+                    pre_build: {commands: ['make -C services/backend install-deploy']},
+                    build: {commands: ['make -C services/backend deploy-migrations']},
                 },
                 cache: {
-                    paths: ['infra/cdk/node_modules/**/*'],
+                    paths: [...this.defaultCachePaths],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},

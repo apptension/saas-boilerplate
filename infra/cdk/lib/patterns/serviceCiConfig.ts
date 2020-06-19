@@ -13,6 +13,7 @@ export interface IServiceCiConfig {
 
 export class ServiceCiConfig extends Construct implements IServiceCiConfig {
     defaultEnvVariables: { [p: string]: BuildEnvironmentVariable };
+    defaultCachePaths: string[];
 
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
@@ -22,6 +23,8 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
             PROJECT_NAME: {type: BuildEnvironmentVariableType.PLAINTEXT, value: props.envSettings.projectName},
             ENV_STAGE: {type: BuildEnvironmentVariableType.PLAINTEXT, value: props.envSettings.envStage},
         };
+
+        this.defaultCachePaths = ['infra/cdk/node_modules/**/*', 'infra/functions/node_modules/**/*']
     }
 }
 

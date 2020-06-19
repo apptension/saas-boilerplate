@@ -46,7 +46,8 @@ export class WebappCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    build: {commands: ['make build-webapp']},
+                    pre_build: {commands: ['make -C services/webapp install']},
+                    build: {commands: ['make -C services/webapp build']},
                 },
                 artifacts: {
                     files: [
@@ -79,11 +80,11 @@ export class WebappCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-infra-cdk']},
-                    build: {commands: ['make deploy-webapp']},
+                    pre_build: {commands: ['make -C services/webapp install-deploy']},
+                    build: {commands: ['make -C services/webapp deploy']},
                 },
                 cache: {
-                    paths: ['infra/cdk/node_modules/**/*'],
+                    paths: [...this.defaultCachePaths],
                 },
             }),
             environmentVariables: {...this.defaultEnvVariables},

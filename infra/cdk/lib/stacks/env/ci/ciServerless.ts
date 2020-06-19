@@ -47,14 +47,12 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-serverless']},
-                    build: {commands: [`make build-${props.name}`]},
+                    pre_build: {commands: [`make -C services/${props.name} install`]},
+                    build: {commands: [`make -C services/${props.name} build`]},
                 },
                 artifacts: {
                     files: [
                         '*',
-                        'infra/**/*',
-                        'scripts/**/*',
                         `services/${props.name}/**/*`,
                     ],
                 },
@@ -81,12 +79,12 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
-                    pre_build: {commands: ['make install-serverless', `make -C services/${props.name} install`]},
-                    build: {commands: [`make deploy-${props.name}`]},
+                    pre_build: {commands: [`make -C services/${props.name} install-deploy`]},
+                    build: {commands: [`make -C services/${props.name} deploy`]},
                 },
                 cache: {
                     paths: [
-                        'infra/cdk/node_modules/**/*',
+                        ...this.defaultCachePaths,
                         `services/${props.name}/node_modules/**/*`,
                     ],
                 },
