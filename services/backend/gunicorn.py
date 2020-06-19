@@ -6,7 +6,7 @@ def max_workers():
     return cpu_count()
 
 
-bind = "0.0.0.0:5000"
+bind = "0.0.0.0:80"
 max_requests = 1000
 accesslog = "-"
 errorlog = "-"

@@ -58,15 +58,6 @@ export class ApiStack extends core.Stack {
             assignPublicIp: true,
             taskImageOptions: [
                 {
-                    containerName: 'nginx',
-                    containerPorts: [80],
-                    image: ContainerImage.fromEcrRepository(resources.nginxRepository, envSettings.version),
-                    environment: {
-                        "NGINX_BACKEND_HOST": "localhost",
-                        "NGINX_SERVER_NAME": allowedHosts,
-                    },
-                },
-                {
                     containerName: 'backend',
                     image: ContainerImage.fromEcrRepository(resources.backendRepository, envSettings.version),
                     environment: {
