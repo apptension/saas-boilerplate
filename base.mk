@@ -54,7 +54,7 @@ version:
 
 install-infra-cdk:
 	npm install -g aws-cdk@1.41.0
-	$(MAKE) -C infra/cdk install
+	$(MAKE) -C $(SELF_DIR)/infra/cdk install
 
 install-infra-functions:
-	$(MAKE) -C infra/functions install
+	$(MAKE) -C $(SELF_DIR)/infra/functions install

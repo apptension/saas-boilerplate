@@ -15,9 +15,9 @@ else
 endif
 
 install: install-infra-cdk install-infra-functions
-	$(MAKE) -C services/backend install
-	$(MAKE) -C services/workers install
-	$(MAKE) -C services/webapp install
+	$(MAKE) -C $(SELF_DIR)/services/backend install
+	$(MAKE) -C $(SELF_DIR)/services/workers install
+	$(MAKE) -C $(SELF_DIR)/services/webapp install
 
 setup-infra:
 	chmod +x ./scripts/*.sh
@@ -67,22 +67,22 @@ migrate:
 #
 
 deploy-global-infra:
-	cd infra/cdk;\
+	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *GlobalStack;
 
 deploy-infra-main:
-	cd infra/cdk;\
+	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *MainStack;
 
 deploy-infra-ci:
-	cd infra/cdk;\
+	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *CiStack;
 
 deploy-infra-functions:
-	cd infra/functions;\
+	cd $(SELF_DIR)infra/functions;\
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
@@ -98,7 +98,7 @@ build:
 	$(MAKE) -C services/workers build
 
 deploy-components:
-	cd infra/cdk;\
+	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
 	$(AWS_VAULT) cdk deploy *ComponentsStack;
 

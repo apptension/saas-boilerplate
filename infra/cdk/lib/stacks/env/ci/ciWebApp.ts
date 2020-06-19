@@ -54,6 +54,7 @@ export class WebappCiConfig extends ServiceCiConfig {
                         '*',
                         'infra/**/*',
                         'scripts/**/*',
+                        'services/webapp/*',
                         'services/webapp/build/**/*',
                     ],
                 }
