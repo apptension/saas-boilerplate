@@ -10,7 +10,7 @@ setup:
 	chmod +x ./scripts/*.sh
 
 build:
-	/bin/sh ./scripts/build.sh
+	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
 	cd $(SELF_DIR)/infra/cdk;\

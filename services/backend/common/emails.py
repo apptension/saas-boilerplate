@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 
-from . import Task
+from .tasks import Task
 
 
 @dataclass
