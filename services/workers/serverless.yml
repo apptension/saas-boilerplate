@@ -31,12 +31,24 @@ functions:
       subnetIds:
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
+  SendEmail:
+    handler: email.send.handler
+    timeout: 6
+    memorySize: 128
+    events:
+      - eventBridge:
+          eventBus: '${self:custom.eventBusArn}'
+          pattern:
+            source:
+              - backend.email
 
 plugins:
+  - serverless-pseudo-parameters
   - serverless-python-requirements
 
 custom:
   projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
+  eventBusArn: 'arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers'
   pythonRequirements:
     dockerizePip: true
     useDownloadCache: true
