@@ -1,8 +1,10 @@
 import hashid_field
-from django.db import models
-from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager
+from django.db import models
 from rest_framework_jwt.settings import api_settings
+
+from . import tasks
 
 
 class UserManager(BaseUserManager):
@@ -10,14 +12,17 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
-        user = self.model(email=self.normalize_email(email),)
+        user = self.model(email=self.normalize_email(email), )
 
         user.set_password(password)
         user.save(using=self._db)
+
+        tasks.send_welcome_email.apply(tasks.WelcomeEmailParams(to=user.email, name=user.get_username()))
+
         return user
 
     def create_superuser(self, email, password):
-        user = self.create_user(email, password=password,)
+        user = self.create_user(email, password=password, )
         user.is_superuser = True
         user.save(using=self._db)
         return user
