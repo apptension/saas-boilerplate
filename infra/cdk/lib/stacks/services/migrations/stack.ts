@@ -109,6 +109,6 @@ export class MigrationsStack extends core.Stack {
     }
 
     protected getChamberServiceName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectEnvName}-admin-panel`;
+        return `env-${envSettings.projectEnvName}-admin-panel`;
     }
 }
