@@ -130,6 +130,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
                 executionRole: props.executionRole,
                 taskRole: props.taskRole,
                 family: props.family,
+
             });
 
             for (const taskImageOptionsProps of taskImageOptions) {
@@ -139,6 +140,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
                     logging: this.logDriver,
                     environment: taskImageOptionsProps.environment,
                     secrets: taskImageOptionsProps.secrets,
+                    command: ["sh", "-c", "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/run.sh"]
                 });
                 if (taskImageOptionsProps.containerPorts) {
                     for (const containerPort of taskImageOptionsProps.containerPorts) {
