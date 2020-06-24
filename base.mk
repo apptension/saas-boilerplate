@@ -58,3 +58,6 @@ install-infra-cdk:
 
 install-infra-functions:
 	$(MAKE) -C $(SELF_DIR)/infra/functions install
+
+aws-shell:
+	$(AWS_VAULT) $(SHELL)

@@ -22,7 +22,7 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: userauth.handlers.hello
     timeout: 6
     memorySize: 256
     vpc:
@@ -31,10 +31,13 @@ functions:
       subnetIds:
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
+
   SendEmail:
-    handler: email.send.handler
+    handler: emails.handlers.send_email
     timeout: 6
     memorySize: 128
+    environment:
+      FROM_EMAIL: ''
     events:
       - eventBridge:
           eventBus: '${self:custom.eventBusArn}'

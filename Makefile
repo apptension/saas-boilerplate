@@ -103,8 +103,8 @@ deploy-components:
 	$(AWS_VAULT) cdk deploy *ComponentsStack;
 
 deploy-stage-app: deploy-components
+	$(MAKE) -C services/backend deploy-migrations
 	$(MAKE) -C services/backend deploy-admin-panel
 	$(MAKE) -C services/backend deploy-api
-	$(MAKE) -C services/backend deploy-migrations
 	$(MAKE) -C services/workers deploy
 	$(MAKE) -C services/webapp deploy
