@@ -17,5 +17,5 @@ jobs:
           CODE_COMMIT_REPO: ${{ secrets.CODE_COMMIT_REPO }}
         run: |
           git remote add codecommit "$CODE_COMMIT_REPO"
-          git push -u codecommit ${GITHUB_REF##*/}
+          git push -u codecommit ${GITHUB_REF#refs/heads/}
           git push codecommit --tags
