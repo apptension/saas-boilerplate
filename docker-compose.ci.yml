@@ -1,6 +1,5 @@
 version: '3.4'
 
 services:
-  backend:
-    env_file:
-      - ./services/backend/.env
+  backend: {}
+

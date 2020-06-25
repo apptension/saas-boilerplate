@@ -1,8 +1,8 @@
 PWD ?= pwd_unknown
-SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+BASE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-CONFIG_FILE ?= $(SELF_DIR)/.awsboilerplate.json
+CONFIG_FILE ?= $(BASE_DIR)/.awsboilerplate.json
 
 define GetFromCfg
 $(shell node -p "require('$(CONFIG_FILE)').$(1)")
@@ -25,7 +25,7 @@ export WWW_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.www)
 
 ifeq ($(CI),true)
 	AWS_VAULT =
-	VERSION := $(shell cat $(SELF_DIR)/VERSION)
+	VERSION := $(shell cat $(BASE_DIR)/VERSION)
 else
 	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
@@ -56,10 +56,10 @@ version:
 
 install-infra-cdk:
 	npm install -g aws-cdk@1.41.0
-	$(MAKE) -C $(SELF_DIR)/infra/cdk install
+	$(MAKE) -C $(BASE_DIR)/infra/cdk install
 
 install-infra-functions:
-	$(MAKE) -C $(SELF_DIR)/infra/functions install
+	$(MAKE) -C $(BASE_DIR)/infra/functions install
 
 aws-shell:
 	$(AWS_VAULT) $(SHELL)

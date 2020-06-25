@@ -12,7 +12,7 @@ test:
 	pipenv run pytest
 
 build:
-	$(DOCKER_COMPOSE) up -d db
+	$(DOCKER_COMPOSE) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml run -d db
 	$(MAKE) test
 
 deploy:
