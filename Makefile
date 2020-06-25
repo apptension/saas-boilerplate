@@ -3,17 +3,6 @@ include $(SELF_DIR)/base.mk
 
 .PHONY: shell help build rebuild service login test clean prune version
 
-COMPOSE_BACKEND_SHELL = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend
-
-shell:
-ifeq ($(CMD_ARGUMENTS),)
-	# no command is given, default to shell
-	$(COMPOSE_BACKEND_SHELL) sh
-else
-	# run the command
-	$(COMPOSE_BACKEND_SHELL) sh -c "$(CMD_ARGUMENTS)"
-endif
-
 install: install-infra-cdk install-infra-functions
 	$(MAKE) -C $(SELF_DIR)/services/backend install
 	$(MAKE) -C $(SELF_DIR)/services/workers install
@@ -28,39 +17,11 @@ setup-docker:
 
 setup: install setup-infra setup-docker
 
-up:
-	# run as a (background) service
-	$(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID) up --build --force-recreate
-
-down:
-	# run as a (background) service
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down
-
-login: up
-	# run as a service and attach to it
-	docker exec -it $(PROJECT_NAME)_$(HOST_UID) bash
-
-clean:
-	# remove created images
-	@docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down --remove-orphans --rmi all 2>/dev/null \
-	&& echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" removed.' \
-	|| echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" already removed.'
-
-prune:
-	# clean all that is not actively used
-	docker system prune -af
-
 test:
 	# here it is useful to add your own customised tests
 	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend sh -c '\
 		echo "I am `whoami`. My uid is `id -u`." && echo "Docker runs!"' \
 	&& echo success
-
-makemigrations:
-	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py makemigrations"
-
-migrate:
-	$(COMPOSE_BACKEND_SHELL) sh -c "python ./manage.py migrate"
 
 #
 # Infrastructure deployment

@@ -8,8 +8,12 @@ install:
 
 install-deploy: install
 
+test:
+	pytest
+
 build:
-	@echo "Test workers"
+	$(DOCKER_COMPOSE) up -d db
+	$(MAKE) test
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);

@@ -49,6 +49,8 @@ CMD_ARGUMENTS ?= $(cmd)
 export HOST_USER
 export HOST_UID
 
+DOCKER_COMPOSE = $(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
+
 version:
 	@echo $(VERSION)
 
@@ -61,3 +63,20 @@ install-infra-functions:
 
 aws-shell:
 	$(AWS_VAULT) $(SHELL)
+
+up:
+	$(DOCKER_COMPOSE) up --build --force-recreate -d
+
+down:
+	# run as a (background) service
+	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down
+
+clean:
+	# remove created images
+	@docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down --remove-orphans --rmi all 2>/dev/null \
+	&& echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" removed.' \
+	|| echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" already removed.'
+
+prune:
+	# clean all that is not actively used
+	docker system prune -af

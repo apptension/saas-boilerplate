@@ -61,7 +61,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                 privileged: true,
             },
             environmentVariables: {...this.defaultEnvVariables},
-            cache: Cache.local(LocalCacheMode.CUSTOM),
+            cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
         });
     }
 
