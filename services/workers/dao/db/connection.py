@@ -1,9 +1,10 @@
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
-
 from sqlalchemy.engine import url
 
 import settings
+
+is_enabled = settings.DB_CONNECTION is not None
 
 db_url = url.URL(**{
     'drivername': settings.DB_CONNECTION['engine'],

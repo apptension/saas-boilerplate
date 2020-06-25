@@ -15,4 +15,5 @@ class User(models.Base):
     is_staff = Column("is_staff", Boolean, default=False)
     is_superuser = Column("is_superuser", Boolean, default=False)
     is_active = Column("is_active", Boolean, default=True)
-    date_joined = Column("date_joined", DateTime)
+    is_confirmed = Column("is_confirmed", Boolean, default=True)
+    created = Column("created", DateTime)

@@ -4,6 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest = "*"
+pytest-mock = "*"
+pytest-factoryboy = "*"
+pytest-dotenv = "*"
 
 [packages]
 boto3 = "*"

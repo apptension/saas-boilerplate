@@ -18,7 +18,10 @@ def fetch_db_secret(db_secret_arn):
 
 LAMBDA_TASK_ROOT = env('LAMBDA_TASK_ROOT', '')
 
-DB_SECRET_ARN = env('DB_SECRET_ARN', None)
-DB_CONNECTION = fetch_db_secret(DB_SECRET_ARN)
+DB_CONNECTION = env('DB_CONNECTION', None)
+if DB_CONNECTION:
+    DB_CONNECTION = json.loads(DB_CONNECTION)
+else:
+    DB_CONNECTION = fetch_db_secret(env('DB_SECRET_ARN', None))
 
 FROM_EMAIL = env('FROM_EMAIL', None)
