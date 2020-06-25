@@ -9,7 +9,7 @@ install:
 install-deploy: install
 
 test:
-	pytest
+	pipenv run pytest
 
 build:
 	$(DOCKER_COMPOSE) up -d db

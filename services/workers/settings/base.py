@@ -10,7 +10,7 @@ env = Env()
 
 def fetch_db_secret(db_secret_arn):
     if db_secret_arn is None:
-        return {}
+        return None
 
     response = secrets_manager_client.get_secret_value(SecretId=db_secret_arn)
     return json.loads(response['SecretString'])
