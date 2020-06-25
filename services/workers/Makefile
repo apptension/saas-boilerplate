@@ -4,6 +4,7 @@ include $(SELF_DIR)/../../base.mk
 install:
 	npm install -g serverless
 	npm install
+	pipenv install --dev
 
 install-deploy: install
 

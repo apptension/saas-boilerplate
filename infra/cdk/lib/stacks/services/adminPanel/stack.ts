@@ -14,6 +14,7 @@ import {FargateServiceResources} from "../../../patterns/fargateServiceResources
 import {MigrationsStackProps} from "../migrations/stack";
 import {EnvironmentSettings} from "../../../settings";
 import {MainECSCluster} from "../../env/main/mainEcsCluster";
+import {EnvComponentsStack} from "../../env/components";
 
 
 export interface AdminPanelStackProps extends core.StackProps, EnvConstructProps {
@@ -58,11 +59,12 @@ export class AdminPanelStack extends core.Stack {
                         "CHAMBER_SERVICE_NAME": this.getChamberServiceName(envSettings),
                         "CHAMBER_KMS_KEY_ALIAS": MainKmsKey.getKeyAlias(envSettings),
                         "DJANGO_ALLOWED_HOSTS": `${envSettings.domains.adminPanel}`,
-                        "DJANGO_ALLOWED_CIDR_NETS": "10.0.1.0/16"
+                        "DJANGO_ALLOWED_CIDR_NETS": "10.0.1.0/16",
+                        "WORKERS_EVENT_BUS_NAME": EnvComponentsStack.getWorkersEventBusName(props.envSettings),
                     },
                     secrets: {
                         "DB_CONNECTION": EcsSecret.fromSecretsManager(
-                            Secret.fromSecretArn(this, "DbSecret", dbSecretArn))
+                            Secret.fromSecretArn(this, "DbSecret", dbSecretArn)),
                     },
                 }
             ],

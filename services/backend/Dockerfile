@@ -35,7 +35,8 @@ FROM backend_build AS static_files
 ENV HASHID_FIELD_SALT='' \
     DJANGO_PARENT_HOST='' \
     DJANGO_SECRET_KEY='build' \
-    DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}'
+    DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
+    WORKERS_EVENT_BUS_NAME=''
 
 RUN python manage.py collectstatic --no-input
 

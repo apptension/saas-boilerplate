@@ -30,4 +30,4 @@ deploy-migrations:
 	cd $(SELF_DIR)/infra/functions;\
 	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
 
-deploy: deploy-admin-panel deploy-api deploy-migrations
+deploy: deploy-migrations deploy-admin-panel deploy-api

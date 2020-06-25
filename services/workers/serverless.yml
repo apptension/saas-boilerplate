@@ -22,7 +22,7 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: userauth.handlers.hello
     timeout: 6
     memorySize: 256
     vpc:
@@ -32,11 +32,26 @@ functions:
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
         - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
 
+  SendEmail:
+    handler: emails.handlers.send_email
+    timeout: 6
+    memorySize: 128
+    environment:
+      FROM_EMAIL: ''
+    events:
+      - eventBridge:
+          eventBus: '${self:custom.eventBusArn}'
+          pattern:
+            source:
+              - backend.email
+
 plugins:
+  - serverless-pseudo-parameters
   - serverless-python-requirements
 
 custom:
   projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
+  eventBusArn: 'arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers'
   pythonRequirements:
     dockerizePip: true
     useDownloadCache: true

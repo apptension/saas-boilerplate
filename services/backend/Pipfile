@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+boto3 = "*"
 Django = "~=3.0"
 djangorestframework = "~=3.11"
 django-hashid-field = "~=3.1"
