@@ -6,6 +6,7 @@ import pystache
 from botocore.exceptions import ClientError
 
 import settings
+from . import emails  # noqa
 from .config import email_handlers, EmailConfig
 
 CHARSET = "UTF-8"
@@ -26,8 +27,8 @@ def send_email(name, data):
 
     email_config: EmailConfig = email_handler(data)
 
-    template_dir = path.join(settings.LAMBDA_TASK_ROOT, 'src/emails/templates')
-    with open(path.join(template_dir, email_config.template, '.html')) as f:
+    template_dir = path.join(settings.LAMBDA_TASK_ROOT, 'emails/templates')
+    with open(path.join(template_dir, f'{email_config.template}.html')) as f:
         template_html = ''.join([line.rstrip('\n') for line in f])
 
     rendered_html = pystache.render(template_html, email_config.template_vars)
@@ -54,7 +55,6 @@ def send_email(name, data):
         )
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
-
     else:
         logger.info("Email sent! Message ID:"),
         logger.info(response['MessageId'])

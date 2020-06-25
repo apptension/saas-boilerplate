@@ -1,4 +1,6 @@
+import boto3
 import pytest
+from moto import mock_ses
 from pytest_factoryboy import register
 from sqlalchemy import exc, create_engine
 from sqlalchemy.engine import url
@@ -49,3 +51,11 @@ def db_session():
         yield session
 
     Base.metadata.drop_all(bind=connection.db)
+
+
+@pytest.fixture
+def ses_client():
+    with mock_ses():
+        client = boto3.client("ses")
+        client.verify_email_identity(EmailAddress=settings.FROM_EMAIL)
+        yield client
