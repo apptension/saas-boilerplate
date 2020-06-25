@@ -19,9 +19,9 @@ def get_ses_client():
 
 
 def send_email(name, data):
-    email_handler = email_handlers.get(name)
-
-    if not email_handler:
+    try:
+        email_handler = email_handlers[name]
+    except AttributeError:
         raise Exception(f'Unknown email type {name}')
 
     email_config: EmailConfig = email_handler(data)
