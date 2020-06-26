@@ -54,6 +54,6 @@ custom:
   projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
   eventBusArn: 'arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers'
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: non-linux
     useDownloadCache: true
     useStaticCache: true

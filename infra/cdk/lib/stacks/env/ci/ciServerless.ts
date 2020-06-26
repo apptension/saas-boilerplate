@@ -81,6 +81,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
+                    install: {"runtime-versions": {"python": "3.8"}},
                     pre_build: {commands: [`make -C services/${props.name} install-deploy`]},
                     build: {commands: [`make -C services/${props.name} deploy`]},
                 },
@@ -93,6 +94,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             }),
             environment: {
                 privileged: true,
+                buildImage: LinuxBuildImage.AMAZON_LINUX_2_3,
             },
             environmentVariables: {...this.defaultEnvVariables},
             cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
@@ -117,6 +119,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                 's3:*',
                 'lambda:*',
                 'apigateway:*',
+                'logs:*',
                 'cloudformation:ValidateTemplate',
             ],
             resources: ['*'],
