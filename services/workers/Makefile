@@ -13,7 +13,7 @@ test:
 
 build:
 	$(DOCKER_COMPOSE) run -d db
-	sh $(BASE_DIR)/scripts/wait-for-it.sh localhost:5432
+	bash $(BASE_DIR)/scripts/wait-for-it.sh localhost:5432
 	$(MAKE) test
 
 deploy:
