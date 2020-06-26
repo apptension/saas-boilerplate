@@ -1,5 +1,6 @@
 import json
 from distutils.core import setup, Command
+from time import sleep
 
 from dotenv import load_dotenv
 from environs import Env
@@ -13,6 +14,21 @@ load_dotenv(dotenv_path='.test.env')
 DB_CONNECTION = json.loads(env('DB_CONNECTION'))
 
 
+def connect(template_engine):
+    retries = 0
+    while retries <= 20:
+        try:
+            conn = template_engine.connect()
+            return conn
+        except exc.OperationalError:
+            pass
+
+        sleep(1)
+        retries += 1
+
+    return None
+
+
 def create_test_database():
     template_engine = create_engine(url.URL(**{
         'drivername': DB_CONNECTION['engine'],
@@ -23,7 +39,8 @@ def create_test_database():
         'database': DB_CONNECTION['conndbname']
     }), echo=False)
 
-    conn = template_engine.connect()
+    conn = connect(template_engine)
+
     conn = conn.execution_options(autocommit=False)
     conn.execute("ROLLBACK")
     try:
