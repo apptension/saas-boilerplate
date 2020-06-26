@@ -3,9 +3,9 @@ import json
 import boto3
 from environs import Env
 
-secrets_manager_client = boto3.client('secretsmanager')
-
 env = Env()
+
+secrets_manager_client = boto3.client('secretsmanager')
 
 
 def fetch_db_secret(db_secret_arn):

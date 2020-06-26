@@ -9,6 +9,7 @@ pytest = "*"
 pytest-mock = "*"
 pytest-factoryboy = "*"
 pytest-dotenv = "*"
+python-dotenv = "*"
 
 [packages]
 boto3 = "*"

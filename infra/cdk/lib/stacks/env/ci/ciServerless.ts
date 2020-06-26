@@ -47,6 +47,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
+                    install: {"runtime-versions": {"python": "3.8"}},
                     pre_build: {commands: [`make -C services/${props.name} install`]},
                     build: {commands: [`make -C services/${props.name} build`]},
                 },

@@ -9,12 +9,10 @@ install:
 install-deploy: install
 
 test:
-	pipenv run pytest
+	$(DOCKER_COMPOSE) up -d db
+	pipenv run python setup.py test
 
-build:
-	$(DOCKER_COMPOSE) run -d db
-	bash $(BASE_DIR)/scripts/wait-for-it.sh localhost:5432
-	$(MAKE) test
+build: test
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
