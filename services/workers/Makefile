@@ -12,7 +12,8 @@ test:
 	pipenv run pytest
 
 build:
-	$(DOCKER_COMPOSE) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml run -d db
+	$(DOCKER_COMPOSE) run -d db
+	sh $(BASE_DIR)/wait-for-it.sh localhost:5432
 	$(MAKE) test
 
 deploy:
