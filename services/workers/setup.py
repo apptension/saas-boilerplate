@@ -70,7 +70,7 @@ class PyTest(Command):
     def run(self):
         import subprocess
         create_test_database()
-        errno = subprocess.call(['pytest'])
+        errno = subprocess.call(['pipenv', 'run', 'pytest'])
         raise SystemExit(errno)
 
 
