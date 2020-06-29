@@ -1,8 +1,8 @@
 PWD ?= pwd_unknown
-SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+BASE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 export PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-CONFIG_FILE ?= $(SELF_DIR)/.awsboilerplate.json
+CONFIG_FILE ?= $(BASE_DIR)/.awsboilerplate.json
 
 define GetFromCfg
 $(shell node -p "require('$(CONFIG_FILE)').$(1)")
@@ -25,11 +25,13 @@ export WWW_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.www)
 
 ifeq ($(CI),true)
 	AWS_VAULT =
-	VERSION := $(shell cat $(SELF_DIR)/VERSION)
+	VERSION := $(shell cat $(BASE_DIR)/VERSION)
+	DOCKER_COMPOSE = $(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
 else
 	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+	DOCKER_COMPOSE = $(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
 endif
 export VERSION
 
@@ -49,15 +51,34 @@ CMD_ARGUMENTS ?= $(cmd)
 export HOST_USER
 export HOST_UID
 
+
+
 version:
 	@echo $(VERSION)
 
 install-infra-cdk:
 	npm install -g aws-cdk@1.41.0
-	$(MAKE) -C $(SELF_DIR)/infra/cdk install
+	$(MAKE) -C $(BASE_DIR)/infra/cdk install
 
 install-infra-functions:
-	$(MAKE) -C $(SELF_DIR)/infra/functions install
+	$(MAKE) -C $(BASE_DIR)/infra/functions install
 
 aws-shell:
 	$(AWS_VAULT) $(SHELL)
+
+up:
+	$(DOCKER_COMPOSE) up --build --force-recreate -d
+
+down:
+	# run as a (background) service
+	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down
+
+clean:
+	# remove created images
+	@docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down --remove-orphans --rmi all 2>/dev/null \
+	&& echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" removed.' \
+	|| echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" already removed.'
+
+prune:
+	# clean all that is not actively used
+	docker system prune -af

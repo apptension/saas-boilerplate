@@ -41,6 +41,7 @@ export class CiEntrypoint extends Construct {
     private createBuildProject(artifactsBucket: Bucket, props: CiEntrypointProps) {
         return new Project(this, "Project", {
             projectName: `${props.envSettings.projectEnvName}`,
+            description: `Run this project to deploy ${props.envSettings.envStage} environment`,
             buildSpec: this.createBuildSpec(),
             cache: Cache.local(LocalCacheMode.SOURCE),
             source: Source.codeCommit({repository: props.codeRepository}),

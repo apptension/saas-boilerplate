@@ -5,13 +5,15 @@ from sqlalchemy import orm
 
 from .connection import db
 
-Session = orm.scoped_session(orm.sessionmaker())
+Session = None
+
+if db is not None:
+    Session = orm.scoped_session(orm.sessionmaker())
+    Session.configure(bind=db)
 
 
 @contextmanager
 def db_session() -> ContextManager[Session]:
-    Session.configure(bind=db)
-
     session = Session()
 
     try:

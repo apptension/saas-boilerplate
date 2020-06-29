@@ -8,8 +8,11 @@ install:
 
 install-deploy: install
 
-build:
-	@echo "Test workers"
+test:
+	$(DOCKER_COMPOSE) up -d db
+	pipenv run python setup.py test
+
+build: test
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);

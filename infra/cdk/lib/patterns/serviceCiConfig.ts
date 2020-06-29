@@ -24,7 +24,12 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
             ENV_STAGE: {type: BuildEnvironmentVariableType.PLAINTEXT, value: props.envSettings.envStage},
         };
 
-        this.defaultCachePaths = ['infra/cdk/node_modules/**/*', 'infra/functions/node_modules/**/*']
+        this.defaultCachePaths = [
+            'infra/cdk/node_modules/**/*',
+            'infra/functions/node_modules/**/*',
+            '/root/.cache/pip/',
+            '/root/.cache/pipenv/',
+        ]
     }
 }
 
