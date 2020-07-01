@@ -28,7 +28,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         model = dj_auth.get_user_model()
         fields = ("id", "email", "password", "jwt_token", "profile")
         read_only_fields = ("jwt_token",)
-        extra_kwargs = {"password": {"write_only": True,}}
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, password):
         password_validation.validate_password(password)
@@ -36,14 +36,10 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = dj_auth.get_user_model().objects.create_user(validated_data["email"], validated_data["password"],)
-        models.UserProfile.objects.create(
-            user=user, **validated_data.pop("profile", {}),
-        )
+        models.UserProfile.objects.create(user=user, **validated_data.pop("profile", {}))
 
         activation_token = tokens.account_activation_token.make_token(user)
-        utils.user_notification_impl(
-            "account_activation", user=user, token=activation_token,
-        )
+        utils.user_notification_impl("account_activation", user=user, token=activation_token)
 
         return user
 

@@ -41,7 +41,7 @@ class TestResetPassword:
 
         response = api_client.post(
             reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": password_token, "new_password": new_password,},
+            {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
         assert response.status_code == status.HTTP_201_CREATED, response.data
         assert "jwt_token" in response.data
@@ -54,7 +54,7 @@ class TestResetPassword:
         new_password = "random1234"
         response = api_client.post(
             reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": "wrong_token", "new_password": new_password,},
+            {"user": str(user.pk), "token": "wrong_token", "new_password": new_password},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["non_field_errors"][0] == "Malformed password reset token", response.data
@@ -64,7 +64,7 @@ class TestResetPassword:
         password_token = tokens.password_reset_token.make_token(user)
         response = api_client.post(
             reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": password_token, "new_password": new_password,},
+            {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert "too short" in response.data["new_password"][0], response.data
@@ -85,7 +85,7 @@ class TestChangePassword:
         api_client.force_authenticate(user)
         response = api_client.post(
             reverse("change_password"),
-            {"user": user.pk, "old_password": factories.UserFactory.password, "new_password": faker.password(),},
+            {"user": user.pk, "old_password": factories.UserFactory.password, "new_password": faker.password()},
         )
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
@@ -97,7 +97,7 @@ class TestChangePassword:
         api_client.force_authenticate(user)
         response = api_client.post(
             reverse("change_password"),
-            {"user": user.pk, "old_password": "wrong_old_password", "new_password": faker.password(),},
+            {"user": user.pk, "old_password": "wrong_old_password", "new_password": faker.password()},
         )
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -106,7 +106,7 @@ class TestChangePassword:
     def test_user_not_auth(self, api_client, user):
         response = api_client.post(
             reverse("change_password"),
-            {"user": user.pk, "old_password": "wrong_old_password", "new_password": "password1234",},
+            {"user": user.pk, "old_password": "wrong_old_password", "new_password": "password1234"},
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED

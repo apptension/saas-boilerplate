@@ -20,6 +20,9 @@ install-deploy: install-infra-cdk install-infra-functions
 setup:
 	chmod +x ./scripts/*.sh
 
+flake8:
+	$(DOCKER_COMPOSE) run -T backend flake8
+
 black:
 ifeq ($(CI),true)
 	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml --check .
@@ -32,6 +35,8 @@ test:
 
 build:
 	$(DOCKER_COMPOSE) up -d db
+	$(DOCKER_COMPOSE) build backend
+	$(MAKE) flake8
 	$(MAKE) black
 	$(MAKE) test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh

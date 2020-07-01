@@ -21,4 +21,24 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 
-setup(cmdclass={'test': PyTest})
+class Lint(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import subprocess
+
+        errno = subprocess.call(['bash', './scripts/wait-for-it.sh', 'db:5432'])
+        if errno:
+            raise SystemError(errno)
+
+        errno = subprocess.call(['pytest'])
+        raise SystemExit(errno)
+
+
+setup(cmdclass={'test': PyTest, 'lint': Lint})
