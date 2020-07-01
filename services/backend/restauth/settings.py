@@ -152,3 +152,5 @@ HASHID_FIELD_SALT = env("HASHID_FIELD_SALT")
 USER_NOTIFICATION_IMPL = "restauth.notifications.stdout"
 
 WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
+
+AWS_EVENTS_URL = env("AWS_EVENTS_URL", default=None)

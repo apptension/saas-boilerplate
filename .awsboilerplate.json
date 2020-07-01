@@ -1,6 +1,6 @@
 {
   "projectName": "aws-boilerplate",
-  "defaultEnv": "dev",
+  "defaultEnv": "local",
   "aws": {
     "profile": "aws-boilerplate",
     "region": "eu-west-1"
@@ -42,6 +42,20 @@
         "api": "api.awsboilerplate.dev.apptoku.com",
         "webApp": "app.awsboilerplate.dev.apptoku.com",
         "www": "www.awsboilerplate.dev.apptoku.com"
+      }
+    },
+    "local": {
+      "hostedZone": {
+        "id": "",
+        "name": ""
+      },
+      "certificate": "",
+      "cloudFrontCertificate": "",
+      "domains": {
+        "adminPanel": "admin.localhost:5000",
+        "api": "api.localhost:5000",
+        "webApp": "",
+        "www": ""
       }
     }
   }

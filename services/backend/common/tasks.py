@@ -12,7 +12,9 @@ class Task:
         self.event_bus_name = event_bus_name
 
     def apply(self, data: dict):
-        client = boto3.client('events')
+        data["type"] = self.name
+
+        client = boto3.client('events', endpoint_url=settings.AWS_EVENTS_URL)
         client.put_events(
             Entries=[
                 {

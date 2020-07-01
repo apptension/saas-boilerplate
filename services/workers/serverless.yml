@@ -4,41 +4,25 @@ provider:
   name: aws
   runtime: python3.8
   versionFunctions: false
+  stage: ${opt:stage, 'local'}
   region: "${env:AWS_DEFAULT_REGION}"
-
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - "secretsmanager:GetRandomPassword"
-        - "secretsmanager:CreateSecret"
-        - "secretsmanager:ListSecrets"
-      Resource: '*'
-    - Effect: 'Allow'
-      Action:
-        - "secretsmanager:*"
-      Resource: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn' }
+  stackName: ${file(./workers.conf.${self:provider.stage}.yml):stackName}
+  iamRoleStatements: ${file(./workers.conf.${self:provider.stage}.yml):iam}
 
 functions:
   hello:
     handler: userauth.handlers.hello
     timeout: 6
     memorySize: 256
-    environment:
-      # Do not put DB_SECRET_ARN in global environments. This will make all functions try to connect to DB
-      DB_SECRET_ARN: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn' }
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: '${self:custom.projectEnvName}-lambdaSecurityGroupId'
-      subnetIds:
-        - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
-        - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
+    environment: ${file(./workers.conf.${self:provider.stage}.yml):envsHello}
+    vpc: ${file(./workers.conf.${self:provider.stage}.yml):vpcHello}
+
 
   SendEmail:
     handler: emails.handlers.send_email
     timeout: 6
     memorySize: 128
-    environment:
-      FROM_EMAIL: ''
+    environment: ${file(./workers.conf.${self:provider.stage}.yml):envsSendEmail}
     events:
       - eventBridge:
           eventBus: '${self:custom.eventBusArn}'
@@ -49,6 +33,7 @@ functions:
 plugins:
   - serverless-pseudo-parameters
   - serverless-python-requirements
+  - serverless-localstack
 
 custom:
   projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
@@ -57,3 +42,16 @@ custom:
     dockerizePip: non-linux
     useDownloadCache: true
     useStaticCache: true
+
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    endpointFile: localstack_endpoints.json
+    debug: true
+    mountCode: false
+
+package:
+  exclude:
+    - .git/**
+    - node_modules/**

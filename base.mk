@@ -75,7 +75,7 @@ aws-shell:
 	$(AWS_VAULT) $(SHELL)
 
 up:
-	$(DOCKER_COMPOSE) up --build --force-recreate -d
+	$(DOCKER_COMPOSE) up --build --force-recreate
 
 down:
 	# run as a (background) service
