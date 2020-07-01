@@ -20,6 +20,7 @@ class Task:
                     'Source': self.source,
                     'DetailType': self.name,
                     'Detail': json.dumps(data),
-                    'EventBusName': self.event_bus_name
+                    'EventBusName': self.event_bus_name,
                 },
-            ])
+            ]
+        )

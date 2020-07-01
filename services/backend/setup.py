@@ -12,6 +12,7 @@ class PyTest(Command):
 
     def run(self):
         import subprocess
+
         errno = subprocess.call(['bash', './scripts/wait-for-it.sh', 'db:5432'])
         if errno:
             raise SystemError(errno)
