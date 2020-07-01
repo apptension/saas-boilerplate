@@ -21,7 +21,8 @@ setup:
 	chmod +x ./scripts/*.sh
 
 test:
-	$(COMPOSE_SHELL) python setup.py test
+	$(DOCKER_COMPOSE) up -d backend
+	$(DOCKER_COMPOSE) exec backend python setup.py test
 
 build: test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
