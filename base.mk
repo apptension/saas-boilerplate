@@ -26,12 +26,12 @@ export WWW_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.www)
 ifeq ($(CI),true)
 	AWS_VAULT =
 	VERSION := $(shell cat $(BASE_DIR)/VERSION)
-	DOCKER_COMPOSE = $(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
+	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
 else
 	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
-	DOCKER_COMPOSE = $(AWS_VAULT) docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
+	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
 endif
 export VERSION
 

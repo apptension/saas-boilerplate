@@ -22,14 +22,13 @@ setup:
 
 black:
 ifeq ($(CI),true)
-	$(DOCKER_COMPOSE) exec -T backend pipenv run black --config=pyproject.toml --check .
+	$(DOCKER_COMPOSE) exec -T backend black --config=pyproject.toml --check .
 else
-	$(DOCKER_COMPOSE) exec -T backend pipenv run black --config=pyproject.toml .
+	$(DOCKER_COMPOSE) exec -T backend black --config=pyproject.toml .
 endif
 
 test:
 	$(DOCKER_COMPOSE) up -d backend
-	$(MAKE) black
 	$(DOCKER_COMPOSE) exec -T backend python setup.py test
 	$(DOCKER_COMPOSE) down
 
