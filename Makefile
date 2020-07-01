@@ -28,31 +28,19 @@ test:
 #
 
 deploy-global-infra:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) $(CDK_DEPLOY) *GlobalStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-infra
 
 deploy-global-tools:
-	$(MAKE) -C tools/version-matrix install
-	$(MAKE) -C tools/version-matrix build
-
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) $(CDK_DEPLOY) *GlobalToolsStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-tools
 
 deploy-infra-main:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) $(CDK_DEPLOY) *MainStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-main
 
 deploy-infra-ci:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) $(CDK_DEPLOY) *CiStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-ci
 
 deploy-infra-functions:
-	cd $(SELF_DIR)infra/functions;\
-	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+	$(MAKE) -C $(SELF_DIR)infra/functions deploy
 
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
@@ -70,9 +58,7 @@ build:
 	$(MAKE) -C services/workers build
 
 deploy-components:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) $(CDK_DEPLOY) *ComponentsStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-components
 
 deploy-stage-app: deploy-components
 	$(MAKE) -C services/backend deploy-migrations
