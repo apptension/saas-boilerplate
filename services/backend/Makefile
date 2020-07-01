@@ -20,11 +20,16 @@ install-deploy: install-infra-cdk install-infra-functions
 setup:
 	chmod +x ./scripts/*.sh
 
+lint:
+	$(DOCKER_COMPOSE) exec backend pipenv run black --config=pyproject.toml --check
+
 test:
-	$(DOCKER_COMPOSE) up -d backend
 	$(DOCKER_COMPOSE) exec backend python setup.py test
 
-build: test
+build:
+	$(DOCKER_COMPOSE) up -d backend
+	$(MAKE) lint
+	$(MAKE) test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
