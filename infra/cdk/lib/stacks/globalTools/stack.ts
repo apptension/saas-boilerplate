@@ -31,8 +31,8 @@ export class GlobalToolsStack extends core.Stack {
             publicReadAccess: true,
             accessControl: BucketAccessControl.PUBLIC_READ,
             cors: [{
-                allowedMethods: [HttpMethods.GET],
-                allowedOrigins: [props.envSettings.domains.versionMatrixDomain],
+                allowedMethods: [HttpMethods.GET, HttpMethods.HEAD],
+                allowedOrigins: [`https://${props.envSettings.domains.versionMatrixDomain}`],
             }]
         })
 
