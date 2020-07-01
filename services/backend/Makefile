@@ -20,7 +20,10 @@ install-deploy: install-infra-cdk install-infra-functions
 setup:
 	chmod +x ./scripts/*.sh
 
-build:
+test:
+	$(COMPOSE_SHELL) python setup.py test
+
+build: test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
