@@ -6,7 +6,10 @@ install:
 
 install-deploy: install-infra-cdk
 
-build:
+test:
+	@echo "test"
+
+build: test
 	mkdir -p build
 	cp index.html build/index.html
 
