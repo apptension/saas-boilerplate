@@ -5,6 +5,16 @@
     "profile": "{{ awsProfile }}",
     "region": "{{ awsRegion }}"
   },
+  "toolsConfig": {
+    "cloudFrontCertificate": "{{ cloudFrontCertificate }}",
+    "hostedZone": {
+      "id": "{{ hostedZoneId }}",
+      "name": "{{ hostedZoneName }}"
+    },
+    "domains": {
+      "versionMatrix": "status.{{ appDomain }}"
+    }
+  },
   "envConfig": {
     "{{ defaultEnv }}": {
       "hostedZone": {

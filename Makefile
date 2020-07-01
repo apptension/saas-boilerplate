@@ -32,6 +32,14 @@ deploy-global-infra:
 	npm run build;\
 	$(AWS_VAULT) npm run cdk deploy *GlobalStack;
 
+deploy-global-tools:
+	$(MAKE) -C tools/version-matrix install
+	$(MAKE) -C tools/version-matrix build
+
+	cd $(SELF_DIR)infra/cdk;\
+	npm run build;\
+	$(AWS_VAULT) npm run cdk deploy *GlobalToolsStack;
+
 deploy-infra-main:
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
@@ -47,6 +55,9 @@ deploy-infra-functions:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
+
+upload-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-version.js
 
 #
 # Services deployment

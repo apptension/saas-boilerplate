@@ -27,6 +27,7 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
         this.defaultCachePaths = [
             'infra/cdk/node_modules/**/*',
             'infra/functions/node_modules/**/*',
+            'scripts/node_modules/**/*',
             '/root/.cache/pip/',
             '/root/.cache/pipenv/',
         ]

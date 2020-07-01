@@ -18,6 +18,11 @@ export HOSTED_ZONE_NAME := $(call GetFromCfg,envConfig.$(ENV_STAGE).hostedZone.n
 export CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).certificate)
 export CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).cloudFrontCertificate)
 
+export TOOLS_CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,toolsConfig.cloudFrontCertificate)
+export TOOLS_HOSTED_ZONE_ID := $(call GetFromCfg,toolsConfig.hostedZone.id)
+export TOOLS_HOSTED_ZONE_NAME := $(call GetFromCfg,toolsConfig.hostedZone.name)
+
+export VERSION_MATRIX_DOMAIN := $(call GetFromCfg,toolsConfig.domains.versionMatrix)
 export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.adminPanel)
 export API_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.api)
 export WEB_APP_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.webApp)
@@ -62,6 +67,9 @@ install-infra-cdk:
 
 install-infra-functions:
 	$(MAKE) -C $(BASE_DIR)/infra/functions install
+
+install-scripts:
+	$(MAKE) -C $(BASE_DIR)/scripts install
 
 aws-shell:
 	$(AWS_VAULT) $(SHELL)

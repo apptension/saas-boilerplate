@@ -5,6 +5,16 @@
     "profile": "aws-boilerplate",
     "region": "eu-west-1"
   },
+  "toolsConfig": {
+    "cloudFrontCertificate": "arn:aws:acm:us-east-1:075678138205:certificate/b80a00b3-531b-4baa-9e87-51424f0ac6fc",
+    "hostedZone": {
+      "id": "Z00186483IY7RFDXZHUCI",
+      "name": "apptoku.com"
+    },
+    "domains": {
+      "versionMatrix": "status.awsboilerplate.apptoku.com"
+    }
+  },
   "envConfig": {
     "dev": {
       "hostedZone": {

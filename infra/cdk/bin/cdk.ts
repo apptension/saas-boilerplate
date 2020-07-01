@@ -3,6 +3,7 @@ import * as cdk from '@aws-cdk/core';
 
 import {loadEnvSettings} from '../lib/settings';
 import {GlobalStack} from '../lib/stacks/global';
+import {GlobalToolsStack} from "../lib/stacks/globalTools";
 import {EnvMainStack} from '../lib/stacks/env/main';
 import {EnvComponentsStack} from '../lib/stacks/env/components';
 import {AdminPanelStack} from "../lib/stacks/services/adminPanel";
@@ -10,6 +11,7 @@ import {ApiStack} from "../lib/stacks/services/api";
 import {MigrationsStack} from "../lib/stacks/services/migrations";
 import {WebAppStack} from "../lib/stacks/services/webApp";
 import {EnvCiStack} from "../lib/stacks/env/ci";
+
 
 const envSettings = loadEnvSettings();
 
@@ -19,6 +21,7 @@ const app = new cdk.App();
 
 // Global stacks
 new GlobalStack(app, getStackName('GlobalStack', envSettings.projectName), {envSettings});
+new GlobalToolsStack(app, getStackName('GlobalToolsStack', envSettings.projectName), {envSettings});
 
 // Environment (dev / qa / stage / prod) stacks
 new EnvMainStack(app, getStackName("MainStack", envSettings.projectEnvName), {envSettings});
