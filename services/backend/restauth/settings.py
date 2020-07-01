@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django_hosts",
     "rest_framework_jwt.blacklist",
     "whitenoise",
-    "restauth"
+    "restauth",
 ]
 
 
@@ -100,12 +100,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
@@ -137,9 +135,7 @@ LOCALE_PATHS = []
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_jwt.authentication.JSONWebTokenAuthentication",),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
 }
 
@@ -148,9 +144,7 @@ JWT_AUTH = {
 }
 
 SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}
-    },
+    "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
 }
 
 HASHID_FIELD_SALT = env("HASHID_FIELD_SALT")

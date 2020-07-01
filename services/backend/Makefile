@@ -1,17 +1,6 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
-COMPOSE_SHELL = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend
-
-shell:
-ifeq ($(CMD_ARGUMENTS),)
-	# no command is given, default to shell
-	$(COMPOSE_SHELL) sh
-else
-	# run the command
-	$(COMPOSE_SHELL) sh -c "$(CMD_ARGUMENTS)"
-endif
-
 install:
 	pipenv install --dev
 
@@ -20,7 +9,11 @@ install-deploy: install-infra-cdk install-infra-functions
 setup:
 	chmod +x ./scripts/*.sh
 
+test:
+	$(DOCKER_COMPOSE) run -T backend ./scripts/run_tests.sh
+
 build:
+	$(MAKE) test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
@@ -43,8 +36,20 @@ deploy-migrations:
 
 deploy: deploy-migrations deploy-admin-panel deploy-api
 
+# Local CLI rules
+
+shell:
+	$(DOCKER_COMPOSE) run backend sh
+
+
 makemigrations:
-	$(COMPOSE_SHELL) sh -c "python ./manage.py makemigrations"
+	$(DOCKER_COMPOSE) run -T backend sh -c "python ./manage.py makemigrations"
 
 migrate:
-	$(COMPOSE_SHELL) sh -c "python ./manage.py migrate"
+	$(DOCKER_COMPOSE) run -T backend sh -c "python ./manage.py migrate"
+
+flake8:
+	$(DOCKER_COMPOSE) run -T backend flake8
+
+black:
+	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml .

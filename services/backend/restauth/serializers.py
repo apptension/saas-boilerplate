@@ -20,9 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserSignupSerializer(serializers.ModelSerializer):
     id = rest.HashidSerializerCharField(source_field="restauth.User.id", read_only=True)
     email = serializers.EmailField(
-        validators=[
-            validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())
-        ],
+        validators=[validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())],
     )
     profile = UserProfileSerializer(required=False)
 
@@ -30,33 +28,25 @@ class UserSignupSerializer(serializers.ModelSerializer):
         model = dj_auth.get_user_model()
         fields = ("id", "email", "password", "jwt_token", "profile")
         read_only_fields = ("jwt_token",)
-        extra_kwargs = {"password": {"write_only": True,}}
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, password):
         password_validation.validate_password(password)
         return password
 
     def create(self, validated_data):
-        user = dj_auth.get_user_model().objects.create_user(
-            validated_data["email"], validated_data["password"],
-        )
-        models.UserProfile.objects.create(
-            user=user, **validated_data.pop("profile", {}),
-        )
+        user = dj_auth.get_user_model().objects.create_user(validated_data["email"], validated_data["password"],)
+        models.UserProfile.objects.create(user=user, **validated_data.pop("profile", {}))
 
         activation_token = tokens.account_activation_token.make_token(user)
-        utils.user_notification_impl(
-            "account_activation", user=user, token=activation_token,
-        )
+        utils.user_notification_impl("account_activation", user=user, token=activation_token)
 
         return user
 
 
 class UserAccountConfirmationSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(),
-        pk_field=rest.HashidSerializerCharField(),
-        write_only=True,
+        queryset=models.User.objects.all(), pk_field=rest.HashidSerializerCharField(), write_only=True,
     )
     token = serializers.CharField(write_only=True)
 
@@ -65,9 +55,7 @@ class UserAccountConfirmationSerializer(serializers.Serializer):
         user = attrs["user"]
 
         if not tokens.account_activation_token.check_token(user, token):
-            raise exceptions.ValidationError(
-                _("Malformed user account confirmation token")
-            )
+            raise exceptions.ValidationError(_("Malformed user account confirmation token"))
 
         return attrs
 
@@ -134,9 +122,7 @@ class PasswordResetSerializer(serializers.Serializer):
 
 class PasswordResetConfirmationSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(),
-        pk_field=rest.HashidSerializerCharField(),
-        write_only=True,
+        queryset=models.User.objects.all(), pk_field=rest.HashidSerializerCharField(), write_only=True,
     )
 
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))

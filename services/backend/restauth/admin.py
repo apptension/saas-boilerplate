@@ -9,9 +9,7 @@ from . import models
 
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label="Password confirmation", widget=forms.PasswordInput
-    )
+    password2 = forms.CharField(label="Password confirmation", widget=forms.PasswordInput)
 
     class Meta:
         model = models.User
@@ -53,9 +51,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ("email", "password", "is_active")}),
         ("Permissions", {"fields": ("is_superuser",)}),
     )
-    add_fieldsets = (
-        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
-    )
+    add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),)
     search_fields = ("email",)
     ordering = ("created",)
     filter_horizontal = ()

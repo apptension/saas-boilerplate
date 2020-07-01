@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
-        user = self.model(email=self.normalize_email(email), )
+        user = self.model(email=self.normalize_email(email),)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password):
-        user = self.create_user(email, password=password, )
+        user = self.create_user(email, password=password,)
         user.is_superuser = True
         user.save(using=self._db)
         return user
@@ -31,9 +31,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     id = hashid_field.HashidAutoField(primary_key=True)
     created = models.DateTimeField(editable=False, auto_now_add=True)
-    email = models.EmailField(
-        verbose_name="email address", max_length=255, unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True,)
     is_confirmed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)

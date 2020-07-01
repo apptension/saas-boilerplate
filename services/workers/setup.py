@@ -7,9 +7,9 @@ from environs import Env
 from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import url
 
-env = Env()
-
 load_dotenv(dotenv_path='.test.env')
+
+env = Env()
 
 DB_CONNECTION = json.loads(env('DB_CONNECTION'))
 
