@@ -13,8 +13,6 @@ test:
 	$(DOCKER_COMPOSE) run -T backend ./scripts/run_tests.sh
 
 build:
-	$(DOCKER_COMPOSE) up -d db
-	$(DOCKER_COMPOSE) build backend
 	$(MAKE) test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
