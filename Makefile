@@ -30,7 +30,7 @@ test:
 deploy-global-infra:
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *GlobalStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *GlobalStack;
 
 deploy-global-tools:
 	$(MAKE) -C tools/version-matrix install
@@ -38,17 +38,17 @@ deploy-global-tools:
 
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *GlobalToolsStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *GlobalToolsStack;
 
 deploy-infra-main:
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *MainStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *MainStack;
 
 deploy-infra-ci:
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *CiStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *CiStack;
 
 deploy-infra-functions:
 	cd $(SELF_DIR)infra/functions;\
@@ -72,7 +72,7 @@ build:
 deploy-components:
 	cd $(SELF_DIR)infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *ComponentsStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *ComponentsStack;
 
 deploy-stage-app: deploy-components
 	$(MAKE) -C services/backend deploy-migrations

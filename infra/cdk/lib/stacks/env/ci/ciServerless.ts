@@ -122,6 +122,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                 'logs:*',
                 'ec2:DescribeSecurityGroups',
                 'ec2:DescribeSubnets',
+                'ec2:DescribeVpcs',
                 'cloudformation:ValidateTemplate',
             ],
             resources: ['*'],

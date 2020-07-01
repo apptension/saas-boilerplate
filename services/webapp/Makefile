@@ -16,4 +16,4 @@ build: test
 deploy:
 	cd $(BASE_DIR)/infra/cdk;\
 	npm run build;\
-	$(AWS_VAULT) cdk deploy *WebAppStack;
+	$(AWS_VAULT) $(CDK_DEPLOY) *WebAppStack;
