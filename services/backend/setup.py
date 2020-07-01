@@ -17,7 +17,7 @@ class PyTest(Command):
         if errno:
             raise SystemError(errno)
 
-        errno = subprocess.call(['pipenv', 'run', 'pytest'])
+        errno = subprocess.call(['pytest'])
         raise SystemExit(errno)
 
 

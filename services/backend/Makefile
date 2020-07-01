@@ -22,17 +22,18 @@ setup:
 
 black:
 ifeq ($(CI),true)
-	$(DOCKER_COMPOSE) exec -T backend black --config=pyproject.toml --check .
+	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml --check .
 else
-	$(DOCKER_COMPOSE) exec -T backend black --config=pyproject.toml .
+	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml .
 endif
 
 test:
-	$(DOCKER_COMPOSE) up -d backend
-	$(DOCKER_COMPOSE) exec -T backend python setup.py test
-	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) run -T backend python setup.py test
 
-build: test
+build:
+	$(DOCKER_COMPOSE) up -d db
+	$(MAKE) black
+	$(MAKE) test
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
