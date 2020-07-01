@@ -21,11 +21,15 @@ setup:
 	chmod +x ./scripts/*.sh
 
 black:
+ifeq ($(CI),true)
+	$(DOCKER_COMPOSE) exec backend pipenv run black --config=pyproject.toml --check .
+else
 	$(DOCKER_COMPOSE) exec backend pipenv run black --config=pyproject.toml .
+endif
 
 test:
 	$(DOCKER_COMPOSE) up -d backend
-	$(DOCKER_COMPOSE) exec backend pipenv run black --config=pyproject.toml --check .
+	$(MAKE) black
 	$(DOCKER_COMPOSE) exec backend python setup.py test
 	$(DOCKER_COMPOSE) down
 
