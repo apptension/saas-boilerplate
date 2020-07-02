@@ -12,6 +12,7 @@ You environment will have everything you need in a full-stack
 * Web app's frontend hosted with AWS S3 and AWS CloudFront
 * Multi-environment support (`dev`, `qa`, `stage`, `prod`, etc)
 * Continuous Deployment pipeline built with `CodePipeline`
+* Dashboard displaying a list of existing environments and deployed app versions
 
 ## General overview
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you 

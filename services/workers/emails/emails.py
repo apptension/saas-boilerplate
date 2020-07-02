@@ -12,9 +12,4 @@ class WelcomeEmailParams(EmailParams):
 def welcome_email(data):
     params = WelcomeEmailParams(**data)
 
-    return EmailConfig(
-        to=params.to,
-        subject='Welcome!',
-        template='welcome',
-        template_vars={'name': params.name},
-    )
+    return EmailConfig(to=params.to, subject='Welcome!', template='welcome', template_vars={'name': params.name},)
