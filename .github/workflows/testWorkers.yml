@@ -5,7 +5,7 @@ on:
     branches: [ '**' ]
 
 jobs:
-  test-workers:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,10 +30,12 @@ jobs:
             ${{ runner.os }}-pipenv-
 
       - shell: bash
+          run: echo "test" > VERSION
+
+      - shell: bash
         env:
           PROJECT_NAME: test
           ENV_STAGE: test
         run: |
-          echo "test" > VERSION
           make -C services/workers install
           make -C services/workers test

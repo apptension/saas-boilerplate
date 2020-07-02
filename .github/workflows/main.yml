@@ -2,14 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ '**' ]
+    branches: ['**']
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - shell: bash
   build:
     runs-on: ubuntu-latest
     steps:
