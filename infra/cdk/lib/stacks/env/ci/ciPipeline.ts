@@ -10,6 +10,7 @@ import {CiEntrypoint} from "./ciEntrypoint";
 import {BackendCiConfig} from "./ciBackend";
 import {WebappCiConfig} from "./ciWebApp";
 import {ServerlessCiConfig} from "./ciServerless";
+import {UploadVersionCiConfig} from "./ciUploadVersion";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -54,6 +55,13 @@ export class CiPipeline extends Construct {
 
         new ServerlessCiConfig(this, "WorkersConfig", {
             name: 'workers',
+            envSettings: props.envSettings,
+            buildStage,
+            deployStage,
+            inputArtifact: sourceOutputArtifact,
+        });
+
+        new UploadVersionCiConfig(this, "UploadVersionConfig", {
             envSettings: props.envSettings,
             buildStage,
             deployStage,

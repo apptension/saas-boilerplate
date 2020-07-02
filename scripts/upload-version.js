@@ -17,7 +17,7 @@ const s3 = new AWS.S3();
 const newVersion = {
     name: ENV_STAGE,
     version: CURRENT_VERSION,
-    builtAt: new Date,
+    builtAt: new Date(),
     values,
 };
 
@@ -39,7 +39,7 @@ function putJsonObject(payload) {
 s3.getObject(
     { Bucket: VERSIONS_BUCKET, Key: VERSIONS_OBJECT },
     function (error, data) {
-        if (error != null && error.statusCode == 404) {
+        if (error != null && error.statusCode === 404) {
             putJsonObject([newVersion]);
         } else {
             const versions = JSON.parse(data.Body.toString('utf-8'));
@@ -47,7 +47,7 @@ s3.getObject(
 
             let found = false;
             for (const version of versions) {
-                if (version.name == ENV_STAGE) {
+                if (version.name === ENV_STAGE) {
                     newVersions.push(newVersion);
                     found = true;
                 } else {

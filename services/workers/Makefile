@@ -16,3 +16,4 @@ build: test
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+

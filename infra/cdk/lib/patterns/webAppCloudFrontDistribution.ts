@@ -14,7 +14,7 @@ export interface WebAppCloudFrontDistributionProps {
     sources: ISource[],
     domainZone: IHostedZone;
     domainName: string;
-    apiDomainName: string;
+    apiDomainName?: string;
     certificateArn: string;
 }
 
@@ -52,13 +52,16 @@ export class WebAppCloudFrontDistribution extends Construct {
     private createCloudFrontWebDistribution(staticFilesBucket: Bucket, props: WebAppCloudFrontDistributionProps) {
         const indexFile = '/index.html';
 
+        const originConfigs = [this.createStaticFilesSourceConfig(staticFilesBucket)];
+        const apiSourceConfig = this.createApiProxySourceConfig(props);
+        if (apiSourceConfig) {
+            originConfigs.push(apiSourceConfig);
+        }
+
         return new CloudFrontWebDistribution(this, "CloudFrontWebDistribution", {
             defaultRootObject: indexFile,
             errorConfigurations: [{errorCode: 404, responseCode: 200, responsePagePath: indexFile}],
-            originConfigs: [
-                this.createStaticFilesSourceConfig(staticFilesBucket),
-                this.createApiProxySourceConfig(props),
-            ],
+            originConfigs: originConfigs,
             viewerCertificate: {
                 aliases: [props.domainName],
                 props: {
@@ -80,7 +83,11 @@ export class WebAppCloudFrontDistribution extends Construct {
         };
     }
 
-    private createApiProxySourceConfig(props: WebAppCloudFrontDistributionProps): SourceConfiguration {
+    private createApiProxySourceConfig(props: WebAppCloudFrontDistributionProps): SourceConfiguration | null {
+        if (!props.apiDomainName) {
+            return null;
+        }
+
         return {
             behaviors: [{
                 pathPattern: '/api/*',

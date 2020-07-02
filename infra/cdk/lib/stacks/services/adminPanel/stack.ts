@@ -123,6 +123,6 @@ export class AdminPanelStack extends core.Stack {
     }
 
     protected getChamberServiceName(envSettings: EnvironmentSettings) {
-        return `env-${envSettings.projectEnvName}-admin-panel`;
+        return `env-${envSettings.projectEnvName}-backend`;
     }
 }

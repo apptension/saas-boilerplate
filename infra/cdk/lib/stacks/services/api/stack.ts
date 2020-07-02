@@ -131,6 +131,6 @@ export class ApiStack extends core.Stack {
     }
 
     protected getChamberServiceName(envSettings: EnvironmentSettings) {
-        return `env-${envSettings.projectEnvName}-api`;
+        return `env-${envSettings.projectEnvName}-backend`;
     }
 }

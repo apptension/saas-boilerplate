@@ -4,7 +4,11 @@ include $(SELF_DIR)/../../base.mk
 install:
 	yarn
 
-build:
+clean:
+	rm -rf build
+
+build: export REACT_APP_VERSIONS_JSON_URL := https://$(PROJECT_NAME)-version-matrix.s3-$(AWS_DEFAULT_REGION).amazonaws.com/versions.json
+build: clean
 	yarn build
 
 deploy:

@@ -17,19 +17,13 @@ build:
 	$(AWS_VAULT) /bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
-	cd $(BASE_DIR)/infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *AdminPanelStack;
+	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
 
 deploy-api:
-	cd $(BASE_DIR)/infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *ApiStack;
+	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-api
 
 deploy-migrations:
-	cd $(BASE_DIR)/infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *MigrationsStack;
+	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations
 
 	cd $(BASE_DIR)/infra/functions;\
 	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob

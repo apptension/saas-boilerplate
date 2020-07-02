@@ -28,25 +28,24 @@ test:
 #
 
 deploy-global-infra:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *GlobalStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-infra
+
+deploy-global-tools:
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-tools
 
 deploy-infra-main:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *MainStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-main
 
 deploy-infra-ci:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *CiStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-ci
 
 deploy-infra-functions:
-	cd $(SELF_DIR)infra/functions;\
-	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+	$(MAKE) -C $(SELF_DIR)infra/functions deploy
 
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
+
+upload-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-version.js
 
 #
 # Services deployment
@@ -59,9 +58,7 @@ build:
 	$(MAKE) -C services/workers build
 
 deploy-components:
-	cd $(SELF_DIR)infra/cdk;\
-	npm run build;\
-	$(AWS_VAULT) npm run cdk deploy *ComponentsStack;
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-components
 
 deploy-stage-app: deploy-components
 	$(MAKE) -C services/backend deploy-migrations
