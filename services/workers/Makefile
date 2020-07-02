@@ -10,10 +10,15 @@ install-deploy: install
 
 test:
 	$(DOCKER_COMPOSE) up -d db
-	pipenv run python setup.py test
+	bash ./scripts/run_tests.sh
 
 build: test
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
 
+flake8:
+	pipenv run flake8
+
+black:
+	pipenv run black --config=pyproject.toml .

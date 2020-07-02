@@ -6,10 +6,7 @@ def test_send_welcome_email(mocker, ses_client):
     ses_send_email = mocker.patch.object(ses_client, 'send_email', autospec=True)
     mocker.patch('emails.sender.get_ses_client', return_value=ses_client)
 
-    event = {'detail-type': 'WelcomeEmail', 'detail': {
-        'to': 'bilbo@example.com',
-        'name': 'Bilbo Baggins',
-    }}
+    event = {'detail-type': 'WelcomeEmail', 'detail': {'to': 'bilbo@example.com', 'name': 'Bilbo Baggins'}}
     handlers.send_email(event, {})
 
     ses_send_email.assert_called_once()

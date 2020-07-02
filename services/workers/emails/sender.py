@@ -38,20 +38,10 @@ def send_email(name, data):
         response = ses_client.send_email(
             Source=settings.FROM_EMAIL,
             Message={
-                'Subject': {
-                    'Data': email_config.subject,
-                    'Charset': CHARSET,
-                },
-                'Body': {
-                    'Html': {
-                        'Data': rendered_html,
-                        'Charset': CHARSET
-                    }
-                },
+                'Subject': {'Data': email_config.subject, 'Charset': CHARSET},
+                'Body': {'Html': {'Data': rendered_html, 'Charset': CHARSET}},
             },
-            Destination={
-                'ToAddresses': [email_config.to]
-            }
+            Destination={'ToAddresses': [email_config.to]},
         )
     except ClientError as e:
         logger.error(e.response['Error']['Message'])

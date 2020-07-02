@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master, feature/version-matrix-deploy ]
+    branches: [ master, feature/workers-linters ]
 
 jobs:
   build:
