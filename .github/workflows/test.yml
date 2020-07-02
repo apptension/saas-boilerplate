@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  test-workers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - shell: bash
+        env:
+          PROJECT_NAME: test
+          ENV_STAGE: test
+        run: |
+          make -C services/workers install
+          make -C services/workers test
