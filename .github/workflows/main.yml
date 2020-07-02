@@ -1,4 +1,4 @@
-name: CI
+name: CodeCommitSync
 
 on:
   push:
