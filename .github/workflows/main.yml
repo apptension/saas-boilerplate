@@ -1,8 +1,8 @@
-name: CI
+name: CodeCommitSync
 
 on:
   push:
-    branches: [ master, feature/workers-linters ]
+    branches: ['**']
 
 jobs:
   build:

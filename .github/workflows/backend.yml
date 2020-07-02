@@ -1,0 +1,22 @@
+name: Backend
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - shell: bash
+        run: echo "test" > VERSION
+
+      - shell: bash
+        env:
+          PROJECT_NAME: test
+          ENV_STAGE: test
+        run: make -C services/backend test

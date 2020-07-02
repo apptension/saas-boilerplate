@@ -16,6 +16,20 @@
     }
   },
   "envConfig": {
+    "test": {
+      "hostedZone": {
+        "id": "testHostedZoneId",
+        "name": "testHostedZoneName"
+      },
+      "certificate": "testCertificate",
+      "cloudFrontCertificate": "testCFCertificate",
+      "domains": {
+        "adminPanel": "admin.example.com",
+        "api": "api.example.com",
+        "webApp": "app.example.com",
+        "www": "www.example.com"
+      }
+    },
     "dev": {
       "hostedZone": {
         "id": "Z00186483IY7RFDXZHUCI",

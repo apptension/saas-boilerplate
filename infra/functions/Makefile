@@ -3,8 +3,7 @@ include $(SELF_DIR)/../../base.mk
 
 
 install:
-	npm install -g serverless
 	npm install
 
 deploy:
-	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+	$(AWS_VAULT) $(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);

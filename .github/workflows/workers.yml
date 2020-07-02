@@ -1,0 +1,41 @@
+name: Workers
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v1
+      - uses: dschep/install-pipenv-action@v1
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/services/workers/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/services/workers/Pipfile') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+
+      - shell: bash
+        run: echo "test" > VERSION
+
+      - shell: bash
+        env:
+          PROJECT_NAME: test
+          ENV_STAGE: test
+        run: |
+          make -C services/workers install
+          make -C services/workers test
