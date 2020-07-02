@@ -112,6 +112,7 @@ export class WebappCiConfig extends ServiceCiConfig {
                 'cloudfront:*',
                 's3:*',
                 'ecs:*',
+                'lambda:*',
             ],
             resources: ['*'],
         }));
