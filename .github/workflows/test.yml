@@ -24,5 +24,6 @@ jobs:
           PROJECT_NAME: test
           ENV_STAGE: test
         run: |
+          echo "test" > VERSION
           make -C services/workers install
           make -C services/workers test
