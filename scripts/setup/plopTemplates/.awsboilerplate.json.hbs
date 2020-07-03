@@ -30,6 +30,20 @@
         "www": "www.example.com"
       }
     },
+    "local": {
+      "hostedZone": {
+        "id": "localHostedZoneId",
+        "name": "localHostedZoneName"
+      },
+      "certificate": "localCertificate",
+      "cloudFrontCertificate": "localCertificate",
+      "domains": {
+        "adminPanel": "admin.localhost:5000",
+        "api": "api.localhost:5000",
+        "webApp": "",
+        "www": ""
+      }
+    },
     "{{ defaultEnv }}": {
       "hostedZone": {
         "id": "{{ hostedZoneId }}",

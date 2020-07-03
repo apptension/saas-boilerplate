@@ -1,4 +1,4 @@
-stackName: "${env:PROJECT_NAME}-workers-${self:provider.stage}"
+stackName: "${env:PROJECT_NAME}-${self:provider.stage}-workers"
 
 iam:
   - Effect: 'Allow'

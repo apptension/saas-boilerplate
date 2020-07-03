@@ -46,16 +46,16 @@
     },
     "local": {
       "hostedZone": {
-        "id": "",
-        "name": ""
+        "id": "localHostedZoneId",
+        "name": "localHostedZoneName"
       },
-      "certificate": "",
-      "cloudFrontCertificate": "",
+      "certificate": "localCertificate",
+      "cloudFrontCertificate": "localCertificate",
       "domains": {
-        "adminPanel": "admin.localhost:5000",
-        "api": "api.localhost:5000",
-        "webApp": "",
-        "www": ""
+        "adminPanel": "admin.example.com",
+        "api": "api.example.com",
+        "webApp": "app.example.com",
+        "www": "www.example.com"
       }
     }
   }

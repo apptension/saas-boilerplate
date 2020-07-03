@@ -107,7 +107,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
-                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectName}-${props.name}-${props.envSettings.envStage}/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectName}-${props.envSettings.envStage}-${props.name}/*`,
             ],
         }));
 

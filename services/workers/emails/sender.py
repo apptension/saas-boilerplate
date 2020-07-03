@@ -19,44 +19,37 @@ def get_ses_client():
     return boto3.client('ses', endpoint_url=settings.LOCAL_STACK_URL)
 
 
+def send_local(email_config, rendered_html):
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    message = MIMEMultipart()
+    message["Subject"] = email_config.subject
+    message["From"] = settings.FROM_EMAIL
+    message["To"] = email_config.to
+
+    message.attach(MIMEText(rendered_html, 'plain'))
+
+    smtp_client = smtplib.SMTP(host=settings.HOSTNAME, port=1025)
+    smtp_client.send_message(message)
+
+    print("Successfully sent email")
+
+
 def send(email_config, rendered_html):
     if settings.LS_HOST:
-        import smtplib
-        from email.mime.text import MIMEText
-        from email.mime.multipart import MIMEMultipart
-
-        message = MIMEMultipart()
-        message["Subject"] = email_config.subject
-        message["From"] = settings.FROM_EMAIL
-        message["To"] = email_config.to
-
-        message.attach(MIMEText(rendered_html, 'plain'))
-
-        smtp_client = smtplib.SMTP(host=settings.HOSTNAME, port=1025)
-        smtp_client.send_message(message)
-
-        print("Successfully sent email")
-
+        send_local(email_config, rendered_html)
     else:
         ses_client = get_ses_client()
         try:
             response = ses_client.send_email(
                 Source=settings.FROM_EMAIL,
                 Message={
-                    'Subject': {
-                        'Data': email_config.subject,
-                        'Charset': CHARSET,
-                    },
-                    'Body': {
-                        'Html': {
-                            'Data': rendered_html,
-                            'Charset': CHARSET
-                        }
-                    },
+                    'Subject': {'Data': email_config.subject, 'Charset': CHARSET},
+                    'Body': {'Html': {'Data': rendered_html, 'Charset': CHARSET}},
                 },
-                Destination={
-                    'ToAddresses': [email_config.to]
-                }
+                Destination={'ToAddresses': [email_config.to]},
             )
         except ClientError as e:
             logger.error(e.response['Error']['Message'])

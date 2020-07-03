@@ -32,12 +32,17 @@ ifeq ($(CI),true)
 	AWS_VAULT =
 	VERSION := $(shell cat $(BASE_DIR)/VERSION)
 	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
+else ifeq ($(ENV_STAGE),local)
+	AWS_VAULT =
+	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
 else
 	AWS_VAULT_PROFILE := $(call GetFromCfg,aws.profile)
 	AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
 	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
 endif
+
 export VERSION
 
 ifeq ($(user),)

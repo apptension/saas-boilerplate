@@ -17,7 +17,6 @@ services:
       - "4566:4566"
     environment:
       - SERVICES=serverless,events,cloudformation,ses,secretsmanager
-      - DATA_DIR=${DATA_DIR- }
       - DEFAULT_REGION=eu-west-1
       - DEBUG=1
       - LAMBDA_EXECUTOR=docker
@@ -50,6 +49,8 @@ services:
       - AWS_SECRET_ACCESS_KEY=bar
       - AWS_DEFAULT_REGION=eu-west-1
       - PROJECT_NAME=${PROJECT_NAME}
+    stdin_open: true
+    tty: true
 
   mailcatcher:
     build: ./tools/mailcatcher
