@@ -43,11 +43,10 @@ definitions:
       image: postgres:10.6
       ports:
         - "5432:5432"
-      restart: unless-stopped
       environment:
-        - POSTGRES_USER=backend
-        - POSTGRES_PASSWORD=backend
-        - POSTGRES_DB=backend
+        POSTGRES_USER: backend
+        POSTGRES_PASSWORD: backend
+        POSTGRES_DB: backend
   caches:
     yarn: /usr/local/share/.cache/yarn
     webappnode: ./services/webapp/node_modules
