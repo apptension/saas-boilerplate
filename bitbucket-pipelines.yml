@@ -27,9 +27,10 @@ pipelines:
               - pip install pipenv --upgrade
               - echo "test" > VERSION
               - make -C services/workers install-test PROJECT_NAME=test ENV_STAGE=test
-              - make -C services/workers test PROJECT_NAME=test ENV_STAGE=test
+              - make -C services/workers test-bb-ci PROJECT_NAME=test ENV_STAGE=test
             services:
               - docker
+              - db
             caches:
               - pip
               - docker
@@ -38,6 +39,15 @@ definitions:
   services:
     docker:
       memory: 1024
+    db:
+      image: postgres:10.6
+      ports:
+        - "5432:5432"
+      restart: unless-stopped
+      environment:
+        - POSTGRES_USER=backend
+        - POSTGRES_PASSWORD=backend
+        - POSTGRES_DB=backend
   caches:
     yarn: /usr/local/share/.cache/yarn
     webappnode: ./services/webapp/node_modules

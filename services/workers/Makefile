@@ -7,13 +7,15 @@ install-node:
 install-python:
 	pipenv install --dev
 
-
 install-test: install-python
 install-build: install-node install-python
 install-deploy: install-node install-python
 
 install: install-node install-python
 	# Local machine installation rule
+
+test-bb-ci:
+	bash ./scripts/run_tests.sh
 
 test:
 	$(DOCKER_COMPOSE) up -d db
