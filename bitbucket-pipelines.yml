@@ -9,6 +9,7 @@ pipelines:
             - git remote add codecommit "$CODE_COMMIT_REPO"
             - git push -u codecommit "$CODE_COMMIT_REPO"
             - git push codecommit --tags
+
   default:
     - parallel:
         - step:
@@ -51,8 +52,6 @@ definitions:
       memory: 1024
     db:
       image: postgres:10.6
-      ports:
-        - "5432:5432"
       environment:
         POSTGRES_USER: backend
         POSTGRES_PASSWORD: backend
