@@ -1,6 +1,6 @@
 pipelines:
   branches:
-    '{*}':
+    '{**}':
       - step:
           name: Push code to CodeCommit
           clone:
