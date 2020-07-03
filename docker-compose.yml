@@ -11,6 +11,25 @@ services:
       - POSTGRES_PASSWORD=backend
       - POSTGRES_DB=backend
 
+  localstack:
+    image: localstack/localstack:0.11.3
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=serverless,events,cloudformation,ses,secretsmanager
+      - DEFAULT_REGION=eu-west-1
+      - DEBUG=1
+      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_REMOTE_DOCKER=true
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    privileged: true
+
   backend:
     build:
       context: ./services/backend
@@ -20,14 +39,18 @@ services:
       - "5000:5000"
     depends_on:
       - db
+      - localstack
       - mailcatcher
     restart: unless-stopped
     links:
       - db
     environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=eu-west-1
+      - PROJECT_NAME=${PROJECT_NAME}
+    stdin_open: true
+    tty: true
 
   mailcatcher:
     build: ./tools/mailcatcher

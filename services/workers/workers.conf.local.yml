@@ -1,0 +1,12 @@
+stackName: "${env:PROJECT_NAME}-workers"
+
+iam: []
+
+envsHello:
+  DB_CONNECTION: '{"engine":"postgres", "dbname":"backend","username":"backend","password":"backend","host":"172.17.0.1","port":5432}'
+
+
+envsSendEmail:
+  FROM_EMAIL: "from@example.com"
+
+vpcHello: []

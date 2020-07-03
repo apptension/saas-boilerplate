@@ -21,3 +21,7 @@ flake8:
 
 black:
 	pipenv run black --config=pyproject.toml .
+
+invoke-hello:
+	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f hello;
+
