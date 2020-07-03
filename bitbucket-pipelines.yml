@@ -7,7 +7,7 @@ pipelines:
             depth: full
           script:
             - git remote add codecommit "$CODE_COMMIT_REPO"
-            - git push -u codecommit "$CODE_COMMIT_REPO"
+            - git push -u codecommit "$BITBUCKET_BRANCH"
             - git push codecommit --tags
 
   default:
