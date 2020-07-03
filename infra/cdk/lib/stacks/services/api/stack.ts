@@ -26,8 +26,20 @@ export class ApiStack extends core.Stack {
     constructor(scope: core.App, id: string, props: ApiStackProps) {
         super(scope, id, props);
 
-        const {envSettings} = props;
         const resources = new FargateServiceResources(this, "ApiResources", props);
+
+        this.fargateService = this.createFargateService(resources, props);
+        const scaling = this.fargateService.service.autoScaleTaskCount({
+            maxCapacity: 5,
+        });
+
+        scaling.scaleOnCpuUtilization('CpuScaling', {
+            targetUtilizationPercent: 50,
+        });
+    }
+
+    private createFargateService(resources: FargateServiceResources, props: ApiStackProps) {
+        const {envSettings} = props;
         const taskRole = this.createTaskRole(props);
 
         const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
@@ -47,8 +59,7 @@ export class ApiStack extends core.Stack {
                 MainECSCluster.getLoadBalancerHttpsListenerArnOutputExportName(props.envSettings)),
             securityGroup: resources.publicLoadBalancerSecurityGroup,
         });
-
-        this.fargateService = new ApplicationMultipleTargetGroupsFargateService(this, "ApiService", {
+        return new ApplicationMultipleTargetGroupsFargateService(this, "ApiService", {
             securityGroup: resources.fargateContainerSecurityGroup,
             serviceName: `${props.envSettings.projectEnvName}-api`,
             cluster: resources.mainCluster,
