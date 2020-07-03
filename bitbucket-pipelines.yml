@@ -1,9 +1,19 @@
 pipelines:
+  branches:
+    '{*}':
+      - step:
+          name: Push code to CodeCommit
+          clone:
+            depth: full
+          script:
+            - git remote add codecommit "$CODE_COMMIT_REPO"
+            - git push -u codecommit "$CODE_COMMIT_REPO"
+            - git push codecommit --tags
   default:
     - parallel:
         - step:
             name: Build and test web app
-            image: node:10.15.0
+            image: node:10.15.0`
             script:
               - make -C services/webapp install
               - make -C services/webapp build
@@ -51,3 +61,6 @@ definitions:
     yarn: /usr/local/share/.cache/yarn
     webappnode: ./services/webapp/node_modules
     pipenv: ./services/webapp/node_modules
+
+
+
