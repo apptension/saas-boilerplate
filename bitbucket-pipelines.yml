@@ -14,7 +14,7 @@ pipelines:
     - parallel:
         - step:
             name: Build and test web app
-            image: node:10.15.0`
+            image: node:10.15.0
             script:
               - make -C services/webapp install
               - make -C services/webapp build
