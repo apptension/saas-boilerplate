@@ -1,17 +1,15 @@
 pipelines:
-  branches:
-    '{**}':
-      - step:
-          name: Push code to CodeCommit
-          clone:
-            depth: full
-          script:
-            - git remote add codecommit "$CODE_COMMIT_REPO"
-            - git push -u codecommit "$BITBUCKET_BRANCH"
-            - git push codecommit --tags
-
   default:
     - parallel:
+        - step:
+            name: Push code to CodeCommit
+            clone:
+              depth: full
+            script:
+              - git remote add codecommit "$CODE_COMMIT_REPO"
+              - git push -u codecommit "$BITBUCKET_BRANCH"
+              - git push codecommit --tags
+
         - step:
             name: Build and test web app
             image: node:10.15.0
@@ -21,6 +19,7 @@ pipelines:
             caches:
               - yarn
               - webappnode
+
         - step:
             name: Test backend
             image: atlassian/default-image:2
@@ -31,6 +30,7 @@ pipelines:
               - docker
             caches:
               - docker
+
         - step:
             name: Test async-workers
             image: python:3.8
