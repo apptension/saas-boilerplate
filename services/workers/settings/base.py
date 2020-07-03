@@ -8,9 +8,9 @@ env = Env()
 
 LS_HOST = env('LOCALSTACK_HOSTNAME', None)
 
-if LS_HOST:
-    LOCAL_STACK_URL = f"http://{LS_HOST}:4566" if LS_HOST else None
-    HOSTNAME = env('HOSTNAME', None)
+
+LOCAL_STACK_URL = f"http://{LS_HOST}:4566" if LS_HOST else None
+HOSTNAME = env('HOSTNAME', None)
 
 secrets_manager_client = boto3.client('secretsmanager', endpoint_url=LOCAL_STACK_URL)
 
