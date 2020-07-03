@@ -16,7 +16,7 @@ ENV PIP_NO_CACHE_DIR off
 
 RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client ca-certificates jq \
   && update-ca-certificates \
-  && pip install --no-cache-dir setuptools pipenv==2018.11.26 gunicorn \
+  && pip install --no-cache-dir setuptools pipenv==2018.11.26 gunicorn awscli \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 

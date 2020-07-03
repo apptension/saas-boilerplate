@@ -1,0 +1,26 @@
+stackName: "${env:PROJECT_NAME}-${self:provider.stage}-workers"
+
+iam:
+  - Effect: 'Allow'
+    Action:
+      - "secretsmanager:GetRandomPassword"
+      - "secretsmanager:CreateSecret"
+      - "secretsmanager:ListSecrets"
+    Resource: '*'
+  - Effect: 'Allow'
+    Action:
+      - "secretsmanager:*"
+    Resource: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn'}
+
+envsHello:
+  DB_SECRET_ARN: { Fn::ImportValue: '${self:custom.projectEnvName}-databaseSecretArn' }
+
+envsSendEmail:
+  FROM_EMAIL: ''
+
+vpcHello:
+  securityGroupIds:
+    - Fn::ImportValue: '${self:custom.projectEnvName}-lambdaSecurityGroupId'
+  subnetIds:
+    - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetOneId'
+    - Fn::ImportValue: '${self:custom.projectEnvName}-publicSubnetTwoId'
