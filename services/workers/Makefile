@@ -1,11 +1,20 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
-install:
+install-node:
 	npm install
+
+install-python:
 	pipenv install --dev
 
-install-deploy: install
+install-python-ci:
+	pipenv install --dev --system --sequential
+
+install-build: install-node install-python-ci
+install-deploy: install-node install-python-ci
+
+install: install-node install-python
+	# Local machine installation rule
 
 test:
 	$(DOCKER_COMPOSE) up -d db
