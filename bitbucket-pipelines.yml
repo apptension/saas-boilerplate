@@ -26,7 +26,7 @@ pipelines:
             script:
               - pip install pipenv --upgrade
               - echo "test" > VERSION
-              - make -C services/workers install-python-ci PROJECT_NAME=test ENV_STAGE=test
+              - make -C services/workers install-test PROJECT_NAME=test ENV_STAGE=test
               - make -C services/workers test PROJECT_NAME=test ENV_STAGE=test
             services:
               - docker

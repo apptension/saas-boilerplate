@@ -7,11 +7,10 @@ install-node:
 install-python:
 	pipenv install --dev
 
-install-python-ci:
-	pipenv install --dev --system --sequential
 
-install-build: install-node install-python-ci
-install-deploy: install-node install-python-ci
+install-test: install-python
+install-build: install-node install-python
+install-deploy: install-node install-python
 
 install: install-node install-python
 	# Local machine installation rule
