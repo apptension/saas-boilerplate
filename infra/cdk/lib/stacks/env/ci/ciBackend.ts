@@ -115,6 +115,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'iam:*',
                 'ec2:*',
                 'ecs:*',
+                'application-autoscaling:*',
             ],
             resources: ['*'],
         }));

@@ -26,7 +26,7 @@ deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations
 
 	cd $(BASE_DIR)/infra/functions;\
-	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
+	$(AWS_VAULT) node_modules/.bin/sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
 
 deploy: deploy-migrations deploy-admin-panel deploy-api
 

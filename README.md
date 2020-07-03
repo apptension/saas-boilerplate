@@ -168,8 +168,3 @@ make deploy-stage-app
 
 ## Local development
 Explain .env file
-
-
-## TODO tasks
-- add lambda layers for requirements
-- add slack notifications
