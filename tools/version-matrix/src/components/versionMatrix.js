@@ -34,9 +34,9 @@ const VersionMatrix = (props) => {
                         <ServicePair key={i}>
                             <div>
                                 {service.name}
-                            <CardSubtext>
+                                <CardSubtext>
                                     {service.builtAt}
-                            </CardSubtext>
+                                </CardSubtext>
                             </div>
 
                             <CardBadge smaller>{service.version}</CardBadge>

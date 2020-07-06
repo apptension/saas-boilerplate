@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createReducer } from '@reduxjs/toolkit';
 import { fetchVersions, fetchServices } from './actions';
 
 const INITIAL_STATE = {
@@ -6,25 +6,14 @@ const INITIAL_STATE = {
     services: {},
 }
 
-const versionsReducer = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case fetchVersions.fulfilled.toString():
-            return {
-                ...state,
-                envs: action.payload,
-            }
-        case fetchServices.fulfilled.toString():
-            return {
-                ...state,
-                services: {
-                    ...state.services,
-                    [action.meta.arg.envName]: action.payload
-                }
-            }
-        default:
-            return state;
+const versionsReducer = createReducer(INITIAL_STATE, {
+    [fetchServices.fulfilled]: (state, action) => {
+        state.services[action.meta.arg.envName] = action.payload;
+    },
+    [fetchVersions.fulfilled]: (state, action) => {
+        state.envs = action.payload;
     }
-};
+});
 
 const store = configureStore({
     reducer: {
