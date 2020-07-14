@@ -16,13 +16,23 @@
     }
   },
   "envConfig": {
+    "{{ defaultEnv }}": {
+      "hostedZone": {
+        "id": "{{ hostedZoneId }}",
+        "name": "{{ hostedZoneName }}"
+      },
+      "domains": {
+        "adminPanel": "admin.{{ defaultEnv }}.{{ appDomain }}",
+        "api": "api.{{ defaultEnv }}.{{ appDomain }}",
+        "webApp": "app.{{ defaultEnv }}.{{ appDomain }}",
+        "www": "www.{{ defaultEnv }}.{{ appDomain }}"
+      }
+    },
     "test": {
       "hostedZone": {
         "id": "testHostedZoneId",
         "name": "testHostedZoneName"
       },
-      "certificate": "testCertificate",
-      "cloudFrontCertificate": "testCFCertificate",
       "domains": {
         "adminPanel": "admin.example.com",
         "api": "api.example.com",
@@ -35,27 +45,11 @@
         "id": "localHostedZoneId",
         "name": "localHostedZoneName"
       },
-      "certificate": "localCertificate",
-      "cloudFrontCertificate": "localCertificate",
       "domains": {
         "adminPanel": "admin.localhost:5000",
         "api": "api.localhost:5000",
         "webApp": "",
         "www": ""
-      }
-    },
-    "{{ defaultEnv }}": {
-      "hostedZone": {
-        "id": "{{ hostedZoneId }}",
-        "name": "{{ hostedZoneName }}"
-      },
-      "certificate": "{{ certificate }}",
-      "cloudFrontCertificate": "{{ cloudFrontCertificate }}",
-      "domains": {
-        "adminPanel": "admin.{{ defaultEnv }}.{{ appDomain }}",
-        "api": "api.{{ defaultEnv }}.{{ appDomain }}",
-        "webApp": "app.{{ defaultEnv }}.{{ appDomain }}",
-        "www": "www.{{ defaultEnv }}.{{ appDomain }}"
       }
     }
   }

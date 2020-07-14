@@ -44,8 +44,6 @@
         "id": "localHostedZoneId",
         "name": "localHostedZoneName"
       },
-      "certificate": "localCertificate",
-      "cloudFrontCertificate": "localCertificate",
       "domains": {
         "adminPanel": "admin.example.com",
         "api": "api.example.com",
