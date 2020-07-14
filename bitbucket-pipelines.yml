@@ -2,6 +2,15 @@ pipelines:
   default:
     - parallel:
         - step:
+            name: Push code to CodeCommit
+            clone:
+              depth: full
+            script:
+              - git remote add codecommit "$CODE_COMMIT_REPO"
+              - git push -u codecommit "$BITBUCKET_BRANCH"
+              - git push codecommit --tags
+
+        - step:
             name: Build and test web app
             image: node:10.15.0
             script:
@@ -10,6 +19,7 @@ pipelines:
             caches:
               - yarn
               - webappnode
+
         - step:
             name: Test backend
             image: atlassian/default-image:2
@@ -20,16 +30,18 @@ pipelines:
               - docker
             caches:
               - docker
+
         - step:
             name: Test async-workers
             image: python:3.8
             script:
               - pip install pipenv --upgrade
               - echo "test" > VERSION
-              - make -C services/workers install PROJECT_NAME=test ENV_STAGE=test
-              - make -C services/workers test PROJECT_NAME=test ENV_STAGE=test
+              - make -C services/workers install-test PROJECT_NAME=test ENV_STAGE=test
+              - make -C services/workers test-bb-ci PROJECT_NAME=test ENV_STAGE=test
             services:
               - docker
+              - db
             caches:
               - pip
               - docker
@@ -38,7 +50,16 @@ definitions:
   services:
     docker:
       memory: 1024
+    db:
+      image: postgres:10.6
+      environment:
+        POSTGRES_USER: backend
+        POSTGRES_PASSWORD: backend
+        POSTGRES_DB: backend
   caches:
     yarn: /usr/local/share/.cache/yarn
     webappnode: ./services/webapp/node_modules
     pipenv: ./services/webapp/node_modules
+
+
+

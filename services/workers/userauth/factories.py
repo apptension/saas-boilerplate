@@ -14,7 +14,4 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda i: i)
     password = factory.Faker('pystr')
     email = factory.Faker('email')
-    username = factory.LazyAttribute(lambda o: o.email)
-    first_name = factory.LazyAttribute(lambda o: f'{o.id}-first')
-    last_name = factory.LazyAttribute(lambda o: f'{o.id}-last')
     created = factory.LazyFunction(datetime.now)

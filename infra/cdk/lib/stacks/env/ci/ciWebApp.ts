@@ -113,6 +113,7 @@ export class WebappCiConfig extends ServiceCiConfig {
                 's3:*',
                 'ecs:*',
                 'lambda:*',
+                'route53:*',
             ],
             resources: ['*'],
         }));
