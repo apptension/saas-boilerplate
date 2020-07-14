@@ -6,6 +6,7 @@ import {Source} from "@aws-cdk/aws-s3-deployment";
 import {EnvConstructProps} from "../../types";
 import {WebAppCloudFrontDistribution} from "../../patterns/webAppCloudFrontDistribution";
 import {Bucket, BucketAccessControl, HttpMethods} from "@aws-cdk/aws-s3";
+import {DnsValidatedCertificate, ICertificate} from "@aws-cdk/aws-certificatemanager";
 
 
 export interface GlobalToolsStackProps extends core.StackProps, EnvConstructProps {
@@ -22,10 +23,18 @@ export class GlobalToolsStack extends core.Stack {
             zoneName: props.envSettings.toolsHostedZone.name,
         });
 
-        this.createVersionMatrixTool(props, domainZone);
+        const domainName = props.envSettings.toolsHostedZone.name;
+        const certificate = new DnsValidatedCertificate(this, "ToolsCertificate", {
+            region: 'us-east-1',
+            domainName: domainName,
+            subjectAlternativeNames: [`*.${domainName}`],
+            hostedZone: domainZone
+        });
+
+        this.createVersionMatrixTool(props, domainZone, certificate);
     }
 
-    private createVersionMatrixTool(props: GlobalToolsStackProps, domainZone: IHostedZone) {
+    private createVersionMatrixTool(props: GlobalToolsStackProps, domainZone: IHostedZone, certificate: ICertificate) {
         new Bucket(this, "VersionMatrixBucket", {
             bucketName: `${props.envSettings.projectName}-version-matrix`,
             publicReadAccess: true,
@@ -42,7 +51,7 @@ export class GlobalToolsStack extends core.Stack {
                 sources: [Source.asset(filesPath)],
                 domainZone,
                 domainName: props.envSettings.domains.versionMatrixDomain,
-                certificateArn: props.envSettings.toolsCloudFrontCertificateArn,
+                certificateArn: certificate.certificateArn,
             });
         }
     }
