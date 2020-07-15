@@ -10,23 +10,25 @@ endef
 
 export ENV_STAGE ?= $(call GetFromCfg,defaultEnv)
 export PROJECT_NAME ?= $(call GetFromCfg,projectName)
-
 export AWS_DEFAULT_REGION ?= $(call GetFromCfg,aws.region)
 
-export HOSTED_ZONE_ID := $(call GetFromCfg,envConfig.$(ENV_STAGE).hostedZone.id)
-export HOSTED_ZONE_NAME := $(call GetFromCfg,envConfig.$(ENV_STAGE).hostedZone.name)
-export CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).certificate)
-export CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,envConfig.$(ENV_STAGE).cloudFrontCertificate)
+ENV_CONFIG_FILE ?= $(BASE_DIR)/.awsboilerplate.$(ENV_STAGE).json
 
-export TOOLS_CLOUD_FRONT_CERTIFICATE_ARN := $(call GetFromCfg,toolsConfig.cloudFrontCertificate)
+define GetFromEnvCfg
+$(shell node -p "require('$(ENV_CONFIG_FILE)').$(1)")
+endef
+
+export HOSTED_ZONE_ID := $(call GetFromEnvCfg,hostedZone.id)
+export HOSTED_ZONE_NAME := $(call GetFromEnvCfg,hostedZone.name)
+
 export TOOLS_HOSTED_ZONE_ID := $(call GetFromCfg,toolsConfig.hostedZone.id)
 export TOOLS_HOSTED_ZONE_NAME := $(call GetFromCfg,toolsConfig.hostedZone.name)
 
 export VERSION_MATRIX_DOMAIN := $(call GetFromCfg,toolsConfig.domains.versionMatrix)
-export ADMIN_PANEL_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.adminPanel)
-export API_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.api)
-export WEB_APP_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.webApp)
-export WWW_DOMAIN := $(call GetFromCfg,envConfig.$(ENV_STAGE).domains.www)
+export ADMIN_PANEL_DOMAIN := $(call GetFromEnvCfg,domains.adminPanel)
+export API_DOMAIN := $(call GetFromEnvCfg,domains.api)
+export WEB_APP_DOMAIN := $(call GetFromEnvCfg,domains.webApp)
+export WWW_DOMAIN := $(call GetFromEnvCfg,domains.www)
 
 ifeq ($(CI),true)
 	AWS_VAULT =

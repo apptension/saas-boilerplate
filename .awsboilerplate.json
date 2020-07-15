@@ -1,62 +1,17 @@
 {
-  "projectName": "aws-boilerplate",
+  "projectName": "dbt",
   "defaultEnv": "local",
   "aws": {
-    "profile": "aws-boilerplate",
+    "profile": "dbt",
     "region": "eu-west-1"
   },
   "toolsConfig": {
-    "cloudFrontCertificate": "arn:aws:acm:us-east-1:075678138205:certificate/b80a00b3-531b-4baa-9e87-51424f0ac6fc",
     "hostedZone": {
-      "id": "Z00186483IY7RFDXZHUCI",
-      "name": "apptoku.com"
+      "id": "Z1019320SEC473QW1LV2",
+      "name": "awsb.apptoku.com"
     },
     "domains": {
-      "versionMatrix": "status.awsboilerplate.apptoku.com"
-    }
-  },
-  "envConfig": {
-    "test": {
-      "hostedZone": {
-        "id": "testHostedZoneId",
-        "name": "testHostedZoneName"
-      },
-      "certificate": "testCertificate",
-      "cloudFrontCertificate": "testCFCertificate",
-      "domains": {
-        "adminPanel": "admin.example.com",
-        "api": "api.example.com",
-        "webApp": "app.example.com",
-        "www": "www.example.com"
-      }
-    },
-    "dev": {
-      "hostedZone": {
-        "id": "Z00186483IY7RFDXZHUCI",
-        "name": "apptoku.com"
-      },
-      "certificate": "arn:aws:acm:eu-west-1:075678138205:certificate/70bed90f-cd5a-48b6-a900-60aac69ac274",
-      "cloudFrontCertificate": "arn:aws:acm:us-east-1:075678138205:certificate/9e3df42d-6101-43bb-85a5-be6c7c28fb44",
-      "domains": {
-        "adminPanel": "admin.awsboilerplate.dev.apptoku.com",
-        "api": "api.awsboilerplate.dev.apptoku.com",
-        "webApp": "app.awsboilerplate.dev.apptoku.com",
-        "www": "www.awsboilerplate.dev.apptoku.com"
-      }
-    },
-    "local": {
-      "hostedZone": {
-        "id": "localHostedZoneId",
-        "name": "localHostedZoneName"
-      },
-      "certificate": "localCertificate",
-      "cloudFrontCertificate": "localCertificate",
-      "domains": {
-        "adminPanel": "admin.example.com",
-        "api": "api.example.com",
-        "webApp": "app.example.com",
-        "www": "www.example.com"
-      }
+      "versionMatrix": "status.awsb.apptoku.com"
     }
   }
 }

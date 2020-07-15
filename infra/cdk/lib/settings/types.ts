@@ -15,9 +15,6 @@ declare global {
             WEB_APP_DOMAIN: string;
             WWW_DOMAIN: string;
             VERSION_MATRIX_DOMAIN: string;
-            CERTIFICATE_ARN: string;
-            CLOUD_FRONT_CERTIFICATE_ARN: string;
-            TOOLS_CLOUD_FRONT_CERTIFICATE_ARN: string;
             TOOLS_HOSTED_ZONE_ID: string;
             TOOLS_HOSTED_ZONE_NAME: string;
         }

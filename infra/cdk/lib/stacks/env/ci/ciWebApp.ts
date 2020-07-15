@@ -96,12 +96,10 @@ export class WebappCiConfig extends ServiceCiConfig {
             effect: Effect.ALLOW,
             actions: [
                 'cloudformation:*',
-                'route53:*'
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-WebAppStack/*`,
-                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
             ],
         }));
 
@@ -113,7 +111,7 @@ export class WebappCiConfig extends ServiceCiConfig {
                 's3:*',
                 'ecs:*',
                 'lambda:*',
-                'route53:*',
+                'route53:*'
             ],
             resources: ['*'],
         }));
