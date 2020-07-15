@@ -1,0 +1,12 @@
+{
+  "hostedZone": {
+    "id": "testHostedZoneId",
+    "name": "testHostedZoneName"
+  },
+  "domains": {
+    "adminPanel": "admin.example.com",
+    "api": "api.example.com",
+    "webApp": "app.example.com",
+    "www": "www.example.com"
+  }
+}

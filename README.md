@@ -64,6 +64,8 @@ my-app
 │   └── workers
 ├── README.md
 ├── .awsboilerplate.json
+├── .awsboilerplate.local.json
+├── .awsboilerplate.test.json
 ├── base.mk
 ├── docker-compose.ci.yml
 ├── docker-compose.override.yml
@@ -90,18 +92,6 @@ Values to save:
 * `id` of the hosted zone
 * `name` of the hosted zone
 
-#### Create a certificate in your app's primary region
-This certificate will be used by Application Load Balancer.
-
-Values to save:
-* `arn` of the certificate
-
-#### Create a certificate in us-east-1 (N. Virginia)
-This certificate will be used by CloudFront.
-
-Values to save:
-* `arn` of the certificate
-
 #### Create an [aws-vault](https://github.com/99designs/aws-vault) profile
 This profile will be used by Make when running any commands that communicate with AWS platform.
 
@@ -122,6 +112,13 @@ sh ./setup.sh
 ```
 
 This script will install all possible package dependencies.
+
+### Create an environment
+Each environment needs a hosted zone. You can reuse the same hosted zone for all environments if you want.
+
+```shell script
+make create-env
+```
 
 ## Deploy the app to AWS
 
@@ -164,6 +161,3 @@ make build
 ```shell script
 make deploy-stage-app
 ```
-
-## Local development
-Explain .env file

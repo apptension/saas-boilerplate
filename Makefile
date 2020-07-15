@@ -17,6 +17,9 @@ setup-docker:
 
 setup: install setup-infra setup-docker
 
+create-env:
+	cd scripts/setup && plop createEnv
+
 test:
 	# here it is useful to add your own customised tests
 	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend sh -c '\

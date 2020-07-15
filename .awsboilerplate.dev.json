@@ -1,0 +1,12 @@
+{
+  "hostedZone": {
+    "id": "Z1019320SEC473QW1LV2",
+    "name": "awsb.apptoku.com"
+  },
+  "domains": {
+    "adminPanel": "admin.dev.awsb.apptoku.com",
+    "api": "api.dev.awsb.apptoku.com",
+    "webApp": "app.dev.awsb.apptoku.com",
+    "www": "www.dev.awsb.apptoku.com"
+  }
+}
