@@ -25,6 +25,7 @@ build: test
 
 deploy:
 	$(AWS_VAULT) $(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(MAKE) upload-service-version SERVICE_NAME=workers
 
 flake8:
 	pipenv run flake8

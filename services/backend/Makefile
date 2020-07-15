@@ -18,9 +18,11 @@ build:
 
 deploy-admin-panel:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
+	$(MAKE) upload-service-version SERVICE_NAME=admin-panel
 
 deploy-api:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-api
+	$(MAKE) upload-service-version SERVICE_NAME=api
 
 deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations

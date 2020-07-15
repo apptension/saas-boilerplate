@@ -97,3 +97,6 @@ clean:
 prune:
 	# clean all that is not actively used
 	docker system prune -af
+
+upload-service-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME)
