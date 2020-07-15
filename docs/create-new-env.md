@@ -34,21 +34,3 @@ This command will deploy
 * Main CDK stack
 * CI CDK stack
 * Helper functions
-
-## Configure SSM parameters
-
-* env-${projectEnvName}-backend/DJANGO_DEBUG
-* env-${projectEnvName}-backend/DJANGO_SECRET_KEY
-* env-${projectEnvName}-backend/HASHID_FIELD_SALT
-
-where `projectEnvName` is a normalized name of your project suffixed with environment name (e.g. `my-app-dev`)
-
-## Build app components
-```shell script
-make build
-```
-
-## Deploy app components
-```shell script
-make deploy-stage-app
-```
