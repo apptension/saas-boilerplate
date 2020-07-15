@@ -149,10 +149,9 @@ This command will deploy
 
 ##### Configure SSM parameters
 
-* env-${projectEnvName}-admin-panel/DJANGO_DEBUG
-* env-${projectEnvName}-admin-panel/DJANGO_SECRET
-* env-${projectEnvName}-api/DJANGO_DEBUG
-* env-${projectEnvName}-api/DJANGO_SECRET
+* env-${projectEnvName}-backend/DJANGO_DEBUG
+* env-${projectEnvName}-backend/DJANGO_SECRET_KEY
+* env-${projectEnvName}-backend/HASHID_FIELD_SALT
 
 where `projectEnvName` is a normalized name of your project suffixed with environment name (e.g. `my-app-dev`)
 
