@@ -49,4 +49,37 @@ module.exports = function (plop) {
       templateFile: 'plopTemplates/.awsboilerplate.json.hbs'
     }]
   });
+
+  plop.setGenerator('createEnv', {
+    description: 'Create new environment',
+    prompts: [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Environment name',
+        default: 'dev',
+      },
+      {
+        type: 'input',
+        name: 'hostedZoneId',
+        message: 'Hosted zone Id',
+      },
+      {
+        type: 'input',
+        name: 'hostedZoneName',
+        message: 'Hosted zone name',
+      },
+      {
+        type: 'input',
+        name: 'domain',
+        message: 'Domain name',
+        default: ({ name, hostedZoneName }) => `${name}.${hostedZoneName}`,
+      }
+    ],
+    actions: [{
+      type: 'add',
+      path: '../../.awsboilerplate.{{name}}.json',
+      templateFile: 'plopTemplates/.awsboilerplate.env.json.hbs'
+    }]
+  });
 };

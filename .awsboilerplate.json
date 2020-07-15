@@ -13,43 +13,5 @@
     "domains": {
       "versionMatrix": "status.awsb.apptoku.com"
     }
-  },
-  "envConfig": {
-    "dev": {
-      "hostedZone": {
-        "id": "Z1019320SEC473QW1LV2",
-        "name": "awsb.apptoku.com"
-      },
-      "domains": {
-        "adminPanel": "admin.dev.awsb.apptoku.com",
-        "api": "api.dev.awsb.apptoku.com",
-        "webApp": "app.dev.awsb.apptoku.com",
-        "www": "www.dev.awsb.apptoku.com"
-      }
-    },
-    "test": {
-      "hostedZone": {
-        "id": "testHostedZoneId",
-        "name": "testHostedZoneName"
-      },
-      "domains": {
-        "adminPanel": "admin.example.com",
-        "api": "api.example.com",
-        "webApp": "app.example.com",
-        "www": "www.example.com"
-      }
-    },
-    "local": {
-      "hostedZone": {
-        "id": "localHostedZoneId",
-        "name": "localHostedZoneName"
-      },
-      "domains": {
-        "adminPanel": "admin.example.com",
-        "api": "api.example.com",
-        "webApp": "app.example.com",
-        "www": "www.example.com"
-      }
-    }
   }
 }
