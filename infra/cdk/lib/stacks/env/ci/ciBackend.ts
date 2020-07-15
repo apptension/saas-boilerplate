@@ -100,12 +100,10 @@ export class BackendCiConfig extends ServiceCiConfig {
             effect: Effect.ALLOW,
             actions: [
                 'cloudformation:*',
-                'route53:*'
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ApiStack/*`,
-                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
             ],
         }));
 
@@ -117,6 +115,8 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'ecs:*',
                 'application-autoscaling:*',
                 'logs:*',
+                'elasticloadbalancing:*',
+                'route53:*',
             ],
             resources: ['*'],
         }));
@@ -145,13 +145,11 @@ export class BackendCiConfig extends ServiceCiConfig {
         project.addToRolePolicy(new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
-                'cloudformation:*',
-                'route53:*'
+                'cloudformation:*'
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-AdminPanelStack/*`,
-                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
             ],
         }));
 
@@ -162,6 +160,8 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'ec2:*',
                 'ecs:*',
                 'logs:*',
+                'elasticloadbalancing:*',
+                'route53:*',
             ],
             resources: ['*'],
         }));
@@ -191,12 +191,10 @@ export class BackendCiConfig extends ServiceCiConfig {
             effect: Effect.ALLOW,
             actions: [
                 'cloudformation:*',
-                'route53:*',
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-MigrationsStack/*`,
-                `arn:aws:route53:::hostedzone/${props.envSettings.hostedZone.id}`,
             ],
         }));
 
@@ -209,6 +207,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'states:*',
                 'lambda:*',
                 'logs:*',
+                'route53:*',
             ],
             resources: ['*'],
         }));
