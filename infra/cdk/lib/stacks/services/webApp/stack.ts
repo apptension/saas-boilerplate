@@ -1,10 +1,12 @@
 import * as fs from 'fs';
 import * as core from '@aws-cdk/core';
+import {Fn} from '@aws-cdk/core';
 import {PublicHostedZone} from "@aws-cdk/aws-route53";
 import {Source} from "@aws-cdk/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../../types";
 import {WebAppCloudFrontDistribution} from "../../../patterns/webAppCloudFrontDistribution";
+import {MainCertificates} from "../../env/main/mainCertificates";
 
 
 export interface WebAppStackProps extends core.StackProps, EnvConstructProps {
@@ -30,7 +32,8 @@ export class WebAppStack extends core.Stack {
                 domainZone,
                 domainName: props.envSettings.domains.webApp,
                 apiDomainName: props.envSettings.domains.api,
-                certificateArn: props.envSettings.cloudFrontCertificateArn,
+                certificateArn: Fn.importValue(
+                    MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)),
             });
         }
     }

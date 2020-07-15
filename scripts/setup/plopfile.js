@@ -41,17 +41,7 @@ module.exports = function (plop) {
         name: 'appDomain',
         message: 'App domain',
         default: ({ hostedZoneName }) => hostedZoneName,
-      },
-      {
-        type: 'input',
-        name: 'certificate',
-        message: 'Certificate ARN',
-      },
-      {
-        type: 'input',
-        name: 'cloudFrontCertificate',
-        message: 'CloudFront Certificate ARN',
-      },
+      }
     ],
     actions: [{
       type: 'add',
