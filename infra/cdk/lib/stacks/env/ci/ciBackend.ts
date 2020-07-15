@@ -87,6 +87,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 phases: {
                     pre_build: {commands: ['make -C services/backend install-deploy']},
                     build: {commands: ['make -C services/backend deploy-api']},
+                    post_build: {commands: ['make upload-service-version SERVICE_NAME=api']}
                 },
                 cache: {
                     paths: [...this.defaultCachePaths],
@@ -133,6 +134,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 phases: {
                     pre_build: {commands: ['make -C services/backend install-deploy']},
                     build: {commands: ['make -C services/backend deploy-admin-panel']},
+                    post_build: {commands: ['make upload-service-version SERVICE_NAME=admin-panel']}
                 },
                 cache: {
                     paths: [...this.defaultCachePaths],

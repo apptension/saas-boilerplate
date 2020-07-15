@@ -48,7 +48,10 @@ deploy-infra-functions:
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 upload-version:
-	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-version.js
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-version.js api,workers,web-app,admin-panel
+
+upload-service-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME)
 
 #
 # Services deployment

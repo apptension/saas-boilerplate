@@ -84,6 +84,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                     install: {"runtime-versions": {"python": "3.8"}},
                     pre_build: {commands: [`make -C services/${props.name} install-deploy`]},
                     build: {commands: [`make -C services/${props.name} deploy`]},
+                    post_build: {commands: [`make upload-service-version SERVICE_NAME=${props.name}`]}
                 },
                 cache: {
                     paths: [

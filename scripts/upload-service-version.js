@@ -4,9 +4,10 @@ const AWS = require('aws-sdk');
 
 const ENV_STAGE = process.env.ENV_STAGE;
 const PROJECT_NAME = process.env.PROJECT_NAME;
+const CURRENT_VERSION = process.env.VERSION;
 const VERSIONS_BUCKET = `${PROJECT_NAME}-version-matrix`;
 
-const [serviceName, serviceVersion, ...valuesArgv] = process.argv.slice(2);
+const [serviceName, ...valuesArgv] = process.argv.slice(2);
 
 const values = valuesArgv.reduce((values, arg) => {
     const [label, value] = arg.split('=');
@@ -33,7 +34,7 @@ function putJsonObject(bucket, key, payload) {
 
 putJsonObject(VERSIONS_BUCKET, `${ENV_STAGE}-${serviceName}.json`, {
     name: serviceName,
-    version: serviceVersion,
+    version: CURRENT_VERSION,
     builtAt: new Date(),
     values,
 });
