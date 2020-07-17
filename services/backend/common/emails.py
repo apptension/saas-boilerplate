@@ -1,6 +1,10 @@
+import importlib
 from dataclasses import dataclass, asdict
 
-from .tasks import Task
+from django.conf import settings
+
+module_name, package = settings.TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
+Task = getattr(importlib.import_module(module_name), package)
 
 
 @dataclass
