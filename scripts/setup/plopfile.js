@@ -6,7 +6,7 @@ module.exports = function (plop) {
       {
         type: 'input',
         name: 'projectName',
-        message: 'Project name',
+        message: 'Project name, recommended 3 (max 4) characters',
       },
       {
         type: 'input',
