@@ -4,7 +4,7 @@ include $(SELF_DIR)/../../base.mk
 install:
 	pipenv install --dev
 
-install-deploy: install-infra-cdk install-infra-functions
+install-deploy: install-infra-cdk install-infra-functions install-scripts
 
 setup:
 	chmod +x ./scripts/*.sh

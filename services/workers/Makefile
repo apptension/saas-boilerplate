@@ -9,7 +9,7 @@ install-python:
 
 install-test: install-python
 install-build: install-node install-python
-install-deploy: install-node install-python
+install-deploy: install-node install-python install-scripts
 
 install: install-node install-python
 	# Local machine installation rule

@@ -4,7 +4,7 @@ include $(SELF_DIR)/../../base.mk
 install:
 	@echo "install"
 
-install-deploy: install-infra-cdk
+install-deploy: install-infra-cdk install-scripts
 
 test:
 	@echo "test"
