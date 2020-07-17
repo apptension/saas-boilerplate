@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchVersions } from '../actions';
-import { Card, CardContainer, CardHeader, CardKey, CardPair, CardBadge, CardSubtext, Divider, ServicePair } from '../styles';
+import { Card, CardContainer, CardHeader, CardKey, CardPair, CardBadge, CardService, Divider } from '../styles';
 
 const VersionMatrix = (props) => {
     const dispatch = useDispatch();
@@ -31,21 +31,29 @@ const VersionMatrix = (props) => {
                     <Divider>Built at {builtAt}</Divider>
 
                     {versions.services[name] && versions.services[name].map((service, i) => (
-                        <ServicePair key={i}>
+                        <CardService key={i}>
                             <div>
-                                {service.name}
-                                <CardSubtext>
-                                    {service.builtAt}
-                                </CardSubtext>
+                                <strong>{service.name}</strong>
                             </div>
 
-                            <CardBadge smaller>{service.version}</CardBadge>
-                        </ServicePair>
+                            <CardBadge smaller dark={service.version == version}>
+                                {service.version}
+                            </CardBadge>
+
+                            <div>
+                                {service.builtAt}
+                            </div>
+                        </CardService>
                     ))}
+
+                    <Divider />
 
                     {values.map((value, i) => (
                         <CardPair key={i}>
-                            <CardKey>{value.label}</CardKey> {renderValue(value)}
+                            <CardKey>{value.label}</CardKey>
+                            <div style={{ textAlign: 'right' }}>
+                                {renderValue(value)}
+                            </div>
                         </CardPair>
                     ))}
                 </Card>

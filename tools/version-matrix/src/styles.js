@@ -40,10 +40,8 @@ export const CardKey = styled.span`
 `;
 
 export const CardBadge = styled.div`
-    background: #1165f1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: ${props => props.dark ? '#95A3A6' : '#1165f1'};
+    text-align: center;
     font-size: ${props => props.smaller ? "1.1rem" : "1.5rem"};
     color: #fff;
     padding: 5px;
@@ -59,7 +57,14 @@ export const Divider = styled(CardSubtext)`
     margin: 12px 0 12px;
 `;
 
-export const ServicePair = styled(CardPair)`
+export const CardService = styled.div`
+    display: flex;
+    flex-direction: column;
     border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+
+    & > div {
+        margin-bottom: 5px;
+    }
 `;
