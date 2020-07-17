@@ -69,7 +69,6 @@ version:
 	@echo $(VERSION)
 
 install-infra-cdk:
-	npm install -g aws-cdk@1.41.0
 	$(MAKE) -C $(BASE_DIR)/infra/cdk install
 
 install-infra-functions:
@@ -97,3 +96,6 @@ clean:
 prune:
 	# clean all that is not actively used
 	docker system prune -af
+
+upload-service-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME)

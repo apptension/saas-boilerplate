@@ -1,16 +1,24 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { configureStore, createReducer } from '@reduxjs/toolkit';
+import { fetchVersions, fetchServices } from './actions';
 
-const rootReducer = (state = [], action) => {
-    if (action.type === 'VERSIONS_RECEIVED') {
-        return action.versions;
-    }
-
-    return state;
+const INITIAL_STATE = {
+    envs: [],
+    services: {},
 }
 
-const store = createStore(combineReducers({
-    versions: rootReducer
-}), applyMiddleware(thunk));
+const versionsReducer = createReducer(INITIAL_STATE, {
+    [fetchServices.fulfilled]: (state, action) => {
+        state.services[action.meta.arg.envName] = action.payload;
+    },
+    [fetchVersions.fulfilled]: (state, action) => {
+        state.envs = action.payload;
+    }
+});
+
+const store = configureStore({
+    reducer: {
+        versions: versionsReducer
+    },
+})
 
 export default store;

@@ -4,7 +4,7 @@ include $(SELF_DIR)/../../base.mk
 install:
 	pipenv install --dev
 
-install-deploy: install-infra-cdk install-infra-functions
+install-deploy: install-infra-cdk install-infra-functions install-scripts
 
 setup:
 	chmod +x ./scripts/*.sh
@@ -18,9 +18,11 @@ build:
 
 deploy-admin-panel:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
+	$(MAKE) upload-service-version SERVICE_NAME=admin-panel
 
 deploy-api:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-api
+	$(MAKE) upload-service-version SERVICE_NAME=api
 
 deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations

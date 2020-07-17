@@ -86,7 +86,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 version: '0.2',
                 phases: {
                     pre_build: {commands: ['make -C services/backend install-deploy']},
-                    build: {commands: ['make -C services/backend deploy-api']},
+                    build: {commands: ['make -C services/backend deploy-api']}
                 },
                 cache: {
                     paths: [...this.defaultCachePaths],
@@ -117,6 +117,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'logs:*',
                 'elasticloadbalancing:*',
                 'route53:*',
+                's3:*',
             ],
             resources: ['*'],
         }));
@@ -132,7 +133,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 version: '0.2',
                 phases: {
                     pre_build: {commands: ['make -C services/backend install-deploy']},
-                    build: {commands: ['make -C services/backend deploy-admin-panel']},
+                    build: {commands: ['make -C services/backend deploy-admin-panel']}
                 },
                 cache: {
                     paths: [...this.defaultCachePaths],
@@ -162,6 +163,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'logs:*',
                 'elasticloadbalancing:*',
                 'route53:*',
+                's3:*',
             ],
             resources: ['*'],
         }));

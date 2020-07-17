@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const AWS = require('aws-sdk');
 
 const ENV_STAGE = process.env.ENV_STAGE;
@@ -6,11 +8,15 @@ const PROJECT_NAME = process.env.PROJECT_NAME;
 const VERSIONS_BUCKET = `${PROJECT_NAME}-version-matrix`;
 const VERSIONS_OBJECT = 'versions.json';
 
-const values = process.argv.slice(2).reduce((values, arg) => {
+const [servicesArgv, ...valuesArgv] = process.argv.slice(2);
+
+const values = valuesArgv.reduce((values, arg) => {
     const [label, value] = arg.split('=');
 
     return [...values, { label, value }];
 }, []);
+
+const services = servicesArgv.split(',');
 
 const s3 = new AWS.S3();
 
@@ -18,6 +24,7 @@ const newVersion = {
     name: ENV_STAGE,
     version: CURRENT_VERSION,
     builtAt: new Date(),
+    services,
     values,
 };
 

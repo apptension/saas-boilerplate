@@ -15,7 +15,7 @@ export const Card = styled.div`
     border-radius: 5px;
     transition: all .3s ease-in-out;
     box-sizing: border-box;
-    width: 290px;
+    width: 340px;
 
     &:hover {
         box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
@@ -25,23 +25,41 @@ export const Card = styled.div`
 
 export const CardHeader = styled.h2`
     text-align: center;
-    margin: 10px 0 10px;
+    margin: 0 0 10px;
 `;
 
 export const CardPair = styled.div`
     margin: 0 0 0.5rem;
+    display: flex;
+    justify-content: space-between;
 `;
 
 export const CardKey = styled.span`
     font-weight: bolder;
+    margin-right: 5px;
 `;
 
-export const CardStripe = styled.div`
+export const CardBadge = styled.div`
     background: #1165f1;
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: ${props => props.smaller ? "1.1rem" : "1.5rem"};
     color: #fff;
-    padding: 5px 0 5px;
-    margin: 0 0 10px;
-    text-align: center;
+    padding: 5px;
     border-radius: 5px;
+`;
+
+export const CardSubtext = styled.div`
+    font-size: 0.9rem;
+    text-align: center;
+`;
+
+export const Divider = styled(CardSubtext)`
+    margin: 12px 0 12px;
+`;
+
+export const ServicePair = styled(CardPair)`
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
 `;
