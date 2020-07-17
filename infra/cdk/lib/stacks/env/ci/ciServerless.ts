@@ -54,6 +54,8 @@ export class ServerlessCiConfig extends ServiceCiConfig {
                 artifacts: {
                     files: [
                         '*',
+                        'infra/**/*',
+                        'scripts/**/*',
                         `services/${props.name}/**/*`,
                     ],
                 },

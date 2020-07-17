@@ -117,6 +117,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'logs:*',
                 'elasticloadbalancing:*',
                 'route53:*',
+                's3:*',
             ],
             resources: ['*'],
         }));
@@ -162,6 +163,7 @@ export class BackendCiConfig extends ServiceCiConfig {
                 'logs:*',
                 'elasticloadbalancing:*',
                 'route53:*',
+                's3:*',
             ],
             resources: ['*'],
         }));

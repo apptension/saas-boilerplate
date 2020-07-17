@@ -7,7 +7,7 @@ install:
 clean:
 	rm -rf build
 
-build: export REACT_APP_VERSIONS_JSON_URL := https://$(PROJECT_NAME)-version-matrix.s3-$(AWS_DEFAULT_REGION).amazonaws.com/versions.json
+build: export REACT_APP_VERSIONS_BASE_URL := https://$(PROJECT_NAME)-version-matrix.s3-$(AWS_DEFAULT_REGION).amazonaws.com
 build: clean
 	yarn build
 
