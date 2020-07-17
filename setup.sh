@@ -4,7 +4,7 @@ set -e
 
 BACKEND_DIR=services/backend
 
-rm ".awsboilerplate.json"
+rm -f ".awsboilerplate.json"
 cd scripts
 npm install
 
@@ -16,4 +16,4 @@ cd ../../
 cp ${BACKEND_DIR}/.env.example ${BACKEND_DIR}/.env
 
 make setup
-rm setup.sh
+rm -f setup.sh
