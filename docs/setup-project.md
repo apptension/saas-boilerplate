@@ -46,7 +46,7 @@ my-app
 
 ### Run setup
 You will be asked about resources created during [Initial setup](#initial-setup), but you can input some dummy values 
-first and later change them in `.awsboilerplate.json` configuration file.
+first and later change them [^1] in `.awsboilerplate.json` configuration file.
 
 ```shell script
 sh ./setup.sh
@@ -54,3 +54,10 @@ sh ./setup.sh
 
 This script will install all possible package dependencies.
 
+#### Run CDK bootstrap [^1]
+
+```shell script
+make setup-infra
+```
+
+[^1]: Can be omitted during setup of local environment.
