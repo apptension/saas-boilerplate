@@ -11,16 +11,23 @@ class Task:
         self.source = source
         self.event_bus_name = event_bus_name
 
+    def get_entries(self, data: dict):
+        return [
+            {
+                'Time': datetime.now(),
+                'Source': self.source,
+                'DetailType': self.name,
+                'Detail': json.dumps({"type": self.name, **data}),
+                'EventBusName': self.event_bus_name,
+            },
+        ]
+
     def apply(self, data: dict):
         client = boto3.client('events', endpoint_url=settings.AWS_EVENTS_URL)
-        client.put_events(
-            Entries=[
-                {
-                    'Time': datetime.now(),
-                    'Source': self.source,
-                    'DetailType': self.name,
-                    'Detail': json.dumps({"type": self.name, **data}),
-                    'EventBusName': self.event_bus_name,
-                },
-            ]
-        )
+        client.put_events(Entries=self.get_entries(data))
+
+
+class TaskPrinter(Task):
+    def apply(self, data: dict):
+        entries = self.get_entries(data)
+        print(f"Put events: {entries=}")
