@@ -42,6 +42,7 @@ build:
 
 deploy:
 	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+	$(MAKE) upload-service-version SERVICE_NAME=<CHANGE_ME>;
 ```
 
 ## Configure CI/CD steps

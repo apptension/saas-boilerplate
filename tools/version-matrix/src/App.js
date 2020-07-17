@@ -1,5 +1,5 @@
 import React from 'react';
-import Versions from './Versions';
+import VersionMatrix from './components/versionMatrix';
 import styled, { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
@@ -25,7 +25,7 @@ function App() {
       <GlobalStyles />
 
       <Container>
-        <Versions />
+        <VersionMatrix />
       </Container>
     </div>
   );

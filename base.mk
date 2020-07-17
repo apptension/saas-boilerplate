@@ -63,13 +63,17 @@ CMD_ARGUMENTS ?= $(cmd)
 export HOST_USER
 export HOST_UID
 
+# As specified in
+# https://www.gnu.org/software/make/manual/html_node/Choosing-the-Shell.html,
+# the variable SHELL is never set from the environment.
+# As such, default shell of the user has to be get the other way.
+USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
 
 version:
 	@echo $(VERSION)
 
 install-infra-cdk:
-	npm install -g aws-cdk@1.41.0
 	$(MAKE) -C $(BASE_DIR)/infra/cdk install
 
 install-infra-functions:
@@ -78,8 +82,12 @@ install-infra-functions:
 install-scripts:
 	$(MAKE) -C $(BASE_DIR)/scripts install
 
+# Run shell with pre-configured environment.
+shell:
+	$(USER_SHELL)
+
 aws-shell:
-	$(AWS_VAULT) $(SHELL)
+	$(AWS_VAULT) $(USER_SHELL)
 
 up:
 	$(DOCKER_COMPOSE) up --build --force-recreate
@@ -97,3 +105,6 @@ clean:
 prune:
 	# clean all that is not actively used
 	docker system prune -af
+
+upload-service-version:
+	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME)

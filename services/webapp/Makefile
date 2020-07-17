@@ -4,7 +4,7 @@ include $(SELF_DIR)/../../base.mk
 install:
 	@echo "install"
 
-install-deploy: install-infra-cdk
+install-deploy: install-infra-cdk install-scripts
 
 test:
 	@echo "test"
@@ -15,3 +15,4 @@ build: test
 
 deploy:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-webapp
+	$(MAKE) upload-service-version SERVICE_NAME=webapp

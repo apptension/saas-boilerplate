@@ -9,7 +9,7 @@ install-python:
 
 install-test: install-python
 install-build: install-node install-python
-install-deploy: install-node install-python
+install-deploy: install-node install-python install-scripts
 
 install: install-node install-python
 	# Local machine installation rule
@@ -25,6 +25,7 @@ build: test
 
 deploy:
 	$(AWS_VAULT) $(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(MAKE) upload-service-version SERVICE_NAME=workers
 
 flake8:
 	pipenv run flake8

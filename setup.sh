@@ -2,16 +2,16 @@
 
 set -e
 
-CONFIG_FILENAME=.awsboilerplate.json
 BACKEND_DIR=services/backend
 
-rm -f "${CONFIG_FILENAME}"
-npm install -g plop
-cd scripts/setup
-plop config
+rm -f ".awsboilerplate.json"
+cd scripts
+npm install
+
+cd setup
+node ../node_modules/.bin/plop config
 
 cd ../../
-git add "${CONFIG_FILENAME}"
 
 cp ${BACKEND_DIR}/.env.example ${BACKEND_DIR}/.env
 

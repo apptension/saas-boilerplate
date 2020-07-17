@@ -25,22 +25,6 @@ module.exports = function (plop) {
         name: 'defaultEnv',
         message: 'Default Env',
         default: 'dev',
-      },
-      {
-        type: 'input',
-        name: 'hostedZoneId',
-        message: 'Hosted zone Id',
-      },
-      {
-        type: 'input',
-        name: 'hostedZoneName',
-        message: 'Hosted zone name',
-      },
-      {
-        type: 'input',
-        name: 'appDomain',
-        message: 'App domain',
-        default: ({ hostedZoneName }) => hostedZoneName,
       }
     ],
     actions: [{
