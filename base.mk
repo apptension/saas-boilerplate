@@ -63,6 +63,11 @@ CMD_ARGUMENTS ?= $(cmd)
 export HOST_USER
 export HOST_UID
 
+# As specified in
+# https://www.gnu.org/software/make/manual/html_node/Choosing-the-Shell.html,
+# the variable SHELL is never set from the environment.
+# As such, default shell of the user has to be get the other way.
+USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
 
 version:
@@ -78,8 +83,12 @@ install-infra-functions:
 install-scripts:
 	$(MAKE) -C $(BASE_DIR)/scripts install
 
+# Run shell with pre-configured environment.
+shell:
+	$(USER_SHELL)
+
 aws-shell:
-	$(AWS_VAULT) $(SHELL)
+	$(AWS_VAULT) $(USER_SHELL)
 
 up:
 	$(DOCKER_COMPOSE) up --build --force-recreate
