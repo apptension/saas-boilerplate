@@ -60,4 +60,5 @@ This script will install all possible package dependencies.
 make setup-infra
 ```
 
+---
 [^1]: Can be omitted during setup of local environment.
