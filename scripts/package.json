@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.708.0"
+    "aws-cdk": "^1.51.0",
+    "aws-sdk": "^2.708.0",
+    "plop": "^2.7.1"
   }
 }
