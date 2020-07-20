@@ -30,6 +30,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         props.deployStage.addAction(this.createDeployAction({
             project: deployProject,
             input: buildArtifact,
+            runOrder: 2,
         }, props));
     }
 

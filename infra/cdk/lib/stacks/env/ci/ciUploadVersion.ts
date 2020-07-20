@@ -21,6 +21,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         props.deployStage.addAction(this.createDeployAction({
             project: deployProject,
             input: props.inputArtifact,
+            runOrder: 3,
         }, props));
     }
 
@@ -28,7 +29,6 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
             actionName: `${props.envSettings.projectEnvName}-upload-version`,
-            runOrder: 2,
         });
     }
 

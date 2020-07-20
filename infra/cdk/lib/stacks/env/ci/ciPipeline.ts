@@ -11,6 +11,7 @@ import {BackendCiConfig} from "./ciBackend";
 import {WebappCiConfig} from "./ciWebApp";
 import {ServerlessCiConfig} from "./ciServerless";
 import {UploadVersionCiConfig} from "./ciUploadVersion";
+import {ComponentsCiConfig} from "./ciComponents";
 
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -37,6 +38,13 @@ export class CiPipeline extends Construct {
         const sourceOutputArtifact = CiPipeline.getSourceOutputArtifact(props.envSettings);
         const buildStage = this.selectStage(this.buildStageName, pipeline);
         const deployStage = this.selectStage(this.deployStageName, pipeline);
+
+        new ComponentsCiConfig(this, "ComponentsConfig", {
+            buildStage,
+            deployStage,
+            envSettings: props.envSettings,
+            inputArtifact: sourceOutputArtifact,
+        });
 
         new BackendCiConfig(this, "BackendConfig", {
             buildStage,
