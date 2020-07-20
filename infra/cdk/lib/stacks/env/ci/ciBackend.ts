@@ -27,16 +27,19 @@ export class BackendCiConfig extends ServiceCiConfig {
         const apiDeployProject = this.createApiDeployProject(props);
         props.deployStage.addAction(this.createDeployAction('api', {
             project: apiDeployProject,
+            runOrder: 2,
         }, props));
 
         const adminPanelDeployProject = this.createAdminPanelDeployProject(props);
         props.deployStage.addAction(this.createDeployAction('admin', {
             project: adminPanelDeployProject,
+            runOrder: 2,
         }, props));
 
         const migrationsDeployProject = this.createMigrationsDeployProject(props);
         props.deployStage.addAction(this.createDeployAction('migrations', {
             project: migrationsDeployProject,
+            runOrder: 2,
         }, props));
     }
 
