@@ -15,7 +15,7 @@ setup-infra:
 setup-docker:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
 
-setup: install setup-infra setup-docker
+setup: install setup-docker
 
 create-env:
 	cd scripts/setup && plop createEnv
