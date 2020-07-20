@@ -10,7 +10,7 @@ install: install-infra-cdk install-infra-functions
 
 setup-infra:
 	chmod +x ./scripts/*.sh
-	$(AWS_VAULT) scripts/cdk-bootstrap.sh
+	scripts/cdk-bootstrap.sh
 
 setup-docker:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
@@ -48,7 +48,7 @@ deploy-infra-functions:
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 upload-version:
-	$(AWS_VAULT) node $(BASE_DIR)/scripts/upload-version.js api,workers,webapp,admin-panel
+	node $(BASE_DIR)/scripts/upload-version.js api,workers,webapp,admin-panel
 
 
 #
@@ -57,7 +57,7 @@ upload-version:
 
 build:
 	@echo Build version: $(VERSION)
-	$(AWS_VAULT) $(MAKE) -C services/backend build
+	$(MAKE) -C services/backend build
 	$(MAKE) -C services/webapp build
 	$(MAKE) -C services/workers build
 

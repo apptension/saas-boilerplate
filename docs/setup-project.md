@@ -54,8 +54,12 @@ sh ./setup.sh
 
 This script will install all possible package dependencies.
 
-#### Run CDK bootstrap [^1]
+#### Switch to AWS context using aws-vault [^1]
+```shell script
+make aws-vault
+```
 
+#### Run CDK bootstrap [^1]
 ```shell script
 make setup-infra
 ```

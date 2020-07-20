@@ -6,4 +6,4 @@ install:
 	npm install
 
 deploy:
-	$(AWS_VAULT) $(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
