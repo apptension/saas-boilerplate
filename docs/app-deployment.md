@@ -1,5 +1,10 @@
 # Deploy the app to AWS
 
+## Switch to AWS context using aws-vault
+```shell script
+make aws-vault
+```
+
 ## Deploy infrastructure of the environment
 
 ```shell script

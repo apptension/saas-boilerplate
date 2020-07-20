@@ -6,40 +6,40 @@ install:
 
 deploy-global-infra:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *GlobalStack;
+	npm run cdk deploy *GlobalStack;
 
 deploy-global-tools:
 	$(MAKE) -C $(BASE_DIR)/tools/version-matrix install
 	$(MAKE) -C $(BASE_DIR)/tools/version-matrix build
 
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *GlobalToolsStack;
+	npm run cdk deploy *GlobalToolsStack;
 
 deploy-infra-main:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *MainStack;
+	npm run cdk deploy *MainStack;
 
 deploy-infra-ci:
 	pwd;
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *CiStack;
+	npm run cdk deploy *CiStack;
 
 deploy-components:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *ComponentsStack;
+	npm run cdk deploy *ComponentsStack;
 
 deploy-admin-panel:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *AdminPanelStack;
+	npm run cdk deploy *AdminPanelStack;
 
 deploy-api:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *ApiStack;
+	npm run cdk deploy *ApiStack;
 
 deploy-migrations:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *MigrationsStack;
+	npm run cdk deploy *MigrationsStack;
 
 deploy-webapp:
 	npm run build;
-	$(AWS_VAULT) npm run cdk deploy *WebAppStack;
+	npm run cdk deploy *WebAppStack;

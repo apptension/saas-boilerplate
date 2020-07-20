@@ -14,7 +14,7 @@ test:
 
 build:
 	$(MAKE) test
-	$(AWS_VAULT) /bin/sh ./scripts/build.sh
+	/bin/sh ./scripts/build.sh
 
 deploy-admin-panel:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
@@ -28,7 +28,7 @@ deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations
 
 	cd $(BASE_DIR)/infra/functions;\
-	$(AWS_VAULT) node_modules/.bin/sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
+	node_modules/.bin/sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
 
 deploy: deploy-migrations deploy-admin-panel deploy-api
 

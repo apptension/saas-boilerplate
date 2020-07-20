@@ -41,7 +41,7 @@ build:
 	@echo "Test <CHANGE_ME>"
 
 deploy:
-	$(AWS_VAULT) sls deploy --stage $(ENV_STAGE);
+	sls deploy --stage $(ENV_STAGE);
 	$(MAKE) upload-service-version SERVICE_NAME=<CHANGE_ME>;
 ```
 

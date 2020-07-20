@@ -24,7 +24,7 @@ test:
 build: test
 
 deploy:
-	$(AWS_VAULT) $(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
 	$(MAKE) upload-service-version SERVICE_NAME=workers
 
 flake8:
@@ -34,5 +34,5 @@ black:
 	pipenv run black --config=pyproject.toml .
 
 invoke-hello:
-	$(AWS_VAULT) sls invoke --stage $(ENV_STAGE) -f hello;
+	sls invoke --stage $(ENV_STAGE) -f hello;
 
