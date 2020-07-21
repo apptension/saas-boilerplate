@@ -7,6 +7,7 @@ import {EnvConstructProps} from "../../types";
 import {WebAppCloudFrontDistribution} from "../../patterns/webAppCloudFrontDistribution";
 import {Bucket, BucketAccessControl, HttpMethods} from "@aws-cdk/aws-s3";
 import {DnsValidatedCertificate, ICertificate} from "@aws-cdk/aws-certificatemanager";
+import {UsEastResourcesStack} from "../usEastResources";
 
 
 export interface GlobalToolsStackProps extends core.StackProps, EnvConstructProps {
@@ -52,6 +53,7 @@ export class GlobalToolsStack extends core.Stack {
                 domainZone,
                 domainName: props.envSettings.domains.versionMatrixDomain,
                 certificateArn: certificate.certificateArn,
+                authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
             });
         }
     }

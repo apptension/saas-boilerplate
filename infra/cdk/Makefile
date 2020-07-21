@@ -7,6 +7,7 @@ install:
 deploy-global-infra:
 	npm run build;
 	npm run cdk deploy *GlobalStack;
+	npm run cdk deploy *UsEastResourcesStack;
 
 deploy-global-tools:
 	$(MAKE) -C $(BASE_DIR)/tools/version-matrix install

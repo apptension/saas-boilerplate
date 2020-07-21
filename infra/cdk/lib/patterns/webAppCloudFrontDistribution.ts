@@ -1,14 +1,19 @@
 import {Construct, Duration} from "@aws-cdk/core";
 import {Bucket} from '@aws-cdk/aws-s3';
+import * as lambda from '@aws-cdk/aws-lambda';
+import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from '@aws-cdk/custom-resources';
 import {
     CloudFrontAllowedMethods,
     CloudFrontWebDistribution,
+    LambdaEdgeEventType,
     OriginProtocolPolicy,
     SourceConfiguration
 } from '@aws-cdk/aws-cloudfront';
 import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
 import {BucketDeployment, CacheControl, ISource} from "@aws-cdk/aws-s3-deployment";
+import {LambdaFunctionAssociation} from "@aws-cdk/aws-cloudfront/lib/web_distribution";
+
 
 export interface WebAppCloudFrontDistributionProps {
     sources: ISource[],
@@ -16,6 +21,7 @@ export interface WebAppCloudFrontDistributionProps {
     domainName: string;
     apiDomainName?: string;
     certificateArn: string;
+    authLambdaSSMParameterName?: string;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
@@ -52,7 +58,7 @@ export class WebAppCloudFrontDistribution extends Construct {
     private createCloudFrontWebDistribution(staticFilesBucket: Bucket, props: WebAppCloudFrontDistributionProps) {
         const indexFile = '/index.html';
 
-        const originConfigs = [this.createStaticFilesSourceConfig(staticFilesBucket)];
+        const originConfigs = [this.createStaticFilesSourceConfig(staticFilesBucket, props)];
         const apiSourceConfig = this.createApiProxySourceConfig(props);
         if (apiSourceConfig) {
             originConfigs.push(apiSourceConfig);
@@ -72,9 +78,40 @@ export class WebAppCloudFrontDistribution extends Construct {
         });
     }
 
-    private createStaticFilesSourceConfig(staticFilesBucket: Bucket): SourceConfiguration {
+
+    private createStaticFilesSourceConfig(staticFilesBucket: Bucket, props: WebAppCloudFrontDistributionProps): SourceConfiguration {
+        const lambdaFunctionAssociations: LambdaFunctionAssociation[] = [];
+
+        if (props.authLambdaSSMParameterName) {
+            const authLambdaParam = new AwsCustomResource(
+                this,
+                "GetParameter",
+                {
+                    policy: AwsCustomResourcePolicy.fromSdkCalls({
+                        resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+                    }),
+                    onUpdate: {
+                        action: 'getParameter',
+                        parameters: {Name: props.authLambdaSSMParameterName},
+                        region: 'us-east-1',
+                        service: 'SSM',
+                        physicalResourceId: PhysicalResourceId.of(Date.now().toString()),
+                    }
+                }
+            )
+
+            lambdaFunctionAssociations.push({
+                eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+                lambdaFunction: lambda.Version.fromVersionArn(this, "AuthLambdaFunction",
+                    authLambdaParam.getResponseField("Parameter.Value"))
+            });
+        }
+
         return {
-            behaviors: [{isDefaultBehavior: true}],
+            behaviors: [{
+                isDefaultBehavior: true,
+                lambdaFunctionAssociations,
+            }],
             originPath: '',
             customOriginSource: {
                 domainName: staticFilesBucket.bucketWebsiteDomainName,

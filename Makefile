@@ -3,7 +3,7 @@ include $(SELF_DIR)/base.mk
 
 .PHONY: shell help build rebuild service login test clean prune version
 
-install: install-infra-cdk install-infra-functions
+install: install-infra-cdk install-infra-functions install-scripts
 	$(MAKE) -C $(SELF_DIR)/services/backend install
 	$(MAKE) -C $(SELF_DIR)/services/workers install
 	$(MAKE) -C $(SELF_DIR)/services/webapp install
@@ -44,6 +44,7 @@ deploy-infra-ci:
 
 deploy-infra-functions:
 	$(MAKE) -C $(SELF_DIR)infra/functions deploy
+
 
 deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
