@@ -21,7 +21,8 @@ export interface WebAppCloudFrontDistributionProps {
     domainName: string;
     apiDomainName?: string;
     certificateArn: string;
-    authLambdaSSMParameterName?: string;
+    basicAuth?: string;
+    authLambdaSSMParameterName: string;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
@@ -34,7 +35,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
         this.distribution = this.createCloudFrontWebDistribution(staticFilesBucket, props);
         this.createDnsRecord(this.distribution, props);
-        this.createDeployment(staticFilesBucket, this.distribution, props);
+        // this.createDeployment(staticFilesBucket, this.distribution, props);
     }
 
     private createDeployment(staticFilesBucket: Bucket, distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
@@ -81,8 +82,9 @@ export class WebAppCloudFrontDistribution extends Construct {
 
     private createStaticFilesSourceConfig(staticFilesBucket: Bucket, props: WebAppCloudFrontDistributionProps): SourceConfiguration {
         const lambdaFunctionAssociations: LambdaFunctionAssociation[] = [];
+        const originHeaders: { [key: string]: string } = {};
 
-        if (props.authLambdaSSMParameterName) {
+        if (props.basicAuth) {
             const authLambdaParam = new AwsCustomResource(
                 this,
                 "GetParameter",
@@ -101,22 +103,28 @@ export class WebAppCloudFrontDistribution extends Construct {
             )
 
             lambdaFunctionAssociations.push({
-                eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+                eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
                 lambdaFunction: lambda.Version.fromVersionArn(this, "AuthLambdaFunction",
                     authLambdaParam.getResponseField("Parameter.Value"))
             });
+            originHeaders['X-Auth-String'] = new Buffer(props.basicAuth).toString('base64')
         }
 
         return {
             behaviors: [{
-                isDefaultBehavior: true,
                 lambdaFunctionAssociations,
+                isDefaultBehavior: true,
+                forwardedValues: {
+                    headers: ['Authorization', 'CloudFront-Viewer-Country'],
+                    queryString: true,
+                }
             }],
             originPath: '',
             customOriginSource: {
                 domainName: staticFilesBucket.bucketWebsiteDomainName,
                 originProtocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
             },
+            originHeaders,
         };
     }
 

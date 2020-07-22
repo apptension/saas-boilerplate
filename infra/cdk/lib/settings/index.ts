@@ -14,6 +14,7 @@ export interface EnvironmentSettingsHostedZone {
 }
 
 export interface EnvironmentSettings {
+    appBasicAuth: string;
     projectRootDir: string;
     projectName: string;
     projectEnvName: string;
@@ -33,6 +34,7 @@ export function loadEnvSettings(): EnvironmentSettings {
     }
 
     return {
+        appBasicAuth: process.env.APP_BASIC_AUTH,
         projectRootDir: process.env.PROJECT_ROOT_DIR,
         projectName: projectName,
         projectEnvName: `${projectName}-${envStage}`,

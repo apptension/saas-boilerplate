@@ -29,6 +29,7 @@ export ADMIN_PANEL_DOMAIN := $(call GetFromEnvCfg,domains.adminPanel)
 export API_DOMAIN := $(call GetFromEnvCfg,domains.api)
 export WEB_APP_DOMAIN := $(call GetFromEnvCfg,domains.webApp)
 export WWW_DOMAIN := $(call GetFromEnvCfg,domains.www)
+export APP_BASIC_AUTH := $(call GetFromEnvCfg,basicAuth)
 
 AWS_VAULT_PROFILE ?= $(call GetFromCfg,aws.profile)
 AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
