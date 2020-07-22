@@ -35,7 +35,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
         this.distribution = this.createCloudFrontWebDistribution(staticFilesBucket, props);
         this.createDnsRecord(this.distribution, props);
-        // this.createDeployment(staticFilesBucket, this.distribution, props);
+        this.createDeployment(staticFilesBucket, this.distribution, props);
     }
 
     private createDeployment(staticFilesBucket: Bucket, distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
