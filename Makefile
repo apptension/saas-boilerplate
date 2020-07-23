@@ -36,21 +36,11 @@ deploy-global-infra:
 deploy-global-tools:
 	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-tools
 
-deploy-infra-main:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-main
-
-deploy-infra-ci:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-infra-ci
-
-deploy-infra-functions:
-	$(MAKE) -C $(SELF_DIR)infra/functions deploy
-
-
-deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
+deploy-stage-infra:
+	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-stage-infra
 
 upload-version:
 	node $(BASE_DIR)/scripts/upload-version.js api,workers,webapp,admin-panel
-
 
 #
 # Services deployment

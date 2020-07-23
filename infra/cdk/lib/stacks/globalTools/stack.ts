@@ -54,7 +54,7 @@ export class GlobalToolsStack extends core.Stack {
                 domainName: props.envSettings.domains.versionMatrixDomain,
                 certificateArn: certificate.certificateArn,
                 authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
-                basicAuth: props.envSettings.appBasicAuth,
+                basicAuth: props.envSettings.toolsBasicAuth,
             });
         }
     }

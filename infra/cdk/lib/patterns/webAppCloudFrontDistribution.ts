@@ -21,7 +21,7 @@ export interface WebAppCloudFrontDistributionProps {
     domainName: string;
     apiDomainName?: string;
     certificateArn: string;
-    basicAuth?: string;
+    basicAuth?: string | null;
     authLambdaSSMParameterName: string;
 }
 

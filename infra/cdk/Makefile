@@ -21,9 +21,10 @@ deploy-infra-main:
 	npm run cdk deploy *MainStack;
 
 deploy-infra-ci:
-	pwd;
 	npm run build;
 	npm run cdk deploy *CiStack;
+
+deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 deploy-components:
 	npm run build;

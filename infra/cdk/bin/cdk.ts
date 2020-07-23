@@ -37,5 +37,3 @@ new AdminPanelStack(app, getStackName('AdminPanelStack', envSettings.projectEnvN
 new ApiStack(app, getStackName('ApiStack', envSettings.projectEnvName), {envSettings});
 new MigrationsStack(app, getStackName('MigrationsStack', envSettings.projectEnvName), {envSettings});
 new WebAppStack(app, getStackName('WebAppStack', envSettings.projectEnvName), {envSettings});
-
-app.synth();

@@ -30,6 +30,7 @@ export API_DOMAIN := $(call GetFromEnvCfg,domains.api)
 export WEB_APP_DOMAIN := $(call GetFromEnvCfg,domains.webApp)
 export WWW_DOMAIN := $(call GetFromEnvCfg,domains.www)
 export APP_BASIC_AUTH := $(call GetFromEnvCfg,basicAuth)
+export TOOLS_BASIC_AUTH := $(call GetFromCfg,toolsConfig.basicAuth)
 
 AWS_VAULT_PROFILE ?= $(call GetFromCfg,aws.profile)
 AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
@@ -104,4 +105,4 @@ prune:
 	docker system prune -af
 
 upload-service-version:
-	node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME)
+	node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME) $(SERVICE_PARAMS)
