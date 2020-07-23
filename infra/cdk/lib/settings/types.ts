@@ -17,6 +17,8 @@ declare global {
             VERSION_MATRIX_DOMAIN: string;
             TOOLS_HOSTED_ZONE_ID: string;
             TOOLS_HOSTED_ZONE_NAME: string;
+            APP_BASIC_AUTH: string;
+            TOOLS_BASIC_AUTH: string;
         }
     }
 }

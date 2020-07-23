@@ -3,6 +3,7 @@
     "id": "Z1019320SEC473QW1LV2",
     "name": "awsb.apptoku.com"
   },
+  "basicAuth": "awsb:awsb",
   "domains": {
     "adminPanel": "admin.dev.awsb.apptoku.com",
     "api": "api.dev.awsb.apptoku.com",

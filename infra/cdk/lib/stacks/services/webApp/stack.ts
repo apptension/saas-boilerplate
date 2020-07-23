@@ -7,6 +7,7 @@ import {Source} from "@aws-cdk/aws-s3-deployment";
 import {EnvConstructProps} from "../../../types";
 import {WebAppCloudFrontDistribution} from "../../../patterns/webAppCloudFrontDistribution";
 import {MainCertificates} from "../../env/main/mainCertificates";
+import {UsEastResourcesStack} from "../../usEastResources";
 
 
 export interface WebAppStackProps extends core.StackProps, EnvConstructProps {
@@ -34,6 +35,8 @@ export class WebAppStack extends core.Stack {
                 apiDomainName: props.envSettings.domains.api,
                 certificateArn: Fn.importValue(
                     MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)),
+                authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
+                basicAuth: props.envSettings.appBasicAuth,
             });
         }
     }

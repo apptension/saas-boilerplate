@@ -18,11 +18,11 @@ build:
 
 deploy-admin-panel:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
-	$(MAKE) upload-service-version SERVICE_NAME=admin-panel
+	$(MAKE) upload-service-version SERVICE_NAME=admin-panel SERVICE_PARAMS="url=https://$(ADMIN_PANEL_DOMAIN)"
 
 deploy-api:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-api
-	$(MAKE) upload-service-version SERVICE_NAME=api
+	$(MAKE) upload-service-version SERVICE_NAME=api SERVICE_PARAMS="url=https://$(API_DOMAIN)"
 
 deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations

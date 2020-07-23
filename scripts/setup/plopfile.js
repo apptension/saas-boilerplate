@@ -25,7 +25,13 @@ module.exports = function (plop) {
         name: 'defaultEnv',
         message: 'Default Env',
         default: 'dev',
-      }
+      },
+      {
+        type: 'input',
+        name: 'toolsPassword',
+        message: 'Tools basic auth password',
+        default: () => Math.random().toString(36).substring(7),
+      },
     ],
     actions: [{
       type: 'add',
@@ -58,7 +64,13 @@ module.exports = function (plop) {
         name: 'domain',
         message: 'Domain name',
         default: ({ name, hostedZoneName }) => `${name}.${hostedZoneName}`,
-      }
+      },
+      {
+        type: 'input',
+        name: 'basicAuthPass',
+        message: 'Basic auth password',
+        default: () => Math.random().toString(36).substring(7)
+      },
     ],
     actions: [{
       type: 'add',

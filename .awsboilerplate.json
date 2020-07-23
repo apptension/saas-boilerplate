@@ -6,6 +6,7 @@
     "region": "eu-west-1"
   },
   "toolsConfig": {
+    "basicAuth": "awsb:awsb",
     "hostedZone": {
       "id": "Z1019320SEC473QW1LV2",
       "name": "awsb.apptoku.com"

@@ -14,14 +14,28 @@ export interface EnvironmentSettingsHostedZone {
 }
 
 export interface EnvironmentSettings {
+    appBasicAuth: string | null;
     projectRootDir: string;
     projectName: string;
     projectEnvName: string;
     envStage: string;
     version: string;
     hostedZone: EnvironmentSettingsHostedZone;
+    toolsBasicAuth: string | null;
     toolsHostedZone: EnvironmentSettingsHostedZone;
     domains: EnvironmentSettingsDomains;
+}
+
+const parseValue = (value: string) => {
+    if (value === 'undefined') {
+        return null;
+    }
+
+    if (typeof value === 'undefined') {
+        return null;
+    }
+
+    return value;
 }
 
 export function loadEnvSettings(): EnvironmentSettings {
@@ -33,6 +47,7 @@ export function loadEnvSettings(): EnvironmentSettings {
     }
 
     return {
+        appBasicAuth: parseValue(process.env.APP_BASIC_AUTH),
         projectRootDir: process.env.PROJECT_ROOT_DIR,
         projectName: projectName,
         projectEnvName: `${projectName}-${envStage}`,
@@ -42,6 +57,7 @@ export function loadEnvSettings(): EnvironmentSettings {
             id: process.env.HOSTED_ZONE_ID,
             name: process.env.HOSTED_ZONE_NAME,
         },
+        toolsBasicAuth: parseValue(process.env.TOOLS_BASIC_AUTH),
         toolsHostedZone: {
             id: process.env.TOOLS_HOSTED_ZONE_ID,
             name: process.env.TOOLS_HOSTED_ZONE_NAME,

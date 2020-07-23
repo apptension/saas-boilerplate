@@ -7,6 +7,7 @@ install:
 deploy-global-infra:
 	npm run build;
 	npm run cdk deploy *GlobalStack;
+	npm run cdk deploy *UsEastResourcesStack;
 
 deploy-global-tools:
 	$(MAKE) -C $(BASE_DIR)/tools/version-matrix install
@@ -20,9 +21,10 @@ deploy-infra-main:
 	npm run cdk deploy *MainStack;
 
 deploy-infra-ci:
-	pwd;
 	npm run build;
 	npm run cdk deploy *CiStack;
+
+deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 deploy-components:
 	npm run build;

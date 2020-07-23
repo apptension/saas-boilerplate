@@ -23,6 +23,7 @@
   "dependencies": {
     "@aws-cdk/aws-cloudfront": "1.41.0",
     "@aws-cdk/aws-codecommit": "1.41.0",
+    "@aws-cdk/custom-resources": "1.41.0",
     "@aws-cdk/aws-events": "1.41.0",
     "@aws-cdk/aws-events-targets": "1.41.0",
     "@aws-cdk/aws-codebuild": "1.41.0",
@@ -33,6 +34,7 @@
     "@aws-cdk/aws-elasticloadbalancingv2": "1.41.0",
     "@aws-cdk/aws-iam": "1.41.0",
     "@aws-cdk/aws-secretsmanager": "1.41.0",
+    "@aws-cdk/aws-ssm": "1.41.0",
     "@aws-cdk/aws-stepfunctions-tasks": "1.41.0",
     "@aws-cdk/aws-stepfunctions": "1.41.0",
     "@aws-cdk/aws-rds": "1.41.0",
