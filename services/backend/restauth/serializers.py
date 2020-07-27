@@ -111,7 +111,7 @@ class PasswordResetSerializer(serializers.Serializer):
             raise exceptions.NotFound(_("User not found"))
 
         utils.user_notification_impl(
-            "password_reset", token=tokens.password_reset_token.make_token(user),
+            "password_reset", user=user, token=tokens.password_reset_token.make_token(user),
         )
 
         return user
