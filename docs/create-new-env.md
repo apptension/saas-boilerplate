@@ -15,11 +15,11 @@ This command will create following file named `.awsboilerplate.<ENV_STAGE_NAME>.
     "id": "<HOSTED_ZONE_ID>",
     "name": "<HOSTED_ZONE_NAME>"
   },
+  "basicAuth": "admin:<BASIC_AUTH_PASS>",
   "domains": {
     "adminPanel": "admin.<DOMAIN_NAME>",
     "api": "api.<DOMAIN_NAME>",
     "webApp": "app.<DOMAIN_NAME>",
-    "www": "www.<DOMAIN_NAME>"
   }
 }
 ```

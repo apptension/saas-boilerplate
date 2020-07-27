@@ -2,6 +2,8 @@ PWD ?= pwd_unknown
 BASE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 export PROJECT_ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+export SERVICES_DIR := $(BASE_DIR)services
+
 CONFIG_FILE ?= $(BASE_DIR)/.awsboilerplate.json
 
 define GetFromCfg
