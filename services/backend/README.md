@@ -1,6 +1,23 @@
 # 🍔 django-restauth
 
-[![Build Status](https://travis-ci.org/apptension/django-restauth.svg?branch=master)](https://travis-ci.org/apptension/django-restauth)
+## Make rules
+
+### `make install`
+Runs installation of all required project dependencies.
+
+### `make install-deploy`
+This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact.
+This rule should most likely stay unchanged unless you know what you're doing!
+
+### `make test`
+Runs tests and linters inside docker container.
+
+### `make build`
+Builds docker images used by the backend and pushes them to AWS ECR repository.
+Make sure you're logged into the AWS using `make aws-vault` command.
+
+### `make deploy`
+This rule deploys admin-panel, api, and migrations stacks.
 
 ## Running
 
@@ -55,3 +72,4 @@ HASHID_FIELD_SALT = ''
 - [x] Ability to set user notification implementation
 - [x] Health check endpoint with DB migrations validation
 - [x] Two separate hosts, api & admin using django-hosts
+

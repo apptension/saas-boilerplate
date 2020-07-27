@@ -4,9 +4,7 @@ include $(SELF_DIR)/base.mk
 .PHONY: shell help build rebuild service login test clean prune version
 
 install: install-infra-cdk install-infra-functions install-scripts
-	$(MAKE) -C $(SELF_DIR)/services/backend install
-	$(MAKE) -C $(SELF_DIR)/services/workers install
-	$(MAKE) -C $(SELF_DIR)/services/webapp install
+	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) install;)
 
 setup-infra:
 	chmod +x ./scripts/*.sh
@@ -19,12 +17,6 @@ setup: install setup-docker
 
 create-env:
 	cd scripts/setup && plop createEnv
-
-test:
-	# here it is useful to add your own customised tests
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) run --rm backend sh -c '\
-		echo "I am `whoami`. My uid is `id -u`." && echo "Docker runs!"' \
-	&& echo success
 
 #
 # Infrastructure deployment
@@ -48,16 +40,11 @@ upload-version:
 
 build:
 	@echo Build version: $(VERSION)
-	$(MAKE) -C services/backend build
-	$(MAKE) -C services/webapp build
-	$(MAKE) -C services/workers build
+	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) build;)
 
 deploy-components:
 	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-components
 
 deploy-stage-app: deploy-components
-	$(MAKE) -C services/backend deploy-migrations
-	$(MAKE) -C services/backend deploy-admin-panel
-	$(MAKE) -C services/backend deploy-api
-	$(MAKE) -C services/workers deploy
-	$(MAKE) -C services/webapp deploy
+	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) deploy;)
+

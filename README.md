@@ -33,5 +33,20 @@ which you can extend or change however you like:
 - [ ] Next you need to [create a new environment](/docs/create-new-env.md)
 - [ ] And finally you can [deploy the app to your environment](/docs/app-deployment.md)
 
-# Services
-- [Creating a new Serverless service](/docs/services/create-new-serverless-service.md)
+# Services reference
+The boilerplate contains a number of typical services that are ready to be deployed to AWS.
+Each of them resides in the `services` directory and has to contain a `Makefile`. Do not change the names of the rules
+that are defined in Makefiles unless you know what you're doing. Most of them are used in CodeBuild jobs in your CI 
+pipeline.
+
+
+- [Web App](/services/webapp) – Single page application
+- [Backend](/services/backend) – Contains three services:
+    * API backend
+    * Admin Panel
+    * Migrations
+- [Async Workers](/services/workers) – Serverless Framework
+
+
+# Misc
+- [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
