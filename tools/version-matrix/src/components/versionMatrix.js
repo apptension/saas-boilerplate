@@ -1,22 +1,15 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchVersions } from '../actions';
-import { Card, CardContainer, CardHeader, CardKey, CardPair, CardBadge, CardService, Divider } from '../styles';
+import { Card, CardBadge, CardContainer, CardHeader, CardService, Divider } from '../styles';
+import ValueList from './valueList';
 
 const VersionMatrix = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchVersions());
-    }, [dispatch]);
-
-    const renderValue = (value) => {
-        if (Boolean(['http://', 'https://'].some(protocol => value.value.startsWith(protocol)))) {
-            return <a href={value.value} target="_blank" rel="noopener noreferrer">Open</a>;
-        } else {
-            return value.value;
-        }
-    };
+    }, [dispatch]); 
 
     const versions = useSelector(state => state.versions);
 
@@ -36,26 +29,18 @@ const VersionMatrix = (props) => {
                                 <strong>{service.name}</strong>
                             </div>
 
-                            <CardBadge smaller dark={service.version == version}>
+                            <CardBadge smaller dark={service.version === version}>
                                 {service.version}
                             </CardBadge>
 
-                            <div>
-                                {service.builtAt}
-                            </div>
+                            <div>{service.builtAt}</div>
+                            
+                            <ValueList items={service.values} />
                         </CardService>
                     ))}
 
                     <Divider />
-
-                    {values.map((value, i) => (
-                        <CardPair key={i}>
-                            <CardKey>{value.label}</CardKey>
-                            <div style={{ textAlign: 'right' }}>
-                                {renderValue(value)}
-                            </div>
-                        </CardPair>
-                    ))}
+                    <ValueList items={values} />
                 </Card>
             ))}
         </CardContainer>
