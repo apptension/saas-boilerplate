@@ -29,7 +29,6 @@ export const CardHeader = styled.h2`
 `;
 
 export const CardPair = styled.div`
-    margin: 0 0 0.5rem;
     display: flex;
     justify-content: space-between;
 `;
@@ -67,4 +66,10 @@ export const CardService = styled.div`
     & > div {
         margin-bottom: 5px;
     }
+`;
+
+export const Panel = styled.div`
+    padding: 5px 10px;
+    background: #f4f4f4;
+    border-radius: 5px;
 `;
