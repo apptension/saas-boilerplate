@@ -46,6 +46,10 @@ export function loadEnvSettings(): EnvironmentSettings {
         throw new Error('Environmental variable ENV_STAGE is undefined!')
     }
 
+    if (['local', 'test'].includes(envStage)) {
+        throw new Error(`ENV_STAGE environment variable cannot be set to '${envStage}'`)
+    }
+
     return {
         appBasicAuth: parseValue(process.env.APP_BASIC_AUTH),
         projectRootDir: process.env.PROJECT_ROOT_DIR,
