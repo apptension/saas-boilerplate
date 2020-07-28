@@ -27,7 +27,7 @@ Make sure you include the `base.mk` file so that all environment variables are c
 * `build` – Build the Serverless package
 * `deploy` – Deploy the Serverless package
 
-```shell script
+```shell
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
@@ -63,7 +63,7 @@ private configureEnv(pipeline: Pipeline, props: CiPipelineProps) {
 ```
 
 Update CI pipeline
-```shell script
+```shell
 make deploy-infra-ci
 ```
 
@@ -83,6 +83,6 @@ deploy-stage-app:
 ```
 
 Deploy the app
-```shell script
+```shell
 make deploy-stage-app
 ```

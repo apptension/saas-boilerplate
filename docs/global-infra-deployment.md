@@ -2,11 +2,11 @@
 This command will deploy [Global infrastructure](/docs/infrastructure-components.md#global-infrastructure) CDK stack
 
 ## Switch to AWS context using aws-vault
-```shell script
+```shell
 make aws-vault
 ```
 
 ## Deploy CDK Stack
-```shell script
+```shell
 make deploy-global-infra
 ```

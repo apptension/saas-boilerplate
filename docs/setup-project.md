@@ -48,19 +48,19 @@ my-app
 You will be asked about resources created during [Initial setup](#initial-setup), but you can input some dummy values 
 first and later change them [^1] in `.awsboilerplate.json` configuration file.
 
-```shell script
+```shell
 sh ./setup.sh
 ```
 
 This script will install all possible package dependencies.
 
 #### Switch to AWS context using aws-vault [^1]
-```shell script
+```shell
 make aws-vault
 ```
 
 #### Run CDK bootstrap [^1]
-```shell script
+```shell
 make setup-infra
 ```
 
