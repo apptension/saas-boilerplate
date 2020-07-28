@@ -9,7 +9,7 @@ import {PublicHostedZone} from "@aws-cdk/aws-route53";
 import {EnvConstructProps} from "../../../types";
 import {ApplicationMultipleTargetGroupsFargateService} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
 import {MainKmsKey} from "../../env/main/mainKmsKey";
-import {MainDatabase} from "../../env/main/mainDatabase";
+import {MainDatabase} from "../../env/db/mainDatabase";
 import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
 import {MigrationsStackProps} from "../migrations/stack";
 import {EnvironmentSettings} from "../../../settings";

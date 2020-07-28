@@ -9,7 +9,7 @@ import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
 import {EnvConstructProps} from "../../../types";
 import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
-import {MainDatabase} from "../../env/main/mainDatabase";
+import {MainDatabase} from "../../env/db/mainDatabase";
 import {MainKmsKey} from "../../env/main/mainKmsKey";
 import {EnvironmentSettings} from "../../../settings";
 
