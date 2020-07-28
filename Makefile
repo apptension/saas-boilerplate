@@ -32,7 +32,7 @@ deploy-stage-infra:
 	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-stage-infra
 
 upload-version:
-	node $(BASE_DIR)/scripts/upload-version.js api,workers,webapp,admin-panel
+	node $(BASE_DIR)/scripts/upload-version.js migrations,api,workers,webapp,admin-panel
 
 #
 # Services deployment

@@ -12,6 +12,7 @@ import {MigrationsStack} from "../lib/stacks/services/migrations";
 import {WebAppStack} from "../lib/stacks/services/webApp";
 import {EnvCiStack} from "../lib/stacks/env/ci";
 import {UsEastResourcesStack} from "../lib/stacks/usEastResources";
+import {EnvDbStack} from "../lib/stacks/env/db";
 
 
 const envSettings = loadEnvSettings();
@@ -31,6 +32,7 @@ new GlobalToolsStack(app, getStackName('GlobalToolsStack', envSettings.projectNa
 // Environment (dev / qa / stage / prod) stacks
 
 new EnvMainStack(app, getStackName("MainStack", envSettings.projectEnvName), {envSettings});
+new EnvDbStack(app, getStackName("DbStack", envSettings.projectEnvName), {envSettings});
 new EnvComponentsStack(app, getStackName("ComponentsStack", envSettings.projectEnvName), {envSettings});
 new EnvCiStack(app, getStackName("CiStack", envSettings.projectEnvName), {envSettings});
 new AdminPanelStack(app, getStackName('AdminPanelStack', envSettings.projectEnvName), {envSettings});

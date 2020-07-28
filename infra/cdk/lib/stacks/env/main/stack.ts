@@ -4,7 +4,6 @@ import {EnvConstructProps} from "../../../types";
 import {MainVpc} from './mainVpc';
 import {MainECSCluster} from './mainEcsCluster';
 import {MainKmsKey} from "./mainKmsKey";
-import {MainDatabase} from "./mainDatabase";
 import {MainLambdaConfig} from "./mainLambdaConfig";
 import {MainCertificates} from "./mainCertificates";
 
@@ -17,7 +16,6 @@ export class EnvMainStack extends Stack {
     mainVpc: MainVpc;
     mainEcsCluster: MainECSCluster;
     mainKmsKey: MainKmsKey;
-    mainDatabase: MainDatabase;
     mainLambdaConfig: MainLambdaConfig;
     mainCertificates: MainCertificates;
 
@@ -40,12 +38,6 @@ export class EnvMainStack extends Stack {
         this.mainLambdaConfig = new MainLambdaConfig(this, "MainLambdaConfig", {
             envSettings,
             mainVpc: this.mainVpc,
-        });
-        this.mainDatabase = new MainDatabase(this, "MainDatabase", {
-            envSettings,
-            vpc: this.mainVpc.vpc,
-            fargateContainerSecurityGroup: this.mainEcsCluster.fargateContainerSecurityGroup,
-            lambdaSecurityGroup: this.mainLambdaConfig.lambdaSecurityGroup,
         });
     }
 }
