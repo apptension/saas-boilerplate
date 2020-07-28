@@ -16,7 +16,7 @@ setup-docker:
 setup: install setup-docker
 
 create-env:
-	cd scripts/setup && ../node_modules/.bin/plop createEnv --force
+	cd scripts/setup && ../node_modules/.bin/plop createEnv
 
 #
 # Infrastructure deployment

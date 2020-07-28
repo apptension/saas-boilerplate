@@ -35,6 +35,7 @@ module.exports = function (plop) {
     ],
     actions: [{
       type: 'add',
+      force: true,
       path: '../../.awsboilerplate.json',
       templateFile: 'plopTemplates/.awsboilerplate.json.hbs'
     }]
@@ -74,6 +75,7 @@ module.exports = function (plop) {
     ],
     actions: [{
       type: 'add',
+      force: true,
       path: '../../.awsboilerplate.{{name}}.json',
       templateFile: 'plopTemplates/.awsboilerplate.env.json.hbs'
     }]
