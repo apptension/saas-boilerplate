@@ -29,6 +29,7 @@ deploy-migrations:
 
 	cd $(BASE_DIR)/infra/functions;\
 	node_modules/.bin/sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
+	$(MAKE) upload-service-version SERVICE_NAME=migrations
 
 deploy: deploy-migrations deploy-admin-panel deploy-api
 

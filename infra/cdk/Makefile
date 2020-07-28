@@ -10,8 +10,8 @@ deploy-global-infra:
 	npm run cdk deploy *UsEastResourcesStack;
 
 deploy-global-tools:
-	$(MAKE) -C $(BASE_DIR)/tools/version-matrix install
-	$(MAKE) -C $(BASE_DIR)/tools/version-matrix build
+	$(MAKE) -C $(BASE_DIR)tools/version-matrix install
+	$(MAKE) -C $(BASE_DIR)tools/version-matrix build
 
 	npm run build;
 	npm run cdk deploy *GlobalToolsStack;
@@ -20,11 +20,13 @@ deploy-infra-main:
 	npm run build;
 	npm run cdk deploy *MainStack;
 
+deploy-infra-db:
+	npm run build;
+	npm run cdk deploy *DbStack;
+
 deploy-infra-ci:
 	npm run build;
 	npm run cdk deploy *CiStack;
-
-deploy-stage-infra: deploy-infra-main deploy-infra-functions deploy-infra-ci
 
 deploy-components:
 	npm run build;

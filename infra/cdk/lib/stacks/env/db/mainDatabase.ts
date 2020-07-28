@@ -1,6 +1,16 @@
 import {CfnOutput, Construct} from "@aws-cdk/core";
 import {DatabaseInstance, DatabaseInstanceEngine} from "@aws-cdk/aws-rds";
-import {InstanceClass, InstanceSize, InstanceType, Port, Protocol, SecurityGroup, Vpc} from "@aws-cdk/aws-ec2";
+import {
+    InstanceClass,
+    InstanceSize,
+    InstanceType,
+    ISecurityGroup,
+    IVpc,
+    Port,
+    Protocol,
+    SecurityGroup,
+    Vpc
+} from "@aws-cdk/aws-ec2";
 import {Effect, PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
 import {EnvironmentSettings} from "../../../settings";
@@ -8,9 +18,9 @@ import {EnvConstructProps} from "../../../types";
 
 
 export interface MainDatabaseProps extends EnvConstructProps {
-    vpc: Vpc;
-    fargateContainerSecurityGroup: SecurityGroup,
-    lambdaSecurityGroup: SecurityGroup,
+    vpc: IVpc;
+    fargateContainerSecurityGroup: ISecurityGroup,
+    lambdaSecurityGroup: ISecurityGroup,
 }
 
 export class MainDatabase extends Construct {

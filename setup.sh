@@ -9,7 +9,7 @@ cd scripts
 npm install
 
 cd setup
-node ../node_modules/.bin/plop config
+node ../node_modules/.bin/plop config --force
 
 cd ../../
 
