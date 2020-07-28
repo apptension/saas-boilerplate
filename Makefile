@@ -8,7 +8,7 @@ install: install-infra-cdk install-infra-functions install-scripts
 
 setup-infra:
 	chmod +x ./scripts/*.sh
-	scripts/cdk-bootstrap.sh
+	cd $(SELF_DIR)scripts && cdk-bootstrap.sh
 
 setup-docker:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
@@ -23,13 +23,13 @@ create-env:
 #
 
 deploy-global-infra:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-infra
+	$(MAKE) -C $(SELF_DIR)infra deploy-global-infra
 
 deploy-global-tools:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-global-tools
+	$(MAKE) -C $(SELF_DIR)infra deploy-global-tools
 
 deploy-stage-infra:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-stage-infra
+	$(MAKE) -C $(SELF_DIR)infra deploy-stage-infra
 
 upload-version:
 	node $(BASE_DIR)/scripts/upload-version.js migrations,api,workers,webapp,admin-panel
