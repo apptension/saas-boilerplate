@@ -26,6 +26,17 @@ This command will create following file named `.awsboilerplate.<ENV_STAGE_NAME>.
 
 ## Deploy infrastructure of the new environment
 
+### Set environment parameters
+Backend image needs couple of parameters set in AWS SSM parameter store.
+Those parameters should be set to a `SecureString` and encrypted with a KMS key 
+with alias `{PROJECT_NAME}-{ENV_STAGE_NAME}-main` key. This key is created by the Main CDK stack.
+
+#### Backend
+
+- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/DJANGO_DEBUG`
+- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/DJANGO_SECRET_KEY`
+- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/HASHID_FIELD_SALT`
+
 ### Switch to AWS context using aws-vault
 ```shell
 make aws-vault

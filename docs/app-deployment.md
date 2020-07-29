@@ -22,7 +22,6 @@ make build
 ```
 
 ## Deploy app components
-Make sure that all 
 ```shell
 make deploy-stage-app
 ```
