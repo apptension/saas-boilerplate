@@ -27,11 +27,11 @@ This command will create following file named `.awsboilerplate.<ENV_STAGE_NAME>.
 ## Deploy infrastructure of the new environment
 
 ### Switch to AWS context using aws-vault
-```shell script
+```shell
 make aws-vault
 ```
 
-```shell script
+```shell
 make deploy-stage-infra ENV_STAGE=<ENV_STAGE_NAME>
 ```
 
