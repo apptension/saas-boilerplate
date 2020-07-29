@@ -23,7 +23,7 @@ class Task:
         ]
 
     def apply(self, data: dict):
-        client = boto3.client('events', endpoint_url=settings.AWS_EVENTS_URL)
+        client = boto3.client('events', endpoint_url=settings.LOCALSTACK_URL)
         client.put_events(Entries=self.get_entries(data))
 
 

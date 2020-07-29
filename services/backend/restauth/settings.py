@@ -153,6 +153,6 @@ USER_NOTIFICATION_IMPL = "restauth.notifications.stdout"
 
 WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 
-AWS_EVENTS_URL = env("AWS_EVENTS_URL", default=None)
+LOCALSTACK_URL = env("LOCALSTACK_URL", default=None)
 
 TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
