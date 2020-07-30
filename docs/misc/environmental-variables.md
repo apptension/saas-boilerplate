@@ -8,11 +8,17 @@ service from your local machine.
 ## Installing requirements
 First you need to install some tools in your system.
 
-### [chamber](https://github.com/segmentio/chamber#installing)
-### vipe
+### MacOs
+
+#### [chamber](https://github.com/segmentio/chamber#installing)
+```shell
+brew install go
+go get github.com/segmentio/chamber
+```
+
+#### vipe
 This is a text editor which works with pipes. This way your secret values will never be saved to a local file.
 
-#### MacOs
 ```shell
 brew install moreutils
 ```
