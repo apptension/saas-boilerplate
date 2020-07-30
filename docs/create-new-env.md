@@ -28,7 +28,8 @@ This command will create following file named `.awsboilerplate.<ENV_STAGE_NAME>.
 
 ### Set environmental variables
 Before you deploy make sure you set up following environmental variables. Otherwise your services will fail to start.
-Check [environmental variables docs](/docs/misc/environmental-variables.md) on how to do it from your local machine.
+Check [environmental variables docs](/docs/misc/environmental-variables.md) on how to install tools needed to set up 
+variables from your local machine. 
 
 #### Backend
 
@@ -39,13 +40,20 @@ Check [environmental variables docs](/docs/misc/environmental-variables.md) on h
 | HASHID_FIELD_SALT | t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)      |
 
 
-### Switch to AWS context using aws-vault
 ```shell
-make aws-vault
+# Make sure you are in a proper environment
+make aws-vault ENV_STAGE=dev
+
+make chamber
 ```
 
+### Run deploy command
+
 ```shell
-make deploy-stage-infra ENV_STAGE=<ENV_STAGE_NAME>
+# Make sure you are in a proper environment
+make aws-vault ENV_STAGE=<ENV_STAGE_NAME>
+
+make deploy-stage-infra 
 ```
 
 This command will deploy

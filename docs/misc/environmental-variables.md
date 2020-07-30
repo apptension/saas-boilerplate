@@ -24,13 +24,3 @@ This is a text editor which works with pipes. This way your secret values will n
 ```shell
 brew install moreutils
 ```
-
-## Set services' values
-### Backend
-```shell
-# Make sure you are in a proper environment
-make aws-vault ENV_STAGE=dev
-
-cd services/backend
-make chamber
-```
