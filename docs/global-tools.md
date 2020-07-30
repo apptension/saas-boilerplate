@@ -36,7 +36,7 @@ Type: `string`
 
 Example: `status.awsb.apptoku.com`
 
-## Listed services
+## Available tools
 ### Version matrix
 This tool displays a list of all environment stages (e.g. `dev`, `stage`, `prod`) and their metadata:
 - Currently deployed version
