@@ -10,11 +10,15 @@ deploy-global-infra:
 	npm run cdk deploy *UsEastResourcesStack;
 
 deploy-global-tools:
+ifneq ($(TOOLS_ENABLED),true)
+	$(error "Global tools are disabled.")
+else
 	$(MAKE) -C $(BASE_DIR)tools/version-matrix install
 	$(MAKE) -C $(BASE_DIR)tools/version-matrix build
 
 	npm run build;
 	npm run cdk deploy *GlobalToolsStack;
+endif
 
 deploy-infra-main:
 	npm run build;

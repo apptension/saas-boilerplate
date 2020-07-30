@@ -10,3 +10,8 @@ make aws-vault
 ```shell
 make deploy-global-infra
 ```
+
+## Deploy global tools
+```shell
+make deploy-global-tools
+```
