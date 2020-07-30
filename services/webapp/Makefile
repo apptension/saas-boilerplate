@@ -13,6 +13,7 @@ build: test
 	mkdir -p build
 	cp index.html build/index.html
 
+deploy: SERVICE_URL=$(call GetFromEnvCfg,domains.webApp)
 deploy:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-webapp
-	$(MAKE) upload-service-version SERVICE_NAME=webapp SERVICE_PARAMS="url=https://$(WEB_APP_DOMAIN)"
+	$(MAKE) upload-service-version SERVICE_NAME=webapp SERVICE_PARAMS="url=https://$(SERVICE_URL)"

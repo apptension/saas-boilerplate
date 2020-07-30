@@ -16,13 +16,15 @@ build:
 	$(MAKE) test
 	/bin/sh ./scripts/build.sh
 
+deploy-admin-panel: SERVICE_URL=$(call GetFromEnvCfg,domains.adminPanel)
 deploy-admin-panel:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
-	$(MAKE) upload-service-version SERVICE_NAME=admin-panel SERVICE_PARAMS="url=https://$(ADMIN_PANEL_DOMAIN)"
+	$(MAKE) upload-service-version SERVICE_NAME=admin-panel SERVICE_PARAMS="url=https://$(SERVICE_URL)"
 
+deploy-api: SERVICE_URL=$(call GetFromEnvCfg,domains.api)
 deploy-api:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-api
-	$(MAKE) upload-service-version SERVICE_NAME=api SERVICE_PARAMS="url=https://$(API_DOMAIN)"
+	$(MAKE) upload-service-version SERVICE_NAME=api SERVICE_PARAMS="url=https://$(SERVICE_URL)"
 
 deploy-migrations:
 	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-migrations

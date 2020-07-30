@@ -20,11 +20,11 @@ export class GlobalToolsStack extends core.Stack {
         super(scope, id, props);
 
         const domainZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
-            hostedZoneId: props.envSettings.toolsHostedZone.id,
-            zoneName: props.envSettings.toolsHostedZone.name,
+            hostedZoneId: props.envSettings.tools.hostedZone.id,
+            zoneName: props.envSettings.tools.hostedZone.name,
         });
 
-        const domainName = props.envSettings.toolsHostedZone.name;
+        const domainName = props.envSettings.tools.hostedZone.name;
         const certificate = new DnsValidatedCertificate(this, "ToolsCertificate", {
             region: 'us-east-1',
             domainName: domainName,
@@ -42,7 +42,7 @@ export class GlobalToolsStack extends core.Stack {
             accessControl: BucketAccessControl.PUBLIC_READ,
             cors: [{
                 allowedMethods: [HttpMethods.GET, HttpMethods.HEAD],
-                allowedOrigins: [`https://${props.envSettings.domains.versionMatrixDomain}`],
+                allowedOrigins: [`https://${props.envSettings.tools.domains.versionMatrix}`],
             }]
         })
 
@@ -51,10 +51,10 @@ export class GlobalToolsStack extends core.Stack {
             this.versionMatrixCloudFrontDistribution = new WebAppCloudFrontDistribution(this, "WebApp", {
                 sources: [Source.asset(filesPath)],
                 domainZone,
-                domainName: props.envSettings.domains.versionMatrixDomain,
+                domainName: props.envSettings.tools.domains.versionMatrix,
                 certificateArn: certificate.certificateArn,
                 authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
-                basicAuth: props.envSettings.toolsBasicAuth,
+                basicAuth: props.envSettings.tools.basicAuth,
             });
         }
     }

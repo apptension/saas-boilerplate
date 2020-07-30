@@ -28,19 +28,11 @@ define GetFromEnvCfg
 $(shell node -p "require('$(ENV_CONFIG_FILE)').$(1)")
 endef
 
-export HOSTED_ZONE_ID := $(call GetFromEnvCfg,hostedZone.id)
-export HOSTED_ZONE_NAME := $(call GetFromEnvCfg,hostedZone.name)
-
 export TOOLS_ENABLED := $(call GetFromCfg,toolsConfig.enabled)
 export TOOLS_HOSTED_ZONE_ID := $(call GetFromCfg,toolsConfig.hostedZone.id)
 export TOOLS_HOSTED_ZONE_NAME := $(call GetFromCfg,toolsConfig.hostedZone.name)
 
 export VERSION_MATRIX_DOMAIN := $(call GetFromCfg,toolsConfig.domains.versionMatrix)
-export ADMIN_PANEL_DOMAIN := $(call GetFromEnvCfg,domains.adminPanel)
-export API_DOMAIN := $(call GetFromEnvCfg,domains.api)
-export WEB_APP_DOMAIN := $(call GetFromEnvCfg,domains.webApp)
-export WWW_DOMAIN := $(call GetFromEnvCfg,domains.www)
-export APP_BASIC_AUTH := $(call GetFromEnvCfg,basicAuth)
 export TOOLS_BASIC_AUTH := $(call GetFromCfg,toolsConfig.basicAuth)
 
 AWS_VAULT_PROFILE ?= $(call GetFromCfg,aws.profile)
