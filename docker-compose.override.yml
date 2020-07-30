@@ -18,6 +18,7 @@ services:
       - ./services/backend/.env
     environment:
       - AWS_ENDPOINT_URL=http://localstack:4566
+      - WORKERS_EVENT_BUS_NAME=${PROJECT_NAME}-${ENV_STAGE}-workers
     depends_on:
       - db
       - localstack
