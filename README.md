@@ -46,6 +46,7 @@ pipeline.
     * Admin Panel
     * Migrations
 - [Async Workers](/services/workers) – Serverless Framework
+- [Global Tools](/docs/global-tools.md) – Optional helper tools
 
 
 # Misc
