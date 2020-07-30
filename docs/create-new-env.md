@@ -44,6 +44,7 @@ variables from your local machine.
 # Make sure you are in a proper environment
 make aws-vault ENV_STAGE=dev
 
+cd services/backend
 make chamber
 ```
 
