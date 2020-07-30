@@ -1,6 +1,6 @@
 # Global tools
 The boilerplate includes some helper tools that you can deploy together with your app.
-Right now we only provide on such tool – version matrix.
+Right now we only provide one such tool – version matrix.
 
 ## Configuration
 You can configure global tools in`.awsboilerplate.json` with a `toolsConfig` key.
