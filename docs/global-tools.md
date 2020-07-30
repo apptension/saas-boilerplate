@@ -36,6 +36,11 @@ Type: `string`
 
 Example: `status.awsb.apptoku.com`
 
+## Deployment
+```shell
+make deploy-global-tools
+```
+
 ## Available tools
 ### Version matrix
 This tool displays a list of all environment stages (e.g. `dev`, `stage`, `prod`) and their metadata:
