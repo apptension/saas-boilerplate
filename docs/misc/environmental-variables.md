@@ -11,6 +11,8 @@ First you need to install some tools in your system.
 ### MacOs
 
 #### [chamber](https://github.com/segmentio/chamber#installing)
+A tool, written in go, which allows you to inject SSM parameters as env variables in your shell.
+
 ```shell
 brew install go
 go get github.com/segmentio/chamber
