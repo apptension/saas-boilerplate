@@ -41,6 +41,10 @@ services:
       - "/tmp/localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     privileged: true
+    depends_on:
+      - db
+    links:
+      - db
 
   mailcatcher:
     build: ./tools/mailcatcher
@@ -48,3 +52,12 @@ services:
       - "1080:1080"
       - "1025:1025"
     restart: always
+
+  chamber:
+    image: segment/chamber:2
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - CHAMBER_KMS_KEY_ALIAS=${PROJECT_NAME}-${ENV_STAGE}-main
