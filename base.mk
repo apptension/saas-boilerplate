@@ -29,11 +29,6 @@ $(shell node -p "require('$(ENV_CONFIG_FILE)').$(1)")
 endef
 
 export TOOLS_ENABLED := $(call GetFromCfg,toolsConfig.enabled)
-export TOOLS_HOSTED_ZONE_ID := $(call GetFromCfg,toolsConfig.hostedZone.id)
-export TOOLS_HOSTED_ZONE_NAME := $(call GetFromCfg,toolsConfig.hostedZone.name)
-
-export VERSION_MATRIX_DOMAIN := $(call GetFromCfg,toolsConfig.domains.versionMatrix)
-export TOOLS_BASIC_AUTH := $(call GetFromCfg,toolsConfig.basicAuth)
 
 AWS_VAULT_PROFILE ?= $(call GetFromCfg,aws.profile)
 AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --

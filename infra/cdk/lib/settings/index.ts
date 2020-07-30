@@ -15,19 +15,6 @@ interface EnvConfigFileDomains {
     www: string;
 }
 
-export interface EnvironmentSettings {
-    appBasicAuth: string | null;
-    projectRootDir: string;
-    projectName: string;
-    projectEnvName: string;
-    envStage: string;
-    version: string;
-    hostedZone: EnvConfigHostedZone;
-    domains: EnvConfigFileDomains;
-    tools: ToolsConfig,
-}
-
-
 interface ToolsDomains {
     versionMatrix: string;
 }
@@ -37,6 +24,19 @@ interface ToolsConfig {
     "basicAuth": string,
     "hostedZone": EnvConfigHostedZone,
     "domains": ToolsDomains
+}
+
+export interface EnvironmentSettings {
+    appBasicAuth: string | null;
+    deployBranches: Array<string>;
+    domains: EnvConfigFileDomains;
+    envStage: string;
+    hostedZone: EnvConfigHostedZone;
+    projectRootDir: string;
+    projectName: string;
+    projectEnvName: string;
+    tools: ToolsConfig,
+    version: string;
 }
 
 interface ConfigFileContent {
@@ -102,13 +102,14 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
 
     return {
         envStage,
+        projectName,
         projectEnvName: `${projectName}-${envStage}`,
-        projectRootDir: process.env.PROJECT_ROOT_DIR,
         version: process.env.VERSION,
+        projectRootDir: process.env.PROJECT_ROOT_DIR,
+        tools: config.toolsConfig,
         appBasicAuth: envConfig.basicAuth,
-        projectName: projectName,
         hostedZone: envConfig.hostedZone,
         domains: envConfig.domains,
-        tools: config.toolsConfig,
+        deployBranches: envConfig.deployBranches,
     };
 }
