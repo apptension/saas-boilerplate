@@ -31,6 +31,7 @@ endef
 export HOSTED_ZONE_ID := $(call GetFromEnvCfg,hostedZone.id)
 export HOSTED_ZONE_NAME := $(call GetFromEnvCfg,hostedZone.name)
 
+export TOOLS_ENABLED := $(call GetFromCfg,toolsConfig.enabled)
 export TOOLS_HOSTED_ZONE_ID := $(call GetFromCfg,toolsConfig.hostedZone.id)
 export TOOLS_HOSTED_ZONE_NAME := $(call GetFromCfg,toolsConfig.hostedZone.name)
 
@@ -117,6 +118,8 @@ prune:
 upload-service-version:
 ifeq ($(ENV_STAGE),local)
 	@echo "Skipping upload-service-version for local env"
+else ifneq ($(TOOLS_ENABLED),true)
+	@echo "Global tools are disabled. Skipping upload-service-version"
 else
 	node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME) $(SERVICE_PARAMS)
 endif
