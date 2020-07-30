@@ -20,17 +20,20 @@ Type: `string`
 Example: `username:password`
 
 ##### `hostedZone.id`
+Id of a AWS Route53 hosted zone of a domain used to host global tools.
 
 Type: `string`
 Example: `Z1019320SEC473QW1LV2`
 
 ##### `hostedZone.name`
+Name of a AWS Route53 hosted zone of a domain used to host global tools.
 
 Type: `string`
 
 Example: `awsb.apptoku.com`
 
 ##### `domains.versionMatrix`
+A domain used to host version matrix tool.
 
 Type: `string`
 
