@@ -46,8 +46,6 @@ This tool displays a list of all environment stages (e.g. `dev`, `stage`, `prod`
 
 
 <p align="center"> 
-    <b>An opinionated guide on how to become a professional Web/Mobile App Developer.</b> 
-    <br /><br /> 
     <img src="/docs/images/version-matrix.png" alt="Version matrix" height="300" /> 
 </p>
 
