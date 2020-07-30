@@ -10,8 +10,16 @@ define GetFromCfg
 $(shell node -p "require('$(CONFIG_FILE)').$(1)")
 endef
 
+define Chamber
+	CHAMBER_KMS_KEY_ALIAS=$(PROJECT_ENV_NAME)-main chamber export $(1) \
+	| jq '.' \
+	| vipe \
+	| CHAMBER_KMS_KEY_ALIAS=$(PROJECT_ENV_NAME)-main chamber import $(1) -
+endef
+
 export ENV_STAGE ?= $(call GetFromCfg,defaultEnv)
 export PROJECT_NAME ?= $(call GetFromCfg,projectName)
+export PROJECT_ENV_NAME = $(PROJECT_NAME)-$(ENV_STAGE)
 export AWS_DEFAULT_REGION ?= $(call GetFromCfg,aws.region)
 
 ENV_CONFIG_FILE ?= $(BASE_DIR)/.awsboilerplate.$(ENV_STAGE).json
