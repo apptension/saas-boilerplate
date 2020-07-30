@@ -50,3 +50,4 @@ pipeline.
 
 # Misc
 - [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
+- [Environmental Variables](/docs/misc/environmental-variables.md)

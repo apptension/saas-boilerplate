@@ -26,24 +26,34 @@ This command will create following file named `.awsboilerplate.<ENV_STAGE_NAME>.
 
 ## Deploy infrastructure of the new environment
 
-### Set environment parameters
-Backend image needs couple of parameters set in AWS SSM parameter store.
-Those parameters should be set to a `SecureString` and encrypted with a KMS key 
-with alias `{PROJECT_NAME}-{ENV_STAGE_NAME}-main` key. This key is created by the Main CDK stack.
+### Set environmental variables
+Before you deploy make sure you set up following environmental variables. Otherwise your services will fail to start.
+Check [environmental variables docs](/docs/misc/environmental-variables.md) on how to install tools needed to set up 
+variables from your local machine. 
 
 #### Backend
 
-- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/DJANGO_DEBUG`
-- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/DJANGO_SECRET_KEY`
-- `/env-{PROJECT_NAME}-{ENV_STAGE_NAME}-backend/HASHID_FIELD_SALT`
+| Name              | Example                          | Description                                                                   |
+|-------------------|----------------------------------|-------------------------------------------------------------------------------|
+| DJANGO_DEBUG      | True                             | [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-DEBUG) |
+| DJANGO_SECRET_KEY | Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I | [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#secret-key)        |
+| HASHID_FIELD_SALT | t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)      |
 
-### Switch to AWS context using aws-vault
+
 ```shell
-make aws-vault
+# Make sure you are in a proper environment
+make aws-vault ENV_STAGE=dev
+
+make chamber
 ```
 
+### Run deploy command
+
 ```shell
-make deploy-stage-infra ENV_STAGE=<ENV_STAGE_NAME>
+# Make sure you are in a proper environment
+make aws-vault ENV_STAGE=<ENV_STAGE_NAME>
+
+make deploy-stage-infra 
 ```
 
 This command will deploy

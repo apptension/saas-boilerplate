@@ -49,3 +49,6 @@ flake8:
 
 black:
 	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml .
+
+chamber:
+	$(call Chamber,env-$(PROJECT_ENV_NAME)-backend)
