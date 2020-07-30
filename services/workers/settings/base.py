@@ -5,14 +5,11 @@ from environs import Env
 
 env = Env()
 
+AWS_ENDPOINT_URL = env('AWS_ENDPOINT_URL', None)
+SMTP_HOST = env('SMTP_HOST', None)
+EMAIL_ENABLED = env.bool('EMAIL_ENABLED', default=True)
 
-LS_HOST = env('LOCALSTACK_HOSTNAME', None)
-
-
-LOCAL_STACK_URL = f"http://{LS_HOST}:4566" if LS_HOST else None
-HOSTNAME = env('HOSTNAME', None)
-
-secrets_manager_client = boto3.client('secretsmanager', endpoint_url=LOCAL_STACK_URL)
+secrets_manager_client = boto3.client('secretsmanager', endpoint_url=AWS_ENDPOINT_URL)
 
 
 def fetch_db_secret(db_secret_arn):

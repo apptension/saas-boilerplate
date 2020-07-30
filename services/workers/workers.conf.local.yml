@@ -8,5 +8,8 @@ envsHello:
 
 envsSendEmail:
   FROM_EMAIL: "from@example.com"
+  AWS_ENDPOINT_URL: "https://localstack:4566"
+  SMTP_HOST: "172.17.0.1"
+  EMAIL_ENABLED: "False"
 
 vpcHello: []

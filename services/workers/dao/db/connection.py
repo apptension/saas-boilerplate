@@ -12,7 +12,7 @@ if settings.DB_CONNECTION is not None:
     db_url = url.URL(
         **{
             'drivername': settings.DB_CONNECTION['engine'],
-            'host': settings.HOSTNAME if settings.LS_HOST else settings.DB_CONNECTION['host'],
+            'host': settings.DB_CONNECTION['host'],
             'port': settings.DB_CONNECTION['port'],
             'username': settings.DB_CONNECTION['username'],
             'password': settings.DB_CONNECTION['password'],

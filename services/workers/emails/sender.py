@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 
 def get_ses_client():
-    return boto3.client('ses', endpoint_url=settings.LOCAL_STACK_URL)
+    return boto3.client('ses', endpoint_url=settings.AWS_ENDPOINT_URL)
 
 
 def send_local(email_config, rendered_html):
@@ -31,14 +31,14 @@ def send_local(email_config, rendered_html):
 
     message.attach(MIMEText(rendered_html, 'plain'))
 
-    smtp_client = smtplib.SMTP(host=settings.HOSTNAME, port=1025)
+    smtp_client = smtplib.SMTP(host=settings.SMTP_HOST, port=1025)
     smtp_client.send_message(message)
 
     print("Successfully sent email")
 
 
 def send(email_config, rendered_html):
-    if settings.LS_HOST:
+    if not settings.EMAIL_ENABLED:
         send_local(email_config, rendered_html)
     else:
         ses_client = get_ses_client()

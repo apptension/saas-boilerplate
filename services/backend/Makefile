@@ -38,7 +38,6 @@ deploy: deploy-migrations deploy-admin-panel deploy-api
 shell:
 	$(DOCKER_COMPOSE) run backend sh
 
-
 makemigrations:
 	$(DOCKER_COMPOSE) run -T backend sh -c "python ./manage.py makemigrations"
 

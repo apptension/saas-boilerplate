@@ -107,4 +107,9 @@ prune:
 	docker system prune -af
 
 upload-service-version:
+ifeq ($(ENV_STAGE),local)
+	@echo "Skipping upload-service-version for local env"
+else
 	node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME) $(SERVICE_PARAMS)
+endif
+

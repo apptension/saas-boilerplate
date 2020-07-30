@@ -11,4 +11,4 @@ def hello(event, context):
     with db_session() as session:
         users = list(session.query(ua_models.User))
 
-    return {"users": users}
+    return json.dumps({"users": len(users)})
