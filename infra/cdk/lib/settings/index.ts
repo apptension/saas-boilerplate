@@ -1,44 +1,91 @@
+import {promises as fs} from 'fs';
+import * as path from 'path';
+
 import './types';
 
-export interface EnvironmentSettingsDomains {
-    adminPanel: string;
-    api: string;
-    webApp: string;
-    www: string;
-    versionMatrixDomain: string;
-}
-
-export interface EnvironmentSettingsHostedZone {
+export interface EnvConfigHostedZone {
     id: string;
     name: string;
 }
 
+interface EnvConfigFileDomains {
+    adminPanel: string;
+    api: string;
+    webApp: string;
+    www: string;
+}
+
+interface ToolsDomains {
+    versionMatrix: string;
+}
+
+interface ToolsConfig {
+    "enabled": true,
+    "basicAuth": string,
+    "hostedZone": EnvConfigHostedZone,
+    "domains": ToolsDomains
+}
+
 export interface EnvironmentSettings {
     appBasicAuth: string | null;
+    deployBranches: Array<string>;
+    domains: EnvConfigFileDomains;
+    envStage: string;
+    hostedZone: EnvConfigHostedZone;
     projectRootDir: string;
     projectName: string;
     projectEnvName: string;
-    envStage: string;
+    tools: ToolsConfig,
     version: string;
-    hostedZone: EnvironmentSettingsHostedZone;
-    toolsBasicAuth: string | null;
-    toolsHostedZone: EnvironmentSettingsHostedZone;
-    domains: EnvironmentSettingsDomains;
 }
 
-const parseValue = (value: string) => {
-    if (value === 'undefined') {
-        return null;
-    }
-
-    if (typeof value === 'undefined') {
-        return null;
-    }
-
-    return value;
+interface ConfigFileContent {
+    toolsConfig: ToolsConfig
 }
 
-export function loadEnvSettings(): EnvironmentSettings {
+export interface EnvConfigFileContent {
+    deployBranches: Array<string>,
+    hostedZone: EnvConfigHostedZone,
+    basicAuth: string,
+    domains: EnvConfigFileDomains
+}
+
+async function readConfig(): Promise<ConfigFileContent> {
+    const configFileName = `.awsboilerplate.json`;
+    const configFilePath = path.join(process.env.PROJECT_ROOT_DIR, configFileName);
+
+    try {
+        await fs.stat(configFilePath);
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            throw new Error(`Config file ${configFileName} does not exist. `)
+        }
+        throw err;
+    }
+
+    const strContent = await fs.readFile(configFilePath, "utf8");
+    return JSON.parse(strContent);
+}
+
+
+async function readEnvConfig(envStage: string): Promise<EnvConfigFileContent> {
+    const envConfigFileName = `.awsboilerplate.${envStage}.json`;
+    const envConfigFilePath = path.join(process.env.PROJECT_ROOT_DIR, envConfigFileName);
+
+    try {
+        await fs.stat(envConfigFilePath);
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            throw new Error(`Config file ${envConfigFileName} for environment ${envStage} does not exist. `)
+        }
+        throw err;
+    }
+
+    const strContent = await fs.readFile(envConfigFilePath, "utf8");
+    return JSON.parse(strContent);
+}
+
+export async function loadEnvSettings(): Promise<EnvironmentSettings> {
     const projectName = process.env.PROJECT_NAME;
     const envStage = process.env.ENV_STAGE;
 
@@ -50,28 +97,19 @@ export function loadEnvSettings(): EnvironmentSettings {
         throw new Error(`ENV_STAGE environment variable cannot be set to '${envStage}'`)
     }
 
+    const config = await readConfig();
+    const envConfig = await readEnvConfig(envStage);
+
     return {
-        appBasicAuth: parseValue(process.env.APP_BASIC_AUTH),
-        projectRootDir: process.env.PROJECT_ROOT_DIR,
-        projectName: projectName,
+        envStage,
+        projectName,
         projectEnvName: `${projectName}-${envStage}`,
-        envStage: process.env.ENV_STAGE,
         version: process.env.VERSION,
-        hostedZone: {
-            id: process.env.HOSTED_ZONE_ID,
-            name: process.env.HOSTED_ZONE_NAME,
-        },
-        toolsBasicAuth: parseValue(process.env.TOOLS_BASIC_AUTH),
-        toolsHostedZone: {
-            id: process.env.TOOLS_HOSTED_ZONE_ID,
-            name: process.env.TOOLS_HOSTED_ZONE_NAME,
-        },
-        domains: {
-            adminPanel: process.env.ADMIN_PANEL_DOMAIN,
-            api: process.env.API_DOMAIN,
-            webApp: process.env.WEB_APP_DOMAIN,
-            www: process.env.WWW_DOMAIN,
-            versionMatrixDomain: process.env.VERSION_MATRIX_DOMAIN,
-        },
+        projectRootDir: process.env.PROJECT_ROOT_DIR,
+        tools: config.toolsConfig,
+        appBasicAuth: envConfig.basicAuth,
+        hostedZone: envConfig.hostedZone,
+        domains: envConfig.domains,
+        deployBranches: envConfig.deployBranches,
     };
 }

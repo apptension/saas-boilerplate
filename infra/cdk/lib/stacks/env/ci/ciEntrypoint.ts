@@ -14,7 +14,7 @@ export interface CiEntrypointProps extends EnvConstructProps {
 
 export class CiEntrypoint extends Construct {
     public artifactsBucket: Bucket;
-    private codeBuildProject: Project;
+    private readonly codeBuildProject: Project;
 
     static getArtifactsIdentifier(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-entrypoint`;
@@ -32,10 +32,12 @@ export class CiEntrypoint extends Construct {
         });
         this.codeBuildProject = this.createBuildProject(this.artifactsBucket, props);
 
-        props.codeRepository.onCommit('OnMasterCommit', {
-            branches: ['master'],
-            target: new targets.CodeBuildProject(this.codeBuildProject),
-        });
+        if (props.envSettings.deployBranches.length > 0) {
+            props.codeRepository.onCommit('OnDeployCommit', {
+                branches: props.envSettings.deployBranches,
+                target: new targets.CodeBuildProject(this.codeBuildProject),
+            });
+        }
     }
 
     private createBuildProject(artifactsBucket: Bucket, props: CiEntrypointProps) {

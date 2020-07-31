@@ -1,4 +1,5 @@
 {
+  "deployBranches": [],
   "hostedZone": {
     "id": "testHostedZoneId",
     "name": "testHostedZoneName"

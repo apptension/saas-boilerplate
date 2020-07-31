@@ -72,6 +72,12 @@ module.exports = function (plop) {
         message: 'Basic auth password',
         default: () => Math.random().toString(36).substring(7)
       },
+      {
+        type: 'input',
+        name: 'deployBranch',
+        message: 'Name of the GIT branch used for automatic deployment',
+        default: 'master',
+      }
     ],
     actions: [{
       type: 'add',

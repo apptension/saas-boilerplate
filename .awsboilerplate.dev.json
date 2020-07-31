@@ -1,4 +1,5 @@
 {
+  "deployBranches": ["master", "feature/auto-deploy"],
   "hostedZone": {
     "id": "Z1019320SEC473QW1LV2",
     "name": "awsb.apptoku.com"
