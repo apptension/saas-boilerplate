@@ -45,3 +45,12 @@ FROM backend_build AS backend
 COPY --from=static_files /app/static /app/static
 
 CMD ["./scripts/run.sh"]
+
+##
+# SSH Bastion stage
+##
+FROM backend_build AS ssh_bastion
+
+RUN apt-get update && apt-get install -y openssh-server
+
+CMD ["./scripts/run-ssh-bastion.sh"]

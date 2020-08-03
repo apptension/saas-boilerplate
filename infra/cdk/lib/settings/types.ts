@@ -8,6 +8,7 @@ declare global {
             PROJECT_NAME: string;
             ENV_STAGE: string;
             VERSION: string;
+            SSH_PUBLIC_KEY: string;
         }
     }
 }
