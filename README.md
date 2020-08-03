@@ -32,6 +32,7 @@ which you can extend or change however you like:
 
 # How do I use this boilerplate?
 
+- [ ] Check the [prerequisites](/docs/prerequisites.md)
 - [ ] First you need to [setup the project](/docs/setup-project.md)
 - [ ] Second you need to [deploy the global infrastructure](/docs/global-infra-deployment.md)
 - [ ] Next you need to [create a new environment](/docs/create-new-env.md)
