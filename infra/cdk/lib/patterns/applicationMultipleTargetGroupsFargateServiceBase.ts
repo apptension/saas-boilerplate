@@ -381,6 +381,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
                     healthyThresholdCount: 2,
                     unhealthyThresholdCount: 2,
                 },
+                deregistrationDelay: Duration.seconds(10),
                 targetType: TargetType.IP,
                 targets: [
                     service.loadBalancerTarget({
