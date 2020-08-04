@@ -95,10 +95,19 @@ async function stopTask({ cluster, task }) {
       NetworkInterfaceIds: [networkInterfaceId],
     }).promise();
 
-    const { PublicIp: publicIp } = describeNetworkInterfacesResult.NetworkInterfaces[0].Association;
+    console.log('\nBastion has been successfully started:');
+    console.log(`\tECS task: ${taskArn}`);
+    console.log('\n')
 
-    console.log('Connecting to SSH bastion using');
-    const sshCmd = spawn('ssh', ['-i', SSH_PRIVATE_KEY, `root@${publicIp}`], { stdio: 'inherit' });
+    const { PublicIp: publicIp } = describeNetworkInterfacesResult.NetworkInterfaces[0].Association;
+    const destination = `root@${publicIp}`;
+
+    console.log(`\nConnecting to SSH bastion with following parameters:`);
+    console.log(`\tprivate key: ${SSH_PRIVATE_KEY}`);
+    console.log(`\tdestination: ${destination}`);
+    console.log('\n')
+
+    const sshCmd = spawn('ssh', ['-i', SSH_PRIVATE_KEY, destination], { stdio: 'inherit' });
     sshCmd.on('close', async () => {
       await stopTask({ cluster, task: taskArn });
     });

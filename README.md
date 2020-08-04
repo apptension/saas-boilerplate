@@ -65,6 +65,7 @@ repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/doc
 
 ## Additional
 - [Global Tools](/docs/global-tools.md) – Optional helper tools
+- [SSH bastion](/docs/ssh-bastion.md)
 
 
 # Misc
