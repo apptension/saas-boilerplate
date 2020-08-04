@@ -13,6 +13,7 @@ import {WebAppStack} from "../lib/stacks/services/webApp";
 import {EnvCiStack} from "../lib/stacks/env/ci";
 import {UsEastResourcesStack} from "../lib/stacks/usEastResources";
 import {EnvDbStack} from "../lib/stacks/env/db";
+import {SshBastionStack} from "../lib/stacks/services/sshBastion";
 
 (async () => {
     const envSettings = await loadEnvSettings();
@@ -38,4 +39,5 @@ import {EnvDbStack} from "../lib/stacks/env/db";
     new ApiStack(app, getStackName('ApiStack', envSettings.projectEnvName), {envSettings});
     new MigrationsStack(app, getStackName('MigrationsStack', envSettings.projectEnvName), {envSettings});
     new WebAppStack(app, getStackName('WebAppStack', envSettings.projectEnvName), {envSettings});
+    new SshBastionStack(app, getStackName('SshBastionStack', envSettings.projectEnvName), {envSettings});
 })();

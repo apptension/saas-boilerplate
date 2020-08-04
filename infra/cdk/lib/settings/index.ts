@@ -20,10 +20,14 @@ interface ToolsDomains {
 }
 
 interface ToolsConfig {
-    "enabled": true,
-    "basicAuth": string,
-    "hostedZone": EnvConfigHostedZone,
-    "domains": ToolsDomains
+    enabled: true,
+    basicAuth: string,
+    hostedZone: EnvConfigHostedZone,
+    domains: ToolsDomains
+}
+
+interface SshBastionConfig {
+    sshPublicKey: string | null | undefined;
 }
 
 export interface EnvironmentSettings {
@@ -37,6 +41,7 @@ export interface EnvironmentSettings {
     projectEnvName: string;
     tools: ToolsConfig,
     version: string;
+    sshBastion: SshBastionConfig;
 }
 
 interface ConfigFileContent {
@@ -111,5 +116,8 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
         hostedZone: envConfig.hostedZone,
         domains: envConfig.domains,
         deployBranches: envConfig.deployBranches,
+        sshBastion: {
+            sshPublicKey: process.env.BASTION_SSH_PUBLIC_KEY,
+        },
     };
 }

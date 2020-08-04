@@ -51,3 +51,7 @@ deploy-migrations:
 deploy-webapp:
 	npm run build;
 	npm run cdk deploy *WebAppStack;
+
+deploy-ssh-bastion:
+	npm run build;
+	npm run cdk deploy *SshBastionStack;
