@@ -38,7 +38,9 @@ make ssh-bastion                # Start the bastion service. It will automatical
 
 
 ### Connect to RDS instance using SSH tunnel 
-You can use the bastion as an SSH tunnel
+You can use the bastion as a regular SSH tunnel. Just use bastion's ip address in your tunneling software and a the same
+private key and you're good to go.
+
 You probably should not be interacting with database directly and use this approach as a last resort.
 
 > You should not be running this in production environment.
