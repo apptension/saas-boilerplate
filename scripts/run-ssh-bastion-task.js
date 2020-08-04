@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-const util = require('util');
-const spawn = util.promisify(require('child_process').spawn);
+const { spawn } = require('child_process');
 const AWS = require('aws-sdk');
 const { prop, indexBy, propEq } = require('ramda');
 
@@ -53,6 +52,16 @@ async function waitForTask({ cluster, taskArn, maxRetries = 100, retryCount = 0 
   }
 }
 
+async function stopTask({ cluster, task }) {
+  console.log(`Stopping bastion task ${task}`);
+
+  try {
+    await ecs.stopTask({ cluster, task }).promise();
+  } catch (err) {
+    console.log('Could not stop bastion task! Make sure you kill it manually to avoid unnecessary costs.');
+  }
+}
+
 (async function () {
   const bastionStackOutputs = await getOutputsFromStack('SshBastionStack');
   const mainStackOutputs = await getOutputsFromStack('MainStack');
@@ -79,7 +88,6 @@ async function waitForTask({ cluster, taskArn, maxRetries = 100, retryCount = 0 
   const { taskArn } = runTaskResult.tasks[0];
 
   try {
-
     const describeTaskResult = await waitForTask({ cluster, taskArn });
     const eniAttachment = describeTaskResult.tasks[0].attachments.find(propEq('type', 'ElasticNetworkInterface'));
     const { value: networkInterfaceId } = eniAttachment.details.find(propEq('name', 'networkInterfaceId'));
@@ -88,11 +96,13 @@ async function waitForTask({ cluster, taskArn, maxRetries = 100, retryCount = 0 
     }).promise();
 
     const { PublicIp: publicIp } = describeNetworkInterfacesResult.NetworkInterfaces[0].Association;
-    await spawn('ssh', ['-i', SSH_PRIVATE_KEY, `root@${publicIp}`], { stdio: 'inherit' });
+
+    const sshCmd = spawn('ssh', ['-i', SSH_PRIVATE_KEY, `root@${publicIp}`], { stdio: 'inherit' });
+    sshCmd.on('close', async () => {
+      await stopTask({ cluster, task: taskArn });
+    });
   } catch (err) {
     console.error(err);
+    await stopTask({ cluster, task: taskArn });
   }
-
-  console.log('Stopping bastion...');
-  await ecs.stopTask({ cluster, task: taskArn }).promise();
 })();
