@@ -46,7 +46,7 @@ async function waitForTask({ cluster, taskArn, maxRetries = 100, retryCount = 0 
       throw new Error('Bastion setup timeout!');
     }
 
-    console.log(`[${retryCount}] Waiting for bastion setup... (${lastStatus})`);
+    console.log(`[${retryCount}] Waiting for bastion to start... (${lastStatus})`);
     await sleep(1000);
     retryCount += 1;
   }
@@ -58,7 +58,7 @@ async function stopTask({ cluster, task }) {
   try {
     await ecs.stopTask({ cluster, task }).promise();
   } catch (err) {
-    console.log('Could not stop bastion task! Make sure you kill it manually to avoid unnecessary costs.');
+    console.log(`Could not stop bastion task ${task}! \nMake sure you kill it manually to avoid unnecessary costs.`);
   }
 }
 
@@ -97,6 +97,7 @@ async function stopTask({ cluster, task }) {
 
     const { PublicIp: publicIp } = describeNetworkInterfacesResult.NetworkInterfaces[0].Association;
 
+    console.log('Connecting to SSH bastion using');
     const sshCmd = spawn('ssh', ['-i', SSH_PRIVATE_KEY, `root@${publicIp}`], { stdio: 'inherit' });
     sshCmd.on('close', async () => {
       await stopTask({ cluster, task: taskArn });
