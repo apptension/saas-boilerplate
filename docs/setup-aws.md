@@ -22,35 +22,6 @@ Values to save:
 Download ZIP file with this repository's code from releases page or clone the `master` branch in order to get the 
 latest changes.
 
-#### Directory structure
-```
-my-app
-├── infra
-│   ├── cdk
-│   └── functions
-├── services
-│   ├── backend
-│   ├── webapp
-│   └── workers
-├── README.md
-├── .awsboilerplate.json
-├── .awsboilerplate.local.json
-├── .awsboilerplate.test.json
-├── base.mk
-├── docker-compose.ci.yml
-├── docker-compose.override.yml
-├── docker-compose.yml
-├── Makefile
-└── setup.sh
-```
-
-### Run setup
-You will be asked about resources created during [Initial setup](#initial-setup), but you can input some dummy values 
-first and later change them [^1] in `.awsboilerplate.json` configuration file.
-
-```shell
-sh ./setup.sh
-```
 
 This script will install all possible package dependencies.
 

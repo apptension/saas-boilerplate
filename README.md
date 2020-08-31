@@ -5,17 +5,6 @@ framework.
 
 > Note: This is a work in progress
 
-## What's included?
-
-You environment will have everything you need in a full-stack 
-* Backend API hosted in AWS ECS
-* Admin Panel hosted in AWS ECS
-* Asynchronous Workers hosted with AWS Lambda using Serverless Framework
-* Web app's frontend hosted with AWS S3 and AWS CloudFront
-* Multi-environment support (`dev`, `qa`, `stage`, `prod`, etc)
-* Continuous Deployment pipeline built with `CodePipeline`
-* Dashboard displaying a list of existing environments and deployed app versions
-
 ## General overview
 
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you 
@@ -30,18 +19,44 @@ which you can extend or change however you like:
 * Serverless Framework
 * Docker
 
-# How do I use this boilerplate?
+## Prerequisites
 
-- [ ] Check the [prerequisites](/docs/prerequisites.md)
-- [ ] First you need to [setup the project](/docs/setup-project.md)
-- [ ] Second you need to [deploy the global infrastructure](/docs/global-infra-deployment.md)
-- [ ] Next you need to [create a new environment](/docs/create-new-env.md)
-- [ ] And finally you can [deploy the app to your environment](/docs/app-deployment.md)
+- Install latest [Node.js](https://nodejs.org/en/download/package-manager/#macos) (with NPM >= 6)
+- Install Python 3.8
+  
+  > We recommend installing Python using [`pyenv`](https://github.com/pyenv/pyenv)
+                          
+- Install [Pipenv](https://github.com/pypa/pipenv#installation)
+- Install [Docker](https://docs.docker.com/get-docker)
 
-# Components reference
+## Installation
+We recommend cloning this repository instead of downloading the ZIP. This way you'll be able to
+merge latest changes without too much hassle by resolving conflicts using your favourite tools. 
 
+To setup the project and install local dependencies run following command:
 
-## Services
+```sh
+sh ./setup.sh
+```
+
+## Running locally
+
+Run backend services:
+```sh
+make up
+```
+
+Backend is running on `http://localhost:5000`.
+
+Admin Panel is running on `http://admin.localhost:5000`.
+
+Workers do not expose any http address.
+
+## How do I deploy the app to AWS?
+
+Check out our [deployment to AWS](/docs/guides/aws-deployment.md) documentation
+
+## Services included in boilerplate
 
 The boilerplate contains a number of typical services that are ready to be deployed to AWS.
 Each of them resides in the `services` directory and has to contain a `Makefile`. Do not change the names of the rules
@@ -63,12 +78,9 @@ and AWS CodePipeline. The general idea of deployment is for the user to push cod
 repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/docs/cicd) to learn more.
 
 
-## Additional
-- [Global Tools](/docs/global-tools.md) – Optional helper tools
-- [SSH bastion](/docs/ssh-bastion.md)
-
-
-# Misc
+## Guides
+- Using optional helper [global tools](/docs/global-tools.md)
+- Accessing application code running in AWS through [SSH bastion](/docs/ssh-bastion.md)
 - [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
 - [Environmental Variables](/docs/misc/environmental-variables.md)
 

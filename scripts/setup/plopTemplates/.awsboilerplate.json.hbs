@@ -1,19 +1,11 @@
 {
-  "projectName": "{{ projectName }}",
-  "defaultEnv": "{{ defaultEnv }}",
+  "projectName": "{{ lowerCase projectName }}",
+  "defaultEnv": "local",
   "aws": {
     "profile": "{{ awsProfile }}",
     "region": "{{ awsRegion }}"
   },
   "toolsConfig": {
-    "enabled": false,
-    "basicAuth": "awsb:{{ toolsPassword }}",
-    "hostedZone": {
-      "id": "<CHANGE_ME>",
-      "name": "<CHANGE_ME>"
-    },
-    "domains": {
-      "versionMatrix": "status.<CHANGE_ME>"
-    }
+    "enabled": false
   }
 }

@@ -7,7 +7,7 @@ deploy-global-infra:
 deploy-global-tools:
 	$(MAKE) -C $(BASE_DIR)infra/cdk deploy-global-tools
 
-deploy-stage-infra:
+deploy-env-infra:
 	$(MAKE) -C $(BASE_DIR)infra/cdk deploy-infra-main
 	$(MAKE) -C $(BASE_DIR)infra/cdk deploy-infra-db
 	$(MAKE) -C $(BASE_DIR)infra/functions deploy

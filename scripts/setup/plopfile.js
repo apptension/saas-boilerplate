@@ -11,7 +11,7 @@ module.exports = function (plop) {
       {
         type: 'input',
         name: 'awsProfile',
-        message: 'AWS Profile',
+        message: 'AWS Profile name',
         default: ({ projectName }) => projectName,
       },
       {
@@ -20,18 +20,6 @@ module.exports = function (plop) {
         message: 'AWS Region',
         default: 'eu-west-1',
       },
-      {
-        type: 'input',
-        name: 'defaultEnv',
-        message: 'Default Env',
-        default: 'dev',
-      },
-      {
-        type: 'input',
-        name: 'toolsPassword',
-        message: 'Tools basic auth password',
-        default: () => Math.random().toString(36).substring(7),
-      },
     ],
     actions: [{
       type: 'add',
@@ -39,6 +27,53 @@ module.exports = function (plop) {
       path: '../../.awsboilerplate.json',
       templateFile: 'plopTemplates/.awsboilerplate.json.hbs'
     }]
+  });
+
+  plop.setGenerator('configTools', {
+    description: 'Configure tools',
+    prompts: [
+      {
+        type: 'input',
+        name: 'password',
+        message: 'Tools basic auth password',
+        default: () => Math.random().toString(36).substring(7),
+      },
+      {
+        type: 'input',
+        name: 'hostedZoneId',
+        message: 'Tools hosted zone Id',
+      },
+      {
+        type: 'input',
+        name: 'hostedZoneName',
+        message: 'Tools hosted zone name',
+      },
+      {
+        type: 'input',
+        name: 'versionMatrixDomain',
+        message: 'Version matrix domain name',
+        default: ({ name, hostedZoneName }) => `status.${hostedZoneName}`,
+      },
+    ],
+    actions: [
+      function (answers) {
+        process.chdir(plop.getPlopfilePath());
+        var fs = require('fs');
+        const configFilePath = plop.getDestBasePath() + '/../../.awsboilerplate.json';
+
+        const toolsConfigTemplate =  fs.readFileSync(plop.getDestBasePath() + '/plopTemplates/.awsboilerplateToolsConfig.json.hbs', 'utf-8')
+        const configFileContents = fs.readFileSync(configFilePath, 'utf-8')
+
+        const toolsConfig = JSON.parse(plop.renderString(toolsConfigTemplate, answers));
+        const config = JSON.parse(configFileContents);
+
+        const resultConfig = { ...config, toolsConfig }
+
+        fs.writeFileSync(configFilePath, JSON.stringify(resultConfig, null, 2));
+
+        return '';
+      }
+    ]
   });
 
   plop.setGenerator('createEnv', {

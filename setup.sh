@@ -2,18 +2,21 @@
 
 set -e
 
-BACKEND_DIR=services/backend
+DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-rm -f ".awsboilerplate.json"
-cd scripts
-npm install
 
-cd setup
-node ../node_modules/.bin/plop config
+BACKEND_DIR="${DIR}/services/backend"
+SCRIPTS_DIR="${DIR}/scripts"
 
-cd ../../
+rm -rf ".awsboilerplate.json"
+rm -rf ".awsboilerplate.dev.json"
 
-cp ${BACKEND_DIR}/.env.example ${BACKEND_DIR}/.env
+cd "${SCRIPTS_DIR}" && npm install
+cd "${SCRIPTS_DIR}/setup" && node ../node_modules/.bin/plop config
 
-make setup
-rm -f setup.sh
+cp "${BACKEND_DIR}"/.env.example "${BACKEND_DIR}"/.env
+
+cd "${DIR}"
+
+make install
+make setup-docker

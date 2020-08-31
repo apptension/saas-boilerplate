@@ -35,10 +35,10 @@ AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
 
 ifeq ($(CI),true)
 	VERSION := $(shell cat $(BASE_DIR)/VERSION)
-	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID) -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
+	DOCKER_COMPOSE = docker-compose -f $(BASE_DIR)/docker-compose.yml -f $(BASE_DIR)/docker-compose.ci.yml
 else
 	VERSION := $(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
-	DOCKER_COMPOSE = docker-compose -p $(PROJECT_NAME)_$(HOST_UID)
+	DOCKER_COMPOSE = docker-compose
 endif
 
 export VERSION
@@ -90,13 +90,13 @@ up:
 
 down:
 	# run as a (background) service
-	docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down
+	docker-compose down
 
 clean:
 	# remove created images
-	@docker-compose -p $(PROJECT_NAME)_$(HOST_UID) down --remove-orphans --rmi all 2>/dev/null \
-	&& echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" removed.' \
-	|| echo 'Image(s) for "$(PROJECT_NAME):$(HOST_USER)" already removed.'
+	@docker-compose -p  down --remove-orphans --rmi all 2>/dev/null \
+	&& echo 'Image(s) removed.' \
+	|| echo 'Image(s) already removed.'
 
 prune:
 	# clean all that is not actively used
