@@ -12,55 +12,7 @@ You can easily create it with the following `make` rule we've created for you:
 make create-env
 ```
 
-#### Configuration file specification
-
-##### `deployBranches`
-A list of branches that will trigger automatic deployment of this environment.
-
-Type: `Array<string>`
-
-Example: `['master']`
-
-##### `hostedZone.id`
-Id of a AWS Route53 hosted zone of a domain used to host services of this env.
-
-Type: `string`
-Example: `Z1019320SEC473QW1LV2`
-
-##### `hostedZone.name`
-Name of a AWS Route53 hosted zone of a domain used to host services of this env.
-
-Type: `string`
-
-Example: `dev.awsb.apptoku.com`
-
-##### `basicAuth`
-This flag controls if basic auth should be used to access services via HTTP.
-
-Type: `string`
-
-Example: `username:password`
-
-##### `domains.adminPanel`
-A domain used to host an admin panel service.
-
-Type: `string`
-
-Example: `admin.dev.awsb.apptoku.com`
-
-##### `domains.api`
-A domain used to host an API backend service.
-
-Type: `string`
-
-Example: `api.dev.awsb.apptoku.com`
-
-##### `domains.webApp`
-A domain used to host the web app.
-
-Type: `string`
-
-Example: `app.dev.awsb.apptoku.com`
+> See configuration file [spec](#configuration-file-specification) for more details.
 
 ## Infrastructure deployment
 Now that the configuration part is done you can switch to aws-vault session of this new environment:
@@ -112,3 +64,56 @@ make build
 ```sh
 make deploy-stage-app
 ```
+
+
+<hr>
+
+#### Configuration file specification
+
+##### `deployBranches`
+A list of branches that will trigger automatic deployment of this environment.
+
+Type: `Array<string>`
+
+Example: `['master']`
+
+##### `hostedZone.id`
+Id of a AWS Route53 hosted zone of a domain used to host services of this env.
+
+Type: `string`
+Example: `Z1019320SEC473QW1LV2`
+
+##### `hostedZone.name`
+Name of a AWS Route53 hosted zone of a domain used to host services of this env.
+
+Type: `string`
+
+Example: `dev.awsb.apptoku.com`
+
+##### `basicAuth`
+This flag controls if basic auth should be used to access services via HTTP.
+
+Type: `string`
+
+Example: `username:password`
+
+##### `domains.adminPanel`
+A domain used to host an admin panel service.
+
+Type: `string`
+
+Example: `admin.dev.awsb.apptoku.com`
+
+##### `domains.api`
+A domain used to host an API backend service.
+
+Type: `string`
+
+Example: `api.dev.awsb.apptoku.com`
+
+##### `domains.webApp`
+A domain used to host the web app.
+
+Type: `string`
+
+Example: `app.dev.awsb.apptoku.com`
