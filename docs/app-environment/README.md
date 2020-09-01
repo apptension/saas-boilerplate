@@ -34,9 +34,14 @@ keys for a 3rd party service, boolean flags enabling features, and much much mor
 We chose AWS Systems Manager Parameter Store to keep such variables and utilize a tool named [`chamber`](https://github.com/segmentio/chamber)
 to actually manage them with ease.
 
-Before you deploy your application's code make sure you set up all required environmental variables.
+Before you deploy your application's code you have to set all required environmental variables.
 
 ##### Backend
+You can set backend variables in a JSON format using following `make` rule:
+
+```shell
+make -C services/backend secrets
+```
 
 
 | Name              | Example                          | Description                                                                   |
@@ -45,11 +50,6 @@ Before you deploy your application's code make sure you set up all required envi
 | DJANGO_SECRET_KEY | Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I | [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#secret-key)        |
 | HASHID_FIELD_SALT | t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)      |
 
-You can set those variables using following `make` rule:
-
-```shell
-make -C services/backend chamber
-```
 
 ## (Optional) Deploy application's code
 This step is optional because it usually should be run through CI/CD pipeline. We didn't want to limit you so we also
