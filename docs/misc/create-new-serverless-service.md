@@ -75,14 +75,14 @@ build:
 	$(MAKE) -C services/<CHANGE_ME> build
 ```
 
-Add deployment step to `deploy-stage-app` rule.
+Add deployment step to `deploy-env-app` rule.
 ```
-deploy-stage-app:
+deploy-env-app:
 	# ...
 	$(MAKE) -C services/<CHANGE_ME> deploy
 ```
 
 Deploy the app
 ```shell
-make deploy-stage-app
+make deploy-env-app
 ```

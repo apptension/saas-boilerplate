@@ -54,7 +54,7 @@ make -C services/backend secrets
 (Optional) Deploy app's code:
 ```sh
 make build
-make deploy-stage-app
+make deploy-env-app
 ```
 
 ## Connect your repository to CI/CD

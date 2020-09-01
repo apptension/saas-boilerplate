@@ -51,7 +51,7 @@ make aws-vault ENV_STAGE=dev
 
 Now you can deploy an actual infrastructure of your app by running following command:
 ```shell
-make deploy-stage-infra
+make deploy-env-infra
 ```
 
 When CDK finishes successfully you'll be almost ready to deploy your application!
@@ -91,7 +91,7 @@ make build
 
 Deploy artifacts to the newly created env:
 ```sh
-make deploy-stage-app
+make deploy-env-app
 ```
 
 
