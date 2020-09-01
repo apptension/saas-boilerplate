@@ -58,7 +58,7 @@ that are defined in Makefiles unless you know what you're doing. Most of them ar
 pipeline.
 
 - [Web App](/services/webapp) – Single page application
-- [Backend](/services/backend) – Contains three services:
+- [Backend](/services/backend) – Django app containing three services:
     * API backend
     * Admin Panel
     * Migrations
