@@ -54,11 +54,18 @@ services:
       - "1025:1025"
     restart: always
 
-  chamber:
-    image: segment/chamber:2
+  ssmeditor:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./tools/ssm-editor
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - CHAMBER_KMS_KEY_ALIAS=${PROJECT_NAME}-${ENV_STAGE}-main
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
+      - PROJECT_ENV_NAME=${PROJECT_ENV_NAME}
+      - CHAMBER_SERVICE=${CHAMBER_SERVICE}
+

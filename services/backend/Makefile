@@ -60,5 +60,7 @@ flake8:
 black:
 	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml .
 
+chamber: export CHAMBER_SERVICE=backend
 chamber:
-	$(call Chamber,env-$(PROJECT_ENV_NAME)-backend)
+	$(DOCKER_COMPOSE) build ssmeditor
+	$(DOCKER_COMPOSE) run --rm ssmeditor
