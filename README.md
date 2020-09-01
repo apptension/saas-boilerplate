@@ -1,10 +1,5 @@
 # AWS Boilerplate
 
-Opinionated full stack web app's boilerplate, ready to be deployed to AWS platform. Configured using CDK and Serverless 
-framework.
-
-> Note: This is a work in progress
-
 ## General overview
 
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you 
