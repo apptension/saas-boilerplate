@@ -1,8 +1,6 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/base.mk
 
-.PHONY: shell help build rebuild service login test clean prune version
-
 install: install-infra-cdk install-infra-functions install-scripts
 	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) install;)
 
