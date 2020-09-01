@@ -1,7 +1,5 @@
 # AWS Boilerplate
 
-## General overview
-
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you 
 would normally have to spend on system infrastructure's configuration. It contains a number of services that a typical
 web application has (frontend, backend api, admin panel, workers) as well as their continuous deployment. Using this 
