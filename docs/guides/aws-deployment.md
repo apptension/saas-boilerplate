@@ -48,7 +48,7 @@ make deploy-env-infra
 
 Define necessary environmental variables in SSM:
 ```sh
-make -C services/backend chamber
+make -C services/backend secrets
 ```
 
 (Optional) Deploy app's code:
