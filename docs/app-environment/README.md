@@ -84,12 +84,12 @@ make -C services/backend secrets
 This step is optional because it usually should be run through CI/CD pipeline. We didn't want to limit you so we also
 prepared a way to deploy the app fully from your local machine. There are two steps – building artifacts and deploying.
 
-### Build application's code
+Build application's code
 ```sh
 make build
 ```
 
-## Deploy application's code to your environment
+Deploy artifacts to the newly created env:
 ```sh
 make deploy-stage-app
 ```
