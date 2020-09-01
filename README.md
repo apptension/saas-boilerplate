@@ -27,6 +27,7 @@ which you can extend or change however you like:
   > We recommend installing Python using [`pyenv`](https://github.com/pyenv/pyenv)
                           
 - Install [Pipenv](https://github.com/pypa/pipenv#installation)
+- Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) version 2
 - Install [Docker](https://docs.docker.com/get-docker)
 
 ## Installation
