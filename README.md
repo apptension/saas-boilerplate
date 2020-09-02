@@ -79,7 +79,7 @@ Each deployed environment comes with a preconfigured CI/CD implemented with AWS 
 and AWS CodePipeline. The general idea of deployment is for the user to push code to a `master` branch of the CodeCommit 
 repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/docs/cicd) to learn more.
 
-<p align="center"> <img src="/docs/images/cicd-diagram-v2.png" alt="CI/CD Diagram" /> </p>
+<p align="center"> <img src="/docs/images/cicd-diagram-v3.png" alt="CI/CD Diagram" /> </p>
 
 
 ## Guides
