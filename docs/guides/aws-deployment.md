@@ -57,6 +57,3 @@ make build
 make deploy-env-app
 ```
 
-## Connect your repository to CI/CD
-
-TODO

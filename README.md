@@ -50,6 +50,10 @@ Admin Panel is running on `http://admin.localhost:5000`.
 
 Workers do not expose any http address.
 
+## System architecture diagram
+
+<p align="center"> <img src="/docs/images/system-diagram-v1.png" alt="System Diagram" /> </p>
+
 ## How do I deploy the app to AWS?
 
 Check out our [deployment to AWS](/docs/guides/aws-deployment.md) documentation
@@ -82,6 +86,3 @@ repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/doc
 - [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
 
 
-## System architecture diagram
-
-<p align="center"> <img src="/docs/images/system-diagram-v1.png" alt="System Diagram" /> </p>
