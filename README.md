@@ -84,4 +84,4 @@ repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/doc
 
 ## System architecture diagram
 
-<p align="center"> <img src="/docs/images/system-diagram.png" alt="System Diagram" /> </p>
+<p align="center"> <img src="/docs/images/system-diagram.png?v=1" alt="System Diagram" /> </p>
