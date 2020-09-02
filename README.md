@@ -81,3 +81,7 @@ repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/doc
 - Accessing application code running in AWS through [SSH bastion](/docs/ssh-bastion.md)
 - [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
 
+
+## System architecture diagram
+
+<p align="center"> <img src="/docs/images/system-diagram.png" alt="System Diagram" /> </p>
