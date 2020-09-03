@@ -83,8 +83,8 @@ Check out the [CI/CD documentation](/docs/cicd) to learn more.
 
 <p align="center"> <img src="/docs/images/cicd-diagram-v3.png" alt="CI/CD Diagram" /> </p>
 
-
 ## Guides
-- Using optional helper [global tools](/docs/global-tools.md)
-- Accessing application code running in AWS through [SSH bastion](/docs/ssh-bastion.md)
-- [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
+- [Creating new application environment](/docs/app-environment)
+- [Using optional helper tools](/docs/global-tools.md)
+- [Running SSH bastion](/docs/ssh-bastion.md) to access application code running in AWS 
+- [Creating new Serverless service](/docs/misc/create-new-serverless-service.md)
