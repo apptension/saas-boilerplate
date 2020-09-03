@@ -13,7 +13,7 @@ repository. In order to implement a synchronization logic we need to get a repos
 You can create both using a following command:
 
 > Note: This command will output a value with a password in a plain text!
-> You can pipe it to `xclip` in Linux or to `pbcopy` in  OS to save it directly to your clipboard.
+> You can pipe it to `xclip` in Linux or to `pbcopy` in Mac OS to save it directly to your clipboard.
 
 ```sh
 make aws-vault
