@@ -1,4 +1,4 @@
-import {Construct} from "@aws-cdk/core";
+import {CfnOutput, Construct} from "@aws-cdk/core";
 import {Repository} from "@aws-cdk/aws-codecommit";
 import {User} from "@aws-cdk/aws-iam";
 
@@ -13,6 +13,14 @@ export class GlobalCodeCommit extends Construct {
         return `${envSettings.projectName}-code`;
     }
 
+    static getCodeRepoUserNameOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectName}-codeRepoUserName`
+    }
+
+    static getCodeRepoCloneUrlHttpOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectName}-codeRepoCloneUrlHttp`
+    }
+
     constructor(scope: Construct, id: string, props: EnvConstructProps) {
         super(scope, id);
 
@@ -25,5 +33,15 @@ export class GlobalCodeCommit extends Construct {
             userName: `${props.envSettings.projectName}-code`
         });
         this.repository.grantPullPush(user);
+
+        new CfnOutput(this, "CodeRepoUserName", {
+            exportName: GlobalCodeCommit.getCodeRepoUserNameOutputExportName(props.envSettings),
+            value: user.userName,
+        });
+
+        new CfnOutput(this, "CodeRepoCloneUrlHttp", {
+            exportName: GlobalCodeCommit.getCodeRepoCloneUrlHttpOutputExportName(props.envSettings),
+            value: this.repository.repositoryCloneUrlHttp,
+        });
     }
 }

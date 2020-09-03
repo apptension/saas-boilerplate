@@ -2,7 +2,6 @@ import * as core from '@aws-cdk/core';
 
 import {EnvConstructProps} from "../../types";
 import {GlobalResources} from './resources';
-import {DnsValidatedCertificate} from "@aws-cdk/aws-certificatemanager";
 
 
 export interface GlobalStackProps extends core.StackProps, EnvConstructProps {

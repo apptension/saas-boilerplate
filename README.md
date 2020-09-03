@@ -86,5 +86,3 @@ repository created by the Ci CDK Stack. Check out the [CI/CD documentation](/doc
 - Using optional helper [global tools](/docs/global-tools.md)
 - Accessing application code running in AWS through [SSH bastion](/docs/ssh-bastion.md)
 - [Creating a new Serverless service](/docs/misc/create-new-serverless-service.md)
-
-

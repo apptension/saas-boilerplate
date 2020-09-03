@@ -17,6 +17,9 @@ setup-docker:
 create-env:
 	cd scripts/setup && ../node_modules/.bin/plop createEnv
 
+create-cicd-creds:
+	node $(SELF_DIR)scripts/create-cicd-creds.js
+
 #
 # Infrastructure deployment
 #
