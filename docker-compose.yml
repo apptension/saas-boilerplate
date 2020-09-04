@@ -30,3 +30,11 @@ services:
       - PROJECT_NAME=${PROJECT_NAME}
     stdin_open: true
     tty: true
+
+  workers:
+    build:
+      context: ./services/workers
+    depends_on:
+      - db
+    links:
+      - db

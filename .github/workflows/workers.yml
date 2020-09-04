@@ -12,6 +12,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: docker/apptension/awsb-base
+
       - uses: actions/setup-python@v1
       - uses: dschep/install-pipenv-action@v1
 
@@ -37,5 +39,4 @@ jobs:
           PROJECT_NAME: test
           ENV_STAGE: test
         run: |
-          make -C services/workers install-test
           make -C services/workers test

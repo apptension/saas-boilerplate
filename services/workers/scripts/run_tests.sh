@@ -4,8 +4,8 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-pipenv run flake8
-pipenv run black --config=pyproject.toml --check .
+flake8
+black --config=pyproject.toml --check .
 
-bash ./scripts/wait-for-it.sh localhost:5432
-pipenv run python setup.py test
+./scripts/wait-for-it.sh db:5432
+python setup.py test
