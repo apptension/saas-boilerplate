@@ -86,5 +86,5 @@ Check out the [CI/CD documentation](/docs/cicd) to learn more.
 ## Guides
 - [Creating new application environment](/docs/app-environment)
 - [Using optional helper tools](/docs/global-tools.md)
-- [Running SSH bastion](/docs/ssh-bastion.md) to run backend commands in ECS Container.
+- [Running SSH bastion](/docs/ssh-bastion.md) to run backend commands in ECS Container
 - [Creating new Serverless service](/docs/misc/create-new-serverless-service.md)

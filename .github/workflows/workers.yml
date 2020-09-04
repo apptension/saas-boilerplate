@@ -36,6 +36,4 @@ jobs:
         env:
           PROJECT_NAME: test
           ENV_STAGE: test
-        run: |
-          make -C services/workers install-test
-          make -C services/workers test
+        run: make -C services/workers test
