@@ -12,7 +12,7 @@ pipelines:
 
         - step:
             name: Build and test web app
-            image: apptension/awsb-base
+            image: atlassian/default-image:2
             script:
               - make -C services/webapp install
               - make -C services/webapp build
@@ -22,7 +22,7 @@ pipelines:
 
         - step:
             name: Test backend
-            image: apptension/awsb-base
+            image: atlassian/default-image:2
             script:
               - echo "test" > VERSION
               - make -C services/backend test PROJECT_NAME=test ENV_STAGE=test
@@ -33,27 +33,19 @@ pipelines:
 
         - step:
             name: Test async-workers
-            image: apptension/awsb-base
+            image: atlassian/default-image:2
             script:
               - echo "test" > VERSION
               - make -C services/workers test PROJECT_NAME=test ENV_STAGE=test
             services:
               - docker
-              - db
             caches:
-              - pip
               - docker
 
 definitions:
   services:
     docker:
       memory: 1024
-    db:
-      image: postgres:10.6
-      environment:
-        POSTGRES_USER: backend
-        POSTGRES_PASSWORD: backend
-        POSTGRES_DB: backend
   caches:
     yarn: /usr/local/share/.cache/yarn
     webappnode: ./services/webapp/node_modules
