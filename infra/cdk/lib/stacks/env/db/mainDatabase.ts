@@ -66,7 +66,7 @@ export class MainDatabase extends Construct {
             instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
             vpc: props.vpc,
             engine: DatabaseInstanceEngine.POSTGRES,
-            instanceClass: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
+            instanceType: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
             masterUsername: 'root',
             databaseName: 'main',
             securityGroups: [securityGroup],

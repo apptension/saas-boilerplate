@@ -1,6 +1,6 @@
 import * as core from '@aws-cdk/core';
 import {Duration, Fn, Stack} from '@aws-cdk/core';
-import {AwsLogDriver, ContainerImage, FargateTaskDefinition} from "@aws-cdk/aws-ecs";
+import {AwsLogDriver, ContainerDefinition, ContainerImage, FargateTaskDefinition} from "@aws-cdk/aws-ecs";
 import {RunEcsFargateTask} from "@aws-cdk/aws-stepfunctions-tasks";
 import {ServiceIntegrationPattern, StateMachine, Task} from "@aws-cdk/aws-stepfunctions";
 import {Secret} from "@aws-cdk/aws-secretsmanager";
@@ -35,7 +35,7 @@ export class MigrationsStack extends core.Stack {
             memoryLimitMiB: 512,
         });
 
-        migrationsTaskDefinition.addContainer(containerName, {
+        const containerDef = migrationsTaskDefinition.addContainer(containerName, {
             image: ContainerImage.fromEcrRepository(resources.backendRepository, envSettings.version),
             logging: this.createAWSLogDriver(this.node.id),
             environment: {
@@ -58,7 +58,7 @@ export class MigrationsStack extends core.Stack {
                     securityGroup: resources.fargateContainerSecurityGroup,
                     containerOverrides: [
                         {
-                            containerName,
+                            containerDefinition: containerDef,
                             command: ['./scripts/run_migrations.sh'],
                         }
                     ],
