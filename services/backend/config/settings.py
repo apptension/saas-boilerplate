@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django_hosts",
     "rest_framework_jwt.blacklist",
     "whitenoise",
-    "restauth",
+    "apps.users",
 ]
 
 
@@ -56,8 +56,8 @@ MIDDLEWARE = [
     "allow_cidr.middleware.AllowCIDRMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
 ]
-ROOT_URLCONF = "restauth.urls_api"
-ROOT_HOSTCONF = "restauth.hosts"
+ROOT_URLCONF = "config.urls_api"
+ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "api"
 
 TEMPLATES = [
@@ -76,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "restauth.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
@@ -129,7 +129,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = "restauth.User"
+AUTH_USER_MODEL = "users.User"
 
 LOCALE_PATHS = []
 
@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_ENCODE_HANDLER': 'restauth.jwt.encode_handler',
+    'JWT_ENCODE_HANDLER': 'apps.users.jwt.encode_handler',
 }
 
 SWAGGER_SETTINGS = {
@@ -149,7 +149,7 @@ SWAGGER_SETTINGS = {
 
 HASHID_FIELD_SALT = env("HASHID_FIELD_SALT")
 
-USER_NOTIFICATION_IMPL = "restauth.notifications.stdout"
+USER_NOTIFICATION_IMPL = "config.notifications.stdout"
 
 WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 

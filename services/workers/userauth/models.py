@@ -4,7 +4,7 @@ from dao.db import models
 
 
 class User(models.Base):
-    __tablename__ = "restauth_user"
+    __tablename__ = "users_user"
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     password = Column("password", String)

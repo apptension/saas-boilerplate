@@ -1,11 +1,9 @@
 import factory
 
-from .. import models
-
 
 class UserFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.User
+        model = "users.User"
 
     email = factory.Faker("email")
     is_superuser = False
@@ -14,7 +12,7 @@ class UserFactory(factory.DjangoModelFactory):
 
 class UserProfileFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.UserProfile
+        model = "users.UserProfile"
 
     user = factory.SubFactory(UserFactory)
     first_name = factory.Faker("name", locale="pl")

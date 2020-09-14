@@ -6,9 +6,7 @@ from rest_framework import serializers
 from rest_framework import validators
 from django.utils.translation import gettext as _
 
-from . import models
-from . import tokens
-from . import utils
+from . import models, tokens, utils
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -18,7 +16,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
-    id = rest.HashidSerializerCharField(source_field="restauth.User.id", read_only=True)
+    id = rest.HashidSerializerCharField(source_field="users.User.id", read_only=True)
     email = serializers.EmailField(
         validators=[validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())],
     )
