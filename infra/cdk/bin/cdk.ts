@@ -28,7 +28,9 @@ import {SshBastionStack} from "../lib/stacks/services/sshBastion";
         envSettings,
         env: {region: 'us-east-1'},
     });
-    new GlobalToolsStack(app, getStackName('GlobalToolsStack', envSettings.projectName), {envSettings});
+    if (envSettings.tools.enabled) {
+        new GlobalToolsStack(app, getStackName('GlobalToolsStack', envSettings.projectName), {envSettings});
+    }
 
     // Environment (dev / qa / stage / prod) stacks
     new EnvMainStack(app, getStackName("MainStack", envSettings.projectEnvName), {envSettings});
