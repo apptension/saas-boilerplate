@@ -34,7 +34,7 @@ pipenv run python manage.py runserver
 ```python
 # ..
 
-AUTH_USER_MODEL = 'restauth.User'
+AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -48,7 +48,7 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_ENCODE_HANDLER': 'restauth.jwt.encode_handler',
+    'JWT_ENCODE_HANDLER': 'apps.users.jwt.encode_handler',
 }
 
 HASHID_FIELD_SALT = ''

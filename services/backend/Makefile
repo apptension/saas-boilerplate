@@ -46,19 +46,22 @@ ssh-bastion:
 # Local CLI rules
 
 shell:
-	$(DOCKER_COMPOSE) run backend sh
+	$(DOCKER_COMPOSE) run --rm backend bash
+
+create-app:
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "cd apps && django-admin startapp $(app_name)"
 
 makemigrations:
-	$(DOCKER_COMPOSE) run -T backend sh -c "python ./manage.py makemigrations"
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py makemigrations"
 
 migrate:
-	$(DOCKER_COMPOSE) run -T backend sh -c "python ./manage.py migrate"
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py migrate"
 
 flake8:
-	$(DOCKER_COMPOSE) run -T backend flake8
+	$(DOCKER_COMPOSE) run --rm -T backend flake8
 
 black:
-	$(DOCKER_COMPOSE) run -T backend black --config=pyproject.toml .
+	$(DOCKER_COMPOSE) run --rm -T backend black --config=pyproject.toml .
 
 secrets: export CHAMBER_SERVICE=backend
 secrets:
