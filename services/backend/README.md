@@ -48,7 +48,7 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_ENCODE_HANDLER': 'app.users.jwt.encode_handler',
+    'JWT_ENCODE_HANDLER': 'apps.users.jwt.encode_handler',
 }
 
 HASHID_FIELD_SALT = ''

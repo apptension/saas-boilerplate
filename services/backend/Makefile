@@ -48,6 +48,9 @@ ssh-bastion:
 shell:
 	$(DOCKER_COMPOSE) run --rm backend bash
 
+create-app:
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "cd apps && django-admin startapp $(app_name)"
+
 makemigrations:
 	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py makemigrations"
 
