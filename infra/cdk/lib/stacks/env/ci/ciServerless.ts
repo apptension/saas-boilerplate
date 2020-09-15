@@ -38,13 +38,13 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     private createBuildAction(actionProps: Partial<CodeBuildActionProps>, props: ServerlessCiConfigProps) {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
-            actionName: `${props.envSettings.projectName}-build-${props.name}`,
+            actionName: `${props.envSettings.projectEnvName}-build-${props.name}`,
         });
     }
 
     private createBuildProject(props: ServerlessCiConfigProps) {
         return new Project(this, "BuildProject", {
-            projectName: `${props.envSettings.projectName}-build-${props.name}`,
+            projectName: `${props.envSettings.projectEnvName}-build-${props.name}`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
@@ -73,14 +73,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     private createDeployAction(actionProps: Partial<CodeBuildActionProps>, props: ServerlessCiConfigProps) {
         return new CodeBuildAction(<CodeBuildActionProps>{
             ...actionProps,
-            actionName: `${props.envSettings.projectName}-deploy-${props.name}`,
+            actionName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
         });
     }
 
     private createDeployProject(props: ServerlessCiConfigProps) {
         const stack = Stack.of(this);
         const project = new Project(this, "DeployProject", {
-            projectName: `${props.envSettings.projectName}-deploy-${props.name}`,
+            projectName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
             buildSpec: BuildSpec.fromObject({
                 version: '0.2',
                 phases: {
@@ -110,7 +110,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             ],
             resources: [
                 `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
-                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectName}-${props.envSettings.envStage}-${props.name}/*`,
+                `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-${props.name}/*`,
             ],
         }));
 
