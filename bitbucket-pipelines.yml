@@ -7,8 +7,8 @@ pipelines:
               depth: full
             script:
               - git remote add codecommit "$CODE_COMMIT_REPO"
-              - git push -u codecommit "$BITBUCKET_BRANCH"
-              - git push codecommit --tags
+              - git push --force -u codecommit "$BITBUCKET_BRANCH"
+              - git push codecommit --tags --force
 
         - step:
             name: Build and test web app
