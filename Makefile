@@ -17,7 +17,7 @@ setup-docker:
 create-env:
 	cd scripts/setup && ../node_modules/.bin/plop createEnv
 
-create-cicd-creds:
+create-repo-auth-url:
 	node $(SELF_DIR)scripts/create-cicd-creds.js
 
 #
