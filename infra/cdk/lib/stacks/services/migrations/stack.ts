@@ -26,7 +26,7 @@ export class MigrationsStack extends core.Stack {
         const resources = new FargateServiceResources(this, "MigrationsResources", props);
 
         const containerName = 'migrations';
-        const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
+        const dbSecretArn = Fn.importValue(MainDatabase.getDatabaseSecretArnOutputExportName(envSettings));
         const taskRole = this.createTaskRole(props);
 
         const migrationsTaskDefinition = new FargateTaskDefinition(this, "MigrationsTaskDefinition", {

@@ -45,7 +45,7 @@ export class SshBastionStack extends core.Stack {
         securityGroup.addIngressRule(securityGroup, Port.allTcp());
 
         const containerName = 'sshBastion';
-        const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
+        const dbSecretArn = Fn.importValue(MainDatabase.getDatabaseSecretArnOutputExportName(envSettings));
         const taskRole = this.createTaskRole(props);
 
         const taskDefinition = new FargateTaskDefinition(this, "TaskDefinition", {

@@ -42,7 +42,7 @@ export class ApiStack extends core.Stack {
         const {envSettings} = props;
         const taskRole = this.createTaskRole(props);
 
-        const dbSecretArn = Fn.importValue(MainDatabase.geDatabaseSecretArnOutputExportName(envSettings));
+        const dbSecretArn = Fn.importValue(MainDatabase.getDatabaseSecretArnOutputExportName(envSettings));
         const domainZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
             hostedZoneId: envSettings.hostedZone.id,
             zoneName: envSettings.hostedZone.name,
