@@ -26,7 +26,7 @@ function is_event_bus_exists {
 }
 
 function create_event_bus() {
-  if $(is_event_bus_exists $WORKERS_EVENT_BUS_NAME) ; then
+  if is_event_bus_exists "$WORKERS_EVENT_BUS_NAME" ; then
     echo "Event bus $WORKERS_EVENT_BUS_NAME already exists."
     return
   else
@@ -42,7 +42,7 @@ function create_event_bus() {
   aws --region=eu-west-1 --endpoint-url="$LOCALSTACK_URL" events put-targets \
     --rule send-email-rule \
     --event-bus-name "$WORKERS_EVENT_BUS_NAME"\
-    --targets "Id"="sendEmailLambdaTarget","Arn"="$SEND_EMAIL_LAMBDA_ARN";
+    --targets "Id=sendEmailLambdaTarget,Arn=$SEND_EMAIL_LAMBDA_ARN";
 
 }
 
