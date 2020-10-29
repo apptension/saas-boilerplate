@@ -26,11 +26,11 @@ export interface MainDatabaseProps extends EnvConstructProps {
 export class MainDatabase extends Construct {
     private instance: DatabaseInstance;
 
-    static geDatabaseSecretArnOutputExportName(envSettings: EnvironmentSettings) {
+    static getDatabaseSecretArnOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-databaseSecretArn`
     }
 
-    static geDatabaseProxyRoleArnOutputExportName(envSettings: EnvironmentSettings) {
+    static getDatabaseProxyRoleArnOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-databaseProxyRoleArn`
     }
 
@@ -51,7 +51,7 @@ export class MainDatabase extends Construct {
             toPort: 5432,
             protocol: Protocol.TCP,
             stringRepresentation: "",
-        })
+        });
 
         sg.addIngressRule(props.fargateContainerSecurityGroup, dbPort);
         sg.addIngressRule(props.lambdaSecurityGroup, dbPort);
@@ -75,7 +75,7 @@ export class MainDatabase extends Construct {
 
         if (instance.secret) {
             new CfnOutput(this, "SecretOutput", {
-                exportName: MainDatabase.geDatabaseSecretArnOutputExportName(props.envSettings),
+                exportName: MainDatabase.getDatabaseSecretArnOutputExportName(props.envSettings),
                 value: instance.secret.secretArn,
             });
         }
@@ -107,7 +107,7 @@ export class MainDatabase extends Construct {
         }
 
         new CfnOutput(this, "DbProxyRoleArn", {
-            exportName: MainDatabase.geDatabaseProxyRoleArnOutputExportName(props.envSettings),
+            exportName: MainDatabase.getDatabaseProxyRoleArnOutputExportName(props.envSettings),
             value: role.roleArn,
         });
     }
