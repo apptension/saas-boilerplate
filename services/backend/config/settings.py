@@ -27,21 +27,28 @@ ALLOWED_CIDR_NETS = env.list("DJANGO_ALLOWED_CIDR_NETS", default=[])
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_CORE_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "drf_yasg",
+]
+
+THIRD_PARTY_APPS = [
     "django_hosts",
+    "drf_yasg",
+    "rest_framework",
     "rest_framework_jwt.blacklist",
     "whitenoise",
+]
+
+LOCAL_APPS = [
     "apps.users",
 ]
 
+INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django_hosts.middleware.HostsRequestMiddleware",
