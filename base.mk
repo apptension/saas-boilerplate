@@ -24,7 +24,7 @@ endef
 export TOOLS_ENABLED := $(call GetFromCfg,toolsConfig.enabled)
 
 AWS_VAULT_PROFILE ?= $(call GetFromCfg,aws.profile)
-AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --
+AWS_VAULT = aws-vault exec $(AWS_VAULT_PROFILE) --no-session --
 
 ifeq ($(CI),true)
 	VERSION := $(shell cat $(BASE_DIR)/VERSION)
