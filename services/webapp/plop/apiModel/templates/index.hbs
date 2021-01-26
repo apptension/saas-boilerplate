@@ -1,0 +1,14 @@
+import { client } from '../client';
+import { {{ pascalCase name }}ApiGetResponseData } from './types';
+
+export const {{ constantCase name }}_URL = '/{{ camelCase name }}';
+
+export const get = async (id: string) => {
+  const res = await client.get<{{ pascalCase name }}ApiGetResponseData>({{ constantCase name }}_URL + `/${id}`);
+  return res.data;
+};
+
+export const list = async () => {
+  const res = await client.get<{{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL);
+  return res.data;
+};

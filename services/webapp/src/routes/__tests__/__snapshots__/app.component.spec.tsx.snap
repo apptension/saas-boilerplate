@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App: Component should render App when language is set 1`] = `
+<div>
+  <span
+    data-testid="content"
+  >
+    content
+  </span>
+</div>
+`;

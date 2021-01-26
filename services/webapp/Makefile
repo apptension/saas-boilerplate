@@ -2,16 +2,15 @@ SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
 install:
-	@echo "install"
+	yarn install
 
 install-deploy: install-infra-cdk install-scripts
 
 test:
-	@echo "test"
+	yarn test
 
 build: test
-	mkdir -p build
-	cp index.html build/index.html
+	yarn build
 
 deploy: SERVICE_URL=$(call GetFromEnvCfg,domains.webApp)
 deploy:

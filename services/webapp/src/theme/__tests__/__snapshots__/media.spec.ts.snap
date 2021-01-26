@@ -1,0 +1,161 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`theme/media media() for specified breakpoint should return correct css media query 1`] = `
+"
+      @media (min-width: 320px) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified breakpoint should return correct css media query 2`] = `
+"
+      @media (min-width: 768px) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified breakpoint should return correct css media query 3`] = `
+"
+      @media (min-width: 1280px) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified breakpoint should return correct css media query 4`] = `
+"
+      @media (min-width: 1440px) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified breakpoint should return correct css media query 5`] = `
+"
+      @media (min-width: 1920px) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified landscape breakpoint should return correct css media query 1`] = `
+"
+      @media (min-width: 320px) and (orientation: landscape) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified landscape breakpoint should return correct css media query 2`] = `
+"
+      @media (min-width: 768px) and (orientation: landscape) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified landscape breakpoint should return correct css media query 3`] = `
+"
+      @media (min-width: 1280px) and (orientation: landscape) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified landscape breakpoint should return correct css media query 4`] = `
+"
+      @media (min-width: 1440px) and (orientation: landscape) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified landscape breakpoint should return correct css media query 5`] = `
+"
+      @media (min-width: 1920px) and (orientation: landscape) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina breakpoint should return correct css media query 1`] = `
+"
+      @media (min-width: 320px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 320px) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina breakpoint should return correct css media query 2`] = `
+"
+      @media (min-width: 768px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 768px) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina breakpoint should return correct css media query 3`] = `
+"
+      @media (min-width: 1280px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1280px) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina breakpoint should return correct css media query 4`] = `
+"
+      @media (min-width: 1440px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1440px) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina breakpoint should return correct css media query 5`] = `
+"
+      @media (min-width: 1920px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1920px) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 1`] = `
+"
+      @media (min-width: 320px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 320px) and (orientation: landscape) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 2`] = `
+"
+      @media (min-width: 768px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 768px) and (orientation: landscape) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 3`] = `
+"
+      @media (min-width: 1280px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1280px) and (orientation: landscape) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 4`] = `
+"
+      @media (min-width: 1440px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1440px) and (orientation: landscape) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;
+
+exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 5`] = `
+"
+      @media (min-width: 1920px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1920px) and (orientation: landscape) and (min-resolution: 192dpi) {
+        
+      }
+    "
+`;

@@ -1,1 +1,15 @@
-build/
+# Don't check auto-generated stuff into git
+coverage
+build
+junit
+generated
+node_modules
+.nyc_output
+stats.json
+dist
+public/uploads/**
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea

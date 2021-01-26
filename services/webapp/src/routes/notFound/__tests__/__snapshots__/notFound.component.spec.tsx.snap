@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotFound: Component should render correctly 1`] = `
+.c0 {
+  font-family: OpenSans;
+  font-weight: bold;
+  color: #000000;
+}
+
+<div>
+  <div
+    class=""
+  >
+    <h1
+      class="c0"
+    >
+      Error: 404
+    </h1>
+  </div>
+</div>
+`;

@@ -1,0 +1,9 @@
+import { rest } from 'msw';
+import { {{ pascalCase name }}ApiGetResponseData } from '../../../shared/services/api/{{ camelCase name }}/types';
+import { {{ constantCase name }}_URL } from '../../../shared/services/api/{{ camelCase name }}';
+const baseUrl = process.env.REACT_APP_BASE_API_URL;
+
+export const mockGet{{ pascalCase name }} = (response: {{ pascalCase name }}ApiGetResponseData[] = []) =>
+  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>([baseUrl, {{ constantCase name }}_URL].join(''), (req, res, ctx) => {
+  return res(ctx.json(response));
+});

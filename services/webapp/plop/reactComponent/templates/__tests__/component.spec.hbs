@@ -1,0 +1,15 @@
+import React from 'react';
+
+import { makeContextRenderer } from '{{ testUtilsPath }}';
+import { {{ pascalCase name }}, {{ pascalCase name }}Props } from '../{{ camelCase name }}.component';
+
+describe('{{ pascalCase name }}: Component', () => {
+  const defaultProps: {{ pascalCase name }}Props = {};
+
+  const component = (props: Partial<{{ pascalCase name }}Props>) => <{{ pascalCase name }} {...defaultProps} {...props} />;
+  const render = makeContextRenderer(component);
+
+  it('should render without errors', () => {
+    render();
+  })
+});

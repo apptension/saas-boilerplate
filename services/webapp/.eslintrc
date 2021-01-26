@@ -1,0 +1,33 @@
+{
+  "extends": [
+    "react-app",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
+  "plugins": ["react-hooks", "formatjs"],
+  "rules": {
+    "import/order": ["error"],
+    "formatjs/no-offset": "error"
+  },
+  "overrides": [
+    {
+      "files": "*.stories.tsx",
+      "rules": {
+        "import/no-anonymous-default-export": "off"
+      }
+    },
+    {
+      "files": "*.{ts,tsx}",
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "import/no-anonymous-default-export": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
+}

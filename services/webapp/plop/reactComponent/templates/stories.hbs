@@ -1,0 +1,16 @@
+import React from 'react';
+import { Story } from '@storybook/react';
+
+import { {{ pascalCase name }}, {{ pascalCase name }}Props } from './{{ camelCase name }}.component';
+
+const Template: Story<{{ pascalCase name }}Props> = (args) => {
+  return <{{ pascalCase name }} {...args} />;
+};
+
+export default {
+  title: '{{ pascalCase name }}',
+  component: {{ pascalCase name }},
+};
+
+export const Default = Template.bind({});
+Default.args = { children: 'text' };

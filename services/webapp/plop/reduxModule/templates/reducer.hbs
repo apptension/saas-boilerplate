@@ -1,0 +1,21 @@
+import { createReducer, PayloadAction } from '@reduxjs/toolkit';
+
+import * as {{ camelCase name }}Actions from './{{ camelCase name }}.actions';
+import { {{ pascalCase name }}State, Fetch{{ pascalCase name }}SuccessPayload } from './{{ camelCase name }}.types';
+
+export const INITIAL_STATE: {{ pascalCase name }}State = {
+  {{ camelCase name }}: null,
+};
+
+const handleFetch{{ pascalCase name }} = (state: {{ pascalCase name }}State) => {
+  state.{{ camelCase name }} = null;
+};
+
+const handleFetch{{ pascalCase name }}Success = (state: {{ pascalCase name }}State, { payload }: PayloadAction<Fetch{{ pascalCase name }}SuccessPayload>) => {
+  state.{{ camelCase name }} = payload;
+};
+
+export const reducer = createReducer(INITIAL_STATE, (builder) => {
+  builder.addCase({{ camelCase name }}Actions.fetch{{ pascalCase name }}, handleFetch{{ pascalCase name }});
+  builder.addCase({{ camelCase name }}Actions.fetch{{ pascalCase name }}.resolved, handleFetch{{ pascalCase name }}Success);
+});

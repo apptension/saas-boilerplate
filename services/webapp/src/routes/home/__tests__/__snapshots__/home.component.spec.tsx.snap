@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home: Component should render correctly 1`] = `
+.c1 {
+  font-family: OpenSans;
+  font-weight: bold;
+  color: #000000;
+}
+
+.c3 {
+  padding: 8px 16px;
+  border: 1px solid #80809B;
+  color: #42f272;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.c2 {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+<div
+  class="c0"
+>
+  <h1
+    class="c1"
+  >
+    Hello world!
+  </h1>
+  <svg
+    class="c2"
+  >
+    logo.svg
+  </svg>
+  <select
+    class=""
+  >
+    <option
+      value="en"
+    >
+      en
+    </option>
+    <option
+      value="pl"
+    >
+      pl
+    </option>
+  </select>
+  <div
+    class=""
+  >
+    <button
+      class="c3"
+    >
+      Fetch users
+    </button>
+    <ul />
+  </div>
+</div>
+`;

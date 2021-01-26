@@ -1,0 +1,16 @@
+import { expectSaga } from 'redux-saga-test-plan';
+
+import { watch{{ pascalCase name }} } from '../{{ camelCase name }}.sagas';
+import { {{ camelCase name }}Actions } from '..';
+
+describe('{{ pascalCase name }}: sagas', () => {
+  const defaultState = {};
+
+  it('should implement a test', async () => {
+    await expectSaga(watch{{ pascalCase name }})
+      .withState(defaultState)
+      .put({{ camelCase name }}Actions.fetch{{ pascalCase name }}.resolved([]))
+      .dispatch({{ camelCase name }}Actions.fetch{{ pascalCase name }}())
+      .silentRun();
+  });
+});

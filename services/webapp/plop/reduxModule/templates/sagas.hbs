@@ -1,0 +1,21 @@
+import { all, takeLatest } from 'redux-saga/effects';
+
+import { reportError } from '../../shared/utils/reportError';
+import { PromiseAction, resolvePromiseAction, rejectPromiseAction } from '../../shared/utils/reduxSagaPromise';
+import { {{ camelCase name }} } from '../../shared/services/api';
+import * as {{ camelCase name }}Actions from './{{ camelCase name }}.actions';
+import { Fetch{{ pascalCase name }}SuccessPayload } from './{{ camelCase name }}.types';
+
+function* fetch{{ pascalCase name }}(action: PromiseAction<void, Fetch{{ pascalCase name }}SuccessPayload>) {
+  try {
+    const data = yield {{ camelCase name }}.list();
+    yield resolvePromiseAction(action, data);
+  } catch (error) {
+    reportError(error);
+    yield rejectPromiseAction(action, error);
+  }
+}
+
+export function* watch{{ pascalCase name }}() {
+  yield all([takeLatest({{ camelCase name }}Actions.fetch{{ pascalCase name }}, fetch{{ pascalCase name }})]);
+}
