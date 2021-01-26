@@ -134,6 +134,7 @@ AUTH_USER_MODEL = "users.User"
 LOCALE_PATHS = []
 
 REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "common.utils.custom_exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_jwt.authentication.JSONWebTokenAuthentication",),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
@@ -141,7 +142,11 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER': 'apps.users.jwt.encode_handler',
+    'JWT_TOKEN_ID': 'require',
+    'JWT_AUTH_COOKIE': 'X-Auth',
+    'JWT_AUTH_COOKIE_SECURE': env.bool('JWT_AUTH_COOKIE_SECURE', default=True),
 }
+
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},

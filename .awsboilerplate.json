@@ -1,8 +1,8 @@
 {
-  "projectName": "dbt",
+  "projectName": "saas",
   "defaultEnv": "local",
   "aws": {
-    "profile": "dbt",
+    "profile": "saas",
     "region": "eu-west-1"
   },
   "toolsConfig": {

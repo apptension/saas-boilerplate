@@ -2,11 +2,16 @@ import pytest
 from django.contrib import auth as dj_auth
 from django.urls import reverse
 from rest_framework import status
+from rest_framework_jwt.settings import api_settings
 
-from . import factories
 from .. import tokens
 
 pytestmark = pytest.mark.django_db
+
+
+def validate_jwt_token(token, user):
+    jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
+    return jwt_decode_handler(token)['user_id'] == user.id
 
 
 class TestUserProfile:
@@ -25,6 +30,7 @@ class TestResetPassword:
     def test_no_email(self, api_client):
         response = api_client.post(reverse("password_reset"), {},)
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert response.data["is_error"]
 
     def test_user_not_found(self, api_client):
         response = api_client.post(reverse("password_reset"), {"email": "wrong_email@wp.pl"},)
@@ -47,7 +53,7 @@ class TestResetPassword:
         assert "jwt_token" in response.data
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
-        assert response.data["jwt_token"] == u.jwt_token, response.data
+        assert validate_jwt_token(response.data["jwt_token"], u)
         assert u.check_password(new_password)
 
     def test_wrong_token(self, api_client, user):
@@ -58,6 +64,7 @@ class TestResetPassword:
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["non_field_errors"][0] == "Malformed password reset token", response.data
+        assert response.data["is_error"]
 
     def test_wrong_password(self, api_client, user):
         new_password = "r"
@@ -67,6 +74,7 @@ class TestResetPassword:
             {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert response.data["is_error"]
         assert "too short" in response.data["new_password"][0], response.data
 
     def test_wrong_user(self, api_client, user):
@@ -77,21 +85,24 @@ class TestResetPassword:
             {"user": "abc", "token": password_token, "new_password": new_password},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert response.data["is_error"]
         assert response.data["user"][0] == "Invalid int or Hashid string", response.data
 
 
 class TestChangePassword:
-    def test_correct_password(self, api_client, user, faker):
+    def test_correct_password(self, api_client, user_factory, faker):
+        old_password = faker.password()
+        user = user_factory(password=old_password)
         api_client.force_authenticate(user)
         response = api_client.post(
             reverse("change_password"),
-            {"user": user.pk, "old_password": factories.UserFactory.password, "new_password": faker.password()},
+            {"user": user.pk, "old_password": old_password, "new_password": faker.password()},
         )
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
 
         assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert response.data["jwt_token"] == u.jwt_token, response.data
+        assert validate_jwt_token(response.data["jwt_token"], u)
 
     def test_wrong_old_password(self, api_client, user, faker):
         api_client.force_authenticate(user)
@@ -101,6 +112,7 @@ class TestChangePassword:
         )
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data["is_error"]
         assert "Wrong old password" in response.data["old_password"]
 
     def test_user_not_auth(self, api_client, user):
