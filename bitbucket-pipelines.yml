@@ -12,7 +12,7 @@ pipelines:
 
         - step:
             name: Build and test web app
-            image: atlassian/default-image:2
+            image: node:12.20.1
             script:
               - make -C services/webapp install
               - make -C services/webapp build
