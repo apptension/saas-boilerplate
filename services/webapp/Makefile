@@ -8,6 +8,7 @@ install-deploy: install-infra-cdk install-scripts
 
 test:
 	yarn test
+	yarn lint
 
 build: test
 	yarn build

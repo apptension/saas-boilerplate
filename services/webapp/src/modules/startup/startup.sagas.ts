@@ -1,8 +1,10 @@
-import { all, takeLatest } from 'redux-saga/effects';
+import { all, takeLatest, put } from 'redux-saga/effects';
+import { authActions } from '../auth';
 import { startupActions } from '.';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function* handleStartup() {}
+export function* handleStartup() {
+  yield put(authActions.fetchProfile());
+}
 
 export function* watchStartup() {
   yield all([takeLatest(startupActions.startup, handleStartup)]);

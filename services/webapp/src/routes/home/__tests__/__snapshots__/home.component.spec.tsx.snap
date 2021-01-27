@@ -8,6 +8,12 @@ exports[`Home: Component should render correctly 1`] = `
 }
 
 .c3 {
+  font-family: OpenSans;
+  font-weight: bold;
+  color: #000000;
+}
+
+.c4 {
   padding: 8px 16px;
   border: 1px solid #80809B;
   color: #42f272;
@@ -64,15 +70,85 @@ exports[`Home: Component should render correctly 1`] = `
       pl
     </option>
   </select>
-  <div
+  <h2
+    class="c3"
+  >
+    Register
+  </h2>
+  <form
     class=""
   >
-    <button
-      class="c3"
+    <div
+      class=""
     >
-      Fetch users
+      <input
+        class=""
+        name="email"
+        placeholder="Email"
+        type="email"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <div
+      class=""
+    >
+      <input
+        class=""
+        name="password"
+        placeholder="Password"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <button
+      class="c4"
+      type="submit"
+    >
+      Signup
     </button>
-    <ul />
-  </div>
+  </form>
+  <h2
+    class="c3"
+  >
+    Login
+  </h2>
+  <form
+    class=""
+  >
+    <div
+      class=""
+    >
+      <input
+        class=""
+        name="email"
+        placeholder="Email"
+        type="email"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <div
+      class=""
+    >
+      <input
+        class=""
+        name="password"
+        placeholder="Password"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <button
+      class="c4"
+      type="submit"
+    >
+      Login
+    </button>
+  </form>
 </div>
 `;

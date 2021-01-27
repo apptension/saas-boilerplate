@@ -1,2 +1,2 @@
-export * from './users';
+export * from './auth';
 //<-- IMPORT API MODULE MOCK -->

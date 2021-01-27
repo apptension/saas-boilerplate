@@ -7,7 +7,7 @@ export const actionCreator = (prefix: string) => {
 
   return {
     createAction: <T>(actionName: string) => createAction<T>(prefixActionName(actionName)),
-    createPromiseAction: <T = void, A = void, B = void>(actionName: string) =>
+    createPromiseAction: <T = void, A = void, B = any>(actionName: string) =>
       createPromiseAction<T, A, B>(prefixActionName(actionName)),
   };
 };

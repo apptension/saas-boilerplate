@@ -60,6 +60,7 @@
     "react": "^16.13.1",
     "react-dom": "npm:@hot-loader/react-dom",
     "react-helmet-async": "^1.0.4",
+    "react-hook-form": "^6.14.2",
     "react-intl": "^5.8.8",
     "react-redux": "7.2.2",
     "react-router": "^5",
@@ -112,5 +113,6 @@
     "hooks": {
       "pre-commit": "lint-staged && pretty-quick --staged"
     }
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

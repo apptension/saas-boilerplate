@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux';
 import {
   ActionCreatorWithPayload,
   ActionCreatorWithPreparedPayload,
@@ -6,8 +7,8 @@ import {
   PayloadAction,
   PrepareAction,
 } from '@reduxjs/toolkit';
-import { put } from 'redux-saga/effects';
 
+import { put } from 'redux-saga/effects';
 import { GlobalState } from '../../config/reducers';
 
 export interface PromiseActionMeta<A, B> {
@@ -19,8 +20,9 @@ export interface PromiseActionMeta<A, B> {
   };
 }
 
-export interface PromiseActionCreatorWithPayload<P, A, B> extends ActionCreatorWithPayload<P> {
-  (payload: P): PayloadAction<P, string, PromiseActionMeta<A, B>>;
+export interface PromiseActionCreatorWithPayload<P, A, B> {
+  (payload: P): PromiseAction<P, A, B>;
+  type: string;
   trigger: ActionCreatorWithPreparedPayload<[P], PreparePromiseAction<P, A, B>>;
   resolved: ActionCreatorWithPayload<A>;
   rejected: ActionCreatorWithPayload<B>;
@@ -92,3 +94,6 @@ export const promiseMiddleware: Middleware<unknown, GlobalState> = (store) => (n
 
   return next(action);
 };
+
+type PromiseDispatch = <P, A, B>(action: PromiseAction<P, A, B>) => Promise<A>;
+export const useAsyncDispatch = () => useDispatch<PromiseDispatch>();

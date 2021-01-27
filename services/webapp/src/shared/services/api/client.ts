@@ -7,6 +7,10 @@ if (!baseUrl) {
   throw new Error('REACT_APP_BASE_API_URL env is missing');
 }
 
-export const client = applyCaseMiddleware(axios.create({
-  baseURL: baseUrl,
-}));
+export const client = applyCaseMiddleware(
+  axios.create({
+    baseURL: baseUrl,
+    withCredentials: true,
+    validateStatus: (status) => (status >= 200 && status < 300) || status === 400,
+  })
+);

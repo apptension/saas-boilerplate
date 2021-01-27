@@ -1,7 +1,7 @@
-declare module 'redux-saga/effects' {
-  import { PayloadActionCreator, PayloadAction } from '@reduxjs/toolkit';
-  import { PromiseAction, PromiseActionCreatorWithPayload } from '../shared/utils/reduxSagaPromise';
+import { PayloadAction, ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { PromiseAction, PromiseActionCreatorWithPayload } from '../shared/utils/reduxSagaPromise';
 
+declare module 'redux-saga/effects' {
   export {
     put,
     all,
@@ -27,9 +27,11 @@ declare module 'redux-saga/effects' {
     effectTypes,
   } from 'redux-saga/effects';
 
-  type EffectHandlerBinding = <P, A = never, B = never>(
-    actionCreator: PayloadActionCreator<P> | PromiseActionCreatorWithPayload<P, A, B>,
-    effectHandler: (action: PayloadAction<P> | PromiseAction<P, A, B>) => void
+  type EffectHandlerBinding = <Payload, Resolved = void, Rejected = void>(
+    actionCreator: ActionCreatorWithPayload<Payload> | PromiseActionCreatorWithPayload<Payload, Resolved, Rejected>,
+    effectHandler: actionCreator extends PromiseActionCreatorWithPayload<Payload, Resolved, Rejected>
+      ? (action: PromiseAction<Payload, Resolved, Rejected>) => any
+      : (action: PayloadAction<Payload>) => any
   ) => any;
 
   export const takeMaybe: EffectHandlerBinding;

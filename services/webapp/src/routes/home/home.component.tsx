@@ -3,8 +3,9 @@ import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { LanguageSwitcher } from '../../shared/components/languageSwitcher';
-import { H1 } from '../../theme/typography';
-import { Users } from '../../shared/components/users';
+import { H1, H2 } from '../../theme/typography';
+import { LoginForm } from '../../shared/components/auth/loginForm';
+import { SignupForm } from '../../shared/components/auth/signupForm';
 import { Container, Logo } from './home.styles';
 
 export const Home = () => {
@@ -27,7 +28,15 @@ export const Home = () => {
 
       <LanguageSwitcher />
 
-      <Users />
+      <H2>
+        <FormattedMessage defaultMessage="Register" description="Home / register" />
+      </H2>
+      <SignupForm />
+
+      <H2>
+        <FormattedMessage defaultMessage="Login" description="Home / login" />
+      </H2>
+      <LoginForm />
     </Container>
   );
 };
