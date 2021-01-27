@@ -29,3 +29,5 @@ else:
     DB_CONNECTION = fetch_db_secret(env('DB_SECRET_ARN', None))
 
 FROM_EMAIL = env('FROM_EMAIL', None)
+
+WEB_APP_URL = env('WEB_APP_URL', None)

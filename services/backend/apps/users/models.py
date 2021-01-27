@@ -4,8 +4,6 @@ from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from rest_framework_jwt.settings import api_settings
 
-from . import tasks
-
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -13,12 +11,8 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have an email address")
 
         user = self.model(email=self.normalize_email(email),)
-
         user.set_password(password)
         user.save(using=self._db)
-
-        tasks.send_welcome_email.apply(tasks.WelcomeEmailParams(to=user.email, name=user.get_username()))
-
         return user
 
     def create_superuser(self, email, password):

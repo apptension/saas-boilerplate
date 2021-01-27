@@ -17,6 +17,7 @@ envsHello:
 
 envsSendEmail:
   FROM_EMAIL: ''
+  WEB_APP_URL: ''
 
 vpcHello:
   securityGroupIds:

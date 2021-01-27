@@ -1,12 +1,12 @@
 from django.contrib import auth as dj_auth
 from django.contrib.auth import password_validation
+from django.utils.translation import gettext as _
 from hashid_field import rest
 from rest_framework import exceptions
 from rest_framework import serializers
 from rest_framework import validators
-from django.utils.translation import gettext as _
 
-from . import models, tokens, utils
+from . import models, tokens, notifications
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -36,8 +36,13 @@ class UserSignupSerializer(serializers.ModelSerializer):
         user = dj_auth.get_user_model().objects.create_user(validated_data["email"], validated_data["password"],)
         models.UserProfile.objects.create(user=user, **validated_data.pop("profile", {}))
 
-        activation_token = tokens.account_activation_token.make_token(user)
-        utils.user_notification_impl("account_activation", user=user, token=activation_token)
+        notifications.create(
+            "account_activation",
+            user,
+            data=notifications.AccountActivationNotificationData(
+                user_id=user.id.hashid, token=tokens.account_activation_token.make_token(user)
+            ),
+        )
 
         return user
 
@@ -108,8 +113,12 @@ class PasswordResetSerializer(serializers.Serializer):
         except dj_auth.get_user_model().DoesNotExist:
             raise exceptions.NotFound(_("User not found"))
 
-        utils.user_notification_impl(
-            "password_reset", user=user, token=tokens.password_reset_token.make_token(user),
+        notifications.create(
+            "password_reset",
+            user=user,
+            data=notifications.PasswordResetNotificationData(
+                user_id=user.id.hashid, token=tokens.password_reset_token.make_token(user)
+            ),
         )
 
         return user

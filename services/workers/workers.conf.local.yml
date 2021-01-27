@@ -11,5 +11,6 @@ envsSendEmail:
   AWS_ENDPOINT_URL: "https://localstack:4566"
   SMTP_HOST: "172.17.0.1"
   EMAIL_ENABLED: "False"
+  WEB_APP_URL: 'https://localhost:3000'
 
 vpcHello: []

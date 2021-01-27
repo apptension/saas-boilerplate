@@ -1,1 +1,1 @@
-from .emails import SendEmail, EmailParams  # noqa
+from .emails import SendEmail  # noqa

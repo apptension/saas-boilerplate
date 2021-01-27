@@ -1,15 +1,22 @@
-from dataclasses import dataclass
-
-from .config import email, EmailConfig, EmailParams
-
-
-@dataclass
-class WelcomeEmailParams(EmailParams):
-    name: str
+import settings
+from .config import email, EmailConfig
 
 
-@email('WelcomeEmail')
-def welcome_email(data):
-    params = WelcomeEmailParams(**data)
+@email('account_activation')
+def account_activation_email(data):
+    return EmailConfig(
+        to=data['to'],
+        subject='Activate your account!',
+        template='account_activation',
+        template_vars={**data, "web_app_url": settings.WEB_APP_URL},
+    )
 
-    return EmailConfig(to=params.to, subject='Welcome!', template='welcome', template_vars={'name': params.name},)
+
+@email('password_reset')
+def password_reset_email(data):
+    return EmailConfig(
+        to=data['to'],
+        subject='Reset password',
+        template='password_reset',
+        template_vars={**data, "web_app_url": settings.WEB_APP_URL},
+    )

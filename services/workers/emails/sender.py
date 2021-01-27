@@ -34,7 +34,7 @@ def send_local(email_config, rendered_html):
     smtp_client = smtplib.SMTP(host=settings.SMTP_HOST, port=1025)
     smtp_client.send_message(message)
 
-    print("Successfully sent email")
+    logger.info("Successfully sent email")
 
 
 def send(email_config, rendered_html):
