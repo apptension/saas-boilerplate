@@ -20,7 +20,7 @@ export interface PromiseActionMeta<A, B> {
   };
 }
 
-export interface PromiseActionCreatorWithPayload<P, A, B> {
+export interface PromiseActionCreatorWithPayload<P, A, B = void> {
   (payload: P): PromiseAction<P, A, B>;
   type: string;
   trigger: ActionCreatorWithPreparedPayload<[P], PreparePromiseAction<P, A, B>>;

@@ -1,6 +1,6 @@
 import React, { Fragment, ReactNode } from 'react';
 import '../theme/styled.d';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
 
@@ -27,18 +27,14 @@ export const AppComponent = ({ children }: AppComponentProps) => {
 
   return (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
-      <HelmetProvider>
-        <Fragment>
-          <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
-            {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
-          </FormattedMessage>
+      <Fragment>
+        <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
+          {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
+        </FormattedMessage>
 
-          <GlobalStyle />
-          <ResponsiveThemeProvider>
-            {React.Children.only(children)}
-          </ResponsiveThemeProvider>
-        </Fragment>
-      </HelmetProvider>
+        <GlobalStyle />
+        <ResponsiveThemeProvider>{React.Children.only(children)}</ResponsiveThemeProvider>
+      </Fragment>
     </IntlProvider>
   );
 };

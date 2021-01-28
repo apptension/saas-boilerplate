@@ -1,15 +1,16 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../app.constants';
 import { LanguageSwitcher } from '../../shared/components/languageSwitcher';
-import { H1, H2 } from '../../theme/typography';
-import { LoginForm } from '../../shared/components/auth/loginForm';
-import { SignupForm } from '../../shared/components/auth/signupForm';
+import { H1 } from '../../theme/typography';
+import { useLocale } from '../useLanguageFromParams/useLanguageFromParams.hook';
 import { Container, Logo } from './home.styles';
 
 export const Home = () => {
   const intl = useIntl();
+  const locale = useLocale();
 
   return (
     <Container>
@@ -28,15 +29,17 @@ export const Home = () => {
 
       <LanguageSwitcher />
 
-      <H2>
-        <FormattedMessage defaultMessage="Register" description="Home / register" />
-      </H2>
-      <SignupForm />
+      <Link to={`/${locale}${ROUTES.login}`}>
+        <FormattedMessage defaultMessage="Login" description="Home / login link" />
+      </Link>
 
-      <H2>
-        <FormattedMessage defaultMessage="Login" description="Home / login" />
-      </H2>
-      <LoginForm />
+      <Link to={`/${locale}${ROUTES.signup}`}>
+        <FormattedMessage defaultMessage="Signup" description="Home / signup link" />
+      </Link>
+
+      <Link to={`/${locale}${ROUTES.profile}`}>
+        <FormattedMessage defaultMessage="Profile" description="Home / profile link" />
+      </Link>
     </Container>
   );
 };

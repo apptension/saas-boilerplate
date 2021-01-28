@@ -7,18 +7,6 @@ exports[`Home: Component should render correctly 1`] = `
   color: #000000;
 }
 
-.c3 {
-  font-family: OpenSans;
-  font-weight: bold;
-  color: #000000;
-}
-
-.c4 {
-  padding: 8px 16px;
-  border: 1px solid #80809B;
-  color: #42f272;
-}
-
 .c0 {
   display: -webkit-box;
   display: -webkit-flex;
@@ -70,85 +58,20 @@ exports[`Home: Component should render correctly 1`] = `
       pl
     </option>
   </select>
-  <h2
-    class="c3"
-  >
-    Register
-  </h2>
-  <form
-    class=""
-  >
-    <div
-      class=""
-    >
-      <input
-        class=""
-        name="email"
-        placeholder="Email"
-        type="email"
-      />
-      <p
-        class=""
-      />
-    </div>
-    <div
-      class=""
-    >
-      <input
-        class=""
-        name="password"
-        placeholder="Password"
-      />
-      <p
-        class=""
-      />
-    </div>
-    <button
-      class="c4"
-      type="submit"
-    >
-      Signup
-    </button>
-  </form>
-  <h2
-    class="c3"
+  <a
+    href="/en/auth/login"
   >
     Login
-  </h2>
-  <form
-    class=""
+  </a>
+  <a
+    href="/en/auth/signup"
   >
-    <div
-      class=""
-    >
-      <input
-        class=""
-        name="email"
-        placeholder="Email"
-        type="email"
-      />
-      <p
-        class=""
-      />
-    </div>
-    <div
-      class=""
-    >
-      <input
-        class=""
-        name="password"
-        placeholder="Password"
-      />
-      <p
-        class=""
-      />
-    </div>
-    <button
-      class="c4"
-      type="submit"
-    >
-      Login
-    </button>
-  </form>
+    Signup
+  </a>
+  <a
+    href="/en/profile"
+  >
+    Profile
+  </a>
 </div>
 `;

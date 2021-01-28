@@ -1,7 +1,7 @@
 import { useForm, FieldName } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isNil, keys } from 'ramda';
-import { FormSubmitError } from '../../services/api/types';
+import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 
 export const useApiForm = <FormData>() => {
   const [genericError, setGenericError] = useState<string>();
@@ -26,5 +26,14 @@ export const useApiForm = <FormData>() => {
     [setError]
   );
 
-  return { ...formControls, genericError, setResponseErrors };
+  const setApiResponse = useCallback(
+    (response: ApiFormSubmitResponse<FormData, unknown>) => {
+      if (response.isError) {
+        setResponseErrors(response);
+      }
+    },
+    [setResponseErrors]
+  );
+
+  return { ...formControls, genericError, setApiResponse };
 };

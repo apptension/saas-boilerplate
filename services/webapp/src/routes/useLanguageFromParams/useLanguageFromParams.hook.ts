@@ -9,11 +9,16 @@ export interface LanguagePathParams {
   lang: string;
 }
 
+export const useLocale = () => {
+  const { lang } = useParams<LanguagePathParams>();
+  return lang || DEFAULT_LOCALE;
+};
+
 export const useLanguageFromParams = () => {
   const dispatch = useDispatch();
-  const { lang } = useParams<LanguagePathParams>();
+  const lang = useLocale();
 
   useEffect(() => {
-    dispatch(localesActions.setLanguage(lang || DEFAULT_LOCALE));
+    dispatch(localesActions.setLanguage(lang));
   }, [lang, dispatch]);
 };

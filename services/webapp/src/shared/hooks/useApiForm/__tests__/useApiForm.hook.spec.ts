@@ -8,9 +8,9 @@ interface TestFormFields {
 describe('useApiForm: Hook', () => {
   it('set generic form error from api response', () => {
     const { result } = renderHook(() => useApiForm<TestFormFields>());
-    const { setResponseErrors } = result.current;
+    const { setApiResponse } = result.current;
     act(() => {
-      setResponseErrors({ nonFieldErrors: ['custom error'] });
+      setApiResponse({ isError: true, nonFieldErrors: ['custom error'] });
     });
 
     expect(result.current.genericError).toEqual('custom error');
@@ -19,9 +19,9 @@ describe('useApiForm: Hook', () => {
 
   it('set field error from api response', () => {
     const { result } = renderHook(() => useApiForm<TestFormFields>());
-    const { setResponseErrors } = result.current;
+    const { setApiResponse } = result.current;
     act(() => {
-      setResponseErrors({ email: ['custom email error'] });
+      setApiResponse({ isError: true, email: ['custom email error'] });
     });
 
     expect(result.current.genericError).toBeUndefined();

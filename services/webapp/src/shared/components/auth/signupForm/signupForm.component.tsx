@@ -16,13 +16,11 @@ interface SignupFormFields {
 export const SignupForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setResponseErrors, genericError } = useApiForm<SignupFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>();
 
   const onSignup = async (data: SignupFormFields) => {
     const res = await dispatch(signup(data));
-    if (res.isError) {
-      setResponseErrors(res);
-    }
+    setApiResponse(res);
   };
 
   return (
@@ -56,6 +54,7 @@ export const SignupForm = () => {
           },
         })}
         name={'password'}
+        type={'password'}
         placeholder={intl.formatMessage({
           defaultMessage: 'Password',
           description: 'Auth / Signup / Password placeholder',

@@ -7,9 +7,8 @@ import { login } from '../../../../../modules/auth/auth.actions';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
-  const mockReactRedux = jest.requireActual('react-redux');
   return {
-    ...mockReactRedux,
+    ...jest.requireActual<NodeModule>('react-redux'),
     useDispatch: () => mockDispatch,
   };
 });

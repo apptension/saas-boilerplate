@@ -16,13 +16,11 @@ interface LoginFormFields {
 export const LoginForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setResponseErrors, genericError } = useApiForm<LoginFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<LoginFormFields>();
 
   const onLogin = async (data: LoginFormFields) => {
     const res = await dispatch(login(data));
-    if (res.isError) {
-      setResponseErrors(res);
-    }
+    setApiResponse(res);
   };
 
   return (
@@ -56,6 +54,7 @@ export const LoginForm = () => {
           },
         })}
         name={'password'}
+        type={'password'}
         placeholder={intl.formatMessage({
           defaultMessage: 'Password',
           description: 'Auth / Login / Password placeholder',

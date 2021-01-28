@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signup: Component should render correctly 1`] = `
+.c2 {
+  padding: 8px 16px;
+  border: 1px solid #80809B;
+  color: #42f272;
+}
+
+.c1 {
+  font-family: OpenSans;
+  font-weight: bold;
+  color: #000000;
+}
+
+.c0 {
+  text-align: center;
+}
+
+<div
+  class="c0"
+>
+  <h1
+    class="c1"
+  >
+    Register
+  </h1>
+  <form
+    class=""
+  >
+    <div
+      class=""
+    >
+      <input
+        class=""
+        name="email"
+        placeholder="Email"
+        type="email"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <div
+      class=""
+    >
+      <input
+        class=""
+        name="password"
+        placeholder="Password"
+        type="password"
+      />
+      <p
+        class=""
+      />
+    </div>
+    <button
+      class="c2"
+      type="submit"
+    >
+      Signup
+    </button>
+  </form>
+</div>
+`;
