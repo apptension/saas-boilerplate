@@ -8,10 +8,11 @@ import { server } from '../../../mocks/server';
 import { mockChangePassword, mockLogin, mockMe, mockSignup } from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
+import { userProfileFactory } from '../../../mocks/factories';
 
 jest.mock('../../../shared/utils/history');
 
-const mockCredentials = {
+const credentials = {
   email: 'user@mail.com',
   password: 'password',
 };
@@ -19,6 +20,7 @@ const mockCredentials = {
 describe('Auth: sagas', () => {
   const defaultState = prepareState(identity);
   const mockHistoryPush = history.push as jest.Mock;
+  const profile = userProfileFactory();
 
   beforeEach(() => {
     mockHistoryPush.mockReset();
@@ -30,13 +32,21 @@ describe('Auth: sagas', () => {
         await expectSaga(watchAuth)
           .withState(defaultState)
           .put(authActions.login.resolved({ isError: false }))
-          .dispatch(authActions.login(mockCredentials))
+          .dispatch(authActions.login(credentials))
           .silentRun();
       });
 
       it('should redirect to homepage', async () => {
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.login(mockCredentials)).silentRun();
+        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.login(credentials)).silentRun();
         expect(mockHistoryPush).toHaveBeenCalledWith('/en/');
+      });
+
+      it('should fetch user profile', async () => {
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.fetchProfile())
+          .dispatch(authActions.login(credentials))
+          .silentRun();
       });
     });
 
@@ -46,36 +56,37 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.login.resolved({ isError: true, password: ['error'] }))
-        .dispatch(authActions.login(mockCredentials))
+        .dispatch(authActions.login(credentials))
         .silentRun();
     });
   });
 
   describe('fetchProfile', () => {
-    it('should call success action if call completes successfully', async () => {
-      const MOCK_PROFILE = { firstName: 'username' };
-      server.use(mockMe(MOCK_PROFILE, BAD_REQUEST));
+    describe('call completes successfully', () => {
+      it('should call success action', async () => {
+        server.use(mockMe(profile));
 
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.fetchProfileSuccess(MOCK_PROFILE))
-        .dispatch(authActions.fetchProfile())
-        .silentRun();
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.fetchProfileSuccess(profile))
+          .dispatch(authActions.fetchProfile())
+          .silentRun();
+      });
     });
 
     describe('call completes with UNAUTHORIZED error', () => {
       it('should not call success action', async () => {
-        server.use(mockMe({}, UNAUTHORIZED));
+        server.use(mockMe(profile, UNAUTHORIZED));
 
         await expectSaga(watchAuth)
           .withState(defaultState)
-          .not.put(authActions.fetchProfileSuccess({}))
+          .not.put(authActions.fetchProfileSuccess(profile))
           .dispatch(authActions.fetchProfile())
           .silentRun();
       });
 
       it('should redirect to login screen', async () => {
-        server.use(mockMe({}, UNAUTHORIZED));
+        server.use(mockMe(profile, UNAUTHORIZED));
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.fetchProfile()).silentRun();
         expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
       });
@@ -83,15 +94,29 @@ describe('Auth: sagas', () => {
   });
 
   describe('signup', () => {
-    it('should resolve action if call completes successfully', async () => {
-      const MOCK_PROFILE = { email: 'test@gm.com', id: '123', profile: {} };
-      server.use(mockSignup({ isError: false, ...MOCK_PROFILE }));
+    describe('call completes successfully', () => {
+      it('should resolve action', async () => {
+        server.use(mockSignup({ isError: false, profile }));
 
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.signup.resolved({ isError: false, ...MOCK_PROFILE }))
-        .dispatch(authActions.signup(mockCredentials))
-        .silentRun();
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.signup.resolved({ isError: false, profile }))
+          .dispatch(authActions.signup(credentials))
+          .silentRun();
+      });
+
+      it('should redirect to homepage', async () => {
+        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.signup(credentials)).silentRun();
+        expect(mockHistoryPush).toHaveBeenCalledWith('/en/');
+      });
+
+      it('should fetch user profile', async () => {
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.fetchProfile())
+          .dispatch(authActions.signup(credentials))
+          .silentRun();
+      });
     });
 
     it('should reject action if call completes with error', async () => {
@@ -100,7 +125,7 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.signup.resolved({ isError: true, password: ['error'] }))
-        .dispatch(authActions.signup(mockCredentials))
+        .dispatch(authActions.signup(credentials))
         .silentRun();
     });
   });

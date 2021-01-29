@@ -1,4 +1,5 @@
 import React from 'react';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer, PLACEHOLDER_CONTENT } from '../../shared/utils/testUtils';
 import { AppComponent, AppComponentProps } from '../app.component';
 
@@ -11,7 +12,12 @@ describe('App: Component', () => {
   const render = makeContextRenderer(component);
 
   it('should render App when language is set', () => {
-    const { container } = render();
-    expect(container).toMatchSnapshot();
+    render({ children: <span data-testid="content" /> }, { router: { url: '/en' } });
+    expect(screen.queryByTestId('content')).toBeInTheDocument();
+  });
+
+  it('should render nothing when language is not set', () => {
+    render({ children: <span data-testid="content" /> }, { router: { url: '/' } });
+    expect(screen.queryByTestId('content')).not.toBeInTheDocument();
   });
 });

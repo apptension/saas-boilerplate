@@ -1,12 +1,14 @@
 import { ApiFormSubmitResponse } from '../types';
+import { Role } from '../../../../modules/auth/auth.types';
 
 export interface ProfileData {
   firstName?: string;
+  lastName?: string;
+  email: string;
+  roles: Role[];
 }
 
 interface ProfileApiResponseData {
-  id: string;
-  email: string;
   profile: ProfileData;
 }
 

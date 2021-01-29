@@ -14,11 +14,12 @@ import {
   AUTH_ME_URL,
   AUTH_SIGNUP_URL,
 } from '../../../shared/services/api/auth';
+import { Profile, Role } from '../../../modules/auth/auth.types';
 const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
-const MOCK_SIGNUP_RESPONSE = { isError: false as const, email: 'test@gm.com', id: '123', profile: {} };
+const profile: Profile = { email: 'user@mail.com', firstName: 'User', lastName: 'White', roles: [Role.ADMIN] };
 
-export const mockSignup = (response: SignupApiResponseData = MOCK_SIGNUP_RESPONSE, status = 200) =>
+export const mockSignup = (response: SignupApiResponseData = { isError: false, profile }, status = 200) =>
   rest.post<SignupApiRequestData, SignupApiResponseData>(baseUrl + AUTH_SIGNUP_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
@@ -28,7 +29,7 @@ export const mockLogin = (status = 200, response: LoginApiResponseData = { isErr
     return res(ctx.status(status), ctx.json(response));
   });
 
-export const mockMe = (response: MeApiResponseData = {}, status = 200) =>
+export const mockMe = (response: MeApiResponseData = profile, status = 200) =>
   rest.get<SignupApiRequestData, MeApiResponseData>(baseUrl + AUTH_ME_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });

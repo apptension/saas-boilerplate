@@ -8,6 +8,7 @@ import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
+import { Header } from '../shared/components/header';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
@@ -33,6 +34,7 @@ export const AppComponent = ({ children }: AppComponentProps) => {
         </FormattedMessage>
 
         <GlobalStyle />
+        <Header />
         <ResponsiveThemeProvider>{React.Children.only(children)}</ResponsiveThemeProvider>
       </Fragment>
     </IntlProvider>

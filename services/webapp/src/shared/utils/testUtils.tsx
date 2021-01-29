@@ -40,6 +40,8 @@ interface ProvidersWrapperProps {
   context?: ContextData;
 }
 
+export const createDefaultMemoryHistory = () => createMemoryHistory({ initialEntries: [`/${DEFAULT_LOCALE}`] });
+
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
   const { router = {}, store = fixturesStore, messages } = context;
   const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', history } = router;

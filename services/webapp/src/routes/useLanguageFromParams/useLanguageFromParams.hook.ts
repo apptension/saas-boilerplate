@@ -14,6 +14,11 @@ export const useLocale = () => {
   return lang || DEFAULT_LOCALE;
 };
 
+export const useLocaleUrl = (url: string) => {
+  const locale = useLocale();
+  return `/${locale}${url}`;
+};
+
 export const useLanguageFromParams = () => {
   const dispatch = useDispatch();
   const lang = useLocale();

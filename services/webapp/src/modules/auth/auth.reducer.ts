@@ -1,24 +1,18 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
 
-import { SignupApiResponseData } from '../../shared/services/api/auth/types';
 import * as authActions from './auth.actions';
-import { AuthState, SignupSuccessPayload } from './auth.types';
+import { AuthState, FetchProfileSuccessPayload } from './auth.types';
 
 export const INITIAL_STATE: AuthState = {
+  isLoggedIn: false,
   profile: undefined,
 };
 
-const handleSignupSuccess = (state: AuthState, { payload }: PayloadAction<SignupApiResponseData>) => {
-  if (!payload.isError) {
-    state.profile = payload.profile;
-  }
-};
-
-const handleFetchProfileSuccess = (state: AuthState, { payload }: PayloadAction<SignupSuccessPayload>) => {
+const handleFetchProfileSuccess = (state: AuthState, { payload }: PayloadAction<FetchProfileSuccessPayload>) => {
   state.profile = payload;
+  state.isLoggedIn = true;
 };
 
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
-  builder.addCase(authActions.signup.resolved, handleSignupSuccess);
   builder.addCase(authActions.fetchProfileSuccess, handleFetchProfileSuccess);
 });
