@@ -2,14 +2,18 @@ import { rest } from 'msw';
 import {
   ChangePasswordRequestData,
   ChangePasswordResponseData,
+  ConfirmEmailRequestData,
+  ConfirmEmailResponseData,
   LoginApiRequestData,
   LoginApiResponseData,
+  MeApiRequestData,
   MeApiResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
 } from '../../../shared/services/api/auth/types';
 import {
   AUTH_CHANGE_PASSWORD_URL,
+  AUTH_CONFIRM_EMAIL_URL,
   AUTH_LOGIN_URL,
   AUTH_ME_URL,
   AUTH_SIGNUP_URL,
@@ -30,7 +34,7 @@ export const mockLogin = (status = 200, response: LoginApiResponseData = { isErr
   });
 
 export const mockMe = (response: MeApiResponseData = profile, status = 200) =>
-  rest.get<SignupApiRequestData, MeApiResponseData>(baseUrl + AUTH_ME_URL, (req, res, ctx) => {
+  rest.get<MeApiRequestData, MeApiResponseData>(baseUrl + AUTH_ME_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
@@ -41,3 +45,8 @@ export const mockChangePassword = (response: ChangePasswordResponseData = { isEr
       return res(ctx.status(status), ctx.json(response));
     }
   );
+
+export const mockConfirmEmail = (response: ConfirmEmailResponseData = { isError: false }, status = 200) =>
+  rest.post<ConfirmEmailRequestData, ConfirmEmailResponseData>(baseUrl + AUTH_CONFIRM_EMAIL_URL, (req, res, ctx) => {
+    return res(ctx.status(status), ctx.json(response));
+  });

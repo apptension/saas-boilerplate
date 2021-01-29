@@ -1,10 +1,9 @@
+import { identity } from 'ramda';
 import { selectStartupDomain } from '../startup.selectors';
 import { prepareState } from '../../../mocks/store';
 
 describe('Startup: selectors', () => {
-  const defaultState = prepareState((state) => {
-    state.startup = {};
-  });
+  const defaultState = prepareState(identity);
 
   describe('selectStartupDomain', () => {
     it('should select a domain', () => {

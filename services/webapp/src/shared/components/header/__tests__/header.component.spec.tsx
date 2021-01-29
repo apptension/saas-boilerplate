@@ -2,7 +2,7 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createDefaultMemoryHistory, makeContextRenderer } from '../../../utils/testUtils';
+import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
 import { Header } from '../header.component';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
@@ -17,13 +17,11 @@ describe('Header: Component', () => {
     });
 
     it('should open profile when clicked on "profile" link', async () => {
-      const history = createDefaultMemoryHistory();
-      const mockHistoryPush = jest.spyOn(history, 'push');
-
+      const { pushSpy, history } = spiedHistory();
       render({}, { store, router: { history } });
 
       userEvent.click(screen.getByText(/my profile \(user@mail\.com\)/gi));
-      expect(mockHistoryPush).toHaveBeenCalledWith('/en/profile');
+      expect(pushSpy).toHaveBeenCalledWith('/en/profile');
     });
   });
 

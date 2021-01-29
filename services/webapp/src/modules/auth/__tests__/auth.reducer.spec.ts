@@ -15,17 +15,17 @@ describe('Auth: reducer', () => {
     expect(resultState).toEqual(defaultState);
   });
 
-  describe('fetchProfileSuccess', () => {
+  describe('fetchProfile.resolve', () => {
     const profile = userProfileFactory();
 
     it('should update user profile', () => {
-      const action = authActions.fetchProfileSuccess(profile);
+      const action = authActions.fetchProfile.resolved(profile);
       const resultState = reducer(defaultState, action);
       expect(resultState.profile).toEqual(profile);
     });
 
     it('should set isLoggedIn to true', () => {
-      const action = authActions.fetchProfileSuccess(profile);
+      const action = authActions.fetchProfile.resolved(profile);
       const resultState = reducer(defaultState, action);
       expect(resultState.isLoggedIn).toBe(true);
     });

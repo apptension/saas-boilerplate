@@ -1,9 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useStartup } from '../useStartup.hook';
+import { useStartup, useProfileStartup } from '../useStartup.hook';
 import initializeFonts from '../../../theme/initializeFontFace';
 import { startupActions } from '../../../modules/startup';
-
-const render = () => renderHook(() => useStartup());
 
 const mockDispatch = jest.fn();
 jest.mock('../../../theme/initializeFontFace');
@@ -13,6 +11,8 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('useStartup: Hook', () => {
+  const render = () => renderHook(() => useStartup());
+
   it('should call startup on mount', () => {
     render();
     expect(mockDispatch).toHaveBeenCalledWith(startupActions.startup());
@@ -21,5 +21,14 @@ describe('useStartup: Hook', () => {
   it('should initialize fonts on mount', () => {
     render();
     expect(initializeFonts).toHaveBeenCalled();
+  });
+});
+
+describe('useProfileStartup: Hook', () => {
+  const render = () => renderHook(() => useProfileStartup());
+
+  it('should call profileStartup on mount', () => {
+    render();
+    expect(mockDispatch).toHaveBeenCalledWith(startupActions.profileStartup());
   });
 });

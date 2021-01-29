@@ -4,4 +4,6 @@ export const ROUTES = {
   signup: '/auth/signup',
   notFound: '/404',
   profile: '/profile',
+  confirmEmail: '/confirm/:user/:token',
+  confirmEmailClear: '/confirm',
 };

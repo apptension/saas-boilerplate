@@ -28,7 +28,7 @@ describe('ChangePasswordForm: Component', () => {
   };
 
   it('should call login action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ error: false });
+    mockDispatch.mockResolvedValue({ isError: false });
 
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);

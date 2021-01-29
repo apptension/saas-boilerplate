@@ -1,1 +1,1 @@
-export { useStartup } from './useStartup.hook';
+export { useStartup, useProfileStartup } from './useStartup.hook';

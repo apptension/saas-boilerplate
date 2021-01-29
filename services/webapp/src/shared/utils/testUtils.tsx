@@ -16,12 +16,12 @@ import createReducer, { GlobalState } from '../../config/reducers';
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
-export const spiedHistory = (route = '/') => {
+export const spiedHistory = (route = `/${DEFAULT_LOCALE}`) => {
   const history = createMemoryHistory({ initialEntries: [route] });
-  const pushSpy = jest.spyOn(history, 'push');
+  history.push = jest.fn();
   return {
     history,
-    pushSpy,
+    pushSpy: history.push,
   };
 };
 
@@ -39,8 +39,6 @@ interface ProvidersWrapperProps {
   children: ReactNode;
   context?: ContextData;
 }
-
-export const createDefaultMemoryHistory = () => createMemoryHistory({ initialEntries: [`/${DEFAULT_LOCALE}`] });
 
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
   const { router = {}, store = fixturesStore, messages } = context;

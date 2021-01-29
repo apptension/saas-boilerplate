@@ -1,5 +1,3 @@
-import { DEFAULT_LOCALE, translationMessages } from '../../../i18n';
-
 require('es5-shim');
 require('es5-shim/es5-sham');
 

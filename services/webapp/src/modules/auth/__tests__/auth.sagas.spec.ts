@@ -5,7 +5,7 @@ import { identity } from 'ramda';
 import { watchAuth } from '../auth.sagas';
 import { authActions } from '..';
 import { server } from '../../../mocks/server';
-import { mockChangePassword, mockLogin, mockMe, mockSignup } from '../../../mocks/server/handlers';
+import { mockChangePassword, mockConfirmEmail, mockLogin, mockMe, mockSignup } from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { userProfileFactory } from '../../../mocks/factories';
@@ -68,7 +68,7 @@ describe('Auth: sagas', () => {
 
         await expectSaga(watchAuth)
           .withState(defaultState)
-          .put(authActions.fetchProfileSuccess(profile))
+          .put(authActions.fetchProfile.resolved(profile))
           .dispatch(authActions.fetchProfile())
           .silentRun();
       });
@@ -80,7 +80,7 @@ describe('Auth: sagas', () => {
 
         await expectSaga(watchAuth)
           .withState(defaultState)
-          .not.put(authActions.fetchProfileSuccess(profile))
+          .not.put(authActions.fetchProfile.resolved(profile))
           .dispatch(authActions.fetchProfile())
           .silentRun();
       });
@@ -131,7 +131,7 @@ describe('Auth: sagas', () => {
   });
 
   describe('changePassword', () => {
-    const mockChangePasswordPayload = {
+    const changePasswordPayload = {
       oldPassword: 'old-pass',
       newPassword: 'new-pass',
     };
@@ -142,7 +142,7 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.changePassword.resolved({ isError: false }))
-        .dispatch(authActions.changePassword(mockChangePasswordPayload))
+        .dispatch(authActions.changePassword(changePasswordPayload))
         .silentRun();
     });
 
@@ -152,7 +152,34 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.changePassword.resolved({ isError: true, oldPassword: ['error'] }))
-        .dispatch(authActions.changePassword(mockChangePasswordPayload))
+        .dispatch(authActions.changePassword(changePasswordPayload))
+        .silentRun();
+    });
+  });
+
+  describe('confirmEmail', () => {
+    const confirmEmailPayload = {
+      user: 'user_id',
+      token: 'token_value',
+    };
+
+    it('should resolve action if call completes successfully', async () => {
+      server.use(mockConfirmEmail({ isError: false }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.confirmEmail.resolved({ isError: false }))
+        .dispatch(authActions.confirmEmail(confirmEmailPayload))
+        .silentRun();
+    });
+
+    it('should reject action if call completes with error', async () => {
+      server.use(mockConfirmEmail({ isError: true }, BAD_REQUEST));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.confirmEmail.resolved({ isError: true }))
+        .dispatch(authActions.confirmEmail(confirmEmailPayload))
         .silentRun();
     });
   });

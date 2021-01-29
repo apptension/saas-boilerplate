@@ -1,1 +1,3 @@
-export type StartupState = Record<string, never>;
+export type StartupState = {
+  profileStartupCompleted: boolean;
+};

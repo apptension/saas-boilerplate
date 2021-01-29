@@ -14,5 +14,5 @@ const handleFetchProfileSuccess = (state: AuthState, { payload }: PayloadAction<
 };
 
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
-  builder.addCase(authActions.fetchProfileSuccess, handleFetchProfileSuccess);
+  builder.addCase(authActions.fetchProfile.resolved, handleFetchProfileSuccess);
 });
