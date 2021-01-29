@@ -8,6 +8,8 @@ provider:
   region: "${env:AWS_DEFAULT_REGION}"
   stackName: ${file(./${self:custom.confFile.${self:provider.stage}}):stackName}
   iamRoleStatements: ${file(./${self:custom.confFile.${self:provider.stage}}):iam}
+  environment:
+    SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
 
 functions:
   hello:
@@ -24,7 +26,7 @@ functions:
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):envsSendEmail}
     events:
       - eventBridge:
-          eventBus: '${self:custom.eventBusArn}'
+          eventBus: "${self:custom.eventBusArn}"
           pattern:
             source:
               - backend.email
@@ -35,8 +37,8 @@ plugins:
   - serverless-localstack
 
 custom:
-  projectEnvName: '${env:PROJECT_NAME}-${env:ENV_STAGE}'
-  eventBusArn: 'arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers'
+  projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
+  eventBusArn: "arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers"
   pythonRequirements:
     dockerizePip: non-linux
     useDownloadCache: true
@@ -49,6 +51,8 @@ custom:
     endpointFile: localstack_endpoints.json
     debug: true
     mountCode: false
+
+  ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
 
   confFile:
     local: workers.conf.local.yml

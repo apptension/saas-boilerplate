@@ -1,8 +1,6 @@
-# AWS Boilerplate
+# SaaS Boilerplate
 
 <p align="center"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="AWS Boilerplate License" /> <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance" /> </p>
-
-> Note: The documentation is a work in progress. It will be in a much better state in couple of days!
 
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you 
 would normally have to spend on system infrastructure's configuration. It contains a number of services that a typical

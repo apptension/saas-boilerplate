@@ -33,7 +33,10 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return password
 
     def create(self, validated_data):
-        user = dj_auth.get_user_model().objects.create_user(validated_data["email"], validated_data["password"],)
+        user = dj_auth.get_user_model().objects.create_user(
+            validated_data["email"],
+            validated_data["password"],
+        )
         models.UserProfile.objects.create(user=user, **validated_data.pop("profile", {}))
 
         notifications.create(
@@ -49,7 +52,9 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
 class UserAccountConfirmationSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(), pk_field=rest.HashidSerializerCharField(), write_only=True,
+        queryset=models.User.objects.all(),
+        pk_field=rest.HashidSerializerCharField(),
+        write_only=True,
     )
     token = serializers.CharField(write_only=True)
 
@@ -129,7 +134,9 @@ class PasswordResetSerializer(serializers.Serializer):
 
 class PasswordResetConfirmationSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(), pk_field=rest.HashidSerializerCharField(), write_only=True,
+        queryset=models.User.objects.all(),
+        pk_field=rest.HashidSerializerCharField(),
+        write_only=True,
     )
 
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))

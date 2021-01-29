@@ -13,5 +13,8 @@ class SendEmail(Task):
 
     def apply(self, to: str, data):
         super().apply(
-            {"to": to, **asdict(data),}
+            {
+                "to": to,
+                **asdict(data),
+            }
         )

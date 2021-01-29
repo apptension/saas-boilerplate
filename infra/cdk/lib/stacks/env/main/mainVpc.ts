@@ -1,76 +1,99 @@
-import {InterfaceVpcEndpoint, InterfaceVpcEndpointAwsService, SubnetType, Vpc} from "@aws-cdk/aws-ec2";
-import {CfnOutput, Construct} from "@aws-cdk/core";
+import { SubnetType, Vpc } from "@aws-cdk/aws-ec2";
+import { CfnOutput, Construct } from "@aws-cdk/core";
 
-import {EnvironmentSettings} from "../../../settings";
-import {EnvConstructProps} from "../../../types";
+import { EnvironmentSettings } from "../../../settings";
+import { EnvConstructProps } from "../../../types";
 
-export interface MainVpcProps extends EnvConstructProps {
-}
+export interface MainVpcProps extends EnvConstructProps {}
 
 export class MainVpc extends Construct {
-    vpc: Vpc;
-    secretsManagerVpcEndpoint: InterfaceVpcEndpoint;
+  vpc: Vpc;
 
-    private readonly envSettings: EnvironmentSettings;
+  private readonly envSettings: EnvironmentSettings;
 
-    static getVpcArnOutputExportName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectEnvName}-mainVpcId`
-    }
+  static getVpcArnOutputExportName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectEnvName}-mainVpcId`;
+  }
 
-    static getPublicSubnetOneIdOutputExportName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectEnvName}-publicSubnetOneId`
-    }
+  static getPublicSubnetOneIdOutputExportName(
+    envSettings: EnvironmentSettings
+  ) {
+    return `${envSettings.projectEnvName}-publicSubnetOneId`;
+  }
 
-    static getPublicSubnetTwoIdOutputExportName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectEnvName}-publicSubnetTwoId`
-    }
+  static getPublicSubnetTwoIdOutputExportName(
+    envSettings: EnvironmentSettings
+  ) {
+    return `${envSettings.projectEnvName}-publicSubnetTwoId`;
+  }
 
-    constructor(scope: Construct, id: string, props: MainVpcProps) {
-        super(scope, id);
+  static getPrivateSubnetOneIdOutputExportName(
+    envSettings: EnvironmentSettings
+  ) {
+    return `${envSettings.projectEnvName}-privateSubnetOneId`;
+  }
 
-        this.envSettings = props.envSettings;
+  static getPrivateSubnetTwoIdOutputExportName(
+    envSettings: EnvironmentSettings
+  ) {
+    return `${envSettings.projectEnvName}-privateSubnetTwoId`;
+  }
 
-        this.vpc = this.createVPC();
-        this.secretsManagerVpcEndpoint = this.createSecretsManagerVpcEndpoint(this.vpc);
+  constructor(scope: Construct, id: string, props: MainVpcProps) {
+    super(scope, id);
 
-        this.createOutputs(props);
-    }
+    this.envSettings = props.envSettings;
 
-    private createVPC() {
-        return new Vpc(this, "EC2MainVpc", {
-            cidr: '10.0.0.0/16',
-            enableDnsSupport: true,
-            enableDnsHostnames: true,
-            natGateways: 0,
-            subnetConfiguration: [
-                {cidrMask: 24, name: "PublicSubnetOne", subnetType: SubnetType.PUBLIC},
-                {cidrMask: 24, name: "PublicSubnetTwo", subnetType: SubnetType.PUBLIC},
-            ]
-        });
-    }
+    this.vpc = this.createVPC();
 
-    private createSecretsManagerVpcEndpoint(vpc: Vpc) {
-        return vpc.addInterfaceEndpoint('SecretsManagerVpcEndpoint', {
-            service: new InterfaceVpcEndpointAwsService('secretsmanager'),
-            subnets: {subnetType: SubnetType.PUBLIC},
-            privateDnsEnabled: true,
-        });
-    }
+    this.createOutputs(props);
+  }
 
-    private createOutputs(props: MainVpcProps) {
-        new CfnOutput(this, "PublicSubnetOneIdOutput", {
-            exportName: MainVpc.getPublicSubnetOneIdOutputExportName(props.envSettings),
-            value: this.vpc.publicSubnets[0].subnetId,
-        });
+  private createVPC() {
+    return new Vpc(this, "EC2MainVpc", {
+      cidr: "10.0.0.0/16",
+      enableDnsSupport: true,
+      enableDnsHostnames: true,
+      natGateways: 1,
+      subnetConfiguration: [
+        { cidrMask: 24, name: "PublicSubnet", subnetType: SubnetType.PUBLIC },
+        { cidrMask: 24, name: "PrivateSubnet", subnetType: SubnetType.PRIVATE },
+      ],
+    });
+  }
 
-        new CfnOutput(this, "PublicSubnetTwoIdOutput", {
-            exportName: MainVpc.getPublicSubnetTwoIdOutputExportName(props.envSettings),
-            value: this.vpc.publicSubnets[1].subnetId,
-        });
+  private createOutputs(props: MainVpcProps) {
+    new CfnOutput(this, "PublicSubnetOneIdOutput", {
+      exportName: MainVpc.getPublicSubnetOneIdOutputExportName(
+        props.envSettings
+      ),
+      value: this.vpc.publicSubnets[0].subnetId,
+    });
 
-        new CfnOutput(this, "MainVPCOutput", {
-            exportName: MainVpc.getVpcArnOutputExportName(props.envSettings),
-            value: this.vpc.vpcId,
-        });
-    }
+    new CfnOutput(this, "PublicSubnetTwoIdOutput", {
+      exportName: MainVpc.getPublicSubnetTwoIdOutputExportName(
+        props.envSettings
+      ),
+      value: this.vpc.publicSubnets[1].subnetId,
+    });
+
+    new CfnOutput(this, "PrivateSubnetOneIdOutput", {
+      exportName: MainVpc.getPrivateSubnetOneIdOutputExportName(
+        props.envSettings
+      ),
+      value: this.vpc.privateSubnets[0].subnetId,
+    });
+
+    new CfnOutput(this, "PrivateSubnetTwoIdOutput", {
+      exportName: MainVpc.getPrivateSubnetTwoIdOutputExportName(
+        props.envSettings
+      ),
+      value: this.vpc.privateSubnets[1].subnetId,
+    });
+
+    new CfnOutput(this, "MainVPCOutput", {
+      exportName: MainVpc.getVpcArnOutputExportName(props.envSettings),
+      value: this.vpc.vpcId,
+    });
+  }
 }

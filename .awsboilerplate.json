@@ -7,13 +7,13 @@
   },
   "toolsConfig": {
     "enabled": true,
-    "basicAuth": "awsb:awsb",
+    "basicAuth": "saas:NVvdHn",
     "hostedZone": {
-      "id": "Z1019320SEC473QW1LV2",
-      "name": "awsb.apptoku.com"
+      "id": "Z08281743N1VR4R6ETETV",
+      "name": "saas.apptoku.com"
     },
     "domains": {
-      "versionMatrix": "status.awsb.apptoku.com"
+      "versionMatrix": "status.saas.apptoku.com"
     }
   }
 }

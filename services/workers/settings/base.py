@@ -31,3 +31,5 @@ else:
 FROM_EMAIL = env('FROM_EMAIL', None)
 
 WEB_APP_URL = env('WEB_APP_URL', None)
+
+SENTRY_DSN = env('SENTRY_DSN', None)

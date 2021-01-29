@@ -13,13 +13,9 @@ test:
 	$(DOCKER_COMPOSE) run -T backend ./scripts/run_tests.sh
 
 build:
+	$(MAKE) docker-login
 	$(MAKE) test
 	/bin/sh ./scripts/build.sh
-
-deploy-admin-panel: SERVICE_URL=$(call GetFromEnvCfg,domains.adminPanel)
-deploy-admin-panel:
-	$(MAKE) -C $(BASE_DIR)/infra/cdk deploy-admin-panel
-	$(MAKE) upload-service-version SERVICE_NAME=admin-panel SERVICE_PARAMS="url=https://$(SERVICE_URL)"
 
 deploy-api: SERVICE_URL=$(call GetFromEnvCfg,domains.api)
 deploy-api:
@@ -33,7 +29,7 @@ deploy-migrations:
 	node_modules/.bin/sls invoke --stage $(ENV_STAGE) -f TriggerMigrationsJob
 	$(MAKE) upload-service-version SERVICE_NAME=migrations
 
-deploy: deploy-migrations deploy-admin-panel deploy-api
+deploy: deploy-migrations deploy-api
 
 ssh-bastion: public_key ?= ~/.ssh/id_rsa.pub
 ssh-bastion: private_key ?= ~/.ssh/id_rsa

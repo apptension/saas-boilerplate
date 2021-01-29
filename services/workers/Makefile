@@ -14,6 +14,7 @@ install: install-node install-python
 	# Local machine installation rule
 
 test:
+	$(MAKE) docker-login
 	$(DOCKER_COMPOSE) up -d db
 	$(DOCKER_COMPOSE) build workers
 	$(DOCKER_COMPOSE) run -T workers ./scripts/run_tests.sh
@@ -33,3 +34,7 @@ black:
 invoke-hello:
 	sls invoke --stage $(ENV_STAGE) -f hello;
 
+secrets: export CHAMBER_SERVICE=workers
+secrets:
+	$(DOCKER_COMPOSE) build ssmeditor
+	$(DOCKER_COMPOSE) run --rm ssmeditor

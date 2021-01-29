@@ -1,5 +1,5 @@
 import {CfnOutput, Construct} from "@aws-cdk/core";
-import {DatabaseInstance, DatabaseInstanceEngine} from "@aws-cdk/aws-rds";
+import {DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion} from "@aws-cdk/aws-rds";
 import {
     InstanceClass,
     InstanceSize,
@@ -9,7 +9,7 @@ import {
     Port,
     Protocol,
     SecurityGroup,
-    Vpc
+    SubnetType
 } from "@aws-cdk/aws-ec2";
 import {Effect, PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
@@ -65,9 +65,11 @@ export class MainDatabase extends Construct {
         const instance = new DatabaseInstance(this, "Instance", {
             instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
             vpc: props.vpc,
-            engine: DatabaseInstanceEngine.POSTGRES,
+            vpcSubnets: {subnetType: SubnetType.PUBLIC},
+            engine: DatabaseInstanceEngine.postgres({
+                version: PostgresEngineVersion.VER_12_4
+            }),
             instanceType: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
-            masterUsername: 'root',
             databaseName: 'main',
             securityGroups: [securityGroup],
             deletionProtection: true,

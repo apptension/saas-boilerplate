@@ -1,0 +1,14 @@
+{
+  "deployBranches": ["master"],
+  "hostedZone": {
+    "id": "Z08281743N1VR4R6ETETV",
+    "name": "saas.apptoku.com"
+  },
+  "basicAuth": "saas:NVvdHn",
+  "domains": {
+    "adminPanel": "admin.qa.saas.apptoku.com",
+    "api": "api.qa.saas.apptoku.com",
+    "webApp": "app.qa.saas.apptoku.com",
+    "www": "www.qa.saas.apptoku.com"
+  }
+}

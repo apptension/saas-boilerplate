@@ -1,14 +1,16 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
+.PHONY: build test
+
 install:
 	yarn install
 
 install-deploy: install-infra-cdk install-scripts
 
 test:
-	yarn test
 	yarn lint
+	yarn test --watchAll=false
 
 build: test
 	yarn build

@@ -3,6 +3,9 @@ import json
 from dao.db.session import db_session
 from userauth import models as ua_models
 from utils.logging import logger
+from utils import monitoring
+
+monitoring.init()
 
 
 def hello(event, context):

@@ -1,7 +1,10 @@
 import json
 import logging
 
+from utils import monitoring
 from . import sender
+
+monitoring.init()
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

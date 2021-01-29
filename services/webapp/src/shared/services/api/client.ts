@@ -1,7 +1,7 @@
 import axios from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 
-const baseUrl = process.env.REACT_APP_BASE_API_URL;
+const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
 
 if (!baseUrl) {
   throw new Error('REACT_APP_BASE_API_URL env is missing');

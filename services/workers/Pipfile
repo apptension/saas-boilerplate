@@ -8,6 +8,7 @@ boto3 = "*"
 environs = "*"
 "psycopg2-binary" = "*"
 pystache = "*"
+sentry-sdk = "*"
 sqlalchemy = "*"
 
 [dev-packages]

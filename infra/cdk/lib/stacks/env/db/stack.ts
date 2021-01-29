@@ -40,6 +40,10 @@ export class EnvDbStack extends Stack {
                 Fn.importValue(MainVpc.getPublicSubnetOneIdOutputExportName(props.envSettings)),
                 Fn.importValue(MainVpc.getPublicSubnetTwoIdOutputExportName(props.envSettings)),
             ],
+            privateSubnetIds: [
+                Fn.importValue(MainVpc.getPrivateSubnetOneIdOutputExportName(props.envSettings)),
+                Fn.importValue(MainVpc.getPrivateSubnetTwoIdOutputExportName(props.envSettings)),
+            ],
             availabilityZones: [
                 stack.availabilityZones[0],
                 stack.availabilityZones[1],

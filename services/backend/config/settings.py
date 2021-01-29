@@ -1,6 +1,7 @@
 import json
 import os
-
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -13,6 +14,13 @@ env = environ.Env(
 
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
+sentry_sdk.init(
+    dsn=env("SENTRY_DSN", default=None),
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True,
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -20,7 +28,6 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
-ALLOWED_CIDR_NETS = env.list("DJANGO_ALLOWED_CIDR_NETS", default=[])
 
 # Application definition
 
@@ -40,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
+    "common.middleware.HealthCheckMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -49,7 +58,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allow_cidr.middleware.AllowCIDRMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
 ]
 ROOT_URLCONF = "config.urls_api"
@@ -77,10 +85,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {'console': {'class': 'logging.StreamHandler',},},
-    'root': {'handlers': ['console'], 'level': 'WARNING',},
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
     'loggers': {
-        'django': {'handlers': ['console'], 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'), 'propagate': False,},
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
     },
 }
 

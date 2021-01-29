@@ -23,7 +23,7 @@ class UserAccountConfirmationView(generics.CreateAPIView):
 
 
 class UserAccountChangePasswordView(generics.CreateAPIView):
-    """"Change the password of logged in user.
+    """ "Change the password of logged in user.
 
     post:
     Request to change the password of the user, it requires to provide *old_password* and *new_password*
@@ -35,7 +35,7 @@ class UserAccountChangePasswordView(generics.CreateAPIView):
 
 
 class PasswordResetView(generics.CreateAPIView):
-    """"Reset the user's password.
+    """ "Reset the user's password.
 
     post:
     Request to reset the user password. It will generate a token for the confirmation e-mail.

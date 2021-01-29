@@ -28,16 +28,25 @@ class TestUserProfile:
 
 class TestResetPassword:
     def test_no_email(self, api_client):
-        response = api_client.post(reverse("password_reset"), {},)
+        response = api_client.post(
+            reverse("password_reset"),
+            {},
+        )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
 
     def test_user_not_found(self, api_client):
-        response = api_client.post(reverse("password_reset"), {"email": "wrong_email@wp.pl"},)
+        response = api_client.post(
+            reverse("password_reset"),
+            {"email": "wrong_email@wp.pl"},
+        )
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.data
 
     def test_user_found(self, api_client, user):
-        response = api_client.post(reverse("password_reset"), {"email": user.email},)
+        response = api_client.post(
+            reverse("password_reset"),
+            {"email": user.email},
+        )
         assert response.status_code == status.HTTP_201_CREATED, response.data
 
     # Password reset confirmation

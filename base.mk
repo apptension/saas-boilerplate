@@ -104,3 +104,7 @@ else
 	node $(BASE_DIR)/scripts/upload-service-version.js $(SERVICE_NAME) $(SERVICE_PARAMS)
 endif
 
+docker-login:
+ifneq ($(DOCKER_USERNAME),)
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+endif

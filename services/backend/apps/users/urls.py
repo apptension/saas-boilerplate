@@ -9,12 +9,20 @@ user_patterns = [
     path("token/", obtain_jwt_token, name="jwt_token"),
     path("me/", views.UserProfileView.as_view(), name="profile"),
     path("confirm/", views.UserAccountConfirmationView.as_view(), name="confirmation"),
-    path("change-password/", views.UserAccountChangePasswordView.as_view(), name="change_password",),
+    path(
+        "change-password/",
+        views.UserAccountChangePasswordView.as_view(),
+        name="change_password",
+    ),
 ]
 
 password_reset_patterns = [
     path("", views.PasswordResetView.as_view(), name="password_reset"),
-    path("confirm/", views.PasswordResetConfirmationView.as_view(), name="password_reset_confirmation",),
+    path(
+        "confirm/",
+        views.PasswordResetConfirmationView.as_view(),
+        name="password_reset_confirmation",
+    ),
 ]
 
 
