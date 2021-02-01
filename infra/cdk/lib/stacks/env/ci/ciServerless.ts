@@ -178,6 +178,8 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           "lambda:*",
           "apigateway:*",
           "logs:*",
+          "kms:*",
+          "ssm:*",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeSubnets",
           "ec2:DescribeVpcs",

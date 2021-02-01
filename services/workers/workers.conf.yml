@@ -12,6 +12,10 @@ iam:
       - "secretsmanager:*"
     Resource:
       { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+  - Effect: "Allow"
+    Action:
+      - "ses:SendEmail"
+    Resource: "*"
 
 envsHello:
   DB_SECRET_ARN:
