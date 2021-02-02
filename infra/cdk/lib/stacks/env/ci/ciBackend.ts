@@ -3,6 +3,7 @@ import {
   BuildEnvironmentVariableType,
   BuildSpec,
   Cache,
+  LinuxBuildImage,
   LocalCacheMode,
   Project,
 } from "@aws-cdk/aws-codebuild";
@@ -87,6 +88,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
+        buildImage: LinuxBuildImage.STANDARD_4_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -142,6 +144,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
+      environment: { buildImage: LinuxBuildImage.STANDARD_4_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
@@ -191,6 +194,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
+      environment: { buildImage: LinuxBuildImage.STANDARD_4_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });

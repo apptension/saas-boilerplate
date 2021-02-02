@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   db:
@@ -38,3 +38,9 @@ services:
       - db
     links:
       - db
+
+  webapp:
+    build:
+      context: ./services/webapp
+    volumes:
+      - ./services/webapp/build:/usr/src/app/build/
