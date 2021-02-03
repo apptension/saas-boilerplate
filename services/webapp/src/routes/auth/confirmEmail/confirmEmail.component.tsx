@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useHistory, useParams } from 'react-router';
+import { generatePath, useHistory, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
@@ -12,29 +12,31 @@ export const ConfirmEmail = () => {
   const history = useHistory();
   const dispatch = useAsyncDispatch();
   const { token, user } = useParams<{ token: string; user: string }>();
-  const confirmRequestedUrl = useLocaleUrl(ROUTES.confirmEmailClear);
+  const confirmRequestedUrl = useLocaleUrl(generatePath(ROUTES.confirmEmail, {}));
   const [validationError, setValidationError] = useState(false);
 
   const handleEmailConfirmation = useCallback(
     async ({ token, user }) => {
-      if (token && user) {
-        try {
-          const res = await dispatch(confirmEmail({ token, user }));
-          history.push(confirmRequestedUrl);
+      try {
+        const res = await dispatch(confirmEmail({ token, user }));
+        history.push(confirmRequestedUrl);
 
-          if (res.isError) {
-            setValidationError(true);
-          }
-        } catch (ex) {
+        if (res.isError) {
           setValidationError(true);
         }
+      } catch (ex) {
+        setValidationError(true);
       }
     },
     [confirmRequestedUrl, dispatch, history]
   );
 
   useEffect(() => {
-    handleEmailConfirmation({ token, user });
+    if (token && user) {
+      handleEmailConfirmation({ token, user });
+    } else {
+      setValidationError(true);
+    }
   }, [handleEmailConfirmation, token, user]);
 
   return renderWhenTrue(() => (

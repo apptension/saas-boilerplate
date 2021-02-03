@@ -27,7 +27,7 @@ describe('LoginForm: Component', () => {
       password: 'abcxyz',
     };
 
-    mockDispatch.mockResolvedValue({ error: false });
+    mockDispatch.mockResolvedValue({ isError: false });
 
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);

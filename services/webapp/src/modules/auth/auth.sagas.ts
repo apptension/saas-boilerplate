@@ -37,5 +37,7 @@ export function* watchAuth() {
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
     takeLatest(authActions.fetchProfile, handleApiRequest(auth.me)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail, confirmEmailResolve)),
+    takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),
+    takeLatest(authActions.confirmPasswordReset, handleApiRequest(auth.confirmPasswordReset)),
   ]);
 }

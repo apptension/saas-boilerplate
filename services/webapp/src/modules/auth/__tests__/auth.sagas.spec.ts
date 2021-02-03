@@ -5,7 +5,15 @@ import { identity } from 'ramda';
 import { watchAuth } from '../auth.sagas';
 import { authActions } from '..';
 import { server } from '../../../mocks/server';
-import { mockChangePassword, mockConfirmEmail, mockLogin, mockMe, mockSignup } from '../../../mocks/server/handlers';
+import {
+  mockChangePassword,
+  mockConfirmEmail,
+  mockConfirmPasswordReset,
+  mockLogin,
+  mockMe,
+  mockRequestPasswordReset,
+  mockSignup,
+} from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { userProfileFactory } from '../../../mocks/factories';
@@ -180,6 +188,60 @@ describe('Auth: sagas', () => {
         .withState(defaultState)
         .put(authActions.confirmEmail.resolved({ isError: true }))
         .dispatch(authActions.confirmEmail(confirmEmailPayload))
+        .silentRun();
+    });
+  });
+
+  describe('requestPasswordReset', () => {
+    const requestPasswordResetPayload = {
+      email: 'user@mail.com',
+    };
+
+    it('should resolve action if call completes successfully', async () => {
+      server.use(mockRequestPasswordReset({ isError: false }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.requestPasswordReset.resolved({ isError: false }))
+        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
+        .silentRun();
+    });
+
+    it('should reject action if call completes with error', async () => {
+      server.use(mockRequestPasswordReset({ isError: true }, BAD_REQUEST));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.requestPasswordReset.resolved({ isError: true }))
+        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
+        .silentRun();
+    });
+  });
+
+  describe('confirmPasswordReset', () => {
+    const confirmPasswordResetPayload = {
+      newPassword: 'user_id',
+      user: 'user-id',
+      token: 'token',
+    };
+
+    it('should resolve action if call completes successfully', async () => {
+      server.use(mockConfirmPasswordReset({ isError: false }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.confirmPasswordReset.resolved({ isError: false }))
+        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
+        .silentRun();
+    });
+
+    it('should reject action if call completes with error', async () => {
+      server.use(mockConfirmPasswordReset({ isError: true }, BAD_REQUEST));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.confirmPasswordReset.resolved({ isError: true }))
+        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
         .silentRun();
     });
   });

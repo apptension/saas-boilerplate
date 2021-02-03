@@ -8,6 +8,7 @@ import { asyncComponent } from '../shared/utils/asyncComponent';
 import { AppComponent as App } from './app.component';
 import { ROUTES } from './app.constants';
 import { useProfileStartup } from './useStartup';
+import { PasswordReset } from './auth/passwordReset';
 //<-- IMPORT ROUTE -->
 
 const Home = asyncComponent(() => import('./home'), 'Home');
@@ -42,8 +43,8 @@ const MatchedLanguageComponent = () => {
         <Route exact path={`${match.path}${ROUTES.confirmEmail}`}>
           <ConfirmEmail />
         </Route>
-        <Route exact path={`${match.path}${ROUTES.confirmEmailClear}`}>
-          <ConfirmEmail />
+        <Route path={`${match.path}${ROUTES.passwordReset.index}`}>
+          <PasswordReset />
         </Route>
         {/* <-- INJECT ROUTE --> */}
 

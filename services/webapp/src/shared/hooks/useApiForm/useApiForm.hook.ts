@@ -5,6 +5,7 @@ import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types
 
 export const useApiForm = <FormData>() => {
   const [genericError, setGenericError] = useState<string>();
+
   const formControls = useForm<FormData>();
   const { setError } = formControls;
 
@@ -35,5 +36,18 @@ export const useApiForm = <FormData>() => {
     [setResponseErrors]
   );
 
-  return { ...formControls, genericError, setApiResponse };
+  const handleSubmit: typeof formControls.handleSubmit = (onValid, onInvalid) => {
+    return (e) => {
+      formControls.clearErrors();
+      setGenericError(undefined);
+      return formControls.handleSubmit(onValid, onInvalid)(e);
+    };
+  };
+
+  return {
+    ...formControls,
+    genericError,
+    setApiResponse,
+    handleSubmit,
+  };
 };

@@ -16,7 +16,8 @@ jest.mock('react-redux', () => {
 
 const user = 'user_id';
 const token = 'token';
-const confirmTokenRoute = `/en/confirm/${user}/${token}`;
+const confirmTokenRoute = `/en/auth/confirm/${user}/${token}`;
+const confirmTokenRouteNoToken = `/en/auth/confirm`;
 
 describe('ConfirmEmail: Component', () => {
   const component = () => <ConfirmEmail />;
@@ -41,7 +42,7 @@ describe('ConfirmEmail: Component', () => {
     const { pushSpy, history } = spiedHistory(confirmTokenRoute);
     render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
     await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith('/en/confirm');
+      expect(pushSpy).toHaveBeenCalledWith('/en/auth/confirm');
     });
   });
 
@@ -51,6 +52,16 @@ describe('ConfirmEmail: Component', () => {
         isError: true,
       });
       const { history } = spiedHistory(confirmTokenRoute);
+      render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
+      await waitFor(() => {
+        expect(screen.getByText('Invalid token')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('token is missing from URL', () => {
+    it('should show invalid token error', async () => {
+      const { history } = spiedHistory(confirmTokenRouteNoToken);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
         expect(screen.getByText('Invalid token')).toBeInTheDocument();

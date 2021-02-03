@@ -4,18 +4,24 @@ import {
   ChangePasswordResponseData,
   ConfirmEmailRequestData,
   ConfirmEmailResponseData,
+  ConfirmPasswordResetRequestData,
+  ConfirmPasswordResetResponseData,
   LoginApiRequestData,
   LoginApiResponseData,
   MeApiRequestData,
   MeApiResponseData,
+  RequestPasswordResetRequestData,
+  RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
 } from '../../../shared/services/api/auth/types';
 import {
   AUTH_CHANGE_PASSWORD_URL,
   AUTH_CONFIRM_EMAIL_URL,
+  AUTH_CONFIRM_PASSWORD_RESET_URL,
   AUTH_LOGIN_URL,
   AUTH_ME_URL,
+  AUTH_REQUEST_PASSWORD_RESET_URL,
   AUTH_SIGNUP_URL,
 } from '../../../shared/services/api/auth';
 import { Profile, Role } from '../../../modules/auth/auth.types';
@@ -50,3 +56,25 @@ export const mockConfirmEmail = (response: ConfirmEmailResponseData = { isError:
   rest.post<ConfirmEmailRequestData, ConfirmEmailResponseData>(baseUrl + AUTH_CONFIRM_EMAIL_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
+
+export const mockRequestPasswordReset = (
+  response: RequestPasswordResetResponseData = { isError: false },
+  status = 200
+) =>
+  rest.post<RequestPasswordResetRequestData, RequestPasswordResetResponseData>(
+    baseUrl + AUTH_REQUEST_PASSWORD_RESET_URL,
+    (req, res, ctx) => {
+      return res(ctx.status(status), ctx.json(response));
+    }
+  );
+
+export const mockConfirmPasswordReset = (
+  response: ConfirmPasswordResetResponseData = { isError: false },
+  status = 200
+) =>
+  rest.post<ConfirmPasswordResetRequestData, ConfirmPasswordResetResponseData>(
+    baseUrl + AUTH_CONFIRM_PASSWORD_RESET_URL,
+    (req, res, ctx) => {
+      return res(ctx.status(status), ctx.json(response));
+    }
+  );

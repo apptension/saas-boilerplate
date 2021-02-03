@@ -4,10 +4,14 @@ import {
   ChangePasswordResponseData,
   ConfirmEmailRequestData,
   ConfirmEmailResponseData,
+  ConfirmPasswordResetRequestData,
+  ConfirmPasswordResetResponseData,
   LoginApiRequestData,
   LoginApiResponseData,
   MeApiRequestData,
   MeApiResponseData,
+  RequestPasswordResetRequestData,
+  RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
 } from '../../shared/services/api/auth/types';
@@ -21,3 +25,11 @@ export const changePassword = createPromiseAction<ChangePasswordRequestData, Cha
 );
 export const fetchProfile = createPromiseAction<MeApiRequestData, MeApiResponseData>('FETCH_PROFILE');
 export const confirmEmail = createPromiseAction<ConfirmEmailRequestData, ConfirmEmailResponseData>('CONFIRM_EMAIL');
+export const requestPasswordReset = createPromiseAction<
+  RequestPasswordResetRequestData,
+  RequestPasswordResetResponseData
+>('REQUEST_PASSWORD_RESET');
+export const confirmPasswordReset = createPromiseAction<
+  ConfirmPasswordResetRequestData,
+  ConfirmPasswordResetResponseData
+>('CONFIRM_PASSWORD_RESET');

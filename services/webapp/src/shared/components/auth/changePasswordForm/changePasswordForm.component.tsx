@@ -16,7 +16,14 @@ interface ChangePasswordFormFields {
 export const ChangePasswordForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, genericError, setApiResponse } = useApiForm<ChangePasswordFormFields>();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    genericError,
+    setApiResponse,
+    formState,
+  } = useApiForm<ChangePasswordFormFields>();
 
   const onChangePassword = async (data: ChangePasswordFormFields) => {
     const res = await dispatch(changePassword(data));
@@ -65,6 +72,13 @@ export const ChangePasswordForm = () => {
       <Button type="submit">
         <FormattedMessage defaultMessage="Change password" description="Auth / Change password / Submit button" />
       </Button>
+
+      {formState.isSubmitSuccessful && (
+        <FormattedMessage
+          defaultMessage="Password changed successfully"
+          description="Auth / Change password / Success message"
+        />
+      )}
     </Container>
   );
 };

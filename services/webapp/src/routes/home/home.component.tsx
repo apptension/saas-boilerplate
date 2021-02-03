@@ -40,6 +40,10 @@ export const Home = () => {
       <Link to={`/${locale}${ROUTES.profile}`}>
         <FormattedMessage defaultMessage="Profile" description="Home / profile link" />
       </Link>
+
+      <Link to={`/${locale}${ROUTES.passwordReset.index}`}>
+        <FormattedMessage defaultMessage="Reset password" description="Home / reset password" />
+      </Link>
     </Container>
   );
 };
