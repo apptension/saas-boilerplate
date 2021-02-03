@@ -16,4 +16,4 @@ def test_send_account_activation_email(mocker, ses_client):
 
     assert kwargs['Source'] == settings.FROM_EMAIL
     assert kwargs['Destination']['ToAddresses'] == [event['to']]
-    assert 'https://example.org/auth/confirm/user-1/secret-token' in kwargs['Message']['Body']['Html']['Data']
+    assert 'https://example.org/en/auth/confirm/user-1/secret-token' in kwargs['Message']['Body']['Html']['Data']

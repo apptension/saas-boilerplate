@@ -92,12 +92,12 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': env('DJANGO_LOG_LEVEL', default='INFO'),
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
             'propagate': False,
         },
     },

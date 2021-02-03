@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/react';
 
 // Needed for redux-saga es6 generator support
 import 'core-js/stable';
@@ -16,6 +17,8 @@ import configureStore from './config/store';
 import browserHistory from './shared/utils/history';
 import UnsupportedBrowserDetection from './shared/utils/unsupported/unsupportedBrowserDetection';
 import { setUnsupportedClasses } from './shared/utils/unsupported/support';
+
+Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
@@ -42,11 +45,13 @@ const render = (): void => {
   const NextApp = require('./routes').default;
 
   ReactDOM.render(
-    <Provider store={store}>
-      <Router history={browserHistory}>
-        <NextApp />
-      </Router>
-    </Provider>,
+    <Sentry.ErrorBoundary fallback={'An error has occurred'}>
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          <NextApp />
+        </Router>
+      </Provider>
+    </Sentry.ErrorBoundary>,
     document.getElementById('app')
   );
 };

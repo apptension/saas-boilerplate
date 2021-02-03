@@ -17,6 +17,6 @@ def test_send_password_reset_email(mocker, ses_client):
     assert kwargs['Source'] == settings.FROM_EMAIL
     assert kwargs['Destination']['ToAddresses'] == [event['to']]
     assert (
-        'https://example.org/auth/reset-password/confirm/user-1/secret-token'
+        'https://example.org/en/auth/reset-password/confirm/user-1/secret-token'
         in kwargs['Message']['Body']['Html']['Data']
     )
