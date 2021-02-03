@@ -59,6 +59,19 @@ describe('ConfirmEmail: Component', () => {
     });
   });
 
+  describe('token is valid', () => {
+    it('should not show invalid token error', async () => {
+      mockDispatch.mockResolvedValue({
+        isError: false,
+      });
+      const { history } = spiedHistory(confirmTokenRoute);
+      render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
+      await waitFor(() => {
+        expect(screen.queryByText('Invalid token')).not.toBeInTheDocument();
+      });
+    });
+  });
+
   describe('token is missing from URL', () => {
     it('should show invalid token error', async () => {
       const { history } = spiedHistory(confirmTokenRouteNoToken);

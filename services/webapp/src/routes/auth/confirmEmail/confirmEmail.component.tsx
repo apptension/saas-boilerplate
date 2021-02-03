@@ -11,15 +11,20 @@ import { confirmEmail } from '../../../modules/auth/auth.actions';
 export const ConfirmEmail = () => {
   const history = useHistory();
   const dispatch = useAsyncDispatch();
-  const { token, user } = useParams<{ token: string; user: string }>();
+  const params = useParams<{ token: string; user: string }>();
+  const [token] = useState(params.token);
+  const [user] = useState(params.user);
   const confirmRequestedUrl = useLocaleUrl(generatePath(ROUTES.confirmEmail, {}));
   const [validationError, setValidationError] = useState(false);
+
+  const isTokenInUrl = Boolean(params.token && params.user);
+  const isTokenSavedFromUrl = Boolean(user && token);
 
   const handleEmailConfirmation = useCallback(
     async ({ token, user }) => {
       try {
-        const res = await dispatch(confirmEmail({ token, user }));
         history.push(confirmRequestedUrl);
+        const res = await dispatch(confirmEmail({ token, user }));
 
         if (res.isError) {
           setValidationError(true);
@@ -32,12 +37,14 @@ export const ConfirmEmail = () => {
   );
 
   useEffect(() => {
-    if (token && user) {
-      handleEmailConfirmation({ token, user });
-    } else {
+    if (isTokenInUrl) {
+      handleEmailConfirmation(params);
+    }
+
+    if (!isTokenSavedFromUrl && !isTokenInUrl) {
       setValidationError(true);
     }
-  }, [handleEmailConfirmation, token, user]);
+  }, [handleEmailConfirmation, isTokenInUrl, isTokenSavedFromUrl, params]);
 
   return renderWhenTrue(() => (
     <h1>
