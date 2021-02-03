@@ -6,11 +6,13 @@ import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../input';
 import { Button } from '../../button';
 import { signup } from '../../../../modules/auth/auth.actions';
+import { Checkbox } from '../../checkbox';
 import { Container, ErrorMessage } from './signupForm.styles';
 
 interface SignupFormFields {
   password: string;
   email: string;
+  acceptTerms: boolean;
 }
 
 export const SignupForm = () => {
@@ -19,7 +21,12 @@ export const SignupForm = () => {
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>();
 
   const onSignup = async (data: SignupFormFields) => {
-    const res = await dispatch(signup(data));
+    const res = await dispatch(
+      signup({
+        password: data.password,
+        email: data.email,
+      })
+    );
     setApiResponse(res);
   };
 
@@ -60,6 +67,23 @@ export const SignupForm = () => {
           description: 'Auth / Signup / Password placeholder',
         })}
         error={errors.password?.message}
+      />
+      <Checkbox
+        label={intl.formatMessage({
+          defaultMessage: 'Accept terms and conditions',
+          description: 'Auth / Signup / Accept terms label',
+        })}
+        ref={register({
+          required: {
+            value: true,
+            message: intl.formatMessage({
+              defaultMessage: 'You need to accept terms and conditions',
+              description: 'Auth / Signup / Password required',
+            }),
+          },
+        })}
+        name={'acceptTerms'}
+        error={errors.acceptTerms?.message}
       />
       {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
       <Button type="submit">

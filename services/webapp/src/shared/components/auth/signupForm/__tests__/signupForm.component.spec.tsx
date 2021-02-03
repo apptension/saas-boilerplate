@@ -32,15 +32,17 @@ describe('SignupForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
     userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.click(screen.getByLabelText(/accept terms/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(signup(mockCreds));
     });
   });
 
-  it('should show error if required value is missing', async () => {
+  it('should show error if password value is missing', async () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
+    userEvent.click(screen.getByLabelText(/accept terms/gi));
     userEvent.click(screen.getByRole('button', { name: /signup/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -48,17 +50,24 @@ describe('SignupForm: Component', () => {
     });
   });
 
-  it('should show field error if action throws error', async () => {
-    const mockCreds = {
-      email: 'user@mail.com',
-      password: 'abcxyz',
-    };
+  it('should show error if terms are not accepted', async () => {
+    render();
+    userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
+    userEvent.type(screen.getByPlaceholderText(/password/gi), 'asdzxc');
+    userEvent.click(screen.getByRole('button', { name: /signup/gi }));
+    expect(mockDispatch).not.toHaveBeenCalledWith();
+    await waitFor(() => {
+      expect(screen.getByText('You need to accept terms and conditions')).toBeInTheDocument();
+    });
+  });
 
+  it('should show field error if action throws error', async () => {
     mockDispatch.mockResolvedValue({ isError: true, password: ['Provided password is invalid'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
+    userEvent.type(screen.getByPlaceholderText(/password/gi), 'abcxyz');
+    userEvent.click(screen.getByLabelText(/accept terms/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -67,16 +76,12 @@ describe('SignupForm: Component', () => {
   });
 
   it('should show generic form error if action throws error', async () => {
-    const mockCreds = {
-      email: 'user@mail.com',
-      password: 'abcxyz',
-    };
-
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid credentials'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
+    userEvent.type(screen.getByPlaceholderText(/password/gi), 'abcxyz');
+    userEvent.click(screen.getByLabelText(/accept terms/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {

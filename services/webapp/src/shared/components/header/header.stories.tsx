@@ -19,7 +19,7 @@ const Template: Story = (args) => {
 };
 
 export default {
-  title: 'Header',
+  title: 'Shared/Header',
   component: Header,
 };
 
