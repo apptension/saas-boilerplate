@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { waitFor, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { ConfirmEmail } from '../confirmEmail.component';
 import { ROUTES } from '../../../app.constants';
@@ -55,20 +56,32 @@ describe('ConfirmEmail: Component', () => {
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
         expect(screen.getByText('Invalid token')).toBeInTheDocument();
+        expect(screen.queryByText('Email confirmed successfully')).not.toBeInTheDocument();
       });
     });
   });
 
   describe('token is valid', () => {
-    it('should not show invalid token error', async () => {
-      mockDispatch.mockResolvedValue({
-        isError: false,
-      });
+    it('should show success message', async () => {
+      mockDispatch.mockResolvedValue({ isError: false });
       const { history } = spiedHistory(confirmTokenRoute);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
+        expect(screen.getByText('Email confirmed successfully')).toBeInTheDocument();
         expect(screen.queryByText('Invalid token')).not.toBeInTheDocument();
       });
+    });
+
+    it('should show login link', async () => {
+      mockDispatch.mockResolvedValue({ isError: false });
+      const { history, pushSpy } = spiedHistory(confirmTokenRoute);
+      render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
+      await waitFor(() => {
+        expect(screen.getByText(/login/gi)).toBeInTheDocument();
+      });
+      pushSpy.mockClear();
+      userEvent.click(screen.getByText(/login/gi));
+      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });
 
@@ -78,6 +91,7 @@ describe('ConfirmEmail: Component', () => {
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
         expect(screen.getByText('Invalid token')).toBeInTheDocument();
+        expect(screen.queryByText('Email confirmed successfully')).not.toBeInTheDocument();
       });
     });
   });

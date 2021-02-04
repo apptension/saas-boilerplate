@@ -21,7 +21,7 @@ export const spiedHistory = (route = `/${DEFAULT_LOCALE}`) => {
   history.push = jest.fn();
   return {
     history,
-    pushSpy: history.push,
+    pushSpy: history.push as jest.Mock,
   };
 };
 
