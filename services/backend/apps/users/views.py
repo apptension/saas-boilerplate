@@ -1,6 +1,12 @@
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.throttling import AnonRateThrottle
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from social_core.actions import do_complete
+from social_django.utils import psa
 
 from . import serializers
 
@@ -55,3 +61,27 @@ class PasswordResetConfirmationView(generics.CreateAPIView):
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.PasswordResetConfirmationSerializer
+
+
+@never_cache
+@csrf_exempt
+@psa('social:complete')
+def complete(request, backend, *args, **kwargs):
+    """Authentication complete view"""
+
+    def _do_login(backend, user, social_user):
+        user.backend = '{0}.{1}'.format(backend.__module__, backend.__class__.__name__)
+
+        payload = JSONWebTokenAuthentication.jwt_create_payload(user)
+        token = JSONWebTokenAuthentication.jwt_encode_payload(payload)
+        backend.strategy.set_jwt(token)
+
+    return do_complete(
+        request.backend,
+        _do_login,
+        user=request.user,
+        redirect_name=REDIRECT_FIELD_NAME,
+        request=request,
+        *args,
+        **kwargs
+    )

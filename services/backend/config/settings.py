@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_hosts",
     "rest_framework_jwt.blacklist",
     "whitenoise",
+    "social_django",
     "apps.users",
 ]
 
@@ -152,6 +153,11 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = "users.User"
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 LOCALE_PATHS = []
 
 REST_FRAMEWORK = {
@@ -167,6 +173,24 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': 'X-Auth',
     'JWT_AUTH_COOKIE_SECURE': env.bool('JWT_AUTH_COOKIE_SECURE', default=True),
 }
+
+SOCIAL_AUTH_USER_MODEL = "users.User"
+SOCIAL_AUTH_STRATEGY = "apps.users.strategy.DjangoJWTStrategy"
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS = env.list('SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS', default=[])
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
