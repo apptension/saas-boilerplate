@@ -18,6 +18,7 @@ import {
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { userProfileFactory } from '../../../mocks/factories';
+import { OAuthProvider } from '../auth.types';
 
 jest.mock('../../../shared/utils/history');
 
@@ -280,6 +281,30 @@ describe('Auth: sagas', () => {
         .put(authActions.confirmPasswordReset.resolved({ isError: true }))
         .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
         .silentRun();
+    });
+  });
+
+  describe('oAuthLogin', () => {
+    describe('for google provider', () => {
+      it('should redirect to google OAuth url', async () => {
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .dispatch(authActions.oAuthLogin(OAuthProvider.Google))
+          .silentRun();
+        const encodedNextUrl = encodeURIComponent('http://localhost');
+        expect(mockHistoryPush).toHaveBeenCalledWith(`/api/auth/social/login/google-oauth2?next=${encodedNextUrl}`);
+      });
+    });
+
+    describe('for facebook provider', () => {
+      it('should redirect to facebook OAuth url', async () => {
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .dispatch(authActions.oAuthLogin(OAuthProvider.Facebook))
+          .silentRun();
+        const encodedNextUrl = encodeURIComponent('http://localhost');
+        expect(mockHistoryPush).toHaveBeenCalledWith(`/api/auth/social/login/facebook?next=${encodedNextUrl}`);
+      });
     });
   });
 });

@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { renderWhenTrue, renderWhenTrueOtherwise } from '../../../shared/utils/rendering';
+import { renderWhenTrue } from '../../../shared/utils/rendering';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { H1 } from '../../../theme/typography';

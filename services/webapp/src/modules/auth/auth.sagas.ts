@@ -2,13 +2,16 @@ import { all, put, takeLatest } from 'redux-saga/effects';
 
 import { auth } from '../../shared/services/api';
 import {
-  ConfirmEmailResponseData,
   LoginApiResponseData,
   LogoutApiResponseData,
   SignupApiResponseData,
 } from '../../shared/services/api/auth/types';
 import { ROUTES } from '../../routes/app.constants';
 import { handleApiRequest, navigate } from '../helpers';
+import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
+import history from '../../shared/utils/history';
+import { getOauthUrl } from '../../shared/services/api/auth';
+import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
 
 function* loginResolve(response: LoginApiResponseData) {
@@ -31,6 +34,10 @@ function* signupResolve(response: SignupApiResponseData) {
   }
 }
 
+function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
+  yield history.push(getOauthUrl(provider));
+}
+
 export function* watchAuth() {
   yield all([
     takeLatest(authActions.signup, handleApiRequest(auth.signup, signupResolve)),
@@ -41,5 +48,6 @@ export function* watchAuth() {
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
     takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),
     takeLatest(authActions.confirmPasswordReset, handleApiRequest(auth.confirmPasswordReset)),
+    takeLatest(authActions.oAuthLogin, oAuthLogin),
   ]);
 }

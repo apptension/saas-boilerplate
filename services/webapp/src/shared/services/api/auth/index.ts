@@ -1,4 +1,5 @@
 import { client } from '../client';
+import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import {
   SignupApiRequestData,
   LoginApiRequestData,
@@ -13,7 +14,6 @@ import {
   RequestPasswordResetResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
-  LogoutApiRequestData,
   LogoutApiResponseData,
 } from './types';
 
@@ -26,6 +26,9 @@ export const AUTH_CHANGE_PASSWORD_URL = AUTH_URL + `/change-password/`;
 export const AUTH_CONFIRM_EMAIL_URL = AUTH_URL + `/confirm/`;
 export const AUTH_REQUEST_PASSWORD_RESET_URL = `/password-reset/`;
 export const AUTH_CONFIRM_PASSWORD_RESET_URL = `/password-reset/confirm/`;
+
+export const getOauthUrl = (provider: OAuthProvider) =>
+  `/api${AUTH_URL}/social/login/${provider}?next=${encodeURIComponent(window.location.origin)}`;
 
 export const signup = async (creds: SignupApiRequestData) => {
   const res = await client.post<SignupApiResponseData>(AUTH_SIGNUP_URL, creds);
