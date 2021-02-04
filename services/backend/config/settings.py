@@ -155,6 +155,7 @@ AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -175,6 +176,7 @@ JWT_AUTH = {
 }
 
 SOCIAL_AUTH_USER_MODEL = "users.User"
+SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
 SOCIAL_AUTH_STRATEGY = "apps.users.strategy.DjangoJWTStrategy"
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_PIPELINE = (
@@ -191,6 +193,12 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS = env.list('SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS', default=[])
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
+SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY', default='')
+SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET', default='')
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'public_profile']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email',
+}
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
