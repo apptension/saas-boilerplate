@@ -10,6 +10,7 @@ import {
   mockConfirmEmail,
   mockConfirmPasswordReset,
   mockLogin,
+  mockLogout,
   mockMe,
   mockRequestPasswordReset,
   mockSignup,
@@ -66,6 +67,42 @@ describe('Auth: sagas', () => {
         .put(authActions.login.resolved({ isError: true, password: ['error'] }))
         .dispatch(authActions.login(credentials))
         .silentRun();
+    });
+  });
+
+  describe('logout', () => {
+    describe('call completes successfully', () => {
+      it('should resolve action', async () => {
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.logout.resolved({ isError: false }))
+          .dispatch(authActions.logout())
+          .silentRun();
+      });
+
+      it('should redirect to login page', async () => {
+        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
+        expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
+      });
+    });
+
+    describe('call completes with error', () => {
+      it('should reject action', async () => {
+        server.use(mockLogout(BAD_REQUEST, { isError: true }));
+
+        await expectSaga(watchAuth)
+          .withState(defaultState)
+          .put(authActions.logout.resolved({ isError: true }))
+          .dispatch(authActions.logout())
+          .silentRun();
+      });
+
+      it('should not redirect anywhere', async () => {
+        server.use(mockLogout(BAD_REQUEST, { isError: true }));
+
+        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
+        expect(mockHistoryPush).not.toHaveBeenCalled();
+      });
     });
   });
 

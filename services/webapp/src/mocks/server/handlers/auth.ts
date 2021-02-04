@@ -8,6 +8,8 @@ import {
   ConfirmPasswordResetResponseData,
   LoginApiRequestData,
   LoginApiResponseData,
+  LogoutApiRequestData,
+  LogoutApiResponseData,
   MeApiRequestData,
   MeApiResponseData,
   RequestPasswordResetRequestData,
@@ -20,6 +22,7 @@ import {
   AUTH_CONFIRM_EMAIL_URL,
   AUTH_CONFIRM_PASSWORD_RESET_URL,
   AUTH_LOGIN_URL,
+  AUTH_LOGOUT_URL,
   AUTH_ME_URL,
   AUTH_REQUEST_PASSWORD_RESET_URL,
   AUTH_SIGNUP_URL,
@@ -36,6 +39,11 @@ export const mockSignup = (response: SignupApiResponseData = { isError: false, p
 
 export const mockLogin = (status = 200, response: LoginApiResponseData = { isError: false }) =>
   rest.post<LoginApiRequestData, LoginApiResponseData>(baseUrl + AUTH_LOGIN_URL, (req, res, ctx) => {
+    return res(ctx.status(status), ctx.json(response));
+  });
+
+export const mockLogout = (status = 200, response: LogoutApiResponseData = { isError: false }) =>
+  rest.post<LogoutApiRequestData, LogoutApiResponseData>(baseUrl + AUTH_LOGOUT_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 

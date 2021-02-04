@@ -6,10 +6,23 @@ import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
 import { Header } from '../header.component';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
+import { logout } from '../../../../modules/auth/auth.actions';
+
+const mockDispatch = jest.fn();
+jest.mock('react-redux', () => {
+  return {
+    ...jest.requireActual<NodeModule>('react-redux'),
+    useDispatch: () => mockDispatch,
+  };
+});
 
 describe('Header: Component', () => {
   const component = () => <Header />;
   const render = makeContextRenderer(component);
+
+  beforeEach(() => {
+    mockDispatch.mockReset();
+  });
 
   describe('user is logged in', () => {
     const store = prepareState((state) => {
@@ -23,12 +36,23 @@ describe('Header: Component', () => {
       userEvent.click(screen.getByText(/my profile \(user@mail\.com\)/gi));
       expect(pushSpy).toHaveBeenCalledWith('/en/profile');
     });
+
+    it('should dispatch logout action when clicking on "logout" button', () => {
+      render({}, { store });
+      userEvent.click(screen.getByText(/logout/gi));
+      expect(mockDispatch).toHaveBeenCalledWith(logout());
+    });
   });
 
   describe('user is logged out', () => {
     it('should not display "profile" link', () => {
       render();
       expect(screen.queryByText(/my profile \(user@mail\.com\)/gi)).not.toBeInTheDocument();
+    });
+
+    it('should not display "logout" link', () => {
+      render();
+      expect(screen.queryByText(/logout/gi)).not.toBeInTheDocument();
     });
   });
 });

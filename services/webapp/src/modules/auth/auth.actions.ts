@@ -8,6 +8,8 @@ import {
   ConfirmPasswordResetResponseData,
   LoginApiRequestData,
   LoginApiResponseData,
+  LogoutApiRequestData,
+  LogoutApiResponseData,
   MeApiRequestData,
   MeApiResponseData,
   RequestPasswordResetRequestData,
@@ -20,6 +22,7 @@ const { createPromiseAction } = actionCreator('AUTH');
 
 export const signup = createPromiseAction<SignupApiRequestData, SignupApiResponseData>('SIGNUP');
 export const login = createPromiseAction<LoginApiRequestData, LoginApiResponseData>('LOGIN');
+export const logout = createPromiseAction<LogoutApiRequestData, LogoutApiResponseData>('LOGOUT');
 export const changePassword = createPromiseAction<ChangePasswordRequestData, ChangePasswordResponseData>(
   'CHANGE_PASSWORD'
 );

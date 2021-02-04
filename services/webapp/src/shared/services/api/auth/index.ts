@@ -13,11 +13,14 @@ import {
   RequestPasswordResetResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
+  LogoutApiRequestData,
+  LogoutApiResponseData,
 } from './types';
 
 export const AUTH_URL = '/auth';
 export const AUTH_SIGNUP_URL = AUTH_URL + `/signup/`;
 export const AUTH_LOGIN_URL = AUTH_URL + `/token/`;
+export const AUTH_LOGOUT_URL = AUTH_URL + `/logout/`;
 export const AUTH_ME_URL = AUTH_URL + `/me/`;
 export const AUTH_CHANGE_PASSWORD_URL = AUTH_URL + `/change-password/`;
 export const AUTH_CONFIRM_EMAIL_URL = AUTH_URL + `/confirm/`;
@@ -31,6 +34,11 @@ export const signup = async (creds: SignupApiRequestData) => {
 
 export const login = async (creds: LoginApiRequestData) => {
   const res = await client.post<LoginApiResponseData>(AUTH_LOGIN_URL, creds);
+  return res.data;
+};
+
+export const logout = async () => {
+  const res = await client.post<LogoutApiResponseData>(AUTH_LOGOUT_URL);
   return res.data;
 };
 

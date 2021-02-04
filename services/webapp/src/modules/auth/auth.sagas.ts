@@ -4,6 +4,7 @@ import { auth } from '../../shared/services/api';
 import {
   ConfirmEmailResponseData,
   LoginApiResponseData,
+  LogoutApiResponseData,
   SignupApiResponseData,
 } from '../../shared/services/api/auth/types';
 import { ROUTES } from '../../routes/app.constants';
@@ -14,6 +15,12 @@ function* loginResolve(response: LoginApiResponseData) {
   if (!response.isError) {
     yield navigate(ROUTES.home);
     yield put(authActions.fetchProfile());
+  }
+}
+
+function* logoutResolve(response: LogoutApiResponseData) {
+  if (!response.isError) {
+    yield navigate(ROUTES.login);
   }
 }
 
@@ -28,6 +35,7 @@ export function* watchAuth() {
   yield all([
     takeLatest(authActions.signup, handleApiRequest(auth.signup, signupResolve)),
     takeLatest(authActions.login, handleApiRequest(auth.login, loginResolve)),
+    takeLatest(authActions.logout, handleApiRequest(auth.logout, logoutResolve)),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
     takeLatest(authActions.fetchProfile, handleApiRequest(auth.me)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
