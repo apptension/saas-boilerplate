@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react';
-import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, Redirect, useRouteMatch, useLocation } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 
 import { HelmetProvider } from 'react-helmet-async';
@@ -57,15 +57,17 @@ const MatchedLanguageComponent = () => {
 };
 
 export default () => {
+  const { pathname, search } = useLocation();
+
   return (
     <HelmetProvider>
       <Switch>
-        <Route exact path="/">
-          <Redirect to={DEFAULT_LOCALE} />
-        </Route>
-
         <Route path={`/:lang(${appLocales.join('|')})`}>
           <MatchedLanguageComponent />
+        </Route>
+
+        <Route path="/">
+          <Redirect to={`/${DEFAULT_LOCALE}${pathname}${search}`} />
         </Route>
 
         <IntlProvider key={DEFAULT_LOCALE} locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
