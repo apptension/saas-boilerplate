@@ -11,6 +11,7 @@ import { Container, ErrorMessage } from './changePasswordForm.styles';
 interface ChangePasswordFormFields {
   oldPassword: string;
   newPassword: string;
+  confirmNewPassword: string;
 }
 
 export const ChangePasswordForm = () => {
@@ -23,10 +24,11 @@ export const ChangePasswordForm = () => {
     genericError,
     setApiResponse,
     formState,
+    getValues,
   } = useApiForm<ChangePasswordFormFields>();
 
-  const onChangePassword = async (data: ChangePasswordFormFields) => {
-    const res = await dispatch(changePassword(data));
+  const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
+    const res = await dispatch(changePassword({ oldPassword, newPassword }));
     setApiResponse(res);
   };
 
@@ -64,9 +66,34 @@ export const ChangePasswordForm = () => {
         type={'password'}
         placeholder={intl.formatMessage({
           defaultMessage: 'New password',
-          description: 'Auth / Login / New password placeholder',
+          description: 'Auth / Change password / New password placeholder',
         })}
         error={errors.newPassword?.message}
+      />
+      <Input
+        ref={register({
+          validate: {
+            required: (value) =>
+              value?.length > 0 ||
+              intl.formatMessage({
+                defaultMessage: 'Confirm password is required',
+                description: 'Auth / Change password / Confirm password required',
+              }),
+            mustMatch: (value) =>
+              getValues().newPassword === value ||
+              intl.formatMessage({
+                defaultMessage: 'Passwords must match',
+                description: 'Auth / Change password / Password must match',
+              }),
+          },
+        })}
+        name={'confirmNewPassword'}
+        type={'password'}
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Confirm new password',
+          description: 'Auth / Change password / Confirm new password placeholder',
+        })}
+        error={errors.confirmNewPassword?.message}
       />
       {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
       <Button type="submit">

@@ -24,7 +24,8 @@ describe('ChangePasswordForm: Component', () => {
 
   const formData = {
     oldPassword: 'old-pass',
-    newPassword: ' new-pass',
+    newPassword: 'new-pass',
+    confirmNewPassword: 'new-pass',
   };
 
   it('should call login action when submitted', async () => {
@@ -33,9 +34,15 @@ describe('ChangePasswordForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
     userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
     act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
     await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(changePassword(formData));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        changePassword({
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword,
+        })
+      );
     });
   });
 
@@ -45,6 +52,7 @@ describe('ChangePasswordForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
     userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
     act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
     await waitFor(() => {
       expect(screen.getByText('Password changed successfully')).toBeInTheDocument();
@@ -54,10 +62,23 @@ describe('ChangePasswordForm: Component', () => {
   it('should show error if required value is missing', async () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
     userEvent.click(screen.getByRole('button', { name: /change password/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('New password is required')).toBeInTheDocument();
+    });
+  });
+
+  it('should show error if new passwords dont match', async () => {
+    render();
+    userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
+    userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), 'misspelled-pass');
+    userEvent.click(screen.getByRole('button', { name: /change password/gi }));
+    expect(mockDispatch).not.toHaveBeenCalledWith();
+    await waitFor(() => {
+      expect(screen.getByText('Passwords must match')).toBeInTheDocument();
     });
   });
 
@@ -67,6 +88,7 @@ describe('ChangePasswordForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
     userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
     act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -80,6 +102,7 @@ describe('ChangePasswordForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
     userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
     act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
