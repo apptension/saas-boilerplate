@@ -157,11 +157,11 @@ describe('Auth: sagas', () => {
   describe('signup', () => {
     describe('call completes successfully', () => {
       it('should resolve action', async () => {
-        server.use(mockSignup({ isError: false, profile }));
+        server.use(mockSignup({ isError: false }));
 
         await expectSaga(watchAuth)
           .withState(defaultState)
-          .put(authActions.signup.resolved({ isError: false, profile }))
+          .put(authActions.signup.resolved({ isError: false }))
           .dispatch(authActions.signup(credentials))
           .silentRun();
       });

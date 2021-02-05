@@ -8,10 +8,6 @@ export interface ProfileData {
   roles: Role[];
 }
 
-interface ProfileApiResponseData {
-  profile: ProfileData;
-}
-
 interface ApiCredentialsData {
   email: string;
   password: string;
@@ -21,7 +17,7 @@ export type LoginApiRequestData = ApiCredentialsData;
 export type LoginApiResponseData = ApiFormSubmitResponse<LoginApiRequestData, void>;
 
 export type SignupApiRequestData = ApiCredentialsData;
-export type SignupApiResponseData = ApiFormSubmitResponse<SignupApiRequestData, ProfileApiResponseData>;
+export type SignupApiResponseData = ApiFormSubmitResponse<SignupApiRequestData, void>;
 
 export type MeApiRequestData = void;
 export type MeApiResponseData = ProfileData;

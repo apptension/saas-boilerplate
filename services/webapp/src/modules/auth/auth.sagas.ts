@@ -9,7 +9,6 @@ import {
 import { ROUTES } from '../../routes/app.constants';
 import { handleApiRequest, navigate } from '../helpers';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
-import history from '../../shared/utils/history';
 import { getOauthUrl } from '../../shared/services/api/auth';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';

@@ -32,7 +32,7 @@ const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
 const profile: Profile = { email: 'user@mail.com', firstName: 'User', lastName: 'White', roles: [Role.ADMIN] };
 
-export const mockSignup = (response: SignupApiResponseData = { isError: false, profile }, status = 200) =>
+export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
   rest.post<SignupApiRequestData, SignupApiResponseData>(baseUrl + AUTH_SIGNUP_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
