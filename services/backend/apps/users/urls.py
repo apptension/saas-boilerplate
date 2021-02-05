@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token
 from social_django import views as django_social_views
@@ -7,11 +7,11 @@ from . import views
 
 social_patterns = [
     # authentication / association
-    url(r'^login/(?P<backend>[^/]+)/$', django_social_views.auth, name='begin'),
-    url(r'^complete/(?P<backend>[^/]+)/$', views.complete, name='complete'),
+    re_path(r'^login/(?P<backend>[^/]+)/$', django_social_views.auth, name='begin'),
+    re_path(r'^complete/(?P<backend>[^/]+)/$', views.complete, name='complete'),
     # disconnection
-    url(r'^disconnect/(?P<backend>[^/]+)/$', django_social_views.disconnect, name='disconnect'),
-    url(
+    re_path(r'^disconnect/(?P<backend>[^/]+)/$', django_social_views.disconnect, name='disconnect'),
+    re_path(
         r'^disconnect/(?P<backend>[^/]+)/(?P<association_id>\d+)/$',
         django_social_views.disconnect,
         name='disconnect_individual',

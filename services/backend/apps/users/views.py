@@ -1,10 +1,13 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework import permissions
+from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.compat import set_cookie_with_token
+from rest_framework_jwt.settings import api_settings
 from social_core.actions import do_complete
 from social_django.utils import psa
 
@@ -14,6 +17,18 @@ from . import serializers
 class SignUpView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.UserSignupSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        response = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        set_cookie_with_token(response, api_settings.JWT_AUTH_COOKIE, serializer.data.get('jwt_token'))
+
+        return response
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):

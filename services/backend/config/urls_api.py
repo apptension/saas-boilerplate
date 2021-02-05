@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import include
 from django.urls import path
 from rest_framework import permissions
@@ -10,7 +10,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    url(r"^doc/", schema_view.with_ui("swagger")),
-    url(r"^redoc/", schema_view.with_ui("redoc")),
+    re_path(r"^doc/", schema_view.with_ui("swagger")),
+    re_path(r"^redoc/", schema_view.with_ui("redoc")),
     path("api/", include("apps.users.urls")),
 ]

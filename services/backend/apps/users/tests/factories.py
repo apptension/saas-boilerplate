@@ -23,4 +23,5 @@ class UserProfileFactory(factory.DjangoModelFactory):
         model = "users.UserProfile"
 
     user = factory.SubFactory(UserFactory)
-    first_name = factory.Faker("name", locale="pl")
+    first_name = factory.Faker("first_name", locale="pl")
+    last_name = factory.Faker("last_name", locale="pl")

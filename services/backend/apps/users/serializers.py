@@ -10,9 +10,12 @@ from . import models, tokens, notifications
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    id = rest.HashidSerializerCharField(source_field="users.User.id", source="user.id", read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True)
+
     class Meta:
         model = models.UserProfile
-        fields = ("first_name",)
+        fields = ("id", "first_name", "last_name", "email")
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
@@ -20,11 +23,10 @@ class UserSignupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())],
     )
-    profile = UserProfileSerializer(required=False)
 
     class Meta:
         model = dj_auth.get_user_model()
-        fields = ("id", "email", "password", "jwt_token", "profile")
+        fields = ("id", "email", "password", "jwt_token")
         read_only_fields = ("jwt_token",)
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -37,7 +39,6 @@ class UserSignupSerializer(serializers.ModelSerializer):
             validated_data["email"],
             validated_data["password"],
         )
-        models.UserProfile.objects.create(user=user, **validated_data.pop("profile", {}))
 
         notifications.create(
             "account_activation",

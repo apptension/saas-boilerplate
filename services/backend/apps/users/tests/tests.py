@@ -23,7 +23,33 @@ class TestUserProfile:
         api_client.force_authenticate(user_profile.user)
         response = api_client.get(reverse("profile"))
         assert response.status_code == status.HTTP_200_OK, response.data
+        assert response.data["id"] == user_profile.user.id
+        assert response.data["email"] == user_profile.user.email
         assert response.data["first_name"] == user_profile.first_name
+        assert response.data["last_name"] == user_profile.last_name
+
+    def test_update_user_profile(self, api_client, user_profile):
+        api_client.force_authenticate(user_profile.user)
+        first_name = 'Changed-first-name'
+        last_name = 'Changed-last-name'
+        api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
+
+        user_profile.refresh_from_db()
+
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
+
+    def test_update_user_profile_response(self, api_client, user_profile):
+        api_client.force_authenticate(user_profile.user)
+        first_name = 'Changed-first-name'
+        last_name = 'Changed-last-name'
+        response = api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert response.data["id"] == user_profile.user.id
+        assert response.data["email"] == user_profile.user.email
+        assert response.data["first_name"] == first_name
+        assert response.data["last_name"] == last_name
 
 
 class TestResetPassword:

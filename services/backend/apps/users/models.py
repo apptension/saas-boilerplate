@@ -2,7 +2,7 @@ import hashid_field
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
-from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
 class UserManager(BaseUserManager):
@@ -55,13 +55,11 @@ class User(AbstractBaseUser):
 
     @property
     def jwt_token(self):
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        payload = jwt_payload_handler(self)
-        return jwt_encode_handler(payload)
+        payload = JSONWebTokenAuthentication.jwt_create_payload(self)
+        return JSONWebTokenAuthentication.jwt_encode_payload(payload)
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
