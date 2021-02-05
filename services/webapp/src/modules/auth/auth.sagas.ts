@@ -35,7 +35,7 @@ function* signupResolve(response: SignupApiResponseData) {
 }
 
 function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
-  yield history.push(getOauthUrl(provider));
+  yield window.location.assign(getOauthUrl(provider));
 }
 
 export function* watchAuth() {

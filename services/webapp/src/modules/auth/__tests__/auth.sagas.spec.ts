@@ -32,8 +32,23 @@ describe('Auth: sagas', () => {
   const mockHistoryPush = history.push as jest.Mock;
   const profile = userProfileFactory();
 
+  const originalLocation = window.location;
+  const locationAssignSpy = jest.fn();
+
+  beforeAll(() => {
+    // @ts-ignore
+    delete window.location;
+    window.location = {
+      ...originalLocation,
+      assign: locationAssignSpy,
+    };
+  });
+
+  afterAll(() => (window.location = originalLocation));
+
   beforeEach(() => {
     mockHistoryPush.mockReset();
+    locationAssignSpy.mockReset();
   });
 
   describe('login', () => {
@@ -292,7 +307,7 @@ describe('Auth: sagas', () => {
           .dispatch(authActions.oAuthLogin(OAuthProvider.Google))
           .silentRun();
         const encodedNextUrl = encodeURIComponent('http://localhost');
-        expect(mockHistoryPush).toHaveBeenCalledWith(`/api/auth/social/login/google-oauth2?next=${encodedNextUrl}`);
+        expect(locationAssignSpy).toHaveBeenCalledWith(`/api/auth/social/login/google-oauth2?next=${encodedNextUrl}`);
       });
     });
 
@@ -303,7 +318,7 @@ describe('Auth: sagas', () => {
           .dispatch(authActions.oAuthLogin(OAuthProvider.Facebook))
           .silentRun();
         const encodedNextUrl = encodeURIComponent('http://localhost');
-        expect(mockHistoryPush).toHaveBeenCalledWith(`/api/auth/social/login/facebook?next=${encodedNextUrl}`);
+        expect(locationAssignSpy).toHaveBeenCalledWith(`/api/auth/social/login/facebook?next=${encodedNextUrl}`);
       });
     });
   });
