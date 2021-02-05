@@ -22,6 +22,7 @@ user_patterns = [
     path("signup/", views.SignUpView.as_view(), name="signup"),
     path("token/", obtain_jwt_token, name="jwt_token"),
     path("me/", views.UserProfileView.as_view(), name="profile"),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
     path("confirm/", views.UserAccountConfirmationView.as_view(), name="confirmation"),
     path(
         "change-password/",

@@ -1,10 +1,11 @@
 import pytest
 from django.contrib import auth as dj_auth
+from django.http import SimpleCookie
 from django.urls import reverse
 from rest_framework import status
 from rest_framework_jwt.settings import api_settings
 
-from .. import tokens
+from .. import tokens, models
 
 pytestmark = pytest.mark.django_db
 
@@ -157,3 +158,14 @@ class TestChangePassword:
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+class TestLogout:
+    def test_logout(self, api_client, user: models.User):
+        api_client.force_authenticate(user)
+        response = api_client.post(
+            reverse('logout'), cookies=SimpleCookie({api_settings.JWT_AUTH_COOKIE: user.jwt_token})
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.cookies[api_settings.JWT_AUTH_COOKIE].value == ''

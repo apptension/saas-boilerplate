@@ -78,6 +78,15 @@ class PasswordResetConfirmationView(generics.CreateAPIView):
     serializer_class = serializers.PasswordResetConfirmationSerializer
 
 
+class LogoutView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie(api_settings.JWT_AUTH_COOKIE)
+        return response
+
+
 @never_cache
 @csrf_exempt
 @psa('social:complete')
