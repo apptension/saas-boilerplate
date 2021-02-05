@@ -15,6 +15,60 @@ def validate_jwt_token(token, user):
     return jwt_decode_handler(token)['user_id'] == user.id
 
 
+class TestSignup:
+    def test_return_error_with_missing_email(self, api_client, faker):
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'password': faker.password(),
+            },
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+
+    def test_return_error_with_invalid_email(self, api_client, faker):
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'email': 'this-is-not-an-email',
+                'password': faker.password(),
+            },
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+
+    def test_return_error_with_missing_password(self, api_client, faker):
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'email': faker.email(),
+            },
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+
+    def test_create_user(self, api_client, faker):
+        email = faker.email()
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'email': email,
+                'password': faker.password(),
+            },
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        assert models.User.objects.get(email=email)
+
+    def test_create_user_profile_instance(self, api_client, faker):
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'email': faker.email(),
+                'password': faker.password(),
+            },
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        user = models.User.objects.get(id=response.data['id'])
+        assert user.profile
+
+
 class TestUserProfile:
     def test_user_profile_only_when_authenticated(self, api_client):
         response = api_client.get(reverse("profile"))
