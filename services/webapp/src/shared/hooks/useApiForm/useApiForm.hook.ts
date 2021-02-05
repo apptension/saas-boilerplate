@@ -49,5 +49,8 @@ export const useApiForm = <FormData>() => {
     genericError,
     setApiResponse,
     handleSubmit,
+    formState: Object.assign(formControls.formState, {
+      isSubmitSuccessful: formControls.formState.isSubmitSuccessful && !genericError,
+    }),
   };
 };
