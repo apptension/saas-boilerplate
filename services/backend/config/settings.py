@@ -179,6 +179,7 @@ SOCIAL_AUTH_USER_MODEL = "users.User"
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
 SOCIAL_AUTH_STRATEGY = "apps.users.strategy.DjangoJWTStrategy"
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = env.bool('SOCIAL_AUTH_REDIRECT_IS_HTTPS', default=True)
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
