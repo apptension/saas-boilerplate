@@ -2,7 +2,6 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
-from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -11,11 +10,12 @@ from rest_framework_jwt.settings import api_settings
 from social_core.actions import do_complete
 from social_django.utils import psa
 
+from common.acl import policies
 from . import serializers
 
 
 class SignUpView(generics.CreateAPIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (policies.IsAnonymousFullAccess,)
     serializer_class = serializers.UserSignupSerializer
 
     def create(self, request, *args, **kwargs):
@@ -32,6 +32,7 @@ class SignUpView(generics.CreateAPIView):
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = (policies.UserFullAccess,)
     serializer_class = serializers.UserProfileSerializer
 
     def get_object(self):
@@ -39,7 +40,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 
 class UserAccountConfirmationView(generics.CreateAPIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (policies.AnyoneFullAccess,)
     serializer_class = serializers.UserAccountConfirmationSerializer
 
 
@@ -51,7 +52,7 @@ class UserAccountChangePasswordView(generics.CreateAPIView):
     parameters.
     """
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (policies.UserFullAccess,)
     serializer_class = serializers.UserAccountChangePasswordSerializer
 
 
@@ -63,7 +64,7 @@ class PasswordResetView(generics.CreateAPIView):
     """
 
     throttle_classes = (AnonRateThrottle,)
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (policies.AnyoneFullAccess,)
     serializer_class = serializers.PasswordResetSerializer
 
 
@@ -74,12 +75,12 @@ class PasswordResetConfirmationView(generics.CreateAPIView):
     Set new password, it requires to provide the new password to set.
     """
 
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (policies.AnyoneFullAccess,)
     serializer_class = serializers.PasswordResetConfirmationSerializer
 
 
 class LogoutView(generics.GenericAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (policies.IsAuthenticatedFullAccess,)
 
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_200_OK)

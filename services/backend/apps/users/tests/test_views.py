@@ -5,6 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework_jwt.settings import api_settings
 
+from common.acl.helpers import CommonGroups
 from .. import tokens, models
 
 pytestmark = pytest.mark.django_db
@@ -68,6 +69,18 @@ class TestSignup:
         user = models.User.objects.get(id=response.data['id'])
         assert user.profile
 
+    def test_add_to_user_group(self, api_client, faker):
+        response = api_client.post(
+            reverse('signup'),
+            {
+                'email': faker.email(),
+                'password': faker.password(),
+            },
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        user = models.User.objects.get(id=response.data['id'])
+        assert user.has_group(CommonGroups.User)
+
 
 class TestUserProfile:
     def test_user_profile_only_when_authenticated(self, api_client):
@@ -105,6 +118,13 @@ class TestUserProfile:
         assert response.data["email"] == user_profile.user.email
         assert response.data["first_name"] == first_name
         assert response.data["last_name"] == last_name
+
+    def test_return_roles(self, api_client, user_profile):
+        api_client.force_authenticate(user_profile.user)
+        response = api_client.get(reverse("profile"))
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert response.data["roles"] == [CommonGroups.User]
 
 
 class TestResetPassword:

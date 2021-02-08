@@ -12,10 +12,14 @@ from . import models, tokens, notifications
 class UserProfileSerializer(serializers.ModelSerializer):
     id = rest.HashidSerializerCharField(source_field="users.User.id", source="user.id", read_only=True)
     email = serializers.CharField(source="user.email", read_only=True)
+    roles = serializers.SerializerMethodField()
+
+    def get_roles(self, obj):
+        return [group.name for group in obj.user.groups.all()]
 
     class Meta:
         model = models.UserProfile
-        fields = ("id", "first_name", "last_name", "email")
+        fields = ("id", "first_name", "last_name", "email", "roles")
 
 
 class UserSignupSerializer(serializers.ModelSerializer):

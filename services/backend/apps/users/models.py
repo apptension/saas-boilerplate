@@ -1,8 +1,10 @@
 import hashid_field
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
+from common.acl.helpers import CommonGroups
 
 
 class UserManager(BaseUserManager):
@@ -14,7 +16,10 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
         )
         user.set_password(password)
+        user_group = Group.objects.get(name=CommonGroups.User)
         user.save(using=self._db)
+
+        user.groups.add(user_group)
 
         UserProfile.objects.create(user=user)
 
@@ -30,7 +35,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = hashid_field.HashidAutoField(primary_key=True)
     created = models.DateTimeField(editable=False, auto_now_add=True)
     email = models.EmailField(
@@ -49,6 +54,9 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_superuser
+
+    def has_group(self, name):
+        return self.groups.filter(name=name).exists()
 
     def has_perm(self, perm, obj=None):
         return True
