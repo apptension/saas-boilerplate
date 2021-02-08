@@ -21,13 +21,15 @@ export const SignupForm = () => {
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>();
 
   const onSignup = async (data: SignupFormFields) => {
-    const res = await dispatch(
-      signup({
-        password: data.password,
-        email: data.email,
-      })
-    );
-    setApiResponse(res);
+    try {
+      const res = await dispatch(
+        signup({
+          password: data.password,
+          email: data.email,
+        })
+      );
+      setApiResponse(res);
+    } catch {}
   };
 
   return (

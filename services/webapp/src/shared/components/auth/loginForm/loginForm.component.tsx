@@ -19,8 +19,10 @@ export const LoginForm = () => {
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<LoginFormFields>();
 
   const onLogin = async (data: LoginFormFields) => {
-    const res = await dispatch(login(data));
-    setApiResponse(res);
+    try {
+      const res = await dispatch(login(data));
+      setApiResponse(res);
+    } catch {}
   };
 
   return (

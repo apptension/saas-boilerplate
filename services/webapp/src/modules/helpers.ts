@@ -49,7 +49,7 @@ export function handleApiRequest<Request, Response>(
       yield resolveHandler?.(res);
     } catch (error) {
       yield handleApiError(error);
-      yield rejectPromiseAction(action, error?.response?.data);
+      yield rejectPromiseAction(action, error);
       yield rejectHandler?.(error);
     }
   };

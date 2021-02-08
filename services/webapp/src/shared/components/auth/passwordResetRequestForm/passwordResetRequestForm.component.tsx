@@ -25,8 +25,10 @@ export const PasswordResetRequestForm = () => {
   } = useApiForm<ResetPasswordFormFields>();
 
   const onSubmit = async (data: ResetPasswordFormFields) => {
-    const res = await dispatch(requestPasswordReset(data));
-    setApiResponse(res);
+    try {
+      const res = await dispatch(requestPasswordReset(data));
+      setApiResponse(res);
+    } catch {}
   };
 
   const renderForm = () => (

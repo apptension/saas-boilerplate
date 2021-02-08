@@ -33,14 +33,16 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   } = useApiForm<ResetPasswordFormFields>();
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
-    const res = await dispatch(
-      confirmPasswordReset({
-        newPassword: data.newPassword,
-        user,
-        token,
-      })
-    );
-    setApiResponse(res);
+    try {
+      const res = await dispatch(
+        confirmPasswordReset({
+          newPassword: data.newPassword,
+          user,
+          token,
+        })
+      );
+      setApiResponse(res);
+    } catch {}
   };
 
   const renderForm = () => (

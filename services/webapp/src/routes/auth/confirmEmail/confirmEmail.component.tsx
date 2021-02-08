@@ -35,7 +35,7 @@ export const ConfirmEmail = () => {
         history.push(confirmRequestedUrl);
         const res = await dispatch(confirmEmail({ token, user }));
         setValidationStatus(res.isError ? VALIDATION_STATUS.INVALID : VALIDATION_STATUS.VALID);
-      } catch (ex) {
+      } catch {
         setValidationStatus(VALIDATION_STATUS.INVALID);
       }
     },

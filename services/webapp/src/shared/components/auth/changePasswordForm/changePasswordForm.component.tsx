@@ -28,8 +28,10 @@ export const ChangePasswordForm = () => {
   } = useApiForm<ChangePasswordFormFields>();
 
   const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
-    const res = await dispatch(changePassword({ oldPassword, newPassword }));
-    setApiResponse(res);
+    try {
+      const res = await dispatch(changePassword({ oldPassword, newPassword }));
+      setApiResponse(res);
+    } catch {}
   };
 
   return (
