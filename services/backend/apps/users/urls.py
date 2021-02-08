@@ -1,6 +1,5 @@
-from django.urls import re_path
 from django.urls import path, include
-from rest_framework_jwt.views import obtain_jwt_token
+from django.urls import re_path
 from social_django import views as django_social_views
 
 from . import views
@@ -20,7 +19,8 @@ social_patterns = [
 
 user_patterns = [
     path("signup/", views.SignUpView.as_view(), name="signup"),
-    path("token/", obtain_jwt_token, name="jwt_token"),
+    path("token/", views.ObtainJSONWebTokenView.as_view(), name="jwt_token"),
+    path("token-refresh/", views.RefreshJSONWebTokenView.as_view(), name="jwt_token_refresh"),
     path("me/", views.UserProfileView.as_view(), name="profile"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("confirm/", views.UserAccountConfirmationView.as_view(), name="confirmation"),

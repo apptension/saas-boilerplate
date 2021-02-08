@@ -5,6 +5,7 @@ from hashid_field import rest
 from rest_framework import exceptions
 from rest_framework import serializers
 from rest_framework import validators
+from rest_framework_jwt import serializers as jwt_serializers
 
 from . import models, tokens, notifications
 
@@ -171,3 +172,8 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class JSONWebTokenSerializer(jwt_serializers.JSONWebTokenSerializer):
+    def validate(self, data):
+        return super(JSONWebTokenSerializer, self).validate(data)

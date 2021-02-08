@@ -234,6 +234,18 @@ class TestChangePassword:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
+class TestObtainToken:
+    def test_get_jwt(self, api_client, user, faker):
+        password = faker.password()
+        user.set_password(password)
+        user.save()
+
+        response = api_client.post(reverse('jwt_token'), {'email': user.email, 'password': password})
+
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        assert validate_jwt_token(response.data.get("token"), user), response.data
+
+
 class TestLogout:
     def test_logout(self, api_client, user: models.User):
         api_client.force_authenticate(user)

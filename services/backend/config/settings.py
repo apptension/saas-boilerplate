@@ -1,5 +1,7 @@
 import json
 import os
+import datetime
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import environ
@@ -165,7 +167,7 @@ LOCALE_PATHS = []
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "common.utils.custom_exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_jwt.authentication.JSONWebTokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("apps.users.authentication.JSONWebTokenAuthentication",),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
 }
 
@@ -174,6 +176,8 @@ JWT_AUTH = {
     'JWT_TOKEN_ID': 'require',
     'JWT_AUTH_COOKIE': 'X-Auth',
     'JWT_AUTH_COOKIE_SECURE': env.bool('JWT_AUTH_COOKIE_SECURE', default=True),
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
 SOCIAL_AUTH_USER_MODEL = "users.User"

@@ -7,6 +7,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.compat import set_cookie_with_token
 from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt import views as jwt_views
 from social_core.actions import do_complete
 from social_django.utils import psa
 
@@ -86,6 +87,21 @@ class LogoutView(generics.GenericAPIView):
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie(api_settings.JWT_AUTH_COOKIE)
         return response
+
+
+class ObtainJSONWebTokenView(jwt_views.ObtainJSONWebTokenView):
+    serializer_class = serializers.JSONWebTokenSerializer
+
+
+class RefreshJSONWebTokenView(jwt_views.RefreshJSONWebTokenView):
+    permission_classes = (policies.AnyoneFullAccess,)
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs.setdefault('context', self.get_serializer_context())
+        print(self.request.COOKIES)
+        kwargs['data'] = {'token': JSONWebTokenAuthentication.get_token_from_request(self.request)}
+        return serializer_class(*args, **kwargs)
 
 
 @never_cache
