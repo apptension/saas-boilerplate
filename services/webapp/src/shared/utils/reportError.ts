@@ -8,7 +8,7 @@ import * as Sentry from '@sentry/react';
  */
 export const reportError = (error: any): void => {
   console.error(error); //eslint-disable-line
-  if (error?.response) {
+  if (!error?.response) {
     Sentry.captureException(error);
   }
 };
