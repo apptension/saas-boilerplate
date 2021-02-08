@@ -5,6 +5,7 @@ import { watchStartup } from '../startup.sagas';
 import { startupActions } from '..';
 import { authActions } from '../../auth';
 import { prepareState } from '../../../mocks/store';
+import { userProfileFactory } from '../../../mocks/factories';
 
 describe('Startup: sagas', () => {
   const defaultState = prepareState(identity);
@@ -16,13 +17,15 @@ describe('Startup: sagas', () => {
           .withState(defaultState)
           .dispatch(startupActions.profileStartup())
           .put(authActions.fetchProfile())
+          .not.put(startupActions.completeProfileStartup())
           .silentRun();
       });
 
-      it('should complete profile startup', async () => {
+      it('should complete profile startup after fetching is done', async () => {
         await expectSaga(watchStartup)
           .withState(defaultState)
           .dispatch(startupActions.profileStartup())
+          .dispatch(authActions.fetchProfile.resolved(userProfileFactory()))
           .put(startupActions.completeProfileStartup())
           .silentRun();
       });

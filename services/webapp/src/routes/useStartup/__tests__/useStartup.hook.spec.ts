@@ -11,6 +11,10 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('useStartup: Hook', () => {
+  beforeEach(() => {
+    mockDispatch.mockClear();
+  });
+
   const render = () => renderHook(() => useStartup());
 
   it('should call startup on mount', () => {

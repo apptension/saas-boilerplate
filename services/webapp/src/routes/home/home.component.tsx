@@ -6,6 +6,8 @@ import { ROUTES } from '../app.constants';
 import { LanguageSwitcher } from '../../shared/components/languageSwitcher';
 import { H1 } from '../../theme/typography';
 import { useLocale } from '../useLanguageFromParams/useLanguageFromParams.hook';
+import { RoleAccess } from '../../shared/components/roleAccess';
+import { Role } from '../../modules/auth/auth.types';
 import { Container, Logo } from './home.styles';
 
 export const Home = () => {
@@ -42,8 +44,14 @@ export const Home = () => {
       </Link>
 
       <Link to={`/${locale}${ROUTES.passwordReset.index}`}>
-        <FormattedMessage defaultMessage="Reset password" description="Home / reset password" />
+        <FormattedMessage defaultMessage="Reset password" description="Home / reset password link" />
       </Link>
+
+      <RoleAccess allowedRoles={Role.ADMIN}>
+        <Link to={`/${locale}${ROUTES.admin}`}>
+          <FormattedMessage defaultMessage="Admin" description="Home / admin link" />
+        </Link>
+      </RoleAccess>
     </Container>
   );
 };

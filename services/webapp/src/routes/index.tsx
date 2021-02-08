@@ -1,14 +1,16 @@
-import React, { ComponentProps } from 'react';
+import React from 'react';
 import { Route, Switch, Redirect, useRouteMatch, useLocation } from 'react-router-dom';
-import { IntlProvider } from 'react-intl';
+import { FormattedMessage, IntlProvider } from 'react-intl';
 
 import { HelmetProvider } from 'react-helmet-async';
-import { DEFAULT_LOCALE, appLocales, translationMessages } from '../i18n';
+import { appLocales, DEFAULT_LOCALE, translationMessages } from '../i18n';
 import { asyncComponent } from '../shared/utils/asyncComponent';
+import { H1 } from '../theme/typography';
+import { Role } from '../modules/auth/auth.types';
 import { AppComponent as App } from './app.component';
 import { ROUTES } from './app.constants';
-import { useProfileStartup } from './useStartup';
 import { PasswordReset } from './auth/passwordReset';
+import { AuthRoute } from './authRoute';
 //<-- IMPORT ROUTE -->
 
 const Home = asyncComponent(() => import('./home'), 'Home');
@@ -17,11 +19,6 @@ const Signup = asyncComponent(() => import('./auth/signup'), 'Signup');
 const Login = asyncComponent(() => import('./auth/login'), 'Login');
 const Profile = asyncComponent(() => import('./profile'), 'Profile');
 const ConfirmEmail = asyncComponent(() => import('./auth/confirmEmail'), 'ConfirmEmail');
-
-const AuthRoute = ({ children, ...props }: ComponentProps<typeof Route>) => {
-  useProfileStartup();
-  return <Route {...props}>{children}</Route>;
-};
 
 const MatchedLanguageComponent = () => {
   const match = useRouteMatch();
@@ -46,6 +43,11 @@ const MatchedLanguageComponent = () => {
         <Route path={`${match.path}${ROUTES.passwordReset.index}`}>
           <PasswordReset />
         </Route>
+        <AuthRoute path={`${match.path}${ROUTES.admin}`} allowedRoles={Role.ADMIN}>
+          <H1>
+            <FormattedMessage defaultMessage="This page is only visible for admins" description="Admin / Heading" />
+          </H1>
+        </AuthRoute>
         {/* <-- INJECT ROUTE --> */}
 
         <Route>

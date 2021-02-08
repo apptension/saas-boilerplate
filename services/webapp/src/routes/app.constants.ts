@@ -16,6 +16,7 @@ export const ROUTES = {
   signup: '/auth/signup',
   notFound: '/404',
   profile: '/profile',
+  admin: '/admin',
   confirmEmail: '/auth/confirm/:user?/:token?',
   passwordReset: nestedRoute('/auth/reset-password', {
     confirm: '/confirm/:user?/:token?',
