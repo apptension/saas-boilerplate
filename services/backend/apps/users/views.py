@@ -4,15 +4,12 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt.compat import set_cookie_with_token
-from rest_framework_jwt.settings import api_settings
-from rest_framework_jwt import views as jwt_views
+from rest_framework_simplejwt import views as jwt_views, tokens as jwt_tokens
 from social_core.actions import do_complete
 from social_django.utils import psa
 
 from common.acl import policies
-from . import serializers
+from . import serializers, utils
 
 
 class SignUpView(generics.CreateAPIView):
@@ -26,9 +23,7 @@ class SignUpView(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         response = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        set_cookie_with_token(response, api_settings.JWT_AUTH_COOKIE, serializer.data.get('jwt_token'))
-
+        utils.set_auth_cookie(response, serializer.data)
         return response
 
 
@@ -55,6 +50,15 @@ class UserAccountChangePasswordView(generics.CreateAPIView):
 
     permission_classes = (policies.UserFullAccess,)
     serializer_class = serializers.UserAccountChangePasswordSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        response = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        utils.set_auth_cookie(response, serializer.data)
+        return response
 
 
 class PasswordResetView(generics.CreateAPIView):
@@ -85,23 +89,22 @@ class LogoutView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_200_OK)
-        response.delete_cookie(api_settings.JWT_AUTH_COOKIE)
+        utils.reset_auth_cookie(response)
         return response
 
 
-class ObtainJSONWebTokenView(jwt_views.ObtainJSONWebTokenView):
-    serializer_class = serializers.JSONWebTokenSerializer
+class CookieTokenObtainPairView(jwt_views.TokenObtainPairView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        utils.set_auth_cookie(response, response.data)
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
-class RefreshJSONWebTokenView(jwt_views.RefreshJSONWebTokenView):
-    permission_classes = (policies.AnyoneFullAccess,)
+class CookieTokenRefreshView(jwt_views.TokenRefreshView):
+    serializer_class = serializers.CookieTokenRefreshSerializer
 
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs.setdefault('context', self.get_serializer_context())
-        print(self.request.COOKIES)
-        kwargs['data'] = {'token': JSONWebTokenAuthentication.get_token_from_request(self.request)}
-        return serializer_class(*args, **kwargs)
+    def finalize_response(self, request, response, *args, **kwargs):
+        utils.set_auth_cookie(response, response.data)
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
 @never_cache
@@ -112,9 +115,7 @@ def complete(request, backend, *args, **kwargs):
 
     def _do_login(backend, user, social_user):
         user.backend = '{0}.{1}'.format(backend.__module__, backend.__class__.__name__)
-
-        payload = JSONWebTokenAuthentication.jwt_create_payload(user)
-        token = JSONWebTokenAuthentication.jwt_encode_payload(payload)
+        token = jwt_tokens.RefreshToken.for_user(user)
         backend.strategy.set_jwt(token)
 
     return do_complete(

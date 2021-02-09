@@ -1,11 +1,14 @@
+from django.conf import settings
 from django.contrib import auth as dj_auth
 from django.contrib.auth import password_validation
+from django.contrib.auth.models import update_last_login
 from django.utils.translation import gettext as _
 from hashid_field import rest
-from rest_framework import exceptions
-from rest_framework import serializers
-from rest_framework import validators
-from rest_framework_jwt import serializers as jwt_serializers
+from rest_framework import exceptions, serializers, validators
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import models, tokens, notifications
 
@@ -28,11 +31,12 @@ class UserSignupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())],
     )
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
 
     class Meta:
         model = dj_auth.get_user_model()
-        fields = ("id", "email", "password", "jwt_token")
-        read_only_fields = ("jwt_token",)
+        fields = ("id", "email", "password", "access", "refresh")
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, password):
@@ -45,6 +49,11 @@ class UserSignupSerializer(serializers.ModelSerializer):
             validated_data["password"],
         )
 
+        refresh = RefreshToken.for_user(user)
+
+        if jwt_api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, user)
+
         notifications.create(
             "account_activation",
             user,
@@ -53,7 +62,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
             ),
         )
 
-        return user
+        return {'id': user.id, 'email': user.email, 'access': str(refresh.access_token), 'refresh': str(refresh)}
 
 
 class UserAccountConfirmationSerializer(serializers.Serializer):
@@ -88,7 +97,8 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True, help_text=_("Old password"))
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))
 
-    jwt_token = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+    access = serializers.CharField(read_only=True)
 
     def validate_new_password(self, new_password):
         password_validation.validate_password(new_password)
@@ -112,7 +122,12 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
         user.set_password(new_password)
         user.save()
 
-        return user
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }
 
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -147,7 +162,6 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
 
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))
     token = serializers.CharField(write_only=True, help_text=_("Token"))
-    jwt_token = serializers.CharField(read_only=True, help_text=_("JWT token"))
 
     def validate_new_password(self, new_password):
         password_validation.validate_password(new_password)
@@ -174,6 +188,17 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         return user
 
 
-class JSONWebTokenSerializer(jwt_serializers.JSONWebTokenSerializer):
-    def validate(self, data):
-        return super(JSONWebTokenSerializer, self).validate(data)
+class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+    refresh = None
+
+    def validate(self, attrs):
+        refresh = self.context['request'].COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
+        if refresh:
+            return super().validate(
+                {
+                    'refresh': refresh,
+                    **attrs,
+                }
+            )
+        else:
+            raise InvalidToken('No valid token found in cookie \'refresh_token\'')

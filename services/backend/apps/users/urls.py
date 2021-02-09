@@ -19,8 +19,8 @@ social_patterns = [
 
 user_patterns = [
     path("signup/", views.SignUpView.as_view(), name="signup"),
-    path("token/", views.ObtainJSONWebTokenView.as_view(), name="jwt_token"),
-    path("token-refresh/", views.RefreshJSONWebTokenView.as_view(), name="jwt_token_refresh"),
+    path("token/", views.CookieTokenObtainPairView.as_view(), name="jwt_token"),
+    path("token-refresh/", views.CookieTokenRefreshView.as_view(), name="jwt_token_refresh"),
     path("me/", views.UserProfileView.as_view(), name="profile"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("confirm/", views.UserAccountConfirmationView.as_view(), name="confirmation"),

@@ -1,9 +1,11 @@
 import pytest
+from django.conf import settings
 from django.contrib import auth as dj_auth
 from django.http import SimpleCookie
 from django.urls import reverse
 from rest_framework import status
-from rest_framework_jwt.settings import api_settings
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from common.acl.helpers import CommonGroups
 from .. import tokens, models
@@ -11,9 +13,11 @@ from .. import tokens, models
 pytestmark = pytest.mark.django_db
 
 
-def validate_jwt_token(token, user):
-    jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
-    return jwt_decode_handler(token)['user_id'] == user.id
+def validate_jwt(response_data, user):
+    AuthToken = jwt_api_settings.AUTH_TOKEN_CLASSES[0]
+    token = AuthToken(response_data['access'])
+
+    return token[jwt_api_settings.USER_ID_CLAIM] == user.id
 
 
 class TestSignup:
@@ -160,10 +164,8 @@ class TestResetPassword:
             {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
         assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert "jwt_token" in response.data
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
-        assert validate_jwt_token(response.data["jwt_token"], u)
         assert u.check_password(new_password)
 
     def test_wrong_token(self, api_client, user):
@@ -212,7 +214,7 @@ class TestChangePassword:
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
 
         assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert validate_jwt_token(response.data["jwt_token"], u)
+        assert validate_jwt(response.data, u)
 
     def test_wrong_old_password(self, api_client, user, faker):
         api_client.force_authenticate(user)
@@ -242,16 +244,24 @@ class TestObtainToken:
 
         response = api_client.post(reverse('jwt_token'), {'email': user.email, 'password': password})
 
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert validate_jwt_token(response.data.get("token"), user), response.data
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert validate_jwt(response.data, user), response.data
 
 
 class TestLogout:
     def test_logout(self, api_client, user: models.User):
         api_client.force_authenticate(user)
+        refresh = RefreshToken.for_user(user)
         response = api_client.post(
-            reverse('logout'), cookies=SimpleCookie({api_settings.JWT_AUTH_COOKIE: user.jwt_token})
+            reverse('logout'),
+            cookies=SimpleCookie(
+                {
+                    settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
+                    settings.REFRESH_TOKEN_COOKIE: str(refresh),
+                }
+            ),
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.cookies[api_settings.JWT_AUTH_COOKIE].value == ''
+        assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == ''
+        assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == ''

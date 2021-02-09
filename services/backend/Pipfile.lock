@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "996aa1cfc271237f5636e41436601cb579d54bb0364f9b8c6d84a846570470ea"
+            "sha256": "eaae86cf91bc25032b22de189d6a5407356c76c173f486033555642cc28dcd22"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -107,6 +107,7 @@
                 "sha256:cd1d14b6c52d9372a7f4682576fa7d9c9d256afa6cc50828b337dbb8a9596066",
                 "sha256:e63b8da1d77ff60a73d72db68cb72e8ffbe9f7319e5ffa23f6bfe2757d6871e3"
             ],
+            "markers": "python_version >= '3.6'",
             "version": "==3.4.1"
         },
         "defusedxml": {
@@ -166,20 +167,20 @@
             "index": "pypi",
             "version": "==3.12.2"
         },
+        "djangorestframework-simplejwt": {
+            "hashes": [
+                "sha256:7adc913ba0d2ed7f46e0b9bf6e86f9bd9248f1c4201722b732b8213e0ea66f9f",
+                "sha256:bd587700b6ab34a6c6b12d426cce4fa580d57ef1952ad4ba3b79707784619ed3"
+            ],
+            "index": "pypi",
+            "version": "==4.6.0"
+        },
         "drf-access-policy": {
             "hashes": [
                 "sha256:b5141eba54fd2529c52c049615c09370ea1b69426db9cd3a22915f0b6af6a803"
             ],
             "index": "pypi",
             "version": "==0.8.6"
-        },
-        "drf-jwt": {
-            "hashes": [
-                "sha256:104f62ba8d897a4c16b3dd483364629f71b3c5bd7a7377a494a696c62c465e7c",
-                "sha256:5a947232e56539a300d11ab723b552568f382a44edb188ce580ecaf10a17722e"
-            ],
-            "index": "pypi",
-            "version": "==1.17.3"
         },
         "faker": {
             "hashes": [
@@ -271,9 +272,7 @@
             "version": "==2.20"
         },
         "pyjwt": {
-            "extras": [
-                "crypto"
-            ],
+            "extras": [],
             "hashes": [
                 "sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e",
                 "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"
@@ -596,6 +595,7 @@
                 "sha256:cd1d14b6c52d9372a7f4682576fa7d9c9d256afa6cc50828b337dbb8a9596066",
                 "sha256:e63b8da1d77ff60a73d72db68cb72e8ffbe9f7319e5ffa23f6bfe2757d6871e3"
             ],
+            "markers": "python_version >= '3.6'",
             "version": "==3.4.1"
         },
         "decorator": {

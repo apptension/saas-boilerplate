@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "rest_framework",
+    'rest_framework_simplejwt.token_blacklist',
     "drf_yasg",
     "django_hosts",
-    "rest_framework_jwt.blacklist",
     "whitenoise",
     "social_django",
     "apps.users",
@@ -171,14 +171,15 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
 }
 
-JWT_AUTH = {
-    'JWT_ENCODE_HANDLER': 'apps.users.jwt.encode_handler',
-    'JWT_TOKEN_ID': 'require',
-    'JWT_AUTH_COOKIE': 'X-Auth',
-    'JWT_AUTH_COOKIE_SECURE': env.bool('JWT_AUTH_COOKIE_SECURE', default=True),
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
+ACCESS_TOKEN_COOKIE = 'token'
+REFRESH_TOKEN_COOKIE = 'refresh_token'
 
 SOCIAL_AUTH_USER_MODEL = "users.User"
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username']

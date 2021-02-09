@@ -2,7 +2,6 @@ import hashid_field
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from common.acl.helpers import CommonGroups
 
@@ -63,11 +62,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
-
-    @property
-    def jwt_token(self):
-        payload = JSONWebTokenAuthentication.jwt_create_payload(self)
-        return JSONWebTokenAuthentication.jwt_encode_payload(payload)
 
 
 class UserProfile(models.Model):

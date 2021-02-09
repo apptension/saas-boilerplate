@@ -1,6 +1,6 @@
-from rest_framework_jwt.compat import set_cookie_with_token
-from rest_framework_jwt.settings import api_settings
 from social_django.strategy import DjangoStrategy
+
+from . import utils
 
 
 class DjangoJWTStrategy(DjangoStrategy):
@@ -22,7 +22,7 @@ class DjangoJWTStrategy(DjangoStrategy):
             # last step of the OAuth flow – we can flush the session
             self.session.flush()
 
-            set_cookie_with_token(response, api_settings.JWT_AUTH_COOKIE, self.token)
+            utils.set_auth_cookie(response, {'access': str(self.token.access_token), 'refresh': str(self.token)})
 
         return response
 
