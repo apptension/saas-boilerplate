@@ -3,6 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { UNAUTHORIZED } from 'http-status-codes';
 import { select } from 'redux-saga/effects';
 import {
+  createActionRoutine,
   createPromiseAction,
   PromiseAction,
   rejectPromiseAction,
@@ -21,6 +22,8 @@ export const actionCreator = (prefix: string) => {
     createAction: <T>(actionName: string) => createAction<T>(prefixActionName(actionName)),
     createPromiseAction: <T = void, A = void, B = any>(actionName: string) =>
       createPromiseAction<T, A, B>(prefixActionName(actionName)),
+    createActionRoutine: <T = void, A = void, B = any>(actionName: string) =>
+      createActionRoutine<T, A, B>(prefixActionName(actionName)),
   };
 };
 

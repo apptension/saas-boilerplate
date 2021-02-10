@@ -19,7 +19,7 @@ import {
 } from '../../shared/services/api/auth/types';
 import { OAuthProvider } from './auth.types';
 
-const { createPromiseAction } = actionCreator('AUTH');
+const { createPromiseAction, createActionRoutine } = actionCreator('AUTH');
 
 export const signup = createPromiseAction<SignupApiRequestData, SignupApiResponseData>('SIGNUP');
 export const login = createPromiseAction<LoginApiRequestData, LoginApiResponseData>('LOGIN');
@@ -28,7 +28,7 @@ export const oAuthLogin = createPromiseAction<OAuthProvider, void>('OAUTH_LOGIN'
 export const changePassword = createPromiseAction<ChangePasswordRequestData, ChangePasswordResponseData>(
   'CHANGE_PASSWORD'
 );
-export const fetchProfile = createPromiseAction<MeApiRequestData, MeApiResponseData>('FETCH_PROFILE');
+export const fetchProfile = createActionRoutine<MeApiRequestData, MeApiResponseData>('FETCH_PROFILE');
 export const confirmEmail = createPromiseAction<ConfirmEmailRequestData, ConfirmEmailResponseData>('CONFIRM_EMAIL');
 export const requestPasswordReset = createPromiseAction<
   RequestPasswordResetRequestData,
