@@ -237,6 +237,12 @@ class TestChangePassword:
 
 
 class TestObtainToken:
+    def test_return_invalid_credentials_error(self, api_client, user):
+        response = api_client.post(reverse('jwt_token'), {'email': user.email, 'password': 'wrong-password'})
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert 'non_field_errors' in response.data, response.data
+
     def test_get_jwt(self, api_client, user, faker):
         password = faker.password()
         user.set_password(password)

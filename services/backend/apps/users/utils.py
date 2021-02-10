@@ -20,4 +20,4 @@ def set_auth_cookie(response, data):
 
 def reset_auth_cookie(response):
     response.delete_cookie(settings.ACCESS_TOKEN_COOKIE)
-    response.delete_cookie(settings.REFRESH_TOKEN_COOKIE)
+    response.delete_cookie(settings.REFRESH_TOKEN_COOKIE, path=reverse('jwt_token_refresh'))

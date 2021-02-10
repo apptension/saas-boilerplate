@@ -94,9 +94,15 @@ class LogoutView(generics.GenericAPIView):
 
 
 class CookieTokenObtainPairView(jwt_views.TokenObtainPairView):
-    def finalize_response(self, request, response, *args, **kwargs):
-        utils.set_auth_cookie(response, response.data)
-        return super().finalize_response(request, response, *args, **kwargs)
+    permission_classes = (policies.AnyoneFullAccess,)
+    serializer_class = serializers.CookieTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
+        utils.set_auth_cookie(response, serializer.validated_data)
+        return response
 
 
 class CookieTokenRefreshView(jwt_views.TokenRefreshView):

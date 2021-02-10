@@ -5,10 +5,8 @@ from django.contrib.auth.models import update_last_login
 from django.utils.translation import gettext as _
 from hashid_field import rest
 from rest_framework import exceptions, serializers, validators
-from rest_framework_simplejwt.exceptions import InvalidToken
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt import serializers as jwt_serializers, tokens as jwt_tokens, exceptions as jwt_exceptions
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import models, tokens, notifications
 
@@ -49,7 +47,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
             validated_data["password"],
         )
 
-        refresh = RefreshToken.for_user(user)
+        refresh = jwt_tokens.RefreshToken.for_user(user)
 
         if jwt_api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, user)
@@ -122,7 +120,7 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
         user.set_password(new_password)
         user.save()
 
-        refresh = RefreshToken.for_user(user)
+        refresh = jwt_tokens.RefreshToken.for_user(user)
 
         return {
             'access': str(refresh.access_token),
@@ -188,7 +186,17 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         return user
 
 
-class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer):
+    def validate(self, attrs):
+        try:
+            data = super().validate(attrs)
+        except exceptions.AuthenticationFailed as e:
+            raise exceptions.ValidationError(e.detail)
+
+        return data
+
+
+class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
     refresh = None
 
     def validate(self, attrs):
@@ -201,4 +209,4 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
                 }
             )
         else:
-            raise InvalidToken('No valid token found in cookie \'refresh_token\'')
+            raise jwt_exceptions.InvalidToken('No valid token found in cookie \'refresh_token\'')
