@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
-import { ProfileDetails } from '../auth/profileDetails';
+import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
 import { Container } from './profile.styles';
 
 export const Profile = () => {
@@ -12,7 +12,7 @@ export const Profile = () => {
         <FormattedMessage defaultMessage="My profile" description="Profile / heading" />
       </h1>
 
-      <ProfileDetails />
+      <EditProfileForm />
 
       <ChangePasswordForm />
     </Container>

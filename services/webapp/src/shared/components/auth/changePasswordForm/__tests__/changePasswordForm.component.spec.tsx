@@ -28,7 +28,7 @@ describe('ChangePasswordForm: Component', () => {
     confirmNewPassword: 'new-pass',
   };
 
-  it('should call login action when submitted', async () => {
+  it('should call changePassword action when submitted', async () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
@@ -46,16 +46,33 @@ describe('ChangePasswordForm: Component', () => {
     });
   });
 
-  it('should show success message if action completes successfully', async () => {
-    mockDispatch.mockResolvedValue({ isError: false });
+  describe('action completes successfully', () => {
+    it('should show success message', async () => {
+      mockDispatch.mockResolvedValue({ isError: false });
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
-    userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
-    userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Password changed successfully')).toBeInTheDocument();
+      render();
+      userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
+      userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+      userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
+      act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
+      await waitFor(() => {
+        expect(screen.getByText('Password changed successfully')).toBeInTheDocument();
+      });
+    });
+
+    it('should clear form', async () => {
+      mockDispatch.mockResolvedValue({ isError: false });
+
+      render();
+      userEvent.type(screen.getByPlaceholderText(/old password/gi), formData.oldPassword);
+      userEvent.type(screen.getByPlaceholderText(/new password/gi), formData.newPassword);
+      userEvent.type(screen.getByPlaceholderText(/confirm new password/gi), formData.confirmNewPassword);
+      act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
+      await waitFor(() => {
+        expect(screen.queryByDisplayValue(formData.oldPassword)).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue(formData.newPassword)).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue(formData.confirmNewPassword)).not.toBeInTheDocument();
+      });
     });
   });
 

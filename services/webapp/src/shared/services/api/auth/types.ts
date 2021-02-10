@@ -22,6 +22,9 @@ export type SignupApiResponseData = ApiFormSubmitResponse<SignupApiRequestData, 
 export type MeApiRequestData = void;
 export type MeApiResponseData = ProfileData;
 
+export type UpdateProfileApiRequestData = Required<Pick<ProfileData, 'firstName' | 'lastName'>>;
+export type UpdateProfileApiResponseData = ApiFormSubmitResponse<ChangePasswordRequestData, ProfileData>;
+
 export type ChangePasswordRequestData = { oldPassword: string; newPassword: string };
 export type ChangePasswordResponseData = ApiFormSubmitResponse<ChangePasswordRequestData, void>;
 

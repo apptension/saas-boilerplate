@@ -16,6 +16,8 @@ import {
   RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
+  UpdateProfileApiRequestData,
+  UpdateProfileApiResponseData,
 } from '../../../shared/services/api/auth/types';
 import {
   AUTH_CHANGE_PASSWORD_URL,
@@ -26,6 +28,7 @@ import {
   AUTH_ME_URL,
   AUTH_REQUEST_PASSWORD_RESET_URL,
   AUTH_SIGNUP_URL,
+  AUTH_UPDATE_PROFILE_URL,
 } from '../../../shared/services/api/auth';
 import { Profile, Role } from '../../../modules/auth/auth.types';
 const baseUrl = process.env.REACT_APP_BASE_API_URL;
@@ -51,6 +54,17 @@ export const mockMe = (response: MeApiResponseData = profile, status = 200) =>
   rest.get<MeApiRequestData, MeApiResponseData>(baseUrl + AUTH_ME_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
+
+export const mockUpdateProfile = (
+  response: UpdateProfileApiResponseData = { ...profile, isError: false },
+  status = 200
+) =>
+  rest.put<UpdateProfileApiRequestData, UpdateProfileApiResponseData>(
+    baseUrl + AUTH_UPDATE_PROFILE_URL,
+    (req, res, ctx) => {
+      return res(ctx.status(status), ctx.json(response));
+    }
+  );
 
 export const mockChangePassword = (response: ChangePasswordResponseData = { isError: false }, status = 200) =>
   rest.post<ChangePasswordRequestData, ChangePasswordResponseData>(

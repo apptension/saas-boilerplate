@@ -15,6 +15,8 @@ import {
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
   LogoutApiResponseData,
+  UpdateProfileApiResponseData,
+  UpdateProfileApiRequestData,
 } from './types';
 
 export const AUTH_URL = '/auth';
@@ -22,6 +24,7 @@ export const AUTH_SIGNUP_URL = AUTH_URL + `/signup/`;
 export const AUTH_LOGIN_URL = AUTH_URL + `/token/`;
 export const AUTH_LOGOUT_URL = AUTH_URL + `/logout/`;
 export const AUTH_ME_URL = AUTH_URL + `/me/`;
+export const AUTH_UPDATE_PROFILE_URL = AUTH_URL + `/me/`;
 export const AUTH_CHANGE_PASSWORD_URL = AUTH_URL + `/change-password/`;
 export const AUTH_CONFIRM_EMAIL_URL = AUTH_URL + `/confirm/`;
 export const AUTH_REQUEST_PASSWORD_RESET_URL = `/password-reset/`;
@@ -47,6 +50,11 @@ export const logout = async () => {
 
 export const me = async () => {
   const res = await client.get<MeApiResponseData>(AUTH_ME_URL);
+  return res.data;
+};
+
+export const updateProfile = async (data: UpdateProfileApiRequestData) => {
+  const res = await client.put<UpdateProfileApiResponseData>(AUTH_UPDATE_PROFILE_URL, data);
   return res.data;
 };
 

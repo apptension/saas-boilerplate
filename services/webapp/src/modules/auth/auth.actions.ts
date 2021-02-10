@@ -16,6 +16,8 @@ import {
   RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
+  UpdateProfileApiRequestData,
+  UpdateProfileApiResponseData,
 } from '../../shared/services/api/auth/types';
 import { OAuthProvider } from './auth.types';
 
@@ -29,6 +31,9 @@ export const changePassword = createPromiseAction<ChangePasswordRequestData, Cha
   'CHANGE_PASSWORD'
 );
 export const fetchProfile = createActionRoutine<MeApiRequestData, MeApiResponseData>('FETCH_PROFILE');
+export const updateProfile = createPromiseAction<UpdateProfileApiRequestData, UpdateProfileApiResponseData>(
+  'UPDATE_PROFILE'
+);
 export const confirmEmail = createPromiseAction<ConfirmEmailRequestData, ConfirmEmailResponseData>('CONFIRM_EMAIL');
 export const requestPasswordReset = createPromiseAction<
   RequestPasswordResetRequestData,

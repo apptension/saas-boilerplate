@@ -14,6 +14,7 @@ import {
   mockMe,
   mockRequestPasswordReset,
   mockSignup,
+  mockUpdateProfile,
 } from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
@@ -151,6 +152,34 @@ describe('Auth: sagas', () => {
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.fetchProfile()).silentRun();
         expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
       });
+    });
+  });
+
+  describe('updateProfile', () => {
+    const updateProfilePayload = {
+      firstName: 'John',
+      lastName: 'Black',
+    };
+    const profile = userProfileFactory({ ...updateProfilePayload });
+
+    it('should resolve action if call completes successfully', async () => {
+      server.use(mockUpdateProfile({ ...profile, isError: false }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.updateProfile.resolved({ ...profile, isError: false }))
+        .dispatch(authActions.updateProfile(updateProfilePayload))
+        .silentRun();
+    });
+
+    it('should reject action if call completes with error', async () => {
+      server.use(mockUpdateProfile({ isError: true }, BAD_REQUEST));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.updateProfile.resolved({ isError: true }))
+        .dispatch(authActions.updateProfile(updateProfilePayload))
+        .silentRun();
     });
   });
 

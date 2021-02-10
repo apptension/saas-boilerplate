@@ -32,6 +32,16 @@ describe('Auth: reducer', () => {
     });
   });
 
+  describe('updateProfile.resolve', () => {
+    const profile = userProfileFactory();
+
+    it('should update user profile', () => {
+      const action = authActions.fetchProfile.resolved(profile);
+      const resultState = reducer(defaultState, action);
+      expect(resultState.profile).toEqual(profile);
+    });
+  });
+
   describe('logout.resolve', () => {
     const loggedInState = prepareState((state) => {
       state.auth = loggedInAuthFactory();

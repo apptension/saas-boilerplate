@@ -25,12 +25,16 @@ export const ChangePasswordForm = () => {
     setApiResponse,
     formState,
     getValues,
+    reset,
   } = useApiForm<ChangePasswordFormFields>();
 
   const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
     try {
       const res = await dispatch(changePassword({ oldPassword, newPassword }));
       setApiResponse(res);
+      if (!res.isError) {
+        reset();
+      }
     } catch {}
   };
 
