@@ -152,11 +152,8 @@ class PasswordResetSerializer(serializers.Serializer):
 
 
 class PasswordResetConfirmationSerializer(serializers.Serializer):
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(),
-        pk_field=rest.HashidSerializerCharField(),
-        write_only=True,
-    )
+    # user field is a CharField by design to hide the information whether the user exists or not
+    user = serializers.CharField(write_only=True)
 
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))
     token = serializers.CharField(write_only=True, help_text=_("Token"))
@@ -167,12 +164,17 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         token = attrs["token"]
-        user = attrs["user"]
+        user_id = attrs["user"]
+
+        try:
+            user = models.User.objects.get(pk=user_id)
+        except models.User.DoesNotExist:
+            raise exceptions.ValidationError(_("Malformed password reset token"))
 
         if not tokens.password_reset_token.check_token(user, token):
             raise exceptions.ValidationError(_("Malformed password reset token"))
 
-        return attrs
+        return {**attrs, 'user': user}
 
     def update(self, instance, validated_data):
         pass
