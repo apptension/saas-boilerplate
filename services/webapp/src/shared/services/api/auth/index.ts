@@ -22,6 +22,7 @@ import {
 export const AUTH_URL = '/auth';
 export const AUTH_SIGNUP_URL = AUTH_URL + `/signup/`;
 export const AUTH_LOGIN_URL = AUTH_URL + `/token/`;
+export const AUTH_TOKEN_REFRESH_URL = AUTH_URL + `/token-refresh/`;
 export const AUTH_LOGOUT_URL = AUTH_URL + `/logout/`;
 export const AUTH_ME_URL = AUTH_URL + `/me/`;
 export const AUTH_UPDATE_PROFILE_URL = AUTH_URL + `/me/`;
@@ -40,6 +41,11 @@ export const signup = async (creds: SignupApiRequestData) => {
 
 export const login = async (creds: LoginApiRequestData) => {
   const res = await client.post<LoginApiResponseData>(AUTH_LOGIN_URL, creds);
+  return res.data;
+};
+
+export const refreshToken = async () => {
+  const res = await client.post<void>(AUTH_TOKEN_REFRESH_URL);
   return res.data;
 };
 

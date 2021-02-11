@@ -17,6 +17,7 @@ import configureStore from './config/store';
 import browserHistory from './shared/utils/history';
 import UnsupportedBrowserDetection from './shared/utils/unsupported/unsupportedBrowserDetection';
 import { setUnsupportedClasses } from './shared/utils/unsupported/support';
+import { setupStoreInterceptors } from './shared/services/api/client';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
@@ -40,6 +41,7 @@ openSansObserver.load().then(
 // e.g. `const browserHistory = useRouterHistory(createBrowserHistory)();`
 const initialState = {};
 const store = configureStore(initialState);
+setupStoreInterceptors(store);
 
 const render = (): void => {
   const NextApp = require('./routes').default;

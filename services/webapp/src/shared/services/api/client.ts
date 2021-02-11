@@ -1,5 +1,8 @@
 import axios from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
+import { Store } from 'redux';
+import { GlobalState } from '../../../config/reducers';
+import { createRefreshTokenInterceptor, validateStatus } from './helpers';
 
 const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
 
@@ -11,6 +14,11 @@ export const client = applyCaseMiddleware(
   axios.create({
     baseURL: baseUrl,
     withCredentials: true,
-    validateStatus: (status) => (status >= 200 && status < 300) || status === 400,
+    validateStatus,
   })
 );
+
+export const setupStoreInterceptors = (store: Store<GlobalState>) => {
+  const refreshTokenInterceptor = createRefreshTokenInterceptor(store);
+  client.interceptors.response.use(refreshTokenInterceptor.onFulfilled, refreshTokenInterceptor.onRejected);
+};

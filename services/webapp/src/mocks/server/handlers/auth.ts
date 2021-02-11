@@ -28,6 +28,7 @@ import {
   AUTH_ME_URL,
   AUTH_REQUEST_PASSWORD_RESET_URL,
   AUTH_SIGNUP_URL,
+  AUTH_TOKEN_REFRESH_URL,
   AUTH_UPDATE_PROFILE_URL,
 } from '../../../shared/services/api/auth';
 import { Profile, Role } from '../../../modules/auth/auth.types';
@@ -43,6 +44,11 @@ export const mockSignup = (response: SignupApiResponseData = { isError: false },
 export const mockLogin = (status = 200, response: LoginApiResponseData = { isError: false }) =>
   rest.post<LoginApiRequestData, LoginApiResponseData>(baseUrl + AUTH_LOGIN_URL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
+  });
+
+export const mockRefreshToken = (status = 200) =>
+  rest.post<void, void>(baseUrl + AUTH_TOKEN_REFRESH_URL, (req, res, ctx) => {
+    return res(ctx.status(status));
   });
 
 export const mockLogout = (status = 200, response: LogoutApiResponseData = { isError: false }) =>
