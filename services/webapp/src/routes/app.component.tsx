@@ -3,12 +3,14 @@ import '../theme/styled.d';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
+import { ApolloProvider } from '@apollo/client';
 
 import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
 import { Header } from '../shared/components/header';
+import { apolloClient } from '../shared/services/contentful';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
@@ -28,15 +30,17 @@ export const AppComponent = ({ children }: AppComponentProps) => {
 
   return (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
-      <Fragment>
-        <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
-          {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
-        </FormattedMessage>
+      <ApolloProvider client={apolloClient}>
+        <Fragment>
+          <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
+            {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
+          </FormattedMessage>
 
-        <GlobalStyle />
-        <Header />
-        <ResponsiveThemeProvider>{React.Children.only(children)}</ResponsiveThemeProvider>
-      </Fragment>
+          <GlobalStyle />
+          <Header />
+          <ResponsiveThemeProvider>{React.Children.only(children)}</ResponsiveThemeProvider>
+        </Fragment>
+      </ApolloProvider>
     </IntlProvider>
   );
 };

@@ -20,6 +20,8 @@ export const ROUTES = {
   privacyPolicy: '/privacy-policy',
   termsAndConditions: '/terms-and-conditions',
   confirmEmail: '/auth/confirm/:user?/:token?',
+  demoItems: '/demo-items',
+  demoItem: '/demo-items/:id',
   passwordReset: nestedRoute('/auth/reset-password', {
     confirm: '/confirm/:user?/:token?',
   }),

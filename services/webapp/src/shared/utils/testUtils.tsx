@@ -9,6 +9,7 @@ import { Route, Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import produce from 'immer';
 
+import { MockedProvider } from '@apollo/client/testing';
 import { DEFAULT_LOCALE, translationMessages, MessagesObject } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';
@@ -33,6 +34,7 @@ interface ContextData {
   };
   store?: GlobalState;
   messages?: MessagesObject;
+  apolloMocks?: any[];
 }
 
 interface ProvidersWrapperProps {
@@ -41,7 +43,7 @@ interface ProvidersWrapperProps {
 }
 
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
-  const { router = {}, store = fixturesStore, messages } = context;
+  const { router = {}, store = fixturesStore, messages, apolloMocks = [] } = context;
   const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', history } = router;
 
   const routerHistory: MemoryHistory = history ?? createMemoryHistory({ initialEntries: [url] });
@@ -54,11 +56,13 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   return (
     <Router history={routerHistory}>
       <HelmetProvider>
-        <IntlProvider {...intlProviderMockProps}>
-          <Provider store={createStore(createReducer(), produce(store, identity))}>
-            <Route path={routePath}>{children}</Route>
-          </Provider>
-        </IntlProvider>
+        <MockedProvider mocks={apolloMocks} addTypename={false}>
+          <IntlProvider {...intlProviderMockProps}>
+            <Provider store={createStore(createReducer(), produce(store, identity))}>
+              <Route path={routePath}>{children}</Route>
+            </Provider>
+          </IntlProvider>
+        </MockedProvider>
       </HelmetProvider>
     </Router>
   );

@@ -21,6 +21,8 @@ const Profile = asyncComponent(() => import('./profile'), 'Profile');
 const ConfirmEmail = asyncComponent(() => import('./auth/confirmEmail'), 'ConfirmEmail');
 const PrivacyPolicy = asyncComponent(() => import('./privacyPolicy'), 'PrivacyPolicy');
 const TermsAndConditions = asyncComponent(() => import('./termsAndConditions'), 'TermsAndConditions');
+const DemoItems = asyncComponent(() => import('./demoItems'), 'DemoItems');
+const DemoItem = asyncComponent(() => import('./demoItem'), 'DemoItem');
 
 const MatchedLanguageComponent = () => {
   const match = useRouteMatch();
@@ -32,6 +34,12 @@ const MatchedLanguageComponent = () => {
         </AuthRoute>
         <AuthRoute exact path={`${match.path}${ROUTES.profile}`}>
           <Profile />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.demoItems}`}>
+          <DemoItems />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.demoItem}`}>
+          <DemoItem />
         </AuthRoute>
         <Route exact path={`${match.path}${ROUTES.signup}`}>
           <Signup />

@@ -55,6 +55,10 @@ export const Home = () => {
         <FormattedMessage defaultMessage="Terms and conditions" description="Home / t&c link" />
       </Link>
 
+      <Link to={`/${locale}${ROUTES.demoItems}`}>
+        <FormattedMessage defaultMessage="Demo Contentful items" description="Home / demo contentful items link" />
+      </Link>
+
       <RoleAccess allowedRoles={Role.ADMIN}>
         <Link to={`/${locale}${ROUTES.admin}`}>
           <FormattedMessage defaultMessage="Admin" description="Home / admin link" />
