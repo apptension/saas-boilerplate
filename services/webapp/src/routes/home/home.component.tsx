@@ -47,6 +47,14 @@ export const Home = () => {
         <FormattedMessage defaultMessage="Reset password" description="Home / reset password link" />
       </Link>
 
+      <Link to={`/${locale}${ROUTES.privacyPolicy}`}>
+        <FormattedMessage defaultMessage="Privacy policy" description="Home / privacy policy link" />
+      </Link>
+
+      <Link to={`/${locale}${ROUTES.termsAndConditions}`}>
+        <FormattedMessage defaultMessage="Terms and conditions" description="Home / t&c link" />
+      </Link>
+
       <RoleAccess allowedRoles={Role.ADMIN}>
         <Link to={`/${locale}${ROUTES.admin}`}>
           <FormattedMessage defaultMessage="Admin" description="Home / admin link" />

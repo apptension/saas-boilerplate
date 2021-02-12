@@ -17,6 +17,8 @@ export const ROUTES = {
   notFound: '/404',
   profile: '/profile',
   admin: '/admin',
+  privacyPolicy: '/privacy-policy',
+  termsAndConditions: '/terms-and-conditions',
   confirmEmail: '/auth/confirm/:user?/:token?',
   passwordReset: nestedRoute('/auth/reset-password', {
     confirm: '/confirm/:user?/:token?',

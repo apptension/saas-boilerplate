@@ -29,6 +29,14 @@ describe('Header: Component', () => {
       state.auth = loggedInAuthFactory({ profile: userProfileFactory({ email: 'user@mail.com' }) });
     });
 
+    it('should open homepage when clicked on "home" link', async () => {
+      const { pushSpy, history } = spiedHistory();
+      render({}, { store, router: { history } });
+
+      userEvent.click(screen.getByText(/home/gi));
+      expect(pushSpy).toHaveBeenCalledWith('/en/');
+    });
+
     it('should open profile when clicked on "profile" link', async () => {
       const { pushSpy, history } = spiedHistory();
       render({}, { store, router: { history } });
@@ -45,6 +53,14 @@ describe('Header: Component', () => {
   });
 
   describe('user is logged out', () => {
+    it('should open homepage when clicked on "home" link', async () => {
+      const { pushSpy, history } = spiedHistory();
+      render({}, { router: { history } });
+
+      userEvent.click(screen.getByText(/home/gi));
+      expect(pushSpy).toHaveBeenCalledWith('/en/');
+    });
+
     it('should not display "profile" link', () => {
       render();
       expect(screen.queryByText(/my profile \(user@mail\.com\)/gi)).not.toBeInTheDocument();

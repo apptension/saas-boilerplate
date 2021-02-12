@@ -5,7 +5,7 @@ import { reportError } from '../../shared/utils/reportError';
 import { selectIsProfileStartupCompleted } from './startup.selectors';
 import { startupActions } from '.';
 
-export function* handleProfileStartup() {
+function* handleProfileStartup() {
   try {
     const isStartupCompleted = yield select(selectIsProfileStartupCompleted);
     if (!isStartupCompleted) {

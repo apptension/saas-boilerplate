@@ -7,6 +7,10 @@
     "@formatjs/cli": "^2.13.5",
     "@formatjs/intl-getcanonicallocales": "^1.5.1",
     "@formatjs/intl-pluralrules": "^3.5.1",
+    "@graphql-codegen/cli": "^1.20.1",
+    "@graphql-codegen/typescript": "^1.20.2",
+    "@graphql-codegen/typescript-graphql-request": "3.0.0",
+    "@graphql-codegen/typescript-operations": "^1.17.14",
     "@loadable/component": "^5.14.1",
     "@reduxjs/toolkit": "^1.2.1",
     "@sentry/react": "^6.0.4",
@@ -31,8 +35,10 @@
     "@types/styled-components": "5.1.4",
     "@types/styled-theming": "^2.2.2",
     "@types/ua-parser-js": "^0.7.33",
+    "apollo": "^2.32.1",
     "axios": "^0.18.0",
     "axios-case-converter": "^0.6.0",
+    "concurrently": "^5.3.0",
     "core-js": "^3.6.2",
     "es5-shim": "^4.5.12",
     "eslint-config-prettier": "^6.15.0",
@@ -64,6 +70,7 @@
     "react-helmet-async": "^1.0.4",
     "react-hook-form": "^6.14.2",
     "react-intl": "^5.8.8",
+    "react-markdown": "^5.0.3",
     "react-redux": "7.2.2",
     "react-router": "^5",
     "react-router-dom": "^5",
@@ -85,8 +92,8 @@
     "ua-parser-js": "^0.7.22"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "yarn contentful:generate-types && yarn concurrently \"react-scripts start\" \"yarn contentful:generate-types --watch\"",
+    "build": "yarn contentful:generate-types && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
@@ -94,7 +101,9 @@
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
     "storybook": "start-storybook --port 5000",
-    "build-storybook": "node ./scripts/build-storybook.js"
+    "build-storybook": "node ./scripts/build-storybook.js",
+    "contentful:download-schema": "dotenv ./scripts/download-contentful-schema.sh",
+    "contentful:generate-types": "yarn graphql-codegen"
   },
   "eslintConfig": {
     "extends": "react-app"

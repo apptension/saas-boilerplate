@@ -8,19 +8,26 @@ import { useLocaleUrl } from '../../../routes/useLanguageFromParams/useLanguageF
 import { ROUTES } from '../../../routes/app.constants';
 import { renderWhenTrue } from '../../utils/rendering';
 import { logout } from '../../../modules/auth/auth.actions';
-import { Container, LogoutButton } from './header.styles';
+import { Container, LogoutButton, GlobalActions, ProfileActions } from './header.styles';
 
 export const Header = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const email = useSelector(selectProfileEmail);
+  const homeUrl = useLocaleUrl(ROUTES.home);
   const profileUrl = useLocaleUrl(ROUTES.profile);
   const dispatch = useDispatch();
   const handleLogout = () => dispatch(logout());
 
   return (
     <Container>
+      <GlobalActions>
+        <Link to={homeUrl}>
+          <FormattedMessage defaultMessage={'Home'} values={{ email }} description={'Header / Home button'} />
+        </Link>
+      </GlobalActions>
+
       {renderWhenTrue(() => (
-        <>
+        <ProfileActions>
           <Link to={profileUrl}>
             <FormattedMessage
               defaultMessage={'My profile ({email})'}
@@ -31,7 +38,7 @@ export const Header = () => {
           <LogoutButton onClick={handleLogout}>
             <FormattedMessage defaultMessage={'Logout'} description={'Header / Logout button'} />
           </LogoutButton>
-        </>
+        </ProfileActions>
       ))(isLoggedIn)}
     </Container>
   );

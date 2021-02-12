@@ -1,0 +1,16 @@
+overwrite: true
+schema: './schema.graphql'
+documents: ./src/**/*.graphql
+generates:
+  src/shared/services/contentful/__generated/types.ts:
+    config:
+      skipTypename: true
+      declarationKind: 'interface'
+      typesPrefix: 'Contentful'
+      maybeValue: T | undefined
+      namingConvention:
+        enumValues: change-case#upperCase
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-graphql-request'

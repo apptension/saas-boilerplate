@@ -1,0 +1,9 @@
+query appConfig {
+  appConfigCollection(limit: 1) {
+    items {
+      name
+      privacyPolicy
+      termsAndConditions
+    }
+  }
+}
