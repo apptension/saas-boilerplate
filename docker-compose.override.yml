@@ -23,10 +23,17 @@ services:
       - db
       - localstack
       - mailcatcher
+      - workers
 
   workers:
+    volumes:
+      - ./services/workers/:/app
+      - /app/node_modules/
     env_file:
       - ./services/workers/.env
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - ENV_STAGE=${ENV_STAGE}
     depends_on:
       - db
       - mailcatcher

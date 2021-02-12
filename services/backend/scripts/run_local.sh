@@ -11,10 +11,9 @@ set -o nounset
 echo "Install LocalStack fixture"
 
 wait_for_s3
-create_event_bus
-verify_email_in_ses
 
 echo "LocalStack fixtures installed"
 
+python manage.py contentful_sync
 python manage.py migrate
 python manage.py runserver 0.0.0.0:5000
