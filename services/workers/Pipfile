@@ -5,6 +5,7 @@ verify_ssl = true
 
 [packages]
 boto3 = "*"
+contentful = "*"
 environs = "*"
 "psycopg2-binary" = "*"
 pystache = "*"

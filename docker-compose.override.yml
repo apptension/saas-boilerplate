@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 volumes:
   web_backend_db_data:
@@ -22,6 +22,13 @@ services:
     depends_on:
       - db
       - localstack
+      - mailcatcher
+
+  workers:
+    env_file:
+      - ./services/workers/.env
+    depends_on:
+      - db
       - mailcatcher
 
   localstack:
@@ -68,4 +75,3 @@ services:
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
       - PROJECT_ENV_NAME=${PROJECT_ENV_NAME}
       - CHAMBER_SERVICE=${CHAMBER_SERVICE}
-

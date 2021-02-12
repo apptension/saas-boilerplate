@@ -12,5 +12,5 @@ schema_view = get_schema_view(
 urlpatterns = [
     re_path(r"^doc/", schema_view.with_ui("swagger")),
     re_path(r"^redoc/", schema_view.with_ui("redoc")),
-    path("api/", include("apps.users.urls")),
+    path("api/", include([path("", include("apps.users.urls")), path("content/", include("apps.content.urls"))])),
 ]

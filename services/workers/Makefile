@@ -31,9 +31,6 @@ flake8:
 black:
 	pipenv run black --config=pyproject.toml .
 
-invoke-hello:
-	sls invoke --stage $(ENV_STAGE) -f hello;
-
 secrets: export CHAMBER_SERVICE=workers
 secrets:
 	$(DOCKER_COMPOSE) build ssmeditor

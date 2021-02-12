@@ -1,0 +1,12 @@
+{
+  "name": "contentful",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.4.1",
+    "contentful-cli": "^1.5.26",
+    "contentful-migration": "^4.0.7",
+    "dotenv": "^8.2.0"
+  }
+}

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "whitenoise",
     "social_django",
     "apps.users",
+    "apps.content",
 ]
 
 MIDDLEWARE = [

@@ -8,17 +8,9 @@ provider:
   region: "${env:AWS_DEFAULT_REGION}"
   stackName: ${file(./${self:custom.confFile.${self:provider.stage}}):stackName}
   iamRoleStatements: ${file(./${self:custom.confFile.${self:provider.stage}}):iam}
-  environment:
-    SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
+  environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
 
 functions:
-  hello:
-    handler: userauth.handlers.hello
-    timeout: 6
-    memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):envsHello}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpcHello}
-
   SendEmail:
     handler: emails.handlers.send_email
     timeout: 6
@@ -30,6 +22,20 @@ functions:
           pattern:
             source:
               - backend.email
+
+  SynchronizeContentfulContent:
+    handler: content.handlers.synchronize_content
+    timeout: 30
+    memorySize: 256
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):envsSynchronizeContentfulContent}
+    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    events:
+      - schedule: rate(5 minutes)
+      - eventBridge:
+          eventBus: "${self:custom.eventBusArn}"
+          pattern:
+            source:
+              - backend.contentfulSync
 
 plugins:
   - serverless-pseudo-parameters

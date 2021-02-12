@@ -6,14 +6,10 @@ from environs import Env
 from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import url
 
-load_dotenv(dotenv_path='.test.env')
-
-env = Env()
-
-DB_CONNECTION = json.loads(env('DB_CONNECTION'))
-
 
 def create_test_database():
+    env = Env()
+    DB_CONNECTION = json.loads(env('DB_CONNECTION'))
     template_engine = create_engine(
         url.URL(
             **{
@@ -59,6 +55,7 @@ class PyTest(Command):
     def run(self):
         import subprocess
 
+        load_dotenv(dotenv_path='.env.test', override=True)
         create_test_database()
         errno = subprocess.call(['pytest'])
         raise SystemExit(errno)
