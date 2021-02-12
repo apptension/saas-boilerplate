@@ -1,7 +1,12 @@
-import boto3
 import json
+import logging
 from datetime import datetime
+
+import boto3
+import requests
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class Task:
@@ -10,23 +15,29 @@ class Task:
         self.source = source
         self.event_bus_name = event_bus_name
 
-    def get_entries(self, data: dict):
-        return [
-            {
-                'Time': datetime.now(),
-                'Source': self.source,
-                'DetailType': self.name,
-                'Detail': json.dumps({"type": self.name, **data}),
-                'EventBusName': self.event_bus_name,
-            },
-        ]
+    def get_entry(self, data: dict):
+        return {
+            'Time': datetime.now(),
+            'Source': self.source,
+            'DetailType': self.name,
+            'Detail': json.dumps({"type": self.name, **data}),
+            'EventBusName': self.event_bus_name,
+        }
 
     def apply(self, data: dict):
         client = boto3.client('events', endpoint_url=settings.AWS_ENDPOINT_URL)
-        client.put_events(Entries=self.get_entries(data))
+        client.put_events(Entries=[self.get_entry(data)])
+
+
+class TaskLocalInvoke(Task):
+    def apply(self, data: dict):
+        entry = self.get_entry(data)
+        response = requests.post(settings.TASKS_LOCAL_URL, json={**entry, 'Time': entry['Time'].isoformat()})
+        logger.info(f"Invoking local task: {entry=}")
+        logger.info(f"Invoke local response status code: {response.status_code}")
 
 
 class TaskPrinter(Task):
     def apply(self, data: dict):
-        entries = self.get_entries(data)
-        print(f"Put events: {entries=}")
+        entry = self.get_entry(data)
+        logger.info(f"Put events: {entry=}")

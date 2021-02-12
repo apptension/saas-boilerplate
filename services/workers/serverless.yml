@@ -40,7 +40,6 @@ functions:
 plugins:
   - serverless-pseudo-parameters
   - serverless-python-requirements
-  - serverless-localstack
 
 custom:
   projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
@@ -49,14 +48,6 @@ custom:
     dockerizePip: non-linux
     useDownloadCache: true
     useStaticCache: false
-
-  localstack:
-    stages:
-      - local
-    host: http://localhost
-    endpointFile: localstack_endpoints.json
-    debug: true
-    mountCode: false
 
   ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
 

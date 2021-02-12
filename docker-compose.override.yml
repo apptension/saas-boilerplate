@@ -30,6 +30,8 @@ services:
     depends_on:
       - db
       - mailcatcher
+    ports:
+      - "3005:3005"
 
   localstack:
     image: localstack/localstack:0.11.3

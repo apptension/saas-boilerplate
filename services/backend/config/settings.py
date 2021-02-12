@@ -221,3 +221,4 @@ WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 
 TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
+TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)

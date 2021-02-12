@@ -1,0 +1,69 @@
+const express = require("express");
+const bodyParser = require("body-parser");
+const { spawn } = require("child_process");
+const YAML = require("yaml");
+const fs = require("fs");
+
+const app = express();
+const port = 3005;
+const hostname = "0.0.0.0";
+
+app.use(bodyParser.json());
+
+function invokeFunction(name, data) {
+  const ls = spawn(
+    "node_modules/.bin/sls",
+    ["invoke", "local", "-f", name, "-d", JSON.stringify(data)],
+    {
+      cwd: "/app",
+    }
+  );
+
+  ls.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  ls.stderr.on("data", (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  ls.on("error", (error) => {
+    console.log(`error: ${error.message}`);
+  });
+
+  ls.on("close", (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+}
+
+app.post("/", (req, res) => {
+  const source = req.body.Source;
+  const serverlessConfigFile = fs.readFileSync("/app/serverless.yml", "utf8");
+  const serverlessConfig = YAML.parse(serverlessConfigFile);
+
+  const invokeData = {
+    source: source,
+    "detail-type": req.body.DetailType,
+    detail: req.body.Detail ? JSON.parse(req.body.Detail) : {},
+  };
+
+  Object.keys(serverlessConfig.functions).forEach((fnName) => {
+    const fnConfig = serverlessConfig.functions[fnName];
+    fnConfig.events.forEach((event) => {
+      if (
+        event.eventBridge &&
+        event.eventBridge.pattern &&
+        event.eventBridge.pattern.source &&
+        event.eventBridge.pattern.source.includes(source)
+      ) {
+        invokeFunction(fnName, invokeData);
+      }
+    });
+  });
+
+  res.send({ message: "OK" });
+});
+
+app.listen(port, hostname, () => {
+  console.log(`Local trigger server listening at http://${hostname}:${port}`);
+});

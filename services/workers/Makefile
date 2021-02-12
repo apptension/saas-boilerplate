@@ -17,7 +17,7 @@ test:
 	$(MAKE) docker-login
 	$(DOCKER_COMPOSE) up -d db
 	$(DOCKER_COMPOSE) build workers
-	$(DOCKER_COMPOSE) run -T workers ./scripts/run_tests.sh
+	$(DOCKER_COMPOSE) run -T workers bash ./scripts/run_tests.sh
 
 build: test
 
