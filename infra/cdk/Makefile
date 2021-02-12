@@ -3,6 +3,7 @@ include $(SELF_DIR)/../../base.mk
 
 install:
 	npm install
+	cd lib/stacks/env/ci/functions/trigger-entrypoint && npm install
 
 deploy-global-infra:
 	npm run build;
