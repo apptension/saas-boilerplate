@@ -1,9 +1,9 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 
 import { Container, Field, Message, Label } from './checkbox.styles';
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label: string | ReactNode;
   error?: string;
 }
 

@@ -1,12 +1,15 @@
 import React from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../input';
 import { Button } from '../../button';
 import { signup } from '../../../../modules/auth/auth.actions';
 import { Checkbox } from '../../checkbox';
+import { useLocaleUrl } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../../routes/app.constants';
 import { Container, ErrorMessage } from './signupForm.styles';
 
 interface SignupFormFields {
@@ -17,6 +20,7 @@ interface SignupFormFields {
 
 export const SignupForm = () => {
   const intl = useIntl();
+  const termsUrl = useLocaleUrl(ROUTES.termsAndConditions);
   const dispatch = useAsyncDispatch();
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>();
 
@@ -71,10 +75,22 @@ export const SignupForm = () => {
         error={errors.password?.message}
       />
       <Checkbox
-        label={intl.formatMessage({
-          defaultMessage: 'Accept terms and conditions',
-          description: 'Auth / Signup / Accept terms label',
-        })}
+        label={intl.formatMessage(
+          {
+            defaultMessage: 'Accept {link}',
+            description: 'Auth / Signup / Accept terms label',
+          },
+          {
+            link: (
+              <Link to={termsUrl}>
+                <FormattedMessage
+                  description={'Auth / Signup / Accept terms label / T&C link'}
+                  defaultMessage="terms and conditions"
+                />
+              </Link>
+            ),
+          }
+        )}
         ref={register({
           required: {
             value: true,

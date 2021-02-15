@@ -32,7 +32,7 @@ describe('SignupForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
     userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
-    userEvent.click(screen.getByLabelText(/accept terms/gi));
+    userEvent.click(screen.getByLabelText(/accept/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(signup(mockCreds));
@@ -42,7 +42,7 @@ describe('SignupForm: Component', () => {
   it('should show error if password value is missing', async () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
-    userEvent.click(screen.getByLabelText(/accept terms/gi));
+    userEvent.click(screen.getByLabelText(/accept/gi));
     userEvent.click(screen.getByRole('button', { name: /signup/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -67,7 +67,7 @@ describe('SignupForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
     userEvent.type(screen.getByPlaceholderText(/password/gi), 'abcxyz');
-    userEvent.click(screen.getByLabelText(/accept terms/gi));
+    userEvent.click(screen.getByLabelText(/accept/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -81,7 +81,7 @@ describe('SignupForm: Component', () => {
     render();
     userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
     userEvent.type(screen.getByPlaceholderText(/password/gi), 'abcxyz');
-    userEvent.click(screen.getByLabelText(/accept terms/gi));
+    userEvent.click(screen.getByLabelText(/accept/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /signup/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {

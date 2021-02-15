@@ -10,8 +10,8 @@ const mockUseIntl = () => {
 
   return {
     ...other,
-    formatMessage: (params: any) => {
-      return formatMessage({ ...params, id: 'mock-message-id' });
+    formatMessage: (params: any, values: any) => {
+      return formatMessage({ ...params, id: 'mock-message-id' }, values);
     },
   };
 };
