@@ -23,7 +23,7 @@ const handleFetchFavoritesResolved = (
   state: DemoItemsState,
   { payload }: PayloadAction<FavoriteDemoItemsApiGetResponseData>
 ) => {
-  state.favorites = (payload ?? []).map((item) => item.id);
+  state.favorites = (payload ?? []).map(({ item }) => item);
 };
 
 export const reducer = createReducer(INITIAL_STATE, (builder) => {

@@ -76,9 +76,9 @@ describe('DemoItems: reducer', () => {
   describe('fetchFavoriteDemoItems.resolved', () => {
     it('should save items ids in the store', () => {
       const action = demoItemsActions.fetchFavoriteDemoItems.resolved([
-        { id: 'item-1' },
-        { id: 'item-2' },
-        { id: 'item-999' },
+        { item: 'item-1' },
+        { item: 'item-2' },
+        { item: 'item-999' },
       ]);
       const resultState = reducer(defaultState, action);
       expect(resultState).toEqual({
