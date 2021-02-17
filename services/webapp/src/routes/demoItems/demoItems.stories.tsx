@@ -43,7 +43,7 @@ const Template: Story = ({ favorited = [], ...args }) => {
 };
 
 export default {
-  title: 'DemoItems',
+  title: 'ContentfulDemo / DemoItems',
   component: DemoItems,
 };
 

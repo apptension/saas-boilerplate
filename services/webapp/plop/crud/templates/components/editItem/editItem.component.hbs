@@ -1,0 +1,17 @@
+import React from 'react';
+
+import { useParams } from 'react-router';
+import { {{ pascalCase name }}Form } from '../{{ camelCase name }}Form';
+import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
+import { Container } from './edit{{ pascalCase name }}.styles';
+
+export const Edit{{ pascalCase name }} = () => {
+  const { id } = useParams<{ id: string }>();
+  const itemData = use{{ pascalCase name }}(id);
+
+  return (
+    <Container>
+      <{{ pascalCase name }}Form data={itemData} />
+    </Container>
+  );
+};

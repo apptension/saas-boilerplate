@@ -1,0 +1,53 @@
+import React from 'react';
+
+import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/dom';
+import { {{ pascalCase name }}ListItem, {{ pascalCase name }}ListItemProps } from '../{{ camelCase name }}ListItem.component';
+import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
+import { {{ camelCase name }}Factory } from '../../../../../mocks/factories';
+import { {{ camelCase name }}Actions } from '../../../../../modules/{{ camelCase name }}';
+
+const item = {{ camelCase name }}Factory({ id: 'test-id', name: 'test-name' });
+
+const mockDispatch = jest.fn();
+jest.mock('react-redux', () => {
+  return {
+    ...jest.requireActual<NodeModule>('react-redux'),
+    useDispatch: () => mockDispatch,
+  };
+});
+
+describe('{{ pascalCase name }}ListItem: Component', () => {
+  const defaultProps: {{ pascalCase name }}ListItemProps = {
+    item,
+  };
+
+  const component = (props: Partial<{{ pascalCase name }}ListItemProps>) => (
+    <{{ pascalCase name }}ListItem {...defaultProps} {...props} />
+  );
+  const render = makeContextRenderer(component);
+
+  beforeEach(() => {
+    mockDispatch.mockReset();
+  });
+
+  it('should render link to details page', () => {
+    const { pushSpy, history } = spiedHistory();
+    render({}, { router: { history } });
+    userEvent.click(screen.getByText('test-name'));
+    expect(pushSpy).toHaveBeenCalledWith('/en/{{ dashCase name }}/test-id');
+  });
+
+  it('should render link to edit form', () => {
+    const { pushSpy, history } = spiedHistory();
+    render({}, { router: { history } });
+    userEvent.click(screen.getByText(/edit/gi));
+    expect(pushSpy).toHaveBeenCalledWith('/en/{{ dashCase name }}/edit/test-id');
+  });
+
+  it('should delete item when delete button is clicked', () => {
+    render();
+    userEvent.click(screen.getByText(/delete/gi));
+    expect(mockDispatch).toHaveBeenCalledWith({{ camelCase name }}Actions.delete{{ pascalCase name }}('test-id'));
+  });
+});

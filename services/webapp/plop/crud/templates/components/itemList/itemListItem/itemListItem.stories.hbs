@@ -1,0 +1,24 @@
+import React from 'react';
+import { Story } from '@storybook/react';
+
+import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
+import { ProvidersWrapper } from '../../../../shared/utils/testUtils';
+import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem.component';
+
+const item = {{ camelCase name }}Factory();
+
+const Template: Story = (args) => {
+  return (
+    <ProvidersWrapper>
+      <{{ pascalCase name }}ListItem item={item} {...args} />
+    </ProvidersWrapper>
+  );
+};
+
+export default {
+  title: '{{ pascalCase name }} / {{ pascalCase name }}ListItem',
+  component: {{ pascalCase name }}ListItem,
+};
+
+export const Default = Template.bind({});
+Default.args = { item };

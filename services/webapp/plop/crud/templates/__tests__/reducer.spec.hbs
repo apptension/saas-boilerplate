@@ -1,0 +1,71 @@
+import { reducer, INITIAL_STATE as defaultState } from '../{{ camelCase name }}.reducer';
+import { {{ camelCase name }}Factory } from '../../../mocks/factories';
+import { {{ camelCase name }}Actions } from '../index';
+import { prepareState } from '../../../mocks/store';
+
+const items = [{{ camelCase name }}Factory(), {{ camelCase name }}Factory(), {{ camelCase name }}Factory()];
+
+describe('{{ pascalCase name }}: reducer', () => {
+  it('should return initial state', () => {
+    const action = { type: 'unknown-action' };
+    const resultState = reducer(undefined, action);
+    expect(resultState).toEqual(defaultState);
+  });
+
+  it('should return state on unknown action', () => {
+    const action = { type: 'unknown-action' };
+    const resultState = reducer(defaultState, action);
+    expect(resultState).toEqual(defaultState);
+  });
+
+  describe('fetch{{ pascalCase name }}', () => {
+    it('should save fetched items to store', () => {
+      const action = {{ camelCase name }}Actions.fetch{{ pascalCase name }}List.resolved(items);
+      const resultState = reducer(defaultState, action);
+      expect(resultState).toEqual({
+        ...defaultState,
+        items,
+      });
+    });
+  });
+
+  describe('fetch{{ pascalCase name }}', () => {
+    it('should save fetched item to store', () => {
+      const initialState = prepareState((state) => {
+        state.{{ camelCase name }}.items = [items[0], items[1]];
+      }).{{ camelCase name }};
+
+      const action = {{ camelCase name }}Actions.fetch{{ pascalCase name }}.resolved(items[2]);
+      const resultState = reducer(initialState, action);
+      expect(resultState).toEqual({
+        ...initialState,
+        items,
+      });
+    });
+
+    it('should not add fetched item to store if already is there', () => {
+      const initialState = prepareState((state) => {
+        state.{{ camelCase name }}.items = items;
+      }).{{ camelCase name }};
+
+      const action = {{ camelCase name }}Actions.fetch{{ pascalCase name }}.resolved(items[2]);
+      const resultState = reducer(initialState, action);
+      expect(resultState).toEqual(initialState);
+    });
+  });
+
+  describe('delete{{ pascalCase name }}', () => {
+    it('should delete item from store', () => {
+      const initialState = prepareState((state) => {
+        state.{{ camelCase name }}.items = items;
+      }).{{ camelCase name }};
+
+      const action = {{ camelCase name }}Actions.delete{{ pascalCase name }}(items[1].id);
+      const resultState = reducer(initialState, action);
+      expect(resultState).toEqual({
+        ...initialState,
+        items: [items[0], items[2]],
+      });
+    });
+  });
+});

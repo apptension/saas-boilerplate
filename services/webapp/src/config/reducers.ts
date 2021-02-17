@@ -10,6 +10,8 @@ import { reducer as configReducer } from '../modules/config/config.reducer';
 import { ConfigState } from '../modules/config/config.types';
 import { reducer as demoItemsReducer } from '../modules/demoItems/demoItems.reducer';
 import { DemoItemsState } from '../modules/demoItems/demoItems.types';
+import { reducer as crudDemoItemReducer } from '../modules/crudDemoItem/crudDemoItem.reducer';
+import { CrudDemoItemState } from '../modules/crudDemoItem/crudDemoItem.types';
 //<-- IMPORT MODULE REDUCER -->
 
 export type GlobalState = {
@@ -18,6 +20,7 @@ export type GlobalState = {
   auth: AuthState;
   config: ConfigState;
   demoItems: DemoItemsState;
+  crudDemoItem: CrudDemoItemState;
   //<-- INJECT MODULE STATE TYPE -->
 };
 
@@ -28,6 +31,7 @@ export default function createReducer() {
     auth: authReducer,
     config: configReducer,
     demoItems: demoItemsReducer,
+    crudDemoItem: crudDemoItemReducer,
     //<-- INJECT MODULE REDUCER -->
   });
 }

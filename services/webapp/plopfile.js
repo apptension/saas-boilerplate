@@ -4,6 +4,7 @@ const addReduxModuleGenerator = require('./plop/reduxModule');
 const addReactComponentGenerator = require('./plop/reactComponent');
 const addReactHookGenerator = require('./plop/reactHook');
 const addApiModelGenerator = require('./plop/apiModel');
+const addCrudGenerator = require('./plop/crud');
 
 module.exports = function (plop) {
   plop.setPrompt('directory', promptDirectory);
@@ -12,4 +13,5 @@ module.exports = function (plop) {
   addReactComponentGenerator(plop);
   addReactHookGenerator(plop);
   addApiModelGenerator(plop);
+  addCrudGenerator(plop);
 };

@@ -1,0 +1,15 @@
+import React from 'react';
+
+import { makeContextRenderer } from '../../../../shared/utils/testUtils';
+import { {{ pascalCase name }}Form, {{ pascalCase name }}FormProps } from '../{{ camelCase name }}Form.component';
+
+describe('{{ pascalCase name }}Form: Component', () => {
+  const defaultProps: {{ pascalCase name }}FormProps = {};
+
+  const component = (props: Partial<{{ pascalCase name }}FormProps>) => <{{ pascalCase name }}Form {...defaultProps} {...props} />;
+  const render = makeContextRenderer(component);
+
+  it('should render without errors', () => {
+    render();
+  });
+});

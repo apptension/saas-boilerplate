@@ -1,0 +1,85 @@
+import React, { ReactNode } from 'react';
+
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
+import { useApiForm } from '../../../shared/hooks/useApiForm';
+import { Input } from '../../../shared/components/input';
+import { Button } from '../../../shared/components/button';
+import { {{ pascalCase name }} } from '../../../shared/services/api/{{ camelCase name }}/types';
+import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
+import { Container, ErrorMessage, Label, Form, Row, Value } from './{{ camelCase name }}Form.styles';
+
+export interface {{ pascalCase name }}FormProps {
+  data?: {{ pascalCase name }};
+}
+
+interface {{ pascalCase name }}FormFields {
+  name: string;
+}
+
+export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormProps) => {
+  const intl = useIntl();
+  const dispatch = useAsyncDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    genericError,
+    setApiResponse,
+    formState,
+  } = useApiForm<{{ pascalCase name }}FormFields>({
+    defaultValues: {
+      name: data?.name,
+    },
+  });
+
+  const onFormSubmit = async (formData: {{ pascalCase name }}FormFields) => {
+    try {
+      const action = data
+        ? {{ camelCase name }}Actions.update{{ pascalCase name }}({ id: data.id, ...formData })
+        : {{ camelCase name }}Actions.add{{ pascalCase name }}(formData);
+
+      const res = await dispatch(action);
+      setApiResponse(res);
+    } catch {}
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit(onFormSubmit)}>
+        <Row>
+          <Label>
+            <FormattedMessage defaultMessage="Name:" description="{{ pascalCase name }} Form / Name label" />
+          </Label>
+          <Input
+            ref={register({
+              required: {
+                value: true,
+                message: intl.formatMessage({
+                  defaultMessage: 'Name is required',
+                  description: '{{ pascalCase name }} form / Name required',
+                }),
+              },
+            })}
+            name={'name'}
+            placeholder={intl.formatMessage({
+              defaultMessage: 'Name',
+              description: '{{ pascalCase name }} form / Name placeholder',
+            })}
+            error={errors.name?.message}
+          />
+        </Row>
+
+        {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+        <Button type="submit">
+          <FormattedMessage defaultMessage="Save" description="{{ pascalCase name }} form / Submit button" />
+        </Button>
+
+        {formState.isSubmitSuccessful && (
+          <FormattedMessage defaultMessage="Saved successfully" description="{{ pascalCase name }} form / Success message" />
+        )}
+      </Form>
+    </Container>
+  );
+};

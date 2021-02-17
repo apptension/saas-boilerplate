@@ -1,0 +1,19 @@
+import { actionCreator } from '../helpers';
+import {
+  {{ pascalCase name }}ApiGetResponseData,
+  {{ pascalCase name }}ApiPostRequestData,
+  {{ pascalCase name }}ApiPostResponseData,
+  {{ pascalCase name }}ApiPutRequestData,
+} from '../../shared/services/api/{{ camelCase name }}/types';
+
+const { createPromiseAction, createActionRoutine } = actionCreator('{{ constantCase name }}');
+
+export const fetch{{ pascalCase name }}List = createActionRoutine<void, {{ pascalCase name }}ApiGetResponseData[]>('FETCH_ITEMS');
+export const fetch{{ pascalCase name }} = createActionRoutine<string, {{ pascalCase name }}ApiGetResponseData>('FETCH_ITEM');
+export const add{{ pascalCase name }} = createActionRoutine<{{ pascalCase name }}ApiPostRequestData, {{ pascalCase name }}ApiPostResponseData>(
+  'ADD_ITEM'
+);
+export const update{{ pascalCase name }} = createPromiseAction<{{ pascalCase name }}ApiPutRequestData, {{ pascalCase name }}ApiPostResponseData>(
+  'UPDATE_ITEM'
+);
+export const delete{{ pascalCase name }} = createActionRoutine<string, void>('DELETE_ITEM');

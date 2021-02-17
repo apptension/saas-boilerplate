@@ -25,4 +25,11 @@ export const ROUTES = {
   passwordReset: nestedRoute('/auth/reset-password', {
     confirm: '/confirm/:user?/:token?',
   }),
+  crudDemoItem: nestedRoute('/crud-demo-item', {
+    list: '/',
+    details: '/:id',
+    edit: '/edit/:id',
+    add: '/add',
+  }),
+  //<-- INJECT ROUTE DEFINITION -->
 };

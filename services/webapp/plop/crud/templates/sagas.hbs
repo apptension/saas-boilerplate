@@ -1,0 +1,23 @@
+import { all, takeLatest } from 'redux-saga/effects';
+
+import { {{ camelCase name }} } from '../../shared/services/api';
+import { handleApiRequest, navigate } from '../helpers';
+import { ROUTES } from '../../routes/app.constants';
+import { {{ pascalCase name }}ApiPostResponseData } from '../../shared/services/api/{{ camelCase name }}/types';
+import * as {{ camelCase name }}Actions from './{{ camelCase name }}.actions';
+
+function* addDemoItemResolve(response: {{ pascalCase name }}ApiPostResponseData) {
+  if (!response.isError) {
+    yield navigate(ROUTES.{{ camelCase name }}.list);
+  }
+}
+
+export function* watch{{ pascalCase name }}() {
+  yield all([
+    takeLatest({{ camelCase name }}Actions.fetch{{ pascalCase name }}List, handleApiRequest({{ camelCase name }}.list)),
+    takeLatest({{ camelCase name }}Actions.fetch{{ pascalCase name }}, handleApiRequest({{ camelCase name }}.get)),
+    takeLatest({{ camelCase name }}Actions.add{{ pascalCase name }}, handleApiRequest({{ camelCase name }}.add, addDemoItemResolve)),
+    takeLatest({{ camelCase name }}Actions.update{{ pascalCase name }}, handleApiRequest({{ camelCase name }}.update)),
+    takeLatest({{ camelCase name }}Actions.delete{{ pascalCase name }}, handleApiRequest({{ camelCase name }}.remove)),
+  ]);
+}

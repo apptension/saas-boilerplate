@@ -1,0 +1,34 @@
+import React, { useEffect } from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
+import { select{{ pascalCase name }}List } from '../../../modules/{{ camelCase name }}/{{ camelCase name }}.selectors';
+import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../app.constants';
+import { Container } from './{{ camelCase name }}List.styles';
+import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem';
+
+export const {{ pascalCase name }}List = () => {
+  const dispatch = useDispatch();
+  const addNewUrl = useLocaleUrl(ROUTES.{{ camelCase name }}.add);
+  useEffect(() => {
+    dispatch({{ camelCase name }}Actions.fetch{{ pascalCase name }}List());
+  }, [dispatch]);
+
+  const items = useSelector(select{{ pascalCase name }}List);
+
+  return (
+    <Container>
+      <h1>{{ pascalCase name }}List component</h1>
+      <Link to={addNewUrl}>
+        <FormattedMessage description={'{{ pascalCase name }}List / Add new'} defaultMessage={'Add new'} />
+      </Link>
+
+      {items.map((item) => (
+        <{{ pascalCase name }}ListItem item={item} key={item.id} />
+      ))}
+    </Container>
+  );
+};

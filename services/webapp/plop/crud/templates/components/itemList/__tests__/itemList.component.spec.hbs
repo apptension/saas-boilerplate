@@ -1,0 +1,34 @@
+import React from 'react';
+
+import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/dom';
+import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import { {{ pascalCase name }}List, {{ pascalCase name }}ListProps } from '../{{ camelCase name }}List.component';
+import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
+import { prepareState } from '../../../../mocks/store';
+
+const items = [{{ camelCase name }}Factory({ name: 'first item' }), {{ camelCase name }}Factory({ name: 'second item' })];
+
+const store = prepareState((state) => {
+  state.{{ camelCase name }}.items = items;
+});
+
+describe('{{ pascalCase name }}List: Component', () => {
+  const defaultProps: {{ pascalCase name }}ListProps = {};
+
+  const component = (props: Partial<{{ pascalCase name }}ListProps>) => <{{ pascalCase name }}List {...defaultProps} {...props} />;
+  const render = makeContextRenderer(component);
+
+  it('should render all items', () => {
+    render({}, { store });
+    expect(screen.getByText('first item')).toBeInTheDocument();
+    expect(screen.getByText('second item')).toBeInTheDocument();
+  });
+
+  it('should render link to add new item form', () => {
+    const { pushSpy, history } = spiedHistory();
+    render({}, { router: { history } });
+    userEvent.click(screen.getByText(/add/gi));
+    expect(pushSpy).toHaveBeenCalledWith('/en/{{ dashCase name }}/add');
+  });
+});

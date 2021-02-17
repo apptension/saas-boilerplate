@@ -1,0 +1,20 @@
+import React from 'react';
+import { Story } from '@storybook/react';
+
+import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import { Add{{ pascalCase name }} } from './add{{ pascalCase name }}.component';
+
+const Template: Story = (args) => {
+  return (
+    <ProvidersWrapper>
+      <Add{{ pascalCase name }} {...args} />
+    </ProvidersWrapper>
+  );
+};
+
+export default {
+  title: '{{ pascalCase name }} / Add{{ pascalCase name }}',
+  component: Add{{ pascalCase name }},
+};
+
+export const Default = Template.bind({});

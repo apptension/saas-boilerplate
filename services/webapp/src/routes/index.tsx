@@ -11,7 +11,6 @@ import { AppComponent as App } from './app.component';
 import { ROUTES } from './app.constants';
 import { PasswordReset } from './auth/passwordReset';
 import { AuthRoute } from './authRoute';
-//<-- IMPORT ROUTE -->
 
 const Home = asyncComponent(() => import('./home'), 'Home');
 const NotFound = asyncComponent(() => import('./notFound'), 'NotFound');
@@ -23,6 +22,11 @@ const PrivacyPolicy = asyncComponent(() => import('./privacyPolicy'), 'PrivacyPo
 const TermsAndConditions = asyncComponent(() => import('./termsAndConditions'), 'TermsAndConditions');
 const DemoItems = asyncComponent(() => import('./demoItems'), 'DemoItems');
 const DemoItem = asyncComponent(() => import('./demoItem'), 'DemoItem');
+const CrudDemoItemList = asyncComponent(() => import('./crudDemoItem/crudDemoItemList'), 'CrudDemoItemList');
+const CrudDemoItemDetails = asyncComponent(() => import('./crudDemoItem/crudDemoItemDetails'), 'CrudDemoItemDetails');
+const AddCrudDemoItem = asyncComponent(() => import('./crudDemoItem/addCrudDemoItem'), 'AddCrudDemoItem');
+const EditCrudDemoItem = asyncComponent(() => import('./crudDemoItem/editCrudDemoItem'), 'EditCrudDemoItem');
+//<-- IMPORT ROUTE -->
 
 const MatchedLanguageComponent = () => {
   const match = useRouteMatch();
@@ -63,6 +67,18 @@ const MatchedLanguageComponent = () => {
           <H1>
             <FormattedMessage defaultMessage="This page is only visible for admins" description="Admin / Heading" />
           </H1>
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.crudDemoItem.list}`}>
+          <CrudDemoItemList />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.crudDemoItem.add}`}>
+          <AddCrudDemoItem />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.crudDemoItem.details}`}>
+          <CrudDemoItemDetails />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.crudDemoItem.edit}`}>
+          <EditCrudDemoItem />
         </AuthRoute>
         {/* <-- INJECT ROUTE --> */}
 

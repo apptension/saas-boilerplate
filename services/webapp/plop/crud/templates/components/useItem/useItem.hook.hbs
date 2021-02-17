@@ -1,0 +1,19 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo } from 'react';
+import { propEq } from 'ramda';
+import { select{{ pascalCase name }}List } from '../../../modules/{{ camelCase name }}/{{ camelCase name }}.selectors';
+import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
+
+export const use{{ pascalCase name }} = (id: string) => {
+  const dispatch = useDispatch();
+  const allItems = useSelector(select{{ pascalCase name }}List);
+  const itemData = useMemo(() => allItems.find(propEq('id', id)), [allItems, id]);
+
+  useEffect(() => {
+    if (!itemData) {
+      dispatch({{ camelCase name }}Actions.fetch{{ pascalCase name }}(id));
+    }
+  }, [dispatch, id, itemData]);
+
+  return itemData;
+};

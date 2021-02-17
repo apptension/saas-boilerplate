@@ -36,7 +36,7 @@ const Template: Story = (args) => {
 };
 
 export default {
-  title: 'DemoItem',
+  title: 'ContentfulDemo / DemoItem',
   component: DemoItem,
 };
 

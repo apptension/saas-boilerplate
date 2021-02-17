@@ -1,0 +1,37 @@
+import React from 'react';
+import { Story } from '@storybook/react';
+
+import { generatePath } from 'react-router';
+import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import { {{ camelCase name }}Factory } from '../../../mocks/factories';
+import { prepareState } from '../../../mocks/store';
+import { ROUTES } from '../../app.constants';
+import { {{ pascalCase name }}Details } from './{{ camelCase name }}Details.component';
+
+const item = {{ camelCase name }}Factory();
+const store = prepareState((state) => {
+  state.{{ camelCase name }}.items = [item];
+});
+
+const Template: Story = (args) => {
+  return (
+    <ProvidersWrapper
+      context=\{{
+        store,
+        router: {
+          url: `/en${generatePath(ROUTES.{{ camelCase name }}.details, { id: item.id })}`,
+          routePath: `/:lang${ROUTES.{{ camelCase name }}.details}`,
+        },
+      }}
+    >
+      <{{ pascalCase name }}Details {...args} />
+    </ProvidersWrapper>
+  );
+};
+
+export default {
+  title: '{{ pascalCase name }} / {{ pascalCase name }}Details',
+  component: {{ pascalCase name }}Details,
+};
+
+export const Default = Template.bind({});

@@ -13,7 +13,7 @@ const Template: Story<DemoItemListItemProps> = (args) => {
 };
 
 export default {
-  title: 'DemoItemListItem',
+  title: 'ContentfulDemo / DemoItemListItem',
   component: DemoItemListItem,
 };
 
