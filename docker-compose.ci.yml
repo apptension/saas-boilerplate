@@ -1,7 +1,13 @@
 version: "3.4"
 
 services:
-  backend: {}
+  backend:
+    environment:
+      - CI=true
+
+  workers:
+    environment:
+      - CI=true
 
   webapp:
     environment:

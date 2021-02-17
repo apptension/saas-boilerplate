@@ -5,7 +5,13 @@ set -o pipefail
 set -o nounset
 
 flake8
-black --config=pyproject.toml --check .
+
+if [ "${CI:-}" = "true" ]
+then
+  black --config=pyproject.toml --check .
+else
+   black --config=pyproject.toml .
+fi
 
 ./scripts/wait-for-it.sh db:5432
 pytest
