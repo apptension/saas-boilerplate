@@ -17,7 +17,7 @@ export const mockGetCrudDemoItem = (
   id = 'id',
   response: CrudDemoItemApiGetResponseData = { id: '123', name: 'name' }
 ) =>
-  rest.get<void, CrudDemoItemApiGetResponseData>([baseUrl, CRUD_DEMO_ITEM_URL, `/${id}`].join(''), (req, res, ctx) => {
+  rest.get<void, CrudDemoItemApiGetResponseData>([baseUrl, CRUD_DEMO_ITEM_URL, `${id}/`].join(''), (req, res, ctx) => {
     return res(ctx.json(response));
   });
 
@@ -27,7 +27,7 @@ export const mockUpdateCrudDemoItem = (
   status = 200
 ) =>
   rest.put<CrudDemoItemApiPutRequestData, CrudDemoItemApiPostResponseData>(
-    [baseUrl, CRUD_DEMO_ITEM_URL, `/${id}`].join(''),
+    [baseUrl, CRUD_DEMO_ITEM_URL, `${id}/`].join(''),
     (req, res, ctx) => {
       return res(ctx.json(response), ctx.status(status));
     }

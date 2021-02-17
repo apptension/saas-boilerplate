@@ -14,7 +14,7 @@ export const list = async () => {
 };
 
 export const get = async (id: string) => {
-  const res = await client.get<{{ pascalCase name }}ApiGetResponseData>({{ constantCase name }}_URL + `/${id}`);
+  const res = await client.get<{{ pascalCase name }}ApiGetResponseData>({{ constantCase name }}_URL + id + '/');
   return res.data;
 };
 
@@ -24,11 +24,11 @@ export const add = async (data: {{ pascalCase name }}ApiPostRequestData) => {
 };
 
 export const update = async (data: {{ pascalCase name }}ApiPutRequestData) => {
-  const res = await client.put<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL + `/${data.id}/`, data);
+  const res = await client.put<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL + data.id + '/', data);
   return res.data;
 };
 
 export const remove = async (id: string) => {
-  const res = await client.delete({{ constantCase name }}_URL + `/${id}`);
+  const res = await client.delete({{ constantCase name }}_URL + id + '/');
   return res.data;
 };
