@@ -15,5 +15,8 @@ export default {
 export const Default = Template.bind({});
 Default.args = { label: 'Checkbox' };
 
+export const NoLabel = Template.bind({});
+Default.args = {};
+
 export const Invalid = Template.bind({});
 Invalid.args = { label: 'Checkbox', error: 'Invalid value' };

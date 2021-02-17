@@ -3,7 +3,7 @@ import React, { forwardRef, ReactNode } from 'react';
 import { Container, Field, Message, Label } from './checkbox.styles';
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string | ReactNode;
+  label?: string | ReactNode;
   error?: string;
 }
 

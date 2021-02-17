@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -10,6 +10,15 @@ class CrudDemoItemViewSet(viewsets.ModelViewSet):
     queryset = models.CrudDemoItem.objects.all()
     serializer_class = serializers.CrudDemoItemSerializer
     permission_classes = (policies.IsAuthenticatedFullAccess,)
+
+
+class ContentfulDemoItemFavoriteListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    permission_classes = (policies.IsAuthenticatedFullAccess,)
+    serializer_class = serializers.ContentfulDemoItemFavoriteSerializer
+    queryset = models.ContentfulDemoItemFavorite.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
 
 
 class ContentfulDemoItemFavoriteViewSet(viewsets.GenericViewSet):

@@ -5,6 +5,7 @@ import { LOCALES_INITIAL_STATE } from '../modules/locales';
 import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
+import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
 //<-- IMPORT MODULE STATE -->
 
 export const store: GlobalState = {
@@ -12,6 +13,7 @@ export const store: GlobalState = {
   startup: STARTUP_INITIAL_STATE,
   auth: AUTH_INITIAL_STATE,
   config: CONFIG_INITIAL_STATE,
+  demoItems: DEMO_ITEMS_INITIAL_STATE,
   //<-- INJECT MODULE STATE -->
 };
 

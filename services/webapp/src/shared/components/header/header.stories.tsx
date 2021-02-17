@@ -3,14 +3,16 @@ import { Story } from '@storybook/react';
 
 import { ProvidersWrapper } from '../../utils/testUtils';
 import { prepareState } from '../../../mocks/store';
-import { loggedInAuthFactory } from '../../../mocks/factories';
+import { loggedInAuthFactory, loggedOutAuthFactory } from '../../../mocks/factories';
 import { Header } from './header.component';
 
-const store = prepareState((state) => {
-  state.auth = loggedInAuthFactory();
-});
+const loggedInAuthState = loggedInAuthFactory();
+const loggedOutAuthState = loggedOutAuthFactory();
 
-const Template: Story = (args) => {
+const Template: Story = ({ isLoggedIn, ...args }) => {
+  const store = prepareState((state) => {
+    state.auth = isLoggedIn ? loggedInAuthState : loggedOutAuthState;
+  });
   return (
     <ProvidersWrapper context={{ store }}>
       <Header {...args} />
@@ -23,4 +25,8 @@ export default {
   component: Header,
 };
 
-export const Default = Template.bind({});
+export const LoggedOut = Template.bind({});
+LoggedOut.args = { isLoggedIn: false };
+
+export const LoggedIn = Template.bind({});
+LoggedIn.args = { isLoggedIn: true };

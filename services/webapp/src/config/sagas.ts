@@ -3,6 +3,7 @@ import { all, fork } from 'redux-saga/effects';
 import { watchStartup } from '../modules/startup/startup.sagas';
 import { watchAuth } from '../modules/auth/auth.sagas';
 import { watchConfig } from '../modules/config/config.sagas';
+import { watchDemoItems } from '../modules/demoItems/demoItems.sagas';
 //<-- IMPORT MODULE SAGA -->
 
 export default function* rootSaga() {
@@ -10,6 +11,7 @@ export default function* rootSaga() {
     fork(watchStartup),
     fork(watchAuth),
     fork(watchConfig),
+    fork(watchDemoItems),
     //<-- INJECT MODULE SAGA -->
   ]);
 }

@@ -8,4 +8,4 @@ type ErrorFlag<T extends boolean> = { isError: T };
 
 export type ApiFormSubmitResponse<Request, Response> =
   | (Response extends void ? ErrorFlag<false> : Response & ErrorFlag<false>)
-  | (FormSubmitError<Request> & ErrorFlag<true>);
+  | (Request extends void ? ErrorFlag<true> : FormSubmitError<Request> & ErrorFlag<true>);

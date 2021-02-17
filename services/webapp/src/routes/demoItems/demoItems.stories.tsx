@@ -5,8 +5,10 @@ import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { ROUTES } from '../app.constants';
 import { AllDemoItemsDocument } from '../../shared/services/contentful';
 import { demoItemFactory } from '../../mocks/factories';
+import { prepareState } from '../../mocks/store';
 import { DemoItems } from './demoItems.component';
 
+const items = [demoItemFactory(), demoItemFactory(), demoItemFactory()];
 const apolloMocks = [
   {
     request: {
@@ -15,17 +17,25 @@ const apolloMocks = [
     result: {
       data: {
         demoItemCollection: {
-          items: [demoItemFactory(), demoItemFactory(), demoItemFactory()],
+          items,
         },
       },
     },
   },
 ];
 
-const Template: Story = (args) => {
+const Template: Story = ({ favorited = [], ...args }) => {
+  const store = prepareState((state) => {
+    state.demoItems.favorites = favorited;
+  });
+
   return (
     <ProvidersWrapper
-      context={{ apolloMocks, router: { url: `/en${ROUTES.demoItems}`, routePath: `/:lang${ROUTES.demoItems}` } }}
+      context={{
+        store,
+        apolloMocks,
+        router: { url: `/en${ROUTES.demoItems}`, routePath: `/:lang${ROUTES.demoItems}` },
+      }}
     >
       <DemoItems {...args} />
     </ProvidersWrapper>
@@ -38,3 +48,6 @@ export default {
 };
 
 export const Default = Template.bind({});
+
+export const WithFavorited = Template.bind({});
+WithFavorited.args = { favorited: [items[0].sys.id, items[2].sys.id] };

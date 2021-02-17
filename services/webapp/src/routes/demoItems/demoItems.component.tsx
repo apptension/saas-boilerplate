@@ -1,29 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { generatePath, Link } from 'react-router-dom';
-import { ROUTES } from '../app.constants';
-import { useLocale } from '../useLanguageFromParams/useLanguageFromParams.hook';
+import { useDispatch } from 'react-redux';
 import { useAllDemoItemsQuery } from '../../shared/services/contentful/__generated/hooks';
+import { demoItemsActions } from '../../modules/demoItems';
 import { Container } from './demoItems.styles';
+import { DemoItemListItem } from './demoItemListItem';
 
 export const DemoItems = () => {
-  const locale = useLocale();
   const { data } = useAllDemoItemsQuery();
   const items = data?.demoItemCollection?.items;
+  const dispatch = useDispatch();
 
-  const renderItemLink = (item: NonNullable<NonNullable<typeof items>[number]>) => {
-    const id = item.sys.id;
-    return (
-      <Link key={id} to={`/${locale}${generatePath(ROUTES.demoItem, { id })}`}>
-        {item.title}
-      </Link>
-    );
-  };
+  useEffect(() => {
+    dispatch(demoItemsActions.fetchFavoriteDemoItems());
+  }, [dispatch]);
 
   return (
     <Container>
       {items?.map((demoItem) => {
-        return demoItem ? renderItemLink(demoItem) : null;
+        return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} title={demoItem.title} /> : null;
       })}
     </Container>
   );

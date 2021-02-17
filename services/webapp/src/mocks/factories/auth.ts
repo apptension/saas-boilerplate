@@ -15,3 +15,8 @@ export const loggedInAuthFactory: Factory<AuthState> = (overrides = {}) => ({
   profile: userProfileFactory(),
   ...overrides,
 });
+
+export const loggedOutAuthFactory: Factory<AuthState> = (overrides = {}) => ({
+  isLoggedIn: false,
+  ...overrides,
+});

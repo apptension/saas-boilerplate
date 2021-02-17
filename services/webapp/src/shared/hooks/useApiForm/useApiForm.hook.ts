@@ -4,7 +4,7 @@ import { isNil, keys } from 'ramda';
 import { UseFormOptions } from 'react-hook-form/dist/types';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 
-export const useApiForm = <FormData>(args?: UseFormOptions<FormData>) => {
+export const useApiForm = <FormData extends Record<string, any>>(args?: UseFormOptions<FormData>) => {
   const [genericError, setGenericError] = useState<string>();
 
   const formControls = useForm<FormData>(args);
