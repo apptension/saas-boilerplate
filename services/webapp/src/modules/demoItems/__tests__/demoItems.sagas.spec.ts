@@ -38,11 +38,11 @@ describe('DemoItems: sagas', () => {
 
   describe('fetchFavoriteDemoItems', () => {
     it('should resolve action if call completes successfully', async () => {
-      server.use(mockGetFavoritesDemoItems(['item-1', 'item-2']));
+      server.use(mockGetFavoritesDemoItems([{ id: 'item-1' }, { id: 'item-2' }]));
 
       await expectSaga(watchDemoItems)
         .withState(defaultState)
-        .put(demoItemsActions.fetchFavoriteDemoItems.resolved(['item-1', 'item-2']))
+        .put(demoItemsActions.fetchFavoriteDemoItems.resolved([{ id: 'item-1' }, { id: 'item-2' }]))
         .dispatch(demoItemsActions.fetchFavoriteDemoItems())
         .silentRun();
     });

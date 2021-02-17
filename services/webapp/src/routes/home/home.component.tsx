@@ -59,6 +59,10 @@ export const Home = () => {
         <FormattedMessage defaultMessage="Demo Contentful items" description="Home / demo contentful items link" />
       </Link>
 
+      <Link to={`/${locale}${ROUTES.crudDemoItem.list}`}>
+        <FormattedMessage defaultMessage="CRUD Example Items" description="Home / CRUD example items link" />
+      </Link>
+
       <RoleAccess allowedRoles={Role.ADMIN}>
         <Link to={`/${locale}${ROUTES.admin}`}>
           <FormattedMessage defaultMessage="Admin" description="Home / admin link" />
