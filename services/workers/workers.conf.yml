@@ -20,17 +20,19 @@ iam:
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
 
-envsSendEmail:
-  EMAIL_ENABLED: "True"
-  FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL~true}
-  WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL~true}
+SendEmail:
+  handler: emails/handlers.sendEmail
+  environment:
+    FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL~true}
+    WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL~true}
 
-envsSynchronizeContentfulContent:
-  DB_SECRET_ARN:
-    { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
-  CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID~true}
-  CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN~true}
-  CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT~true}
+SynchronizeContentfulContent:
+  environment:
+    DB_SECRET_ARN:
+      { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+    CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID~true}
+    CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN~true}
+    CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT~true}
 
 vpc:
   securityGroupIds:

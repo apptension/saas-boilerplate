@@ -7,8 +7,7 @@ install-node:
 install-python:
 	pipenv install --dev
 
-install-build: install-node install-python
-install-deploy: install-node install-python install-scripts
+install-deploy: install-scripts
 
 install: install-node install-python
 	# Local machine installation rule
@@ -22,14 +21,23 @@ test:
 build: test
 
 deploy:
-	$(SELF_DIR)node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(MAKE) docker-login
+	$(DOCKER_COMPOSE) run -T workers node_modules/.bin/sls deploy --stage $(ENV_STAGE);
 	$(MAKE) upload-service-version SERVICE_NAME=workers
 
 flake8:
 	pipenv run flake8
 
 black:
-	pipenv run black --config=pyproject.toml .
+	$(DOCKER_COMPOSE) run -T workers run black --config=pyproject.toml .
+	
+invoke-local: d ?= {}
+invoke-local:
+	$(DOCKER_COMPOSE) run -T workers node_modules/.bin/sls invoke local -f=$(f) -d=$(d)
+
+shell:
+	$(DOCKER_COMPOSE) run --rm workers bash
+
 
 secrets: export CHAMBER_SERVICE=workers
 secrets:

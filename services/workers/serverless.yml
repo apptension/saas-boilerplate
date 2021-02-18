@@ -12,10 +12,11 @@ provider:
 
 functions:
   SendEmail:
-    handler: emails.handlers.send_email
+    handler: ${file(./${self:custom.confFile.${self:provider.stage}}):SendEmail.handler}
+    runtime: nodejs12.x
     timeout: 6
     memorySize: 128
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):envsSendEmail}
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):SendEmail.environment}
     events:
       - eventBridge:
           eventBus: "${self:custom.eventBusArn}"
@@ -27,7 +28,7 @@ functions:
     handler: content.handlers.synchronize_content
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):envsSynchronizeContentfulContent}
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):SynchronizeContentfulContent.environment}
     vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
     events:
       - schedule: rate(5 minutes)

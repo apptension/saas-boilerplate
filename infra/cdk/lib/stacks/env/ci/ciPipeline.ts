@@ -70,6 +70,7 @@ export class CiPipeline extends Construct {
       buildStage,
       deployStage,
       inputArtifact: sourceOutputArtifact,
+      webappBaseRepository: props.webappBaseRepository,
     });
 
     new UploadVersionCiConfig(this, "UploadVersionConfig", {

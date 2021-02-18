@@ -21,6 +21,10 @@ build: CHAMBER_SERVICE_NAME=env-${PROJECT_ENV_NAME}-webapp
 build: pull-base-image build-image test
 	$(DOCKER_COMPOSE) run webapp sh -c "/bin/chamber exec ${CHAMBER_SERVICE_NAME} -- yarn build"
 
+build-emails: CHAMBER_SERVICE_NAME=env-${PROJECT_ENV_NAME}-webapp
+build-emails: pull-base-image build-image
+	$(DOCKER_COMPOSE) run webapp sh -c "/bin/chamber exec ${CHAMBER_SERVICE_NAME} -- yarn build-emails"
+
 build-test: pull-base-image build-image test
 	$(DOCKER_COMPOSE) run webapp yarn build
 

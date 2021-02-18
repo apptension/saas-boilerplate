@@ -114,7 +114,7 @@ export class WebappCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_4_0,
+        buildImage: LinuxBuildImage.STANDARD_5_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -164,7 +164,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: LinuxBuildImage.STANDARD_4_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
 

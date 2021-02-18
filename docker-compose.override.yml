@@ -27,6 +27,7 @@ services:
 
   workers:
     volumes:
+      - ./services/webapp/build/email-renderer/:/app/emails/renderer
       - ./services/workers/:/app
       - /app/node_modules/
     env_file:

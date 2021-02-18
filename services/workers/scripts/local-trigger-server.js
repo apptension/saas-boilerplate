@@ -11,7 +11,7 @@ const hostname = "0.0.0.0";
 app.use(bodyParser.json());
 
 function invokeFunction(name, data) {
-  const ls = spawn(
+  const sls = spawn(
     "node_modules/.bin/sls",
     ["invoke", "local", "-f", name, "-d", JSON.stringify(data)],
     {
@@ -19,19 +19,19 @@ function invokeFunction(name, data) {
     }
   );
 
-  ls.stdout.on("data", (data) => {
+  sls.stdout.on("data", (data) => {
     console.log(`stdout: ${data}`);
   });
 
-  ls.stderr.on("data", (data) => {
+  sls.stderr.on("data", (data) => {
     console.log(`stderr: ${data}`);
   });
 
-  ls.on("error", (error) => {
+  sls.on("error", (error) => {
     console.log(`error: ${error.message}`);
   });
 
-  ls.on("close", (code) => {
+  sls.on("close", (code) => {
     console.log(`child process exited with code ${code}`);
   });
 }

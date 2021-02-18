@@ -77,7 +77,7 @@ export class BaseImagesConfig extends Construct {
       source: Source.codeCommit({ repository: props.codeRepository }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_4_0,
+        buildImage: LinuxBuildImage.STANDARD_5_0,
       },
     });
   }

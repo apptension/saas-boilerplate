@@ -34,6 +34,8 @@ services:
   workers:
     build:
       context: ./services/workers
+    volumes:
+      - ./services/webapp/build/email-renderer/:/app/emails/renderer
     depends_on:
       - db
     links:

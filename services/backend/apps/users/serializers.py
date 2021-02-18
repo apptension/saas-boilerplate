@@ -53,7 +53,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
             update_last_login(None, user)
 
         notifications.create(
-            "account_activation",
+            "accountActivation",
             user,
             data=notifications.AccountActivationNotificationData(
                 user_id=user.id.hashid, token=tokens.account_activation_token.make_token(user)
@@ -138,7 +138,7 @@ class PasswordResetSerializer(serializers.Serializer):
             raise exceptions.NotFound(_("User not found"))
 
         notifications.create(
-            "password_reset",
+            "passwordReset",
             user=user,
             data=notifications.PasswordResetNotificationData(
                 user_id=user.id.hashid, token=tokens.password_reset_token.make_token(user)

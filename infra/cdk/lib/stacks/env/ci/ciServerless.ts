@@ -12,16 +12,23 @@ import {
   CodeBuildActionProps,
 } from "@aws-cdk/aws-codepipeline-actions";
 import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+import {
+  AccountRootPrincipal,
+  Effect,
+  PolicyStatement,
+  Role,
+} from "@aws-cdk/aws-iam";
 
 import { EnvConstructProps } from "../../../types";
 import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
+import { IRepository } from "@aws-cdk/aws-ecr";
 
 interface ServerlessCiConfigProps extends EnvConstructProps {
   name: string;
   inputArtifact: Artifact;
   buildStage: IStage;
   deployStage: IStage;
+  webappBaseRepository: IRepository;
 }
 
 export class ServerlessCiConfig extends ServiceCiConfig {
@@ -68,16 +75,30 @@ export class ServerlessCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: ServerlessCiConfigProps) {
+    const dockerAssumeRole = new Role(this, "BuildDockerAssume", {
+      assumedBy: new AccountRootPrincipal(),
+    });
+
     const project = new Project(this, "BuildProject", {
       projectName: `${props.envSettings.projectEnvName}-build-${props.name}`,
       buildSpec: BuildSpec.fromObject({
         version: "0.2",
         phases: {
-          install: { "runtime-versions": { python: "3.8" } },
-          pre_build: {
-            commands: [`make -C services/${props.name} install-build`],
+          install: {
+            commands: [
+              "TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`",
+              "export TEMP_ROLE",
+              "export AWS_ACCESS_KEY_ID=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.AccessKeyId')",
+              "export AWS_SECRET_ACCESS_KEY=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.SecretAccessKey')",
+              "export AWS_SESSION_TOKEN=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.SessionToken')",
+            ],
           },
-          build: { commands: [`make -C services/${props.name} build`] },
+          build: {
+            commands: [
+              "make -C services/webapp build-emails",
+              `make -C services/${props.name} build`,
+            ],
+          },
         },
         artifacts: {
           files: [
@@ -85,28 +106,40 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             "infra/**/*",
             "scripts/**/*",
             `services/${props.name}/**/*`,
+            `services/webapp/build/**/*`,
+            `services/backend/**/*`,
           ],
         },
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.AMAZON_LINUX_2_3,
+        buildImage: LinuxBuildImage.STANDARD_5_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
-        ...{
-          DOCKER_USERNAME: {
-            type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-            value: "GlobalBuildSecrets:DOCKER_USERNAME",
-          },
-          DOCKER_PASSWORD: {
-            type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-            value: "GlobalBuildSecrets:DOCKER_PASSWORD",
-          },
+        DOCKER_USERNAME: {
+          type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: "GlobalBuildSecrets:DOCKER_USERNAME",
+        },
+        DOCKER_PASSWORD: {
+          type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: "GlobalBuildSecrets:DOCKER_PASSWORD",
+        },
+        ASSUME_ROLE_ARN: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: dockerAssumeRole.roleArn,
         },
       },
       cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
     });
+
+    dockerAssumeRole.addToPolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["kms:*", "ssm:*"],
+        resources: ["*"],
+      })
+    );
 
     project.addToRolePolicy(
       new PolicyStatement({
@@ -115,6 +148,16 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         resources: ["*"],
       })
     );
+
+    project.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["sts:AssumeRole"],
+        resources: [dockerAssumeRole.roleArn],
+      })
+    );
+
+    props.webappBaseRepository.grantPull(dockerAssumeRole);
 
     return project;
   }
@@ -131,33 +174,72 @@ export class ServerlessCiConfig extends ServiceCiConfig {
 
   private createDeployProject(props: ServerlessCiConfigProps) {
     const stack = Stack.of(this);
+    const dockerAssumeRole = new Role(this, "DeployDockerAssume", {
+      assumedBy: new AccountRootPrincipal(),
+    });
+
     const project = new Project(this, "DeployProject", {
       projectName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
       buildSpec: BuildSpec.fromObject({
         version: "0.2",
         phases: {
-          install: { "runtime-versions": { python: "3.8" } },
+          install: {
+            commands: [
+              "TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`",
+              "export TEMP_ROLE",
+              "export AWS_ACCESS_KEY_ID=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.AccessKeyId')",
+              "export AWS_SECRET_ACCESS_KEY=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.SecretAccessKey')",
+              "export AWS_SESSION_TOKEN=$(echo \"${TEMP_ROLE}\" | jq -r '.Credentials.SessionToken')",
+            ],
+          },
           pre_build: {
             commands: [`make -C services/${props.name} install-deploy`],
           },
           build: { commands: [`make -C services/${props.name} deploy`] },
         },
         cache: {
-          paths: [
-            ...this.defaultCachePaths,
-            `services/${props.name}/node_modules/**/*`,
-          ],
+          paths: this.defaultCachePaths,
         },
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.AMAZON_LINUX_2_3,
+        buildImage: LinuxBuildImage.STANDARD_5_0,
       },
-      environmentVariables: { ...this.defaultEnvVariables },
-      cache: Cache.local(LocalCacheMode.CUSTOM, LocalCacheMode.DOCKER_LAYER),
+      environmentVariables: {
+        ...this.defaultEnvVariables,
+        DOCKER_USERNAME: {
+          type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: "GlobalBuildSecrets:DOCKER_USERNAME",
+        },
+        DOCKER_PASSWORD: {
+          type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: "GlobalBuildSecrets:DOCKER_PASSWORD",
+        },
+        ASSUME_ROLE_ARN: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: dockerAssumeRole.roleArn,
+        },
+      },
+      cache: Cache.local(LocalCacheMode.DOCKER_LAYER),
     });
 
     project.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["secretsmanager:*"],
+        resources: ["*"],
+      })
+    );
+
+    project.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["sts:AssumeRole"],
+        resources: [dockerAssumeRole.roleArn],
+      })
+    );
+
+    dockerAssumeRole.addToPolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["cloudformation:*"],
@@ -168,7 +250,15 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       })
     );
 
-    project.addToRolePolicy(
+    dockerAssumeRole.addToPolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["kms:*", "ssm:*"],
+        resources: ["*"],
+      })
+    );
+
+    dockerAssumeRole.addToPolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: [
@@ -189,6 +279,8 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         resources: ["*"],
       })
     );
+
+    props.webappBaseRepository.grantPull(dockerAssumeRole);
 
     return project;
   }

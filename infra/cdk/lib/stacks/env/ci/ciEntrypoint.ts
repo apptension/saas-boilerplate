@@ -68,7 +68,7 @@ export class CiEntrypoint extends Construct {
         path: "",
       }),
       environment: {
-        buildImage: LinuxBuildImage.STANDARD_4_0,
+        buildImage: LinuxBuildImage.STANDARD_5_0,
       },
     });
   }
