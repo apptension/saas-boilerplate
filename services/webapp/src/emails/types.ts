@@ -2,6 +2,7 @@ import { ComponentType } from 'react';
 
 export enum EmailTemplateType {
   AccountActivation = 'accountActivation',
+  PasswordReset = 'passwordReset',
 }
 
 export interface EmailComponentProps {

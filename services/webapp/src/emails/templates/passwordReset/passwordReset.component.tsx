@@ -3,21 +3,21 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { EmailComponentProps } from '../../types';
 import { Td, Tr } from '../../base';
-import { Container } from './accountActivation.styles';
+import { Container } from './passwordReset.styles';
 
-export interface AccountActivationProps extends EmailComponentProps {
+export interface PasswordResetProps extends EmailComponentProps {
   userId: string;
   token: string;
 }
 
-export const Template = ({ webAppUrl, userId, token }: AccountActivationProps) => {
-  const url = `${webAppUrl}/en/auth/confirm/${userId}/${token}`;
+export const Template = ({ webAppUrl, userId, token }: PasswordResetProps) => {
+  const url = `${webAppUrl}/en/auth/reset-password/confirm/${userId}/${token}`;
 
   return (
     <Container>
       <Tr>
         <Td>
-          <FormattedMessage defaultMessage="Activation link: " description="Email / account activation / title" />
+          <FormattedMessage defaultMessage="Reset link: " description="Email / reset password / title" />
         </Td>
       </Tr>
 
@@ -35,8 +35,8 @@ export const Subject = () => {
   return (
     <>
       {intl.formatMessage({
-        defaultMessage: 'Confirm your account',
-        description: 'Email / account activation / subject',
+        defaultMessage: 'Reset your password',
+        description: 'Email / reset password / subject',
       })}
     </>
   );
