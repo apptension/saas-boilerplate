@@ -38,4 +38,4 @@ export type ConfirmPasswordResetRequestData = { user: string; token: string; new
 export type ConfirmPasswordResetResponseData = ApiFormSubmitResponse<RequestPasswordResetRequestData, void>;
 
 export type LogoutApiRequestData = void;
-export type LogoutApiResponseData = ApiFormSubmitResponse<LoginApiRequestData, void>;
+export type LogoutApiResponseData = void;

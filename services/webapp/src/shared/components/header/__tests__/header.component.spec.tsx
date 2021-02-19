@@ -53,12 +53,9 @@ describe('Header: Component', () => {
   });
 
   describe('user is logged out', () => {
-    it('should open homepage when clicked on "home" link', async () => {
-      const { pushSpy, history } = spiedHistory();
-      render({}, { router: { history } });
-
-      userEvent.click(screen.getByText(/home/gi));
-      expect(pushSpy).toHaveBeenCalledWith('/en/');
+    it('should not display "home" link', async () => {
+      render();
+      expect(screen.queryByText(/home/gi)).not.toBeInTheDocument();
     });
 
     it('should not display "profile" link', () => {

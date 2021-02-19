@@ -49,21 +49,21 @@ describe('Auth: reducer', () => {
 
     describe('is resolved without error', () => {
       it('should reset user profile', () => {
-        const action = authActions.logout.resolved({ isError: false });
+        const action = authActions.logout.resolved();
         const resultState = reducer(loggedInState, action);
         expect(resultState.profile).toBeUndefined();
       });
 
       it('should set isLoggedIn to false', () => {
-        const action = authActions.logout.resolved({ isError: false });
+        const action = authActions.logout.resolved();
         const resultState = reducer(loggedInState, action);
         expect(resultState.isLoggedIn).toBe(false);
       });
     });
 
-    describe('is resolved with error', () => {
+    describe('is rejected', () => {
       it('should not reset user profile', () => {
-        const action = authActions.logout.resolved({ isError: true });
+        const action = authActions.logout.rejected({});
         const resultState = reducer(loggedInState, action);
         expect(resultState.profile).toEqual(loggedInState.profile);
       });

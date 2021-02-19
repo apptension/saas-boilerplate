@@ -1,11 +1,7 @@
 import { all, put, takeLatest } from 'redux-saga/effects';
 
 import { auth } from '../../shared/services/api';
-import {
-  LoginApiResponseData,
-  LogoutApiResponseData,
-  SignupApiResponseData,
-} from '../../shared/services/api/auth/types';
+import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';
 import { ROUTES } from '../../routes/app.constants';
 import { handleApiRequest, navigate } from '../helpers';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
@@ -20,10 +16,8 @@ function* loginResolve(response: LoginApiResponseData) {
   }
 }
 
-function* logoutResolve(response: LogoutApiResponseData) {
-  if (!response.isError) {
-    yield navigate(ROUTES.login);
-  }
+function* logoutResolve() {
+  yield navigate(ROUTES.login);
 }
 
 function* signupResolve(response: SignupApiResponseData) {

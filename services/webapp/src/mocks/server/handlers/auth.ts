@@ -51,9 +51,9 @@ export const mockRefreshToken = (status = 200) =>
     return res(ctx.status(status));
   });
 
-export const mockLogout = (status = 200, response: LogoutApiResponseData = { isError: false }) =>
+export const mockLogout = (status = 200) =>
   rest.post<LogoutApiRequestData, LogoutApiResponseData>(baseUrl + AUTH_LOGOUT_URL, (req, res, ctx) => {
-    return res(ctx.status(status), ctx.json(response));
+    return res(ctx.status(status));
   });
 
 export const mockMe = (response: MeApiResponseData = profile, status = 200) =>

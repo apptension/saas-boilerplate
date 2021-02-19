@@ -1,5 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { BAD_REQUEST, UNAUTHORIZED } from 'http-status-codes';
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from 'http-status-codes';
 
 import { identity } from 'ramda';
 import { watchAuth } from '../auth.sagas';
@@ -92,7 +92,8 @@ describe('Auth: sagas', () => {
       it('should resolve action', async () => {
         await expectSaga(watchAuth)
           .withState(defaultState)
-          .put(authActions.logout.resolved({ isError: false }))
+          // @ts-ignore
+          .put(authActions.logout.resolved(''))
           .dispatch(authActions.logout())
           .silentRun();
       });
@@ -104,19 +105,8 @@ describe('Auth: sagas', () => {
     });
 
     describe('call completes with error', () => {
-      it('should reject action', async () => {
-        server.use(mockLogout(BAD_REQUEST, { isError: true }));
-
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.logout.resolved({ isError: true }))
-          .dispatch(authActions.logout())
-          .silentRun();
-      });
-
       it('should not redirect anywhere', async () => {
-        server.use(mockLogout(BAD_REQUEST, { isError: true }));
-
+        server.use(mockLogout(INTERNAL_SERVER_ERROR));
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
         expect(mockHistoryPush).not.toHaveBeenCalled();
       });

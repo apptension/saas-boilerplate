@@ -1,4 +1,4 @@
-import React, { ComponentProps, useEffect } from 'react';
+import React, { ComponentProps, useLayoutEffect } from 'react';
 
 import { Route, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ export const AuthRoute = ({
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
   const fallbackUrl = useLocaleUrl(ROUTES.notFound);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isProfileStartupCompleted && !isAllowed) {
       history.push(fallbackUrl);
     }

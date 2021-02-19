@@ -15,10 +15,8 @@ const handleFetchProfileSuccess = (state: AuthState, { payload }: PayloadAction<
 };
 
 const handleLogoutResolved = (state: AuthState, { payload }: PayloadAction<LogoutApiResponseData>) => {
-  if (!payload.isError) {
-    state.profile = undefined;
-    state.isLoggedIn = false;
-  }
+  state.profile = undefined;
+  state.isLoggedIn = false;
 };
 
 const handleUpdateProfileResolved = (state: AuthState, { payload }: PayloadAction<UpdateProfileApiResponseData>) => {

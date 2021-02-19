@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import * as authActions from '../auth/auth.actions';
 import { StartupState } from './startup.types';
 import * as startupActions from './startup.actions';
 
