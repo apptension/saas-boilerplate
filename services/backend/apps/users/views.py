@@ -108,9 +108,16 @@ class CookieTokenObtainPairView(jwt_views.TokenObtainPairView):
 class CookieTokenRefreshView(jwt_views.TokenRefreshView):
     serializer_class = serializers.CookieTokenRefreshSerializer
 
-    def finalize_response(self, request, response, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid(raise_exception=False):
+            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            utils.reset_auth_cookie(response)
+            return response
+
+        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
         utils.set_auth_cookie(response, response.data)
-        return super().finalize_response(request, response, *args, **kwargs)
+        return response
 
 
 @never_cache

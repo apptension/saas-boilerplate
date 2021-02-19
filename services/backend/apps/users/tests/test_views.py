@@ -5,7 +5,7 @@ from django.http import SimpleCookie
 from django.urls import reverse
 from rest_framework import status
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 
 from common.acl.helpers import CommonGroups
 from .. import tokens, models
@@ -200,6 +200,18 @@ class TestResetPassword:
         assert response.data["is_error"]
         assert response.data["non_field_errors"][0] == "Malformed password reset token", response.data
 
+    def test_blacklist_all_jwt(self, api_client, user, faker):
+        jwts = [RefreshToken.for_user(user) for _ in range(3)]
+        password_token = tokens.password_reset_token.make_token(user)
+        response = api_client.post(
+            reverse("password_reset_confirmation"),
+            {"user": str(user.pk), "token": password_token, "new_password": faker.password()},
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+
+        for jwt in jwts:
+            assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()
+
 
 class TestChangePassword:
     def test_correct_password(self, api_client, user_factory, faker):
@@ -256,18 +268,62 @@ class TestObtainToken:
 
 class TestLogout:
     def test_logout(self, api_client, user: models.User):
-        api_client.force_authenticate(user)
         refresh = RefreshToken.for_user(user)
-        response = api_client.post(
-            reverse('logout'),
-            cookies=SimpleCookie(
-                {
-                    settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
-                    settings.REFRESH_TOKEN_COOKIE: str(refresh),
-                }
-            ),
+        api_client.cookies = SimpleCookie(
+            {
+                settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
+                settings.REFRESH_TOKEN_COOKIE: str(refresh),
+            }
         )
+        response = api_client.post(reverse('logout'))
 
         assert response.status_code == status.HTTP_200_OK
         assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == ''
         assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == ''
+
+
+class TestTokenRefresh:
+    def test_return_error_for_invalid_refresh_token(self, api_client, user: models.User):
+        refresh = RefreshToken.for_user(user)
+        api_client.cookies = SimpleCookie(
+            {
+                settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
+                settings.REFRESH_TOKEN_COOKIE: 'invalid-token',
+            }
+        )
+        response = api_client.post(
+            reverse('jwt_token_refresh'),
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == ''
+        assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == ''
+
+    def test_refresh(self, api_client, user: models.User):
+        refresh = RefreshToken.for_user(user)
+        api_client.cookies = SimpleCookie(
+            {
+                settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
+                settings.REFRESH_TOKEN_COOKIE: str(refresh),
+            }
+        )
+        response = api_client.post(reverse('jwt_token_refresh'))
+
+        assert response.status_code == status.HTTP_200_OK
+
+        new_access_token_raw = response.cookies[settings.ACCESS_TOKEN_COOKIE].value
+        new_refresh_token_raw = response.cookies[settings.REFRESH_TOKEN_COOKIE].value
+
+        assert AccessToken(new_access_token_raw), new_access_token_raw
+        assert RefreshToken(new_refresh_token_raw), new_refresh_token_raw
+
+    def test_blacklist_old_token(self, api_client, user: models.User):
+        refresh = RefreshToken.for_user(user)
+        api_client.cookies = SimpleCookie(
+            {
+                settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
+                settings.REFRESH_TOKEN_COOKIE: str(refresh),
+            }
+        )
+        api_client.post(reverse('jwt_token_refresh'))
+        assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()

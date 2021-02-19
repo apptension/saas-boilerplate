@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import auth as dj_auth
-from django.contrib.auth import password_validation
+from django.contrib.auth import password_validation, get_user_model
 from django.contrib.auth.models import update_last_login
 from django.utils.translation import gettext as _
 from hashid_field import rest
@@ -8,7 +8,7 @@ from rest_framework import exceptions, serializers, validators
 from rest_framework_simplejwt import serializers as jwt_serializers, tokens as jwt_tokens, exceptions as jwt_exceptions
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 
-from . import models, tokens, notifications
+from . import models, tokens, notifications, jwt
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -183,8 +183,8 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         user = validated_data.pop("user")
         new_password = validated_data.pop("new_password")
         user.set_password(new_password)
+        jwt.blacklist_user_tokens(user)
         user.save()
-
         return user
 
 
@@ -202,13 +202,33 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
     refresh = None
 
     def validate(self, attrs):
-        refresh = self.context['request'].COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
-        if refresh:
-            return super().validate(
-                {
-                    'refresh': refresh,
-                    **attrs,
-                }
-            )
-        else:
-            raise jwt_exceptions.InvalidToken('No valid token found in cookie \'refresh_token\'')
+        request = self.context['request']
+        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
+
+        print('heereererererererer')
+        print(request.COOKIES)
+
+        if not raw_token:
+            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+
+        try:
+            refresh = jwt_tokens.RefreshToken(raw_token)
+        except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
+            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+
+        if jwt_api_settings.ROTATE_REFRESH_TOKENS:
+            if jwt_api_settings.BLACKLIST_AFTER_ROTATION:
+                try:
+                    # Attempt to blacklist the given refresh token
+                    refresh.blacklist()
+                except AttributeError:
+                    # If blacklist app not installed, `blacklist` method will
+                    # not be present
+                    pass
+
+            user = get_user_model().objects.get(id=refresh[jwt_api_settings.USER_ID_CLAIM])
+            new_refresh = jwt_tokens.RefreshToken.for_user(user)
+
+            return {'access': str(new_refresh.access_token), 'refresh': str(new_refresh)}
+
+        return {'access': str(refresh.access_token)}

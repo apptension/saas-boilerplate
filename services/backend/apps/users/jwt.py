@@ -1,6 +1,7 @@
-from rest_framework_jwt import utils
+from rest_framework_simplejwt.token_blacklist import models as blacklist_models
 
 
-def encode_handler(payload):
-    payload["user_id"] = str(payload["user_id"])
-    return utils.jwt_encode_payload(payload)
+def blacklist_user_tokens(user):
+    tokens = blacklist_models.OutstandingToken.objects.filter(user=user)
+    for token in tokens:
+        blacklist_models.BlacklistedToken.objects.get_or_create(token=token)
