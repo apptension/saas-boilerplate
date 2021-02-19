@@ -4,7 +4,7 @@ import { Store } from 'redux';
 import { GlobalState } from '../../../config/reducers';
 import { createRefreshTokenInterceptor, validateStatus } from './helpers';
 
-const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
+export const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
 
 if (!baseUrl) {
   throw new Error('REACT_APP_BASE_API_URL env is missing');

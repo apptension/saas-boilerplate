@@ -6,6 +6,7 @@ import history from '../../utils/history';
 import { DEFAULT_LOCALE } from '../../../i18n';
 import { selectLocalesLanguage } from '../../../modules/locales/locales.selectors';
 import { ROUTES } from '../../../routes/app.constants';
+import { baseUrl } from './client';
 import { AUTH_TOKEN_REFRESH_URL, refreshToken } from './auth';
 
 export const validateStatus = (status: number) => (status >= 200 && status < 300) || status === BAD_REQUEST;
@@ -22,7 +23,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
       return Promise.reject(error);
     }
 
-    if (error.config.url === process.env.REACT_APP_BASE_API_URL + AUTH_TOKEN_REFRESH_URL) {
+    if (error.config.url === baseUrl + AUTH_TOKEN_REFRESH_URL) {
       redirectToLogin();
       return Promise.reject(error);
     }
