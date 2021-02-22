@@ -1,8 +1,10 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { generatePath } from 'react-router-dom';
 import { EmailComponentProps } from '../../types';
 import { Td, Tr } from '../../base';
+import { ROUTES } from '../../../routes/app.constants';
 import { Container } from './accountActivation.styles';
 
 export interface AccountActivationProps extends EmailComponentProps {
@@ -11,7 +13,7 @@ export interface AccountActivationProps extends EmailComponentProps {
 }
 
 export const Template = ({ webAppUrl, userId, token }: AccountActivationProps) => {
-  const url = `${webAppUrl}/en/auth/confirm/${userId}/${token}`;
+  const url = `${webAppUrl}/en${generatePath(ROUTES.confirmEmail, { token, user: userId })}`;
 
   return (
     <Container>

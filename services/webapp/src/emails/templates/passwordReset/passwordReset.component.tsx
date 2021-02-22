@@ -1,8 +1,10 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { generatePath } from 'react-router-dom';
 import { EmailComponentProps } from '../../types';
 import { Td, Tr } from '../../base';
+import { ROUTES } from '../../../routes/app.constants';
 import { Container } from './passwordReset.styles';
 
 export interface PasswordResetProps extends EmailComponentProps {
@@ -11,7 +13,7 @@ export interface PasswordResetProps extends EmailComponentProps {
 }
 
 export const Template = ({ webAppUrl, userId, token }: PasswordResetProps) => {
-  const url = `${webAppUrl}/en/auth/reset-password/confirm/${userId}/${token}`;
+  const url = `${webAppUrl}/en${generatePath(ROUTES.passwordReset.confirm, { token, user: userId })}`;
 
   return (
     <Container>

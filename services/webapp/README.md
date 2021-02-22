@@ -96,8 +96,8 @@ test:
 
 ### `make install-deploy`
 
-This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact. This rule
-should most likely stay unchanged unless you know what you're doing!
+This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact. 
+This rule should most likely stay unchanged unless you know what you're doing!
 
 ### `make test`
 
@@ -287,4 +287,38 @@ interface <model_name> {
   id: string;
   name: string;
 }
+```
+
+## Emails
+
+### Adding new email template
+
+To add new email template you need to:
+
+- add new file in `src/emails`. It should export `Template` and `Subject` components.
+- add new email `EmailTemplateType` enum value in `src/emails/types.ts`
+- assign your component with new type in `src/emails/templates.config.ts`
+
+### Testing email templates
+
+You can test email templates using storybooks and wrapping email with `EmailStory`:
+
+```typescript jsx
+const StorybookTemplate: Story<PasswordResetProps> = (args) => (
+  <EmailStory type={EmailTemplateType.PasswordReset} subject={<PasswordResetSubject />} emailData={args}>
+    <PasswordResetEmail {...args} />
+  </EmailStory>
+);
+```
+
+It allows you to see email subject & template within the storybook.
+It also shows a button to send each email to specific email address.
+
+To be able to use email send button you need to run storybook using your AWS credentials and have the recipient email whitelisted in SES by project admin.
+
+Example usage:
+
+```shell
+aws-vault exec saas-boilerplate-user -- yarn storybook
+
 ```
