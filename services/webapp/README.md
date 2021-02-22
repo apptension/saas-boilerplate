@@ -1,4 +1,5 @@
-This project was bootstrapped with [Create React App (by Apptension)](https://github.com/apptension/react-scripts-apptension).
+This project was bootstrapped
+with [Create React App (by Apptension)](https://github.com/apptension/react-scripts-apptension).
 
 ## Available Scripts
 
@@ -15,7 +16,8 @@ You will also see any lint errors in the console.
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
+information.
 
 ### `yarn build`
 
@@ -31,11 +33,16 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will
+remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right
+into your project so you have full control over them. All of the commands except `eject` will still work, but they will
+point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you
+shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t
+customize it when you are ready for it.
 
 ### `yarn extract-intl language1, language2, [...]`
 
@@ -65,43 +72,219 @@ Generate React component (class or function) in specified path
 yarn plop component
 ```
 
+### `yarn contentful:download-schema`
+
+It introspects remote Contentful GraphQL API endpoint and generates `schema.graphql` file based on current content-model
+structure on Contentful
+
 ## Learn More
 
 You can learn more on [Create React App (by Apptension)](https://github.com/apptension/react-scripts-apptension).
 
-
 ## Make rules
 
 ### `make install`
+
 You should configure this rule in Makefile to install web app's dependencies
 
 #### Example rule
+
 ```makefile
 test:
 	npm install
 ```
 
 ### `make install-deploy`
-This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact.
-This rule should most likely stay unchanged unless you know what you're doing!
+
+This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact. This rule
+should most likely stay unchanged unless you know what you're doing!
 
 ### `make test`
+
 You should configure this rule in Makefile to run your web app's tests and linters
 
 #### Example rule
+
 ```makefile
 test:
 	npm run test
 ```
 
 ### `make build`
+
 You should configure this rule in Makefile to run your web app's build step
 
 #### Example rule
+
 ```makefile
 build: test
 	npm run build
 ```
 
 ### `make deploy`
+
 This rule will deploy the app to AWS. Make sure you log in to AWS first using `make aws-vault` command.
+
+## Django REST API integration
+
+Project is configured with fully typed support for REST API.
+
+All request can be provided with response type:
+
+```typescript
+import { client } from './services/api/client';
+//...
+export const list = async () => {
+  const res = await client.get<ItemType[]>(API_URL);
+  return res.data; // data is ItemType[]
+};
+```
+
+### Form submission errors
+
+Every POST/PUT response type from BE is formatted in following way:
+
+```json
+#successfull response
+{
+  "isError": "false",
+  "dataKey1":"dataVal1",
+  "dataKey2":"dataVal2"
+}
+```
+
+```json
+#failed response
+{
+  "isError": "true",
+  "fieldKey1":["field-error-1"],
+  "nonFieldErrors":["non-field-error"]
+}
+```
+
+It allows us to support TS types for API error handling.
+To support form submit with validation, you can use out-of-the-box solution based on `react-hook-form / useForm()`:
+
+Example:
+
+```typescript
+// api
+export const updateProfile = async (data: UpdateProfileApiRequestData) => {
+  const res = await client.put<UpdateProfileApiResponseData>(AUTH_UPDATE_PROFILE_URL, data);
+  return res.data;
+};
+
+// saga
+takeLatest(authActions.updateProfile, handleApiRequest(auth.updateProfile)),
+
+
+// component
+const {setApiResponse, errors, genericError, ...} = useApiForm<UpdateProfileFormFields>();
+
+const onProfileUpdate = async (profile: UpdateProfileFormFields) => {
+  try {
+    const res = await dispatch(updateProfile(profile));
+
+    // dispatch promise is resolved in case of 2xx or 400 status code
+
+    // in case of 400 status results with resolved promise but with submission errors returned
+    // it will fill 'errors' variable with field errors coming from API response
+    // or 'genericError' with generic errors (not related with specific form field)
+    setApiResponse(res);
+  } catch {
+    // you can handle any other unexpected errors here
+  }
+};
+
+```
+
+## Contentful integration
+
+Project is configured with Contentful integration with full GraphQL and Typescript support.
+
+To use it .env variables must point to your contentful environment:
+
+```dotenv
+REACT_APP_CONTENTFUL_SPACE=<CHANGE_ME>
+REACT_APP_CONTENTFUL_TOKEN=<CHANGE_ME>
+REACT_APP_CONTENTFUL_ENV=develop
+```
+
+Whenever Contentful model changes, you should run `yarn contentful:download-schema` to update local schema to match with
+remote contentful model.
+
+### Creating queries
+
+To create a new Contentful query, you need to create it inside `shared/services/contentful/queries/*.graphql` file. It
+will be used to automatically generate fully typed API.
+
+### Example:
+
+```graphql
+# shared/services/contentful/queries/demoItems.graphql
+
+query demoItem($itemId: String!) {
+  demoItem(id: $itemId) {
+    title
+    description
+  }
+}
+```
+
+### Usage with hooks
+
+```typescript jsx
+// useDemoItemQuery hook is generated automatically, with full TS support, based on your query defined in `.graphql` file
+import { useDemoItemQuery } from '../../shared/services/contentful/hooks';
+
+export const Example = () => {
+  const { data, loading } = useDemoItemQuery({ variables: { itemId: id } });
+  const title = data?.demoItem?.title; // const title: string | undefined
+  const foo = data?.demoItem?.foo; // ERROR: property `foo` does not exist
+  //  ...
+};
+```
+
+### Usage with imperative API calls
+
+```typescript
+import { client } from '../../shared/services/contentful';
+// ...
+const { demoItem } = await client.demoItem({ itemId: id });
+const title = demoItem?.title; // const title: string | undefined
+const foo = demoItem?.foo; // ERROR: property `foo` does not exist
+//...
+```
+
+## CRUD generator
+
+Project is configured with simple CRUD UI generator.
+
+To generate a fully-functional CRUD UI you need to run `yarn plop crud <model_name> <api_endpoint>` (i.e. `yarn plop crud event /event/`)
+
+It will generate functional elements including:
+
+Routes:
+
+- `ROUTES.<model_name>.list` under `/<model_name>/` (i.e. ROUTES.event.list under /event/)
+- `ROUTES.<model_name>.details` under `/<model_name>/<id>`
+- `ROUTES.<model_name>.edit` under `/<model_name>/edit/<id>`
+- `ROUTES.<model_name>.add` under `/<model_name>/add`
+
+Actions:
+
+- `<model_name>Actions.fetch<model_name>List` - to fetch all items data (i.e. `eventActions.fetchEventList`)
+- `<model_name>Actions.fetch<model_name>` - to fetch single item data
+- `<model_name>Actions.add<model_name>` - to add new item
+- `<model_name>Actions.update<model_name>` - to update existing item
+- `<model_name>Actions.delete<model_name>` - to delete existing item
+
+Each generated route will contain functional components (listing / editing / adding / deleting).
+All you need to do is to adjust it with your data model - by default it is generated using following data model:
+
+```typescript
+interface <model_name> {
+  id: string;
+  name: string;
+}
+```
