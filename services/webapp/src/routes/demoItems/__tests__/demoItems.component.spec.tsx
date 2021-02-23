@@ -16,8 +16,8 @@ describe('DemoItems: Component', () => {
         data: {
           demoItemCollection: {
             items: [
-              { sys: { id: 1 }, title: 'First' },
-              { sys: { id: 2 }, title: 'Second' },
+              { sys: { id: 1 }, title: 'First', image: { title: 'first image title', url: 'https://image.url' } },
+              { sys: { id: 2 }, title: 'Second', image: { title: 'second image title', url: 'https://image.url' } },
             ],
           },
         },

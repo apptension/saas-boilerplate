@@ -5,6 +5,10 @@ query allDemoItems {
         id
       }
       title
+      image {
+        title
+        url
+      }
     }
   }
 }

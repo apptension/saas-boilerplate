@@ -18,7 +18,13 @@ jest.mock('react-redux', () => {
 describe('DemoItemListItem: Component', () => {
   const defaultProps: DemoItemListItemProps = {
     id: 'item-1',
-    title: 'Example title',
+    item: {
+      title: 'Example title',
+      image: {
+        title: 'image title',
+        url: 'http://image.url',
+      },
+    },
   };
 
   const component = (props: Partial<DemoItemListItemProps>) => <DemoItemListItem {...defaultProps} {...props} />;

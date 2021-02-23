@@ -6,21 +6,31 @@ import { ROUTES } from '../../app.constants';
 import { useLocale } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { Checkbox } from '../../../shared/components/checkbox';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
-import { Container } from './demoItemListItem.styles';
+import { imageProps } from '../../../shared/services/contentful';
+import { Container, Thumbnail } from './demoItemListItem.styles';
 
 export interface DemoItemListItemProps {
   id: string;
-  title?: string;
+  item: {
+    title?: string;
+    image?: {
+      title?: string;
+      url?: string;
+    };
+  };
 }
 
-export const DemoItemListItem = ({ id, title }: DemoItemListItemProps) => {
+export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const locale = useLocale();
   const intl = useIntl();
   const { setFavorite, isFavorite } = useFavoriteDemoItem(id);
 
   return (
     <Container>
-      <Link to={`/${locale}${generatePath(ROUTES.demoItem, { id })}`}>{title}</Link>
+      <Link to={`/${locale}${generatePath(ROUTES.demoItem, { id })}`}>
+        {item.title}
+        {item.image && <Thumbnail {...imageProps(item.image, { size: { height: 50 } })} role="presentation" />}
+      </Link>
       <Checkbox
         aria-label={intl.formatMessage({
           defaultMessage: 'Is favorite',

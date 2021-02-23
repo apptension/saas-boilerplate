@@ -18,7 +18,7 @@ export const DemoItems = () => {
   return (
     <Container>
       {items?.map((demoItem) => {
-        return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} title={demoItem.title} /> : null;
+        return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} item={demoItem} /> : null;
       })}
     </Container>
   );
