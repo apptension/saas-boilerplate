@@ -1,0 +1,23 @@
+---
+id: architecture
+title: Architecture
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+## Services included in boilerplate
+
+The boilerplate contains a number of typical services that are ready to be deployed to AWS.
+Each of them resides in the `services` directory and has to contain a `Makefile`. Do not change the names of the rules
+that are defined in Makefiles unless you know what you're doing. Most of them are used in CodeBuild jobs in your CI
+pipeline.
+
+- React [web application](/services/webapp)
+- Django [backend and admin panel](/services/backend)
+- Serverless [async workers](/services/workers)
+
+## System architecture diagram
+
+<p align="center">
+  <img src={useBaseUrl("img/system-diagram-v1.png")} alt="System Diagram" />
+</p>
