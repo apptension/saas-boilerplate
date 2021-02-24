@@ -2,10 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 import { BAD_REQUEST, UNAUTHORIZED } from 'http-status-codes';
 import { Store } from 'redux';
 import { GlobalState } from '../../../config/reducers';
-import history from '../../utils/history';
-import { DEFAULT_LOCALE } from '../../../i18n';
-import { selectLocalesLanguage } from '../../../modules/locales/locales.selectors';
-import { ROUTES } from '../../../routes/app.constants';
 import { baseUrl } from './client';
 import { AUTH_TOKEN_REFRESH_URL, refreshToken } from './auth';
 
@@ -14,9 +10,9 @@ export const validateStatus = (status: number) => (status >= 200 && status < 300
 export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
   onFulfilled: (response: AxiosResponse) => response,
   onRejected: async (error: any) => {
-    const redirectToLogin = () => {
-      const locale = selectLocalesLanguage(store.getState());
-      history.push(`/${locale ?? DEFAULT_LOCALE}${ROUTES.login}`);
+    const forceLogout = () => {
+      store.dispatch({ type: 'AUTH/LOGOUT.RESOLVED' });
+      return Promise.reject(error);
     };
 
     if (error.response.status !== UNAUTHORIZED) {
@@ -24,8 +20,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
     }
 
     if (error.config.url === baseUrl + AUTH_TOKEN_REFRESH_URL) {
-      redirectToLogin();
-      return Promise.reject(error);
+      return forceLogout();
     }
 
     try {
@@ -35,8 +30,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
         baseURL: '/',
       });
     } catch (ex) {
-      redirectToLogin();
-      return Promise.reject(error);
+      return forceLogout();
     }
   },
 });

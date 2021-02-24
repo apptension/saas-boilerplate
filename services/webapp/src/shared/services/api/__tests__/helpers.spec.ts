@@ -9,6 +9,7 @@ import { AUTH_ME_URL, AUTH_TOKEN_REFRESH_URL } from '../auth';
 import { server } from '../../../../mocks/server';
 import { mockRefreshToken } from '../../../../mocks/server/handlers';
 import history from '../../../utils/history';
+import { authActions } from '../../../../modules/auth';
 
 describe('shared / services / api', () => {
   describe('validate status', () => {
@@ -36,6 +37,11 @@ describe('shared / services / api', () => {
   describe('createRefreshTokenInterceptor', () => {
     const store = createStore(createReducer(), fixturesStore);
     const interceptor = createRefreshTokenInterceptor(store);
+    const mockDispatch = jest.spyOn(store, 'dispatch');
+
+    afterEach(() => {
+      mockDispatch.mockReset();
+    });
 
     describe('onFulfilled', () => {
       it('should return response', () => {
@@ -93,12 +99,11 @@ describe('shared / services / api', () => {
             await expect(interceptor.onRejected(error)).rejects.toEqual(error);
           });
 
-          it('should redirect to login page', async () => {
-            const mockHistoryPush = jest.spyOn(history, 'push');
+          it('should dispatch logout.resolved() action', async () => {
             server.use(mockRefreshToken(403));
             const error = { foo: 'bar', response: { status: UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
             await expect(interceptor.onRejected(error)).rejects.toBeDefined();
-            expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
+            expect(mockDispatch).toHaveBeenCalledWith(authActions.logout.resolved());
           });
         });
       });

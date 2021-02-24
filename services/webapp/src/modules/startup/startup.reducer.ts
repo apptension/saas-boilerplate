@@ -12,6 +12,11 @@ const handleProfileStartupCompleted = (state: StartupState) => {
   state.profileStartupCompleted = true;
 };
 
+const handleLogoutCompleted = (state: StartupState) => {
+  state.profileStartupCompleted = false;
+};
+
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(startupActions.completeProfileStartup, handleProfileStartupCompleted);
+  builder.addCase(authActions.logout.resolved, handleLogoutCompleted);
 });

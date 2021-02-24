@@ -25,7 +25,7 @@ const { createPromiseAction, createActionRoutine } = actionCreator('AUTH');
 
 export const signup = createPromiseAction<SignupApiRequestData, SignupApiResponseData>('SIGNUP');
 export const login = createPromiseAction<LoginApiRequestData, LoginApiResponseData>('LOGIN');
-export const logout = createPromiseAction<LogoutApiRequestData, LogoutApiResponseData>('LOGOUT');
+export const logout = createActionRoutine<LogoutApiRequestData, LogoutApiResponseData>('LOGOUT');
 export const oAuthLogin = createPromiseAction<OAuthProvider, void>('OAUTH_LOGIN');
 export const changePassword = createPromiseAction<ChangePasswordRequestData, ChangePasswordResponseData>(
   'CHANGE_PASSWORD'

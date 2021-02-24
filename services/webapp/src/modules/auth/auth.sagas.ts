@@ -35,7 +35,8 @@ export function* watchAuth() {
   yield all([
     takeLatest(authActions.signup, handleApiRequest(auth.signup, signupResolve)),
     takeLatest(authActions.login, handleApiRequest(auth.login, loginResolve)),
-    takeLatest(authActions.logout, handleApiRequest(auth.logout, logoutResolve)),
+    takeLatest(authActions.logout, handleApiRequest(auth.logout)),
+    takeLatest(authActions.logout.resolved, logoutResolve),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
     takeLatest(authActions.fetchProfile, handleApiRequest(auth.me)),
     takeLatest(authActions.updateProfile, handleApiRequest(auth.updateProfile)),
