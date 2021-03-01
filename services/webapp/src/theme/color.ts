@@ -24,7 +24,6 @@ export const button = {
 
   hover: skyBlueScale.get(65),
   active: skyBlueScale.get(35),
-  outline: skyBlueScale.get(90),
 
   disabled: {
     main: greyScale.get(90),
@@ -45,6 +44,23 @@ export const checkbox = {
   main: skyBlueScale.get(35),
   active: skyBlueScale.get(50),
   hover: skyBlueScale.get(65),
-  outline: skyBlueScale.get(90),
   invalid: error,
+};
+
+export const input = {
+  text: greyScale.get(15),
+  label: greyScale.get(15),
+  border: greyScale.get(55),
+  background: white,
+
+  disabled: {
+    text: greyScale.get(70),
+    label: greyScale.get(40),
+    border: greyScale.get(90),
+    background: greyScale.get(98),
+  },
+
+  hover: skyBlueScale.get(65),
+  active: skyBlueScale.get(50),
+  invalid: cherryRedScale.get(50),
 };

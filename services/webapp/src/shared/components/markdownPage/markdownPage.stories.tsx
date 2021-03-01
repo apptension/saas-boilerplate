@@ -19,7 +19,7 @@ const Template: Story<MarkdownPageProps> = (args) => {
 };
 
 export default {
-  title: 'MarkdownPage',
+  title: 'Shared/MarkdownPage',
   component: MarkdownPage,
 };
 

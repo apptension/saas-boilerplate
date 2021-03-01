@@ -3,7 +3,8 @@ import theme from 'styled-theming';
 import { sizeUnits } from '../../../theme/size';
 import { MicroLabel } from '../../../theme/typography';
 import { checkbox } from '../../../theme/color';
-import { transition } from '../../../theme';
+import { border, transition } from '../../../theme';
+import { Icon } from '../icon';
 
 export const Container = styled.div``;
 
@@ -11,11 +12,12 @@ export const Field = styled.input`
   width: 0;
   position: absolute;
   height: 0;
+  visibility: hidden;
 `;
 
-export const CheckIcon = styled.span`
+export const CheckIcon = styled(Icon)`
   visibility: hidden;
-  line-height: 0;
+  font-size: 10px;
 `;
 
 export const Checkmark = styled.div`
@@ -40,8 +42,7 @@ export const Checkmark = styled.div`
   }
 
   input:focus ~ & {
-    outline: none;
-    box-shadow: 0 0 0 2px ${checkbox.outline};
+    ${border.outline};
   }
 
   input:checked ~ & {

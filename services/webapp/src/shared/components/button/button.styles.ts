@@ -1,7 +1,7 @@
 import styled, { css, ThemeProps } from 'styled-components';
 import theme from 'styled-theming';
 
-import { size, transition } from '../../../theme';
+import { border, size, transition } from '../../../theme';
 import { button } from '../../../theme/color';
 import { label, labelBold } from '../../../theme/typography';
 import { ButtonVariant, ButtonTheme } from './button.types';
@@ -142,11 +142,6 @@ export const baseButtonStyle = css`
     &:focus,
     &:hover {
       ${hoverButtonStyle}
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px ${button.outline};
     }
 
     &:active {

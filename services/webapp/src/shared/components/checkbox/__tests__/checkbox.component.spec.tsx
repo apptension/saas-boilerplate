@@ -15,13 +15,13 @@ describe('Checkbox: Component', () => {
 
   it('should be unchecked by default', () => {
     render();
-    expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toEqual(false);
+    expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(false);
   });
 
   it('should be checked after clicking', () => {
     render();
     userEvent.click(screen.getByText('Checkbox label'));
-    expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toEqual(true);
+    expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(true);
   });
 
   it('should render provided error message', () => {

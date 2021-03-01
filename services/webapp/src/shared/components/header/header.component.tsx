@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,9 +11,19 @@ import { logout } from '../../../modules/auth/auth.actions';
 import { Button } from '../button';
 import { Link as ButtonLink } from '../link';
 import { ButtonVariant } from '../button/button.types';
-import { Container, GlobalActions, HeaderLogo, Menu, ProfileActions, Content, Avatar } from './header.styles';
+import { Snackbar } from '../snackbar';
+import {
+  Container,
+  GlobalActions,
+  HeaderLogo,
+  Menu,
+  ProfileActions,
+  Content,
+  Avatar,
+  SnackbarMessages,
+} from './header.styles';
 
-export const Header = () => {
+export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
   const intl = useIntl();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const homeUrl = useLocaleUrl(ROUTES.home);
@@ -27,7 +37,7 @@ export const Header = () => {
   };
 
   return (
-    <Container>
+    <Container {...props}>
       <Content>
         <GlobalActions>
           <Link
@@ -41,6 +51,10 @@ export const Header = () => {
           </Link>
         </GlobalActions>
 
+        <SnackbarMessages>
+          <Snackbar />
+        </SnackbarMessages>
+
         {isLoggedIn && (
           <ProfileActions>
             <Avatar
@@ -52,6 +66,7 @@ export const Header = () => {
                 defaultMessage: 'Open profile menu',
               })}
             />
+
             {isDropdownOpen && (
               <ClickAwayListener onClickAway={closeDropdown}>
                 <Menu>

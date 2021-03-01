@@ -9,10 +9,10 @@ import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
-import { Header } from '../shared/components/header';
 import { apolloClient } from '../shared/services/contentful';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
+import { Layout, Content, Header, Sidebar } from './app.styles';
 
 export interface AppComponentProps {
   children?: ReactNode;
@@ -37,8 +37,14 @@ export const AppComponent = ({ children }: AppComponentProps) => {
           </FormattedMessage>
 
           <GlobalStyle />
-          <Header />
-          <ResponsiveThemeProvider>{React.Children.only(children)}</ResponsiveThemeProvider>
+
+          <ResponsiveThemeProvider>
+            <Layout>
+              <Header />
+              <Sidebar />
+              <Content>{React.Children.only(children)}</Content>
+            </Layout>
+          </ResponsiveThemeProvider>
         </Fragment>
       </ApolloProvider>
     </IntlProvider>

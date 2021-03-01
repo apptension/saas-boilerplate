@@ -1,5 +1,4 @@
 import React, { forwardRef, ReactNode } from 'react';
-import { Icon } from '@iconify/react';
 import checkedIcon from '@iconify-icons/ion/checkmark';
 import semicheckedIcon from '@iconify-icons/ion/remove-outline';
 
@@ -24,9 +23,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           <Label>
             <Field type={'checkbox'} {...checkboxProps} ref={ref} />
             <Checkmark>
-              <CheckIcon>
-                <Icon icon={icon} />
-              </CheckIcon>
+              <CheckIcon icon={icon} />
             </Checkmark>
             {label}
           </Label>

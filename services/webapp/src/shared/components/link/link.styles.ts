@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { baseButtonStyle } from '../button/button.styles';
 
 export const HtmlLinkContainer = styled.a`
@@ -8,6 +8,11 @@ export const HtmlLinkContainer = styled.a`
 `;
 
 export const RouterLinkContainer = styled(Link)`
+  text-decoration: none;
+  ${baseButtonStyle}
+`;
+
+export const RouterNavLinkContainer = styled(NavLink)`
   text-decoration: none;
   ${baseButtonStyle}
 `;

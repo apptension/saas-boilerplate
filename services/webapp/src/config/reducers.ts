@@ -12,6 +12,8 @@ import { reducer as demoItemsReducer } from '../modules/demoItems/demoItems.redu
 import { DemoItemsState } from '../modules/demoItems/demoItems.types';
 import { reducer as crudDemoItemReducer } from '../modules/crudDemoItem/crudDemoItem.reducer';
 import { CrudDemoItemState } from '../modules/crudDemoItem/crudDemoItem.types';
+import { reducer as snackbarReducer } from '../modules/snackbar/snackbar.reducer';
+import { SnackbarState } from '../modules/snackbar/snackbar.types';
 //<-- IMPORT MODULE REDUCER -->
 
 export type GlobalState = {
@@ -21,6 +23,7 @@ export type GlobalState = {
   config: ConfigState;
   demoItems: DemoItemsState;
   crudDemoItem: CrudDemoItemState;
+  snackbar: SnackbarState;
   //<-- INJECT MODULE STATE TYPE -->
 };
 
@@ -32,6 +35,7 @@ export default function createReducer() {
     config: configReducer,
     demoItems: demoItemsReducer,
     crudDemoItem: crudDemoItemReducer,
+    snackbar: snackbarReducer,
     //<-- INJECT MODULE REDUCER -->
   });
 }

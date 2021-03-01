@@ -1,5 +1,90 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import theme from 'styled-theming';
+import { label, Label as LabelTypographyBase, MicroLabel } from '../../../theme/typography';
+import { input } from '../../../theme/color';
+import { sizeUnits } from '../../../theme/size';
+import { transition } from '../../../theme';
+
+const FIELD_HEIGHT = 40;
 
 export const Container = styled.div``;
-export const Field = styled.input``;
-export const Message = styled.p``;
+
+export const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+export const LabelText = styled(LabelTypographyBase)`
+  margin-bottom: 4px;
+  order: -1;
+  transition: color ${transition.primary};
+  color: ${input.label};
+
+  input:focus + &,
+  input:hover + & {
+    color: ${input.hover};
+  }
+
+  input:active + & {
+    color: ${input.active};
+  }
+
+  input:disabled + & {
+    color: ${input.disabled.label};
+  }
+
+  ${theme('invalid', {
+    true: css`
+      color: ${input.invalid} !important;
+    `,
+  })};
+`;
+
+export const Field = styled.input`
+  height: ${FIELD_HEIGHT}px;
+  color: ${input.text};
+  min-width: 288px;
+  border: 1px solid ${input.border};
+  box-sizing: border-box;
+  border-radius: 4px;
+  ${label};
+  line-height: ${FIELD_HEIGHT}px;
+  padding-left: ${sizeUnits(1)}px;
+  padding-right: ${sizeUnits(1)}px;
+  transition: background-color ${transition.primary}, border-color ${transition.primary}, color ${transition.primary};
+
+  &::placeholder {
+    color: ${input.text};
+  }
+
+  &:focus,
+  &:hover {
+    border-color: ${input.hover};
+  }
+
+  &:active {
+    border-color: ${input.active};
+  }
+
+  &:disabled {
+    border-color: ${input.disabled.border};
+    background-color: ${input.disabled.background};
+    color: ${input.disabled.text};
+
+    &::placeholder {
+      color: ${input.disabled.text};
+    }
+  }
+
+  ${theme('invalid', {
+    true: css`
+      border-color: ${input.invalid} !important;
+    `,
+  })};
+`;
+
+export const Message = styled(MicroLabel)`
+  margin-top: 2px;
+  color: ${input.invalid};
+`;

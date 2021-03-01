@@ -5,6 +5,7 @@ import { watchAuth } from '../modules/auth/auth.sagas';
 import { watchConfig } from '../modules/config/config.sagas';
 import { watchDemoItems } from '../modules/demoItems/demoItems.sagas';
 import { watchCrudDemoItem } from '../modules/crudDemoItem/crudDemoItem.sagas';
+import { watchSnackbar } from '../modules/snackbar/snackbar.sagas';
 //<-- IMPORT MODULE SAGA -->
 
 export default function* rootSaga() {
@@ -14,6 +15,7 @@ export default function* rootSaga() {
     fork(watchConfig),
     fork(watchDemoItems),
     fork(watchCrudDemoItem),
+    fork(watchSnackbar),
     //<-- INJECT MODULE SAGA -->
   ]);
 }

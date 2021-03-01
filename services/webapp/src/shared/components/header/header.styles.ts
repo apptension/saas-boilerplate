@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { elevation, size } from '../../../theme';
+import { color, elevation, size } from '../../../theme';
 import { greyScale } from '../../../theme/color';
 import { ReactComponent as HeaderLogoSvg } from '../../../images/icons/headerLogo.svg';
 import { contentWrapper, sizeUnits } from '../../../theme/size';
@@ -17,6 +17,7 @@ export const Content = styled.div`
   align-items: center;
   justify-content: space-between;
   line-height: 0;
+  position: relative;
 `;
 
 export const HeaderLogo = styled(HeaderLogoSvg)``;
@@ -30,14 +31,29 @@ export const ProfileActions = styled.div`
 export const Menu = styled.div`
   position: absolute;
   right: 0;
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
   top: ${sizeUnits(5)}px;
   min-width: ${sizeUnits(21)}px;
   text-align: left;
   ${elevation.elevationLightest};
   display: flex;
   flex-direction: column;
+  background-color: ${color.white};
+
+  & > * {
+    padding-left: 11px;
+  }
 `;
 
 export const Avatar = styled(AvatarBase)`
   cursor: pointer;
+`;
+
+export const SnackbarMessages = styled.div`
+  position: absolute;
+  top: calc(100% + ${sizeUnits(2)}px);
+  right: ${sizeUnits(3)}px;
+  z-index: 1;
 `;
