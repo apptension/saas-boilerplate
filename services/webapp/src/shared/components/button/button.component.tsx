@@ -1,26 +1,24 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { empty } from 'ramda';
 
-import { Container } from './button.styles';
+import { Icon, Container } from './button.styles';
 import { ButtonTheme, ButtonVariant } from './button.types';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  icon?: ReactNode;
+  fixedWidth?: boolean;
 }
 
-export const Button = ({
-  children,
-  className,
-  disabled = false,
-  variant = ButtonVariant.PRIMARY,
-  onClick = empty,
-  ...other
-}: ButtonProps) => {
-  const theme: ButtonTheme = { variant, isDisabled: disabled };
+export const Button = (props: ButtonProps) => {
+  const { children, disabled = false, variant = ButtonVariant.PRIMARY, icon, fixedWidth, ...other } = props;
+
+  const theme: ButtonTheme = { variant, isDisabled: disabled, fixedWidth };
+
   return (
     <ThemeProvider theme={theme}>
-      <Container onClick={onClick} className={className} disabled={disabled} {...other}>
+      <Container disabled={disabled} {...other}>
+        {icon ? <Icon>{icon}</Icon> : null}
         {children}
       </Container>
     </ThemeProvider>

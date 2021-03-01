@@ -1,8 +1,9 @@
 import * as border from './border';
 import * as color from './color';
 import { fontFamily, fontWeight } from './font';
-import * as shadow from './shadow';
+import * as elevation from './elevation';
 import * as size from './size';
 import * as zIndex from './zIndex';
+import * as transition from './transition';
 
-export { border, color, fontFamily, fontWeight, shadow, size, zIndex };
+export { border, color, fontFamily, fontWeight, elevation, size, zIndex, transition };

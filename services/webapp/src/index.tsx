@@ -18,15 +18,15 @@ import browserHistory from './shared/utils/history';
 import UnsupportedBrowserDetection from './shared/utils/unsupported/unsupportedBrowserDetection';
 import { setUnsupportedClasses } from './shared/utils/unsupported/support';
 import { setupStoreInterceptors } from './shared/services/api/client';
+import { fontFamily } from './theme';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
-// Observe loading of Open Sans (to remove open sans, remove the <link> tag in
-// the index.html file and this observer)
-const openSansObserver = new FontFaceObserver('Open Sans', {});
+// Observe loading of primary font
+const primaryFontObserver = new FontFaceObserver(fontFamily.primary, {});
 
 // When Open Sans is loaded, add a font-family using Open Sans to the body
-openSansObserver.load().then(
+primaryFontObserver.load().then(
   () => {
     document.body.classList.add('fontLoaded');
   },

@@ -12,11 +12,17 @@ export default {
   component: Checkbox,
 };
 
-export const Default = Template.bind({});
-Default.args = { label: 'Checkbox' };
+export const WithLabel = Template.bind({});
+WithLabel.args = { label: 'Checkbox' };
+
+export const Checked = Template.bind({});
+Checked.args = { label: 'Checkbox', checked: true };
+
+export const SemiChecked = Template.bind({});
+SemiChecked.args = { label: 'Checkbox', semiChecked: true, checked: true };
 
 export const NoLabel = Template.bind({});
-Default.args = {};
+NoLabel.args = {};
 
 export const Invalid = Template.bind({});
 Invalid.args = { label: 'Checkbox', error: 'Invalid value' };

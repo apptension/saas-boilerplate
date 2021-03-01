@@ -1,7 +1,8 @@
 export const fontFamily = {
-  primary: 'OpenSans',
+  primary: 'Inter Regular',
 };
 
 export const fontWeight = {
-  bold: 'bold',
+  regular: '400',
+  bold: '600',
 };

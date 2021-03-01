@@ -1,13 +1,13 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '../app.constants';
 import { LanguageSwitcher } from '../../shared/components/languageSwitcher';
 import { H1 } from '../../theme/typography';
 import { useLocale } from '../useLanguageFromParams/useLanguageFromParams.hook';
 import { RoleAccess } from '../../shared/components/roleAccess';
 import { Role } from '../../modules/auth/auth.types';
+import { Link } from '../../shared/components/link';
 import { Container, Logo } from './home.styles';
 
 export const Home = () => {

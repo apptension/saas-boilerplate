@@ -33,21 +33,33 @@ describe('Header: Component', () => {
       const { pushSpy, history } = spiedHistory();
       render({}, { store, router: { history } });
 
-      userEvent.click(screen.getByText(/home/gi));
+      userEvent.click(screen.getByLabelText(/home/gi));
       expect(pushSpy).toHaveBeenCalledWith('/en/');
+    });
+
+    it('should not display "profile" link', () => {
+      render();
+      expect(screen.queryByText(/profile/gi)).not.toBeInTheDocument();
+    });
+
+    it('should not display "logout" link', () => {
+      render();
+      expect(screen.queryByText(/log out/gi)).not.toBeInTheDocument();
     });
 
     it('should open profile when clicked on "profile" link', async () => {
       const { pushSpy, history } = spiedHistory();
       render({}, { store, router: { history } });
 
-      userEvent.click(screen.getByText(/my profile \(user@mail\.com\)/gi));
+      userEvent.click(screen.getByLabelText(/open profile menu/gi));
+      userEvent.click(screen.getByText(/profile/gi));
       expect(pushSpy).toHaveBeenCalledWith('/en/profile');
     });
 
     it('should dispatch logout action when clicking on "logout" button', () => {
       render({}, { store });
-      userEvent.click(screen.getByText(/logout/gi));
+      userEvent.click(screen.getByLabelText(/open profile menu/gi));
+      userEvent.click(screen.getByText(/log out/gi));
       expect(mockDispatch).toHaveBeenCalledWith(logout());
     });
   });
@@ -58,14 +70,9 @@ describe('Header: Component', () => {
       expect(screen.queryByText(/home/gi)).not.toBeInTheDocument();
     });
 
-    it('should not display "profile" link', () => {
+    it('should not display avatar', () => {
       render();
-      expect(screen.queryByText(/my profile \(user@mail\.com\)/gi)).not.toBeInTheDocument();
-    });
-
-    it('should not display "logout" link', () => {
-      render();
-      expect(screen.queryByText(/logout/gi)).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/open profile menu/gi)).not.toBeInTheDocument();
     });
   });
 });
