@@ -20,6 +20,7 @@ import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { userProfileFactory } from '../../../mocks/factories';
 import { OAuthProvider } from '../auth.types';
+import { snackbarActions } from '../../snackbar';
 
 jest.mock('../../../shared/utils/history');
 
@@ -82,6 +83,16 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.login.resolved({ isError: true, password: ['error'] }))
+        .dispatch(authActions.login(credentials))
+        .silentRun();
+    });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockLogin(INTERNAL_SERVER_ERROR, { isError: true }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
         .dispatch(authActions.login(credentials))
         .silentRun();
     });
@@ -171,6 +182,16 @@ describe('Auth: sagas', () => {
         .dispatch(authActions.updateProfile(updateProfilePayload))
         .silentRun();
     });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockUpdateProfile({ isError: true }, INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
+        .dispatch(authActions.updateProfile(updateProfilePayload))
+        .silentRun();
+    });
   });
 
   describe('signup', () => {
@@ -208,6 +229,16 @@ describe('Auth: sagas', () => {
         .dispatch(authActions.signup(credentials))
         .silentRun();
     });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockSignup({ isError: true }, INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
+        .dispatch(authActions.signup(credentials))
+        .silentRun();
+    });
   });
 
   describe('changePassword', () => {
@@ -232,6 +263,16 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.changePassword.resolved({ isError: true, oldPassword: ['error'] }))
+        .dispatch(authActions.changePassword(changePasswordPayload))
+        .silentRun();
+    });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockChangePassword({ isError: true }, INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
         .dispatch(authActions.changePassword(changePasswordPayload))
         .silentRun();
     });
@@ -288,6 +329,16 @@ describe('Auth: sagas', () => {
         .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
         .silentRun();
     });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockRequestPasswordReset({ isError: true }, INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
+        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
+        .silentRun();
+    });
   });
 
   describe('confirmPasswordReset', () => {
@@ -313,6 +364,16 @@ describe('Auth: sagas', () => {
       await expectSaga(watchAuth)
         .withState(defaultState)
         .put(authActions.confirmPasswordReset.resolved({ isError: true }))
+        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
+        .silentRun();
+    });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockConfirmPasswordReset({ isError: true }, INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
         .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
         .silentRun();
     });

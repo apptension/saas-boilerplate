@@ -1,6 +1,6 @@
 export interface Message {
   id: number;
-  text: string;
+  text: string | null;
 }
 
 export interface SnackbarState {

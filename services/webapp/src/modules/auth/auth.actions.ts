@@ -1,4 +1,4 @@
-import { actionCreator } from '../helpers';
+import { actionCreator } from '../helpers/actionCreator';
 import {
   ChangePasswordRequestData,
   ChangePasswordResponseData,

@@ -1,7 +1,8 @@
 import { all, takeLatest } from 'redux-saga/effects';
 
 import { {{ camelCase name }} } from '../../shared/services/api';
-import { handleApiRequest, navigate } from '../helpers';
+import { handleApiRequest } from '../helpers/handleApiRequest';
+import { navigate } from '../helpers/navigate';
 import { ROUTES } from '../../routes/app.constants';
 import { {{ pascalCase name }}ApiPostResponseData } from '../../shared/services/api/{{ camelCase name }}/types';
 import * as {{ camelCase name }}Actions from './{{ camelCase name }}.actions';

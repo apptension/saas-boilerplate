@@ -31,6 +31,11 @@ Default.args = {
   ],
 };
 
+export const GenericError = Template.bind({});
+GenericError.args = {
+  messages: [{ id: 1, text: null }],
+};
+
 export const LongMessages = Template.bind({});
 LongMessages.args = {
   messages: [

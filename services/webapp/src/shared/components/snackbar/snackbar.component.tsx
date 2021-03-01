@@ -29,14 +29,22 @@ const Message = ({ text, onDismiss }: { text: string; onDismiss: () => void }) =
 
 export const Snackbar = () => {
   const dispatch = useDispatch();
+  const intl = useIntl();
   const messages = useSelector(selectSnackbarMessages);
   const hideMessage = (id: number) => dispatch(snackbarActions.hideMessage(id));
 
   return (
     <Container>
-      {messages.map((message) => (
-        <Message key={message.id} text={message.text} onDismiss={() => hideMessage(message.id)} />
-      ))}
+      {messages.map((message) => {
+        const messageText =
+          message.text ??
+          intl.formatMessage({
+            description: 'Snackbar / Generic error',
+            defaultMessage: 'Something went wrong.',
+          });
+
+        return <Message key={message.id} text={messageText} onDismiss={() => hideMessage(message.id)} />;
+      })}
     </Container>
   );
 };

@@ -1,7 +1,7 @@
 import { all, takeLatest } from 'redux-saga/effects';
 
 import { demoItems } from '../../shared/services/api';
-import { handleApiRequest } from '../helpers';
+import { handleApiRequest } from '../helpers/handleApiRequest';
 import * as demoItemsActions from './demoItems.actions';
 
 export function* watchDemoItems() {

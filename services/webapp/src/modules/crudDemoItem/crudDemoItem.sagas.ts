@@ -1,7 +1,8 @@
 import { all, takeLatest } from 'redux-saga/effects';
 
 import { crudDemoItem } from '../../shared/services/api';
-import { handleApiRequest, navigate } from '../helpers';
+import { handleApiRequest } from '../helpers/handleApiRequest';
+import { navigate } from '../helpers/navigate';
 import { ROUTES } from '../../routes/app.constants';
 import { CrudDemoItemApiPostResponseData } from '../../shared/services/api/crudDemoItem/types';
 import * as crudDemoItemActions from './crudDemoItem.actions';

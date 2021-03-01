@@ -7,7 +7,7 @@ import { selectLastSnackbarMessageId } from './snackbar.selectors';
 
 const MESSAGE_ONSCREEN_TIME = 5000;
 
-function* showMessage({ payload }: PayloadAction<string>) {
+function* showMessage({ payload }: PayloadAction<string | null>) {
   try {
     const lastMessageId = yield select(selectLastSnackbarMessageId);
     const newMessageId = lastMessageId + 1;
