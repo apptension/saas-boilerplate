@@ -33,6 +33,10 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       <MenuLink to={`/${locale}${ROUTES.termsAndConditions}`}>
         <FormattedMessage defaultMessage="Terms and conditions" description="Home / t&c link" />
       </MenuLink>
+
+      <MenuLink to={`/${locale}${ROUTES.finances.paymentConfirm}`}>
+        <FormattedMessage defaultMessage="Payment demo" description="Home / payment demo link" />
+      </MenuLink>
     </Container>
   );
 };
