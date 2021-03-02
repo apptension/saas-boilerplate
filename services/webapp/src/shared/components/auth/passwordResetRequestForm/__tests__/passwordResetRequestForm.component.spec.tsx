@@ -27,30 +27,30 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /reset/gi })));
+    userEvent.type(screen.getByLabelText(/email/gi), email);
+    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(requestPasswordReset({ email }));
     });
   });
 
-  it('should show success message if action completes successfully', async () => {
+  it('should show resend button if action completes successfully', async () => {
     const email = 'user@mail.com';
 
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /reset/gi })));
+    userEvent.type(screen.getByLabelText(/email/gi), email);
+    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
-      expect(screen.getByText('Reset link has been sent to your email')).toBeInTheDocument();
+      expect(screen.getByText(/send the link again/gi)).toBeInTheDocument();
     });
   });
 
   it('should show error if required value is missing', async () => {
     render();
-    userEvent.click(screen.getByRole('button', { name: /reset/gi }));
+    userEvent.click(screen.getByRole('button', { name: /send the link/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Email is required')).toBeInTheDocument();
@@ -63,8 +63,8 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, email: ['Email is invalid'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /reset/gi })));
+    userEvent.type(screen.getByLabelText(/email/gi), email);
+    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Email is invalid')).toBeInTheDocument();
@@ -77,8 +77,8 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /reset/gi })));
+    userEvent.type(screen.getByLabelText(/email/gi), email);
+    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid data')).toBeInTheDocument();

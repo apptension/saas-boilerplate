@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react';
 
 import { useSelector } from 'react-redux';
 import { selectProfileInitial } from '../../../modules/auth/auth.selectors';
-import { sizeUnitBase, sizeUnits } from '../../../theme/size';
+import { sizeUnitBase } from '../../../theme/size';
 import { Container } from './avatar.styles';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement> {

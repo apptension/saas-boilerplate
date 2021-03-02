@@ -7,15 +7,26 @@ import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
 
 describe('Avatar: Component', () => {
-  const store = prepareState((state) => {
-    state.auth = loggedInAuthFactory();
-    state.auth.profile = userProfileFactory({ firstName: 'John' });
-  });
   const component = () => <Avatar />;
   const render = makeContextRenderer(component);
 
   it('should render user initial', () => {
+    const store = prepareState((state) => {
+      state.auth = loggedInAuthFactory();
+      state.auth.profile = userProfileFactory({ firstName: 'John' });
+    });
+
     render({}, { store });
     expect(screen.getByText('J')).toBeInTheDocument();
+  });
+
+  it('should render U if user has no name', () => {
+    const store = prepareState((state) => {
+      state.auth = loggedInAuthFactory();
+      state.auth.profile = userProfileFactory({ firstName: '', lastName: '' });
+    });
+
+    render({}, { store });
+    expect(screen.getByText('U')).toBeInTheDocument();
   });
 });

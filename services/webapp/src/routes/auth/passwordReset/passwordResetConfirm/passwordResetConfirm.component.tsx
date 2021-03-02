@@ -6,7 +6,8 @@ import { PasswordResetConfirmForm } from '../../../../shared/components/auth/pas
 import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../app.constants';
 import { H1 } from '../../../../theme/typography';
-import { Container } from './passwordResetConfirm.styles';
+import { Link } from '../../../../shared/components/link';
+import { Container, Links, Header, Text } from './passwordResetConfirm.styles';
 
 export const PasswordResetConfirm = () => {
   const history = useHistory();
@@ -31,13 +32,26 @@ export const PasswordResetConfirm = () => {
 
   return (
     <Container>
-      <H1>
+      <Header>
+        <FormattedMessage defaultMessage="Change your password" description="Auth / Confirm reset password / heading" />
+      </Header>
+      <Text>
         <FormattedMessage
-          defaultMessage="Confirm reset password"
-          description="Auth / confirm reset password / heading"
+          defaultMessage="Set your new password."
+          description="Auth / Confirm reset password / description"
         />
-      </H1>
+      </Text>
+
       <PasswordResetConfirmForm user={user} token={token} />
+
+      <Links>
+        <Link to={loginUrl}>
+          <FormattedMessage
+            defaultMessage="Go back to log in"
+            description="Auth / Confirm reset password / login link"
+          />
+        </Link>
+      </Links>
     </Container>
   );
 };

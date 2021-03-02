@@ -5,14 +5,17 @@ import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { requestPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
-import { Button } from '../../button';
-import { Container, ErrorMessage } from './passwordResetRequestForm.styles';
+import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
+
+interface PasswordResetRequestFormProps {
+  onSubmitted?: () => void;
+}
 
 interface ResetPasswordFormFields {
   email: string;
 }
 
-export const PasswordResetRequestForm = () => {
+export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
   const {
@@ -28,10 +31,13 @@ export const PasswordResetRequestForm = () => {
     try {
       const res = await dispatch(requestPasswordReset(data));
       setApiResponse(res);
+      if (!res.isError) {
+        onSubmitted?.();
+      }
     } catch {}
   };
 
-  const renderForm = () => (
+  return (
     <Container onSubmit={handleSubmit(onSubmit)}>
       <Input
         name={'email'}
@@ -45,25 +51,33 @@ export const PasswordResetRequestForm = () => {
             }),
           },
         })}
-        placeholder={intl.formatMessage({
+        required
+        label={intl.formatMessage({
           defaultMessage: 'Email',
+          description: 'Auth / Request password reset / Email label',
+        })}
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Write your email here...',
           description: 'Auth / Request password reset / Email placeholder',
         })}
         error={errors.email?.message}
       />
+
       {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-      <Button type="submit">
-        <FormattedMessage defaultMessage="Reset" description="Auth / Request password reset / Submit button" />
-      </Button>
+
+      <SubmitButton>
+        {formState.isSubmitSuccessful ? (
+          <FormattedMessage
+            defaultMessage="Send the link again"
+            description="Auth / Request password reset / Resend button"
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage="Send the link"
+            description="Auth / Request password reset / Submit button"
+          />
+        )}
+      </SubmitButton>
     </Container>
   );
-
-  const renderSuccess = () => (
-    <FormattedMessage
-      defaultMessage="Reset link has been sent to your email"
-      description="Auth / Request password reset / Sucesss message"
-    />
-  );
-
-  return formState.isSubmitSuccessful ? renderSuccess() : renderForm();
 };

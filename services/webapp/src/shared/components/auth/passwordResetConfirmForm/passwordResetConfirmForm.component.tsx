@@ -1,13 +1,17 @@
 import React from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
-import { Button } from '../../button';
-import { renderWhenTrueOtherwise } from '../../../utils/rendering';
-import { Container, ErrorMessage } from './passwordResetConfirmForm.styles';
+import { FormFieldsRow } from '../../../../theme/size';
+import { snackbarActions } from '../../../../modules/snackbar';
+import { useLocaleUrl } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../../routes/app.constants';
+import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 
 export interface PasswordResetConfirmFormProps {
   user: string;
@@ -21,20 +25,22 @@ interface ResetPasswordFormFields {
 
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
+  const dispatchWithPromise = useAsyncDispatch();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const loginUrl = useLocaleUrl(ROUTES.login);
   const {
     register,
     handleSubmit,
     errors,
     genericError,
     setApiResponse,
-    formState,
     getValues,
   } = useApiForm<ResetPasswordFormFields>();
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
     try {
-      const res = await dispatch(
+      const res = await dispatchWithPromise(
         confirmPasswordReset({
           newPassword: data.newPassword,
           user,
@@ -42,70 +48,89 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         })
       );
       setApiResponse(res);
+
+      if (!res.isError) {
+        history.push(loginUrl);
+        dispatch(
+          snackbarActions.showMessage(
+            intl.formatMessage({
+              defaultMessage: '🎉 Password reset successfully!',
+              description: 'Auth / Reset password confirm / Success message',
+            })
+          )
+        );
+      }
     } catch {}
   };
 
-  const renderForm = () => (
+  return (
     <Container onSubmit={handleSubmit(onResetPassword)}>
-      <Input
-        name={'newPassword'}
-        type={'password'}
-        ref={register({
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'Password is required',
-              description: 'Auth / Reset password confirm / Old password required',
-            }),
-          },
-        })}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'New password',
-          description: 'Auth / Reset password confirm / Password placeholder',
-        })}
-        error={errors.newPassword?.message}
-      />
-      <Input
-        ref={register({
-          validate: {
-            required: (value) =>
-              value?.length > 0 ||
-              intl.formatMessage({
-                defaultMessage: 'Confirm password is required',
-                description: 'Auth / Reset password confirm / Password required',
+      <FormFieldsRow>
+        <Input
+          name={'newPassword'}
+          type={'password'}
+          ref={register({
+            required: {
+              value: true,
+              message: intl.formatMessage({
+                defaultMessage: 'Password is required',
+                description: 'Auth / Reset password confirm / Old password required',
               }),
-            mustMatch: (value) =>
-              getValues().newPassword === value ||
-              intl.formatMessage({
-                defaultMessage: 'Passwords must match',
-                description: 'Auth / Reset password confirm / Password must match',
-              }),
-          },
-        })}
-        name={'confirmPassword'}
-        type={'password'}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'Confirm password',
-          description: 'Auth / Login / Confirm password placeholder',
-        })}
-        error={errors.confirmPassword?.message}
-      />
+            },
+          })}
+          required
+          label={intl.formatMessage({
+            defaultMessage: 'New password',
+            description: 'Auth / Reset password confirm / Password label',
+          })}
+          placeholder={intl.formatMessage({
+            defaultMessage: 'Write new password here...',
+            description: 'Auth / Reset password confirm / Password placeholder',
+          })}
+          error={errors.newPassword?.message}
+        />
+      </FormFieldsRow>
+      <FormFieldsRow>
+        <Input
+          ref={register({
+            validate: {
+              required: (value) =>
+                value?.length > 0 ||
+                intl.formatMessage({
+                  defaultMessage: 'Repeat new password is required',
+                  description: 'Auth / Reset password confirm / Password required',
+                }),
+              mustMatch: (value) =>
+                getValues().newPassword === value ||
+                intl.formatMessage({
+                  defaultMessage: 'Passwords must match',
+                  description: 'Auth / Reset password confirm / Password must match',
+                }),
+            },
+          })}
+          name={'confirmPassword'}
+          type={'password'}
+          required
+          label={intl.formatMessage({
+            defaultMessage: 'Repeat new password',
+            description: 'Auth / Login / Confirm password label',
+          })}
+          placeholder={intl.formatMessage({
+            defaultMessage: 'Confirm your new password here...',
+            description: 'Auth / Login / Confirm password placeholder',
+          })}
+          error={errors.confirmPassword?.message}
+        />
+      </FormFieldsRow>
+
       {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-      <Button type="submit">
+
+      <SubmitButton>
         <FormattedMessage
-          defaultMessage="Change password"
+          defaultMessage="Confirm the change"
           description="Auth / Reset password confirm / Submit button"
         />
-      </Button>
+      </SubmitButton>
     </Container>
   );
-
-  const renderSuccessMessage = () => (
-    <FormattedMessage
-      defaultMessage="Password changed successfully"
-      description="Auth / Reset password confirm / Success message"
-    />
-  );
-
-  return renderWhenTrueOtherwise(renderSuccessMessage, renderForm)(formState.isSubmitSuccessful);
 };

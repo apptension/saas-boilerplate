@@ -7,8 +7,9 @@ export const selectIsLoggedIn = createSelector(selectAuthDomain, (state) => stat
 
 export const selectProfile = createSelector(selectAuthDomain, (state) => state.profile);
 
-export const selectProfileInitial = createSelector(selectAuthDomain, (state) =>
-  state.profile?.firstName?.[0]?.toUpperCase()
+export const selectProfileInitial = createSelector(
+  selectAuthDomain,
+  (state) => state.profile?.firstName?.[0]?.toUpperCase() ?? 'U'
 );
 
 export const selectProfileEmail = createSelector(selectProfile, (profile) => profile?.email);

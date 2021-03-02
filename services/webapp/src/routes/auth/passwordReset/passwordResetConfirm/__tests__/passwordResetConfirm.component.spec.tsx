@@ -43,9 +43,9 @@ describe('PasswordResetConfirm: Component', () => {
 
     const { history } = spiedHistory(confirmResetRoute);
     render({}, { router: { history, routePath: `/:lang${ROUTES.passwordReset.confirm}` } });
-    userEvent.type(screen.getByPlaceholderText(/new password/gi), newPassword);
-    userEvent.type(screen.getByPlaceholderText(/confirm password/gi), newPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /change password/gi })));
+    userEvent.type(screen.getByLabelText(/^new password$/gi), newPassword);
+    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), newPassword);
+    act(() => userEvent.click(screen.getByRole('button', { name: /confirm the change/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(
         confirmPasswordReset({
