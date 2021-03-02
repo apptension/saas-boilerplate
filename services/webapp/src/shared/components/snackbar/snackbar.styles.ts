@@ -12,9 +12,9 @@ export const Container = styled.div`
 
 export const MessageWrapper = styled.div`
   position: relative;
-  padding: ${sizeUnits(2)}px 47px ${sizeUnits(2)}px ${sizeUnits(2)}px;
+  padding: ${sizeUnits(2)} 47px ${sizeUnits(2)} ${sizeUnits(2)};
   ${elevation.elevationLightest};
-  margin-bottom: ${sizeUnits(2)}px;
+  margin-bottom: ${sizeUnits(2)};
   border-radius: 4px;
   background: ${color.white};
 `;

@@ -4,9 +4,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../input';
-import { Button } from '../../button';
 import { login } from '../../../../modules/auth/auth.actions';
-import { Container, ErrorMessage } from './loginForm.styles';
+import { FormFieldsRow } from '../../../../theme/size';
+import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 
 interface LoginFormFields {
   password: string;
@@ -27,46 +27,63 @@ export const LoginForm = () => {
 
   return (
     <Container onSubmit={handleSubmit(onLogin)}>
-      <Input
-        name={'email'}
-        type={'email'}
-        ref={register({
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'Email is required',
-              description: 'Auth / Login / Email required',
-            }),
-          },
-        })}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'Email',
-          description: 'Auth / Login / Email placeholder',
-        })}
-        error={errors.email?.message}
-      />
-      <Input
-        ref={register({
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'Password is required',
-              description: 'Auth / Login / Password required',
-            }),
-          },
-        })}
-        name={'password'}
-        type={'password'}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'Password',
-          description: 'Auth / Login / Password placeholder',
-        })}
-        error={errors.password?.message}
-      />
+      <FormFieldsRow>
+        <Input
+          name={'email'}
+          type={'email'}
+          ref={register({
+            required: {
+              value: true,
+              message: intl.formatMessage({
+                defaultMessage: 'Email is required',
+                description: 'Auth / Login / Email required',
+              }),
+            },
+          })}
+          required
+          label={intl.formatMessage({
+            defaultMessage: 'Email',
+            description: 'Auth / Login / Email label',
+          })}
+          placeholder={intl.formatMessage({
+            defaultMessage: 'Write your email here...',
+            description: 'Auth / Login / Email placeholder',
+          })}
+          error={errors.email?.message}
+        />
+      </FormFieldsRow>
+
+      <FormFieldsRow>
+        <Input
+          ref={register({
+            required: {
+              value: true,
+              message: intl.formatMessage({
+                defaultMessage: 'Password is required',
+                description: 'Auth / Login / Password required',
+              }),
+            },
+          })}
+          name={'password'}
+          type={'password'}
+          required
+          label={intl.formatMessage({
+            defaultMessage: 'Password',
+            description: 'Auth / Login / Password label',
+          })}
+          placeholder={intl.formatMessage({
+            defaultMessage: 'Minimum 9 characters and 1 number',
+            description: 'Auth / Login / Password placeholder',
+          })}
+          error={errors.password?.message}
+        />
+      </FormFieldsRow>
+
       {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-      <Button type="submit">
+
+      <SubmitButton>
         <FormattedMessage defaultMessage="Login" description="Auth / login button" />
-      </Button>
+      </SubmitButton>
     </Container>
   );
 };

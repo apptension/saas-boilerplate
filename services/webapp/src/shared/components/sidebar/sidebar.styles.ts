@@ -25,16 +25,13 @@ export const Container = styled.div`
 export const MenuLink = styled(Link).attrs(() => ({ variant: ButtonVariant.FLAT, navLink: true }))<
   ComponentProps<typeof Link>
 >`
-  height: ${sizeUnits(6)}px;
-  padding-left: ${sizeUnits(5)}px;
+  height: ${sizeUnits(6)};
+  padding-left: ${sizeUnits(5)};
   ${labelBold};
   background-color: ${greyScale.get(99)};
 
   &.active {
-    background-color: ${skyBlueScale.get(50)};
-
-    &:not(:focus):not(:hover):not(:active) {
-      color: ${color.white};
-    }
+    background-color: ${skyBlueScale.get(50)} !important;
+    color: ${color.white} !important;
   }
 `;

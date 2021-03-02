@@ -2,17 +2,27 @@ import styled, { css } from 'styled-components';
 import theme from 'styled-theming';
 import { label, Label as LabelTypographyBase, MicroLabel } from '../../../theme/typography';
 import { input } from '../../../theme/color';
-import { sizeUnits } from '../../../theme/size';
-import { transition } from '../../../theme';
+import { formFieldWidth, sizeUnits } from '../../../theme/size';
+import { color, transition } from '../../../theme';
 
 const FIELD_HEIGHT = 40;
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  position: relative;
+  ${formFieldWidth};
+`;
 
 export const Label = styled.label`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+`;
+
+const requiredAsterixStyle = css`
+  &:after {
+    content: '*';
+    color: ${color.error};
+  }
 `;
 
 export const LabelText = styled(LabelTypographyBase)`
@@ -39,6 +49,10 @@ export const LabelText = styled(LabelTypographyBase)`
       color: ${input.invalid} !important;
     `,
   })};
+
+  ${theme('required', {
+    true: requiredAsterixStyle,
+  })};
 `;
 
 export const Field = styled.input`
@@ -50,9 +64,10 @@ export const Field = styled.input`
   border-radius: 4px;
   ${label};
   line-height: ${FIELD_HEIGHT}px;
-  padding-left: ${sizeUnits(1)}px;
-  padding-right: ${sizeUnits(1)}px;
+  padding-left: ${sizeUnits(1)};
+  padding-right: ${sizeUnits(1)};
   transition: background-color ${transition.primary}, border-color ${transition.primary}, color ${transition.primary};
+  width: 100%;
 
   &::placeholder {
     color: ${input.text};
@@ -85,6 +100,8 @@ export const Field = styled.input`
 `;
 
 export const Message = styled(MicroLabel)`
-  margin-top: 2px;
+  position: absolute;
+  top: calc(100% + 2px);
+  margin: 0;
   color: ${input.invalid};
 `;

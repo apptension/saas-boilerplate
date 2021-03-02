@@ -13,13 +13,13 @@ export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElemen
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ error, label, ...checkboxProps }: CheckboxProps, ref) => {
+  ({ error, label, className, ...checkboxProps }: CheckboxProps, ref) => {
     const icon = checkboxProps.semiChecked ? semicheckedIcon : checkedIcon;
     const theme: CheckboxTheme = { invalid: !!error };
 
     return (
       <ThemeProvider theme={theme}>
-        <Container>
+        <Container className={className}>
           <Label>
             <Field type={'checkbox'} {...checkboxProps} ref={ref} />
             <Checkmark>

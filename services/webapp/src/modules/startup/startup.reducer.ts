@@ -8,15 +8,16 @@ export const INITIAL_STATE: StartupState = {
   profileStartupCompleted: false,
 };
 
+const handleProfileStartupReset = (state: StartupState) => {
+  state.profileStartupCompleted = false;
+};
+
 const handleProfileStartupCompleted = (state: StartupState) => {
   state.profileStartupCompleted = true;
 };
 
-const handleLogoutCompleted = (state: StartupState) => {
-  state.profileStartupCompleted = false;
-};
-
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(startupActions.completeProfileStartup, handleProfileStartupCompleted);
-  builder.addCase(authActions.logout.resolved, handleLogoutCompleted);
+  builder.addCase(authActions.logout.resolved, handleProfileStartupReset);
+  builder.addCase(startupActions.startProfileStartup, handleProfileStartupReset);
 });

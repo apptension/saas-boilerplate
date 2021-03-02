@@ -79,12 +79,12 @@ export const Paragraph = styled.p`
 export const ParagraphBold = styled.p`
   ${paragraphBold}
 `;
-export const Label = styled.label`
+export const Label = styled.p`
   ${label}
 `;
-export const MicroLabel = styled.label`
+export const MicroLabel = styled.p`
   ${microlabel}
 `;
-export const UltraMicroLabel = styled.label`
+export const UltraMicroLabel = styled.p`
   ${ultraMicrolabel}
 `;

@@ -16,4 +16,8 @@ export const GlobalStyle = createGlobalStyle`
   *:focus {
     ${border.outline};
   }
+
+  p {
+    margin: 0;
+  }
 `;

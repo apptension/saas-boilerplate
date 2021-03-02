@@ -4,6 +4,7 @@ import theme from 'styled-theming';
 import { border, size, transition } from '../../../theme';
 import { button } from '../../../theme/color';
 import { label, labelBold } from '../../../theme/typography';
+import { Breakpoint, media } from '../../../theme/media';
 import { ButtonVariant, ButtonTheme } from './button.types';
 
 const disabledButtonStyle = css`
@@ -55,16 +56,47 @@ const activeButtonStyle = css`
 `;
 
 const fixedWidthButtonStyle = css`
+  width: ${theme('variant', {
+    [ButtonVariant.PRIMARY]: '100%',
+    [ButtonVariant.SECONDARY]: '100%',
+    [ButtonVariant.FLAT]: '100%',
+    [ButtonVariant.RAW]: 'auto',
+  })};
+
   min-width: ${theme('variant', {
     [ButtonVariant.PRIMARY]: '288px',
     [ButtonVariant.SECONDARY]: '288px',
     [ButtonVariant.FLAT]: '288px',
     [ButtonVariant.RAW]: '0',
   })};
+
+  ${media(Breakpoint.TABLET)`
+    width: auto;
+  `};
+`;
+
+const fluidWidthButtonStyle = css`
+  width: ${theme('variant', {
+    [ButtonVariant.PRIMARY]: '100%',
+    [ButtonVariant.SECONDARY]: '100%',
+    [ButtonVariant.FLAT]: '100%',
+    [ButtonVariant.RAW]: 'auto',
+  })};
+
+  max-width: ${theme('variant', {
+    [ButtonVariant.PRIMARY]: '342px',
+    [ButtonVariant.SECONDARY]: '342px',
+    [ButtonVariant.FLAT]: '342px',
+    [ButtonVariant.RAW]: 'none',
+  })};
+
+  ${media(Breakpoint.TABLET)`
+    width: auto;
+  `};
 `;
 
 const fullShape = css`
-  padding: ${size.contentVerticalPadding}px ${size.smallContentHorizontalPadding}px;
+  padding: ${size.contentVerticalPadding} ${size.smallContentHorizontalPadding};
   height: 40px;
 `;
 
@@ -136,6 +168,8 @@ export const baseButtonStyle = css`
 
   ${theme('fixedWidth', {
     true: fixedWidthButtonStyle,
+    false: fluidWidthButtonStyle,
+    undefined: fluidWidthButtonStyle,
   })}
 
   &:not(:disabled) {

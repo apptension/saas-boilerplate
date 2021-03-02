@@ -4,20 +4,25 @@ import { greyScale } from '../../../theme/color';
 import { ReactComponent as HeaderLogoSvg } from '../../../images/icons/headerLogo.svg';
 import { contentWrapper, sizeUnits } from '../../../theme/size';
 import { Avatar as AvatarBase } from '../avatar';
+import { Breakpoint, media } from '../../../theme/media';
 
 export const Container = styled.header`
-  height: ${size.header}px;
+  height: ${size.header};
   border-bottom: 1px solid ${greyScale.get(95)};
 `;
 
 export const Content = styled.div`
   ${contentWrapper};
-  height: ${size.header}px;
+  height: ${size.header};
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   line-height: 0;
   position: relative;
+
+  ${media(Breakpoint.TABLET)`
+    justify-content: space-between;
+  `}
 `;
 
 export const HeaderLogo = styled(HeaderLogoSvg)``;
@@ -26,6 +31,11 @@ export const GlobalActions = styled.div``;
 
 export const ProfileActions = styled.div`
   position: relative;
+  display: none;
+
+  ${media(Breakpoint.TABLET)`
+    display: block;
+  `}
 `;
 
 export const Menu = styled.div`
@@ -34,8 +44,8 @@ export const Menu = styled.div`
   z-index: 1;
   border-radius: 4px;
   overflow: hidden;
-  top: ${sizeUnits(5)}px;
-  min-width: ${sizeUnits(21)}px;
+  top: ${sizeUnits(5)};
+  min-width: ${sizeUnits(21)};
   text-align: left;
   ${elevation.elevationLightest};
   display: flex;
@@ -53,7 +63,7 @@ export const Avatar = styled(AvatarBase)`
 
 export const SnackbarMessages = styled.div`
   position: absolute;
-  top: calc(100% + ${sizeUnits(2)}px);
-  right: ${sizeUnits(3)}px;
+  top: calc(100% + ${sizeUnits(2)});
+  right: ${sizeUnits(3)};
   z-index: 1;
 `;

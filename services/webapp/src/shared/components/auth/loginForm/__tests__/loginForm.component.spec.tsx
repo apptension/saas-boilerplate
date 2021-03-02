@@ -30,8 +30,8 @@ describe('LoginForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
+    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
     act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(login(mockCreds));
@@ -40,7 +40,7 @@ describe('LoginForm: Component', () => {
 
   it('should show error if required value is missing', async () => {
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), 'user@mail.com');
+    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
     userEvent.click(screen.getByRole('button', { name: /login/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -57,8 +57,8 @@ describe('LoginForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, password: ['Provided password is invalid'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
+    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
     act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -75,8 +75,8 @@ describe('LoginForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid credentials'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByPlaceholderText(/password/gi), mockCreds.password);
+    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
+    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
     act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {

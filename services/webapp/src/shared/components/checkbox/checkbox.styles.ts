@@ -6,7 +6,9 @@ import { checkbox } from '../../../theme/color';
 import { border, transition } from '../../../theme';
 import { Icon } from '../icon';
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  font-size: 0;
+`;
 
 export const Field = styled.input`
   width: 0;
@@ -18,6 +20,7 @@ export const Field = styled.input`
 export const CheckIcon = styled(Icon)`
   visibility: hidden;
   font-size: 10px;
+  height: 16px;
 `;
 
 export const Checkmark = styled.div`
@@ -27,7 +30,7 @@ export const Checkmark = styled.div`
   width: 16px;
   height: 16px;
   border-radius: 2px;
-  margin-right: ${sizeUnits(1)}px;
+  margin-right: ${sizeUnits(1)};
   border: 1px solid ${checkbox.idle};
   transition: background-color ${transition.primary}, border-color ${transition.primary}, color ${transition.primary};
   color: ${checkbox.icon};
@@ -75,9 +78,10 @@ export const Checkmark = styled.div`
 export const Message = styled(MicroLabel)`
   display: block;
   color: ${checkbox.invalid};
+  position: absolute;
 `;
 
-export const Label = styled(MicroLabel)`
+export const Label = styled(MicroLabel).attrs(() => ({ as: 'label' }))`
   display: inline-flex;
   align-items: center;
 `;

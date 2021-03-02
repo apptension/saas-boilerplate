@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { Signup } from '../signup.component';
-import { OAuthProvider } from '../../../../modules/auth/auth.types';
-import { oAuthLogin } from '../../../../modules/auth/auth.actions';
+import { screen } from '@testing-library/react';
+import { SocialLoginButtons } from '../socialLoginButtons.component';
+import { makeContextRenderer } from '../../../../utils/testUtils';
+import { oAuthLogin } from '../../../../../modules/auth/auth.actions';
+import { OAuthProvider } from '../../../../../modules/auth/auth.types';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -15,8 +15,8 @@ jest.mock('react-redux', () => {
   };
 });
 
-describe('Login: Component', () => {
-  const component = () => <Signup />;
+describe('SocialLoginButtons: Component', () => {
+  const component = () => <SocialLoginButtons />;
   const render = makeContextRenderer(component);
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('Login: Component', () => {
   describe('Google login button is clicked', () => {
     it('should trigger google oauth flow', () => {
       render();
-      userEvent.click(screen.getByText(/google/gi));
+      userEvent.click(screen.getByText(/login with Google/gi));
       expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Google));
     });
   });
@@ -34,7 +34,7 @@ describe('Login: Component', () => {
   describe('Facebook login button is clicked', () => {
     it('should trigger facebook oauth flow', () => {
       render();
-      userEvent.click(screen.getByText(/facebook/gi));
+      userEvent.click(screen.getByText(/login with Facebook/gi));
       expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Facebook));
     });
   });

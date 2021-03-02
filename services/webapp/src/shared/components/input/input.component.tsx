@@ -10,7 +10,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, label, ...inputProps }: InputProps, ref) => {
-    const theme: InputTheme = { invalid: !!error };
+    const theme: InputTheme = { invalid: !!error, required: inputProps.required };
 
     return (
       <ThemeProvider theme={theme}>
@@ -18,8 +18,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <Label>
             <Field {...inputProps} ref={ref} />
             {label && <LabelText>{label}</LabelText>}
-            <Message>{error}</Message>
           </Label>
+          <Message>{error}</Message>
         </Container>
       </ThemeProvider>
     );

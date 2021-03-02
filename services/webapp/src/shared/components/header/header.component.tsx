@@ -12,14 +12,16 @@ import { Button } from '../button';
 import { Link as ButtonLink } from '../link';
 import { ButtonVariant } from '../button/button.types';
 import { Snackbar } from '../snackbar';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { Breakpoint } from '../../../theme/media';
 import {
+  Avatar,
   Container,
+  Content,
   GlobalActions,
   HeaderLogo,
   Menu,
   ProfileActions,
-  Content,
-  Avatar,
   SnackbarMessages,
 } from './header.styles';
 
