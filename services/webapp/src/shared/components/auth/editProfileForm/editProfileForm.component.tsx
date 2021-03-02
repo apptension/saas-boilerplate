@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { selectProfile } from '../../../../modules/auth/auth.selectors';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { updateProfile } from '../../../../modules/auth/auth.actions';
-import { Button } from '../../button';
 import { Input } from '../../input';
-import { Container, Label, Row, Value, ErrorMessage, Form } from './editProfileForm.styles';
+import { snackbarActions } from '../../../../modules/snackbar';
+import { Container, ErrorMessage, Form, SubmitButton, FormFieldsRow } from './editProfileForm.styles';
 
 interface UpdateProfileFormFields {
   firstName: string;
@@ -20,16 +20,11 @@ const LAST_NAME_MAX_LENGTH = 40;
 
 export const EditProfileForm = () => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
+  const dispatch = useDispatch();
+  const dispatchWithPromise = useAsyncDispatch();
   const profile = useSelector(selectProfile);
-  const {
-    register,
-    handleSubmit,
-    errors,
-    genericError,
-    setApiResponse,
-    formState,
-  } = useApiForm<UpdateProfileFormFields>({
+
+  const { register, handleSubmit, errors, genericError, setApiResponse } = useApiForm<UpdateProfileFormFields>({
     defaultValues: {
       firstName: profile?.firstName,
       lastName: profile?.lastName,
@@ -38,75 +33,69 @@ export const EditProfileForm = () => {
 
   const onProfileUpdate = async (profile: UpdateProfileFormFields) => {
     try {
-      const res = await dispatch(updateProfile(profile));
+      const res = await dispatchWithPromise(updateProfile(profile));
       setApiResponse(res);
+
+      if (!res.isError) {
+        dispatch(
+          snackbarActions.showMessage(
+            intl.formatMessage({
+              defaultMessage: 'Personal data successfully changed.',
+              description: 'Auth / Update profile/ Success message',
+            })
+          )
+        );
+      }
     } catch {}
   };
 
   return (
     <Container>
-      <Row>
-        <Label>
-          <FormattedMessage defaultMessage="Email:" description="Auth / Profile details / Email label" />
-        </Label>
-        <Value>{profile?.email}</Value>
-      </Row>
-
-      <Row>
-        <Label>
-          <FormattedMessage defaultMessage="Roles:" description="Auth / Profile details / Roles label" />
-        </Label>
-        <Value>{profile?.roles?.join(',')}</Value>
-      </Row>
-
       <Form onSubmit={handleSubmit(onProfileUpdate)}>
-        <Input
-          ref={register({
-            maxLength: {
-              value: FIRST_NAME_MAX_LENGTH,
-              message: intl.formatMessage({
-                defaultMessage: 'First name is too long',
-                description: 'Auth / Update profile/ First name max length error',
-              }),
-            },
-          })}
-          name={'firstName'}
-          placeholder={intl.formatMessage({
-            defaultMessage: 'First name',
-            description: 'Auth / Update profile / First name placeholder',
-          })}
-          error={errors.firstName?.message}
-        />
+        <FormFieldsRow>
+          <Input
+            ref={register({
+              maxLength: {
+                value: FIRST_NAME_MAX_LENGTH,
+                message: intl.formatMessage({
+                  defaultMessage: 'First name is too long',
+                  description: 'Auth / Update profile/ First name max length error',
+                }),
+              },
+            })}
+            name={'firstName'}
+            label={intl.formatMessage({
+              defaultMessage: 'First name',
+              description: 'Auth / Update profile / First name label',
+            })}
+            error={errors.firstName?.message}
+          />
+        </FormFieldsRow>
 
-        <Input
-          ref={register({
-            maxLength: {
-              value: LAST_NAME_MAX_LENGTH,
-              message: intl.formatMessage({
-                defaultMessage: 'Last name is too long',
-                description: 'Auth / Update profile/ Last name max length error',
-              }),
-            },
-          })}
-          name={'lastName'}
-          placeholder={intl.formatMessage({
-            defaultMessage: 'Last name',
-            description: 'Auth / Update profile / Last name placeholder',
-          })}
-          error={errors.lastName?.message}
-        />
+        <FormFieldsRow>
+          <Input
+            ref={register({
+              maxLength: {
+                value: LAST_NAME_MAX_LENGTH,
+                message: intl.formatMessage({
+                  defaultMessage: 'Last name is too long',
+                  description: 'Auth / Update profile/ Last name max length error',
+                }),
+              },
+            })}
+            name={'lastName'}
+            label={intl.formatMessage({
+              defaultMessage: 'Last name',
+              description: 'Auth / Update profile / Last name label',
+            })}
+            error={errors.lastName?.message}
+          />
+        </FormFieldsRow>
 
         {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-        <Button type="submit">
-          <FormattedMessage defaultMessage="Update profile" description="Auth / Update profile/ Submit button" />
-        </Button>
-
-        {formState.isSubmitSuccessful && (
-          <FormattedMessage
-            defaultMessage="Profile updated successfully"
-            description="Auth / Update profile/ Success message"
-          />
-        )}
+        <SubmitButton>
+          <FormattedMessage defaultMessage="Update personal data" description="Auth / Update profile/ Submit button" />
+        </SubmitButton>
       </Form>
     </Container>
   );

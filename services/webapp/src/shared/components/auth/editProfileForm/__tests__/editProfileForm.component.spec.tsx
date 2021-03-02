@@ -4,10 +4,10 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { EditProfileForm } from '../editProfileForm.component';
-import { prepareState } from '../../../../../mocks/store';
 import { userProfileFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { updateProfile } from '../../../../../modules/auth/auth.actions';
+import { snackbarActions } from '../../../../../modules/snackbar';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -29,9 +29,7 @@ describe('EditProfileForm: Component', () => {
     email: 'jack.white@mail.com',
     roles: [Role.ADMIN, Role.USER],
   });
-  const store = prepareState((state) => {
-    state.auth.profile = originalProfile;
-  });
+
   const render = makeContextRenderer(component);
 
   const formData = {
@@ -44,21 +42,13 @@ describe('EditProfileForm: Component', () => {
     ...formData,
   };
 
-  it('should display profile data', () => {
-    render({}, { store });
-    expect(screen.getByDisplayValue('Jack')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('White')).toBeInTheDocument();
-    expect(screen.getByText('jack.white@mail.com')).toBeInTheDocument();
-    expect(screen.getByText('admin,user')).toBeInTheDocument();
-  });
-
   it('should call updateProfile action when submitted', async () => {
     mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/first name/gi), formData.firstName);
-    userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-    act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+    userEvent.type(screen.getByLabelText(/first name/gi), formData.firstName);
+    userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+    act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(updateProfile(formData));
     });
@@ -69,11 +59,11 @@ describe('EditProfileForm: Component', () => {
       mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
 
       render();
-      userEvent.type(screen.getByPlaceholderText(/first name/gi), formData.firstName);
-      userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-      act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+      userEvent.type(screen.getByLabelText(/first name/gi), formData.firstName);
+      userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+      act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
       await waitFor(() => {
-        expect(screen.getByText('Profile updated successfully')).toBeInTheDocument();
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Personal data successfully changed.'));
       });
     });
 
@@ -81,9 +71,9 @@ describe('EditProfileForm: Component', () => {
       mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
 
       render();
-      userEvent.type(screen.getByPlaceholderText(/first name/gi), formData.firstName);
-      userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-      act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+      userEvent.type(screen.getByLabelText(/first name/gi), formData.firstName);
+      userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+      act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
       await waitFor(() => {
         expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
         expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
@@ -93,9 +83,9 @@ describe('EditProfileForm: Component', () => {
 
   it('should show error if value is too long', async () => {
     render();
-    userEvent.type(screen.getByPlaceholderText(/first name/gi), '_'.repeat(41));
-    userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-    act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+    userEvent.type(screen.getByLabelText(/first name/gi), '_'.repeat(41));
+    userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+    act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('First name is too long')).toBeInTheDocument();
@@ -106,9 +96,9 @@ describe('EditProfileForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, firstName: ['Provided value is invalid'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/first name/gi), formData.firstName);
-    userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-    act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+    userEvent.type(screen.getByLabelText(/first name/gi), formData.firstName);
+    userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+    act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
@@ -119,9 +109,9 @@ describe('EditProfileForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
 
     render();
-    userEvent.type(screen.getByPlaceholderText(/first name/gi), formData.firstName);
-    userEvent.type(screen.getByPlaceholderText(/last name/gi), formData.lastName);
-    act(() => userEvent.click(screen.getByRole('button', { name: /update profile/gi })));
+    userEvent.type(screen.getByLabelText(/first name/gi), formData.firstName);
+    userEvent.type(screen.getByLabelText(/last name/gi), formData.lastName);
+    act(() => userEvent.click(screen.getByRole('button', { name: /update personal data/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid data')).toBeInTheDocument();

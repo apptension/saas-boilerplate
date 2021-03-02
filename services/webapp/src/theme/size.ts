@@ -20,8 +20,12 @@ export const contentVerticalPadding = responsiveValue(sizeUnits(1), {
   [Breakpoint.TABLET]: sizeUnits(1.5),
 });
 
+export const contentWithLimitedWidth = css`
+  max-width: 684px;
+`;
+
 export const contentWrapper = css`
-  max-width: 1360px;
+  width: 100%;
   padding-left: ${sizeUnits(3)};
   padding-right: ${sizeUnits(3)};
   margin-left: auto;

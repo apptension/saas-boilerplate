@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { color, elevation, size } from '../../../theme';
 import { greyScale } from '../../../theme/color';
 import { ReactComponent as HeaderLogoSvg } from '../../../images/icons/headerLogo.svg';
-import { contentWrapper, sizeUnits } from '../../../theme/size';
+import { contentWrapper, header, sizeUnits } from '../../../theme/size';
 import { Avatar as AvatarBase } from '../avatar';
 import { Breakpoint, media } from '../../../theme/media';
 
@@ -13,6 +13,7 @@ export const Container = styled.header`
 
 export const Content = styled.div`
   ${contentWrapper};
+  max-width: none;
   height: ${size.header};
   display: flex;
   align-items: center;
@@ -62,8 +63,8 @@ export const Avatar = styled(AvatarBase)`
 `;
 
 export const SnackbarMessages = styled.div`
-  position: absolute;
-  top: calc(100% + ${sizeUnits(2)});
+  position: fixed;
+  top: calc(${header} + ${sizeUnits(2)});
   right: ${sizeUnits(3)};
   z-index: 1;
 `;

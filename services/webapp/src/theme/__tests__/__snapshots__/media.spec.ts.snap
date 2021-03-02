@@ -3,7 +3,7 @@
 exports[`theme/media media() for specified breakpoint should return correct css media query 1`] = `
 "
       @media (min-width: 320px) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -11,7 +11,7 @@ exports[`theme/media media() for specified breakpoint should return correct css 
 exports[`theme/media media() for specified breakpoint should return correct css media query 2`] = `
 "
       @media (min-width: 768px) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -19,7 +19,7 @@ exports[`theme/media media() for specified breakpoint should return correct css 
 exports[`theme/media media() for specified breakpoint should return correct css media query 3`] = `
 "
       @media (min-width: 1280px) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -27,7 +27,7 @@ exports[`theme/media media() for specified breakpoint should return correct css 
 exports[`theme/media media() for specified breakpoint should return correct css media query 4`] = `
 "
       @media (min-width: 1440px) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -35,7 +35,7 @@ exports[`theme/media media() for specified breakpoint should return correct css 
 exports[`theme/media media() for specified breakpoint should return correct css media query 5`] = `
 "
       @media (min-width: 1920px) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -43,7 +43,7 @@ exports[`theme/media media() for specified breakpoint should return correct css 
 exports[`theme/media media() for specified landscape breakpoint should return correct css media query 1`] = `
 "
       @media (min-width: 320px) and (orientation: landscape) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -51,7 +51,7 @@ exports[`theme/media media() for specified landscape breakpoint should return co
 exports[`theme/media media() for specified landscape breakpoint should return correct css media query 2`] = `
 "
       @media (min-width: 768px) and (orientation: landscape) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -59,7 +59,7 @@ exports[`theme/media media() for specified landscape breakpoint should return co
 exports[`theme/media media() for specified landscape breakpoint should return correct css media query 3`] = `
 "
       @media (min-width: 1280px) and (orientation: landscape) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -67,7 +67,7 @@ exports[`theme/media media() for specified landscape breakpoint should return co
 exports[`theme/media media() for specified landscape breakpoint should return correct css media query 4`] = `
 "
       @media (min-width: 1440px) and (orientation: landscape) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -75,7 +75,7 @@ exports[`theme/media media() for specified landscape breakpoint should return co
 exports[`theme/media media() for specified landscape breakpoint should return correct css media query 5`] = `
 "
       @media (min-width: 1920px) and (orientation: landscape) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -83,7 +83,7 @@ exports[`theme/media media() for specified landscape breakpoint should return co
 exports[`theme/media media() for specified retina breakpoint should return correct css media query 1`] = `
 "
       @media (min-width: 320px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 320px) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -91,7 +91,7 @@ exports[`theme/media media() for specified retina breakpoint should return corre
 exports[`theme/media media() for specified retina breakpoint should return correct css media query 2`] = `
 "
       @media (min-width: 768px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 768px) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -99,7 +99,7 @@ exports[`theme/media media() for specified retina breakpoint should return corre
 exports[`theme/media media() for specified retina breakpoint should return correct css media query 3`] = `
 "
       @media (min-width: 1280px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1280px) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -107,7 +107,7 @@ exports[`theme/media media() for specified retina breakpoint should return corre
 exports[`theme/media media() for specified retina breakpoint should return correct css media query 4`] = `
 "
       @media (min-width: 1440px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1440px) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -115,7 +115,7 @@ exports[`theme/media media() for specified retina breakpoint should return corre
 exports[`theme/media media() for specified retina breakpoint should return correct css media query 5`] = `
 "
       @media (min-width: 1920px) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1920px) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -123,7 +123,7 @@ exports[`theme/media media() for specified retina breakpoint should return corre
 exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 1`] = `
 "
       @media (min-width: 320px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 320px) and (orientation: landscape) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -131,7 +131,7 @@ exports[`theme/media media() for specified retina landscape breakpoint should re
 exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 2`] = `
 "
       @media (min-width: 768px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 768px) and (orientation: landscape) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -139,7 +139,7 @@ exports[`theme/media media() for specified retina landscape breakpoint should re
 exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 3`] = `
 "
       @media (min-width: 1280px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1280px) and (orientation: landscape) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -147,7 +147,7 @@ exports[`theme/media media() for specified retina landscape breakpoint should re
 exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 4`] = `
 "
       @media (min-width: 1440px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1440px) and (orientation: landscape) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;
@@ -155,7 +155,7 @@ exports[`theme/media media() for specified retina landscape breakpoint should re
 exports[`theme/media media() for specified retina landscape breakpoint should return correct css media query 5`] = `
 "
       @media (min-width: 1920px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 2), (min-width: 1920px) and (orientation: landscape) and (min-resolution: 192dpi) {
-        
+        padding: 10px;
       }
     "
 `;

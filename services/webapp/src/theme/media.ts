@@ -1,4 +1,4 @@
-import { BaseThemedCssFunction, css, DefaultTheme } from 'styled-components';
+import { BaseThemedCssFunction, css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 import { complement, isNil, reverse } from 'ramda';
 
 export enum Breakpoint {
@@ -30,7 +30,7 @@ const getWindowWidth = () => window.innerWidth;
 export const getBreakpointMediaQuery = (breakpoint: Breakpoint) => `(min-width: ${sizes[breakpoint]}px)`;
 
 export const media = (breakpoint: Breakpoint, opts: { landscape?: boolean; retina?: boolean } = {}) => {
-  return ((styleTemplate: TemplateStringsArray) => {
+  return ((styleTemplate: TemplateStringsArray, ...interpolations: SimpleInterpolation[]) => {
     const joinQuery = (...queries: (string | null)[]) => queries.filter(complement(isNil)).join(' and ');
 
     const sizeQuery = `(min-width: ${sizes[breakpoint]}px)`;
@@ -39,14 +39,14 @@ export const media = (breakpoint: Breakpoint, opts: { landscape?: boolean; retin
 
     let query = '';
     if (retinaQueries) {
-      query = retinaQueries.map(retinaQuery => joinQuery(sizeQuery, landscapeQuery, retinaQuery)).join(', ');
+      query = retinaQueries.map((retinaQuery) => joinQuery(sizeQuery, landscapeQuery, retinaQuery)).join(', ');
     } else {
       query = joinQuery(sizeQuery, landscapeQuery);
     }
 
     return css`
       @media ${query} {
-        ${css(styleTemplate)}
+        ${css(styleTemplate, ...interpolations)}
       }
     `;
   }) as BaseThemedCssFunction<DefaultTheme>;
@@ -77,7 +77,7 @@ export const getActiveBreakpoint = () => {
     [Breakpoint.MOBILE]: Breakpoint.MOBILE,
   };
 
-  sizesOrdered.forEach(size => {
+  sizesOrdered.forEach((size) => {
     if (config[size] && window.matchMedia(getBreakpointMediaQuery(size)).matches) {
       breakpoint = config[size];
     }
@@ -86,8 +86,13 @@ export const getActiveBreakpoint = () => {
   return breakpoint;
 };
 
-export const responsiveValue = <Value>(defaultValue: Value, config: Partial<Record<Breakpoint, Value>> = {}) => ({ theme }: { theme: DefaultTheme }) => {
-  const matchesCurrentBreakpoint = (breakpoint: Breakpoint) => sizesOrdered.indexOf(breakpoint) <= sizesOrdered.indexOf(theme.activeBreakpoint ?? Breakpoint.MOBILE);
-  const matchingBreakpoint = reverse(sizesOrdered).find(size => config[size] && matchesCurrentBreakpoint(size));
+export const responsiveValue = <Value>(defaultValue: Value, config: Partial<Record<Breakpoint, Value>> = {}) => ({
+  theme,
+}: {
+  theme: DefaultTheme;
+}) => {
+  const matchesCurrentBreakpoint = (breakpoint: Breakpoint) =>
+    sizesOrdered.indexOf(breakpoint) <= sizesOrdered.indexOf(theme.activeBreakpoint ?? Breakpoint.MOBILE);
+  const matchingBreakpoint = reverse(sizesOrdered).find((size) => config[size] && matchesCurrentBreakpoint(size));
   return matchingBreakpoint ? config[matchingBreakpoint] : defaultValue;
 };
