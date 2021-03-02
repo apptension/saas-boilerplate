@@ -1,9 +1,7 @@
-from django.urls import re_path
-from django.urls import include
-from django.urls import path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
+from django.urls import include, path, re_path
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(title="Documentation", default_version="v1"), public=True, permission_classes=(permissions.AllowAny,)
@@ -16,9 +14,10 @@ urlpatterns = [
         "api/",
         include(
             [
-                path("", include("apps.users.urls")),
                 path("content/", include("apps.content.urls")),
                 path("demo/", include("apps.demo.urls")),
+                path("finances/", include("apps.finances.urls")),
+                path("", include("apps.users.urls")),
             ]
         ),
     ),

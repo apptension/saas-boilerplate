@@ -41,15 +41,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "djstripe",
+    "django_hosts",
+    "drf_yasg",
     "rest_framework",
     'rest_framework_simplejwt.token_blacklist',
-    "drf_yasg",
-    "django_hosts",
-    "whitenoise",
     "social_django",
-    "apps.users",
+    "whitenoise",
     "apps.content",
     "apps.demo",
+    "apps.finances",
+    "apps.users",
 ]
 
 MIDDLEWARE = [
@@ -223,3 +225,9 @@ AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 
 TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
 TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
+
+STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY", default="")
+STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="")
+STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", default=False)
+DJSTRIPE_WEBHOOK_SECRET = env("DJSTRIPE_WEBHOOK_SECRET", default="")
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"

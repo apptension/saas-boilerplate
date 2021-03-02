@@ -59,7 +59,11 @@ flake8:
 black:
 	$(DOCKER_COMPOSE) run --rm -T backend black --config=pyproject.toml .
 
+sync-stripe: 
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py djstripe_sync_models" 
+
 secrets: export CHAMBER_SERVICE=backend
 secrets:
 	$(DOCKER_COMPOSE) build ssmeditor
 	$(DOCKER_COMPOSE) run --rm ssmeditor
+

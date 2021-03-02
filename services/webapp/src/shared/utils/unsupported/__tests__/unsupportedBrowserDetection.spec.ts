@@ -1,4 +1,4 @@
-import UnsupportedBrowserDetection, { BrowserConfig } from '../unsupportedBrowserDetection';
+import UnsupportedBrowserDetection from '../unsupportedBrowserDetection';
 
 /* eslint-disable max-len*/
 const CHROME_UA =

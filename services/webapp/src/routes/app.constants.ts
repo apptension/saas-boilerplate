@@ -31,5 +31,9 @@ export const ROUTES = {
     edit: '/edit/:id',
     add: '/add',
   }),
+  finances: nestedRoute('/finances', {
+    paymentConfirm: '/payment-confirm',
+    paymentSuccess: '/payment-success/:paymentIntentId',
+  }),
   //<-- INJECT ROUTE DEFINITION -->
 };

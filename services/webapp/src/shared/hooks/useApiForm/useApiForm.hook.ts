@@ -49,6 +49,7 @@ export const useApiForm = <FormData extends Record<string, any>>(args?: UseFormO
     ...formControls,
     genericError,
     setApiResponse,
+    setGenericError,
     handleSubmit,
     formState: Object.assign(formControls.formState, {
       isSubmitSuccessful: formControls.formState.isSubmitSuccessful && !genericError,

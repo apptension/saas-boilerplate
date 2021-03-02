@@ -12,6 +12,8 @@ import { reducer as demoItemsReducer } from '../modules/demoItems/demoItems.redu
 import { DemoItemsState } from '../modules/demoItems/demoItems.types';
 import { reducer as crudDemoItemReducer } from '../modules/crudDemoItem/crudDemoItem.reducer';
 import { CrudDemoItemState } from '../modules/crudDemoItem/crudDemoItem.types';
+import { reducer as stripeReducer } from '../modules/stripe/stripe.reducer';
+import { StripeState } from '../modules/stripe/stripe.types';
 import { reducer as snackbarReducer } from '../modules/snackbar/snackbar.reducer';
 import { SnackbarState } from '../modules/snackbar/snackbar.types';
 //<-- IMPORT MODULE REDUCER -->
@@ -23,6 +25,7 @@ export type GlobalState = {
   config: ConfigState;
   demoItems: DemoItemsState;
   crudDemoItem: CrudDemoItemState;
+  stripe: StripeState;
   snackbar: SnackbarState;
   //<-- INJECT MODULE STATE TYPE -->
 };
@@ -35,6 +38,7 @@ export default function createReducer() {
     config: configReducer,
     demoItems: demoItemsReducer,
     crudDemoItem: crudDemoItemReducer,
+    stripe: stripeReducer,
     snackbar: snackbarReducer,
     //<-- INJECT MODULE REDUCER -->
   });

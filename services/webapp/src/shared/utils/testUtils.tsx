@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Route, Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { MockedProvider } from '@apollo/client/testing';
 import { DEFAULT_LOCALE, translationMessages, MessagesObject } from '../../i18n';
@@ -68,13 +68,12 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   );
 };
 
-export const makeContextRenderer = <T, _>(component: (props: T | Record<string, never>) => ReactElement) => (
-  props?: T,
-  context?: ContextData
-) =>
-  render(component(props ?? {}), {
-    wrapper: ({ children }) => <ProvidersWrapper context={context}>{children}</ProvidersWrapper>,
-  });
-
-export const makePropsRenderer = <T, _>(component: (props: T | Record<string, never>) => ReactElement) => (props?: T) =>
-  render(component(props ?? {}));
+export function makeContextRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
+  return (props?: T, context?: ContextData) =>
+    render(component(props ?? {}), {
+      wrapper: ({ children }) => <ProvidersWrapper context={context}>{children}</ProvidersWrapper>,
+    });
+}
+export function makePropsRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
+  return (props?: T) => render(component(props ?? {}));
+}

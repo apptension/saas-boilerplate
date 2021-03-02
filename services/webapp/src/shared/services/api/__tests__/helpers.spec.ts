@@ -8,7 +8,6 @@ import { client } from '../client';
 import { AUTH_ME_URL, AUTH_TOKEN_REFRESH_URL } from '../auth';
 import { server } from '../../../../mocks/server';
 import { mockRefreshToken } from '../../../../mocks/server/handlers';
-import history from '../../../utils/history';
 import { authActions } from '../../../../modules/auth';
 
 describe('shared / services / api', () => {

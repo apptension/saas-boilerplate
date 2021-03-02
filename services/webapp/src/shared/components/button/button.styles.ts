@@ -1,11 +1,11 @@
 import styled, { css, ThemeProps } from 'styled-components';
 import theme from 'styled-theming';
 
-import { border, size, transition } from '../../../theme';
+import { size, transition } from '../../../theme';
 import { button } from '../../../theme/color';
 import { label, labelBold } from '../../../theme/typography';
 import { Breakpoint, media } from '../../../theme/media';
-import { ButtonVariant, ButtonTheme } from './button.types';
+import { ButtonTheme, ButtonVariant } from './button.types';
 
 const disabledButtonStyle = css`
   color: ${button.disabled.text};

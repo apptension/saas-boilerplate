@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
@@ -7,7 +7,7 @@ import { Input } from '../../../shared/components/input';
 import { Button } from '../../../shared/components/button';
 import { CrudDemoItem } from '../../../shared/services/api/crudDemoItem/types';
 import { crudDemoItemActions } from '../../../modules/crudDemoItem';
-import { Container, ErrorMessage, Label, Form, Row, Value } from './crudDemoItemForm.styles';
+import { Container, ErrorMessage, Form, Label, Row } from './crudDemoItemForm.styles';
 
 export interface CrudDemoItemFormProps {
   data?: CrudDemoItem;

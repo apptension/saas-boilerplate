@@ -1,8 +1,7 @@
 import React from 'react';
-
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/dom';
-import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
+
+import { makeContextRenderer } from '../../../utils/testUtils';
 import { Sidebar } from '../sidebar.component';
 import { prepareState } from '../../../../mocks/store';
 import { userProfileFactory } from '../../../../mocks/factories';

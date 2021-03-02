@@ -7,15 +7,12 @@ import { crudDemoItemFactory } from '../../../mocks/factories';
 import { server } from '../../../mocks/server';
 import {
   mockAddCrudDemoItem,
-  mockConfirmPasswordReset,
   mockGetCrudDemoItem,
   mockGetCrudDemoItemList,
   mockUpdateCrudDemoItem,
 } from '../../../mocks/server/handlers';
 import { prepareState } from '../../../mocks/store';
-import { watchAuth } from '../../auth/auth.sagas';
 import { snackbarActions } from '../../snackbar';
-import { authActions } from '../../auth';
 
 const items = [crudDemoItemFactory(), crudDemoItemFactory(), crudDemoItemFactory()];
 

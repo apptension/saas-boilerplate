@@ -7,6 +7,7 @@ import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
 import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
 import { CRUD_DEMO_ITEM_INITIAL_STATE } from '../modules/crudDemoItem';
+import { STRIPE_INITIAL_STATE } from '../modules/stripe';
 import { SNACKBAR_INITIAL_STATE } from '../modules/snackbar';
 //<-- IMPORT MODULE STATE -->
 
@@ -18,6 +19,7 @@ export const store: GlobalState = {
   demoItems: DEMO_ITEMS_INITIAL_STATE,
   crudDemoItem: CRUD_DEMO_ITEM_INITIAL_STATE,
   snackbar: SNACKBAR_INITIAL_STATE,
+  stripe: STRIPE_INITIAL_STATE,
   //<-- INJECT MODULE STATE -->
 };
 
