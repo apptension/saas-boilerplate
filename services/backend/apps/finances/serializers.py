@@ -3,11 +3,15 @@ from rest_framework import serializers
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
-    product = serializers.ChoiceField(choices=(
-        ('5', 'A'),
-        ('10', 'B'),
-        ('15', 'C'),
-    ), required=True, write_only=True)
+    product = serializers.ChoiceField(
+        choices=(
+            ('5', 'A'),
+            ('10', 'B'),
+            ('15', 'C'),
+        ),
+        required=True,
+        write_only=True,
+    )
 
     class Meta:
         model = djstripe_models.PaymentIntent

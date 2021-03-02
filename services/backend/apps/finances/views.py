@@ -5,8 +5,9 @@ from common.acl import policies
 from . import serializers
 
 
-class StripePaymentIntentViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-                                 viewsets.GenericViewSet):
+class StripePaymentIntentViewSet(
+    mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
     permission_classes = (policies.UserFullAccess,)
     queryset = djstripe_models.PaymentIntent.objects.all()
     serializer_class = serializers.PaymentIntentSerializer
