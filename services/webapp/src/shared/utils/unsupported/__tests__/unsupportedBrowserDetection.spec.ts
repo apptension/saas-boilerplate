@@ -11,6 +11,8 @@ const OPERA_UA =
 const CRAWLER_UA = 'Googlebot/2.1';
 const FB_UA =
   'Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/28.0.0.20.16;]';
+const HEADLESS_CHROME_UA =
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/79.0.3945.79 Safari/537.36';
 /* eslint-enable max-len*/
 
 function setUserAgent(userAgent: string) {
@@ -29,6 +31,12 @@ describe('Utils: UnsupportedBrowserDetection Class', () => {
   describe('isSupported()', () => {
     it('should return true for Chrome', () => {
       setUserAgent(CHROME_UA);
+      const detector = checkSupport({});
+      expect(detector.isSupported()).toBe(true);
+    });
+
+    it('should return true for Headless Chrome', () => {
+      setUserAgent(HEADLESS_CHROME_UA);
       const detector = checkSupport({});
       expect(detector.isSupported()).toBe(true);
     });

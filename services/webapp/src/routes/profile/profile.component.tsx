@@ -5,13 +5,17 @@ import { useSelector } from 'react-redux';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
 import { selectProfile } from '../../modules/auth/auth.selectors';
-import { Container, Avatar, EmailLabel, RolesLabel, FormHeader, HeaderInfo } from './profile.styles';
+import { Container, Avatar, EmailLabel, RolesLabel, FormHeader, HeaderInfo, Header } from './profile.styles';
 
 export const Profile = () => {
   const profile = useSelector(selectProfile);
 
   return (
     <Container>
+      <Header>
+        <FormattedMessage defaultMessage="User profile" description="Auth / Profile details / Header" />
+      </Header>
+
       <HeaderInfo>
         <Avatar />
 

@@ -6,6 +6,7 @@ import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/test
 import { ConfirmEmail } from '../confirmEmail.component';
 import { ROUTES } from '../../../app.constants';
 import { confirmEmail } from '../../../../modules/auth/auth.actions';
+import { snackbarActions } from '../../../../modules/snackbar';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -43,55 +44,43 @@ describe('ConfirmEmail: Component', () => {
     const { pushSpy, history } = spiedHistory(confirmTokenRoute);
     render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
     await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith('/en/auth/confirm');
+      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });
 
   describe('token is invalid', () => {
-    it('should show invalid token error', async () => {
+    it('should redirect to login show invalid token error', async () => {
       mockDispatch.mockResolvedValue({
         isError: true,
       });
-      const { history } = spiedHistory(confirmTokenRoute);
+      const { history, pushSpy } = spiedHistory(confirmTokenRoute);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
-        expect(screen.getByText('Invalid token')).toBeInTheDocument();
-        expect(screen.queryByText('Email confirmed successfully')).not.toBeInTheDocument();
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
     });
   });
 
   describe('token is valid', () => {
-    it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ isError: false });
-      const { history } = spiedHistory(confirmTokenRoute);
-      render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
-      await waitFor(() => {
-        expect(screen.getByText('Email confirmed successfully')).toBeInTheDocument();
-        expect(screen.queryByText('Invalid token')).not.toBeInTheDocument();
-      });
-    });
-
-    it('should show log in link', async () => {
+    it('should redirect to login and show success message', async () => {
       mockDispatch.mockResolvedValue({ isError: false });
       const { history, pushSpy } = spiedHistory(confirmTokenRoute);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
-        expect(screen.getByText(/log in/gi)).toBeInTheDocument();
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Congratulations! Now you can log in.'));
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
-      pushSpy.mockClear();
-      userEvent.click(screen.getByText(/log in/gi));
-      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });
 
   describe('token is missing from URL', () => {
-    it('should show invalid token error', async () => {
-      const { history } = spiedHistory(confirmTokenRouteNoToken);
+    it('should redirect to login and show invalid token error', async () => {
+      const { history, pushSpy } = spiedHistory(confirmTokenRouteNoToken);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
-        expect(screen.getByText('Invalid token')).toBeInTheDocument();
-        expect(screen.queryByText('Email confirmed successfully')).not.toBeInTheDocument();
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
     });
   });

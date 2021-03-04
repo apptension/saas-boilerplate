@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
+import throttle from 'lodash.throttle';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { requestPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
+
+const SUBMIT_THROTTLE = 15_000;
 
 interface PasswordResetRequestFormProps {
   onSubmitted?: () => void;
@@ -21,16 +24,23 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   const dispatch = useAsyncDispatch();
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>();
 
-  const onSubmit = async (data: ResetPasswordFormFields) => {
-    try {
-      const res = await dispatch(requestPasswordReset(data));
-      setApiResponse(res);
-      if (!res.isError) {
-        setSubmitted(true);
-        onSubmitted?.();
-      }
-    } catch {}
-  };
+  const onSubmit = useCallback(
+    throttle(
+      async (data: ResetPasswordFormFields) => {
+        try {
+          const res = await dispatch(requestPasswordReset(data));
+          setApiResponse(res);
+          if (!res.isError) {
+            setSubmitted(true);
+            onSubmitted?.();
+          }
+        } catch {}
+      },
+      SUBMIT_THROTTLE,
+      { leading: true, trailing: true }
+    ),
+    []
+  );
 
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>

@@ -35,6 +35,9 @@ const DEFAULT_SUPPORTED_BROWSERS_CONFIG: BrowserConfig = {
       minversion: 45,
     },
     {
+      browser: 'chrome headless',
+    },
+    {
       browser: 'edge',
     },
     {
@@ -59,6 +62,9 @@ const DEFAULT_SUPPORTED_BROWSERS_CONFIG: BrowserConfig = {
       browser: 'chrome',
     },
     {
+      browser: 'chrome headless',
+    },
+    {
       browser: 'ie',
       versions: [11, 'edge'],
     },
@@ -79,6 +85,9 @@ const DEFAULT_SUPPORTED_BROWSERS_CONFIG: BrowserConfig = {
       os: 'ios',
       minos: '5.0',
       browser: 'chrome',
+    },
+    {
+      browser: 'chrome headless',
     },
     {
       os: 'android',

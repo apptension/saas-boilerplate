@@ -64,7 +64,8 @@ export const Avatar = styled(AvatarBase)`
 
 export const SnackbarMessages = styled.div`
   position: fixed;
-  top: calc(${header} + ${sizeUnits(2)});
-  right: ${sizeUnits(3)};
+  top: ${sizeUnits(3)};
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1;
 `;

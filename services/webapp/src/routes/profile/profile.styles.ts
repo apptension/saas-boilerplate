@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Avatar as AvatarBase } from '../../shared/components/avatar';
 import { contentWithLimitedWidth, contentWrapper, formFieldWidth, sizeUnits } from '../../theme/size';
-import { H4, Paragraph, ParagraphBold } from '../../theme/typography';
+import { H4, heading3, Paragraph, ParagraphBold } from '../../theme/typography';
 import { greyScale } from '../../theme/color';
 import { Breakpoint, media } from '../../theme/media';
 
@@ -11,10 +11,21 @@ export const Container = styled.div`
   padding-bottom: ${sizeUnits(3)};
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   ${contentWrapper};
   ${contentWithLimitedWidth};
+  margin-left: 0;
+`;
+
+export const Header = styled.h1`
+  ${heading3};
+  margin-bottom: ${sizeUnits(3)};
+  display: none;
+
+  ${media(Breakpoint.TABLET)`
+    display: block;
+  `};
 `;
 
 export const HeaderInfo = styled.div`
