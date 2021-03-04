@@ -39,6 +39,13 @@ export const LoginForm = () => {
                 description: 'Auth / Login / Email required',
               }),
             },
+            pattern: {
+              value: /^\S+@\S+\.\S+$/,
+              message: intl.formatMessage({
+                defaultMessage: 'Email format is invalid',
+                description: 'Auth / Login / Email format error',
+              }),
+            },
           })}
           required
           label={intl.formatMessage({
@@ -72,17 +79,17 @@ export const LoginForm = () => {
             description: 'Auth / Login / Password label',
           })}
           placeholder={intl.formatMessage({
-            defaultMessage: 'Minimum 9 characters and 1 number',
+            defaultMessage: 'Write your password here...',
             description: 'Auth / Login / Password placeholder',
           })}
           error={errors.password?.message}
         />
       </FormFieldsRow>
 
-      {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        <FormattedMessage defaultMessage="Login" description="Auth / login button" />
+        <FormattedMessage defaultMessage="Log in" description="Auth / login button" />
       </SubmitButton>
     </Container>
   );

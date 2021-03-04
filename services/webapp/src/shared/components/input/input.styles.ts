@@ -78,6 +78,10 @@ export const Field = styled.input`
     border-color: ${input.hover};
   }
 
+  &:focus::placeholder {
+    color: transparent;
+  }
+
   &:active {
     border-color: ${input.active};
   }

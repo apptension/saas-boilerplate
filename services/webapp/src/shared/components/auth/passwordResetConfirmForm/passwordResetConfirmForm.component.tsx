@@ -123,7 +123,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         />
       </FormFieldsRow>
 
-      {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         <FormattedMessage

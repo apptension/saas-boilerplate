@@ -3,7 +3,7 @@ import { Button } from '../../button';
 import { sizeUnits } from '../../../../theme/size';
 import { color } from '../../../../theme';
 
-export const Container = styled.form``;
+export const Container = styled.form.attrs(() => ({ noValidate: true }))``;
 
 export const ErrorMessage = styled.p`
   position: absolute;

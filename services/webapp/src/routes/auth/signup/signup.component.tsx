@@ -6,7 +6,8 @@ import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.
 import { ROUTES } from '../../app.constants';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { Link } from '../../../shared/components/link';
-import { Container, Links, Header, OrDivider } from './signup.styles';
+import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
+import { Container, Header, Links, OrDivider } from './signup.styles';
 
 export const Signup = () => {
   const loginUrl = useLocaleUrl(ROUTES.login);
@@ -14,10 +15,10 @@ export const Signup = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Signup" description="Auth / Signup / heading" />
+        <FormattedMessage defaultMessage="Sign up" description="Auth / Signup / heading" />
       </Header>
 
-      <SocialLoginButtons />
+      <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />
 
       <OrDivider>
         <FormattedMessage defaultMessage="or" description="Auth / Signup / or" />
@@ -27,7 +28,7 @@ export const Signup = () => {
 
       <Links>
         <Link to={loginUrl}>
-          <FormattedMessage defaultMessage="Login" description="Auth / Signup / login link" />
+          <FormattedMessage defaultMessage="Log in" description="Auth / Signup / login link" />
         </Link>
       </Links>
     </Container>

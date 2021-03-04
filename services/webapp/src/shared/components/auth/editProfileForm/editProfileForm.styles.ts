@@ -12,7 +12,7 @@ export const Container = styled.div`
   `}
 `;
 
-export const Form = styled.form`
+export const Form = styled.form.attrs(() => ({ noValidate: true }))`
   ${media(Breakpoint.TABLET)`
     display: grid;
     grid-column-gap: ${sizeUnits(3)};

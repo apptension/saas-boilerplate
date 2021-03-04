@@ -25,6 +25,10 @@ export const Links = styled.div`
   justify-content: space-between;
   margin-top: ${sizeUnits(3)};
   width: 100%;
+
+  ${media(Breakpoint.TABLET)`
+    margin-top: ${sizeUnits(5)};
+  `};
 `;
 
 export const Header = styled.h1`

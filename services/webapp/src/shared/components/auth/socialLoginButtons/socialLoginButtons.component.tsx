@@ -6,20 +6,40 @@ import { oAuthLogin } from '../../../../modules/auth/auth.actions';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import { Container, FacebookButton, GoogleButton } from './socialLoginButtons.styles';
 
-export const SocialLoginButtons = (props: HTMLAttributes<HTMLDivElement>) => {
+export enum SignupButtonsVariant {
+  LOGIN,
+  SIGNUP,
+}
+
+export interface SocialLoginButtonsProps extends HTMLAttributes<HTMLDivElement> {
+  variant: SignupButtonsVariant;
+}
+
+export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProps) => {
   const dispatch = useDispatch();
   const handleGoogleLogin = () => dispatch(oAuthLogin(OAuthProvider.Google));
   const handleFacebookLogin = () => dispatch(oAuthLogin(OAuthProvider.Facebook));
 
   return (
     <Container {...props}>
-      <GoogleButton onClick={handleGoogleLogin}>
-        <FormattedMessage defaultMessage="Login with Google" description="Auth / Login / Google login button" />
-      </GoogleButton>
-
       <FacebookButton onClick={handleFacebookLogin}>
-        <FormattedMessage defaultMessage="Login with Facebook" description="Auth / Login / Facebook login button" />
+        {variant === SignupButtonsVariant.LOGIN ? (
+          <FormattedMessage defaultMessage="Log in with Facebook" description="Auth / Login / Facebook login button" />
+        ) : (
+          <FormattedMessage
+            defaultMessage="Sign up with Facebook"
+            description="Auth / Signup / Facebook signup button"
+          />
+        )}
       </FacebookButton>
+
+      <GoogleButton onClick={handleGoogleLogin}>
+        {variant === SignupButtonsVariant.LOGIN ? (
+          <FormattedMessage defaultMessage="Log in with Google" description="Auth / Login / Google login button" />
+        ) : (
+          <FormattedMessage defaultMessage="Sign up with Google" description="Auth / Signup / Google signup button" />
+        )}
+      </GoogleButton>
     </Container>
   );
 };

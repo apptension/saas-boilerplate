@@ -58,7 +58,7 @@ export const ConfirmEmail = () => {
         <FormattedMessage description={'Confirm email / Valid token'} defaultMessage={'Email confirmed successfully'} />
       </H1>
       <Link to={loginUrl}>
-        <FormattedMessage description={'Confirm email / Login button'} defaultMessage={'Login'} />
+        <FormattedMessage description={'Confirm email / Login button'} defaultMessage={'Log in'} />
       </Link>
     </>
   );

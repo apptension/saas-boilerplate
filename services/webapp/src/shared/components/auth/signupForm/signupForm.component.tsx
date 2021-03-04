@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../input';
@@ -9,7 +8,7 @@ import { signup } from '../../../../modules/auth/auth.actions';
 import { useLocaleUrl } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../routes/app.constants';
 import { FormFieldsRow } from '../../../../theme/size';
-import { Container, ErrorMessage, SubmitButton, Checkbox } from './signupForm.styles';
+import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
 
 interface SignupFormFields {
   password: string;
@@ -42,6 +41,7 @@ export const SignupForm = () => {
         <Input
           name={'email'}
           type={'email'}
+          required
           ref={register({
             required: {
               value: true,
@@ -50,9 +50,20 @@ export const SignupForm = () => {
                 description: 'Auth / Signup / Email required',
               }),
             },
+            pattern: {
+              value: /^\S+@\S+\.\S+$/,
+              message: intl.formatMessage({
+                defaultMessage: 'Email format is invalid',
+                description: 'Auth / Signup / Email format error',
+              }),
+            },
+          })}
+          label={intl.formatMessage({
+            defaultMessage: 'Email',
+            description: 'Auth / Signup / Email label',
           })}
           placeholder={intl.formatMessage({
-            defaultMessage: 'Email',
+            defaultMessage: 'Write your email here...',
             description: 'Auth / Signup / Email placeholder',
           })}
           error={errors.email?.message}
@@ -70,10 +81,15 @@ export const SignupForm = () => {
               }),
             },
           })}
+          required
           name={'password'}
           type={'password'}
-          placeholder={intl.formatMessage({
+          label={intl.formatMessage({
             defaultMessage: 'Password',
+            description: 'Auth / Signup / Password label',
+          })}
+          placeholder={intl.formatMessage({
+            defaultMessage: 'Minimum 9 characters and 1 number',
             description: 'Auth / Signup / Password placeholder',
           })}
           error={errors.password?.message}
@@ -83,25 +99,25 @@ export const SignupForm = () => {
       <Checkbox
         label={intl.formatMessage(
           {
-            defaultMessage: 'You must accept our {termsLink} and {policyLink}',
+            defaultMessage: 'You must accept our {termsLink} and {policyLink}.',
             description: 'Auth / Signup / Accept terms label',
           },
           {
             termsLink: (
-              <Link to={termsUrl}>
+              <InlineLink to={termsUrl}>
                 <FormattedMessage
                   description={'Auth / Signup / Accept checkbox / T&C link'}
                   defaultMessage="Terms of Use"
                 />
-              </Link>
+              </InlineLink>
             ),
             policyLink: (
-              <Link to={privacyUrl}>
+              <InlineLink to={privacyUrl}>
                 <FormattedMessage
                   description={'Auth / Signup / Accept checkbox / Privacy policy link'}
                   defaultMessage="Privacy Policy"
                 />
-              </Link>
+              </InlineLink>
             ),
           }
         )}
@@ -118,10 +134,10 @@ export const SignupForm = () => {
         error={errors.acceptTerms?.message}
       />
 
-      {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        <FormattedMessage defaultMessage="Signup" description="Auth / signup button" />
+        <FormattedMessage defaultMessage="Sign up" description="Auth / signup button" />
       </SubmitButton>
     </Container>
   );

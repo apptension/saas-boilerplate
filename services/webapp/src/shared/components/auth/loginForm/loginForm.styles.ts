@@ -4,7 +4,7 @@ import { color } from '../../../../theme';
 import { Button } from '../../button';
 import { formFieldWidth, sizeUnits } from '../../../../theme/size';
 
-export const Container = styled.form`
+export const Container = styled.form.attrs(() => ({ noValidate: true }))`
   ${formFieldWidth};
 `;
 

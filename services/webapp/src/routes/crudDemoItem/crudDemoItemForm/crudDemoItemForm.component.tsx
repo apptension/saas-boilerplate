@@ -9,6 +9,8 @@ import { CrudDemoItem } from '../../../shared/services/api/crudDemoItem/types';
 import { crudDemoItemActions } from '../../../modules/crudDemoItem';
 import { Container, ErrorMessage, Form, Label, Row } from './crudDemoItemForm.styles';
 
+const MAX_NAME_LENGTH = 255;
+
 export interface CrudDemoItemFormProps {
   data?: CrudDemoItem;
 }
@@ -54,6 +56,13 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
           </Label>
           <Input
             ref={register({
+              maxLength: {
+                value: MAX_NAME_LENGTH,
+                message: intl.formatMessage({
+                  defaultMessage: 'Name is too long',
+                  description: 'CrudDemoItem form / Name max length error',
+                }),
+              },
               required: {
                 value: true,
                 message: intl.formatMessage({
@@ -71,7 +80,7 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
           />
         </Row>
 
-        {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+        {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
         <Button type="submit">
           <FormattedMessage defaultMessage="Save" description="CrudDemoItem form / Submit button" />
         </Button>

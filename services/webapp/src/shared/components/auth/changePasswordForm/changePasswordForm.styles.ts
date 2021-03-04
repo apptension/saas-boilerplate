@@ -4,7 +4,7 @@ import { color } from '../../../../theme';
 import { Button } from '../../button';
 import { Breakpoint, media } from '../../../../theme/media';
 
-export const Container = styled.form`
+export const Container = styled.form.attrs(() => ({ noValidate: true }))`
   ${formFieldWidth};
 
   ${media(Breakpoint.TABLET)`

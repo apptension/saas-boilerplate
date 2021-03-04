@@ -23,6 +23,10 @@ export const Links = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: ${sizeUnits(3)};
+
+  ${media(Breakpoint.TABLET)`
+    margin-top: ${sizeUnits(5)};
+  `};
 `;
 
 export const Header = styled.h1`

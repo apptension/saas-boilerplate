@@ -67,7 +67,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <div>
         <FormattedMessage defaultMessage="Choose the product" description="Stripe / payment form / product label" />

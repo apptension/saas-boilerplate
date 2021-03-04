@@ -19,6 +19,7 @@ export const FacebookButton = styled(Button).attrs(() => ({
   variant: ButtonVariant.SECONDARY,
 }))`
   ${formFieldWidth};
+  margin-bottom: ${sizeUnits(2)};
 `;
 
 export const GoogleButton = styled(Button).attrs(() => ({
@@ -26,5 +27,4 @@ export const GoogleButton = styled(Button).attrs(() => ({
   variant: ButtonVariant.SECONDARY,
 }))`
   ${formFieldWidth};
-  margin-bottom: ${sizeUnits(2)};
 `;

@@ -92,7 +92,7 @@ export const EditProfileForm = () => {
           />
         </FormFieldsRow>
 
-        {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+        {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
         <SubmitButton>
           <FormattedMessage defaultMessage="Update personal data" description="Auth / Update profile/ Submit button" />
         </SubmitButton>

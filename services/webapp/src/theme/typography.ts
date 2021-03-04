@@ -42,6 +42,7 @@ export const label = css`
   font-family: ${fontFamily.primary};
   font-size: 13px;
   line-height: 18px;
+  font-weight: ${fontWeight.regular};
 `;
 
 export const labelBold = css`
@@ -53,12 +54,14 @@ export const microlabel = css`
   font-family: ${fontFamily.primary};
   font-size: 10px;
   line-height: 14px;
+  font-weight: ${fontWeight.regular};
 `;
 
 export const ultraMicrolabel = css`
   font-family: ${fontFamily.primary};
   font-size: 8px;
   line-height: 10px;
+  font-weight: ${fontWeight.regular};
 `;
 
 export const H1 = styled.h1`

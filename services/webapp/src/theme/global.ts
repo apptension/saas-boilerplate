@@ -1,12 +1,14 @@
 import { createGlobalStyle } from 'styled-components';
 
 import { fontFamily } from './font';
+import { greyScale } from './color';
 import { border } from './index';
 
 export const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     font-family: ${fontFamily.primary};
+    color: ${greyScale.get(15)};
   }
 
   *, *:before, *:after {
@@ -23,5 +25,9 @@ export const GlobalStyle = createGlobalStyle`
 
   p {
     margin: 0;
+  }
+
+  a {
+    color: inherit;
   }
 `;

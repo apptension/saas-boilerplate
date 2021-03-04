@@ -4,7 +4,7 @@ import { color } from '../../../../../theme';
 
 export const Container = styled.div``;
 
-export const Form = styled.form`
+export const Form = styled.form.attrs(() => ({ noValidate: true }))`
   width: 400px;
 `;
 

@@ -50,6 +50,13 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
               description: 'Auth / Request password reset  / Email required',
             }),
           },
+          pattern: {
+            value: /^\S+@\S+\.\S+$/,
+            message: intl.formatMessage({
+              defaultMessage: 'Email format is invalid',
+              description: 'Auth / Request password reset / Email format error',
+            }),
+          },
         })}
         required
         label={intl.formatMessage({
@@ -63,7 +70,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
         error={errors.email?.message}
       />
 
-      {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         {formState.isSubmitSuccessful ? (

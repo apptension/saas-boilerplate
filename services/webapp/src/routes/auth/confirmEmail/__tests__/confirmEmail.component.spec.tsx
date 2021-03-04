@@ -72,15 +72,15 @@ describe('ConfirmEmail: Component', () => {
       });
     });
 
-    it('should show login link', async () => {
+    it('should show log in link', async () => {
       mockDispatch.mockResolvedValue({ isError: false });
       const { history, pushSpy } = spiedHistory(confirmTokenRoute);
       render({}, { router: { history, routePath: `/:lang${ROUTES.confirmEmail}` } });
       await waitFor(() => {
-        expect(screen.getByText(/login/gi)).toBeInTheDocument();
+        expect(screen.getByText(/log in/gi)).toBeInTheDocument();
       });
       pushSpy.mockClear();
-      userEvent.click(screen.getByText(/login/gi));
+      userEvent.click(screen.getByText(/log in/gi));
       expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });

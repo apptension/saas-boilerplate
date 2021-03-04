@@ -2,9 +2,9 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { ProvidersWrapper } from '../../../utils/testUtils';
-import { SocialLoginButtons } from './socialLoginButtons.component';
+import { SocialLoginButtons, SocialLoginButtonsProps, SignupButtonsVariant } from './socialLoginButtons.component';
 
-const Template: Story = (args) => {
+const Template: Story<SocialLoginButtonsProps> = (args) => {
   return (
     <ProvidersWrapper>
       <SocialLoginButtons {...args} />
@@ -17,5 +17,8 @@ export default {
   component: SocialLoginButtons,
 };
 
-export const Default = Template.bind({});
-Default.args = { children: 'text' };
+export const Login = Template.bind({});
+Login.args = { variant: SignupButtonsVariant.LOGIN };
+
+export const Signup = Template.bind({});
+Signup.args = { variant: SignupButtonsVariant.SIGNUP };

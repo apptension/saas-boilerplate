@@ -32,7 +32,7 @@ describe('LoginForm: Component', () => {
     render();
     userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
     userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
+    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(login(mockCreds));
     });
@@ -41,7 +41,7 @@ describe('LoginForm: Component', () => {
   it('should show error if required value is missing', async () => {
     render();
     userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.click(screen.getByRole('button', { name: /login/gi }));
+    userEvent.click(screen.getByRole('button', { name: /log in/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Password is required')).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe('LoginForm: Component', () => {
     render();
     userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
     userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
+    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('LoginForm: Component', () => {
     render();
     userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
     userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /login/gi })));
+    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
