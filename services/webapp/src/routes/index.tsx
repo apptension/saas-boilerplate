@@ -7,6 +7,7 @@ import { appLocales, DEFAULT_LOCALE, translationMessages } from '../i18n';
 import { asyncComponent } from '../shared/utils/asyncComponent';
 import { H1 } from '../theme/typography';
 import { Role } from '../modules/auth/auth.types';
+import { useRouterScrollToTop } from '../shared/hooks/useRouterScrollToTop';
 import { AppComponent as App } from './app.component';
 import { ROUTES } from './app.constants';
 import { PasswordReset } from './auth/passwordReset';
@@ -32,6 +33,8 @@ const FinancesPaymentSuccess = asyncComponent(() => import('./finances/paymentSu
 
 const MatchedLanguageComponent = () => {
   const match = useRouteMatch();
+  useRouterScrollToTop();
+
   return (
     <App>
       <Switch>

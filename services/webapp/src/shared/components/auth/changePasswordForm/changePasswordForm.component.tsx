@@ -88,7 +88,7 @@ export const ChangePasswordForm = () => {
             description: 'Auth / Change password / New password label',
           })}
           placeholder={intl.formatMessage({
-            defaultMessage: 'Minimum 9 characters and 1 number',
+            defaultMessage: 'Minimum 8 characters',
             description: 'Auth / Change password / New password placeholder',
           })}
           error={errors.newPassword?.message}
@@ -120,7 +120,7 @@ export const ChangePasswordForm = () => {
             description: 'Auth / Change password / Confirm new password label',
           })}
           placeholder={intl.formatMessage({
-            defaultMessage: 'Minimum 9 characters and 1 number',
+            defaultMessage: 'Minimum 8 characters',
             description: 'Auth / Change password / Confirm new password placeholder',
           })}
           error={errors.confirmNewPassword?.message}

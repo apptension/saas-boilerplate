@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -16,22 +16,17 @@ interface ResetPasswordFormFields {
 }
 
 export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
+  const [isSubmitted, setSubmitted] = useState(false);
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setApiResponse,
-    genericError,
-    formState,
-  } = useApiForm<ResetPasswordFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>();
 
   const onSubmit = async (data: ResetPasswordFormFields) => {
     try {
       const res = await dispatch(requestPasswordReset(data));
       setApiResponse(res);
       if (!res.isError) {
+        setSubmitted(true);
         onSubmitted?.();
       }
     } catch {}
@@ -73,7 +68,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
       {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        {formState.isSubmitSuccessful ? (
+        {isSubmitted ? (
           <FormattedMessage
             defaultMessage="Send the link again"
             description="Auth / Request password reset / Resend button"

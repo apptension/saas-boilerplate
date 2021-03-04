@@ -89,7 +89,7 @@ export const SignupForm = () => {
             description: 'Auth / Signup / Password label',
           })}
           placeholder={intl.formatMessage({
-            defaultMessage: 'Minimum 9 characters and 1 number',
+            defaultMessage: 'Minimum 8 characters',
             description: 'Auth / Signup / Password placeholder',
           })}
           error={errors.password?.message}
