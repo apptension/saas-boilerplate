@@ -1,0 +1,17 @@
+{% extends "djstripe/admin/change_form.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {% with original.get_stripe_dashboard_url as stripe_url %}
+        {% if stripe_url %}
+            <li>
+                <a href="{% url 'payment-intent-refund' pk=original.payment_intent.pk %} " rel="modal:open"
+                   class="djstripe-payment-refund-cta">
+                    {% trans "Refund" %}
+                </a>
+            </li>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

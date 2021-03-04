@@ -1,0 +1,6 @@
+{% extends "admin/base.html" %} {% load static %} {% block extrastyle %} {{
+block.super }}
+<link rel="stylesheet" href="{% static 'djstripe/jquery.modal.min.css' %}" />
+{% endblock %} {% block footer %} {{ block.super }}
+<script src="{% static 'djstripe/jquery.modal.min.js' %}"></script>
+{% endblock %}

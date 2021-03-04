@@ -138,7 +138,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && pretty-quick --staged"
+      "pre-commit": "lint-staged && pretty-quick --staged --pattern 'services/webapp/**/*.(js|jsx|ts|tsx)'"
     }
   },
   "devDependencies": {

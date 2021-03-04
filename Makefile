@@ -11,8 +11,9 @@ setup-infra:
 	chmod +x ./scripts/*.sh
 	cd $(SELF_DIR)scripts && $(SHELL) cdk-bootstrap.sh
 
-setup-docker:
+setup:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
+	$(foreach file, $(wildcard $(SERVICES_DIR)/*), cp $(file)/.env.example $(file)/.env 2>/dev/null || :;)
 
 create-env:
 	cd scripts/setup && ../node_modules/.bin/plop createEnv

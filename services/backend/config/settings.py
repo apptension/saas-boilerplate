@@ -75,7 +75,7 @@ DEFAULT_HOST = "api"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR.path('templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -171,7 +171,11 @@ LOCALE_PATHS = []
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "common.utils.custom_exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_AUTHENTICATION_CLASSES": ("apps.users.authentication.JSONWebTokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "apps.users.authentication.JSONWebTokenAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
 }
 
