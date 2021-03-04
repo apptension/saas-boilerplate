@@ -1,5 +1,5 @@
 export const fontFamily = {
-  primary: 'Inter Regular',
+  primary: 'Inter Regular,Helvetica,Arial,sans-serif',
 };
 
 export const fontWeight = {

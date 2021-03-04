@@ -116,7 +116,7 @@
     "lint": "yarn run lint:js && yarn run lint:css",
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
-    "storybook": "yarn build-emails && start-storybook --port 5000",
+    "storybook": "yarn build-emails && start-storybook -s ./public --port 5000",
     "build-storybook": "node ./scripts/build-storybook.js",
     "contentful:download-schema": "dotenv ./scripts/download-contentful-schema.sh",
     "contentful:generate-types": "yarn graphql-codegen"

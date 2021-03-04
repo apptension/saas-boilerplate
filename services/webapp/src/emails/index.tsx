@@ -18,6 +18,6 @@ export const renderEmail = (name: EmailTemplateType, rawData: Record<string, unk
   sheet.seal();
 
   const rawHtml = `<html><head><title>${name}</title></head><body>${bodyHtml}${styleTags}</body></html>`;
-  const html = juice(rawHtml, { preserveFontFaces: false });
+  const html = juice(rawHtml, { preserveFontFaces: true });
   return { subject, html };
 };

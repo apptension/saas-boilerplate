@@ -3,9 +3,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { generatePath } from 'react-router-dom';
 import { EmailComponentProps } from '../../types';
-import { Td, Tr } from '../../base';
 import { ROUTES } from '../../../routes/app.constants';
-import { Container } from './passwordReset.styles';
+import { Layout, Button } from '../../base';
 
 export interface PasswordResetProps extends EmailComponentProps {
   userId: string;
@@ -16,19 +15,19 @@ export const Template = ({ webAppUrl, userId, token }: PasswordResetProps) => {
   const url = `${webAppUrl}/en${generatePath(ROUTES.passwordReset.confirm, { token, user: userId })}`;
 
   return (
-    <Container>
-      <Tr>
-        <Td>
-          <FormattedMessage defaultMessage="Reset link: " description="Email / reset password / title" />
-        </Td>
-      </Tr>
-
-      <Tr>
-        <Td>
-          <a href={url}>{url}</a>
-        </Td>
-      </Tr>
-    </Container>
+    <Layout
+      title={<FormattedMessage defaultMessage="Reset the password" description="Email / Reset password / title" />}
+      text={
+        <FormattedMessage
+          defaultMessage="Click the button below to reset the password. "
+          description="Email / Reset password / text"
+        />
+      }
+    >
+      <Button linkTo={url}>
+        <FormattedMessage defaultMessage="Reset the password" description="Email / Reset password / link label" />
+      </Button>
+    </Layout>
   );
 };
 

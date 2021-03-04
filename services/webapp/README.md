@@ -96,7 +96,7 @@ test:
 
 ### `make install-deploy`
 
-This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact. 
+This rule will be used by CodeBuild to install dependencies required to deploy previously built artifact.
 This rule should most likely stay unchanged unless you know what you're doing!
 
 ### `make test`
@@ -291,6 +291,8 @@ interface <model_name> {
 
 ## Emails
 
+Default templates are prepared to support Gmail, Apple mail client and Microsoft Outlook.
+
 ### Adding new email template
 
 To add new email template you need to:
@@ -322,3 +324,9 @@ Example usage:
 aws-vault exec saas-boilerplate-user -- yarn storybook
 
 ```
+
+### Using static assets in the template
+
+- To use static assets in email, they must be saved inside `/public/email-assets/` folder.
+- You should reference them by using `PUBLIC_BUCKET_URL` url, i.e. `<img src={`${process.env.PUBLIC_BUCKET_URL ?? ''}/email-assets/image.png`} />`
+- `PUBLIC_BUCKET_URL` must point to public website URL (alternatively directly to s3 bucket, in case of environment protected by basic auth)
