@@ -130,6 +130,16 @@ class TestUserProfile:
         assert response.status_code == status.HTTP_200_OK, response.data
         assert response.data["roles"] == [CommonGroups.User]
 
+    def test_validate_first_last_name_length(self, api_client, user_profile, faker):
+        api_client.force_authenticate(user_profile.user)
+
+        response = api_client.put(
+            reverse("profile"), {'first_name': faker.pystr(41, 41), 'last_name': faker.pystr(41, 41)}, format='json'
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data['first_name'] == ['Ensure this field has no more than 40 characters.']
+        assert response.data['last_name'] == ['Ensure this field has no more than 40 characters.']
+
 
 class TestResetPassword:
     def test_no_email(self, api_client):
