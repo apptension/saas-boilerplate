@@ -111,7 +111,7 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid(raise_exception=False):
-            response = Response(status=status.HTTP_400_BAD_REQUEST)
+            response = Response(status=status.HTTP_401_UNAUTHORIZED)
             utils.reset_auth_cookie(response)
             return response
 

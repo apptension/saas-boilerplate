@@ -205,9 +205,6 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
         request = self.context['request']
         raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
 
-        print('heereererererererer')
-        print(request.COOKIES)
-
         if not raw_token:
             raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
 
@@ -219,11 +216,8 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
         if jwt_api_settings.ROTATE_REFRESH_TOKENS:
             if jwt_api_settings.BLACKLIST_AFTER_ROTATION:
                 try:
-                    # Attempt to blacklist the given refresh token
                     refresh.blacklist()
                 except AttributeError:
-                    # If blacklist app not installed, `blacklist` method will
-                    # not be present
                     pass
 
             user = get_user_model().objects.get(id=refresh[jwt_api_settings.USER_ID_CLAIM])

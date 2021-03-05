@@ -305,7 +305,7 @@ class TestTokenRefresh:
             reverse('jwt_token_refresh'),
         )
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == ''
         assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == ''
 
