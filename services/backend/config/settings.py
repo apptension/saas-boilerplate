@@ -174,7 +174,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "apps.users.authentication.JSONWebTokenAuthentication",
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
 }
