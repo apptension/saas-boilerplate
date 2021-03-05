@@ -21,7 +21,6 @@ export default {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  webAppUrl: 'http://localhost:3000',
   token: 'token-value',
   userId: 'user-id',
 };

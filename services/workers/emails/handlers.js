@@ -5,7 +5,6 @@ const { renderEmail } = require("./renderer");
 const config = {
   awsEndpoint: process.env.AWS_ENDPOINT_URL,
   fromEmail: process.env.FROM_EMAIL,
-  webAppUrl: process.env.WEB_APP_URL,
 };
 
 const sesClient = new AWS.SES({
@@ -16,7 +15,6 @@ exports.sendEmail = async function (event, context) {
   const { to, type } = event.detail || {};
   const { subject, html } = renderEmail(type, {
     ...event.detail,
-    webAppUrl: config.webAppUrl,
   });
 
   return sesClient

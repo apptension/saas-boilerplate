@@ -19,14 +19,14 @@ export const Icon = styled(Image)`
 export const injectedFonts = css`
   @font-face {
     font-family: ${fontFamily.primary};
-    src: url('${process.env.PUBLIC_BUCKET_URL ?? ''}/email-assets/Inter-Regular.woff') format('woff');
+    src: url('${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/Inter-Regular.woff') format('woff');
     font-weight: ${fontWeight.regular};
     font-style: normal;
   }
 
   @font-face {
     font-family: ${fontFamily.primary};
-    src: url('${process.env.PUBLIC_BUCKET_URL ?? ''}/email-assets/Inter-SemiBold.woff') format('woff');
+    src: url('${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/Inter-SemiBold.woff') format('woff');
     font-weight: ${fontWeight.bold};
     font-style: normal;
   }

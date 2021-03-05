@@ -11,8 +11,8 @@ export interface AccountActivationProps extends EmailComponentProps {
   token: string;
 }
 
-export const Template = ({ webAppUrl, userId, token }: AccountActivationProps) => {
-  const url = `${webAppUrl}/en${generatePath(ROUTES.confirmEmail, { token, user: userId })}`;
+export const Template = ({ userId, token }: AccountActivationProps) => {
+  const url = `${process.env.REACT_APP_WEB_APP_URL}/en${generatePath(ROUTES.confirmEmail, { token, user: userId })}`;
 
   return (
     <Layout

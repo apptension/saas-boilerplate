@@ -5,7 +5,7 @@ export interface ImageProps extends HTMLAttributes<HTMLImageElement> {
 }
 
 export const Image = (props: ImageProps) => {
-  return <img alt="" {...props} src={`${process.env.PUBLIC_BUCKET_URL ?? ''}/email-assets/${props.src}`} />;
+  return <img alt="" {...props} src={`${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/${props.src}`} />;
 };
 
 Image.defaultProps = {

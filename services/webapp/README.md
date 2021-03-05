@@ -327,6 +327,6 @@ aws-vault exec saas-boilerplate-user -- yarn storybook
 
 ### Using static assets in the template
 
-- To use static assets in email, they must be saved inside `/public/email-assets/` folder.
-- You should reference them by using `PUBLIC_BUCKET_URL` url, i.e. `<img src={`${process.env.PUBLIC_BUCKET_URL ?? ''}/email-assets/image.png`} />`
-- `PUBLIC_BUCKET_URL` must point to public website URL (alternatively directly to s3 bucket, in case of environment protected by basic auth)
+- To use static assets in email, they should be saved inside `/public/email-assets/` folder.
+- You should reference them by using `REACT_APP_EMAIL_ASSETS_URL` url, i.e. `<img src={`${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/image.png`} />`
+- `REACT_APP_EMAIL_ASSETS_URL` should point to public website URL (alternatively directly to s3 bucket, in case of environment protected by basic auth)

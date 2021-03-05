@@ -12,7 +12,6 @@ module.exports = (router) => {
 
     const config = {
       fromEmail: 'from@saas.apptoku.com',
-      webAppUrl: 'http://localhost:3000',
     };
 
     const sesClient = new AWS.SES({
@@ -21,7 +20,6 @@ module.exports = (router) => {
 
     const { subject, html } = renderEmail(type, {
       ...data,
-      webAppUrl: config.webAppUrl,
     });
 
     sesClient
