@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { waitFor, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { waitFor } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { ConfirmEmail } from '../confirmEmail.component';
 import { ROUTES } from '../../../app.constants';

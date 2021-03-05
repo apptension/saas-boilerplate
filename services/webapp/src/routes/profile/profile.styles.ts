@@ -11,11 +11,15 @@ export const Container = styled.div`
   padding-bottom: ${sizeUnits(3)};
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   ${contentWrapper};
   ${contentWithLimitedWidth};
   margin-left: 0;
+
+  ${media(Breakpoint.TABLET)`
+    align-items: flex-start;
+  `};
 `;
 
 export const Header = styled.h1`

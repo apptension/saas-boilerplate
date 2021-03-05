@@ -13,6 +13,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { DEFAULT_LOCALE, translationMessages, MessagesObject } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';
+import { ResponsiveThemeProvider } from '../components/responsiveThemeProvider';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
@@ -56,13 +57,15 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   return (
     <Router history={routerHistory}>
       <HelmetProvider>
-        <MockedProvider mocks={apolloMocks} addTypename={false}>
-          <IntlProvider {...intlProviderMockProps}>
-            <Provider store={createStore(createReducer(), produce(store, identity))}>
-              <Route path={routePath}>{children}</Route>
-            </Provider>
-          </IntlProvider>
-        </MockedProvider>
+        <ResponsiveThemeProvider>
+          <MockedProvider mocks={apolloMocks} addTypename={false}>
+            <IntlProvider {...intlProviderMockProps}>
+              <Provider store={createStore(createReducer(), produce(store, identity))}>
+                <Route path={routePath}>{children}</Route>
+              </Provider>
+            </IntlProvider>
+          </MockedProvider>
+        </ResponsiveThemeProvider>
       </HelmetProvider>
     </Router>
   );

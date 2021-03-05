@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { generatePath, useHistory, useParams } from 'react-router';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router';
+import { useIntl } from 'react-intl';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { renderWhenTrue } from '../../../shared/utils/rendering';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
-import { H1 } from '../../../theme/typography';
 import { useSnackbar } from '../../../shared/components/snackbar';
 
 export const ConfirmEmail = () => {

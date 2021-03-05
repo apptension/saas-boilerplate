@@ -2,12 +2,15 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { ProvidersWrapper } from '../../utils/testUtils';
+import { LayoutContext } from '../../../routes/layout/layout.context';
 import { Sidebar } from './sidebar.component';
 
 const Template: Story = (args) => {
   return (
     <ProvidersWrapper>
-      <Sidebar {...args} />
+      <LayoutContext.Provider value={{ isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+        <Sidebar {...args} />
+      </LayoutContext.Provider>
     </ProvidersWrapper>
   );
 };

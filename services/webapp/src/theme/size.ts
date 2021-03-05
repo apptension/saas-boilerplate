@@ -8,6 +8,14 @@ export const header = responsiveValue(sizeUnits(7), {
   [Breakpoint.TABLET]: sizeUnits(8),
 });
 
+export const sideMenu = '281px';
+
+export const fullContentHeight = css`
+  ${media(Breakpoint.TABLET)`
+    min-height: calc(100vh - ${header});
+  `};
+`;
+
 export const contentHorizontalPadding = responsiveValue(sizeUnits(2), {
   [Breakpoint.TABLET]: sizeUnits(4),
 });

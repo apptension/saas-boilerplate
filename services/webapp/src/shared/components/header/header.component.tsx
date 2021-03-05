@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useState } from 'react';
+import React, { HTMLAttributes, useContext, useState } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,9 @@ import { Button } from '../button';
 import { Link as ButtonLink } from '../link';
 import { ButtonVariant } from '../button/button.types';
 import { Snackbar } from '../snackbar';
+import { LayoutContext } from '../../../routes/layout/layout.context';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { Breakpoint } from '../../../theme/media';
 import {
   Avatar,
   Container,
@@ -19,6 +22,8 @@ import {
   GlobalActions,
   HeaderLogo,
   Menu,
+  MenuLine,
+  MenuToggleButton,
   ProfileActions,
   SnackbarMessages,
 } from './header.styles';
@@ -29,6 +34,8 @@ export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
   const homeUrl = useLocaleUrl(ROUTES.home);
   const profileUrl = useLocaleUrl(ROUTES.profile);
   const dispatch = useDispatch();
+  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const closeDropdown = () => setDropdownOpen(false);
   const handleLogout = () => {
@@ -39,6 +46,21 @@ export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
   return (
     <Container {...props}>
       <Content>
+        {isLoggedIn && !isDesktop && (
+          <MenuToggleButton
+            onClick={() => setSideMenuOpen(true)}
+            aria-expanded={isSideMenuOpen}
+            aria-label={intl.formatMessage({
+              description: 'Header / Home menu link aria label',
+              defaultMessage: 'Open menu',
+            })}
+          >
+            <MenuLine />
+            <MenuLine />
+            <MenuLine />
+          </MenuToggleButton>
+        )}
+
         <GlobalActions>
           <Link
             to={homeUrl}
@@ -67,18 +89,16 @@ export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
               })}
             />
 
-            {isDropdownOpen && (
-              <ClickAwayListener onClickAway={closeDropdown}>
-                <Menu>
-                  <ButtonLink onClick={closeDropdown} to={profileUrl} variant={ButtonVariant.FLAT}>
-                    <FormattedMessage defaultMessage={'Profile'} description={'Header / Profile button'} />
-                  </ButtonLink>
-                  <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
-                    <FormattedMessage defaultMessage={'Log out'} description={'Header / Logout button'} />
-                  </Button>
-                </Menu>
-              </ClickAwayListener>
-            )}
+            <ClickAwayListener onClickAway={isDropdownOpen ? closeDropdown : () => null}>
+              <Menu isOpen={isDropdownOpen}>
+                <ButtonLink onClick={closeDropdown} to={profileUrl} variant={ButtonVariant.FLAT}>
+                  <FormattedMessage defaultMessage={'Profile'} description={'Header / Profile button'} />
+                </ButtonLink>
+                <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
+                  <FormattedMessage defaultMessage={'Log out'} description={'Header / Logout button'} />
+                </Button>
+              </Menu>
+            </ClickAwayListener>
           </ProfileActions>
         )}
       </Content>

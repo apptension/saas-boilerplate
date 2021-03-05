@@ -39,7 +39,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
       SUBMIT_THROTTLE,
       { leading: true, trailing: true }
     ),
-    []
+    [dispatch, onSubmitted, setApiResponse]
   );
 
   return (

@@ -6,9 +6,14 @@ import { Sidebar } from '../sidebar.component';
 import { prepareState } from '../../../../mocks/store';
 import { userProfileFactory } from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
+import { LayoutContext } from '../../../../routes/layout/layout.context';
 
 describe('Sidebar: Component', () => {
-  const component = () => <Sidebar />;
+  const component = () => (
+    <LayoutContext.Provider value={{ isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+      <Sidebar />
+    </LayoutContext.Provider>
+  );
   const render = makeContextRenderer(component);
 
   describe('user has admin role', () => {

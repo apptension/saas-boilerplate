@@ -10,10 +10,9 @@ import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
 import { apolloClient } from '../shared/services/contentful';
-import { selectIsLoggedIn } from '../modules/auth/auth.selectors';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
-import { Layout, Content, Header, Sidebar } from './app.styles';
+import { Layout } from './layout';
 
 export interface AppComponentProps {
   children?: ReactNode;
@@ -22,7 +21,6 @@ export interface AppComponentProps {
 export const AppComponent = ({ children }: AppComponentProps) => {
   useStartup();
   useLanguageFromParams();
-  const isUserLoggedIn = useSelector(selectIsLoggedIn);
 
   const language = useSelector(localesSelectors.selectLocalesLanguage);
 
@@ -41,11 +39,7 @@ export const AppComponent = ({ children }: AppComponentProps) => {
           <GlobalStyle />
 
           <ResponsiveThemeProvider>
-            <Layout>
-              <Header />
-              {isUserLoggedIn && <Sidebar />}
-              <Content>{React.Children.only(children)}</Content>
-            </Layout>
+            <Layout>{React.Children.only(children)}</Layout>
           </ResponsiveThemeProvider>
         </Fragment>
       </ApolloProvider>

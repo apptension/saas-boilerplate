@@ -1,8 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import React from 'react';
 import { useApiForm } from '../useApiForm.hook';
-import { ErrorMessages } from '../useTranslatedErrors/useTranslatedErrors.types';
-import { useTranslatedErrors } from '../useTranslatedErrors';
 import { ProvidersWrapper } from '../../../utils/testUtils';
 import { UseApiFormArgs } from '../useApiForm.types';
 

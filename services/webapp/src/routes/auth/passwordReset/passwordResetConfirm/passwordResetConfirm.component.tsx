@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../app.constants';
-import { H1 } from '../../../../theme/typography';
 import { Link } from '../../../../shared/components/link';
 import { Container, Links, Header, Text } from './passwordResetConfirm.styles';
 
