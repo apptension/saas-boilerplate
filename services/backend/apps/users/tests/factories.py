@@ -39,10 +39,19 @@ class UserFactory(factory.DjangoModelFactory):
         if extracted:
             for group in extracted:
                 if type(group) == str:
-                    group_obj, created = Group.objects.get_or_create(name=CommonGroups.User)
+                    group_obj, created = Group.objects.get_or_create(name=group)
                     self.groups.add(group_obj)
                 else:
                     self.groups.add(group)
+
+    @factory.post_generation
+    def admin(self, create, extracted, **kwargs):
+        if extracted is None:
+            return
+
+        user_group, created = Group.objects.get_or_create(name=CommonGroups.Admin)
+        self.groups.add(user_group)
+        self.is_superuser = True
 
 
 class UserProfileFactory(factory.DjangoModelFactory):

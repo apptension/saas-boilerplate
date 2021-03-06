@@ -14,8 +14,6 @@ env = environ.Env(
     DJANGO_DEBUG=(bool, False)
 )
 
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
 sentry_sdk.init(
     dsn=env("SENTRY_DSN", default=None),
     integrations=[DjangoIntegration()],
@@ -71,6 +69,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "config.urls_api"
 ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "api"
+PARENT_HOST = env('PARENT_HOST', default=None)
 
 TEMPLATES = [
     {

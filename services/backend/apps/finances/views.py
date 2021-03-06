@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect
 from djstripe import models as djstripe_models
-from rest_framework import mixins, viewsets, response, views, renderers
+from rest_framework import mixins, viewsets, response, views, renderers, status
 
 from common.acl import policies
 from . import serializers
@@ -43,11 +43,11 @@ class AdminRefundView(views.APIView):
         serializer = serializers.AdminStripePaymentIntentRefundSerializer(
             instance,
             data=request.data,
-            context={
-                'request': self.request,
-            },
+            context={'request': self.request},
         )
         if not serializer.is_valid():
-            return response.Response({'serializer': serializer, 'payment_intent': instance})
+            return response.Response(
+                {'serializer': serializer, 'payment_intent': instance}, status=status.HTTP_400_BAD_REQUEST
+            )
         serializer.save()
         return redirect('admin:djstripe_paymentintent_change', object_id=pk)

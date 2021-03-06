@@ -1,18 +1,13 @@
 {% load rest_framework %}
 
-<html>
-<body>
-<h1>Refund {{ payment_intent.id }}</h1>
+<div class="modal">
+    <h1>Refund {{ payment_intent.id }}</h1>
 
-<form
-        action="{% url 'payment-intent-refund' pk=payment_intent.pk %}"
-        method="POST"
->
-    {% csrf_token %} {% render_form serializer %}
+    <form action="{% url 'payment-intent-refund' pk=payment_intent.pk %}" method="POST">
+        {% render_form serializer %}
 
-    <br />
+        <br/>
 
-    <input type="submit" value="Refund" />
-</form>
-</body>
-</html>
+        <input type="submit" value="Refund"/>
+    </form>
+</div>
