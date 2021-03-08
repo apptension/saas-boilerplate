@@ -86,7 +86,7 @@ class AdminStripePaymentIntentRefundSerializer(serializers.Serializer):
         }
 
     def update(self, instance: djstripe_models.PaymentIntent, validated_data):
-        amount = validated_data['amount'] / 100
+        amount = validated_data['amount']
         reason = validated_data['reason']
         charge: djstripe_models.Charge = validated_data['charge']
         amount_to_refund = validated_data['amount_to_refund'] / 100
