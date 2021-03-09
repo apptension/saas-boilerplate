@@ -1,0 +1,21 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true
+  },
+  "extends": ["plugin:cypress/recommended", "airbnb", "prettier"],
+  "plugins": ["prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "prettier/prettier": ["error"],
+    "multiline-ternary": ["error", "always-multiline"],
+    "no-underscore-dangle": ["error", { "allow": ["_persist"] }],
+    "camelcase": ["error", { "properties": "never", "ignoreDestructuring": true }],
+    "no-console": ["error", { "allow": ["warn", "error", "log"] }],
+    "no-param-reassign": ["error", { "props": false }]
+  }
+}
