@@ -15,7 +15,6 @@ mochareports
 cypress.env.json
 .env
 cypress/support/GmailAPI/token.json
-cypress/support/GmailAPI/token.js
 
 # vscode
 jsconfig.json
