@@ -58,11 +58,18 @@ describe('CrudDemoItem: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockAddCrudDemoItem({ isError: true, nonFieldErrors: ['error'] }, BAD_REQUEST));
+      server.use(
+        mockAddCrudDemoItem({ isError: true, nonFieldErrors: [{ message: 'error', code: 'error' }] }, BAD_REQUEST)
+      );
 
       await expectSaga(watchCrudDemoItem)
         .withState(defaultState)
-        .put(crudDemoItemActions.addCrudDemoItem.resolved({ isError: true, nonFieldErrors: ['error'] }))
+        .put(
+          crudDemoItemActions.addCrudDemoItem.resolved({
+            isError: true,
+            nonFieldErrors: [{ message: 'error', code: 'error' }],
+          })
+        )
         .dispatch(crudDemoItemActions.addCrudDemoItem(item))
         .silentRun();
     });
@@ -93,11 +100,22 @@ describe('CrudDemoItem: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockUpdateCrudDemoItem(item.id, { isError: true, nonFieldErrors: ['error'] }, BAD_REQUEST));
+      server.use(
+        mockUpdateCrudDemoItem(
+          item.id,
+          { isError: true, nonFieldErrors: [{ message: 'error', code: 'error' }] },
+          BAD_REQUEST
+        )
+      );
 
       await expectSaga(watchCrudDemoItem)
         .withState(defaultState)
-        .put(crudDemoItemActions.updateCrudDemoItem.resolved({ isError: true, nonFieldErrors: ['error'] }))
+        .put(
+          crudDemoItemActions.updateCrudDemoItem.resolved({
+            isError: true,
+            nonFieldErrors: [{ message: 'error', code: 'error' }],
+          })
+        )
         .dispatch(crudDemoItemActions.updateCrudDemoItem(item))
         .silentRun();
     });

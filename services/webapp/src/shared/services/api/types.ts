@@ -1,6 +1,11 @@
 export * from './auth/types';
 
-export type FieldErrors = string[];
+export type FieldError = {
+  message?: string;
+  code: string;
+};
+
+export type FieldErrors = FieldError[];
 
 export type FormSubmitError<T = unknown> = { [key in keyof T]?: FieldErrors } & { nonFieldErrors?: FieldErrors };
 

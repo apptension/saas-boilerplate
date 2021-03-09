@@ -14,6 +14,7 @@ interface SignupFormFields {
   password: string;
   email: string;
   acceptTerms: boolean;
+  test: { nested: string };
 }
 
 export const SignupForm = () => {
@@ -21,7 +22,26 @@ export const SignupForm = () => {
   const termsUrl = useLocaleUrl(ROUTES.termsAndConditions);
   const privacyUrl = useLocaleUrl(ROUTES.privacyPolicy);
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>({
+    errorMessages: {
+      email: {
+        unique: intl.formatMessage({
+          defaultMessage: 'The email address is already taken',
+          description: 'Auth / Signup / email unique',
+        }),
+      },
+      password: {
+        password_too_common: intl.formatMessage({
+          defaultMessage: 'The password is too common.',
+          description: 'Auth / Signup / password too common',
+        }),
+        password_entirely_numeric: intl.formatMessage({
+          defaultMessage: 'The password can\'t be entirely numeric.',
+          description: 'Auth / Signup / password entirely numeric',
+        }),
+      },
+    },
+  });
 
   const onSignup = async (data: SignupFormFields) => {
     try {
@@ -78,6 +98,13 @@ export const SignupForm = () => {
               message: intl.formatMessage({
                 defaultMessage: 'Password is required',
                 description: 'Auth / Signup / Password required',
+              }),
+            },
+            minLength: {
+              value: 8,
+              message: intl.formatMessage({
+                defaultMessage: 'Password is too short. It must contain at least 8 characters.',
+                description: 'Auth / Signup / Password too short',
               }),
             },
           })}

@@ -24,7 +24,7 @@ describe('SignupForm: Component', () => {
   it('should call signup action when submitted', async () => {
     const mockCreds = {
       email: 'user@mail.com',
-      password: 'abcxyz',
+      password: 'abcxyz123456',
     };
 
     mockDispatch.mockResolvedValue({ error: false });
@@ -53,7 +53,7 @@ describe('SignupForm: Component', () => {
   it('should show error if terms are not accepted', async () => {
     render();
     userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'asdzxc');
+    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
     userEvent.click(screen.getByRole('button', { name: /sign up/gi }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
@@ -62,11 +62,14 @@ describe('SignupForm: Component', () => {
   });
 
   it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, password: ['Provided password is invalid'] });
+    mockDispatch.mockResolvedValue({
+      isError: true,
+      password: [{ message: 'Provided password is invalid', code: 'invalid' }],
+    });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz');
+    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
     userEvent.click(screen.getByLabelText(/accept/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /sign up/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();
@@ -76,11 +79,14 @@ describe('SignupForm: Component', () => {
   });
 
   it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid credentials'] });
+    mockDispatch.mockResolvedValue({
+      isError: true,
+      nonFieldErrors: [{ message: 'Invalid credentials', code: 'invalid' }],
+    });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz');
+    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
     userEvent.click(screen.getByLabelText(/accept/gi));
     act(() => userEvent.click(screen.getByRole('button', { name: /sign up/gi })));
     expect(mockDispatch).not.toHaveBeenCalledWith();

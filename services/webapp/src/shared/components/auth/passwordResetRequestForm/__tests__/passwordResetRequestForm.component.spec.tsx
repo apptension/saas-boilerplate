@@ -60,7 +60,7 @@ describe('PasswordResetRequestForm: Component', () => {
   it('should show field error if action throws error', async () => {
     const email = 'user@mail.com';
 
-    mockDispatch.mockResolvedValue({ isError: true, email: ['Email is invalid'] });
+    mockDispatch.mockResolvedValue({ isError: true, email: [{ message: 'Email is invalid', code: 'invalid' }] });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), email);
@@ -74,7 +74,7 @@ describe('PasswordResetRequestForm: Component', () => {
   it('should show generic form error if action throws error', async () => {
     const email = 'user@mail.com';
 
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
+    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), email);

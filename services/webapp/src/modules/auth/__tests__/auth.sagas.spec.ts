@@ -78,11 +78,11 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockLogin(BAD_REQUEST, { isError: true, password: ['error'] }));
+      server.use(mockLogin(BAD_REQUEST, { isError: true, password: [{ message: 'error', code: 'error' }] }));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
-        .put(authActions.login.resolved({ isError: true, password: ['error'] }))
+        .put(authActions.login.resolved({ isError: true, password: [{ message: 'error', code: 'error' }] }))
         .dispatch(authActions.login(credentials))
         .silentRun();
     });
@@ -221,11 +221,11 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockSignup({ isError: true, password: ['error'] }, BAD_REQUEST));
+      server.use(mockSignup({ isError: true, password: [{ message: 'error', code: 'error' }] }, BAD_REQUEST));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
-        .put(authActions.signup.resolved({ isError: true, password: ['error'] }))
+        .put(authActions.signup.resolved({ isError: true, password: [{ message: 'error', code: 'error' }] }))
         .dispatch(authActions.signup(credentials))
         .silentRun();
     });
@@ -258,11 +258,13 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockChangePassword({ isError: true, oldPassword: ['error'] }, BAD_REQUEST));
+      server.use(
+        mockChangePassword({ isError: true, oldPassword: [{ message: 'error', code: 'error' }] }, BAD_REQUEST)
+      );
 
       await expectSaga(watchAuth)
         .withState(defaultState)
-        .put(authActions.changePassword.resolved({ isError: true, oldPassword: ['error'] }))
+        .put(authActions.changePassword.resolved({ isError: true, oldPassword: [{ message: 'error', code: 'error' }] }))
         .dispatch(authActions.changePassword(changePasswordPayload))
         .silentRun();
     });

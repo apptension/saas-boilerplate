@@ -137,8 +137,8 @@ class TestUserProfile:
             reverse("profile"), {'first_name': faker.pystr(41, 41), 'last_name': faker.pystr(41, 41)}, format='json'
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.data['first_name'] == ['Ensure this field has no more than 40 characters.']
-        assert response.data['last_name'] == ['Ensure this field has no more than 40 characters.']
+        assert response.data['first_name'][0]['code'] == 'max_length'
+        assert response.data['last_name'][0]['code'] == 'max_length'
 
 
 class TestResetPassword:
@@ -155,7 +155,7 @@ class TestResetPassword:
             reverse("password_reset"),
             {"email": "wrong_email@wp.pl"},
         )
-        assert response.status_code == status.HTTP_404_NOT_FOUND, response.data
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
 
     def test_user_found(self, api_client, user):
         response = api_client.post(
@@ -185,8 +185,8 @@ class TestResetPassword:
             {"user": str(user.pk), "token": "wrong_token", "new_password": new_password},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data["non_field_errors"][0] == "Malformed password reset token", response.data
-        assert response.data["is_error"]
+        assert response.data["is_error"], response.data
+        assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
 
     def test_wrong_password(self, api_client, user):
         new_password = "r"
@@ -197,7 +197,7 @@ class TestResetPassword:
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
-        assert "too short" in response.data["new_password"][0], response.data
+        assert response.data["new_password"][0]['code'] == 'password_too_short', response.data
 
     def test_wrong_user(self, api_client, user):
         new_password = "random1234"
@@ -208,7 +208,7 @@ class TestResetPassword:
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
-        assert response.data["non_field_errors"][0] == "Malformed password reset token", response.data
+        assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
 
     def test_blacklist_all_jwt(self, api_client, user, faker):
         jwts = [RefreshToken.for_user(user) for _ in range(3)]
@@ -247,7 +247,7 @@ class TestChangePassword:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data["is_error"]
-        assert "Wrong old password" in response.data["old_password"]
+        assert response.data["old_password"][0]['code'] == 'wrong_password'
 
     def test_user_not_auth(self, api_client, user):
         response = api_client.post(

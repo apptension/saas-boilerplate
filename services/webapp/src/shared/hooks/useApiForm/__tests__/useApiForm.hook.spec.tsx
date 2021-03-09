@@ -18,7 +18,7 @@ describe('useApiForm: Hook', () => {
     const { result } = render();
     const { setApiResponse } = result.current;
     act(() => {
-      setApiResponse({ isError: true, nonFieldErrors: ['custom error'] });
+      setApiResponse({ isError: true, nonFieldErrors: [{ message: 'custom error', code: 'custom-error' }] });
     });
 
     expect(result.current.genericError).toEqual('custom error');
@@ -29,7 +29,7 @@ describe('useApiForm: Hook', () => {
     const { result } = render();
     const { setApiResponse } = result.current;
     act(() => {
-      setApiResponse({ isError: true, email: ['custom email error'] });
+      setApiResponse({ isError: true, email: [{ message: 'custom email error', code: 'custom-email-error' }] });
     });
 
     expect(result.current.genericError).toBeUndefined();
@@ -38,10 +38,10 @@ describe('useApiForm: Hook', () => {
 
   describe('custom error messages are provided', () => {
     it('should set field error from api response using custom translations', () => {
-      const { result } = render({ errorMessages: { CUSTOM_ERROR: 'my custom error text' } });
+      const { result } = render({ errorMessages: { email: { custom_error: 'my custom error text' } } });
       const { setApiResponse } = result.current;
       act(() => {
-        setApiResponse({ isError: true, email: ['CUSTOM_ERROR'] });
+        setApiResponse({ isError: true, email: [{ message: '', code: 'custom_error' }] });
       });
 
       expect(result.current.genericError).toBeUndefined();
@@ -49,10 +49,10 @@ describe('useApiForm: Hook', () => {
     });
 
     it('should set generic error from api response using custom translations', () => {
-      const { result } = render({ errorMessages: { CUSTOM_ERROR: 'my custom error text' } });
+      const { result } = render({ errorMessages: { nonFieldErrors: { custom_error: 'my custom error text' } } });
       const { setApiResponse } = result.current;
       act(() => {
-        setApiResponse({ isError: true, nonFieldErrors: ['CUSTOM_ERROR'] });
+        setApiResponse({ isError: true, nonFieldErrors: [{ message: '', code: 'custom_error' }] });
       });
 
       expect(result.current.genericError).toEqual('my custom error text');

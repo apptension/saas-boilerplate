@@ -27,7 +27,26 @@ export const ChangePasswordForm = () => {
     setApiResponse,
     getValues,
     reset,
-  } = useApiForm<ChangePasswordFormFields>();
+  } = useApiForm<ChangePasswordFormFields>({
+    errorMessages: {
+      oldPassword: {
+        wrong_password: intl.formatMessage({
+          defaultMessage: 'The password is invalid.',
+          description: 'Auth / Change password / wrong old password',
+        }),
+      },
+      newPassword: {
+        password_too_common: intl.formatMessage({
+          defaultMessage: 'The password is too common.',
+          description: 'Auth / Change password / password too common',
+        }),
+        password_entirely_numeric: intl.formatMessage({
+          defaultMessage: "The password can't be entirely numeric.",
+          description: 'Auth / Change password / password entirely numeric',
+        }),
+      },
+    },
+  });
 
   const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
     try {
@@ -78,6 +97,13 @@ export const ChangePasswordForm = () => {
               message: intl.formatMessage({
                 defaultMessage: 'New password is required',
                 description: 'Auth / Change password / Password required',
+              }),
+            },
+            minLength: {
+              value: 8,
+              message: intl.formatMessage({
+                defaultMessage: 'Password is too short. It must contain at least 8 characters.',
+                description: 'Auth / Change password / Password too short',
               }),
             },
           })}

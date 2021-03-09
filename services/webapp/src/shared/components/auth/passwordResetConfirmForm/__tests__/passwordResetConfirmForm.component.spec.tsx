@@ -76,7 +76,10 @@ describe('PasswordResetConfirmForm: Component', () => {
   });
 
   it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, newPassword: ['Provided password is invalid'] });
+    mockDispatch.mockResolvedValue({
+      isError: true,
+      newPassword: [{ message: 'Provided password is invalid', code: 'invalid' }],
+    });
 
     render();
     userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
@@ -89,7 +92,7 @@ describe('PasswordResetConfirmForm: Component', () => {
   });
 
   it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
+    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
 
     render();
     userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);

@@ -22,7 +22,16 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   const [isSubmitted, setSubmitted] = useState(false);
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>({
+    errorMessages: {
+      email: {
+        user_not_found: intl.formatMessage({
+          defaultMessage: 'The user with specified email does not exist',
+          description: 'Auth / Request password reset / User not found',
+        }),
+      },
+    },
+  });
 
   const onSubmit = useCallback(
     throttle(

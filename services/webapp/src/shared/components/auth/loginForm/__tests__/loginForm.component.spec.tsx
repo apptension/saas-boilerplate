@@ -54,7 +54,10 @@ describe('LoginForm: Component', () => {
       password: 'abcxyz',
     };
 
-    mockDispatch.mockResolvedValue({ isError: true, password: ['Provided password is invalid'] });
+    mockDispatch.mockResolvedValue({
+      isError: true,
+      password: [{ message: 'Provided password is invalid', code: 'invalid' }],
+    });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
@@ -72,7 +75,10 @@ describe('LoginForm: Component', () => {
       password: 'abcxyz',
     };
 
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid credentials'] });
+    mockDispatch.mockResolvedValue({
+      isError: true,
+      nonFieldErrors: [{ message: 'Invalid credentials', code: 'invalid' }],
+    });
 
     render();
     userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);

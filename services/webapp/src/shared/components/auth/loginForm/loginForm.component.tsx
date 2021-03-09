@@ -11,12 +11,28 @@ import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 interface LoginFormFields {
   password: string;
   email: string;
+  asdf: {
+    dupa: string;
+  };
 }
 
 export const LoginForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<LoginFormFields>();
+  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<LoginFormFields>({
+    errorMessages: {
+      nonFieldErrors: {
+        no_active_account: intl.formatMessage({
+          defaultMessage: 'Incorrect authentication credentials.',
+          description: 'Login form / error / no active account',
+        }),
+        authentication_failed: intl.formatMessage({
+          defaultMessage: 'Incorrect authentication credentials.',
+          description: 'Login form / error / authentication failed',
+        }),
+      },
+    },
+  });
 
   const onLogin = async (data: LoginFormFields) => {
     try {

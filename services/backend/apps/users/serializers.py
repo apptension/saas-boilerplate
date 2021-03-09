@@ -107,7 +107,7 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
 
         user = attrs["user"]
         if not user.check_password(old_password):
-            raise exceptions.ValidationError({"old_password": _("Wrong old password")})
+            raise exceptions.ValidationError({"old_password": _("Wrong old password")}, 'wrong_password')
 
         return attrs
 
@@ -131,11 +131,16 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(write_only=True, help_text=_("User e-mail"))
 
-    def create(self, validated_data):
+    def validate(self, attrs):
         try:
-            user = dj_auth.get_user_model().objects.get(email=validated_data["email"])
+            user = dj_auth.get_user_model().objects.get(email=attrs["email"])
         except dj_auth.get_user_model().DoesNotExist:
-            raise exceptions.NotFound(_("User not found"))
+            raise exceptions.ValidationError({'email': _('User not found')}, 'user_not_found')
+
+        return {**attrs, 'user': user}
+
+    def create(self, validated_data):
+        user = validated_data.pop('user')
 
         notifications.create(
             "passwordReset",
@@ -169,10 +174,10 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         try:
             user = models.User.objects.get(pk=user_id)
         except models.User.DoesNotExist:
-            raise exceptions.ValidationError(_("Malformed password reset token"))
+            raise exceptions.ValidationError(_("Malformed password reset token"), 'invalid_token')
 
         if not tokens.password_reset_token.check_token(user, token):
-            raise exceptions.ValidationError(_("Malformed password reset token"))
+            raise exceptions.ValidationError(_("Malformed password reset token"), 'invalid_token')
 
         return {**attrs, 'user': user}
 

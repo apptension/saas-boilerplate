@@ -1,25 +1,29 @@
-import { useIntl } from 'react-intl';
-import { useCallback, useMemo } from 'react';
-import { ErrorMessages } from './useTranslatedErrors.types';
+import { useCallback } from 'react';
+import { FieldValues } from 'react-hook-form/dist/types/fields';
+import { FieldName } from 'react-hook-form';
+import { path } from 'ramda';
 
-export const useTranslatedErrors = (customMessages: ErrorMessages = {}) => {
-  const intl = useIntl();
+import { ErrorMessages, FieldErrorMessages } from '../useApiForm.types';
+import { FieldError } from '../../../services/api/types';
 
-  const messages = useMemo(() => {
-    const defaultMessages: ErrorMessages = {
-      INVALID_CREDENTIALS: intl.formatMessage({
-        description: 'Form Error / Invalid credentials',
-        defaultMessage: 'Provided email or password is invalid.',
-      }),
-    };
+export const useTranslatedErrors = <FormData extends FieldValues = FieldValues>(
+  customMessages?: ErrorMessages<FormData>
+) => {
+  const translateErrorMessage = useCallback(
+    (field: FieldName<FormData> | 'nonFieldErrors', error?: FieldError) => {
+      if (!error) {
+        return '';
+      }
 
-    return {
-      ...defaultMessages,
-      ...customMessages,
-    };
-  }, [customMessages, intl]);
+      const fallbackMessage = error.message || error.code;
+      if (!customMessages) {
+        return fallbackMessage;
+      }
 
-  const translateErrorMessage = useCallback((error?: string) => (error ? messages[error] ?? error : error), [messages]);
-
+      const msg = path<FieldErrorMessages>(field.split('.'), customMessages);
+      return msg?.[error.code] ?? fallbackMessage;
+    },
+    [customMessages]
+  );
   return { translateErrorMessage };
 };

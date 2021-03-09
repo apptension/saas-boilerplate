@@ -7,7 +7,7 @@ import { useTranslatedErrors } from './useTranslatedErrors';
 
 export const useApiForm = <FormData extends Record<string, any>>(args?: UseApiFormArgs<FormData>) => {
   const [genericError, setGenericError] = useState<string>();
-  const { translateErrorMessage } = useTranslatedErrors(args?.errorMessages);
+  const { translateErrorMessage } = useTranslatedErrors<FormData>(args?.errorMessages);
 
   const formControls = useForm<FormData>(args);
   const { setError } = formControls;
@@ -15,14 +15,15 @@ export const useApiForm = <FormData extends Record<string, any>>(args?: UseApiFo
   const setResponseErrors = useCallback(
     (response: FormSubmitError<FormData>) => {
       if (response.nonFieldErrors) {
-        setGenericError(translateErrorMessage(response.nonFieldErrors[0]));
+        setGenericError(translateErrorMessage('nonFieldErrors', response.nonFieldErrors[0]));
       }
 
       keys(response).forEach((field) => {
         if (field !== 'isError' && field !== 'nonFieldErrors') {
           const message = response[field]?.[0];
+          const fieldName = field as FieldName<FormData>;
           if (!isNil(message)) {
-            setError(field as FieldName<FormData>, { message: translateErrorMessage(message) });
+            setError(fieldName, { message: translateErrorMessage(fieldName, message) });
           }
         }
       });

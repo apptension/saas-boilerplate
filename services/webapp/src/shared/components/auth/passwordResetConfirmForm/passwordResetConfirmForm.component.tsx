@@ -36,7 +36,26 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
     genericError,
     setApiResponse,
     getValues,
-  } = useApiForm<ResetPasswordFormFields>();
+  } = useApiForm<ResetPasswordFormFields>({
+    errorMessages: {
+      nonFieldErrors: {
+        invalid_token: intl.formatMessage({
+          defaultMessage: 'Malformed password reset token',
+          description: 'Auth / Reset password confirm / invalid token',
+        }),
+      },
+      newPassword: {
+        password_too_common: intl.formatMessage({
+          defaultMessage: 'The password is too common.',
+          description: 'Auth / Reset password confirm / password too common',
+        }),
+        password_entirely_numeric: intl.formatMessage({
+          defaultMessage: "The password can't be entirely numeric.",
+          description: 'Auth / Reset password confirm / password entirely numeric',
+        }),
+      },
+    },
+  });
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
     try {
@@ -75,6 +94,13 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
               message: intl.formatMessage({
                 defaultMessage: 'Password is required',
                 description: 'Auth / Reset password confirm / Old password required',
+              }),
+            },
+            minLength: {
+              value: 8,
+              message: intl.formatMessage({
+                defaultMessage: 'Password is too short. It must contain at least 8 characters.',
+                description: 'Auth / Reset password confirm / Password too short',
               }),
             },
           })}
