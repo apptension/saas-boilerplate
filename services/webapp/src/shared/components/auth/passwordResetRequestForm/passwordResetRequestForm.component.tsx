@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import throttle from 'lodash.throttle';
@@ -22,6 +22,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   const [isSubmitted, setSubmitted] = useState(false);
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
+
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       email: {

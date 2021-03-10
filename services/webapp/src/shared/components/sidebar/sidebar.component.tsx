@@ -2,6 +2,7 @@ import React, { HTMLAttributes, useCallback, useContext, useEffect } from 'react
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import closeIcon from '@iconify-icons/ion/close-outline';
+import { useDispatch } from 'react-redux';
 import { ROUTES } from '../../../routes/app.constants';
 import { RoleAccess } from '../roleAccess';
 import { Role } from '../../../modules/auth/auth.types';
@@ -13,16 +14,24 @@ import { Link } from '../link';
 import { Avatar } from '../avatar';
 import { LayoutContext } from '../../../routes/layout/layout.context';
 import { NO_SCROLL_CLASSNAME } from '../../../theme/global';
+import { Button } from '../button';
+import { logout } from '../../../modules/auth/auth.actions';
 import { Container, MenuLink, MenuLinks, Header, CloseButton } from './sidebar.styles';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const locale = useLocale();
   const intl = useIntl();
+  const dispatch = useDispatch();
   const profileUrl = useLocaleUrl(ROUTES.profile);
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
+
+  const handleLogout = useCallback(() => {
+    closeSidebar();
+    dispatch(logout());
+  }, [closeSidebar, dispatch]);
 
   useEffect(() => {
     if (!isDesktop && isSideMenuOpen) {
@@ -90,6 +99,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
         <MenuLink to={`/${locale}${ROUTES.finances.paymentConfirm}`} onClick={closeSidebar}>
           <FormattedMessage defaultMessage="Payment demo" description="Home / payment demo link" />
         </MenuLink>
+
+        {!isDesktop && (
+          <MenuLink as={Button} onClick={handleLogout}>
+            <FormattedMessage defaultMessage="Logout" description="Home / logout link" />
+          </MenuLink>
+        )}
       </MenuLinks>
     </Container>
   );
