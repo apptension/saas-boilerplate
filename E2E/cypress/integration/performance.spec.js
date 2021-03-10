@@ -22,7 +22,7 @@ const mobileConfig = {
 const userEmail = Cypress.env('EMAIL');
 const password = Cypress.env('PASSWORD');
 
-describe('Lighthouse audit - desktop', () => {
+describe.skip('Lighthouse audit - desktop', () => {
   describe('Unauthorized pages - should pass on:', () => {
     it('Login page', () => {
       cy.visit('/', BASIC_AUTH);
@@ -82,7 +82,7 @@ describe('Lighthouse audit - desktop', () => {
   });
 });
 
-describe('Lighthouse audit - mobile', () => {
+describe.skip('Lighthouse audit - mobile', () => {
   describe('Unauthorized pages - should pass on:', () => {
     it('Login page', () => {
       cy.visit('/', BASIC_AUTH);

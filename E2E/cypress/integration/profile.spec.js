@@ -26,10 +26,9 @@ import {
 } from '../support/assertion';
 
 const password = Cypress.env('PASSWORD');
+const userEmail = Cypress.env('EMAIL');
 
 describe('Change first name and last name', () => {
-  const userEmail = Cypress.env('EMAIL');
-
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     cy.visit('/en/profile', BASIC_AUTH);
@@ -93,7 +92,6 @@ describe('Change password', () => {
 });
 
 describe('Should not update a password if: ', () => {
-  const userEmail = Cypress.env('EMAIL');
   const basePassword = Cypress.env('PASSWORD');
 
   beforeEach(() => {
@@ -127,8 +125,6 @@ describe('Should not update a password if: ', () => {
 });
 
 describe('Snackbar', () => {
-  const userEmail = Cypress.env('SIGNUP_EMAIL');
-
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     cy.visit('/en/profile', BASIC_AUTH);

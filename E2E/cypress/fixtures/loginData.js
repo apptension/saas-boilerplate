@@ -7,6 +7,9 @@ import {
   WRONG_CREDENTIALS_ERROR_TEXT,
 } from '../support/assertion';
 import { EMPTY_INPUT, VALID_PASSWORD } from './signupData';
+import API_ERROR_CODES from './apiErrorCodes';
+
+const { noActiveAccountFoundApiError } = API_ERROR_CODES;
 
 const INVALID_EMAIL = 'test@example.org';
 const INVALID_PASSWORD = 'qwerty1';
@@ -40,6 +43,7 @@ export default [
     password: INVALID_PASSWORD,
     passwordState: INVALID,
     errorText: [WRONG_CREDENTIALS_ERROR_TEXT],
+    apiErrorCode: noActiveAccountFoundApiError,
   },
   {
     userEmail: INVALID_EMAIL,
@@ -54,6 +58,7 @@ export default [
     password: VALID_PASSWORD,
     passwordState: VALID,
     errorText: [WRONG_CREDENTIALS_ERROR_TEXT],
+    apiErrorCode: noActiveAccountFoundApiError,
   },
   {
     userEmail: VALID_EMAIL,
@@ -61,6 +66,7 @@ export default [
     password: INVALID_PASSWORD,
     passwordState: INVALID,
     errorText: [WRONG_CREDENTIALS_ERROR_TEXT],
+    apiErrorCode: noActiveAccountFoundApiError,
   },
   {
     userEmail: VALID_EMAIL,

@@ -7,7 +7,11 @@ import {
 } from '../support/authentication';
 import LOGIN_DATA from '../fixtures/loginData';
 import BASIC_AUTH from '../fixtures/basicAuth';
-import { expectErrorTextToBeDisplayed, expectRequestToSucceed } from '../support/helpers';
+import {
+  expectErrorTextToBeDisplayed,
+  expectRequestToFail,
+  expectRequestToSucceed,
+} from '../support/helpers';
 import { VALID_FIRST_NAME, VALID_LAST_NAME } from '../fixtures/profileData';
 
 describe('Login page', () => {
@@ -35,12 +39,14 @@ describe('Login page', () => {
   });
 
   LOGIN_DATA.forEach((item) => {
-    const { userEmail, password, emailState, passwordState, errorText } = item;
+    const { userEmail, password, emailState, passwordState, errorText, apiErrorCode } = item;
 
     it(`should not log in with ${emailState} email and ${passwordState} password`, () => {
+      cy.intercept('POST', '/api/auth/token/').as('tokenResponse');
       logInWithUI({ userEmail, password });
 
       expectErrorTextToBeDisplayed(errorText);
+      expectRequestToFail('@tokenResponse', apiErrorCode);
       expectUserToBeLoggedOut();
     });
   });

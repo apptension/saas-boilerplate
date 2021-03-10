@@ -19,11 +19,9 @@ import {
 import API_ERROR_CODES from './apiErrorCodes';
 
 const {
-  shortPasswordApiError,
   commonPasswordApiError,
   notUniqueEmailApiError,
-  notUniqueEmailShortPasswordApiError,
-  notUniqueEmailCommonPasswordApiError,
+  existingEmailCommonPasswordApiError,
 } = API_ERROR_CODES;
 
 export const EMPTY_INPUT = '';
@@ -188,7 +186,6 @@ export default [
     checkbox: true,
     checkboxState: SELECTED,
     errorText: [TOO_SHORT_PASSWORD_ERROR_TEXT],
-    apiError: shortPasswordApiError,
   },
   {
     userEmail: VALID_EMAIL,
@@ -272,7 +269,6 @@ export default [
     checkbox: true,
     checkboxState: SELECTED,
     errorText: [TOO_SHORT_PASSWORD_ERROR_TEXT],
-    apiError: notUniqueEmailShortPasswordApiError,
   },
   {
     userEmail: EXISTING_EMAIL,
@@ -290,8 +286,8 @@ export default [
     passwordState: COMMON,
     checkbox: true,
     checkboxState: SELECTED,
-    errorText: [COMMON_PASSWORD_ERROR_TEXT],
-    apiError: notUniqueEmailCommonPasswordApiError,
+    errorText: [EMAIL_EXISTS_ERROR_TEXT, COMMON_PASSWORD_ERROR_TEXT],
+    apiError: existingEmailCommonPasswordApiError,
   },
   {
     userEmail: EXISTING_EMAIL,

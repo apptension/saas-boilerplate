@@ -28,7 +28,6 @@ const {
   numericNewPasswordApiError,
   wrongOldPasswordApiError,
   commonNewPasswordApiError,
-  shortNewPasswordApiError,
 } = API_ERROR_CODES;
 
 export default [
@@ -68,7 +67,6 @@ export default [
     confirmPassword: TOO_SHORT_PASSWORD,
     confirmPasswordState: TOO_SHORT,
     errorText: [TOO_SHORT_PASSWORD_ERROR_TEXT],
-    apiErrorCode: shortNewPasswordApiError,
   },
   {
     oldPassword: VALID_PASSWORD,

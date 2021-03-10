@@ -78,7 +78,6 @@ export const SET_NEW_PASSWORD_DATA = [
     confirmPassword: TOO_SHORT_PASSWORD,
     confirmPasswordState: TOO_SHORT,
     errorText: [TOO_SHORT_PASSWORD_ERROR_TEXT],
-    apiErrorCode: shortNewPasswordApiError,
   },
   {
     password: COMMON_PASSWORD,
