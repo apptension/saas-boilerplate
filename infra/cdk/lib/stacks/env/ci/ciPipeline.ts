@@ -3,6 +3,7 @@ import { Artifact, Pipeline } from "@aws-cdk/aws-codepipeline";
 import { S3SourceAction, S3Trigger } from "@aws-cdk/aws-codepipeline-actions";
 import { Bucket } from "@aws-cdk/aws-s3";
 import * as ecr from "@aws-cdk/aws-ecr";
+import * as cc from "@aws-cdk/aws-codecommit";
 
 import { EnvConstructProps } from "../../../types";
 import { EnvironmentSettings } from "../../../settings";
@@ -12,16 +13,20 @@ import { WebappCiConfig } from "./ciWebApp";
 import { ServerlessCiConfig } from "./ciServerless";
 import { UploadVersionCiConfig } from "./ciUploadVersion";
 import { ComponentsCiConfig } from "./ciComponents";
+import { E2ETestsCiConfig } from "./e2eTests";
 
 export interface CiPipelineProps extends EnvConstructProps {
   entrypointArtifactBucket: Bucket;
   backendRepository: ecr.IRepository;
   webappBaseRepository: ecr.IRepository;
+  e2eBaseRepository: ecr.IRepository;
+  codeRepository: cc.IRepository;
 }
 
 export class CiPipeline extends Construct {
   buildStageName = "Build";
   deployStageName = "Deploy";
+  postDeployStageName = "PostDeploy";
 
   static getSourceOutputArtifact(envSettings: EnvironmentSettings) {
     return Artifact.artifact(`${envSettings.projectEnvName}-source`);
@@ -40,6 +45,10 @@ export class CiPipeline extends Construct {
     );
     const buildStage = this.selectStage(this.buildStageName, pipeline);
     const deployStage = this.selectStage(this.deployStageName, pipeline);
+    const postDeployStage = this.selectStage(
+      this.postDeployStageName,
+      pipeline
+    );
 
     new ComponentsCiConfig(this, "ComponentsConfig", {
       buildStage,
@@ -75,9 +84,16 @@ export class CiPipeline extends Construct {
 
     new UploadVersionCiConfig(this, "UploadVersionConfig", {
       envSettings: props.envSettings,
-      buildStage,
-      deployStage,
+      stage: deployStage,
       inputArtifact: sourceOutputArtifact,
+    });
+
+    new E2ETestsCiConfig(this, "E2ETestsConfig", {
+      envSettings: props.envSettings,
+      codeRepository: props.codeRepository,
+      stage: postDeployStage,
+      inputArtifact: sourceOutputArtifact,
+      e2eBaseRepository: props.e2eBaseRepository,
     });
   }
 
@@ -113,6 +129,10 @@ export class CiPipeline extends Construct {
         },
         {
           stageName: this.deployStageName,
+          actions: [],
+        },
+        {
+          stageName: this.postDeployStageName,
           actions: [],
         },
       ],

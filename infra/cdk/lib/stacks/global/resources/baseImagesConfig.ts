@@ -10,10 +10,10 @@ import {
   Source,
 } from "@aws-cdk/aws-codebuild";
 import * as targets from "@aws-cdk/aws-events-targets";
+import { AnyPrincipal } from "@aws-cdk/aws-iam";
 
 import { EnvConstructProps } from "../../../types";
 import { EnvironmentSettings } from "../../../settings";
-import { AnyPrincipal } from "@aws-cdk/aws-iam";
 
 export interface BaseImagesConfigProps extends EnvConstructProps {
   codeRepository: IRepository;
@@ -23,6 +23,7 @@ export class BaseImagesConfig extends Construct {
   private readonly codeBuildProject: Project;
   backendBaseRepository: ECRRepository;
   webappBaseRepository: ECRRepository;
+  e2eBaseRepository: ECRRepository;
 
   static getBackendBaseRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-backend-base`;
@@ -30,6 +31,10 @@ export class BaseImagesConfig extends Construct {
 
   static getWebappBaseRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-webapp-base`;
+  }
+
+  static getE2EBaseRepositoryName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectName}-e2e-base`;
   }
 
   constructor(scope: Construct, id: string, props: BaseImagesConfigProps) {
@@ -57,11 +62,19 @@ export class BaseImagesConfig extends Construct {
       }
     );
 
+    this.e2eBaseRepository = new ECRRepository(this, "ECRE2EBaseRepository", {
+      repositoryName: BaseImagesConfig.getE2EBaseRepositoryName(
+        props.envSettings
+      ),
+    });
+
     this.backendBaseRepository.grantPullPush(this.codeBuildProject);
     this.webappBaseRepository.grantPullPush(this.codeBuildProject);
+    this.e2eBaseRepository.grantPullPush(this.codeBuildProject);
 
     this.backendBaseRepository.grantPull(new AnyPrincipal());
     this.webappBaseRepository.grantPull(new AnyPrincipal());
+    this.e2eBaseRepository.grantPull(new AnyPrincipal());
 
     props.codeRepository.onCommit("OnDeployCommit", {
       branches: ["master"],
@@ -87,7 +100,10 @@ export class BaseImagesConfig extends Construct {
       version: "0.2",
       phases: {
         build: {
-          commands: ["make -C services/webapp build-base-image"],
+          commands: [
+            "make -C services/webapp build-base-image",
+            "make -C E2E build-base-image",
+          ],
         },
       },
     });

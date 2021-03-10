@@ -18,8 +18,7 @@ import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
 
 interface UploadVersionCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
-  buildStage: IStage;
-  deployStage: IStage;
+  stage: IStage;
 }
 
 export class UploadVersionCiConfig extends ServiceCiConfig {
@@ -27,7 +26,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
     super(scope, id, { envSettings: props.envSettings });
 
     const deployProject = this.createDeployProject(props);
-    props.deployStage.addAction(
+    props.stage.addAction(
       this.createDeployAction(
         {
           project: deployProject,

@@ -108,6 +108,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             `services/${props.name}/**/*`,
             `services/webapp/build/**/*`,
             `services/backend/**/*`,
+            `E2E/**/*`,
           ],
         },
       }),

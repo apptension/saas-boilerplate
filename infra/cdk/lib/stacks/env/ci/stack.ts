@@ -6,9 +6,9 @@ import * as codeCommit from "@aws-cdk/aws-codecommit";
 import { EnvConstructProps } from "../../../types";
 import { GlobalECR } from "../../global/resources/globalECR";
 import { GlobalCodeCommit } from "../../global/resources/globalCodeCommit";
+import { BaseImagesConfig } from "../../global/resources/baseImagesConfig";
 import { CiPipeline } from "./ciPipeline";
 import { CiEntrypoint } from "./ciEntrypoint";
-import { BaseImagesConfig } from "../../global/resources/baseImagesConfig";
 
 export interface EnvCiStackProps extends StackProps, EnvConstructProps {}
 
@@ -18,6 +18,7 @@ export class EnvCiStack extends core.Stack {
 
     const backendRepository = this.retrieveBackendECRRepository(props);
     const webappBaseRepository = this.retrieveWebappBaseECRRepository(props);
+    const e2eBaseRepository = this.retrieveE2EBaseECRRepository(props);
     const codeRepository = this.retrieveCodeRepository(props);
 
     const entrypoint = new CiEntrypoint(this, "Entrypoint", {
@@ -27,8 +28,10 @@ export class EnvCiStack extends core.Stack {
 
     new CiPipeline(this, "PipelineConfig", {
       envSettings: props.envSettings,
+      codeRepository,
       backendRepository,
       webappBaseRepository,
+      e2eBaseRepository,
       entrypointArtifactBucket: entrypoint.artifactsBucket,
     });
   }
@@ -54,6 +57,14 @@ export class EnvCiStack extends core.Stack {
       this,
       "ECRWebappBaseRepository",
       BaseImagesConfig.getWebappBaseRepositoryName(props.envSettings)
+    );
+  }
+
+  private retrieveE2EBaseECRRepository(props: EnvCiStackProps) {
+    return Repository.fromRepositoryName(
+      this,
+      "ECRE2EBaseRepository",
+      BaseImagesConfig.getE2EBaseRepositoryName(props.envSettings)
     );
   }
 }

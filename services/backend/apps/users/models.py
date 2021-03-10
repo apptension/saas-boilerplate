@@ -57,12 +57,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_group(self, name):
         return self.groups.filter(name=name).exists()
 
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
-
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
