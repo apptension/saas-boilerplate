@@ -37,3 +37,11 @@ export const ROUTES = {
   }),
   //<-- INJECT ROUTE DEFINITION -->
 };
+
+export const NO_NAVIGATION_ROUTES = [
+  ROUTES.login,
+  ROUTES.signup,
+  ROUTES.passwordReset.index,
+  ROUTES.passwordReset.confirm,
+  ROUTES.confirmEmail,
+];

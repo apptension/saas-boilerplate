@@ -3,12 +3,14 @@ import { screen } from '@testing-library/dom';
 
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/react';
+import { generatePath } from 'react-router-dom';
 import { Layout } from '../layout.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
 import { LayoutContext } from '../layout.context';
 import { Breakpoint } from '../../../theme/media';
 import { prepareState } from '../../../mocks/store';
 import { loggedInAuthFactory } from '../../../mocks/factories';
+import { ROUTES } from '../../app.constants';
 
 const loggedInState = prepareState((state) => {
   state.auth = loggedInAuthFactory();
@@ -22,13 +24,11 @@ jest.mock('../../../theme/media', () => {
   };
 });
 
-describe('Sidebar: Component', () => {
+describe('Layout: Component', () => {
   const component = () => (
-    <LayoutContext.Provider value={{ isSideMenuOpen: true, setSideMenuOpen: () => null }}>
-      <Layout>
-        <span data-testid="content" />
-      </Layout>
-    </LayoutContext.Provider>
+    <Layout>
+      <span data-testid="content" />
+    </Layout>
   );
   const render = makeContextRenderer(component);
 
@@ -37,20 +37,32 @@ describe('Sidebar: Component', () => {
       mockGetActiveBreakpoint.mockReturnValue(Breakpoint.MOBILE);
     });
 
+    describe('on /auth routes', () => {
+      it('should not show open menu button', () => {
+        render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
+        expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
+      });
+    });
+
     it('should show content', () => {
       render();
       expect(screen.getByTestId('content')).toBeVisible();
     });
 
     describe('user is logged out', () => {
-      it('should not show open menu button', () => {
+      it('should show open menu button', () => {
         render();
-        expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/open menu/gi)).toBeInTheDocument();
       });
 
-      it('should not show menu links', () => {
+      it('should show privacy menu link', () => {
         render();
-        expect(screen.queryByText(/privacy policy/gi)).not.toBeInTheDocument();
+        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+      });
+
+      it('should not show dashboard menu link', () => {
+        render();
+        expect(screen.queryByText(/dashboard/gi)).not.toBeInTheDocument();
       });
     });
 
@@ -104,15 +116,22 @@ describe('Sidebar: Component', () => {
       expect(screen.getByTestId('content')).toBeVisible();
     });
 
+    describe('on /auth routes', () => {
+      it('should not show menu links', () => {
+        render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
+        expect(screen.queryByText(/privacy policy/gi)).not.toBeInTheDocument();
+      });
+    });
+
     describe('user is logged out', () => {
       it('should not show open menu button', () => {
         render();
         expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
       });
 
-      it('should not show menu links', () => {
+      it('should show menu links', () => {
         render();
-        expect(screen.queryByText(/privacy policy/gi)).not.toBeInTheDocument();
+        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
       });
     });
 

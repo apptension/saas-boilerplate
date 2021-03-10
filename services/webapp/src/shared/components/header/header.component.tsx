@@ -35,7 +35,7 @@ export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
   const profileUrl = useLocaleUrl(ROUTES.profile);
   const dispatch = useDispatch();
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
-  const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
+  const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const closeDropdown = () => setDropdownOpen(false);
   const handleLogout = () => {
@@ -46,7 +46,7 @@ export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
   return (
     <Container {...props}>
       <Content>
-        {isLoggedIn && !isDesktop && (
+        {isSidebarAvailable && !isDesktop && (
           <MenuToggleButton
             onClick={() => setSideMenuOpen(true)}
             aria-expanded={isSideMenuOpen}

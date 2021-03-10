@@ -48,6 +48,7 @@ export const Header = styled.div`
   justify-content: space-between;
   padding-left: ${sizeUnits(2)};
   padding-right: ${sizeUnits(2)};
+  flex-direction: row-reverse;
 
   ${media(Breakpoint.TABLET)`
     display: none;

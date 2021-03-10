@@ -5,7 +5,7 @@ import { useRoleAccessCheck } from '../../hooks/useRoleAccessCheck';
 
 export interface RoleAccessProps {
   children: ReactNode;
-  allowedRoles: Role | Role[];
+  allowedRoles?: Role | Role[];
 }
 
 export const RoleAccess = ({ children, allowedRoles }: RoleAccessProps) => {

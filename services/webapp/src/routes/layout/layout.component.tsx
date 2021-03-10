@@ -1,7 +1,8 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 
-import { useSelector } from 'react-redux';
-import { selectIsLoggedIn } from '../../modules/auth/auth.selectors';
+import { useLocation, matchPath } from 'react-router-dom';
+import { isNil } from 'ramda';
+import { NO_NAVIGATION_ROUTES } from '../app.constants';
 import { Header, Sidebar, Content } from './layout.styles';
 import { LayoutContext } from './layout.context';
 
@@ -10,14 +11,19 @@ export interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const isUserLoggedIn = useSelector(selectIsLoggedIn);
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  const shouldHideSidebar = useMemo(
+    () => NO_NAVIGATION_ROUTES.some((routePath) => !isNil(matchPath(pathname, { path: `/:lang${routePath}` }))),
+    [pathname]
+  );
 
   return (
-    <LayoutContext.Provider value={{ isSideMenuOpen, setSideMenuOpen }}>
+    <LayoutContext.Provider value={{ isSidebarAvailable: !shouldHideSidebar, isSideMenuOpen, setSideMenuOpen }}>
       <Header />
-      {isUserLoggedIn && <Sidebar />}
-      <Content withSidebar={isUserLoggedIn}>{children}</Content>
+      {!shouldHideSidebar && <Sidebar />}
+      <Content withSidebar={!shouldHideSidebar}>{children}</Content>
     </LayoutContext.Provider>
   );
 };

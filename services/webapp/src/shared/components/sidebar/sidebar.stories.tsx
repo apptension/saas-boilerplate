@@ -8,7 +8,7 @@ import { Sidebar } from './sidebar.component';
 const Template: Story = (args) => {
   return (
     <ProvidersWrapper>
-      <LayoutContext.Provider value={{ isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+      <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
         <Sidebar {...args} />
       </LayoutContext.Provider>
     </ProvidersWrapper>
