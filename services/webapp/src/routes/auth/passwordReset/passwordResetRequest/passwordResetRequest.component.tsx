@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
@@ -10,6 +10,8 @@ import { Container, Header, Text, Links } from './passwordResetRequest.styles';
 export const PasswordResetRequest = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const loginUrl = useLocaleUrl(ROUTES.login);
+
+  const handleSubmit = useCallback(() => setIsSubmitted(true), []);
 
   return (
     <Container>
@@ -34,7 +36,7 @@ export const PasswordResetRequest = () => {
         )}
       </Text>
 
-      <PasswordResetRequestForm onSubmitted={() => setIsSubmitted(true)} />
+      <PasswordResetRequestForm onSubmitted={handleSubmit} />
 
       <Links>
         <Link to={loginUrl}>
