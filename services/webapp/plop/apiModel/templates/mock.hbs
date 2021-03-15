@@ -1,6 +1,6 @@
 import { rest } from 'msw';
-import { {{ pascalCase name }}ApiGetResponseData } from '../../../shared/services/api/{{ camelCase name }}/types';
-import { {{ constantCase name }}_URL } from '../../../shared/services/api/{{ camelCase name }}';
+import { {{ pascalCase name }}ApiGetResponseData } from '{{ relativeModulePath }}/{{ camelCase name }}/types';
+import { {{ constantCase name }}_URL } from '{{ relativeModulePath }}/{{ camelCase name }}';
 const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
 export const mockGet{{ pascalCase name }} = (response: {{ pascalCase name }}ApiGetResponseData[] = []) =>
