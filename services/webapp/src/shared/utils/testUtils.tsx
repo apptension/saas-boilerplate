@@ -10,7 +10,7 @@ import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
 
 import { MockedProvider } from '@apollo/client/testing';
-import { DEFAULT_LOCALE, translationMessages, MessagesObject } from '../../i18n';
+import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';
 import { ResponsiveThemeProvider } from '../components/responsiveThemeProvider';
@@ -34,7 +34,7 @@ interface ContextData {
     history?: MemoryHistory;
   };
   store?: GlobalState;
-  messages?: MessagesObject;
+  messages?: TranslationMessages;
   apolloMocks?: any[];
 }
 

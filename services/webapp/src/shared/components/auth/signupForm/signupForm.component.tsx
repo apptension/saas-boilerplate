@@ -36,7 +36,7 @@ export const SignupForm = () => {
           description: 'Auth / Signup / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
-          defaultMessage: 'The password can\'t be entirely numeric.',
+          defaultMessage: "The password can't be entirely numeric.",
           description: 'Auth / Signup / password entirely numeric',
         }),
       },
@@ -133,7 +133,7 @@ export const SignupForm = () => {
             termsLink: (
               <InlineLink to={termsUrl}>
                 <FormattedMessage
-                  description={'Auth / Signup / Accept checkbox / T&C link'}
+                  description="Auth / Signup / Accept checkbox / T&C link"
                   defaultMessage="Terms of Use"
                 />
               </InlineLink>
@@ -141,7 +141,7 @@ export const SignupForm = () => {
             policyLink: (
               <InlineLink to={privacyUrl}>
                 <FormattedMessage
-                  description={'Auth / Signup / Accept checkbox / Privacy policy link'}
+                  description="Auth / Signup / Accept checkbox / Privacy policy link"
                   defaultMessage="Privacy Policy"
                 />
               </InlineLink>

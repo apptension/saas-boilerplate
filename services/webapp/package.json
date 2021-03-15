@@ -112,7 +112,7 @@
     "build-emails": "yarn contentful:generate-types && node ./scripts/build-emails.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --out-file src/translations/en.json --ignore src/mocks/**",
     "lint": "yarn run lint:js && yarn run lint:css",
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
