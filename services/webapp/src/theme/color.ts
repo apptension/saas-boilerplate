@@ -9,6 +9,7 @@ export const ultramarineBlueScale = colorScale('#0001FF');
 export const prussianBlueScale = colorScale('#406ABF');
 export const cherryRedScale = colorScale('#FF0055');
 
+export const text = greyScale.get(15);
 export const border = '#80809B';
 export const disabled = '#DDDDE0';
 export const primary = '#42f272';
@@ -63,6 +64,18 @@ export const input = {
   hover: skyBlueScale.get(65),
   active: skyBlueScale.get(50),
   invalid: cherryRedScale.get(50),
+};
+
+export const radio = {
+  main: skyBlueScale.get(50),
+  hover: {
+    main: skyBlueScale.get(98),
+    border: skyBlueScale.get(65),
+  },
+  disabled: {
+    main: greyScale.get(90),
+    text: greyScale.get(70),
+  },
 };
 
 export const listItem = {

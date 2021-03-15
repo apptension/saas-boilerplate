@@ -2,7 +2,6 @@ import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Controller, NestedValue } from 'react-hook-form';
 
-import { Label } from '../../../../../theme/typography';
 import { StripePaymentIntent, TestProduct } from '../../../../services/api/stripe/paymentIntent';
 import { useApiForm } from '../../../../hooks/useApiForm';
 import { Button } from '../../../button';
@@ -12,7 +11,13 @@ import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { ErrorMessage, Form, ProductListContainer, ProductListItem } from './stripePaymentForm.styles';
+import {
+  ErrorMessage,
+  Form,
+  ProductListContainer,
+  ProductListItem,
+  ProductListItemButton,
+} from './stripePaymentForm.styles';
 
 interface StripePaymentFormFields {
   product: TestProduct;
@@ -75,23 +80,21 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         <ProductListContainer>
           {Object.values(TestProduct).map((amount) => (
             <ProductListItem key={amount}>
-              <Label>
-                <input
-                  name="product"
-                  type="radio"
-                  value={amount}
-                  ref={register({
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Product is required',
-                        description: 'Stripe / Payment / Product required',
-                      }),
-                    },
-                  })}
-                />{' '}
+              <ProductListItemButton
+                name="product"
+                value={amount}
+                ref={register({
+                  required: {
+                    value: true,
+                    message: intl.formatMessage({
+                      defaultMessage: 'Product is required',
+                      description: 'Stripe / Payment / Product required',
+                    }),
+                  },
+                })}
+              >
                 {amount} zł
-              </Label>
+              </ProductListItemButton>
             </ProductListItem>
           ))}
         </ProductListContainer>
