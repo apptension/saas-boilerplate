@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
 
-import { Container } from './markdownPage.styles';
+import { BackButton } from '../backButton/backButton.component';
+import { Container, Markdown } from './markdownPage.styles';
 
 export interface MarkdownPageProps {
   markdown?: string;
@@ -10,7 +10,8 @@ export interface MarkdownPageProps {
 export const MarkdownPage = ({ markdown = '' }: MarkdownPageProps) => {
   return (
     <Container>
-      <ReactMarkdown>{markdown}</ReactMarkdown>
+      <BackButton />
+      <Markdown>{markdown}</Markdown>
     </Container>
   );
 };

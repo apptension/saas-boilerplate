@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 
 import { useDispatch } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { useAllDemoItemsQuery } from '../../shared/services/contentful/__generated/hooks';
 import { demoItemsActions } from '../../modules/demoItems';
-import { Container } from './demoItems.styles';
+import { Container, Header, List } from './demoItems.styles';
 import { DemoItemListItem } from './demoItemListItem';
 
 export const DemoItems = () => {
@@ -17,9 +18,15 @@ export const DemoItems = () => {
 
   return (
     <Container>
-      {items?.map((demoItem) => {
-        return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} item={demoItem} /> : null;
-      })}
+      <Header>
+        <FormattedMessage defaultMessage={'Contentful items'} description={'Contentful Items / List header'} />
+      </Header>
+
+      <List>
+        {items?.map((demoItem) => {
+          return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} item={demoItem} /> : null;
+        })}
+      </List>
     </Container>
   );
 };

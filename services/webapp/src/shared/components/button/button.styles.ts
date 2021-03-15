@@ -23,7 +23,7 @@ const hoverButtonStyle = css`
   background: ${theme('variant', {
     [ButtonVariant.PRIMARY]: button.hover,
     [ButtonVariant.SECONDARY]: button.inverted,
-    [ButtonVariant.RAW]: button.inverted,
+    [ButtonVariant.RAW]: 'transparent',
     [ButtonVariant.FLAT]: button.flat.hover,
   })};
 
@@ -106,7 +106,7 @@ const rawShape = css`
 `;
 
 export const Icon = styled.span`
-  margin-right: 8px;
+  margin-right: 4px;
   font-size: 0;
   display: inline-flex;
   align-items: center;
@@ -139,7 +139,7 @@ const rawBaseButtonStyle = css`
   border-radius: 4px;
   color: ${button.invertedText};
   border: none;
-  background-color: ${button.inverted};
+  background-color: transparent;
 `;
 
 const flatBaseButtonStyle = css`

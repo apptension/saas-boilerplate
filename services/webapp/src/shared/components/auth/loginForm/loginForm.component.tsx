@@ -11,9 +11,6 @@ import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 interface LoginFormFields {
   password: string;
   email: string;
-  asdf: {
-    dupa: string;
-  };
 }
 
 export const LoginForm = () => {

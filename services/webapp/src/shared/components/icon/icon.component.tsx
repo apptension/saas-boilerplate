@@ -5,8 +5,9 @@ import { Container } from './icon.styles';
 export interface IconProps {
   icon: ComponentProps<typeof IconifyIcon>['icon'];
   className?: string;
+  size?: number;
 }
 
-export const Icon = ({ icon, className }: IconProps) => {
-  return <Container icon={icon} className={className} />;
+export const Icon = ({ icon, className, size }: IconProps) => {
+  return <Container icon={icon} className={className} size={size ?? 24} />;
 };

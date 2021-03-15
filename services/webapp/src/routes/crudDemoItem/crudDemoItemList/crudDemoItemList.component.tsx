@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { crudDemoItemActions } from '../../../modules/crudDemoItem';
 import { selectCrudDemoItemList } from '../../../modules/crudDemoItem/crudDemoItem.selectors';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { Container } from './crudDemoItemList.styles';
+import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
 
 export const CrudDemoItemList = () => {
@@ -21,14 +21,16 @@ export const CrudDemoItemList = () => {
 
   return (
     <Container>
-      <h1>CrudDemoItemList component</h1>
-      <Link to={addNewUrl}>
-        <FormattedMessage description={'CrudDemoItemList / Add new'} defaultMessage={'Add new'} />
-      </Link>
+      <Header>CRUD Example Items</Header>
+      <AddNewLink to={addNewUrl} variant={ButtonVariant.PRIMARY}>
+        <FormattedMessage description={'CrudDemoItemList / Add new'} defaultMessage={'Add new item'} />
+      </AddNewLink>
 
-      {items.map((item) => (
-        <CrudDemoItemListItem item={item} key={item.id} />
-      ))}
+      <List>
+        {items.map((item) => (
+          <CrudDemoItemListItem item={item} key={item.id} />
+        ))}
+      </List>
     </Container>
   );
 };

@@ -30,6 +30,6 @@ describe('CrudDemoItemDetails: Component', () => {
         },
       }
     );
-    expect(screen.getByText(`[${item.id}] ${item.name}`)).toBeInTheDocument();
+    expect(screen.getByText(`${item.name}`)).toBeInTheDocument();
   });
 });

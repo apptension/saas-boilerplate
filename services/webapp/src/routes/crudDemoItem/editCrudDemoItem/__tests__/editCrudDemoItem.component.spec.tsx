@@ -9,6 +9,7 @@ import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { crudDemoItemActions } from '../../../../modules/crudDemoItem';
 import { prepareState } from '../../../../mocks/store';
 import { ROUTES } from '../../../app.constants';
+import { snackbarActions } from '../../../../modules/snackbar';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -76,7 +77,7 @@ describe('EditCrudDemoItem: Component', () => {
       userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
       act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
       await waitFor(() => {
-        expect(screen.getByText('Saved successfully')).toBeInTheDocument();
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
       });
     });
   });

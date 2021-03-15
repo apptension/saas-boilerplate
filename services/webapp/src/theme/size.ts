@@ -34,8 +34,8 @@ export const contentWithLimitedWidth = css`
 
 export const contentWrapper = css`
   width: 100%;
-  padding-left: ${sizeUnits(3)};
-  padding-right: ${sizeUnits(3)};
+  padding-left: ${sizeUnits(2)};
+  padding-right: ${sizeUnits(2)};
   margin-left: auto;
   margin-right: auto;
 
@@ -43,6 +43,26 @@ export const contentWrapper = css`
     padding-left: ${sizeUnits(5)};
     padding-right: ${sizeUnits(5)};
   `};
+`;
+
+export const horizontalPadding = (value: string) => css`
+  padding-left: ${value};
+  padding-right: ${value};
+`;
+
+export const verticalPadding = (value: string) => css`
+  padding-top: ${value};
+  padding-bottom: ${value};
+`;
+
+export const horizontalMargin = (value: string) => css`
+  margin-left: ${value};
+  margin-right: ${value};
+`;
+
+export const verticalMargin = (value: string) => css`
+  margin-top: ${value};
+  margin-bottom: ${value};
 `;
 
 export const formFieldWidth = css`

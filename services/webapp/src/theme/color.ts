@@ -64,3 +64,17 @@ export const input = {
   active: skyBlueScale.get(50),
   invalid: cherryRedScale.get(50),
 };
+
+export const listItem = {
+  background: white,
+  hover: {
+    background: skyBlueScale.get(98),
+  },
+  focus: {
+    background: skyBlueScale.get(98),
+  },
+  active: {
+    background: skyBlueScale.get(95),
+    text: skyBlueScale.get(35),
+  },
+};

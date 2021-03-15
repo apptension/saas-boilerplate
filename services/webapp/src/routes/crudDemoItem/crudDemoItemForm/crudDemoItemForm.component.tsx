@@ -7,7 +7,12 @@ import { Input } from '../../../shared/components/input';
 import { Button } from '../../../shared/components/button';
 import { CrudDemoItem } from '../../../shared/services/api/crudDemoItem/types';
 import { crudDemoItemActions } from '../../../modules/crudDemoItem';
-import { Container, ErrorMessage, Form, Label, Row } from './crudDemoItemForm.styles';
+import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { Link } from '../../../shared/components/link';
+import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../app.constants';
+import { useSnackbar } from '../../../shared/components/snackbar';
+import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;
 
@@ -22,15 +27,15 @@ interface CrudDemoItemFormFields {
 export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
+  const goBackUrl = useLocaleUrl(ROUTES.crudDemoItem.list);
+  const { showMessage } = useSnackbar();
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    genericError,
-    setApiResponse,
-    formState,
-  } = useApiForm<CrudDemoItemFormFields>({
+  const successMessage = intl.formatMessage({
+    description: 'CrudDemoItem form / Success message',
+    defaultMessage: '🎉 Changes saved successfully!',
+  });
+
+  const { register, handleSubmit, errors, genericError, setApiResponse } = useApiForm<CrudDemoItemFormFields>({
     defaultValues: {
       name: data?.name,
     },
@@ -44,16 +49,17 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
 
       const res = await dispatch(action);
       setApiResponse(res);
+
+      if (!res.isError) {
+        await showMessage(successMessage);
+      }
     } catch {}
   };
 
   return (
     <Container>
       <Form onSubmit={handleSubmit(onFormSubmit)}>
-        <Row>
-          <Label>
-            <FormattedMessage defaultMessage="Name:" description="CrudDemoItem Form / Name label" />
-          </Label>
+        <Fields>
           <Input
             ref={register({
               maxLength: {
@@ -72,22 +78,29 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
               },
             })}
             name={'name'}
+            label={intl.formatMessage({
+              defaultMessage: 'Name:',
+              description: 'CrudDemoItem Form / Name label',
+            })}
             placeholder={intl.formatMessage({
               defaultMessage: 'Name',
               description: 'CrudDemoItem form / Name placeholder',
             })}
             error={errors.name?.message}
           />
-        </Row>
 
-        {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-        <Button type="submit">
-          <FormattedMessage defaultMessage="Save" description="CrudDemoItem form / Submit button" />
-        </Button>
+          {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+        </Fields>
 
-        {formState.isSubmitSuccessful && (
-          <FormattedMessage defaultMessage="Saved successfully" description="CrudDemoItem form / Success message" />
-        )}
+        <Buttons>
+          <Link to={goBackUrl} variant={ButtonVariant.SECONDARY}>
+            <FormattedMessage defaultMessage="Cancel" description="CrudDemoItem form / Cancel button" />
+          </Link>
+
+          <Button type="submit">
+            <FormattedMessage defaultMessage="Save changes" description="CrudDemoItem form / Submit button" />
+          </Button>
+        </Buttons>
       </Form>
     </Container>
   );

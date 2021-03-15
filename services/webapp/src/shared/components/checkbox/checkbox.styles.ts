@@ -14,7 +14,7 @@ export const Field = styled.input`
   width: 0;
   position: absolute;
   height: 0;
-  visibility: hidden;
+  opacity: 0;
 `;
 
 export const CheckIcon = styled(Icon)`
