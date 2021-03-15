@@ -4,6 +4,9 @@ module.exports = {
     Guides: ["aws-environment", "ssh-bastion"],
     Features: [
       "sentry",
+      "emails",
+      "crud-generator",
+      "django-rest-api",
       {
         type: "category",
         label: "SSO",

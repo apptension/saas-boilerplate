@@ -17,6 +17,14 @@ REACT_APP_CONTENTFUL_TOKEN=<CHANGE_ME>
 REACT_APP_CONTENTFUL_ENV=develop
 ```
 
+## Updating local schema to match Contentful remote one
+
+Whenever Contentful model changes, you should run `yarn contentful:download-schema` to update local schema to match with
+remote contentful model.
+
+It introspects remote Contentful GraphQL API endpoint and generates `schema.graphql` file based on current content-model
+structure on Contentful
+
 ## Running in AWS
 
 ##### Start AWS vault session
