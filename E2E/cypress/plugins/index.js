@@ -1,17 +1,17 @@
 /// <reference types="cypress" />
+const path = require('path');
 require('dotenv').config();
 
 const fse = require('fs-extra');
-const path = require('path');
 const { lighthouse, prepareAudit } = require('cypress-audit');
-const { deleteEmails } = require('../support/GmailAPI/gmail.api');
-const { getEmails } = require('../support/GmailAPI/gmail.api');
-const { getLinksFromEmailBody } = require('../support/GmailAPI/gmail.api');
-const { getEmailId } = require('../support/GmailAPI/gmail.api');
-const { getEmailText } = require('../support/GmailAPI/gmail.api');
-const { waitForEmail } = require('../support/GmailAPI/gmail.api');
-const { getAuth } = require('../support/GmailAPI/gmail.api');
-const { baseTokens } = require('../support/GmailAPI/token');
+const { deleteEmails } = require('../support/gmailApi/gmail.api');
+const { getEmails } = require('../support/gmailApi/gmail.api');
+const { getLinksFromEmailBody } = require('../support/gmailApi/gmail.api');
+const { getEmailId } = require('../support/gmailApi/gmail.api');
+const { getEmailText } = require('../support/gmailApi/gmail.api');
+const { waitForEmail } = require('../support/gmailApi/gmail.api');
+const { getAuth } = require('../support/gmailApi/gmail.api');
+const { baseTokens } = require('../support/gmailApi/token');
 
 const getConfigurationByFile = (file) => {
   const pathToConfigFile = path.resolve('cypress', 'config', `${file}.json`);

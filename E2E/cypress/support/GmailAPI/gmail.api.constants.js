@@ -24,7 +24,7 @@ const BASE64 = 'base64';
 const UTF8 = 'utf8';
 const V1 = 'v1';
 const OFFLINE = 'offline';
-const URL_REGEX = new RegExp(/((http|https):\/\/[a-zA-Z0-9\-.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g);
+const URL_REGEX = /((http|https):\/\/[a-zA-Z0-9\-.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g;
 
 module.exports = {
   TOKEN_AUTHORIZE_PROMPT,

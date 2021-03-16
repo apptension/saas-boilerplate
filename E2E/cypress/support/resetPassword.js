@@ -1,7 +1,7 @@
 import { EMAIL_INPUT, SUBMIT_BTN } from './authentication';
 import BASIC_AUTH_OPTIONS from '../fixtures/basicAuth';
 
-const { URL_REGEX } = require('./GmailAPI/gmail.api.constants');
+const { URL_REGEX } = require('./gmailApi/gmail.api.constants');
 
 export const NEW_PASSWORD_INPUT = '[name="newPassword"]';
 export const CONFIRM_PASSWORD_INPUT = '[name="confirmPassword"]';

@@ -50,6 +50,20 @@ Feature: SB-10-reset-password
         | 'numeric'     | 'numeric'            |
 
 
+  Scenario: Reset password link is not re-send immediately
+    Given I have chosen to reset my password
+    When I choose to re-send the link immediately
+    Then the email with the link is not sent
+
+
+  Scenario: Reset password link is re-sent 15 seconds after the previous attempt happened
+    Given I have chosen to reset my password
+    And I have chosen to re-send the link immediately
+    When 15 seconds have passed 
+    Then the email with the link is sent to me
+
+
+
 
 
 

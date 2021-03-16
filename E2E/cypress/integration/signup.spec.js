@@ -1,4 +1,4 @@
-import SIGNUP_DATA from '../fixtures/signupData';
+import SIGNUP_DATA, { SIGNUP_EMAIL } from '../fixtures/signupData';
 import BASIC_AUTH_OPTIONS from '../fixtures/basicAuth';
 import {
   deleteEmails,
@@ -53,7 +53,7 @@ describe('Signup', () => {
   describe('Account creation', () => {
     it('Can create a new account', () => {
       cy.intercept('POST', '/api/auth/signup/').as('signupRequest');
-      const userEmail = randomizeEmail(Cypress.env('SIGNUP_EMAIL'));
+      const userEmail = randomizeEmail(SIGNUP_EMAIL);
       const password = Cypress.env('PASSWORD');
 
       createAccountWithUI({ userEmail, password });
@@ -66,7 +66,7 @@ describe('Signup', () => {
 
     it('Can confirm a new account using a link from an email', () => {
       deleteEmails('Confirm your account');
-      const userEmail = randomizeEmail(Cypress.env('SIGNUP_EMAIL'));
+      const userEmail = randomizeEmail(SIGNUP_EMAIL);
       const password = Cypress.env('PASSWORD');
 
       createAccountWithApi(userEmail, password).then((res) => {

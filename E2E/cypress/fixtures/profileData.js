@@ -1,6 +1,8 @@
 import { EMPTY_INPUT } from './signupData';
 import { FIRST_NAME_IS_TOO_LONG_ERROR, LAST_NAME_IS_TOO_LONG_ERROR } from '../support/assertion';
+import { generateEmail } from '../support/helpers';
 
+export const CHANGE_PASSWORD_EMAIL = generateEmail(Cypress.env('EMAIL'), 'changePassword');
 export const VALID_FIRST_NAME = 'John';
 export const VALID_LAST_NAME = 'Doe';
 const FIRST_NAME = 'first name';

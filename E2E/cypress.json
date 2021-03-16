@@ -12,6 +12,5 @@
   "videoUploadOnPasses": false,
   "experimentalRunEvents": true,
   "pageLoadTimeout": 10000,
-  "taskTimeout": 15000,
-  "projectId": "zo7dwj"
+  "taskTimeout": 20000
 }

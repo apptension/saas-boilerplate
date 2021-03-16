@@ -39,7 +39,8 @@
   "scripts": {
     "open:qa": "npx cypress open --env configFile=qa",
     "all:headless:chrome:qa": "npm run pretest:clear; npx cypress run --env configFile=qa --browser chrome --headless; npm run generate:report",
-    "all:headless:chrome:qa:dashboard": "npx cypress run --env configFile=staging --browser chrome --headless --record",
+    "all:headless:ff:qa": "npm run pretest:clear; npx cypress run --env configFile=qa --browser firefox --headless; npm run generate:report",
+    "all:headless:edge:qa": "npm run pretest:clear; npx cypress run --env configFile=qa --browser edge --headless; npm run generate:report",
     "generate:report": "mkdir -p mochareports; npx mochawesome-merge cypress/reports/mocha/*.json > mochareports/report.json && npx marge mochareports/report.json -f report -o mochareports",
     "delete:results": "rm -rf cypress/reports/* || true",
     "delete:report": "rm -rf mochareports/* || true",

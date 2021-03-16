@@ -1,5 +1,10 @@
+import crypto from 'crypto';
 import BASIC_AUTH from '../fixtures/basicAuth';
-import { VALID_PROFILE_DATA, INVALID_PROFILE_DATA } from '../fixtures/profileData';
+import {
+  VALID_PROFILE_DATA,
+  INVALID_PROFILE_DATA,
+  CHANGE_PASSWORD_EMAIL,
+} from '../fixtures/profileData';
 import CHANGE_PASSWORD_DATA from '../fixtures/changePasswordData';
 import { UserProfileResponseFactory, updateUserProfile, updatePassword } from '../support/profile';
 import {
@@ -26,9 +31,10 @@ import {
 } from '../support/assertion';
 
 const password = Cypress.env('PASSWORD');
-const userEmail = Cypress.env('EMAIL');
 
 describe('Change first name and last name', () => {
+  const userEmail = Cypress.env('EMAIL');
+
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     cy.visit('/en/profile', BASIC_AUTH);
@@ -61,9 +67,9 @@ describe('Change first name and last name', () => {
 });
 
 describe('Change password', () => {
-  const userEmail = Cypress.env('CHANGE_PASSWORD_EMAIL');
+  const userEmail = CHANGE_PASSWORD_EMAIL;
   const oldPassword = Cypress.env('PASSWORD');
-  const newPassword = Cypress.env('NEW_PASSWORD');
+  const newPassword = crypto.randomBytes(10).toString('hex');
 
   before(() => {
     deleteEmails(RESET_YOUR_PASSWORD);
@@ -92,6 +98,7 @@ describe('Change password', () => {
 });
 
 describe('Should not update a password if: ', () => {
+  const userEmail = Cypress.env('EMAIL');
   const basePassword = Cypress.env('PASSWORD');
 
   beforeEach(() => {
@@ -125,6 +132,8 @@ describe('Should not update a password if: ', () => {
 });
 
 describe('Snackbar', () => {
+  const userEmail = Cypress.env('EMAIL');
+
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     cy.visit('/en/profile', BASIC_AUTH);

@@ -1,7 +1,10 @@
+const path = require('path');
 const jsdom = require('jsdom');
 const readline = require('readline');
 const googleapis = require('googleapis');
 const fs = require('fs');
+
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 const {
   BASE64,
@@ -15,7 +18,7 @@ const {
   TOKEN_ERROR_MSG,
   V1,
   OFFLINE,
-} = require('./gmail.api.constants.js');
+} = require('./gmail.api.constants');
 
 const { google } = googleapis;
 const gmail = google.gmail(V1);

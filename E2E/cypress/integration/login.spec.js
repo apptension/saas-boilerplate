@@ -5,7 +5,7 @@ import {
   logInWithUI,
   logOut,
 } from '../support/authentication';
-import LOGIN_DATA from '../fixtures/loginData';
+import LOGIN_DATA, { LOGIN_EMAIL } from '../fixtures/loginData';
 import BASIC_AUTH from '../fixtures/basicAuth';
 import {
   expectErrorTextToBeDisplayed,
@@ -21,7 +21,7 @@ describe('Login page', () => {
 
   it('should log in', () => {
     cy.intercept('POST', '/api/auth/logout/').as('logout');
-    const userEmail = Cypress.env('LOGIN_EMAIL');
+    const userEmail = LOGIN_EMAIL;
     const password = Cypress.env('PASSWORD');
 
     expectLoginPageToMatchDesign();

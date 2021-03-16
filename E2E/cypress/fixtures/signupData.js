@@ -1,4 +1,4 @@
-import { randomizeEmail } from '../support/helpers';
+import { randomizeEmail, generateEmail } from '../support/helpers';
 import {
   COMMON,
   COMMON_PASSWORD_ERROR_TEXT,
@@ -24,12 +24,14 @@ const {
   existingEmailCommonPasswordApiError,
 } = API_ERROR_CODES;
 
-export const EMPTY_INPUT = '';
-export const INVALID_EMAIL = 'text@example';
 const EXISTING_EMAIL = Cypress.env('EMAIL');
+export const SIGNUP_EMAIL = generateEmail(Cypress.env('EMAIL'), 'signup');
+const VALID_EMAIL = randomizeEmail(SIGNUP_EMAIL);
+export const INVALID_EMAIL = 'text@example';
+
+export const EMPTY_INPUT = '';
 export const TOO_SHORT_PASSWORD = 'qwerty1';
 export const COMMON_PASSWORD = 'aaaaaaaa';
-const VALID_EMAIL = randomizeEmail(Cypress.env('SIGNUP_EMAIL'));
 export const VALID_PASSWORD = Cypress.env('PASSWORD');
 export const NUMERIC_PASSWORD = '1234123456';
 

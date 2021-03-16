@@ -23,12 +23,11 @@ import {
   TOO_SHORT_PASSWORD_ERROR_TEXT,
   VALID,
 } from '../support/assertion';
+import { generateEmail } from '../support/helpers';
 
-const {
-  shortNewPasswordApiError,
-  commonNewPasswordApiError,
-  numericNewPasswordApiError,
-} = API_ERROR_CODES;
+const { commonNewPasswordApiError, numericNewPasswordApiError } = API_ERROR_CODES;
+
+export const RESET_PASSWORD_EMAIL = generateEmail(Cypress.env('EMAIL'), 'resetPassword');
 
 export const RESET_PASSWORD_DATA = [
   {

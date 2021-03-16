@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import {
   COMMON_PASSWORD,
   EMPTY_INPUT,
@@ -23,7 +24,7 @@ import {
 
 import API_ERROR_CODES from './apiErrorCodes';
 
-const NEW_PASSWORD = Cypress.env('NEW_PASSWORD');
+const NEW_PASSWORD = crypto.randomBytes(10).toString('hex');
 const {
   numericNewPasswordApiError,
   wrongOldPasswordApiError,

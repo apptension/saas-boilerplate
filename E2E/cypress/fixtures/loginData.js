@@ -8,12 +8,14 @@ import {
 } from '../support/assertion';
 import { EMPTY_INPUT, VALID_PASSWORD } from './signupData';
 import API_ERROR_CODES from './apiErrorCodes';
+import { generateEmail } from '../support/helpers';
 
 const { noActiveAccountFoundApiError } = API_ERROR_CODES;
 
 const INVALID_EMAIL = 'test@example.org';
 const INVALID_PASSWORD = 'qwerty1';
 const VALID_EMAIL = Cypress.env('EMAIL');
+export const LOGIN_EMAIL = generateEmail(Cypress.env('EMAIL'), 'login');
 
 export default [
   {

@@ -1,7 +1,11 @@
 import crypto from 'crypto';
 
 import BASIC_AUTH from '../fixtures/basicAuth';
-import { RESET_PASSWORD_DATA, SET_NEW_PASSWORD_DATA } from '../fixtures/resetPasswordData';
+import {
+  RESET_PASSWORD_DATA,
+  RESET_PASSWORD_EMAIL,
+  SET_NEW_PASSWORD_DATA,
+} from '../fixtures/resetPasswordData';
 import {
   goToConfirmPage,
   RESET_YOUR_PASSWORD,
@@ -14,6 +18,7 @@ import {
 import {
   deleteEmails,
   expectErrorTextToBeDisplayed,
+  expectLinkToExistInEmail,
   expectRequestToFail,
   expectRequestToSucceed,
 } from '../support/helpers';
@@ -25,7 +30,7 @@ import {
 import API_ERROR_CODES from '../fixtures/apiErrorCodes';
 import { MALFORMED_RESET_TOKEN_ERROR_TEXT } from '../support/assertion';
 
-const { URL_REGEX } = require('../support/GmailAPI/gmail.api.constants');
+const { URL_REGEX } = require('../support/gmailApi/gmail.api.constants');
 
 const { malformedPasswordResetTokenApiError, noActiveAccountFoundApiError } = API_ERROR_CODES;
 
@@ -38,7 +43,7 @@ describe('Should reset a password if:', () => {
     deleteEmails('Reset your password');
     cy.intercept('POST', '/api/password-reset/confirm/').as('passwordReset');
 
-    const userEmail = Cypress.env('RESET_PASSWORD_EMAIL');
+    const userEmail = RESET_PASSWORD_EMAIL;
     const password = crypto.randomBytes(10).toString('hex');
 
     resetPassword({ userEmail, password, confirmPassword: password });
@@ -60,7 +65,7 @@ describe('Should not reset a password if:', () => {
     deleteEmails(RESET_YOUR_PASSWORD);
     cy.intercept('POST', '/api/password-reset/confirm/').as('passwordReset');
 
-    const userEmail = Cypress.env('RESET_PASSWORD_EMAIL');
+    const userEmail = RESET_PASSWORD_EMAIL;
     const password = crypto.randomBytes(10).toString('hex');
     const newPassword = crypto.randomBytes(10).toString('hex');
 
@@ -91,6 +96,7 @@ describe('Should not receive a reset password email if:', () => {
   RESET_PASSWORD_DATA.forEach((item) => {
     const { email, emailState, errorText } = item;
 
+    // TODO add test for non-existing email once SB-326 is done
     it(`email is ${emailState} `, () => {
       cy.intercept('POST', '/api/password-reset/').as('passwordReset');
 
@@ -100,12 +106,51 @@ describe('Should not receive a reset password email if:', () => {
   });
 });
 
+describe('Password reset throttle', () => {
+  const userEmail = RESET_PASSWORD_EMAIL;
+
+  it('should not re-send a password reset link immediately', () => {
+    cy.clock();
+
+    cy.on('fail', (err) => {
+      expect(err.message).to.include('No request ever occurred.');
+      return false;
+    });
+
+    cy.visit('/auth/reset-password', BASIC_AUTH);
+
+    submitResetPasswordForm(userEmail);
+
+    cy.intercept('POST', '/api/password-reset/').as('passwordReset');
+    submitResetPasswordForm(userEmail);
+
+    cy.wait('@passwordReset', { timeout: 1000 }).then(() => {
+      throw new Error('Unexpected API call - throttle failed.');
+    });
+  });
+
+  it('should re-send a password reset link 15 seconds after previous request happened', () => {
+    cy.clock();
+    cy.visit('/auth/reset-password', BASIC_AUTH);
+
+    submitResetPasswordForm(userEmail);
+    deleteEmails(RESET_YOUR_PASSWORD);
+
+    cy.intercept('POST', '/api/password-reset/').as('passwordReset');
+    submitResetPasswordForm(userEmail);
+
+    cy.tick(15000);
+    expectRequestToSucceed('@passwordReset', 201);
+    expectLinkToExistInEmail({ emailSubject: RESET_YOUR_PASSWORD, linkRegex: URL_REGEX });
+  });
+});
+
 describe('Should not reset a password if:', () => {
   let setNewPasswordLink;
 
   before(() => {
     deleteEmails(RESET_YOUR_PASSWORD);
-    sendResetPasswordLinkWithApi(Cypress.env('RESET_PASSWORD_EMAIL'));
+    sendResetPasswordLinkWithApi(RESET_PASSWORD_EMAIL);
 
     cy.getLinkFromEmail({
       emailSubject: RESET_YOUR_PASSWORD,
