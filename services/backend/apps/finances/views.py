@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, redirect
 from djstripe import models as djstripe_models
-from rest_framework import mixins, viewsets, response, views, renderers, status
+from rest_framework import mixins, viewsets, response, views, renderers, status, generics
 
 from common.acl import policies
-from . import serializers
+from . import serializers, models
 
 
 class StripePaymentIntentViewSet(
@@ -26,6 +26,15 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, viewsets.GenericViewSet)
 
     def get_queryset(self):
         return self.queryset.filter(customer__subscriber=self.request.user)
+
+
+class UserActiveSubscriptionView(generics.RetrieveAPIView):
+    permission_classes = (policies.UserFullAccess,)
+    serializer_class = serializers.ActiveSubscriptionSerializer
+
+    def get_object(self):
+        customer, _ = models.Customer.get_or_create(self.request.user)
+        return customer.subscription
 
 
 class AdminRefundView(views.APIView):

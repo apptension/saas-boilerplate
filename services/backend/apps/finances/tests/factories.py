@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 import factory
@@ -200,9 +201,13 @@ class SubscriptionFactory(factory.DjangoModelFactory):
 
     id = factory.Faker('uuid4')
     livemode = False
+    default_payment_method = factory.SubFactory(
+        PaymentMethodFactory, customer=factory.LazyAttribute(lambda obj: obj.factory_parent.customer)
+    )
     collection_method = enums.InvoiceCollectionMethod.charge_automatically
-    current_period_end = factory.Faker('future_date', tzinfo=pytz.utc)
-    current_period_start = factory.Faker('future_date', tzinfo=pytz.utc)
+    start_date = datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc)
+    current_period_end = datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc)
+    current_period_start = datetime.datetime(2000, 1, 30, tzinfo=datetime.timezone.utc)
 
     customer = factory.SubFactory(CustomerFactory)
     status = enums.SubscriptionStatus.active

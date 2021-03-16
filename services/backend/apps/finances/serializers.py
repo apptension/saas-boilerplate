@@ -3,6 +3,8 @@ from rest_framework import serializers, exceptions
 from django.contrib import messages
 from django.utils.translation import gettext as _
 
+from . import models
+
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
     product = serializers.ChoiceField(
@@ -46,6 +48,45 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
         model = djstripe_models.PaymentMethod
         fields = ('id', 'type', 'card')
         read_only_fields = fields
+
+
+class SubscriptionItemProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Product
+        fields = ('id', 'name')
+
+
+class SubscriptionItemPriceSerializer(serializers.ModelSerializer):
+    product = SubscriptionItemProductSerializer()
+
+    class Meta:
+        model = models.Price
+        fields = ('id', 'product', 'unit_amount')
+
+
+class SubscriptionItemSerializer(serializers.ModelSerializer):
+    price = SubscriptionItemPriceSerializer()
+
+    class Meta:
+        model = models.SubscriptionItem
+        fields = ('id', 'price', 'quantity')
+
+
+class ActiveSubscriptionSerializer(serializers.ModelSerializer):
+    default_payment_method = PaymentMethodSerializer()
+    item = SubscriptionItemSerializer(source='items.first')
+
+    class Meta:
+        model = models.Subscription
+        fields = (
+            'id',
+            'status',
+            'start_date',
+            'current_period_end',
+            'current_period_start',
+            'default_payment_method',
+            'item',
+        )
 
 
 class AdminStripePaymentIntentRefundSerializer(serializers.Serializer):
