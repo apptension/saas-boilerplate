@@ -17,6 +17,7 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = "users.User"
 
+    id = factory.Sequence(lambda n: n)
     email = factory.Faker("email")
     is_superuser = False
 

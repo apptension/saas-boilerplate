@@ -20,6 +20,7 @@ services:
       - "5000:5000"
     depends_on:
       - db
+      - stripemock
     restart: unless-stopped
     links:
       - db
@@ -62,3 +63,9 @@ services:
       - CYPRESS_BASIC_AUTH_LOGIN=${CYPRESS_BASIC_AUTH_LOGIN}
       - CYPRESS_BASIC_AUTH_PASSWORD=${CYPRESS_BASIC_AUTH_PASSWORD}
       - CYPRESS_BASIC_AUTH_HEADER=${CYPRESS_BASIC_AUTH_HEADER}
+
+  stripemock:
+    image: stripemock/stripe-mock:v0.101.0
+    ports:
+      - "12111:12111"
+      - "12112:12112"

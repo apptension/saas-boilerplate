@@ -31,13 +31,16 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_CORE_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
     "django_extensions",
     "djstripe",
     "django_hosts",
@@ -46,11 +49,16 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     "social_django",
     "whitenoise",
+]
+
+LOCAL_APPS = [
     "apps.content",
     "apps.demo",
     "apps.finances",
     "apps.users",
 ]
+
+INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
@@ -214,6 +222,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 }
 
 SWAGGER_SETTINGS = {
+    'DEFAULT_INFO': 'config.urls_api.api_info',
     "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
 }
 
