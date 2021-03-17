@@ -27,6 +27,12 @@ export const heading4 = css`
   line-height: 28px;
 `;
 
+export const heading5 = css`
+  ${heading1};
+  font-size: 18px;
+  line-height: 32px;
+`;
+
 export const paragraph = css`
   font-family: ${fontFamily.primary};
   font-size: 16px;
@@ -75,6 +81,9 @@ export const H3 = styled.h3`
 `;
 export const H4 = styled.h4`
   ${heading4}
+`;
+export const H5 = styled.h5`
+  ${heading5}
 `;
 export const Paragraph = styled.p`
   ${paragraph}

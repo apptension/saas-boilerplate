@@ -33,7 +33,6 @@ export const ROUTES = {
   }),
   finances: nestedRoute('/finances', {
     paymentConfirm: '/payment-confirm',
-    paymentSuccess: '/payment-success/:paymentIntentId',
   }),
   //<-- INJECT ROUTE DEFINITION -->
 };

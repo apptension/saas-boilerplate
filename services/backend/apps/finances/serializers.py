@@ -43,10 +43,11 @@ class PaymentIntentSerializer(serializers.ModelSerializer):
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
     card = serializers.JSONField(read_only=True)
+    billing_details = serializers.JSONField(read_only=True)
 
     class Meta:
         model = djstripe_models.PaymentMethod
-        fields = ('id', 'type', 'card')
+        fields = ('id', 'type', 'card', 'billing_details')
         read_only_fields = fields
 
 

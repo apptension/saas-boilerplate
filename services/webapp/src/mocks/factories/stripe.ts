@@ -9,6 +9,9 @@ import { Factory } from './types';
 export const paymentMethodFactory: Factory<StripePaymentMethod> = (overrides = {}) => ({
   id: faker.random.uuid(),
   type: faker.random.arrayElement([StripePaymentMethodType.Card]),
+  billingDetails: {
+    name: faker.name.lastName(),
+  },
   card: {
     id: faker.random.uuid(),
     last4: faker.random.number({ min: 1000, max: 9999 }).toString(),

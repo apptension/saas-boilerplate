@@ -26,10 +26,15 @@ export enum StripePaymentMethodType {
   Card = 'card',
 }
 
+export interface StripeBillingDetails {
+  name: string;
+}
+
 export interface StripePaymentMethod {
   id: string;
   card: StripePaymentMethodCard;
   type: StripePaymentMethodType;
+  billingDetails: StripeBillingDetails;
 }
 
 export type StripePaymentMethodGetApiResponseData = StripePaymentMethod;

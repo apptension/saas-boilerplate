@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { stripeActions } from '../../../../modules/stripe';
@@ -86,10 +86,13 @@ export const useStripePayment = () => {
     }
 
     if (paymentMethod.type === StripePaymentMethodSelectionType.NEW_CARD) {
-      const card = elements?.getElement(CardElement) ?? null;
+      const card = elements?.getElement(CardNumberElement) ?? null;
       if (card) {
         return await stripe.confirmCardPayment(paymentIntent.clientSecret, {
-          payment_method: { card },
+          payment_method: {
+            card,
+            billing_details: { name: paymentMethod.data?.name },
+          },
         });
       }
     }

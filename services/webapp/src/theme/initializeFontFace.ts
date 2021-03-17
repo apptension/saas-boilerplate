@@ -5,7 +5,7 @@ import interPrimary from '../fonts/Inter-Regular.woff';
 // @ts-ignore
 import interBold from '../fonts/Inter-SemiBold.woff';
 
-import { fontFamily } from './font';
+import { interFontName } from './font';
 
 function fontFace(
   name: string,
@@ -28,8 +28,8 @@ function fontFace(
 
 const generateFontsString = (): string =>
   [
-    fontFace(fontFamily.primary, [{ src: interPrimary, format: 'woff' }]),
-    fontFace(fontFamily.primary, [{ src: interBold, format: 'woff' }], '600'),
+    fontFace(interFontName, [{ src: interPrimary, format: 'woff' }]),
+    fontFace(interFontName, [{ src: interBold, format: 'woff' }], '600'),
   ].join('\n');
 
 export default (): void => {

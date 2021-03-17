@@ -1,7 +1,10 @@
 import styled from 'styled-components';
-import { MicroLabel } from '../../../../../theme/typography';
+import { heading5, MicroLabel } from '../../../../../theme/typography';
 import { color } from '../../../../../theme';
 import { RadioButton } from '../../../radioButton';
+import { sizeUnits } from '../../../../../theme/size';
+import { Breakpoint, media } from '../../../../../theme/media';
+import { Button } from '../../../button';
 
 export const Container = styled.div``;
 
@@ -21,15 +24,33 @@ export const ProductListContainer = styled.ul`
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  display: flex;
+  display: grid;
   padding: 0;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: ${sizeUnits(1)};
+  grid-row-gap: ${sizeUnits(2)};
+
+  ${media(Breakpoint.TABLET)`
+    grid-template-columns: repeat(3, 1fr);
+  `}
 `;
 
 export const ProductListItem = styled.li`
   display: flex;
-  min-width: 150px;
 `;
 
 export const ProductListItemButton = styled(RadioButton)`
   width: 100%;
+`;
+
+export const Heading = styled.h3`
+  ${heading5};
+  margin-top: ${sizeUnits(3)};
+  margin-bottom: ${sizeUnits(1)};
+`;
+
+export const SubmitButton = styled(Button).attrs(() => ({ type: 'submit' }))`
+  margin-top: ${sizeUnits(5)};
+  width: 100%;
+  max-width: none;
 `;

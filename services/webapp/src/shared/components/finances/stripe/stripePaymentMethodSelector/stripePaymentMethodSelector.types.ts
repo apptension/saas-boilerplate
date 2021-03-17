@@ -7,6 +7,21 @@ export enum StripePaymentMethodSelectionType {
   NEW_CARD,
 }
 
+export type StripeBillingInfoChangeEvent = {
+  elementType: 'name';
+  value: string;
+};
+
+export type StripePaymentMethodChangeEvent =
+  | {
+      type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD;
+      data: StripePaymentMethod;
+    }
+  | {
+      type: StripePaymentMethodSelectionType.NEW_CARD;
+      data: StripeBillingInfoChangeEvent | StripeElementChangeEvent | null;
+    };
+
 export type StripePaymentMethodSelection =
   | {
       type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD;
@@ -14,5 +29,9 @@ export type StripePaymentMethodSelection =
     }
   | {
       type: StripePaymentMethodSelectionType.NEW_CARD;
-      data: StripeElementChangeEvent | null;
+      data: {
+        name: string;
+        cardErrors: Record<string, any>;
+        cardMissingFields: Record<string, boolean>;
+      };
     };

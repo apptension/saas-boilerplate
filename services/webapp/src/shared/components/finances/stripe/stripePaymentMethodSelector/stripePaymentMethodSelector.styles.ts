@@ -1,5 +1,10 @@
 import styled from 'styled-components';
-import { color } from '../../../../../theme';
+import { heading5 } from '../../../../../theme/typography';
+import { sizeUnits } from '../../../../../theme/size';
+import { RadioButton } from '../../../radioButton';
+import { Button } from '../../../button';
+import { ButtonVariant } from '../../../button/button.types';
+import { color, fontFamily, fontWeight } from '../../../../../theme';
 
 export const Container = styled.div``;
 
@@ -7,14 +12,33 @@ export const PaymentMethodList = styled.ul`
   list-style: none;
 `;
 
-export const PaymentMethodListItem = styled.li<{ isSelected: boolean }>`
-  border: 1px solid ${({ isSelected }) => (isSelected ? color.primary : color.border)};
-  margin-bottom: 10px;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer;
+export const PaymentMethodListItem = styled.li`
+  & + & {
+    margin-top: ${sizeUnits(1)};
+  }
+`;
+
+export const ExistingPaymentMethodItem = styled(RadioButton)`
+  width: 100%;
+`;
+
+export const CardBrand = styled.span`
+  text-transform: capitalize;
+`;
+
+export const NewPaymentMethodItem = styled(Button).attrs((props: { isSelected: boolean }) => ({
+  variant: props.isSelected ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+}))<{ isSelected: boolean }>`
+  width: 100%;
+  max-width: none;
 `;
 
 export const CardElementContainer = styled.div`
-  padding: 40px;
+  margin-top: ${sizeUnits(3)};
+`;
+
+export const Heading = styled.h3`
+  ${heading5};
+  margin-top: ${sizeUnits(3)};
+  margin-bottom: ${sizeUnits(1)};
 `;

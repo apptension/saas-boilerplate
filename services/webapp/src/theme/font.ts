@@ -1,5 +1,7 @@
+export const interFontName = 'Inter Regular';
+
 export const fontFamily = {
-  primary: 'Inter Regular,Helvetica,Arial,sans-serif',
+  primary: `${interFontName},Helvetica,Arial,sans-serif`,
 };
 
 export const fontWeight = {
