@@ -8,20 +8,21 @@ class ProductManager(models.Manager):
     def get_or_create_subscription_plan(
         self, plan_config: SubscriptionPlanConfig, livemode=djstripe_settings.STRIPE_LIVE_MODE, stripe_account=None
     ):
-        try:
-            return self.filter(name=plan_config.name).order_by('created').first(), False
-        except self.model.DoesNotExist:
-            action = "create:{}".format(plan_config.name)
-            idempotency_key = djstripe_settings.get_idempotency_key("product", action, livemode)
-            return (
-                self.create(
-                    idempotency_key=idempotency_key,
-                    stripe_account=stripe_account,
-                    name=plan_config.name,
-                    type=djstripe_enums.ProductType.service,
-                ),
-                True,
-            )
+        product = self.filter(name=plan_config.name).order_by('created').first()
+        if product:
+            return product, False
+
+        action = "create:{}".format(plan_config.name)
+        idempotency_key = djstripe_settings.get_idempotency_key("product", action, livemode)
+        return (
+            self.create(
+                idempotency_key=idempotency_key,
+                stripe_account=stripe_account,
+                name=plan_config.name,
+                type=djstripe_enums.ProductType.service,
+            ),
+            True,
+        )
 
     def create(self, idempotency_key=None, stripe_account=None, **kwargs):
         metadata = {}
