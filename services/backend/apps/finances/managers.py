@@ -53,7 +53,7 @@ class PriceManager(models.Manager):
             action = "create:{}".format(plan_config.name)
             idempotency_key = djstripe_settings.get_idempotency_key("plan_price", action, livemode)
             return (
-                self.create(
+                self.model.create(
                     idempotency_key=idempotency_key,
                     stripe_account=stripe_account,
                     product=product,

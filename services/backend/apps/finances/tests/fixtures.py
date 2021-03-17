@@ -41,6 +41,7 @@ def stripe_methods_factory(mocker):
             stripe_instance = mocker.MagicMock()
             stripe_instance._wrapped_instance = instance
             stripe_instance.__getitem__.side_effect = getitem
+            stripe_instance.request.return_value = stripe_instance
             return stripe_instance
 
         def create(**kwargs):
@@ -57,6 +58,7 @@ def stripe_methods_factory(mocker):
             stripe_instance = mocker.MagicMock()
             stripe_instance._wrapped_instance = instance
             stripe_instance.__getitem__.side_effect = getitem
+            stripe_instance.request.return_value = stripe_instance
             return stripe_instance
 
         return {'retrieve': retrieve, 'create': create}
@@ -128,6 +130,44 @@ def free_plan_price(price_factory, plan_factory):
         product=price.product,
         amount=constants.FREE_PLAN.initial_price.unit_amount,
         currency=constants.FREE_PLAN.initial_price.currency,
+    )
+
+    return price
+
+
+@pytest.fixture(scope='function', autouse=True)
+def monthly_plan_price(price_factory, plan_factory):
+    price = price_factory(
+        product__name=constants.MONTHLY_PLAN.name,
+        unit_amount=constants.MONTHLY_PLAN.initial_price.unit_amount,
+        currency=constants.MONTHLY_PLAN.initial_price.currency,
+        recurring=constants.MONTHLY_PLAN.initial_price.recurring,
+    )
+
+    plan_factory(
+        id=price.id,
+        product=price.product,
+        amount=constants.MONTHLY_PLAN.initial_price.unit_amount,
+        currency=constants.MONTHLY_PLAN.initial_price.currency,
+    )
+
+    return price
+
+
+@pytest.fixture(scope='function', autouse=True)
+def yearly_plan_price(price_factory, plan_factory):
+    price = price_factory(
+        product__name=constants.YEARLY_PLAN.name,
+        unit_amount=constants.YEARLY_PLAN.initial_price.unit_amount,
+        currency=constants.YEARLY_PLAN.initial_price.currency,
+        recurring=constants.YEARLY_PLAN.initial_price.recurring,
+    )
+
+    plan_factory(
+        id=price.id,
+        product=price.product,
+        amount=constants.YEARLY_PLAN.initial_price.unit_amount,
+        currency=constants.YEARLY_PLAN.initial_price.currency,
     )
 
     return price

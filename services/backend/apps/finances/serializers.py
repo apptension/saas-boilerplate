@@ -3,7 +3,7 @@ from rest_framework import serializers, exceptions
 from django.contrib import messages
 from django.utils.translation import gettext as _
 
-from . import models
+from . import models, constants
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
@@ -56,6 +56,15 @@ class SubscriptionItemProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class SubscriptionPlansListSerializer(serializers.ModelSerializer):
+    product = SubscriptionItemProductSerializer()
+
+    class Meta:
+        model = models.Price
+        fields = ('id', 'product', 'unit_amount')
+        read_only_fields = fields
+
+
 class SubscriptionItemPriceSerializer(serializers.ModelSerializer):
     product = SubscriptionItemProductSerializer()
 
@@ -72,13 +81,67 @@ class SubscriptionItemSerializer(serializers.ModelSerializer):
         fields = ('id', 'price', 'quantity')
 
 
-class ActiveSubscriptionSerializer(serializers.ModelSerializer):
-    default_payment_method = PaymentMethodSerializer()
-    item = SubscriptionItemSerializer(source='items.first')
+class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
+    default_payment_method = PaymentMethodSerializer(read_only=True)
+    item = SubscriptionItemSerializer(source='items.first', read_only=True)
+    price = serializers.SlugRelatedField(
+        slug_field='id',
+        queryset=models.Price.objects.filter(
+            product__name__in=[
+                constants.MONTHLY_PLAN.name,
+                constants.YEARLY_PLAN.name,
+            ],
+        ),
+        write_only=True,
+    )
+
+    def validate(self, attrs):
+        customer = self.instance.customer
+        payment_method = self.instance.default_payment_method
+
+        print(payment_method)
+
+        if payment_method is None:
+            payment_method = (
+                djstripe_models.PaymentMethod.objects.filter(customer=customer).order_by('-created').first()
+            )
+
+        print(payment_method)
+
+        if not payment_method:
+            raise serializers.ValidationError(_('Customer has no payment method setup'), code='missing_payment_method')
+
+        return {**attrs, 'payment_method': payment_method}
+
+    def update(self, instance: models.Subscription, validated_data):
+        price = validated_data['price']
+        subscription_item = instance.items.first()
+        payment_method = validated_data['payment_method']
+
+        data = instance._api_update(
+            items=[{'id': subscription_item.id, 'price': price.id}],
+            proration_behavior='create_prorations',
+            default_payment_method=payment_method.id,
+        )
+
+        subscription = models.Subscription.sync_from_stripe_data(data)
+        models.SubscriptionItem.sync_from_stripe_data(data.get("items").data[0])
+
+        return subscription
 
     class Meta:
         model = models.Subscription
         fields = (
+            'id',
+            'status',
+            'start_date',
+            'current_period_end',
+            'current_period_start',
+            'default_payment_method',
+            'item',
+            'price',
+        )
+        read_only_fields = (
             'id',
             'status',
             'start_date',
