@@ -30,11 +30,7 @@ class TestUserActiveSubscriptionView:
 
         assert response.data['id'] == subscription.id
         assert response.data['status'] == subscription.status
-        assert response.data['default_payment_method'] == {
-            'id': subscription.default_payment_method.id,
-            'type': subscription.default_payment_method.type,
-            'card': subscription.default_payment_method.card,
-        }
+        assert response.data['default_payment_method']['id'] == subscription.default_payment_method.id
         assert response.data['item'] == {
             'id': subscription_item.id,
             'quantity': subscription_item.quantity,

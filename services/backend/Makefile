@@ -10,6 +10,7 @@ setup:
 	chmod +x ./scripts/*.sh
 
 test:
+	$(DOCKER_COMPOSE) build backend
 	$(DOCKER_COMPOSE) run -T backend ./scripts/run_tests.sh
 
 build:

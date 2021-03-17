@@ -41,6 +41,22 @@ class PaymentIntentSerializer(serializers.ModelSerializer):
         return djstripe_models.PaymentIntent.sync_from_stripe_data(payment_intent_response)
 
 
+class SetupIntentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = djstripe_models.SetupIntent
+        fields = ('id', 'client_secret')
+        read_only_fields = ('id', 'client_secret')
+
+    def create(self, validated_data):
+        request = self.context['request']
+
+        (customer, _) = djstripe_models.Customer.get_or_create(request.user)
+        setup_intent_response = djstripe_models.SetupIntent._api_create(
+            customer=customer.id, payment_method_types=['card'], usage='off_session'
+        )
+        return djstripe_models.SetupIntent.sync_from_stripe_data(setup_intent_response)
+
+
 class PaymentMethodSerializer(serializers.ModelSerializer):
     card = serializers.JSONField(read_only=True)
     billing_details = serializers.JSONField(read_only=True)
@@ -100,14 +116,10 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
         customer = self.instance.customer
         payment_method = self.instance.default_payment_method
 
-        print(payment_method)
-
         if payment_method is None:
             payment_method = (
                 djstripe_models.PaymentMethod.objects.filter(customer=customer).order_by('-created').first()
             )
-
-        print(payment_method)
 
         if not payment_method:
             raise serializers.ValidationError(_('Customer has no payment method setup'), code='missing_payment_method')

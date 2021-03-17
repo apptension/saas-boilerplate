@@ -9,7 +9,7 @@ class ProductManager(models.Manager):
         self, plan_config: SubscriptionPlanConfig, livemode=djstripe_settings.STRIPE_LIVE_MODE, stripe_account=None
     ):
         try:
-            return self.get(name=plan_config.name), False
+            return self.filter(name=plan_config.name).order_by('created').first(), False
         except self.model.DoesNotExist:
             action = "create:{}".format(plan_config.name)
             idempotency_key = djstripe_settings.get_idempotency_key("product", action, livemode)
@@ -38,7 +38,7 @@ class ProductManager(models.Manager):
 
 class PriceManager(models.Manager):
     def get_by_plan(self, plan: SubscriptionPlanConfig):
-        return self.get(product__name=plan.name)
+        return self.filter(product__name=plan.name).order_by('created').first()
 
     def get_or_create_subscription_price(
         self,
