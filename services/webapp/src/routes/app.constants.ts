@@ -34,6 +34,7 @@ export const ROUTES = {
   finances: nestedRoute('/finances', {
     paymentConfirm: '/payment-confirm',
   }),
+  subscriptions: '/subscriptions',
   //<-- INJECT ROUTE DEFINITION -->
 };
 

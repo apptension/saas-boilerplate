@@ -9,6 +9,7 @@ import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
 import { CRUD_DEMO_ITEM_INITIAL_STATE } from '../modules/crudDemoItem';
 import { STRIPE_INITIAL_STATE } from '../modules/stripe';
 import { SNACKBAR_INITIAL_STATE } from '../modules/snackbar';
+import { SUBSCRIPTION_INITIAL_STATE } from '../modules/subscription';
 //<-- IMPORT MODULE STATE -->
 
 export const store: GlobalState = {
@@ -20,6 +21,7 @@ export const store: GlobalState = {
   crudDemoItem: CRUD_DEMO_ITEM_INITIAL_STATE,
   snackbar: SNACKBAR_INITIAL_STATE,
   stripe: STRIPE_INITIAL_STATE,
+  subscription: SUBSCRIPTION_INITIAL_STATE,
   //<-- INJECT MODULE STATE -->
 };
 

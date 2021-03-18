@@ -112,6 +112,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           </MenuLink>
         </RoleAccess>
 
+        <RoleAccess>
+          <MenuLink to={`/${locale}${ROUTES.subscriptions}`} onClick={closeSidebar}>
+            <FormattedMessage defaultMessage="My Subscription" description="Home / my subscriptions link" />
+          </MenuLink>
+        </RoleAccess>
+
         {!isDesktop && (
           <RoleAccess>
             <MenuLink as={Button} onClick={handleLogout}>

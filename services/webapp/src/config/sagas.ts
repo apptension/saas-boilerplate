@@ -7,6 +7,7 @@ import { watchDemoItems } from '../modules/demoItems/demoItems.sagas';
 import { watchCrudDemoItem } from '../modules/crudDemoItem/crudDemoItem.sagas';
 import { watchSnackbar } from '../modules/snackbar/snackbar.sagas';
 import { watchStripe } from '../modules/stripe/stripe.sagas';
+import { watchSubscription } from '../modules/subscription/subscription.sagas';
 //<-- IMPORT MODULE SAGA -->
 
 export default function* rootSaga() {
@@ -18,6 +19,7 @@ export default function* rootSaga() {
     fork(watchCrudDemoItem),
     fork(watchStripe),
     fork(watchSnackbar),
+    fork(watchSubscription),
     //<-- INJECT MODULE SAGA -->
   ]);
 }

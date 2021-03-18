@@ -16,6 +16,8 @@ import { reducer as stripeReducer } from '../modules/stripe/stripe.reducer';
 import { StripeState } from '../modules/stripe/stripe.types';
 import { reducer as snackbarReducer } from '../modules/snackbar/snackbar.reducer';
 import { SnackbarState } from '../modules/snackbar/snackbar.types';
+import { reducer as subscriptionReducer } from '../modules/subscription/subscription.reducer';
+import { SubscriptionState } from '../modules/subscription/subscription.types';
 //<-- IMPORT MODULE REDUCER -->
 
 export type GlobalState = {
@@ -27,6 +29,7 @@ export type GlobalState = {
   crudDemoItem: CrudDemoItemState;
   stripe: StripeState;
   snackbar: SnackbarState;
+  subscription: SubscriptionState;
   //<-- INJECT MODULE STATE TYPE -->
 };
 
@@ -40,6 +43,7 @@ export default function createReducer() {
     crudDemoItem: crudDemoItemReducer,
     stripe: stripeReducer,
     snackbar: snackbarReducer,
+    subscription: subscriptionReducer,
     //<-- INJECT MODULE REDUCER -->
   });
 }

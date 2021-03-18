@@ -27,7 +27,7 @@ export const spiedHistory = (route = `/${DEFAULT_LOCALE}`) => {
   };
 };
 
-interface ContextData {
+export interface ContextData {
   router?: {
     url?: string;
     routePath?: string;

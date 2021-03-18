@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ResponsiveThemeProvider } from '../src/shared/components/responsiveThemeProvider';
+import { ProvidersWrapper } from '../src/shared/utils/testUtils';
 export { default as withRouter } from 'storybook-react-router';
 
 import { GlobalStyle } from '../src/theme/global';
@@ -28,4 +29,8 @@ export const withFontFace = (story) => {
   }, []);
 
   return story();
+};
+
+export const withProviders = (context) => (story) => {
+  return <ProvidersWrapper context={context}>{story()}</ProvidersWrapper>;
 };
