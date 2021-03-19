@@ -3,11 +3,11 @@ import { ComponentType } from 'react';
 export enum EmailTemplateType {
   AccountActivation = 'accountActivation',
   PasswordReset = 'passwordReset',
+  SubscriptionError = 'subscriptionError',
 }
 
 export interface EmailComponentProps {
   to: string;
-  webAppUrl: string;
 }
 
 export interface EmailTemplateDefinition {
