@@ -1,1 +1,1 @@
-export { useSubscriptionPlanDetails } from './useSubscriptionPlanDetails.hook';
+export { useSubscriptionPlanDetails, useActiveSubscriptionPlanDetails } from './useSubscriptionPlanDetails.hook';

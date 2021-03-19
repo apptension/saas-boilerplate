@@ -26,7 +26,12 @@ const handleFetchSubscriptionPlansSuccess = (
   state.availablePlans = payload;
 };
 
+const handleCancelSubscriptionSuccess = (state: SubscriptionState) => {
+  state.activeSubscription = null;
+};
+
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(subscriptionActions.fetchActiveSubscription.resolved, handleFetchSubscriptionSuccess);
   builder.addCase(subscriptionActions.fetchAvailableSubscriptionPlans.resolved, handleFetchSubscriptionPlansSuccess);
+  builder.addCase(subscriptionActions.cancelSubscription.resolved, handleCancelSubscriptionSuccess);
 });

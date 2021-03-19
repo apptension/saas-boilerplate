@@ -31,6 +31,7 @@ const FinancesPaymentConfirm = asyncComponent(() => import('./finances/paymentCo
 const Subscriptions = asyncComponent(() => import('./finances/subscriptions'), 'Subscriptions');
 const EditSubscription = asyncComponent(() => import('./finances/editSubscription'), 'EditSubscription');
 const EditPaymentMethod = asyncComponent(() => import('./finances/editPaymentMethod'), 'EditPaymentMethod');
+const CancelSubscription = asyncComponent(() => import('./finances/cancelSubscription'), 'CancelSubscription');
 //<-- IMPORT ROUTE -->
 
 const MatchedLanguageComponent = () => {
@@ -98,6 +99,9 @@ const MatchedLanguageComponent = () => {
         </AuthRoute>
         <AuthRoute exact path={`${match.path}${ROUTES.subscriptions.paymentMethod}`}>
           <EditPaymentMethod />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.subscriptions.cancel}`}>
+          <CancelSubscription />
         </AuthRoute>
         {/* <-- INJECT ROUTE --> */}
 

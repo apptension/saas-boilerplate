@@ -17,7 +17,7 @@ export const subscriptionPlanFactory: DeepMergeFactory<SubscriptionPlan> = (over
           SubscriptionPlanName.YEARLY,
         ]),
       },
-      unitAmount: faker.random.number(10),
+      unitAmount: faker.random.number({ min: 1000, max: 2500 }),
     },
     overrides
   );

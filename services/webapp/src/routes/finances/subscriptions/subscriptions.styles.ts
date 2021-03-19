@@ -11,3 +11,13 @@ export const Container = styled.div`
     margin-bottom: ${sizeUnits(3)};
   }
 `;
+
+export const Links = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  > * {
+    margin: ${sizeUnits(2)};
+  }
+`;

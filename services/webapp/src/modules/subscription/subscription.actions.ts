@@ -19,3 +19,5 @@ export const updateSubscriptionPlan = createPromiseAction<
 export const fetchAvailableSubscriptionPlans = createPromiseAction<void, FetchSubscriptionPlansSuccessPayload>(
   'FETCH_PLANS'
 );
+
+export const cancelSubscription = createPromiseAction<void, void>('CANCEL_SUBSCRIPTION');

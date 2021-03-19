@@ -1,5 +1,9 @@
 import { useIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
+import { selectActiveSubscriptionPlan } from '../../../../modules/subscription/subscription.selectors';
+import { subscriptionActions } from '../../../../modules/subscription';
 
 export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
   const intl = useIntl();
@@ -23,6 +27,20 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
     ? {
         name: planDisplayNames[plan.product.name],
         price: plan.unitAmount / 100,
+        isFree: plan.product.name === SubscriptionPlanName.FREE,
       }
     : {};
+};
+
+export const useActiveSubscriptionPlanDetails = () => {
+  const dispatch = useDispatch();
+  const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
+
+  useEffect(() => {
+    if (!activeSubscriptionPlan) {
+      dispatch(subscriptionActions.fetchActiveSubscription());
+    }
+  }, [activeSubscriptionPlan, dispatch]);
+
+  return useSubscriptionPlanDetails(activeSubscriptionPlan);
 };

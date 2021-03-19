@@ -37,6 +37,7 @@ export const ROUTES = {
   subscriptions: nestedRoute('/subscriptions', {
     changePlan: '/edit',
     paymentMethod: '/payment-method',
+    cancel: '/cancel',
   }),
   //<-- INJECT ROUTE DEFINITION -->
 };

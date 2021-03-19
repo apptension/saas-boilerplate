@@ -9,5 +9,6 @@ export function* watchSubscription() {
     takeLatest(subscriptionActions.fetchActiveSubscription, handleApiRequest(subscription.get)),
     takeLatest(subscriptionActions.updateSubscriptionPlan, handleApiRequest(subscription.update)),
     takeLatest(subscriptionActions.fetchAvailableSubscriptionPlans, handleApiRequest(subscription.list)),
+    takeLatest(subscriptionActions.cancelSubscription, handleApiRequest(subscription.cancel)),
   ]);
 }
