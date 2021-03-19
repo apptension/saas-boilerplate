@@ -79,3 +79,14 @@ export const generateEmail = (email, name) => {
   arr.splice(index, 0, '+', name);
   return arr.join('');
 };
+
+export const expectRequestNotToHappen = (alias) => {
+  cy.on('fail', (err) => {
+    expect(err.message).to.include('No request ever occurred.');
+    return false;
+  });
+
+  cy.wait(alias, { timeout: 1000 }).then(() => {
+    throw new Error('Unexpected API call');
+  });
+};

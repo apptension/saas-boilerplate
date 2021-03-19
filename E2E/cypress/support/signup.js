@@ -1,9 +1,9 @@
 import { EMAIL_INPUT, PASSWORD_INPUT, SUBMIT_BTN } from './authentication';
 
 export const TERMS_CHECKBOX = '[type="checkbox"]';
-export const LOGIN_LINK = 'a[href$=\\/auth\\/login]';
-export const TERMS_PAGE_LINK = 'label a[href$="\\/terms-and-conditions"]';
-export const PRIVACY_POLICY_LINK = 'label a[href$="\\/privacy-policy"]';
+export const LOGIN_LINK = 'a[href$="/auth/login"]';
+export const TERMS_PAGE_LINK = 'label a[href$="/terms-and-conditions"]';
+export const PRIVACY_POLICY_LINK = 'label a[href$="/privacy-policy"]';
 export const CONFIRM_YOUR_ACCOUNT = 'Confirm registration';
 
 export const createAccountWithUI = ({ userEmail, password, checkbox = true }) => {
@@ -33,6 +33,7 @@ export const expectAccountToBeCreated = (apiResp, userEmail) => {
   cy.generateAssertLog('account', 'BE');
   const { id, email, access, refresh } = apiResp.body;
 
+  expect(apiResp.statusCode || apiResp.status).to.equal(201);
   expect(id).to.be.a('string').and.to.have.length.gte(1);
   expect(email).to.equal(userEmail);
 

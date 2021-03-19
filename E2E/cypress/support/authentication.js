@@ -3,8 +3,8 @@ import { expectHeaderToBeDisplayed, openMenu } from './header';
 export const EMAIL_INPUT = '[name="email"]';
 export const PASSWORD_INPUT = '[name="password"]';
 export const SUBMIT_BTN = '[type="submit"]';
-export const RESET_PASSWORD_BTN = '[href$="\\/auth\\/reset-password"]';
-export const SIGNUP_BTN = '[href$="\\/auth\\/signup"]';
+export const RESET_PASSWORD_BTN = '[href$="/auth/reset-password"]';
+export const SIGNUP_BTN = '[href$="/auth/signup"]';
 
 export const logInWithUI = ({ userEmail, password }) => {
   cy.get(EMAIL_INPUT).type(userEmail);
@@ -52,7 +52,7 @@ export const expectTokenToExist = () => {
   });
 };
 
-const getToken = () => cy.getCookie('token').then((token) => token.value);
+export const getToken = () => cy.getCookie('token').then((token) => token.value);
 
 Cypress.Commands.add('getTokens', () => {
   cy.getCookie('token').then((token) => {

@@ -19,6 +19,7 @@ import {
   deleteEmails,
   expectErrorTextToBeDisplayed,
   expectLinkToExistInEmail,
+  expectRequestNotToHappen,
   expectRequestToFail,
   expectRequestToSucceed,
 } from '../support/helpers';
@@ -110,13 +111,6 @@ describe('Password reset throttle', () => {
   const userEmail = RESET_PASSWORD_EMAIL;
 
   it('should not re-send a password reset link immediately', () => {
-    cy.clock();
-
-    cy.on('fail', (err) => {
-      expect(err.message).to.include('No request ever occurred.');
-      return false;
-    });
-
     cy.visit('/auth/reset-password', BASIC_AUTH);
 
     submitResetPasswordForm(userEmail);
@@ -124,9 +118,7 @@ describe('Password reset throttle', () => {
     cy.intercept('POST', '/api/password-reset/').as('passwordReset');
     submitResetPasswordForm(userEmail);
 
-    cy.wait('@passwordReset', { timeout: 1000 }).then(() => {
-      throw new Error('Unexpected API call - throttle failed.');
-    });
+    expectRequestNotToHappen('@passwordReset');
   });
 
   it('should re-send a password reset link 15 seconds after previous request happened', () => {
