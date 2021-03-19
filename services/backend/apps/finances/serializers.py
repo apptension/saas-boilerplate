@@ -3,12 +3,14 @@ import datetime
 import pytz
 from django.conf import settings
 from django.contrib import messages
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from djstripe import models as djstripe_models, enums as djstripe_enums
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers, exceptions
 
 from . import models, constants, utils
+from .services import subscriptions
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
@@ -82,7 +84,7 @@ class SubscriptionPlansListSerializer(serializers.ModelSerializer):
     product = SubscriptionItemProductSerializer()
 
     class Meta:
-        model = models.Price
+        model = djstripe_models.Price
         fields = ('id', 'product', 'unit_amount')
         read_only_fields = fields
 
@@ -91,7 +93,7 @@ class SubscriptionItemPriceSerializer(serializers.ModelSerializer):
     product = SubscriptionItemProductSerializer()
 
     class Meta:
-        model = models.Price
+        model = djstripe_models.Price
         fields = ('id', 'product', 'unit_amount')
 
 
@@ -99,7 +101,7 @@ class SubscriptionItemSerializer(serializers.ModelSerializer):
     price = SubscriptionItemPriceSerializer()
 
     class Meta:
-        model = models.SubscriptionItem
+        model = djstripe_models.SubscriptionItem
         fields = ('id', 'price', 'quantity')
 
 
@@ -108,7 +110,7 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
     item = SubscriptionItemSerializer(source='items.first', read_only=True)
     price = serializers.SlugRelatedField(
         slug_field='id',
-        queryset=models.Price.objects.filter(
+        queryset=djstripe_models.Price.objects.filter(
             product__name__in=[
                 constants.MONTHLY_PLAN.name,
                 constants.YEARLY_PLAN.name,
@@ -137,17 +139,13 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
 
         return {**attrs, 'payment_method': payment_method, 'can_activate_trial': can_activate_trial}
 
-    def update(self, instance: models.Subscription, validated_data):
+    def update(self, instance: djstripe_models.Subscription, validated_data):
         price = validated_data['price']
         subscription_item = instance.items.first()
         payment_method = validated_data['payment_method']
         can_activate_trial = validated_data['can_activate_trial']
 
-        update_kwargs = {
-            'items': [{'id': subscription_item.id, 'price': price.id}],
-            'proration_behavior': 'create_prorations',
-        }
-
+        update_kwargs = {}
         if payment_method:
             update_kwargs['default_payment_method'] = payment_method.id
 
@@ -156,20 +154,24 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
                 settings.SUBSCRIPTION_TRIAL_PERIOD_DAYS
             )
 
-        data = instance._api_update(**update_kwargs)
-        subscription = models.Subscription.sync_from_stripe_data(data)
-        models.SubscriptionItem.sync_from_stripe_data(data.get("items").data[0])
-
-        return subscription
+        return subscriptions.update(
+            instance,
+            items=[{'id': subscription_item.id, 'price': price.id}],
+            proration_behavior='create_prorations',
+            cancel_at_period_end=False,
+            **update_kwargs,
+        )
 
     class Meta:
-        model = models.Subscription
+        model = djstripe_models.Subscription
         fields = (
             'id',
             'status',
             'start_date',
             'current_period_end',
             'current_period_start',
+            'cancel_at',
+            'cancel_at_period_end',
             'trial_start',
             'trial_end',
             'can_activate_trial',
@@ -185,9 +187,38 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
             'current_period_start',
             'trial_start',
             'trial_end',
+            'cancel_at',
+            'cancel_at_period_end',
             'default_payment_method',
             'item',
         )
+
+
+class CancelUserActiveSubscriptionSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        customer = self.instance.customer
+        free_plan_product, created = models.Product.objects.get_or_create_subscription_plan(
+            plan_config=constants.FREE_PLAN
+        )
+        if customer.is_subscribed_to(product=free_plan_product):
+            raise serializers.ValidationError(
+                _('Customer has no paid subscription to cancel'), code='no_paid_subscription'
+            )
+
+        return attrs
+
+    def update(self, instance: djstripe_models.Subscription, validated_data):
+        if instance.trial_end and instance.trial_end > timezone.now():
+            return subscriptions.update_to_free_plan(
+                instance,
+                trial_end='now',
+                proration_behavior='none',
+            )
+        return instance.cancel(at_period_end=True)
+
+    class Meta:
+        model = djstripe_models.Subscription
+        fields = ()
 
 
 class AdminStripePaymentIntentRefundSerializer(serializers.Serializer):

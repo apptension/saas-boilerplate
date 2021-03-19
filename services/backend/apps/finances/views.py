@@ -3,7 +3,7 @@ from djstripe import models as djstripe_models
 from rest_framework import mixins, viewsets, response, views, renderers, status, generics
 
 from common.acl import policies
-from . import serializers, constants, models
+from . import serializers, constants
 
 
 class StripePaymentIntentViewSet(
@@ -43,7 +43,23 @@ class UserActiveSubscriptionView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.UserActiveSubscriptionSerializer
 
     def get_object(self):
-        customer, _ = models.Customer.get_or_create(self.request.user)
+        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
+        return customer.subscription
+
+
+class CancelUserActiveSubscriptionView(generics.GenericAPIView):
+    permission_classes = (policies.UserFullAccess,)
+    serializer_class = serializers.CancelUserActiveSubscriptionSerializer
+
+    def post(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(serializer.data)
+
+    def get_object(self):
+        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
         return customer.subscription
 
 
@@ -52,7 +68,7 @@ class SubscriptionPlansListView(generics.ListAPIView):
     serializer_class = serializers.SubscriptionPlansListSerializer
 
     def get_queryset(self):
-        return models.Price.objects.filter(
+        return djstripe_models.Price.objects.filter(
             product__name__in=[
                 constants.MONTHLY_PLAN.name,
                 constants.YEARLY_PLAN.name,

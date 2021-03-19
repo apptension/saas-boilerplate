@@ -3,8 +3,6 @@ from django.urls import reverse
 from djstripe import models as djstripe_models
 from rest_framework import status
 
-from .. import models
-
 pytestmark = pytest.mark.django_db
 
 
@@ -57,8 +55,8 @@ class TestUserActiveSubscriptionView:
     def test_trial_fields_in_response_when_customer_already_activated_trial(
         self, api_client, user, subscription_factory
     ):
-        customer, _ = models.Customer.get_or_create(user)
-        models.Subscription.objects.filter(customer=customer).delete()
+        customer, _ = djstripe_models.Customer.get_or_create(user)
+        djstripe_models.Subscription.objects.filter(customer=customer).delete()
         subscription_factory(trialing=True, customer=customer)
 
         api_client.force_authenticate(user)
@@ -77,7 +75,7 @@ class TestUserActiveSubscriptionView:
 
         assert response.status_code == status.HTTP_200_OK, response.data
 
-        customer = models.Customer.objects.get(subscriber=user)
+        customer = djstripe_models.Customer.objects.get(subscriber=user)
         self.assert_response(response, customer.subscription)
 
     def test_change_active_subscription(self, api_client, user, monthly_plan_price):
@@ -87,11 +85,11 @@ class TestUserActiveSubscriptionView:
 
         assert response.status_code == status.HTTP_200_OK, response.data
 
-        customer = models.Customer.objects.get(subscriber=user)
+        customer = djstripe_models.Customer.objects.get(subscriber=user)
         self.assert_response(response, customer.subscription)
 
     def test_change_when_user_has_no_payment_method_but_can_activate_trial(self, api_client, user, monthly_plan_price):
-        customer = models.Customer.objects.get(subscriber=user)
+        customer = djstripe_models.Customer.objects.get(subscriber=user)
 
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
@@ -108,8 +106,8 @@ class TestUserActiveSubscriptionView:
     def test_return_error_on_change_if_customer_has_no_payment_method(
         self, api_client, user, monthly_plan_price, subscription_factory
     ):
-        customer, _ = models.Customer.get_or_create(user)
-        models.Subscription.objects.filter(customer=customer).delete()
+        customer, _ = djstripe_models.Customer.get_or_create(user)
+        djstripe_models.Subscription.objects.filter(customer=customer).delete()
         subscription_factory(trialing=True, customer=customer)
 
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
@@ -121,3 +119,26 @@ class TestUserActiveSubscriptionView:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data['non_field_errors'][0]['code'] == 'missing_payment_method'
+
+
+class TestCancelUserActiveSubscriptionView:
+    def test_return_error_if_customer_has_no_paid_subscription(self, api_client, user):
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription-cancel')
+        response = api_client.post(url)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert response.data['non_field_errors'][0]['code'] == 'no_paid_subscription'
+
+    def test_cancel_trialing_subscription(self, api_client, user, subscription_factory, monthly_plan_price):
+        customer, _ = djstripe_models.Customer.get_or_create(user)
+        djstripe_models.Subscription.objects.filter(customer=customer).delete()
+        subscription_factory(trialing=True, customer=customer, items=[{'price': monthly_plan_price.id}])
+
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription-cancel')
+        response = api_client.post(url)
+
+        customer.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK, response.data

@@ -15,18 +15,3 @@ class Price(djstripe_models.Price):
         proxy = True
 
     objects = managers.PriceManager()
-
-
-class Subscription(djstripe_models.Subscription):
-    class Meta:
-        proxy = True
-
-
-class SubscriptionItem(djstripe_models.SubscriptionItem):
-    class Meta:
-        proxy = True
-
-
-class Customer(djstripe_models.Customer):
-    class Meta:
-        proxy = True

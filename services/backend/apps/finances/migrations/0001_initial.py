@@ -13,17 +13,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Customer',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('djstripe.customer',),
-        ),
-        migrations.CreateModel(
             name='Price',
             fields=[
             ],
@@ -44,27 +33,5 @@ class Migration(migrations.Migration):
                 'constraints': [],
             },
             bases=('djstripe.product',),
-        ),
-        migrations.CreateModel(
-            name='Subscription',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('djstripe.subscription',),
-        ),
-        migrations.CreateModel(
-            name='SubscriptionItem',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('djstripe.subscriptionitem',),
         ),
     ]

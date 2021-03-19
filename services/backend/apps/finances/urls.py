@@ -17,4 +17,9 @@ urlpatterns = [
     path("stripe/", include(stripe_urls)),
     path("subscription-plans/", views.SubscriptionPlansListView.as_view(), name='subscription-plans-list'),
     path("subscription/me/", views.UserActiveSubscriptionView.as_view(), name='user-active-subscription'),
+    path(
+        "subscription/me/cancel/",
+        views.CancelUserActiveSubscriptionView.as_view(),
+        name='user-active-subscription-cancel',
+    ),
 ]

@@ -2,10 +2,12 @@ import pytest
 import pytest_factoryboy
 import stripe
 from django.contrib.auth import get_user_model
+from django.db import models as django_models
+from django.utils import timezone
 from djstripe import models as djstripe_models
 
 from . import factories
-from .. import constants, models
+from .. import constants
 
 User = get_user_model()
 
@@ -31,18 +33,44 @@ def djstripe_sync_method(mocker):
 
 @pytest.fixture()
 def stripe_methods_factory(mocker):
-    def fn(model, factory):
-        def retrieve(id, **kwargs):
-            instance = model.objects.get(id=id)
+    def fn(model, factory, request=None):
+        def mock_stripe_instance(instance):
+            stripe_instance = mocker.MagicMock()
 
             def getitem(*args, **kwargs):
                 return instance.__dict__.__getitem__(*args, **kwargs)
 
-            stripe_instance = mocker.MagicMock()
+            def base_request(method, url, params):
+                if request:
+                    request(instance, method, url, params)
+                    return stripe_instance
+
+                if method == 'post':
+                    ignore_fields = ["date_purged", "subscriber"]
+                    for field in model._meta.fields:
+                        if field.name.startswith("djstripe_") or field.name in ignore_fields:
+                            continue
+
+                        field_data = params.get(field.name, None)
+                        if field_data and not isinstance(field, django_models.ForeignKey):
+                            setattr(instance, field.name, field_data)
+                    instance.save()
+
+                return stripe_instance
+
+            def delete(**kwargs):
+                instance.delete()
+                return stripe_instance
+
             stripe_instance._wrapped_instance = instance
             stripe_instance.__getitem__.side_effect = getitem
-            stripe_instance.request.return_value = stripe_instance
+            stripe_instance.request.side_effect = base_request
+            stripe_instance.delete.side_effect = delete
             return stripe_instance
+
+        def retrieve(id, **kwargs):
+            instance = model.objects.get(id=id)
+            return mock_stripe_instance(instance)
 
         def create(**kwargs):
             kwargs.pop('api_key', None)
@@ -51,15 +79,7 @@ def stripe_methods_factory(mocker):
             kwargs.pop('metadata', None)
 
             instance = factory(**kwargs)
-
-            def getitem(*args, **kwargs):
-                return instance.__dict__.__getitem__(*args, **kwargs)
-
-            stripe_instance = mocker.MagicMock()
-            stripe_instance._wrapped_instance = instance
-            stripe_instance.__getitem__.side_effect = getitem
-            stripe_instance.request.return_value = stripe_instance
-            return stripe_instance
+            return mock_stripe_instance(instance)
 
         return {'retrieve': retrieve, 'create': create}
 
@@ -68,7 +88,7 @@ def stripe_methods_factory(mocker):
 
 @pytest.fixture(scope='function', autouse=True)
 def stripe_customer_mock(mocker, stripe_methods_factory, customer_factory):
-    methods = stripe_methods_factory(models.Customer, customer_factory)
+    methods = stripe_methods_factory(djstripe_models.Customer, customer_factory)
 
     def create(**kwargs):
         email = kwargs.pop('email')
@@ -82,19 +102,34 @@ def stripe_customer_mock(mocker, stripe_methods_factory, customer_factory):
 
 @pytest.fixture(scope='function', autouse=True)
 def stripe_price_mock(mocker, stripe_methods_factory, price_factory):
-    methods = stripe_methods_factory(models.Price, price_factory)
+    methods = stripe_methods_factory(djstripe_models.Price, price_factory)
     mocker.patch('stripe.Price.retrieve', side_effect=methods['retrieve'])
     mocker.patch('stripe.Price.create', side_effect=methods['create'])
 
 
 @pytest.fixture(scope='function', autouse=True)
 def stripe_subscription_mock(mocker, stripe_methods_factory, subscription_factory):
-    methods = stripe_methods_factory(models.Subscription, subscription_factory)
+    def request(instance, method, url, params):
+        if method == 'post':
+            ignore_fields = ["date_purged", "subscriber"]
+            for field in djstripe_models.Subscription._meta.fields:
+                if params.get('trial_end', None) == 'now':
+                    params['trial_end'] = timezone.now()
+
+                if field.name.startswith("djstripe_") or field.name in ignore_fields:
+                    continue
+
+                field_data = params.get(field.name, None)
+                if field_data and not isinstance(field, django_models.ForeignKey):
+                    setattr(instance, field.name, field_data)
+            instance.save()
+
+    methods = stripe_methods_factory(djstripe_models.Subscription, subscription_factory, request=request)
 
     def create(**kwargs):
         customer = kwargs.pop('customer', None)
         if isinstance(customer, str):
-            kwargs['customer'] = models.Customer.objects.get(id=customer)
+            kwargs['customer'] = djstripe_models.Customer.objects.get(id=customer)
 
         return methods['create'](**kwargs)
 

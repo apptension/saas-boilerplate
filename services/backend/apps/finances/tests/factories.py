@@ -12,7 +12,7 @@ from .. import models
 
 class CustomerFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Customer
+        model = djstripe_models.Customer
         django_get_or_create = ('id', 'subscriber')
 
     id = factory.Faker('uuid4')
@@ -162,7 +162,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
 class PriceFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Price
+        model = djstripe_models.Price
         django_get_or_create = ('id',)
 
     id = factory.Faker('uuid4')
@@ -196,7 +196,7 @@ class SubscriptionItemFactory(factory.DjangoModelFactory):
 
 class SubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.Subscription
+        model = djstripe_models.Subscription
         django_get_or_create = ('id',)
 
     id = factory.Faker('uuid4')
@@ -221,10 +221,10 @@ class SubscriptionFactory(factory.DjangoModelFactory):
 
         if extracted:
             for item in extracted:
-                models.SubscriptionItem.objects.create(
+                djstripe_models.SubscriptionItem.objects.create(
                     id=uuid.uuid4(),
                     subscription=self,
-                    price=models.Price.objects.get(id=item['price']),
+                    price=djstripe_models.Price.objects.get(id=item['price']),
                     plan=djstripe_models.Plan.objects.get(id=item['price']),
                 )
 
