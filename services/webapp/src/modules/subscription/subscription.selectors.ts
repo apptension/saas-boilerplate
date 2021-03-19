@@ -22,5 +22,5 @@ export const selectActiveSubscriptionPlan = createSelector(
 
 export const selectActiveSubscriptionPaymentMethod = createSelector(
   selectActiveSubscription,
-  (subscription) => subscription?.defaultPaymentMethod?.card
+  (subscription) => subscription?.defaultPaymentMethod
 );

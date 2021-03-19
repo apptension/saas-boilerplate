@@ -1,24 +1,27 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { times } from 'ramda';
 
-import { paymentMethodFactory } from '../../../../../mocks/factories/stripe';
+import { Elements } from '@stripe/react-stripe-js';
+import { withProviders } from '../../../../utils/storybook';
+import { useApiForm } from '../../../../hooks/useApiForm';
+import { stripePromise } from '../../../../services/stripe';
 import { StripePaymentMethodSelector, StripePaymentMethodSelectorProps } from './stripePaymentMethodSelector.component';
+import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 
 const Template: Story<StripePaymentMethodSelectorProps> = (args) => {
-  return <StripePaymentMethodSelector {...args} />;
+  const formControls = useApiForm<PaymentFormFields>();
+  return (
+    <Elements stripe={stripePromise}>
+      <StripePaymentMethodSelector {...args} formControls={formControls} />
+    </Elements>
+  );
 };
 
 export default {
   title: 'Shared/Finances/Stripe/StripePaymentMethodSelector',
   component: StripePaymentMethodSelector,
-  decorators: [],
+  decorators: [withProviders()],
 };
 
 export const Default = Template.bind({});
-Default.args = {
-  paymentMethods: times(() => paymentMethodFactory(), 3),
-  onChange: action('change'),
-  value: undefined,
-};
+Default.args = {};

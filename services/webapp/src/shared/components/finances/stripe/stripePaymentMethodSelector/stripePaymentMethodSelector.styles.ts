@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { heading5 } from '../../../../../theme/typography';
+import { heading5, MicroLabel } from '../../../../../theme/typography';
 import { sizeUnits } from '../../../../../theme/size';
 import { RadioButton } from '../../../radioButton';
 import { Button } from '../../../button';
 import { ButtonVariant } from '../../../button/button.types';
-import { color, fontFamily, fontWeight } from '../../../../../theme';
+import { color } from '../../../../../theme';
 
 export const Container = styled.div``;
 
@@ -41,4 +41,9 @@ export const Heading = styled.h3`
   ${heading5};
   margin-top: ${sizeUnits(3)};
   margin-bottom: ${sizeUnits(1)};
+`;
+
+export const ErrorMessage = styled(MicroLabel)`
+  margin-top: 2px;
+  color: ${color.error};
 `;

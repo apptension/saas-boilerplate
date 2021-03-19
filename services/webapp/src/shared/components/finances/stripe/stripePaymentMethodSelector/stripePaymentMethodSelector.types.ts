@@ -1,6 +1,8 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 
+import { NestedValue } from 'react-hook-form';
 import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
+import { useApiForm } from '../../../../hooks/useApiForm';
 
 export enum StripePaymentMethodSelectionType {
   SAVED_PAYMENT_METHOD,
@@ -35,3 +37,8 @@ export type StripePaymentMethodSelection =
         cardMissingFields: Record<string, boolean>;
       };
     };
+
+export type PaymentFormFields = { paymentMethod: NestedValue<StripePaymentMethodSelection> };
+
+const usePaymentMethodApiForm = <T extends PaymentFormFields>() => useApiForm<T>();
+export type PaymentMethodApiFormControls = ReturnType<typeof usePaymentMethodApiForm>;

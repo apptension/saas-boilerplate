@@ -30,7 +30,3 @@ export const withFontFace = (story) => {
 
   return story();
 };
-
-export const withProviders = (context) => (story) => {
-  return <ProvidersWrapper context={context}>{story()}</ProvidersWrapper>;
-};

@@ -2,9 +2,9 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { times } from 'ramda';
-import { withProviders } from '../../../../.storybook/decorators';
 import { prepareState } from '../../../mocks/store';
 import { subscriptionPlanFactory } from '../../../mocks/factories';
+import { withProviders } from '../../../shared/utils/storybook';
 import { EditSubscription } from './editSubscription.component';
 
 const storeWithPlans = prepareState((state) => {

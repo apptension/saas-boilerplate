@@ -69,15 +69,24 @@ export const Subscriptions = () => {
             defaultMessage="Current payment method:"
             description="My subscription / Current payment method"
           />{' '}
-          {activeSubscriptionPaymentMethod?.brand} **** {activeSubscriptionPaymentMethod?.last4}
+          {activeSubscriptionPaymentMethod?.billingDetails?.name &&
+            `${activeSubscriptionPaymentMethod?.billingDetails?.name} `}
+          {activeSubscriptionPaymentMethod?.card.brand} **** {activeSubscriptionPaymentMethod?.card.last4}
         </H3>
 
-        <Button onClick={noopClick}>
-          <FormattedMessage
-            defaultMessage="Edit payment method"
-            description="My subscription / Edit payment method button"
-          />
-        </Button>
+        <Link to={ROUTES.subscriptions.paymentMethod}>
+          {activeSubscriptionPaymentMethod ? (
+            <FormattedMessage
+              defaultMessage="Edit payment method"
+              description="My subscription / Edit payment method button"
+            />
+          ) : (
+            <FormattedMessage
+              defaultMessage="Add payment method"
+              description="My subscription / Add payment method button"
+            />
+          )}
+        </Link>
       </section>
 
       <section>

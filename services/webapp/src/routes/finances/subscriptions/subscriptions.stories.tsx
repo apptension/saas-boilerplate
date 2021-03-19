@@ -1,9 +1,9 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { withProviders } from '../../../../.storybook/decorators';
 import { prepareState } from '../../../mocks/store';
 import { subscriptionFactory } from '../../../mocks/factories';
+import { withProviders } from '../../../shared/utils/storybook';
 import { Subscriptions } from './subscriptions.component';
 
 const store = prepareState((state) => {
