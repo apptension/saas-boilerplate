@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
-from rest_framework import status
 from djstripe import models as djstripe_models
+from rest_framework import status
 
 from .. import models
 
@@ -30,7 +30,9 @@ class TestUserActiveSubscriptionView:
 
         assert response.data['id'] == subscription.id
         assert response.data['status'] == subscription.status
-        assert response.data['default_payment_method']['id'] == subscription.default_payment_method.id
+        if subscription.default_payment_method:
+            assert response.data['default_payment_method']['id'] == subscription.default_payment_method.id
+
         assert response.data['item'] == {
             'id': subscription_item.id,
             'quantity': subscription_item.quantity,
@@ -40,6 +42,33 @@ class TestUserActiveSubscriptionView:
                 'product': {'id': subscription_item.price.product.id, 'name': subscription_item.price.product.name},
             },
         }
+
+    def test_trial_fields_in_response_when_user_never_activated_it(self, api_client, user):
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription')
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+
+        assert not response.data['trial_start']
+        assert not response.data['trial_end']
+        assert response.data['can_activate_trial']
+
+    def test_trial_fields_in_response_when_customer_already_activated_trial(
+        self, api_client, user, subscription_factory
+    ):
+        customer, _ = models.Customer.get_or_create(user)
+        models.Subscription.objects.filter(customer=customer).delete()
+        subscription_factory(trialing=True, customer=customer)
+
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription')
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert response.data['trial_start']
+        assert response.data['trial_end']
+        assert not response.data['can_activate_trial']
 
     def test_return_active_subscription_data(self, api_client, user):
         api_client.force_authenticate(user)
@@ -61,8 +90,27 @@ class TestUserActiveSubscriptionView:
         customer = models.Customer.objects.get(subscriber=user)
         self.assert_response(response, customer.subscription)
 
-    def test_return_error_on_change_if_customer_has_no_payment_method(self, api_client, user, monthly_plan_price):
+    def test_change_when_user_has_no_payment_method_but_can_activate_trial(self, api_client, user, monthly_plan_price):
         customer = models.Customer.objects.get(subscriber=user)
+
+        djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
+
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription')
+
+        response = api_client.patch(url, {'price': monthly_plan_price.id})
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+
+        customer.subscription.refresh_from_db()
+        self.assert_response(response, customer.subscription)
+
+    def test_return_error_on_change_if_customer_has_no_payment_method(
+        self, api_client, user, monthly_plan_price, subscription_factory
+    ):
+        customer, _ = models.Customer.get_or_create(user)
+        models.Subscription.objects.filter(customer=customer).delete()
+        subscription_factory(trialing=True, customer=customer)
 
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 

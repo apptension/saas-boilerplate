@@ -1,9 +1,14 @@
-from djstripe import models as djstripe_models, enums as djstripe_enums
-from rest_framework import serializers, exceptions
+import datetime
+
+import pytz
+from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from djstripe import models as djstripe_models, enums as djstripe_enums
+from drf_yasg.utils import swagger_serializer_method
+from rest_framework import serializers, exceptions
 
-from . import models, constants
+from . import models, constants, utils
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
@@ -111,32 +116,47 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
         ),
         write_only=True,
     )
+    can_activate_trial = serializers.SerializerMethodField()
+
+    @swagger_serializer_method(serializer_or_field=serializers.BooleanField)
+    def get_can_activate_trial(self, instance):
+        return utils.customer_can_activate_trial(instance.customer)
 
     def validate(self, attrs):
         customer = self.instance.customer
         payment_method = self.instance.default_payment_method
+        can_activate_trial = utils.customer_can_activate_trial(customer)
 
         if payment_method is None:
             payment_method = (
                 djstripe_models.PaymentMethod.objects.filter(customer=customer).order_by('-created').first()
             )
 
-        if not payment_method:
+        if not can_activate_trial and not payment_method:
             raise serializers.ValidationError(_('Customer has no payment method setup'), code='missing_payment_method')
 
-        return {**attrs, 'payment_method': payment_method}
+        return {**attrs, 'payment_method': payment_method, 'can_activate_trial': can_activate_trial}
 
     def update(self, instance: models.Subscription, validated_data):
         price = validated_data['price']
         subscription_item = instance.items.first()
         payment_method = validated_data['payment_method']
+        can_activate_trial = validated_data['can_activate_trial']
 
-        data = instance._api_update(
-            items=[{'id': subscription_item.id, 'price': price.id}],
-            proration_behavior='create_prorations',
-            default_payment_method=payment_method.id,
-        )
+        update_kwargs = {
+            'items': [{'id': subscription_item.id, 'price': price.id}],
+            'proration_behavior': 'create_prorations',
+        }
 
+        if payment_method:
+            update_kwargs['default_payment_method'] = payment_method.id
+
+        if can_activate_trial:
+            update_kwargs['trial_end'] = datetime.datetime.now(tz=pytz.UTC) + datetime.timedelta(
+                settings.SUBSCRIPTION_TRIAL_PERIOD_DAYS
+            )
+
+        data = instance._api_update(**update_kwargs)
         subscription = models.Subscription.sync_from_stripe_data(data)
         models.SubscriptionItem.sync_from_stripe_data(data.get("items").data[0])
 
@@ -150,6 +170,9 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
             'start_date',
             'current_period_end',
             'current_period_start',
+            'trial_start',
+            'trial_end',
+            'can_activate_trial',
             'default_payment_method',
             'item',
             'price',
@@ -160,6 +183,8 @@ class UserActiveSubscriptionSerializer(serializers.ModelSerializer):
             'start_date',
             'current_period_end',
             'current_period_start',
+            'trial_start',
+            'trial_end',
             'default_payment_method',
             'item',
         )

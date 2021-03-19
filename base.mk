@@ -82,7 +82,6 @@ up:
 	$(DOCKER_COMPOSE) up --build --force-recreate backend workers
 
 down:
-	# run as a (background) service
 	docker-compose down
 
 clean:

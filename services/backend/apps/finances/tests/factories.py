@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 import factory
+import pytz
 from django.utils import timezone
 from djstripe import models as djstripe_models, enums
 
@@ -205,6 +206,8 @@ class SubscriptionFactory(factory.DjangoModelFactory):
     )
     collection_method = enums.InvoiceCollectionMethod.charge_automatically
     start_date = datetime.datetime.now(tz=datetime.timezone.utc)
+    trial_start = None
+    trial_end = None
     current_period_start = factory.LazyAttribute(lambda o: o.start_date)
     current_period_end = factory.LazyAttribute(lambda o: o.current_period_start + +datetime.timedelta(30))
 
@@ -224,3 +227,10 @@ class SubscriptionFactory(factory.DjangoModelFactory):
                     price=models.Price.objects.get(id=item['price']),
                     plan=djstripe_models.Plan.objects.get(id=item['price']),
                 )
+
+    class Params:
+        trialing = factory.Trait(
+            status=enums.SubscriptionStatus.trialing,
+            trial_start=datetime.datetime.now(tz=pytz.UTC),
+            trial_end=datetime.datetime.now(tz=pytz.UTC) + datetime.timedelta(30),
+        )
