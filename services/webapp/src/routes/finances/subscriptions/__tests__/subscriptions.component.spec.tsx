@@ -2,7 +2,7 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { Subscriptions, SubscriptionsProps } from '../subscriptions.component';
+import { Subscriptions } from '../subscriptions.component';
 import { prepareState } from '../../../../mocks/store';
 import { subscriptionFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
@@ -21,14 +21,12 @@ const store = prepareState((state) => {
 });
 
 describe('Subscriptions: Component', () => {
-  const defaultProps: SubscriptionsProps = {};
-
-  const component = (props: Partial<SubscriptionsProps>) => <Subscriptions {...defaultProps} {...props} />;
+  const component = () => <Subscriptions />;
   const render = makeContextRenderer(component);
 
   it('should render current subscription plan', () => {
     render({}, { store });
-    expect(screen.getByText(/active plan.+free_plan/gi)).toBeInTheDocument();
+    expect(screen.getByText(/active plan.+free/gi)).toBeInTheDocument();
   });
 
   it('should render next renewal date', () => {

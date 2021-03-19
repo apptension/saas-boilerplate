@@ -3,6 +3,11 @@ import { GlobalState } from '../../config/reducers';
 
 export const selectSubscriptionDomain = (state: GlobalState) => state.subscription;
 
+export const selectAvailableSubscriptionPlans = createSelector(
+  selectSubscriptionDomain,
+  (state) => state.availablePlans
+);
+
 export const selectActiveSubscription = createSelector(selectSubscriptionDomain, (state) => state.activeSubscription);
 
 export const selectActiveSubscriptionRenewalDate = createSelector(
@@ -12,7 +17,7 @@ export const selectActiveSubscriptionRenewalDate = createSelector(
 
 export const selectActiveSubscriptionPlan = createSelector(
   selectActiveSubscription,
-  (subscription) => subscription?.item.price.product.name
+  (subscription) => subscription?.item.price
 );
 
 export const selectActiveSubscriptionPaymentMethod = createSelector(

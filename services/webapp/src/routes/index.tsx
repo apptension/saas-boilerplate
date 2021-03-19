@@ -29,6 +29,7 @@ const AddCrudDemoItem = asyncComponent(() => import('./crudDemoItem/addCrudDemoI
 const EditCrudDemoItem = asyncComponent(() => import('./crudDemoItem/editCrudDemoItem'), 'EditCrudDemoItem');
 const FinancesPaymentConfirm = asyncComponent(() => import('./finances/paymentConfirm'), 'PaymentConfirm');
 const Subscriptions = asyncComponent(() => import('./finances/subscriptions'), 'Subscriptions');
+const EditSubscription = asyncComponent(() => import('./finances/editSubscription'), 'EditSubscription');
 //<-- IMPORT ROUTE -->
 
 const MatchedLanguageComponent = () => {
@@ -88,8 +89,11 @@ const MatchedLanguageComponent = () => {
         <AuthRoute exact path={`${match.path}${ROUTES.finances.paymentConfirm}`}>
           <FinancesPaymentConfirm />
         </AuthRoute>
-        <AuthRoute exact path={`${match.path}${ROUTES.subscriptions}`}>
+        <AuthRoute exact path={`${match.path}${ROUTES.subscriptions.index}`}>
           <Subscriptions />
+        </AuthRoute>
+        <AuthRoute exact path={`${match.path}${ROUTES.subscriptions.changePlan}`}>
+          <EditSubscription />
         </AuthRoute>
         {/* <-- INJECT ROUTE --> */}
 

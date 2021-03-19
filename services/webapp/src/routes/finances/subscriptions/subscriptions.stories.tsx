@@ -4,13 +4,13 @@ import { Story } from '@storybook/react';
 import { withProviders } from '../../../../.storybook/decorators';
 import { prepareState } from '../../../mocks/store';
 import { subscriptionFactory } from '../../../mocks/factories';
-import { Subscriptions, SubscriptionsProps } from './subscriptions.component';
+import { Subscriptions } from './subscriptions.component';
 
 const store = prepareState((state) => {
   state.subscription.activeSubscription = subscriptionFactory();
 });
 
-const Template: Story<SubscriptionsProps> = (args) => {
+const Template: Story = (args) => {
   return <Subscriptions {...args} />;
 };
 

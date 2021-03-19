@@ -11,18 +11,20 @@ import {
 import { H1, H2, H3 } from '../../../theme/typography';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { Button } from '../../../shared/components/button';
+import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../app.constants';
+import { Link } from '../../../shared/components/link';
+import { useSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { Container } from './subscriptions.styles';
 
-export interface SubscriptionsProps {
-  children?: ReactNode;
-}
-
-export const Subscriptions = ({ children }: SubscriptionsProps) => {
+export const Subscriptions = () => {
   const dispatch = useDispatch();
+  const changePlanUrl = useLocaleUrl(ROUTES.subscriptions.changePlan);
   const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
   const activeSubscriptionRenewalDate = useSelector(selectActiveSubscriptionRenewalDate);
   const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
   const { showMessage } = useSnackbar();
+  const activeSubscriptionPlanName = useSubscriptionPlanDetails(activeSubscriptionPlan)?.name;
 
   const noopClick = () => showMessage('Unsupported');
 
@@ -41,16 +43,16 @@ export const Subscriptions = ({ children }: SubscriptionsProps) => {
 
         <H3>
           <FormattedMessage defaultMessage="Active plan:" description="My subscription / Active plan" />{' '}
-          {activeSubscriptionPlan}
+          {activeSubscriptionPlan && activeSubscriptionPlanName}
         </H3>
         <H3>
           <FormattedMessage defaultMessage="Next renewal / expiry:" description="My subscription / Next renewal" />{' '}
           {activeSubscriptionRenewalDate}
         </H3>
 
-        <Button onClick={noopClick}>
+        <Link to={changePlanUrl}>
           <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
-        </Button>
+        </Link>
 
         <Button onClick={noopClick}>
           <FormattedMessage defaultMessage="Cancel subscription" description="My subscription / Cancel subscription" />

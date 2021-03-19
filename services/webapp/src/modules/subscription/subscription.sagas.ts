@@ -5,5 +5,9 @@ import { handleApiRequest } from '../helpers/handleApiRequest';
 import * as subscriptionActions from './subscription.actions';
 
 export function* watchSubscription() {
-  yield all([takeLatest(subscriptionActions.fetchActiveSubscription, handleApiRequest(subscription.get))]);
+  yield all([
+    takeLatest(subscriptionActions.fetchActiveSubscription, handleApiRequest(subscription.get)),
+    takeLatest(subscriptionActions.updateSubscriptionPlan, handleApiRequest(subscription.update)),
+    takeLatest(subscriptionActions.fetchAvailableSubscriptionPlans, handleApiRequest(subscription.list)),
+  ]);
 }

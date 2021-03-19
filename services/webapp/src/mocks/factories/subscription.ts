@@ -1,9 +1,26 @@
 import * as faker from 'faker';
 
 import { mergeDeepRight } from 'ramda';
-import { Subscription, SubscriptionPlanName } from '../../shared/services/api/subscription/types';
+import { Subscription, SubscriptionPlan, SubscriptionPlanName } from '../../shared/services/api/subscription/types';
 import { DeepMergeFactory } from './types';
 import { paymentMethodFactory } from './stripe';
+
+export const subscriptionPlanFactory: DeepMergeFactory<SubscriptionPlan> = (overrides = {}) =>
+  mergeDeepRight(
+    {
+      id: faker.random.uuid(),
+      product: {
+        id: faker.random.uuid(),
+        name: faker.random.arrayElement([
+          SubscriptionPlanName.FREE,
+          SubscriptionPlanName.MONTHLY,
+          SubscriptionPlanName.YEARLY,
+        ]),
+      },
+      unitAmount: faker.random.number(10),
+    },
+    overrides
+  );
 
 export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = {}) =>
   mergeDeepRight(
@@ -14,18 +31,7 @@ export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = 
       defaultPaymentMethod: paymentMethodFactory(),
       item: {
         id: faker.random.uuid(),
-        price: {
-          id: faker.random.uuid(),
-          product: {
-            id: faker.random.uuid(),
-            name: faker.random.arrayElement([
-              SubscriptionPlanName.FREE,
-              SubscriptionPlanName.MONTHLY,
-              SubscriptionPlanName.YEARLY,
-            ]),
-          },
-          unitAmount: faker.random.number(10),
-        },
+        price: subscriptionPlanFactory(overrides.item?.price),
         quantity: faker.random.number(10),
       },
     },
