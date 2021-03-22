@@ -24,6 +24,7 @@ export interface Subscription {
   trialEnd: string | null;
   canActivateTrial: boolean;
   defaultPaymentMethod: StripePaymentMethod | null;
+  cancelAt?: string;
   item: {
     id: string;
     price: SubscriptionPlan;

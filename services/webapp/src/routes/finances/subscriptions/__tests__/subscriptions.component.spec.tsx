@@ -30,9 +30,35 @@ describe('Subscriptions: Component', () => {
     expect(screen.getByText(/active plan.+free/gi)).toBeInTheDocument();
   });
 
-  it('should render next renewal date', () => {
-    render({}, { store });
-    expect(screen.getByText(/next renewal.+2099-01-01/gi)).toBeInTheDocument();
+  describe('subscription is active', () => {
+    it('should render next renewal date', () => {
+      render({}, { store });
+      expect(screen.getByText(/next renewal.+2099-01-01/gi)).toBeInTheDocument();
+    });
+
+    it('should not render cancelation date', () => {
+      render({}, { store });
+      expect(screen.queryByText(/subscription will expire at/gi)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('subscription is canceled', () => {
+    const storeWithSubscriptionCanceled = prepareState((state) => {
+      state.subscription.activeSubscription = subscriptionFactory();
+      state.subscription.activeSubscription.item.price.product.name = SubscriptionPlanName.MONTHLY;
+      state.subscription.activeSubscription.currentPeriodEnd = new Date('Jan 1, 2099 GMT').toISOString();
+      state.subscription.activeSubscription.cancelAt = new Date('Jan 1, 2099 GMT').toISOString();
+    });
+
+    it('should render cancelation date', () => {
+      render({}, { store: storeWithSubscriptionCanceled });
+      expect(screen.getByText(/subscription will expire at.+2099-01-01/gi)).toBeInTheDocument();
+    });
+
+    it('should not render next renewal date', () => {
+      render({}, { store: storeWithSubscriptionCanceled });
+      expect(screen.queryByText(/next renewal/gi)).not.toBeInTheDocument();
+    });
   });
 
   describe('edit subscription button', () => {

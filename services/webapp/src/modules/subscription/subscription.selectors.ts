@@ -10,9 +10,25 @@ export const selectAvailableSubscriptionPlans = createSelector(
 
 export const selectActiveSubscription = createSelector(selectSubscriptionDomain, (state) => state.activeSubscription);
 
-export const selectActiveSubscriptionRenewalDate = createSelector(
+export const selectActiveSubscriptionCancelDate = createSelector(
+  selectActiveSubscription,
+  (subscription) => subscription?.cancelAt
+);
+
+export const selectActiveSubscriptionPeriodEndDate = createSelector(
   selectActiveSubscription,
   (subscription) => subscription?.currentPeriodEnd
+);
+
+export const selectActiveSubscriptionRenewalDate = createSelector(
+  selectActiveSubscriptionPeriodEndDate,
+  selectActiveSubscriptionCancelDate,
+  (periodEndDate, cancelDate) => {
+    if (!cancelDate || !periodEndDate) {
+      return periodEndDate;
+    }
+    return Date.parse(periodEndDate) >= Date.parse(cancelDate) ? undefined : periodEndDate;
+  }
 );
 
 export const selectActiveSubscriptionPlan = createSelector(

@@ -3,6 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
+  selectActiveSubscriptionCancelDate,
   selectActiveSubscriptionPaymentMethod,
   selectActiveSubscriptionRenewalDate,
   selectIsTrialActive,
@@ -23,6 +24,7 @@ export const Subscriptions = () => {
 
   const activeSubscriptionPlan = useActiveSubscriptionPlanDetails();
   const activeSubscriptionRenewalDate = useSelector(selectActiveSubscriptionRenewalDate);
+  const activeSubscriptionExpiryDate = useSelector(selectActiveSubscriptionCancelDate);
   const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
   const isTrialActive = useSelector(selectIsTrialActive);
   const trialEnd = useSelector(selectTrialEnd);
@@ -48,10 +50,24 @@ export const Subscriptions = () => {
             </>
           )}
         </H3>
-        <H3>
-          <FormattedMessage defaultMessage="Next renewal / expiry:" description="My subscription / Next renewal" />{' '}
-          {activeSubscriptionRenewalDate}
-        </H3>
+
+        {activeSubscriptionRenewalDate && (
+          <H3>
+            <FormattedMessage defaultMessage="Next renewal:" description="My subscription / Next renewal" />{' '}
+            {activeSubscriptionRenewalDate}
+          </H3>
+        )}
+
+        {!activeSubscriptionRenewalDate && activeSubscriptionExpiryDate && (
+          <H3>
+            <FormattedMessage
+              defaultMessage="Your subscription will expire at:"
+              description="My subscription / Expiry date"
+            />{' '}
+            {activeSubscriptionExpiryDate}
+          </H3>
+        )}
+
         {isTrialActive && (
           <H3>
             <FormattedMessage defaultMessage="Your trial ends at " description="My subscription / Trial ends at" />{' '}
