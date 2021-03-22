@@ -79,4 +79,27 @@ describe('EditSubscription: Component', () => {
       });
     });
   });
+
+  describe('user is eligible to start trial', () => {
+    it('should show trial info', () => {
+      const store = prepareState((state) => {
+        state.subscription.activeSubscription = subscriptionFactory({ canActivateTrial: true });
+      });
+
+      render({}, { store });
+
+      expect(screen.getByText(/your plan will start with a trial/gi)).toBeInTheDocument();
+    });
+  });
+
+  describe('user is illegible to start trial', () => {
+    it('should not show trial info', () => {
+      const store = prepareState((state) => {
+        state.subscription.activeSubscription = subscriptionFactory({ canActivateTrial: false });
+      });
+
+      render({}, { store });
+      expect(screen.queryByText(/your plan will start with a trial/gi)).not.toBeInTheDocument();
+    });
+  });
 });

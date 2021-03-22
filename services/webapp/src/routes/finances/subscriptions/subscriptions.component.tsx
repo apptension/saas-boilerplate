@@ -5,6 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import {
   selectActiveSubscriptionPaymentMethod,
   selectActiveSubscriptionRenewalDate,
+  selectIsTrialActive,
+  selectTrialEnd,
 } from '../../../modules/subscription/subscription.selectors';
 import { H1, H2, H3 } from '../../../theme/typography';
 import { useSnackbar } from '../../../shared/components/snackbar';
@@ -22,6 +24,9 @@ export const Subscriptions = () => {
   const activeSubscriptionPlan = useActiveSubscriptionPlanDetails();
   const activeSubscriptionRenewalDate = useSelector(selectActiveSubscriptionRenewalDate);
   const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
+  const isTrialActive = useSelector(selectIsTrialActive);
+  const trialEnd = useSelector(selectTrialEnd);
+
   const { showMessage } = useSnackbar();
 
   const noopClick = () => showMessage('Unsupported');
@@ -47,6 +52,12 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="Next renewal / expiry:" description="My subscription / Next renewal" />{' '}
           {activeSubscriptionRenewalDate}
         </H3>
+        {isTrialActive && (
+          <H3>
+            <FormattedMessage defaultMessage="Your trial ends at " description="My subscription / Trial ends at" />{' '}
+            {trialEnd}
+          </H3>
+        )}
 
         <Links>
           <Link to={changePlanUrl}>

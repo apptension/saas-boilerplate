@@ -1,7 +1,8 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { H1 } from '../../../theme/typography';
+import { useSelector } from 'react-redux';
+import { H1, Label } from '../../../theme/typography';
 
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
@@ -9,7 +10,7 @@ import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { useSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import { selectIsTrialEligible } from '../../../modules/subscription/subscription.selectors';
 import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
 import { Container, SubmitButton, Form, ErrorMessage } from './editSubscription.styles';
 import { SubscriptionPlanItem } from './subscriptionPlanItem';
@@ -29,6 +30,7 @@ export const EditSubscription = () => {
   });
   const dispatch = useAsyncDispatch();
   const formError = genericError ?? errors.plan;
+  const isTrialEligilbe = useSelector(selectIsTrialEligible);
 
   const successMessage = intl.formatMessage({
     description: 'Change plan / Sucess message',
@@ -80,6 +82,15 @@ export const EditSubscription = () => {
           <FormattedMessage defaultMessage="Change plan" description="Change plan / Submit button" />
         </SubmitButton>
       </Form>
+
+      {isTrialEligilbe && (
+        <Label>
+          <FormattedMessage
+            defaultMessage="Your plan will start with a trial"
+            description="Change plan / Trial is available info"
+          />
+        </Label>
+      )}
     </Container>
   );
 };

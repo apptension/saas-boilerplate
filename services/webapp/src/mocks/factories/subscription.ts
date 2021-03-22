@@ -29,6 +29,9 @@ export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = 
       currentPeriodStart: new Date(2020, 5, 5).toString(),
       currentPeriodEnd: new Date(2025, 10, 10).toString(),
       defaultPaymentMethod: paymentMethodFactory(),
+      trialStart: null,
+      trialEnd: null,
+      canActivateTrial: false,
       item: {
         id: faker.random.uuid(),
         price: subscriptionPlanFactory(overrides.item?.price),

@@ -37,10 +37,8 @@ export const useActiveSubscriptionPlanDetails = () => {
   const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
 
   useEffect(() => {
-    if (!activeSubscriptionPlan) {
-      dispatch(subscriptionActions.fetchActiveSubscription());
-    }
-  }, [activeSubscriptionPlan, dispatch]);
+    dispatch(subscriptionActions.fetchActiveSubscription());
+  }, [dispatch]);
 
   return useSubscriptionPlanDetails(activeSubscriptionPlan);
 };

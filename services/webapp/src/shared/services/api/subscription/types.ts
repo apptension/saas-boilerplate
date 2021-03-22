@@ -20,6 +20,9 @@ export interface Subscription {
   id: string;
   currentPeriodStart: string;
   currentPeriodEnd: string;
+  trialStart: string | null;
+  trialEnd: string | null;
+  canActivateTrial: boolean;
   defaultPaymentMethod: StripePaymentMethod | null;
   item: {
     id: string;

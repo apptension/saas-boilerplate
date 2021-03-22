@@ -71,7 +71,11 @@ describe('CancelSubscription: Component', () => {
   describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
       const { history, pushSpy } = spiedHistory();
-      mockDispatch.mockRejectedValue(null);
+      mockDispatch.mockImplementation((action) => {
+        if (action.type.startsWith(subscriptionActions.cancelSubscription.type)) {
+          return Promise.reject(null);
+        }
+      });
 
       render({}, { store, router: { history } });
       userEvent.click(screen.getByText(/cancel subscription/i));
