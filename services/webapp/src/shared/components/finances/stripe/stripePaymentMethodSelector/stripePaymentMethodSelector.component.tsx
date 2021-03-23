@@ -109,10 +109,17 @@ export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMetho
         return (
           <Container>
             <Heading>
-              <FormattedMessage
-                defaultMessage="Select payment method"
-                description="Stripe / payment method selector / label"
-              />
+              {paymentMethods?.length > 0 ? (
+                <FormattedMessage
+                  defaultMessage="Select payment method"
+                  description="Stripe / payment method selector / select payment method"
+                />
+              ) : (
+                <FormattedMessage
+                  defaultMessage="Enter card details"
+                  description="Stripe / payment method selector / enter card details"
+                />
+              )}
             </Heading>
 
             <PaymentMethodList>
@@ -140,22 +147,24 @@ export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMetho
                 );
               })}
 
-              <PaymentMethodListItem>
-                <NewPaymentMethodItem
-                  isSelected={value?.type === StripePaymentMethodSelectionType.NEW_CARD}
-                  onClick={() => {
-                    handleChange({
-                      type: StripePaymentMethodSelectionType.NEW_CARD,
-                      data: null,
-                    });
-                  }}
-                >
-                  <FormattedMessage
-                    defaultMessage="Add a new card"
-                    description="Stripe / payment method selector / new card option"
-                  />
-                </NewPaymentMethodItem>
-              </PaymentMethodListItem>
+              {paymentMethods?.length > 0 && (
+                <PaymentMethodListItem>
+                  <NewPaymentMethodItem
+                    isSelected={value?.type === StripePaymentMethodSelectionType.NEW_CARD}
+                    onClick={() => {
+                      handleChange({
+                        type: StripePaymentMethodSelectionType.NEW_CARD,
+                        data: null,
+                      });
+                    }}
+                  >
+                    <FormattedMessage
+                      defaultMessage="Add a new card"
+                      description="Stripe / payment method selector / new card option"
+                    />
+                  </NewPaymentMethodItem>
+                </PaymentMethodListItem>
+              )}
             </PaymentMethodList>
 
             {value?.type === StripePaymentMethodSelectionType.NEW_CARD && (

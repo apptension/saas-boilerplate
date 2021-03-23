@@ -1,6 +1,6 @@
 import React, { ReactNode, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { render } from '@testing-library/react';
+import { Nullish, render } from '@testing-library/react';
 import { createStore } from 'redux';
 import { identity } from 'ramda';
 import { Provider } from 'react-redux';
@@ -80,3 +80,10 @@ export function makeContextRenderer<T>(component: (props: T | Record<string, nev
 export function makePropsRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
   return (props?: T) => render(component(props ?? {}));
 }
+
+// using `screen.getByText(matchTextContent('hello world'))` will match <div>hello <span>world</span></div>
+export const matchTextContent = (text: string) => (_: unknown, node: Nullish<Element>) => {
+  const hasText = (node: Element) => node.textContent === text;
+  const childrenDontHaveText = Array.from(node?.children ?? []).every((child) => !hasText(child));
+  return Boolean(node && hasText(node) && childrenDontHaveText);
+};
