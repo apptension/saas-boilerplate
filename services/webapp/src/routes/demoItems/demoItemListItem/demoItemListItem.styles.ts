@@ -54,6 +54,10 @@ export const Title = styled.p`
   ${label};
   margin-left: ${sizeUnits(2)};
   text-decoration: none;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 
   ${media(Breakpoint.TABLET)`
     margin-left: ${sizeUnits(4)};

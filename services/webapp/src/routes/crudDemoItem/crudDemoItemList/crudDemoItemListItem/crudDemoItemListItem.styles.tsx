@@ -53,7 +53,11 @@ export const InlineButtons = styled.div`
 `;
 
 export const Text = styled.p`
-  ${label}
+  ${label};
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 `;
 
 export const DropdownMenu = styled(CrudDropdownMenu)`

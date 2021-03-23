@@ -5,6 +5,18 @@
     "stylelint-config-styled-components"
   ],
   "rules": {
-    "no-extra-semicolons": null
+    "no-extra-semicolons": null,
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": ["line-clamp", "box-orient"]
+      }
+    ],
+    "value-no-vendor-prefix": [
+      true,
+      {
+        "ignoreValues": ["box"]
+      }
+    ]
   }
 }
