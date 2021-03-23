@@ -1,6 +1,7 @@
 import hashid_field
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
 from common.acl.helpers import CommonGroups
@@ -37,7 +38,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = hashid_field.HashidAutoField(primary_key=True)
     created = models.DateTimeField(editable=False, auto_now_add=True)
-    email = models.EmailField(
+    email = CIEmailField(
         verbose_name="email address",
         max_length=255,
         unique=True,
