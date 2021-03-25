@@ -11,85 +11,101 @@ class TestSubscriptionPlanListView:
         assert result['id'] == price.id
         assert result['product'] == {'id': price.product.id, 'name': price.product.name}
 
-    def test_return_available_plans(self, api_client, user, monthly_plan_price, yearly_plan_price):
+    def test_return_available_plans(self, api_client, user, free_plan_price, monthly_plan_price, yearly_plan_price):
         api_client.force_authenticate(user)
         url = reverse('subscription-plans-list')
 
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        self.assert_plan(response.data[0], monthly_plan_price)
-        self.assert_plan(response.data[1], yearly_plan_price)
+        self.assert_plan(response.data[0], free_plan_price)
+        self.assert_plan(response.data[1], monthly_plan_price)
+        self.assert_plan(response.data[2], yearly_plan_price)
 
 
 class TestUserActiveSubscriptionView:
-    def assert_response(self, response, subscription):
-        subscription_item = subscription.items.first()
+    def assert_response(self, response, schedule):
+        subscription = schedule.customer.subscription
 
-        assert response.data['id'] == subscription.id
-        assert response.data['status'] == subscription.status
-        if subscription.default_payment_method:
-            assert response.data['default_payment_method']['id'] == subscription.default_payment_method.id
+        assert response.data['subscription']['id'] == subscription.id
+        assert response.data['subscription']['status'] == subscription.status
 
-        assert response.data['item'] == {
-            'id': subscription_item.id,
-            'quantity': subscription_item.quantity,
-            'price': {
-                'id': subscription_item.price.id,
-                'unit_amount': subscription_item.price.unit_amount,
-                'product': {'id': subscription_item.price.product.id, 'name': subscription_item.price.product.name},
-            },
-        }
+        assert len(response.data['phases']) > 0
+        for index, response_phase in enumerate(response.data['phases']):
+            phase = schedule.phases[index]
+            item = phase['items'][0]
+            price = djstripe_models.Price.objects.get(id=item['price'])
 
-    def test_trial_fields_in_response_when_user_never_activated_it(self, api_client, user):
-        api_client.force_authenticate(user)
-        url = reverse('user-active-subscription')
-        response = api_client.get(url)
+            default_payment_method_id = phase.get('default_payment_method', None)
+            if default_payment_method_id:
+                assert response_phase['default_payment_method']['id'] == default_payment_method_id
 
-        assert response.status_code == status.HTTP_200_OK, response.data
-
-        assert not response.data['trial_start']
-        assert not response.data['trial_end']
-        assert response.data['can_activate_trial']
+            assert response_phase['item'] == {
+                'quantity': item['quantity'],
+                'price': {
+                    'id': price.id,
+                    'unit_amount': price.unit_amount,
+                    'product': {'id': price.product.id, 'name': price.product.name},
+                },
+            }
 
     def test_trial_fields_in_response_when_customer_already_activated_trial(
-        self, api_client, user, subscription_factory
+        self, api_client, subscription_schedule_factory, monthly_plan_price
     ):
-        customer, _ = djstripe_models.Customer.get_or_create(user)
-        djstripe_models.Subscription.objects.filter(customer=customer).delete()
-        subscription_factory(trialing=True, customer=customer)
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
+        )
+        customer = subscription_schedule.customer
 
-        api_client.force_authenticate(user)
+        api_client.force_authenticate(customer.subscriber)
         url = reverse('user-active-subscription')
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data['trial_start']
-        assert response.data['trial_end']
+        assert response.data['phases'][0]['trial_end']
+        assert response.data['subscription']['trial_start']
+        assert response.data['subscription']['trial_end']
         assert not response.data['can_activate_trial']
 
-    def test_return_active_subscription_data(self, api_client, user):
+    def test_trial_fields_in_response_when_user_never_activated_it(self, api_client, subscription_schedule):
+        user = subscription_schedule.customer.subscriber
+        api_client.force_authenticate(user)
+        url = reverse('user-active-subscription')
+        response = api_client.get(url)
+
+        response_phase = response.data['phases'][0]
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+
+        assert not response_phase['trial_end']
+        assert response.data['can_activate_trial']
+
+    def test_return_active_subscription_data(self, api_client, subscription_schedule):
+        user = subscription_schedule.customer.subscriber
         api_client.force_authenticate(user)
         url = reverse('user-active-subscription')
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK, response.data
 
-        customer = djstripe_models.Customer.objects.get(subscriber=user)
-        self.assert_response(response, customer.subscription)
+        self.assert_response(response, subscription_schedule)
 
-    def test_change_active_subscription(self, api_client, user, monthly_plan_price):
+    def test_change_active_subscription(self, api_client, subscription_schedule, monthly_plan_price):
+        user = subscription_schedule.customer.subscriber
         api_client.force_authenticate(user)
         url = reverse('user-active-subscription')
         response = api_client.patch(url, {'price': monthly_plan_price.id})
 
         assert response.status_code == status.HTTP_200_OK, response.data
 
-        customer = djstripe_models.Customer.objects.get(subscriber=user)
-        self.assert_response(response, customer.subscription)
-
-    def test_change_when_user_has_no_payment_method_but_can_activate_trial(self, api_client, user, monthly_plan_price):
-        customer = djstripe_models.Customer.objects.get(subscriber=user)
+    def test_change_when_user_has_no_payment_method_but_can_activate_trial(
+        self, api_client, subscription_schedule_factory, free_plan_price, monthly_plan_price
+    ):
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': free_plan_price.id}], 'default_payment_method': None}]
+        )
+        customer = subscription_schedule.customer
+        user = customer.subscriber
 
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
@@ -99,20 +115,19 @@ class TestUserActiveSubscriptionView:
         response = api_client.patch(url, {'price': monthly_plan_price.id})
 
         assert response.status_code == status.HTTP_200_OK, response.data
-
-        customer.subscription.refresh_from_db()
-        self.assert_response(response, customer.subscription)
 
     def test_return_error_on_change_if_customer_has_no_payment_method(
-        self, api_client, user, monthly_plan_price, subscription_factory
+        self, api_client, monthly_plan_price, subscription_schedule_factory
     ):
-        customer, _ = djstripe_models.Customer.get_or_create(user)
-        djstripe_models.Subscription.objects.filter(customer=customer).delete()
-        subscription_factory(trialing=True, customer=customer)
-
+        subscription_schedule = subscription_schedule_factory(
+            phases=[
+                {'items': [{'price': monthly_plan_price.id}], 'trial_completed': True, 'default_payment_method': None}
+            ]
+        )
+        customer = subscription_schedule.customer
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
-        api_client.force_authenticate(user)
+        api_client.force_authenticate(customer.subscriber)
         url = reverse('user-active-subscription')
 
         response = api_client.patch(url, {'price': monthly_plan_price.id})
@@ -122,7 +137,8 @@ class TestUserActiveSubscriptionView:
 
 
 class TestCancelUserActiveSubscriptionView:
-    def test_return_error_if_customer_has_no_paid_subscription(self, api_client, user):
+    def test_return_error_if_customer_has_no_paid_subscription(self, api_client, subscription_schedule):
+        user = subscription_schedule.customer.subscriber
         api_client.force_authenticate(user)
         url = reverse('user-active-subscription-cancel')
         response = api_client.post(url)
@@ -130,15 +146,11 @@ class TestCancelUserActiveSubscriptionView:
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data['non_field_errors'][0]['code'] == 'no_paid_subscription'
 
-    def test_cancel_trialing_subscription(self, api_client, user, subscription_factory, monthly_plan_price):
-        customer, _ = djstripe_models.Customer.get_or_create(user)
-        djstripe_models.Subscription.objects.filter(customer=customer).delete()
-        subscription_factory(trialing=True, customer=customer, items=[{'price': monthly_plan_price.id}])
-
-        api_client.force_authenticate(user)
+    def test_cancel_trialing_subscription(self, api_client, user, subscription_schedule_factory, monthly_plan_price):
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
+        )
+        api_client.force_authenticate(subscription_schedule.customer.subscriber)
         url = reverse('user-active-subscription-cancel')
         response = api_client.post(url)
-
-        customer.refresh_from_db()
-
         assert response.status_code == status.HTTP_200_OK, response.data

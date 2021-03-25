@@ -65,7 +65,7 @@ services:
       - CYPRESS_BASIC_AUTH_HEADER=${CYPRESS_BASIC_AUTH_HEADER}
 
   stripemock:
-    image: stripemock/stripe-mock:v0.101.0
+    image: stripemock/stripe-mock:v0.103.0
     ports:
       - "12111:12111"
       - "12112:12112"

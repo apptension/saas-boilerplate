@@ -1,9 +1,9 @@
-from django.shortcuts import get_object_or_404, redirect
 from djstripe import models as djstripe_models
-from rest_framework import mixins, viewsets, response, views, renderers, status, generics
+from rest_framework import mixins, viewsets, response, generics
 
 from common.acl import policies
 from . import serializers, constants
+from .services import subscriptions
 
 
 class StripePaymentIntentViewSet(
@@ -40,11 +40,10 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, viewsets.GenericViewSet)
 
 class UserActiveSubscriptionView(generics.RetrieveUpdateAPIView):
     permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.UserActiveSubscriptionSerializer
+    serializer_class = serializers.UserSubscriptionScheduleSerializer
 
     def get_object(self):
-        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
-        return customer.subscription
+        return subscriptions.get_schedule(user=self.request.user)
 
 
 class CancelUserActiveSubscriptionView(generics.GenericAPIView):
@@ -59,8 +58,7 @@ class CancelUserActiveSubscriptionView(generics.GenericAPIView):
         return response.Response(serializer.data)
 
     def get_object(self):
-        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
-        return customer.subscription
+        return subscriptions.get_schedule(user=self.request.user)
 
 
 class SubscriptionPlansListView(generics.ListAPIView):
@@ -70,32 +68,8 @@ class SubscriptionPlansListView(generics.ListAPIView):
     def get_queryset(self):
         return djstripe_models.Price.objects.filter(
             product__name__in=[
+                constants.FREE_PLAN.name,
                 constants.MONTHLY_PLAN.name,
                 constants.YEARLY_PLAN.name,
             ]
         )
-
-
-class AdminRefundView(views.APIView):
-    renderer_classes = [renderers.TemplateHTMLRenderer]
-    permission_classes = (policies.AdminFullAccess,)
-    template_name = 'refund.html'
-
-    def get(self, request, pk):
-        instance = get_object_or_404(djstripe_models.PaymentIntent, pk=pk)
-        serializer = serializers.AdminStripePaymentIntentRefundSerializer(instance)
-        return response.Response({'serializer': serializer, 'payment_intent': instance})
-
-    def post(self, request, pk):
-        instance = get_object_or_404(djstripe_models.PaymentIntent, pk=pk)
-        serializer = serializers.AdminStripePaymentIntentRefundSerializer(
-            instance,
-            data=request.data,
-            context={'request': self.request},
-        )
-        if not serializer.is_valid():
-            return response.Response(
-                {'serializer': serializer, 'payment_intent': instance}, status=status.HTTP_400_BAD_REQUEST
-            )
-        serializer.save()
-        return redirect('admin:djstripe_paymentintent_change', object_id=pk)

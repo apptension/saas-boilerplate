@@ -14,3 +14,8 @@ class PaymentIntentAdmin(djstripe_admin.PaymentIntentAdmin):
 @admin.register(djstripe_models.Charge)
 class ChargeAdmin(djstripe_admin.ChargeAdmin):
     change_form_template = 'djstripe/charge/admin/change_form.html'
+
+
+@admin.register(djstripe_models.SubscriptionSchedule)
+class SubscriptionScheduleAdmin(djstripe_admin.StripeModelAdmin):
+    pass

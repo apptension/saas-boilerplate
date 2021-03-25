@@ -3,8 +3,6 @@ import pytest_factoryboy
 import stripe
 from django.contrib.auth import get_user_model
 from django.db import models as django_models
-from django.utils import timezone
-from djstripe import models as djstripe_models
 
 from . import factories
 from .. import constants
@@ -21,14 +19,12 @@ pytest_factoryboy.register(factories.PlanFactory)
 pytest_factoryboy.register(factories.ProductFactory)
 pytest_factoryboy.register(factories.SubscriptionFactory)
 pytest_factoryboy.register(factories.SubscriptionItemFactory)
+pytest_factoryboy.register(factories.SubscriptionScheduleFactory)
 
 
-@pytest.fixture(scope='function', autouse=True)
-def djstripe_sync_method(mocker):
-    def sync_from_stripe_data(data):
-        return data._wrapped_instance
-
-    mocker.patch('djstripe.models.StripeModel.sync_from_stripe_data', side_effect=sync_from_stripe_data)
+@pytest.fixture(autouse=True)
+def mock_init_user(mocker):
+    mocker.patch('apps.finances.services.subscriptions.initialize_user')
 
 
 @pytest.fixture()
@@ -84,71 +80,6 @@ def stripe_methods_factory(mocker):
         return {'retrieve': retrieve, 'create': create}
 
     return fn
-
-
-@pytest.fixture(scope='function', autouse=True)
-def stripe_customer_mock(mocker, stripe_methods_factory, customer_factory):
-    methods = stripe_methods_factory(djstripe_models.Customer, customer_factory)
-
-    def create(**kwargs):
-        email = kwargs.pop('email')
-        subscriber = User.objects.get(email=email)
-
-        return methods['create'](subscriber=subscriber, **kwargs)
-
-    mocker.patch('stripe.Customer.retrieve', side_effect=methods['retrieve'])
-    mocker.patch('stripe.Customer.create', side_effect=create)
-
-
-@pytest.fixture(scope='function', autouse=True)
-def stripe_price_mock(mocker, stripe_methods_factory, price_factory):
-    methods = stripe_methods_factory(djstripe_models.Price, price_factory)
-    mocker.patch('stripe.Price.retrieve', side_effect=methods['retrieve'])
-    mocker.patch('stripe.Price.create', side_effect=methods['create'])
-
-
-@pytest.fixture(scope='function', autouse=True)
-def stripe_subscription_mock(mocker, stripe_methods_factory, subscription_factory):
-    def request(instance, method, url, params):
-        if method == 'post':
-            ignore_fields = ["date_purged", "subscriber"]
-            for field in djstripe_models.Subscription._meta.fields:
-                if params.get('trial_end', None) == 'now':
-                    params['trial_end'] = timezone.now()
-
-                if field.name.startswith("djstripe_") or field.name in ignore_fields:
-                    continue
-
-                field_data = params.get(field.name, None)
-                if field_data and not isinstance(field, django_models.ForeignKey):
-                    setattr(instance, field.name, field_data)
-            instance.save()
-
-    methods = stripe_methods_factory(djstripe_models.Subscription, subscription_factory, request=request)
-
-    def create(**kwargs):
-        customer = kwargs.pop('customer', None)
-        if isinstance(customer, str):
-            kwargs['customer'] = djstripe_models.Customer.objects.get(id=customer)
-
-        return methods['create'](**kwargs)
-
-    mocker.patch('stripe.Subscription.retrieve', side_effect=methods['retrieve'])
-    mocker.patch('stripe.Subscription.create', side_effect=create)
-
-
-@pytest.fixture(scope='function', autouse=True)
-def stripe_charge_mock(mocker, stripe_methods_factory, charge_factory):
-    methods = stripe_methods_factory(djstripe_models.Charge, charge_factory)
-
-    def retrieve(**kwargs):
-        stripe_instance = methods['retrieve'](**kwargs)
-        stripe_instance.refund.return_value = stripe_instance
-        stripe_instance.capture.return_value = stripe_instance
-        return stripe_instance
-
-    mocker.patch('stripe.Charge.retrieve', side_effect=retrieve)
-    mocker.patch('stripe.Charge.create', side_effect=methods['create'])
 
 
 @pytest.fixture(scope='function', autouse=True)

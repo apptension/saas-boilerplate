@@ -7,7 +7,7 @@ from django.utils import timezone
 from djstripe import models as djstripe_models, enums
 
 from apps.users.tests import factories as user_factories
-from .. import models
+from .. import models, constants
 
 
 class CustomerFactory(factory.DjangoModelFactory):
@@ -192,6 +192,7 @@ class SubscriptionItemFactory(factory.DjangoModelFactory):
     id = factory.Faker('uuid4')
     livemode = False
     price = factory.SubFactory(PriceFactory)
+    quantity = 1
 
 
 class SubscriptionFactory(factory.DjangoModelFactory):
@@ -224,6 +225,7 @@ class SubscriptionFactory(factory.DjangoModelFactory):
                 djstripe_models.SubscriptionItem.objects.create(
                     id=uuid.uuid4(),
                     subscription=self,
+                    quantity=item.get('quantity', 1),
                     price=djstripe_models.Price.objects.get(id=item['price']),
                     plan=djstripe_models.Plan.objects.get(id=item['price']),
                 )
@@ -234,3 +236,54 @@ class SubscriptionFactory(factory.DjangoModelFactory):
             trial_start=datetime.datetime.now(tz=pytz.UTC),
             trial_end=datetime.datetime.now(tz=pytz.UTC) + datetime.timedelta(30),
         )
+
+        trial_completed = factory.Trait(
+            status=enums.SubscriptionStatus.trialing,
+            current_period_start=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(2),
+            trial_start=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(2),
+            trial_end=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(1),
+        )
+
+
+class SubscriptionScheduleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = djstripe_models.SubscriptionSchedule
+        django_get_or_create = ('id',)
+
+    id = factory.Faker('uuid4')
+    livemode = False
+    customer = factory.SubFactory(CustomerFactory)
+    end_behavior = enums.SubscriptionScheduleEndBehavior.release
+    status = enums.SubscriptionScheduleStatus.active
+
+    @factory.post_generation
+    def phases(self, create, extracted, **kwargs):
+        def unix_time(dt):
+            epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.UTC)
+            return int((dt - epoch).total_seconds())
+
+        if not create:
+            return
+
+        phases = extracted
+        if phases is None:
+            free_plan_price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
+            phases = [{'items': [{'price': free_plan_price.id}]}]
+
+        phase, *rest_phases = phases
+        for item in phase['items']:
+            item['quantity'] = item.get('quantity', 1)
+
+        subscription = SubscriptionFactory(customer=self.customer, **phase)
+        phase['start_date'] = unix_time(subscription.start_date)
+        phase['end_date'] = unix_time(subscription.current_period_end)
+
+        phase['default_payment_method'] = None
+        if subscription.default_payment_method:
+            phase['default_payment_method'] = subscription.default_payment_method.id
+
+        phase['trial_end'] = None
+        if subscription.trial_end:
+            phase['trial_end'] = unix_time(subscription.trial_end)
+
+        self.phases = [phase, *rest_phases]

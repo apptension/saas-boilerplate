@@ -1,36 +1,19 @@
 import logging
 
-from djstripe import models as djstripe_models, enums as djstripe_enums
+from djstripe import models as djstripe_models
 from djstripe import webhooks
 
-from . import constants, notifications
+from . import constants, notifications, models
 from .services import subscriptions
 
 logger = logging.getLogger(__name__)
 
 
-@webhooks.handler('customer.subscription.updated')
-def downgrade_to_free_plan_for_past_due_subscription(event: djstripe_models.Event):
-    """
-    Subscription is has a past_due status after a recurring charge fails.
-
-    :param event:
-    :return:
-    """
-
-    obj = event.data['object']
-    if obj['status'] != djstripe_enums.SubscriptionStatus.past_due:
-        return
-
-    subscription = djstripe_models.Subscription.objects.get(id=obj['id'])
-    subscriptions.update_to_free_plan(subscription)
-
-
-@webhooks.handler('customer.subscription.deleted')
+@webhooks.handler('subscription_schedule.canceled', 'subscription_schedule.completed')
 def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     """
     It is not possible to reactivate a canceled subscription with a different plan so we
-    create a new subscription on a free plan
+    create a new subscription schedule on a free plan
 
     :param event:
     :return:
@@ -38,8 +21,8 @@ def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
 
     obj = event.data['object']
     customer = djstripe_models.Customer.objects.get(id=obj['customer'])
-    free_plan_price = djstripe_models.Price.objects.get_by_plan(constants.FREE_PLAN)
-    customer.subscribe(price=free_plan_price)
+    free_plan_price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
+    subscriptions.create_schedule(customer=customer, price=free_plan_price)
 
 
 @webhooks.handler('payment_method.attached')
@@ -57,10 +40,13 @@ def update_subscription_default_payment_method(event: djstripe_models.Event):
 
     obj = event.data['object']
     customer: djstripe_models.Customer = djstripe_models.Customer.objects.get(id=obj['customer'])
-    if not customer.subscription:
+    schedule = subscriptions.get_schedule(customer=customer)
+    if schedule is None:
         return
 
-    subscriptions.update(customer.subscription, default_payment_method=obj['id'])
+    current_phase = subscriptions.get_current_schedule_phase(schedule)
+    current_phase['default_payment_method'] = obj['id']
+    subscriptions.update_schedule(schedule, phases=[current_phase])
 
 
 @webhooks.handler('invoice.payment_failed', 'invoice.payment_action_required')
