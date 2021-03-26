@@ -1,7 +1,12 @@
 import * as faker from 'faker';
 
 import { mergeDeepRight } from 'ramda';
-import { Subscription, SubscriptionPlan, SubscriptionPlanName } from '../../shared/services/api/subscription/types';
+import {
+  Subscription,
+  SubscriptionPhase,
+  SubscriptionPlan,
+  SubscriptionPlanName,
+} from '../../shared/services/api/subscription/types';
 import { DeepMergeFactory } from './types';
 import { paymentMethodFactory } from './stripe';
 
@@ -11,27 +16,20 @@ export const subscriptionPlanFactory: DeepMergeFactory<SubscriptionPlan> = (over
       id: faker.random.uuid(),
       product: {
         id: faker.random.uuid(),
-        name: faker.random.arrayElement([
-          SubscriptionPlanName.FREE,
-          SubscriptionPlanName.MONTHLY,
-          SubscriptionPlanName.YEARLY,
-        ]),
+        name: SubscriptionPlanName.MONTHLY,
       },
       unitAmount: faker.random.number({ min: 1000, max: 2500 }),
     },
     overrides
   );
 
-export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = {}) =>
+export const subscriptionPhaseFactory: DeepMergeFactory<SubscriptionPhase> = (overrides = {}) =>
   mergeDeepRight(
     {
-      id: faker.random.uuid(),
-      currentPeriodStart: new Date(2020, 5, 5).toString(),
-      currentPeriodEnd: new Date(2025, 10, 10).toString(),
       defaultPaymentMethod: paymentMethodFactory(),
-      trialStart: null,
+      startDate: new Date(2020, 5, 5).toString(),
+      endDate: new Date(2025, 10, 10).toString(),
       trialEnd: null,
-      canActivateTrial: false,
       item: {
         id: faker.random.uuid(),
         price: subscriptionPlanFactory(overrides.item?.price),
@@ -40,3 +38,17 @@ export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = 
     },
     overrides
   );
+
+export const subscriptionFactory: DeepMergeFactory<Subscription> = (overrides = {}) => ({
+  phases: [subscriptionPhaseFactory()],
+  canActivateTrial: false,
+  ...overrides,
+  subscription: {
+    id: faker.random.uuid(),
+    currentPeriodStart: new Date(2020, 5, 5).toString(),
+    currentPeriodEnd: new Date(2025, 10, 10).toString(),
+    trialStart: null,
+    trialEnd: null,
+    ...(overrides.subscription ?? {}),
+  },
+});

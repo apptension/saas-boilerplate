@@ -16,20 +16,27 @@ export interface SubscriptionPlan {
   unitAmount: number;
 }
 
-export interface Subscription {
-  id: string;
-  currentPeriodStart: string;
-  currentPeriodEnd: string;
-  trialStart: string | null;
-  trialEnd: string | null;
-  canActivateTrial: boolean;
+export interface SubscriptionPhase {
   defaultPaymentMethod: StripePaymentMethod | null;
-  cancelAt?: string;
+  startDate: string;
+  endDate: string;
+  trialEnd: string | null;
   item: {
-    id: string;
     price: SubscriptionPlan;
     quantity: number;
   };
+}
+
+export interface Subscription {
+  subscription: {
+    id: string;
+    currentPeriodStart: string;
+    currentPeriodEnd: string;
+    trialStart: string | null;
+    trialEnd: string | null;
+  };
+  phases: SubscriptionPhase[];
+  canActivateTrial: boolean;
 }
 
 export type SubscriptionGetApiResponseData = Subscription;

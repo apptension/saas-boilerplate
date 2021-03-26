@@ -6,7 +6,7 @@ import { waitFor } from '@testing-library/dom';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { prepareState } from '../../../../mocks/store';
-import { subscriptionFactory } from '../../../../mocks/factories';
+import { subscriptionFactory, subscriptionPhaseFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { subscriptionActions } from '../../../../modules/subscription';
 import { snackbarActions } from '../../../../modules/snackbar';
@@ -21,14 +21,19 @@ jest.mock('react-redux', () => {
 
 const store = prepareState((state) => {
   state.subscription.activeSubscription = subscriptionFactory({
-    currentPeriodEnd: '2020-10-10',
-    item: {
-      price: {
-        product: {
-          name: SubscriptionPlanName.MONTHLY,
+    phases: [
+      subscriptionPhaseFactory({
+        endDate: '2020-10-10',
+        item: {
+          price: {
+            product: {
+              name: SubscriptionPlanName.MONTHLY,
+            },
+          },
         },
-      },
-    },
+      }),
+      subscriptionPhaseFactory({ startDate: '2020-10-10' }),
+    ],
   });
 });
 

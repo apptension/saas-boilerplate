@@ -5,20 +5,18 @@ import userEvent from '@testing-library/user-event';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { Subscriptions } from '../subscriptions.component';
 import { prepareState } from '../../../../mocks/store';
-import { subscriptionFactory } from '../../../../mocks/factories';
+import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 
 const store = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory();
-  state.subscription.activeSubscription.item.price.product.name = SubscriptionPlanName.FREE;
-  state.subscription.activeSubscription.currentPeriodEnd = new Date('Jan 1, 2099 GMT').toISOString();
-});
-
-const storeWithTrialActive = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory();
-  state.subscription.activeSubscription.item.price.product.name = SubscriptionPlanName.MONTHLY;
-  state.subscription.activeSubscription.currentPeriodEnd = new Date('Jan 1, 2099 GMT').toISOString();
-  state.subscription.activeSubscription.trialEnd = new Date('Jan 1, 2099 GMT').toISOString();
+  state.subscription.activeSubscription = subscriptionFactory({
+    phases: [
+      subscriptionPhaseFactory({
+        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
+      }),
+    ],
+  });
 });
 
 describe('Subscriptions: Component', () => {
@@ -44,10 +42,18 @@ describe('Subscriptions: Component', () => {
 
   describe('subscription is canceled', () => {
     const storeWithSubscriptionCanceled = prepareState((state) => {
-      state.subscription.activeSubscription = subscriptionFactory();
-      state.subscription.activeSubscription.item.price.product.name = SubscriptionPlanName.MONTHLY;
-      state.subscription.activeSubscription.currentPeriodEnd = new Date('Jan 1, 2099 GMT').toISOString();
-      state.subscription.activeSubscription.cancelAt = new Date('Jan 1, 2099 GMT').toISOString();
+      state.subscription.activeSubscription = subscriptionFactory({
+        phases: [
+          subscriptionPhaseFactory({
+            endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+            item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
+          }),
+          subscriptionPhaseFactory({
+            startDate: new Date('Jan 1, 2099 GMT').toISOString(),
+            item: { price: { product: { name: SubscriptionPlanName.FREE } } },
+          }),
+        ],
+      });
     });
 
     it('should render cancelation date', () => {
@@ -75,13 +81,13 @@ describe('Subscriptions: Component', () => {
     it('should be hidden if user is on free plan', () => {
       const store = prepareState((state) => {
         state.subscription.activeSubscription = subscriptionFactory({
-          item: {
-            price: {
-              product: {
-                name: SubscriptionPlanName.FREE,
+          phases: [
+            subscriptionPhaseFactory({
+              item: {
+                price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }),
               },
-            },
-          },
+            }),
+          ],
         });
       });
 
@@ -91,15 +97,7 @@ describe('Subscriptions: Component', () => {
 
     it('should navigate to cancel subscription screen', () => {
       const store = prepareState((state) => {
-        state.subscription.activeSubscription = subscriptionFactory({
-          item: {
-            price: {
-              product: {
-                name: SubscriptionPlanName.MONTHLY,
-              },
-            },
-          },
-        });
+        state.subscription.activeSubscription = subscriptionFactory();
       });
 
       const { history, pushSpy } = spiedHistory();
@@ -117,7 +115,21 @@ describe('Subscriptions: Component', () => {
     });
 
     it('should be displayed if user has  trial active', () => {
-      render({}, { store: storeWithTrialActive });
+      const store = prepareState((state) => {
+        state.subscription.activeSubscription = subscriptionFactory({
+          subscription: {
+            trialEnd: new Date('Jan 1, 2099 GMT').toISOString(),
+          },
+          phases: [
+            subscriptionPhaseFactory({
+              endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+              item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
+            }),
+          ],
+        });
+      });
+
+      render({}, { store });
       expect(screen.getByText(/your trial ends at 2099-01-01/gi)).toBeInTheDocument();
     });
   });
