@@ -12,7 +12,7 @@ export const cherryRedScale = colorScale('#FF0055');
 export const text = greyScale.get(15);
 export const border = '#80809B';
 export const disabled = '#DDDDE0';
-export const primary = '#42f272';
+export const primary = skyBlueScale.get(50);
 export const secondary = '#2249f9';
 export const error = cherryRedScale.get(50);
 

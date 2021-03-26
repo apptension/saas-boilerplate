@@ -19,6 +19,21 @@ const store = prepareState((state) => {
   });
 });
 
+const storeWithSubscriptionCanceled = prepareState((state) => {
+  state.subscription.activeSubscription = subscriptionFactory({
+    phases: [
+      subscriptionPhaseFactory({
+        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
+      }),
+      subscriptionPhaseFactory({
+        startDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
+      }),
+    ],
+  });
+});
+
 describe('Subscriptions: Component', () => {
   const component = () => <Subscriptions />;
   const render = makeContextRenderer(component);
@@ -41,21 +56,6 @@ describe('Subscriptions: Component', () => {
   });
 
   describe('subscription is canceled', () => {
-    const storeWithSubscriptionCanceled = prepareState((state) => {
-      state.subscription.activeSubscription = subscriptionFactory({
-        phases: [
-          subscriptionPhaseFactory({
-            endDate: new Date('Jan 1, 2099 GMT').toISOString(),
-            item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
-          }),
-          subscriptionPhaseFactory({
-            startDate: new Date('Jan 1, 2099 GMT').toISOString(),
-            item: { price: { product: { name: SubscriptionPlanName.FREE } } },
-          }),
-        ],
-      });
-    });
-
     it('should render cancelation date', () => {
       render({}, { store: storeWithSubscriptionCanceled });
       expect(screen.getByText(/subscription will expire at.+2099-01-01/gi)).toBeInTheDocument();
@@ -78,6 +78,11 @@ describe('Subscriptions: Component', () => {
   });
 
   describe('cancel subscription button', () => {
+    it('should be hidden if subscription is already canceled', () => {
+      render({}, { store: storeWithSubscriptionCanceled });
+      expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
+    });
+
     it('should be hidden if user is on free plan', () => {
       const store = prepareState((state) => {
         state.subscription.activeSubscription = subscriptionFactory({

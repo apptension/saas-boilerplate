@@ -80,7 +80,7 @@ export const Subscriptions = () => {
             <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
           </Link>
 
-          {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && (
+          {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionExpiryDate && (
             <Link to={cancelSubscriptionUrl}>
               <FormattedMessage
                 defaultMessage="Cancel subscription"

@@ -1,15 +1,23 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { times } from 'ramda';
 import { prepareState } from '../../../mocks/store';
-import { subscriptionPlanFactory } from '../../../mocks/factories';
+import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../mocks/factories';
 import { withProviders } from '../../../shared/utils/storybook';
+import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
 import { EditSubscription } from './editSubscription.component';
 
-const storeWithPlans = prepareState((state) => {
-  state.subscription.availablePlans = times(() => subscriptionPlanFactory(), 2);
-});
+const storeWithPlans = (activePlan: SubscriptionPlanName) =>
+  prepareState((state) => {
+    state.subscription.availablePlans = [
+      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }),
+      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } }),
+      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.YEARLY } }),
+    ];
+    state.subscription.activeSubscription = subscriptionFactory({
+      phases: [subscriptionPhaseFactory({ item: { price: { product: { name: activePlan } } } })],
+    });
+  });
 
 const Template: Story = (args) => {
   return <EditSubscription {...args} />;
@@ -18,8 +26,12 @@ const Template: Story = (args) => {
 export default {
   title: 'Shared/Subscriptions/EditSubscription',
   component: EditSubscription,
-  decorators: [withProviders({ store: storeWithPlans })],
 };
 
-export const Default = Template.bind({});
-Default.args = { children: 'text' };
+export const FreeActive = Template.bind({});
+FreeActive.args = { children: 'text' };
+FreeActive.decorators = [withProviders({ store: storeWithPlans(SubscriptionPlanName.FREE) })];
+
+export const MonthlyActive = Template.bind({});
+MonthlyActive.args = { children: 'text' };
+MonthlyActive.decorators = [withProviders({ store: storeWithPlans(SubscriptionPlanName.MONTHLY) })];
