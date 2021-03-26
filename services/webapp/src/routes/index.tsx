@@ -12,6 +12,7 @@ import { AppComponent as App } from './app.component';
 import { ROUTES } from './app.constants';
 import { PasswordReset } from './auth/passwordReset';
 import { AuthRoute } from './authRoute';
+import { AnonymousRoute } from './anonymousRoute';
 
 const Home = asyncComponent(() => import('./home'), 'Home');
 const NotFound = asyncComponent(() => import('./notFound'), 'NotFound');
@@ -41,9 +42,9 @@ const MatchedLanguageComponent = () => {
   return (
     <App>
       <Switch>
-        <AuthRoute exact path={`${match.path}${ROUTES.home}`}>
+        <Route exact path={`${match.path}${ROUTES.home}`}>
           <Home />
-        </AuthRoute>
+        </Route>
         <AuthRoute exact path={`${match.path}${ROUTES.profile}`}>
           <Profile />
         </AuthRoute>
@@ -53,12 +54,12 @@ const MatchedLanguageComponent = () => {
         <AuthRoute exact path={`${match.path}${ROUTES.demoItem}`}>
           <DemoItem />
         </AuthRoute>
-        <Route exact path={`${match.path}${ROUTES.signup}`}>
+        <AnonymousRoute exact path={`${match.path}${ROUTES.signup}`}>
           <Signup />
-        </Route>
-        <Route exact path={`${match.path}${ROUTES.login}`}>
+        </AnonymousRoute>
+        <AnonymousRoute exact path={`${match.path}${ROUTES.login}`}>
           <Login />
-        </Route>
+        </AnonymousRoute>
         <Route exact path={`${match.path}${ROUTES.confirmEmail}`}>
           <ConfirmEmail />
         </Route>

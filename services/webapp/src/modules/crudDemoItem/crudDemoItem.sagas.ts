@@ -17,7 +17,10 @@ export function* watchCrudDemoItem() {
   yield all([
     takeLatest(crudDemoItemActions.fetchCrudDemoItemList, handleApiRequest(crudDemoItem.list)),
     takeLatest(crudDemoItemActions.fetchCrudDemoItem, handleApiRequest(crudDemoItem.get)),
-    takeLatest(crudDemoItemActions.addCrudDemoItem, handleApiRequest(crudDemoItem.add, addDemoItemResolve)),
+    takeLatest(
+      crudDemoItemActions.addCrudDemoItem,
+      handleApiRequest(crudDemoItem.add, { onResolve: addDemoItemResolve })
+    ),
     takeLatest(crudDemoItemActions.updateCrudDemoItem, handleApiRequest(crudDemoItem.update)),
     takeLatest(crudDemoItemActions.deleteCrudDemoItem, handleApiRequest(crudDemoItem.remove)),
   ]);

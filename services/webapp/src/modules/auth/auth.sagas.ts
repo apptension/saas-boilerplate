@@ -1,4 +1,4 @@
-import { all, put, takeLatest } from 'redux-saga/effects';
+import { all, put, takeLatest, select } from 'redux-saga/effects';
 
 import { auth } from '../../shared/services/api';
 import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';
@@ -9,6 +9,7 @@ import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { getOauthUrl } from '../../shared/services/api/auth';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
+import { selectIsLoggedIn } from './auth.selectors';
 
 function* loginResolve(response: LoginApiResponseData) {
   if (!response.isError) {
@@ -18,7 +19,10 @@ function* loginResolve(response: LoginApiResponseData) {
 }
 
 function* logoutResolve() {
-  yield navigate(ROUTES.login);
+  const isLoggedIn = yield select(selectIsLoggedIn);
+  if (isLoggedIn) {
+    yield navigate(ROUTES.login);
+  }
 }
 
 function* signupResolve(response: SignupApiResponseData) {
@@ -34,12 +38,12 @@ function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
 
 export function* watchAuth() {
   yield all([
-    takeLatest(authActions.signup, handleApiRequest(auth.signup, signupResolve)),
-    takeLatest(authActions.login, handleApiRequest(auth.login, loginResolve)),
+    takeLatest(authActions.signup, handleApiRequest(auth.signup, { onResolve: signupResolve })),
+    takeLatest(authActions.login, handleApiRequest(auth.login, { onResolve: loginResolve })),
     takeLatest(authActions.logout, handleApiRequest(auth.logout)),
     takeLatest(authActions.logout.resolved, logoutResolve),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
-    takeLatest(authActions.fetchProfile, handleApiRequest(auth.me)),
+    takeLatest(authActions.fetchProfile, handleApiRequest(auth.me, { redirectToLoginOnFail: false })),
     takeLatest(authActions.updateProfile, handleApiRequest(auth.updateProfile)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
     takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),

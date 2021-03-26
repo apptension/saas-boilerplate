@@ -11,11 +11,3 @@ export const useStartup = () => {
     initializeFontFace();
   }, [dispatch]);
 };
-
-export const useProfileStartup = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(startupActions.profileStartup());
-  }, [dispatch]);
-};

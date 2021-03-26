@@ -18,7 +18,7 @@ import {
 } from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
-import { userProfileFactory } from '../../../mocks/factories';
+import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '../../../mocks/factories';
 import { OAuthProvider } from '../auth.types';
 import { snackbarActions } from '../../snackbar';
 
@@ -109,9 +109,25 @@ describe('Auth: sagas', () => {
           .silentRun();
       });
 
-      it('should redirect to login page', async () => {
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
-        expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
+      describe('user is logged in', () => {
+        it('should redirect to login page', async () => {
+          const state = prepareState((state) => {
+            state.auth = loggedInAuthFactory();
+          });
+
+          await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
+          expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
+        });
+      });
+
+      describe('user is logged out', () => {
+        it('should not redirect to login page', async () => {
+          const state = prepareState((state) => {
+            state.auth = loggedOutAuthFactory();
+          });
+          await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
+          expect(mockHistoryPush).not.toHaveBeenCalled();
+        });
       });
     });
 
@@ -148,10 +164,10 @@ describe('Auth: sagas', () => {
           .silentRun();
       });
 
-      it('should redirect to login screen', async () => {
+      it('should not redirect to login screen', async () => {
         server.use(mockMe(profile, UNAUTHORIZED));
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.fetchProfile()).silentRun();
-        expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
+        expect(mockHistoryPush).not.toHaveBeenCalled();
       });
     });
   });

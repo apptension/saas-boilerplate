@@ -2,7 +2,6 @@ import React, { ComponentProps, useLayoutEffect } from 'react';
 
 import { Route, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useProfileStartup } from '../useStartup';
 import { selectIsProfileStartupCompleted } from '../../modules/startup/startup.selectors';
 import { Role } from '../../modules/auth/auth.types';
 import { useRoleAccessCheck } from '../../shared/hooks/useRoleAccessCheck';
@@ -20,7 +19,6 @@ export const AuthRoute = ({
   ...props
 }: ComponentProps<typeof Route> & AuthRouteProps) => {
   const history = useHistory();
-  useProfileStartup();
   const isProfileStartupCompleted = useSelector(selectIsProfileStartupCompleted);
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
   const fallbackUrl = useLocaleUrl(ROUTES.notFound);

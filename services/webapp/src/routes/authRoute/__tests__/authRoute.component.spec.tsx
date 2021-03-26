@@ -2,7 +2,6 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
-import { startupActions } from '../../../modules/startup';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
 import { prepareState } from '../../../mocks/store';
 import { userProfileFactory } from '../../../mocks/factories';
@@ -29,11 +28,6 @@ describe('AuthRoute: Component', () => {
     </AuthRoute>
   );
   const render = makeContextRenderer(component);
-
-  it('should call profileStartup on mount', () => {
-    render();
-    expect(mockDispatch).toHaveBeenCalledWith(startupActions.profileStartup());
-  });
 
   describe('user profile is not fetched yet', () => {
     it('should render nothing', () => {

@@ -15,7 +15,7 @@ describe('Startup: sagas', () => {
       it('should fetch user profile', async () => {
         await expectSaga(watchStartup)
           .withState(defaultState)
-          .dispatch(startupActions.profileStartup())
+          .dispatch(startupActions.startup())
           .put(authActions.fetchProfile())
           .not.put(startupActions.completeProfileStartup())
           .silentRun();
@@ -24,7 +24,7 @@ describe('Startup: sagas', () => {
       it('should complete profile startup after fetching is done', async () => {
         await expectSaga(watchStartup)
           .withState(defaultState)
-          .dispatch(startupActions.profileStartup())
+          .dispatch(startupActions.startup())
           .dispatch(authActions.fetchProfile.resolved(userProfileFactory()))
           .put(startupActions.completeProfileStartup())
           .silentRun();
@@ -39,7 +39,7 @@ describe('Startup: sagas', () => {
 
         await expectSaga(watchStartup)
           .withState(state)
-          .dispatch(startupActions.profileStartup())
+          .dispatch(startupActions.startup())
           .not.put(authActions.fetchProfile())
           .silentRun();
       });

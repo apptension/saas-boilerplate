@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useStartup, useProfileStartup } from '../useStartup.hook';
+import { useStartup } from '../useStartup.hook';
 import initializeFonts from '../../../theme/initializeFontFace';
 import { startupActions } from '../../../modules/startup';
 
@@ -25,14 +25,5 @@ describe('useStartup: Hook', () => {
   it('should initialize fonts on mount', () => {
     render();
     expect(initializeFonts).toHaveBeenCalled();
-  });
-});
-
-describe('useProfileStartup: Hook', () => {
-  const render = () => renderHook(() => useProfileStartup());
-
-  it('should call profileStartup on mount', () => {
-    render();
-    expect(mockDispatch).toHaveBeenCalledWith(startupActions.profileStartup());
   });
 });
