@@ -12,7 +12,8 @@ export interface PasswordResetProps extends EmailComponentProps {
 }
 
 export const Template = ({ userId, token }: PasswordResetProps) => {
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/en${generatePath(ROUTES.passwordReset.confirm, {
+  const { locale } = useIntl();
+  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.passwordReset.confirm, {
     token,
     user: userId,
   })}`;

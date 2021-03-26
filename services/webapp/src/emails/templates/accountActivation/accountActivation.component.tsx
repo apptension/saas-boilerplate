@@ -12,7 +12,11 @@ export interface AccountActivationProps extends EmailComponentProps {
 }
 
 export const Template = ({ userId, token }: AccountActivationProps) => {
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/en${generatePath(ROUTES.confirmEmail, { token, user: userId })}`;
+  const { locale } = useIntl();
+  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.confirmEmail, {
+    token,
+    user: userId,
+  })}`;
 
   return (
     <Layout

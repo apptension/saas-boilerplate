@@ -6,7 +6,8 @@ import { ROUTES } from '../../../routes/app.constants';
 import { Layout, Button } from '../../base';
 
 export const Template = () => {
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/en${generatePath(ROUTES.subscriptions.index)}`;
+  const { locale } = useIntl();
+  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.subscriptions.index)}`;
 
   return (
     <Layout

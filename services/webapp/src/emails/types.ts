@@ -4,6 +4,7 @@ export enum EmailTemplateType {
   AccountActivation = 'accountActivation',
   PasswordReset = 'passwordReset',
   SubscriptionError = 'subscriptionError',
+  TrialExpiresSoon = 'trialExpiresSoon',
 }
 
 export interface EmailComponentProps {
