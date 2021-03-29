@@ -42,12 +42,12 @@ describe('TransactionHistory: Component', () => {
   it('should render all items', () => {
     render({}, { store });
 
-    expect(screen.getByText('Owner 1 visa **** 1234')).toBeInTheDocument();
+    expect(screen.getByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
     expect(screen.getByText('50 USD')).toBeInTheDocument();
-    expect(screen.getByText('6/5/2020')).toBeInTheDocument();
+    expect(screen.getByText('June 05, 2020')).toBeInTheDocument();
 
-    expect(screen.getByText('Owner 2 visa **** 9876')).toBeInTheDocument();
+    expect(screen.getByText('Owner 2 Visa **** 9876')).toBeInTheDocument();
     expect(screen.getByText('100 USD')).toBeInTheDocument();
-    expect(screen.getByText('11/10/2020')).toBeInTheDocument();
+    expect(screen.getByText('June 05, 2020')).toBeInTheDocument();
   });
 });

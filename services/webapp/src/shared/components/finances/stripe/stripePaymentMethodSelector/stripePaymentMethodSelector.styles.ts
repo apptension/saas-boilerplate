@@ -22,10 +22,6 @@ export const ExistingPaymentMethodItem = styled(RadioButton)`
   width: 100%;
 `;
 
-export const CardBrand = styled.span`
-  text-transform: capitalize;
-`;
-
 export const NewPaymentMethodItem = styled(Button).attrs((props: { isSelected: boolean }) => ({
   variant: props.isSelected ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
 }))<{ isSelected: boolean }>`

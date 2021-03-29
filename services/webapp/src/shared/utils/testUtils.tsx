@@ -10,6 +10,7 @@ import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
 
 import { MockedProvider } from '@apollo/client/testing';
+import { Regex } from 'aws-sdk/clients/wafv2';
 import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';
@@ -82,8 +83,12 @@ export function makePropsRenderer<T>(component: (props: T | Record<string, never
 }
 
 // using `screen.getByText(matchTextContent('hello world'))` will match <div>hello <span>world</span></div>
-export const matchTextContent = (text: string) => (_: unknown, node: Nullish<Element>) => {
-  const hasText = (node: Element) => node.textContent === text;
+export const matchTextContent = (text: string | RegExp) => (_: unknown, node: Nullish<Element>) => {
+  const hasText = (node: Element) => {
+    const isPlainString = typeof text === 'string';
+    const nodeContent = node.textContent ?? '';
+    return isPlainString ? nodeContent === text : new RegExp(text).test(nodeContent);
+  };
   const childrenDontHaveText = Array.from(node?.children ?? []).every((child) => !hasText(child));
   return Boolean(node && hasText(node) && childrenDontHaveText);
 };

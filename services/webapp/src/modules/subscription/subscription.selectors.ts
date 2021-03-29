@@ -48,6 +48,12 @@ export const selectActiveSubscriptionRenewalDate = createSelector(
 
 export const selectActiveSubscriptionPlan = createSelector(selectActiveSubscriptionPhase, (phase) => phase?.item.price);
 
+export const selectActiveSubscriptionNextPlan = createSelector(
+  selectActiveSubscriptionPlan,
+  selectActiveSubscriptionNextPhase,
+  (activePlan, nextPhase) => nextPhase?.item.price ?? activePlan
+);
+
 export const selectActiveSubscriptionPaymentMethod = createSelector(
   selectActiveSubscriptionPhase,
   (phase) => phase?.defaultPaymentMethod

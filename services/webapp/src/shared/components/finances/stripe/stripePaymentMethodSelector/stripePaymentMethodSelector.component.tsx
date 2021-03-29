@@ -5,6 +5,7 @@ import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { Controller } from 'react-hook-form';
 import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
+import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import {
   PaymentMethodApiFormControls,
   StripePaymentMethodChangeEvent,
@@ -19,7 +20,6 @@ import {
   Heading,
   ExistingPaymentMethodItem,
   NewPaymentMethodItem,
-  CardBrand,
   ErrorMessage,
 } from './stripePaymentMethodSelector.styles';
 
@@ -140,8 +140,7 @@ export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMetho
                         });
                       }}
                     >
-                      {paymentMethod.billingDetails?.name && `${paymentMethod.billingDetails?.name} `}
-                      <CardBrand>{paymentMethod.card.brand}</CardBrand> **** {paymentMethod.card.last4}
+                      <StripePaymentMethodInfo method={paymentMethod} />
                     </ExistingPaymentMethodItem>
                   </PaymentMethodListItem>
                 );

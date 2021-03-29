@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { selectStripeTransactionHistory } from '../../../../../modules/stripe/stripe.selectors';
+import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
+import { Date } from '../../../date';
 import {
   Container,
   HeaderCell,
@@ -13,10 +13,10 @@ import {
   TransactionDate,
   Details,
 } from './transactionHistory.styles';
+import { useTransactionHistory } from './transactionHistory.hooks';
 
 export const TransactionHistory = () => {
-  const { locale } = useIntl();
-  const transactionsHistory = useSelector(selectStripeTransactionHistory);
+  const transactionsHistory = useTransactionHistory();
 
   return (
     <Container>
@@ -39,18 +39,15 @@ export const TransactionHistory = () => {
       </HeaderRow>
 
       {transactionsHistory.map((entry) => {
-        const cardDetails = [
-          entry.paymentMethod.billingDetails.name,
-          entry.paymentMethod.card.brand,
-          '****',
-          entry.paymentMethod.card.last4,
-        ].join(' ');
-
         return (
           <Entry key={entry.id}>
-            <TransactionDate>{new Date(entry.date).toLocaleDateString(locale)}</TransactionDate>
+            <TransactionDate>
+              <Date value={entry.date} />
+            </TransactionDate>
             <Details>TODO</Details>
-            <Card>{cardDetails}</Card>
+            <Card>
+              <StripePaymentMethodInfo method={entry.paymentMethod} />
+            </Card>
             <Amount>{entry.amount} USD</Amount>
           </Entry>
         );

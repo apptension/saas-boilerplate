@@ -2,7 +2,7 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import { makeContextRenderer, matchTextContent, spiedHistory } from '../../../../shared/utils/testUtils';
 import { Subscriptions } from '../subscriptions.component';
 import { prepareState } from '../../../../mocks/store';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
@@ -40,25 +40,25 @@ describe('Subscriptions: Component', () => {
 
   it('should render current subscription plan', () => {
     render({}, { store });
-    expect(screen.getByText(/active plan.+free/gi)).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
   });
 
   describe('subscription is active', () => {
     it('should render next renewal date', () => {
       render({}, { store });
-      expect(screen.getByText(/next renewal.+2099-01-01/gi)).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
     });
 
     it('should not render cancelation date', () => {
       render({}, { store });
-      expect(screen.queryByText(/subscription will expire at/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
     });
   });
 
   describe('subscription is canceled', () => {
     it('should render cancelation date', () => {
       render({}, { store: storeWithSubscriptionCanceled });
-      expect(screen.getByText(/subscription will expire at.+2099-01-01/gi)).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
     });
 
     it('should not render next renewal date', () => {
@@ -116,7 +116,7 @@ describe('Subscriptions: Component', () => {
   describe('trial section', () => {
     it('shouldnt be displayed if user has no trial active', () => {
       render({}, { store });
-      expect(screen.queryByText(/your trial ends at/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/free trial info/gi)).not.toBeInTheDocument();
     });
 
     it('should be displayed if user has  trial active', () => {
@@ -135,7 +135,9 @@ describe('Subscriptions: Component', () => {
       });
 
       render({}, { store });
-      expect(screen.getByText(/your trial ends at 2099-01-01/gi)).toBeInTheDocument();
+      expect(
+        screen.getByText(matchTextContent(/free trial info.*expiry date.*january 01, 2099/gi))
+      ).toBeInTheDocument();
     });
   });
 });

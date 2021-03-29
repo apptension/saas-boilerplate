@@ -1,15 +1,11 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
 import { TransactionHistory as TransactionHistoryList } from '../../../shared/components/finances/stripe/transactionHistory';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';
 import { Container, Header } from './transactionHistory.styles';
 
-export interface TransactionHistoryProps {
-  children?: ReactNode;
-}
-
-export const TransactionHistory = ({ children }: TransactionHistoryProps) => {
+export const TransactionHistory = () => {
   return (
     <Container>
       <BackButton />

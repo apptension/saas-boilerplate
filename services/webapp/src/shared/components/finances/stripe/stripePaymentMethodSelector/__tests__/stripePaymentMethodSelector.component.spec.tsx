@@ -44,8 +44,8 @@ describe('StripePaymentMethodSelector: Component', () => {
       mockUseStripePaymentMethods.mockReturnValue({ isLoading: false, paymentMethods });
 
       render();
-      expect(screen.getByText(matchTextContent('First Owner visa **** 1234'))).toBeInTheDocument();
-      expect(screen.getByText(matchTextContent('Second Owner visa **** 9999'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('First Owner Visa **** 1234'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('Second Owner Visa **** 9999'))).toBeInTheDocument();
     });
 
     it('should show add new method button', () => {
@@ -61,8 +61,8 @@ describe('StripePaymentMethodSelector: Component', () => {
       mockUseStripePaymentMethods.mockReturnValue({ isLoading: false, paymentMethods: [] });
 
       render();
-      expect(screen.queryByText(matchTextContent('First Owner visa **** 1234'))).not.toBeInTheDocument();
-      expect(screen.queryByText(matchTextContent('Second Owner visa **** 9999'))).not.toBeInTheDocument();
+      expect(screen.queryByText(matchTextContent('First Owner Visa **** 1234'))).not.toBeInTheDocument();
+      expect(screen.queryByText(matchTextContent('Second Owner Visa **** 9999'))).not.toBeInTheDocument();
     });
 
     it('should not show add new method button', () => {

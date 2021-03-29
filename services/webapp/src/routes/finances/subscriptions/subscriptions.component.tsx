@@ -4,137 +4,156 @@ import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
   selectActiveSubscriptionCancelDate,
+  selectActiveSubscriptionNextPlan,
   selectActiveSubscriptionPaymentMethod,
   selectActiveSubscriptionRenewalDate,
+  selectIsSubscriptionCanceled,
   selectIsTrialActive,
   selectTrialEnd,
 } from '../../../modules/subscription/subscription.selectors';
-import { H1, H2, H3 } from '../../../theme/typography';
-import { useSnackbar } from '../../../shared/components/snackbar';
-import { Button } from '../../../shared/components/button';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { Link } from '../../../shared/components/link';
-import { useActiveSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import { Container, Links } from './subscriptions.styles';
+import {
+  useActiveSubscriptionPlanDetails,
+  useSubscriptionPlanDetails,
+} from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { useTransactionHistory } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
+import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
+import { Date } from '../../../shared/components/date';
+import { Container, Header, Link, Row, RowValue, Section, Subheader } from './subscriptions.styles';
 
 export const Subscriptions = () => {
   const changePlanUrl = useLocaleUrl(ROUTES.subscriptions.changePlan);
   const cancelSubscriptionUrl = useLocaleUrl(ROUTES.subscriptions.cancel);
 
   const activeSubscriptionPlan = useActiveSubscriptionPlanDetails();
+  const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
+  const nextSubscriptionPlanDetails = useSubscriptionPlanDetails(nextSubscriptionPlan);
   const activeSubscriptionRenewalDate = useSelector(selectActiveSubscriptionRenewalDate);
   const activeSubscriptionExpiryDate = useSelector(selectActiveSubscriptionCancelDate);
   const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
   const isTrialActive = useSelector(selectIsTrialActive);
   const trialEnd = useSelector(selectTrialEnd);
-
-  const { showMessage } = useSnackbar();
-
-  const noopClick = () => showMessage('Unsupported');
+  const isCancelled = useSelector(selectIsSubscriptionCanceled);
+  const transactionsHistory = useTransactionHistory();
 
   return (
     <Container>
-      <H1>Subscriptions component</H1>
+      <Section>
+        <Header>
+          <FormattedMessage defaultMessage="Subscriptions" description="My subscription / Header" />
+        </Header>
 
-      <section>
-        <H2>
-          <FormattedMessage defaultMessage="Current plan info" description="My subscription / Current plan header" />
-        </H2>
-
-        <H3>
-          <FormattedMessage defaultMessage="Active plan:" description="My subscription / Active plan" />{' '}
-          {activeSubscriptionPlan && (
-            <>
-              {activeSubscriptionPlan?.name} [{activeSubscriptionPlan?.price} zł]
-            </>
-          )}
-        </H3>
+        <Subheader>
+          <FormattedMessage defaultMessage="Current plan:" description="My subscription / Active plan" />
+          <RowValue>{activeSubscriptionPlan?.name}</RowValue>
+        </Subheader>
 
         {activeSubscriptionRenewalDate && (
-          <H3>
-            <FormattedMessage defaultMessage="Next renewal:" description="My subscription / Next renewal" />{' '}
-            {activeSubscriptionRenewalDate}
-          </H3>
+          <Row>
+            <FormattedMessage defaultMessage="Next renewal:" description="My subscription / Next renewal" />
+            <RowValue>
+              <Date value={activeSubscriptionRenewalDate} />
+            </RowValue>
+          </Row>
         )}
 
         {!activeSubscriptionRenewalDate && activeSubscriptionExpiryDate && (
-          <H3>
-            <FormattedMessage
-              defaultMessage="Your subscription will expire at:"
-              description="My subscription / Expiry date"
-            />{' '}
-            {activeSubscriptionExpiryDate}
-          </H3>
+          <Row>
+            <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Expiry date" />
+            <RowValue>
+              <Date value={activeSubscriptionExpiryDate} />
+            </RowValue>
+          </Row>
         )}
 
-        {isTrialActive && (
-          <H3>
-            <FormattedMessage defaultMessage="Your trial ends at " description="My subscription / Trial ends at" />{' '}
-            {trialEnd}
-          </H3>
+        {nextSubscriptionPlanDetails && (
+          <Row>
+            <FormattedMessage defaultMessage="Next billing plan:" description="My subscription / Next plan" />
+            <RowValue>{nextSubscriptionPlanDetails?.name}</RowValue>
+          </Row>
         )}
 
-        <Links>
-          <Link to={changePlanUrl}>
-            <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
-          </Link>
+        {isTrialActive && trialEnd && (
+          <>
+            <Subheader>
+              <FormattedMessage defaultMessage="Free trial info" description="My subscription / Trial header" />
+            </Subheader>
+            <Row>
+              <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Trial expiry date" />
+              <RowValue>
+                <Date value={trialEnd} />
+              </RowValue>
+            </Row>
+          </>
+        )}
 
-          {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionExpiryDate && (
-            <Link to={cancelSubscriptionUrl}>
-              <FormattedMessage
-                defaultMessage="Cancel subscription"
-                description="My subscription / Cancel subscription"
-              />
-            </Link>
-          )}
-        </Links>
-      </section>
-
-      <section>
-        <H2>
-          <FormattedMessage defaultMessage="Payments" description="My subscription / Payments header" />
-        </H2>
-
-        <H3>
-          <FormattedMessage
-            defaultMessage="Current payment method:"
-            description="My subscription / Current payment method"
-          />{' '}
-          {activeSubscriptionPaymentMethod?.billingDetails?.name &&
-            `${activeSubscriptionPaymentMethod?.billingDetails?.name} `}
-          {activeSubscriptionPaymentMethod?.card.brand} **** {activeSubscriptionPaymentMethod?.card.last4}
-        </H3>
-
-        <Links>
-          <Link to={ROUTES.subscriptions.paymentMethod}>
-            {activeSubscriptionPaymentMethod ? (
-              <FormattedMessage
-                defaultMessage="Edit payment method"
-                description="My subscription / Edit payment method button"
-              />
-            ) : (
-              <FormattedMessage
-                defaultMessage="Add payment method"
-                description="My subscription / Add payment method button"
-              />
-            )}
-          </Link>
-        </Links>
-      </section>
-
-      <section>
-        <H2>
-          <FormattedMessage defaultMessage="History" description="My subscription / History header" />
-        </H2>
-
-        <Link to={ROUTES.finances.history}>
-          <FormattedMessage
-            defaultMessage="View transaction history"
-            description="My subscription / View history button"
-          />
+        <Link to={changePlanUrl}>
+          <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
         </Link>
-      </section>
+
+        {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !isCancelled && (
+          <Link to={cancelSubscriptionUrl} variant={ButtonVariant.SECONDARY}>
+            <FormattedMessage
+              defaultMessage="Cancel subscription"
+              description="My subscription / Cancel subscription"
+            />
+          </Link>
+        )}
+      </Section>
+
+      <Section>
+        <Header>
+          <FormattedMessage defaultMessage="Payments" description="My subscription / Payments header" />
+        </Header>
+
+        <Subheader>
+          <FormattedMessage defaultMessage="Payment method" description="My subscription / Payment method header" />
+        </Subheader>
+        <Row>
+          <FormattedMessage defaultMessage="Current method:" description="My subscription / Current method" />
+          <RowValue>
+            <StripePaymentMethodInfo method={activeSubscriptionPaymentMethod} />
+          </RowValue>
+        </Row>
+
+        <Link to={ROUTES.subscriptions.paymentMethod}>
+          {activeSubscriptionPaymentMethod ? (
+            <FormattedMessage
+              defaultMessage="Edit payment method"
+              description="My subscription / Edit payment method button"
+            />
+          ) : (
+            <FormattedMessage
+              defaultMessage="Add payment method"
+              description="My subscription / Add payment method button"
+            />
+          )}
+        </Link>
+      </Section>
+
+      <Section>
+        <Header>
+          <FormattedMessage defaultMessage="History" description="My subscription / History header" />
+        </Header>
+
+        {transactionsHistory.length > 0 ? (
+          <Link to={ROUTES.finances.history}>
+            <FormattedMessage
+              defaultMessage="View transaction history"
+              description="My subscription / View history button"
+            />
+          </Link>
+        ) : (
+          <Row>
+            <FormattedMessage
+              defaultMessage="You don't have any history to show"
+              description="My subscription / No transaction history"
+            />
+          </Row>
+        )}
+      </Section>
     </Container>
   );
 };

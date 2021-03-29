@@ -5,9 +5,9 @@ import { times } from 'ramda';
 import { prepareState } from '../../../mocks/store';
 import { transactionHistoryEntryFactory } from '../../../mocks/factories';
 import { withProviders } from '../../../shared/utils/storybook';
-import { TransactionHistory, TransactionHistoryProps } from './transactionHistory.component';
+import { TransactionHistory } from './transactionHistory.component';
 
-const Template: Story<TransactionHistoryProps> = (args) => {
+const Template: Story = (args) => {
   return <TransactionHistory {...args} />;
 };
 
