@@ -91,6 +91,8 @@ describe('Change password', () => {
       });
 
       logOut();
+      cy.url().should('include', '/auth/login');
+
       logInWithUI({ userEmail, password: newPassword });
       expectUserToBeLoggedIn({ userEmail });
     });

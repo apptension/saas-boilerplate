@@ -22,7 +22,7 @@ import {
   PRIVACY_POLICY_LINK,
   TERMS_PAGE_LINK,
 } from '../support/signup';
-import { goToConfirmPage } from '../support/resetPassword';
+import { useLinkFromEmail } from '../support/resetPassword';
 import { SIGNUP_SNACKBAR_TEXT } from '../support/assertion';
 
 describe('Signup', () => {
@@ -73,9 +73,9 @@ describe('Signup', () => {
         expectAccountToBeCreated(res, userEmail);
       });
 
-      goToConfirmPage(CONFIRM_YOUR_ACCOUNT);
+      useLinkFromEmail(CONFIRM_YOUR_ACCOUNT);
 
-      cy.url().should('include', '/auth/login');
+      cy.url().should('equal', `${Cypress.config().baseUrl}/en/`);
       expectSnackbarToBeDisplayed(SIGNUP_SNACKBAR_TEXT);
       expectTokenToExist();
     });

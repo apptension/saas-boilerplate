@@ -7,7 +7,7 @@ import {
   SET_NEW_PASSWORD_DATA,
 } from '../fixtures/resetPasswordData';
 import {
-  goToConfirmPage,
+  useLinkFromEmail,
   RESET_YOUR_PASSWORD,
   resetPassword,
   sendResetPasswordLinkWithApi,
@@ -73,7 +73,7 @@ describe('Should not reset a password if:', () => {
     sendResetPasswordLinkWithApi(userEmail);
     setNewPasswordWithApi(password);
 
-    goToConfirmPage(RESET_YOUR_PASSWORD);
+    useLinkFromEmail(RESET_YOUR_PASSWORD);
 
     setNewPassword(newPassword, newPassword);
     expectRequestToFail('@passwordReset', malformedPasswordResetTokenApiError);

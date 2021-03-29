@@ -34,8 +34,10 @@ describe('Login page', () => {
     });
 
     logOut();
+
     expectRequestToSucceed('@logout', 200);
     expectUserToBeLoggedOut();
+    cy.url().should('include', '/auth/login');
   });
 
   LOGIN_DATA.forEach((item) => {

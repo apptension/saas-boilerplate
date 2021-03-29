@@ -7,7 +7,7 @@ export const NEW_PASSWORD_INPUT = '[name="newPassword"]';
 export const CONFIRM_PASSWORD_INPUT = '[name="confirmPassword"]';
 export const RESET_YOUR_PASSWORD = 'Reset your password';
 
-export const goToConfirmPage = (emailSubject) => {
+export const useLinkFromEmail = (emailSubject) => {
   cy.getLinkFromEmail({
     emailSubject,
     linkRegex: URL_REGEX,
@@ -28,7 +28,7 @@ export const setNewPassword = (password, confirmPassword) => {
 export const resetPassword = ({ userEmail, password, confirmPassword }) => {
   submitResetPasswordForm(userEmail);
 
-  goToConfirmPage(RESET_YOUR_PASSWORD);
+  useLinkFromEmail(RESET_YOUR_PASSWORD);
 
   cy.url().should('include', '/auth/reset-password/confirm');
   cy.get('h1').should('have.text', 'Change your password').and('be.visible');
