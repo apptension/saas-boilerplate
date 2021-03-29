@@ -42,9 +42,9 @@ const MatchedLanguageComponent = () => {
   return (
     <App>
       <Switch>
-        <Route exact path={`${match.path}${ROUTES.home}`}>
+        <AuthRoute exact path={`${match.path}${ROUTES.home}`}>
           <Home />
-        </Route>
+        </AuthRoute>
         <AuthRoute exact path={`${match.path}${ROUTES.profile}`}>
           <Profile />
         </AuthRoute>

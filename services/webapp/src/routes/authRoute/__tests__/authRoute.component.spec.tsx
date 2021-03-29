@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
 import { prepareState } from '../../../mocks/store';
-import { userProfileFactory } from '../../../mocks/factories';
+import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '../../../mocks/factories';
 import { Role } from '../../../modules/auth/auth.types';
 
 const mockDispatch = jest.fn();
@@ -66,12 +66,25 @@ describe('AuthRoute: Component', () => {
       it('should redirect to not found page', () => {
         const store = prepareState((state) => {
           state.startup.profileStartupCompleted = true;
-          state.auth.profile = userProfileFactory({ roles: [Role.USER] });
+          state.auth = loggedInAuthFactory({ profile: userProfileFactory({ roles: [Role.USER] }) });
         });
         const { pushSpy, history } = spiedHistory();
         render({ allowedRoles: Role.ADMIN }, { store, router: { history } });
         expect(screen.queryByTestId('content')).not.toBeInTheDocument();
         expect(pushSpy).toHaveBeenCalledWith('/en/404');
+      });
+    });
+
+    describe('user is not logged in', () => {
+      it('should redirect to login page', () => {
+        const store = prepareState((state) => {
+          state.startup.profileStartupCompleted = true;
+          state.auth = loggedOutAuthFactory();
+        });
+        const { pushSpy, history } = spiedHistory();
+        render({ allowedRoles: Role.ADMIN }, { store, router: { history } });
+        expect(screen.queryByTestId('content')).not.toBeInTheDocument();
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
     });
   });

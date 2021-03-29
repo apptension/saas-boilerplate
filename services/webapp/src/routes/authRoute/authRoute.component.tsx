@@ -8,6 +8,7 @@ import { useRoleAccessCheck } from '../../shared/hooks/useRoleAccessCheck';
 import { useLocaleUrl } from '../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../app.constants';
 import { renderWhenTrue } from '../../shared/utils/rendering';
+import { selectIsLoggedIn } from '../../modules/auth/auth.selectors';
 
 export interface AuthRouteProps {
   allowedRoles?: Role | Role[];
@@ -20,14 +21,17 @@ export const AuthRoute = ({
 }: ComponentProps<typeof Route> & AuthRouteProps) => {
   const history = useHistory();
   const isProfileStartupCompleted = useSelector(selectIsProfileStartupCompleted);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
-  const fallbackUrl = useLocaleUrl(ROUTES.notFound);
+  const loginUrl = useLocaleUrl(ROUTES.login);
+  const notFoundUrl = useLocaleUrl(ROUTES.notFound);
+  const fallbackUrl = isLoggedIn ? notFoundUrl : loginUrl;
 
   useLayoutEffect(() => {
     if (isProfileStartupCompleted && !isAllowed) {
       history.push(fallbackUrl);
     }
-  }, [isProfileStartupCompleted, isAllowed, history, fallbackUrl]);
+  }, [fallbackUrl, history, isAllowed, isProfileStartupCompleted]);
 
   const renderRoute = () => <Route {...props}>{children}</Route>;
   return renderWhenTrue(renderRoute)(isProfileStartupCompleted && isAllowed);
