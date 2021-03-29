@@ -33,6 +33,7 @@ export const ROUTES = {
   }),
   finances: nestedRoute('/finances', {
     paymentConfirm: '/payment-confirm',
+    history: '/history',
   }),
   subscriptions: nestedRoute('/subscriptions', {
     changePlan: '/edit',

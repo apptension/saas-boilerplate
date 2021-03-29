@@ -1,0 +1,53 @@
+import React from 'react';
+
+import { screen } from '@testing-library/react';
+import { TransactionHistory } from '../transactionHistory.component';
+import { makeContextRenderer } from '../../../../../utils/testUtils';
+import { prepareState } from '../../../../../../mocks/store';
+import { paymentMethodFactory, transactionHistoryEntryFactory } from '../../../../../../mocks/factories';
+
+const store = prepareState((state) => {
+  state.stripe.transactionHistory = [
+    transactionHistoryEntryFactory({
+      date: new Date(2020, 5, 5).toString(),
+      amount: 50,
+      paymentMethod: paymentMethodFactory({
+        billingDetails: {
+          name: 'Owner 1',
+        },
+        card: {
+          last4: '1234',
+        },
+      }),
+    }),
+    transactionHistoryEntryFactory({
+      date: new Date(2020, 10, 10).toString(),
+      amount: 100,
+      paymentMethod: paymentMethodFactory({
+        billingDetails: {
+          name: 'Owner 2',
+        },
+        card: {
+          last4: '9876',
+        },
+      }),
+    }),
+  ];
+});
+
+describe('TransactionHistory: Component', () => {
+  const component = () => <TransactionHistory />;
+  const render = makeContextRenderer(component);
+
+  it('should render all items', () => {
+    render({}, { store });
+
+    expect(screen.getByText('Owner 1 visa **** 1234')).toBeInTheDocument();
+    expect(screen.getByText('50 USD')).toBeInTheDocument();
+    expect(screen.getByText('6/5/2020')).toBeInTheDocument();
+
+    expect(screen.getByText('Owner 2 visa **** 9876')).toBeInTheDocument();
+    expect(screen.getByText('100 USD')).toBeInTheDocument();
+    expect(screen.getByText('11/10/2020')).toBeInTheDocument();
+  });
+});

@@ -5,6 +5,7 @@ import {
   StripePaymentMethodCardBrand,
   StripePaymentMethodType,
 } from '../../shared/services/api/stripe/paymentMethod';
+import { TransactionHistoryEntry } from '../../shared/services/api/stripe/history/types';
 import { DeepMergeFactory } from './types';
 
 export const paymentMethodFactory: DeepMergeFactory<StripePaymentMethod> = (overrides = {}) =>
@@ -34,6 +35,17 @@ export const paymentMethodFactory: DeepMergeFactory<StripePaymentMethod> = (over
           cvcCheck: 'pass',
         },
       },
+    },
+    overrides
+  );
+
+export const transactionHistoryEntryFactory: DeepMergeFactory<TransactionHistoryEntry> = (overrides = {}) =>
+  mergeDeepRight(
+    {
+      id: faker.random.uuid(),
+      date: new Date(2020, 5, 5).toString(),
+      amount: faker.random.number({ min: 100, max: 1000 }),
+      paymentMethod: paymentMethodFactory(),
     },
     overrides
   );

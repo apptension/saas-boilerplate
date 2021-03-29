@@ -128,12 +128,12 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="History" description="My subscription / History header" />
         </H2>
 
-        <Button onClick={noopClick}>
+        <Link to={ROUTES.finances.history}>
           <FormattedMessage
             defaultMessage="View transaction history"
             description="My subscription / View history button"
           />
-        </Button>
+        </Link>
       </section>
     </Container>
   );

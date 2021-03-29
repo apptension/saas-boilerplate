@@ -5,5 +5,8 @@ import { handleApiRequest } from '../helpers/handleApiRequest';
 import * as stripeActions from './stripe.actions';
 
 export function* watchStripe() {
-  yield all([takeLatest(stripeActions.fetchStripePaymentMethods, handleApiRequest(stripe.paymentMethod.list))]);
+  yield all([
+    takeLatest(stripeActions.fetchStripePaymentMethods, handleApiRequest(stripe.paymentMethod.list)),
+    takeLatest(stripeActions.fetchStripeTransactionHistory, handleApiRequest(stripe.history.list)),
+  ]);
 }
