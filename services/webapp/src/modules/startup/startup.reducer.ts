@@ -1,6 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import * as authActions from '../auth/auth.actions';
 import { StartupState } from './startup.types';
 import * as startupActions from './startup.actions';
 
@@ -18,6 +17,5 @@ const handleProfileStartupCompleted = (state: StartupState) => {
 
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(startupActions.completeProfileStartup, handleProfileStartupCompleted);
-  builder.addCase(authActions.logout.resolved, handleProfileStartupReset);
   builder.addCase(startupActions.startup, handleProfileStartupReset);
 });

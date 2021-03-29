@@ -42,31 +42,21 @@ describe('Auth: reducer', () => {
     });
   });
 
-  describe('logout.resolve', () => {
+  describe('resetProfile', () => {
     const loggedInState = prepareState((state) => {
       state.auth = loggedInAuthFactory();
     }).auth;
 
-    describe('is resolved without error', () => {
-      it('should reset user profile', () => {
-        const action = authActions.logout.resolved();
-        const resultState = reducer(loggedInState, action);
-        expect(resultState.profile).toBeUndefined();
-      });
-
-      it('should set isLoggedIn to false', () => {
-        const action = authActions.logout.resolved();
-        const resultState = reducer(loggedInState, action);
-        expect(resultState.isLoggedIn).toBe(false);
-      });
+    it('should reset user profile', () => {
+      const action = authActions.resetProfile();
+      const resultState = reducer(loggedInState, action);
+      expect(resultState.profile).toBeUndefined();
     });
 
-    describe('is rejected', () => {
-      it('should not reset user profile', () => {
-        const action = authActions.logout.rejected({});
-        const resultState = reducer(loggedInState, action);
-        expect(resultState.profile).toEqual(loggedInState.profile);
-      });
+    it('should set isLoggedIn to false', () => {
+      const action = authActions.resetProfile();
+      const resultState = reducer(loggedInState, action);
+      expect(resultState.isLoggedIn).toBe(false);
     });
   });
 });

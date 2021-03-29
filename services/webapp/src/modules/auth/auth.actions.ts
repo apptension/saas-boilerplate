@@ -21,11 +21,12 @@ import {
 } from '../../shared/services/api/auth/types';
 import { OAuthProvider } from './auth.types';
 
-const { createPromiseAction, createActionRoutine } = actionCreator('AUTH');
+const { createPromiseAction, createActionRoutine, createAction } = actionCreator('AUTH');
 
 export const signup = createPromiseAction<SignupApiRequestData, SignupApiResponseData>('SIGNUP');
 export const login = createPromiseAction<LoginApiRequestData, LoginApiResponseData>('LOGIN');
 export const logout = createActionRoutine<LogoutApiRequestData, LogoutApiResponseData>('LOGOUT');
+export const resetProfile = createAction<void>('RESET_PROFILE');
 export const oAuthLogin = createPromiseAction<OAuthProvider, void>('OAUTH_LOGIN');
 export const changePassword = createPromiseAction<ChangePasswordRequestData, ChangePasswordResponseData>(
   'CHANGE_PASSWORD'
