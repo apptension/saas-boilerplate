@@ -7,9 +7,10 @@ stripe_router = DefaultRouter()
 stripe_router.register(r'payment-intent', views.StripePaymentIntentViewSet, basename='payment-intent')
 stripe_router.register(r'setup-intent', views.StripeSetupIntentViewSet, basename='setup-intent')
 stripe_router.register(r'payment-method', views.StripePaymentMethodViewSet, basename='payment-intent')
+stripe_router.register(r'charge', views.UserChargeViewSet, basename='charge')
 
 stripe_urls = [
-    path("", include((stripe_router.urls, 'stripe_finances'), namespace='stripe_finances')),
+    path("", include(stripe_router.urls)),
     path("", include("djstripe.urls", namespace="djstripe")),
 ]
 

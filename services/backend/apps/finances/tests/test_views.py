@@ -11,8 +11,7 @@ class TestSubscriptionPlanListView:
         assert result['id'] == price.id
         assert result['product'] == {'id': price.product.id, 'name': price.product.name}
 
-    def test_return_available_plans(self, api_client, user, free_plan_price, monthly_plan_price, yearly_plan_price):
-        api_client.force_authenticate(user)
+    def test_return_available_plans(self, api_client, free_plan_price, monthly_plan_price, yearly_plan_price):
         url = reverse('subscription-plans-list')
 
         response = api_client.get(url)
@@ -48,6 +47,12 @@ class TestUserActiveSubscriptionView:
                     'product': {'id': price.product.id, 'name': price.product.name},
                 },
             }
+
+    def test_return_error_for_unauthorized_user(self, api_client):
+        url = reverse('user-active-subscription')
+        response = api_client.post(url)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_trial_fields_in_response_when_customer_already_activated_trial(
         self, api_client, subscription_schedule_factory, monthly_plan_price
@@ -137,16 +142,21 @@ class TestUserActiveSubscriptionView:
 
 
 class TestCancelUserActiveSubscriptionView:
+    def test_return_error_for_unauthorized_user(self, api_client):
+        url = reverse('user-active-subscription-cancel')
+        response = api_client.post(url)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
     def test_return_error_if_customer_has_no_paid_subscription(self, api_client, subscription_schedule):
-        user = subscription_schedule.customer.subscriber
-        api_client.force_authenticate(user)
+        api_client.force_authenticate(subscription_schedule.customer.subscriber)
         url = reverse('user-active-subscription-cancel')
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data['non_field_errors'][0]['code'] == 'no_paid_subscription'
 
-    def test_cancel_trialing_subscription(self, api_client, user, subscription_schedule_factory, monthly_plan_price):
+    def test_cancel_trialing_subscription(self, api_client, subscription_schedule_factory, monthly_plan_price):
         subscription_schedule = subscription_schedule_factory(
             phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
         )
@@ -154,3 +164,28 @@ class TestCancelUserActiveSubscriptionView:
         url = reverse('user-active-subscription-cancel')
         response = api_client.post(url)
         assert response.status_code == status.HTTP_200_OK, response.data
+
+
+class TestUserChargesListView:
+    def test_return_error_for_unauthorized_user(self, api_client):
+        url = reverse('charge-list')
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_return_only_customer_charges(self, api_client, customer, charge_factory):
+        other_customer_charge = charge_factory()
+        regular_charge = charge_factory(customer=customer)
+
+        api_client.force_authenticate(customer.subscriber)
+
+        url = reverse('charge-list')
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert len(response.data) == 1
+
+        charge_ids = [charge['id'] for charge in response.data]
+
+        assert regular_charge.id in charge_ids
+        assert other_customer_charge.id not in charge_ids

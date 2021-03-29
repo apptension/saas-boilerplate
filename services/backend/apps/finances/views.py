@@ -1,4 +1,4 @@
-from djstripe import models as djstripe_models
+from djstripe import models as djstripe_models, enums as djstripe_enums
 from rest_framework import mixins, viewsets, response, generics
 
 from common.acl import policies
@@ -73,3 +73,12 @@ class SubscriptionPlansListView(generics.ListAPIView):
                 constants.YEARLY_PLAN.name,
             ]
         )
+
+
+class UserChargeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    permission_classes = (policies.UserFullAccess,)
+    serializer_class = serializers.UserChargeSerializer
+
+    def get_queryset(self):
+        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
+        return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded)

@@ -87,7 +87,7 @@ class SubscriptionPlansListSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-class SubscriptionItemPriceSerializer(serializers.ModelSerializer):
+class PriceSerializer(serializers.ModelSerializer):
     product = SubscriptionItemProductSerializer()
 
     class Meta:
@@ -122,13 +122,13 @@ class SubscriptionSchedulePhaseItemSerializer(serializers.Serializer):
     price = serializers.SerializerMethodField()
     quantity = serializers.IntegerField()
 
-    @swagger_serializer_method(serializer_or_field=SubscriptionItemPriceSerializer)
+    @swagger_serializer_method(serializer_or_field=PriceSerializer)
     def get_price(self, obj):
         # We check for existence of the price because of the stripe-mock limitations
         price = djstripe_models.Price.objects.filter(id=obj['price']).first()
         if not price:
             return None
-        return SubscriptionItemPriceSerializer(price).data
+        return PriceSerializer(price).data
 
 
 class StripeTimestampField(serializers.DateTimeField):
@@ -314,3 +314,38 @@ class AdminStripePaymentIntentRefundSerializer(serializers.Serializer):
         )
 
         return instance
+
+
+class UserChargeInvoiceItemSerializer(serializers.ModelSerializer):
+    price = PriceSerializer()
+
+    class Meta:
+        model = djstripe_models.InvoiceItem
+        fields = ('id', 'price')
+
+
+class UserChargeInvoiceSerializer(serializers.ModelSerializer):
+    items = UserChargeInvoiceItemSerializer(source='invoiceitems', many=True)
+
+    class Meta:
+        model = djstripe_models.Invoice
+        fields = ('id', 'billing_reason', 'items')
+
+
+class UserChargeSerializer(serializers.ModelSerializer):
+    invoice = UserChargeInvoiceSerializer()
+
+    class Meta:
+        model = djstripe_models.Charge
+        fields = (
+            'id',
+            'amount',
+            'billing_details',
+            'currency',
+            'captured',
+            'created',
+            'paid',
+            'payment_method_details',
+            'status',
+            'invoice',
+        )
