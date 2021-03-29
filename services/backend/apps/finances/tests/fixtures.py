@@ -142,3 +142,12 @@ def yearly_plan_price(price_factory, plan_factory):
 @pytest.fixture(scope='function', autouse=True)
 def stripe_proxy():
     stripe.api_base = "http://stripemock:12111"
+
+
+@pytest.fixture(scope='function', autouse=True)
+def stripe_request_client():
+    from stripe.http_client import RequestsClient
+
+    client = RequestsClient()
+    stripe.default_http_client = client
+    return client

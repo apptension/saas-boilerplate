@@ -73,3 +73,11 @@ def is_current_schedule_phase_trialing(schedule: djstripe_models.SubscriptionSch
 
     trial_end = timezone.datetime.fromtimestamp(current_phase['trial_end'], tz=pytz.UTC)
     return trial_end > timezone.now()
+
+
+def update_schedule_payment_method(
+    schedule: djstripe_models.SubscriptionSchedule, payment_method: djstripe_models.PaymentMethod
+):
+    current_phase, *rest_phases = get_valid_schedule_phases(schedule)
+    current_phase['default_payment_method'] = payment_method.id
+    update_schedule(schedule, phases=[current_phase, *rest_phases])

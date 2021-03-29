@@ -1,7 +1,10 @@
+import callee
 import pytest
 from django.urls import reverse
 from djstripe import models as djstripe_models
 from rest_framework import status
+
+from .utils import stripe_encode
 
 pytestmark = pytest.mark.django_db
 
@@ -189,3 +192,49 @@ class TestUserChargesListView:
 
         assert regular_charge.id in charge_ids
         assert other_customer_charge.id not in charge_ids
+
+
+class TestPaymentMethodSetDefault:
+    def test_return_error_for_other_users_payment_method(
+        self, mocker, stripe_request_client, api_client, payment_method_factory
+    ):
+        other_users_pm = payment_method_factory()
+        payment_method = payment_method_factory()
+        stripe_request = mocker.spy(stripe_request_client, 'request')
+
+        api_client.force_authenticate(payment_method.customer.subscriber)
+        url = reverse('payment-method-set-default', kwargs={'id': other_users_pm.id})
+        response = api_client.post(url)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        stripe_request.assert_not_called()
+
+    def test_set_default_payment_method(
+        self, mocker, api_client, payment_method_factory, subscription_schedule_factory, stripe_request_client
+    ):
+        schedule = subscription_schedule_factory()
+        current_phase, *rest_phases = schedule.phases
+        payment_method = payment_method_factory(customer=schedule.customer)
+        stripe_request = mocker.spy(stripe_request_client, 'request')
+
+        api_client.force_authenticate(payment_method.customer.subscriber)
+        url = reverse('payment-method-set-default', kwargs={'id': payment_method.id})
+        response = api_client.post(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        stripe_request.assert_any_call(
+            'post',
+            callee.EndsWith(f'/subscription_schedules/{schedule.id}'),
+            callee.Any(),
+            stripe_encode(
+                {
+                    'phases': [
+                        {
+                            **current_phase,
+                            'default_payment_method': payment_method.id,
+                        },
+                        *rest_phases,
+                    ]
+                }
+            ),
+        )

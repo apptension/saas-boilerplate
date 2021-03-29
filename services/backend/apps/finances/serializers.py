@@ -72,6 +72,13 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class UpdateDefaultPaymentMethodSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        schedule = subscriptions.get_schedule(user=self.context['request'].user)
+        subscriptions.update_schedule_payment_method(schedule=schedule, payment_method=self.instance)
+        return instance
+
+
 class SubscriptionItemProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product

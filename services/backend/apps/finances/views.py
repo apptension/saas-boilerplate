@@ -1,5 +1,6 @@
 from djstripe import models as djstripe_models, enums as djstripe_enums
 from rest_framework import mixins, viewsets, response, generics
+from rest_framework.decorators import action
 
 from common.acl import policies
 from . import serializers, constants
@@ -36,6 +37,17 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, viewsets.GenericViewSet)
 
     def get_queryset(self):
         return self.queryset.filter(customer__subscriber=self.request.user)
+
+    @action(detail=True, methods=['post'], url_path='default')
+    def set_default(self, request, id=None):
+        payment_method = self.get_object()
+        serializer = serializers.UpdateDefaultPaymentMethodSerializer(
+            payment_method, data=request.data, context=self.get_serializer_context()
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return response.Response(serializer.data)
 
 
 class UserActiveSubscriptionView(generics.RetrieveUpdateAPIView):
