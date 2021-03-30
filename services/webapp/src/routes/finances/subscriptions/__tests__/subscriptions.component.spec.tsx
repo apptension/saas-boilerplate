@@ -5,11 +5,17 @@ import userEvent from '@testing-library/user-event';
 import { makeContextRenderer, matchTextContent, spiedHistory } from '../../../../shared/utils/testUtils';
 import { Subscriptions } from '../subscriptions.component';
 import { prepareState } from '../../../../mocks/store';
-import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 
 const store = prepareState((state) => {
   state.subscription.activeSubscription = subscriptionFactory({
+    defaultPaymentMethod: paymentMethodFactory({ billingDetails: { name: 'Owner' }, card: { last4: '1234' } }),
     phases: [
       subscriptionPhaseFactory({
         endDate: new Date('Jan 1, 2099 GMT').toISOString(),
@@ -41,6 +47,11 @@ describe('Subscriptions: Component', () => {
   it('should render current subscription plan', () => {
     render({}, { store });
     expect(screen.getByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
+  });
+
+  it('should render default payment method', () => {
+    render({}, { store });
+    expect(screen.getByText('Owner Visa **** 1234')).toBeInTheDocument();
   });
 
   describe('subscription is active', () => {

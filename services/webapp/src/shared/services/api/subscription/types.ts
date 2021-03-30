@@ -17,7 +17,6 @@ export interface SubscriptionPlan {
 }
 
 export interface SubscriptionPhase {
-  defaultPaymentMethod: StripePaymentMethod | null;
   startDate: string;
   endDate: string;
   trialEnd: string | null;
@@ -37,6 +36,7 @@ export interface Subscription {
   };
   phases: SubscriptionPhase[];
   canActivateTrial: boolean;
+  defaultPaymentMethod: StripePaymentMethod | null;
 }
 
 export type SubscriptionGetApiResponseData = Subscription;

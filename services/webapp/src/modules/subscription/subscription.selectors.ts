@@ -55,8 +55,8 @@ export const selectActiveSubscriptionNextPlan = createSelector(
 );
 
 export const selectActiveSubscriptionPaymentMethod = createSelector(
-  selectActiveSubscriptionPhase,
-  (phase) => phase?.defaultPaymentMethod
+  selectActiveSubscription,
+  (subscription) => subscription?.defaultPaymentMethod
 );
 
 export const selectTrialEnd = createSelector(
