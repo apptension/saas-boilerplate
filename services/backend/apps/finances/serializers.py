@@ -341,6 +341,8 @@ class UserChargeInvoiceSerializer(serializers.ModelSerializer):
 
 class UserChargeSerializer(serializers.ModelSerializer):
     invoice = UserChargeInvoiceSerializer()
+    billing_details = serializers.JSONField(read_only=True)
+    payment_method_details = serializers.JSONField(read_only=True)
 
     class Meta:
         model = djstripe_models.Charge

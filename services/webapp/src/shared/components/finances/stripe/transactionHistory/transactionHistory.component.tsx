@@ -1,18 +1,7 @@
 import React from 'react';
 
-import { FormattedMessage, useIntl } from 'react-intl';
-import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
-import { Date } from '../../../date';
-import {
-  Container,
-  HeaderCell,
-  HeaderRow,
-  Entry,
-  Amount,
-  Card,
-  TransactionDate,
-  Details,
-} from './transactionHistory.styles';
+import { FormattedMessage } from 'react-intl';
+import { Container, HeaderCell, Entry, HeaderRow } from './transactionHistory.styles';
 import { useTransactionHistory } from './transactionHistory.hooks';
 
 export const TransactionHistory = () => {
@@ -39,18 +28,7 @@ export const TransactionHistory = () => {
       </HeaderRow>
 
       {transactionsHistory.map((entry) => {
-        return (
-          <Entry key={entry.id}>
-            <TransactionDate>
-              <Date value={entry.date} />
-            </TransactionDate>
-            <Details>TODO</Details>
-            <Card>
-              <StripePaymentMethodInfo method={entry.paymentMethod} />
-            </Card>
-            <Amount>{entry.amount} USD</Amount>
-          </Entry>
-        );
+        return <Entry key={entry.id} entry={entry} />;
       })}
     </Container>
   );

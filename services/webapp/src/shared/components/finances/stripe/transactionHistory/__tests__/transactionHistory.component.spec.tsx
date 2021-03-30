@@ -9,24 +9,24 @@ import { paymentMethodFactory, transactionHistoryEntryFactory } from '../../../.
 const store = prepareState((state) => {
   state.stripe.transactionHistory = [
     transactionHistoryEntryFactory({
-      date: new Date(2020, 5, 5).toString(),
+      billingDetails: {
+        name: 'Owner 1',
+      },
+      created: new Date(2020, 5, 5).toString(),
       amount: 50,
-      paymentMethod: paymentMethodFactory({
-        billingDetails: {
-          name: 'Owner 1',
-        },
+      paymentMethodDetails: paymentMethodFactory({
         card: {
           last4: '1234',
         },
       }),
     }),
     transactionHistoryEntryFactory({
-      date: new Date(2020, 10, 10).toString(),
+      billingDetails: {
+        name: 'Owner 2',
+      },
+      created: new Date(2020, 10, 10).toString(),
       amount: 100,
-      paymentMethod: paymentMethodFactory({
-        billingDetails: {
-          name: 'Owner 2',
-        },
+      paymentMethodDetails: paymentMethodFactory({
         card: {
           last4: '9876',
         },
