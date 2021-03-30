@@ -80,7 +80,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
                   },
                 })}
               >
-                {amount} zł
+                {amount} USD
               </ProductListItemButton>
             </ProductListItem>
           ))}
@@ -92,7 +92,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
         <FormattedMessage
-          values={{ amount: amountValue ? `${amountValue} zł` : '' }}
+          values={{ amount: amountValue ? `${amountValue} USD` : '' }}
           defaultMessage="Pay {amount}"
           description="Stripe / payment form / pay CTA"
         />

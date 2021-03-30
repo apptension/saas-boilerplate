@@ -30,7 +30,7 @@ describe('SubscriptionPlanItem: Component', () => {
 
   it('should render plan price', () => {
     render();
-    expect(screen.getByText(/2\.5zł/gi)).toBeInTheDocument();
+    expect(screen.getByText(/2\.5 USD/gi)).toBeInTheDocument();
   });
 
   it('should call onSelect when button is clicked', () => {

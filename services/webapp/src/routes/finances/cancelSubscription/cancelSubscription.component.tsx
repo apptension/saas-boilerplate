@@ -44,7 +44,7 @@ export const CancelSubscription = () => {
       </H2>
       <Label>
         <FormattedMessage defaultMessage="Active plan:" description="Cancel subscription / Active plan" />{' '}
-        {activeSubscriptionPlan?.name} [{activeSubscriptionPlan?.price} zł]
+        {activeSubscriptionPlan?.name} [{activeSubscriptionPlan?.price} USD]
       </Label>
       <Label>
         <FormattedMessage defaultMessage="Next renewal / expiry:" description="Cancel subscription / Next renewal" />{' '}

@@ -42,7 +42,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className }: Subscription
 
       <SelectButton onClick={onSelect} disabled={isActive || isFree}>
         <FormattedMessage
-          defaultMessage="Select ({price}zł)"
+          defaultMessage="Select ({price} USD)"
           description="Change plan item / Select button"
           values={{ price }}
         />

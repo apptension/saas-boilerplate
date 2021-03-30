@@ -18,7 +18,7 @@ const render = () =>
   });
 
 describe('useSubscriptionPlanDetails: Hook', () => {
-  it('should return plan price in zł units', () => {
+  it('should return plan price in USD units', () => {
     const { result } = render();
     expect(result.current?.price).toBe(2.5);
   });
