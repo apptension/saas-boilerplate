@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 
 pytest_plugins = [
     'tests.aws_fixtures',
+    'common.tests.fixtures',
     'apps.users.tests.fixtures',
     'apps.finances.tests.fixtures',
     'apps.demo.tests.fixtures',

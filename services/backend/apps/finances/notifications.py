@@ -1,27 +1,20 @@
 import logging
-import random
-from dataclasses import dataclass, asdict
-
-from django.conf import settings
-from djstripe import models as djstripe_models
 
 from common import emails
+from . import email_serializers
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class NotificationData:
-    pass
+class CustomerEmail(emails.Email):
+    def __init__(self, customer, data=None):
+        super().__init__(to=customer.subscriber.email, data=data)
 
 
-def create(name, customer: djstripe_models.Customer, data: NotificationData = None):
-    if data is None:
-        data = NotificationData()
+class TrialExpiresSoonEmail(CustomerEmail):
+    name = 'trialExpiresSoon'
+    serializer_class = email_serializers.TrialExpiresSoonEmailSerializer
 
-    if settings.DEBUG:
-        logger.info(random.choice(["🍿", "🍉", "🌯", "🍔"]))
-        logger.info({"customer": customer, "data": asdict(data)})
 
-    email_task = emails.SendEmail(name)
-    email_task.apply(to=customer.subscriber.email, data=data)
+class SubscriptionErrorEmail(CustomerEmail):
+    name = 'subscriptionError'

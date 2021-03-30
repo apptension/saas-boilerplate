@@ -4,11 +4,11 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
-from common.acl.helpers import CommonGroups
-
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
+        from common.acl.helpers import CommonGroups
+
         if not email:
             raise ValueError("Users must have an email address")
 

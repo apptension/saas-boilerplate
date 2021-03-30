@@ -1,5 +1,6 @@
 import logging
 
+from django.utils import timezone
 from djstripe import models as djstripe_models
 from djstripe import webhooks
 
@@ -18,11 +19,8 @@ def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     :param event:
     :return:
     """
-
-    obj = event.data['object']
-    customer = djstripe_models.Customer.objects.get(id=obj['customer'])
     free_plan_price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
-    subscriptions.create_schedule(customer=customer, price=free_plan_price)
+    subscriptions.create_schedule(customer=event.customer, price=free_plan_price)
 
 
 @webhooks.handler('payment_method.attached')
@@ -39,7 +37,7 @@ def update_subscription_default_payment_method(event: djstripe_models.Event):
     """
 
     obj = event.data['object']
-    customer: djstripe_models.Customer = djstripe_models.Customer.objects.get(id=obj['customer'])
+    customer = event.customer
     if customer.default_payment_method is None:
         customers.set_default_payment_method(customer=customer, payment_method=obj['id'])
 
@@ -65,6 +63,11 @@ def send_email_on_subscription_payment_failure(event: djstripe_models.Event):
     :param event:
     :return:
     """
+    notifications.SubscriptionErrorEmail(customer=event.customer).send()
+
+
+@webhooks.handler('customer.subscription.trial_will_end')
+def send_email_trial_expires_soon(event: djstripe_models.Event):
     obj = event.data['object']
-    customer: djstripe_models.Customer = djstripe_models.Customer.objects.get(id=obj['customer'])
-    notifications.create("subscriptionError", customer)
+    expiry_date = timezone.datetime.fromtimestamp(obj['trial_end'], tz=timezone.timezone.utc)
+    notifications.TrialExpiresSoonEmail(customer=event.customer, data={'expiry_date': expiry_date}).send()

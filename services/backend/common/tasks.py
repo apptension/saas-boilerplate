@@ -25,8 +25,13 @@ class Task:
         }
 
     def apply(self, data: dict):
+        Task._apply(entry=self.get_entry(data))
+
+    @classmethod
+    def _apply(cls, entry):
+        print({'apply': entry})
         client = boto3.client('events', endpoint_url=settings.AWS_ENDPOINT_URL)
-        client.put_events(Entries=[self.get_entry(data)])
+        client.put_events(Entries=[entry])
 
 
 class TaskLocalInvoke(Task):
