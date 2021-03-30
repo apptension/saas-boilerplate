@@ -20,6 +20,7 @@ pytest_factoryboy.register(factories.ProductFactory)
 pytest_factoryboy.register(factories.SubscriptionFactory)
 pytest_factoryboy.register(factories.SubscriptionItemFactory)
 pytest_factoryboy.register(factories.SubscriptionScheduleFactory)
+pytest_factoryboy.register(factories.WebhookEventFactory)
 
 
 @pytest.fixture(autouse=True)
@@ -151,3 +152,8 @@ def stripe_request_client():
     client = RequestsClient()
     stripe.default_http_client = client
     return client
+
+
+@pytest.fixture(scope='function', autouse=True)
+def stripe_request(mocker, stripe_request_client):
+    return mocker.spy(stripe_request_client, 'request')

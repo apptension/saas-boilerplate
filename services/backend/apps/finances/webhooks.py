@@ -41,7 +41,20 @@ def update_subscription_default_payment_method(event: djstripe_models.Event):
     obj = event.data['object']
     customer: djstripe_models.Customer = djstripe_models.Customer.objects.get(id=obj['customer'])
     if customer.default_payment_method is None:
-        customers.set_default_payment_method(customer=customer, payment_method_id=obj['id'])
+        customers.set_default_payment_method(customer=customer, payment_method=obj['id'])
+
+
+@webhooks.handler('invoice.payment_failed', 'invoice.payment_action_required')
+def cancel_trial_subscription_on_payment_failure(event: djstripe_models.Event):
+    obj = event.data['object']
+    subscription_id = obj.get('subscription', None)
+
+    subscription: djstripe_models.Subscription = djstripe_models.Subscription.objects.get(id=subscription_id)
+
+    # Check if the previous subscription period was trialing
+    # Unfortunately status field is already updated to active at this point
+    if subscription.current_period_start == subscription.trial_end:
+        subscription.cancel(at_period_end=False)
 
 
 @webhooks.handler('invoice.payment_failed', 'invoice.payment_action_required')

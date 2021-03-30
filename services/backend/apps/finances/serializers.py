@@ -34,7 +34,7 @@ class PaymentIntentSerializer(serializers.ModelSerializer):
         amount = int(validated_data['product']) * 100
         payment_intent_response = djstripe_models.PaymentIntent._api_create(
             amount=amount,
-            currency="pln",
+            currency="usd",
             customer=customer.id,
             setup_future_usage="off_session",
         )
@@ -75,7 +75,7 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
 class UpdateDefaultPaymentMethodSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         customer, _ = djstripe_models.Customer.get_or_create(self.context['request'].user)
-        customers.set_default_payment_method(customer=customer, payment_method_id=instance.id)
+        customers.set_default_payment_method(customer=customer, payment_method=instance)
         return instance
 
 
@@ -209,7 +209,7 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
         current_phase = subscriptions.get_current_schedule_phase(schedule=instance)
 
         if payment_method and customer.default_payment_method is None:
-            customers.set_default_payment_method(customer=customer, payment_method_id=payment_method.id)
+            customers.set_default_payment_method(customer=customer, payment_method=payment_method)
 
         if is_trialing:
             current_phase.pop('end_date', None)

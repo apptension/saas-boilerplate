@@ -223,11 +223,11 @@ class SubscriptionFactory(factory.DjangoModelFactory):
         if extracted:
             for item in extracted:
                 djstripe_models.SubscriptionItem.objects.create(
-                    id=uuid.uuid4(),
-                    subscription=self,
-                    quantity=item.get('quantity', 1),
+                    id=item.get('id', uuid.uuid4()),
                     price=djstripe_models.Price.objects.get(id=item['price']),
                     plan=djstripe_models.Plan.objects.get(id=item['price']),
+                    subscription=self,
+                    quantity=item.get('quantity', 1),
                 )
 
     class Params:
@@ -283,3 +283,10 @@ class SubscriptionScheduleFactory(factory.DjangoModelFactory):
             phase['trial_end'] = unix_time(subscription.trial_end)
 
         self.phases = [phase, *rest_phases]
+
+
+class WebhookEventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = djstripe_models.Event
+
+    id = factory.Faker('uuid4')

@@ -207,9 +207,8 @@ class TestPaymentMethodDelete:
         assert response.status_code == status.HTTP_404_NOT_FOUND
         stripe_request.assert_not_called()
 
-    def test_detach_payment_method(self, mocker, stripe_request_client, api_client, payment_method):
+    def test_detach_payment_method(self, stripe_request, api_client, payment_method):
         customer = payment_method.customer
-        stripe_request = mocker.spy(stripe_request_client, 'request')
 
         api_client.force_authenticate(customer.subscriber)
         url = reverse('payment-method-detail', kwargs={'id': payment_method.id})
@@ -228,12 +227,9 @@ class TestPaymentMethodDelete:
 
 
 class TestPaymentMethodSetDefault:
-    def test_return_error_for_other_users_payment_method(
-        self, mocker, stripe_request_client, api_client, payment_method_factory
-    ):
+    def test_return_error_for_other_users_payment_method(self, stripe_request, api_client, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        stripe_request = mocker.spy(stripe_request_client, 'request')
 
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-set-default', kwargs={'id': other_users_pm.id})
@@ -242,11 +238,8 @@ class TestPaymentMethodSetDefault:
         assert response.status_code == status.HTTP_404_NOT_FOUND
         stripe_request.assert_not_called()
 
-    def test_set_default_payment_method(
-        self, mocker, api_client, payment_method_factory, customer, stripe_request_client
-    ):
+    def test_set_default_payment_method(self, api_client, payment_method_factory, customer, stripe_request):
         payment_method = payment_method_factory(customer=customer)
-        stripe_request = mocker.spy(stripe_request_client, 'request')
 
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-set-default', kwargs={'id': payment_method.id})
