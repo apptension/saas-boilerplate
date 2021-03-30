@@ -30,7 +30,7 @@ export const TOO_SHORT = 'too short';
 export const COMMON = 'common';
 export const NUMERIC = 'numeric';
 
-export const SIGNUP_SNACKBAR_TEXT = 'Congratulations! Now you can log in.';
+export const SIGNUP_SNACKBAR_TEXT = 'Congratulations! Your email has been confirmed.';
 export const PROFILE_UPDATED_SNACKBAR_TEXT = 'Personal data successfully changed.';
 export const UNEXPECTED_ERROR_SNACKBAR_TEXT = 'Something went wrong.';
 export const CHANGES_SAVED_SNACKBAR_TEXT = 'Changes saved successfully!';
