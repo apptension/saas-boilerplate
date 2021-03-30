@@ -21,6 +21,9 @@ class CustomerFactory(factory.DjangoModelFactory):
     tax_exempt = enums.CustomerTaxExempt.none
     subscriber = factory.SubFactory(user_factories.UserFactory)
     email = factory.LazyAttribute(lambda obj: obj.subscriber.email)
+    default_payment_method = factory.RelatedFactory(
+        'apps.finances.tests.factories.PaymentMethodFactory', factory_related_name='customer'
+    )
 
 
 class PaymentIntentFactory(factory.DjangoModelFactory):
@@ -202,9 +205,6 @@ class SubscriptionFactory(factory.DjangoModelFactory):
 
     id = factory.Faker('uuid4')
     livemode = False
-    default_payment_method = factory.SubFactory(
-        PaymentMethodFactory, customer=factory.LazyAttribute(lambda obj: obj.factory_parent.customer)
-    )
     collection_method = enums.InvoiceCollectionMethod.charge_automatically
     start_date = datetime.datetime.now(tz=datetime.timezone.utc)
     trial_start = None
@@ -277,10 +277,6 @@ class SubscriptionScheduleFactory(factory.DjangoModelFactory):
         subscription = SubscriptionFactory(customer=self.customer, **phase)
         phase['start_date'] = unix_time(subscription.start_date)
         phase['end_date'] = unix_time(subscription.current_period_end)
-
-        phase['default_payment_method'] = None
-        if subscription.default_payment_method:
-            phase['default_payment_method'] = subscription.default_payment_method.id
 
         phase['trial_end'] = None
         if subscription.trial_end:

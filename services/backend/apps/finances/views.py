@@ -29,7 +29,7 @@ class StripeSetupIntentViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixi
         return self.queryset.filter(customer__subscriber=self.request.user)
 
 
-class StripePaymentMethodViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     permission_classes = (policies.UserFullAccess,)
     queryset = djstripe_models.PaymentMethod.objects.all()
     serializer_class = serializers.PaymentMethodSerializer
@@ -37,6 +37,13 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, viewsets.GenericViewSet)
 
     def get_queryset(self):
         return self.queryset.filter(customer__subscriber=self.request.user)
+
+    def perform_destroy(self, instance):
+        customer = instance.customer
+        if customer.default_payment_method and customer.default_payment_method.id == instance.id:
+            customer.default_payment_method = None
+            customer.save()
+        instance.detach()
 
     @action(detail=True, methods=['post'], url_path='default')
     def set_default(self, request, id=None):

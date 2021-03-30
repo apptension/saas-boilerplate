@@ -4,7 +4,7 @@ from djstripe import models as djstripe_models
 from djstripe import webhooks
 
 from . import constants, notifications, models
-from .services import subscriptions
+from .services import subscriptions, customers
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +40,8 @@ def update_subscription_default_payment_method(event: djstripe_models.Event):
 
     obj = event.data['object']
     customer: djstripe_models.Customer = djstripe_models.Customer.objects.get(id=obj['customer'])
-    schedule = subscriptions.get_schedule(customer=customer)
-    if schedule is None:
-        return
-
-    current_phase = subscriptions.get_current_schedule_phase(schedule)
-    current_phase['default_payment_method'] = obj['id']
-    subscriptions.update_schedule(schedule, phases=[current_phase])
+    if customer.default_payment_method is None:
+        customers.set_default_payment_method(customer=customer, payment_method_id=obj['id'])
 
 
 @webhooks.handler('invoice.payment_failed', 'invoice.payment_action_required')

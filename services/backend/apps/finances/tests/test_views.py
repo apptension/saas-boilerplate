@@ -32,15 +32,17 @@ class TestUserActiveSubscriptionView:
         assert response.data['subscription']['id'] == subscription.id
         assert response.data['subscription']['status'] == subscription.status
 
+        default_payment_method = schedule.customer.default_payment_method
+        if default_payment_method:
+            assert response.data['default_payment_method']['id'] == default_payment_method.id
+        else:
+            assert response.data['default_payment_method'] is None
+
         assert len(response.data['phases']) > 0
         for index, response_phase in enumerate(response.data['phases']):
             phase = schedule.phases[index]
             item = phase['items'][0]
             price = djstripe_models.Price.objects.get(id=item['price'])
-
-            default_payment_method_id = phase.get('default_payment_method', None)
-            if default_payment_method_id:
-                assert response_phase['default_payment_method']['id'] == default_payment_method_id
 
             assert response_phase['item'] == {
                 'quantity': item['quantity'],
@@ -107,12 +109,10 @@ class TestUserActiveSubscriptionView:
         assert response.status_code == status.HTTP_200_OK, response.data
 
     def test_change_when_user_has_no_payment_method_but_can_activate_trial(
-        self, api_client, subscription_schedule_factory, free_plan_price, monthly_plan_price
+        self, api_client, customer_factory, subscription_schedule_factory, free_plan_price, monthly_plan_price
     ):
-        subscription_schedule = subscription_schedule_factory(
-            phases=[{'items': [{'price': free_plan_price.id}], 'default_payment_method': None}]
-        )
-        customer = subscription_schedule.customer
+        customer = customer_factory(default_payment_method=None)
+        subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
         user = customer.subscriber
 
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
@@ -125,14 +125,12 @@ class TestUserActiveSubscriptionView:
         assert response.status_code == status.HTTP_200_OK, response.data
 
     def test_return_error_on_change_if_customer_has_no_payment_method(
-        self, api_client, monthly_plan_price, subscription_schedule_factory
+        self, api_client, customer_factory, monthly_plan_price, subscription_schedule_factory
     ):
-        subscription_schedule = subscription_schedule_factory(
-            phases=[
-                {'items': [{'price': monthly_plan_price.id}], 'trial_completed': True, 'default_payment_method': None}
-            ]
+        customer = customer_factory(default_payment_method=None)
+        subscription_schedule_factory(
+            customer=customer, phases=[{'items': [{'price': monthly_plan_price.id}], 'trial_completed': True}]
         )
-        customer = subscription_schedule.customer
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
         api_client.force_authenticate(customer.subscriber)
@@ -194,6 +192,41 @@ class TestUserChargesListView:
         assert other_customer_charge.id not in charge_ids
 
 
+class TestPaymentMethodDelete:
+    def test_return_error_for_other_users_payment_method(
+        self, mocker, stripe_request_client, api_client, payment_method_factory
+    ):
+        other_users_pm = payment_method_factory()
+        payment_method = payment_method_factory()
+        stripe_request = mocker.spy(stripe_request_client, 'request')
+
+        api_client.force_authenticate(payment_method.customer.subscriber)
+        url = reverse('payment-method-detail', kwargs={'id': other_users_pm.id})
+        response = api_client.delete(url)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        stripe_request.assert_not_called()
+
+    def test_detach_payment_method(self, mocker, stripe_request_client, api_client, payment_method):
+        customer = payment_method.customer
+        stripe_request = mocker.spy(stripe_request_client, 'request')
+
+        api_client.force_authenticate(customer.subscriber)
+        url = reverse('payment-method-detail', kwargs={'id': payment_method.id})
+        response = api_client.delete(url)
+
+        customer.refresh_from_db()
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert customer.default_payment_method is None
+        stripe_request.assert_any_call(
+            'post',
+            callee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            callee.Any(),
+            '',
+        )
+
+
 class TestPaymentMethodSetDefault:
     def test_return_error_for_other_users_payment_method(
         self, mocker, stripe_request_client, api_client, payment_method_factory
@@ -210,11 +243,9 @@ class TestPaymentMethodSetDefault:
         stripe_request.assert_not_called()
 
     def test_set_default_payment_method(
-        self, mocker, api_client, payment_method_factory, subscription_schedule_factory, stripe_request_client
+        self, mocker, api_client, payment_method_factory, customer, stripe_request_client
     ):
-        schedule = subscription_schedule_factory()
-        current_phase, *rest_phases = schedule.phases
-        payment_method = payment_method_factory(customer=schedule.customer)
+        payment_method = payment_method_factory(customer=customer)
         stripe_request = mocker.spy(stripe_request_client, 'request')
 
         api_client.force_authenticate(payment_method.customer.subscriber)
@@ -224,17 +255,7 @@ class TestPaymentMethodSetDefault:
         assert response.status_code == status.HTTP_200_OK
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith(f'/subscription_schedules/{schedule.id}'),
+            callee.EndsWith(f'/customers/{customer.id}'),
             callee.Any(),
-            stripe_encode(
-                {
-                    'phases': [
-                        {
-                            **current_phase,
-                            'default_payment_method': payment_method.id,
-                        },
-                        *rest_phases,
-                    ]
-                }
-            ),
+            stripe_encode({'invoice_settings': {'default_payment_method': payment_method.id}}),
         )

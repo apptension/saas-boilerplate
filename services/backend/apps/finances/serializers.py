@@ -8,7 +8,7 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers, exceptions
 
 from . import models, constants, utils
-from .services import subscriptions
+from .services import subscriptions, customers
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
@@ -74,8 +74,8 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
 
 class UpdateDefaultPaymentMethodSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
-        schedule = subscriptions.get_schedule(user=self.context['request'].user)
-        subscriptions.update_schedule_payment_method(schedule=schedule, payment_method=self.instance)
+        customer, _ = djstripe_models.Customer.get_or_create(self.context['request'].user)
+        customers.set_default_payment_method(customer=customer, payment_method_id=instance.id)
         return instance
 
 
@@ -145,7 +145,6 @@ class StripeTimestampField(serializers.DateTimeField):
 
 class SubscriptionSchedulePhaseSerializer(serializers.Serializer):
     item = serializers.SerializerMethodField()
-    default_payment_method = serializers.SerializerMethodField()
     start_date = StripeTimestampField()
     end_date = StripeTimestampField()
     trial_end = StripeTimestampField()
@@ -154,18 +153,10 @@ class SubscriptionSchedulePhaseSerializer(serializers.Serializer):
     def get_item(self, obj):
         return SubscriptionSchedulePhaseItemSerializer(obj['items'][0]).data
 
-    @swagger_serializer_method(serializer_or_field=PaymentMethodSerializer)
-    def get_default_payment_method(self, obj):
-        payment_method_id = obj['default_payment_method']
-        if payment_method_id is None:
-            return None
-
-        payment_method = djstripe_models.PaymentMethod.objects.get(id=payment_method_id)
-        return PaymentMethodSerializer(payment_method).data
-
 
 class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
     subscription = SubscriptionSerializer(source='customer.subscription', read_only=True)
+    default_payment_method = PaymentMethodSerializer(source='customer.default_payment_method', read_only=True)
     phases = serializers.SerializerMethodField()
     can_activate_trial = serializers.SerializerMethodField()
     price = serializers.SlugRelatedField(
@@ -193,11 +184,7 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
         can_activate_trial = utils.customer_can_activate_trial(customer)
         is_trialing = subscriptions.is_current_schedule_phase_trialing(schedule=self.instance)
 
-        payment_method = None
-        payment_method_id = self.instance.phases[0]['default_payment_method']
-        if payment_method_id:
-            payment_method = djstripe_models.PaymentMethod.objects.get(id=payment_method_id)
-
+        payment_method = customer.default_payment_method
         if payment_method is None:
             payment_method = (
                 djstripe_models.PaymentMethod.objects.filter(customer=customer).order_by('-created').first()
@@ -214,11 +201,15 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance: djstripe_models.SubscriptionSchedule, validated_data):
+        customer = instance.customer
         price = validated_data['price']
         payment_method = validated_data['payment_method']
         can_activate_trial = validated_data['can_activate_trial']
         is_trialing = validated_data['is_trialing']
         current_phase = subscriptions.get_current_schedule_phase(schedule=instance)
+
+        if payment_method and customer.default_payment_method is None:
+            customers.set_default_payment_method(customer=customer, payment_method_id=payment_method.id)
 
         if is_trialing:
             current_phase.pop('end_date', None)
@@ -230,8 +221,6 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
             current_phase['end_date'] = 'now'
 
         next_phase = {'items': [{'price': price.id}]}
-        if payment_method:
-            next_phase['default_payment_method'] = payment_method.id
         if can_activate_trial:
             next_phase['trial_end'] = timezone.now() + timezone.timedelta(settings.SUBSCRIPTION_TRIAL_PERIOD_DAYS)
 
@@ -243,7 +232,7 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = djstripe_models.SubscriptionSchedule
-        fields = ('subscription', 'phases', 'can_activate_trial', 'price')
+        fields = ('subscription', 'phases', 'can_activate_trial', 'price', 'default_payment_method')
 
 
 class CancelUserActiveSubscriptionSerializer(serializers.ModelSerializer):
