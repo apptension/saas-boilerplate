@@ -3,9 +3,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { Controller } from 'react-hook-form';
+import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
+import { Icon } from '../../../icon';
 import {
   PaymentMethodApiFormControls,
   StripePaymentMethodChangeEvent,
@@ -21,6 +23,7 @@ import {
   ExistingPaymentMethodItem,
   NewPaymentMethodItem,
   ErrorMessage,
+  DeleteButton,
 } from './stripePaymentMethodSelector.styles';
 
 export interface StripePaymentMethodSelectorProps {
@@ -29,7 +32,7 @@ export interface StripePaymentMethodSelectorProps {
 
 export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMethodSelectorProps) => {
   const intl = useIntl();
-  const { isLoading, paymentMethods } = useStripePaymentMethods();
+  const { isLoading, paymentMethods, deletePaymentMethod } = useStripePaymentMethods();
   const { control, errors, genericError } = formControls;
 
   return isLoading ? null : (
@@ -106,6 +109,21 @@ export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMetho
           }
         };
 
+        const handleMethodRemoved = (id: string) => {
+          if (paymentMethods?.length === 1) {
+            handleChange({
+              type: StripePaymentMethodSelectionType.NEW_CARD,
+              data: null,
+            });
+          } else if (value.data.id === id) {
+            handleChange({
+              type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
+              data: paymentMethods.filter((i) => i.id !== id)[0],
+            });
+          }
+          deletePaymentMethod(id);
+        };
+
         return (
           <Container>
             <Heading>
@@ -141,6 +159,14 @@ export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMetho
                       }}
                     >
                       <StripePaymentMethodInfo method={paymentMethod} />
+                      <DeleteButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleMethodRemoved(paymentMethod.id);
+                        }}
+                      >
+                        <Icon size={16} icon={deleteIcon} />
+                      </DeleteButton>
                     </ExistingPaymentMethodItem>
                   </PaymentMethodListItem>
                 );

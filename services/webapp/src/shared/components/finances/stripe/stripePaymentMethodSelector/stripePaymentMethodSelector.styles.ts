@@ -20,6 +20,7 @@ export const PaymentMethodListItem = styled.li`
 
 export const ExistingPaymentMethodItem = styled(RadioButton)`
   width: 100%;
+  position: relative;
 `;
 
 export const NewPaymentMethodItem = styled(Button).attrs((props: { isSelected: boolean }) => ({
@@ -42,4 +43,12 @@ export const Heading = styled.h3`
 export const ErrorMessage = styled(MicroLabel)`
   margin-top: 2px;
   color: ${color.error};
+`;
+
+export const DeleteButton = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  line-height: 0;
+  margin-top: -8px;
 `;

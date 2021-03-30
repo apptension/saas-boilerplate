@@ -12,3 +12,7 @@ export const fetchStripePaymentMethods = createPromiseAction<void, FetchStripePa
 export const fetchStripeTransactionHistory = createActionRoutine<void, HistoryListApiResponseData>(
   'FETCH_STRIPE_TRANSACTION_HISTORY'
 );
+
+export const setDefaultStripePaymentMethod = createPromiseAction<string, void>('SET_DEFAULT_STRIPE_PAYMENT_METHOD');
+
+export const deleteStripePaymentMethod = createPromiseAction<string, void>('DELETE_STRIPE_PAYMENT_METHOD');

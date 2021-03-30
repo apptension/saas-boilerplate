@@ -18,6 +18,12 @@ export const useStripePaymentMethods = () => {
   const dispatch = useAsyncDispatch();
   const paymentMethods = useSelector(selectStripePaymentMethods);
 
+  const deletePaymentMethod = async (id: string) => {
+    try {
+      await dispatch(stripeActions.deleteStripePaymentMethod(id));
+    } catch {}
+  };
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -26,7 +32,7 @@ export const useStripePaymentMethods = () => {
     })();
   }, [dispatch]);
 
-  return { isLoading, paymentMethods };
+  return { isLoading, paymentMethods, deletePaymentMethod };
 };
 
 /**

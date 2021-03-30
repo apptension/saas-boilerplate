@@ -3,7 +3,12 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { StripePaymentMethodSelector } from '../../../../shared/components/finances/stripe';
 import { useApiForm } from '../../../../shared/hooks/useApiForm';
-import { PaymentFormFields } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
+import {
+  PaymentFormFields,
+  StripePaymentMethodSelectionType,
+} from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
+import { useAsyncDispatch } from '../../../../shared/utils/reduxSagaPromise';
+import { stripeActions } from '../../../../modules/stripe';
 import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 
@@ -15,12 +20,14 @@ export interface EditPaymentMethodFormProps {
 }
 
 export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps) => {
+  const dispatch = useAsyncDispatch();
   const { createSetupIntent } = useStripeSetupIntent();
   const { confirmCardSetup } = useStripeCardSetup();
 
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const { handleSubmit, setApiResponse, setGenericError, formState } = apiFormControls;
-  const onSubmit = async (data: ChangePaymentFormFields) => {
+
+  const setupNewCard = async (data: ChangePaymentFormFields) => {
     const setupIntentResponse = await createSetupIntent();
     if (setupIntentResponse.isError) {
       return setApiResponse(setupIntentResponse);
@@ -41,6 +48,17 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
 
     if (result.setupIntent?.status === 'succeeded') {
       onSuccess();
+    }
+  };
+
+  const onSubmit = async (data: ChangePaymentFormFields) => {
+    if (data.paymentMethod.type === StripePaymentMethodSelectionType.NEW_CARD) {
+      return setupNewCard(data);
+    } else {
+      try {
+        await dispatch(stripeActions.setDefaultStripePaymentMethod(data.paymentMethod.data.id));
+        onSuccess();
+      } catch {}
     }
   };
 

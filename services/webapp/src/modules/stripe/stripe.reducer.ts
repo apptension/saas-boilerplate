@@ -23,7 +23,12 @@ const handleFetchStripeTransactionHistorySuccess = (
   state.transactionHistory = payload;
 };
 
+const handleDeleteStripePaymentMethod = (state: StripeState, { payload }: PayloadAction<string>) => {
+  state.paymentMethods = state.paymentMethods.filter(({ id }) => id !== payload);
+};
+
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(stripeActions.fetchStripePaymentMethods.resolved, handleFetchStripePaymentMethodsSuccess);
   builder.addCase(stripeActions.fetchStripeTransactionHistory.resolved, handleFetchStripeTransactionHistorySuccess);
+  builder.addCase(stripeActions.deleteStripePaymentMethod, handleDeleteStripePaymentMethod);
 });
