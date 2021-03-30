@@ -5,6 +5,7 @@ import { generatePath } from 'react-router-dom';
 import { ROUTES } from '../../../routes/app.constants';
 import { Layout, Button } from '../../base';
 import { EmailComponentProps } from '../../types';
+import { Date } from '../../../shared/components/date';
 
 export interface TrialExpiresSoonProps extends EmailComponentProps {
   expiryDate: string;
@@ -26,7 +27,7 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
         <FormattedMessage
           defaultMessage="Your trial is about to expire on {expiryDate}, please take action"
           description="Email / Trial Expires Soon / text"
-          values={{ expiryDate }}
+          values={{ expiryDate: <Date value={expiryDate} /> }}
         />
       }
     >
