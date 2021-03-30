@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useHistory, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../../shared/components/snackbar';
+import { selectIsLoggedIn } from '../../../modules/auth/auth.selectors';
+import { selectIsProfileStartupCompleted } from '../../../modules/startup/startup.selectors';
 
 export const ConfirmEmail = () => {
   const history = useHistory();
@@ -16,44 +19,65 @@ export const ConfirmEmail = () => {
   const params = useParams<{ token: string; user: string }>();
   const [token] = useState(params.token);
   const [user] = useState(params.user);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isProfileStartupComplete = useSelector(selectIsProfileStartupCompleted);
   const { showMessage } = useSnackbar();
 
-  const successMessage = intl.formatMessage({
-    description: 'Confirm email / Success message',
+  const loggedOutSuccessMessage = intl.formatMessage({
+    description: 'Confirm email / Logged out success message',
     defaultMessage: 'Congratulations! Now you can log in.',
   });
+
+  const loggedInSuccessMessage = intl.formatMessage({
+    description: 'Confirm email / Logged in success message',
+    defaultMessage: 'Congratulations! Your email has been confirmed.',
+  });
+
+  const successMessage = isLoggedIn ? loggedInSuccessMessage : loggedOutSuccessMessage;
 
   const errorMessage = intl.formatMessage({
     description: 'Confirm email / Error message',
     defaultMessage: 'Invalid token.',
   });
 
-  const isTokenInUrl = Boolean(params.token && params.user);
-  const isTokenSavedFromUrl = Boolean(user && token);
-
   const handleEmailConfirmation = useCallback(
     async ({ token, user }) => {
       try {
-        history.push(loginUrl);
         const res = await dispatch(confirmEmail({ token, user }));
         await showMessage(res.isError ? errorMessage : successMessage);
       } catch {
         await showMessage(errorMessage);
       }
     },
-    [dispatch, errorMessage, history, loginUrl, showMessage, successMessage]
+    [dispatch, errorMessage, showMessage, successMessage]
   );
 
   useEffect(() => {
-    if (isTokenInUrl) {
-      handleEmailConfirmation(params);
-    }
+    if (isProfileStartupComplete) {
+      const isTokenInUrl = Boolean(params.token && params.user);
+      const isTokenSavedFromUrl = Boolean(user && token);
 
-    if (!isTokenSavedFromUrl && !isTokenInUrl) {
       history.push(loginUrl);
-      showMessage(errorMessage);
+
+      if (isTokenInUrl) {
+        handleEmailConfirmation(params);
+      }
+
+      if (!isTokenSavedFromUrl && !isTokenInUrl) {
+        showMessage(errorMessage);
+      }
     }
-  }, [errorMessage, handleEmailConfirmation, isTokenInUrl, isTokenSavedFromUrl, params, showMessage]);
+  }, [
+    errorMessage,
+    handleEmailConfirmation,
+    history,
+    loginUrl,
+    params,
+    showMessage,
+    token,
+    user,
+    isProfileStartupComplete,
+  ]);
 
   return null;
 };
