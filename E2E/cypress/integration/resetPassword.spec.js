@@ -53,7 +53,7 @@ describe('Should reset a password if:', () => {
     cy.visit('/auth/login', BASIC_AUTH);
 
     logInWithUI({ userEmail, password });
-    expectUserToBeLoggedIn({ userEmail, firstName: null, lastName: null, userRoles: ['user'] });
+    expectUserToBeLoggedIn({ userEmail, firstName: '', lastName: '', userRoles: ['user'] });
   });
 });
 

@@ -60,7 +60,7 @@ describe('Signup', () => {
 
       cy.wait('@signupRequest').then((apiResp) => {
         expectAccountToBeCreated(apiResp.response, userEmail);
-        expectUserToBeLoggedIn({ userEmail, firstName: null, lastName: null, userRoles: ['user'] });
+        expectUserToBeLoggedIn({ userEmail, firstName: '', lastName: '', userRoles: ['user'] });
       });
     });
 

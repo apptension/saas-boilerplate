@@ -74,8 +74,8 @@ export const getUserInfo = () =>
 
 export const expectUserToBeLoggedIn = ({
   userEmail,
-  firstName = null,
-  lastName = null,
+  firstName = '',
+  lastName = '',
   userRoles = ['user'],
 }) => {
   cy.location('pathname').should('equal', '/en/');
