@@ -3,6 +3,7 @@ import datetime
 import callee
 import pytest
 
+from .utils import stripe_encode
 from .. import notifications
 
 pytestmark = pytest.mark.django_db
@@ -44,6 +45,31 @@ class TestCancelTrialSubscriptionOnPaymentFailure:
             callee.EndsWith(f'/subscriptions/{subscription.id}'),
             callee.Any(),
             None,
+        )
+
+
+class TestSubscriptionScheduleRelease:
+    def test_subscription_schedule_from_subscription(
+        self, webhook_event_factory, subscription_schedule_factory, monthly_plan_price, stripe_request
+    ):
+        schedule = subscription_schedule_factory(phases=[{'items': [{'price': monthly_plan_price.id}]}])
+
+        webhook_event_factory(
+            type='subscription_schedule.released',
+            data={
+                'object': {
+                    'object': 'subscription_schedule',
+                    'released_subscription': schedule.customer.subscription.id,
+                    'customer': schedule.customer.id,
+                }
+            },
+        ).invoke_webhook_handlers()
+
+        stripe_request.assert_any_call(
+            'post',
+            callee.EndsWith('/subscription_schedules'),
+            callee.Any(),
+            stripe_encode({'from_subscription': schedule.customer.subscription.id}),
         )
 
 

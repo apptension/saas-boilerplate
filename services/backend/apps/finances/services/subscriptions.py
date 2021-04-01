@@ -29,16 +29,16 @@ def get_schedule(user=None, customer=None):
 def create_schedule(
     subscription: djstripe_models.Subscription = None, price: djstripe_models.Price = None, user=None, customer=None
 ):
-    if user:
-        customer, _ = djstripe_models.Customer.get_or_create(user)
-    if customer is None:
-        raise Exception("Either user or customer must be defined")
-
     if subscription and price:
         raise Exception("Subscription and price can't be defined together")
 
     subscription_schedule_stripe_instance = None
     if price:
+        if user:
+            customer, _ = djstripe_models.Customer.get_or_create(user)
+        if customer is None:
+            raise Exception("Either user or customer must be defined")
+
         subscription_schedule_stripe_instance = djstripe_models.SubscriptionSchedule._api_create(
             customer=customer.id, start_date='now', end_behavior="release", phases=[{'items': [{'price': price.id}]}]
         )
