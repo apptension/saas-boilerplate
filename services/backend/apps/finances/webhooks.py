@@ -10,7 +10,7 @@ from .services import subscriptions, customers
 logger = logging.getLogger(__name__)
 
 
-@webhooks.handler('subscription_schedule.canceled', 'subscription_schedule.completed')
+@webhooks.handler('subscription_schedule.canceled')
 def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     """
     It is not possible to reactivate a canceled subscription with a different plan so we
@@ -21,6 +21,19 @@ def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     """
     free_plan_price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
     subscriptions.create_schedule(customer=event.customer, price=free_plan_price)
+
+
+@webhooks.handler('subscription_schedule.released')
+def capture_release_schedule(event: djstripe_models.Event):
+    """
+    Since we mostly operate on subscription schedules, in case the subscription is released by whatever reason
+    we want to assign it to a schedule again
+
+    :param event:
+    :return:
+    """
+    obj = event.data['object']
+    subscriptions.create_schedule(subscription=obj['released_subscription'])
 
 
 @webhooks.handler('payment_method.attached')
