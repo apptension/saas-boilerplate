@@ -10,7 +10,7 @@ class SendEmail(Task):
     def __init__(self, name: str):
         super().__init__(name=name, source='backend.email')
 
-    def apply(self, to: str, data):
+    def apply(self, to: str, data, due_date=None):
         if data is None:
             data = {}
 
@@ -18,7 +18,8 @@ class SendEmail(Task):
             {
                 "to": to,
                 **data,
-            }
+            },
+            due_date,
         )
 
 
@@ -51,7 +52,7 @@ class Email(BaseEmail):
         if data is None:
             self.data = {}
 
-    def send(self):
+    def send(self, due_date=None):
         send_data = None
 
         serializer = self.get_serializer(data=self.data)
@@ -60,4 +61,4 @@ class Email(BaseEmail):
             send_data = serializer.data
 
         email_task = SendEmail(self.name)
-        email_task.apply(to=self.to, data=send_data)
+        email_task.apply(to=self.to, data=send_data, due_date=due_date)

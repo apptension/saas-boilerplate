@@ -4,6 +4,12 @@ iam: []
 
 environment: {}
 
+ScheduleTask:
+  environment: []
+
+ExecuteScheduledTask:
+  environment: []
+
 SendEmail:
   handler: emails/handlers.sendEmailLocal
   environment:

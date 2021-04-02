@@ -16,9 +16,24 @@ iam:
     Action:
       - "ses:SendEmail"
     Resource: "*"
+  - Effect: "Allow"
+    Action:
+      - "states:StartExecution"
+    Resource: "*"
+  - Effect: "Allow"
+    Action:
+      - "events:PutEvents"
+    Resource: ["${self:custom.eventBusArn}"]
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
+
+ScheduleTask:
+  environment:
+    TASK_SCHEDULING_STATE_MACHINE_ARN: { Ref: 'TaskSchedulingStateMachineID' }
+
+ExecuteScheduledTask:
+  environment: [ ]
 
 SendEmail:
   handler: emails/handlers.sendEmail

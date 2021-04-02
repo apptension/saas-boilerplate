@@ -22,6 +22,7 @@ build: test
 
 deploy:
 	$(MAKE) docker-login
+	$(DOCKER_COMPOSE) build workers
 	$(DOCKER_COMPOSE) run -T workers node_modules/.bin/sls deploy --stage $(ENV_STAGE);
 	$(MAKE) upload-service-version SERVICE_NAME=workers
 

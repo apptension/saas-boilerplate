@@ -276,6 +276,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           "ec2:DescribeVpcs",
           "ec2:DescribeNetworkInterfaces",
           "cloudformation:ValidateTemplate",
+          "states:*",
         ],
         resources: ["*"],
       })

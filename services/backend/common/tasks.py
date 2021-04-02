@@ -1,8 +1,10 @@
 import json
 import logging
+import uuid
 from datetime import datetime
 
 import boto3
+import pytz
 import requests
 from django.conf import settings
 
@@ -15,34 +17,61 @@ class Task:
         self.source = source
         self.event_bus_name = event_bus_name
 
-    def get_entry(self, data: dict):
+    @staticmethod
+    def make_entry(data: dict, source: str, detail_type: str, event_bus_name: str):
         return {
-            'Time': datetime.now(),
-            'Source': self.source,
-            'DetailType': self.name,
-            'Detail': json.dumps({"type": self.name, **data}),
-            'EventBusName': self.event_bus_name,
+            'Source': source,
+            'DetailType': detail_type,
+            'Detail': json.dumps(
+                {
+                    "id": uuid.uuid4().hex,
+                    "type": detail_type,
+                    **data,
+                }
+            ),
+            'EventBusName': event_bus_name,
         }
 
-    def apply(self, data: dict):
-        Task._apply(entry=self.get_entry(data))
+    def get_entry(self, data: dict):
+        return Task.make_entry(data=data, source=self.source, detail_type=self.name, event_bus_name=self.event_bus_name)
+
+    def apply(self, data: dict, due_date: datetime = None):
+        task_entry = self.get_entry(data)
+
+        if due_date is not None:
+            task_entry = Task.make_entry(
+                data={
+                    'entry': task_entry,
+                    'due_date': due_date.isoformat(),
+                },
+                event_bus_name=self.event_bus_name,
+                source='backend.scheduler',
+                detail_type='backend.scheduler',
+            )
+
+        Task._apply(entry=task_entry)
 
     @classmethod
     def _apply(cls, entry):
-        print({'apply': entry})
         client = boto3.client('events', endpoint_url=settings.AWS_ENDPOINT_URL)
         client.put_events(Entries=[entry])
 
 
 class TaskLocalInvoke(Task):
-    def apply(self, data: dict):
+    def apply(self, data: dict, due_date: datetime = None):
+        if due_date is None:
+            due_date = datetime.now(tz=pytz.utc)
+
         entry = self.get_entry(data)
-        response = requests.post(settings.TASKS_LOCAL_URL, json={**entry, 'Time': entry['Time'].isoformat()})
-        logger.info(f"Invoking local task: {entry=}")
+        response = requests.post(settings.TASKS_LOCAL_URL, json={**entry, 'Time': datetime.now().isoformat()})
+        logger.info(f"Invoking local task: {entry=} at {due_date.isoformat()}")
         logger.info(f"Invoke local response status code: {response.status_code}")
 
 
 class TaskPrinter(Task):
-    def apply(self, data: dict):
+    def apply(self, data: dict, due_date=None):
+        if due_date is None:
+            due_date = datetime.now()
+
         entry = self.get_entry(data)
-        logger.info(f"Put events: {entry=}")
+        logger.info(f"Put events: {entry=} at {due_date.isoformat()}")

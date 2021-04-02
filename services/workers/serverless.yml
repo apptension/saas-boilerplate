@@ -11,6 +11,24 @@ provider:
   environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
 
 functions:
+  ScheduleTask:
+    handler: scheduler.handlers.schedule_task
+    timeout: 20
+    memorySize: 128
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ScheduleTask.environment}
+    events:
+      - eventBridge:
+          eventBus: '${self:custom.eventBusArn}'
+          pattern:
+            source:
+              - backend.scheduler
+
+  ExecuteScheduledTask:
+    handler: scheduler.handlers.execute_task
+    timeout: 6
+    memorysize: 128
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ExecuteScheduledTask.environment}
+
   SendEmail:
     handler: ${file(./${self:custom.confFile.${self:provider.stage}}):SendEmail.handler}
     runtime: nodejs12.x
@@ -41,6 +59,7 @@ functions:
 plugins:
   - serverless-pseudo-parameters
   - serverless-python-requirements
+  - serverless-step-functions
 
 custom:
   projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
@@ -62,3 +81,23 @@ package:
   exclude:
     - .git/**
     - node_modules/**
+
+
+stepFunctions:
+  stateMachines:
+    TaskSchedulingStateMachine:
+      id: TaskSchedulingStateMachineID
+      name: "${opt:stage, self:provider.stage}-TaskSchedulingStateMachine"
+      definition:
+        Comment: "Schedules task execution"
+        StartAt: WaitForDueDate
+        States:
+          WaitForDueDate:
+            Type: Wait
+            TimestampPath: "$.due_date"
+            Next: Execute
+          Execute:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ ExecuteScheduledTask, Arn ]
+            End: true
