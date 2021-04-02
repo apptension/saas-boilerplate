@@ -54,3 +54,7 @@ export const SubmitButton = styled(Button).attrs(() => ({ type: 'submit' }))`
   width: 100%;
   max-width: none;
 `;
+
+export const StripePaymentFormContainer = styled.div`
+  margin-top: ${sizeUnits(3)};
+`;

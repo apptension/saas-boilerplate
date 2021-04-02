@@ -12,7 +12,7 @@ export const list = async () => {
 };
 
 export const remove = async (id: string) => {
-  const res = await client.delete(STRIPE_PAYMENT_METHOD_URL + `/${id}`);
+  const res = await client.delete(STRIPE_PAYMENT_METHOD_URL + `${id}/`);
   return res.data;
 };
 

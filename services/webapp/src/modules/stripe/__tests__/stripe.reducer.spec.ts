@@ -1,4 +1,7 @@
 import { reducer, INITIAL_STATE as defaultState } from '../stripe.reducer';
+import { authActions } from '../../auth';
+import { prepareState } from '../../../mocks/store';
+import { paymentMethodFactory, transactionHistoryEntryFactory } from '../../../mocks/factories';
 
 describe('Stripe: reducer', () => {
   it('should return initial state', () => {
@@ -11,5 +14,22 @@ describe('Stripe: reducer', () => {
     const action = { type: 'unknown-action' };
     const resultState = reducer(defaultState, action);
     expect(resultState).toEqual(defaultState);
+  });
+
+  describe('authActions.resetProfile', () => {
+    it('should reset transaction history and payment methods', () => {
+      const action = authActions.resetProfile();
+      const initialState = prepareState((state) => {
+        state.stripe.paymentMethods = [paymentMethodFactory()];
+        state.stripe.transactionHistory = [transactionHistoryEntryFactory()];
+      }).stripe;
+
+      const resultState = reducer(initialState, action);
+      expect(resultState).toEqual({
+        ...initialState,
+        paymentMethods: [],
+        transactionHistory: [],
+      });
+    });
   });
 });

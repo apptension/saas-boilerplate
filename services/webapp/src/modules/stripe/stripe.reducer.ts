@@ -1,6 +1,7 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
 
 import { HistoryListApiResponseData } from '../../shared/services/api/stripe/history/types';
+import { authActions } from '../auth';
 import * as stripeActions from './stripe.actions';
 import { FetchStripePaymentMethodsSuccessPayload, StripeState } from './stripe.types';
 
@@ -27,8 +28,11 @@ const handleDeleteStripePaymentMethod = (state: StripeState, { payload }: Payloa
   state.paymentMethods = state.paymentMethods.filter(({ id }) => id !== payload);
 };
 
+const handleResetProfile = () => INITIAL_STATE;
+
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(stripeActions.fetchStripePaymentMethods.resolved, handleFetchStripePaymentMethodsSuccess);
   builder.addCase(stripeActions.fetchStripeTransactionHistory.resolved, handleFetchStripeTransactionHistorySuccess);
   builder.addCase(stripeActions.deleteStripePaymentMethod, handleDeleteStripePaymentMethod);
+  builder.addCase(authActions.resetProfile, handleResetProfile);
 });

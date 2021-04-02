@@ -6,6 +6,9 @@ import { Breakpoint, media } from '../../../../theme/media';
 import { label } from '../../../../theme/typography';
 
 export const Container = styled.div<{ isActive: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: ${sizeUnits(2)};
   border: 1px solid ${(props) => (props.isActive ? primary : greyScale.get(90))};
   border-radius: 4px;
@@ -16,6 +19,8 @@ export const Container = styled.div<{ isActive: boolean }>`
     max-width: 252px;
   `};
 `;
+
+export const Content = styled.div``;
 
 export const Name = styled.h3`
   text-align: center;

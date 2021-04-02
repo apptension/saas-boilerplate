@@ -1,6 +1,7 @@
 import { reducer, INITIAL_STATE as defaultState } from '../demoItems.reducer';
 import { demoItemsActions } from '../index';
 import { prepareState } from '../../../mocks/store';
+import { authActions } from '../../auth';
 
 describe('DemoItems: reducer', () => {
   it('should return initial state', () => {
@@ -84,6 +85,21 @@ describe('DemoItems: reducer', () => {
       expect(resultState).toEqual({
         ...defaultState,
         favorites: ['item-1', 'item-2', 'item-999'],
+      });
+    });
+  });
+
+  describe('authActions.resetProfile', () => {
+    it('should reset favorites', () => {
+      const action = authActions.resetProfile();
+      const initialState = prepareState((state) => {
+        state.demoItems.favorites = ['item-1', 'item-2'];
+      }).demoItems;
+
+      const resultState = reducer(initialState, action);
+      expect(resultState).toEqual({
+        ...initialState,
+        favorites: [],
       });
     });
   });

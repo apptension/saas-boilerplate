@@ -7,8 +7,11 @@ import {
   useActiveSubscriptionPlanDetails,
   useSubscriptionPlanDetails,
 } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import { selectIsTrialEligible } from '../../../../modules/subscription/subscription.selectors';
-import { Container, Feature, FeaturesList, SelectButton, Name } from './subscriptionPlanItem.styles';
+import {
+  selectIsSubscriptionCanceled,
+  selectIsTrialEligible,
+} from '../../../../modules/subscription/subscription.selectors';
+import { Container, Content, Feature, FeaturesList, SelectButton, Name } from './subscriptionPlanItem.styles';
 
 export interface SubscriptionPlanItemProps {
   plan: SubscriptionPlan;
@@ -19,26 +22,29 @@ export interface SubscriptionPlanItemProps {
 export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
   const { name, price, features, isFree } = useSubscriptionPlanDetails(plan);
   const activeSubscription = useActiveSubscriptionPlanDetails();
-  const isActive = activeSubscription.name === name;
+  const isActivePlanCancelled = useSelector(selectIsSubscriptionCanceled);
+  const isActive = activeSubscription.name === name && !isActivePlanCancelled;
   const isTrialEligible = useSelector(selectIsTrialEligible);
 
   return (
     <Container isActive={isActive} className={className}>
-      <Name>{name}</Name>
+      <Content>
+        <Name>{name}</Name>
 
-      <FeaturesList>
-        {features?.map((feature, index) => (
-          <Feature key={[feature, index].join()}>{feature}</Feature>
-        ))}
-        {isTrialEligible && (
-          <Feature>
-            <FormattedMessage
-              defaultMessage="Your subscription will start with a trial"
-              description="Change plan item / Trial eligible info"
-            />
-          </Feature>
-        )}
-      </FeaturesList>
+        <FeaturesList>
+          {features?.map((feature, index) => (
+            <Feature key={[feature, index].join()}>{feature}</Feature>
+          ))}
+          {isTrialEligible && !isFree && (
+            <Feature>
+              <FormattedMessage
+                defaultMessage="Your subscription will start with a trial"
+                description="Change plan item / Trial eligible info"
+              />
+            </Feature>
+          )}
+        </FeaturesList>
+      </Content>
 
       <SelectButton onClick={onSelect} disabled={isActive || isFree}>
         <FormattedMessage

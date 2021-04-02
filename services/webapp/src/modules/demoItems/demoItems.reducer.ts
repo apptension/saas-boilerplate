@@ -2,6 +2,7 @@ import { createReducer, PayloadAction } from '@reduxjs/toolkit';
 
 import { append, equals, pipe, reject, uniq } from 'ramda';
 import { FavoriteDemoItemsApiGetResponseData } from '../../shared/services/api/demoItems/types';
+import { authActions } from '../auth';
 import * as demoItemsActions from './demoItems.actions';
 import { DemoItemsState, SetFavoritePayload } from './demoItems.types';
 
@@ -26,7 +27,10 @@ const handleFetchFavoritesResolved = (
   state.favorites = (payload ?? []).map(({ item }) => item);
 };
 
+const handleResetProfile = () => INITIAL_STATE;
+
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(demoItemsActions.setFavorite, handleSetFavorite);
   builder.addCase(demoItemsActions.fetchFavoriteDemoItems.resolved, handleFetchFavoritesResolved);
+  builder.addCase(authActions.resetProfile, handleResetProfile);
 });

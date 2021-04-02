@@ -7,6 +7,7 @@ import { stripePromise } from '../../../shared/services/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
+import { BackButton } from '../../../shared/components/backButton/backButton.component';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm';
 
@@ -23,6 +24,7 @@ export const EditPaymentMethod = () => {
 
   return (
     <Container>
+      <BackButton />
       <Elements stripe={stripePromise}>
         <EditPaymentMethodForm
           onSuccess={() => {

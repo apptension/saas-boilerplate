@@ -1,4 +1,4 @@
-import { all, takeLatest } from 'redux-saga/effects';
+import { all, takeLatest, takeLeading } from 'redux-saga/effects';
 
 import { subscription } from '../../shared/services/api';
 import { handleApiRequest } from '../helpers/handleApiRequest';
@@ -6,9 +6,9 @@ import * as subscriptionActions from './subscription.actions';
 
 export function* watchSubscription() {
   yield all([
-    takeLatest(subscriptionActions.fetchActiveSubscription, handleApiRequest(subscription.get)),
+    takeLeading(subscriptionActions.fetchActiveSubscription, handleApiRequest(subscription.get)),
     takeLatest(subscriptionActions.updateSubscriptionPlan, handleApiRequest(subscription.update)),
-    takeLatest(subscriptionActions.fetchAvailableSubscriptionPlans, handleApiRequest(subscription.list)),
+    takeLeading(subscriptionActions.fetchAvailableSubscriptionPlans, handleApiRequest(subscription.list)),
     takeLatest(subscriptionActions.cancelSubscription, handleApiRequest(subscription.cancel)),
   ]);
 }

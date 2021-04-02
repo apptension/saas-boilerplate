@@ -36,7 +36,6 @@ export const CardElementContainer = styled.div`
 
 export const Heading = styled.h3`
   ${heading5};
-  margin-top: ${sizeUnits(3)};
   margin-bottom: ${sizeUnits(1)};
 `;
 

@@ -13,6 +13,7 @@ import {
   ProductListItem,
   ProductListItemButton,
   SubmitButton,
+  StripePaymentFormContainer,
 } from './stripePaymentForm.styles';
 
 interface StripePaymentFormFields extends PaymentFormFields {
@@ -88,7 +89,9 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         <ErrorMessage>{errors.product?.message}</ErrorMessage>
       </div>
 
-      <StripePaymentMethodSelector formControls={apiFormControls} />
+      <StripePaymentFormContainer>
+        <StripePaymentMethodSelector formControls={apiFormControls} />
+      </StripePaymentFormContainer>
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
         <FormattedMessage
