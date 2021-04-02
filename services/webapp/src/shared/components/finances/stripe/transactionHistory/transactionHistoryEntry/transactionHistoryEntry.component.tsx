@@ -14,7 +14,7 @@ export interface TransactionHistoryEntryProps {
 
 export const TransactionHistoryEntry = ({ entry, className }: TransactionHistoryEntryProps) => {
   const intl = useIntl();
-  const { name: entryProductName } = useSubscriptionPlanDetails(entry.invoice?.items?.[0]?.product?.item);
+  const { name: entryProductName } = useSubscriptionPlanDetails(entry.invoice?.items?.[0]?.price);
 
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',

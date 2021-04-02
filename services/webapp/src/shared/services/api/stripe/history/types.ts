@@ -5,10 +5,7 @@ export interface TransactionHistoryEntryInvoice {
   id: string;
   items: {
     id: string;
-    product: {
-      item: SubscriptionPlan;
-      unitAmount: number;
-    };
+    price: SubscriptionPlan;
   }[];
 }
 

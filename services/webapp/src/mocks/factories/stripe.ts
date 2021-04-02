@@ -48,10 +48,7 @@ export const transactionHistoryEntryInvoiceFactory: Factory<TransactionHistoryEn
   items: [
     {
       id: faker.random.uuid(),
-      product: {
-        item: subscriptionPlanFactory(),
-        unitAmount: faker.random.number(),
-      },
+      price: subscriptionPlanFactory(),
     },
   ],
   ...overrides,
