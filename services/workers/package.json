@@ -20,6 +20,6 @@
     "yaml": "^2.0.0-3"
   },
   "devDependencies": {
-    "serverless": "^1.80.0"
+    "serverless": "^2.33.1"
   }
 }

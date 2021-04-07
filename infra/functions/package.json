@@ -12,6 +12,6 @@
     "serverless-pseudo-parameters": "^2.5.0"
   },
   "devDependencies": {
-    "serverless": "^1.80.0"
+    "serverless": "^2.33.1"
   }
 }
