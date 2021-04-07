@@ -55,6 +55,12 @@ def update_subscription_default_payment_method(event: djstripe_models.Event):
         customers.set_default_payment_method(customer=customer, payment_method=obj['id'])
 
 
+@webhooks.handler('payment_method.detached')
+def remove_detached_payment_method(event: djstripe_models.Event):
+    obj = event.data['object']
+    djstripe_models.PaymentMethod.objects.filter(id=obj['id']).delete()
+
+
 @webhooks.handler('invoice.payment_failed', 'invoice.payment_action_required')
 def cancel_trial_subscription_on_payment_failure(event: djstripe_models.Event):
     obj = event.data['object']

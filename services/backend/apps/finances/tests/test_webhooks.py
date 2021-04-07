@@ -3,6 +3,7 @@ import datetime
 import callee
 import pytest
 
+from djstripe import models as djstripe_models
 from .utils import stripe_encode
 from .. import notifications
 
@@ -113,3 +114,15 @@ class TestSendTrialExpiresSoonEmail:
         task_apply.assert_email_sent(
             notifications.TrialExpiresSoonEmail, customer.subscriber.email, {'expiry_date': '2021-03-30T11:23:45Z'}
         )
+
+
+class TestPaymentMethodDetached:
+    def test_delete_payment_method_instance(self, payment_method, webhook_event_factory):
+        webhook_event_factory(
+            type='payment_method.detached',
+            data={
+                'object': {'object': 'payment_method', 'id': payment_method.id, 'customer': payment_method.customer.id}
+            },
+        ).invoke_webhook_handlers()
+
+        assert not djstripe_models.PaymentMethod.objects.filter(id=payment_method.id).exists()
