@@ -155,7 +155,7 @@ class TestResetPassword:
             reverse("password_reset"),
             {"email": "wrong_email@wp.pl"},
         )
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
+        assert response.status_code == status.HTTP_201_CREATED, response.data
 
     def test_user_found(self, api_client, user):
         response = api_client.post(

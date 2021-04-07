@@ -128,24 +128,23 @@ class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(write_only=True, help_text=_("User e-mail"))
 
     def validate(self, attrs):
+        user = None
         try:
             user = dj_auth.get_user_model().objects.get(email=attrs["email"])
         except dj_auth.get_user_model().DoesNotExist:
-            raise exceptions.ValidationError({'email': _('User not found')}, 'user_not_found')
+            pass
 
         return {**attrs, 'user': user}
 
     def create(self, validated_data):
         user = validated_data.pop('user')
 
-        notifications.PasswordResetEmail(
-            user=user, data={'user_id': user.id.hashid, 'token': tokens.password_reset_token.make_token(user)}
-        ).send()
+        if user:
+            notifications.PasswordResetEmail(
+                user=user, data={'user_id': user.id.hashid, 'token': tokens.password_reset_token.make_token(user)}
+            ).send()
 
-        return user
-
-    def update(self, instance, validated_data):
-        pass
+        return {}
 
 
 class PasswordResetConfirmationSerializer(serializers.Serializer):
