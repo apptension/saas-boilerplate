@@ -3,7 +3,17 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
+from rest_framework_simplejwt.token_blacklist import admin as token_admin, models as token_models
+
 from . import models
+
+admin.site.unregister(token_models.OutstandingToken)
+
+
+@admin.register(token_models.OutstandingToken)
+class OutstandingTokenAdmin(token_admin.OutstandingTokenAdmin):
+    def has_delete_permission(self, *args, **kwargs):
+        return True
 
 
 class UserCreationForm(forms.ModelForm):
@@ -44,6 +54,7 @@ class UserProfileInline(admin.StackedInline):
     model = models.UserProfile
 
 
+@admin.register(models.User)
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
@@ -69,6 +80,3 @@ class UserAdmin(BaseUserAdmin):
     inlines = [
         UserProfileInline,
     ]
-
-
-admin.site.register(models.User, UserAdmin)
