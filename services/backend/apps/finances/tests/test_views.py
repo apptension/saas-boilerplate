@@ -225,6 +225,32 @@ class TestPaymentMethodDelete:
             '',
         )
 
+    def test_set_default_payment_method_to_next_one(self, stripe_request, api_client, customer, payment_method_factory):
+        payment_method = payment_method_factory(customer=customer)
+        customer.default_payment_method = payment_method
+        customer.save()
+        other_payment_method = payment_method_factory(customer=customer)
+
+        api_client.force_authenticate(customer.subscriber)
+        url = reverse('payment-method-detail', kwargs={'id': payment_method.id})
+        response = api_client.delete(url)
+
+        customer.refresh_from_db()
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        stripe_request.assert_any_call(
+            'post',
+            callee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            callee.Any(),
+            '',
+        )
+        stripe_request.assert_any_call(
+            'post',
+            callee.EndsWith(f'/customers/{customer.id}'),
+            callee.Any(),
+            stripe_encode({'invoice_settings': {'default_payment_method': other_payment_method.id}}),
+        )
+
 
 class TestPaymentMethodSetDefault:
     def test_return_error_for_other_users_payment_method(self, stripe_request, api_client, payment_method_factory):

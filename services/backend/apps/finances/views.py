@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 
 from common.acl import policies
 from . import serializers, constants
-from .services import subscriptions
+from .services import subscriptions, customers
 
 
 class StripePaymentIntentViewSet(
@@ -39,11 +39,7 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
         return self.queryset.filter(customer__subscriber=self.request.user)
 
     def perform_destroy(self, instance):
-        customer = instance.customer
-        if customer.default_payment_method and customer.default_payment_method.id == instance.id:
-            customer.default_payment_method = None
-            customer.save()
-        instance.detach()
+        customers.remove_payment_method(payment_method=instance)
 
     @action(detail=True, methods=['post'], url_path='default')
     def set_default(self, request, id=None):
