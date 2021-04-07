@@ -8,6 +8,7 @@ import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import { Icon } from '../../../icon';
+import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 import {
   PaymentMethodApiFormControls,
   StripePaymentMethodChangeEvent,
@@ -28,24 +29,32 @@ import {
 
 export interface StripePaymentMethodSelectorProps {
   formControls: Pick<PaymentMethodApiFormControls, 'control' | 'genericError' | 'errors'>;
+  initialValue?: StripePaymentMethod | null;
 }
 
-export const StripePaymentMethodSelector = ({ formControls }: StripePaymentMethodSelectorProps) => {
+export const StripePaymentMethodSelector = ({ formControls, initialValue }: StripePaymentMethodSelectorProps) => {
   const intl = useIntl();
   const { isLoading, paymentMethods, deletePaymentMethod } = useStripePaymentMethods();
   const { control, errors, genericError } = formControls;
+  const fallbackDefaultValue = {
+    type:
+      paymentMethods?.length > 0
+        ? StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
+        : StripePaymentMethodSelectionType.NEW_CARD,
+    data: paymentMethods?.[0] ?? null,
+  };
+  const defaultValue = initialValue
+    ? {
+        type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
+        data: paymentMethods?.find((method) => method.id === initialValue.id) ?? null,
+      }
+    : fallbackDefaultValue;
 
   return isLoading ? null : (
     <Controller
       name="paymentMethod"
       control={control}
-      defaultValue={{
-        type:
-          paymentMethods?.length > 0
-            ? StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
-            : StripePaymentMethodSelectionType.NEW_CARD,
-        data: paymentMethods?.[0] ?? null,
-      }}
+      defaultValue={defaultValue}
       rules={{
         required: true,
         validate: (value: StripePaymentMethodSelection) => {

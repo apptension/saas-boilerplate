@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { StripePaymentMethodSelector } from '../../../../shared/components/finances/stripe';
 import { useApiForm } from '../../../../shared/hooks/useApiForm';
 import {
@@ -9,6 +10,8 @@ import {
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 import { useAsyncDispatch } from '../../../../shared/utils/reduxSagaPromise';
 import { stripeActions } from '../../../../modules/stripe';
+import { useActiveSubscriptionPlanDetails } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import { selectActiveSubscriptionPaymentMethod } from '../../../../modules/subscription/subscription.selectors';
 import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 
@@ -23,6 +26,8 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   const dispatch = useAsyncDispatch();
   const { createSetupIntent } = useStripeSetupIntent();
   const { confirmCardSetup } = useStripeCardSetup();
+  const { isLoading: isSubscriptionDataLoading } = useActiveSubscriptionPlanDetails();
+  const defaultPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
 
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const { handleSubmit, setApiResponse, setGenericError, formState } = apiFormControls;
@@ -62,9 +67,9 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     }
   };
 
-  return (
+  return isSubscriptionDataLoading ? null : (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <StripePaymentMethodSelector formControls={apiFormControls} />
+      <StripePaymentMethodSelector formControls={apiFormControls} initialValue={defaultPaymentMethod} />
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
         <FormattedMessage defaultMessage="Save" description="Subscition / change payment method / submit button" />

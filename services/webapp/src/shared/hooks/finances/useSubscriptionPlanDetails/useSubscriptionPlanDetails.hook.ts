@@ -55,5 +55,8 @@ export const useActiveSubscriptionPlanDetails = () => {
     }
   }, [activeSubscriptionPlan, dispatch]);
 
-  return useSubscriptionPlanDetails(activeSubscriptionPlan);
+  return {
+    ...useSubscriptionPlanDetails(activeSubscriptionPlan),
+    isLoading: !activeSubscriptionPlan,
+  };
 };
