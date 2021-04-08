@@ -32,6 +32,13 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const { handleSubmit, setApiResponse, setGenericError, formState } = apiFormControls;
 
+  const setCardAsDefault = async (cardId: string) => {
+    try {
+      await dispatch(stripeActions.setDefaultStripePaymentMethod(cardId));
+      onSuccess();
+    } catch {}
+  };
+
   const setupNewCard = async (data: ChangePaymentFormFields) => {
     const setupIntentResponse = await createSetupIntent();
     if (setupIntentResponse.isError) {
@@ -51,7 +58,8 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
       return setGenericError(result.error.message);
     }
 
-    if (result.setupIntent?.status === 'succeeded') {
+    if (result.setupIntent?.status === 'succeeded' && result.setupIntent.payment_method) {
+      await setCardAsDefault(result.setupIntent.payment_method);
       onSuccess();
     }
   };
@@ -60,10 +68,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     if (data.paymentMethod.type === StripePaymentMethodSelectionType.NEW_CARD) {
       return setupNewCard(data);
     } else {
-      try {
-        await dispatch(stripeActions.setDefaultStripePaymentMethod(data.paymentMethod.data.id));
-        onSuccess();
-      } catch {}
+      return setCardAsDefault(data.paymentMethod.data.id);
     }
   };
 
