@@ -64,6 +64,12 @@ To make it work we need to do a few things:
 
 All of the above has to be done just once - after that, if the access token expires, it will be seamlessly refreshed using the refresh token.
 
+## Contentful demo items tests
+
+Tests located in `contentful.spec.js` file require that at least one demo item is created in connected Contentful instance.
+
+In order for tests not to fail make sure to create at least one Contentful demo item or skip those tests completely.
+
 ## Running tests locally
 
 In order to have the best development and debugging experience it's recommended to run the tests in headed mode, with the testrunner displayed, where we can select which spec file to run and against what browser. In the terminal run the command:
