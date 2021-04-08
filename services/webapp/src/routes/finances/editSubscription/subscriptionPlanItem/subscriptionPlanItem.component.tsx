@@ -8,6 +8,7 @@ import {
   useSubscriptionPlanDetails,
 } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import {
+  selectActiveSubscriptionNextPlan,
   selectIsSubscriptionCanceled,
   selectIsTrialEligible,
 } from '../../../../modules/subscription/subscription.selectors';
@@ -22,8 +23,10 @@ export interface SubscriptionPlanItemProps {
 export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
   const { name, price, features, isFree } = useSubscriptionPlanDetails(plan);
   const activeSubscription = useActiveSubscriptionPlanDetails();
+  const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
   const isActivePlanCancelled = useSelector(selectIsSubscriptionCanceled);
   const isActive = activeSubscription.name === name && !isActivePlanCancelled;
+  const isScheduledForNextPeriod = useSubscriptionPlanDetails(nextSubscriptionPlan).name === name;
   const isTrialEligible = useSelector(selectIsTrialEligible);
 
   return (
@@ -46,7 +49,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className }: Subscription
         </FeaturesList>
       </Content>
 
-      <SelectButton onClick={onSelect} disabled={isActive || isFree}>
+      <SelectButton onClick={onSelect} disabled={isScheduledForNextPeriod || isFree}>
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
           description="Change plan item / Select button"

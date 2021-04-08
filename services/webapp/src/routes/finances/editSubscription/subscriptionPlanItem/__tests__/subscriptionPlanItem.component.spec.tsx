@@ -34,11 +34,18 @@ describe('SubscriptionPlanItem: Component', () => {
   });
 
   describe('button is clicked', () => {
-    describe('current plan is different from the clicked one', () => {
+    describe('next billing plan is different from the clicked one', () => {
       const yearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
+      const monthlyPlan = subscriptionPlanFactory({
+        id: 'plan_monthly',
+        product: { name: SubscriptionPlanName.MONTHLY },
+      });
       const store = prepareState((state) => {
         state.subscription.activeSubscription = subscriptionFactory({
-          phases: [subscriptionPhaseFactory({ item: { price: yearlyPlan } })],
+          phases: [
+            subscriptionPhaseFactory({ item: { price: monthlyPlan } }),
+            subscriptionPhaseFactory({ item: { price: yearlyPlan } }),
+          ],
         });
       });
 
@@ -50,7 +57,7 @@ describe('SubscriptionPlanItem: Component', () => {
       });
     });
 
-    describe('active plan is clicked', () => {
+    describe('next billing plan is same as the clicked one', () => {
       const monthlyPlan = subscriptionPlanFactory({
         id: 'plan_monthly',
         product: { name: SubscriptionPlanName.MONTHLY },
