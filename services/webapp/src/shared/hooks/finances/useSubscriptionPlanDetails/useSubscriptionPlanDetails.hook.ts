@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { times } from 'ramda';
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { selectActiveSubscriptionPlan } from '../../../../modules/subscription/subscription.selectors';
@@ -45,15 +45,16 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
     : {};
 };
 
-export const useActiveSubscriptionPlanDetails = () => {
+export const useActiveSubscriptionPlanDetails = ({ forceRefetch } = { forceRefetch: true }) => {
   const dispatch = useDispatch();
   const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
+  const [initialActiveSubscriptionPlan] = useState(activeSubscriptionPlan);
 
   useEffect(() => {
-    if (!activeSubscriptionPlan) {
+    if (!initialActiveSubscriptionPlan || forceRefetch) {
       dispatch(subscriptionActions.fetchActiveSubscription());
     }
-  }, [activeSubscriptionPlan, dispatch]);
+  }, [initialActiveSubscriptionPlan, dispatch, forceRefetch]);
 
   return {
     ...useSubscriptionPlanDetails(activeSubscriptionPlan),

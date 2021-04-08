@@ -22,7 +22,7 @@ export interface SubscriptionPlanItemProps {
 
 export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
   const { name, price, features, isFree } = useSubscriptionPlanDetails(plan);
-  const activeSubscription = useActiveSubscriptionPlanDetails();
+  const activeSubscription = useActiveSubscriptionPlanDetails({ forceRefetch: false });
   const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
   const isActivePlanCancelled = useSelector(selectIsSubscriptionCanceled);
   const isActive = activeSubscription.name === name && !isActivePlanCancelled;
