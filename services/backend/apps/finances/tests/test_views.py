@@ -193,19 +193,18 @@ class TestUserChargesListView:
 
 
 class TestPaymentMethodDelete:
-    def test_return_error_for_other_users_payment_method(
-        self, mocker, stripe_request_client, api_client, payment_method_factory
-    ):
+    def test_return_error_for_other_users_payment_method(self, stripe_request, api_client, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        stripe_request = mocker.spy(stripe_request_client, 'request')
 
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-detail', kwargs={'id': other_users_pm.id})
         response = api_client.delete(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
-        stripe_request.assert_not_called()
+        stripe_request.assert_any_call(
+            'get', callee.EndsWith(f'/payment_methods/{other_users_pm.id}'), callee.Any(), None
+        )
 
     def test_detach_payment_method(self, stripe_request, api_client, payment_method):
         customer = payment_method.customer
@@ -253,7 +252,7 @@ class TestPaymentMethodDelete:
 
 
 class TestPaymentMethodSetDefault:
-    def test_return_error_for_other_users_payment_method(self, stripe_request, api_client, payment_method_factory):
+    def test_fetch_unknown_payment_method_from_stripe(self, stripe_request, api_client, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
 
@@ -262,7 +261,9 @@ class TestPaymentMethodSetDefault:
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
-        stripe_request.assert_not_called()
+        stripe_request.assert_any_call(
+            'get', callee.EndsWith(f'/payment_methods/{other_users_pm.id}'), callee.Any(), None
+        )
 
     def test_set_default_payment_method(self, api_client, payment_method_factory, customer, stripe_request):
         payment_method = payment_method_factory(customer=customer)

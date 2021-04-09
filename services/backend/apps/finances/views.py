@@ -1,6 +1,8 @@
+from django.http import Http404
 from djstripe import models as djstripe_models, enums as djstripe_enums
 from rest_framework import mixins, viewsets, response, generics
 from rest_framework.decorators import action
+from stripe.error import InvalidRequestError
 
 from common.acl import policies
 from . import serializers, constants
@@ -37,6 +39,25 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
 
     def get_queryset(self):
         return self.queryset.filter(customer__subscriber=self.request.user)
+
+    def get_object(self):
+        """
+        Payment method is created by webhook yet sometimes the object is needed earlier (e.g. set_default action).
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}
+
+        if not queryset.filter(**filter_kwargs).exists():
+            try:
+                api_response = djstripe_models.PaymentMethod(id=self.kwargs[lookup_url_kwarg]).api_retrieve()
+                djstripe_models.PaymentMethod.sync_from_stripe_data(api_response)
+            except InvalidRequestError:
+                raise Http404
+
+        obj = generics.get_object_or_404(queryset, **filter_kwargs)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     def perform_destroy(self, instance):
         customers.remove_payment_method(payment_method=instance)
