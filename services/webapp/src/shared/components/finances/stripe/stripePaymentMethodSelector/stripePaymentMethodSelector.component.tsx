@@ -153,7 +153,7 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
               {paymentMethods.map((paymentMethod) => {
                 const isSelected =
                   value?.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD &&
-                  paymentMethod.id === value.data.id;
+                  paymentMethod.id === value?.data?.id;
 
                 return (
                   <PaymentMethodListItem key={paymentMethod.id}>

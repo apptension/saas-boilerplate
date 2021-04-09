@@ -60,7 +60,6 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
 
     if (result.setupIntent?.status === 'succeeded' && result.setupIntent.payment_method) {
       await setCardAsDefault(result.setupIntent.payment_method);
-      onSuccess();
     }
   };
 
