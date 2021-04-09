@@ -7,7 +7,6 @@ export const waitForFavoritesToLoad = () => {
 
 export const addToFavorites = () => {
   cy.intercept('POST', '/api/demo/contentful-item/*/favorite/').as('addToFavorites');
-  waitForFavoritesToLoad();
 
   cy.get('li button').first().click();
   cy.wait('@addToFavorites');
@@ -35,6 +34,30 @@ const getFavoriteItems = () =>
       Authorization: `Bearer ${getToken()}`,
     },
   });
+
+export const getContentfulItems = () =>
+  cy.request({
+    method: 'POST',
+    url: `https://graphql.contentful.com/content/v1/spaces/${Cypress.env(
+      'CONTENTFUL_SPACE_ID'
+    )}/environments/develop?access_token=${Cypress.env('CONTENTFUL_ACCESS_TOKEN')}`,
+    body: {
+      operationName: 'allDemoItems',
+      query:
+        'query allDemoItems {demoItemCollection {items {sys {id __typename}title image {title url __typename} __typename} __typename}}',
+    },
+  });
+
+export const addToFavoritesWithApi = () => {
+  getContentfulItems().then((res) => {
+    const { items } = res.body.data.demoItemCollection;
+
+    cy.request({
+      method: 'POST',
+      url: `/api/demo/contentful-item/${items[0].sys.id}/favorite/`,
+    });
+  });
+};
 
 export const removeFromFavoritesWithApi = () => {
   getFavoriteItems().then((items) => {

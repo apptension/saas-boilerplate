@@ -1,6 +1,7 @@
 import BASIC_AUTH from '../fixtures/basicAuth';
 import {
   addToFavorites,
+  addToFavoritesWithApi,
   expectItemNotToBeFavorite,
   expectItemToBeFavorite,
   getContentfulItemUrl,
@@ -10,10 +11,10 @@ import {
 } from '../support/contentful';
 import { URL_REGEX } from '../support/gmailApi/gmail.api.constants';
 
-describe('Contentful integration', () => {
-  const userEmail = Cypress.env('EMAIL');
-  const password = Cypress.env('PASSWORD');
+const userEmail = Cypress.env('EMAIL');
+const password = Cypress.env('PASSWORD');
 
+describe('Contentful integration', () => {
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     removeFromFavoritesWithApi();
@@ -34,15 +35,9 @@ describe('Contentful integration', () => {
   });
 
   it('should add item to favorites', () => {
+    expectItemNotToBeFavorite();
     addToFavorites();
     expectItemToBeFavorite();
-  });
-
-  it('should remove item from favorites', () => {
-    addToFavorites();
-    removeFromFavorites();
-
-    expectItemNotToBeFavorite();
   });
 
   it('should see the full content of Contentful item', () => {
@@ -61,5 +56,20 @@ describe('Contentful integration', () => {
 
       expectItemNotToBeFavorite();
     });
+  });
+});
+
+describe('Removing from favorites', () => {
+  before(() => {
+    cy.getJWTtoken(userEmail, password);
+    removeFromFavoritesWithApi();
+    addToFavoritesWithApi();
+    cy.visit('/en/demo-items', BASIC_AUTH);
+  });
+
+  it('should remove item from favorites', () => {
+    expectItemToBeFavorite();
+    removeFromFavorites();
+    expectItemNotToBeFavorite();
   });
 });
