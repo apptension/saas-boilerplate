@@ -5,6 +5,33 @@ module.exports = {
     Features: [
       "sentry",
       "emails",
+      {
+        type: "category",
+        label: "Payments",
+        items: [
+          "stripe-payments-intro",
+          {
+            type: "category",
+            label: "One time payment",
+            items: [
+              "stripe-onetime-payment-create-intent",
+              "stripe-onetime-payment-complete",
+            ],
+          },
+          {
+            type: "category",
+            label: "Subscriptions",
+            items: [
+              "subscriptions-intro",
+              "subscriptions-create-plan",
+              "subscriptions-free-trial",
+              "subscriptions-grace-period",
+            ],
+          },
+          "stripe-webhooks",
+        ],
+      },
+
       "crud-generator",
       "django-rest-api",
       {

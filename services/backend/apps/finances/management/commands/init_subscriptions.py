@@ -18,6 +18,6 @@ class Command(BaseCommand):
         models.Price.objects.get_or_create_subscription_price(product=product, plan_config=plan_config)
 
     def handle(self, *args, **options):
-        plan_products = [constants.FREE_PLAN, constants.MONTHLY_PLAN, constants.YEARLY_PLAN]
+        plan_products = constants.ALL_PLANS
         for plan_product in plan_products:
             self.create_or_update_plan(plan_product)

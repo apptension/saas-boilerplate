@@ -12,6 +12,10 @@ from .services import subscriptions, customers
 
 
 class PaymentIntentSerializer(serializers.ModelSerializer):
+    """
+    TODO: Update this serializer with real products and prices created in Stripe
+    """
+
     product = serializers.ChoiceField(
         choices=(
             ('5', 'A'),

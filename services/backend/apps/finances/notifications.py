@@ -8,7 +8,10 @@ logger = logging.getLogger(__name__)
 
 class CustomerEmail(emails.Email):
     def __init__(self, customer, data=None):
-        super().__init__(to=customer.subscriber.email, data=data)
+        to = None
+        if customer.subscriber:
+            to = customer.subscriber.email
+        super().__init__(to=to, data=data)
 
 
 class TrialExpiresSoonEmail(CustomerEmail):

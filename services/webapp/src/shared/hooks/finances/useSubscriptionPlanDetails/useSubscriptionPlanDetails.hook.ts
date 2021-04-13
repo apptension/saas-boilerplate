@@ -14,7 +14,7 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
     defaultMessage: 'Lorem ipsum dolor sit amet',
   });
 
-  const planDisplayNames = {
+  const planDisplayNames: Record<SubscriptionPlanName, string> = {
     [SubscriptionPlanName.FREE]: intl.formatMessage({
       description: 'Subscription plan display name / Free',
       defaultMessage: 'Free',
@@ -29,7 +29,7 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
     }),
   };
 
-  const planFeaturesList = {
+  const planFeaturesList: Record<SubscriptionPlanName, Array<string>> = {
     [SubscriptionPlanName.FREE]: times(() => examplePlanFeatureItem, 5),
     [SubscriptionPlanName.MONTHLY]: times(() => examplePlanFeatureItem, 5),
     [SubscriptionPlanName.YEARLY]: times(() => examplePlanFeatureItem, 5),

@@ -36,12 +36,22 @@ export const useStripePaymentMethods = () => {
 };
 
 /**
- * You should only create one payment intent per payment session
- * and update the amount when necessary.
+ * This react hook is responsible for tracking whether a payment intent has already been created in the current
+ * component. It uses component's state to determine if the payment intent needs to be created or updated.
+ *
+ * The idea is that you should not create multiple payment intents even if the customer changes a product. This allows
+ * analysts to track how customers behave.
+ *
  */
 export const useStripePaymentIntent = () => {
   const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntent | null>(null);
 
+  /**
+   * This function is responsible for creating a new payment intent and updating it if it has been created before.
+   *
+   * @param product This product will be passed to the payment intent create and update API endpoints. Backend should
+   * handle amount and currency update based on the ID of this product.
+   */
   const updateOrCreatePaymentIntent = async (product: TestProduct) => {
     if (!paymentIntent) {
       const response = await stripeApi.paymentIntent.create({ product });
@@ -65,6 +75,11 @@ export const useStripePayment = () => {
   const stripe = useStripe();
   const elements = useElements();
 
+  /**
+   *
+   * @param paymentMethod
+   * @param paymentIntent
+   */
   const confirmPayment = async ({
     paymentMethod,
     paymentIntent,

@@ -1,8 +1,7 @@
 import logging
 
 from django.utils import timezone
-from djstripe import models as djstripe_models
-from djstripe import webhooks
+from djstripe import webhooks, models as djstripe_models
 
 from . import constants, notifications, models
 from .services import subscriptions, customers
