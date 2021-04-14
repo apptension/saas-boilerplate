@@ -1,7 +1,7 @@
 module.exports = {
   someSidebar: {
     Introduction: ["index", "aws-setup", "aws-deployment", "aws-auto-deploy"],
-    Guides: ["aws-environment", "ssh-bastion"],
+    Guides: ["guides/aws-environment", "guides/ssh-bastion", "guides/configure-cicd-slack-notifications"],
     Features: [
       "sentry",
       "emails",

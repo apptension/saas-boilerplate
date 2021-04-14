@@ -12,6 +12,7 @@ interface EnvConfigFileDomains {
     adminPanel: string;
     api: string;
     webApp: string;
+    docs: string;
     www: string;
 }
 

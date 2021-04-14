@@ -1,0 +1,75 @@
+---
+id: configure-cicd-slack-notifications
+title: Configure CI/CD Slack Notifications
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+Unfortunately the notifications need to be configured using
+AWS web panel.
+
+## Create a new AWS Chatbot Client
+
+The very first thing we need to do is to create an AWS Chatbot
+client that is going to be connected to your Slack organisation
+as an app.
+
+1. Open the "AWS Chatbot" service
+1. Press "Configure new client" button
+
+  <img src={useBaseUrl("img/guides/cicd-slack-notifications/aws-chatbot-configure-new-client.png")} alt="Configure new client" />
+
+1. Select "Slack"
+
+  <img src={useBaseUrl("img/guides/cicd-slack-notifications/aws-chatbot-select-slack.png")} alt="Select Slack" />
+
+1. Follow through the OAuth process
+
+1. You should be able to see your client with a Workspace ID
+  matching your organisation.
+
+## Create a new channel
+
+Next we need to select a channel to which the AWS Chatbot will
+post the messages from our CI/CD.
+
+1. Press the "Create new channel" button
+
+  <img src={useBaseUrl("img/guides/cicd-slack-notifications/aws-chatbot-create-channel.png")} alt="Create new channel" />
+
+1. Fill out the fields:
+
+  - Name – whatever value, we typically call it `{project-name}-ci`
+  - Channel type:
+    * Public – select channel from the list
+
+    * Private – paste the ID from the channel URL ( you can copy it from Slack)
+  - Permissions – Create a new IAM role using a template
+
+## Connect the AWS Chatbot to CodePipeline
+
+The last thing to do is to connect the created AWS Chatbot channel
+and our pipeline in CodePipeline.
+
+:::note
+
+You need to follow this step for every environment of your app.
+
+:::
+
+1. Fill out the name and choose a detail type
+
+<img src={useBaseUrl("img/guides/cicd-slack-notifications/notify-settings.png")} alt="Settings" />
+
+2. Select the triggers that should lead to a notification.
+On the screenshot you can see the triggers that work well for us.
+
+<img src={useBaseUrl("img/guides/cicd-slack-notifications/notify-triggers.png")} alt="Triggers" />
+
+3. Choose the target type as "AWS Chatbot" and the target should
+be the channel you created in the previous step.
+
+<img src={useBaseUrl("img/guides/cicd-slack-notifications/notify-target.png")} alt="Target" />
+
+That's it! You should be able to receive Slack notifications during
+next run of your pipeline.

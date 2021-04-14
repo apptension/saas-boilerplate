@@ -8,6 +8,7 @@
     "adminPanel": "admin.example.com",
     "api": "api.example.com",
     "webApp": "app.example.com",
+    "docs": "docs.example.com",
     "www": "www.example.com"
   }
 }

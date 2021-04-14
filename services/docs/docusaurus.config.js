@@ -20,19 +20,6 @@ module.exports = {
     footer: {
       style: "dark",
       links: [
-        {
-          title: "Docs",
-          items: [
-            {
-              label: "Getting started",
-              to: "docs/",
-            },
-            {
-              label: "Style Guide",
-              to: "docs/style-guide",
-            },
-          ],
-        },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate. Built with Docusaurus.`,
     },

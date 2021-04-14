@@ -52,6 +52,10 @@ deploy-webapp:
 	npm run build;
 	npm run cdk deploy *WebAppStack;
 
+deploy-docs:
+	npm run build;
+	npm run cdk deploy *DocsStack;
+
 deploy-ssh-bastion:
 	npm run build;
 	npm run cdk deploy *SshBastionStack;

@@ -23,6 +23,7 @@ export interface WebAppCloudFrontDistributionProps {
     certificateArn: string;
     basicAuth?: string | null;
     authLambdaSSMParameterName: string;
+    distributionPaths?: Array<string>;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
@@ -41,7 +42,7 @@ export class WebAppCloudFrontDistribution extends Construct {
     private createDeployment(staticFilesBucket: Bucket, distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
         new BucketDeployment(this, 'DeployWebsite', {
             distribution,
-            distributionPaths: ['/index.html'],
+            distributionPaths: props.distributionPaths || ['/index.html'],
             sources: props.sources,
             destinationBucket: staticFilesBucket,
             cacheControl: [CacheControl.setPublic(), CacheControl.maxAge(Duration.hours(1))],

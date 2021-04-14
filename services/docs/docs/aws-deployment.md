@@ -24,7 +24,7 @@ make setup-infra
 
 ## Deploy Global Infrastructure to AWS
 
-Next up is the [global infrastructure](/docs/infrastructure-components.md#global-infrastructure) CDK stack to create
+Next up is the [global infrastructure](./infrastructure-components.md#global-infrastructure) CDK stack to create
 the foundations of your system. Resources created in this step will be used by all environments that you'll create in the
 future.
 
@@ -37,7 +37,7 @@ make deploy-global-infra
 AWS boilerplate allows you to deploy multiple versions of your application. Those, for example, could be `qa`, `staging`
 , `production` or whatever else you desire. You decide how to call them and how many you would like to have.
 
-> For more detailed version of this step check [new environment docs](aws-environment.md)
+> For more detailed version of this step check [new environment docs](guides/aws-environment.md)
 
 ```shell
 make create-env
