@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.http import Http404
 from djstripe import models as djstripe_models, enums as djstripe_enums
 from rest_framework import mixins, viewsets, response, generics
@@ -61,6 +62,10 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
 
     def perform_destroy(self, instance):
         customers.remove_payment_method(payment_method=instance)
+
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
 
     @action(detail=True, methods=['post'], url_path='default')
     def set_default(self, request, id=None):
