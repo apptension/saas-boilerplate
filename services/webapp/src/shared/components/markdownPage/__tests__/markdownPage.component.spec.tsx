@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { screen } from '@testing-library/dom';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../utils/testUtils';
 import { MarkdownPage, MarkdownPageProps } from '../markdownPage.component';
 

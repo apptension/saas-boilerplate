@@ -1,8 +1,6 @@
 import React from 'react';
-
-import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitFor } from '@testing-library/dom';
+import { waitFor, screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { prepareState } from '../../../../mocks/store';

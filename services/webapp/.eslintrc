@@ -7,7 +7,7 @@
     "plugin:import/warnings",
     "plugin:import/typescript"
   ],
-  "plugins": ["react-hooks", "formatjs"],
+  "plugins": ["react-hooks", "formatjs", "testing-library"],
   "rules": {
     "import/order": ["error"],
     "formatjs/no-offset": "error"
@@ -27,6 +27,14 @@
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "import/no-anonymous-default-export": "off",
         "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/react"],
+      "rules": {
+        "testing-library/render-result-naming-convention": "off",
+        "testing-library/no-node-access": "off"
       }
     }
   ]

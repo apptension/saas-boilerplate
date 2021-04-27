@@ -1,7 +1,6 @@
 import React from 'react';
-
 import { generatePath } from 'react-router';
-import { screen } from '@testing-library/dom';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 import { crudDemoItemFactory } from '../../../../mocks/factories';

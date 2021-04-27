@@ -1,8 +1,6 @@
 import React from 'react';
-
-import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { act, waitFor } from '@testing-library/react';
+import { act, waitFor, screen } from '@testing-library/react';
 import { AddCrudDemoItem } from '../addCrudDemoItem.component';
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { crudDemoItemActions } from '../../../../modules/crudDemoItem';

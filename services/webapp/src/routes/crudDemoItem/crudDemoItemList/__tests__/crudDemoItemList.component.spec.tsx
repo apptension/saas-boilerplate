@@ -1,7 +1,6 @@
 import React from 'react';
-
 import userEvent from '@testing-library/user-event';
-import { screen } from '@testing-library/dom';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CrudDemoItemList, CrudDemoItemListProps } from '../crudDemoItemList.component';
 import { crudDemoItemFactory } from '../../../../mocks/factories';

@@ -1,8 +1,6 @@
 import React from 'react';
-
 import userEvent from '@testing-library/user-event';
-import { screen } from '@testing-library/react';
-import { waitFor } from '@testing-library/dom';
+import { waitFor, screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';

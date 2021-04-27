@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/dom';
+import { screen } from '@testing-library/react';
 import { Home } from '../home.component';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';
 

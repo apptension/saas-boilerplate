@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { screen, waitFor } from '@testing-library/dom';
+import { screen, waitFor } from '@testing-library/react';
 import { DemoItem } from '../demoItem.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
 import { DemoItemDocument } from '../../../shared/services/contentful';
