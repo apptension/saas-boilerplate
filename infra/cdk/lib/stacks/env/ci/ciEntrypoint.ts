@@ -1,8 +1,11 @@
+import * as path from "path";
 import {Construct} from "@aws-cdk/core";
 import {Bucket} from "@aws-cdk/aws-s3";
 import {IRepository} from "@aws-cdk/aws-codecommit";
 import {Artifacts, BuildSpec, Cache, LocalCacheMode, Project, Source} from "@aws-cdk/aws-codebuild";
 import * as targets from "@aws-cdk/aws-events-targets";
+import {Function, Runtime, Code} from "@aws-cdk/aws-lambda";
+import {PolicyStatement} from "@aws-cdk/aws-iam";
 
 import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
@@ -15,6 +18,7 @@ export interface CiEntrypointProps extends EnvConstructProps {
 export class CiEntrypoint extends Construct {
     public artifactsBucket: Bucket;
     private readonly codeBuildProject: Project;
+    private readonly triggerFunction: Function;
 
     static getArtifactsIdentifier(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-entrypoint`;
@@ -32,10 +36,27 @@ export class CiEntrypoint extends Construct {
         });
         this.codeBuildProject = this.createBuildProject(this.artifactsBucket, props);
 
-        if (props.envSettings.deployBranches.length > 0) {
+        const deployBranches = props.envSettings.deployBranches;
+        if (deployBranches.length > 0) {
+            this.triggerFunction = new Function(this, 'TriggerLambda', {
+                runtime: Runtime.NODEJS_12_X,
+                handler: 'index.handler',
+                code: Code.fromAsset(path.join(__dirname, 'functions', 'trigger-entrypoint')),
+                environment: {
+                    PROJECT_ENV_NAME: props.envSettings.projectEnvName,
+                    DEPLOY_BRANCHES: JSON.stringify(deployBranches),
+                    PROJECT_NAME: this.codeBuildProject.projectName
+                }
+            });
+
+            this.triggerFunction.addToRolePolicy(new PolicyStatement({
+                actions: [
+                    'codebuild:StartBuild',
+                ],
+                resources: [this.codeBuildProject.projectArn]
+            }));
             props.codeRepository.onCommit('OnDeployCommit', {
-                branches: props.envSettings.deployBranches,
-                target: new targets.CodeBuildProject(this.codeBuildProject),
+                target: new targets.LambdaFunction(this.triggerFunction)
             });
         }
     }
