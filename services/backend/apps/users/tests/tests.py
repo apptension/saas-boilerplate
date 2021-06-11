@@ -3,7 +3,6 @@ from django.contrib import auth as dj_auth
 from django.urls import reverse
 from rest_framework import status
 
-from . import factories
 from .. import tokens
 
 pytestmark = pytest.mark.django_db
@@ -85,7 +84,7 @@ class TestChangePassword:
         api_client.force_authenticate(user)
         response = api_client.post(
             reverse("change_password"),
-            {"user": user.pk, "old_password": factories.UserFactory.password, "new_password": faker.password()},
+            {"user": user.pk, "old_password": user._faker_password, "new_password": faker.password()},
         )
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
