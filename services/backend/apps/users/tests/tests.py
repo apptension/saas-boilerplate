@@ -2,10 +2,20 @@ import pytest
 from django.contrib import auth as dj_auth
 from django.urls import reverse
 from rest_framework import status
+from rest_framework_jwt.settings import api_settings
+from django.contrib import auth
 
 from .. import tokens
 
+User = auth.get_user_model()
 pytestmark = pytest.mark.django_db
+jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
+
+
+def validate_user_jwt_token(jwt_token: str, user: User) -> bool:
+    decoded = jwt_decode_handler(jwt_token)
+
+    return decoded["user_id"] == user.pk
 
 
 class TestUserProfile:
@@ -44,9 +54,10 @@ class TestResetPassword:
         )
         assert response.status_code == status.HTTP_201_CREATED, response.data
         assert "jwt_token" in response.data
+        assert response.data["jwt_token"]
 
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
-        assert response.data["jwt_token"] == u.jwt_token, response.data
+        assert validate_user_jwt_token(response.data["jwt_token"], u), response.data
         assert u.check_password(new_password)
 
     def test_wrong_token(self, api_client, user):
@@ -82,15 +93,15 @@ class TestResetPassword:
 class TestChangePassword:
     def test_correct_password(self, api_client, user, faker):
         api_client.force_authenticate(user)
+
         response = api_client.post(
             reverse("change_password"),
             {"user": user.pk, "old_password": user._faker_password, "new_password": faker.password()},
         )
-
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
 
         assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert response.data["jwt_token"] == u.jwt_token, response.data
+        assert validate_user_jwt_token(response.data["jwt_token"], u), response.data
 
     def test_wrong_old_password(self, api_client, user, faker):
         api_client.force_authenticate(user)
