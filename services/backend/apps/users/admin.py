@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -45,17 +44,21 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ("__str__", "created", "last_login")
+    list_display = ("__str__", "created", "last_login", "is_staff", "is_superuser")
     list_filter = ("is_superuser",)
     fieldsets = (
         (None, {"fields": ("email", "password", "is_active")}),
-        ("Permissions", {"fields": ("is_superuser",)}),
+        ("Permissions", {"fields": ("is_staff", "is_superuser", "groups")}),
     )
-    add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),)
+    add_fieldsets = (
+        (
+            None,
+            {"classes": ("wide",), "fields": ("email", "password1", "password2", "is_staff", "is_superuser", "groups")},
+        ),
+    )
     search_fields = ("email",)
     ordering = ("created",)
     filter_horizontal = ()
 
 
 admin.site.register(models.User, UserAdmin)
-admin.site.unregister(Group)
