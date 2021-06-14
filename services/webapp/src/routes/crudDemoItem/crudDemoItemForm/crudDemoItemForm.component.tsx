@@ -3,8 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/input';
-import { Button } from '../../../shared/components/button';
-import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { Button, ButtonVariant } from '../../../shared/components/button';
 import { Link } from '../../../shared/components/link';
 import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';

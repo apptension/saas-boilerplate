@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ComponentProps } from 'react';
 import { Link } from '../link';
-import { ButtonVariant } from '../button/button.types';
+import { ButtonVariant } from '../button';
 import { sizeUnits } from '../../../theme/size';
 import { labelBold } from '../../../theme/typography';
 import { greyScale, skyBlueScale } from '../../../theme/color';

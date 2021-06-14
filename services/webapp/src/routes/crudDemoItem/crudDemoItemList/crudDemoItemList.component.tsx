@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { ROUTES } from '../../app.constants';
-import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { ButtonVariant } from '../../../shared/components/button';
 import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { AddNewLink, Container, Header } from './crudDemoItemList.styles';
 import { CrudDemoItemListContent } from './crudDemoItemListContent';

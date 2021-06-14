@@ -2,7 +2,7 @@ import React, { AnchorHTMLAttributes, ReactNode } from 'react';
 import { LinkProps as RouterLinkProps, NavLinkProps as RouterNavLinkProps } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { omit } from 'ramda';
-import { ButtonTheme, ButtonVariant } from '../button/button.types';
+import { ButtonTheme, ButtonVariant } from '../button';
 import { Icon } from '../button/button.styles';
 import { RouterLinkContainer, HtmlLinkContainer, RouterNavLinkContainer } from './link.styles';
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { color, elevation, size, transition } from '../../../theme';
 import { black, greyScale, white } from '../../../theme/color';
-import { ReactComponent as HeaderLogoSvg } from '../../../images/icons/headerLogo.svg';
+import { HeaderLogoIcon } from '../../../images/icons';
 import { contentWrapper, sizeUnits } from '../../../theme/size';
 import { Avatar as AvatarBase } from '../avatar';
 import { Breakpoint, media } from '../../../theme/media';
@@ -27,7 +27,7 @@ export const Content = styled.div`
   `}
 `;
 
-export const HeaderLogo = styled(HeaderLogoSvg)``;
+export const HeaderLogo = styled(HeaderLogoIcon)``;
 
 export const MenuToggleButton = styled.div.attrs(() => ({ role: 'button', tabIndex: 0 }))`
   display: block;

@@ -17,7 +17,7 @@ import {
   useActiveSubscriptionPlanDetails,
   useSubscriptionPlanDetails,
 } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { ButtonVariant } from '../../../shared/components/button';
 import { useTransactionHistory } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import { Date } from '../../../shared/components/date';

@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '../../button';
 
-import { ReactComponent as FacebookIcon } from '../../../../images/icons/facebook.svg';
-import { ReactComponent as GoogleIcon } from '../../../../images/icons/google.svg';
-import { ButtonVariant } from '../../button/button.types';
+import { Button, ButtonVariant } from '../../button';
+import { FacebookIcon, GoogleIcon } from '../../../../images/icons';
 import { formFieldWidth, sizeUnits } from '../../../../theme/size';
 
 export const Container = styled.div`

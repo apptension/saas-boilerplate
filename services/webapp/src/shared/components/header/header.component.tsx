@@ -8,9 +8,8 @@ import { selectIsLoggedIn } from '../../../modules/auth/auth.selectors';
 import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../routes/app.constants';
 import { logout } from '../../../modules/auth/auth.actions';
-import { Button } from '../button';
+import { Button, ButtonVariant } from '../button';
 import { Link as ButtonLink } from '../link';
-import { ButtonVariant } from '../button/button.types';
 import { Snackbar } from '../snackbar';
 import { LayoutContext } from '../../../routes/layout/layout.context';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -28,7 +27,7 @@ import {
   SnackbarMessages,
 } from './header.styles';
 
-export const Header = (props: HTMLAttributes<HTMLHeadElement>) => {
+export const Header = (props: HTMLAttributes<HTMLElement>) => {
   const intl = useIntl();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const generateLocalePath = useGenerateLocalePath();

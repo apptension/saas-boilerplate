@@ -1,4 +1,5 @@
 {
+  "ignoreFiles": ["src/shared/components/**/index.ts"],
   "processors": ["stylelint-processor-styled-components"],
   "extends": [
     "stylelint-config-recommended",

@@ -2,7 +2,7 @@ import React from 'react';
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
-import { ReactComponent as Icon } from '../../../images/icons/facebook.svg';
+import { FacebookIcon } from '../../../images/icons';
 import { Button, ButtonProps } from './button.component';
 import { ButtonVariant } from './button.types';
 
@@ -44,7 +44,7 @@ Secondary.args = {
 export const SecondaryWithIcon = Template.bind({});
 SecondaryWithIcon.args = {
   ...Secondary.args,
-  icon: <Icon />,
+  icon: <FacebookIcon />,
 };
 
 export const SecondaryDisabled = Template.bind({});
@@ -68,7 +68,7 @@ Raw.args = {
 export const RawWithIcon = Template.bind({});
 RawWithIcon.args = {
   ...Raw.args,
-  icon: <Icon />,
+  icon: <FacebookIcon />,
 };
 
 export const RawDisabled = Template.bind({});

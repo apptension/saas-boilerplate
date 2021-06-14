@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import { heading5, MicroLabel } from '../../../../../theme/typography';
 import { sizeUnits } from '../../../../../theme/size';
 import { RadioButton } from '../../../radioButton';
-import { Button } from '../../../button';
-import { ButtonVariant } from '../../../button/button.types';
+import { Button, ButtonVariant } from '../../../button';
 import { color } from '../../../../../theme';
 
 export const Container = styled.div``;

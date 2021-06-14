@@ -8,8 +8,7 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 
 import { usePromiseMutation } from '../../../../../shared/services/graphqlApi/usePromiseMutation';
 import { Link as ButtonLink } from '../../../../../shared/components/link';
-import { ButtonVariant } from '../../../../../shared/components/button/button.types';
-import { Button } from '../../../../../shared/components/button';
+import { Button, ButtonVariant } from '../../../../../shared/components/button';
 import { Icon } from '../../../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../app.constants';

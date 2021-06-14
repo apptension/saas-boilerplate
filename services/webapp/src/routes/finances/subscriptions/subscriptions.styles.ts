@@ -4,7 +4,7 @@ import { contentWrapper, sizeUnits, verticalPadding } from '../../../theme/size'
 import { heading3, heading4, label, labelBold } from '../../../theme/typography';
 import { greyScale } from '../../../theme/color';
 import { Link as LinkBase } from '../../../shared/components/link';
-import { ButtonVariant } from '../../../shared/components/button/button.types';
+import { ButtonVariant } from '../../../shared/components/button';
 import { Breakpoint, media } from '../../../theme/media';
 
 export const Container = styled.div`

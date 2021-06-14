@@ -13,9 +13,8 @@ import { useGenerateLocalePath } from '../../../useLanguageFromParams/useLanguag
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
 import { Link } from '../../../../shared/components/link';
-import { Button } from '../../../../shared/components/button';
+import { Button, ButtonVariant } from '../../../../shared/components/button';
 import { Icon } from '../../../../shared/components/icon';
-import { ButtonVariant } from '../../../../shared/components/button/button.types';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
 export interface CrudDemoItemListItemProps {

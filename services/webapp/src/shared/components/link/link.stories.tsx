@@ -1,9 +1,9 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { action } from '@storybook/addon-actions';
+
 import { ProvidersWrapper } from '../../utils/testUtils';
-import { ButtonVariant } from '../button/button.types';
+import { ButtonVariant } from '../button';
 import { Link, LinkProps } from './link.component';
 
 const Template: Story<LinkProps> = (args) => {
