@@ -7,6 +7,7 @@ import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
 
 jest.mock('../../../hooks/useMediaQuery');
+const mockedUseMediaQuery = useMediaQuery as jest.Mock;
 
 describe('HiddenOnPlatform: Component', () => {
   const defaultQuery = {
@@ -24,23 +25,23 @@ describe('HiddenOnPlatform: Component', () => {
   const render = makePropsRenderer(component);
 
   beforeEach(() => {
-    useMediaQuery.mockReset();
+    mockedUseMediaQuery.mockReset();
   });
 
   it('should pass query to useMediaQuery hook', () => {
-    useMediaQuery.mockReturnValue({ matches: true });
+    mockedUseMediaQuery.mockReturnValue({ matches: true });
     render();
     expect(useMediaQuery).toHaveBeenCalledWith(defaultQuery);
   });
 
   it('should render nothing if media query matches', () => {
-    useMediaQuery.mockReturnValue({ matches: true });
+    mockedUseMediaQuery.mockReturnValue({ matches: true });
     render();
     expect(screen.queryByTestId(PLACEHOLDER_TEST_ID)).not.toBeInTheDocument();
   });
 
   it('should render children if media query doesnt match', () => {
-    useMediaQuery.mockReturnValue({ matches: false });
+    mockedUseMediaQuery.mockReturnValue({ matches: false });
     render();
     expect(screen.queryByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });

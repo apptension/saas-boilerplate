@@ -129,6 +129,7 @@
     "lint": "yarn run lint:js && yarn run lint:css",
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
+    "verify": "node ./scripts/verify.js",
     "storybook": "yarn build-emails && start-storybook -s ./public --port 5001",
     "build-storybook": "node ./scripts/build-storybook.js",
     "graphql:download-schema": "/bin/sh ./scripts/download-graphql-schema.sh",
@@ -152,7 +153,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && pretty-quick --staged --pattern 'services/webapp/**/*.(js|jsx|ts|tsx)'"
+      "pre-commit": "lint-staged && pretty-quick --staged --pattern 'services/webapp/**/*.(js|jsx|ts|tsx)'",
+      "pre-push": "yarn run verify"
     }
   },
   "devDependencies": {
@@ -160,7 +162,8 @@
     "babel-plugin-relay": "^11.0.2",
     "relay-compiler": "^11.0.2",
     "relay-compiler-language-typescript": "^14.0.0",
-    "webpack-cli": "^4.5.0"
+    "webpack-cli": "^4.5.0",
+    "terminal-link": "^2.1.1"
   },
   "jest": {
     "transformIgnorePatterns": [

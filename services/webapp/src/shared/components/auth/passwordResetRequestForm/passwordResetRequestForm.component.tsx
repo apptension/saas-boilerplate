@@ -34,6 +34,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
     },
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSubmit = useCallback(
     throttle(
       async (data: ResetPasswordFormFields) => {

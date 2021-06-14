@@ -6,12 +6,15 @@ import { ResponsiveThemeProvider } from '../../../components/responsiveThemeProv
 
 jest.mock('../../../../theme/media', () => ({
   ...jest.requireActual<NodeModule>('../../../../theme/media'),
-  getActiveBreakpoint: jest.fn()
+  getActiveBreakpoint: jest.fn(),
 }));
 
-const render = (query: BreakpointQuery = {}) => renderHook(() => useMediaQuery(query), {
-  wrapper: ({ children }) => <ResponsiveThemeProvider>{children}</ResponsiveThemeProvider>,
-});
+const render = (query: BreakpointQuery = {}) =>
+  renderHook(() => useMediaQuery(query), {
+    wrapper: ({ children }) => <ResponsiveThemeProvider>{children}</ResponsiveThemeProvider>,
+  });
+
+const mockedGetActiveBreakpoint = getActiveBreakpoint as jest.Mock;
 
 describe('useMediaQuery: Hook', () => {
   it('should return true if no query defined', () => {
@@ -20,14 +23,14 @@ describe('useMediaQuery: Hook', () => {
   });
 
   describe('when matches props is specified', () => {
-    it('should return false when given breakPoint name doesn\'t match current breakPoint', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
+    it("should return false when given breakPoint name doesn't match current breakPoint", () => {
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
       const { result } = render({ matches: Breakpoint.MOBILE });
       expect(result.current).toEqual({ matches: false });
     });
 
     it('should return true when given breakPoint name matches current breakPoint', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.MOBILE);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.MOBILE);
       const { result } = render({ matches: Breakpoint.MOBILE });
       expect(result.current).toEqual({ matches: true });
     });
@@ -35,19 +38,19 @@ describe('useMediaQuery: Hook', () => {
 
   describe('when below prop is specified', () => {
     it('should return true if active breakpoint is smaller', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
       const { result } = render({ below: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: true });
     });
 
     it('should return true if active breakpoint is equal', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
       const { result } = render({ below: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: true });
     });
 
     it('should return false if active breakpoint larger', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP_FULL);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP_FULL);
       const { result } = render({ below: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: false });
     });
@@ -55,19 +58,19 @@ describe('useMediaQuery: Hook', () => {
 
   describe('when above prop is specified', () => {
     it('should return false if active breakpoint is smaller', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.TABLET);
       const { result } = render({ above: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: false });
     });
 
     it('should return true if active breakpoint is equal', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
       const { result } = render({ above: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: true });
     });
 
     it('should return true if active breakpoint is larger', () => {
-      getActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP_FULL);
+      mockedGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP_FULL);
       const { result } = render({ above: Breakpoint.DESKTOP });
       expect(result.current).toEqual({ matches: true });
     });

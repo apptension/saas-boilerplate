@@ -18,8 +18,8 @@ describe('ResponsiveThemeProvider: Component', () => {
   };
 
   beforeEach(() => {
-    getActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
-  })
+    (getActiveBreakpoint as jest.Mock).mockReturnValue(Breakpoint.DESKTOP);
+  });
 
   const component = (props: Partial<ResponsiveThemeProviderProps>) => (
     <ResponsiveThemeProvider {...defaultProps} {...props} />
