@@ -30,7 +30,7 @@ describe('useLanguageFromParams: Hook', () => {
     expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(LOCALES.POLISH));
   });
 
-  it('should set default language language is not matched', () => {
+  it('should set default language if it is not matched', () => {
     mockParams.mockReturnValue({ lang: null });
     render();
     expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(DEFAULT_LOCALE));

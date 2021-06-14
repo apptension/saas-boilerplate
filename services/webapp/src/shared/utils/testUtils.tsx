@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Nullish, render } from '@testing-library/react';
 import { createStore } from 'redux';
@@ -8,9 +8,10 @@ import { createMemoryHistory, MemoryHistory } from 'history';
 import { Route, Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
-
 import { MockedProvider } from '@apollo/client/testing';
-import { Regex } from 'aws-sdk/clients/wafv2';
+import { RelayEnvironmentProvider } from 'react-relay';
+import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+
 import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';
@@ -36,6 +37,7 @@ export interface ContextData {
   };
   store?: GlobalState;
   messages?: TranslationMessages;
+  relayEnvironment?: RelayMockEnvironment;
   apolloMocks?: any[];
 }
 
@@ -55,17 +57,21 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
     messages: messages ?? translationMessages[DEFAULT_LOCALE],
   };
 
+  const relayEnvironment = context?.relayEnvironment ?? createMockEnvironment();
+
   return (
     <Router history={routerHistory}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
-          <MockedProvider mocks={apolloMocks} addTypename={false}>
-            <IntlProvider {...intlProviderMockProps}>
-              <Provider store={createStore(createReducer(), produce(store, identity))}>
-                <Route path={routePath}>{children}</Route>
-              </Provider>
-            </IntlProvider>
-          </MockedProvider>
+          <RelayEnvironmentProvider environment={relayEnvironment}>
+            <MockedProvider mocks={apolloMocks} addTypename={false}>
+              <IntlProvider {...intlProviderMockProps}>
+                <Provider store={createStore(createReducer(), produce(store, identity))}>
+                  <Route path={routePath}>{children}</Route>
+                </Provider>
+              </IntlProvider>
+            </MockedProvider>
+          </RelayEnvironmentProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
     </Router>
@@ -91,4 +97,32 @@ export const matchTextContent = (text: string | RegExp) => (_: unknown, node: Nu
   };
   const childrenDontHaveText = Array.from(node?.children ?? []).every((child) => !hasText(child));
   return Boolean(node && hasText(node) && childrenDontHaveText);
+};
+
+export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []) => {
+  if (!arr || arr.length === 0) {
+    return {
+      edges: [],
+      totalCount: 0,
+      count: 0,
+      endCursorOffset: 0,
+      startCursorOffset: 0,
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
+  }
+
+  return {
+    edges: arr.map((node) => ({ node })),
+    totalCount: arr.length,
+    count: arr.length,
+    endCursorOffset: arr.length,
+    startCursorOffset: 0,
+    pageInfo: {
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
+  };
 };

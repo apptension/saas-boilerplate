@@ -3,15 +3,14 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
 import { ROUTES } from '../../app.constants';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { Link } from '../../../shared/components/link';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
 import { Container, Header, Links, OrDivider } from './login.styles';
 
 export const Login = () => {
-  const resetPasswordUrl = useLocaleUrl(ROUTES.passwordReset.index);
-  const signupUrl = useLocaleUrl(ROUTES.signup);
+  const generateLocalePath = useGenerateLocalePath();
 
   return (
     <Container>
@@ -28,11 +27,11 @@ export const Login = () => {
       <LoginForm />
 
       <Links>
-        <Link to={resetPasswordUrl}>
+        <Link to={generateLocalePath(ROUTES.passwordReset.index)}>
           <FormattedMessage defaultMessage="Forgot password?" description="Auth / login / reset password link" />
         </Link>
 
-        <Link to={signupUrl}>
+        <Link to={generateLocalePath(ROUTES.signup)}>
           <FormattedMessage defaultMessage="Sign up" description="Auth / Login / signup link" />
         </Link>
       </Links>

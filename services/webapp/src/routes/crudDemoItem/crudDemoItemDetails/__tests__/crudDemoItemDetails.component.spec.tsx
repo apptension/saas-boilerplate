@@ -1,34 +1,44 @@
 import React from 'react';
 import { generatePath } from 'react-router';
 import { screen } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
-import { crudDemoItemFactory } from '../../../../mocks/factories';
-import { prepareState } from '../../../../mocks/store';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+
+import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDetailsQuery.graphql';
+import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { ROUTES } from '../../../app.constants';
-
-const item = crudDemoItemFactory();
-const items = [crudDemoItemFactory(), item, crudDemoItemFactory()];
-
-const store = prepareState((state) => {
-  state.crudDemoItem.items = items;
-});
+import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 
 describe('CrudDemoItemDetails: Component', () => {
-  const component = () => <CrudDemoItemDetails />;
-  const render = makeContextRenderer(component);
-
-  it('should render item details', () => {
-    render(
+  const render = (context?: Partial<ContextData>) =>
+    makeContextRenderer(() => <CrudDemoItemDetails />)(
       {},
       {
-        store,
+        ...context,
         router: {
-          url: `/en${generatePath(ROUTES.crudDemoItem.details, { id: item.id })}`,
-          routePath: `/:lang${ROUTES.crudDemoItem.details}`,
+          url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: 'test-id' }),
+          routePath: ROUTES.crudDemoItem.edit,
         },
       }
     );
-    expect(screen.getByText(`${item.name}`)).toBeInTheDocument();
+
+  it('should render item details', () => {
+    const relayEnvironment = createMockEnvironment();
+    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        CrudDemoItemType: () => ({ name: 'demo item name' }),
+      })
+    );
+    relayEnvironment.mock.queuePendingOperation(CrudDemoItemDetailsQuery, { id: 'test-id' });
+
+    render({
+      relayEnvironment,
+      router: {
+        url: generatePath(ROUTES.crudDemoItem.details, { lang: 'en', id: 'test-id' }),
+        routePath: ROUTES.crudDemoItem.details,
+      },
+    });
+
+    expect(screen.getByText(/demo item name/gi)).toBeInTheDocument();
   });
 });

@@ -1,13 +1,15 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { generatePath } from 'react-router';
-import { EditCrudDemoItem } from '../editCrudDemoItem.component';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { crudDemoItemActions } from '../../../../modules/crudDemoItem';
-import { prepareState } from '../../../../mocks/store';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+
+import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
+import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
 import { ROUTES } from '../../../app.constants';
 import { snackbarActions } from '../../../../modules/snackbar';
+import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -17,94 +19,111 @@ jest.mock('react-redux', () => {
   };
 });
 
-const originalItem = {
-  name: 'old item',
-  id: 'test-id',
-};
-
-const store = prepareState((state) => {
-  state.crudDemoItem.items = [originalItem];
-});
-
 describe('EditCrudDemoItem: Component', () => {
-  const component = () => <EditCrudDemoItem />;
-  const renderWithContext = makeContextRenderer(component);
-  const render = () =>
+  const renderWithContext = makeContextRenderer(() => <EditCrudDemoItem />);
+  const render = (context?: Partial<ContextData>) =>
     renderWithContext(
       {},
       {
-        store,
+        ...context,
         router: {
-          url: `/en${generatePath(ROUTES.crudDemoItem.edit, { id: 'test-id' })}`,
-          routePath: `/:lang${ROUTES.crudDemoItem.edit}`,
+          url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: 'test-id' }),
+          routePath: ROUTES.crudDemoItem.edit,
         },
       }
     );
-
-  const formData = {
-    name: 'new item',
-  };
 
   beforeEach(() => {
     mockDispatch.mockReset();
   });
 
-  it('should display empty form', () => {
-    render();
+  it('should display prefilled form', () => {
+    const relayEnvironment = createMockEnvironment();
+    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        CrudDemoItemType: () => ({ name: 'old item' }),
+      })
+    );
+    relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
+
+    render({ relayEnvironment });
+
     expect(screen.getByDisplayValue(/old item/gi)).toBeInTheDocument();
   });
 
-  it('should call addCrudDemoItem action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
-    render();
-    userEvent.clear(screen.getByPlaceholderText(/name/gi));
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(
-        crudDemoItemActions.updateCrudDemoItem({ ...originalItem, ...formData })
-      );
-    });
-  });
-
   describe('action completes successfully', () => {
-    it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
+    it('should commit mutation', async () => {
+      const relayEnvironment = createMockEnvironment();
+      relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+        MockPayloadGenerator.generate(operation, {
+          CrudDemoItemType: () => ({ id: 'test-id', name: 'old item' }),
+        })
+      );
+      relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
 
-      render();
-      userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
+      render({ relayEnvironment });
+
+      act(() => {
+        const nameField = screen.getByPlaceholderText(/name/gi);
+        userEvent.clear(nameField);
+        userEvent.type(nameField, 'new item name');
+        userEvent.click(screen.getByRole('button', { name: /save/gi }));
+      });
+
       await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
+        expect(operation.fragment.variables).toEqual({ input: { id: 'test-id', name: 'new item name' } });
+
+        act(() => {
+          relayEnvironment.mock.resolve(
+            operation,
+            MockPayloadGenerator.generate(operation, {
+              CreateOrUpdateCrudDemoItemMutationPayload: () => {
+                return {
+                  errors: null,
+                };
+              },
+            })
+          );
+        });
       });
     });
-  });
 
-  it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      name: [{ message: 'Provided value is invalid', code: 'invalid' }],
-    });
+    it('should show success message', async () => {
+      const relayEnvironment = createMockEnvironment();
+      relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+        MockPayloadGenerator.generate(operation, {
+          CrudDemoItemType: () => ({ name: 'old item' }),
+        })
+      );
+      relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
-    });
-  });
+      render({ relayEnvironment });
 
-  it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }],
-    });
+      userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
+      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
+      await waitFor(() => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
+        act(() => {
+          relayEnvironment.mock.resolve(
+            operation,
+            MockPayloadGenerator.generate(operation, {
+              CreateOrUpdateCrudDemoItemMutationPayload: () => {
+                return {
+                  errors: null,
+                };
+              },
+            })
+          );
+        });
+      });
+
+      await waitFor(() =>
+        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'))
+      );
     });
   });
 });

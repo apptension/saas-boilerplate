@@ -1,42 +1,65 @@
 import React from 'react';
-
-import { generatePath } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import graphql from 'babel-plugin-relay/macro';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { CrudDemoItem } from '../../../../shared/services/api/crudDemoItem/types';
+import { ConnectionHandler } from 'relay-runtime';
+import { useFragment } from 'react-relay';
+
+import { crudDemoItemListItem$key } from '../../../../__generated__/crudDemoItemListItem.graphql';
+import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
 import { ROUTES } from '../../../app.constants';
-import { crudDemoItemActions } from '../../../../modules/crudDemoItem';
-import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
 import { Link } from '../../../../shared/components/link';
 import { Button } from '../../../../shared/components/button';
 import { Icon } from '../../../../shared/components/icon';
 import { ButtonVariant } from '../../../../shared/components/button/button.types';
-import { Container, InlineButtons, LinkContainer, Text, DropdownMenu } from './crudDemoItemListItem.styles';
+import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
 export interface CrudDemoItemListItemProps {
-  item: CrudDemoItem;
+  item: crudDemoItemListItem$key;
 }
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
-  const dispatch = useDispatch();
-  const detailsUrl = useLocaleUrl(ROUTES.crudDemoItem.details);
-  const editUrl = useLocaleUrl(ROUTES.crudDemoItem.edit);
+  const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const [commitDeleteMutation] = usePromiseMutation(
+    graphql`
+      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {
+        deleteCrudDemoItem(input: $input) {
+          deletedIds @deleteEdge(connections: $connections)
+        }
+      }
+    `
+  );
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const data = useFragment<crudDemoItemListItem$key>(
+    graphql`
+      fragment crudDemoItemListItem on CrudDemoItemType {
+        id
+        name
+      }
+    `,
+    item
+  );
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    dispatch(crudDemoItemActions.deleteCrudDemoItem(item.id));
+    await commitDeleteMutation({
+      variables: {
+        input: { id: data.id },
+        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
+      },
+    });
   };
 
   const renderInlineButtons = () => (
     <InlineButtons>
       <Link
         variant={ButtonVariant.RAW}
-        to={generatePath(editUrl, { id: item.id })}
+        to={generateLocalePath(ROUTES.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage description={'CrudDemoItem list / Edit link'} defaultMessage={'Edit'} />
@@ -47,12 +70,14 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     </InlineButtons>
   );
 
-  const renderButtonsMenu = () => <DropdownMenu itemId={item.id} />;
+  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} />;
 
   return (
     <Container>
-      <LinkContainer to={generatePath(detailsUrl, { id: item.id })}>
-        <Text>{item.name}</Text>
+      <LinkContainer>
+        <Link variant={ButtonVariant.RAW} to={generateLocalePath(ROUTES.crudDemoItem.details, { id: data.id })}>
+          <Text>{data.name}</Text>
+        </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
       </LinkContainer>
     </Container>

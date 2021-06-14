@@ -13,4 +13,3 @@ public/uploads/**
 .DS_Store
 npm-debug.log
 .idea
-src/shared/services/contentful/__generated

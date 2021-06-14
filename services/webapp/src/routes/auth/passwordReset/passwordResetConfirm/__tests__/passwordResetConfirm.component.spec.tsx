@@ -1,12 +1,11 @@
 import React from 'react';
-
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { generatePath } from 'react-router';
+
 import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
-import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 import { ROUTES } from '../../../../app.constants';
 import { confirmPasswordReset } from '../../../../../modules/auth/auth.actions';
+import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 
 const user = 'user_id';
 const token = 'token';
@@ -31,7 +30,7 @@ describe('PasswordResetConfirm: Component', () => {
 
   it('should hide token and user from URL', async () => {
     const { pushSpy, history } = spiedHistory(confirmResetRoute);
-    render({}, { router: { history, routePath: `/:lang${ROUTES.passwordReset.confirm}` } });
+    render({}, { router: { history, routePath: ROUTES.passwordReset.confirm } });
     await waitFor(() => {
       expect(pushSpy).toHaveBeenCalledWith('/en/auth/reset-password/confirm');
     });
@@ -42,7 +41,7 @@ describe('PasswordResetConfirm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     const { history } = spiedHistory(confirmResetRoute);
-    render({}, { router: { history, routePath: `/:lang${ROUTES.passwordReset.confirm}` } });
+    render({}, { router: { history, routePath: ROUTES.passwordReset.confirm } });
     userEvent.type(screen.getByLabelText(/^new password$/gi), newPassword);
     userEvent.type(screen.getByLabelText(/^repeat new password$/gi), newPassword);
     act(() => userEvent.click(screen.getByRole('button', { name: /confirm the change/gi })));
@@ -59,7 +58,7 @@ describe('PasswordResetConfirm: Component', () => {
 
   it('should redirect to login if there is not token or user in URL', async () => {
     const { pushSpy, history } = spiedHistory(confirmResetRouteNoToken);
-    render({}, { router: { history, routePath: `/:lang${generatePath(ROUTES.passwordReset.confirm, {})}` } });
+    render({}, { router: { history, routePath: ROUTES.passwordReset.confirm } });
     await waitFor(() => {
       expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });

@@ -1,24 +1,24 @@
 import { produce } from 'immer';
 
 import { GlobalState } from '../config/reducers';
-import { LOCALES_INITIAL_STATE } from '../modules/locales';
 import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
 import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
-import { CRUD_DEMO_ITEM_INITIAL_STATE } from '../modules/crudDemoItem';
 import { STRIPE_INITIAL_STATE } from '../modules/stripe';
 import { SNACKBAR_INITIAL_STATE } from '../modules/snackbar';
 import { SUBSCRIPTION_INITIAL_STATE } from '../modules/subscription';
+import { DEFAULT_LOCALE } from '../i18n';
 //<-- IMPORT MODULE STATE -->
 
 export const store: GlobalState = {
-  locales: LOCALES_INITIAL_STATE,
+  locales: {
+    language: DEFAULT_LOCALE,
+  },
   startup: STARTUP_INITIAL_STATE,
   auth: AUTH_INITIAL_STATE,
   config: CONFIG_INITIAL_STATE,
   demoItems: DEMO_ITEMS_INITIAL_STATE,
-  crudDemoItem: CRUD_DEMO_ITEM_INITIAL_STATE,
   snackbar: SNACKBAR_INITIAL_STATE,
   stripe: STRIPE_INITIAL_STATE,
   subscription: SUBSCRIPTION_INITIAL_STATE,

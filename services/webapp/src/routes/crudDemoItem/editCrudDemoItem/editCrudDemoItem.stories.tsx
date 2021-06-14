@@ -1,32 +1,16 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { generatePath } from 'react-router';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
-import { prepareState } from '../../../mocks/store';
-import { crudDemoItemFactory } from '../../../mocks/factories';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+
+import EditCrudDemoItemQuery from '../../../__generated__/editCrudDemoItemQuery.graphql';
+import { withProviders } from '../../../shared/utils/storybook';
 import { ROUTES } from '../../app.constants';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
-const item = crudDemoItemFactory();
-const store = prepareState((state) => {
-  state.crudDemoItem.items = [item];
-});
-
 const Template: Story = (args) => {
-  return (
-    <ProvidersWrapper
-      context={{
-        store,
-        router: {
-          url: `/en${generatePath(ROUTES.crudDemoItem.edit, { id: item.id })}`,
-          routePath: `/:lang${ROUTES.crudDemoItem.edit}`,
-        },
-      }}
-    >
-      <EditCrudDemoItem {...args} />
-    </ProvidersWrapper>
-  );
+  return <EditCrudDemoItem {...args} />;
 };
 
 export default {
@@ -34,4 +18,27 @@ export default {
   component: EditCrudDemoItem,
 };
 
+const defaultItemId = 'test-id';
+
+const defaultRelayEnv = createMockEnvironment();
+defaultRelayEnv.mock.queueOperationResolver((operation: OperationDescriptor) =>
+  MockPayloadGenerator.generate(operation, {
+    CrudDemoItemType() {
+      return {
+        name: 'Default name',
+      };
+    },
+  })
+);
+defaultRelayEnv.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: defaultItemId });
+
 export const Default = Template.bind({});
+Default.decorators = [
+  withProviders({
+    router: {
+      url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: defaultItemId }),
+      routePath: ROUTES.crudDemoItem.edit,
+    },
+    relayEnvironment: defaultRelayEnv,
+  }),
+];

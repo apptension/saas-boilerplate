@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
@@ -15,7 +15,7 @@ export const ConfirmEmail = () => {
   const history = useHistory();
   const dispatch = useAsyncDispatch();
   const intl = useIntl();
-  const loginUrl = useLocaleUrl(ROUTES.login);
+  const generateLocalePath = useGenerateLocalePath();
   const params = useParams<{ token: string; user: string }>();
   const [token] = useState(params.token);
   const [user] = useState(params.user);
@@ -57,7 +57,7 @@ export const ConfirmEmail = () => {
       const isTokenInUrl = Boolean(params.token && params.user);
       const isTokenSavedFromUrl = Boolean(user && token);
 
-      history.push(loginUrl);
+      history.push(generateLocalePath(ROUTES.login));
 
       if (isTokenInUrl) {
         handleEmailConfirmation(params);
@@ -71,7 +71,7 @@ export const ConfirmEmail = () => {
     errorMessage,
     handleEmailConfirmation,
     history,
-    loginUrl,
+    generateLocalePath,
     params,
     showMessage,
     token,

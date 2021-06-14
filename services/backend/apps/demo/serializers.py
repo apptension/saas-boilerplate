@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from hashid_field import rest
+from hashid_field import rest as hidrest
 
 from apps.content import models as content_models
 from . import models
 
 
 class CrudDemoItemSerializer(serializers.ModelSerializer):
-    id = rest.HashidSerializerCharField(source_field="users.User.id", read_only=True)
+    id = hidrest.HashidSerializerCharField(source_field="users.User.id", read_only=True)
 
     class Meta:
         model = models.CrudDemoItem

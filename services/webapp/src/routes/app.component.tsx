@@ -3,13 +3,13 @@ import '../theme/styled.d';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { ApolloProvider } from '@apollo/client';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
 
 import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
-import { apolloClient } from '../shared/services/contentful';
+import relayEnvironment from '../shared/services/graphqlApi/relayEnvironment';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 import { Layout } from './layout';
@@ -30,7 +30,7 @@ export const AppComponent = ({ children }: AppComponentProps) => {
 
   return (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
-      <ApolloProvider client={apolloClient}>
+      <RelayEnvironmentProvider environment={relayEnvironment}>
         <Fragment>
           <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
             {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
@@ -42,7 +42,7 @@ export const AppComponent = ({ children }: AppComponentProps) => {
             <Layout>{React.Children.only(children)}</Layout>
           </ResponsiveThemeProvider>
         </Fragment>
-      </ApolloProvider>
+      </RelayEnvironmentProvider>
     </IntlProvider>
   );
 };

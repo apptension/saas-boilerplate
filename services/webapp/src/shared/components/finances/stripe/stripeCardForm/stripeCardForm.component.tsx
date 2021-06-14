@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
@@ -6,18 +6,14 @@ import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import {
   StripeBillingInfoChangeEvent,
   StripePaymentMethodChangeEvent,
-  StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { useApiForm } from '../../../../hooks/useApiForm';
-import { Input } from '../../../input';
-import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 import {
   Container,
-  StripeIframeStyles,
   StripeFieldContainer,
-  StripeFieldLabel,
   StripeFieldElement,
+  StripeFieldLabel,
+  StripeIframeStyles,
   StripeNameField,
 } from './stripeCardForm.styles';
 

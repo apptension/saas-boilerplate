@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { generatePath } from 'react-router-dom';
 import { ROUTES } from '../../../routes/app.constants';
-import { Layout, Button } from '../../base';
+import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
+import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { Date } from '../../../shared/components/date';
 
 export interface TrialExpiresSoonProps extends EmailComponentProps {
@@ -12,8 +12,8 @@ export interface TrialExpiresSoonProps extends EmailComponentProps {
 }
 
 export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
-  const { locale } = useIntl();
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.home)}`;
+  const generateLocalePath = useGenerateLocalePath();
+  const url = generateLocalePath(ROUTES.home, {}, { absolute: true });
 
   return (
     <Layout

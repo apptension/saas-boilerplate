@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+
 import { heading3 } from '../../../theme/typography';
 import { Breakpoint, media } from '../../../theme/media';
-import { contentWrapper, horizontalPadding, sizeUnits, verticalPadding } from '../../../theme/size';
+import { contentWrapper, sizeUnits, verticalPadding } from '../../../theme/size';
 
 export const Container = styled.div`
   ${contentWrapper}

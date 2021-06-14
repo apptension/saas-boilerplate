@@ -1,15 +1,14 @@
 import React from 'react';
-
-import { generatePath } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
+
 import { ROUTES } from '../../app.constants';
-import { useLocale } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
 import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
-import { Container, Thumbnail, Title, Link, FavoriteIcon } from './demoItemListItem.styles';
+import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
 export interface DemoItemListItemProps {
   id: string;
@@ -23,13 +22,13 @@ export interface DemoItemListItemProps {
 }
 
 export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
-  const locale = useLocale();
   const intl = useIntl();
   const { setFavorite, isFavorite } = useFavoriteDemoItem(id);
+  const generateLocalePath = useGenerateLocalePath();
 
   return (
     <Container>
-      <Link to={`/${locale}${generatePath(ROUTES.demoItem, { id })}`}>
+      <Link to={generateLocalePath(ROUTES.demoItem, { id })}>
         <FavoriteIcon
           role={'checkbox'}
           aria-checked={isFavorite}

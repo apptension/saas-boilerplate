@@ -9,7 +9,7 @@ import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
 import { FormFieldsRow } from '../../../../theme/size';
 import { snackbarActions } from '../../../../modules/snackbar';
-import { useLocaleUrl } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../routes/app.constants';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 
@@ -28,7 +28,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const dispatchWithPromise = useAsyncDispatch();
   const dispatch = useDispatch();
   const history = useHistory();
-  const loginUrl = useLocaleUrl(ROUTES.login);
+  const generateLocalePath = useGenerateLocalePath();
   const {
     register,
     handleSubmit,
@@ -69,7 +69,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       setApiResponse(res);
 
       if (!res.isError) {
-        history.push(loginUrl);
+        history.push(generateLocalePath(ROUTES.login));
         dispatch(
           snackbarActions.showMessage(
             intl.formatMessage({

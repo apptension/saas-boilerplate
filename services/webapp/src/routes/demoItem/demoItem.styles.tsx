@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { heading3, label } from '../../theme/typography';
 import { Breakpoint, media } from '../../theme/media';

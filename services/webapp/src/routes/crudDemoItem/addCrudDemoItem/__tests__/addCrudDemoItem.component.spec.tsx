@@ -1,10 +1,12 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
-import { AddCrudDemoItem } from '../addCrudDemoItem.component';
+import { act, screen, waitFor } from '@testing-library/react';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { ConnectionHandler } from 'relay-runtime';
+
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { crudDemoItemActions } from '../../../../modules/crudDemoItem';
 import { snackbarActions } from '../../../../modules/snackbar';
+import { AddCrudDemoItem } from '../addCrudDemoItem.component';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -18,10 +20,6 @@ describe('AddCrudDemoItem: Component', () => {
   const component = () => <AddCrudDemoItem />;
   const render = makeContextRenderer(component);
 
-  const formData = {
-    name: 'new item',
-  };
-
   beforeEach(() => {
     mockDispatch.mockReset();
   });
@@ -31,51 +29,68 @@ describe('AddCrudDemoItem: Component', () => {
     expect(screen.getByPlaceholderText(/name/gi).getAttribute('value')).toBeNull();
   });
 
-  it('should call addCrudDemoItem action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(crudDemoItemActions.addCrudDemoItem(formData));
-    });
-  });
-
   describe('action completes successfully', () => {
-    it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
+    it('should commit mutation', async () => {
+      const relayEnvironment = createMockEnvironment();
 
-      render();
-      userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
+      render({}, { relayEnvironment });
+
+      act(() => {
+        userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
+        userEvent.click(screen.getByRole('button', { name: /save/gi }));
+      });
+
+      await waitFor(() => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
+        expect(operation.fragment.variables).toEqual({
+          input: { name: 'new item name' },
+          connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
+        });
+
+        act(() => {
+          relayEnvironment.mock.resolve(
+            operation,
+            MockPayloadGenerator.generate(operation, {
+              CreateOrUpdateCrudDemoItemMutationPayload: () => {
+                return {
+                  errors: null,
+                };
+              },
+            })
+          );
+        });
+      });
+    });
+
+    it('should show success message', async () => {
+      const relayEnvironment = createMockEnvironment();
+
+      render({}, { relayEnvironment });
+
+      userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item');
       act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
+
+      await waitFor(() => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
+        act(() => {
+          relayEnvironment.mock.resolve(
+            operation,
+            MockPayloadGenerator.generate(operation, {
+              CreateOrUpdateCrudDemoItemMutationPayload: () => {
+                return {
+                  errors: null,
+                };
+              },
+            })
+          );
+        });
+      });
+
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
       });
-    });
-  });
-
-  it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      name: [{ message: 'Provided value is invalid', code: 'invalid' }],
-    });
-
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
-    });
-  });
-
-  it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
-
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
     });
   });
 });

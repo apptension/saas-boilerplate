@@ -1,6 +1,6 @@
 import * as faker from 'faker';
 
-import { mergeDeepRight, over } from 'ramda';
+import { mergeDeepRight } from 'ramda';
 import {
   Subscription,
   SubscriptionPhase,

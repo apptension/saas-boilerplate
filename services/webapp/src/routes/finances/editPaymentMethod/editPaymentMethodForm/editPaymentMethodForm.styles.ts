@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+
 import { Button } from '../../../../shared/components/button';
-import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
+import { sizeUnits } from '../../../../theme/size';
 
 export const Form = styled.form.attrs(() => ({ noValidate: true }))`
   width: 100%;

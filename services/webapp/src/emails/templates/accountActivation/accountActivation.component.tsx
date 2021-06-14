@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { generatePath } from 'react-router-dom';
 import { EmailComponentProps } from '../../types';
 import { Button, Layout } from '../../base';
 import { ROUTES } from '../../../routes/app.constants';
+import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
 export interface AccountActivationProps extends EmailComponentProps {
   userId: string;
@@ -12,11 +12,15 @@ export interface AccountActivationProps extends EmailComponentProps {
 }
 
 export const Template = ({ userId, token }: AccountActivationProps) => {
-  const { locale } = useIntl();
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.confirmEmail, {
-    token,
-    user: userId,
-  })}`;
+  const generateLocalPath = useGenerateLocalePath();
+  const url = generateLocalPath(
+    ROUTES.confirmEmail,
+    {
+      token,
+      user: userId,
+    },
+    { absolute: true }
+  );
 
   return (
     <Layout

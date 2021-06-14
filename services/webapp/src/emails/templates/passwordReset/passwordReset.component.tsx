@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { generatePath } from 'react-router-dom';
 import { EmailComponentProps } from '../../types';
 import { ROUTES } from '../../../routes/app.constants';
-import { Layout, Button } from '../../base';
+import { Button, Layout } from '../../base';
+import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
 export interface PasswordResetProps extends EmailComponentProps {
   userId: string;
@@ -12,11 +12,15 @@ export interface PasswordResetProps extends EmailComponentProps {
 }
 
 export const Template = ({ userId, token }: PasswordResetProps) => {
-  const { locale } = useIntl();
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.passwordReset.confirm, {
-    token,
-    user: userId,
-  })}`;
+  const generateLocalePath = useGenerateLocalePath();
+  const url = generateLocalePath(
+    ROUTES.passwordReset.confirm,
+    {
+      token,
+      user: userId,
+    },
+    { absolute: true }
+  );
 
   return (
     <Layout

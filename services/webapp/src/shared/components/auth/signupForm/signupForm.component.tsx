@@ -5,7 +5,7 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../input';
 import { signup } from '../../../../modules/auth/auth.actions';
-import { useLocaleUrl } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../routes/app.constants';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
@@ -19,8 +19,7 @@ interface SignupFormFields {
 
 export const SignupForm = () => {
   const intl = useIntl();
-  const termsUrl = useLocaleUrl(ROUTES.termsAndConditions);
-  const privacyUrl = useLocaleUrl(ROUTES.privacyPolicy);
+  const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
   const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>({
     errorMessages: {
@@ -131,7 +130,7 @@ export const SignupForm = () => {
           },
           {
             termsLink: (
-              <InlineLink to={termsUrl}>
+              <InlineLink to={generateLocalePath(ROUTES.termsAndConditions)}>
                 <FormattedMessage
                   description="Auth / Signup / Accept checkbox / T&C link"
                   defaultMessage="Terms of Use"
@@ -139,7 +138,7 @@ export const SignupForm = () => {
               </InlineLink>
             ),
             policyLink: (
-              <InlineLink to={privacyUrl}>
+              <InlineLink to={generateLocalePath(ROUTES.privacyPolicy)}>
                 <FormattedMessage
                   description="Auth / Signup / Accept checkbox / Privacy policy link"
                   defaultMessage="Privacy Policy"

@@ -1,6 +1,6 @@
-import { ContentfulAppConfig, ContentfulPlain } from '../../shared/services/contentful';
+import { ContentfulAppConfig } from '../../shared/services/contentful';
 
-export type ContentfulAppConfigPlain = ContentfulPlain<ContentfulAppConfig>;
+export type ContentfulAppConfigPlain = Pick<ContentfulAppConfig, 'name' | 'privacyPolicy' | 'termsAndConditions'>;
 
 export interface ConfigState {
   contentfulConfig?: ContentfulAppConfigPlain;

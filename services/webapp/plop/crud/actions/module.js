@@ -137,7 +137,7 @@ module.exports = [
   },
   {
     type: 'modify',
-    path: 'src/routes/index.tsx',
+    path: 'src/routes/asyncComponents.tsx',
     pattern: /(\/\/<-- IMPORT ROUTE -->)/g,
     template: `const {{ pascalCase name }}List = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}List'), '{{ pascalCase name }}List');
 const {{ pascalCase name }}Details = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}Details'), '{{ pascalCase name }}Details');

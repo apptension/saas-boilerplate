@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { generatePath } from 'react-router-dom';
 import { ROUTES } from '../../../routes/app.constants';
-import { Layout, Button } from '../../base';
+import { Button, Layout } from '../../base';
+import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
 export const Template = () => {
-  const { locale } = useIntl();
-  const url = `${process.env.REACT_APP_WEB_APP_URL}/${locale}${generatePath(ROUTES.subscriptions.index)}`;
+  const generateLocalePath = useGenerateLocalePath();
+  const url = generateLocalePath(ROUTES.subscriptions.index, {}, { absolute: true });
 
   return (
     <Layout

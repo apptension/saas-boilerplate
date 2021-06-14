@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { useAllDemoItemsQuery } from '../../shared/services/contentful/__generated/hooks';
+import { useAllDemoItemsQuery } from '../../shared/services/contentful/hooks';
 import { demoItemsActions } from '../../modules/demoItems';
 import { Container, Header, List } from './demoItems.styles';
 import { DemoItemListItem } from './demoItemListItem';

@@ -1,6 +1,7 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
-import { waitFor, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+
 import { Layout } from '../layout.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
 import { Breakpoint } from '../../../theme/media';

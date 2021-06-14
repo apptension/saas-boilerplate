@@ -8,8 +8,9 @@ import { configActions } from './index';
 function* fetchConfig() {
   try {
     const { appConfigCollection }: ContentfulAppConfigQuery = yield client.appConfig();
-    if (appConfigCollection?.items?.[0]) {
-      yield put(configActions.setAppConfig(appConfigCollection?.items?.[0]));
+    const data = appConfigCollection?.items[0];
+    if (data) {
+      yield put(configActions.setAppConfig(data));
     }
   } catch (error) {
     reportError(error);

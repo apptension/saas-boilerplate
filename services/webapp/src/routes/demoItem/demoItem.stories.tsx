@@ -27,7 +27,7 @@ const Template: Story = (args) => {
     <ProvidersWrapper
       context={{
         apolloMocks,
-        router: { url: `/en${generatePath(ROUTES.demoItem, { id: 1 })}`, routePath: `/:lang${ROUTES.demoItem}` },
+        router: { url: generatePath(ROUTES.demoItem, { lang: 'en', id: 1 }), routePath: ROUTES.demoItem },
       }}
     >
       <DemoItem {...args} />

@@ -5,19 +5,18 @@ import { useHistory } from 'react-router-dom';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
-import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';
 import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
-import { Container, Plans, Header, Subheader, PlanItem } from './editSubscription.styles';
+import { Container, Header, PlanItem, Plans, Subheader } from './editSubscription.styles';
 
 export const EditSubscription = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
   const { plans } = useAvailableSubscriptionPlans();
   const history = useHistory();
-  const successUrl = useLocaleUrl(ROUTES.subscriptions.index);
+  const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
 
   const successMessage = intl.formatMessage({
@@ -39,7 +38,7 @@ export const EditSubscription = () => {
 
     if (!res.isError) {
       await showMessage(successMessage);
-      history.push(successUrl);
+      history.push(generateLocalePath(ROUTES.subscriptions.index));
     } else {
       await showMessage(failMessage);
     }

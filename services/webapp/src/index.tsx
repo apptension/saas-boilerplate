@@ -46,14 +46,20 @@ setupStoreInterceptors(store);
 const render = (): void => {
   const NextApp = require('./routes').default;
 
+  const app = (
+    <Provider store={store}>
+      <Router history={browserHistory}>
+        <NextApp />
+      </Router>
+    </Provider>
+  );
+
   ReactDOM.render(
-    <Sentry.ErrorBoundary fallback={'An error has occurred'}>
-      <Provider store={store}>
-        <Router history={browserHistory}>
-          <NextApp />
-        </Router>
-      </Provider>
-    </Sentry.ErrorBoundary>,
+    process.env.REACT_APP_SENTRY_DSN ? (
+      <Sentry.ErrorBoundary fallback={'An error has occurred'}>{app}</Sentry.ErrorBoundary>
+    ) : (
+      app
+    ),
     document.getElementById('app')
   );
 };

@@ -11,7 +11,7 @@ import {
   selectIsTrialActive,
   selectTrialEnd,
 } from '../../../modules/subscription/subscription.selectors';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import {
   useActiveSubscriptionPlanDetails,
@@ -24,8 +24,7 @@ import { Date } from '../../../shared/components/date';
 import { Container, Header, Link, Row, RowValue, Section, Subheader } from './subscriptions.styles';
 
 export const Subscriptions = () => {
-  const changePlanUrl = useLocaleUrl(ROUTES.subscriptions.changePlan);
-  const cancelSubscriptionUrl = useLocaleUrl(ROUTES.subscriptions.cancel);
+  const generateLocalePath = useGenerateLocalePath();
 
   const activeSubscriptionPlan = useActiveSubscriptionPlanDetails();
   const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
@@ -89,12 +88,12 @@ export const Subscriptions = () => {
           </>
         )}
 
-        <Link to={changePlanUrl}>
+        <Link to={generateLocalePath(ROUTES.subscriptions.changePlan)}>
           <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
         </Link>
 
         {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !isCancelled && (
-          <Link to={cancelSubscriptionUrl} variant={ButtonVariant.SECONDARY}>
+          <Link to={generateLocalePath(ROUTES.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
             <FormattedMessage
               defaultMessage="Cancel subscription"
               description="My subscription / Cancel subscription"

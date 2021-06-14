@@ -1,11 +1,12 @@
-import { useForm, FieldName } from 'react-hook-form';
+import { FieldName, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isNil, keys } from 'ramda';
+
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
-import { UseApiFormArgs } from './useApiForm.types';
+import { GraphQLResponseError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
-export const useApiForm = <FormData extends Record<string, any>>(args?: UseApiFormArgs<FormData>) => {
+export const useApiForm = <FormData extends Record<string | number, any>>(args?: UseApiFormArgs<FormData>) => {
   const [genericError, setGenericError] = useState<string>();
   const { translateErrorMessage } = useTranslatedErrors<FormData>(args?.errorMessages);
 
@@ -31,6 +32,23 @@ export const useApiForm = <FormData extends Record<string, any>>(args?: UseApiFo
     [setError, translateErrorMessage]
   );
 
+  const setGraphQLResponseErrors = useCallback(
+    (errors: ReadonlyArray<GraphQLResponseError | null>) => {
+      const formErrors: FormSubmitError<FormData> = {};
+      errors.forEach((error) => {
+        if (error?.messages) {
+          formErrors[error.field as 'nonFieldErrors' | keyof FormData] = error.messages.map((message) => ({
+            code: message?.code ?? '',
+            message: message?.message ?? '',
+          }));
+        }
+      });
+
+      setResponseErrors(formErrors);
+    },
+    [setResponseErrors]
+  );
+
   const setApiResponse = useCallback(
     (response: ApiFormSubmitResponse<FormData, unknown>) => {
       if (response.isError) {
@@ -52,6 +70,7 @@ export const useApiForm = <FormData extends Record<string, any>>(args?: UseApiFo
     ...formControls,
     genericError,
     setApiResponse,
+    setGraphQLResponseErrors,
     setGenericError,
     handleSubmit,
     formState: Object.assign(formControls.formState, {

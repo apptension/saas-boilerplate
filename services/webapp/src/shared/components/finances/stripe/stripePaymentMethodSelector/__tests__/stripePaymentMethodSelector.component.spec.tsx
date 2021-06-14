@@ -1,13 +1,12 @@
 import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
+
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { makeContextRenderer, matchTextContent, ProvidersWrapper } from '../../../../../utils/testUtils';
 import { useApiForm } from '../../../../../hooks/useApiForm';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
-import { prepareState } from '../../../../../../mocks/store';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
-import { useStripePaymentMethods } from '../../stripePayment.hooks';
 
 const mockUseStripePaymentMethods = jest.fn();
 jest.mock('../../stripePayment.hooks', () => ({ useStripePaymentMethods: () => mockUseStripePaymentMethods() }));

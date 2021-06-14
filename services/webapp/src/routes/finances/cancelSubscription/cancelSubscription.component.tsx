@@ -1,16 +1,16 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { H2, H3, Label } from '../../../theme/typography';
+
+import { H2, Label } from '../../../theme/typography';
 import { useActiveSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { selectActiveSubscriptionRenewalDate } from '../../../modules/subscription/subscription.selectors';
 import { Button } from '../../../shared/components/button';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { Container } from './cancelSubscription.styles';
 
@@ -19,7 +19,7 @@ export const CancelSubscription = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
   const history = useHistory();
-  const successUrl = useLocaleUrl(ROUTES.subscriptions.index);
+  const generateLocalePath = useGenerateLocalePath();
 
   const activeSubscriptionPlan = useActiveSubscriptionPlanDetails();
   const activeSubscriptionRenewalDate = useSelector(selectActiveSubscriptionRenewalDate);
@@ -33,7 +33,7 @@ export const CancelSubscription = () => {
     try {
       await dispatch(subscriptionActions.cancelSubscription());
       showMessage(successMessage);
-      history.push(successUrl);
+      history.push(generateLocalePath(ROUTES.subscriptions.index));
     } catch {}
   };
 

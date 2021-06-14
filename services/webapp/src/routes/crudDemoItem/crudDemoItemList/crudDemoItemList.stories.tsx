@@ -1,23 +1,15 @@
 import React from 'react';
 import { Story } from '@storybook/react';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-import { crudDemoItemFactory } from '../../../mocks/factories';
-import { prepareState } from '../../../mocks/store';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import CrudDemoItemListQuery from '../../../__generated__/crudDemoItemListQuery.graphql';
+import { withProviders } from '../../../shared/utils/storybook';
+import { connectionFromArray } from '../../../shared/utils/testUtils';
 import { CrudDemoItemList } from './crudDemoItemList.component';
 
-const items = [crudDemoItemFactory(), crudDemoItemFactory(), crudDemoItemFactory()];
-
-const store = prepareState((state) => {
-  state.crudDemoItem.items = items;
-});
-
 const Template: Story = (args) => {
-  return (
-    <ProvidersWrapper context={{ store }}>
-      <CrudDemoItemList {...args} />
-    </ProvidersWrapper>
-  );
+  return <CrudDemoItemList {...args} />;
 };
 
 export default {
@@ -25,4 +17,17 @@ export default {
   component: CrudDemoItemList,
 };
 
+const environment = createMockEnvironment();
+environment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+  MockPayloadGenerator.generate(operation, {
+    CrudDemoItemConnection: (...args) => connectionFromArray([{ name: 'First item' }, { name: 'Second item' }]),
+  })
+);
+environment.mock.queuePendingOperation(CrudDemoItemListQuery, {});
+
 export const Default = Template.bind({});
+Default.decorators = [
+  withProviders({
+    relayEnvironment: environment,
+  }),
+];

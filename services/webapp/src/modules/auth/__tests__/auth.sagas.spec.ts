@@ -1,10 +1,9 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from 'http-status-codes';
-
 import { identity } from 'ramda';
-import { watchAuth } from '../auth.sagas';
-import { authActions } from '..';
+
 import { server } from '../../../mocks/server';
+import { watchAuth } from '../auth.sagas';
 import {
   mockChangePassword,
   mockConfirmEmail,
@@ -19,8 +18,9 @@ import {
 import history from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '../../../mocks/factories';
-import { OAuthProvider } from '../auth.types';
 import { snackbarActions } from '../../snackbar';
+import { OAuthProvider } from '../auth.types';
+import { authActions } from '..';
 
 jest.mock('../../../shared/utils/history');
 

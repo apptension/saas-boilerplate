@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from 'react';
-
-import { generatePath, useHistory, useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
-import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../app.constants';
 import { Link } from '../../../../shared/components/link';
-import { Container, Links, Header, Text } from './passwordResetConfirm.styles';
+import { Container, Header, Links, Text } from './passwordResetConfirm.styles';
 
 export const PasswordResetConfirm = () => {
   const history = useHistory();
   const params = useParams<{ token: string; user: string }>();
   const [token] = useState(params.token);
   const [user] = useState(params.user);
-  const resetConfirmUrl = useLocaleUrl(generatePath(ROUTES.passwordReset.confirm, {}));
-  const loginUrl = useLocaleUrl(ROUTES.login);
+  const generateLocalePath = useGenerateLocalePath();
 
   const isTokenInUrl = params.token && params.user;
   const isTokenSavedFromUrl = user && token;
 
   useEffect(() => {
     if (isTokenInUrl) {
-      history.push(resetConfirmUrl);
+      history.push(generateLocalePath(ROUTES.passwordReset.confirm));
     }
 
     if (!isTokenInUrl && !isTokenSavedFromUrl) {
-      history.push(loginUrl);
+      history.push(generateLocalePath(ROUTES.login));
     }
-  }, [history, isTokenInUrl, isTokenSavedFromUrl, loginUrl, resetConfirmUrl]);
+  }, [history, isTokenInUrl, isTokenSavedFromUrl, generateLocalePath]);
 
   return (
     <Container>
@@ -44,7 +43,7 @@ export const PasswordResetConfirm = () => {
       <PasswordResetConfirmForm user={user} token={token} />
 
       <Links>
-        <Link to={loginUrl}>
+        <Link to={generateLocalePath(ROUTES.login)}>
           <FormattedMessage
             defaultMessage="Go back to log in"
             description="Auth / Confirm reset password / login link"

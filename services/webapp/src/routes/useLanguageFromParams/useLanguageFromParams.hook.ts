@@ -1,7 +1,7 @@
+import { join } from 'path';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-
+import { useParams, generatePath } from 'react-router-dom';
 import { localesActions } from '../../modules/locales';
 import { DEFAULT_LOCALE } from '../../i18n';
 
@@ -11,12 +11,19 @@ export interface LanguagePathParams {
 
 export const useLocale = () => {
   const { lang } = useParams<LanguagePathParams>();
-  return lang || DEFAULT_LOCALE;
+  return lang ?? DEFAULT_LOCALE;
 };
 
-export const useLocaleUrl = (url: string) => {
-  const locale = useLocale();
-  return `/${locale}${url}`;
+export const useGenerateLocalePath = () => {
+  const lang = useLocale();
+
+  return (path: string, params: Record<string, string | number> = {}, config?: { absolute: boolean }) => {
+    const localPath = generatePath(path, { ...params, lang });
+    if (config?.absolute) {
+      return join(process.env.REACT_APP_WEB_APP_URL ?? '', localPath);
+    }
+    return localPath;
+  };
 };
 
 export const useLanguageFromParams = () => {

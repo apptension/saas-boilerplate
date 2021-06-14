@@ -1,0 +1,98 @@
+schema {
+  query: ApiQuery
+  mutation: ApiMutation
+}
+
+type ApiMutation {
+  createOrUpdateCrudDemoItem(input: CreateOrUpdateCrudDemoItemMutationInput!): CreateOrUpdateCrudDemoItemMutationPayload
+  deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
+}
+
+type ApiQuery {
+  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  crudDemoItemById(id: String): CrudDemoItemType
+}
+
+input CreateOrUpdateCrudDemoItemMutationInput {
+  id: String
+  name: String!
+  clientMutationId: String
+}
+
+type CreateOrUpdateCrudDemoItemMutationPayload {
+  crudDemoItem: CrudDemoItemType
+  crudDemoItemEdge: CrudDemoItemEdge
+
+  """May contain more than one error for same field."""
+  errors: [RelayErrorType]
+  clientMutationId: String
+}
+
+type CrudDemoItemConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [CrudDemoItemEdge]!
+}
+
+"""A Relay edge containing a `CrudDemoItem` and its cursor."""
+type CrudDemoItemEdge {
+  """The item at the end of the edge"""
+  node: CrudDemoItemType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type CrudDemoItemType implements Node {
+  """The ID of the object."""
+  id: ID!
+  name: String!
+}
+
+input DeleteCrudDemoItemMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type DeleteCrudDemoItemMutationPayload {
+  """May contain more than one error for same field."""
+  errors: [RelayErrorType]
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
+"""An object with an ID"""
+interface Node {
+  """The ID of the object."""
+  id: ID!
+}
+
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type RelayErrorMessageType {
+  message: String!
+  code: String!
+}
+
+type RelayErrorType {
+  field: String!
+  messages: [RelayErrorMessageType!]
+}
+

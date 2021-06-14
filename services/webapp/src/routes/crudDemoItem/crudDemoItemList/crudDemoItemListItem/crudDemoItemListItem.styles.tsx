@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
 import { label } from '../../../../theme/typography';
 import { border, color, transition } from '../../../../theme';
@@ -8,7 +7,7 @@ import { CrudDropdownMenu } from './crudDropdownMenu';
 
 export const Container = styled.li``;
 
-export const LinkContainer = styled(Link)`
+export const LinkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -1,12 +1,12 @@
 import { all, put, takeLatest, select } from 'redux-saga/effects';
 
+import { ROUTES } from '../../routes/app.constants';
 import { auth } from '../../shared/services/api';
 import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';
-import { ROUTES } from '../../routes/app.constants';
-import { handleApiRequest } from '../helpers/handleApiRequest';
-import { navigate } from '../helpers/navigate';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { getOauthUrl } from '../../shared/services/api/auth';
+import { handleApiRequest } from '../helpers/handleApiRequest';
+import { navigate } from '../helpers/navigate';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
 import { selectIsLoggedIn } from './auth.selectors';

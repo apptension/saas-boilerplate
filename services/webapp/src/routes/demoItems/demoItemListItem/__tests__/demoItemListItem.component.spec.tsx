@@ -1,10 +1,11 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
-import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.component';
 import { prepareState } from '../../../../mocks/store';
 import { demoItemsActions } from '../../../../modules/demoItems';
+import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.component';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {

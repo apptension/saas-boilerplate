@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { StripePaymentForm } from '../../../shared/components/finances/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { Container, Header, Subheader } from './paymentConfirm.styles';
 
@@ -14,7 +14,7 @@ export const PaymentConfirm = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
   const history = useHistory();
-  const successUrl = useLocaleUrl(ROUTES.home);
+  const generateLocalePath = useGenerateLocalePath();
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'Payment successful',
@@ -34,7 +34,7 @@ export const PaymentConfirm = () => {
       <Elements stripe={stripePromise}>
         <StripePaymentForm
           onSuccess={() => {
-            history.push(successUrl);
+            history.push(generateLocalePath(ROUTES.home));
             showMessage(successMessage);
           }}
         />

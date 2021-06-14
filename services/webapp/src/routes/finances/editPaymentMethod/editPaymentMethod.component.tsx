@@ -5,7 +5,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useHistory } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';
 import { Container } from './editPaymentMethod.styles';
@@ -15,7 +15,7 @@ export const EditPaymentMethod = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
   const history = useHistory();
-  const successUrl = useLocaleUrl(ROUTES.subscriptions.index);
+  const generateLocalePath = useGenerateLocalePath();
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'Payment method changed successfully',
@@ -28,7 +28,7 @@ export const EditPaymentMethod = () => {
       <Elements stripe={stripePromise}>
         <EditPaymentMethodForm
           onSuccess={() => {
-            history.push(successUrl);
+            history.push(generateLocalePath(ROUTES.subscriptions.index));
             showMessage(successMessage);
           }}
         />

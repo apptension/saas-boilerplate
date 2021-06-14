@@ -1,21 +1,34 @@
-import React from 'react';
-
+import React, { Suspense, useEffect } from 'react';
+import graphql from 'babel-plugin-relay/macro';
+import { useQueryLoader } from 'react-relay';
 import { useParams } from 'react-router';
-import { useCrudDemoItem } from '../useCrudDemoItem';
-import { BackButton } from '../../../shared/components/backButton/backButton.component';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
-import { Container, Header } from './crudDemoItemDetails.styles';
+
+import { crudDemoItemDetailsQuery } from '../../../__generated__/crudDemoItemDetailsQuery.graphql';
+import { CrudDemoItemDetailsContent } from './crudDemoItemDetailsContent.component';
 
 export const CrudDemoItemDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const itemData = useCrudDemoItem(id);
-  const goBackUrl = useLocaleUrl(ROUTES.crudDemoItem.list);
+
+  const [queryRef, loadQuery] = useQueryLoader<crudDemoItemDetailsQuery>(graphql`
+    query crudDemoItemDetailsQuery($id: String!) {
+      crudDemoItemById(id: $id) {
+        id
+        name
+      }
+    }
+  `);
+
+  useEffect(() => {
+    loadQuery({ id });
+  }, [loadQuery, id]);
+
+  if (!queryRef) {
+    return null;
+  }
 
   return (
-    <Container>
-      <BackButton to={goBackUrl} />
-      <Header>{itemData?.name}</Header>
-    </Container>
+    <Suspense fallback={<span>Loading ...</span>}>
+      <CrudDemoItemDetailsContent queryRef={queryRef} />
+    </Suspense>
   );
 };

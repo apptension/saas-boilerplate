@@ -1,4 +1,4 @@
 {
-  "name": "SaaS Contenful",
-  "schemaPath": "schema.graphql"
+  "name": "SaaS GraphQL Schema",
+  "schemaPath": "graphql/schema/schema.graphql"
 }

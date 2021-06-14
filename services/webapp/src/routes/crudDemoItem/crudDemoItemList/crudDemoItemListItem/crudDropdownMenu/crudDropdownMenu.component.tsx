@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-
+import graphql from 'babel-plugin-relay/macro';
+import { ConnectionHandler } from 'relay-runtime';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ClickAwayListener from 'react-click-away-listener';
-import { generatePath } from 'react-router-dom';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { useDispatch } from 'react-redux';
+
+import { usePromiseMutation } from '../../../../../shared/services/graphqlApi/usePromiseMutation';
 import { Link as ButtonLink } from '../../../../../shared/components/link';
 import { ButtonVariant } from '../../../../../shared/components/button/button.types';
 import { Button } from '../../../../../shared/components/button';
 import { Icon } from '../../../../../shared/components/icon';
-import { useLocaleUrl } from '../../../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../app.constants';
-import { crudDemoItemActions } from '../../../../../modules/crudDemoItem';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export interface CrudDropdownMenuProps {
@@ -23,12 +23,25 @@ export interface CrudDropdownMenuProps {
 export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) => {
   const [isOpen, setOpen] = useState(false);
   const intl = useIntl();
-  const editUrl = useLocaleUrl(ROUTES.crudDemoItem.edit);
-  const dispatch = useDispatch();
+  const generateLocalePath = useGenerateLocalePath();
+  const [commitDeleteMutation] = usePromiseMutation(
+    graphql`
+      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {
+        deleteCrudDemoItem(input: $input) {
+          deletedIds @deleteEdge(connections: $connections)
+        }
+      }
+    `
+  );
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    dispatch(crudDemoItemActions.deleteCrudDemoItem(itemId));
+    await commitDeleteMutation({
+      variables: {
+        input: { id: itemId },
+        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemListContent_allCrudDemoItems')],
+      },
+    });
   };
 
   return (
@@ -60,7 +73,7 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
         <Menu isOpen={isOpen}>
           <ButtonLink
             variant={ButtonVariant.FLAT}
-            to={generatePath(editUrl, { id: itemId })}
+            to={generateLocalePath(ROUTES.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
           >
             <FormattedMessage description={'CrudDemoItem list / Edit link'} defaultMessage={'Edit'} />

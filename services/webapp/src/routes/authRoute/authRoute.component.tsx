@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectIsProfileStartupCompleted } from '../../modules/startup/startup.selectors';
 import { Role } from '../../modules/auth/auth.types';
 import { useRoleAccessCheck } from '../../shared/hooks/useRoleAccessCheck';
-import { useLocaleUrl } from '../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../app.constants';
 import { renderWhenTrue } from '../../shared/utils/rendering';
 import { selectIsLoggedIn } from '../../modules/auth/auth.selectors';
@@ -23,9 +23,8 @@ export const AuthRoute = ({
   const isProfileStartupCompleted = useSelector(selectIsProfileStartupCompleted);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
-  const loginUrl = useLocaleUrl(ROUTES.login);
-  const notFoundUrl = useLocaleUrl(ROUTES.notFound);
-  const fallbackUrl = isLoggedIn ? notFoundUrl : loginUrl;
+  const generateLocalePath = useGenerateLocalePath();
+  const fallbackUrl = isLoggedIn ? generateLocalePath(ROUTES.notFound) : generateLocalePath(ROUTES.login);
 
   useLayoutEffect(() => {
     if (isProfileStartupCompleted && !isAllowed) {

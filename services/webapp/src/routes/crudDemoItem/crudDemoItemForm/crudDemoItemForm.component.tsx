@@ -1,33 +1,33 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
+
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/input';
 import { Button } from '../../../shared/components/button';
-import { CrudDemoItem } from '../../../shared/services/api/crudDemoItem/types';
-import { crudDemoItemActions } from '../../../modules/crudDemoItem';
 import { ButtonVariant } from '../../../shared/components/button/button.types';
 import { Link } from '../../../shared/components/link';
-import { useLocaleUrl } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { useSnackbar } from '../../../shared/components/snackbar';
+import { GraphQLResponseError } from '../../../shared/hooks/useApiForm/useApiForm.types';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;
 
-export interface CrudDemoItemFormProps {
-  data?: CrudDemoItem;
-}
-
-interface CrudDemoItemFormFields {
+export interface CrudDemoItemFormFields {
   name: string;
 }
 
-export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
+export type CrudDemoItemSubmitReturnType = { errors?: ReadonlyArray<GraphQLResponseError> | null };
+
+export interface CrudDemoItemFormProps {
+  initialData?: CrudDemoItemFormFields | null;
+  onSubmit: (formData: CrudDemoItemFormFields) => Promise<CrudDemoItemSubmitReturnType>;
+}
+
+export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProps) => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
-  const goBackUrl = useLocaleUrl(ROUTES.crudDemoItem.list);
+  const generateLocalePath = useGenerateLocalePath();
   const { showMessage } = useSnackbar();
 
   const successMessage = intl.formatMessage({
@@ -35,25 +35,21 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
     defaultMessage: '🎉 Changes saved successfully!',
   });
 
-  const { register, handleSubmit, errors, genericError, setApiResponse } = useApiForm<CrudDemoItemFormFields>({
-    defaultValues: {
-      name: data?.name,
-    },
-  });
+  const { register, handleSubmit, errors, genericError, setGraphQLResponseErrors } = useApiForm<CrudDemoItemFormFields>(
+    {
+      defaultValues: {
+        name: initialData?.name,
+      },
+    }
+  );
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
-    try {
-      const action = data
-        ? crudDemoItemActions.updateCrudDemoItem({ id: data.id, ...formData })
-        : crudDemoItemActions.addCrudDemoItem(formData);
-
-      const res = await dispatch(action);
-      setApiResponse(res);
-
-      if (!res.isError) {
-        await showMessage(successMessage);
-      }
-    } catch {}
+    const { errors } = await onSubmit(formData);
+    if (errors) {
+      setGraphQLResponseErrors(errors);
+    } else {
+      await showMessage(successMessage);
+    }
   };
 
   return (
@@ -93,7 +89,7 @@ export const CrudDemoItemForm = ({ data }: CrudDemoItemFormProps) => {
         </Fields>
 
         <Buttons>
-          <Link to={goBackUrl} variant={ButtonVariant.SECONDARY}>
+          <Link to={generateLocalePath(ROUTES.crudDemoItem.list)} variant={ButtonVariant.SECONDARY}>
             <FormattedMessage defaultMessage="Cancel" description="CrudDemoItem form / Cancel button" />
           </Link>
 

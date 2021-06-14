@@ -7,7 +7,7 @@ export type FieldError = {
 
 export type FieldErrors = FieldError[];
 
-export type FormSubmitError<T = unknown> = { [key in keyof T]?: FieldErrors } & { nonFieldErrors?: FieldErrors };
+export type FormSubmitError<T = unknown> = { [key in keyof T | 'nonFieldErrors']?: FieldErrors };
 
 type ErrorFlag<T extends boolean> = { isError: T };
 

@@ -1,24 +1,54 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Story } from '@storybook/react';
+import { useLazyLoadQuery } from 'react-relay';
+import graphql from 'babel-plugin-relay/macro';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-import { crudDemoItemFactory } from '../../../../mocks/factories';
-import { ProvidersWrapper } from '../../../../shared/utils/testUtils';
-import { CrudDemoItemListItem } from './crudDemoItemListItem.component';
+import { crudDemoItemListItemDefaultStoryQuery } from '../../../../__generated__/crudDemoItemListItemDefaultStoryQuery.graphql';
+import { withProviders } from '../../../../shared/utils/storybook';
+import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
-const item = crudDemoItemFactory();
+export default {
+  title: 'CrudDemoItem / CrudDemoItemList / CrudDemoItemListItem',
+  component: CrudDemoItemListItem,
+  argTypes: {
+    item: {
+      control: {
+        type: null,
+      },
+    },
+  },
+};
 
-const Template: Story = (args) => {
+const Template: Story<CrudDemoItemListItemProps> = (args) => {
+  const data = useLazyLoadQuery<crudDemoItemListItemDefaultStoryQuery>(
+    graphql`
+      query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {
+        item: crudDemoItemById(id: "test-id") {
+          ...crudDemoItemListItem
+        }
+      }
+    `,
+    {}
+  );
+  return data?.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
+};
+
+const DefaultTemplate: Story<CrudDemoItemListItemProps> = (args) => {
   return (
-    <ProvidersWrapper>
-      <CrudDemoItemListItem item={item} {...args} />
-    </ProvidersWrapper>
+    <Suspense fallback={<span>Loading...</span>}>
+      <Template {...args} />
+    </Suspense>
   );
 };
 
-export default {
-  title: 'CrudDemoItem / CrudDemoItemListItem',
-  component: CrudDemoItemListItem,
-};
+const defaultRelayEnv = createMockEnvironment();
+defaultRelayEnv.mock.queueOperationResolver((operation) => MockPayloadGenerator.generate(operation));
 
-export const Default = Template.bind({});
-Default.args = { item };
+export const Default = DefaultTemplate.bind({});
+Default.decorators = [
+  withProviders({
+    relayEnvironment: defaultRelayEnv,
+  }),
+];
+Default.args = {};
