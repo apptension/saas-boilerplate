@@ -56,6 +56,8 @@ LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users"]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
+SILENCED_SYSTEM_CHECKS = []  # default django value
+
 MIDDLEWARE = [
     #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
     "common.middleware.HealthCheckMiddleware",
@@ -238,6 +240,10 @@ STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="")
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", default=False)
 DJSTRIPE_WEBHOOK_SECRET = env("DJSTRIPE_WEBHOOK_SECRET", default="")
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+# Disable stripe checks for keys on django application start
+STRIPE_CHECKS_ENABLED = env.bool("STRIPE_CHECKS_ENABLED", default=True)
+if not STRIPE_CHECKS_ENABLED:
+    SILENCED_SYSTEM_CHECKS.append("djstripe.C001")
 
 SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7)
 

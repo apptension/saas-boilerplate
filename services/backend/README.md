@@ -1,4 +1,4 @@
-# 🍔 django-restauth
+# 🍔 Saas backend application
 
 ## Make rules
 
