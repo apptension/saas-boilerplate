@@ -271,6 +271,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           "logs:*",
           "kms:*",
           "ssm:*",
+          "events:*",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeSubnets",
           "ec2:DescribeVpcs",
