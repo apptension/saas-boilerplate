@@ -94,16 +94,17 @@ class TestUserActiveSubscriptionView:
         user = subscription_schedule.customer.subscriber
         api_client.force_authenticate(user)
         url = reverse('user-active-subscription')
+
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK, response.data
-
         self.assert_response(response, subscription_schedule)
 
     def test_change_active_subscription(self, api_client, subscription_schedule, monthly_plan_price):
         user = subscription_schedule.customer.subscriber
         api_client.force_authenticate(user)
         url = reverse('user-active-subscription')
+
         response = api_client.patch(url, {'price': monthly_plan_price.id})
 
         assert response.status_code == status.HTTP_200_OK, response.data
@@ -114,10 +115,9 @@ class TestUserActiveSubscriptionView:
         customer = customer_factory(default_payment_method=None)
         subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
         user = customer.subscriber
-
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
-
         api_client.force_authenticate(user)
+
         url = reverse('user-active-subscription')
 
         response = api_client.patch(url, {'price': monthly_plan_price.id})
@@ -145,6 +145,7 @@ class TestUserActiveSubscriptionView:
 class TestCancelUserActiveSubscriptionView:
     def test_return_error_for_unauthorized_user(self, api_client):
         url = reverse('user-active-subscription-cancel')
+
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -152,6 +153,7 @@ class TestCancelUserActiveSubscriptionView:
     def test_return_error_if_customer_has_no_paid_subscription(self, api_client, subscription_schedule):
         api_client.force_authenticate(subscription_schedule.customer.subscriber)
         url = reverse('user-active-subscription-cancel')
+
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
@@ -163,13 +165,16 @@ class TestCancelUserActiveSubscriptionView:
         )
         api_client.force_authenticate(subscription_schedule.customer.subscriber)
         url = reverse('user-active-subscription-cancel')
+
         response = api_client.post(url)
+
         assert response.status_code == status.HTTP_200_OK, response.data
 
 
 class TestUserChargesListView:
     def test_return_error_for_unauthorized_user(self, api_client):
         url = reverse('charge-list')
+
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -177,17 +182,14 @@ class TestUserChargesListView:
     def test_return_only_customer_charges(self, api_client, customer, charge_factory):
         other_customer_charge = charge_factory()
         regular_charge = charge_factory(customer=customer)
-
         api_client.force_authenticate(customer.subscriber)
-
         url = reverse('charge-list')
+
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK, response.data
         assert len(response.data) == 1
-
         charge_ids = [charge['id'] for charge in response.data]
-
         assert regular_charge.id in charge_ids
         assert other_customer_charge.id not in charge_ids
 
@@ -196,9 +198,9 @@ class TestPaymentMethodDelete:
     def test_return_error_for_other_users_payment_method(self, stripe_request, api_client, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-detail', kwargs={'id': other_users_pm.id})
+
         response = api_client.delete(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -208,11 +210,10 @@ class TestPaymentMethodDelete:
 
     def test_detach_payment_method(self, stripe_request, api_client, payment_method):
         customer = payment_method.customer
-
         api_client.force_authenticate(customer.subscriber)
         url = reverse('payment-method-detail', kwargs={'id': payment_method.id})
-        response = api_client.delete(url)
 
+        response = api_client.delete(url)
         customer.refresh_from_db()
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -229,11 +230,10 @@ class TestPaymentMethodDelete:
         customer.default_payment_method = payment_method
         customer.save()
         other_payment_method = payment_method_factory(customer=customer)
-
         api_client.force_authenticate(customer.subscriber)
         url = reverse('payment-method-detail', kwargs={'id': payment_method.id})
-        response = api_client.delete(url)
 
+        response = api_client.delete(url)
         customer.refresh_from_db()
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -255,9 +255,9 @@ class TestPaymentMethodSetDefault:
     def test_fetch_unknown_payment_method_from_stripe(self, stripe_request, api_client, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-set-default', kwargs={'id': other_users_pm.id})
+
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -267,9 +267,9 @@ class TestPaymentMethodSetDefault:
 
     def test_set_default_payment_method(self, api_client, payment_method_factory, customer, stripe_request):
         payment_method = payment_method_factory(customer=customer)
-
         api_client.force_authenticate(payment_method.customer.subscriber)
         url = reverse('payment-method-set-default', kwargs={'id': payment_method.id})
+
         response = api_client.post(url)
 
         assert response.status_code == status.HTTP_200_OK

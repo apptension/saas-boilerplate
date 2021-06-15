@@ -53,7 +53,7 @@ class BalanceTransactionFactory(factory.DjangoModelFactory):
     id = factory.Faker('uuid4')
     livemode = False
     amount = factory.Faker('pyint', min_value=1000, max_value=9999)
-    available_on = factory.Faker('future_date', tzinfo=timezone.get_current_timezone())
+    available_on = factory.Faker('future_datetime', tzinfo=timezone.get_current_timezone())
     currency = 'usd'
     fee = 0
     fee_details = {}

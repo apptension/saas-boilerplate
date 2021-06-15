@@ -93,7 +93,9 @@ class TestUserProfile:
 
     def test_current_user_can_fetch_profile(self, api_client, user_profile):
         api_client.force_authenticate(user_profile.user)
+
         response = api_client.get(reverse("profile"))
+
         assert response.status_code == status.HTTP_200_OK, response.data
         assert response.data["id"] == user_profile.user.id
         assert response.data["email"] == user_profile.user.email
@@ -104,17 +106,18 @@ class TestUserProfile:
         api_client.force_authenticate(user_profile.user)
         first_name = 'Changed-first-name'
         last_name = 'Changed-last-name'
+
         api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
 
         user_profile.refresh_from_db()
-
-        user_profile.first_name = first_name
-        user_profile.last_name = last_name
+        assert user_profile.first_name == first_name
+        assert user_profile.last_name == last_name
 
     def test_update_user_profile_response(self, api_client, user_profile):
         api_client.force_authenticate(user_profile.user)
         first_name = 'Changed-first-name'
         last_name = 'Changed-last-name'
+
         response = api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
 
         assert response.status_code == status.HTTP_200_OK, response.data
@@ -125,6 +128,7 @@ class TestUserProfile:
 
     def test_return_roles(self, api_client, user_profile):
         api_client.force_authenticate(user_profile.user)
+
         response = api_client.get(reverse("profile"))
 
         assert response.status_code == status.HTTP_200_OK, response.data
@@ -136,6 +140,7 @@ class TestUserProfile:
         response = api_client.put(
             reverse("profile"), {'first_name': faker.pystr(41, 41), 'last_name': faker.pystr(41, 41)}, format='json'
         )
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data['first_name'][0]['code'] == 'max_length'
         assert response.data['last_name'][0]['code'] == 'max_length'
@@ -147,6 +152,7 @@ class TestResetPassword:
             reverse("password_reset"),
             {},
         )
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
 
@@ -155,6 +161,7 @@ class TestResetPassword:
             reverse("password_reset"),
             {"email": "wrong_email@wp.pl"},
         )
+
         assert response.status_code == status.HTTP_201_CREATED, response.data
 
     def test_user_found(self, api_client, user):
@@ -162,6 +169,7 @@ class TestResetPassword:
             reverse("password_reset"),
             {"email": user.email},
         )
+
         assert response.status_code == status.HTTP_201_CREATED, response.data
 
     # Password reset confirmation
@@ -173,17 +181,19 @@ class TestResetPassword:
             reverse("password_reset_confirmation"),
             {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
-        assert response.status_code == status.HTTP_201_CREATED, response.data
 
+        assert response.status_code == status.HTTP_201_CREATED, response.data
         u = dj_auth.get_user_model().objects.get(pk=user.pk)
         assert u.check_password(new_password)
 
     def test_wrong_token(self, api_client, user):
         new_password = "random1234"
+
         response = api_client.post(
             reverse("password_reset_confirmation"),
             {"user": str(user.pk), "token": "wrong_token", "new_password": new_password},
         )
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"], response.data
         assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
@@ -191,10 +201,12 @@ class TestResetPassword:
     def test_wrong_password(self, api_client, user):
         new_password = "r"
         password_token = tokens.password_reset_token.make_token(user)
+
         response = api_client.post(
             reverse("password_reset_confirmation"),
             {"user": str(user.pk), "token": password_token, "new_password": new_password},
         )
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
         assert response.data["new_password"][0]['code'] == 'password_too_short', response.data
@@ -202,10 +214,12 @@ class TestResetPassword:
     def test_wrong_user(self, api_client, user):
         new_password = "random1234"
         password_token = tokens.password_reset_token.make_token(user)
+
         response = api_client.post(
             reverse("password_reset_confirmation"),
             {"user": "abc", "token": password_token, "new_password": new_password},
         )
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
         assert response.data["is_error"]
         assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
@@ -213,12 +227,13 @@ class TestResetPassword:
     def test_blacklist_all_jwt(self, api_client, user, faker):
         jwts = [RefreshToken.for_user(user) for _ in range(3)]
         password_token = tokens.password_reset_token.make_token(user)
+
         response = api_client.post(
             reverse("password_reset_confirmation"),
             {"user": str(user.pk), "token": password_token, "new_password": faker.password()},
         )
-        assert response.status_code == status.HTTP_201_CREATED, response.data
 
+        assert response.status_code == status.HTTP_201_CREATED, response.data
         for jwt in jwts:
             assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()
 
@@ -228,6 +243,7 @@ class TestChangePassword:
         old_password = faker.password()
         user = user_factory(password=old_password)
         api_client.force_authenticate(user)
+
         response = api_client.post(
             reverse("change_password"),
             {"user": user.pk, "old_password": old_password, "new_password": faker.password()},
@@ -240,6 +256,7 @@ class TestChangePassword:
 
     def test_wrong_old_password(self, api_client, user, faker):
         api_client.force_authenticate(user)
+
         response = api_client.post(
             reverse("change_password"),
             {"user": user.pk, "old_password": "wrong_old_password", "new_password": faker.password()},
@@ -285,6 +302,7 @@ class TestLogout:
                 settings.REFRESH_TOKEN_COOKIE: str(refresh),
             }
         )
+
         response = api_client.post(reverse('logout'))
 
         assert response.status_code == status.HTTP_200_OK
@@ -301,6 +319,7 @@ class TestTokenRefresh:
                 settings.REFRESH_TOKEN_COOKIE: 'invalid-token',
             }
         )
+
         response = api_client.post(
             reverse('jwt_token_refresh'),
         )
@@ -317,13 +336,12 @@ class TestTokenRefresh:
                 settings.REFRESH_TOKEN_COOKIE: str(refresh),
             }
         )
+
         response = api_client.post(reverse('jwt_token_refresh'))
 
         assert response.status_code == status.HTTP_200_OK
-
         new_access_token_raw = response.cookies[settings.ACCESS_TOKEN_COOKIE].value
         new_refresh_token_raw = response.cookies[settings.REFRESH_TOKEN_COOKIE].value
-
         assert AccessToken(new_access_token_raw), new_access_token_raw
         assert RefreshToken(new_refresh_token_raw), new_refresh_token_raw
 
@@ -335,5 +353,7 @@ class TestTokenRefresh:
                 settings.REFRESH_TOKEN_COOKIE: str(refresh),
             }
         )
+
         api_client.post(reverse('jwt_token_refresh'))
+
         assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()

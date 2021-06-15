@@ -41,7 +41,7 @@ class UserAccountConfirmationView(generics.CreateAPIView):
 
 
 class UserAccountChangePasswordView(generics.CreateAPIView):
-    """ "Change the password of logged in user.
+    """Change the password of logged in user.
 
     post:
     Request to change the password of the user, it requires to provide *old_password* and *new_password*
