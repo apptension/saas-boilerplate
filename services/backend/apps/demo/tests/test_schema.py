@@ -1,8 +1,27 @@
 import pytest
 from graphql_relay import to_global_id, from_global_id
-from .. import models
+
+from apps.notifications.models import Notification
+from .. import models, constants
 
 pytestmark = pytest.mark.django_db
+
+
+class TestContext:
+    def __init__(self, user):
+        self.user = user
+
+
+MUTATION_CREATE_OR_UPDATE_CRUD = '''
+    mutation($input: CreateOrUpdateCrudDemoItemMutationInput!)  {
+      createOrUpdateCrudDemoItem(input: $input) {
+        crudDemoItem {
+          id
+          name
+        }
+      }
+    }
+'''
 
 
 class TestAllCrudDemoItemsQuery:
@@ -78,19 +97,10 @@ class TestCrudDemoItemByIdQuery:
 
 
 class TestCreateOrUpdateCrudDemoItemMutation:
-    def test_create_new_item(self, graphene_client):
+    def test_create_new_item(self, graphene_client_with_context):
         input = {'name': 'Item name'}
-        executed = graphene_client.execute(
-            '''
-            mutation($input: CreateOrUpdateCrudDemoItemMutationInput!)  {
-              createOrUpdateCrudDemoItem(input: $input) {
-                crudDemoItem {
-                  id
-                  name
-                }
-              }
-            }
-        ''',
+        executed = graphene_client_with_context().execute(
+            MUTATION_CREATE_OR_UPDATE_CRUD,
             variables={'input': input},
         )
 
@@ -104,22 +114,32 @@ class TestCreateOrUpdateCrudDemoItemMutation:
 
         assert item.name == input['name']
 
-    def test_update_existing_item(self, graphene_client, crud_demo_item):
+    def test_create_new_item_sends_notification(self, graphene_client_with_context, user_factory):
+        user = user_factory()
+        admin = user_factory(is_superuser=True)
+        input = {'name': 'Item name'}
+        executed = graphene_client_with_context(TestContext(user=user)).execute(
+            MUTATION_CREATE_OR_UPDATE_CRUD,
+            variables={'input': input},
+        )
+
+        item_global_id = executed['data']['createOrUpdateCrudDemoItem']['crudDemoItem']['id']
+        _, pk = from_global_id(item_global_id)
+        item = models.CrudDemoItem.objects.get(pk=pk)
+
+        assert Notification.objects.count() == 1
+        notification = Notification.objects.first()
+        assert notification.type == constants.Notification.CRUD_ITEM_CREATED.value
+        assert notification.user == admin
+        assert notification.data == {"id": item_global_id, "name": item.name, "user": user.email}
+
+    def test_update_existing_item(self, graphene_client_with_context, crud_demo_item):
         input = {
             'name': 'New item name',
-            'id': to_global_id('CrudDemoItem', str(crud_demo_item.id)),
+            'id': to_global_id('CrudDemoItemType', str(crud_demo_item.id)),
         }
-        executed = graphene_client.execute(
-            '''
-            mutation($input: CreateOrUpdateCrudDemoItemMutationInput!)  {
-              createOrUpdateCrudDemoItem(input: $input) {
-                crudDemoItem {
-                  id
-                  name
-                }
-              }
-            }
-        ''',
+        executed = graphene_client_with_context().execute(
+            MUTATION_CREATE_OR_UPDATE_CRUD,
             variables={'input': input},
         )
 
@@ -130,10 +150,56 @@ class TestCreateOrUpdateCrudDemoItemMutation:
         assert executed['data']['createOrUpdateCrudDemoItem']['crudDemoItem']['name'] == input['name']
         assert crud_demo_item.name == input['name']
 
+    def test_update_existing_item_sends_notification_to_admins_and_creator(
+        self, graphene_client_with_context, crud_demo_item_factory, user_factory
+    ):
+        user = user_factory()
+        other_user = user_factory()
+        admins = user_factory.create_batch(2, is_superuser=True)
+        crud_demo_item = crud_demo_item_factory(user=user)
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
+        input = {
+            'name': 'New item name',
+            'id': item_global_id,
+        }
+        graphene_client_with_context(TestContext(user=other_user)).execute(
+            MUTATION_CREATE_OR_UPDATE_CRUD,
+            variables={'input': input},
+        )
+
+        assert Notification.objects.filter(type=constants.Notification.CRUD_ITEM_UPDATED.value).count() == 3
+
+        notification = Notification.objects.get(user=user)
+        assert notification.data == {"id": item_global_id, "name": "New item name", "user": other_user.email}
+
+        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+
+    def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
+        self, graphene_client_with_context, crud_demo_item, user_factory
+    ):
+        user = user_factory()
+        crud_demo_item.user = user
+        crud_demo_item.save()
+        admins = user_factory.create_batch(2, is_superuser=True)
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
+        input = {
+            'name': 'New item name',
+            'id': item_global_id,
+        }
+        graphene_client_with_context(TestContext(user=user)).execute(
+            MUTATION_CREATE_OR_UPDATE_CRUD,
+            variables={'input': input},
+        )
+
+        assert Notification.objects.count() == 2
+        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+
 
 class TestDeleteCrudDemoItemMutation:
     def test_update_existing_item(self, graphene_client, crud_demo_item):
-        item_global_id = to_global_id('CrudDemoItem', str(crud_demo_item.id))
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         executed = graphene_client.execute(
             '''
             mutation($input: DeleteCrudDemoItemMutationInput!) {

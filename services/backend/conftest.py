@@ -11,6 +11,7 @@ pytest_plugins = [
     'apps.finances.tests.fixtures',
     'apps.demo.tests.fixtures',
     'apps.content.tests.fixtures',
+    'apps.notifications.tests.fixtures',
 ]
 
 
@@ -29,3 +30,17 @@ def api_client_admin():
 @pytest.fixture
 def graphene_client():
     return GrapheneClient(schema)
+
+
+@pytest.fixture
+def graphene_client_with_context(user_factory):
+    def _graphene_client_with_context(context=None):
+        if not context:
+
+            class DefaultContext:
+                user = user_factory()
+
+            context = DefaultContext()
+        return GrapheneClient(schema, context_value=context)
+
+    return _graphene_client_with_context

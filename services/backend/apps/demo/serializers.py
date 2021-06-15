@@ -7,10 +7,15 @@ from . import models
 
 class CrudDemoItemSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="users.User.id", read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    def update(self, instance, validated_data):
+        instance.edited_by = self.context['request'].user
+        return super().update(instance, validated_data)
 
     class Meta:
         model = models.CrudDemoItem
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'user')
 
 
 class ContentfulDemoItemFavoriteSerializer(serializers.ModelSerializer):

@@ -19,4 +19,4 @@ cp "${BACKEND_DIR}"/.env.example "${BACKEND_DIR}"/.env
 cd "${DIR}"
 
 make install
-make setup-docker
+make setup

@@ -52,7 +52,7 @@ THIRD_PARTY_APPS = [
     "graphene_django",
 ]
 
-LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users"]
+LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users", "apps.notifications"]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -248,3 +248,5 @@ if not STRIPE_CHECKS_ENABLED:
 SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7)
 
 GRAPHENE = {"SCHEMA": "config.schema.schema"}
+
+NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
