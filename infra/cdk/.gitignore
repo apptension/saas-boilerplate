@@ -1,6 +1,7 @@
 *.js
 !lib/stacks/usEastResources/authLambda/*.js
 !jest.config.js
+!lib/stacks/env/ci/functions/**/*.js
 *.d.ts
 node_modules
 

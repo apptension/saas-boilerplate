@@ -46,7 +46,7 @@ THIRD_PARTY_APPS = [
     "django_hosts",
     "drf_yasg",
     "rest_framework",
-    'rest_framework_simplejwt.token_blacklist',
+    "rest_framework_simplejwt.token_blacklist",
     "social_django",
     "whitenoise",
     "graphene_django",
