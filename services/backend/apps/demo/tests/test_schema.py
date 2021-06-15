@@ -7,7 +7,7 @@ from .. import models, constants
 pytestmark = pytest.mark.django_db
 
 
-class TestContext:
+class Context:
     def __init__(self, user):
         self.user = user
 
@@ -66,7 +66,7 @@ class TestCrudDemoItemByIdQuery:
               }
             }
         ''',
-            variables={'id': to_global_id('CrudDemoItemType', 'invalid-id')},
+            variable_values={'id': to_global_id('CrudDemoItemType', 'invalid-id')},
         )
 
         assert executed['data'] == {'crudDemoItemById': None}
@@ -83,7 +83,7 @@ class TestCrudDemoItemByIdQuery:
               }
             }
         ''',
-            variables={'id': item_global_id},
+            variable_values={'id': item_global_id},
         )
 
         assert executed == {
@@ -101,7 +101,7 @@ class TestCreateOrUpdateCrudDemoItemMutation:
         input = {'name': 'Item name'}
         executed = graphene_client_with_context().execute(
             MUTATION_CREATE_OR_UPDATE_CRUD,
-            variables={'input': input},
+            variable_values={'input': input},
         )
 
         assert executed['data']['createOrUpdateCrudDemoItem']
@@ -118,9 +118,9 @@ class TestCreateOrUpdateCrudDemoItemMutation:
         user = user_factory()
         admin = user_factory(is_superuser=True)
         input = {'name': 'Item name'}
-        executed = graphene_client_with_context(TestContext(user=user)).execute(
+        executed = graphene_client_with_context(Context(user=user)).execute(
             MUTATION_CREATE_OR_UPDATE_CRUD,
-            variables={'input': input},
+            variable_values={'input': input},
         )
 
         item_global_id = executed['data']['createOrUpdateCrudDemoItem']['crudDemoItem']['id']
@@ -140,7 +140,7 @@ class TestCreateOrUpdateCrudDemoItemMutation:
         }
         executed = graphene_client_with_context().execute(
             MUTATION_CREATE_OR_UPDATE_CRUD,
-            variables={'input': input},
+            variable_values={'input': input},
         )
 
         crud_demo_item.refresh_from_db()
@@ -162,9 +162,9 @@ class TestCreateOrUpdateCrudDemoItemMutation:
             'name': 'New item name',
             'id': item_global_id,
         }
-        graphene_client_with_context(TestContext(user=other_user)).execute(
+        graphene_client_with_context(Context(user=other_user)).execute(
             MUTATION_CREATE_OR_UPDATE_CRUD,
-            variables={'input': input},
+            variable_values={'input': input},
         )
 
         assert Notification.objects.filter(type=constants.Notification.CRUD_ITEM_UPDATED.value).count() == 3
@@ -187,9 +187,9 @@ class TestCreateOrUpdateCrudDemoItemMutation:
             'name': 'New item name',
             'id': item_global_id,
         }
-        graphene_client_with_context(TestContext(user=user)).execute(
+        graphene_client_with_context(Context(user=user)).execute(
             MUTATION_CREATE_OR_UPDATE_CRUD,
-            variables={'input': input},
+            variable_values={'input': input},
         )
 
         assert Notification.objects.count() == 2
@@ -208,7 +208,7 @@ class TestDeleteCrudDemoItemMutation:
               }
             }
         ''',
-            variables={'input': {'id': item_global_id}},
+            variable_values={'input': {'id': item_global_id}},
         )
 
         assert executed == {'data': {'deleteCrudDemoItem': {'deletedIds': [item_global_id]}}}
