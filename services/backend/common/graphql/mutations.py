@@ -24,8 +24,6 @@ class RelaySerializerMutation(ClientIDMutation):
     class Meta:
         abstract = True
 
-    errors = graphene.List(exceptions.RelayErrorType, description="May contain more than one error for same field.")
-
     @classmethod
     def __init_subclass_with_meta__(
         cls,
@@ -153,9 +151,7 @@ class RelaySerializerMutation(ClientIDMutation):
         if serializer.is_valid():
             return cls.perform_mutate(serializer, info)
         else:
-            errors = exceptions.RelayErrorType.from_errors(serializer.errors)
-
-            return cls(errors=errors)
+            raise exceptions.GraphQlValidationError(serializer.errors)
 
     @classmethod
     def perform_mutate(cls, serializer, info):
@@ -178,7 +174,7 @@ class RelaySerializerMutation(ClientIDMutation):
         if edge_field_name and edge_class:
             kwargs[edge_field_name] = edge_class(cursor=offset_to_cursor(0), node=obj)
 
-        return cls(errors=None, **kwargs)
+        return cls(**kwargs)
 
 
 class DjangoModelDeleteMutationOptions(MutationOptions):
@@ -192,7 +188,6 @@ class DjangoModelDeleteMutation(ClientIDMutation):
     class Input:
         id = graphene.String()
 
-    errors = graphene.List(exceptions.RelayErrorType, description="May contain more than one error for same field.")
     deleted_ids = graphene.List(graphene.ID)
 
     @classmethod

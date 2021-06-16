@@ -9,6 +9,7 @@ type ApiMutation {
 }
 
 type ApiQuery {
+  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
   allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
   crudDemoItemById(id: String): CrudDemoItemType
 }
@@ -16,15 +17,13 @@ type ApiQuery {
 input CreateOrUpdateCrudDemoItemMutationInput {
   id: String
   name: String!
+  user: String
   clientMutationId: String
 }
 
 type CreateOrUpdateCrudDemoItemMutationPayload {
   crudDemoItem: CrudDemoItemType
   crudDemoItemEdge: CrudDemoItemEdge
-
-  """May contain more than one error for same field."""
-  errors: [RelayErrorType]
   clientMutationId: String
 }
 
@@ -51,22 +50,60 @@ type CrudDemoItemType implements Node {
   name: String!
 }
 
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
 input DeleteCrudDemoItemMutationInput {
   id: String
   clientMutationId: String
 }
 
 type DeleteCrudDemoItemMutationPayload {
-  """May contain more than one error for same field."""
-  errors: [RelayErrorType]
   deletedIds: [ID]
   clientMutationId: String
 }
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
 
 """An object with an ID"""
 interface Node {
   """The ID of the object."""
   id: ID!
+}
+
+type NotificationConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [NotificationEdge]!
+}
+
+"""A Relay edge containing a `Notification` and its cursor."""
+type NotificationEdge {
+  """The item at the end of the edge"""
+  node: NotificationType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type NotificationType implements Node {
+  """The ID of the object."""
+  id: ID!
+  type: String!
+  createdAt: DateTime!
+  readAt: DateTime
+  data: GenericScalar
 }
 
 """
@@ -84,15 +121,5 @@ type PageInfo {
 
   """When paginating forwards, the cursor to continue."""
   endCursor: String
-}
-
-type RelayErrorMessageType {
-  message: String!
-  code: String!
-}
-
-type RelayErrorType {
-  field: String!
-  messages: [RelayErrorMessageType!]
 }
 

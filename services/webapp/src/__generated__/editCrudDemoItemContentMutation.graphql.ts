@@ -6,6 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 export type CreateOrUpdateCrudDemoItemMutationInput = {
     id?: string | null;
     name: string;
+    user?: string | null;
     clientMutationId?: string | null;
 };
 export type editCrudDemoItemContentMutationVariables = {
@@ -17,13 +18,6 @@ export type editCrudDemoItemContentMutationResponse = {
             readonly id: string;
             readonly name: string;
         } | null;
-        readonly errors: ReadonlyArray<{
-            readonly field: string;
-            readonly messages: ReadonlyArray<{
-                readonly code: string;
-                readonly message: string;
-            }> | null;
-        } | null> | null;
     } | null;
 };
 export type editCrudDemoItemContentMutation = {
@@ -41,13 +35,6 @@ mutation editCrudDemoItemContentMutation(
     crudDemoItem {
       id
       name
-    }
-    errors {
-      field
-      messages {
-        code
-        message
-      }
     }
   }
 }
@@ -100,49 +87,6 @@ v1 = [
           }
         ],
         "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "RelayErrorType",
-        "kind": "LinkedField",
-        "name": "errors",
-        "plural": true,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "field",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "RelayErrorMessageType",
-            "kind": "LinkedField",
-            "name": "messages",
-            "plural": true,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "code",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "message",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
       }
     ],
     "storageKey": null
@@ -166,14 +110,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "019a078a35b8dc36977a45db2a794527",
+    "cacheID": "6a59baf73cd51256c6972e2e5a9a4c3f",
     "id": null,
     "metadata": {},
     "name": "editCrudDemoItemContentMutation",
     "operationKind": "mutation",
-    "text": "mutation editCrudDemoItemContentMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItem {\n      id\n      name\n    }\n    errors {\n      field\n      messages {\n        code\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation editCrudDemoItemContentMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItem {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '94ac86a4fa022bb6da3ba1c8394c9895';
+(node as any).hash = 'ee1f3ed5dd4b1c44d17dff1e47121734';
 export default node;

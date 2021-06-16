@@ -6,6 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 export type CreateOrUpdateCrudDemoItemMutationInput = {
     id?: string | null;
     name: string;
+    user?: string | null;
     clientMutationId?: string | null;
 };
 export type addCrudDemoItemMutationVariables = {
@@ -20,13 +21,6 @@ export type addCrudDemoItemMutationResponse = {
                 readonly name: string;
             } | null;
         } | null;
-        readonly errors: ReadonlyArray<{
-            readonly field: string;
-            readonly messages: ReadonlyArray<{
-                readonly code: string;
-                readonly message: string;
-            }> | null;
-        } | null> | null;
     } | null;
 };
 export type addCrudDemoItemMutation = {
@@ -45,13 +39,6 @@ mutation addCrudDemoItemMutation(
       node {
         id
         name
-      }
-    }
-    errors {
-      field
-      messages {
-        code
-        message
       }
     }
   }
@@ -111,49 +98,6 @@ v3 = {
     }
   ],
   "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "RelayErrorType",
-  "kind": "LinkedField",
-  "name": "errors",
-  "plural": true,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "field",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "RelayErrorMessageType",
-      "kind": "LinkedField",
-      "name": "messages",
-      "plural": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "code",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "message",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -173,8 +117,7 @@ return {
         "name": "createOrUpdateCrudDemoItem",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -215,22 +158,21 @@ return {
                 "variableName": "connections"
               }
             ]
-          },
-          (v4/*: any*/)
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "9d87eeded51beaa30b58e4bfe95cb0e1",
+    "cacheID": "275c2f02e8847826204b181b44d32920",
     "id": null,
     "metadata": {},
     "name": "addCrudDemoItemMutation",
     "operationKind": "mutation",
-    "text": "mutation addCrudDemoItemMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItemEdge {\n      node {\n        id\n        name\n      }\n    }\n    errors {\n      field\n      messages {\n        code\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation addCrudDemoItemMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItemEdge {\n      node {\n        id\n        name\n      }\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '86e14fe0c74988898881f715a98f39b5';
+(node as any).hash = 'eac7c0be0dc2d1421d176702043a8145';
 export default node;

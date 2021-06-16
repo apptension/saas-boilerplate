@@ -11,8 +11,13 @@ setup-infra:
 	chmod +x ./scripts/*.sh
 	cd $(SELF_DIR)scripts && $(SHELL) cdk-bootstrap.sh
 
-setup:
+rm-docker-volume:
+	docker volume rm $(PROJECT_NAME)-web-backend-db-data
+
+create-docker-volume:
 	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
+
+setup: create-docker-volume
 	$(foreach file, $(wildcard $(SERVICES_DIR)/*), cp $(file)/.env.example $(file)/.env 2>/dev/null || :;)
 
 create-env:

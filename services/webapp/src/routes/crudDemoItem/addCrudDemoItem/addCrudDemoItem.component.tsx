@@ -29,28 +29,17 @@ export const AddCrudDemoItem = () => {
             name
           }
         }
-        errors {
-          field
-          messages {
-            code
-            message
-          }
-        }
       }
     }
   `);
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
-    const { response } = await commitCrudDemoItemFormMutation({
+    return await commitCrudDemoItemFormMutation({
       variables: {
         input: { name: formData.name },
         connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
       },
     });
-
-    return {
-      errors: response.createOrUpdateCrudDemoItem?.errors,
-    };
   };
 
   return (

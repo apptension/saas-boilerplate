@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { PayloadError } from 'relay-runtime';
 
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/input';
@@ -8,7 +9,6 @@ import { Link } from '../../../shared/components/link';
 import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../app.constants';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { GraphQLResponseError } from '../../../shared/hooks/useApiForm/useApiForm.types';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;
@@ -17,11 +17,9 @@ export interface CrudDemoItemFormFields {
   name: string;
 }
 
-export type CrudDemoItemSubmitReturnType = { errors?: ReadonlyArray<GraphQLResponseError> | null };
-
 export interface CrudDemoItemFormProps {
   initialData?: CrudDemoItemFormFields | null;
-  onSubmit: (formData: CrudDemoItemFormFields) => Promise<CrudDemoItemSubmitReturnType>;
+  onSubmit: (formData: CrudDemoItemFormFields) => Promise<{ errors?: PayloadError[] | null }>;
 }
 
 export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProps) => {

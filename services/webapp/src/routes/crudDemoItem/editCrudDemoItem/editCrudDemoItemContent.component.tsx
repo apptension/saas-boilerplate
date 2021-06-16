@@ -27,13 +27,6 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
           id
           name
         }
-        errors {
-          field
-          messages {
-            code
-            message
-          }
-        }
       }
     }
   `);
@@ -44,17 +37,11 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
       return {};
     }
 
-    console.log('before');
-    const { response, errors } = await commitEditCrudDemoItemMutation({
+    return await commitEditCrudDemoItemMutation({
       variables: {
         input: { id: data.id, name: formData.name },
       },
     });
-    console.log('after', response, errors);
-
-    return {
-      errors: response.createOrUpdateCrudDemoItem?.errors,
-    };
   };
 
   return (

@@ -4,7 +4,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from django.conf import settings
 
-from common.views import DRFAuthenticatedGraphQLView
+from common.graphql.views import DRFAuthenticatedGraphQLView
 
 api_info = openapi.Info(title="Documentation", default_version="v1")
 

@@ -2,8 +2,9 @@ import { FieldName, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isNil, keys } from 'ramda';
 
+import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
-import { GraphQLResponseError, UseApiFormArgs } from './useApiForm.types';
+import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
 export const useApiForm = <FormData extends Record<string | number, any>>(args?: UseApiFormArgs<FormData>) => {
@@ -33,18 +34,20 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
   );
 
   const setGraphQLResponseErrors = useCallback(
-    (errors: ReadonlyArray<GraphQLResponseError | null>) => {
-      const formErrors: FormSubmitError<FormData> = {};
-      errors.forEach((error) => {
-        if (error?.messages) {
-          formErrors[error.field as 'nonFieldErrors' | keyof FormData] = error.messages.map((message) => ({
-            code: message?.code ?? '',
-            message: message?.message ?? '',
-          }));
-        }
-      });
-
-      setResponseErrors(formErrors);
+    (errors: PayloadError[]) => {
+      const validationError = errors.find(
+        ({ message }) => message === 'GraphQlValidationError'
+      ) as GraphQLValidationError<FormData> | undefined;
+      if (validationError) {
+        setResponseErrors(validationError.extensions);
+      } else {
+        setResponseErrors({
+          nonFieldErrors: errors.map(({ message }) => ({
+            message: message,
+            code: message,
+          })),
+        });
+      }
     },
     [setResponseErrors]
   );
