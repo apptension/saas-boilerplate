@@ -16,6 +16,10 @@ const disabledButtonStyle = css`
     [ButtonVariant.SECONDARY]: button.disabled.inverted,
     [ButtonVariant.RAW]: button.disabled.inverted,
     [ButtonVariant.FLAT]: button.disabled.inverted,
+    [ButtonVariant.ROUND]: button.disabled.main,
+  })};
+  opacity: ${theme('variant', {
+    [ButtonVariant.ROUND]: '0.4',
   })};
 `;
 
@@ -25,6 +29,7 @@ const hoverButtonStyle = css`
     [ButtonVariant.SECONDARY]: button.inverted,
     [ButtonVariant.RAW]: 'transparent',
     [ButtonVariant.FLAT]: button.flat.hover,
+    [ButtonVariant.ROUND]: button.round.hover,
   })};
 
   color: ${theme('variant', {
@@ -43,6 +48,7 @@ const activeButtonStyle = css`
     [ButtonVariant.SECONDARY]: button.inverted,
     [ButtonVariant.RAW]: button.inverted,
     [ButtonVariant.FLAT]: button.flat.active,
+    [ButtonVariant.ROUND]: button.round.active,
   })};
 
   color: ${theme('variant', {
@@ -50,6 +56,7 @@ const activeButtonStyle = css`
     [ButtonVariant.SECONDARY]: button.active,
     [ButtonVariant.RAW]: button.active,
     [ButtonVariant.FLAT]: button.flat.activeText,
+    [ButtonVariant.ROUND]: button.round.activeText,
   })};
 
   border-color: ${button.active};
@@ -75,7 +82,7 @@ const fixedWidthButtonStyle = css`
   `};
 `;
 
-const fluidWidthButtonStyle = css`
+const fluidWidthButtonStyle = css<ThemeProps<ButtonTheme>>`
   width: ${theme('variant', {
     [ButtonVariant.PRIMARY]: '100%',
     [ButtonVariant.SECONDARY]: '100%',
@@ -90,9 +97,11 @@ const fluidWidthButtonStyle = css`
     [ButtonVariant.RAW]: 'none',
   })};
 
-  ${media(Breakpoint.TABLET)`
-    width: auto;
-  `};
+  ${(props) =>
+    props.theme.variant !== ButtonVariant.ROUND &&
+    media(Breakpoint.TABLET)`
+      width: auto;
+    `};
 `;
 
 const fullShape = css`
@@ -152,6 +161,18 @@ const flatBaseButtonStyle = css`
   background-color: ${button.inverted};
 `;
 
+const roundBaseButtonStyle = css`
+  color: ${button.main};
+  border-radius: 100%;
+  width: 32px !important;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+`;
+
 export const baseButtonStyle = css`
   box-sizing: border-box;
   display: inline-flex;
@@ -164,6 +185,7 @@ export const baseButtonStyle = css`
     [ButtonVariant.SECONDARY]: secondaryBaseButtonStyle,
     [ButtonVariant.FLAT]: flatBaseButtonStyle,
     [ButtonVariant.RAW]: rawBaseButtonStyle,
+    [ButtonVariant.ROUND]: roundBaseButtonStyle,
   })};
 
   ${theme('fixedWidth', {

@@ -1,5 +1,4 @@
-import React, { HTMLAttributes, useContext, useState } from 'react';
-
+import React, { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -14,11 +13,14 @@ import { Snackbar } from '../snackbar';
 import { LayoutContext } from '../../../routes/layout/layout.context';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { Breakpoint } from '../../../theme/media';
+import { NotificationsButton } from '../notifications/notificationsButton';
+import { useOpenState } from '../../hooks/useOpenState';
+import { NotificationsList } from '../notifications/notificationsList';
 import {
   Avatar,
   Container,
   Content,
-  GlobalActions,
+  MenuContainer,
   HeaderLogo,
   Menu,
   MenuLine,
@@ -29,15 +31,16 @@ import {
 
 export const Header = (props: HTMLAttributes<HTMLElement>) => {
   const intl = useIntl();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-  const generateLocalePath = useGenerateLocalePath();
   const dispatch = useDispatch();
-  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const generateLocalePath = useGenerateLocalePath();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const closeDropdown = () => setDropdownOpen(false);
+  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const userDropdown = useOpenState(false);
+  const notifications = useOpenState(false);
+
   const handleLogout = () => {
-    closeDropdown();
+    userDropdown.close();
     dispatch(logout());
   };
 
@@ -59,7 +62,7 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
           </MenuToggleButton>
         )}
 
-        <GlobalActions>
+        <MenuContainer>
           <Link
             to={generateLocalePath(ROUTES.home)}
             aria-label={intl.formatMessage({
@@ -69,28 +72,33 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
           >
             <HeaderLogo />
           </Link>
-        </GlobalActions>
+        </MenuContainer>
 
         <SnackbarMessages>
           <Snackbar />
         </SnackbarMessages>
 
+        <NotificationsButton onClick={notifications.toggle} />
+        <ClickAwayListener onClickAway={notifications.clickAway}>
+          <NotificationsList isOpen={notifications.isOpen} />
+        </ClickAwayListener>
+
         {isLoggedIn && (
           <ProfileActions>
             <Avatar
-              onClick={() => setDropdownOpen((isOpen) => !isOpen)}
+              onClick={userDropdown.toggle}
               tabIndex={0}
-              aria-expanded={isDropdownOpen}
+              aria-expanded={userDropdown.isOpen}
               aria-label={intl.formatMessage({
                 description: 'Header / Open profile menu aria label',
                 defaultMessage: 'Open profile menu',
               })}
             />
 
-            <ClickAwayListener onClickAway={isDropdownOpen ? closeDropdown : () => null}>
-              <Menu isOpen={isDropdownOpen}>
+            <ClickAwayListener onClickAway={userDropdown.clickAway}>
+              <Menu isOpen={userDropdown.isOpen}>
                 <ButtonLink
-                  onClick={closeDropdown}
+                  onClick={userDropdown.close}
                   to={generateLocalePath(ROUTES.profile)}
                   variant={ButtonVariant.FLAT}
                 >

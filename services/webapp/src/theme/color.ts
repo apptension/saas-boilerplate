@@ -37,6 +37,11 @@ export const button = {
     active: skyBlueScale.get(95),
     activeText: skyBlueScale.get(35),
   },
+  round: {
+    hover: skyBlueScale.get(98),
+    active: skyBlueScale.get(95),
+    activeText: skyBlueScale.get(35),
+  },
 };
 
 export const checkbox = {

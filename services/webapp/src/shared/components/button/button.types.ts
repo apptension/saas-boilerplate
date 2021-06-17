@@ -11,4 +11,5 @@ export enum ButtonVariant {
   SECONDARY = 'secondary',
   RAW = 'raw',
   FLAT = 'flat',
+  ROUND = 'round',
 }

@@ -4,7 +4,7 @@ export const primaryEasing = 'ease-in';
 export const primaryDuration = '.2s';
 export const primary = `${primaryDuration} ${primaryEasing}`;
 
-interface VisiblityAnimationArgs {
+interface VisibilityAnimationArgs {
   isVisible?: boolean;
   duration?: string;
   easing?: string;
@@ -16,7 +16,7 @@ export const withVisibility = ({
   duration = primaryDuration,
   easing = primaryEasing,
   properties = [],
-}: VisiblityAnimationArgs) => css`
+}: VisibilityAnimationArgs) => css`
   visibility: ${isVisible ? 'visible' : 'hidden'};
   ${properties
     .map(({ name, valueWhenVisible, valueWhenHidden }) => `${name}: ${isVisible ? valueWhenVisible : valueWhenHidden}`)

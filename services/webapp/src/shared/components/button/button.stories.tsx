@@ -76,3 +76,16 @@ RawDisabled.args = {
   ...Raw.args,
   disabled: true,
 };
+
+export const Round = Template.bind({});
+Round.args = {
+  ...defaultArgs,
+  variant: ButtonVariant.ROUND,
+  children: <FacebookIcon />,
+};
+
+export const RoundDisabled = Template.bind({});
+RoundDisabled.args = {
+  ...Round.args,
+  disabled: true,
+};
