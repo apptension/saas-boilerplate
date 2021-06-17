@@ -4,7 +4,7 @@ import { isNil, keys } from 'ramda';
 
 import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
-import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
+import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
 export const useApiForm = <FormData extends Record<string | number, any>>(args?: UseApiFormArgs<FormData>) => {
@@ -35,17 +35,21 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
 
   const setGraphQLResponseErrors = useCallback(
     (errors: PayloadError[]) => {
-      const validationError = errors.find(
-        ({ message }) => message === 'GraphQlValidationError'
-      ) as GraphQLValidationError<FormData> | undefined;
+      const validationError = errors.find(({ message }) => message === 'GraphQlValidationError') as
+        | GraphQLValidationError<FormData>
+        | undefined;
+
       if (validationError) {
         setResponseErrors(validationError.extensions);
       } else {
         setResponseErrors({
-          nonFieldErrors: errors.map(({ message }) => ({
-            message: message,
-            code: message,
-          })),
+          nonFieldErrors: errors.map((error) => {
+            const genericError = error as GraphQLGenericError;
+            return {
+              message: genericError.extensions?.message ?? error.message,
+              code: genericError.extensions?.code ?? error.message,
+            };
+          }),
         });
       }
     },

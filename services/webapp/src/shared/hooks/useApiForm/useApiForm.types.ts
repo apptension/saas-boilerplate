@@ -1,7 +1,7 @@
 import { UseFormOptions } from 'react-hook-form/dist/types';
 import { DeepMap, FieldValues } from 'react-hook-form';
 import { PayloadError } from 'relay-runtime';
-import {FormSubmitError} from "../../services/api/types";
+import { FormSubmitError } from '../../services/api/types';
 
 export type FieldErrorMessages = Record<string, string>;
 
@@ -16,11 +16,10 @@ export type UseApiFormArgs<FormData extends FieldValues = FieldValues> = UseForm
   errorMessages?: ErrorMessages<FormData>;
 };
 
-export type GraphQLResponseError = {
-  readonly field: string;
-  readonly messages: ReadonlyArray<{ readonly code: string; readonly message: string } | null> | null;
-} | null;
-
 export type GraphQLValidationError<FormData extends FieldValues = FieldValues> = PayloadError & {
   extensions: FormSubmitError<FormData>;
+};
+
+export type GraphQLGenericError = PayloadError & {
+  extensions?: { readonly code: string; readonly message: string };
 };

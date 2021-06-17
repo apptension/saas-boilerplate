@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from hashid_field import rest as hidrest
+from rest_framework import serializers
 
 from apps.content import models as content_models
 from . import models
