@@ -7,16 +7,24 @@ from .. import models, constants
 pytestmark = pytest.mark.django_db
 
 
-class Context:
-    def __init__(self, user):
-        self.user = user
+MUTATION_CREATE_OR_UPDATE_CRUD = '''
+    mutation($input: CreateOrUpdateCrudDemoItemMutationInput!)  {
+      createOrUpdateCrudDemoItem(input: $input) {
+        crudDemoItem {
+          id
+          name
+        }
+      }
+    }
+'''
 
 
 class TestAllCrudDemoItemsQuery:
-    def test_returns_all_items(self, graphene_client, crud_demo_item_factory):
+    def test_returns_all_items(self, graphene_client, crud_demo_item_factory, user):
         items = crud_demo_item_factory.create_batch(3)
 
-        executed = graphene_client.execute(
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
             '''
             query  {
               allCrudDemoItems {
@@ -44,8 +52,9 @@ class TestAllCrudDemoItemsQuery:
 
 
 class TestCrudDemoItemQuery:
-    def test_return_none_if_item_does_not_exist(self, graphene_client):
-        executed = graphene_client.execute(
+    def test_return_none_if_item_does_not_exist(self, graphene_client, user):
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
             '''
             query($id: ID!)  {
               crudDemoItem(id: $id) {
@@ -59,9 +68,11 @@ class TestCrudDemoItemQuery:
 
         assert executed['data'] == {'crudDemoItem': None}
 
-    def test_return_item(self, graphene_client, crud_demo_item):
+    def test_return_item(self, graphene_client, crud_demo_item, user):
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
-        executed = graphene_client.execute(
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
             '''
             query($id: ID!)  {
               crudDemoItem(id: $id) {
@@ -95,9 +106,11 @@ class TestCreateCrudDemoItemMutation:
         }
     '''
 
-    def test_create_new_item(self, graphene_client_with_context):
+    def test_create_new_item(self, graphene_client, user):
         input = {'name': 'Item name'}
-        executed = graphene_client_with_context().execute(
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
             self.CREATE_MUTATION,
             variable_values={'input': input},
         )
@@ -112,11 +125,13 @@ class TestCreateCrudDemoItemMutation:
 
         assert item.name == input['name']
 
-    def test_create_new_item_sends_notification(self, graphene_client_with_context, user_factory):
+    def test_create_new_item_sends_notification(self, graphene_client, user_factory):
         user = user_factory()
         admin = user_factory(is_superuser=True)
         input = {'name': 'Item name'}
-        executed = graphene_client_with_context(Context(user=user)).execute(
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
             self.CREATE_MUTATION,
             variable_values={'input': input},
         )
@@ -144,12 +159,14 @@ class TestUpdateCrudDemoItemMutation:
         }
     '''
 
-    def test_update_existing_item(self, graphene_client_with_context, crud_demo_item):
+    def test_update_existing_item(self, graphene_client, crud_demo_item, user):
         input = {
             'name': 'New item name',
             'id': to_global_id('CrudDemoItemType', str(crud_demo_item.id)),
         }
-        executed = graphene_client_with_context().execute(
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={'input': input},
         )
@@ -162,7 +179,7 @@ class TestUpdateCrudDemoItemMutation:
         assert crud_demo_item.name == input['name']
 
     def test_update_existing_item_sends_notification_to_admins_and_creator(
-        self, graphene_client_with_context, crud_demo_item_factory, user_factory
+        self, graphene_client, crud_demo_item_factory, user_factory
     ):
         user = user_factory()
         other_user = user_factory()
@@ -173,7 +190,9 @@ class TestUpdateCrudDemoItemMutation:
             'name': 'New item name',
             'id': item_global_id,
         }
-        graphene_client_with_context(Context(user=other_user)).execute(
+
+        graphene_client.force_authenticate(other_user)
+        graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={'input': input},
         )
@@ -187,7 +206,7 @@ class TestUpdateCrudDemoItemMutation:
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
-        self, graphene_client_with_context, crud_demo_item, user_factory
+        self, graphene_client, crud_demo_item, user_factory
     ):
         user = user_factory()
         crud_demo_item.user = user
@@ -198,7 +217,9 @@ class TestUpdateCrudDemoItemMutation:
             'name': 'New item name',
             'id': item_global_id,
         }
-        graphene_client_with_context(Context(user=user)).execute(
+
+        graphene_client.force_authenticate(user)
+        graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={'input': input},
         )
@@ -217,12 +238,34 @@ class TestDeleteCrudDemoItemMutation:
         }
     '''
 
-    def test_update_existing_item(self, graphene_client, crud_demo_item):
+    def test_deleting_item(self, graphene_client, crud_demo_item, user):
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
-        executed = graphene_client.execute(
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
             self.DELETE_MUTATION,
             variable_values={'input': {'id': item_global_id}},
         )
 
         assert executed == {'data': {'deleteCrudDemoItem': {'deletedIds': [item_global_id]}}}
         assert not models.CrudDemoItem.objects.filter(id=crud_demo_item.id).exists()
+
+    def test_deleting_item_by_not_authorized_user(self, graphene_client, crud_demo_item):
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
+
+        executed = graphene_client.mutate(
+            '''
+            mutation($input: DeleteCrudDemoItemMutationInput!) {
+              deleteCrudDemoItem(input: $input) {
+                deletedIds
+              }
+            }
+        ''',
+            variable_values={'input': {'id': item_global_id}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["errors"][0]["path"] == ["deleteCrudDemoItem"]
+        assert executed["data"] == {"deleteCrudDemoItem": None}
+        assert models.CrudDemoItem.objects.filter(id=crud_demo_item.id).exists()

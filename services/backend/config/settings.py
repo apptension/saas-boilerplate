@@ -247,6 +247,11 @@ if not STRIPE_CHECKS_ENABLED:
 
 SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7)
 
-GRAPHENE = {"SCHEMA": "config.schema.schema"}
+GRAPHENE = {
+    "SCHEMA": "config.schema.schema",
+    "DEFAULT_PERMISSION_CLASSES": ("common.acl.policies.IsAuthenticatedFullAccess",),
+}
 
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
+
+SHELL_PLUS_IMPORTS = ["from config.schema import schema"]

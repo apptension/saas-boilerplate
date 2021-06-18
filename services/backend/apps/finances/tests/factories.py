@@ -118,7 +118,7 @@ class ChargeFactory(factory.DjangoModelFactory):
         "name": "Jenny Rosen",
         "phone": None,
     }
-    calculated_statement_descriptor = factory.Faker('name')
+    calculated_statement_descriptor = factory.Faker('text', max_nb_chars=22)
     captured = True
     currency = 'usd'
     customer = factory.SubFactory(CustomerFactory)

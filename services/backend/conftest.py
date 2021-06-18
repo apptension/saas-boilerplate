@@ -1,5 +1,6 @@
 import pytest
-from rest_framework.test import APIClient
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.test import APIClient, APIRequestFactory
 from graphene.test import Client as GrapheneClient
 
 from config.schema import schema
@@ -13,6 +14,25 @@ pytest_plugins = [
     'apps.content.tests.fixtures',
     'apps.notifications.tests.fixtures',
 ]
+
+
+class CustomGrapheneClient(GrapheneClient):
+    def query(self, *args, **kwargs):
+        self.execute_options["context_value"].method = "GET"
+        return super(CustomGrapheneClient, self).execute(*args, **kwargs)
+
+    def mutate(self, *args, **kwargs):
+        self.execute_options["context_value"].method = "POST"
+        return super(CustomGrapheneClient, self).execute(*args, **kwargs)
+
+    def force_authenticate(self, user):
+        self.execute_options["context_value"].user = user
+
+    @staticmethod
+    def create_context():
+        request = APIRequestFactory()
+        request.user = AnonymousUser()
+        return request
 
 
 @pytest.fixture
@@ -29,18 +49,4 @@ def api_client_admin():
 
 @pytest.fixture
 def graphene_client():
-    return GrapheneClient(schema)
-
-
-@pytest.fixture
-def graphene_client_with_context(user_factory):
-    def _graphene_client_with_context(context=None):
-        if not context:
-
-            class DefaultContext:
-                user = user_factory()
-
-            context = DefaultContext()
-        return GrapheneClient(schema, context_value=context)
-
-    return _graphene_client_with_context
+    return CustomGrapheneClient(schema, context_value=CustomGrapheneClient.create_context())
