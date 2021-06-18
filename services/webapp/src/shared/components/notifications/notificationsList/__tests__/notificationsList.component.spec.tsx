@@ -1,13 +1,26 @@
 import React from 'react';
-
+import { useQueryLoader } from 'react-relay';
+import graphql from 'babel-plugin-relay/macro';
 import { makeContextRenderer } from '../../../../utils/testUtils';
-import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
+import { NotificationsList } from '../notificationsList.component';
+import { notificationsListTestQuery } from '../../../../../__generated__/notificationsListTestQuery.graphql';
 
 describe('NotificationsList: Component', () => {
-  const defaultProps: NotificationsListProps = {};
+  const TestRenderer = () => {
+    const [listQueryRef] = useQueryLoader<notificationsListTestQuery>(
+      graphql`
+        query notificationsListTestQuery @relay_test_operation {
+          ...notificationsListContent
+        }
+      `
+    );
 
-  const component = (props: Partial<NotificationsListProps>) => <NotificationsList {...defaultProps} {...props} />;
-  const render = makeContextRenderer(component);
+    if (!listQueryRef) return null;
+
+    return <NotificationsList isOpen={true} listQueryRef={listQueryRef} />;
+  };
+
+  const render = makeContextRenderer(() => <TestRenderer />);
 
   it('should render without errors', () => {
     render();

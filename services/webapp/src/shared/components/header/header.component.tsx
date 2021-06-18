@@ -13,9 +13,8 @@ import { Snackbar } from '../snackbar';
 import { LayoutContext } from '../../../routes/layout/layout.context';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { Breakpoint } from '../../../theme/media';
-import { NotificationsButton } from '../notifications/notificationsButton';
 import { useOpenState } from '../../hooks/useOpenState';
-import { NotificationsList } from '../notifications/notificationsList';
+import { Notifications } from '../notifications';
 import {
   Avatar,
   Container,
@@ -37,7 +36,6 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
   const userDropdown = useOpenState(false);
-  const notifications = useOpenState(false);
 
   const handleLogout = () => {
     userDropdown.close();
@@ -78,10 +76,7 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
           <Snackbar />
         </SnackbarMessages>
 
-        <NotificationsButton onClick={notifications.toggle} />
-        <ClickAwayListener onClickAway={notifications.clickAway}>
-          <NotificationsList isOpen={notifications.isOpen} />
-        </ClickAwayListener>
+        <Notifications />
 
         {isLoggedIn && (
           <ProfileActions>

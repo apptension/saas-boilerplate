@@ -38,11 +38,11 @@ export const CrudDemoItemList = () => {
         <FormattedMessage description={'CrudDemoItemList / Add new'} defaultMessage={'Add new item'} />
       </AddNewLink>
 
-      {listQueryRef ? (
+      {listQueryRef && (
         <Suspense fallback={<span>Loading ...</span>}>
           <CrudDemoItemListContent queryRef={listQueryRef} />
         </Suspense>
-      ) : null}
+      )}
     </Container>
   );
 };

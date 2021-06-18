@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
 import { label, labelBold, microlabel } from '../../../../theme/typography';
-import { color } from '../../../../theme';
+import { color, transition } from '../../../../theme';
 import { Button } from '../../button';
 
 export const Container = styled.li`
@@ -12,9 +12,10 @@ export const Container = styled.li`
     'avatar content content';
   grid-template-columns: ${sizeUnits(3)} 1fr ${sizeUnits(3)};
   grid-column-gap: ${sizeUnits(1)};
+  transition: background-color ${transition.primary};
   ${verticalPadding(sizeUnits(2))}
   ${horizontalPadding(sizeUnits(2))}
-  transition: background-color 0.3s;
+
 
   &:hover {
     background-color: ${color.skyBlueScale.get(95)};

@@ -71,4 +71,5 @@ export const MarkAllAsReadButton = styled(Button)`
 
 export const List = styled.ul`
   grid-area: list;
+  padding-bottom: ${sizeUnits(3)};
 `;
