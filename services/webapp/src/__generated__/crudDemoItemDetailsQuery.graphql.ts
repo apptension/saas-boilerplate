@@ -7,7 +7,7 @@ export type crudDemoItemDetailsQueryVariables = {
     id: string;
 };
 export type crudDemoItemDetailsQueryResponse = {
-    readonly crudDemoItemById: {
+    readonly crudDemoItem: {
         readonly id: string;
         readonly name: string;
     } | null;
@@ -21,9 +21,9 @@ export type crudDemoItemDetailsQuery = {
 
 /*
 query crudDemoItemDetailsQuery(
-  $id: String!
+  $id: ID!
 ) {
-  crudDemoItemById(id: $id) {
+  crudDemoItem(id: $id) {
     id
     name
   }
@@ -50,7 +50,7 @@ v1 = [
     ],
     "concreteType": "CrudDemoItemType",
     "kind": "LinkedField",
-    "name": "crudDemoItemById",
+    "name": "crudDemoItem",
     "plural": false,
     "selections": [
       {
@@ -89,14 +89,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "38db67955ce4a13f67f0cef4c63ce92d",
+    "cacheID": "ae191ada4a6e4ec5a783fad514cd082a",
     "id": null,
     "metadata": {},
     "name": "crudDemoItemDetailsQuery",
     "operationKind": "query",
-    "text": "query crudDemoItemDetailsQuery(\n  $id: String!\n) {\n  crudDemoItemById(id: $id) {\n    id\n    name\n  }\n}\n"
+    "text": "query crudDemoItemDetailsQuery(\n  $id: ID!\n) {\n  crudDemoItem(id: $id) {\n    id\n    name\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '1371d2aec8e41ca35cd2cc6faa5ea808';
+(node as any).hash = '3405ece059e5a6e86e48f7e6266c67c6';
 export default node;

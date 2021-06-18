@@ -10,8 +10,8 @@ export const CrudDemoItemDetails = () => {
   const { id } = useParams<{ id: string }>();
 
   const [queryRef, loadQuery] = useQueryLoader<crudDemoItemDetailsQuery>(graphql`
-    query crudDemoItemDetailsQuery($id: String!) {
-      crudDemoItemById(id: $id) {
+    query crudDemoItemDetailsQuery($id: ID!) {
+      crudDemoItem(id: $id) {
         id
         name
       }

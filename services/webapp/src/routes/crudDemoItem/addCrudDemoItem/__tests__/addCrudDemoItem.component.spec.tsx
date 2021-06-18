@@ -51,13 +51,7 @@ describe('AddCrudDemoItem: Component', () => {
         act(() => {
           relayEnvironment.mock.resolve(
             operation,
-            MockPayloadGenerator.generate(operation, {
-              CreateOrUpdateCrudDemoItemMutationPayload: () => {
-                return {
-                  errors: null,
-                };
-              },
-            })
+            MockPayloadGenerator.generate(operation)
           );
         });
       });
@@ -77,13 +71,7 @@ describe('AddCrudDemoItem: Component', () => {
         act(() => {
           relayEnvironment.mock.resolve(
             operation,
-            MockPayloadGenerator.generate(operation, {
-              CreateOrUpdateCrudDemoItemMutationPayload: () => {
-                return {
-                  errors: null,
-                };
-              },
-            })
+            MockPayloadGenerator.generate(operation)
           );
         });
       });

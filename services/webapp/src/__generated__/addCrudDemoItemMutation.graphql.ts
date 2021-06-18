@@ -3,18 +3,17 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type CreateOrUpdateCrudDemoItemMutationInput = {
-    id?: string | null;
+export type CreateCrudDemoItemMutationInput = {
     name: string;
     user?: string | null;
     clientMutationId?: string | null;
 };
 export type addCrudDemoItemMutationVariables = {
-    input: CreateOrUpdateCrudDemoItemMutationInput;
+    input: CreateCrudDemoItemMutationInput;
     connections: Array<string>;
 };
 export type addCrudDemoItemMutationResponse = {
-    readonly createOrUpdateCrudDemoItem: {
+    readonly createCrudDemoItem: {
         readonly crudDemoItemEdge: {
             readonly node: {
                 readonly id: string;
@@ -32,9 +31,9 @@ export type addCrudDemoItemMutation = {
 
 /*
 mutation addCrudDemoItemMutation(
-  $input: CreateOrUpdateCrudDemoItemMutationInput!
+  $input: CreateCrudDemoItemMutationInput!
 ) {
-  createOrUpdateCrudDemoItem(input: $input) {
+  createCrudDemoItem(input: $input) {
     crudDemoItemEdge {
       node {
         id
@@ -112,9 +111,9 @@ return {
       {
         "alias": null,
         "args": (v2/*: any*/),
-        "concreteType": "CreateOrUpdateCrudDemoItemMutationPayload",
+        "concreteType": "CreateCrudDemoItemMutationPayload",
         "kind": "LinkedField",
-        "name": "createOrUpdateCrudDemoItem",
+        "name": "createCrudDemoItem",
         "plural": false,
         "selections": [
           (v3/*: any*/)
@@ -137,9 +136,9 @@ return {
       {
         "alias": null,
         "args": (v2/*: any*/),
-        "concreteType": "CreateOrUpdateCrudDemoItemMutationPayload",
+        "concreteType": "CreateCrudDemoItemMutationPayload",
         "kind": "LinkedField",
-        "name": "createOrUpdateCrudDemoItem",
+        "name": "createCrudDemoItem",
         "plural": false,
         "selections": [
           (v3/*: any*/),
@@ -165,14 +164,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "275c2f02e8847826204b181b44d32920",
+    "cacheID": "3b97ead646e9f8fd3ca62d6f9cdfcb4c",
     "id": null,
     "metadata": {},
     "name": "addCrudDemoItemMutation",
     "operationKind": "mutation",
-    "text": "mutation addCrudDemoItemMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItemEdge {\n      node {\n        id\n        name\n      }\n    }\n  }\n}\n"
+    "text": "mutation addCrudDemoItemMutation(\n  $input: CreateCrudDemoItemMutationInput!\n) {\n  createCrudDemoItem(input: $input) {\n    crudDemoItemEdge {\n      node {\n        id\n        name\n      }\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'eac7c0be0dc2d1421d176702043a8145';
+(node as any).hash = 'd047d0d75ecf91d2e04460ba1737f41a';
 export default node;

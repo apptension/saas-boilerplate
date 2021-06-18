@@ -19,7 +19,7 @@ export type crudDemoItemListItemTestQuery = {
 
 /*
 query crudDemoItemListItemTestQuery {
-  item: crudDemoItemById(id: "test-id") {
+  item: crudDemoItem(id: "test-id") {
     ...crudDemoItemListItem
     id
   }
@@ -51,7 +51,7 @@ return {
         "args": (v0/*: any*/),
         "concreteType": "CrudDemoItemType",
         "kind": "LinkedField",
-        "name": "crudDemoItemById",
+        "name": "crudDemoItem",
         "plural": false,
         "selections": [
           {
@@ -60,7 +60,7 @@ return {
             "name": "crudDemoItemListItem"
           }
         ],
-        "storageKey": "crudDemoItemById(id:\"test-id\")"
+        "storageKey": "crudDemoItem(id:\"test-id\")"
       }
     ],
     "type": "ApiQuery",
@@ -77,7 +77,7 @@ return {
         "args": (v0/*: any*/),
         "concreteType": "CrudDemoItemType",
         "kind": "LinkedField",
-        "name": "crudDemoItemById",
+        "name": "crudDemoItem",
         "plural": false,
         "selections": [
           {
@@ -95,12 +95,12 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "crudDemoItemById(id:\"test-id\")"
+        "storageKey": "crudDemoItem(id:\"test-id\")"
       }
     ]
   },
   "params": {
-    "cacheID": "6084c3313b49497698d0bb5601b10e99",
+    "cacheID": "5373f40b3e057225d0ae42cba75cb8c1",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -126,9 +126,9 @@ return {
     },
     "name": "crudDemoItemListItemTestQuery",
     "operationKind": "query",
-    "text": "query crudDemoItemListItemTestQuery {\n  item: crudDemoItemById(id: \"test-id\") {\n    ...crudDemoItemListItem\n    id\n  }\n}\n\nfragment crudDemoItemListItem on CrudDemoItemType {\n  id\n  name\n}\n"
+    "text": "query crudDemoItemListItemTestQuery {\n  item: crudDemoItem(id: \"test-id\") {\n    ...crudDemoItemListItem\n    id\n  }\n}\n\nfragment crudDemoItemListItem on CrudDemoItemType {\n  id\n  name\n}\n"
   }
 };
 })();
-(node as any).hash = '8a58c3dcd1a02521384bd618c986c573';
+(node as any).hash = '3777869b4ab394a1433393090f79a518';
 export default node;

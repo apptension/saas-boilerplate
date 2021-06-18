@@ -16,7 +16,7 @@ type CrudDemoItemDetailsContentProps = {
 export const CrudDemoItemDetailsContent = ({ queryRef }: CrudDemoItemDetailsContentProps) => {
   const data = usePreloadedQuery(CrudDemoItemDetailsQuery, queryRef);
 
-  const itemData = data?.crudDemoItemById;
+  const itemData = data?.crudDemoItem;
   const generateLocalePath = useGenerateLocalePath();
 
   return (

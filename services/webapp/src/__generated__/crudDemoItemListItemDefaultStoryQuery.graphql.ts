@@ -19,7 +19,7 @@ export type crudDemoItemListItemDefaultStoryQuery = {
 
 /*
 query crudDemoItemListItemDefaultStoryQuery {
-  item: crudDemoItemById(id: "test-id") {
+  item: crudDemoItem(id: "test-id") {
     ...crudDemoItemListItem
     id
   }
@@ -51,7 +51,7 @@ return {
         "args": (v0/*: any*/),
         "concreteType": "CrudDemoItemType",
         "kind": "LinkedField",
-        "name": "crudDemoItemById",
+        "name": "crudDemoItem",
         "plural": false,
         "selections": [
           {
@@ -60,7 +60,7 @@ return {
             "name": "crudDemoItemListItem"
           }
         ],
-        "storageKey": "crudDemoItemById(id:\"test-id\")"
+        "storageKey": "crudDemoItem(id:\"test-id\")"
       }
     ],
     "type": "ApiQuery",
@@ -77,7 +77,7 @@ return {
         "args": (v0/*: any*/),
         "concreteType": "CrudDemoItemType",
         "kind": "LinkedField",
-        "name": "crudDemoItemById",
+        "name": "crudDemoItem",
         "plural": false,
         "selections": [
           {
@@ -95,12 +95,12 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "crudDemoItemById(id:\"test-id\")"
+        "storageKey": "crudDemoItem(id:\"test-id\")"
       }
     ]
   },
   "params": {
-    "cacheID": "8852ad9c9fb4e3534a62a47ef1d6d483",
+    "cacheID": "5791ce71acc374ae69ea6933377ab2ec",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -126,9 +126,9 @@ return {
     },
     "name": "crudDemoItemListItemDefaultStoryQuery",
     "operationKind": "query",
-    "text": "query crudDemoItemListItemDefaultStoryQuery {\n  item: crudDemoItemById(id: \"test-id\") {\n    ...crudDemoItemListItem\n    id\n  }\n}\n\nfragment crudDemoItemListItem on CrudDemoItemType {\n  id\n  name\n}\n"
+    "text": "query crudDemoItemListItemDefaultStoryQuery {\n  item: crudDemoItem(id: \"test-id\") {\n    ...crudDemoItemListItem\n    id\n  }\n}\n\nfragment crudDemoItemListItem on CrudDemoItemType {\n  id\n  name\n}\n"
   }
 };
 })();
-(node as any).hash = '49bbac36db017d2459e39ea5e652c14e';
+(node as any).hash = '383d77c869152b2312739b3f0affaac2';
 export default node;

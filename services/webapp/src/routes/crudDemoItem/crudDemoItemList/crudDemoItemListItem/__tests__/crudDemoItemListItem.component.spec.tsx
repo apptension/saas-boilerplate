@@ -24,7 +24,7 @@ describe('CrudDemoItemListItem: Component', () => {
     const data = useLazyLoadQuery<crudDemoItemListItemTestQuery>(
       graphql`
         query crudDemoItemListItemTestQuery @relay_test_operation {
-          item: crudDemoItemById(id: "test-id") {
+          item: crudDemoItem(id: "test-id") {
             ...crudDemoItemListItem
           }
         }

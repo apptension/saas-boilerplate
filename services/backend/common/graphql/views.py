@@ -14,7 +14,7 @@ class DRFAuthenticatedGraphQLView(GraphQLView):
 
     @staticmethod
     def format_error(error):
-        if isinstance(error.original_error, APIException):
+        if hasattr(error, 'original_error') and isinstance(error.original_error, APIException):
             error.extensions = error.original_error.get_full_details()
 
         if isinstance(error, GraphQLError):

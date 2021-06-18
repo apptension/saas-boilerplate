@@ -462,24 +462,25 @@ input SysFilter {
 }
 
 type ApiMutation {
-  createOrUpdateCrudDemoItem(input: CreateOrUpdateCrudDemoItemMutationInput!): CreateOrUpdateCrudDemoItemMutationPayload
+  createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
+  updateCrudDemoItem(input: UpdateCrudDemoItemMutationInput!): UpdateCrudDemoItemMutationPayload
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
 }
 
 type ApiQuery {
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
+  """The ID of the object"""
+  crudDemoItem(id: ID!): CrudDemoItemType
   allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
-  crudDemoItemById(id: String): CrudDemoItemType
 }
 
-input CreateOrUpdateCrudDemoItemMutationInput {
-  id: String
+input CreateCrudDemoItemMutationInput {
   name: String!
   user: String
   clientMutationId: String
 }
 
-type CreateOrUpdateCrudDemoItemMutationPayload {
+type CreateCrudDemoItemMutationPayload {
   crudDemoItem: CrudDemoItemType
   crudDemoItemEdge: CrudDemoItemEdge
   clientMutationId: String
@@ -563,6 +564,19 @@ type PageInfo {
   startCursor: String
   """When paginating forwards, the cursor to continue."""
   endCursor: String
+}
+
+input UpdateCrudDemoItemMutationInput {
+  name: String!
+  user: String
+  id: ID!
+  clientMutationId: String
+}
+
+type UpdateCrudDemoItemMutationPayload {
+  crudDemoItem: CrudDemoItemType
+  crudDemoItemEdge: CrudDemoItemEdge
+  clientMutationId: String
 }
 
 schema {

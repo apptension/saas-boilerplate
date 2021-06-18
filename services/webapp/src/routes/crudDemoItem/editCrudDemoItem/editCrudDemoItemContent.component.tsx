@@ -21,8 +21,8 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
   const generateLocalePath = useGenerateLocalePath();
   const queryData = usePreloadedQuery(EditCrudDemoItemQuery, queryRef);
   const [commitEditCrudDemoItemMutation] = usePromiseMutation<editCrudDemoItemContentMutation>(graphql`
-    mutation editCrudDemoItemContentMutation($input: CreateOrUpdateCrudDemoItemMutationInput!) {
-      createOrUpdateCrudDemoItem(input: $input) {
+    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {
+      updateCrudDemoItem(input: $input) {
         crudDemoItem {
           id
           name
@@ -30,7 +30,7 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
       }
     }
   `);
-  const data = queryData?.crudDemoItemById;
+  const data = queryData?.crudDemoItem;
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
     if (!data) {

@@ -24,7 +24,7 @@ const Template: Story<CrudDemoItemListItemProps> = (args) => {
   const data = useLazyLoadQuery<crudDemoItemListItemDefaultStoryQuery>(
     graphql`
       query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {
-        item: crudDemoItemById(id: "test-id") {
+        item: crudDemoItem(id: "test-id") {
           ...crudDemoItemListItem
         }
       }

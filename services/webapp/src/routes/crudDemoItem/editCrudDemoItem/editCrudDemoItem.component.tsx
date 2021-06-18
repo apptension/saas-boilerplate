@@ -10,8 +10,8 @@ export const EditCrudDemoItem = () => {
   const { id } = useParams<{ id: string }>();
   const [editCrudDemoItemQueryRef, loadEditCrudDemoItemQuery] = useQueryLoader<editCrudDemoItemQuery>(
     graphql`
-      query editCrudDemoItemQuery($id: String!) {
-        crudDemoItemById(id: $id) {
+      query editCrudDemoItemQuery($id: ID!) {
+        crudDemoItem(id: $id) {
           id
           name
         }

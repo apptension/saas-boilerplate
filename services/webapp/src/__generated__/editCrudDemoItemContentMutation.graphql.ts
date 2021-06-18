@@ -3,17 +3,17 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type CreateOrUpdateCrudDemoItemMutationInput = {
-    id?: string | null;
+export type UpdateCrudDemoItemMutationInput = {
     name: string;
     user?: string | null;
+    id: string;
     clientMutationId?: string | null;
 };
 export type editCrudDemoItemContentMutationVariables = {
-    input: CreateOrUpdateCrudDemoItemMutationInput;
+    input: UpdateCrudDemoItemMutationInput;
 };
 export type editCrudDemoItemContentMutationResponse = {
-    readonly createOrUpdateCrudDemoItem: {
+    readonly updateCrudDemoItem: {
         readonly crudDemoItem: {
             readonly id: string;
             readonly name: string;
@@ -29,9 +29,9 @@ export type editCrudDemoItemContentMutation = {
 
 /*
 mutation editCrudDemoItemContentMutation(
-  $input: CreateOrUpdateCrudDemoItemMutationInput!
+  $input: UpdateCrudDemoItemMutationInput!
 ) {
-  createOrUpdateCrudDemoItem(input: $input) {
+  updateCrudDemoItem(input: $input) {
     crudDemoItem {
       id
       name
@@ -58,9 +58,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "CreateOrUpdateCrudDemoItemMutationPayload",
+    "concreteType": "UpdateCrudDemoItemMutationPayload",
     "kind": "LinkedField",
-    "name": "createOrUpdateCrudDemoItem",
+    "name": "updateCrudDemoItem",
     "plural": false,
     "selections": [
       {
@@ -110,14 +110,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "6a59baf73cd51256c6972e2e5a9a4c3f",
+    "cacheID": "418738e05b13c4f82b558f39e7e5589a",
     "id": null,
     "metadata": {},
     "name": "editCrudDemoItemContentMutation",
     "operationKind": "mutation",
-    "text": "mutation editCrudDemoItemContentMutation(\n  $input: CreateOrUpdateCrudDemoItemMutationInput!\n) {\n  createOrUpdateCrudDemoItem(input: $input) {\n    crudDemoItem {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "mutation editCrudDemoItemContentMutation(\n  $input: UpdateCrudDemoItemMutationInput!\n) {\n  updateCrudDemoItem(input: $input) {\n    crudDemoItem {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'ee1f3ed5dd4b1c44d17dff1e47121734';
+(node as any).hash = '017ba379de1cf90af6eecdadbfd1220f';
 export default node;

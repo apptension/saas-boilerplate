@@ -21,8 +21,8 @@ export type AddCrudDemoItemProps = () => {
 export const AddCrudDemoItem = () => {
   const generateLocalePath = useGenerateLocalePath();
   const [commitCrudDemoItemFormMutation] = usePromiseMutation<addCrudDemoItemMutation>(graphql`
-    mutation addCrudDemoItemMutation($input: CreateOrUpdateCrudDemoItemMutationInput!, $connections: [ID!]!) {
-      createOrUpdateCrudDemoItem(input: $input) {
+    mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!, $connections: [ID!]!) {
+      createCrudDemoItem(input: $input) {
         crudDemoItemEdge @appendEdge(connections: $connections) {
           node {
             id
