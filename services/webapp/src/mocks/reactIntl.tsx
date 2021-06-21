@@ -1,9 +1,10 @@
 import React from 'react';
+import { UnknownObject } from '../shared/utils/types';
 
 const mockReactIntl = jest.requireActual('react-intl');
 const { FormattedMessage, useIntl } = mockReactIntl;
 
-const mockFormattedMessage = (props: Record<string, unknown>) => <FormattedMessage id="mock-message-id" {...props} />;
+const mockFormattedMessage = (props: UnknownObject) => <FormattedMessage id="mock-message-id" {...props} />;
 const mockUseIntl = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { formatMessage, ...other } = useIntl();

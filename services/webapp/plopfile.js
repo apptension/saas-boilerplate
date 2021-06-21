@@ -6,6 +6,7 @@ const addReactHookGenerator = require('./plop/reactHook');
 const addApiModelGenerator = require('./plop/apiModel');
 const addCrudGenerator = require('./plop/crud');
 const addIconRegisterGenerator = require('./plop/icon');
+const addNotificationGenerator = require('./plop/notification');
 
 module.exports = function (plop) {
   plop.setPrompt('directory', promptDirectory);
@@ -16,4 +17,5 @@ module.exports = function (plop) {
   addApiModelGenerator(plop);
   addCrudGenerator(plop);
   addIconRegisterGenerator(plop);
+  addNotificationGenerator(plop);
 };

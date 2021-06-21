@@ -1,3 +1,5 @@
+import { UnknownObject } from './types';
+
 type ListQuery<ITEM> = {
   readonly edges: ReadonlyArray<{
     readonly node: ITEM | null;
@@ -23,5 +25,5 @@ export type ExtractNodeType<
       readonly node: ITEM | null;
     } | null>;
   } | null,
-  ITEM extends Record<string, unknown> = Record<string, unknown>
+  ITEM extends UnknownObject = UnknownObject
 > = NonNullable<NonNullable<NonNullable<NonNullable<T>['edges']>[number]>['node']>;

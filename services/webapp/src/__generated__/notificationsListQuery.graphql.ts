@@ -34,7 +34,6 @@ fragment notificationsListContent on ApiQuery {
       cursor
     }
     pageInfo {
-      startCursor
       endCursor
       hasNextPage
     }
@@ -163,13 +162,6 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "startCursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               },
@@ -198,12 +190,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f8dbda392ddf6fe9584fb620a2b819b9",
+    "cacheID": "f65b862a6c920199547141510cd07c8d",
     "id": null,
     "metadata": {},
     "name": "notificationsListQuery",
     "operationKind": "query",
-    "text": "query notificationsListQuery {\n  ...notificationsListContent\n}\n\nfragment notificationsListContent on ApiQuery {\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query notificationsListQuery {\n  ...notificationsListContent\n}\n\nfragment notificationsListContent on ApiQuery {\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

@@ -15,9 +15,6 @@ export type notificationsListContent = {
                 readonly type: string;
             } | null;
         } | null>;
-        readonly pageInfo: {
-            readonly startCursor: string | null;
-        };
     } | null;
     readonly " $refType": "notificationsListContent";
 };
@@ -162,13 +159,6 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "startCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             },
@@ -190,5 +180,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = 'a3a82505f61fca6c9d2faa0285b4f881';
+(node as any).hash = 'd281c155bde568f581add801f9c869f1';
 export default node;

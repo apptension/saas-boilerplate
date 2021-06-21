@@ -2,14 +2,15 @@ import { empty } from 'ramda';
 import throttle from 'lodash.throttle';
 import { renderHook } from '@testing-library/react-hooks';
 import { useWindowListener } from '../useWindowListener.hook';
+import { UnknownObject } from '../../../utils/types';
 
-jest.mock('lodash.throttle', () => jest.fn().mockImplementation(fn => fn));
+jest.mock('lodash.throttle', () => jest.fn().mockImplementation((fn) => fn));
 
 const defaultOptions = {
   foo: 'bar',
 };
 
-const defaultArgs: [string, (...args: any) => void, Record<string, unknown>] = [
+const defaultArgs: [string, (...args: any) => void, UnknownObject] = [
   'scroll',
   empty,
   {

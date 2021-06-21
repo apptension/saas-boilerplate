@@ -1,28 +1,70 @@
 import React from 'react';
-import { useQueryLoader } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
+import { screen } from '@testing-library/react';
+import { times } from 'ramda';
 import { makeContextRenderer } from '../../../../utils/testUtils';
-import { NotificationsList } from '../notificationsList.component';
-import { notificationsListTestQuery } from '../../../../../__generated__/notificationsListTestQuery.graphql';
+import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
+import { generateRelayEnvironmentNotifications } from '../notificationsList.fixtures';
+import { notificationFactory } from '../../../../../mocks/factories/notification';
 
 describe('NotificationsList: Component', () => {
-  const TestRenderer = () => {
-    const [listQueryRef] = useQueryLoader<notificationsListTestQuery>(
-      graphql`
-        query notificationsListTestQuery @relay_test_operation {
-          ...notificationsListContent
-        }
-      `
+  const component = (props: Partial<NotificationsListProps>) => (
+    <NotificationsList isOpen listQueryRef={{} as any} {...props} />
+  );
+  const render = makeContextRenderer(component);
+
+  it('should render no items correctly', () => {
+    const env = generateRelayEnvironmentNotifications([]);
+    render(
+      {
+        listQueryRef: {
+          environment: env,
+          isDisposed: false,
+        } as any,
+      },
+      {
+        relayEnvironment: env,
+      }
     );
 
-    if (!listQueryRef) return null;
+    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+  });
 
-    return <NotificationsList isOpen={true} listQueryRef={listQueryRef} />;
-  };
+  it('should not render non registered notifications', () => {
+    const env = generateRelayEnvironmentNotifications([
+      {
+        type: 'some_random_type_that_doesnt_exist',
+      },
+    ]);
+    render(
+      {
+        listQueryRef: {
+          environment: env,
+          isDisposed: false,
+        } as any,
+      },
+      {
+        relayEnvironment: env,
+      }
+    );
 
-  const render = makeContextRenderer(() => <TestRenderer />);
+    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+  });
 
-  it('should render without errors', () => {
-    render();
+  it('should render correct notifications', () => {
+    const notifications = times(() => notificationFactory(), 3);
+    const env = generateRelayEnvironmentNotifications(notifications);
+    render(
+      {
+        listQueryRef: {
+          environment: env,
+          isDisposed: false,
+        } as any,
+      },
+      {
+        relayEnvironment: env,
+      }
+    );
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(notifications.length);
   });
 });

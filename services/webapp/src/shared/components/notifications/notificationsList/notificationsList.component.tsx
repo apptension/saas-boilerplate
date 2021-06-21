@@ -1,10 +1,10 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { ElementType, Suspense, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import graphql from 'babel-plugin-relay/macro';
 import { PreloadedQuery, usePaginationFragment, usePreloadedQuery } from 'react-relay';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { ButtonVariant } from '../../button';
-import { Notification, NotificationSkeleton } from '../notification';
+import { NotificationSkeleton } from '../notification';
 import { mapConnection } from '../../../utils/graphql';
 import NotificationsListQuery, {
   notificationsListQuery,
@@ -13,6 +13,8 @@ import NotificationsListQuery, {
 import { notificationsListContent$key } from '../../../../__generated__/notificationsListContent.graphql';
 import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
 import { EmptyState } from '../../emptyState';
+import { NotificationTypes } from '../notifications.types';
+import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { POLLING_INTERVAL } from './notificationsList.constants';
 
@@ -77,9 +79,6 @@ const Content = ({ queryResponse }: ContentProps) => {
               type
             }
           }
-          pageInfo {
-            startCursor
-          }
         }
       }
     `,
@@ -125,12 +124,15 @@ const Content = ({ queryResponse }: ContentProps) => {
 
   return (
     <>
-      {mapConnection(
-        () => (
-          <Notification />
-        ),
-        allNotifications
-      )}
+      {mapConnection((notification) => {
+        const NotificationComponent = NOTIFICATIONS_STRATEGY[notification.type as NotificationTypes] as
+          | ElementType
+          | undefined;
+        if (!NotificationComponent) {
+          return null;
+        }
+        return <NotificationComponent key={notification.id} {...notification} />;
+      }, allNotifications)}
       {(hasNext || isLoadingNext) && (
         <>
           <NotificationSkeleton $ref={scrollSensorRef} />
