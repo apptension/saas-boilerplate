@@ -4,6 +4,7 @@ from .. import models
 
 
 class NotificationFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory("apps.users.tests.factories.UserFactory")
     type = factory.Faker('pystr')
 
     class Meta:

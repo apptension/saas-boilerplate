@@ -212,7 +212,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
 
         if model_class:
             _, pk = from_global_id(input['id'])
-            instance = get_object_or_404(model_class, pk=pk)
+            instance = cls.get_object(model_class, pk, root, info, **input)
             return {
                 "instance": instance,
                 "data": input,
@@ -221,6 +221,14 @@ class UpdateModelMutation(RelayModelSerializerMutation):
             }
 
         return {"data": input, "context": {"request": info.context}}
+
+    @classmethod
+    def get_object(cls, model_class, pk, root, info, **input):
+        return get_object_or_404(cls.get_queryset(model_class, root, info, **input), pk=pk)
+
+    @classmethod
+    def get_queryset(cls, model_class, root, info, **input):
+        return model_class.objects.all()
 
 
 class SerializerMutation(ClientIDMutation):

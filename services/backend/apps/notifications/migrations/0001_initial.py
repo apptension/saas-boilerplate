@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', hashid_field.field.HashidAutoField(alphabet='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', min_length=7, prefix='', primary_key=True, serialize=False)),
                 ('type', models.CharField(max_length=64)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('read_at', models.DateTimeField(null=True)),
+                ('read_at', models.DateTimeField(null=True, blank=True)),
                 ('data', models.JSONField(default=dict)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
