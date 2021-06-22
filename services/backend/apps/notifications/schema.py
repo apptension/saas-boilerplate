@@ -5,6 +5,7 @@ from graphene_django import DjangoObjectType
 
 from . import models
 from . import serializers
+from . import services
 from common.graphql import mutations
 
 
@@ -31,6 +32,15 @@ class UpdateNotificationMutation(mutations.UpdateModelMutation):
         return model_class.objects.filter_by_user(info.context.user)
 
 
+class MarkReadAllNotificationsMutation(graphene.ClientIDMutation):
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **kwargs):
+        services.NotificationService.mark_read_all_user_notifications(user=info.context.user)
+        return MarkReadAllNotificationsMutation(ok=True)
+
+
 class Query(graphene.ObjectType):
     all_notifications = graphene.relay.ConnectionField(NotificationConnection)
 
@@ -40,3 +50,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     update_notification = UpdateNotificationMutation.Field()
+    mark_read_all_notifications = MarkReadAllNotificationsMutation.Field()
