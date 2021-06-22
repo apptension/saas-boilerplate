@@ -27,6 +27,7 @@ query NotificationsListRefetch(
 }
 
 fragment notificationsListContent_1G22uz on ApiQuery {
+  hasUnreadNotifications
   allNotifications(first: $count, after: $cursor) {
     edges {
       node {
@@ -105,6 +106,13 @@ return {
     "kind": "Operation",
     "name": "NotificationsListRefetch",
     "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "hasUnreadNotifications",
+        "storageKey": null
+      },
       {
         "alias": null,
         "args": (v1/*: any*/),
@@ -224,14 +232,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f0cb84c4ef4725302b4130e6e2b9b8e2",
+    "cacheID": "dd40733704e6371995260cf949b9b06f",
     "id": null,
     "metadata": {},
     "name": "NotificationsListRefetch",
     "operationKind": "query",
-    "text": "query NotificationsListRefetch(\n  $count: Int = 20\n  $cursor: String\n) {\n  ...notificationsListContent_1G22uz\n}\n\nfragment notificationsListContent_1G22uz on ApiQuery {\n  allNotifications(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query NotificationsListRefetch(\n  $count: Int = 20\n  $cursor: String\n) {\n  ...notificationsListContent_1G22uz\n}\n\nfragment notificationsListContent_1G22uz on ApiQuery {\n  hasUnreadNotifications\n  allNotifications(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'd281c155bde568f581add801f9c869f1';
+(node as any).hash = '7d0a73edeae1542fcfb2577b3ce92179';
 export default node;

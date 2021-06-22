@@ -6,7 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type notificationsListQueryVariables = {};
 export type notificationsListQueryResponse = {
-    readonly " $fragmentRefs": FragmentRefs<"notificationsListContent">;
+    readonly " $fragmentRefs": FragmentRefs<"notificationsListContent" | "notificationsButtonContent">;
 };
 export type notificationsListQuery = {
     readonly response: notificationsListQueryResponse;
@@ -18,9 +18,15 @@ export type notificationsListQuery = {
 /*
 query notificationsListQuery {
   ...notificationsListContent
+  ...notificationsButtonContent
+}
+
+fragment notificationsButtonContent on ApiQuery {
+  hasUnreadNotifications
 }
 
 fragment notificationsListContent on ApiQuery {
+  hasUnreadNotifications
   allNotifications(first: 20) {
     edges {
       node {
@@ -60,6 +66,11 @@ return {
         "args": null,
         "kind": "FragmentSpread",
         "name": "notificationsListContent"
+      },
+      {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "notificationsButtonContent"
       }
     ],
     "type": "ApiQuery",
@@ -71,6 +82,13 @@ return {
     "kind": "Operation",
     "name": "notificationsListQuery",
     "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "hasUnreadNotifications",
+        "storageKey": null
+      },
       {
         "alias": null,
         "args": (v0/*: any*/),
@@ -190,14 +208,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f65b862a6c920199547141510cd07c8d",
+    "cacheID": "f457baaecfd869a572a038781379740d",
     "id": null,
     "metadata": {},
     "name": "notificationsListQuery",
     "operationKind": "query",
-    "text": "query notificationsListQuery {\n  ...notificationsListContent\n}\n\nfragment notificationsListContent on ApiQuery {\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query notificationsListQuery {\n  ...notificationsListContent\n  ...notificationsButtonContent\n}\n\nfragment notificationsButtonContent on ApiQuery {\n  hasUnreadNotifications\n}\n\nfragment notificationsListContent on ApiQuery {\n  hasUnreadNotifications\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'c4c0e0807d5a2fe10fb1b6980cee3960';
+(node as any).hash = '59a5ebcaf95c81627950383be40c15fc';
 export default node;

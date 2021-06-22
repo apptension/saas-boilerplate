@@ -1,4 +1,4 @@
-import React, { ElementType, Suspense, useEffect } from 'react';
+import React, { ElementType, Suspense, useCallback, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import graphql from 'babel-plugin-relay/macro';
 import { PreloadedQuery, usePaginationFragment, usePreloadedQuery } from 'react-relay';
@@ -14,9 +14,9 @@ import { notificationsListContent$key } from '../../../../__generated__/notifica
 import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
 import { EmptyState } from '../../emptyState';
 import { NotificationTypes } from '../notifications.types';
-import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
+import { NOTIFICATIONS_STRATEGY, POLLING_INTERVAL } from '../notifications.constants';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
-import { POLLING_INTERVAL } from './notificationsList.constants';
+import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 
 export type NotificationsListProps = {
   isOpen: boolean;
@@ -46,18 +46,18 @@ export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListPro
             </>
           }
         >
-          <Content queryResponse={queryResponse} />
+          <Content isOpen={isOpen} queryResponse={queryResponse} />
         </Suspense>
       </List>
     </Container>
   );
 };
 
-type ContentProps = {
+type ContentProps = Pick<NotificationsListProps, 'isOpen'> & {
   queryResponse: notificationsListQueryResponse;
 };
 
-const Content = ({ queryResponse }: ContentProps) => {
+const Content = ({ isOpen, queryResponse }: ContentProps) => {
   const {
     data: { allNotifications },
     refetch,
@@ -69,6 +69,7 @@ const Content = ({ queryResponse }: ContentProps) => {
       fragment notificationsListContent on ApiQuery
       @refetchable(queryName: "NotificationsListRefetch")
       @argumentDefinitions(count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" }) {
+        hasUnreadNotifications
         allNotifications(first: $count, after: $cursor) @connection(key: "notificationsList_allNotifications") {
           edges {
             node {
@@ -91,25 +92,40 @@ const Content = ({ queryResponse }: ContentProps) => {
     loading: isLoadingNext,
     hasNextPage: hasNext,
     onLoadMore: () => {
-      loadNext(20);
+      loadNext(NOTIFICATIONS_PER_PAGE);
     },
     disabled: false,
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (notificationsCount !== 0) {
-        refetch(
-          {
-            count: notificationsCount,
-          },
-          { fetchPolicy: 'store-and-network' }
-        );
-      }
-    }, POLLING_INTERVAL);
-
-    return () => clearInterval(interval);
+  const fetchNotifications = useCallback(() => {
+    refetch(
+      {
+        count: notificationsCount === 0 ? NOTIFICATIONS_PER_PAGE : notificationsCount,
+      },
+      { fetchPolicy: 'store-and-network' }
+    );
   }, [notificationsCount, refetch]);
+
+  useEffect(() => {
+    let interval: number | null;
+    if (isOpen) {
+      interval = setInterval(() => {
+        fetchNotifications();
+      }, POLLING_INTERVAL);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [fetchNotifications, isOpen, refetch]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchNotifications();
+    }
+  }, [isOpen, fetchNotifications]);
 
   if (notificationsCount === 0) {
     return (

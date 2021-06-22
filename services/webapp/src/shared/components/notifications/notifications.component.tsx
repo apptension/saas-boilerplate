@@ -14,6 +14,7 @@ export const Notifications = () => {
     graphql`
       query notificationsListQuery {
         ...notificationsListContent
+        ...notificationsButtonContent
       }
     `
   );
@@ -22,14 +23,14 @@ export const Notifications = () => {
     loadListQuery({});
   }, [loadListQuery]);
 
+  if (!listQueryRef) return null;
+
   return (
     <>
-      <NotificationsButton onClick={notifications.toggle} />
-      {listQueryRef && (
-        <ClickAwayListener onClickAway={notifications.clickAway}>
-          <NotificationsList isOpen={notifications.isOpen} listQueryRef={listQueryRef} />
-        </ClickAwayListener>
-      )}
+      <NotificationsButton listQueryRef={listQueryRef} onClick={notifications.toggle} />
+      <ClickAwayListener onClickAway={notifications.clickAway}>
+        <NotificationsList isOpen={notifications.isOpen} listQueryRef={listQueryRef} />
+      </ClickAwayListener>
     </>
   );
 };

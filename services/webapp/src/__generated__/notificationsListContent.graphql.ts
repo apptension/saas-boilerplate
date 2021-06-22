@@ -5,6 +5,7 @@
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type notificationsListContent = {
+    readonly hasUnreadNotifications: boolean | null;
     readonly allNotifications: {
         readonly edges: ReadonlyArray<{
             readonly node: {
@@ -68,6 +69,13 @@ return {
   },
   "name": "notificationsListContent",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasUnreadNotifications",
+      "storageKey": null
+    },
     {
       "alias": "allNotifications",
       "args": null,
@@ -180,5 +188,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = 'd281c155bde568f581add801f9c869f1';
+(node as any).hash = '7d0a73edeae1542fcfb2577b3ce92179';
 export default node;

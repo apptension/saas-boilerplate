@@ -9,6 +9,13 @@ from . import services
 from common.graphql import mutations
 
 
+class HasUnreadNotificationsMixin:
+    has_unread_notifications = graphene.Boolean()
+
+    def resolve_has_unread_notifications(self, info):
+        return services.NotificationService.user_has_unread_notifications(user=info.context.user)
+
+
 class NotificationType(DjangoObjectType):
     data = GenericScalar()
 
@@ -22,7 +29,7 @@ class NotificationConnection(graphene.Connection):
         node = NotificationType
 
 
-class UpdateNotificationMutation(mutations.UpdateModelMutation):
+class UpdateNotificationMutation(HasUnreadNotificationsMixin, mutations.UpdateModelMutation):
     class Meta:
         serializer_class = serializers.UpdateNotificationSerializer
         edge_class = NotificationConnection.Edge
@@ -41,7 +48,7 @@ class MarkReadAllNotificationsMutation(graphene.ClientIDMutation):
         return MarkReadAllNotificationsMutation(ok=True)
 
 
-class Query(graphene.ObjectType):
+class Query(HasUnreadNotificationsMixin, graphene.ObjectType):
     all_notifications = graphene.relay.ConnectionField(NotificationConnection)
 
     def resolve_all_notifications(self, info, **kwargs):
@@ -51,3 +58,6 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     update_notification = UpdateNotificationMutation.Field()
     mark_read_all_notifications = MarkReadAllNotificationsMutation.Field()
+
+    def resolve_has_unread_notifications(self, info):
+        return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()

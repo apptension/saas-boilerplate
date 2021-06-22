@@ -62,6 +62,14 @@ export const MarkAsReadButton = styled(Button)<NotificationThemeProps>`
   ${(props) =>
     props.theme.isRead &&
     css`
-      color: ${readColor};
+      &,
+      :focus,
+      :active {
+        color: ${readColor};
+      }
+
+      &:not(:disabled):hover {
+        color: ${color.greyScale.get(75)};
+      }
     `}
 `;

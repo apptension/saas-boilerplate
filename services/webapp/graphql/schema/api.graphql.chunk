@@ -4,12 +4,14 @@ schema {
 }
 
 type ApiMutation {
+  updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
   updateCrudDemoItem(input: UpdateCrudDemoItemMutationInput!): UpdateCrudDemoItemMutationPayload
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
 }
 
 type ApiQuery {
+  hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
 
   """The ID of the object"""
@@ -135,6 +137,19 @@ input UpdateCrudDemoItemMutationInput {
 type UpdateCrudDemoItemMutationPayload {
   crudDemoItem: CrudDemoItemType
   crudDemoItemEdge: CrudDemoItemEdge
+  clientMutationId: String
+}
+
+input UpdateNotificationMutationInput {
+  isRead: Boolean
+  id: ID!
+  clientMutationId: String
+}
+
+type UpdateNotificationMutationPayload {
+  notification: NotificationType
+  notificationEdge: NotificationEdge
+  hasUnreadNotifications: Boolean
   clientMutationId: String
 }
 

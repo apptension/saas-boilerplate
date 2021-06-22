@@ -9,6 +9,7 @@ class TestUpdateNotificationMutation:
     MUTATION = '''
         mutation updateNotification($input: UpdateNotificationMutationInput!){
           updateNotification(input: $input) {
+            hasUnreadNotifications
             notification {
                 id
                 readAt
@@ -31,7 +32,12 @@ class TestUpdateNotificationMutation:
         notification.refresh_from_db()
         assert notification.read_at is not None
         assert executed == {
-            "data": {"updateNotification": {"notification": {"id": input["id"], "readAt": "2021-05-09T00:00:00+00:00"}}}
+            "data": {
+                "updateNotification": {
+                    "hasUnreadNotifications": False,
+                    "notification": {"id": input["id"], "readAt": "2021-05-09T00:00:00+00:00"},
+                }
+            }
         }
 
     @pytest.mark.freeze_time('2021-05-09')
@@ -47,7 +53,37 @@ class TestUpdateNotificationMutation:
 
         notification.refresh_from_db()
         assert notification.read_at is None
-        assert executed == {"data": {"updateNotification": {"notification": {"id": input["id"], "readAt": None}}}}
+        assert executed == {
+            "data": {
+                "updateNotification": {
+                    "hasUnreadNotifications": True,
+                    "notification": {"id": input["id"], "readAt": None},
+                },
+            }
+        }
+
+    @pytest.mark.freeze_time('2021-05-09')
+    def test_has_more_unread_notifications(self, graphene_client, user, notification_factory):
+        notification_factory(read_at=None, user=user)
+        notification = notification_factory(read_at=None, user=user)
+        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": True}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': input},
+        )
+
+        notification.refresh_from_db()
+        assert notification.read_at is not None
+        assert executed == {
+            "data": {
+                "updateNotification": {
+                    "hasUnreadNotifications": True,
+                    "notification": {"id": input["id"], "readAt": "2021-05-09T00:00:00+00:00"},
+                },
+            }
+        }
 
     def test_mark_read_other_user_notification(self, graphene_client, user_factory, notification_factory):
         first_user = user_factory()

@@ -4,33 +4,31 @@ from graphql_relay import to_global_id
 pytestmark = pytest.mark.django_db
 
 
-QUERY_ALL_NOTIFICATIONS = '''
-    query  {
-      allNotifications {
-        edges {
-          node {
-            id
-            type
-            data
+class TestAllNotificationsQuery:
+    QUERY = '''
+        query  {
+          allNotifications {
+            edges {
+              node {
+                id
+                type
+                data
+              }
+            }
           }
         }
-      }
-    }
-'''
+    '''
 
-
-class TestAllNotificationsQuery:
     def test_returns_empty_list(self, graphene_client, user):
         graphene_client.force_authenticate(user)
-        executed = graphene_client.query(QUERY_ALL_NOTIFICATIONS)
+        executed = graphene_client.query(self.QUERY)
 
         assert executed == {'data': {'allNotifications': {'edges': []}}}
 
     def test_returns_all_notifications(self, graphene_client, user, notification_factory):
-        notifications = notification_factory.create_batch(3, user=user)
-
         graphene_client.force_authenticate(user)
-        executed = graphene_client.query(QUERY_ALL_NOTIFICATIONS)
+        notifications = notification_factory.create_batch(3, user=user)
+        executed = graphene_client.query(self.QUERY)
 
         assert executed == {
             'data': {
@@ -54,11 +52,10 @@ class TestAllNotificationsQuery:
     ):
         user = user_factory()
         other_user = user_factory()
+        graphene_client.force_authenticate(user)
         notification = notification_factory(user=user)
         notification_factory(user=other_user)
-
-        graphene_client.force_authenticate(user)
-        executed = graphene_client.query(QUERY_ALL_NOTIFICATIONS)
+        executed = graphene_client.query(self.QUERY)
 
         assert executed == {
             'data': {
