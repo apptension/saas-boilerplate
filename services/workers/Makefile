@@ -51,12 +51,3 @@ secrets: export CHAMBER_SERVICE=workers
 secrets:
 	$(DOCKER_COMPOSE) build ssmeditor
 	$(DOCKER_COMPOSE) run --rm ssmeditor
-
-pull-base-image:
-	/bin/sh ./scripts/pull-base-image.sh
-
-build-base-image:
-	/bin/sh ./scripts/build-base-image.sh
-
-build-image:
-	$(DOCKER_COMPOSE) build --build-arg "BASE_IMAGE=${PROJECT_NAME}-workers-base:latest" webapp
