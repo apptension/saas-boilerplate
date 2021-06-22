@@ -11,12 +11,15 @@ import {
 } from "@aws-cdk/aws-codebuild";
 import * as targets from "@aws-cdk/aws-events-targets";
 import { AnyPrincipal } from "@aws-cdk/aws-iam";
+import { User } from "@aws-cdk/aws-iam";
 
 import { EnvConstructProps } from "../../../types";
 import { EnvironmentSettings } from "../../../settings";
 
+
 export interface BaseImagesConfigProps extends EnvConstructProps {
   codeRepository: IRepository;
+  externalCiUser: User;
 }
 
 export class BaseImagesConfig extends Construct {
@@ -24,6 +27,7 @@ export class BaseImagesConfig extends Construct {
   backendBaseRepository: ECRRepository;
   webappBaseRepository: ECRRepository;
   e2eBaseRepository: ECRRepository;
+  workersBaseRepository: ECRRepository;
 
   static getBackendBaseRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-backend-base`;
@@ -35,6 +39,10 @@ export class BaseImagesConfig extends Construct {
 
   static getE2EBaseRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-e2e-base`;
+  }
+
+  static getWorkersBaseRepositoryName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectName}-workers-base`;
   }
 
   constructor(scope: Construct, id: string, props: BaseImagesConfigProps) {
@@ -62,19 +70,39 @@ export class BaseImagesConfig extends Construct {
       }
     );
 
-    this.e2eBaseRepository = new ECRRepository(this, "ECRE2EBaseRepository", {
-      repositoryName: BaseImagesConfig.getE2EBaseRepositoryName(
+    this.e2eBaseRepository = new ECRRepository(
+      this,
+      "ECRE2EBaseRepository", 
+      {
+        repositoryName: BaseImagesConfig.getE2EBaseRepositoryName(
         props.envSettings
-      ),
-    });
+        ),
+      }
+    );
+
+    this.workersBaseRepository = new ECRRepository(
+      this,
+      "ECRWorkersBaseRepository",
+      {
+        repositoryName: BaseImagesConfig.getWorkersBaseRepositoryName(
+          props.envSettings
+        ),
+      }
+    );
 
     this.backendBaseRepository.grantPullPush(this.codeBuildProject);
     this.webappBaseRepository.grantPullPush(this.codeBuildProject);
     this.e2eBaseRepository.grantPullPush(this.codeBuildProject);
+    this.workersBaseRepository.grantPullPush(this.codeBuildProject);
 
     this.backendBaseRepository.grantPull(new AnyPrincipal());
     this.webappBaseRepository.grantPull(new AnyPrincipal());
     this.e2eBaseRepository.grantPull(new AnyPrincipal());
+    this.workersBaseRepository.grantPull(new AnyPrincipal());
+
+    this.backendBaseRepository.grantPull(props.externalCiUser);
+    this.webappBaseRepository.grantPull(props.externalCiUser);
+    this.workersBaseRepository.grantPull(props.externalCiUser);
 
     props.codeRepository.onCommit("OnDeployCommit", {
       branches: ["master"],
@@ -103,6 +131,7 @@ export class BaseImagesConfig extends Construct {
           commands: [
             "make -C services/webapp build-base-image",
             "make -C E2E build-base-image",
+            "make -C services/workers build-base-image",
           ],
         },
       },

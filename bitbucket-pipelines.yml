@@ -40,6 +40,7 @@ pipelines:
             image: atlassian/default-image:2
             size: 2x
             script:
+              - apt-get update && apt-get install -y awscli
               - echo "test" > VERSION
               - make -C services/workers test ENV_STAGE=test
             services:

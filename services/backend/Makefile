@@ -2,7 +2,7 @@ SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
 install:
-	pipenv install --dev
+	pdm install
 
 install-deploy: install-infra-cdk install-infra-functions install-scripts
 

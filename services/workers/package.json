@@ -15,7 +15,6 @@
     "nodemailer": "^6.4.18",
     "react-scripts": "npm:@apptension/react-scripts",
     "serverless-pseudo-parameters": "^2.5.0",
-    "serverless-python-requirements": "^5.1.0",
     "serverless-step-functions": "^2.29.0",
     "yaml": "^2.0.0-3"
   },

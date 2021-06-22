@@ -1,5 +1,4 @@
-ARG BASE_IMAGE=python:3.8-slim-buster
-FROM ${BASE_IMAGE}
+FROM python:3.8-slim-buster
 
 RUN apt-get update && apt-get install -y wget gnupg curl unzip make
 
@@ -28,11 +27,3 @@ WORKDIR /app
 
 COPY package*.json /app/
 RUN npm install
-
-COPY . /app/
-RUN chmod +x /app/scripts/*.sh
-
-ENV PYTHONPATH=/pkgs/__pypackages__/3.8/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.8/bin
-
-CMD /bin/sh '/app/scripts/run-local-trigger-server.sh'

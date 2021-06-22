@@ -23,17 +23,15 @@ export class GlobalResources extends Construct {
       this,
       "GlobalBuildSecrets",
       props
-    );
-    this.baseImagesConfig = new BaseImagesConfig(this, "BaseImages", {
-      codeRepository: this.codeCommit.repository,
-      envSettings: props.envSettings,
-    });
-
+    );    
     this.externalCiUser = new User(this, "ExternalCiUser", {
       userName: "external-ci",
     });
 
-    this.baseImagesConfig.backendBaseRepository.grantPull(this.externalCiUser);
-    this.baseImagesConfig.webappBaseRepository.grantPull(this.externalCiUser);
+    this.baseImagesConfig = new BaseImagesConfig(this, "BaseImages", {
+      codeRepository: this.codeCommit.repository,
+      envSettings: props.envSettings,
+      externalCiUser: this.externalCiUser,
+    });
   }
 }

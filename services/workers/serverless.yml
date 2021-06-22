@@ -58,7 +58,6 @@ functions:
 
 plugins:
   - serverless-pseudo-parameters
-  - serverless-python-requirements
   - serverless-step-functions
 
 custom:
