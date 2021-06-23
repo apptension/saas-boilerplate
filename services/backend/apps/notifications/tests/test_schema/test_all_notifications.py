@@ -1,4 +1,5 @@
 import pytest
+import operator
 from graphql_relay import to_global_id
 
 pytestmark = pytest.mark.django_db
@@ -25,7 +26,7 @@ class TestAllNotificationsQuery:
 
         assert executed == {'data': {'allNotifications': {'edges': []}}}
 
-    def test_returns_all_notifications(self, graphene_client, user, notification_factory):
+    def test_returns_all_notifications_sorted_by_created_at(self, graphene_client, user, notification_factory):
         graphene_client.force_authenticate(user)
         notifications = notification_factory.create_batch(3, user=user)
         executed = graphene_client.query(self.QUERY)
@@ -41,7 +42,7 @@ class TestAllNotificationsQuery:
                                 'data': notification.data,
                             }
                         }
-                        for notification in notifications
+                        for notification in sorted(notifications, key=operator.attrgetter('created_at'), reverse=True)
                     ]
                 }
             }

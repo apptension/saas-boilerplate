@@ -52,7 +52,7 @@ class Query(HasUnreadNotificationsMixin, graphene.ObjectType):
     all_notifications = graphene.relay.ConnectionField(NotificationConnection)
 
     def resolve_all_notifications(self, info, **kwargs):
-        return models.Notification.objects.filter_by_user(info.context.user)
+        return models.Notification.objects.filter_by_user(info.context.user).order_by('-created_at')
 
 
 class Mutation(graphene.ObjectType):
