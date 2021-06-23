@@ -14,16 +14,16 @@ export const Layout = ({ children }: LayoutProps) => {
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
-  const shouldHideSidebar = useMemo(
-    () => NO_NAVIGATION_ROUTES.some((routePath) => !isNil(matchPath(pathname, { path: `/:lang${routePath}` }))),
+  const shouldDisplaySidebar = useMemo(
+    () => NO_NAVIGATION_ROUTES.every((path) => isNil(matchPath(pathname, { path }))),
     [pathname]
   );
 
   return (
-    <LayoutContext.Provider value={{ isSidebarAvailable: !shouldHideSidebar, isSideMenuOpen, setSideMenuOpen }}>
+    <LayoutContext.Provider value={{ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }}>
       <Header />
-      {!shouldHideSidebar && <Sidebar />}
-      <Content withSidebar={!shouldHideSidebar}>{children}</Content>
+      {shouldDisplaySidebar && <Sidebar />}
+      <Content withSidebar={shouldDisplaySidebar}>{children}</Content>
     </LayoutContext.Provider>
   );
 };
