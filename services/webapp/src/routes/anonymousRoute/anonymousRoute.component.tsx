@@ -1,5 +1,4 @@
 import React, { ComponentProps, useLayoutEffect } from 'react';
-
 import { Route, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useGenerateLocalePath } from '../useLanguageFromParams/useLanguageFromParams.hook';

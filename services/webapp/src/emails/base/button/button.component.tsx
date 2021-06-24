@@ -1,9 +1,9 @@
 import React, { HTMLAttributes } from 'react';
 import { Container } from './button.styles';
 
-export interface ButtonProps extends HTMLAttributes<HTMLAnchorElement> {
+export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {
   linkTo: string;
-}
+};
 
 export const Button = (props: ButtonProps) => {
   const isExternalLink = props.linkTo.startsWith('http');

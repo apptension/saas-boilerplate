@@ -3,7 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import { ConnectionHandler } from 'relay-runtime';
 import graphql from 'babel-plugin-relay/macro';
 import { PreloadedQuery } from 'react-relay';
-
 import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { addCrudDemoItemMutation } from '../../../__generated__/addCrudDemoItemMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';

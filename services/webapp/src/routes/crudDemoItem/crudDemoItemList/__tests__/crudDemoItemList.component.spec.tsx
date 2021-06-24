@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
-
 import Query from '../../../../__generated__/crudDemoItemListQuery.graphql';
 import { connectionFromArray, makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CrudDemoItemList } from '../crudDemoItemList.component';

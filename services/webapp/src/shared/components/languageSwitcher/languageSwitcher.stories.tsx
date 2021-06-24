@@ -1,8 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { withRouter } from '../../../../.storybook/decorators';
-
 import { store } from '../../../mocks/store';
 import { withRedux } from '../../utils/storybook';
 import { LanguageSwitcher } from '.';

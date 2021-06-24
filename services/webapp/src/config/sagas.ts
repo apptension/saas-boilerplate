@@ -1,5 +1,4 @@
 import { all, fork } from 'redux-saga/effects';
-
 import { watchStartup } from '../modules/startup/startup.sagas';
 import { watchAuth } from '../modules/auth/auth.sagas';
 import { watchConfig } from '../modules/config/config.sagas';

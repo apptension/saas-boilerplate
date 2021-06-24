@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-
 import { reducer as localesReducer } from '../modules/locales/locales.reducer';
 import { LocalesState } from '../modules/locales/locales.types';
 import { reducer as startupReducer } from '../modules/startup/startup.reducer';

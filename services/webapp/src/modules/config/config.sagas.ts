@@ -1,5 +1,4 @@
 import { all, takeLatest, put } from 'redux-saga/effects';
-
 import { reportError } from '../../shared/utils/reportError';
 import { startupActions } from '../startup';
 import { client, ContentfulAppConfigQuery } from '../../shared/services/contentful';

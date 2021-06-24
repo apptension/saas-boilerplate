@@ -1,7 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-
 import { FacebookIcon } from '../../../images/icons';
 import { Button, ButtonProps } from './button.component';
 import { ButtonColor, ButtonSize, ButtonVariant } from './button.types';

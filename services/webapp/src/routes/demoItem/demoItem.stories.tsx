@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { generatePath } from 'react-router';
 import { DemoItemDocument } from '../../shared/services/contentful';
 import { demoItemFactory } from '../../mocks/factories';

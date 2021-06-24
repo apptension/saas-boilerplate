@@ -2,11 +2,11 @@ import React, { ReactNode } from 'react';
 import { Image } from '../image';
 import { Container, Table, Tr, Td, Text, Title } from './layout.styles';
 
-export interface LayoutProps {
-  title: string | ReactNode;
-  text: string | ReactNode;
+export type LayoutProps = {
+  title: ReactNode;
+  text: ReactNode;
   children?: ReactNode;
-}
+};
 
 export const Layout = ({ title, text, children }: LayoutProps) => {
   return (

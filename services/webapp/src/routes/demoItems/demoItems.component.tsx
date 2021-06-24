@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-
 import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useAllDemoItemsQuery } from '../../shared/services/contentful/hooks';

@@ -1,5 +1,4 @@
 import { produce } from 'immer';
-
 import { GlobalState } from '../config/reducers';
 import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';

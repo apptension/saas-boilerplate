@@ -5,7 +5,6 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { ConnectionHandler } from 'relay-runtime';
 import { useFragment } from 'react-relay';
-
 import { crudDemoItemListItem$key } from '../../../../__generated__/crudDemoItemListItem.graphql';
 import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
 import { ROUTES } from '../../../app.constants';
@@ -17,9 +16,9 @@ import { Button, ButtonVariant } from '../../../../shared/components/button';
 import { Icon } from '../../../../shared/components/icon';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
-export interface CrudDemoItemListItemProps {
+export type CrudDemoItemListItemProps = {
   item: crudDemoItemListItem$key;
-}
+};
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();

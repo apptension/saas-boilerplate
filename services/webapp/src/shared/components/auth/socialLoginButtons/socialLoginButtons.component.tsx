@@ -1,5 +1,4 @@
 import React, { HTMLAttributes } from 'react';
-
 import { FormattedMessage } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { oAuthLogin } from '../../../../modules/auth/auth.actions';
@@ -11,9 +10,9 @@ export enum SignupButtonsVariant {
   SIGNUP,
 }
 
-export interface SocialLoginButtonsProps extends HTMLAttributes<HTMLDivElement> {
+export type SocialLoginButtonsProps = HTMLAttributes<HTMLDivElement> & {
   variant: SignupButtonsVariant;
-}
+};
 
 export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProps) => {
   const dispatch = useDispatch();

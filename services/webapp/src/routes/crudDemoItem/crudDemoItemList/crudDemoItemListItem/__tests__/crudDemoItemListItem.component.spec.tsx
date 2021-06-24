@@ -5,7 +5,6 @@ import graphql from 'babel-plugin-relay/macro';
 import { useLazyLoadQuery } from 'react-relay';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
-
 import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crudDemoItemListItemTestQuery.graphql';
 import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';

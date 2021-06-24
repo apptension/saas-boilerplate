@@ -11,15 +11,7 @@ import Relay, { UseMutationConfig } from 'react-relay';
 export function usePromiseMutation<TMutation extends MutationParameters>(
   mutation: GraphQLTaggedNode,
   commitMutationFn?: (environment: IEnvironment, config: MutationConfig<TMutation>) => Disposable
-): [
-  (
-    config: UseMutationConfig<TMutation>
-  ) => Promise<{
-    response: TMutation['response'];
-    errors: PayloadError[] | null;
-  }>,
-  boolean
-] {
+) {
   const [originalCommit, ...other] = Relay.useMutation<TMutation>(mutation, commitMutationFn);
 
   const commit = (config: UseMutationConfig<TMutation>) => {
@@ -36,5 +28,6 @@ export function usePromiseMutation<TMutation extends MutationParameters>(
       });
     });
   };
-  return [commit, ...other];
+
+  return [commit, ...other] as const;
 }

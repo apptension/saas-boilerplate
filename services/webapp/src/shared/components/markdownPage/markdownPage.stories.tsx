@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { MarkdownPage, MarkdownPageProps } from './markdownPage.component';
 
 const markdown = `

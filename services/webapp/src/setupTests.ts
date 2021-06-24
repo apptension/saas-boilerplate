@@ -5,7 +5,6 @@ import 'isomorphic-fetch';
 import 'jest-styled-components';
 import axios from 'axios';
 import MockDate from 'mockdate';
-
 import './mocks/reactIntl';
 import { server } from './mocks/server';
 

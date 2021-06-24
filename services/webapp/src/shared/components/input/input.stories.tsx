@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { Input, InputProps } from './input.component';
 
 const Template: Story<InputProps> = (args) => {

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage } from 'react-intl';
 import { TransactionHistory as TransactionHistoryList } from '../../../shared/components/finances/stripe/transactionHistory';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';

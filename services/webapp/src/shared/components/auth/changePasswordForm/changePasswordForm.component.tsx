@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { Input } from '../../input';
@@ -9,11 +8,11 @@ import { changePassword } from '../../../../modules/auth/auth.actions';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { Container, ErrorMessage, SubmitButton, FormFieldsRow } from './changePasswordForm.styles';
 
-interface ChangePasswordFormFields {
+type ChangePasswordFormFields = {
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
-}
+};
 
 export const ChangePasswordForm = () => {
   const intl = useIntl();

@@ -3,7 +3,6 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { HelmetProvider } from 'react-helmet-async';
 import { ApolloProvider } from '@apollo/client';
-
 import { DEFAULT_LOCALE, translationMessages } from '../i18n';
 import { H1 } from '../theme/typography';
 import { Role } from '../modules/auth/auth.types';

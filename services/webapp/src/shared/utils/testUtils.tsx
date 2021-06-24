@@ -11,7 +11,6 @@ import { produce } from 'immer';
 import { MockedProvider } from '@apollo/client/testing';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
-
 import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../config/reducers';

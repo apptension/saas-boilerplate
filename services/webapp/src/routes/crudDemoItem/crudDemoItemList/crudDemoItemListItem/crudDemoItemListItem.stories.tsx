@@ -3,7 +3,6 @@ import { Story } from '@storybook/react';
 import { useLazyLoadQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-
 import { crudDemoItemListItemDefaultStoryQuery } from '../../../../__generated__/crudDemoItemListItemDefaultStoryQuery.graphql';
 import { withProviders } from '../../../../shared/utils/storybook';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';

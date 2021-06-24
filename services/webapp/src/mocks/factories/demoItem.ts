@@ -1,9 +1,9 @@
 import * as faker from 'faker';
 import { ContentfulDemoItem } from '../../shared/services/contentful';
-import { Factory } from './types';
+import { createDeepFactory } from './factoryCreators';
 import { contentfulSysFactory } from './helpers';
 
-export const demoItemFactory: Factory<ContentfulDemoItem> = (overrides = {}) => ({
+export const demoItemFactory = createDeepFactory<ContentfulDemoItem>(() => ({
   title: faker.lorem.sentence(),
   description: faker.lorem.paragraph(),
   sys: contentfulSysFactory(),
@@ -14,4 +14,4 @@ export const demoItemFactory: Factory<ContentfulDemoItem> = (overrides = {}) => 
     contentfulMetadata: { tags: [] },
   },
   contentfulMetadata: { tags: [] },
-});
+}));

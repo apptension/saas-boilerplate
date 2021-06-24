@@ -2,7 +2,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-
 import EditCrudDemoItemQuery, { editCrudDemoItemQuery } from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { editCrudDemoItemContentMutation } from '../../../__generated__/editCrudDemoItemContentMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton/backButton.component';

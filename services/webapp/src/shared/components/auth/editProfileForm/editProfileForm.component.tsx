@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { selectProfile } from '../../../../modules/auth/auth.selectors';
@@ -10,10 +9,10 @@ import { Input } from '../../input';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { Container, ErrorMessage, Form, SubmitButton, FormFieldsRow } from './editProfileForm.styles';
 
-interface UpdateProfileFormFields {
+type UpdateProfileFormFields = {
   firstName: string;
   lastName: string;
-}
+};
 
 const FIRST_NAME_MAX_LENGTH = 40;
 const LAST_NAME_MAX_LENGTH = 40;

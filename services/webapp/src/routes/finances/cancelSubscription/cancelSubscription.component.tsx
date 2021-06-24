@@ -2,7 +2,6 @@ import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
 import { H2, Label } from '../../../theme/typography';
 import { useActiveSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { selectActiveSubscriptionRenewalDate } from '../../../modules/subscription/subscription.selectors';

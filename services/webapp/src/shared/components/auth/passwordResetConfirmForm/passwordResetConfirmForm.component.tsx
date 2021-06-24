@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -13,15 +12,15 @@ import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/
 import { ROUTES } from '../../../../routes/app.constants';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 
-export interface PasswordResetConfirmFormProps {
+export type PasswordResetConfirmFormProps = {
   user: string;
   token: string;
-}
+};
 
-interface ResetPasswordFormFields {
+type ResetPasswordFormFields = {
   newPassword: string;
   confirmPassword: string;
-}
+};
 
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();

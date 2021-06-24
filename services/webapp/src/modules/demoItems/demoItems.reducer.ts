@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import { append, equals, pipe, reject, uniq } from 'ramda';
 import { FavoriteDemoItemsApiGetResponseData } from '../../shared/services/api/demoItems/types';
 import { authActions } from '../auth';

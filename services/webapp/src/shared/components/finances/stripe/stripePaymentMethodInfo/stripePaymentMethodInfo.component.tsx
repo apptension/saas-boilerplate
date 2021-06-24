@@ -1,11 +1,10 @@
 import React from 'react';
-
 import { FormattedMessage } from 'react-intl';
 import { StripePaymentMethod, StripePaymentMethodCardBrand } from '../../../../services/api/stripe/paymentMethod';
 
-export interface StripePaymentMethodInfoProps {
+export type StripePaymentMethodInfoProps = {
   method?: StripePaymentMethod | null;
-}
+};
 
 const brandDisplayNames: Record<StripePaymentMethodCardBrand, string> = {
   [StripePaymentMethodCardBrand.Visa]: 'Visa',

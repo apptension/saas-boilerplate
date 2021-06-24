@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { withProviders } from '../../../shared/utils/storybook';
 import { prepareState } from '../../../mocks/store';
 import { subscriptionFactory } from '../../../mocks/factories';

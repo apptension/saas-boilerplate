@@ -2,7 +2,6 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
-
 import { ROUTES } from '../../app.constants';
 import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
@@ -10,7 +9,7 @@ import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
-export interface DemoItemListItemProps {
+export type DemoItemListItemProps = {
   id: string;
   item: {
     title?: string;
@@ -19,7 +18,7 @@ export interface DemoItemListItemProps {
       url?: string;
     };
   };
-}
+};
 
 export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const intl = useIntl();

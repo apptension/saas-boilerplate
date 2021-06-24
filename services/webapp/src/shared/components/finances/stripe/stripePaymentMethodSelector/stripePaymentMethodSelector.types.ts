@@ -1,5 +1,4 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
-
 import { NestedValue } from 'react-hook-form';
 import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 import { useApiForm } from '../../../../hooks/useApiForm';

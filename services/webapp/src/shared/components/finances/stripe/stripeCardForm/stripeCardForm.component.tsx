@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
@@ -17,11 +16,11 @@ import {
   StripeNameField,
 } from './stripeCardForm.styles';
 
-interface StripeFieldProps {
+type StripeFieldProps = {
   children: ReactNode;
   label: string;
   small?: boolean;
-}
+};
 
 const StripeField = ({ children, label, small }: StripeFieldProps) => (
   <StripeFieldContainer small={small}>
@@ -30,9 +29,9 @@ const StripeField = ({ children, label, small }: StripeFieldProps) => (
   </StripeFieldContainer>
 );
 
-export interface StripeCardFormProps {
+export type StripeCardFormProps = {
   onChange: (data: StripePaymentMethodChangeEvent) => void;
-}
+};
 
 export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
   const intl = useIntl();

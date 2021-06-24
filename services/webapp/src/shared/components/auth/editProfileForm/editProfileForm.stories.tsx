@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import styled from 'styled-components';
 import { prepareState } from '../../../../mocks/store';
 import { userProfileFactory } from '../../../../mocks/factories';

@@ -3,7 +3,6 @@ import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import juice from 'juice';
 import humps from 'humps';
-
 import { UnknownObject } from '../shared/utils/types';
 import { buildEmail } from './email';
 import { EmailTemplateType, EmailComponentProps } from './types';

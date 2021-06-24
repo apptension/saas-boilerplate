@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { ProvidersWrapper } from '../../utils/testUtils';
 import { prepareState } from '../../../mocks/store';
 import { loggedInAuthFactory, userProfileFactory } from '../../../mocks/factories';

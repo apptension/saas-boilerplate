@@ -1,5 +1,4 @@
 import React, { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { useDispatch, useSelector } from 'react-redux';

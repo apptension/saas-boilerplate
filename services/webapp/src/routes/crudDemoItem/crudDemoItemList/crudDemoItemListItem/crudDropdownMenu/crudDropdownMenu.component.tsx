@@ -5,7 +5,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import ClickAwayListener from 'react-click-away-listener';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-
 import { usePromiseMutation } from '../../../../../shared/services/graphqlApi/usePromiseMutation';
 import { Link as ButtonLink } from '../../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../../shared/components/button';
@@ -14,10 +13,10 @@ import { useGenerateLocalePath } from '../../../../useLanguageFromParams/useLang
 import { ROUTES } from '../../../../app.constants';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
-export interface CrudDropdownMenuProps {
+export type CrudDropdownMenuProps = {
   itemId: string;
   className?: string;
-}
+};
 
 export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) => {
   const [isOpen, setOpen] = useState(false);

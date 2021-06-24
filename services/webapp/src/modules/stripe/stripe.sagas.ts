@@ -1,5 +1,4 @@
 import { all, put, takeLatest } from 'redux-saga/effects';
-
 import { stripe } from '../../shared/services/api';
 import { handleApiRequest } from '../helpers/handleApiRequest';
 import * as stripeActions from './stripe.actions';

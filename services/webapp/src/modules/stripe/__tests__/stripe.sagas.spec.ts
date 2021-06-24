@@ -1,5 +1,4 @@
 import { expectSaga } from 'redux-saga-test-plan';
-
 import { times } from 'ramda';
 import { mockGetStripePaymentMethods } from '../../../mocks/server/handlers/stripe';
 import { server } from '../../../mocks/server';

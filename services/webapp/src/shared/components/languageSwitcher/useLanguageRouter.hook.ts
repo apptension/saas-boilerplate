@@ -1,23 +1,16 @@
 import { useHistory, useRouteMatch } from 'react-router';
 import { useSelector } from 'react-redux';
 import { localesSelectors } from '../../../modules/locales';
-import { appLocales } from '../../../i18n';
+import { appLocales, Locale } from '../../../i18n';
 
-interface LocaleData {
-  language: string | null;
-  locales: string[];
-}
-
-type LanguageChanger = (language: string) => void;
-
-export const useLanguageRouter = (): [LocaleData, LanguageChanger] => {
+export const useLanguageRouter = () => {
   const match = useRouteMatch<{ lang: string }>();
   const history = useHistory();
   const language = useSelector(localesSelectors.selectLocalesLanguage);
 
-  const changeLanguage: LanguageChanger = language => {
+  const changeLanguage = (language: Locale) => {
     history.push(match.url.replace(match.params.lang, language));
   };
 
-  return [{ language, locales: appLocales }, changeLanguage];
+  return [{ language, locales: appLocales }, changeLanguage] as const;
 };

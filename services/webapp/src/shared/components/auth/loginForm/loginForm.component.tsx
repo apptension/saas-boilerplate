@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -8,10 +7,10 @@ import { login } from '../../../../modules/auth/auth.actions';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 
-interface LoginFormFields {
+type LoginFormFields = {
   password: string;
   email: string;
-}
+};
 
 export const LoginForm = () => {
   const intl = useIntl();

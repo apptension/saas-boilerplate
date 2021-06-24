@@ -1,5 +1,4 @@
 import { all, takeEvery, delay, select, put } from 'redux-saga/effects';
-
 import { PayloadAction } from '@reduxjs/toolkit';
 import { reportError } from '../../shared/utils/reportError';
 import * as snackbarActions from './snackbar.actions';

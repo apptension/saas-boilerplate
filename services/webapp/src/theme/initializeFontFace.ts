@@ -4,7 +4,6 @@
 import interPrimary from '../fonts/Inter-Regular.woff';
 // @ts-ignore
 import interBold from '../fonts/Inter-SemiBold.woff';
-
 import { interFontName } from './font';
 
 function fontFace(

@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ResponsiveThemeProvider } from '../src/shared/components/responsiveThemeProvider';
-import { ProvidersWrapper } from '../src/shared/utils/testUtils';
 export { default as withRouter } from 'storybook-react-router';
-
 import { GlobalStyle } from '../src/theme/global';
 import { DEFAULT_LOCALE, translationMessages } from '../src/i18n';
 import initializeFontFace from '../src/theme/initializeFontFace';

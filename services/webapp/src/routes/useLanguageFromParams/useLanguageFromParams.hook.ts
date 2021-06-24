@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams, generatePath } from 'react-router-dom';
 import { localesActions } from '../../modules/locales';
-import { DEFAULT_LOCALE } from '../../i18n';
+import { DEFAULT_LOCALE, Locale } from '../../i18n';
 
-export interface LanguagePathParams {
-  lang: string;
-}
+export type LanguagePathParams = {
+  lang: Locale;
+};
 
 export const useLocale = () => {
   const { lang } = useParams<LanguagePathParams>();

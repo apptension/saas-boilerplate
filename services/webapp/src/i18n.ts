@@ -2,10 +2,10 @@ import { keys } from 'ramda';
 import enTranslationMessages from './translations/en.json';
 import plTranslationMessages from './translations/pl.json';
 
-export const LOCALES = {
-  ENGLISH: 'en',
-  POLISH: 'pl',
-};
+export enum Locale {
+  ENGLISH = 'en',
+  POLISH = 'pl',
+}
 
 export interface TranslationMessage {
   defaultMessage: string;
@@ -14,12 +14,12 @@ export interface TranslationMessage {
 export type TranslationMessagesWithDescriptors = Record<string, TranslationMessage>;
 export type TranslationMessages = Record<string, string>;
 
-export const DEFAULT_LOCALE = LOCALES.ENGLISH;
+export const DEFAULT_LOCALE = Locale.ENGLISH;
 
-export const appLocales = [LOCALES.ENGLISH, LOCALES.POLISH];
+export const appLocales = Object.values(Locale);
 
 export const formatTranslationMessages = (
-  locale: string,
+  locale: Locale,
   messages: TranslationMessagesWithDescriptors
 ): TranslationMessages => {
   const defaultFormattedMessages =
@@ -34,7 +34,7 @@ export const formatTranslationMessages = (
   }, {});
 };
 
-export const translationMessages = {
-  [LOCALES.ENGLISH]: formatTranslationMessages(LOCALES.ENGLISH, enTranslationMessages),
-  [LOCALES.POLISH]: formatTranslationMessages(LOCALES.POLISH, plTranslationMessages),
+export const translationMessages: Record<Locale, TranslationMessages> = {
+  [Locale.ENGLISH]: formatTranslationMessages(Locale.ENGLISH, enTranslationMessages),
+  [Locale.POLISH]: formatTranslationMessages(Locale.POLISH, plTranslationMessages),
 };

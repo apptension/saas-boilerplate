@@ -3,7 +3,6 @@ import { generatePath } from 'react-router';
 import { screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-
 import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDetailsQuery.graphql';
 import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { ROUTES } from '../../../app.constants';

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { NotificationTypes } from '../../notifications.types';
 import { withRouter } from '../../../../../../.storybook/decorators';
 import { CrudItemUpdated, CrudItemUpdatedProps } from './crudItemUpdated.component';

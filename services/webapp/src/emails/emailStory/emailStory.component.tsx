@@ -3,12 +3,12 @@ import axios from 'axios';
 import { EmailTemplateType } from '../types';
 import { Container, Subject, Email, Header, RecipientInput, SendEmail, SendEmailButton } from './emailStory.styles';
 
-interface EmailStorybookProps {
+type EmailStorybookProps = {
   children: ReactNode;
   type: EmailTemplateType;
   subject: ReactNode;
   emailData: Record<any, any>;
-}
+};
 
 export const EmailStory = ({ children, subject, emailData, type }: EmailStorybookProps) => {
   const [recipient, setRecipient] = useState('yourmail@mail.com');

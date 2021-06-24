@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { StripePaymentMethodSelector } from '../../../../shared/components/finances/stripe';
@@ -18,9 +17,9 @@ import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodFor
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ChangePaymentFormFields extends PaymentFormFields {}
 
-export interface EditPaymentMethodFormProps {
+export type EditPaymentMethodFormProps = {
   onSuccess: () => void;
-}
+};
 
 export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps) => {
   const dispatch = useAsyncDispatch();

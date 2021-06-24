@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-
 import { fontFamily } from './font';
 import { border, color } from './index';
 

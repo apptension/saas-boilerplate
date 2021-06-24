@@ -4,7 +4,6 @@ import { act, screen, waitFor } from '@testing-library/react';
 import { generatePath } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-
 import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
 import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
 import { ROUTES } from '../../../app.constants';

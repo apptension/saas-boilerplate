@@ -1,22 +1,19 @@
 import * as faker from 'faker';
 import { AuthState, Profile, Role } from '../../modules/auth/auth.types';
-import { Factory } from './types';
+import { createFactory } from './factoryCreators';
 
-export const userProfileFactory: Factory<Profile> = (overrides = {}) => ({
+export const userProfileFactory = createFactory<Profile>(() => ({
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
   roles: faker.random.arrayElements([Role.ADMIN, Role.USER], 2),
-  ...overrides,
-});
+}));
 
-export const loggedInAuthFactory: Factory<AuthState> = (overrides = {}) => ({
+export const loggedInAuthFactory = createFactory<AuthState>(() => ({
   isLoggedIn: true,
   profile: userProfileFactory(),
-  ...overrides,
-});
+}));
 
-export const loggedOutAuthFactory: Factory<AuthState> = (overrides = {}) => ({
+export const loggedOutAuthFactory = createFactory<AuthState>(() => ({
   isLoggedIn: false,
-  ...overrides,
-});
+}));

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { generatePath, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -9,7 +8,7 @@ import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase na
 import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { Container } from './{{ camelCase name }}ListItem.styles';
 
-export interface {{ pascalCase name }}ListItemProps {
+export type {{ pascalCase name }}ListItemProps = {
   item: {{ pascalCase name }};
 }
 

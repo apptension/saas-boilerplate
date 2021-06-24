@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit';
-
 import { StartupState } from './startup.types';
 import * as startupActions from './startup.actions';
 

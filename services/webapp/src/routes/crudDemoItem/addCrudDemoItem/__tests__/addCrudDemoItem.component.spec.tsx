@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { act, screen, waitFor } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { ConnectionHandler } from 'relay-runtime';
-
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { AddCrudDemoItem } from '../addCrudDemoItem.component';
@@ -49,10 +48,7 @@ describe('AddCrudDemoItem: Component', () => {
         });
 
         act(() => {
-          relayEnvironment.mock.resolve(
-            operation,
-            MockPayloadGenerator.generate(operation)
-          );
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
         });
       });
     });
@@ -69,10 +65,7 @@ describe('AddCrudDemoItem: Component', () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
         expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
         act(() => {
-          relayEnvironment.mock.resolve(
-            operation,
-            MockPayloadGenerator.generate(operation)
-          );
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
         });
       });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { elevationLight, elevationLightest, elevationMedium, elevationStrong, elevationStrongest } from '../elevation';
+import { light, lightest, medium, strong, strongest } from '../elevation';
 
 const Box = styled.div`
   margin: 20px;
@@ -12,23 +12,23 @@ const Box = styled.div`
 `;
 
 const BoxLightest = styled(Box)`
-  ${elevationLightest}
+  ${lightest}
 `;
 
 const BoxLight = styled(Box)`
-  ${elevationLight}
+  ${light}
 `;
 
 const BoxMedium = styled(Box)`
-  ${elevationMedium}
+  ${medium}
 `;
 
 const BoxStrong = styled(Box)`
-  ${elevationStrong}
+  ${strong}
 `;
 
-const BoxStronest = styled(Box)`
-  ${elevationStrongest}
+const BoxStrongest = styled(Box)`
+  ${strongest}
 `;
 
 const Template: Story = () => (
@@ -37,7 +37,7 @@ const Template: Story = () => (
     <BoxLight />
     <BoxMedium />
     <BoxStrong />
-    <BoxStronest />
+    <BoxStrongest />
   </>
 );
 

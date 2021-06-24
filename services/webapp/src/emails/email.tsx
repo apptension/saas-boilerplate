@@ -1,16 +1,14 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-
 import { DEFAULT_LOCALE } from '../i18n';
 import { EmailComponentProps, EmailTemplateType } from './types';
-
 import templates from './templates';
 
-interface AppProps {
+type AppProps = {
   name: EmailTemplateType;
   data: EmailComponentProps;
   lang: string;
-}
+};
 
 export const buildEmail = ({ name, data, lang = DEFAULT_LOCALE }: AppProps) => {
   const { Template, Subject } = templates[name];

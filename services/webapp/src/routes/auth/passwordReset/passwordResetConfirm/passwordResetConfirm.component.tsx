@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
-
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 import { useGenerateLocalePath } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../app.constants';

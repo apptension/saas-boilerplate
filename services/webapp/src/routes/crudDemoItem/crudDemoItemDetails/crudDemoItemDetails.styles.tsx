@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 import { heading3 } from '../../../theme/typography';
 import { Breakpoint, media } from '../../../theme/media';
 import { contentWrapper, sizeUnits, verticalPadding } from '../../../theme/size';

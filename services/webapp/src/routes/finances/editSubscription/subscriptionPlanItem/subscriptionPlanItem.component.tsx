@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { SubscriptionPlan } from '../../../../shared/services/api/subscription/types';
@@ -14,11 +13,11 @@ import {
 } from '../../../../modules/subscription/subscription.selectors';
 import { Container, Content, Feature, FeaturesList, SelectButton, Name } from './subscriptionPlanItem.styles';
 
-export interface SubscriptionPlanItemProps {
+export type SubscriptionPlanItemProps = {
   plan: SubscriptionPlan;
   onSelect: () => void;
   className?: string;
-}
+};
 
 export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
   const { name, price, features, isFree } = useSubscriptionPlanDetails(plan);

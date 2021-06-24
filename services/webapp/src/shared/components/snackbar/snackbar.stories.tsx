@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { prepareState } from '../../../mocks/store';
 import { ProvidersWrapper } from '../../utils/testUtils';
 import { Message } from '../../../modules/snackbar/snackbar.types';

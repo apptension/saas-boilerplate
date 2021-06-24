@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import * as configActions from './config.actions';
 import { ConfigState, ContentfulAppConfigPlain } from './config.types';
 

@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { FieldValues } from 'react-hook-form/dist/types/fields';
 import { FieldName } from 'react-hook-form';
 import { path } from 'ramda';
-
 import { ErrorMessages, FieldErrorMessages } from '../useApiForm.types';
 import { FieldError } from '../../../services/api/types';
 

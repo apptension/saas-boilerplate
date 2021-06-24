@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { ProvidersWrapper } from '../../utils/testUtils';
 import { LayoutContext } from '../../../routes/layout/layout.context';
 import { Sidebar } from './sidebar.component';

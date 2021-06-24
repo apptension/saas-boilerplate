@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-
 import { useHistory, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';

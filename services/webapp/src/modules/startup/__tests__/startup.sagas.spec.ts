@@ -1,5 +1,4 @@
 import { expectSaga } from 'redux-saga-test-plan';
-
 import { identity } from 'ramda';
 import { watchStartup } from '../startup.sagas';
 import { startupActions } from '..';

@@ -7,7 +7,6 @@ import {
   PayloadAction,
   PrepareAction,
 } from '@reduxjs/toolkit';
-
 import { put } from 'redux-saga/effects';
 import { GlobalState } from '../../config/reducers';
 

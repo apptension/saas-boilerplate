@@ -1,15 +1,14 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { EmailComponentProps } from '../../types';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
 import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
-export interface PasswordResetProps extends EmailComponentProps {
+export type PasswordResetProps = EmailComponentProps & {
   userId: string;
   token: string;
-}
+};
 
 export const Template = ({ userId, token }: PasswordResetProps) => {
   const generateLocalePath = useGenerateLocalePath();

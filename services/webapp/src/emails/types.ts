@@ -7,9 +7,9 @@ export enum EmailTemplateType {
   TrialExpiresSoon = 'trialExpiresSoon',
 }
 
-export interface EmailComponentProps {
+export type EmailComponentProps = {
   to: string;
-}
+};
 
 export interface EmailTemplateDefinition {
   Template: ComponentType<any>;

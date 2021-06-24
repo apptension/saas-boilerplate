@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-
 import { fontFamily, fontWeight } from '../../theme';
 import { Image } from './image';
 

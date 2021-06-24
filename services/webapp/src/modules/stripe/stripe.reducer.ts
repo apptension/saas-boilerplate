@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import { HistoryListApiResponseData } from '../../shared/services/api/stripe/history/types';
 import { authActions } from '../auth';
 import * as stripeActions from './stripe.actions';

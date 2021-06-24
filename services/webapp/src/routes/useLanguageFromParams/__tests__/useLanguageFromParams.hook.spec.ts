@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useLanguageFromParams } from '../useLanguageFromParams.hook';
 import { localesActions } from '../../../modules/locales';
-import { DEFAULT_LOCALE, LOCALES } from '../../../i18n';
+import { DEFAULT_LOCALE, Locale } from '../../../i18n';
 import { store } from '../../../mocks/store';
 
 const render = () => renderHook(() => useLanguageFromParams());
@@ -27,7 +27,7 @@ describe('useLanguageFromParams: Hook', () => {
   it('should set proper language based on url', () => {
     mockParams.mockReturnValue({ lang: 'pl' });
     render();
-    expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(LOCALES.POLISH));
+    expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(Locale.POLISH));
   });
 
   it('should set default language if it is not matched', () => {
@@ -42,6 +42,6 @@ describe('useLanguageFromParams: Hook', () => {
     mockDispatch.mockClear();
     mockParams.mockReturnValue({ lang: 'en' });
     render();
-    expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(LOCALES.ENGLISH));
+    expect(mockDispatch).toHaveBeenCalledWith(localesActions.setLanguage(Locale.ENGLISH));
   });
 });

@@ -1,16 +1,15 @@
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
-
 import { Icon, Container } from './button.styles';
 import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: ButtonSize;
   color?: ButtonColor | string;
   icon?: ReactNode;
   fixedWidth?: boolean;
-}
+};
 
 export const Button = ({
   children,

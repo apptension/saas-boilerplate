@@ -1,7 +1,6 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PayloadError } from 'relay-runtime';
-
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/input';
 import { Button, ButtonVariant } from '../../../shared/components/button';
@@ -13,14 +12,14 @@ import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemFo
 
 const MAX_NAME_LENGTH = 255;
 
-export interface CrudDemoItemFormFields {
+export type CrudDemoItemFormFields = {
   name: string;
-}
+};
 
-export interface CrudDemoItemFormProps {
+export type CrudDemoItemFormProps = {
   initialData?: CrudDemoItemFormFields | null;
   onSubmit: (formData: CrudDemoItemFormFields) => Promise<{ errors?: PayloadError[] | null }>;
-}
+};
 
 export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProps) => {
   const intl = useIntl();

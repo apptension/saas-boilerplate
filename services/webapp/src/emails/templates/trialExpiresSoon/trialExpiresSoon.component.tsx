@@ -1,15 +1,14 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { Date } from '../../../shared/components/date';
 
-export interface TrialExpiresSoonProps extends EmailComponentProps {
+export type TrialExpiresSoonProps = EmailComponentProps & {
   expiryDate: string;
-}
+};
 
 export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
   const generateLocalePath = useGenerateLocalePath();

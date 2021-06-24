@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';
 import { Profile } from '../profile.component';

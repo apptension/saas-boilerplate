@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { screen } from '@testing-library/react';

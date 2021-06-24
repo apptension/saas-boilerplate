@@ -1,5 +1,4 @@
 import { expectSaga } from 'redux-saga-test-plan';
-
 import { watchConfig } from '../config.sagas';
 import { configActions } from '..';
 import { startupActions } from '../../startup';

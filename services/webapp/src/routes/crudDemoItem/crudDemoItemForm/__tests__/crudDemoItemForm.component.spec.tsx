@@ -1,7 +1,6 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { act, screen, waitFor } from '@testing-library/react';
-
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';

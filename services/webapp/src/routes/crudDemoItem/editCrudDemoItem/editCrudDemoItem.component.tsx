@@ -2,7 +2,6 @@ import React, { Suspense, useEffect } from 'react';
 import graphql from 'babel-plugin-relay/macro';
 import { useParams } from 'react-router';
 import { useQueryLoader } from 'react-relay';
-
 import { editCrudDemoItemQuery } from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { EditCrudDemoItemContent } from './editCrudDemoItemContent.component';
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { Controller } from 'react-hook-form';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
@@ -27,10 +26,10 @@ import {
   DeleteButton,
 } from './stripePaymentMethodSelector.styles';
 
-export interface StripePaymentMethodSelectorProps {
+export type StripePaymentMethodSelectorProps = {
   formControls: Pick<PaymentMethodApiFormControls, 'control' | 'genericError' | 'errors'>;
   initialValue?: StripePaymentMethod | null;
-}
+};
 
 export const StripePaymentMethodSelector = ({ formControls, initialValue }: StripePaymentMethodSelectorProps) => {
   const intl = useIntl();

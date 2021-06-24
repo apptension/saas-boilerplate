@@ -1,6 +1,5 @@
 import { Elements } from '@stripe/react-stripe-js';
 import React from 'react';
-
 import { produce } from 'immer';
 import { times } from 'ramda';
 import { makeContextRenderer } from '../../../../../utils/testUtils';

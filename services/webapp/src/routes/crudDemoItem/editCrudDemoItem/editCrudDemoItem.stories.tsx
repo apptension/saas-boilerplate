@@ -3,7 +3,6 @@ import { Story } from '@storybook/react';
 import { generatePath } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-
 import EditCrudDemoItemQuery from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { withProviders } from '../../../shared/utils/storybook';
 import { ROUTES } from '../../app.constants';

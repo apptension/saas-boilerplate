@@ -1,9 +1,9 @@
 import { selectLocalesLanguage } from '../locales.selectors';
-
 import { prepareState } from '../../../mocks/store';
+import { Locale } from '../../../i18n';
 
 describe('Locales: selectors', () => {
-  const language = 'en';
+  const language = Locale.ENGLISH;
 
   const defaultState = prepareState((state) => {
     state.locales = {

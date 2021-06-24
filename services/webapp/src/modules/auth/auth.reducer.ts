@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import { UpdateProfileApiResponseData } from '../../shared/services/api/auth/types';
 import * as authActions from './auth.actions';
 import { AuthState, FetchProfileSuccessPayload } from './auth.types';

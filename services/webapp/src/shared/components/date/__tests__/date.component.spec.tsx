@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../utils/testUtils';
 import { DateDisplay, DateProps } from '../date.component';

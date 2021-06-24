@@ -19,7 +19,7 @@ export const Container = styled.div`
 export const MessageWrapper = styled.div`
   position: relative;
   padding: ${sizeUnits(2)} 47px ${sizeUnits(2)} ${sizeUnits(2)};
-  ${elevation.elevationLightest};
+  ${elevation.lightest};
   margin-bottom: ${sizeUnits(2)};
   border-radius: 4px;
   background: ${color.white};

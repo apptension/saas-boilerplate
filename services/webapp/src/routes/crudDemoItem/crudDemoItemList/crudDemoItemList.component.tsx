@@ -2,7 +2,6 @@ import React, { Suspense, useEffect } from 'react';
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { FormattedMessage } from 'react-intl';
-
 import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { ROUTES } from '../../app.constants';
 import { ButtonVariant } from '../../../shared/components/button';

@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
@@ -9,7 +8,7 @@ import { {{ pascalCase name }} } from '../../../shared/services/api/{{ camelCase
 import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
 import { Container, ErrorMessage, Label, Form, Row, Value } from './{{ camelCase name }}Form.styles';
 
-export interface {{ pascalCase name }}FormProps {
+export type {{ pascalCase name }}FormProps = {
   data?: {{ pascalCase name }};
 }
 

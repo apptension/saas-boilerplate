@@ -3,9 +3,9 @@ import { ThemeProvider } from 'styled-components';
 import { useWindowListener } from '../../hooks/useWindowListener';
 import { getActiveBreakpoint } from '../../../theme/media';
 
-export interface ResponsiveThemeProviderProps {
+export type ResponsiveThemeProviderProps = {
   children: React.ReactNode;
-}
+};
 
 export const ResponsiveThemeProvider = ({ children }: ResponsiveThemeProviderProps) => {
   const getTheme = () => ({ activeBreakpoint: getActiveBreakpoint() });

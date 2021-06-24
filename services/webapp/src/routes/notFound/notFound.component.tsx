@@ -1,7 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { H1 } from '../../theme/typography';
 import { Container } from './notFound.styles';
 

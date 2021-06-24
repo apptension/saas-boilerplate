@@ -1,5 +1,4 @@
 import React, { ComponentProps, useLayoutEffect } from 'react';
-
 import { Route, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsProfileStartupCompleted } from '../../modules/startup/startup.selectors';
@@ -7,12 +6,11 @@ import { Role } from '../../modules/auth/auth.types';
 import { useRoleAccessCheck } from '../../shared/hooks/useRoleAccessCheck';
 import { useGenerateLocalePath } from '../useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../app.constants';
-import { renderWhenTrue } from '../../shared/utils/rendering';
 import { selectIsLoggedIn } from '../../modules/auth/auth.selectors';
 
-export interface AuthRouteProps {
+export type AuthRouteProps = {
   allowedRoles?: Role | Role[];
-}
+};
 
 export const AuthRoute = ({
   children,
@@ -32,6 +30,6 @@ export const AuthRoute = ({
     }
   }, [fallbackUrl, history, isAllowed, isProfileStartupCompleted]);
 
-  const renderRoute = () => <Route {...props}>{children}</Route>;
-  return renderWhenTrue(renderRoute)(isProfileStartupCompleted && isAllowed);
+  if (!isProfileStartupCompleted || !isAllowed) return null;
+  return <Route {...props}>{children}</Route>;
 };

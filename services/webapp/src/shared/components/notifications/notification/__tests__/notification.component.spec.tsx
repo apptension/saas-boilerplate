@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { fireEvent, screen } from '@testing-library/react';
 import { Notification, NotificationProps } from '../notification.component';
 import { makeContextRenderer, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../utils/testUtils';

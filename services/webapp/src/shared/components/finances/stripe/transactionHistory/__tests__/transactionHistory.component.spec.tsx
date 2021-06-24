@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { screen } from '@testing-library/react';
 import { TransactionHistory } from '../transactionHistory.component';
 import { makeContextRenderer } from '../../../../../utils/testUtils';

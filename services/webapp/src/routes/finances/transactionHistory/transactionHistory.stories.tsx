@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { times } from 'ramda';
 import { prepareState } from '../../../mocks/store';
 import { transactionHistoryEntryFactory } from '../../../mocks/factories';

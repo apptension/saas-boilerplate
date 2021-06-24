@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useIntl } from 'react-intl';
 import { TransactionHistoryEntry as TransactionHistoryEntryData } from '../../../../../services/api/stripe/history/types';
 import { Date } from '../../../../date';
@@ -7,10 +6,10 @@ import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
 import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
-export interface TransactionHistoryEntryProps {
+export type TransactionHistoryEntryProps = {
   entry: TransactionHistoryEntryData;
   className?: string;
-}
+};
 
 export const TransactionHistoryEntry = ({ entry, className }: TransactionHistoryEntryProps) => {
   const intl = useIntl();

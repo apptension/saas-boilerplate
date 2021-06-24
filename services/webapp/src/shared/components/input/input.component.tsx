@@ -3,10 +3,10 @@ import { ThemeProvider } from 'styled-components';
 import { Container, Field, Message, Label, LabelText } from './input.styles';
 import { InputTheme } from './input.types';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
-  label?: string | ReactNode;
-}
+  label?: ReactNode;
+};
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, label, required, ...inputProps }: InputProps, ref) => {

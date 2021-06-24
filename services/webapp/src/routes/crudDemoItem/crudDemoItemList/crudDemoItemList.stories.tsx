@@ -2,7 +2,6 @@ import React from 'react';
 import { Story } from '@storybook/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-
 import CrudDemoItemListQuery from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { withProviders } from '../../../shared/utils/storybook';
 import { connectionFromArray } from '../../../shared/utils/testUtils';

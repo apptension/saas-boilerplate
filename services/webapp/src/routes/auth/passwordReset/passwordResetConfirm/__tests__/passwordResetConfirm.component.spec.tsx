@@ -1,7 +1,6 @@
 import React from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
 import { ROUTES } from '../../../../app.constants';
 import { confirmPasswordReset } from '../../../../../modules/auth/auth.actions';

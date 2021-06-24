@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import throttle from 'lodash.throttle';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -10,13 +9,13 @@ import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestFor
 
 const SUBMIT_THROTTLE = 15_000;
 
-interface PasswordResetRequestFormProps {
+type PasswordResetRequestFormProps = {
   onSubmitted?: () => void;
-}
+};
 
-interface ResetPasswordFormFields {
+type ResetPasswordFormFields = {
   email: string;
-}
+};
 
 export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
   const [isSubmitted, setSubmitted] = useState(false);

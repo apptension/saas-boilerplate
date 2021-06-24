@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useSelector } from 'react-redux';
 import { selectTermsAndConditions } from '../../modules/config/config.selectors';
 import { MarkdownPage } from '../../shared/components/markdownPage';

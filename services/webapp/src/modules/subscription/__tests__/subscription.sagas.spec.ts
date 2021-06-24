@@ -1,5 +1,4 @@
 import { expectSaga } from 'redux-saga-test-plan';
-
 import { watchSubscription } from '../subscription.sagas';
 import { subscriptionActions } from '..';
 import { subscriptionFactory } from '../../../mocks/factories';

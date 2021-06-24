@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
-
 import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
@@ -14,9 +13,9 @@ import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 import { Layout } from './layout';
 
-export interface AppComponentProps {
+export type AppComponentProps = {
   children?: ReactNode;
-}
+};
 
 export const AppComponent = ({ children }: AppComponentProps) => {
   useStartup();

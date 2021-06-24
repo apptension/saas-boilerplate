@@ -1,14 +1,13 @@
 import React, { ReactNode, useMemo, useState } from 'react';
-
 import { useLocation, matchPath } from 'react-router-dom';
 import { isNil } from 'ramda';
 import { NO_NAVIGATION_ROUTES } from '../app.constants';
 import { Header, Sidebar, Content } from './layout.styles';
 import { LayoutContext } from './layout.context';
 
-export interface LayoutProps {
+export type LayoutProps = {
   children?: ReactNode;
-}
+};
 
 export const Layout = ({ children }: LayoutProps) => {
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);

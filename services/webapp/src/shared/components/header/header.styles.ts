@@ -69,7 +69,7 @@ export const Menu = styled.div<{ isOpen: boolean }>`
   top: ${sizeUnits(5)};
   min-width: ${sizeUnits(21)};
   text-align: left;
-  ${elevation.elevationLightest};
+  ${elevation.lightest};
   display: flex;
   flex-direction: column;
   background-color: ${color.white};

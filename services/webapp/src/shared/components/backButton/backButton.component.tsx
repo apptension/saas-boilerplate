@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { empty } from 'ramda';
 import { Container } from './backButton.styles';
 
-export interface BackButtonProps {
+export type BackButtonProps = {
   to?: string;
-}
+};
 
 export const BackButton = ({ to }: BackButtonProps) => {
   const history = useHistory();

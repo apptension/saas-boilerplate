@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -10,12 +9,12 @@ import { ROUTES } from '../../../../routes/app.constants';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
 
-interface SignupFormFields {
+type SignupFormFields = {
   password: string;
   email: string;
   acceptTerms: boolean;
   test: { nested: string };
-}
+};
 
 export const SignupForm = () => {
   const intl = useIntl();

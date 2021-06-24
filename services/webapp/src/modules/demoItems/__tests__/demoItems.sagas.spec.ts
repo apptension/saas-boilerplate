@@ -1,5 +1,4 @@
 import { expectSaga } from 'redux-saga-test-plan';
-
 import { BAD_REQUEST } from 'http-status-codes';
 import { watchDemoItems } from '../demoItems.sagas';
 import { demoItemsActions } from '..';

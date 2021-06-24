@@ -1,6 +1,5 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-
 import { Checkbox, CheckboxProps } from './checkbox.component';
 
 const Template: Story<CheckboxProps> = (args) => {

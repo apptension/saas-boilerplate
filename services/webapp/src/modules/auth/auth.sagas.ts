@@ -1,5 +1,4 @@
 import { all, put, takeLatest, select } from 'redux-saga/effects';
-
 import { ROUTES } from '../../routes/app.constants';
 import { auth } from '../../shared/services/api';
 import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';

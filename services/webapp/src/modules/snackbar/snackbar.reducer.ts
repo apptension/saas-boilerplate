@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import * as snackbarActions from './snackbar.actions';
 import { SnackbarState, Message } from './snackbar.types';
 

@@ -1,7 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from 'http-status-codes';
 import { identity } from 'ramda';
-
 import { server } from '../../../mocks/server';
 import { watchAuth } from '../auth.sagas';
 import {

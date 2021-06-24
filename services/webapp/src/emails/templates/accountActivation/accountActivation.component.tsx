@@ -1,15 +1,14 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { EmailComponentProps } from '../../types';
 import { Button, Layout } from '../../base';
 import { ROUTES } from '../../../routes/app.constants';
 import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
-export interface AccountActivationProps extends EmailComponentProps {
+export type AccountActivationProps = EmailComponentProps & {
   userId: string;
   token: string;
-}
+};
 
 export const Template = ({ userId, token }: AccountActivationProps) => {
   const generateLocalPath = useGenerateLocalePath();

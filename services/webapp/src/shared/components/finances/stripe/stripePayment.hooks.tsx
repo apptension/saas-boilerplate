@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { stripeActions } from '../../../../modules/stripe';
 import { selectStripePaymentMethods } from '../../../../modules/stripe/stripe.selectors';

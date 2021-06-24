@@ -1,3 +1,5 @@
+import { Locale } from '../../i18n';
+
 export type LocalesState = {
-  language: string | null;
+  language: Locale | null;
 };

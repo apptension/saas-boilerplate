@@ -1,5 +1,4 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-
 import { authActions } from '../auth';
 import * as subscriptionActions from './subscription.actions';
 import {

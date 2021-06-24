@@ -20,9 +20,9 @@ interface StripePaymentFormFields extends PaymentFormFields {
   product: TestProduct;
 }
 
-export interface StripePaymentFormProps {
+export type StripePaymentFormProps = {
   onSuccess(paymentIntent: StripePaymentIntent): void;
-}
+};
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();

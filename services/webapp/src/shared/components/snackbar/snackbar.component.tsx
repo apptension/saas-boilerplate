@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { useIntl } from 'react-intl';

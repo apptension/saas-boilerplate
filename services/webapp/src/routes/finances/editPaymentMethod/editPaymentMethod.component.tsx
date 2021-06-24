@@ -1,7 +1,6 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Elements } from '@stripe/react-stripe-js';
-
 import { useHistory } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';

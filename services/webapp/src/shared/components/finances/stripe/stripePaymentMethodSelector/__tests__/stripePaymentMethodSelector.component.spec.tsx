@@ -1,7 +1,6 @@
 import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
-
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { makeContextRenderer, matchTextContent, ProvidersWrapper } from '../../../../../utils/testUtils';
 import { useApiForm } from '../../../../../hooks/useApiForm';

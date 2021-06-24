@@ -2,7 +2,6 @@ import styled, { css, FlattenInterpolation, ThemeProps } from 'styled-components
 import theme from 'styled-theming';
 import Color from 'color';
 import { size, transition, color } from '../../../theme';
-import { greyScale } from '../../../theme/color';
 import { label, labelBold } from '../../../theme/typography';
 import { Breakpoint, media, responsiveValue } from '../../../theme/media';
 import { colorScale, ColorScaleIndex } from '../../../theme/utils/colorScale';
@@ -103,7 +102,7 @@ const primaryBaseButtonStyle = css`
       background: ${getColorScale(35)};
     `,
     disabled: css`
-      background: ${greyScale.get(90)};
+      background: ${color.greyScale.get(90)};
     `,
   })}
 `;
