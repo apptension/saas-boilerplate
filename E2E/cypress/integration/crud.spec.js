@@ -21,7 +21,7 @@ import {
 const userEmail = Cypress.env('EMAIL');
 const password = Cypress.env('PASSWORD');
 const name = 'E2E CRUD item - created';
-const newName = 'E2E CRUD item - editted';
+const newName = 'E2E CRUD item - edited';
 
 describe('CRUD', () => {
   before(() => {
@@ -35,16 +35,16 @@ describe('CRUD', () => {
   });
 
   it('should create CRUD item', () => {
-    cy.intercept('POST', '/api/demo/crud-item/').as('crudCreated');
+    cy.intercept('POST', '/api/graphql/').as('crudCreated');
 
     addCrudItem(name);
-    cy.intercept('GET', '/api/demo/crud-item/').as('getCrud');
+    cy.intercept('GET', '/api/graphql/').as('getCrud');
     expectCrudToBeCreated(name, '@crudCreated', '@getCrud');
   });
 
   it('should preview CRUD item', () => {
     createCrudWithApi(name).then((res) => {
-      const { id } = res.body;
+      const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
 
       cy.reload();
       cy.get(getCrudSelector(id)).find('p').contains(name).click();
@@ -57,14 +57,15 @@ describe('CRUD', () => {
   it('should edit CRUD item', () => {
     createCrudWithApi(name).then((res) => {
       const { id } = res.body;
-      cy.intercept('PUT', `/api/demo/crud-item/${id}/`).as('crudEditted');
+
+      cy.intercept('PUT', `/api/graphql/${id}/`).as('crudEdited');
 
       cy.reload();
       editCrudItem(newName, id);
 
       expectSnackbarToBeDisplayed(CHANGES_SAVED_SNACKBAR_TEXT);
       cy.get('[href$="/crud-demo-item/"]').contains('Go back').click();
-      expectCrudToBeDisplayed(newName, id, '@crudEditted');
+      expectCrudToBeDisplayed(newName, id, '@crudEdited');
     });
   });
 
@@ -92,15 +93,15 @@ describe('CRUD', () => {
     });
 
     it(`should not edit CRUD item name to be ${nameState}`, () => {
-      cy.intercept('PUT', '/api/demo/crud-item/').as('crudEditted');
+      cy.intercept('PUT', '/api/demo/crud-item/').as('crudEdited');
 
       createCrudWithApi(name).then((res) => {
-        const { id } = res.body;
+        const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
 
         cy.reload();
         editCrudItem(crudName, id);
         expectErrorTextToBeDisplayed(errorText);
-        expectRequestNotToHappen('@crudEditted');
+        expectRequestNotToHappen('@crudEdited');
       });
     });
   });

@@ -6,6 +6,9 @@ const ADD_CRUD_ITEM_BTN = '[href$="/crud-demo-item/add"]';
 const CRUD_NAME_INPUT = 'input[name="name"]';
 
 export const getCrudSelector = (id) => `[href$="/crud-demo-item/${id}"]`;
+export const editCrudSelector = (id) => `[href$="/crud-demo-item/${id}/edit"]`;
+export const deleteCrudItem = (id) =>
+  cy.get(getCrudSelector(id)).parent().contains('Delete').click();
 
 const setCrudName = (name) => {
   cy.get(CRUD_NAME_INPUT).type(name);
@@ -18,15 +21,13 @@ export const addCrudItem = (name) => {
 };
 
 export const editCrudItem = (name, id) => {
-  cy.get(getCrudSelector(id)).contains('Edit').click();
+  cy.get(editCrudSelector(id)).contains('Edit').click();
 
-  cy.location('pathname').should('contain', `/crud-demo-item/edit/${id}`);
+  cy.location('pathname').should('contain', `/crud-demo-item/${id}/edit`);
 
   setCrudName(name);
   cy.get(SUBMIT_BTN).click();
 };
-
-export const deleteCrudItem = (id) => cy.get(getCrudSelector(id)).contains('Delete').click();
 
 export const expectCrudToBeDisplayed = (name, id, alias) => {
   cy.wait(alias).then((res) => {
@@ -38,7 +39,6 @@ export const expectCrudToBeDisplayed = (name, id, alias) => {
 export const expectCrudToBeCreated = (name, postAlias, getAlias) => {
   cy.wait(postAlias).then((res) => {
     const { id } = res.response.body;
-
     expect(res.response.statusCode).to.equal(201);
     expect(res.response.body).to.eql({ name, id });
     expectSnackbarToBeDisplayed(CHANGES_SAVED_SNACKBAR_TEXT);
@@ -67,9 +67,16 @@ export const expectCrudToBeDeleted = (name, id, alias) => {
 export const createCrudWithApi = (name) => {
   return cy.request({
     method: 'POST',
-    url: '/api/demo/crud-item/',
+    url: '/api/graphql/',
     body: {
-      name,
+      query:
+        'mutation addCrudDemoItemMutation(\n  $input: CreateCrudDemoItemMutationInput!\n) {\n  createCrudDemoItem(input: $input) {\n    crudDemoItemEdge {\n      node {\n        id\n        name\n      }\n    }\n  }\n}\n',
+      variables: {
+        input: {
+          name,
+        },
+        connections: ['client:root:__crudDemoItemList_allCrudDemoItems_connection'],
+      },
     },
     headers: {
       Authorization: `Bearer ${getToken()}`,

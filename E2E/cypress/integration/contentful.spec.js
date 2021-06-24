@@ -24,7 +24,7 @@ describe('Contentful integration', () => {
   it('should see Contentful items on the list', () => {
     cy.contains('Contentful items').should('be.visible');
 
-    cy.get('li button')
+    cy.get('li button[role=checkbox]')
       .should('be.visible')
       .invoke('attr', 'aria-checked')
       .should('equal', 'false');

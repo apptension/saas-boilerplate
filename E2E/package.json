@@ -7,7 +7,7 @@
     "chai-date-string": "^0.1.0",
     "cypress-audit": "^0.3.0",
     "del": "^6.0.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "fs": "0.0.1-security",
     "fs-extra": "^9.0.1",
     "googleapis": "^67.1.0",

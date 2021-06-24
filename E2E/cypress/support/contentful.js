@@ -8,14 +8,14 @@ export const waitForFavoritesToLoad = () => {
 export const addToFavorites = () => {
   cy.intercept('POST', '/api/demo/contentful-item/*/favorite/').as('addToFavorites');
 
-  cy.get('li button').first().click();
+  cy.get('li button[role=checkbox]').first().click();
   cy.wait('@addToFavorites');
 };
 
 export const removeFromFavorites = () => {
   cy.intercept('DELETE', '/api/demo/contentful-item/*/favorite/').as('removeFromFavorites');
 
-  cy.get('li button').first().click();
+  cy.get('li button[role=checkbox]').first().click();
   cy.wait('@removeFromFavorites');
 };
 
@@ -24,7 +24,7 @@ export const getContentfulItemUrl = () => {
 };
 
 export const previewContentfulItem = () => {
-  cy.get('li').first().click();
+  cy.get('li a').first().click();
 };
 
 const getFavoriteItems = () =>
@@ -73,15 +73,15 @@ export const removeFromFavoritesWithApi = () => {
 };
 
 export const expectItemToBeFavorite = () => {
-  cy.get('li button').first().should('have.attr', 'aria-checked', 'true');
+  cy.get('li button[role=checkbox]').first().should('have.attr', 'aria-checked', 'true');
   cy.reload();
   waitForFavoritesToLoad();
-  cy.get('li button').first().should('have.attr', 'aria-checked', 'true');
+  cy.get('li button[role=checkbox]').first().should('have.attr', 'aria-checked', 'true');
 };
 
 export const expectItemNotToBeFavorite = () => {
-  cy.get('li button').first().should('have.attr', 'aria-checked', 'false');
+  cy.get('li button[role=checkbox]').first().should('have.attr', 'aria-checked', 'false');
   cy.reload();
   waitForFavoritesToLoad();
-  cy.get('li button').first().should('have.attr', 'aria-checked', 'false');
+  cy.get('li button[role=checkbox]').first().should('have.attr', 'aria-checked', 'false');
 };

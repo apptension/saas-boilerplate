@@ -64,7 +64,7 @@ export const expectErrorTextToBeDisplayed = (errorTextArr) =>
   });
 
 export const expectSnackbarToBeDisplayed = (snackbarText) =>
-  cy.get('header').find('p').contains(snackbarText).should('be.visible');
+  cy.get('header').contains(snackbarText).should('be.visible');
 
 export const expectLinkToExistInEmail = ({ emailSubject, linkRegex }) => {
   cy.getLinkFromEmail({
