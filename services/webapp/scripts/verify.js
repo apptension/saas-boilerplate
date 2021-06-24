@@ -1,5 +1,6 @@
 const { uniq } = require('ramda');
 const util = require('util');
+const path = require('path');
 const terminalLink = require('terminal-link');
 const chalk = require('react-dev-utils/chalk');
 const exec = util.promisify(require('child_process').exec);
@@ -47,8 +48,9 @@ const runTSCheck = async () => {
         };
       }, {});
 
-    Object.entries(groupedLinesRecord).forEach(([path, errors]) => {
-      const link = generateLink(`${process.cwd()}/${path}`);
+    Object.entries(groupedLinesRecord).forEach(([relativePath, errors]) => {
+      const absolutePath = path.join(process.cwd(), relativePath);
+      const link = generateLink(absolutePath);
       const formattedErrors = uniq(errors)
         .map((error) => `  ${error}`)
         .join('\n');
@@ -61,8 +63,10 @@ const runTSCheck = async () => {
 const runESlintCheck = async () => {
   try {
     const { stdout } = await exec('eslint . --fix');
+
     const lines = stdout
       .split('\n')
+      .slice(1, -2)
       .map((line) => {
         if (line.includes(process.cwd())) {
           hasError = true;
@@ -70,18 +74,46 @@ const runESlintCheck = async () => {
         }
         return line;
       })
-      .filter((line) => !line.includes('✖ '))
-      .join('\n');
-    console.log(lines);
+      .filter((line) => !line.includes('✖ '));
+
+    if (lines.some((line) => line !== '')) {
+      console.log(lines.join('\n'));
+    }
   } catch (error) {
     hasError = true;
     console.log(error);
   }
 };
 
+const runStylelintCheck = async () => {
+  try {
+    await exec("stylelint './src/**/*.ts'");
+  } catch (error) {
+    hasError = true;
+
+    const lines = error.stdout
+      .split('\n')
+      .slice(1, -1)
+      .map((line) => {
+        if (line.includes('src') && line.includes('.ts')) {
+          const absoluteLink = path.join(process.cwd(), line);
+          return generateLink(absoluteLink);
+        }
+        if (line.includes('✖')) {
+          return line.slice(line.indexOf('✖') + 1);
+        }
+        return line;
+      })
+      .join('\n');
+
+    console.log(lines);
+  }
+};
+
 (async () => {
   await runTSCheck();
   await runESlintCheck();
+  await runStylelintCheck();
 
   if (hasError) {
     console.log(chalk.red('Houston, we have a problem! 🚨'));
