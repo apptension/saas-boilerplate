@@ -463,6 +463,7 @@ input SysFilter {
 
 type ApiMutation {
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
+  markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
   updateCrudDemoItem(input: UpdateCrudDemoItemMutationInput!): UpdateCrudDemoItemMutationPayload
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
@@ -525,6 +526,15 @@ GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
+
+input MarkReadAllNotificationsMutationInput {
+  clientMutationId: String
+}
+
+type MarkReadAllNotificationsMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
 
 """An object with an ID"""
 interface Node {

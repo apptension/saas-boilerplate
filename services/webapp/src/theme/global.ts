@@ -1,8 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 import { fontFamily } from './font';
-import { greyScale } from './color';
-import { border } from './index';
+import { border, color } from './index';
 
 export const NO_SCROLL_CLASSNAME = 'noScroll';
 
@@ -10,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     font-family: ${fontFamily.primary};
-    color: ${greyScale.get(15)};
+    color: ${color.text};
   }
 
   body.${NO_SCROLL_CLASSNAME} {

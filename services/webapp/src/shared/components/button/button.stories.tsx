@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 
 import { FacebookIcon } from '../../../images/icons';
 import { Button, ButtonProps } from './button.component';
-import { ButtonVariant } from './button.types';
+import { ButtonColor, ButtonSize, ButtonVariant } from './button.types';
 
 const Template: Story<ButtonProps> = (args) => <Button {...args} />;
 
@@ -13,15 +13,21 @@ export default {
   component: Button,
 };
 
-const defaultArgs = {
+export const Primary = Template.bind({});
+Primary.args = {
   children: 'Press me',
   onClick: action('Clicked me'),
   disabled: false,
   variant: ButtonVariant.PRIMARY,
+  color: ButtonColor.PRIMARY,
+  size: ButtonSize.NORMAL,
 };
 
-export const Primary = Template.bind({});
-Primary.args = { ...defaultArgs };
+export const PrimaryCustomColor = Template.bind({});
+PrimaryCustomColor.args = { ...Primary.args, color: '#3cd48d' };
+
+export const PrimaryCustomColorDark = Template.bind({});
+PrimaryCustomColorDark.args = { ...Primary.args, color: '#34403b' };
 
 export const PrimaryWithFixedWidth = Template.bind({});
 PrimaryWithFixedWidth.args = {
@@ -35,9 +41,15 @@ PrimaryDisabled.args = {
   disabled: true,
 };
 
+export const PrimarySmall = Template.bind({});
+PrimarySmall.args = {
+  ...Primary.args,
+  size: ButtonSize.SMALL,
+};
+
 export const Secondary = Template.bind({});
 Secondary.args = {
-  ...defaultArgs,
+  ...Primary.args,
   variant: ButtonVariant.SECONDARY,
 };
 
@@ -55,13 +67,19 @@ SecondaryDisabled.args = {
 
 export const Flat = Template.bind({});
 Flat.args = {
-  ...defaultArgs,
+  ...Primary.args,
   variant: ButtonVariant.FLAT,
+};
+
+export const FlatDisabled = Template.bind({});
+FlatDisabled.args = {
+  ...Flat.args,
+  disabled: true,
 };
 
 export const Raw = Template.bind({});
 Raw.args = {
-  ...defaultArgs,
+  ...Primary.args,
   variant: ButtonVariant.RAW,
 };
 
@@ -79,7 +97,7 @@ RawDisabled.args = {
 
 export const Round = Template.bind({});
 Round.args = {
-  ...defaultArgs,
+  ...Primary.args,
   variant: ButtonVariant.ROUND,
   children: <FacebookIcon />,
 };

@@ -4,10 +4,13 @@ import { ThemeProvider } from 'styled-components';
 import { omit } from 'ramda';
 import { ButtonTheme, ButtonVariant } from '../button';
 import { Icon } from '../button/button.styles';
+import { ButtonColor, ButtonSize } from '../button/button.types';
 import { RouterLinkContainer, HtmlLinkContainer, RouterNavLinkContainer } from './link.styles';
 
 type BaseProps = {
   variant?: ButtonVariant;
+  size?: ButtonSize;
+  color?: ButtonColor;
   icon?: ReactNode;
   navLink?: boolean;
 };
@@ -28,8 +31,15 @@ const isInternalNavLink = (props: LinkProps): props is InternalLinkProps => {
 };
 
 export const Link = (props: LinkProps) => {
-  const { children, variant = ButtonVariant.RAW, icon, ...linkProps } = props;
-  const theme: ButtonTheme = { variant, isDisabled: false };
+  const {
+    children,
+    variant = ButtonVariant.RAW,
+    size = ButtonSize.NORMAL,
+    color = ButtonColor.PRIMARY,
+    icon,
+    ...linkProps
+  } = props;
+  const theme: ButtonTheme = { variant, size, color, isDisabled: false };
   const content = (
     <>
       {icon ? <Icon>{icon}</Icon> : null}

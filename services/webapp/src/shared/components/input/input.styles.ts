@@ -1,9 +1,12 @@
-import styled, { css } from 'styled-components';
+import styled, { css, ThemeProps } from 'styled-components';
 import theme from 'styled-theming';
 import { label, Label as LabelTypographyBase, MicroLabel } from '../../../theme/typography';
 import { input } from '../../../theme/color';
 import { formFieldWidth, sizeUnits } from '../../../theme/size';
 import { color, transition } from '../../../theme';
+import { InputTheme } from './input.types';
+
+type InputThemeProps = ThemeProps<InputTheme>;
 
 const FIELD_HEIGHT = 40;
 
@@ -18,14 +21,14 @@ export const Label = styled.label`
   align-items: flex-start;
 `;
 
-const requiredAsterixStyle = css`
+const requiredAsteriskStyle = css`
   &:after {
     content: '*';
     color: ${color.error};
   }
 `;
 
-export const LabelText = styled(LabelTypographyBase)`
+export const LabelText = styled(LabelTypographyBase)<InputThemeProps>`
   margin-bottom: 4px;
   order: -1;
   transition: color ${transition.primary};
@@ -51,11 +54,11 @@ export const LabelText = styled(LabelTypographyBase)`
   })};
 
   ${theme('required', {
-    true: requiredAsterixStyle,
+    true: requiredAsteriskStyle,
   })};
 `;
 
-export const Field = styled.input`
+export const Field = styled.input<InputThemeProps>`
   height: ${FIELD_HEIGHT}px;
   color: ${input.text};
   min-width: 288px;

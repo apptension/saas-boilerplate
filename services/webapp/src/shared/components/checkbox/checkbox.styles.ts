@@ -1,10 +1,13 @@
-import styled, { css } from 'styled-components';
+import styled, { css, ThemeProps } from 'styled-components';
 import theme from 'styled-theming';
 import { sizeUnits } from '../../../theme/size';
 import { MicroLabel } from '../../../theme/typography';
 import { checkbox } from '../../../theme/color';
 import { border, transition } from '../../../theme';
 import { Icon } from '../icon';
+import { CheckboxTheme } from './checkbox.types';
+
+type CheckboxThemeProps = ThemeProps<CheckboxTheme>;
 
 export const Container = styled.div`
   font-size: 0;
@@ -23,7 +26,7 @@ export const CheckIcon = styled(Icon)`
   height: 16px;
 `;
 
-export const Checkmark = styled.div`
+export const Checkmark = styled.div<CheckboxThemeProps>`
   display: flex;
   align-items: center;
   justify-content: center;

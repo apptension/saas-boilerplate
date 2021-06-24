@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
+import { withRelay } from '../../../utils/storybook';
 import { Notification, NotificationProps } from './notification.component';
 import { mockedNotificationProps } from './notification.fixtures';
+import { NotificationButton } from './index';
 
 const Wrapper = styled.div`
   max-width: 320px;
@@ -21,6 +23,7 @@ const Template: Story<NotificationProps> = (args) => {
 export default {
   title: 'Shared/Notifications/Notification',
   component: Notification,
+  decorators: [withRelay()],
 };
 
 export const Default = Template.bind({});
@@ -35,4 +38,37 @@ export const Read = Template.bind({});
 Read.args = {
   ...Default.args,
   readAt: '2021-06-17T16:45:33',
+};
+
+export const OneAction = Template.bind({});
+OneAction.args = {
+  ...Default.args,
+  children: (
+    <>
+      <NotificationButton>Click me</NotificationButton>
+    </>
+  ),
+};
+
+export const TwoActions = Template.bind({});
+TwoActions.args = {
+  ...Default.args,
+  children: (
+    <>
+      <NotificationButton>Click me</NotificationButton>
+      <NotificationButton color="green">Click me too</NotificationButton>
+    </>
+  ),
+};
+
+export const ThreeActions = Template.bind({});
+ThreeActions.args = {
+  ...Default.args,
+  children: (
+    <>
+      <NotificationButton>Click me</NotificationButton>
+      <NotificationButton>Click me too</NotificationButton>
+      <NotificationButton>Click us all</NotificationButton>
+    </>
+  ),
 };

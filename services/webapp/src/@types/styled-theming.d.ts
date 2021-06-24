@@ -1,25 +1,26 @@
 declare module 'styled-theming' {
   import { DefaultTheme, FlattenInterpolation, ThemedStyledProps, ThemeProps } from 'styled-components';
 
-  declare function theme(name: string, values: styledTheming.ThemeMap): styledTheming.ThemeSet;
+  declare function theme<THEME extends DefaultTheme = DefaultTheme, KEY = string>(
+    name: keyof THEME,
+    values: styledTheming.ThemeMap<THEME, KEY>
+  ): styledTheming.ThemeSet<THEME>;
 
   declare namespace styledTheming {
-    type ThemeValueResult =
+    type ThemeValueResult<THEME extends DefaultTheme = DefaultTheme> =
       | string
-      | FlattenInterpolation<ThemeProps<DefaultTheme>>
-      | FlattenInterpolation<ThemedStyledProps<any, DefaultTheme>>;
-    type ThemeValueFn = (props: ThemeProps<DefaultTheme>) => ThemeValueResult;
-    type ThemeValue = ThemeValueFn | ThemeValueResult;
+      | FlattenInterpolation<ThemeProps<THEME>>
+      | FlattenInterpolation<ThemedStyledProps<any, THEME>>;
+    type ThemeValueFn = <THEME extends DefaultTheme = DefaultTheme>(props: ThemeProps<THEME>) => ThemeValueResult;
+    type ThemeValue<THEME extends DefaultTheme = DefaultTheme> = ThemeValueFn<THEME> | ThemeValueResult<THEME>;
 
-    interface ThemeMap {
-      [key: string]: ThemeValue;
-    }
+    type ThemeMap<THEME extends DefaultTheme = DefaultTheme, KEY = string> = Record<KEY, ThemeValue<THEME>>;
 
     interface VariantMap {
       [key: string]: ThemeMap;
     }
 
-    type ThemeSet = (props: Record<string, any>) => string;
+    type ThemeSet<THEME extends DefaultTheme = DefaultTheme> = (props: ThemeProps<THEME>) => string;
     type VariantSet = (props: Record<string, any>) => string;
 
     function variants(name: string, prop: string, values: VariantMap): VariantSet;

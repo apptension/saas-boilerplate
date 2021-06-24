@@ -26,7 +26,7 @@ describe('NotificationsList: Component', () => {
       }
     );
 
-    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('should not render non registered notifications', () => {
@@ -47,7 +47,7 @@ describe('NotificationsList: Component', () => {
       }
     );
 
-    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('should render correct notifications', () => {
@@ -65,6 +65,6 @@ describe('NotificationsList: Component', () => {
       }
     );
 
-    expect(screen.getAllByRole('listitem')).toHaveLength(notifications.length);
+    expect(screen.getAllByRole('link')).toHaveLength(notifications.length);
   });
 });

@@ -1,59 +1,60 @@
-import React, { ReactNode, MouseEvent } from 'react';
+import React, { ReactNode } from 'react';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
 import { ThemeProvider } from 'styled-components';
-import graphql from 'babel-plugin-relay/macro';
 import { ButtonVariant } from '../../button';
 import { Icon } from '../../icon';
 import { ExtractNodeType } from '../../../utils/graphql';
 import { notificationsListContent } from '../../../../__generated__/notificationsListContent.graphql';
 import { RelativeDate } from '../../relativeDate';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import { notificationMutation } from '../../../../__generated__/notificationMutation.graphql';
 import { NotificationTheme } from './notification.types';
-import { Title, Avatar, Container, Content, MarkAsReadButton, Time } from './notification.styles';
+import { Actions, Avatar, Container, Content, MarkAsReadButton, Time, Title } from './notification.styles';
+import { useToggleIsRead } from './notification.hooks';
 
 export type NotificationProps = Omit<ExtractNodeType<notificationsListContent['allNotifications']>, 'data'> & {
   title: ReactNode;
   content: ReactNode;
+  children?: ReactNode;
   onClick?: () => void;
   className?: string;
 };
 
-export const Notification = ({ id, title, className, content, onClick, readAt, createdAt }: NotificationProps) => {
+export const Notification = ({
+  id,
+  title,
+  children,
+  className,
+  content,
+  onClick,
+  readAt,
+  createdAt,
+}: NotificationProps) => {
   const isRead = typeof readAt === 'string';
-
-  const [commitNotificationMutation] = usePromiseMutation<notificationMutation>(graphql`
-    mutation notificationMutation($input: UpdateNotificationMutationInput!) {
-      updateNotification(input: $input) {
-        hasUnreadNotifications
-        notificationEdge {
-          node {
-            readAt
-          }
-        }
-      }
-    }
-  `);
-
-  const onToggleIsRead = async (event: MouseEvent) => {
-    event.stopPropagation();
-    return await commitNotificationMutation({
-      variables: {
-        input: { id, isRead: !isRead },
-      },
-      updater: (store) => {
-        const value = store.getRootField('updateNotification').getValue('hasUnreadNotifications');
-        store.getRoot().setValue(value, 'hasUnreadNotifications');
-      },
-    });
-  };
-
+  const onToggleIsRead = useToggleIsRead({
+    id,
+    isRead: !isRead,
+  });
   const theme: NotificationTheme = { isRead };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container className={className} onClick={onClick}>
+      <Container
+        className={className}
+        role="link"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyUp={(event) => {
+          const { target, key } = event;
+          if (
+            key === 'Enter' &&
+            target instanceof Element &&
+            target.tagName === 'LI' &&
+            target.isEqualNode(document.activeElement)
+          ) {
+            onClick?.();
+          }
+        }}
+      >
         <Avatar src="https://picsum.photos/24/24" />
         <MarkAsReadButton variant={ButtonVariant.RAW} onClick={onToggleIsRead}>
           <Icon icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
@@ -63,6 +64,7 @@ export const Notification = ({ id, title, className, content, onClick, readAt, c
         </Time>
         <Title>{title}</Title>
         <Content>{content}</Content>
+        {children && <Actions>{children}</Actions>}
       </Container>
     </ThemeProvider>
   );

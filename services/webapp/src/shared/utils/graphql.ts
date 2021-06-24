@@ -1,12 +1,15 @@
 import { UnknownObject } from './types';
 
-type ListQuery<ITEM> = {
+export type ConnectionType<ITEM> = {
   readonly edges: ReadonlyArray<{
     readonly node: ITEM | null;
   } | null>;
 } | null;
 
-export const mapConnection = <ITEM, RETURN>(callback: (item: ITEM) => RETURN, query: ListQuery<ITEM>): RETURN[] => {
+export const mapConnection = <ITEM, RETURN>(
+  callback: (item: ITEM) => RETURN,
+  query: ConnectionType<ITEM>
+): RETURN[] => {
   const existingNodes: RETURN[] = [];
   const edges = query?.edges ?? [];
 

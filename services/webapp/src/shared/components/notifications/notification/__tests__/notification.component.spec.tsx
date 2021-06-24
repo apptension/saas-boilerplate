@@ -35,7 +35,7 @@ describe('Notification: Component', () => {
       onClick,
     });
 
-    const container = screen.getByRole('listitem');
+    const container = screen.getByRole('link');
     fireEvent.click(container);
 
     expect(onClick).toBeCalledTimes(1);

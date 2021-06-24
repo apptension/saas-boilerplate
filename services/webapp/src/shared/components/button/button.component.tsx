@@ -2,18 +2,27 @@ import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { Icon, Container } from './button.styles';
-import { ButtonTheme, ButtonVariant } from './button.types';
+import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  size?: ButtonSize;
+  color?: ButtonColor | string;
   icon?: ReactNode;
   fixedWidth?: boolean;
 }
 
-export const Button = (props: ButtonProps) => {
-  const { children, disabled = false, variant = ButtonVariant.PRIMARY, icon, fixedWidth, ...other } = props;
-
-  const theme: ButtonTheme = { variant, isDisabled: disabled, fixedWidth };
+export const Button = ({
+  children,
+  icon,
+  fixedWidth,
+  variant = ButtonVariant.PRIMARY,
+  size = ButtonSize.NORMAL,
+  color = ButtonColor.PRIMARY,
+  disabled = false,
+  ...other
+}: ButtonProps) => {
+  const theme: ButtonTheme = { variant, size, color, isDisabled: disabled, fixedWidth };
 
   return (
     <ThemeProvider theme={theme}>

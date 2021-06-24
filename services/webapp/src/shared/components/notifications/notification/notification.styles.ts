@@ -5,7 +5,7 @@ import { color, transition } from '../../../../theme';
 import { Button } from '../../button';
 import { NotificationTheme } from './notification.types';
 
-type NotificationThemeProps = ThemeProps<NotificationTheme>;
+export type NotificationThemeProps = ThemeProps<NotificationTheme>;
 
 const readColor = color.greyScale.get(55);
 
@@ -14,7 +14,8 @@ export const Container = styled.li<NotificationThemeProps>`
   grid-template-areas:
     'avatar time markAsRead'
     'avatar title markAsRead'
-    'avatar content content';
+    'avatar content content'
+    '. actions actions';
   grid-template-columns: ${sizeUnits(3)} 1fr ${sizeUnits(3)};
   grid-column-gap: ${sizeUnits(1)};
   transition: background-color ${transition.primary};
@@ -23,9 +24,13 @@ export const Container = styled.li<NotificationThemeProps>`
   ${horizontalPadding(sizeUnits(2))}
 
 
-  &:hover {
+  &:hover, &:focus {
     background-color: ${color.skyBlueScale.get(95)};
     cursor: pointer;
+  }
+
+  &:active {
+    background-color: ${color.skyBlueScale.get(90)};
   }
 `;
 
@@ -72,4 +77,17 @@ export const MarkAsReadButton = styled(Button)<NotificationThemeProps>`
         color: ${color.greyScale.get(75)};
       }
     `}
+`;
+
+export const Actions = styled.footer`
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-top: ${sizeUnits(1)};
+  margin: -${sizeUnits(0.5)};
+
+  > * {
+    margin: ${sizeUnits(0.25)};
+  }
 `;

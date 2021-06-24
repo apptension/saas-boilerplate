@@ -18,30 +18,7 @@ export const error = cherryRedScale.get(50);
 
 export const button = {
   main: skyBlueScale.get(50),
-  inverted: white,
-
   text: white,
-  invertedText: skyBlueScale.get(50),
-
-  hover: skyBlueScale.get(65),
-  active: skyBlueScale.get(35),
-
-  disabled: {
-    main: greyScale.get(90),
-    inverted: white,
-    text: greyScale.get(70),
-  },
-  flat: {
-    text: greyScale.get(15),
-    hover: skyBlueScale.get(98),
-    active: skyBlueScale.get(95),
-    activeText: skyBlueScale.get(35),
-  },
-  round: {
-    hover: skyBlueScale.get(98),
-    active: skyBlueScale.get(95),
-    activeText: skyBlueScale.get(35),
-  },
 };
 
 export const checkbox = {

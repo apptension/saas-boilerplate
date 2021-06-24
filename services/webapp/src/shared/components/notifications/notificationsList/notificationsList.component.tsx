@@ -1,22 +1,20 @@
-import React, { ElementType, Suspense, useCallback, useEffect } from 'react';
-import { FormattedMessage } from 'react-intl';
-import graphql from 'babel-plugin-relay/macro';
-import { PreloadedQuery, usePaginationFragment, usePreloadedQuery } from 'react-relay';
+import React, { ElementType, Suspense } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { isEmpty } from 'ramda';
 import { ButtonVariant } from '../../button';
 import { NotificationSkeleton } from '../notification';
-import { mapConnection } from '../../../utils/graphql';
 import NotificationsListQuery, {
   notificationsListQuery,
   notificationsListQueryResponse,
 } from '../../../../__generated__/notificationsListQuery.graphql';
-import { notificationsListContent$key } from '../../../../__generated__/notificationsListContent.graphql';
-import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
 import { EmptyState } from '../../emptyState';
 import { NotificationTypes } from '../notifications.types';
-import { NOTIFICATIONS_STRATEGY, POLLING_INTERVAL } from '../notifications.constants';
+import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
+import { useMarkAllAsRead, useNotificationsListContent, useRefetchNotifications } from './notificationsList.hooks';
 
 export type NotificationsListProps = {
   isOpen: boolean;
@@ -24,14 +22,22 @@ export type NotificationsListProps = {
 };
 
 export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListProps) => {
+  const intl = useIntl();
   const queryResponse = usePreloadedQuery(NotificationsListQuery, listQueryRef);
+
+  const markAllAsRead = useMarkAllAsRead(
+    intl.formatMessage({
+      defaultMessage: 'All notifications marked as read.',
+      description: 'Notifications / Notifications List / Mark all as read notification',
+    })
+  );
 
   return (
     <Container isOpen={isOpen}>
       <Title>
         <FormattedMessage defaultMessage="Notifications" description="Notifications / Notifications List / Title" />
       </Title>
-      <MarkAllAsReadButton variant={ButtonVariant.RAW}>
+      <MarkAllAsReadButton variant={ButtonVariant.RAW} onClick={markAllAsRead}>
         <FormattedMessage
           defaultMessage="Mark all as read"
           description="Notifications / Notifications List / Mark all as read button"
@@ -58,35 +64,9 @@ type ContentProps = Pick<NotificationsListProps, 'isOpen'> & {
 };
 
 const Content = ({ isOpen, queryResponse }: ContentProps) => {
-  const {
-    data: { allNotifications },
-    refetch,
-    loadNext,
-    hasNext,
-    isLoadingNext,
-  } = usePaginationFragment<NotificationsListRefetch, notificationsListContent$key>(
-    graphql`
-      fragment notificationsListContent on ApiQuery
-      @refetchable(queryName: "NotificationsListRefetch")
-      @argumentDefinitions(count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" }) {
-        hasUnreadNotifications
-        allNotifications(first: $count, after: $cursor) @connection(key: "notificationsList_allNotifications") {
-          edges {
-            node {
-              id
-              data
-              createdAt
-              readAt
-              type
-            }
-          }
-        }
-      }
-    `,
+  const { allNotifications, loadNext, hasNext, fetchNotifications, isLoadingNext } = useNotificationsListContent(
     queryResponse
   );
-
-  const notificationsCount = allNotifications?.edges?.length ?? 0;
 
   const [scrollSensorRef] = useInfiniteScroll({
     loading: isLoadingNext,
@@ -97,37 +77,9 @@ const Content = ({ isOpen, queryResponse }: ContentProps) => {
     disabled: false,
   });
 
-  const fetchNotifications = useCallback(() => {
-    refetch(
-      {
-        count: notificationsCount === 0 ? NOTIFICATIONS_PER_PAGE : notificationsCount,
-      },
-      { fetchPolicy: 'store-and-network' }
-    );
-  }, [notificationsCount, refetch]);
+  useRefetchNotifications({ fetchNotifications, isOpen });
 
-  useEffect(() => {
-    let interval: number | null;
-    if (isOpen) {
-      interval = setInterval(() => {
-        fetchNotifications();
-      }, POLLING_INTERVAL);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [fetchNotifications, isOpen, refetch]);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchNotifications();
-    }
-  }, [isOpen, fetchNotifications]);
-
-  if (notificationsCount === 0) {
+  if (isEmpty(allNotifications)) {
     return (
       <EmptyState>
         <FormattedMessage
@@ -140,7 +92,7 @@ const Content = ({ isOpen, queryResponse }: ContentProps) => {
 
   return (
     <>
-      {mapConnection((notification) => {
+      {allNotifications.map((notification) => {
         const NotificationComponent = NOTIFICATIONS_STRATEGY[notification.type as NotificationTypes] as
           | ElementType
           | undefined;
@@ -148,7 +100,7 @@ const Content = ({ isOpen, queryResponse }: ContentProps) => {
           return null;
         }
         return <NotificationComponent key={notification.id} {...notification} />;
-      }, allNotifications)}
+      })}
       {(hasNext || isLoadingNext) && (
         <>
           <NotificationSkeleton $ref={scrollSensorRef} />
