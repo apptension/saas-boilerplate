@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Button as ButtonBase } from '../../button';
 import { color } from '../../../../theme';
-import { Breakpoint, media } from '../../../../theme/media';
 
 export const Button = styled(ButtonBase)<{ hasUnreadNotifications: boolean }>`
   svg {
@@ -16,10 +15,5 @@ export const Button = styled(ButtonBase)<{ hasUnreadNotifications: boolean }>`
           fill: ${color.error};
         }
       `};
-
-    ${media(Breakpoint.TABLET)`
-      width: 15px;
-      height: 12px;
-    `}
   }
 `;
