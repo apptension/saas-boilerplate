@@ -76,35 +76,37 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
           <Snackbar />
         </SnackbarMessages>
 
-        <Notifications />
-
         {isLoggedIn && (
-          <ProfileActions>
-            <Avatar
-              onClick={userDropdown.toggle}
-              tabIndex={0}
-              aria-expanded={userDropdown.isOpen}
-              aria-label={intl.formatMessage({
-                description: 'Header / Open profile menu aria label',
-                defaultMessage: 'Open profile menu',
-              })}
-            />
+          <>
+            <Notifications />
 
-            <ClickAwayListener onClickAway={userDropdown.clickAway}>
-              <Menu isOpen={userDropdown.isOpen}>
-                <ButtonLink
-                  onClick={userDropdown.close}
-                  to={generateLocalePath(ROUTES.profile)}
-                  variant={ButtonVariant.FLAT}
-                >
-                  <FormattedMessage defaultMessage={'Profile'} description={'Header / Profile button'} />
-                </ButtonLink>
-                <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
-                  <FormattedMessage defaultMessage={'Log out'} description={'Header / Logout button'} />
-                </Button>
-              </Menu>
-            </ClickAwayListener>
-          </ProfileActions>
+            <ProfileActions>
+              <Avatar
+                onClick={userDropdown.toggle}
+                tabIndex={0}
+                aria-expanded={userDropdown.isOpen}
+                aria-label={intl.formatMessage({
+                  description: 'Header / Open profile menu aria label',
+                  defaultMessage: 'Open profile menu',
+                })}
+              />
+
+              <ClickAwayListener onClickAway={userDropdown.clickAway}>
+                <Menu isOpen={userDropdown.isOpen}>
+                  <ButtonLink
+                    onClick={userDropdown.close}
+                    to={generateLocalePath(ROUTES.profile)}
+                    variant={ButtonVariant.FLAT}
+                  >
+                    <FormattedMessage defaultMessage={'Profile'} description={'Header / Profile button'} />
+                  </ButtonLink>
+                  <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
+                    <FormattedMessage defaultMessage={'Log out'} description={'Header / Logout button'} />
+                  </Button>
+                </Menu>
+              </ClickAwayListener>
+            </ProfileActions>
+          </>
         )}
       </Content>
     </Container>
