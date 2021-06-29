@@ -15,9 +15,9 @@ class CustomerEmail(emails.Email):
 
 
 class TrialExpiresSoonEmail(CustomerEmail):
-    name = 'trialExpiresSoon'
+    name = 'TRIAL_EXPIRES_SOON'
     serializer_class = email_serializers.TrialExpiresSoonEmailSerializer
 
 
 class SubscriptionErrorEmail(CustomerEmail):
-    name = 'subscriptionError'
+    name = 'SUBSCRIPTION_ERROR'

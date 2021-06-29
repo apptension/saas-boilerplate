@@ -4,7 +4,7 @@ import { EmailTemplateType } from '../../types';
 import { Subject as SubscriptionErrorSubject, Template as SubscriptionErrorEmail } from './subscriptionError.component';
 
 const Template: Story = (args) => (
-  <EmailStory type={EmailTemplateType.SubscriptionError} subject={<SubscriptionErrorSubject />} emailData={args}>
+  <EmailStory type={EmailTemplateType.SUBSCRIPTION_ERROR} subject={<SubscriptionErrorSubject />} emailData={args}>
     <SubscriptionErrorEmail {...args} />
   </EmailStory>
 );

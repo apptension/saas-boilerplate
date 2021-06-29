@@ -8,7 +8,7 @@ import {
 } from './trialExpiresSoon.component';
 
 const Template: Story<TrialExpiresSoonProps> = (args) => (
-  <EmailStory type={EmailTemplateType.TrialExpiresSoon} subject={<TrialExpiresSoonSubject />} emailData={args}>
+  <EmailStory type={EmailTemplateType.TRIAL_EXPIRES_SOON} subject={<TrialExpiresSoonSubject />} emailData={args}>
     <TrialExpiresSoonEmail {...args} />
   </EmailStory>
 );

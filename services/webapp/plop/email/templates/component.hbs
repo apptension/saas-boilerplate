@@ -1,0 +1,29 @@
+import { FormattedMessage } from 'react-intl';
+import { EmailComponentProps } from '../../types';
+import { Button, Layout } from '../../base';
+import { ROUTES } from '../../../routes/app.constants';
+import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+
+export type {{ pascalCase name }}Props = EmailComponentProps & {};
+
+export const Template = ({}: {{ pascalCase name }}Props) => {
+  const generateLocalePath = useGenerateLocalePath();
+  const url = generateLocalePath(
+    ROUTES.confirmEmail,
+    {},
+    { absolute: true }
+  );
+
+  return (
+    <Layout
+      title={<FormattedMessage defaultMessage="Title" description="Email / {{ titleCase name }} / Title" />}
+      text={<FormattedMessage defaultMessage="Text" description="Email / {{ titleCase name }} / Text" />}
+    >
+      <Button linkTo={url}>
+        <FormattedMessage defaultMessage="Button" description="Email / {{ titleCase name }} / Link label" />
+      </Button>
+    </Layout>
+  );
+};
+
+export const Subject = () => <FormattedMessage defaultMessage="Subject" description="Email / {{ titleCase name }} / Subject" />

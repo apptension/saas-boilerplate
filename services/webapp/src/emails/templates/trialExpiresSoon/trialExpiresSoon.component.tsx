@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
@@ -18,32 +18,24 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
       title={
         <FormattedMessage
           defaultMessage="Your trial is about to expire"
-          description="Email / Trial Expires Soon / title"
+          description="Email / Trial Expires Soon / Title"
         />
       }
       text={
         <FormattedMessage
           defaultMessage="Your trial is about to expire on {expiryDate}, please take action"
-          description="Email / Trial Expires Soon / text"
+          description="Email / Trial Expires Soon / Text"
           values={{ expiryDate: <Date value={expiryDate} /> }}
         />
       }
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Go to the dashboard" description="Email / Trial Expires Soon / link label" />
+        <FormattedMessage defaultMessage="Go to the dashboard" description="Email / Trial Expires Soon / Link label" />
       </Button>
     </Layout>
   );
 };
 
-export const Subject = () => {
-  const intl = useIntl();
-  return (
-    <>
-      {intl.formatMessage({
-        defaultMessage: 'Your trial is about to expire',
-        description: 'Email / Trial Expires Soon / subject',
-      })}
-    </>
-  );
-};
+export const Subject = () => (
+  <FormattedMessage defaultMessage="Your trial is about to expire" description="Email / Trial Expires Soon / Subject" />
+);

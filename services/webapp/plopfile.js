@@ -7,15 +7,20 @@ const addApiModelGenerator = require('./plop/apiModel');
 const addCrudGenerator = require('./plop/crud');
 const addIconRegisterGenerator = require('./plop/icon');
 const addNotificationGenerator = require('./plop/notification');
+const addEmailGenerator = require('./plop/email');
 
 module.exports = function (plop) {
   plop.setPrompt('directory', promptDirectory);
+  plop.setHelper('append', (text) => text);
 
-  addReduxModuleGenerator(plop);
-  addReactComponentGenerator(plop);
-  addReactHookGenerator(plop);
-  addApiModelGenerator(plop);
-  addCrudGenerator(plop);
-  addIconRegisterGenerator(plop);
-  addNotificationGenerator(plop);
+  [
+    addReduxModuleGenerator,
+    addReactComponentGenerator,
+    addReactHookGenerator,
+    addApiModelGenerator,
+    addCrudGenerator,
+    addIconRegisterGenerator,
+    addNotificationGenerator,
+    addEmailGenerator,
+  ].forEach((generator) => generator(plop));
 };

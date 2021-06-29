@@ -8,7 +8,7 @@ import {
 } from './accountActivation.component';
 
 const Template: Story<AccountActivationProps> = (args) => (
-  <EmailStory type={EmailTemplateType.AccountActivation} subject={<AccountActivationSubject />} emailData={args}>
+  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<AccountActivationSubject />} emailData={args}>
     <AccountActivationEmail {...args} />
   </EmailStory>
 );

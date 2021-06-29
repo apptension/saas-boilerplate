@@ -7,13 +7,19 @@ Project is configured with flow to implement email templates using React, so you
 
 Default email templates are prepared to support Gmail, Apple mail client and Microsoft Outlook.
 
+Backend and frontend share the `name` which is a `CONSTANT_CASED` identifier.
+
 ## Adding new email template
 
-To add new email template you need to:
+To generate a new email simply run:
 
-- add new file in `src/emails`. It should export `Template` and `Subject` components.
-- add new email `EmailTemplateType` enum value in `src/emails/types.ts`
-- assign your component with new type in `src/emails/templates.config.ts`
+```shell
+yarn plop email <name>
+```
+
+> `name' is the email identifier and name at once
+
+It generates `component` and `story` files under the `src/emails/templates/<type>/` path. The email is automatically registered, no further actions required.
 
 ## Testing email templates
 

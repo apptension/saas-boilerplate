@@ -12,10 +12,10 @@ class UserEmail(emails.Email):
 
 
 class AccountActivationEmail(UserEmail):
-    name = 'accountActivation'
+    name = 'ACCOUNT_ACTIVATION'
     serializer_class = email_serializers.AccountActivationEmailSerializer
 
 
 class PasswordResetEmail(UserEmail):
-    name = 'passwordReset'
+    name = 'PASSWORD_RESET'
     serializer_class = email_serializers.PasswordResetEmailSerializer

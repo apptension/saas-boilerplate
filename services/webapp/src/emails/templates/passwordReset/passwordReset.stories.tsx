@@ -8,7 +8,7 @@ import {
 } from './passwordReset.component';
 
 const Template: Story<PasswordResetProps> = (args) => (
-  <EmailStory type={EmailTemplateType.PasswordReset} subject={<PasswordResetSubject />} emailData={args}>
+  <EmailStory type={EmailTemplateType.PASSWORD_RESET} subject={<PasswordResetSubject />} emailData={args}>
     <PasswordResetEmail {...args} />
   </EmailStory>
 );

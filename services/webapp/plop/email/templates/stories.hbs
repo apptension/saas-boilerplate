@@ -1,0 +1,22 @@
+import { Story } from '@storybook/react';
+import { EmailTemplateType } from '../../types';
+import { EmailStory } from '../../emailStory/emailStory.component';
+import {
+  Template as {{ pascalCase name }}Email,
+  Subject as {{ pascalCase name }}Subject,
+{{ pascalCase name }}Props,
+} from './{{ camelCase name }}.component';
+
+const Template: Story<{{ pascalCase name }}Props> = (args) => (
+  <EmailStory type={EmailTemplateType.{{ constantCase name }}{{append '}'}} subject={<{{ pascalCase name }}Subject />} emailData={args}>
+    <{{ pascalCase name }}Email {...args} />
+  </EmailStory>
+);
+
+export default {
+  title: 'Emails/{{ pascalCase name }}',
+  component: {{ pascalCase name }}Email,
+};
+
+export const Primary = Template.bind({});
+Primary.args = {};

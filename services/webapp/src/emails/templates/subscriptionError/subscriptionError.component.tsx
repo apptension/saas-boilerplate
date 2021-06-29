@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
 import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
@@ -12,34 +12,26 @@ export const Template = () => {
       title={
         <FormattedMessage
           defaultMessage="Your subscription payment failed"
-          description="Email / Subscription Error / title"
+          description="Email / Subscription Error / Title"
         />
       }
       text={
         <FormattedMessage
           defaultMessage="Click the button below to review your payment method details"
-          description="Email / Subscription Error / text"
+          description="Email / Subscription Error / Text"
         />
       }
     >
       <Button linkTo={url}>
         <FormattedMessage
           defaultMessage="See subscription details"
-          description="Email / Subscription Error / link label"
+          description="Email / Subscription Error / Link label"
         />
       </Button>
     </Layout>
   );
 };
 
-export const Subject = () => {
-  const intl = useIntl();
-  return (
-    <>
-      {intl.formatMessage({
-        defaultMessage: 'Subscription payment failed',
-        description: 'Email / Subscription Error / subject',
-      })}
-    </>
-  );
-};
+export const Subject = () => (
+  <FormattedMessage defaultMessage="Subscription payment failed" description="Email / Subscription Error / Subject" />
+);

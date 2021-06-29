@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { EmailComponentProps } from '../../types';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
@@ -22,29 +22,21 @@ export const Template = ({ userId, token }: PasswordResetProps) => {
 
   return (
     <Layout
-      title={<FormattedMessage defaultMessage="Reset the password" description="Email / Reset password / title" />}
+      title={<FormattedMessage defaultMessage="Reset the password" description="Email / Reset Password / Title" />}
       text={
         <FormattedMessage
           defaultMessage="Click the button below to reset the password. "
-          description="Email / Reset password / text"
+          description="Email / Reset Password / Text"
         />
       }
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Reset the password" description="Email / Reset password / link label" />
+        <FormattedMessage defaultMessage="Reset the password" description="Email / Reset Password / Link label" />
       </Button>
     </Layout>
   );
 };
 
-export const Subject = () => {
-  const intl = useIntl();
-  return (
-    <>
-      {intl.formatMessage({
-        defaultMessage: 'Reset your password',
-        description: 'Email / reset password / subject',
-      })}
-    </>
-  );
-};
+export const Subject = () => (
+  <FormattedMessage defaultMessage="Reset your password" description="Email / Reset Password / Subject" />
+);
