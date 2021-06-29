@@ -1,15 +1,17 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { Controller } from 'react-hook-form';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { isEmpty } from 'ramda';
 import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import { Icon } from '../../../icon';
 import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
+import { ApiFormReturnType } from '../../../../hooks/useApiForm';
 import {
-  PaymentMethodApiFormControls,
+  PaymentFormFields,
   StripePaymentMethodChangeEvent,
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
@@ -17,49 +19,71 @@ import {
 import {
   CardElementContainer,
   Container,
+  DeleteButton,
+  ErrorMessage,
+  ExistingPaymentMethodItem,
+  Heading,
+  NewPaymentMethodItem,
   PaymentMethodList,
   PaymentMethodListItem,
-  Heading,
-  ExistingPaymentMethodItem,
-  NewPaymentMethodItem,
-  ErrorMessage,
-  DeleteButton,
 } from './stripePaymentMethodSelector.styles';
 
-export type StripePaymentMethodSelectorProps = {
-  formControls: Pick<PaymentMethodApiFormControls, 'control' | 'genericError' | 'errors'>;
+export type StripePaymentMethodSelectorProps<T extends PaymentFormFields = PaymentFormFields> = {
+  formControls: Pick<ApiFormReturnType<T>, 'control' | 'genericError' | 'hasGenericErrorOnly'> & {
+    formState: Pick<ApiFormReturnType<T>['formState'], 'errors'>;
+  };
   initialValue?: StripePaymentMethod | null;
 };
 
-export const StripePaymentMethodSelector = ({ formControls, initialValue }: StripePaymentMethodSelectorProps) => {
+export const StripePaymentMethodSelector = <T extends PaymentFormFields = PaymentFormFields>({
+  formControls: {
+    control,
+    formState: { errors },
+    genericError,
+    hasGenericErrorOnly,
+  },
+  initialValue,
+}: StripePaymentMethodSelectorProps<T>) => {
   const intl = useIntl();
   const { isLoading, paymentMethods, deletePaymentMethod } = useStripePaymentMethods();
-  const { control, errors, genericError } = formControls;
-  const fallbackDefaultValue = {
-    type:
-      paymentMethods?.length > 0
-        ? StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
-        : StripePaymentMethodSelectionType.NEW_CARD,
-    data: paymentMethods?.[0] ?? null,
-  };
-  const defaultValue = initialValue
-    ? {
+
+  const defaultValue = useMemo<StripePaymentMethodSelection>(() => {
+    if (isEmpty(paymentMethods)) {
+      return {
+        type: StripePaymentMethodSelectionType.NEW_CARD,
+        data: {
+          name: '',
+          cardErrors: {},
+          cardMissingFields: {},
+        },
+      };
+    }
+
+    const savedPaymentMethod = initialValue && paymentMethods.find((method) => method.id === initialValue.id);
+    if (savedPaymentMethod) {
+      return {
         type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-        data: paymentMethods?.find((method) => method.id === initialValue.id) ?? null,
-      }
-    : fallbackDefaultValue;
+        data: savedPaymentMethod,
+      };
+    }
+
+    return {
+      type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
+      data: paymentMethods[0],
+    };
+  }, [paymentMethods, initialValue]);
 
   return isLoading ? null : (
-    <Controller
+    <Controller<PaymentFormFields, 'paymentMethod'>
       name="paymentMethod"
-      control={control}
+      control={control as any}
       defaultValue={defaultValue}
       rules={{
         required: true,
-        validate: (value: StripePaymentMethodSelection) => {
+        validate: (value) => {
           if (value.type === StripePaymentMethodSelectionType.NEW_CARD) {
-            const anyFieldMissing = Object.values(value.data?.cardMissingFields ?? {}).some((isMissing) => isMissing);
-            const fieldError = Object.values(value.data?.cardErrors ?? {})?.filter((error) => !!error)?.[0];
+            const anyFieldMissing = Object.values(value.data.cardMissingFields ?? {}).some((isMissing) => isMissing);
+            const fieldError = Object.values(value.data.cardErrors ?? {}).filter((error) => !!error)[0];
 
             if (fieldError) {
               return fieldError.message;
@@ -83,50 +107,57 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
           return true;
         },
       }}
-      render={({ onChange, value }) => {
-        const handleChange = (e: StripePaymentMethodChangeEvent) => {
-          if (e.type === StripePaymentMethodSelectionType.NEW_CARD) {
-            const data =
-              value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
-                ? {
-                    cardMissingFields: {
-                      cardNumber: true,
-                      cardExpiry: true,
-                      cardCvc: true,
-                    },
-                  }
-                : value.data;
+      render={({ field: { onChange, value } }) => {
+        const handleChange = (event: StripePaymentMethodChangeEvent) => {
+          if (event.type !== StripePaymentMethodSelectionType.NEW_CARD) {
+            onChange(event);
+            return;
+          }
 
-            if (e.data?.elementType === 'name') {
-              onChange({ type: e.type, data: { ...data, name: e.data.value } });
-            } else {
-              const stripeFieldData = e.data as StripeElementChangeEvent;
-              const fieldName = e.data?.elementType as string;
+          const data =
+            value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
+              ? {
+                  cardMissingFields: {
+                    cardNumber: true,
+                    cardExpiry: true,
+                    cardCvc: true,
+                  },
+                }
+              : value.data;
 
-              const cardData = {
-                cardErrors: { ...value.data.cardErrors, [fieldName]: stripeFieldData?.error },
+          if (event.data?.elementType === 'name') {
+            onChange({ type: event.type, data: { ...data, name: event.data.value } });
+          } else if (typeof event.data?.elementType === 'string') {
+            const stripeFieldData = event.data as StripeElementChangeEvent;
+            const fieldName = event.data.elementType;
+            const cardErrors = (value?.data as any)?.cardErrors ?? {};
+
+            onChange({
+              type: event.type,
+              data: {
+                ...data,
+                cardErrors: { ...cardErrors, [fieldName]: stripeFieldData?.error },
                 cardMissingFields: {
                   ...data.cardMissingFields,
                   [fieldName]: !!stripeFieldData?.empty,
                 },
-              };
-              onChange({ type: e.type, data: { ...data, ...(fieldName ? cardData : {}) } });
-            }
+              },
+            });
           } else {
-            onChange(e);
+            onChange({ type: event.type, data });
           }
         };
 
         const handleMethodRemoved = (id: string) => {
-          if (paymentMethods?.length === 1) {
+          if (paymentMethods.length === 1) {
             handleChange({
               type: StripePaymentMethodSelectionType.NEW_CARD,
               data: null,
             });
-          } else if (value.data.id === id) {
+          } else if ((value.data as any).id === id) {
             handleChange({
               type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-              data: paymentMethods.filter((i) => i.id !== id)[0],
+              data: paymentMethods.filter((method) => method.id !== id)[0],
             });
           }
           deletePaymentMethod(id);
@@ -135,15 +166,15 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
         return (
           <Container>
             <Heading>
-              {paymentMethods?.length > 0 ? (
-                <FormattedMessage
-                  defaultMessage="Select payment method"
-                  description="Stripe / payment method selector / select payment method"
-                />
-              ) : (
+              {isEmpty(paymentMethods) ? (
                 <FormattedMessage
                   defaultMessage="Enter card details"
                   description="Stripe / payment method selector / enter card details"
+                />
+              ) : (
+                <FormattedMessage
+                  defaultMessage="Select payment method"
+                  description="Stripe / payment method selector / select payment method"
                 />
               )}
             </Heading>
@@ -151,8 +182,8 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
             <PaymentMethodList>
               {paymentMethods.map((paymentMethod) => {
                 const isSelected =
-                  value?.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD &&
-                  paymentMethod.id === value?.data?.id;
+                  value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD &&
+                  paymentMethod.id === value.data.id;
 
                 return (
                   <PaymentMethodListItem key={paymentMethod.id}>
@@ -183,7 +214,7 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
               {paymentMethods?.length > 0 && (
                 <PaymentMethodListItem>
                   <NewPaymentMethodItem
-                    isSelected={value?.type === StripePaymentMethodSelectionType.NEW_CARD}
+                    isSelected={value.type === StripePaymentMethodSelectionType.NEW_CARD}
                     onClick={() => {
                       handleChange({
                         type: StripePaymentMethodSelectionType.NEW_CARD,
@@ -206,8 +237,8 @@ export const StripePaymentMethodSelector = ({ formControls, initialValue }: Stri
               </CardElementContainer>
             )}
 
-            <ErrorMessage>{errors.paymentMethod?.message}</ErrorMessage>
-            {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+            <ErrorMessage>{(errors.paymentMethod as any)?.message}</ErrorMessage>
+            {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
           </Container>
         );
       }}

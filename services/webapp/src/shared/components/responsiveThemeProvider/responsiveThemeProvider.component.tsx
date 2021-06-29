@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { useWindowListener } from '../../hooks/useWindowListener';
 import { getActiveBreakpoint } from '../../../theme/media';
 
 export type ResponsiveThemeProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export const ResponsiveThemeProvider = ({ children }: ResponsiveThemeProviderProps) => {

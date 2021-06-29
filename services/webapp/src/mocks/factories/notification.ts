@@ -5,7 +5,7 @@ import { NotificationTypes } from '../../shared/components/notifications/notific
 import { createFactory } from './factoryCreators';
 
 export const notificationFactory = createFactory<ExtractNodeType<notificationsListContent['allNotifications']>>(() => ({
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
   type: faker.random.arrayElement(Object.values(NotificationTypes)),
   data: {},
   createdAt: faker.date.past().toISOString(),

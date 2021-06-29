@@ -1,4 +1,3 @@
-import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { ConfirmEmail } from '../confirmEmail.component';

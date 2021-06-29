@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { print } from 'graphql';
+import * as Dom from 'graphql-request/dist/types.dom';
 import { gql } from '@apollo/client';
 export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -733,20 +733,21 @@ export const DemoItemDocument = gql`
 }
     `;
 
-export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
 
-const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    appConfig(variables?: ContentfulAppConfigQueryVariables): Promise<ContentfulAppConfigQuery> {
-      return withWrapper(() => client.request<ContentfulAppConfigQuery>(print(AppConfigDocument), variables));
+    appConfig(variables?: ContentfulAppConfigQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulAppConfigQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulAppConfigQuery>(AppConfigDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'appConfig');
     },
-    allDemoItems(variables?: ContentfulAllDemoItemsQueryVariables): Promise<ContentfulAllDemoItemsQuery> {
-      return withWrapper(() => client.request<ContentfulAllDemoItemsQuery>(print(AllDemoItemsDocument), variables));
+    allDemoItems(variables?: ContentfulAllDemoItemsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulAllDemoItemsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulAllDemoItemsQuery>(AllDemoItemsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'allDemoItems');
     },
-    demoItem(variables: ContentfulDemoItemQueryVariables): Promise<ContentfulDemoItemQuery> {
-      return withWrapper(() => client.request<ContentfulDemoItemQuery>(print(DemoItemDocument), variables));
+    demoItem(variables: ContentfulDemoItemQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulDemoItemQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulDemoItemQuery>(DemoItemDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'demoItem');
     }
   };
 }

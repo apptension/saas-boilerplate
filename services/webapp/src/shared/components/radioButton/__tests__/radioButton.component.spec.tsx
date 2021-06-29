@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { empty } from 'ramda';
 import { makeContextRenderer } from '../../../utils/testUtils';

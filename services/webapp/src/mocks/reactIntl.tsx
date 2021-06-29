@@ -1,4 +1,3 @@
-import React from 'react';
 import { UnknownObject } from '../shared/utils/types';
 
 const mockReactIntl = jest.requireActual('react-intl');

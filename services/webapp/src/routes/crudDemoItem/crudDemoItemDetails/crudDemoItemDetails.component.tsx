@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import graphql from 'babel-plugin-relay/macro';
 import { useQueryLoader } from 'react-relay';
 import { useParams } from 'react-router';

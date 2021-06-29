@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { LanguageSwitcher } from '../index';
 import { DEFAULT_LOCALE } from '../../../../i18n';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { selectProfile } from '../../../../modules/auth/auth.selectors';
@@ -23,7 +22,14 @@ export const EditProfileForm = () => {
   const dispatchWithPromise = useAsyncDispatch();
   const profile = useSelector(selectProfile);
 
-  const { register, handleSubmit, errors, genericError, setApiResponse } = useApiForm<UpdateProfileFormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    genericError,
+    hasGenericErrorOnly,
+    setApiResponse,
+  } = useApiForm<UpdateProfileFormFields>({
     defaultValues: {
       firstName: profile?.firstName,
       lastName: profile?.lastName,
@@ -53,7 +59,7 @@ export const EditProfileForm = () => {
       <Form onSubmit={handleSubmit(onProfileUpdate)}>
         <FormFieldsRow>
           <Input
-            ref={register({
+            {...register('firstName', {
               maxLength: {
                 value: FIRST_NAME_MAX_LENGTH,
                 message: intl.formatMessage({
@@ -62,7 +68,6 @@ export const EditProfileForm = () => {
                 }),
               },
             })}
-            name={'firstName'}
             label={intl.formatMessage({
               defaultMessage: 'First name',
               description: 'Auth / Update profile / First name label',
@@ -73,7 +78,7 @@ export const EditProfileForm = () => {
 
         <FormFieldsRow>
           <Input
-            ref={register({
+            {...register('lastName', {
               maxLength: {
                 value: LAST_NAME_MAX_LENGTH,
                 message: intl.formatMessage({
@@ -82,7 +87,6 @@ export const EditProfileForm = () => {
                 }),
               },
             })}
-            name={'lastName'}
             label={intl.formatMessage({
               defaultMessage: 'Last name',
               description: 'Auth / Update profile / Last name label',
@@ -91,7 +95,7 @@ export const EditProfileForm = () => {
           />
         </FormFieldsRow>
 
-        {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+        {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
         <SubmitButton>
           <FormattedMessage defaultMessage="Update personal data" description="Auth / Update profile/ Submit button" />
         </SubmitButton>

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
@@ -23,7 +23,7 @@ export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormPro
   const {
     register,
     handleSubmit,
-    errors,
+    formState: { errors },
     genericError,
     setApiResponse,
     formState,
@@ -52,15 +52,14 @@ export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormPro
             <FormattedMessage defaultMessage="Name:" description="{{ pascalCase name }} Form / Name label" />
           </Label>
           <Input
-            ref={register({
+            {...register('name', {
               required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'Name is required',
-                  description: '{{ pascalCase name }} form / Name required',
-                }),
-              },
-            })}
+              value: true,
+              message: intl.formatMessage({
+                defaultMessage: 'Name is required',
+                description: '{{ pascalCase name }} form / Name required',
+              }),
+            }})}
             name={'name'}
             placeholder={intl.formatMessage({
               defaultMessage: 'Name',

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Role } from '../../../modules/auth/auth.types';
 import { useRoleAccessCheck } from '../../hooks/useRoleAccessCheck';
 

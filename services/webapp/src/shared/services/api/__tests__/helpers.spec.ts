@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import axios, { AxiosResponse } from 'axios';
-import { INTERNAL_SERVER_ERROR, UNAUTHORIZED } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { createRefreshTokenInterceptor, validateStatus } from '../helpers';
 import createReducer from '../../../../config/reducers';
 import { store as fixturesStore } from '../../../../mocks/store';
@@ -52,8 +52,8 @@ describe('shared / services / api', () => {
     describe('onRejected', () => {
       describe('is rejected with status other than UNAUTHORIZED (401)', () => {
         it('should reject with same error', async () => {
-          const error = { foo: 'bar', response: { status: INTERNAL_SERVER_ERROR } };
-          await expect(interceptor.onRejected(error)).rejects.toBe(error);
+          const error = { foo: 'bar', response: { status: StatusCodes.INTERNAL_SERVER_ERROR } };
+          await expect(interceptor.onRejected(error as any)).rejects.toBe(error);
         });
       });
 
@@ -71,18 +71,18 @@ describe('shared / services / api', () => {
         });
 
         it('should call refresh token endpoint', async () => {
-          const error = { foo: 'bar', response: { status: UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
-          axiosRequestSpy.mockResolvedValue({ status: 200, data: { foo: 'result' } } as AxiosResponse);
-          await interceptor.onRejected(error);
+          const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
+          axiosRequestSpy.mockResolvedValue({ status: StatusCodes.OK, data: { foo: 'result' } } as AxiosResponse);
+          await interceptor.onRejected(error as any);
           expect(apiPostSpy).toHaveBeenCalledWith(AUTH_TOKEN_REFRESH_URL);
         });
 
-        describe('token refresh is successfull', () => {
+        describe('token refresh is successful', () => {
           it('should retry same request and return response', async () => {
-            const requestResponse = { status: 200, data: { foo: 'result' } } as AxiosResponse;
-            const error = { foo: 'bar', response: { status: UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
+            const requestResponse = { status: StatusCodes.OK, data: { foo: 'result' } } as AxiosResponse;
+            const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
             axiosRequestSpy.mockResolvedValue(requestResponse);
-            const res = await interceptor.onRejected(error);
+            const res = await interceptor.onRejected(error as any);
             expect(axiosRequestSpy).toHaveBeenCalledWith({
               ...error.config,
               baseURL: '/',
@@ -94,14 +94,14 @@ describe('shared / services / api', () => {
         describe('token refresh fails', () => {
           it('should reject with error', async () => {
             server.use(mockRefreshToken(403));
-            const error = { foo: 'bar', response: { status: UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
-            await expect(interceptor.onRejected(error)).rejects.toEqual(error);
+            const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
+            await expect(interceptor.onRejected(error as any)).rejects.toEqual(error);
           });
 
           it('should dispatch logout.resolved() action', async () => {
             server.use(mockRefreshToken(403));
-            const error = { foo: 'bar', response: { status: UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
-            await expect(interceptor.onRejected(error)).rejects.toBeDefined();
+            const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_ME_URL } };
+            await expect(interceptor.onRejected(error as any)).rejects.toBeDefined();
             expect(mockDispatch).toHaveBeenCalledWith(authActions.logout.resolved());
           });
         });

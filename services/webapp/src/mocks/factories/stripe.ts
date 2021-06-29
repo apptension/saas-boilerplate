@@ -12,14 +12,14 @@ import { createDeepFactory, createFactory } from './factoryCreators';
 import { subscriptionPlanFactory } from './subscription';
 
 export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() => ({
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
   type: faker.random.arrayElement([StripePaymentMethodType.Card]),
   billingDetails: {
     name: faker.name.lastName(),
   },
   card: {
-    id: faker.random.uuid(),
-    last4: faker.random.number({ min: 1000, max: 9999 }).toString(),
+    id: faker.datatype.uuid(),
+    last4: faker.datatype.number({ min: 1000, max: 9999 }).toString(),
     brand: StripePaymentMethodCardBrand.Visa,
     country: 'PL',
     expMonth: 10,
@@ -39,19 +39,19 @@ export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() =>
 }));
 
 export const transactionHistoryEntryInvoiceFactory = createFactory<TransactionHistoryEntryInvoice>(() => ({
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
   items: [
     {
-      id: faker.random.uuid(),
+      id: faker.datatype.uuid(),
       price: subscriptionPlanFactory(),
     },
   ],
 }));
 
 export const transactionHistoryEntryFactory = createFactory<TransactionHistoryEntry>(() => ({
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
   created: new Date(2020, 5, 5).toString(),
-  amount: faker.random.number({ min: 100, max: 1000 }),
+  amount: faker.datatype.number({ min: 100, max: 1000 }),
   paymentMethodDetails: paymentMethodFactory(),
   billingDetails: {
     name: faker.name.lastName(),

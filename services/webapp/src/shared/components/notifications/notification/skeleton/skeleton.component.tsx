@@ -1,4 +1,3 @@
-import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { useIntl } from 'react-intl';
 import { Container, Content, Avatar, Title } from './skeleton.styles';

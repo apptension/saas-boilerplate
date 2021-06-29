@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import graphql from 'babel-plugin-relay/macro';
 import { ConnectionHandler } from 'relay-runtime';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -32,7 +32,7 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
     `
   );
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await commitDeleteMutation({
       variables: {

@@ -1,5 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, UNAUTHORIZED } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { identity } from 'ramda';
 import { server } from '../../../mocks/server';
 import { watchAuth } from '../auth.sagas';
@@ -77,7 +77,9 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockLogin(BAD_REQUEST, { isError: true, password: [{ message: 'error', code: 'error' }] }));
+      server.use(
+        mockLogin(StatusCodes.BAD_REQUEST, { isError: true, password: [{ message: 'error', code: 'error' }] })
+      );
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -87,7 +89,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockLogin(INTERNAL_SERVER_ERROR, { isError: true }));
+      server.use(mockLogin(StatusCodes.INTERNAL_SERVER_ERROR, { isError: true }));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -132,7 +134,7 @@ describe('Auth: sagas', () => {
 
     describe('call completes with error', () => {
       it('should not redirect anywhere', async () => {
-        server.use(mockLogout(INTERNAL_SERVER_ERROR));
+        server.use(mockLogout(StatusCodes.INTERNAL_SERVER_ERROR));
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
         expect(mockHistoryPush).not.toHaveBeenCalled();
       });
@@ -154,7 +156,7 @@ describe('Auth: sagas', () => {
 
     describe('call completes with UNAUTHORIZED error', () => {
       it('should not call success action', async () => {
-        server.use(mockMe(profile, UNAUTHORIZED));
+        server.use(mockMe(profile, StatusCodes.UNAUTHORIZED));
 
         await expectSaga(watchAuth)
           .withState(defaultState)
@@ -164,7 +166,7 @@ describe('Auth: sagas', () => {
       });
 
       it('should not redirect to login screen', async () => {
-        server.use(mockMe(profile, UNAUTHORIZED));
+        server.use(mockMe(profile, StatusCodes.UNAUTHORIZED));
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.fetchProfile()).silentRun();
         expect(mockHistoryPush).not.toHaveBeenCalled();
       });
@@ -189,7 +191,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockUpdateProfile({ isError: true }, BAD_REQUEST));
+      server.use(mockUpdateProfile({ isError: true }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -199,7 +201,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockUpdateProfile({ isError: true }, INTERNAL_SERVER_ERROR));
+      server.use(mockUpdateProfile({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -236,7 +238,9 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockSignup({ isError: true, password: [{ message: 'error', code: 'error' }] }, BAD_REQUEST));
+      server.use(
+        mockSignup({ isError: true, password: [{ message: 'error', code: 'error' }] }, StatusCodes.BAD_REQUEST)
+      );
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -246,7 +250,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockSignup({ isError: true }, INTERNAL_SERVER_ERROR));
+      server.use(mockSignup({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -274,7 +278,10 @@ describe('Auth: sagas', () => {
 
     it('should reject action if call completes with error', async () => {
       server.use(
-        mockChangePassword({ isError: true, oldPassword: [{ message: 'error', code: 'error' }] }, BAD_REQUEST)
+        mockChangePassword(
+          { isError: true, oldPassword: [{ message: 'error', code: 'error' }] },
+          StatusCodes.BAD_REQUEST
+        )
       );
 
       await expectSaga(watchAuth)
@@ -285,7 +292,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockChangePassword({ isError: true }, INTERNAL_SERVER_ERROR));
+      server.use(mockChangePassword({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -312,7 +319,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockConfirmEmail({ isError: true }, BAD_REQUEST));
+      server.use(mockConfirmEmail({ isError: true }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -338,7 +345,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockRequestPasswordReset({ isError: true }, BAD_REQUEST));
+      server.use(mockRequestPasswordReset({ isError: true }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -348,7 +355,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockRequestPasswordReset({ isError: true }, INTERNAL_SERVER_ERROR));
+      server.use(mockRequestPasswordReset({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -376,7 +383,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockConfirmPasswordReset({ isError: true }, BAD_REQUEST));
+      server.use(mockConfirmPasswordReset({ isError: true }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watchAuth)
         .withState(defaultState)
@@ -386,7 +393,7 @@ describe('Auth: sagas', () => {
     });
 
     it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockConfirmPasswordReset({ isError: true }, INTERNAL_SERVER_ERROR));
+      server.use(mockConfirmPasswordReset({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
 
       await expectSaga(watchAuth)
         .withState(defaultState)

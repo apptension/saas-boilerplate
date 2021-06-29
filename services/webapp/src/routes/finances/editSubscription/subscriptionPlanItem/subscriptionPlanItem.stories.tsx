@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';

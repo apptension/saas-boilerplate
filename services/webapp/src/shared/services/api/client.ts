@@ -3,6 +3,7 @@ import applyCaseMiddleware from 'axios-case-converter';
 import { Store } from 'redux';
 import { GlobalState } from '../../../config/reducers';
 import { createRefreshTokenInterceptor, validateStatus } from './helpers';
+
 export const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
 
 if (!baseUrl) {

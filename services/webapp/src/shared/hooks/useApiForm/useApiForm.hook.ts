@@ -1,6 +1,6 @@
-import { FieldName, useForm } from 'react-hook-form';
+import { Path, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
-import { isNil, keys } from 'ramda';
+import { isEmpty, isNil, keys } from 'ramda';
 import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
@@ -22,7 +22,7 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
       keys(response).forEach((field) => {
         if (field !== 'isError' && field !== 'nonFieldErrors') {
           const message = response[field]?.[0];
-          const fieldName = field as FieldName<FormData>;
+          const fieldName = field as Path<FormData>;
           if (!isNil(message)) {
             setError(fieldName, { message: translateErrorMessage(fieldName, message) });
           }
@@ -65,12 +65,14 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
   );
 
   const handleSubmit: typeof formControls.handleSubmit = (onValid, onInvalid) => {
-    return (e) => {
+    return (event) => {
       formControls.clearErrors();
       setGenericError(undefined);
-      return formControls.handleSubmit(onValid, onInvalid)(e);
+      return formControls.handleSubmit(onValid, onInvalid)(event);
     };
   };
+
+  const hasGenericErrorOnly = isEmpty(formControls.formState.errors) && genericError !== undefined;
 
   return {
     ...formControls,
@@ -78,9 +80,11 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
     setApiResponse,
     setGraphQLResponseErrors,
     setGenericError,
+    hasGenericErrorOnly,
     handleSubmit,
-    formState: Object.assign(formControls.formState, {
+    formState: {
+      ...formControls.formState,
       isSubmitSuccessful: formControls.formState.isSubmitSuccessful && !genericError,
-    }),
+    },
   };
 };

@@ -1,4 +1,4 @@
-import React, { ComponentProps, useLayoutEffect } from 'react';
+import { ComponentProps, useLayoutEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsProfileStartupCompleted } from '../../modules/startup/startup.selectors';

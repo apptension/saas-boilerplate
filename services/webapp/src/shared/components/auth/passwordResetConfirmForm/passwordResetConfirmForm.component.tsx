@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -31,8 +30,9 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const {
     register,
     handleSubmit,
-    errors,
+    formState: { errors },
     genericError,
+    hasGenericErrorOnly,
     setApiResponse,
     getValues,
   } = useApiForm<ResetPasswordFormFields>({
@@ -85,9 +85,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
     <Container onSubmit={handleSubmit(onResetPassword)}>
       <FormFieldsRow>
         <Input
-          name={'newPassword'}
-          type={'password'}
-          ref={register({
+          {...register('newPassword', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -103,6 +101,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
               }),
             },
           })}
+          type="password"
           required
           label={intl.formatMessage({
             defaultMessage: 'New password',
@@ -117,7 +116,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       </FormFieldsRow>
       <FormFieldsRow>
         <Input
-          ref={register({
+          {...register('confirmPassword', {
             validate: {
               required: (value) =>
                 value?.length > 0 ||
@@ -133,8 +132,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
                 }),
             },
           })}
-          name={'confirmPassword'}
-          type={'password'}
+          type="password"
           required
           label={intl.formatMessage({
             defaultMessage: 'Repeat new password',
@@ -148,7 +146,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         />
       </FormFieldsRow>
 
-      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         <FormattedMessage

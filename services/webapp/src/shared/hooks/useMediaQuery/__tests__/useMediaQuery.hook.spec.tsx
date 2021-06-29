@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import React from 'react';
 import { BreakpointQuery, useMediaQuery } from '../useMediaQuery.hook';
 import { Breakpoint, getActiveBreakpoint } from '../../../../theme/media';
 import { ResponsiveThemeProvider } from '../../../components/responsiveThemeProvider';

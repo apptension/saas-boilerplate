@@ -1,4 +1,3 @@
-import React from 'react';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import CrudDemoItemListQuery, { crudDemoItemListQuery } from '../../../../__generated__/crudDemoItemListQuery.graphql';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem';

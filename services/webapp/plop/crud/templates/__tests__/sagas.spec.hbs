@@ -1,5 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { BAD_REQUEST } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { watch{{ pascalCase name }} } from '../{{ camelCase name }}.sagas';
 import { {{ camelCase name }}Actions } from '..';
 import { {{ camelCase name }}Factory } from '../../../mocks/factories';
@@ -56,7 +56,7 @@ describe('{{ pascalCase name }}: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockAdd{{ pascalCase name }}({ isError: true, nonFieldErrors: ['error'] }, BAD_REQUEST));
+      server.use(mockAdd{{ pascalCase name }}({ isError: true, nonFieldErrors: ['error'] }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watch{{ pascalCase name }})
         .withState(defaultState)
@@ -80,7 +80,7 @@ describe('{{ pascalCase name }}: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockUpdate{{ pascalCase name }}(item.id, { isError: true, nonFieldErrors: ['error'] }, BAD_REQUEST));
+      server.use(mockUpdate{{ pascalCase name }}(item.id, { isError: true, nonFieldErrors: ['error'] }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watch{{ pascalCase name }})
         .withState(defaultState)

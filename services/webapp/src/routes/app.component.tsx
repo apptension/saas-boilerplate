@@ -1,9 +1,9 @@
-import React, { Fragment, ReactNode } from 'react';
-import '../theme/styled.d';
+import { Fragment, ReactNode, Children } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
+import '../theme/styled.d';
 import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
@@ -38,7 +38,7 @@ export const AppComponent = ({ children }: AppComponentProps) => {
           <GlobalStyle />
 
           <ResponsiveThemeProvider>
-            <Layout>{React.Children.only(children)}</Layout>
+            <Layout>{Children.only(children)}</Layout>
           </ResponsiveThemeProvider>
         </Fragment>
       </RelayEnvironmentProvider>

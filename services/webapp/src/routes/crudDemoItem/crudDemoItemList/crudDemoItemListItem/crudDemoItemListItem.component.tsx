@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import graphql from 'babel-plugin-relay/macro';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
@@ -43,7 +43,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     item
   );
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await commitDeleteMutation({
       variables: {

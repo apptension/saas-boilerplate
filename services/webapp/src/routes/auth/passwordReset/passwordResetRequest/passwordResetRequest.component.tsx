@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
 import { Link } from '../../../../shared/components/link';

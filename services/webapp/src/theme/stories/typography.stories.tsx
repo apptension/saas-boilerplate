@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 import { H1, H2, H3, H4, H5, Paragraph, ParagraphBold, Label, MicroLabel, UltraMicroLabel } from '../typography';

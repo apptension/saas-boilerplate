@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import { EmailTemplateType } from '../../types';
 import { EmailStory } from '../../emailStory/emailStory.component';

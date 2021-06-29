@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { StripePaymentMethodSelector } from '../../../../shared/components/finances/stripe';
@@ -14,8 +13,7 @@ import { selectActiveSubscriptionPaymentMethod } from '../../../../modules/subsc
 import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ChangePaymentFormFields extends PaymentFormFields {}
+type ChangePaymentFormFields = PaymentFormFields;
 
 export type EditPaymentMethodFormProps = {
   onSuccess: () => void;
@@ -75,7 +73,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
       <StripePaymentMethodSelector formControls={apiFormControls} initialValue={defaultPaymentMethod} />
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
-        <FormattedMessage defaultMessage="Save" description="Subscition / change payment method / submit button" />
+        <FormattedMessage defaultMessage="Save" description="Subscription / change payment method / submit button" />
       </SubmitButton>
     </Form>
   );

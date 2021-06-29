@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { Input } from '../../input';
@@ -21,9 +20,10 @@ export const ChangePasswordForm = () => {
   const {
     register,
     handleSubmit,
-    errors,
+    formState: { errors },
     genericError,
     setApiResponse,
+    hasGenericErrorOnly,
     getValues,
     reset,
   } = useApiForm<ChangePasswordFormFields>({
@@ -69,9 +69,7 @@ export const ChangePasswordForm = () => {
     <Container onSubmit={handleSubmit(onChangePassword)}>
       <FormFieldsRow>
         <Input
-          name={'oldPassword'}
-          type={'password'}
-          ref={register({
+          {...register('oldPassword', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -80,6 +78,7 @@ export const ChangePasswordForm = () => {
               }),
             },
           })}
+          type="password"
           label={intl.formatMessage({
             defaultMessage: 'Old password',
             description: 'Auth / Change password / Old password placeholder',
@@ -90,7 +89,7 @@ export const ChangePasswordForm = () => {
 
       <FormFieldsRow>
         <Input
-          ref={register({
+          {...register('newPassword', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -106,8 +105,7 @@ export const ChangePasswordForm = () => {
               }),
             },
           })}
-          name={'newPassword'}
-          type={'password'}
+          type="password"
           label={intl.formatMessage({
             defaultMessage: 'New password',
             description: 'Auth / Change password / New password label',
@@ -122,7 +120,7 @@ export const ChangePasswordForm = () => {
 
       <FormFieldsRow>
         <Input
-          ref={register({
+          {...register('confirmNewPassword', {
             validate: {
               required: (value) =>
                 value?.length > 0 ||
@@ -138,8 +136,7 @@ export const ChangePasswordForm = () => {
                 }),
             },
           })}
-          name={'confirmNewPassword'}
-          type={'password'}
+          type="password"
           label={intl.formatMessage({
             defaultMessage: 'Confirm new password',
             description: 'Auth / Change password / Confirm new password label',
@@ -151,7 +148,7 @@ export const ChangePasswordForm = () => {
           error={errors.confirmNewPassword?.message}
         />
       </FormFieldsRow>
-      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         <FormattedMessage defaultMessage="Change password" description="Auth / Change password / Submit button" />

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Container, HeaderCell, Entry, HeaderRow } from './transactionHistory.styles';
 import { useTransactionHistory } from './transactionHistory.hooks';

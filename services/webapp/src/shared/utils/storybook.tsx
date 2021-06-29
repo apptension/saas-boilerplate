@@ -1,6 +1,6 @@
-import React from 'react';
-import { Action, createStore } from 'redux';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { produce } from 'immer';
 import { createReducer, Reducer } from '@reduxjs/toolkit';
 import { Story } from '@storybook/react';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
@@ -9,12 +9,14 @@ import { store } from '../../mocks/store';
 import { GlobalState } from '../../config/reducers';
 import { ContextData, ProvidersWrapper } from './testUtils';
 
-export const withRedux = (initialState: GlobalState = store, reducer: Reducer | null = null) => (
-  StoryComponent: Story
-) => {
-  const store = createStore<GlobalState, Action, unknown, unknown>(reducer ?? createReducer(initialState, {}));
+export const withRedux = (
+  initialState: GlobalState | ((draft: GlobalState) => void) = store,
+  reducer: Reducer | null = null
+) => (StoryComponent: Story) => {
+  const state = typeof initialState === 'function' ? produce(store, initialState) : initialState;
+  const createdStore = createStore(reducer ?? createReducer(state, {}));
   return (
-    <Provider store={store}>
+    <Provider store={createdStore}>
       <StoryComponent />
     </Provider>
   );

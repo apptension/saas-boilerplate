@@ -3,6 +3,7 @@ import * as Types from './types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+const defaultOptions =  {}
 
 export const AppConfigDocument = gql`
     query appConfig {
@@ -32,10 +33,12 @@ export const AppConfigDocument = gql`
  * });
  */
 export function useAppConfigQuery(baseOptions?: Apollo.QueryHookOptions<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>) {
-        return Apollo.useQuery<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>(AppConfigDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>(AppConfigDocument, options);
       }
 export function useAppConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>) {
-          return Apollo.useLazyQuery<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>(AppConfigDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.ContentfulAppConfigQuery, Types.ContentfulAppConfigQueryVariables>(AppConfigDocument, options);
         }
 export type AppConfigQueryHookResult = ReturnType<typeof useAppConfigQuery>;
 export type AppConfigLazyQueryHookResult = ReturnType<typeof useAppConfigLazyQuery>;
@@ -73,10 +76,12 @@ export const AllDemoItemsDocument = gql`
  * });
  */
 export function useAllDemoItemsQuery(baseOptions?: Apollo.QueryHookOptions<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>) {
-        return Apollo.useQuery<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>(AllDemoItemsDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>(AllDemoItemsDocument, options);
       }
 export function useAllDemoItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>) {
-          return Apollo.useLazyQuery<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>(AllDemoItemsDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.ContentfulAllDemoItemsQuery, Types.ContentfulAllDemoItemsQueryVariables>(AllDemoItemsDocument, options);
         }
 export type AllDemoItemsQueryHookResult = ReturnType<typeof useAllDemoItemsQuery>;
 export type AllDemoItemsLazyQueryHookResult = ReturnType<typeof useAllDemoItemsLazyQuery>;
@@ -111,10 +116,12 @@ export const DemoItemDocument = gql`
  * });
  */
 export function useDemoItemQuery(baseOptions: Apollo.QueryHookOptions<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>) {
-        return Apollo.useQuery<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>(DemoItemDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>(DemoItemDocument, options);
       }
 export function useDemoItemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>) {
-          return Apollo.useLazyQuery<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>(DemoItemDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.ContentfulDemoItemQuery, Types.ContentfulDemoItemQueryVariables>(DemoItemDocument, options);
         }
 export type DemoItemQueryHookResult = ReturnType<typeof useDemoItemQuery>;
 export type DemoItemLazyQueryHookResult = ReturnType<typeof useDemoItemLazyQuery>;

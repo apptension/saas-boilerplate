@@ -1,4 +1,3 @@
-import React from 'react';
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';

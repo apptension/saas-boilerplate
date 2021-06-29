@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { Container } from './button.styles';
 
 export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {

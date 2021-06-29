@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -15,7 +14,14 @@ type LoginFormFields = {
 export const LoginForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<LoginFormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setApiResponse,
+    hasGenericErrorOnly,
+    genericError,
+  } = useApiForm<LoginFormFields>({
     errorMessages: {
       nonFieldErrors: {
         no_active_account: intl.formatMessage({
@@ -41,9 +47,7 @@ export const LoginForm = () => {
     <Container onSubmit={handleSubmit(onLogin)}>
       <FormFieldsRow>
         <Input
-          name={'email'}
-          type={'email'}
-          ref={register({
+          {...register('email', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -59,6 +63,7 @@ export const LoginForm = () => {
               }),
             },
           })}
+          type="email"
           required
           label={intl.formatMessage({
             defaultMessage: 'Email',
@@ -74,7 +79,7 @@ export const LoginForm = () => {
 
       <FormFieldsRow>
         <Input
-          ref={register({
+          {...register('password', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -83,8 +88,7 @@ export const LoginForm = () => {
               }),
             },
           })}
-          name={'password'}
-          type={'password'}
+          type="password"
           required
           label={intl.formatMessage({
             defaultMessage: 'Password',
@@ -98,7 +102,7 @@ export const LoginForm = () => {
         />
       </FormFieldsRow>
 
-      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         <FormattedMessage defaultMessage="Log in" description="Auth / login button" />

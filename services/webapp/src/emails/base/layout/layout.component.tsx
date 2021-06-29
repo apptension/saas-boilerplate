@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Image } from '../image';
 import { Container, Table, Tr, Td, Text, Title } from './layout.styles';
 

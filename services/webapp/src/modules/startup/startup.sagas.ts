@@ -7,7 +7,7 @@ import { startupActions } from '.';
 
 function* handleProfileStartup() {
   try {
-    const isStartupCompleted = yield select(selectIsProfileStartupCompleted);
+    const isStartupCompleted: boolean = yield select(selectIsProfileStartupCompleted);
     if (!isStartupCompleted) {
       yield put(authActions.fetchProfile());
       yield race({

@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { HiddenOnPlatformComponentProps } from '../hiddenOnPlatform.component';
 import { HiddenOnPlatform } from '../index';

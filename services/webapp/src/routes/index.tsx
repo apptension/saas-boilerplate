@@ -1,4 +1,3 @@
-import React from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { HelmetProvider } from 'react-helmet-async';
@@ -34,6 +33,7 @@ import {
 
 export default () => {
   const { pathname, search } = useLocation();
+
   return (
     <HelmetProvider>
       <Switch>

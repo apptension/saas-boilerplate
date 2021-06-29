@@ -20,7 +20,7 @@ export const useRefetchNotifications = ({
   fetchNotifications: () => void;
 }) => {
   useEffect(() => {
-    let interval: number | null;
+    let interval: NodeJS.Timeout | null;
     if (isOpen) {
       interval = setInterval(() => {
         fetchNotifications();

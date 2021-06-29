@@ -5,5 +5,5 @@ import { createFactory } from './factoryCreators';
 export const contentfulSysFactory = createFactory<ContentfulSys>(() => ({
   spaceId: 'space-id',
   environmentId: 'env-id',
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
 }));

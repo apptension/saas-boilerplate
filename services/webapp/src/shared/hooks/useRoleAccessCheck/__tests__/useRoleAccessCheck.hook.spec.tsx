@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 import { Role } from '../../../../modules/auth/auth.types';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { StripePaymentIntent, TestProduct } from '../../../../services/api/stripe/paymentIntent';
 import { useApiForm } from '../../../../hooks/useApiForm';
@@ -16,9 +15,9 @@ import {
   StripePaymentFormContainer,
 } from './stripePaymentForm.styles';
 
-interface StripePaymentFormFields extends PaymentFormFields {
+type StripePaymentFormFields = PaymentFormFields & {
   product: TestProduct;
-}
+};
 
 export type StripePaymentFormProps = {
   onSuccess(paymentIntent: StripePaymentIntent): void;
@@ -32,7 +31,15 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const apiFormControls = useApiForm<StripePaymentFormFields>({
     mode: 'onChange',
   });
-  const { register, handleSubmit, errors, setApiResponse, setGenericError, formState, watch } = apiFormControls;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setApiResponse,
+    setGenericError,
+    formState,
+    watch,
+  } = apiFormControls;
   const amountValue = watch('product');
   const onSubmit = async (data: StripePaymentFormFields) => {
     const paymentIntentResponse = await updateOrCreatePaymentIntent(data.product);
@@ -69,9 +76,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
           {Object.values(TestProduct).map((amount) => (
             <ProductListItem key={amount}>
               <ProductListItemButton
-                name="product"
-                value={amount}
-                ref={register({
+                {...register('product', {
                   required: {
                     value: true,
                     message: intl.formatMessage({
@@ -80,6 +85,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
                     }),
                   },
                 })}
+                value={amount}
               >
                 {amount} USD
               </ProductListItemButton>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PayloadError } from 'relay-runtime';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
@@ -31,13 +30,18 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
     defaultMessage: '🎉 Changes saved successfully!',
   });
 
-  const { register, handleSubmit, errors, genericError, setGraphQLResponseErrors } = useApiForm<CrudDemoItemFormFields>(
-    {
-      defaultValues: {
-        name: initialData?.name,
-      },
-    }
-  );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    genericError,
+    hasGenericErrorOnly,
+    setGraphQLResponseErrors,
+  } = useApiForm<CrudDemoItemFormFields>({
+    defaultValues: {
+      name: initialData?.name,
+    },
+  });
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
     const { errors } = await onSubmit(formData);
@@ -53,7 +57,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
       <Form onSubmit={handleSubmit(onFormSubmit)}>
         <Fields>
           <Input
-            ref={register({
+            {...register('name', {
               maxLength: {
                 value: MAX_NAME_LENGTH,
                 message: intl.formatMessage({
@@ -69,7 +73,6 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
                 }),
               },
             })}
-            name={'name'}
             label={intl.formatMessage({
               defaultMessage: 'Name:',
               description: 'CrudDemoItem Form / Name label',
@@ -81,7 +84,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
             error={errors.name?.message}
           />
 
-          {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+          {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
         </Fields>
 
         <Buttons>

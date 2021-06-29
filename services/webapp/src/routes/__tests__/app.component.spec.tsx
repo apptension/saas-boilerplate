@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { makeContextRenderer, PLACEHOLDER_CONTENT } from '../../shared/utils/testUtils';
 import { AppComponent, AppComponentProps } from '../app.component';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';

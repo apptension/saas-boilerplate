@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { DemoItem } from '../demoItem.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';

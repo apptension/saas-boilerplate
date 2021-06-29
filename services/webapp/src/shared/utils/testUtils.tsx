@@ -1,6 +1,6 @@
-import React, { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { Nullish, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { createStore } from 'redux';
 import { identity } from 'ramda';
 import { Provider } from 'react-redux';
@@ -88,7 +88,7 @@ export function makePropsRenderer<T>(component: (props: T | Record<string, never
 }
 
 // using `screen.getByText(matchTextContent('hello world'))` will match <div>hello <span>world</span></div>
-export const matchTextContent = (text: string | RegExp) => (_: unknown, node: Nullish<Element>) => {
+export const matchTextContent = (text: string | RegExp) => (_: unknown, node: Element | null | undefined) => {
   const hasText = (node: Element) => {
     const isPlainString = typeof text === 'string';
     const nodeContent = node.textContent ?? '';

@@ -1,4 +1,4 @@
-import React, { ElementType, Suspense } from 'react';
+import { ElementType, Suspense } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import useInfiniteScroll from 'react-infinite-scroll-hook';

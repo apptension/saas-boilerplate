@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import backIcon from '@iconify-icons/ion/chevron-back';
-import React, { ComponentProps } from 'react';
+import { ComponentProps } from 'react';
 import { Icon } from '../icon';
 import { sizeUnits } from '../../../theme/size';
 import { Link } from '../link';

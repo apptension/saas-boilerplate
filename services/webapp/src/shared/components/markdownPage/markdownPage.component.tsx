@@ -1,4 +1,3 @@
-import React from 'react';
 import { BackButton } from '../backButton/backButton.component';
 import { Container, Markdown } from './markdownPage.styles';
 

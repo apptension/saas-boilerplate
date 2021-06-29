@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button as ButtonBase, ButtonProps } from '../../../button';
 import { ButtonSize } from '../../../button/button.types';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodCardBrand } from '../../../../../services/api/stripe/paymentMethod';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { ROUTES } from '../app.constants';

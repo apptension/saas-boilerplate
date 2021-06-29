@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import * as faker from 'faker';
 import { RelativeDate, RelativeDateProps } from './relativeDate.component';

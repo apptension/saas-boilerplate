@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import { withRouter } from '../../../../.storybook/decorators';
 import { BackButton, BackButtonProps } from './backButton.component';

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import axios from 'axios';
 import { EmailTemplateType } from '../types';
 import { Container, Subject, Email, Header, RecipientInput, SendEmail, SendEmailButton } from './emailStory.styles';

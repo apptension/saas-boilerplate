@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import { withRedux } from '../../../shared/utils/storybook';
 import { withRouter } from '../../../../.storybook/decorators';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Elements } from '@stripe/react-stripe-js';
 import { useHistory } from 'react-router-dom';

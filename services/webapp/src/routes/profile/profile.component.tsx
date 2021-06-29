@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';

@@ -1,4 +1,4 @@
-import React, { AnchorHTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, ReactNode } from 'react';
 import { LinkProps as RouterLinkProps, NavLinkProps as RouterNavLinkProps } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { omit } from 'ramda';

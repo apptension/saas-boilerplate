@@ -1,4 +1,4 @@
-import React, { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef, InputHTMLAttributes } from 'react';
 import { Container, GhostInput, Label, Dot, LabelText } from './radioButton.styles';
 
 export type RadioButtonProps = InputHTMLAttributes<HTMLInputElement>;

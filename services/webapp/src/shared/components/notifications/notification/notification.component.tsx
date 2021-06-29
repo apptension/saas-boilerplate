@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
 import { ThemeProvider } from 'styled-components';

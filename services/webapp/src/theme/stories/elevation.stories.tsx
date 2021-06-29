@@ -1,4 +1,3 @@
-import React from 'react';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 import { light, lightest, medium, strong, strongest } from '../elevation';

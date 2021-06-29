@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -20,7 +19,14 @@ export const SignupForm = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<SignupFormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setApiResponse,
+    hasGenericErrorOnly,
+    genericError,
+  } = useApiForm<SignupFormFields>({
     errorMessages: {
       email: {
         unique: intl.formatMessage({
@@ -57,10 +63,7 @@ export const SignupForm = () => {
     <Container onSubmit={handleSubmit(onSignup)}>
       <FormFieldsRow>
         <Input
-          name={'email'}
-          type={'email'}
-          required
-          ref={register({
+          {...register('email', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -76,6 +79,8 @@ export const SignupForm = () => {
               }),
             },
           })}
+          type="email"
+          required
           label={intl.formatMessage({
             defaultMessage: 'Email',
             description: 'Auth / Signup / Email label',
@@ -90,7 +95,7 @@ export const SignupForm = () => {
 
       <FormFieldsRow>
         <Input
-          ref={register({
+          {...register('password', {
             required: {
               value: true,
               message: intl.formatMessage({
@@ -107,8 +112,7 @@ export const SignupForm = () => {
             },
           })}
           required
-          name={'password'}
-          type={'password'}
+          type="password"
           label={intl.formatMessage({
             defaultMessage: 'Password',
             description: 'Auth / Signup / Password label',
@@ -122,6 +126,15 @@ export const SignupForm = () => {
       </FormFieldsRow>
 
       <Checkbox
+        {...register('acceptTerms', {
+          required: {
+            value: true,
+            message: intl.formatMessage({
+              defaultMessage: 'You need to accept terms and conditions',
+              description: 'Auth / Signup / Password required',
+            }),
+          },
+        })}
         label={intl.formatMessage(
           {
             defaultMessage: 'You must accept our {termsLink} and {policyLink}.',
@@ -146,20 +159,10 @@ export const SignupForm = () => {
             ),
           }
         )}
-        ref={register({
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'You need to accept terms and conditions',
-              description: 'Auth / Signup / Password required',
-            }),
-          },
-        })}
-        name={'acceptTerms'}
         error={errors.acceptTerms?.message}
       />
 
-      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         <FormattedMessage defaultMessage="Sign up" description="Auth / signup button" />

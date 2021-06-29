@@ -1,4 +1,3 @@
-import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { act, screen, waitFor } from '@testing-library/react';
 import { generatePath } from 'react-router';
@@ -75,10 +74,7 @@ describe('EditCrudDemoItem: Component', () => {
         expect(operation.fragment.variables).toEqual({ input: { id: 'test-id', name: 'new item name' } });
 
         act(() => {
-          relayEnvironment.mock.resolve(
-            operation,
-            MockPayloadGenerator.generate(operation)
-          );
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
         });
       });
     });
@@ -101,10 +97,7 @@ describe('EditCrudDemoItem: Component', () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
         expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
         act(() => {
-          relayEnvironment.mock.resolve(
-            operation,
-            MockPayloadGenerator.generate(operation)
-          );
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
         });
       });
 

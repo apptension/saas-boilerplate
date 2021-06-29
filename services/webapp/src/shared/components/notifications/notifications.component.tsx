@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';

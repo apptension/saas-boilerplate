@@ -18,7 +18,7 @@ function* loginResolve(response: LoginApiResponseData) {
 }
 
 function* logoutResolve() {
-  const isLoggedIn = yield select(selectIsLoggedIn);
+  const isLoggedIn: boolean = yield select(selectIsLoggedIn);
   if (isLoggedIn) {
     yield put(authActions.resetProfile());
     yield navigate(ROUTES.login);

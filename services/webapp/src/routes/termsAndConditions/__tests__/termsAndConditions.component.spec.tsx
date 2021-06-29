@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { TermsAndConditions } from '../termsAndConditions.component';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';

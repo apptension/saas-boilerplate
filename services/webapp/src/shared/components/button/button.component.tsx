@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Icon, Container } from './button.styles';
 import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';

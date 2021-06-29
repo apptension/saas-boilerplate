@@ -1,9 +1,9 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Breakpoint } from '../../../theme/media';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 export type HiddenOnPlatformComponentProps = {
-  children?: React.ReactNode;
+  children?: ReactNode;
   below?: Breakpoint;
   above?: Breakpoint;
   matches?: Breakpoint | Breakpoint[];

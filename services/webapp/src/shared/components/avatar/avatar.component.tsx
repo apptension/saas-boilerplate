@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { useSelector } from 'react-redux';
 import { selectProfileInitial } from '../../../modules/auth/auth.selectors';
 import { sizeUnitBase } from '../../../theme/size';

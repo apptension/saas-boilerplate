@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useContext } from 'react';
+import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';

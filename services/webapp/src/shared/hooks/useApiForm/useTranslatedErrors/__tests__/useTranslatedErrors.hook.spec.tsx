@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { ProvidersWrapper } from '../../../../utils/testUtils';
 import { ErrorMessages } from '../../useApiForm.types';

@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import React from 'react';
 import { useSubscriptionPlanDetails, useActiveSubscriptionPlanDetails } from '../useSubscriptionPlanDetails.hook';
 import { subscriptionFactory, subscriptionPlanFactory } from '../../../../../mocks/factories';
 import { ProvidersWrapper } from '../../../../utils/testUtils';

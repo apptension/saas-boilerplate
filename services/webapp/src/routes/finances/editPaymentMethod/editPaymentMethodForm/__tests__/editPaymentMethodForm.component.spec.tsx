@@ -1,4 +1,3 @@
-import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { produce } from 'immer';
 import { times } from 'ramda';

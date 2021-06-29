@@ -1,11 +1,11 @@
-import React, { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode, InputHTMLAttributes } from 'react';
 import checkedIcon from '@iconify-icons/ion/checkmark';
 import semicheckedIcon from '@iconify-icons/ion/remove-outline';
 import { ThemeProvider } from 'styled-components';
 import { Container, Field, Message, Label, Checkmark, CheckIcon } from './checkbox.styles';
 import { CheckboxTheme } from './checkbox.types';
 
-export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: ReactNode;
   error?: string;
   semiChecked?: boolean;

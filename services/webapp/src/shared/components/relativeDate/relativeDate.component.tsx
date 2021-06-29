@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useMemo } from 'react';
+import { HTMLAttributes, useMemo } from 'react';
 import { FormattedRelativeTime, useIntl } from 'react-intl';
 import { Container } from './relativeDate.styles';
 import { SECOND_IN_MS, WEEK_IN_MS } from './relativeDate.constants';

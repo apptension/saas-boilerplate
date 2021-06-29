@@ -27,9 +27,7 @@ export interface PromiseActionCreatorWithPayload<P, A, B = void> {
   rejected: ActionCreatorWithPayload<B>;
 }
 
-export type PreparePromiseAction<P, A, B> = (
-  ...args: [P]
-) => {
+export type PreparePromiseAction<P, A, B> = (...args: [P]) => {
   payload: P;
   meta: PromiseActionMeta<A, B>;
 };
@@ -80,26 +78,25 @@ export function* rejectPromiseAction<P = void, A = void, B = void>(action: Promi
 const isPromiseTriggerAction = (action: PayloadAction<any, string, any>) =>
   !!action.meta?.promise?.resolveAction && !!action.meta?.promisified;
 
-export const promiseMiddleware: Middleware<unknown, GlobalState> = (store) => (next) => (
-  action: PayloadAction<any, string, any>
-) => {
-  if (isPromiseTriggerAction(action)) {
-    return new Promise((resolve, reject) =>
-      next({
-        ...action,
-        meta: {
-          promise: {
-            ...action.meta.promise,
-            resolve,
-            reject,
+export const promiseMiddleware: Middleware<unknown, GlobalState> =
+  (store) => (next) => (action: PayloadAction<any, string, any>) => {
+    if (isPromiseTriggerAction(action)) {
+      return new Promise((resolve, reject) =>
+        next({
+          ...action,
+          meta: {
+            promise: {
+              ...action.meta.promise,
+              resolve,
+              reject,
+            },
           },
-        },
-      })
-    );
-  }
+        })
+      );
+    }
 
-  return next(action);
-};
+    return next(action);
+  };
 
 type PromiseDispatch = <P, A, B>(action: PromiseAction<P, A, B>) => Promise<A>;
 export const useAsyncDispatch = () => useDispatch<PromiseDispatch>();

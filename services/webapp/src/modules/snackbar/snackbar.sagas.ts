@@ -8,7 +8,7 @@ const MESSAGE_ONSCREEN_TIME = 5000;
 
 function* showMessage({ payload }: PayloadAction<string | null>) {
   try {
-    const lastMessageId = yield select(selectLastSnackbarMessageId);
+    const lastMessageId: number = yield select(selectLastSnackbarMessageId);
     const newMessageId = lastMessageId + 1;
 
     yield put(snackbarActions.showMessage.resolved({ text: payload, id: newMessageId }));

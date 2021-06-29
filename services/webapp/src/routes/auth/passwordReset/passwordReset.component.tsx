@@ -1,5 +1,4 @@
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import React from 'react';
 import { ROUTES } from '../../app.constants';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 

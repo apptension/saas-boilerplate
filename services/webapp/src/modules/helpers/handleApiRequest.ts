@@ -1,4 +1,4 @@
-import { UNAUTHORIZED } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { put } from 'redux-saga/effects';
 import { PromiseAction, rejectPromiseAction, resolvePromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { snackbarActions } from '../snackbar';
@@ -27,7 +27,7 @@ export function handleApiRequest<Request, Response>(
       yield rejectPromiseAction(action, error);
       yield onReject?.(error);
 
-      if (error.response?.status !== UNAUTHORIZED) {
+      if (error.response?.status !== StatusCodes.BAD_REQUEST) {
         yield put(snackbarActions.showMessage(null));
         reportError(error);
       } else if (redirectToLoginOnFail) {

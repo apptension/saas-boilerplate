@@ -1,4 +1,3 @@
-import React from 'react';
 import { Switch } from 'react-router-dom';
 import { AuthRoute } from '../authRoute';
 import { ROUTES } from '../app.constants';

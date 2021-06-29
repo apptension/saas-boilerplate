@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTheme } from 'styled-components';
 import { screen, getNodeText } from '@testing-library/react';
 import { ResponsiveThemeProvider, ResponsiveThemeProviderProps } from '../responsiveThemeProvider.component';

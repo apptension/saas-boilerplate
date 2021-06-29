@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import { ResponsiveThemeProvider } from '../src/shared/components/responsiveThemeProvider';
 export { default as withRouter } from 'storybook-react-router';

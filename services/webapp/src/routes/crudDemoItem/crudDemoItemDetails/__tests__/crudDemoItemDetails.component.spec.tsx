@@ -1,4 +1,3 @@
-import React from 'react';
 import { generatePath } from 'react-router';
 import { screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';

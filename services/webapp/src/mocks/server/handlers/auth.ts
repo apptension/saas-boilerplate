@@ -31,10 +31,16 @@ import {
   AUTH_TOKEN_REFRESH_URL,
   AUTH_UPDATE_PROFILE_URL,
 } from '../../../shared/services/api/auth';
-import { Profile, Role } from '../../../modules/auth/auth.types';
+import { Role } from '../../../modules/auth/auth.types';
+import { userProfileFactory } from '../../factories';
 const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
-const profile: Profile = { email: 'user@mail.com', firstName: 'User', lastName: 'White', roles: [Role.ADMIN] };
+const profile = userProfileFactory({
+  email: 'user@mail.com',
+  firstName: 'User',
+  lastName: 'White',
+  roles: [Role.ADMIN],
+});
 
 export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
   rest.post<SignupApiRequestData, SignupApiResponseData>(baseUrl + AUTH_SIGNUP_URL, (req, res, ctx) => {

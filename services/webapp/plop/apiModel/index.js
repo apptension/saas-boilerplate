@@ -22,7 +22,7 @@ module.exports = (plop) => {
         message: "Model's directory:",
       },
     ],
-    actions: data => [
+    actions: (data) => [
       {
         type: 'add',
         path: `${moduleDirectory}/index.ts`,
@@ -46,7 +46,7 @@ module.exports = (plop) => {
         data: {
           relativeModulePath: path.relative(
             path.join(projectPathAbsolute, `src/mocks/server/handlers/${data.directory}`),
-            path.join(projectPathAbsolute, `src/shared/services/api/${data.directory}`),
+            path.join(projectPathAbsolute, `src/shared/services/api/${data.directory}`)
           ),
         },
       },

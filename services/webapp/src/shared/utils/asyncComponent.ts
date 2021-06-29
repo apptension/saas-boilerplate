@@ -8,7 +8,6 @@ type NamedExportLoader = () => Promise<NamedExportModule>;
 type DefaultExportLoader = () => Promise<DefaultExportModule>;
 type Module = NamedExportModule | DefaultExportModule;
 
-
 export const asyncComponent = (asyncLoader: NamedExportLoader | DefaultExportLoader, exportedAs?: string) => {
   const isNamedExportModule = (module: Module, exportedAs?: string): module is NamedExportModule => {
     return !isNil(exportedAs);
@@ -16,6 +15,6 @@ export const asyncComponent = (asyncLoader: NamedExportLoader | DefaultExportLoa
 
   return loadable(async () => {
     const module = await asyncLoader();
-    return isNamedExportModule(module, exportedAs) && exportedAs ? module[exportedAs] : module as DefaultExportModule;
+    return isNamedExportModule(module, exportedAs) && exportedAs ? module[exportedAs] : (module as DefaultExportModule);
   });
 };

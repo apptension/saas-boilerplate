@@ -1,4 +1,3 @@
-import React from 'react';
 import { useIntl } from 'react-intl';
 import { TransactionHistoryEntry as TransactionHistoryEntryData } from '../../../../../services/api/stripe/history/types';
 import { Date } from '../../../../date';

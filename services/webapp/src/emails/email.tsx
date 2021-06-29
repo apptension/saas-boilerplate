@@ -1,4 +1,3 @@
-import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { DEFAULT_LOCALE } from '../i18n';
 import { EmailComponentProps, EmailTemplateType } from './types';

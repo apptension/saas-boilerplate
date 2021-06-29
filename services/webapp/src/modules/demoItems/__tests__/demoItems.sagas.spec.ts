@@ -1,5 +1,5 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { BAD_REQUEST } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { watchDemoItems } from '../demoItems.sagas';
 import { demoItemsActions } from '..';
 import { server } from '../../../mocks/server';
@@ -25,7 +25,7 @@ describe('DemoItems: sagas', () => {
     });
 
     it('should reject action if call completes with error', async () => {
-      server.use(mockSetFavoriteDemoItem('item-id', { isError: true }, BAD_REQUEST));
+      server.use(mockSetFavoriteDemoItem('item-id', { isError: true }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watchDemoItems)
         .withState(defaultState)

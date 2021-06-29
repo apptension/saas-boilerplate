@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useDemoItemQuery } from '../../shared/services/contentful/__generated/hooks';
 import { ROUTES } from '../app.constants';

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import throttle from 'lodash.throttle';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
@@ -22,7 +22,14 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
 
-  const { register, handleSubmit, errors, setApiResponse, genericError } = useApiForm<ResetPasswordFormFields>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setApiResponse,
+    hasGenericErrorOnly,
+    genericError,
+  } = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       email: {
         user_not_found: intl.formatMessage({
@@ -55,9 +62,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>
       <Input
-        name={'email'}
-        type={'email'}
-        ref={register({
+        {...register('email', {
           required: {
             value: true,
             message: intl.formatMessage({
@@ -73,6 +78,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
             }),
           },
         })}
+        type="email"
         required
         label={intl.formatMessage({
           defaultMessage: 'Email',
@@ -85,7 +91,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
         error={errors.email?.message}
       />
 
-      {Object.keys(errors).length === 0 && genericError && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
         {isSubmitted ? (

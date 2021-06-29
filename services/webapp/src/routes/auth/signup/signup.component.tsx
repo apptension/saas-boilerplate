@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SignupForm } from '../../../shared/components/auth/signupForm';
 import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';

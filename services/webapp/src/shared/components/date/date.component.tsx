@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedDate } from 'react-intl';
 
 export type DateProps = {

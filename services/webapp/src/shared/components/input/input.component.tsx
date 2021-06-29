@@ -1,9 +1,9 @@
-import React, { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode, InputHTMLAttributes } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Container, Field, Message, Label, LabelText } from './input.styles';
 import { InputTheme } from './input.types';
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   label?: ReactNode;
 };

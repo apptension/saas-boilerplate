@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 
 export type ImageProps = HTMLAttributes<HTMLImageElement> & {
   src: string;

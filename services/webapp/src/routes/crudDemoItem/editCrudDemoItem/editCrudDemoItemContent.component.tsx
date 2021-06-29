@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
