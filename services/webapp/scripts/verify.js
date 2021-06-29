@@ -1,11 +1,11 @@
-const { uniq } = require('ramda');
+const { uniq, isEmpty } = require('ramda');
 const util = require('util');
 const path = require('path');
 const terminalLink = require('terminal-link');
 const chalk = require('react-dev-utils/chalk');
 const exec = util.promisify(require('child_process').exec);
 
-let hasError = false;
+const errors = [];
 
 const generateLink = (absolutePath) => {
   const cwd = process.cwd();
@@ -48,15 +48,16 @@ const runTSCheck = async () => {
         };
       }, {});
 
-    Object.entries(groupedLinesRecord).forEach(([relativePath, errors]) => {
+    const lines = Object.entries(groupedLinesRecord).map(([relativePath, errors]) => {
       const absolutePath = path.join(process.cwd(), relativePath);
       const link = generateLink(absolutePath);
       const formattedErrors = uniq(errors)
         .map((error) => `  ${error}`)
         .join('\n');
-      console.log(link);
-      console.log(formattedErrors, '\n');
+      return [link, formattedErrors, ''].join('\n');
     });
+
+    errors.push(lines);
   }
 };
 
@@ -69,7 +70,6 @@ const runESlintCheck = async () => {
       .slice(1, -2)
       .map((line) => {
         if (line.includes(process.cwd())) {
-          hasError = true;
           return generateLink(line);
         }
         return line;
@@ -77,11 +77,10 @@ const runESlintCheck = async () => {
       .filter((line) => !line.includes('✖ '));
 
     if (lines.some((line) => line !== '')) {
-      console.log(lines.join('\n'));
+      errors.push(lines.join('\n'));
     }
   } catch (error) {
-    hasError = true;
-    console.log(error);
+    errors.push(error);
   }
 };
 
@@ -89,8 +88,6 @@ const runStylelintCheck = async () => {
   try {
     await exec("stylelint './src/**/*.ts'");
   } catch (error) {
-    hasError = true;
-
     const lines = error.stdout
       .split('\n')
       .slice(1, -1)
@@ -106,16 +103,15 @@ const runStylelintCheck = async () => {
       })
       .join('\n');
 
-    console.log(lines);
+    errors.push(lines);
   }
 };
 
 (async () => {
-  await runTSCheck();
-  await runESlintCheck();
-  await runStylelintCheck();
+  await Promise.all([runTSCheck(), runESlintCheck(), runStylelintCheck()]);
 
-  if (hasError) {
+  if (!isEmpty(errors)) {
+    console.log(errors.join('\n'));
     console.log(chalk.red('Houston, we have a problem! 🚨'));
     process.exit(1);
   } else {
