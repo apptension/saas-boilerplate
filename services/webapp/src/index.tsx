@@ -55,7 +55,7 @@ const render = (): void => {
 
   ReactDOM.render(
     process.env.REACT_APP_SENTRY_DSN ? (
-      <Sentry.ErrorBoundary fallback={'An error has occurred'}>{app}</Sentry.ErrorBoundary>
+      <Sentry.ErrorBoundary fallback="An error has occurred">{app}</Sentry.ErrorBoundary>
     ) : (
       app
     ),

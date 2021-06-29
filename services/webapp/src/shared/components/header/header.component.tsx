@@ -98,10 +98,10 @@ export const Header = (props: HTMLAttributes<HTMLElement>) => {
                     to={generateLocalePath(ROUTES.profile)}
                     variant={ButtonVariant.FLAT}
                   >
-                    <FormattedMessage defaultMessage={'Profile'} description={'Header / Profile button'} />
+                    <FormattedMessage defaultMessage="Profile" description="Header / Profile button" />
                   </ButtonLink>
                   <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
-                    <FormattedMessage defaultMessage={'Log out'} description={'Header / Logout button'} />
+                    <FormattedMessage defaultMessage="Log out" description="Header / Logout button" />
                   </Button>
                 </Menu>
               </ClickAwayListener>

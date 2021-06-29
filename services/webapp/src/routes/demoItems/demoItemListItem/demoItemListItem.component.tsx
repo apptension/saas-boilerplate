@@ -28,7 +28,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
     <Container>
       <Link to={generateLocalePath(ROUTES.demoItem, { id })}>
         <FavoriteIcon
-          role={'checkbox'}
+          role="checkbox"
           aria-checked={isFavorite}
           aria-label={intl.formatMessage({
             defaultMessage: 'Is favorite',

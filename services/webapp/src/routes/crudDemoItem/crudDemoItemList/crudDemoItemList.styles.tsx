@@ -4,7 +4,7 @@ import { heading3 } from '../../../theme/typography';
 import { horizontalMargin, horizontalPadding, sizeUnits, verticalPadding } from '../../../theme/size';
 import { Breakpoint, media } from '../../../theme/media';
 import { Link } from '../../../shared/components/link';
-import { greyScale } from '../../../theme/color';
+import { border } from '../../../theme';
 
 export const Container = styled.div`
   ${verticalPadding(sizeUnits(4))};
@@ -43,9 +43,10 @@ export const List = styled.ul`
 
   ${media(Breakpoint.TABLET)`
     margin-top: ${sizeUnits(2)};
-    border: 1px solid ${greyScale.get(95)};
+    border: ${border.light};
+
     > li:not(:last-child) {
-      border-bottom: 1px solid ${greyScale.get(95)};
+      border-bottom: ${border.light};
     }
   `};
 `;

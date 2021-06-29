@@ -3,6 +3,7 @@ import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme
 import { label, labelBold, microlabel } from '../../../../theme/typography';
 import { color, transition } from '../../../../theme';
 import { Button } from '../../button';
+import { RelativeDate as RelativeDateBase } from '../../relativeDate';
 import { NotificationTheme } from './notification.types';
 
 export type NotificationThemeProps = ThemeProps<NotificationTheme>;
@@ -40,7 +41,7 @@ export const Avatar = styled.img`
   border-radius: 100%;
 `;
 
-export const Time = styled.time`
+export const RelativeDate = styled(RelativeDateBase)`
   grid-area: time;
   ${microlabel};
 `;

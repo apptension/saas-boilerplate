@@ -7,7 +7,7 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
   ({ children, className, ...inputProps }: RadioButtonProps, ref) => {
     return (
       <Container className={className}>
-        <GhostInput {...inputProps} type={'radio'} ref={ref} />
+        <GhostInput {...inputProps} type="radio" ref={ref} />
         <Label>
           <Dot />
           <LabelText>{children}</LabelText>

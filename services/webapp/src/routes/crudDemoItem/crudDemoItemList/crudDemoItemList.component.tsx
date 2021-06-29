@@ -34,7 +34,7 @@ export const CrudDemoItemList = () => {
     <Container>
       <Header>CRUD Example Items</Header>
       <AddNewLink to={generateLocalePath(ROUTES.crudDemoItem.add)} variant={ButtonVariant.PRIMARY}>
-        <FormattedMessage description={'CrudDemoItemList / Add new'} defaultMessage={'Add new item'} />
+        <FormattedMessage description="CrudDemoItemList / Add new" defaultMessage="Add new item" />
       </AddNewLink>
 
       {listQueryRef && (

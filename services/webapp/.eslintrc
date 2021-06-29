@@ -10,7 +10,8 @@
   "plugins": ["react-hooks", "formatjs", "testing-library"],
   "rules": {
     "import/order": ["error"],
-    "formatjs/no-offset": "error"
+    "formatjs/no-offset": "error",
+    "react/jsx-curly-brace-presence": "error"
   },
   "overrides": [
     {

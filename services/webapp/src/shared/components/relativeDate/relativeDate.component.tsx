@@ -3,7 +3,7 @@ import { FormattedRelativeTime, useIntl } from 'react-intl';
 import { Container } from './relativeDate.styles';
 import { SECOND_IN_MS, WEEK_IN_MS } from './relativeDate.constants';
 
-export type RelativeDateProps = HTMLAttributes<HTMLSpanElement> & {
+export type RelativeDateProps = HTMLAttributes<HTMLTimeElement> & {
   date: Date;
 };
 
@@ -26,7 +26,7 @@ export const RelativeDate = ({ date, ...restProps }: RelativeDateProps) => {
   const title = [formattedTime, formattedDate].join(' ');
 
   return (
-    <Container title={title} {...restProps}>
+    <Container title={title} dateTime={date.toISOString()} {...restProps}>
       {isAboveWeek ? formattedDate : <FormattedRelativeTime value={value} updateIntervalInSeconds={1} />}
     </Container>
   );

@@ -18,7 +18,7 @@ export const DemoItems = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage={'Contentful items'} description={'Contentful Items / List header'} />
+        <FormattedMessage defaultMessage="Contentful items" description="Contentful Items / List header" />
       </Header>
 
       <List>

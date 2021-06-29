@@ -29,6 +29,7 @@ import {
   EditPaymentMethod,
   CancelSubscription,
   TransactionHistory,
+  Documents,
 } from './asyncComponents';
 
 export default () => {
@@ -104,6 +105,9 @@ export default () => {
               </AuthRoute>
               <AuthRoute exact path={ROUTES.finances.history}>
                 <TransactionHistory />
+              </AuthRoute>
+              <AuthRoute exact path={ROUTES.documents}>
+                <Documents />
               </AuthRoute>
               {/* <-- INJECT ROUTE --> */}
 

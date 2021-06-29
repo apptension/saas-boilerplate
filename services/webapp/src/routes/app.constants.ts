@@ -44,6 +44,7 @@ export const ROUTES = {
     paymentMethod: '/payment-method',
     cancel: '/cancel',
   }),
+  documents: path('/documents'),
   //<-- INJECT ROUTE DEFINITION -->
 };
 

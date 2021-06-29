@@ -46,7 +46,7 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
   return (
     <Container>
       <StripeNameField
-        name={'name'}
+        name="name"
         required
         label={intl.formatMessage({
           defaultMessage: 'Name',

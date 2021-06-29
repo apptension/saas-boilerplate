@@ -46,7 +46,7 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
     <Container>
       <BackButton to={generateLocalePath(ROUTES.crudDemoItem.list)} />
       <Header>
-        <FormattedMessage defaultMessage={'Edit CRUD Example Item'} description={'EditCrudDemoItem / Header'} />
+        <FormattedMessage defaultMessage="Edit CRUD Example Item" description="EditCrudDemoItem / Header" />
       </Header>
 
       <CrudDemoItemForm onSubmit={onFormSubmit} initialData={data} />

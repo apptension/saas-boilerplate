@@ -16,7 +16,7 @@ export const BackButton = ({ to }: BackButtonProps) => {
 
   return (
     <Container to={to} onClick={handleBackClick}>
-      <FormattedMessage defaultMessage={'Go back'} description={'Contentful Item / Bo back button'} />
+      <FormattedMessage defaultMessage="Go back" description="Contentful Item / Bo back button" />
     </Container>
   );
 };

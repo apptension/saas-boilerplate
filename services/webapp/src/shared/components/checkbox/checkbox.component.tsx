@@ -20,7 +20,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <ThemeProvider theme={theme}>
         <Container className={className}>
           <Label>
-            <Field type={'checkbox'} {...checkboxProps} ref={ref} />
+            <Field type="checkbox" {...checkboxProps} ref={ref} />
             <Checkmark>
               <CheckIcon icon={icon} />
             </Checkmark>

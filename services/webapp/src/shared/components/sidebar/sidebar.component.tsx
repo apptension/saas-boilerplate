@@ -116,6 +116,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           </MenuLink>
         </RoleAccess>
 
+        <RoleAccess>
+          <MenuLink to={generateLocalePath(ROUTES.documents)} onClick={closeSidebar}>
+            <FormattedMessage defaultMessage="Documents" description="Home / documents link" />
+          </MenuLink>
+        </RoleAccess>
+
         {!isDesktop && (
           <RoleAccess>
             <MenuLink as={Button} onClick={handleLogout}>

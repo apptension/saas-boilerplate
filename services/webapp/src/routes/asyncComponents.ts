@@ -18,4 +18,5 @@ export const EditSubscription = asyncComponent(() => import('./finances/editSubs
 export const EditPaymentMethod = asyncComponent(() => import('./finances/editPaymentMethod'), 'EditPaymentMethod');
 export const CancelSubscription = asyncComponent(() => import('./finances/cancelSubscription'), 'CancelSubscription');
 export const TransactionHistory = asyncComponent(() => import('./finances/transactionHistory'), 'TransactionHistory');
+export const Documents = asyncComponent(() => import('./documents'), 'Documents');
 //<-- IMPORT ROUTE -->

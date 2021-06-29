@@ -44,7 +44,7 @@ export const AddCrudDemoItem = () => {
     <Container>
       <BackButton to={generateLocalePath(ROUTES.crudDemoItem.list)} />
       <Header>
-        <FormattedMessage defaultMessage={'Add CRUD Example Item'} description={'AddCrudDemoItem / Header'} />
+        <FormattedMessage defaultMessage="Add CRUD Example Item" description="AddCrudDemoItem / Header" />
       </Header>
       <CrudDemoItemForm onSubmit={onFormSubmit} />
     </Container>

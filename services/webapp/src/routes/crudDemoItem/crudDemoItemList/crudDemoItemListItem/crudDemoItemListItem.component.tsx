@@ -60,10 +60,10 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         to={generateLocalePath(ROUTES.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
-        <FormattedMessage description={'CrudDemoItem list / Edit link'} defaultMessage={'Edit'} />
+        <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
       <Button variant={ButtonVariant.RAW} onClick={handleDelete} icon={<Icon size={14} icon={deleteIcon} />}>
-        <FormattedMessage description={'CrudDemoItem list / Delete button'} defaultMessage={'Delete'} />
+        <FormattedMessage description="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>
   );

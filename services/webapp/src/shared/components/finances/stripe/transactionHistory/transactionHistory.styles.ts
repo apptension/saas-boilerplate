@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { greyScale } from '../../../../../theme/color';
+import { border, color } from '../../../../../theme';
 import { label, labelBold } from '../../../../../theme/typography';
 import { sizeUnits } from '../../../../../theme/size';
 import { Breakpoint, media } from '../../../../../theme/media';
@@ -12,7 +12,7 @@ export const Container = styled.div`
 
   ${media(Breakpoint.TABLET)`
     border-radius: 4px;
-    border: 1px solid ${greyScale.get(95)};
+    border: ${border.light};
   `};
 `;
 
@@ -34,7 +34,7 @@ export const HeaderRow = styled.div`
   grid-template-columns: 1fr 1fr 2fr 1fr;
   grid-template-areas: 'date details card amount';
   border: none;
-  background-color: ${greyScale.get(99)};
+  background-color: ${color.greyScale.get(99)};
 
   grid-row-gap: ${sizeUnits(1)};
   grid-column-gap: ${sizeUnits(1)};

@@ -74,10 +74,10 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
             to={generateLocalePath(ROUTES.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
           >
-            <FormattedMessage description={'CrudDemoItem list / Edit link'} defaultMessage={'Edit'} />
+            <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />
           </ButtonLink>
           <Button variant={ButtonVariant.FLAT} onClick={handleDelete} icon={<Icon size={14} icon={deleteIcon} />}>
-            <FormattedMessage description={'CrudDemoItem list / Delete button'} defaultMessage={'Delete'} />
+            <FormattedMessage description="CrudDemoItem list / Delete button" defaultMessage="Delete" />
           </Button>
         </Menu>
       </ClickAwayListener>

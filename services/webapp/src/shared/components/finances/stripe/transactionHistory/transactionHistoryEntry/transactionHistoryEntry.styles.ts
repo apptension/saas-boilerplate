@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { label, labelBold } from '../../../../../../theme/typography';
 import { Breakpoint, media } from '../../../../../../theme/media';
-import { greyScale } from '../../../../../../theme/color';
 import { sizeUnits } from '../../../../../../theme/size';
+import { border, color } from '../../../../../../theme';
 
 export const Container = styled.div`
   padding: ${sizeUnits(2)};
@@ -14,7 +14,7 @@ export const Container = styled.div`
     'card card';
   grid-row-gap: ${sizeUnits(1)};
   grid-column-gap: ${sizeUnits(1)};
-  border: 1px solid ${greyScale.get(95)};
+  border: ${border.light};
   border-radius: 4px;
 
   ${media(Breakpoint.TABLET)`
@@ -25,7 +25,7 @@ export const Container = styled.div`
     align-items: center;
     grid-column-gap: ${sizeUnits(10)};
     border: none;
-    border-top: 1px solid ${greyScale.get(95)};
+    border-top: 1px solid ${color.greyScale.get(95)};
   `};
 `;
 
