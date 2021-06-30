@@ -14,11 +14,6 @@ RUN \
   npm i -g npm@^6 && \
   rm -rf /var/lib/apt/lists/*
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-	unzip awscliv2.zip && \
-	./aws/install --update && \
-	rm awscliv2.zip
-
 WORKDIR /pkgs
 
 COPY pdm.lock pyproject.toml .pdm.toml /pkgs/

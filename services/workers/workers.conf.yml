@@ -27,6 +27,7 @@ iam:
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
+  PYTHONPATH: /var/task/__pypackages__/3.8/lib
 
 ScheduleTask:
   environment:

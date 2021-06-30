@@ -22,15 +22,16 @@ build-image:
 	$(DOCKER_COMPOSE) build --build-arg "BASE_IMAGE=${PROJECT_NAME}-workers-base:latest" workers
 
 test:
+	$(MAKE) docker-login
 	$(DOCKER_COMPOSE) up -d db
-	$(MAKE) docker-login pull-base-image build-image
+	$(MAKE) pull-base-image build-image
 	$(DOCKER_COMPOSE) run -T workers bash ./scripts/run_tests.sh
 
 build: test
 
 deploy:
 	$(MAKE) docker-login pull-base-image build-image
-	$(DOCKER_COMPOSE) run -T workers node_modules/.bin/sls deploy --stage $(ENV_STAGE);
+	$(DOCKER_COMPOSE) run -e ENV_STAGE=$(ENV_STAGE) -T workers bash ./scripts/deploy.sh
 	$(MAKE) upload-service-version SERVICE_NAME=workers
 
 flake8:
