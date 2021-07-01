@@ -52,3 +52,6 @@ secrets: export CHAMBER_SERVICE=workers
 secrets:
 	$(DOCKER_COMPOSE) build ssmeditor
 	$(DOCKER_COMPOSE) run --rm ssmeditor
+
+stop-task-scheduling-executions:
+	./scripts/stop-task-scheduling-executions

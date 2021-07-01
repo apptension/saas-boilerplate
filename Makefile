@@ -56,3 +56,5 @@ deploy-components:
 deploy-env-app: deploy-components
 	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) deploy;)
 
+stop-task-scheduling-executions:
+	$(MAKE) -C $(SELF_DIR)services/workers stop-task-scheduling-executions

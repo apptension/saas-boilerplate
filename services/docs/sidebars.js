@@ -59,6 +59,9 @@ module.exports = {
         items: ["global-tools", "version-matrix"],
       },
     ],
+    "Async workers": [
+        "delete-state-machine",
+    ],
     "Understanding SaaS Boilerplate": [
       "architecture",
       "cicd-architecture",
