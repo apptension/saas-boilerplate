@@ -52,7 +52,7 @@ It's possible to save all entities of any given Contentful model to a SQL DB.
 SaaS Boilerplate provides `ContentfulAbstractModel` class which directly subclasses Django `Model`. Apart from
 subclassing proper class there are three other requirements in order for the synchronisation to work as expected:
 
-- Contentful model needs to be a camelCase.
+- Content Type ID of the Contentful model needs to be a camelCase.
 - The name of the django model class needs to be a PascalCase version of the Contentful model name.
 - The model has to be defined in the `apps.content` app models.
 
