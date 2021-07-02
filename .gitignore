@@ -2,4 +2,5 @@
 .DS_Store
 .local.env
 __pycache__/
+__pypackages__/
 .env

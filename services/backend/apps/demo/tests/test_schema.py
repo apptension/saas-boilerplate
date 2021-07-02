@@ -1,22 +1,13 @@
-import pytest
-from graphql_relay import to_global_id, from_global_id
+import json
 
+import pytest
 from apps.notifications.models import Notification
+from django.core.files.uploadedfile import SimpleUploadedFile
+from graphene_file_upload.django.testing import file_graphql_query
+from graphql_relay import to_global_id, from_global_id
 from .. import models, constants
 
 pytestmark = pytest.mark.django_db
-
-
-MUTATION_CREATE_OR_UPDATE_CRUD = '''
-    mutation($input: CreateOrUpdateCrudDemoItemMutationInput!)  {
-      createOrUpdateCrudDemoItem(input: $input) {
-        crudDemoItem {
-          id
-          name
-        }
-      }
-    }
-'''
 
 
 class TestAllCrudDemoItemsQuery:
@@ -241,7 +232,7 @@ class TestUpdateCrudDemoItemMutation:
         user = user_factory()
         other_user = user_factory()
         admins = user_factory.create_batch(2, is_superuser=True)
-        crud_demo_item = crud_demo_item_factory(user=user)
+        crud_demo_item = crud_demo_item_factory(created_by=user)
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         input = {
             'name': 'New item name',
@@ -263,11 +254,10 @@ class TestUpdateCrudDemoItemMutation:
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
-        self, graphene_client, crud_demo_item, user_factory
+        self, graphene_client, crud_demo_item_factory, user_factory
     ):
         user = user_factory()
-        crud_demo_item.user = user
-        crud_demo_item.save()
+        crud_demo_item = crud_demo_item_factory(created_by=user)
         admins = user_factory.create_batch(2, is_superuser=True)
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         input = {
@@ -352,13 +342,7 @@ class TestDeleteCrudDemoItemMutation:
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
 
         executed = graphene_client.mutate(
-            '''
-            mutation($input: DeleteCrudDemoItemMutationInput!) {
-              deleteCrudDemoItem(input: $input) {
-                deletedIds
-              }
-            }
-        ''',
+            self.DELETE_MUTATION,
             variable_values={'input': {'id': item_global_id}},
         )
 
@@ -367,3 +351,157 @@ class TestDeleteCrudDemoItemMutation:
         assert executed["errors"][0]["path"] == ["deleteCrudDemoItem"]
         assert executed["data"] == {"deleteCrudDemoItem": None}
         assert models.CrudDemoItem.objects.filter(id=crud_demo_item.id).exists()
+
+
+class TestAllDocumentDemoItemsQuery:
+    def test_returns_all_user_items(self, graphene_client, document_demo_item_factory, user):
+        graphene_client.force_authenticate(user)
+        items = document_demo_item_factory.create_batch(3, created_by=user)
+
+        executed = graphene_client.query(
+            '''
+            query  {
+              allDocumentDemoItems {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+        '''
+        )
+
+        returned_documents = executed["data"]["allDocumentDemoItems"]["edges"]
+        for item in items:
+            assert {'node': {'id': to_global_id('DocumentDemoItemType', str(item.id))}} in returned_documents
+
+
+class TestCreateDocumentDemoItemMutation:
+    CREATE_MUTATION = '''
+        mutation($input: CreateDocumentDemoItemMutationInput!)  {
+          createDocumentDemoItem(input: $input) {
+            documentDemoItem {
+              id
+              file {
+                name
+                url
+              }
+            }
+          }
+        }
+    '''
+
+    def execute_create_document_mutation(self, api_client, test_file=None, input={}):
+        if not test_file:
+            test_file = SimpleUploadedFile(name='test.txt', content="file content".encode('utf-8'))
+        response = file_graphql_query(
+            self.CREATE_MUTATION,
+            client=api_client,
+            variables={"input": input},
+            files={"file": test_file},
+            graphql_url="/api/graphql/",
+        )
+        return json.loads(response.content)
+
+    def test_create_new_item(self, mocker, user, api_client):
+        mocker.patch("secrets.token_hex", return_value="a1b2")
+        api_client.force_authenticate(user)
+
+        executed = self.execute_create_document_mutation(api_client)
+
+        assert executed['data']['createDocumentDemoItem']
+        assert executed['data']['createDocumentDemoItem']['documentDemoItem']
+        assert executed['data']['createDocumentDemoItem']['documentDemoItem']["file"]
+        assert executed['data']['createDocumentDemoItem']['documentDemoItem']["file"]["name"] == "test.txt"
+        assert executed['data']['createDocumentDemoItem']['documentDemoItem']["file"]["url"].startswith(
+            "https://cdn.example.com/documents/a1b2/test.txt?"
+        )
+
+        item_global_id = executed['data']['createDocumentDemoItem']['documentDemoItem']['id']
+        _, pk = from_global_id(item_global_id)
+        item = models.DocumentDemoItem.objects.get(pk=pk)
+
+        assert item.created_by == user
+        assert item.file.name == "documents/a1b2/test.txt"
+        assert item.file.url.startswith("https://cdn.example.com/documents/a1b2/test.txt?")
+
+    def test_create_new_item_when_limit_already_reached(self, user, api_client, document_demo_item_factory):
+        api_client.force_authenticate(user)
+        document_demo_item_factory.create_batch(10, created_by=user)
+
+        executed = self.execute_create_document_mutation(api_client)
+
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["path"] == ["createDocumentDemoItem"]
+        assert error["extensions"]["non_field_errors"] == [
+            {'message': 'User has reached documents number limit.', 'code': 'invalid'}
+        ]
+        assert models.DocumentDemoItem.objects.count() == 10
+
+    def test_create_new_item_with_too_large_file(self, user, api_client):
+        api_client.force_authenticate(user)
+        large_file = SimpleUploadedFile(name='test.txt', content=("a" * 1024 * 1024 * 11).encode('utf-8'))
+
+        executed = self.execute_create_document_mutation(api_client, large_file)
+
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["path"] == ["createDocumentDemoItem"]
+        assert error["extensions"]["file"] == [{'message': 'File is too large.', 'code': 'invalid'}]
+        assert models.DocumentDemoItem.objects.count() == 0
+
+
+class TestDeleteDocumentDemoItemMutation:
+    DELETE_MUTATION = '''
+        mutation($input: DeleteDocumentDemoItemMutationInput!) {
+          deleteDocumentDemoItem(input: $input) {
+            deletedIds
+          }
+        }
+    '''
+
+    def test_deleting_item(self, graphene_client, document_demo_item_factory, user):
+        document_demo_item = document_demo_item_factory(created_by=user)
+        item_global_id = to_global_id('DocumentDemoItemType', str(document_demo_item.id))
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            self.DELETE_MUTATION,
+            variable_values={'input': {'id': item_global_id}},
+        )
+
+        assert executed == {'data': {'deleteDocumentDemoItem': {'deletedIds': [item_global_id]}}}
+        assert not models.DocumentDemoItem.objects.filter(id=document_demo_item.id).exists()
+
+    def test_deleting_other_users_item(self, graphene_client, document_demo_item_factory, user_factory):
+        user = user_factory()
+        other_user = user_factory()
+        document_demo_item = document_demo_item_factory(created_by=other_user)
+        item_global_id = to_global_id('DocumentDemoItemType', str(document_demo_item.id))
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            self.DELETE_MUTATION,
+            variable_values={'input': {'id': item_global_id}},
+        )
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["message"] == "No DocumentDemoItem matches the given query."
+
+        assert models.DocumentDemoItem.objects.filter(id=document_demo_item.id).exists()
+
+    def test_deleting_item_by_not_authorized_user(self, graphene_client, document_demo_item):
+        item_global_id = to_global_id('DocumentDemoItemType', str(document_demo_item.id))
+
+        executed = graphene_client.mutate(
+            self.DELETE_MUTATION,
+            variable_values={'input': {'id': item_global_id}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["errors"][0]["path"] == ["deleteDocumentDemoItem"]
+        assert executed["data"] == {"deleteDocumentDemoItem": None}
+        assert models.DocumentDemoItem.objects.filter(id=document_demo_item.id).exists()

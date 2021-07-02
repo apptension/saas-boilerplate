@@ -24,6 +24,7 @@
     "@aws-cdk/aws-apigatewayv2": "1.110.0",
     "@aws-cdk/aws-certificatemanager": "1.110.0",
     "@aws-cdk/aws-cloudfront": "1.110.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.110.0",
     "@aws-cdk/aws-codebuild": "1.110.0",
     "@aws-cdk/aws-codecommit": "1.110.0",
     "@aws-cdk/aws-codepipeline": "1.110.0",

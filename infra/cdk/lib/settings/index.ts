@@ -14,6 +14,7 @@ interface EnvConfigFileDomains {
     webApp: string;
     docs: string;
     www: string;
+    cdn: string;
 }
 
 interface ToolsDomains {

@@ -10,6 +10,7 @@
     "api": "api.qa.saas.apptoku.com",
     "webApp": "app.qa.saas.apptoku.com",
     "docs": "docs.qa.saas.apptoku.com",
-    "www": "www.qa.saas.apptoku.com"
+    "www": "www.qa.saas.apptoku.com",
+    "cdn": "cdn.qa.saas.apptoku.com"
   }
 }

@@ -257,3 +257,8 @@ NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
 SHELL_PLUS_IMPORTS = ["from config.schema import schema"]
 
 WEB_SOCKET_API_ENDPOINT_URL = env("WEB_SOCKET_API_ENDPOINT_URL", default="")
+
+DEFAULT_FILE_STORAGE = 'common.storages.S3Boto3StorageWithCDN'
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
+AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
+AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL

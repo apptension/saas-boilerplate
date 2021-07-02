@@ -13,6 +13,13 @@ class CrudDemoItemFactory(factory.DjangoModelFactory):
         model = models.CrudDemoItem
 
 
+class DocumentDemoItemFactory(factory.DjangoModelFactory):
+    created_by = factory.SubFactory(user_factories.UserFactory)
+
+    class Meta:
+        model = models.DocumentDemoItem
+
+
 class ContentfulDemoItemFavoriteFactory(factory.DjangoModelFactory):
     item = factory.SubFactory(content_factories.ContentfulDemoItemFactory)
     user = factory.SubFactory(user_factories.UserFactory)

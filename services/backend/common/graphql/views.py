@@ -1,15 +1,23 @@
+import json
+
 import six
-from graphene_django.views import GraphQLView
-from graphql import GraphQLError
-from rest_framework.decorators import authentication_classes, permission_classes, api_view
-from rest_framework.settings import api_settings
-from graphql.error import format_error as format_graphql_error
-from rest_framework.exceptions import APIException
 from common.acl import policies
+from graphene_file_upload.django import FileUploadGraphQLView
+from graphene_file_upload.utils import place_files_in_operations
+from graphql import GraphQLError
+from graphql.error import format_error as format_graphql_error
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.exceptions import APIException
+from rest_framework.settings import api_settings
 
 
-class DRFAuthenticatedGraphQLView(GraphQLView):
+class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
     def parse_body(self, request):
+        content_type = self.get_content_type(request)
+        if content_type == 'multipart/form-data' and 'operations' in request.POST:
+            operations = json.loads(request.POST.get('operations', '{}'))
+            files_map = json.loads(request.POST.get('map', '{}'))
+            return place_files_in_operations(operations, files_map, request.FILES)
         return request.data
 
     @staticmethod

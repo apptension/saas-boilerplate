@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from apps.content import models as content_models
+from common.storages import UniqueFilePathGenerator
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ class CrudDemoItem(models.Model):
 
     id = hashid_field.HashidAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
 
 class ContentfulDemoItemFavorite(models.Model):
@@ -30,3 +31,11 @@ class ContentfulDemoItemFavorite(models.Model):
 
     class Meta:
         unique_together = [['item', 'user']]
+
+
+class DocumentDemoItem(models.Model):
+    file = models.FileField(upload_to=UniqueFilePathGenerator("documents"))
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="documents"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)

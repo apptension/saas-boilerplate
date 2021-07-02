@@ -105,7 +105,11 @@ export class ApiStack extends core.Stack {
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),
-              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/ws`
+              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/ws`,
+              AWS_STORAGE_BUCKET_NAME: EnvComponentsStack.getFileUploadsBucketName(
+                props.envSettings
+              ),
+              AWS_S3_CUSTOM_DOMAIN: props.envSettings.domains.cdn
             },
             secrets: {
               DB_CONNECTION: EcsSecret.fromSecretsManager(
@@ -168,7 +172,7 @@ export class ApiStack extends core.Stack {
 
     taskRole.addToPolicy(
       new PolicyStatement({
-        actions: ["sqs:*", "cloudformation:DescribeStacks", "events:*", "apigateway:*", "execute-api:*"],
+        actions: ["sqs:*", "s3:*", "cloudformation:DescribeStacks", "events:*", "apigateway:*", "execute-api:*"],
         resources: ["*"],
       })
     );

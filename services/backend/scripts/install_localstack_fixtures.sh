@@ -11,3 +11,9 @@ function wait_for_s3 {
     sleep 1
   done
 }
+
+function create_s3_bucket {
+  aws --no-sign-request --endpoint-url="$LOCALSTACK_URL" \
+      --region $AWS_DEFAULT_REGION \
+      s3 mb "s3://$1"
+}

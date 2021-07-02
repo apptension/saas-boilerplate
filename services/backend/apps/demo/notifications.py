@@ -12,7 +12,11 @@ def send_new_entry_created_notification(entry: models.CrudDemoItem):
         sender.send_notification(
             user=admin,
             type=constants.Notification.CRUD_ITEM_CREATED.value,
-            data={"id": to_global_id('CrudDemoItemType', str(entry.id)), "name": entry.name, "user": entry.user.email},
+            data={
+                "id": to_global_id('CrudDemoItemType', str(entry.id)),
+                "name": entry.name,
+                "user": entry.created_by.email,
+            },
         )
 
 
@@ -20,7 +24,7 @@ def send_entry_updated_notification(entry: models.CrudDemoItem):
     if not entry.edited_by:
         return
     User = get_user_model()
-    users_to_be_notified = set(User.objects.filter(is_superuser=True)) | {entry.user}
+    users_to_be_notified = set(User.objects.filter(is_superuser=True)) | {entry.created_by}
     for user in users_to_be_notified:
         if user and user != entry.edited_by:
             sender.send_notification(

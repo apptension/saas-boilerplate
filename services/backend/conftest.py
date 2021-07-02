@@ -1,9 +1,15 @@
+from functools import lru_cache
+from unittest.mock import patch, PropertyMock
+
+import boto3
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.test import APIClient, APIRequestFactory
 from graphene.test import Client as GrapheneClient
+from moto import mock_s3
 
 from config.schema import schema
+from storages.backends.s3boto3 import S3Boto3Storage
 
 pytest_plugins = [
     'tests.aws_fixtures',
@@ -51,3 +57,36 @@ def api_client_admin():
 @pytest.fixture
 def graphene_client():
     return CustomGrapheneClient(schema, context_value=CustomGrapheneClient.create_context())
+
+
+@pytest.fixture(autouse=True)
+def storage(mocker):
+    bucket_name = "test-bucket"
+    with mock_s3():
+        storage = S3Boto3Storage()
+        session = boto3.session.Session()
+        with patch(
+            "storages.backends.s3boto3.S3Boto3Storage.connection",
+            new_callable=PropertyMock,
+        ) as mock_connection_property, patch(
+            "storages.backends.s3boto3.S3Boto3Storage.bucket",
+            new_callable=PropertyMock,
+        ) as mock_bucket_property:
+
+            @lru_cache(None)
+            def get_connection():
+                return session.resource("s3")
+
+            @lru_cache(None)
+            def get_bucket():
+                connection = get_connection()
+                connection.create_bucket(
+                    Bucket=bucket_name,
+                    CreateBucketConfiguration={"LocationConstraint": "eu-ewst-1"},
+                )
+                bucket = connection.Bucket(bucket_name)
+                return bucket
+
+            mock_connection_property.side_effect = get_connection
+            mock_bucket_property.side_effect = get_bucket
+            yield storage

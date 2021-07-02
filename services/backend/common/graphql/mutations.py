@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 import graphene
 from django.shortcuts import get_object_or_404
-from graphene import ClientIDMutation, InputField, Field, relay
+from graphene import InputField, Field, relay, ClientIDMutation
 from graphene.types.mutation import MutationOptions
 from graphene.types.utils import yank_fields_from_attrs
 from graphene_django.registry import Registry, get_global_registry
@@ -10,7 +10,6 @@ from graphene_django.rest_framework.mutation import SerializerMutationOptions, f
 from graphql_relay import from_global_id
 from graphql_relay.connection.arrayconnection import offset_to_cursor
 from rest_framework import serializers
-
 from . import exceptions
 
 
@@ -69,7 +68,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
         edge_field_name=None,
         return_field_name=None,
         _meta=None,
-        **options
+        **options,
     ):
 
         if not serializer_class:
@@ -128,7 +127,14 @@ class CreateModelMutation(RelayModelSerializerMutation):
     def get_serializer_kwargs(cls, root, info, **input):
         return {
             "instance": None,
-            "data": input,
+            "data": {
+                **input,
+                **(
+                    {key: info.context.FILES.get(key) for key in info.context.FILES}
+                    if hasattr(info.context, "FILES")
+                    else {}
+                ),
+            },
             "context": {"request": info.context},
             "partial": False,
         }
@@ -150,7 +156,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         edge_field_name=None,
         return_field_name=None,
         _meta=None,
-        **options
+        **options,
     ):
 
         if not serializer_class:
@@ -246,7 +252,7 @@ class SerializerMutation(ClientIDMutation):
         exclude_fields=(),
         convert_choices_to_enum=True,
         _meta=None,
-        **options
+        **options,
     ):
 
         if not serializer_class:
@@ -374,9 +380,13 @@ class DeleteModelMutation(ClientIDMutation):
         super().__init_subclass_with_meta__(_meta=_meta, **options)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, id):
+    def get_object(cls, id, **kwargs):
         model = cls._meta.model
         _, pk = from_global_id(id)
-        obj = get_object_or_404(model, pk=pk)
+        return get_object_or_404(model, pk=pk, **kwargs)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, id):
+        obj = cls.get_object(id)
         obj.delete()
         return cls(deleted_ids=[id])
