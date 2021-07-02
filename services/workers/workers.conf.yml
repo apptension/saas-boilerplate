@@ -24,6 +24,10 @@ iam:
     Action:
       - "events:PutEvents"
     Resource: ["${self:custom.eventBusArn}"]
+  - Effect: "Allow"
+    Action:
+      - "execute-api:ManageConnections"
+    Resource: "*"
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
@@ -50,9 +54,18 @@ SynchronizeContentfulContent:
     CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN~true}
     CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT~true}
 
+WebSocketsHandler:
+  environment:
+    DB_SECRET_ARN:
+      { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+    JWT_SECRET: ${ssm:/${self:custom.ssmService}/JWT_SECRET~true}
+    HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT~true}
+
 vpc:
   securityGroupIds:
     - Fn::ImportValue: "${self:custom.projectEnvName}-lambdaSecurityGroupId"
   subnetIds:
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetOneId"
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetTwoId"
+
+websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }

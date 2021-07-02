@@ -17,3 +17,10 @@ def graphql_mutation(mutations):
         pass
 
     return ApiMutation
+
+
+def graphql_subscription(subscriptions):
+    class ApiSubscription(*subscriptions, graphene.ObjectType):
+        pass
+
+    return ApiSubscription

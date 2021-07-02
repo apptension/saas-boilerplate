@@ -8,8 +8,11 @@ from dao.db import connection
 from dao.db.models import Base
 from dao.db.session import db_session as db_session_ctx
 from userauth import factories as ua_factories
+from websockets import factories as ws_factories
 
 register(ua_factories.UserFactory)
+register(ws_factories.WebSocketConnectionFactory)
+register(ws_factories.GraphQLSubscriptionFactory)
 
 
 @pytest.fixture(scope="function")

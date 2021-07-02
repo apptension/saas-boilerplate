@@ -13,6 +13,7 @@ pytest_plugins = [
     'apps.demo.tests.fixtures',
     'apps.content.tests.fixtures',
     'apps.notifications.tests.fixtures',
+    'apps.websockets.tests.fixtures',
 ]
 
 

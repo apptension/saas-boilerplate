@@ -52,7 +52,7 @@ THIRD_PARTY_APPS = [
     "graphene_django",
 ]
 
-LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users", "apps.notifications"]
+LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users", "apps.notifications", "apps.websockets"]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -255,3 +255,5 @@ GRAPHENE = {
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
 
 SHELL_PLUS_IMPORTS = ["from config.schema import schema"]
+
+WEB_SOCKET_API_ENDPOINT_URL = env("WEB_SOCKET_API_ENDPOINT_URL", default="")

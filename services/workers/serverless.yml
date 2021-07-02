@@ -9,6 +9,8 @@ provider:
   stackName: ${file(./${self:custom.confFile.${self:provider.stage}}):stackName}
   iamRoleStatements: ${file(./${self:custom.confFile.${self:provider.stage}}):iam}
   environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
+  apiGateway:
+    websocketApiId: ${file(./${self:custom.confFile.${self:provider.stage}}):websocketApiId}
 
 functions:
   ScheduleTask:
@@ -56,6 +58,33 @@ functions:
             source:
               - backend.contentfulSync
 
+  WebSocketsConnectHandler:
+    handler: websockets.handlers.connect.handle
+    timeout: 30
+    memorySize: 256
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
+    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    events:
+      - websocket: $connect
+
+  WebSocketsMessageHandler:
+    handler: websockets.handlers.message.handle
+    timeout: 30
+    memorySize: 256
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
+    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    events:
+      - websocket: $default
+
+  WebSocketsDisconnectHandler:
+    handler: websockets.handlers.disconnect.handle
+    timeout: 30
+    memorySize: 256
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
+    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    events:
+      - websocket: $disconnect
+
 plugins:
   - serverless-pseudo-parameters
   - serverless-step-functions
@@ -80,7 +109,7 @@ package:
   exclude:
     - .git/**
     - node_modules/**
-
+    - aws/**
 
 stepFunctions:
   stateMachines:
@@ -100,3 +129,9 @@ stepFunctions:
             Resource:
               Fn::GetAtt: [ ExecuteScheduledTask, Arn ]
             End: true
+
+resources:
+  extensions:
+    WebsocketsDeploymentRBNvo1WzZ4oRRq0W9hknpT7T8If536DEMBg9hyq4o:
+      Properties:
+        StageName: ws

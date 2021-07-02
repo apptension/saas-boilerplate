@@ -82,7 +82,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
     project.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ["iam:*", "logs:*", "s3:*", "sqs:*", "events:*"],
+        actions: ["iam:*", "logs:*", "s3:*", "sqs:*", "events:*", "apigateway:*"],
         resources: ["*"],
       })
     );

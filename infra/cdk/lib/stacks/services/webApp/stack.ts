@@ -37,6 +37,7 @@ export class WebAppStack extends core.Stack {
                     MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)),
                 authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
                 basicAuth: props.envSettings.appBasicAuth,
+                envSettings: props.envSettings,
             });
         }
     }

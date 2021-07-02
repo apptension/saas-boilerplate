@@ -29,7 +29,7 @@ description = ""
 authors = [
     {name = "", email = ""},
 ]
-dependencies = ["boto3", "contentful", "environs", "psycopg2-binary", "pystache", "sentry-sdk", "sqlalchemy==1.3.23"]
+dependencies = ["boto3", "pyjwt", "hashids", "contentful", "environs", "psycopg2-binary", "pystache", "sentry-sdk", "sqlalchemy==1.3.23"]
 requires-python = ">=3.8"
 dynamic = ["classifiers"]
 license = {text = "MIT"}

@@ -61,3 +61,10 @@ class Mutation(graphene.ObjectType):
 
     def resolve_has_unread_notifications(self, info):
         return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()
+
+
+class Subscription(graphene.ObjectType):
+    notification_created = graphene.relay.ConnectionField(NotificationConnection)
+
+    def resolve_notification_created(root, info):
+        return root

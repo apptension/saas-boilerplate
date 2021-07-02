@@ -21,6 +21,7 @@
     "typescript": "~4.1.3"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2": "1.110.0",
     "@aws-cdk/aws-certificatemanager": "1.110.0",
     "@aws-cdk/aws-cloudfront": "1.110.0",
     "@aws-cdk/aws-codebuild": "1.110.0",

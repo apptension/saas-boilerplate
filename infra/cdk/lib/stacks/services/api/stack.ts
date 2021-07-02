@@ -78,6 +78,8 @@ export class ApiStack extends core.Stack {
         securityGroup: resources.publicLoadBalancerSecurityGroup,
       }
     );
+    const stack = Stack.of(this);
+    const webSocketApiId = Fn.importValue(EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings));
     return new ApplicationMultipleTargetGroupsFargateService(
       this,
       "ApiService",
@@ -103,6 +105,7 @@ export class ApiStack extends core.Stack {
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),
+              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/ws`
             },
             secrets: {
               DB_CONNECTION: EcsSecret.fromSecretsManager(
@@ -165,7 +168,7 @@ export class ApiStack extends core.Stack {
 
     taskRole.addToPolicy(
       new PolicyStatement({
-        actions: ["sqs:*", "cloudformation:DescribeStacks", "events:*"],
+        actions: ["sqs:*", "cloudformation:DescribeStacks", "events:*", "apigateway:*", "execute-api:*"],
         resources: ["*"],
       })
     );

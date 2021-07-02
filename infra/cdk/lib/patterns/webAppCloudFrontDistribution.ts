@@ -1,4 +1,4 @@
-import {Construct, Duration} from "@aws-cdk/core";
+import {Construct, Duration, Fn, Stack} from "@aws-cdk/core";
 import {Bucket} from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
 import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from '@aws-cdk/custom-resources';
@@ -6,13 +6,15 @@ import {
     CloudFrontAllowedMethods,
     CloudFrontWebDistribution,
     LambdaEdgeEventType,
+    LambdaFunctionAssociation,
     OriginProtocolPolicy,
     SourceConfiguration
 } from '@aws-cdk/aws-cloudfront';
 import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
 import {BucketDeployment, CacheControl, ISource} from "@aws-cdk/aws-s3-deployment";
-import {LambdaFunctionAssociation} from "@aws-cdk/aws-cloudfront";
+import {EnvComponentsStack} from "../stacks/env/components";
+import {EnvironmentSettings} from "../settings/index";
 
 
 export interface WebAppCloudFrontDistributionProps {
@@ -24,6 +26,7 @@ export interface WebAppCloudFrontDistributionProps {
     basicAuth?: string | null;
     authLambdaSSMParameterName: string;
     distributionPaths?: Array<string>;
+    envSettings?: EnvironmentSettings | null;
 }
 
 export class WebAppCloudFrontDistribution extends Construct {
@@ -64,6 +67,10 @@ export class WebAppCloudFrontDistribution extends Construct {
         const apiSourceConfig = this.createApiProxySourceConfig(props);
         if (apiSourceConfig) {
             originConfigs.push(apiSourceConfig);
+        }
+        const webSocketApiSourceConfig = this.createWebSocketApiProxySourceConfig(props);
+        if (webSocketApiSourceConfig) {
+            originConfigs.push(webSocketApiSourceConfig);
         }
 
         return new CloudFrontWebDistribution(this, "CloudFrontWebDistribution", {
@@ -149,6 +156,32 @@ export class WebAppCloudFrontDistribution extends Construct {
             }],
             customOriginSource: {
                 domainName: props.apiDomainName,
+                originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+            },
+        };
+    }
+
+    private createWebSocketApiProxySourceConfig(props: WebAppCloudFrontDistributionProps): SourceConfiguration | null {
+        if (!props.envSettings) {
+            return null
+        }
+        const stack = Stack.of(this);
+        const webSocketApiId = Fn.importValue(EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings));
+        return {
+            behaviors: [{
+                pathPattern: '/ws',
+                allowedMethods: CloudFrontAllowedMethods.ALL,
+                forwardedValues: {
+                    queryString: false,
+                    headers: [],
+                    cookies: {forward: 'all'},
+                },
+                defaultTtl: Duration.seconds(0),
+                minTtl: Duration.seconds(0),
+                maxTtl: Duration.seconds(0),
+            }],
+            customOriginSource: {
+                domainName: `${webSocketApiId}.execute-api.${stack.region}.amazonaws.com`,
                 originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             },
         };

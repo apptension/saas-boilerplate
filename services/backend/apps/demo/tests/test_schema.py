@@ -106,6 +106,18 @@ class TestCreateCrudDemoItemMutation:
         }
     '''
 
+    NOTIFICATIONS_SUBSCRIPTION = '''
+        subscription notificationsSubscription {
+          notificationCreated {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+    '''
+
     def test_create_new_item(self, graphene_client, user):
         input = {'name': 'Item name'}
 
@@ -146,6 +158,39 @@ class TestCreateCrudDemoItemMutation:
         assert notification.user == admin
         assert notification.data == {"id": item_global_id, "name": item.name, "user": user.email}
 
+    def test_create_new_item_sends_notification_through_websockets(
+        self, mocker, graphene_client, user_factory, graph_ql_subscription_factory
+    ):
+        post_to_connection = mocker.patch("apps.websockets.apigateway.post_to_connection")
+        user = user_factory()
+        admin = user_factory(is_superuser=True)
+        input = {'name': 'Item name'}
+        graph_ql_subscription_factory(
+            connection__connection_id="conn-id",
+            connection__user=admin,
+            operation_name="notificationsSubscription",
+            relay_id="1",
+            query=self.NOTIFICATIONS_SUBSCRIPTION,
+        )
+
+        graphene_client.force_authenticate(user)
+        graphene_client.mutate(self.CREATE_MUTATION, variable_values={'input': input})
+
+        assert Notification.objects.count() == 1
+        notification = Notification.objects.first()
+        notification_global_id = to_global_id('NotificationType', str(notification.id))
+        post_to_connection.assert_called_once_with(
+            {
+                "id": "1",
+                "type": "data",
+                "payload": {
+                    "data": {"notificationCreated": {"edges": [{"node": {"id": notification_global_id}}]}},
+                    "errors": None,
+                },
+            },
+            "conn-id",
+        )
+
 
 class TestUpdateCrudDemoItemMutation:
     UPDATE_MUTATION = '''
@@ -154,6 +199,18 @@ class TestUpdateCrudDemoItemMutation:
             crudDemoItem {
               id
               name
+            }
+          }
+        }
+    '''
+
+    NOTIFICATIONS_SUBSCRIPTION = '''
+        subscription notificationsSubscription {
+          notificationCreated {
+            edges {
+              node {
+                id
+              }
             }
           }
         }
@@ -227,6 +284,47 @@ class TestUpdateCrudDemoItemMutation:
         assert Notification.objects.count() == 2
         assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+
+    def test_update_existing_item_sends_notification_through_websocket_to_admin_with_open_subscription(
+        self, mocker, graphene_client, crud_demo_item, user_factory, graph_ql_subscription_factory
+    ):
+        post_to_connection = mocker.patch("apps.websockets.apigateway.post_to_connection")
+        user = user_factory()
+        crud_demo_item.user = user
+        crud_demo_item.save()
+        admins = user_factory.create_batch(2, is_superuser=True)
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
+        input = {
+            'name': 'New item name',
+            'id': item_global_id,
+        }
+        graph_ql_subscription_factory(
+            connection__connection_id="conn-id",
+            connection__user=admins[0],
+            operation_name="notificationsSubscription",
+            relay_id="1",
+            query=self.NOTIFICATIONS_SUBSCRIPTION,
+        )
+
+        graphene_client.force_authenticate(user)
+        graphene_client.mutate(
+            self.UPDATE_MUTATION,
+            variable_values={'input': input},
+        )
+
+        notification = Notification.objects.get(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value)
+        notification_global_id = to_global_id('NotificationType', str(notification.id))
+        post_to_connection.assert_called_once_with(
+            {
+                "id": "1",
+                "type": "data",
+                "payload": {
+                    "data": {"notificationCreated": {"edges": [{"node": {"id": notification_global_id}}]}},
+                    "errors": None,
+                },
+            },
+            "conn-id",
+        )
 
 
 class TestDeleteCrudDemoItemMutation:
