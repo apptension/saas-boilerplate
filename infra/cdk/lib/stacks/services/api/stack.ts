@@ -197,6 +197,18 @@ export class ApiStack extends core.Stack {
       })
     );
 
+    taskRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
+            "ssmmessages:CreateControlChannel",
+            "ssmmessages:CreateDataChannel",
+            "ssmmessages:OpenControlChannel",
+            "ssmmessages:OpenDataChannel"
+        ],
+        resources: ["*"],
+      })
+    );
+
     return taskRole;
   }
 

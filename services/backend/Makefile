@@ -32,14 +32,6 @@ deploy-migrations:
 
 deploy: deploy-migrations deploy-api
 
-ssh-bastion: public_key ?= ~/.ssh/id_rsa.pub
-ssh-bastion: private_key ?= ~/.ssh/id_rsa
-ssh-bastion: export BASTION_SSH_PUBLIC_KEY=$(shell cat $(public_key))
-ssh-bastion: export BASTION_SSH_PRIVATE_KEY=$(private_key)
-ssh-bastion:
-	$(MAKE) -C $(BASE_DIR)infra/cdk deploy-ssh-bastion
-	node $(BASE_DIR)scripts/run-ssh-bastion-task.js
-
 # Local CLI rules
 
 shell:

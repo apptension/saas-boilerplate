@@ -20,6 +20,3 @@ docker push "$BACKEND_REPO_URI:$VERSION"
 
 docker tag "$BACKEND_REPO_URI:$VERSION" "$BACKEND_REPO_URI:latest"
 docker push "$BACKEND_REPO_URI:latest"
-
-docker build --target ssh_bastion -t "$BACKEND_REPO_URI:ssh-bastion" .
-docker push "$BACKEND_REPO_URI:ssh-bastion"

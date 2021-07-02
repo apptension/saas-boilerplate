@@ -49,12 +49,3 @@ ENV PYTHONPATH=/pkgs/__pypackages__/3.8/lib \
     PATH=$PATH:/pkgs/__pypackages__/3.8/bin
 
 CMD ["./scripts/run.sh"]
-
-##
-# SSH Bastion stage
-##
-FROM backend_build AS ssh_bastion
-
-RUN apt-get update && apt-get install -y openssh-server
-
-CMD ["./scripts/run-ssh-bastion.sh"]

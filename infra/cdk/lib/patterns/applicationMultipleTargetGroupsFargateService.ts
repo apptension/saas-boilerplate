@@ -181,6 +181,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
             cloudMapOptions: props.cloudMapOptions,
             securityGroup: props.securityGroup,
             vpcSubnets: this.cluster.vpc.selectSubnets({subnetType: SubnetType.PRIVATE}),
+            enableExecuteCommand: true
         });
     };
 }

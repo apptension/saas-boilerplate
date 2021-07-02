@@ -12,7 +12,7 @@ import {
 import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
 import {BucketDeployment, CacheControl, ISource} from "@aws-cdk/aws-s3-deployment";
-import {LambdaFunctionAssociation} from "@aws-cdk/aws-cloudfront/lib/web_distribution";
+import {LambdaFunctionAssociation} from "@aws-cdk/aws-cloudfront";
 
 
 export interface WebAppCloudFrontDistributionProps {

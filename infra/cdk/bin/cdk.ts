@@ -13,7 +13,6 @@ import { DocsStack } from "../lib/stacks/services/docs";
 import { EnvCiStack } from "../lib/stacks/env/ci";
 import { UsEastResourcesStack } from "../lib/stacks/usEastResources";
 import { EnvDbStack } from "../lib/stacks/env/db";
-import { SshBastionStack } from "../lib/stacks/services/sshBastion";
 
 (async () => {
   const envSettings = await loadEnvSettings();
@@ -74,9 +73,4 @@ import { SshBastionStack } from "../lib/stacks/services/sshBastion";
   new DocsStack(app, getStackName("DocsStack", envSettings.projectEnvName), {
     envSettings,
   });
-  new SshBastionStack(
-    app,
-    getStackName("SshBastionStack", envSettings.projectEnvName),
-    { envSettings }
-  );
 })();
