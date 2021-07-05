@@ -1,13 +1,11 @@
-import styled, { css, ThemeProps } from 'styled-components';
+import styled, { css } from 'styled-components';
 import theme from 'styled-theming';
 import { sizeUnits } from '../../../theme/size';
 import { MicroLabel } from '../../../theme/typography';
 import { checkbox } from '../../../theme/color';
 import { border, transition } from '../../../theme';
 import { Icon } from '../icon';
-import { CheckboxTheme } from './checkbox.types';
-
-type CheckboxThemeProps = ThemeProps<CheckboxTheme>;
+import { CheckboxThemeProps } from './checkbox.types';
 
 export const Container = styled.div`
   font-size: 0;

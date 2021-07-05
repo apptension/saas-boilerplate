@@ -3,7 +3,7 @@ import { times } from 'ramda';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 import { generateRelayEnvironmentNotifications } from '../notificationsList.fixtures';
-import { notificationFactory } from '../../../../../mocks/factories/notification';
+import { notificationFactory } from "../../../../../mocks/factories";
 
 describe('NotificationsList: Component', () => {
   const component = (props: Partial<NotificationsListProps>) => (

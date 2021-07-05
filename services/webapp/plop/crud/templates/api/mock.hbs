@@ -6,10 +6,9 @@ import {
   {{ pascalCase name }}ApiPutRequestData,
 } from '../../../shared/services/api/{{ camelCase name }}/types';
 import { {{ constantCase name }}_URL } from '../../../shared/services/api/{{ camelCase name }}';
-const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
 export const mockGet{{ pascalCase name }}List = (response: {{ pascalCase name }}ApiGetResponseData[] = []) =>
-  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>([baseUrl, {{ constantCase name }}_URL].join(''), (req, res, ctx) => {
+  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL.LIST, (req, res, ctx) => {
     return res(ctx.json(response));
   });
 
@@ -18,7 +17,7 @@ export const mockGet{{ pascalCase name }} = (
   response: {{ pascalCase name }}ApiGetResponseData = {id: '123', name: 'name'}
 ) =>
   rest.get<void, {{ pascalCase name }}ApiGetResponseData>(
-    [baseUrl, {{ constantCase name }}_URL, `/${id}`].join(''),
+    {{ constantCase name }}_URL.GET({ id }),
     (req, res, ctx) => {
       return res(ctx.json(response));
     }
@@ -30,7 +29,7 @@ export const mockUpdate{{ pascalCase name }} = (
   status = 200
 ) =>
   rest.put<{{ pascalCase name }}ApiPutRequestData, {{ pascalCase name }}ApiPostResponseData>(
-    [baseUrl, {{ constantCase name }}_URL, `/${id}`].join(''),
+    {{ constantCase name }}_URL.UPDATE({ id }),
     (req, res, ctx) => {
       return res(ctx.json(response), ctx.status(status));
     }
@@ -41,13 +40,13 @@ export const mockAdd{{ pascalCase name }} = (
   status = 200
 ) =>
   rest.post<{{ pascalCase name }}ApiPostRequestData, {{ pascalCase name }}ApiPostResponseData>(
-    [baseUrl, {{ constantCase name }}_URL].join(''),
+    {{ constantCase name }}_URL.ADD,
     (req, res, ctx) => {
       return res(ctx.json(response), ctx.status(status));
     }
   );
 
-export const mockDelete{{ pascalCase name }} = (id = 'id', status = 204) =>
-  rest.delete([baseUrl, {{ constantCase name }}_URL, `/${id}`].join(''), (req, res, ctx) => {
+export const mockRemove{{ pascalCase name }} = (id = 'id', status = 204) =>
+  rest.delete({{ constantCase name }}_URL.REMOVE({ id }), (req, res, ctx) => {
     return res(ctx.status(status));
   });

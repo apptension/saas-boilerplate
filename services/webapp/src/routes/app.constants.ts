@@ -1,18 +1,4 @@
-import { appLocales } from '../i18n';
-
-const mapRoutes = <T extends string>(object: Record<T, string>, fn: (value: string) => string): Record<T, string> =>
-  Object.fromEntries(Object.entries<string>(object).map(([key, value]) => [key, fn(value)])) as Record<T, string>;
-
-export const path = (p: string) => `/:lang(${appLocales.join('|')})${p}`;
-
-export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<T, string>) => {
-  const absoluteNestedUrls = mapRoutes(nestedRoutes, (value) => path(root + value));
-  return {
-    index: path(root),
-    ...absoluteNestedUrls,
-    getRelativeUrl: (route: T) => nestedRoutes[route],
-  };
-};
+import { nestedPath, path } from '../shared/utils/path';
 
 export const ROUTES = {
   home: path('/'),

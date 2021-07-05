@@ -15,7 +15,7 @@ yarn plop notification <type>
 
 > `type' is the notification identifier and name at once
 
-It generates `component` and `story` files under the `src/shared/components/notifications/notifications/<type>/` path. The notification is automatically registered, no further actions required.
+It generates `component` and `story` files under the `src/shared/components/notifications/templates/<type>/` path. The notification is automatically registered, no further actions required.
 
 In the `<type>.component.tsx` you will see the component based on the `<Notification/>` which is an interface to compose your notification. You have to define the `data` inside `NotificationType`:
 

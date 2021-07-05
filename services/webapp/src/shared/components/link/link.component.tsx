@@ -5,7 +5,8 @@ import { omit } from 'ramda';
 import { ButtonTheme, ButtonVariant } from '../button';
 import { Icon } from '../button/button.styles';
 import { ButtonColor, ButtonSize } from '../button/button.types';
-import { RouterLinkContainer, HtmlLinkContainer, RouterNavLinkContainer } from './link.styles';
+import { HtmlLinkContainer, RouterLinkContainer, RouterNavLinkContainer } from './link.styles';
+import { isInternalLink, isInternalNavLink } from './link.utils';
 
 type BaseProps = {
   variant?: ButtonVariant;
@@ -15,20 +16,11 @@ type BaseProps = {
   navLink?: boolean;
 };
 
-type InternalLinkProps = RouterLinkProps & BaseProps;
-type InternalNavLinkProps = RouterNavLinkProps & BaseProps;
-type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & BaseProps;
+export type InternalLinkProps = RouterLinkProps & BaseProps;
+export type InternalNavLinkProps = RouterNavLinkProps & BaseProps;
+export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & BaseProps;
 
 export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkProps;
-
-const isInternalLink = (props: LinkProps): props is InternalLinkProps => {
-  // @ts-ignore
-  return !!props.to;
-};
-
-const isInternalNavLink = (props: LinkProps): props is InternalLinkProps => {
-  return isInternalLink(props) && !!props.navLink;
-};
 
 export const Link = (props: LinkProps) => {
   const {

@@ -1,9 +1,8 @@
 import { rest } from 'msw';
 import { {{ pascalCase name }}ApiGetResponseData } from '{{ relativeModulePath }}/{{ camelCase name }}/types';
 import { {{ constantCase name }}_URL } from '{{ relativeModulePath }}/{{ camelCase name }}';
-const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
 export const mockGet{{ pascalCase name }} = (response: {{ pascalCase name }}ApiGetResponseData[] = []) =>
-  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>([baseUrl, {{ constantCase name }}_URL].join(''), (req, res, ctx) => {
+  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL.GET({ id: ':id' }), (req, res, ctx) => {
   return res(ctx.json(response));
 });

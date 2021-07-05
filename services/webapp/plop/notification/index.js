@@ -4,10 +4,10 @@ const templatesPath = path.join(__dirname, 'templates');
 
 module.exports = (plop) => {
   const notificationsNamespace = 'src/shared/components/notifications';
-  const notificationDirectory = path.join(notificationsNamespace, 'notifications/{{ camelCase name }}');
+  const notificationDirectory = path.join(notificationsNamespace, 'templates/{{ camelCase name }}');
 
   plop.setGenerator('notification', {
-    description: 'Generate a Notification component',
+    description: 'Generate a notification',
     prompts: [
       {
         type: 'name',
@@ -33,7 +33,7 @@ module.exports = (plop) => {
       },
       {
         type: 'modify',
-        path: `${notificationsNamespace}/notifications/index.ts`,
+        path: `${notificationsNamespace}/templates/index.ts`,
         pattern: /(\/\/<-- INJECT NOTIFICATION EXPORT -->)/g,
         template: "export { {{ pascalCase name }} } from './{{ camelCase name }}';\n$1",
       },

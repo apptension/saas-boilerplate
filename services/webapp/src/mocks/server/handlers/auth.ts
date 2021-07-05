@@ -19,21 +19,9 @@ import {
   UpdateProfileApiRequestData,
   UpdateProfileApiResponseData,
 } from '../../../shared/services/api/auth/types';
-import {
-  AUTH_CHANGE_PASSWORD_URL,
-  AUTH_CONFIRM_EMAIL_URL,
-  AUTH_CONFIRM_PASSWORD_RESET_URL,
-  AUTH_LOGIN_URL,
-  AUTH_LOGOUT_URL,
-  AUTH_ME_URL,
-  AUTH_REQUEST_PASSWORD_RESET_URL,
-  AUTH_SIGNUP_URL,
-  AUTH_TOKEN_REFRESH_URL,
-  AUTH_UPDATE_PROFILE_URL,
-} from '../../../shared/services/api/auth';
+import { AUTH_URL, AUTH_PASSWORD_RESET_URL } from '../../../shared/services/api/auth';
 import { Role } from '../../../modules/auth/auth.types';
 import { userProfileFactory } from '../../factories';
-const baseUrl = process.env.REACT_APP_BASE_API_URL;
 
 const profile = userProfileFactory({
   email: 'user@mail.com',
@@ -43,27 +31,27 @@ const profile = userProfileFactory({
 });
 
 export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
-  rest.post<SignupApiRequestData, SignupApiResponseData>(baseUrl + AUTH_SIGNUP_URL, (req, res, ctx) => {
+  rest.post<SignupApiRequestData, SignupApiResponseData>(AUTH_URL.SIGN_UP, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
 export const mockLogin = (status = 200, response: LoginApiResponseData = { isError: false }) =>
-  rest.post<LoginApiRequestData, LoginApiResponseData>(baseUrl + AUTH_LOGIN_URL, (req, res, ctx) => {
+  rest.post<LoginApiRequestData, LoginApiResponseData>(AUTH_URL.LOGIN, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
 export const mockRefreshToken = (status = 200) =>
-  rest.post<void, void>(baseUrl + AUTH_TOKEN_REFRESH_URL, (req, res, ctx) => {
+  rest.post<void, void>(AUTH_URL.REFRESH_TOKEN, (req, res, ctx) => {
     return res(ctx.status(status));
   });
 
 export const mockLogout = (status = 200) =>
-  rest.post<LogoutApiRequestData, LogoutApiResponseData>(baseUrl + AUTH_LOGOUT_URL, (req, res, ctx) => {
+  rest.post<LogoutApiRequestData, LogoutApiResponseData>(AUTH_URL.LOGOUT, (req, res, ctx) => {
     return res(ctx.status(status));
   });
 
 export const mockMe = (response: MeApiResponseData = profile, status = 200) =>
-  rest.get<MeApiRequestData, MeApiResponseData>(baseUrl + AUTH_ME_URL, (req, res, ctx) => {
+  rest.get<MeApiRequestData, MeApiResponseData>(AUTH_URL.ME, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
@@ -71,23 +59,17 @@ export const mockUpdateProfile = (
   response: UpdateProfileApiResponseData = { ...profile, isError: false },
   status = 200
 ) =>
-  rest.put<UpdateProfileApiRequestData, UpdateProfileApiResponseData>(
-    baseUrl + AUTH_UPDATE_PROFILE_URL,
-    (req, res, ctx) => {
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
+  rest.put<UpdateProfileApiRequestData, UpdateProfileApiResponseData>(AUTH_URL.UPDATE_PROFILE, (req, res, ctx) => {
+    return res(ctx.status(status), ctx.json(response));
+  });
 
 export const mockChangePassword = (response: ChangePasswordResponseData = { isError: false }, status = 200) =>
-  rest.post<ChangePasswordRequestData, ChangePasswordResponseData>(
-    baseUrl + AUTH_CHANGE_PASSWORD_URL,
-    (req, res, ctx) => {
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
+  rest.post<ChangePasswordRequestData, ChangePasswordResponseData>(AUTH_URL.CHANGE_PASSWORD, (req, res, ctx) => {
+    return res(ctx.status(status), ctx.json(response));
+  });
 
 export const mockConfirmEmail = (response: ConfirmEmailResponseData = { isError: false }, status = 200) =>
-  rest.post<ConfirmEmailRequestData, ConfirmEmailResponseData>(baseUrl + AUTH_CONFIRM_EMAIL_URL, (req, res, ctx) => {
+  rest.post<ConfirmEmailRequestData, ConfirmEmailResponseData>(AUTH_URL.CONFIRM_EMAIL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
@@ -96,7 +78,7 @@ export const mockRequestPasswordReset = (
   status = 200
 ) =>
   rest.post<RequestPasswordResetRequestData, RequestPasswordResetResponseData>(
-    baseUrl + AUTH_REQUEST_PASSWORD_RESET_URL,
+    AUTH_PASSWORD_RESET_URL.REQUEST,
     (req, res, ctx) => {
       return res(ctx.status(status), ctx.json(response));
     }
@@ -107,7 +89,7 @@ export const mockConfirmPasswordReset = (
   status = 200
 ) =>
   rest.post<ConfirmPasswordResetRequestData, ConfirmPasswordResetResponseData>(
-    baseUrl + AUTH_CONFIRM_PASSWORD_RESET_URL,
+    AUTH_PASSWORD_RESET_URL.CONFIRM,
     (req, res, ctx) => {
       return res(ctx.status(status), ctx.json(response));
     }

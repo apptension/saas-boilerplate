@@ -3,7 +3,7 @@ const componentsActions = require('./actions/components');
 
 module.exports = (plop) => {
   plop.setGenerator('crud', {
-    description: 'Generate an API model',
+    description: 'Generate a CRUD',
     prompts: [
       {
         type: 'input',

@@ -5,11 +5,7 @@ import { Input } from '../../input';
 import { login } from '../../../../modules/auth/auth.actions';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
-
-type LoginFormFields = {
-  password: string;
-  email: string;
-};
+import { LoginFormFields } from './loginForm.types';
 
 export const LoginForm = () => {
   const intl = useIntl();

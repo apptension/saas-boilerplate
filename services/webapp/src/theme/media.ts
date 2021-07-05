@@ -2,11 +2,11 @@ import { BaseThemedCssFunction, css, DefaultTheme, SimpleInterpolation } from 's
 import { complement, isNil, reverse } from 'ramda';
 
 export enum Breakpoint {
-  MOBILE = 'mobile',
-  TABLET = 'tablet',
-  DESKTOP = 'desktop',
-  DESKTOP_WIDE = 'desktopWide',
-  DESKTOP_FULL = 'desktopFull',
+  MOBILE = 'MOBILE',
+  TABLET = 'TABLET',
+  DESKTOP = 'DESKTOP',
+  DESKTOP_WIDE = 'DESKTOP_WIDE',
+  DESKTOP_FULL = 'DESKTOP_FULL',
 }
 
 export const sizes: Record<Breakpoint, number> = {
@@ -37,7 +37,7 @@ export const media = (breakpoint: Breakpoint, opts: { landscape?: boolean; retin
     const landscapeQuery = opts.landscape ? '(orientation: landscape)' : null;
     const retinaQueries = opts.retina ? ['(-webkit-min-device-pixel-ratio: 2)', '(min-resolution: 192dpi)'] : null;
 
-    let query = '';
+    let query;
     if (retinaQueries) {
       query = retinaQueries.map((retinaQuery) => joinQuery(sizeQuery, landscapeQuery, retinaQuery)).join(', ');
     } else {

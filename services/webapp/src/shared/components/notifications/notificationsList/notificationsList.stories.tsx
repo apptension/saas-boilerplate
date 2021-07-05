@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 import { withProviders } from '../../../utils/storybook';
-import { notificationFactory } from '../../../../mocks/factories/notification';
+import { notificationFactory } from '../../../../mocks/factories';
 import { NotificationTypes } from '../notifications.types';
 import { NotificationsList, NotificationsListProps } from './notificationsList.component';
 import { generateRelayEnvironmentNotifications } from './notificationsList.fixtures';

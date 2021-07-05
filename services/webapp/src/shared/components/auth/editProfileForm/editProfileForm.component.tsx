@@ -6,20 +6,14 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { updateProfile } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
 import { snackbarActions } from '../../../../modules/snackbar';
-import { Container, ErrorMessage, Form, SubmitButton, FormFieldsRow } from './editProfileForm.styles';
-
-type UpdateProfileFormFields = {
-  firstName: string;
-  lastName: string;
-};
-
-const FIRST_NAME_MAX_LENGTH = 40;
-const LAST_NAME_MAX_LENGTH = 40;
+import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';
+import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';
+import { UpdateProfileFormFields } from './editProfileForm.types';
 
 export const EditProfileForm = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
-  const dispatchWithPromise = useAsyncDispatch();
+  const asyncDispatch = useAsyncDispatch();
   const profile = useSelector(selectProfile);
 
   const {
@@ -38,7 +32,7 @@ export const EditProfileForm = () => {
 
   const onProfileUpdate = async (profile: UpdateProfileFormFields) => {
     try {
-      const res = await dispatchWithPromise(updateProfile(profile));
+      const res = await asyncDispatch(updateProfile(profile));
       setApiResponse(res);
 
       if (!res.isError) {

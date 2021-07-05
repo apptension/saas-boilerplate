@@ -2,7 +2,8 @@ import styled, { css } from 'styled-components';
 import { Button as ButtonBase } from '../../button';
 import { color } from '../../../../theme';
 
-export const Button = styled(ButtonBase)<{ hasUnreadNotifications: boolean }>`
+type ButtonProps = { hasUnreadNotifications: boolean };
+export const Button = styled(ButtonBase)<ButtonProps>`
   svg {
     width: 23px;
     height: 18px;

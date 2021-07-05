@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 import { Locale } from '../../../i18n';
 import { Select } from './languageSwitcher.styles';
-import { useLanguageRouter } from './useLanguageRouter.hook';
+import { useLanguageRouter } from './languageSwitcher.hooks';
 
 export const LanguageSwitcherComponent = () => {
   const [{ language, locales }, changeLanguage] = useLanguageRouter();

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { not } from 'ramda';
 
+/*
+ * Hook to handle popups, dropdowns. etc open state.
+ * Works best if not deconstructed, because exposes semantically
+ * correct methods under namespace.
+ */
 export const useOpenState = (initialValue: boolean | (() => boolean)) => {
   const [isOpen, setIsOpen] = useState<boolean>(initialValue);
   const isTogglingRef = useRef(false);

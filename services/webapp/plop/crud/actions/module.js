@@ -128,7 +128,7 @@ module.exports = [
     type: 'modify',
     path: 'src/routes/app.constants.ts',
     pattern: /(\/\/<-- INJECT ROUTE DEFINITION -->)/g,
-    template: `{{ camelCase name }}: nestedRoute('/{{ dashCase name }}', {
+    template: `{{ camelCase name }}: nestedPath('/{{ dashCase name }}', {
     list: '/',
     details: '/:id',
     edit: '/edit/:id',
@@ -137,12 +137,12 @@ module.exports = [
   },
   {
     type: 'modify',
-    path: 'src/routes/asyncComponents.tsx',
+    path: 'src/routes/asyncComponents.ts',
     pattern: /(\/\/<-- IMPORT ROUTE -->)/g,
-    template: `const {{ pascalCase name }}List = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}List'), '{{ pascalCase name }}List');
-const {{ pascalCase name }}Details = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}Details'), '{{ pascalCase name }}Details');
-const Add{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/add{{ pascalCase name }}'), 'Add{{ pascalCase name }}');
-const Edit{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/edit{{ pascalCase name }}'), 'Edit{{ pascalCase name }}');\n  $1`,
+    template: `export const {{ pascalCase name }}List = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}List'), '{{ pascalCase name }}List');
+export const {{ pascalCase name }}Details = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}Details'), '{{ pascalCase name }}Details');
+export const Add{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/add{{ pascalCase name }}'), 'Add{{ pascalCase name }}');
+export const Edit{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/edit{{ pascalCase name }}'), 'Edit{{ pascalCase name }}');\n  $1`,
   },
   {
     type: 'modify',

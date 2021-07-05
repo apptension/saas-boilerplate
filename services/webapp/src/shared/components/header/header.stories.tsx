@@ -28,4 +28,4 @@ export const LoggedOut = Template.bind({});
 LoggedOut.args = { isLoggedIn: false };
 
 export const LoggedIn = Template.bind({});
-LoggedIn.args = { isLoggedIn: true, onMenuOpenClick: action('Menu open') };
+LoggedIn.args = { isLoggedIn: true, onClick: action('Menu open') };

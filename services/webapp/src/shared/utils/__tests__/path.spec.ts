@@ -1,7 +1,12 @@
-import { nestedPath } from '../app.constants';
+import { nestedPath } from '../path';
 
-describe('App: Constants', () => {
+describe('Utils: path', () => {
   describe('nestedRoute', () => {
+    jest.mock('../../../i18n.ts', () => ({
+      ...(jest.requireActual('../../../i18n.ts') as any),
+      appLocales: ['en', 'pl'],
+    }));
+
     const langPart = '/:lang(en|pl)';
 
     it('should create nested route based on provided config', () => {

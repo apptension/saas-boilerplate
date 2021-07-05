@@ -1,7 +1,11 @@
 import { ElementType } from 'react';
 import { getEnvNumber } from '../../utils/env';
 import { NotificationTypes } from './notifications.types';
-import { CrudItemCreated, CrudItemUpdated } from './notifications';
+import {
+  CrudItemCreated,
+  CrudItemUpdated,
+  //<-- INJECT NOTIFICATION COMPONENT IMPORT -->
+} from './templates';
 
 export const NOTIFICATIONS_STRATEGY: Record<NotificationTypes, ElementType> = {
   [NotificationTypes.CRUD_ITEM_CREATED]: CrudItemCreated,

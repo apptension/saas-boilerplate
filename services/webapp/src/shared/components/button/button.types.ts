@@ -9,11 +9,11 @@ export interface ButtonTheme extends DefaultTheme {
 }
 
 export enum ButtonVariant {
-  PRIMARY = 'primary',
-  SECONDARY = 'secondary',
-  RAW = 'raw',
-  FLAT = 'flat',
-  ROUND = 'round',
+  PRIMARY = 'PRIMARY',
+  SECONDARY = 'SECONDARY',
+  RAW = 'RAW',
+  FLAT = 'FLAT',
+  ROUND = 'ROUND',
 }
 
 export enum ButtonSize {

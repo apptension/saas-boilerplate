@@ -1,4 +1,5 @@
 import { client } from '../client';
+import { apiURLs, appendId } from '../helpers';
 import {
   {{ pascalCase name }}ApiGetResponseData,
   {{ pascalCase name }}ApiPostRequestData,
@@ -6,29 +7,35 @@ import {
   {{ pascalCase name }}ApiPutRequestData,
 } from './types';
 
-export const {{ constantCase name }}_URL = '{{ apiUrl }}';
+export const {{ constantCase name }}_URL = apiURLs('{{ apiUrl }}', {
+  LIST: '',
+  GET: appendId,
+  ADD: '',
+  UPDATE: appendId,
+  REMOVE: appendId,
+});
 
 export const list = async () => {
-  const res = await client.get<{{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL);
+  const res = await client.get<{{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL.LIST);
   return res.data;
 };
 
 export const get = async (id: string) => {
-  const res = await client.get<{{ pascalCase name }}ApiGetResponseData>({{ constantCase name }}_URL + id + '/');
+  const res = await client.get<{{ pascalCase name }}ApiGetResponseData>({{ constantCase name }}_URL.GET({ id }));
   return res.data;
 };
 
 export const add = async (data: {{ pascalCase name }}ApiPostRequestData) => {
-  const res = await client.post<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL, data);
+  const res = await client.post<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL.ADD, data);
   return res.data;
 };
 
 export const update = async (data: {{ pascalCase name }}ApiPutRequestData) => {
-  const res = await client.put<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL + data.id + '/', data);
+  const res = await client.put<{{ pascalCase name }}ApiPostResponseData>({{ constantCase name }}_URL.UPDATE({ id: data.id }), data);
   return res.data;
 };
 
 export const remove = async (id: string) => {
-  const res = await client.delete({{ constantCase name }}_URL + id + '/');
+  const res = await client.delete({{ constantCase name }}_URL.REMOVE({ id }));
   return res.data;
 };

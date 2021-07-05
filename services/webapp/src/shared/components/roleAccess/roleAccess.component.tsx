@@ -9,5 +9,5 @@ export type RoleAccessProps = {
 
 export const RoleAccess = ({ children, allowedRoles }: RoleAccessProps) => {
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
-  return <>{isAllowed ? children : null}</>;
+  return isAllowed ? <>{children}</> : null;
 };

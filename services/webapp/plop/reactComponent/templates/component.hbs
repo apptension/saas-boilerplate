@@ -1,15 +1,18 @@
+{{#if hasProps}}
 import { ReactNode } from 'react';
+{{/if}}
 import { Container } from './{{ camelCase name }}.styles';
+{{#if hasProps}}
 
 export type {{ pascalCase name }}Props = {
   children?: ReactNode;
 }
+{{/if}}
 
-export const {{ pascalCase name }} = ({ children }: {{ pascalCase name }}Props) => {
+export const {{ pascalCase name }} = ({{#if hasProps}}{ children }: {{ pascalCase name }}Props{{/if}}) => {
   return (
     <Container>
       <h1>{{ pascalCase name }} component</h1>
-      {children}
     </Container>
   );
 };

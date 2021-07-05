@@ -20,6 +20,7 @@ import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '.
 import { snackbarActions } from '../../snackbar';
 import { OAuthProvider } from '../auth.types';
 import { authActions } from '..';
+import { apiURL } from '../../../shared/services/api/helpers';
 
 jest.mock('../../../shared/utils/history');
 
@@ -411,7 +412,9 @@ describe('Auth: sagas', () => {
           .dispatch(authActions.oAuthLogin(OAuthProvider.Google))
           .silentRun();
         const encodedNextUrl = encodeURIComponent('http://localhost');
-        expect(locationAssignSpy).toHaveBeenCalledWith(`/api/auth/social/login/google-oauth2?next=${encodedNextUrl}`);
+        expect(locationAssignSpy).toHaveBeenCalledWith(
+          apiURL(`/auth/social/login/google-oauth2?next=${encodedNextUrl}`)
+        );
       });
     });
 
@@ -422,7 +425,7 @@ describe('Auth: sagas', () => {
           .dispatch(authActions.oAuthLogin(OAuthProvider.Facebook))
           .silentRun();
         const encodedNextUrl = encodeURIComponent('http://localhost');
-        expect(locationAssignSpy).toHaveBeenCalledWith(`/api/auth/social/login/facebook?next=${encodedNextUrl}`);
+        expect(locationAssignSpy).toHaveBeenCalledWith(apiURL(`/auth/social/login/facebook?next=${encodedNextUrl}`));
       });
     });
   });

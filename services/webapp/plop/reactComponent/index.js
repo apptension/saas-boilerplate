@@ -1,4 +1,6 @@
 const path = require('path');
+const humps = require('humps');
+const { complement, isEmpty } = require('ramda');
 
 const templatesPath = path.join(__dirname, 'templates');
 
@@ -22,8 +24,14 @@ module.exports = (plop) => {
         basePath: 'src',
         message: "Component's directory:",
       },
+      {
+        type: 'confirm',
+        name: 'hasProps',
+        message: 'Do you want to include props?',
+        default: true,
+      },
     ],
-    actions: [
+    actions: (data) => [
       {
         type: 'add',
         path: `${componentDirectory}/index.ts`,
@@ -43,6 +51,30 @@ module.exports = (plop) => {
         type: 'add',
         path: `${componentDirectory}/{{ camelCase name }}.stories.tsx`,
         templateFile: path.join(templatesPath, 'stories.hbs'),
+        data: {
+          storyTitleNamespace: (() => {
+            const rules = [
+              { path: 'shared/components', base: 'Shared' },
+              { path: 'routes', base: 'Routes' },
+            ];
+
+            for (const { path, base } of rules) {
+              if (data.directory.startsWith(path)) {
+                const nestedComponentsPaths = data.directory
+                  .slice(path.length + 1)
+                  .split('/')
+                  .filter(complement(isEmpty))
+                  .map((name) => humps.pascalize(name));
+
+                console.log(nestedComponentsPaths);
+
+                return [base, ...nestedComponentsPaths, ''].join('/');
+              }
+            }
+
+            return '';
+          })(),
+        },
       },
       {
         type: 'add',

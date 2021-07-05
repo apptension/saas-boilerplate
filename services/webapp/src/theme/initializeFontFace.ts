@@ -1,5 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
-
 // @ts-ignore
 import interPrimary from '../fonts/Inter-Regular.woff';
 // @ts-ignore
@@ -12,7 +10,7 @@ function fontFace(
   fontWeight = 'normal',
   fontStyle = 'normal'
 ): string {
-  const sources = files.map(({ src, format }, index) => `url(${src}) format("${format}")`).join(',');
+  const sources = files.map(({ src, format }) => `url(${src}) format("${format}")`).join(',');
 
   return `
     @font-face{
@@ -23,7 +21,6 @@ function fontFace(
     }
   `;
 }
-/* eslint-enable import/no-dynamic-require */
 
 const generateFontsString = (): string =>
   [

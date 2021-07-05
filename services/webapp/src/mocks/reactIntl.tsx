@@ -4,8 +4,7 @@ const mockReactIntl = jest.requireActual('react-intl');
 const { FormattedMessage, useIntl } = mockReactIntl;
 
 const mockFormattedMessage = (props: UnknownObject) => <FormattedMessage id="mock-message-id" {...props} />;
-const mockUseIntl = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+const useMockedIntl = () => {
   const { formatMessage, ...other } = useIntl();
 
   return {
@@ -15,8 +14,9 @@ const mockUseIntl = () => {
     },
   };
 };
+
 jest.mock('react-intl', () => ({
   ...mockReactIntl,
-  useIntl: mockUseIntl,
+  useIntl: useMockedIntl,
   FormattedMessage: mockFormattedMessage,
 }));

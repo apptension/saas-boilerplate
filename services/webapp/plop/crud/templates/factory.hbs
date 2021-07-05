@@ -1,13 +1,8 @@
 import * as faker from 'faker';
-import { mergeDeepRight } from 'ramda';
 import { {{ pascalCase name }} } from '../../shared/services/api/{{ camelCase name }}/types';
-import { Factory } from './types';
+import { createFactory } from './factoryCreators';
 
-export const {{ camelCase name }}Factory: Factory<{{ pascalCase name }}> = (overrides = {}) =>
-  mergeDeepRight(
-    {
-      id: faker.random.uuid(),
-      name: faker.lorem.word(),
-    },
-    overrides
-  );
+export const {{ camelCase name }}Factory = createFactory<{{ pascalCase name }}>({
+  id: faker.datatype.uuid(),
+  name: faker.lorem.word(),
+})

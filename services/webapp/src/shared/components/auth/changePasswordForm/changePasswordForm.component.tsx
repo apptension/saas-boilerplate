@@ -16,7 +16,7 @@ type ChangePasswordFormFields = {
 export const ChangePasswordForm = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
-  const dispatchWithPromise = useAsyncDispatch();
+  const asyncDispatch = useAsyncDispatch();
   const {
     register,
     handleSubmit,
@@ -49,7 +49,7 @@ export const ChangePasswordForm = () => {
 
   const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
     try {
-      const res = await dispatchWithPromise(changePassword({ oldPassword, newPassword }));
+      const res = await asyncDispatch(changePassword({ oldPassword, newPassword }));
       setApiResponse(res);
       if (!res.isError) {
         reset();

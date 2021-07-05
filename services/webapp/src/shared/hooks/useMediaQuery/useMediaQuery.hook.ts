@@ -13,10 +13,10 @@ interface QueryResult {
 }
 
 /**
- * useMediaQuery({above=Breakpoint.DESKTOP}); => true for desktop and above, false otherwise
- * useMediaQuery({below=Breakpoint.DESKTOP}); => true for desktop and below, false otherwise
- * useMediaQuery({matches=Breakpoint.DESKTOP}); => true for desktop, false otherwise
- * useMediaQuery({matches=[Breakpoint.DESKTOP, Breakpoint.MOBILE]}); => true for desktop and mobile, false otherwise
+ * useMediaQuery({above: Breakpoint.DESKTOP}); => true for desktop and above, false otherwise
+ * useMediaQuery({below: Breakpoint.DESKTOP}); => true for desktop and below, false otherwise
+ * useMediaQuery({matches: Breakpoint.DESKTOP}); => true for desktop, false otherwise
+ * useMediaQuery({matches: [Breakpoint.DESKTOP, Breakpoint.MOBILE]}); => true for desktop and mobile, false otherwise
  **/
 export const useMediaQuery = ({ above, below, matches }: BreakpointQuery): QueryResult => {
   const activeBreakpoint: Breakpoint = useTheme().activeBreakpoint ?? Breakpoint.MOBILE;

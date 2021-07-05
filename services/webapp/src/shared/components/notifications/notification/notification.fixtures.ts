@@ -1,5 +1,5 @@
 import { pick } from 'ramda';
-import { notificationFactory } from '../../../../mocks/factories/notification';
+import { notificationFactory } from "../../../../mocks/factories";
 import { NotificationProps } from './notification.component';
 
 export const mockedNotificationProps: NotificationProps = {

@@ -5,7 +5,6 @@ const templatesPath = path.join(__dirname, 'templates');
 module.exports = (plop) => {
   const projectPathAbsolute = plop.getDestBasePath();
   const moduleDirectory = 'src/shared/services/api/{{ directory }}/{{ camelCase name }}';
-  const moduleDirectoryAbsolute = path.join(projectPathAbsolute, moduleDirectory);
 
   plop.setGenerator('apiModel', {
     description: 'Generate an API model',
@@ -31,6 +30,10 @@ module.exports = (plop) => {
           clientPath: path.relative(
             path.join(projectPathAbsolute, `src/shared/services/api/${data.directory}/index.ts`),
             path.join(projectPathAbsolute, 'src/shared/services/api/client')
+          ),
+          helpersPath: path.relative(
+            path.join(projectPathAbsolute, `src/shared/services/api/${data.directory}/index.ts`),
+            path.join(projectPathAbsolute, 'src/shared/services/api/helpers')
           ),
         },
       },

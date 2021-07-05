@@ -10,20 +10,16 @@ import { snackbarActions } from '../../../../modules/snackbar';
 import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../routes/app.constants';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
+import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 
 export type PasswordResetConfirmFormProps = {
   user: string;
   token: string;
 };
 
-type ResetPasswordFormFields = {
-  newPassword: string;
-  confirmPassword: string;
-};
-
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
-  const dispatchWithPromise = useAsyncDispatch();
+  const asyncDispatch = useAsyncDispatch();
   const dispatch = useDispatch();
   const history = useHistory();
   const generateLocalePath = useGenerateLocalePath();
@@ -58,7 +54,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
     try {
-      const res = await dispatchWithPromise(
+      const res = await asyncDispatch(
         confirmPasswordReset({
           newPassword: data.newPassword,
           user,

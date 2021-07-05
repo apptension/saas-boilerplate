@@ -1,12 +1,10 @@
-import styled, { css, ThemeProps } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
 import { label, labelBold, microlabel } from '../../../../theme/typography';
 import { color, transition } from '../../../../theme';
 import { Button } from '../../button';
 import { RelativeDate as RelativeDateBase } from '../../relativeDate';
-import { NotificationTheme } from './notification.types';
-
-export type NotificationThemeProps = ThemeProps<NotificationTheme>;
+import { NotificationThemeProps } from './notification.types';
 
 const readColor = color.greyScale.get(55);
 

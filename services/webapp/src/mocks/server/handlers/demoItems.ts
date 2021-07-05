@@ -4,11 +4,10 @@ import {
   FavoriteDemoItemApiPostResponseData,
   FavoriteDemoItemsApiGetResponseData,
 } from '../../../shared/services/api/demoItems/types';
-import { DEMO_ITEMS_URL, getDemoItemFavoriteUrl } from '../../../shared/services/api/demoItems';
-const baseUrl = process.env.REACT_APP_BASE_API_URL;
+import { DEMO_ITEMS_URL } from '../../../shared/services/api/demoItems';
 
 export const mockGetFavoritesDemoItems = (response: FavoriteDemoItemsApiGetResponseData = [], status = 200) =>
-  rest.get<void, FavoriteDemoItemsApiGetResponseData>([baseUrl, DEMO_ITEMS_URL].join(''), (req, res, ctx) => {
+  rest.get<void, FavoriteDemoItemsApiGetResponseData>(DEMO_ITEMS_URL.ALL, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 
@@ -18,7 +17,7 @@ export const mockSetFavoriteDemoItem = (
   status = 200
 ) =>
   rest.post<FavoriteDemoItemApiPostRequestData, FavoriteDemoItemApiPostResponseData>(
-    [baseUrl, getDemoItemFavoriteUrl(id)].join(''),
+    DEMO_ITEMS_URL.FAVORITE({ id }),
     (req, res, ctx) => {
       return res(ctx.status(status), ctx.json(response));
     }

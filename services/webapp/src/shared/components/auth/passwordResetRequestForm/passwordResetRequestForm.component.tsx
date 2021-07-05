@@ -6,21 +6,17 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { requestPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
-
-const SUBMIT_THROTTLE = 15_000;
+import { SUBMIT_THROTTLE } from './passwordResetRequestForm.constants';
+import { ResetPasswordFormFields } from './passwordResetRequestForm.types';
 
 type PasswordResetRequestFormProps = {
   onSubmitted?: () => void;
 };
 
-type ResetPasswordFormFields = {
-  email: string;
-};
-
 export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
-  const [isSubmitted, setSubmitted] = useState(false);
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
+  const [isSubmitted, setSubmitted] = useState(false);
 
   const {
     register,
