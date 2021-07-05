@@ -1,8 +1,7 @@
-import { useCallback, useEffect } from 'react';
 import graphql from 'babel-plugin-relay/macro';
-import { usePaginationFragment } from 'react-relay';
-import { isEmpty } from 'ramda';
-import { POLLING_INTERVAL } from '../notifications.constants';
+import { ConnectionHandler, usePaginationFragment, useSubscription } from 'react-relay';
+import { GraphQLSubscriptionConfig } from 'relay-runtime';
+import { useMemo } from 'react';
 import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { notificationsListMarkAsReadMutation } from '../../../../__generated__/notificationsListMarkAsReadMutation.graphql';
@@ -10,36 +9,7 @@ import { notificationsListQueryResponse } from '../../../../__generated__/notifi
 import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
 import { notificationsListContent$key } from '../../../../__generated__/notificationsListContent.graphql';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
-import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
-
-export const useRefetchNotifications = ({
-  fetchNotifications,
-  isOpen,
-}: {
-  isOpen: boolean;
-  fetchNotifications: () => void;
-}) => {
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null;
-    if (isOpen) {
-      interval = setInterval(() => {
-        fetchNotifications();
-      }, POLLING_INTERVAL);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [fetchNotifications, isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchNotifications();
-    }
-  }, [isOpen, fetchNotifications]);
-};
+import { notificationsListSubscription } from '../../../../__generated__/notificationsListSubscription.graphql';
 
 export const useMarkAllAsRead = (message: string) => {
   const snackbar = useSnackbar();
@@ -65,6 +35,22 @@ export const useMarkAllAsRead = (message: string) => {
   };
 };
 
+const subscription = graphql`
+  subscription notificationsListSubscription($connections: [ID!]!) {
+    notificationCreated {
+      edges @prependEdge(connections: $connections) {
+        node {
+          id
+          type
+          createdAt
+          readAt
+          data
+        }
+      }
+    }
+  }
+`;
+
 export const useNotificationsListContent = (queryResponse: notificationsListQueryResponse) => {
   const fragment = usePaginationFragment<NotificationsListRefetch, notificationsListContent$key>(
     graphql`
@@ -87,18 +73,22 @@ export const useNotificationsListContent = (queryResponse: notificationsListQuer
     `,
     queryResponse
   );
-  const { data, refetch } = fragment;
 
-  const allNotifications = useMappedConnection(data.allNotifications);
+  const allNotifications = useMappedConnection(fragment.data.allNotifications);
 
-  const fetchNotifications = useCallback(() => {
-    refetch(
-      {
-        count: isEmpty(allNotifications) ? NOTIFICATIONS_PER_PAGE : allNotifications.length,
+  const config = useMemo<GraphQLSubscriptionConfig<notificationsListSubscription>>(
+    () => ({
+      variables: {
+        connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
       },
-      { fetchPolicy: 'store-and-network' }
-    );
-  }, [allNotifications, refetch]);
+      subscription,
+      updater: (store) => {
+        store.getRoot().setValue(true, 'hasUnreadNotifications');
+      },
+    }),
+    []
+  );
+  useSubscription(config);
 
-  return { ...fragment, allNotifications, fetchNotifications };
+  return { ...fragment, allNotifications };
 };

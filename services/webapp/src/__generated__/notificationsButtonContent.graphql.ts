@@ -19,13 +19,7 @@ export type notificationsButtonContent$key = {
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": {
-    "refetch": {
-      "connection": null,
-      "fragmentPathInResult": [],
-      "operation": require('./NotificationsButtonRefetch.graphql.ts')
-    }
-  },
+  "metadata": null,
   "name": "notificationsButtonContent",
   "selections": [
     {
@@ -39,5 +33,5 @@ const node: ReaderFragment = {
   "type": "ApiQuery",
   "abstractKey": null
 };
-(node as any).hash = 'b26b7d704396597510f5c6f4a4fa9faf';
+(node as any).hash = 'f339f8afc72f8403798b2e0e368e8e60';
 export default node;

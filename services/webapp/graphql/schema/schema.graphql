@@ -467,6 +467,8 @@ type ApiMutation {
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
   updateCrudDemoItem(input: UpdateCrudDemoItemMutationInput!): UpdateCrudDemoItemMutationPayload
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
+  createDocumentDemoItem(input: CreateDocumentDemoItemMutationInput!): CreateDocumentDemoItemMutationPayload
+  deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
 }
 
 type ApiQuery {
@@ -475,17 +477,34 @@ type ApiQuery {
   """The ID of the object"""
   crudDemoItem(id: ID!): CrudDemoItemType
   allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
+}
+
+type ApiSubscription {
+  notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
 }
 
 input CreateCrudDemoItemMutationInput {
   name: String!
-  user: String
+  createdBy: String
   clientMutationId: String
 }
 
 type CreateCrudDemoItemMutationPayload {
   crudDemoItem: CrudDemoItemType
   crudDemoItemEdge: CrudDemoItemEdge
+  clientMutationId: String
+}
+
+input CreateDocumentDemoItemMutationInput {
+  file: String
+  createdBy: String
+  clientMutationId: String
+}
+
+type CreateDocumentDemoItemMutationPayload {
+  documentDemoItem: DocumentDemoItemType
+  documentDemoItemEdge: DocumentDemoItemEdge
   clientMutationId: String
 }
 
@@ -518,6 +537,43 @@ input DeleteCrudDemoItemMutationInput {
 type DeleteCrudDemoItemMutationPayload {
   deletedIds: [ID]
   clientMutationId: String
+}
+
+input DeleteDocumentDemoItemMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type DeleteDocumentDemoItemMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
+type DocumentDemoItemConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  """Contains the nodes in this connection."""
+  edges: [DocumentDemoItemEdge]!
+}
+
+"""A Relay edge containing a `DocumentDemoItem` and its cursor."""
+type DocumentDemoItemEdge {
+  """The item at the end of the edge"""
+  node: DocumentDemoItemType
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type DocumentDemoItemType implements Node {
+  """The ID of the object."""
+  id: ID!
+  file: FieldType
+  createdAt: DateTime!
+}
+
+type FieldType {
+  url: String
+  name: String
 }
 
 """
@@ -580,7 +636,7 @@ type PageInfo {
 
 input UpdateCrudDemoItemMutationInput {
   name: String!
-  user: String
+  createdBy: String
   id: ID!
   clientMutationId: String
 }
@@ -607,4 +663,5 @@ type UpdateNotificationMutationPayload {
 schema {
   query: ApiQuery
   mutation: ApiMutation
+  subscription: ApiSubscription
 }

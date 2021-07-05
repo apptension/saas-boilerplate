@@ -1,8 +1,13 @@
 module.exports = {
   someSidebar: {
     Introduction: ["index", "aws-setup", "aws-deployment", "aws-auto-deploy"],
-    Guides: ["guides/aws-environment", "guides/aws-exec", "guides/configure-cicd-slack-notifications"],
+    Guides: [
+      "guides/aws-environment",
+      "guides/aws-exec",
+      "guides/configure-cicd-slack-notifications",
+    ],
     Features: [
+      "graphql-subscriptions",
       "sentry",
       "emails",
       "notifications",
@@ -52,12 +57,14 @@ module.exports = {
       {
         type: "category",
         label: "Dev tools",
-        items: ["global-tools", "version-matrix"],
+        items: [
+          "global-tools",
+          "version-matrix",
+          "graphql-subscriptions-mock-server",
+        ],
       },
     ],
-    "Async workers": [
-        "delete-state-machine",
-    ],
+    "Async workers": ["delete-state-machine"],
     "Understanding SaaS Boilerplate": [
       "architecture",
       "cicd-architecture",

@@ -5,7 +5,7 @@
 import { ConcreteRequest } from "relay-runtime";
 export type UpdateCrudDemoItemMutationInput = {
     name: string;
-    user?: string | null;
+    createdBy?: string | null;
     id: string;
     clientMutationId?: string | null;
 };

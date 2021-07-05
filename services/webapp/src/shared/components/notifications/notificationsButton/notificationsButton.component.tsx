@@ -1,7 +1,7 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
-import { PreloadedQuery, usePreloadedQuery, useRefetchableFragment } from 'react-relay';
+import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { ButtonProps, ButtonVariant } from '../../button';
 import { Icon } from '../../icon';
@@ -9,9 +9,7 @@ import NotificationsButtonQuery, {
   notificationsListQuery,
   notificationsListQueryResponse,
 } from '../../../../__generated__/notificationsListQuery.graphql';
-import { NotificationsButtonRefetch } from '../../../../__generated__/NotificationsButtonRefetch.graphql';
 import { notificationsButtonContent$key } from '../../../../__generated__/notificationsButtonContent.graphql';
-import { POLLING_INTERVAL } from '../notifications.constants';
 import { Button } from './notificationsButton.styles';
 
 export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'> & {
@@ -33,22 +31,14 @@ type WrapperProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
 };
 
 export const Wrapper = ({ queryResponse, ...props }: WrapperProps) => {
-  const [data, refetch] = useRefetchableFragment<NotificationsButtonRefetch, notificationsButtonContent$key>(
+  const data = useFragment<notificationsButtonContent$key>(
     graphql`
-      fragment notificationsButtonContent on ApiQuery @refetchable(queryName: "NotificationsButtonRefetch") {
+      fragment notificationsButtonContent on ApiQuery {
         hasUnreadNotifications
       }
     `,
     queryResponse
   );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refetch({}, { fetchPolicy: 'store-and-network' });
-    }, POLLING_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [refetch]);
 
   return <Content hasUnreadNotifications={data.hasUnreadNotifications ?? false} {...props} />;
 };

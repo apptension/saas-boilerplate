@@ -3,7 +3,7 @@ id: notifications
 title: Notifications
 ---
 
-Project is configured with the in-app notifications support out of the box. Backend and frontend share the `type` which is a `CONSTANT_CASED` identifier.
+Project is configured with the in-app notifications support out of the box. Backend and frontend share the `type` which is a `CONSTANT_CASED` identifier. Notifications are handled with GraphQL Subscriptions.
 
 ## Webapp reference
 
@@ -39,3 +39,4 @@ Mistakes in the data type (e.g., missing nulls) might produce error-prone code. 
 - Delete `src/shared/components/notifications` directory
 - Delete `addNotificationGenerator` call from  the`plopfile.js`
 - Delete `plop/notification` directory
+- [Check if you should delete WebSocket connection](/graphql-subscriptions#removing-the-feature)

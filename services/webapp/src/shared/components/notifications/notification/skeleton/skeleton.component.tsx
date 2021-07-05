@@ -1,17 +1,14 @@
 import LoadingSkeleton from 'react-loading-skeleton';
 import { useIntl } from 'react-intl';
+import { forwardRef } from 'react';
 import { Container, Content, Avatar, Title } from './skeleton.styles';
 
-type SkeletonProps = {
-  $ref?: (node: Element | null) => void;
-};
-
-export const Skeleton = ({ $ref }: SkeletonProps) => {
+export const Skeleton = forwardRef<HTMLLIElement, Record<string, unknown>>((_, ref) => {
   const intl = useIntl();
 
   return (
     <Container
-      ref={$ref}
+      ref={ref}
       role="status"
       aria-label={intl.formatMessage({
         description: 'Notifications / Notification / Loading ARIA label',
@@ -30,4 +27,4 @@ export const Skeleton = ({ $ref }: SkeletonProps) => {
       </Content>
     </Container>
   );
-};
+});

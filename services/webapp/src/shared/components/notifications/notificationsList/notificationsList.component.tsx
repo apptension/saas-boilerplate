@@ -14,7 +14,7 @@ import { NotificationTypes } from '../notifications.types';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
-import { useMarkAllAsRead, useNotificationsListContent, useRefetchNotifications } from './notificationsList.hooks';
+import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
 
 export type NotificationsListProps = {
   isOpen: boolean;
@@ -52,21 +52,19 @@ export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListPro
             </>
           }
         >
-          <Content isOpen={isOpen} queryResponse={queryResponse} />
+          <Content queryResponse={queryResponse} />
         </Suspense>
       </List>
     </Container>
   );
 };
 
-type ContentProps = Pick<NotificationsListProps, 'isOpen'> & {
+type ContentProps = {
   queryResponse: notificationsListQueryResponse;
 };
 
-const Content = ({ isOpen, queryResponse }: ContentProps) => {
-  const { allNotifications, loadNext, hasNext, fetchNotifications, isLoadingNext } = useNotificationsListContent(
-    queryResponse
-  );
+const Content = ({ queryResponse }: ContentProps) => {
+  const { allNotifications, loadNext, hasNext, isLoadingNext } = useNotificationsListContent(queryResponse);
 
   const [scrollSensorRef] = useInfiniteScroll({
     loading: isLoadingNext,
@@ -76,8 +74,6 @@ const Content = ({ isOpen, queryResponse }: ContentProps) => {
     },
     disabled: false,
   });
-
-  useRefetchNotifications({ fetchNotifications, isOpen });
 
   if (isEmpty(allNotifications)) {
     return (
@@ -103,7 +99,7 @@ const Content = ({ isOpen, queryResponse }: ContentProps) => {
       })}
       {(hasNext || isLoadingNext) && (
         <>
-          <NotificationSkeleton $ref={scrollSensorRef} />
+          <NotificationSkeleton ref={scrollSensorRef} />
           <NotificationSkeleton />
         </>
       )}
