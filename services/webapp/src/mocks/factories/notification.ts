@@ -1,10 +1,9 @@
 import * as faker from 'faker';
-import { ExtractNodeType } from '../../shared/utils/graphql';
-import { notificationsListContent } from '../../__generated__/notificationsListContent.graphql';
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
+import { NotificationType } from '../../../graphql/schema/schemaTypes';
 import { createFactory } from './factoryCreators';
 
-export const notificationFactory = createFactory<ExtractNodeType<notificationsListContent['allNotifications']>>(() => ({
+export const notificationFactory = createFactory<NotificationType>(() => ({
   id: faker.datatype.uuid(),
   type: faker.random.arrayElement(Object.values(NotificationTypes)),
   data: {},

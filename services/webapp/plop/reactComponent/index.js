@@ -66,8 +66,6 @@ module.exports = (plop) => {
                   .filter(complement(isEmpty))
                   .map((name) => humps.pascalize(name));
 
-                console.log(nestedComponentsPaths);
-
                 return [base, ...nestedComponentsPaths, ''].join('/');
               }
             }

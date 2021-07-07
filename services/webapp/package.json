@@ -138,6 +138,7 @@
     "build-storybook": "node ./scripts/build-storybook.js",
     "graphql:download-schema": "/bin/sh ./scripts/download-graphql-schema.sh",
     "graphql:generate-types": "yarn graphql-codegen -c ./graphql/codegen/contentful.yml",
+    "graphql:extract-schema-types": "yarn graphql-codegen -c graphql/codegen/schemaTypes.yml",
     "relay": "yarn run relay-compiler --customScalars.DateTime=String --schema ./graphql/schema/api.graphql.chunk --src ./src --language typescript --artifactDirectory ./src/__generated__"
   },
   "eslintConfig": {

@@ -18,8 +18,13 @@ export const RelativeDate = styled(RelativeDateBase)`
   ${microlabel};
 `;
 
-export const Name = styled.h5`
-  ${labelBold}
+export const Name = styled.a`
+  ${labelBold};
+  text-decoration: underline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 export const IconContainer = styled.div`

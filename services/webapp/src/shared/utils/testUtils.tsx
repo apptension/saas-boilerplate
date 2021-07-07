@@ -36,7 +36,7 @@ export interface ContextData {
   };
   store?: GlobalState;
   messages?: TranslationMessages;
-  relayEnvironment?: RelayMockEnvironment;
+  relayEnvironment?: RelayMockEnvironment | ((env: RelayMockEnvironment) => void);
   apolloMocks?: any[];
 }
 
@@ -56,7 +56,17 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
     messages: messages ?? translationMessages[DEFAULT_LOCALE],
   };
 
-  const relayEnvironment = context?.relayEnvironment ?? createMockEnvironment();
+  const relayEnvironment = (() => {
+    if (context?.relayEnvironment === undefined) {
+      return createMockEnvironment();
+    }
+    if (typeof context.relayEnvironment === 'function') {
+      const mockEnvironment = createMockEnvironment();
+      context.relayEnvironment(mockEnvironment);
+      return mockEnvironment;
+    }
+    return context.relayEnvironment;
+  })();
 
   return (
     <Router history={routerHistory}>

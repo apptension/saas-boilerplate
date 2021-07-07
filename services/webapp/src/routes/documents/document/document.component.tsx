@@ -1,24 +1,43 @@
-import { ReactNode } from 'react';
-import faker from 'faker';
 import { FormattedMessage } from 'react-intl';
 import documentIcon from '@iconify-icons/ion/document-text-outline';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { useFragment } from 'react-relay';
+import graphql from 'babel-plugin-relay/macro';
 import { Icon } from '../../../shared/components/icon';
-import { Container, RelativeDate, Name, DeleteButton, IconContainer } from './document.styles';
+import { documentListItem$key } from '../../../__generated__/documentListItem.graphql';
+import { useHandleDelete } from '../documents.hooks';
+import { Container, DeleteButton, IconContainer, Name, RelativeDate } from './document.styles';
 
 export type DocumentProps = {
-  children?: ReactNode;
+  item: documentListItem$key;
 };
 
-export const Document = (props: DocumentProps) => {
+export const Document = ({ item }: DocumentProps) => {
+  const { id, file, createdAt } = useFragment(
+    graphql`
+      fragment documentListItem on DocumentDemoItemType {
+        id
+        file {
+          url
+          name
+        }
+        createdAt
+      }
+    `,
+    item
+  );
+  const handleDelete = useHandleDelete();
+
   return (
     <Container>
-      <RelativeDate date={faker.date.recent(2)} />
+      <RelativeDate date={new Date(createdAt)} />
       <IconContainer>
         <Icon icon={documentIcon} size={32} />
       </IconContainer>
-      <Name>filename.pdf</Name>
-      <DeleteButton icon={<Icon icon={deleteIcon} />}>
+      <Name title={file?.name ?? ''} target="_blank" href={file?.url ?? undefined}>
+        {file?.name}
+      </Name>
+      <DeleteButton icon={<Icon icon={deleteIcon} />} onClick={() => handleDelete(id)}>
         <FormattedMessage defaultMessage="Delete" description="Documents / Document / Delete button" />
       </DeleteButton>
     </Container>

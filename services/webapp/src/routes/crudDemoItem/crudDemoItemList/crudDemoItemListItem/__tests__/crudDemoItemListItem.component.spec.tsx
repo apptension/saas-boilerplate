@@ -18,7 +18,6 @@ jest.mock('react-redux', () => {
 
 describe('CrudDemoItemListItem: Component', () => {
   const TestRenderer = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const data = useLazyLoadQuery<crudDemoItemListItemTestQuery>(
       graphql`
         query crudDemoItemListItemTestQuery @relay_test_operation {

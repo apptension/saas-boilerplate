@@ -21,6 +21,6 @@ export const Header = styled.h1`
 export const List = styled.ul`
   margin-top: ${sizeUnits(2)};
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   grid-gap: ${sizeUnits(3)};
 `;

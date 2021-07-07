@@ -5,6 +5,7 @@ import { microlabel } from '../../../theme/typography';
 
 type ContainerProps = {
   isDragActive: boolean;
+  disabled: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
@@ -12,8 +13,10 @@ export const Container = styled.div<ContainerProps>`
   text-align: center;
   color: ${color.greyScale.base};
   border: 1px dashed ${(props) => (props.isDragActive ? color.skyBlueScale.base : color.greyScale.get(95))};
+  transition: border-color ${transition.primary}, opacity ${transition.primary};
+  opacity: ${(props) => (props.disabled ? 0.8 : 1)};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   ${microlabel};
-  transition: border-color ${transition.primary};
 `;
 
 export const Text = styled.span``;

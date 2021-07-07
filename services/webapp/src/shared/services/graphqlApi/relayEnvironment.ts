@@ -1,6 +1,8 @@
 import { Environment, Network, Observable, RecordSource, RequestParameters, Store, Variables } from 'relay-runtime';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
-import { fetchGraphQL } from './fetchGraphQL';
+import { FetchFunction } from 'relay-runtime/lib/network/RelayNetworkTypes';
+import { graphQlClient } from '../api/client';
+import { apiURL } from '../api/helpers';
 
 const subscribe = (() => {
   const SUBSCRIPTIONS_URL = (() => {
@@ -25,7 +27,26 @@ const subscribe = (() => {
   };
 })();
 
-const fetchQuery = async (params: RequestParameters, variables: Variables) => fetchGraphQL(params.text, variables);
+const fetchQuery: FetchFunction = async (operation, variables, cacheConfig, uploadables) => {
+  const body = (() => {
+    if (uploadables) {
+      const formData = new FormData();
+      formData.append('query', operation.text ?? '');
+      formData.append('variables', JSON.stringify(variables));
+
+      Object.entries(uploadables).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      return formData;
+    }
+
+    return { query: operation.text, variables };
+  })();
+
+  const { data } = await graphQlClient.post(apiURL('/graphql/'), body);
+  return data;
+};
 
 export default new Environment({
   network: Network.create(fetchQuery, subscribe),
