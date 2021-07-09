@@ -17,33 +17,45 @@ const setCrudName = (name) => {
 export const addCrudItem = (name) => {
   cy.get(ADD_CRUD_ITEM_BTN).click();
   setCrudName(name);
+  cy.intercept('POST', 'api/graphql').as('crudCreated');
   cy.get(SUBMIT_BTN).click();
 };
 
 export const editCrudItem = (name, id) => {
   cy.get(editCrudSelector(id)).contains('Edit').click();
-
   cy.location('pathname').should('contain', `/crud-demo-item/${id}/edit`);
-
   setCrudName(name);
+  cy.intercept('POST', 'api/graphql').as('crudEdited');
   cy.get(SUBMIT_BTN).click();
 };
 
-export const expectCrudToBeDisplayed = (name, id, alias) => {
+export const expectCrudToBeDisplayed = (crudName, crudId, alias) => {
   cy.wait(alias).then((res) => {
-    expect(res.response.body).to.deep.include({ name, id });
+    const createdCrud = res.response.body.data.allCrudDemoItems.edges.filter((edge) => {
+      return edge?.node.id === crudId;
+    });
+    const { id, name } = createdCrud[0].node;
+    expect(createdCrud[0].node).to.deep.include({ id, name });
+  });
+  cy.get(getCrudSelector(crudId)).find('p').contains(crudName);
+};
+
+export const expectEditedCrudToBeDisplayed = (name, id, alias) => {
+  cy.wait(alias).then((res) => {
+    const updatedCrud = res.response.body.data.updateCrudDemoItem.crudDemoItem;
+    expect(updatedCrud).to.deep.include({ id, name });
   });
   cy.get(getCrudSelector(id)).find('p').contains(name);
 };
 
-export const expectCrudToBeCreated = (name, postAlias, getAlias) => {
+export const expectCrudToBeCreated = (name, postAlias) => {
   cy.wait(postAlias).then((res) => {
-    const { id } = res.response.body;
-    expect(res.response.statusCode).to.equal(201);
-    expect(res.response.body).to.eql({ name, id });
+    const { id } = res.response.body.data.createCrudDemoItem.crudDemoItemEdge.node;
+    expect(res.response.statusCode).to.equal(200);
+    expect(res.response.body.data.createCrudDemoItem.crudDemoItemEdge.node).to.eql({ id, name });
     expectSnackbarToBeDisplayed(CHANGES_SAVED_SNACKBAR_TEXT);
-
-    expectCrudToBeDisplayed(name, id, getAlias);
+    cy.get('[href$="/crud-demo-item/"]').contains('Go back').click();
+    expectCrudToBeDisplayed(name, id, postAlias);
   });
 };
 
@@ -57,7 +69,7 @@ const getCrudItems = () =>
 
 export const expectCrudToBeDeleted = (name, id, alias) => {
   cy.wait(alias).then((deleteRes) => {
-    expect(deleteRes.response.statusCode).to.equal(204);
+    expect(deleteRes.response.statusCode).to.equal(200);
     cy.get('li').find('p').should('not.have.text', name);
     cy.get('li').find('a').should('not.contain', `/crud-demo-item/${id}`);
     getCrudItems().then((res) => expect(res.body).not.to.deep.include({ name, id }));

@@ -9,7 +9,7 @@ import {
   editCrudItem,
   expectCrudToBeCreated,
   expectCrudToBeDeleted,
-  expectCrudToBeDisplayed,
+  expectEditedCrudToBeDisplayed,
   getCrudSelector,
 } from '../support/crud';
 import {
@@ -35,11 +35,8 @@ describe('CRUD', () => {
   });
 
   it('should create CRUD item', () => {
-    cy.intercept('POST', '/api/graphql/').as('crudCreated');
-
     addCrudItem(name);
-    cy.intercept('GET', '/api/graphql/').as('getCrud');
-    expectCrudToBeCreated(name, '@crudCreated', '@getCrud');
+    expectCrudToBeCreated(name, '@crudCreated');
   });
 
   it('should preview CRUD item', () => {
@@ -56,23 +53,20 @@ describe('CRUD', () => {
 
   it('should edit CRUD item', () => {
     createCrudWithApi(name).then((res) => {
-      const { id } = res.body;
+      const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
 
-      cy.intercept('PUT', `/api/graphql/${id}/`).as('crudEdited');
-
-      cy.reload();
       editCrudItem(newName, id);
-
       expectSnackbarToBeDisplayed(CHANGES_SAVED_SNACKBAR_TEXT);
       cy.get('[href$="/crud-demo-item/"]').contains('Go back').click();
-      expectCrudToBeDisplayed(newName, id, '@crudEdited');
+
+      expectEditedCrudToBeDisplayed(newName, id, '@crudEdited');
     });
   });
 
   it('should delete CRUD item', () => {
     createCrudWithApi(name).then((res) => {
-      const { id } = res.body;
-      cy.intercept('DELETE', `/api/demo/crud-item/${id}/`).as('crudDeleted');
+      const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
+      cy.intercept('POST', `/api/graphql/`).as('crudDeleted');
 
       cy.reload();
       deleteCrudItem(id);
@@ -85,16 +79,12 @@ describe('CRUD', () => {
     const { crudName, nameState, errorText } = item;
 
     it(`should not create CRUD item with ${nameState} name`, () => {
-      cy.intercept('POST', '/api/demo/crud-item/').as('crudCreated');
-
       addCrudItem(crudName);
       expectErrorTextToBeDisplayed(errorText);
       expectRequestNotToHappen('@crudCreated');
     });
 
     it(`should not edit CRUD item name to be ${nameState}`, () => {
-      cy.intercept('PUT', '/api/demo/crud-item/').as('crudEdited');
-
       createCrudWithApi(name).then((res) => {
         const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
 

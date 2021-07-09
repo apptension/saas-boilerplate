@@ -66,7 +66,7 @@ describe('Change first name and last name', () => {
   });
 });
 
-describe('Change password', () => {
+describe.skip('Change password', () => {
   const userEmail = CHANGE_PASSWORD_EMAIL;
   const oldPassword = Cypress.env('PASSWORD');
   const newPassword = crypto.randomBytes(10).toString('hex');

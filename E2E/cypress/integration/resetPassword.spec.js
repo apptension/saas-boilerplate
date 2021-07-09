@@ -35,7 +35,7 @@ const { URL_REGEX } = require('../support/gmailApi/gmail.api.constants');
 
 const { malformedPasswordResetTokenApiError, noActiveAccountFoundApiError } = API_ERROR_CODES;
 
-describe('Should reset a password if:', () => {
+describe.skip('Should reset a password if:', () => {
   beforeEach(() => {
     cy.visit('/auth/reset-password', BASIC_AUTH);
   });
@@ -57,7 +57,7 @@ describe('Should reset a password if:', () => {
   });
 });
 
-describe('Should not reset a password if:', () => {
+describe.skip('Should not reset a password if:', () => {
   beforeEach(() => {
     cy.visit('/auth/reset-password', BASIC_AUTH);
   });
@@ -121,7 +121,7 @@ describe('Password reset throttle', () => {
     expectRequestNotToHappen('@passwordReset');
   });
 
-  it('should re-send a password reset link 15 seconds after previous request happened', () => {
+  it.skip('should re-send a password reset link 15 seconds after previous request happened', () => {
     cy.clock();
     cy.visit('/auth/reset-password', BASIC_AUTH);
 
@@ -137,7 +137,7 @@ describe('Password reset throttle', () => {
   });
 });
 
-describe('Should not reset a password if:', () => {
+describe.skip('Should not reset a password if:', () => {
   let setNewPasswordLink;
 
   before(() => {
