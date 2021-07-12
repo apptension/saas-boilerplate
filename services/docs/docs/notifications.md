@@ -40,3 +40,39 @@ Mistakes in the data type (e.g., missing nulls) might produce error-prone code. 
 - Delete `addNotificationGenerator` call from  the`plopfile.js`
 - Delete `plop/notification` directory
 - [Check if you should delete WebSocket connection](/graphql-subscriptions#removing-the-feature)
+
+
+## Backend reference
+
+Backend comes with a built-in support for in-app notifications, and possibility to implement other types of notifications.
+
+### Strategies
+
+Enabled notifications strategies are configurable with `NOTIFICATIONS_STRATEGIES` variable in `settings.py` file. Its default value is `["InAppNotificationStrategy"]`.
+
+To write your own notifications strategy, you need to extend the `BaseNotificationStrategy` class that can be found in `apps/notifications/strategies.py` file. The only method that needs to be implemented is:
+
+```python
+@staticmethod
+def send_notification(user: str, type: str, data: dict):
+    ...
+```
+
+There's also second method, that may sometimes come in handy:
+
+```python
+@staticmethod
+def should_send_notification(user: str, type: str):
+    ...
+```
+
+With that method you can decide, if specific user should receive notification with specific type with that strategy.
+
+### Sending notifications
+
+To send notification to users you simple need to call `send_notification` function that can be found in  `apps.notifications.sender` module. It iterates through all enabled strategies and sends notification with specified type and payload to specified user.
+
+### Removing the feature
+
+- Delete `apps/notifications` directory
+- Remove `apps.notifications` from `LOCAL_APPS` variable in `settings.py` file

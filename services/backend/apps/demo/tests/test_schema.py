@@ -98,7 +98,7 @@ class TestCreateCrudDemoItemMutation:
     '''
 
     NOTIFICATIONS_SUBSCRIPTION = '''
-        subscription notificationsSubscription {
+        subscription notificationsListSubscription {
           notificationCreated {
             edges {
               node {
@@ -159,7 +159,7 @@ class TestCreateCrudDemoItemMutation:
         graph_ql_subscription_factory(
             connection__connection_id="conn-id",
             connection__user=admin,
-            operation_name="notificationsSubscription",
+            operation_name="notificationsListSubscription",
             relay_id="1",
             query=self.NOTIFICATIONS_SUBSCRIPTION,
         )
@@ -196,7 +196,7 @@ class TestUpdateCrudDemoItemMutation:
     '''
 
     NOTIFICATIONS_SUBSCRIPTION = '''
-        subscription notificationsSubscription {
+        subscription notificationsListSubscription {
           notificationCreated {
             edges {
               node {
@@ -291,7 +291,7 @@ class TestUpdateCrudDemoItemMutation:
         graph_ql_subscription_factory(
             connection__connection_id="conn-id",
             connection__user=admins[0],
-            operation_name="notificationsSubscription",
+            operation_name="notificationsListSubscription",
             relay_id="1",
             query=self.NOTIFICATIONS_SUBSCRIPTION,
         )

@@ -84,9 +84,9 @@ def test_handler_message_start(web_socket_connection_factory):
         {
             "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": "example.com"},
             "body": (
-                '{\"id\":\"1\",\"type\":\"start\",\"payload\":{\"query\":\"subscription notificationsSubscription {\\n'
-                '  notificationCreated {\\n    id\\n  }\\n}\\n\",\"operationName\":\"notificationsSubscription\",\"'
-                'variables\":{}}}'
+                '{\"id\":\"1\",\"type\":\"start\",\"payload\":{\"query\":\"subscription '
+                'notificationsListSubscription {\\n  notificationCreated {\\n    id\\n  }\\n}\\n\",\"'
+                'operationName\":\"notificationsListSubscription\",\"variables\":{}}}'
             ),
         },
         {},
