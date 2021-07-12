@@ -3,6 +3,7 @@ import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
 import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
+import { useIntl } from 'react-intl';
 import { ButtonProps, ButtonVariant } from '../../button';
 import { Icon } from '../../icon';
 import NotificationsButtonQuery, {
@@ -48,8 +49,18 @@ type ContentProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
 };
 
 const Content = ({ hasUnreadNotifications, ...props }: ContentProps) => {
+  const intl = useIntl();
+
   return (
-    <Button variant={ButtonVariant.ROUND} hasUnreadNotifications={hasUnreadNotifications} {...props}>
+    <Button
+      variant={ButtonVariant.ROUND}
+      hasUnreadNotifications={hasUnreadNotifications}
+      aria-label={intl.formatMessage({
+        defaultMessage: 'Open notifications',
+        description: 'Notifications / Notifications Button / Label',
+      })}
+      {...props}
+    >
       <Icon icon={hasUnreadNotifications ? mailUnreadOutlineIcon : mailOutlineIcon} />
     </Button>
   );
