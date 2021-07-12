@@ -7,11 +7,11 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 @deconstructible
 class UniqueFilePathGenerator:
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, path_prefix):
+        self.path_prefix = path_prefix
 
     def __call__(self, _, filename, *args, **kwargs):
-        return f"{self.path}/{secrets.token_hex(8)}/{filename}"
+        return f"{self.path_prefix}/{secrets.token_hex(8)}/{filename}"
 
 
 class S3Boto3StorageWithCDN(S3Boto3Storage):

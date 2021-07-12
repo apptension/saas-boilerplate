@@ -25,7 +25,7 @@ test:
 	$(MAKE) docker-login
 	$(DOCKER_COMPOSE) up -d db
 	$(MAKE) pull-base-image build-image
-	$(DOCKER_COMPOSE) run -T workers bash ./scripts/run_tests.sh
+	$(DOCKER_COMPOSE) run --rm -T workers bash ./scripts/run_tests.sh
 
 build: test
 

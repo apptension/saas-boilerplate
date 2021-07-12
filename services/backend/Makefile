@@ -11,7 +11,7 @@ setup:
 
 test:
 	$(DOCKER_COMPOSE) build backend
-	$(DOCKER_COMPOSE) run -T backend ./scripts/run_tests.sh
+	$(DOCKER_COMPOSE) run --rm -T backend ./scripts/run_tests.sh
 
 build:
 	$(MAKE) docker-login

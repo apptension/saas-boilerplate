@@ -11,6 +11,7 @@ module.exports = {
       "sentry",
       "emails",
       "notifications",
+      "assets-management",
       {
         type: "category",
         label: "Payments",
