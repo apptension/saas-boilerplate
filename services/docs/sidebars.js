@@ -7,7 +7,13 @@ module.exports = {
       "guides/configure-cicd-slack-notifications",
     ],
     Features: [
-      "graphql-subscriptions",
+      {
+        type: "category",
+        label: "GraphQL",
+        items: [
+          "graphql-subscriptions",
+        ],
+      },
       "sentry",
       "emails",
       "notifications",
