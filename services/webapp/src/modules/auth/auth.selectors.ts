@@ -15,3 +15,5 @@ export const selectProfileInitial = createSelector(
 export const selectProfileEmail = createSelector(selectProfile, (profile) => profile?.email);
 
 export const selectProfileRoles = createSelector(selectProfile, (profile) => profile?.roles ?? []);
+
+export const selectProfileAvatar = createSelector(selectProfile, (profile) => profile?.avatar);

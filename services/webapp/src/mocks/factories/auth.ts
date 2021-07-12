@@ -7,6 +7,7 @@ export const userProfileFactory = createFactory<Profile>(() => ({
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
   roles: faker.random.arrayElements([Role.ADMIN, Role.USER], 2),
+  avatar: faker.internet.avatar(),
 }));
 
 export const loggedInAuthFactory = createFactory<AuthState>(() => ({

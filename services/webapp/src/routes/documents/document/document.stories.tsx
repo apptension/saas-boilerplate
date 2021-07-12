@@ -9,7 +9,7 @@ import { documentFactory } from '../../../mocks/factories/document';
 import { connectionFromArray } from '../../../shared/utils/testUtils';
 import { Document, DocumentProps } from './document.component';
 
-const Wrapper = styled.div`
+const Container = styled.div`
   width: 200px;
   padding: 10px;
 `;
@@ -32,7 +32,7 @@ const Template: Story<DocumentProps> = (args) => {
 
   const item = data.allDocumentDemoItems?.edges[0]?.node;
 
-  return <Wrapper>{item && <Document {...args} item={item} />}</Wrapper>;
+  return <Container>{item && <Document {...args} item={item} />}</Container>;
 };
 
 export default {

@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
 import { selectProfile } from '../../modules/auth/auth.selectors';
-import { Container, Avatar, EmailLabel, RolesLabel, FormHeader, HeaderInfo, Header } from './profile.styles';
+import { AvatarForm } from '../../shared/components/auth/avatarForm';
+import { Container, EmailLabel, RolesLabel, FormHeader, HeaderInfo, Header } from './profile.styles';
 
 export const Profile = () => {
   const profile = useSelector(selectProfile);
@@ -15,16 +16,22 @@ export const Profile = () => {
       </Header>
 
       <HeaderInfo>
-        <Avatar />
+        <AvatarForm />
 
         <EmailLabel>
-          <FormattedMessage defaultMessage="Email:" description="Auth / Profile details / Email label" />{' '}
-          {profile?.email}
+          <FormattedMessage
+            defaultMessage="Email: {email}"
+            description="Auth / Profile details / Email label"
+            values={{ email: profile?.email }}
+          />
         </EmailLabel>
 
         <RolesLabel>
-          <FormattedMessage defaultMessage="Roles:" description="Auth / Profile details / Roles label" />{' '}
-          {profile?.roles?.join(',')}
+          <FormattedMessage
+            defaultMessage="Roles: {roles}"
+            description="Auth / Profile details / Roles label"
+            values={{ roles: profile?.roles?.join(',') }}
+          />
         </RolesLabel>
       </HeaderInfo>
 

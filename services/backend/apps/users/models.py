@@ -4,6 +4,8 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
+from common.storages import UniqueFilePathGenerator
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -63,3 +65,4 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     first_name = models.CharField(max_length=40, blank=True, default='')
     last_name = models.CharField(max_length=40, blank=True, default='')
+    avatar = models.ImageField(upload_to=UniqueFilePathGenerator("avatars"), null=True)

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Container as ContainerBase } from '../notification.styles';
 import { sizeUnits } from '../../../../../theme/size';
+import { circle } from '../../../../../theme';
 
 export const Container = styled(ContainerBase)`
   grid-template-areas: 'avatar title' 'avatar content';
@@ -11,9 +12,7 @@ export const Container = styled(ContainerBase)`
 
 export const Avatar = styled.div`
   grid-area: avatar;
-  width: ${sizeUnits(3)};
-  height: ${sizeUnits(3)};
-  border-radius: 100%;
+  ${circle(sizeUnits(3))}
 `;
 
 export const Title = styled.div`

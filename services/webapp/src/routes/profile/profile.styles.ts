@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Avatar as AvatarBase } from '../../shared/components/avatar';
 import { contentWithLimitedWidth, contentWrapper, formFieldWidth, sizeUnits } from '../../theme/size';
 import { H4, heading3, Paragraph, ParagraphBold } from '../../theme/typography';
 import { greyScale } from '../../theme/color';
@@ -36,6 +35,7 @@ export const HeaderInfo = styled.div`
   display: grid;
   grid-template-areas:
     'avatar'
+    'avatarError'
     'email'
     'roles';
   grid-column-gap: ${sizeUnits(3)};
@@ -46,17 +46,8 @@ export const HeaderInfo = styled.div`
     grid-row-gap: ${sizeUnits(1)};
     grid-template-areas:
       'avatar email'
-      'avatar roles';
-  `};
-`;
-
-export const Avatar = styled(AvatarBase).attrs(() => ({ size: 80 }))`
-  margin-bottom: ${sizeUnits(2)};
-  grid-area: avatar;
-  justify-self: center;
-
-  ${media(Breakpoint.TABLET)`
-    margin-bottom: 0;
+      'avatar roles'
+      'avatarError avatarError';
   `};
 `;
 

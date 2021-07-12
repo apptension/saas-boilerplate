@@ -16,6 +16,8 @@ import {
   RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
+  UpdateAvatarApiRequestData,
+  UpdateAvatarApiResponseData,
   UpdateProfileApiRequestData,
   UpdateProfileApiResponseData,
 } from '../../../shared/services/api/auth/types';
@@ -60,6 +62,14 @@ export const mockUpdateProfile = (
   status = 200
 ) =>
   rest.put<UpdateProfileApiRequestData, UpdateProfileApiResponseData>(AUTH_URL.UPDATE_PROFILE, (req, res, ctx) => {
+    return res(ctx.status(status), ctx.json(response));
+  });
+
+export const mockUpdateAvatar = (
+  response: UpdateAvatarApiResponseData = { ...profile, isError: false },
+  status = 200
+) =>
+  rest.put<UpdateAvatarApiRequestData, UpdateAvatarApiResponseData>(AUTH_URL.UPDATE_AVATAR, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 

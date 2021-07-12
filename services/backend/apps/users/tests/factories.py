@@ -62,3 +62,4 @@ class UserProfileFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     first_name = factory.Faker("first_name", locale="pl")
     last_name = factory.Faker("last_name", locale="pl")
+    avatar = factory.django.ImageField(filename="avatar.jpg")

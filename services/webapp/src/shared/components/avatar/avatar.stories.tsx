@@ -23,8 +23,11 @@ export default {
 
 export const Default = Template.bind({});
 
+export const NoAvatarUser = Template.bind({});
+NoAvatarUser.args = { profile: userProfileFactory({ avatar: null }) };
+
 export const NoNameUser = Template.bind({});
-NoNameUser.args = { profile: userProfileFactory({ firstName: '', lastName: '' }) };
+NoNameUser.args = { profile: userProfileFactory({ firstName: '', lastName: '', avatar: null }) };
 
 export const CustomSize = Template.bind({});
 CustomSize.args = { size: 100 };

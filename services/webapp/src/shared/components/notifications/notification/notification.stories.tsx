@@ -6,15 +6,15 @@ import { Notification, NotificationProps } from './notification.component';
 import { mockedNotificationProps } from './notification.fixtures';
 import { NotificationButton } from './index';
 
-const Wrapper = styled.div`
+const Container = styled.div`
   max-width: 320px;
 `;
 
 const Template: Story<NotificationProps> = (args) => {
   return (
-    <Wrapper>
+    <Container>
       <Notification {...args} />
-    </Wrapper>
+    </Container>
   );
 };
 

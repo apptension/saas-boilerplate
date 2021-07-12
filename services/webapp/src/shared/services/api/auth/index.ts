@@ -18,6 +18,8 @@ import {
   LogoutApiResponseData,
   UpdateProfileApiResponseData,
   UpdateProfileApiRequestData,
+  UpdateAvatarApiRequestData,
+  UpdateAvatarApiResponseData,
 } from './types';
 
 export const AUTH_URL = apiURLs('/auth/', {
@@ -27,6 +29,7 @@ export const AUTH_URL = apiURLs('/auth/', {
   LOGOUT: '/logout/',
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
+  UPDATE_AVATAR: '/me/',
   CHANGE_PASSWORD: '/change-password/',
   CONFIRM_EMAIL: '/confirm/',
 });
@@ -66,6 +69,15 @@ export const me = async () => {
 
 export const updateProfile = async (data: UpdateProfileApiRequestData) => {
   const res = await client.put<UpdateProfileApiResponseData>(AUTH_URL.UPDATE_PROFILE, data);
+  return res.data;
+};
+
+export const updateAvatar = async (data: UpdateAvatarApiRequestData) => {
+  const formData = new FormData();
+  if (data.avatar) {
+    formData.append('avatar', data.avatar);
+  }
+  const res = await client.put<UpdateAvatarApiResponseData>(AUTH_URL.UPDATE_AVATAR, formData);
   return res.data;
 };
 

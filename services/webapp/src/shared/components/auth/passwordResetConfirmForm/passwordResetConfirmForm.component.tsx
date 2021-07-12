@@ -1,14 +1,13 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
 import { FormFieldsRow } from '../../../../theme/size';
-import { snackbarActions } from '../../../../modules/snackbar';
 import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { ROUTES } from '../../../../routes/app.constants';
+import { useSnackbar } from '../../snackbar';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 
@@ -19,8 +18,8 @@ export type PasswordResetConfirmFormProps = {
 
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
-  const asyncDispatch = useAsyncDispatch();
-  const dispatch = useDispatch();
+  const snackbar = useSnackbar();
+  const dispatch = useAsyncDispatch();
   const history = useHistory();
   const generateLocalePath = useGenerateLocalePath();
   const {
@@ -54,7 +53,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
     try {
-      const res = await asyncDispatch(
+      const res = await dispatch(
         confirmPasswordReset({
           newPassword: data.newPassword,
           user,
@@ -65,13 +64,11 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
       if (!res.isError) {
         history.push(generateLocalePath(ROUTES.login));
-        dispatch(
-          snackbarActions.showMessage(
-            intl.formatMessage({
-              defaultMessage: '🎉 Password reset successfully!',
-              description: 'Auth / Reset password confirm / Success message',
-            })
-          )
+        snackbar.showMessage(
+          intl.formatMessage({
+            defaultMessage: '🎉 Password reset successfully!',
+            description: 'Auth / Reset password confirm / Success message',
+          })
         );
       }
     } catch {}

@@ -101,6 +101,7 @@ class TestUserProfile:
         assert response.data["email"] == user_profile.user.email
         assert response.data["first_name"] == user_profile.first_name
         assert response.data["last_name"] == user_profile.last_name
+        assert response.data["avatar"] == user_profile.avatar.url
 
     def test_update_user_profile(self, api_client, user_profile):
         api_client.force_authenticate(user_profile.user)
@@ -125,6 +126,20 @@ class TestUserProfile:
         assert response.data["email"] == user_profile.user.email
         assert response.data["first_name"] == first_name
         assert response.data["last_name"] == last_name
+
+    def test_update_user_avatar(self, api_client, user_profile_factory, mocker):
+        mocker.patch("secrets.token_hex", return_value="a1b2")
+        user_profile = user_profile_factory(avatar=None)
+        new_avatar = user_profile_factory().avatar
+        api_client.force_authenticate(user_profile.user)
+
+        response = api_client.put(reverse("profile"), {"avatar": new_avatar})
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert response.data["avatar"].startswith("https://cdn.example.com/avatars/a1b2/avatar.jpg?")
+
+        user_profile.refresh_from_db()
+        assert user_profile.avatar == new_avatar
 
     def test_return_roles(self, api_client, user_profile):
         api_client.force_authenticate(user_profile.user)

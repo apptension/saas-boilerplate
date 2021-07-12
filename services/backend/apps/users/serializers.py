@@ -10,18 +10,28 @@ from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 
 from . import models, tokens, jwt, notifications
 
+UPLOADED_AVATAR_SIZE_LIMIT = 1 * 1024 * 1024
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     id = rest.HashidSerializerCharField(source_field="users.User.id", source="user.id", read_only=True)
     email = serializers.CharField(source="user.email", read_only=True)
     roles = serializers.SerializerMethodField()
 
-    def get_roles(self, obj):
-        return [group.name for group in obj.user.groups.all()]
-
     class Meta:
         model = models.UserProfile
-        fields = ("id", "first_name", "last_name", "email", "roles")
+        fields = ("id", "first_name", "last_name", "email", "roles", "avatar")
+
+    def validate(self, attrs):
+        avatar = attrs.get('avatar')
+
+        if avatar and avatar.size > UPLOADED_AVATAR_SIZE_LIMIT:
+            raise exceptions.ValidationError({"avatar": _("Too large file")}, 'too_large')
+
+        return attrs
+
+    def get_roles(self, obj):
+        return [group.name for group in obj.user.groups.all()]
 
 
 class UserSignupSerializer(serializers.ModelSerializer):

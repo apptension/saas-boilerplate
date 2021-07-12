@@ -1,5 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-import { UpdateProfileApiResponseData } from '../../shared/services/api/auth/types';
+import { omit } from 'ramda';
+import { UpdateAvatarApiResponseData, UpdateProfileApiResponseData } from '../../shared/services/api/auth/types';
 import * as authActions from './auth.actions';
 import { AuthState, FetchProfileSuccessPayload } from './auth.types';
 
@@ -20,7 +21,13 @@ const handleResetProfile = (state: AuthState) => {
 
 const handleUpdateProfileResolved = (state: AuthState, { payload }: PayloadAction<UpdateProfileApiResponseData>) => {
   if (!payload.isError) {
-    state.profile = payload;
+    state.profile = omit(['isError'], payload);
+  }
+};
+
+const handleUpdateAvatarResolved = (state: AuthState, { payload }: PayloadAction<UpdateAvatarApiResponseData>) => {
+  if (!payload.isError) {
+    state.profile = omit(['isError'], payload);
   }
 };
 
@@ -28,4 +35,5 @@ export const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder.addCase(authActions.fetchProfile.resolved, handleFetchProfileSuccess);
   builder.addCase(authActions.resetProfile, handleResetProfile);
   builder.addCase(authActions.updateProfile.resolved, handleUpdateProfileResolved);
+  builder.addCase(authActions.updateAvatar.resolved, handleUpdateAvatarResolved);
 });

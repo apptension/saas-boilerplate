@@ -1,10 +1,9 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 import { Input } from '../../input';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { changePassword } from '../../../../modules/auth/auth.actions';
-import { snackbarActions } from '../../../../modules/snackbar';
+import { useSnackbar } from '../../snackbar';
 import { Container, ErrorMessage, SubmitButton, FormFieldsRow } from './changePasswordForm.styles';
 
 type ChangePasswordFormFields = {
@@ -15,8 +14,8 @@ type ChangePasswordFormFields = {
 
 export const ChangePasswordForm = () => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const asyncDispatch = useAsyncDispatch();
+  const snackbar = useSnackbar();
+  const dispatch = useAsyncDispatch();
   const {
     register,
     handleSubmit,
@@ -49,17 +48,15 @@ export const ChangePasswordForm = () => {
 
   const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
     try {
-      const res = await asyncDispatch(changePassword({ oldPassword, newPassword }));
+      const res = await dispatch(changePassword({ oldPassword, newPassword }));
       setApiResponse(res);
       if (!res.isError) {
         reset();
-        dispatch(
-          snackbarActions.showMessage(
-            intl.formatMessage({
-              defaultMessage: 'Password successfully changed.',
-              description: 'Auth / Change password / Success message',
-            })
-          )
+        snackbar.showMessage(
+          intl.formatMessage({
+            defaultMessage: 'Password successfully changed.',
+            description: 'Auth / Change password / Success message',
+          })
         );
       }
     } catch {}

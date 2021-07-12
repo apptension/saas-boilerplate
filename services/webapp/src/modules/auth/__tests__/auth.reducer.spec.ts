@@ -36,7 +36,17 @@ describe('Auth: reducer', () => {
     const profile = userProfileFactory();
 
     it('should update user profile', () => {
-      const action = authActions.fetchProfile.resolved(profile);
+      const action = authActions.updateProfile.resolved({ ...profile, isError: false });
+      const resultState = reducer(defaultState, action);
+      expect(resultState.profile).toEqual(profile);
+    });
+  });
+
+  describe('updateAvatar.resolve', () => {
+    const profile = userProfileFactory();
+
+    it('should update user profile', () => {
+      const action = authActions.updateAvatar.resolved({ ...profile, isError: false });
       const resultState = reducer(defaultState, action);
       expect(resultState.profile).toEqual(profile);
     });

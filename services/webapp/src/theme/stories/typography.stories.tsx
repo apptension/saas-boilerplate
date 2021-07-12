@@ -2,12 +2,12 @@ import { Story } from '@storybook/react';
 import styled from 'styled-components';
 import { H1, H2, H3, H4, H5, Paragraph, ParagraphBold, Label, MicroLabel, UltraMicroLabel } from '../typography';
 
-const Wrapper = styled.div`
+const Container = styled.div`
   margin: 20px;
 `;
 
 const Template: Story = (args) => (
-  <Wrapper {...args}>
+  <Container {...args}>
     <H1>Heading 1</H1>
     <H2>Heading 2</H2>
     <H3>Heading 3</H3>
@@ -24,12 +24,12 @@ const Template: Story = (args) => (
     <div>
       <UltraMicroLabel>Ultra Micro Label</UltraMicroLabel>
     </div>
-  </Wrapper>
+  </Container>
 );
 
 export default {
   title: 'Styleguide/Typography',
-  component: Wrapper,
+  component: Container,
 };
 
 export const Primary = Template.bind({});

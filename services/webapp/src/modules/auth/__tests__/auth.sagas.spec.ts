@@ -12,6 +12,7 @@ import {
   mockMe,
   mockRequestPasswordReset,
   mockSignup,
+  mockUpdateAvatar,
   mockUpdateProfile,
 } from '../../../mocks/server/handlers';
 import history from '../../../shared/utils/history';
@@ -208,6 +209,43 @@ describe('Auth: sagas', () => {
         .withState(defaultState)
         .put(snackbarActions.showMessage(null))
         .dispatch(authActions.updateProfile(updateProfilePayload))
+        .silentRun();
+    });
+  });
+
+  describe('updateAvatar', () => {
+    const updateAvatar = {
+      avatar: null,
+    };
+    const profile = userProfileFactory({ ...updateAvatar });
+
+    it('should resolve action if call completes successfully', async () => {
+      server.use(mockUpdateAvatar({ ...profile, isError: false }));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.updateAvatar.resolved({ ...profile, isError: false }))
+        .dispatch(authActions.updateAvatar(updateAvatar))
+        .silentRun();
+    });
+
+    it('should reject action if call completes with error', async () => {
+      server.use(mockUpdateAvatar({ isError: true }, StatusCodes.BAD_REQUEST));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(authActions.updateAvatar.resolved({ isError: true }))
+        .dispatch(authActions.updateAvatar(updateAvatar))
+        .silentRun();
+    });
+
+    it('should prompt snackbar error if call completes with unexpected error', async () => {
+      server.use(mockUpdateAvatar({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
+
+      await expectSaga(watchAuth)
+        .withState(defaultState)
+        .put(snackbarActions.showMessage(null))
+        .dispatch(authActions.updateAvatar(updateAvatar))
         .silentRun();
     });
   });

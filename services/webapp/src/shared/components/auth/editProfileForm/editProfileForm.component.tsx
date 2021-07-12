@@ -1,19 +1,19 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { selectProfile } from '../../../../modules/auth/auth.selectors';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { updateProfile } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../input';
-import { snackbarActions } from '../../../../modules/snackbar';
+import { useSnackbar } from '../../snackbar';
 import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';
 import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';
 import { UpdateProfileFormFields } from './editProfileForm.types';
 
 export const EditProfileForm = () => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const asyncDispatch = useAsyncDispatch();
+  const snackbar = useSnackbar();
+  const dispatch = useAsyncDispatch();
   const profile = useSelector(selectProfile);
 
   const {
@@ -32,17 +32,15 @@ export const EditProfileForm = () => {
 
   const onProfileUpdate = async (profile: UpdateProfileFormFields) => {
     try {
-      const res = await asyncDispatch(updateProfile(profile));
+      const res = await dispatch(updateProfile(profile));
       setApiResponse(res);
 
       if (!res.isError) {
-        dispatch(
-          snackbarActions.showMessage(
-            intl.formatMessage({
-              defaultMessage: 'Personal data successfully changed.',
-              description: 'Auth / Update profile/ Success message',
-            })
-          )
+        snackbar.showMessage(
+          intl.formatMessage({
+            defaultMessage: 'Personal data successfully changed.',
+            description: 'Auth / Update profile/ Success message',
+          })
         );
       }
     } catch {}
