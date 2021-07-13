@@ -75,6 +75,15 @@ export class WebappCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: WebAppCiConfigProps) {
+    const configEnvVariables = Object.assign(
+      {},
+      ...Object.keys(props.envSettings.webAppEnvVariables).map((k) => ({
+        [k]: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: props.envSettings.webAppEnvVariables[k],
+        },
+      }))
+    );
     const dockerAssumeRole = new Role(this, "BuildDockerAssume", {
       assumedBy: new AccountRootPrincipal(),
     });
@@ -118,6 +127,7 @@ export class WebappCiConfig extends ServiceCiConfig {
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
+        ...configEnvVariables,
         ASSUME_ROLE_ARN: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,

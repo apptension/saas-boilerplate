@@ -15,5 +15,8 @@
     "domains": {
       "versionMatrix": "status.saas.apptoku.com"
     }
+  },
+  "webAppConfig": {
+    "envVariables": {}
   }
 }

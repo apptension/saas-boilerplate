@@ -6,7 +6,7 @@ import { apiURL } from '../api/helpers';
 
 const subscribe = (() => {
   const SUBSCRIPTIONS_URL = (() => {
-    const envValue = process.env['REACT_APP_SUBSCRIPTIONS_URL'] ?? 'wss://app.qa.saas.apptoku.com/ws';
+    const envValue = process.env['REACT_APP_SUBSCRIPTIONS_URL'];
     if (!envValue) {
       throw new Error('Env variable REACT_APP_SUBSCRIPTIONS_URL not set');
     }

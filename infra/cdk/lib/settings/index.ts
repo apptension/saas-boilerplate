@@ -28,6 +28,14 @@ interface ToolsConfig {
     domains: ToolsDomains
 }
 
+interface EnvironmentVariables {
+  [name: string]: string;
+}
+
+interface WebAppConfig {
+  envVariables: EnvironmentVariables;
+}
+
 export interface EnvironmentSettings {
     appBasicAuth: string | null;
     deployBranches: Array<string>;
@@ -39,17 +47,20 @@ export interface EnvironmentSettings {
     projectEnvName: string;
     tools: ToolsConfig,
     version: string;
+    webAppEnvVariables: EnvironmentVariables;
 }
 
 interface ConfigFileContent {
-    toolsConfig: ToolsConfig
+    toolsConfig: ToolsConfig;
+    webAppConfig: WebAppConfig;
 }
 
 export interface EnvConfigFileContent {
     deployBranches: Array<string>,
     hostedZone: EnvConfigHostedZone,
     basicAuth: string,
-    domains: EnvConfigFileDomains
+    domains: EnvConfigFileDomains,
+    webAppConfig: WebAppConfig,
 }
 
 async function readConfig(): Promise<ConfigFileContent> {
@@ -113,5 +124,9 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
         hostedZone: envConfig.hostedZone,
         domains: envConfig.domains,
         deployBranches: envConfig.deployBranches,
+        webAppEnvVariables: {
+          ...(config?.webAppConfig?.envVariables || {}),
+          ...(envConfig?.webAppConfig?.envVariables || {}),
+        },
     };
 }

@@ -1,5 +1,7 @@
 {
-  "deployBranches": ["master"],
+  "deployBranches": [
+    "master"
+  ],
   "hostedZone": {
     "id": "Z08281743N1VR4R6ETETV",
     "name": "saas.apptoku.com"
@@ -12,5 +14,10 @@
     "docs": "docs.qa.saas.apptoku.com",
     "www": "www.qa.saas.apptoku.com",
     "cdn": "cdn.qa.saas.apptoku.com"
+  },
+  "webAppConfig": {
+    "envVariables": {
+      "REACT_APP_SUBSCRIPTIONS_URL": "wss://app.qa.saas.apptoku.com/ws"
+    }
   }
 }
