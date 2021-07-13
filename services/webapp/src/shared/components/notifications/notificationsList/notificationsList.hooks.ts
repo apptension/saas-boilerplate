@@ -29,6 +29,14 @@ export const useMarkAllAsRead = (message: string) => {
       },
       updater: (store) => {
         store.getRoot().setValue(false, 'hasUnreadNotifications');
+
+        const readAt = new Date().toISOString();
+        ConnectionHandler.getConnection(store.getRoot(), 'notificationsList_allNotifications')
+          ?.getLinkedRecords('edges')
+          ?.forEach((edge) => {
+            const notification = edge.getLinkedRecord('node');
+            notification?.setValue(readAt, 'readAt');
+          });
       },
     });
     snackbar.showMessage(message);
