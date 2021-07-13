@@ -2,11 +2,15 @@ import json
 import logging
 
 import jwt
+from hashids import Hashids
+
 import settings
 from dao.db.session import db_session
-from hashids import Hashids
 from userauth.models import User
+from utils import monitoring
 from .. import models, utils
+
+monitoring.init()
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -31,8 +35,15 @@ def handle(event, context):
 
     connection_id = event["requestContext"]["connectionId"]
     cookie_header = event["headers"].get("Cookie", "")
+
     token = get_token_from_cookie(cookie_header)
-    user_id = get_user_id_from_token(token)
+    if not token:
+        return utils.prepare_response("Token is missing.", 400)
+
+    try:
+        user_id = get_user_id_from_token(token)
+    except jwt.ExpiredSignatureError:
+        return utils.prepare_response("Signature has expired.", 400)
 
     with db_session() as session:
         user = session.query(User).filter_by(id=user_id).first()

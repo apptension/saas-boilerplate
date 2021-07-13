@@ -18,7 +18,7 @@ class GraphQLSubscription(models.Base):
     __tablename__ = "websockets_graphqlsubscription"
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    connection_id = Column(ForeignKey("websockets_websocketconnection.id", ondelete="CASCADE"))
+    connection_id = Column(ForeignKey("websockets_websocketconnection.id"))
     connection = relationship(WebSocketConnection)
     relay_id = Column("relay_id", String)
     operation_name = Column("operation_name", String)

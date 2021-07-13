@@ -3,7 +3,10 @@ import logging
 import uuid
 
 from dao.db.session import db_session
+from utils import monitoring
 from .. import models, apigateway, utils
+
+monitoring.init()
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
