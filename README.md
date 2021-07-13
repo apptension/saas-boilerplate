@@ -88,6 +88,17 @@ Check out the [CI/CD documentation](/docs/cicd) to learn more.
 
 <p align="center"> <img src="/docs/images/cicd-diagram-v3.png" alt="CI/CD Diagram" /> </p>
 
+
+## Pycharm integration
+
+### Backend service
+
+One option to configure the python interpreter in pycharm is to add interpreter with docker/docker-compose option.
+The advantage of this solution is independence from using python package manager.
+
+<p align="center"> <img src="/docs/images/pycharm-python.png" alt="Pycharm" /> </p>
+
+
 ## Guides
 
 - [Creating new application environment](/docs/app-environment)
