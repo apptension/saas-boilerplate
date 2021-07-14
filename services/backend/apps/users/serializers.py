@@ -17,6 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     id = rest.HashidSerializerCharField(source_field="users.User.id", source="user.id", read_only=True)
     email = serializers.CharField(source="user.email", read_only=True)
     roles = serializers.SerializerMethodField()
+    avatar = serializers.FileField(required=False)
 
     class Meta:
         model = models.UserProfile
@@ -32,6 +33,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_roles(self, obj):
         return [group.name for group in obj.user.groups.all()]
+
+    def to_representation(self, instance):
+        self.fields["avatar"] = serializers.FileField(source="avatar.thumbnail", default="")
+        return super().to_representation(instance)
+
+    def update(self, instance, validated_data):
+        avatar = validated_data.pop("avatar", None)
+        if avatar:
+            if not instance.avatar:
+                instance.avatar = models.UserAvatar()
+            instance.avatar.original = avatar
+            instance.avatar.save()
+        return super().update(instance, validated_data)
 
 
 class UserSignupSerializer(serializers.ModelSerializer):

@@ -4,6 +4,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
+from common.models import ImageWithThumbnailMixin
 from common.storages import UniqueFilePathGenerator
 
 
@@ -61,8 +62,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.groups.filter(name=name).exists()
 
 
+class UserAvatar(ImageWithThumbnailMixin, models.Model):
+    original = models.ImageField(upload_to=UniqueFilePathGenerator("avatars"), null=True)
+    thumbnail = models.ImageField(upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True)
+
+    THUMBNAIL_SIZE = (128, 128)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     first_name = models.CharField(max_length=40, blank=True, default='')
     last_name = models.CharField(max_length=40, blank=True, default='')
-    avatar = models.ImageField(upload_to=UniqueFilePathGenerator("avatars"), null=True)
+    avatar = models.OneToOneField(UserAvatar, on_delete=models.SET_NULL, null=True, related_name="user_profile")

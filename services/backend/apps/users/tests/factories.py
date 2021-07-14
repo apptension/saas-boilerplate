@@ -55,6 +55,14 @@ class UserFactory(factory.DjangoModelFactory):
         self.is_superuser = True
 
 
+class UserAvatarFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = "users.UserAvatar"
+
+    original = factory.django.ImageField(filename="avatar.jpg")
+    thumbnail = factory.django.ImageField(filename="thumbnails/avatar.jpg")
+
+
 class UserProfileFactory(factory.DjangoModelFactory):
     class Meta:
         model = "users.UserProfile"
@@ -62,4 +70,4 @@ class UserProfileFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     first_name = factory.Faker("first_name", locale="pl")
     last_name = factory.Faker("last_name", locale="pl")
-    avatar = factory.django.ImageField(filename="avatar.jpg")
+    avatar = factory.SubFactory(UserAvatarFactory)
