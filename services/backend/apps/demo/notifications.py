@@ -16,6 +16,7 @@ def send_new_entry_created_notification(entry: models.CrudDemoItem):
                 "id": to_global_id('CrudDemoItemType', str(entry.id)),
                 "name": entry.name,
                 "user": entry.created_by.email,
+                "avatar": entry.created_by.profile.avatar.thumbnail.url if entry.created_by.profile.avatar else None,
             },
         )
 
@@ -34,5 +35,6 @@ def send_entry_updated_notification(entry: models.CrudDemoItem):
                     "id": to_global_id('CrudDemoItemType', str(entry.id)),
                     "name": entry.name,
                     "user": entry.edited_by.email,
+                    "avatar": entry.edited_by.profile.avatar.thumbnail.url if entry.edited_by.profile.avatar else None,
                 },
             )

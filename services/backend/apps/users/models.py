@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
 from common.models import ImageWithThumbnailMixin
-from common.storages import UniqueFilePathGenerator
+from common.storages import UniqueFilePathGenerator, PublicS3Boto3StorageWithCDN
 
 
 class UserManager(BaseUserManager):
@@ -63,8 +63,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserAvatar(ImageWithThumbnailMixin, models.Model):
-    original = models.ImageField(upload_to=UniqueFilePathGenerator("avatars"), null=True)
-    thumbnail = models.ImageField(upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True)
+    original = models.ImageField(
+        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars"), null=True
+    )
+    thumbnail = models.ImageField(
+        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
+    )
 
     THUMBNAIL_SIZE = (128, 128)
 

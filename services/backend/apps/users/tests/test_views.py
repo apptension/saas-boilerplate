@@ -136,7 +136,7 @@ class TestUserProfile:
         response = api_client.put(reverse("profile"), {"avatar": new_avatar})
 
         assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data["avatar"].startswith("https://cdn.example.com/avatars/thumbnails/a1b2/avatar.jpg?")
+        assert response.data["avatar"] == "https://cdn.example.com/avatars/thumbnails/a1b2/avatar.jpg"
 
         user_profile.refresh_from_db()
         assert user_profile.avatar.original == new_avatar

@@ -6,6 +6,7 @@ import {EventBus} from "@aws-cdk/aws-events";
 import {EnvironmentSettings} from "../../../settings";
 import {Bucket} from "@aws-cdk/aws-s3";
 import {
+    CachePolicy, CacheQueryStringBehavior,
     CfnDistribution,
     Distribution,
     OriginRequestPolicy,
@@ -74,7 +75,6 @@ export class EnvComponentsStack extends core.Stack {
     private createFileUploadsBucket(props: EnvComponentsStackProps) {
         return new Bucket(this, "FileUploadsBucket", {
             bucketName: EnvComponentsStack.getFileUploadsBucketName(props.envSettings),
-            blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         });
     };
 
@@ -95,9 +95,16 @@ export class EnvComponentsStack extends core.Stack {
     private createCloudfrontDistribution(props: EnvComponentsStackProps, fileUploadsBucket: Bucket) {
         const originRequestPolicy = new OriginRequestPolicy(this, "OriginRequestPolicy", {
             queryStringBehavior: OriginRequestQueryStringBehavior.all()
+        });
+        const cachePolicy = new CachePolicy(this, "CachePolicy", {
+            queryStringBehavior: CacheQueryStringBehavior.all()
         })
         const distribution = new Distribution(this,"FileUploadsBucketCdn", {
-            defaultBehavior: {origin: new S3Origin(fileUploadsBucket), originRequestPolicy: originRequestPolicy},
+            defaultBehavior: {
+                origin: new S3Origin(fileUploadsBucket),
+                originRequestPolicy: originRequestPolicy,
+                cachePolicy: cachePolicy,
+            },
             domainNames: [props.envSettings.domains.cdn],
             certificate: Certificate.fromCertificateArn(this, "Certificate", Fn.importValue(
                 MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)

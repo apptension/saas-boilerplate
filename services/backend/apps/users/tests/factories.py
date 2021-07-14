@@ -20,6 +20,7 @@ class UserFactory(factory.DjangoModelFactory):
     id = factory.Sequence(lambda n: n)
     email = factory.Faker("email")
     is_superuser = False
+    profile = factory.RelatedFactory("apps.users.tests.factories.UserProfileFactory", factory_related_name="user")
 
     @classmethod
     def _create(cls, *args, **kwargs):
@@ -67,7 +68,7 @@ class UserProfileFactory(factory.DjangoModelFactory):
     class Meta:
         model = "users.UserProfile"
 
-    user = factory.SubFactory(UserFactory)
+    user = factory.SubFactory(UserFactory, profile=None)
     first_name = factory.Faker("first_name", locale="pl")
     last_name = factory.Faker("last_name", locale="pl")
     avatar = factory.SubFactory(UserAvatarFactory)
