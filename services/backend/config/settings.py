@@ -27,6 +27,8 @@ sentry_sdk.init(
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 DEBUG = env("DJANGO_DEBUG")
+ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
+IS_LOCAL_DEBUG = DEBUG and ENVIRONMENT_NAME == "local"
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
 # Application definition

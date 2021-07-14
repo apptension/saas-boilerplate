@@ -27,3 +27,15 @@ urlpatterns = [
         ),
     ),
 ]
+
+if settings.IS_LOCAL_DEBUG:
+    urlpatterns += [
+        path(
+            "debug/",
+            include(
+                [
+                    path("ws/", include("apps.websockets.urls_debug")),
+                ]
+            ),
+        )
+    ]

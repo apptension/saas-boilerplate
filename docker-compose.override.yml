@@ -25,6 +25,7 @@ services:
       - localstack
       - mailcatcher
       - workers
+      - localwsserver
 
   workers:
     volumes:
@@ -93,3 +94,12 @@ services:
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
       - PROJECT_ENV_NAME=${PROJECT_ENV_NAME}
       - CHAMBER_SERVICE=${CHAMBER_SERVICE}
+
+  localwsserver:
+    build: ./tools/localWSServer
+    ports:
+      - "8080:8080"
+    environment:
+      - BE_ENDPOINT_URL=http://backend:5000/
+    volumes:
+      - ./tools/localWSServer/:/app/

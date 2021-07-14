@@ -4,9 +4,12 @@ import boto3
 from django.conf import settings
 
 from .models import WebSocketConnection
+from .local_client import LocalWebsocketClient
 
 
 def get_client():
+    if settings.IS_LOCAL_DEBUG:
+        return LocalWebsocketClient()
     return boto3.client('apigatewaymanagementapi', endpoint_url=settings.WEB_SOCKET_API_ENDPOINT_URL)
 
 

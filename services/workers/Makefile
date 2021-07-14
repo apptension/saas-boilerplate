@@ -2,7 +2,9 @@ SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
 install-node:
-	npm install
+	npm install --legacy-peer-deps
+	# After https://github.com/apptension/react-scripts-apptension/pull/60 is deployed
+	# and proper version is added to package.json, --legacy-peer-deps can be removed
 
 install-python:
 	pdm install
