@@ -3,7 +3,7 @@ import logging
 
 import boto3
 from dao.db.session import db_session
-from . import models
+from .connection import purge_connection
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -16,5 +16,4 @@ def post_to_connection(domain_name, connection_id, body):
         client.post_to_connection(Data=json.dumps(body).encode(), ConnectionId=connection_id)
     except client.exceptions.GoneException:
         with db_session() as session:
-            connection = session.query(models.WebSocketConnection).filter_by(connection_id=connection_id).first()
-            session.delete(connection)
+            purge_connection(connection_id, session)

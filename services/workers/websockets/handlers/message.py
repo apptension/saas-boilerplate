@@ -18,7 +18,6 @@ def handle(event, context):
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
     operation = json.loads(event.get("body", "{}"))
-    logger.info(f"{operation=}")
 
     if operation.get("type") == "connection_init":
         apigateway.post_to_connection(
@@ -33,22 +32,24 @@ def handle(event, context):
 
         with db_session() as session:
             connection = session.query(models.WebSocketConnection).filter_by(connection_id=connection_id).first()
-            subscription = models.GraphQLSubscription(
-                connection=connection,
-                relay_id=subscription_id,
-                operation_name=payload.get("operationName"),
-                query=payload.get("query"),
-                variables=payload.get("variables"),
-            )
-            session.add(subscription)
+            if connection:
+                subscription = models.GraphQLSubscription(
+                    connection=connection,
+                    relay_id=subscription_id,
+                    operation_name=payload.get("operationName"),
+                    query=payload.get("query"),
+                    variables=payload.get("variables"),
+                )
+                session.add(subscription)
 
     elif operation.get("type") == "stop":
         subscription_id = operation.get("id")
 
         with db_session() as session:
             connection = session.query(models.WebSocketConnection).filter_by(connection_id=connection_id).first()
-            session.query(models.GraphQLSubscription).filter_by(
-                connection=connection, relay_id=subscription_id
-            ).delete()
+            if connection:
+                session.query(models.GraphQLSubscription).filter_by(
+                    connection=connection, relay_id=subscription_id
+                ).delete()
 
     return utils.prepare_response(connection_id)

@@ -3,7 +3,8 @@ import logging
 
 from dao.db.session import db_session
 from utils import monitoring
-from .. import models, utils
+from .. import utils
+from ..connection import purge_connection
 
 monitoring.init()
 
@@ -17,8 +18,6 @@ def handle(event, context):
     connection_id = event["requestContext"]["connectionId"]
 
     with db_session() as session:
-        connection = session.query(models.WebSocketConnection).filter_by(connection_id=connection_id).first()
-        session.query(models.GraphQLSubscription).filter_by(connection=connection).delete()
-        session.delete(connection)
+        purge_connection(connection_id, session)
 
     return utils.prepare_response(connection_id)
