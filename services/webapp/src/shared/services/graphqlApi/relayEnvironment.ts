@@ -1,31 +1,46 @@
-import { Environment, Network, Observable, RecordSource, RequestParameters, Store, Variables } from 'relay-runtime';
+import {
+  commitLocalUpdate,
+  Environment,
+  Network,
+  Observable,
+  RecordSource,
+  RequestParameters,
+  Store,
+  Variables,
+} from 'relay-runtime';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { FetchFunction } from 'relay-runtime/lib/network/RelayNetworkTypes';
+import { RecordSourceSelectorProxy } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { graphQlClient } from '../api/client';
 import { apiURL } from '../api/helpers';
+import { refreshToken } from '../api/auth';
 
-const subscribe = (() => {
-  const SUBSCRIPTIONS_URL = (() => {
-    const envValue = process.env['REACT_APP_SUBSCRIPTIONS_URL'];
-    if (!envValue) {
-      throw new Error('Env variable REACT_APP_SUBSCRIPTIONS_URL not set');
-    }
-    return envValue;
-  })();
-
-  const subscriptionClient = new SubscriptionClient(SUBSCRIPTIONS_URL, {
-    reconnect: true,
-  });
-
-  return ({ text, name }: RequestParameters, variables: Variables) => {
-    const subscribeObservable = subscriptionClient.request({
-      query: text === null ? undefined : text,
-      operationName: name,
-      variables,
-    });
-    return Observable.from(subscribeObservable as any) as any;
-  };
+const SUBSCRIPTIONS_URL = (() => {
+  const envValue = process.env['REACT_APP_SUBSCRIPTIONS_URL'];
+  if (!envValue) {
+    throw new Error('Env variable REACT_APP_SUBSCRIPTIONS_URL not set');
+  }
+  return envValue;
 })();
+
+export const subscriptionClient = new SubscriptionClient(SUBSCRIPTIONS_URL, {
+  reconnect: true,
+  lazy: true,
+  minTimeout: 10000,
+});
+
+subscriptionClient.onError(async () => {
+  await refreshToken();
+});
+
+const subscribe = ({ text, name }: RequestParameters, variables: Variables) => {
+  const subscribeObservable = subscriptionClient.request({
+    query: text === null ? undefined : text,
+    operationName: name,
+    variables,
+  });
+  return Observable.from(subscribeObservable as any) as any;
+};
 
 const fetchQuery: FetchFunction = async (operation, variables, cacheConfig, uploadables) => {
   const body = (() => {
@@ -48,7 +63,13 @@ const fetchQuery: FetchFunction = async (operation, variables, cacheConfig, uplo
   return data;
 };
 
-export default new Environment({
+export const relayEnvironment = new Environment({
   network: Network.create(fetchQuery, subscribe),
   store: new Store(new RecordSource()),
 });
+
+export const invalidateRelayStore = () => {
+  commitLocalUpdate(relayEnvironment, (store) => {
+    (store as RecordSourceSelectorProxy).invalidateStore();
+  });
+};

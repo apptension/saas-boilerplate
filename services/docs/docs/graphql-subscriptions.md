@@ -45,13 +45,13 @@ All you have to configure is `REACT_APP_SUBSCRIPTIONS_URL` environment variable.
 
 ### Removing the feature
 
-WebSocket connection is established just when the application starts. You should remove this feature if:
+You should remove this feature if:
 
 - you don't use Subscriptions by yourself
 - you have removed Notifications feature
 
 Steps to remove:
 
-- Delete `subscribe` IIFE, and it's usage from  the `src/shared/services/graphqlApi/relayEnvironment.ts`
+- Delete `SUBSCRIPTIONS_URL, subscriptionClient, subscribe` and it's usages from  the `src/shared/services/graphqlApi/relayEnvironment.ts`
 - Remove `subscriptions-transport-ws` package
 - Remove `REACT_APP_SUBSCRIPTIONS_URL` env variable from `.env`, `.env.example` and `.env.tests` files

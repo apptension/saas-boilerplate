@@ -8,7 +8,7 @@ import { translationMessages } from '../i18n';
 import { GlobalStyle } from '../theme/global';
 import { localesSelectors } from '../modules/locales';
 import { ResponsiveThemeProvider } from '../shared/components/responsiveThemeProvider';
-import relayEnvironment from '../shared/services/graphqlApi/relayEnvironment';
+import { relayEnvironment } from '../shared/services/graphqlApi/relayEnvironment';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 import { Layout } from './layout';
