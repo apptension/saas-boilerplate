@@ -6,6 +6,7 @@ import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { getOauthUrl } from '../../shared/services/api/auth';
 import { handleApiRequest } from '../helpers/handleApiRequest';
 import { navigate } from '../helpers/navigate';
+import { invalidateRelayStore } from '../../shared/services/graphqlApi/relayEnvironment';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
 import { selectIsLoggedIn } from './auth.selectors';
@@ -18,6 +19,7 @@ function* loginResolve(response: LoginApiResponseData) {
 }
 
 function* logoutResolve() {
+  invalidateRelayStore();
   const isLoggedIn: boolean = yield select(selectIsLoggedIn);
   if (isLoggedIn) {
     yield put(authActions.resetProfile());

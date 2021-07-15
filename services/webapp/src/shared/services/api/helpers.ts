@@ -3,7 +3,6 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Store } from 'redux';
 import { GlobalState } from '../../../config/reducers';
-import { invalidateRelayStore } from '../graphqlApi/relayEnvironment';
 import { AUTH_URL, refreshToken } from './auth';
 
 export const validateStatus = (status: number) => (status >= 200 && status < 300) || status === StatusCodes.BAD_REQUEST;
@@ -12,7 +11,6 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
   onFulfilled: (response: AxiosResponse) => response,
   onRejected: async (error: AxiosError) => {
     const forceLogout = () => {
-      invalidateRelayStore();
       store.dispatch({ type: 'AUTH/LOGOUT.RESOLVED' });
       return Promise.reject(error);
     };
