@@ -5,14 +5,13 @@ module.exports = {
       "guides/aws-environment",
       "guides/aws-exec",
       "guides/configure-cicd-slack-notifications",
+      "guides/git-flow",
     ],
     Features: [
       {
         type: "category",
         label: "GraphQL",
-        items: [
-          "graphql-subscriptions",
-        ],
+        items: ["graphql-subscriptions"],
       },
       "sentry",
       "emails",
