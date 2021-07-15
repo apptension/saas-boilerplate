@@ -115,7 +115,7 @@ export const Subscriptions = () => {
           </RowValue>
         </Row>
 
-        <Link to={ROUTES.subscriptions.paymentMethod}>
+        <Link to={generateLocalePath(ROUTES.subscriptions.paymentMethod)}>
           {activeSubscriptionPaymentMethod ? (
             <FormattedMessage
               defaultMessage="Edit payment method"
@@ -136,7 +136,7 @@ export const Subscriptions = () => {
         </Header>
 
         {transactionsHistory.length > 0 ? (
-          <Link to={ROUTES.finances.history}>
+          <Link to={generateLocalePath(ROUTES.finances.history)}>
             <FormattedMessage
               defaultMessage="View transaction history"
               description="My subscription / View history button"

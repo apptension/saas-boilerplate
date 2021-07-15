@@ -33,7 +33,7 @@ export interface Subscription {
     currentPeriodEnd: string;
     trialStart: string | null;
     trialEnd: string | null;
-  };
+  } | null;
   phases: SubscriptionPhase[];
   canActivateTrial: boolean;
   defaultPaymentMethod: StripePaymentMethod | null;

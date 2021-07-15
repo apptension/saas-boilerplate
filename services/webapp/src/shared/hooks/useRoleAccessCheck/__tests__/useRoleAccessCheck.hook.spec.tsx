@@ -3,13 +3,14 @@ import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 import { Role } from '../../../../modules/auth/auth.types';
 import { ProvidersWrapper } from '../../../utils/testUtils';
 import { prepareState } from '../../../../mocks/store';
+import { userProfileFactory } from '../../../../mocks/factories';
 
 const render = ({ userRoles, allowedRoles }: { userRoles: Role[]; allowedRoles: Role | Role[] }) => {
   const store = prepareState((state) => {
-    state.auth.profile = {
+    state.auth.profile = userProfileFactory({
       email: 'user@mail.com',
       roles: userRoles,
-    };
+    });
   });
   return renderHook(() => useRoleAccessCheck(allowedRoles), {
     wrapper: ({ children }) => <ProvidersWrapper context={{ store }}>{children}</ProvidersWrapper>,

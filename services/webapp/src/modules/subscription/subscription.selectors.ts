@@ -61,7 +61,7 @@ export const selectActiveSubscriptionPaymentMethod = createSelector(
 
 export const selectTrialEnd = createSelector(
   selectActiveSubscription,
-  (subscription) => subscription?.subscription.trialEnd
+  (subscription) => subscription?.subscription?.trialEnd
 );
 
 export const selectIsTrialActive = createSelector(selectTrialEnd, (trialEnd) =>
