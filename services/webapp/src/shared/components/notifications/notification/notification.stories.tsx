@@ -32,6 +32,12 @@ Default.args = {
   onClick: action('click action'),
 };
 
+export const NoAvatar = Template.bind({});
+NoAvatar.args = {
+  ...Default.args,
+  avatar: null,
+};
+
 export const Read = Template.bind({});
 Read.args = {
   ...Default.args,

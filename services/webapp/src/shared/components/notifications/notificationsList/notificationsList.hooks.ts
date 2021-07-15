@@ -1,6 +1,5 @@
 import graphql from 'babel-plugin-relay/macro';
 import { ConnectionHandler, usePaginationFragment, useSubscription } from 'react-relay';
-import { GraphQLSubscriptionConfig } from 'relay-runtime';
 import { useMemo } from 'react';
 import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
@@ -84,19 +83,20 @@ export const useNotificationsListContent = (queryResponse: notificationsListQuer
 
   const allNotifications = useMappedConnection(fragment.data.allNotifications);
 
-  const config = useMemo<GraphQLSubscriptionConfig<notificationsListSubscription>>(
-    () => ({
-      variables: {
-        connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
-      },
-      subscription,
-      updater: (store) => {
-        store.getRoot().setValue(true, 'hasUnreadNotifications');
-      },
-    }),
-    []
+  useSubscription<notificationsListSubscription>(
+    useMemo(
+      () => ({
+        variables: {
+          connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
+        },
+        subscription,
+        updater: (store) => {
+          store.getRoot().setValue(true, 'hasUnreadNotifications');
+        },
+      }),
+      []
+    )
   );
-  useSubscription(config);
 
   return { ...fragment, allNotifications };
 };

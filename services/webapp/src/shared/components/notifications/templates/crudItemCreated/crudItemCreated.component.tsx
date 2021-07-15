@@ -9,9 +9,10 @@ export type CrudItemCreatedProps = NotificationType<{
   id: string;
   name: string;
   user: string;
+  avatar: string | null;
 }>;
 
-export const CrudItemCreated = ({ data: { id, name, user }, ...restProps }: CrudItemCreatedProps) => {
+export const CrudItemCreated = ({ data: { id, name, user, avatar }, ...restProps }: CrudItemCreatedProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const history = useHistory();
 
@@ -22,6 +23,7 @@ export const CrudItemCreated = ({ data: { id, name, user }, ...restProps }: Crud
         const route = generateLocalePath(ROUTES.crudDemoItem.details, { id });
         history.push(route);
       }}
+      avatar={avatar}
       title={user}
       content={
         <FormattedMessage

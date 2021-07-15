@@ -21,5 +21,6 @@ Default.args = {
     id: 'data-mock-uuid',
     user: 'example@example.com',
     name: 'CRUD entry name',
+    avatar: 'https://picsum.photos/24/24',
   },
 };

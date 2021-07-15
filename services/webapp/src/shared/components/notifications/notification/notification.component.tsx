@@ -14,6 +14,7 @@ export type NotificationProps = Omit<ExtractNodeType<notificationsListContent['a
   title: ReactNode;
   content: ReactNode;
   children?: ReactNode;
+  avatar?: string | null;
   onClick?: () => void;
   className?: string;
 };
@@ -22,18 +23,20 @@ export const Notification = ({
   id,
   title,
   children,
+  avatar,
   className,
   content,
   onClick,
   readAt,
   createdAt,
 }: NotificationProps) => {
+  const hasAvatar = typeof avatar === 'string';
   const isRead = typeof readAt === 'string';
   const onToggleIsRead = useToggleIsRead({
     id,
     isRead: !isRead,
   });
-  const theme: NotificationTheme = { isRead };
+  const theme: NotificationTheme = { isRead, hasAvatar };
 
   return (
     <ThemeProvider theme={theme}>
@@ -54,7 +57,7 @@ export const Notification = ({
           }
         }}
       >
-        <Avatar src="https://picsum.photos/24/24" />
+        {hasAvatar && <Avatar src={avatar as string} />}
         <MarkAsReadButton variant={ButtonVariant.RAW} onClick={onToggleIsRead}>
           <Icon icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
         </MarkAsReadButton>

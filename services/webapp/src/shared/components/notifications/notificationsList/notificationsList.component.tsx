@@ -15,6 +15,7 @@ import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
+import { NotificationErrorBoundary } from './notificationErrorBoundary';
 
 export type NotificationsListProps = {
   isOpen: boolean;
@@ -95,7 +96,11 @@ const Content = ({ queryResponse }: ContentProps) => {
         if (!NotificationComponent) {
           return null;
         }
-        return <NotificationComponent key={notification.id} {...notification} />;
+        return (
+          <NotificationErrorBoundary key={notification.id}>
+            <NotificationComponent {...notification} />
+          </NotificationErrorBoundary>
+        );
       })}
       {(hasNext || isLoadingNext) && (
         <>

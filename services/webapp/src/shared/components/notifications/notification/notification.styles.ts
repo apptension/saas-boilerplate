@@ -10,17 +10,29 @@ const readColor = color.greyScale.get(55);
 
 export const Container = styled.li<NotificationThemeProps>`
   display: grid;
-  grid-template-areas:
-    'avatar time markAsRead'
-    'avatar title markAsRead'
-    'avatar content content'
-    '. actions actions';
-  grid-template-columns: ${sizeUnits(3)} 1fr ${sizeUnits(3)};
   grid-column-gap: ${sizeUnits(1)};
   transition: background-color ${transition.primary};
   color: ${(props) => (props.theme.isRead ? readColor : 'inherit')};
   ${verticalPadding(sizeUnits(2))}
   ${horizontalPadding(sizeUnits(2))}
+  ${(props) =>
+    props.theme.hasAvatar
+      ? css`
+          grid-template-areas:
+            'avatar time markAsRead'
+            'avatar title markAsRead'
+            'avatar content content'
+            '. actions actions';
+          grid-template-columns: ${sizeUnits(3)} 1fr ${sizeUnits(3)};
+        `
+      : css`
+          grid-template-areas:
+            'time markAsRead'
+            'title markAsRead'
+            'content content'
+            'actions actions';
+          grid-template-columns: 1fr ${sizeUnits(3)};
+        `}
 
 
   &:hover, &:focus {
@@ -37,6 +49,9 @@ export const Avatar = styled.img`
   margin-top: ${sizeUnits(0.5)};
   grid-area: avatar;
   border-radius: 100%;
+  width: ${sizeUnits(3)};
+  height: ${sizeUnits(3)};
+  object-fit: cover;
 `;
 
 export const RelativeDate = styled(RelativeDateBase)`
