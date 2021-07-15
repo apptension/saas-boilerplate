@@ -1,11 +1,11 @@
 import { FormattedMessage } from 'react-intl';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
-import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateAbsoluteLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
 export const Template = () => {
-  const generateLocalePath = useGenerateLocalePath();
-  const url = generateLocalePath(ROUTES.subscriptions.index, {}, { absolute: true });
+  const generateLocalePath = useGenerateAbsoluteLocalePath();
+  const url = generateLocalePath(ROUTES.subscriptions.index);
 
   return (
     <Layout

@@ -2,17 +2,13 @@ import { FormattedMessage } from 'react-intl';
 import { EmailComponentProps } from '../../types';
 import { Button, Layout } from '../../base';
 import { ROUTES } from '../../../routes/app.constants';
-import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateAbsoluteLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 
 export type {{ pascalCase name }}Props = EmailComponentProps & {};
 
 export const Template = ({}: {{ pascalCase name }}Props) => {
-  const generateLocalePath = useGenerateLocalePath();
-  const url = generateLocalePath(
-    ROUTES.confirmEmail,
-    {},
-    { absolute: true }
-  );
+  const generateLocalePath = useGenerateAbsoluteLocalePath();
+  const url = generateLocalePath(ROUTES);
 
   return (
     <Layout

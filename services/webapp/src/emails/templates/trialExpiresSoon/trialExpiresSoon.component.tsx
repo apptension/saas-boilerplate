@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl';
 import { ROUTES } from '../../../routes/app.constants';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
-import { useGenerateLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateAbsoluteLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
 import { Date } from '../../../shared/components/date';
 
 export type TrialExpiresSoonProps = EmailComponentProps & {
@@ -10,8 +10,8 @@ export type TrialExpiresSoonProps = EmailComponentProps & {
 };
 
 export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
-  const generateLocalePath = useGenerateLocalePath();
-  const url = generateLocalePath(ROUTES.home, {}, { absolute: true });
+  const generateLocalePath = useGenerateAbsoluteLocalePath();
+  const url = generateLocalePath(ROUTES.home);
 
   return (
     <Layout

@@ -2,6 +2,7 @@ import { join } from 'path';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams, generatePath } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 import { localesActions } from '../../modules/locales';
 import { DEFAULT_LOCALE, Locale } from '../../i18n';
 
@@ -14,16 +15,22 @@ export const useLocale = () => {
   return lang ?? DEFAULT_LOCALE;
 };
 
+/**
+ * Intended to use in the emails
+ * */
+export const useGenerateAbsoluteLocalePath = () => {
+  const { locale } = useIntl();
+
+  return (path: string, params: Record<string, string | number> = {}) => {
+    const localPath = generatePath(path, { ...params, lang: locale });
+    return join(process.env.REACT_APP_WEB_APP_URL ?? '', localPath);
+  };
+};
+
 export const useGenerateLocalePath = () => {
   const lang = useLocale();
 
-  return (path: string, params: Record<string, string | number> = {}, config?: { absolute: boolean }) => {
-    const localPath = generatePath(path, { ...params, lang });
-    if (config?.absolute) {
-      return join(process.env.REACT_APP_WEB_APP_URL ?? '', localPath);
-    }
-    return localPath;
-  };
+  return (path: string, params: Record<string, string | number> = {}) => generatePath(path, { ...params, lang });
 };
 
 export const useLanguageFromParams = () => {
