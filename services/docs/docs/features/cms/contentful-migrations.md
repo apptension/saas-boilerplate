@@ -1,5 +1,5 @@
 ---
-id: cms-contentful-migrations
+id: contentful-migrations
 title: Run Contentful migrations
 ---
 

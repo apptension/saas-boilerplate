@@ -1,5 +1,5 @@
 ---
-id: sso-google
+id: google
 title: Google SSO
 sidebar_label: Google
 ---

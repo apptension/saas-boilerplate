@@ -1,5 +1,5 @@
 ---
-id: stripe-onetime-payment-complete
+id: complete-payment
 title: Complete the payment
 ---
 

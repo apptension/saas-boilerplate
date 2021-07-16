@@ -1,5 +1,5 @@
 ---
-id: sso-facebook
+id: facebook
 title: Facebook SSO
 sidebar_label: Facebook
 ---

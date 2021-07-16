@@ -1,6 +1,6 @@
 ---
-id: graphql-subscriptions
-title: GraphQL Subscriptions
+id: subscriptions
+title: Subscriptions
 ---
 
 Project comes with support to GraphQL Subscriptions through WebSockets. WebSockets connections are established and maintained with the help of AWS WebSocket Api Gateway. This Api Gateway is deployed as a part of Components Stack.

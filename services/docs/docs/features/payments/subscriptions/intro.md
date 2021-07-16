@@ -1,5 +1,5 @@
 ---
-id: subscriptions-intro
+id: intro
 title: Subscriptions introduction
 ---
 

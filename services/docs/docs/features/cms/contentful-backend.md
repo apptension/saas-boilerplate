@@ -1,5 +1,5 @@
 ---
-id: cms-contentful-backend
+id: contentful-backend
 title: Contentful Backend Integration
 sidebar_title: Backend Integration
 ---

@@ -1,81 +1,95 @@
 module.exports = {
   someSidebar: {
-    Introduction: ["index", "aws-setup", "aws-deployment", "aws-auto-deploy"],
+    Introduction: [
+      "intro/index",
+      "intro/architecture",
+      "intro/cicd-architecture",
+    ],
+    "Setup AWS Infrastructure": [
+      "setup-aws/infrastructure-components",
+      "setup-aws/initial-setup",
+      "setup-aws/environment-stage",
+      "setup-aws/auto-deploy",
+    ],
     Guides: [
-      "guides/aws-environment",
       "guides/aws-exec",
-      "guides/configure-cicd-slack-notifications",
       "guides/git-flow",
+      "guides/aws-manual-deploy",
+      "guides/configure-cicd-slack-notifications",
     ],
     Features: [
-      {
-        type: "category",
-        label: "GraphQL",
-        items: ["graphql-subscriptions"],
-      },
-      "sentry",
-      "emails",
-      "notifications",
-      "assets-management",
+      "features/sentry",
+      "features/emails",
+      "features/notifications",
       {
         type: "category",
         label: "Payments",
         items: [
-          "stripe-payments-intro",
+          "features/payments/stripe-intro",
           {
             type: "category",
             label: "One time payment",
             items: [
-              "stripe-onetime-payment-create-intent",
-              "stripe-onetime-payment-complete",
+              "features/payments/one-time/create-payment-intent",
+              "features/payments/one-time/complete-payment",
             ],
           },
           {
             type: "category",
             label: "Subscriptions",
             items: [
-              "subscriptions-intro",
-              "subscriptions-create-plan",
-              "subscriptions-free-trial",
-              "subscriptions-grace-period",
+              "features/payments/subscriptions/intro",
+              "features/payments/subscriptions/create-plan",
+              "features/payments/subscriptions/free-trial",
+              "features/payments/subscriptions/grace-period",
             ],
           },
-          "stripe-webhooks",
+          "features/payments/stripe-webhooks",
         ],
       },
-
-      "crud-generator",
-      "django-rest-api",
+      "features/assets-management",
+      "features/crud-generator",
+      "features/django-rest-api",
       {
         type: "category",
         label: "SSO",
-        items: ["sso-general", "sso-facebook", "sso-google"],
+        items: [
+          "features/sso/general",
+          "features/sso/facebook",
+          "features/sso/google",
+        ],
       },
       {
         type: "category",
         label: "CMS",
         items: [
-          "cms-contentful-migrations",
-          "cms-contentful-webapp",
-          "cms-contentful-backend",
+          "features/cms/contentful-migrations",
+          "features/cms/contentful-webapp",
+          "features/cms/contentful-backend",
         ],
+      },
+      {
+        type: "category",
+        label: "GraphQL",
+        items: [
+          "features/graphql/subscriptions",
+          "features/graphql/subscriptions-mock-server",
+        ],
+      },
+      {
+        type: "category",
+        label: "Async Workers",
+        items: ["features/async-workers/delete-state-machine"],
       },
       {
         type: "category",
         label: "Dev tools",
         items: [
-          "global-tools",
-          "version-matrix",
-          "graphql-subscriptions-mock-server",
+          "features/dev-tools/global-tools",
+          "features/dev-tools/version-matrix",
         ],
       },
     ],
-    "Async workers": ["delete-state-machine"],
-    "Understanding SaaS Boilerplate": [
-      "architecture",
-      "cicd-architecture",
-      "infrastructure-components",
-    ],
-    Docusaurus: ["style-guide"],
+    Docusaurus: ["docusaurus/style-guide", "docusaurus/example"],
   },
 };

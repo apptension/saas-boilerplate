@@ -1,6 +1,6 @@
 ---
-id: graphql-subscriptions-mock-server
-title: GraphQL Subscriptions Mock Server
+id: subscriptions-mock-server
+title: Subscriptions Mock Server
 ---
 
 This tool is a development GraphQL server to mock and test your GraphQL Subscriptions connections. 

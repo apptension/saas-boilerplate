@@ -1,5 +1,5 @@
 ---
-id: stripe-onetime-payment-create-intent
+id: create-payment-intent
 title: Create payment intent
 ---
 
