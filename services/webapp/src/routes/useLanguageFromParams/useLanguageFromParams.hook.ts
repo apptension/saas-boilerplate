@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams, generatePath } from 'react-router-dom';
@@ -23,7 +22,9 @@ export const useGenerateAbsoluteLocalePath = () => {
 
   return (path: string, params: Record<string, string | number> = {}) => {
     const localPath = generatePath(path, { ...params, lang: locale });
-    return join(process.env.REACT_APP_WEB_APP_URL ?? '', localPath);
+    const WEB_APP_URL = process.env.REACT_APP_WEB_APP_URL ?? ''
+    const separator = WEB_APP_URL.endsWith('/') ? '' : '/';
+    return [WEB_APP_URL ?? '', localPath].join(separator);
   };
 };
 
