@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
@@ -26,11 +26,11 @@ export const Notifications = () => {
   if (!listQueryRef) return null;
 
   return (
-    <>
+    <Suspense fallback={<NotificationsButton.Fallback />}>
       <NotificationsButton listQueryRef={listQueryRef} onClick={notifications.toggle} />
       <ClickAwayListener onClickAway={notifications.clickAway}>
         <NotificationsList isOpen={notifications.isOpen} listQueryRef={listQueryRef} />
       </ClickAwayListener>
-    </>
+    </Suspense>
   );
 };

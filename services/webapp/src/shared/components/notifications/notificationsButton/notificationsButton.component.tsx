@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
 import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
@@ -20,11 +19,7 @@ export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'>
 export const NotificationsButton = ({ listQueryRef, ...props }: NotificationsButtonProps) => {
   const queryResponse = usePreloadedQuery(NotificationsButtonQuery, listQueryRef);
 
-  return (
-    <Suspense fallback={<Content hasUnreadNotifications={false} {...props} />}>
-      <Wrapper queryResponse={queryResponse} {...props} />
-    </Suspense>
-  );
+  return <Wrapper queryResponse={queryResponse} {...props} />;
 };
 
 type WrapperProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
@@ -65,3 +60,5 @@ const Content = ({ hasUnreadNotifications, ...props }: ContentProps) => {
     </Button>
   );
 };
+
+NotificationsButton.Fallback = () => <Content hasUnreadNotifications={false} />;
