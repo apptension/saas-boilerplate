@@ -497,7 +497,7 @@ type CreateCrudDemoItemMutationPayload {
 }
 
 input CreateDocumentDemoItemMutationInput {
-  file: String
+  file: Upload
   createdBy: String
   clientMutationId: String
 }
@@ -567,11 +567,11 @@ type DocumentDemoItemEdge {
 type DocumentDemoItemType implements Node {
   """The ID of the object."""
   id: ID!
-  file: FieldType
+  file: FileFieldType
   createdAt: DateTime!
 }
 
-type FieldType {
+type FileFieldType {
   url: String
   name: String
 }
@@ -659,6 +659,12 @@ type UpdateNotificationMutationPayload {
   hasUnreadNotifications: Boolean
   clientMutationId: String
 }
+
+"""
+Create scalar that ignores normal serialization/deserialization, since
+that will be handled by the multipart request spec
+"""
+scalar Upload
 
 schema {
   query: ApiQuery

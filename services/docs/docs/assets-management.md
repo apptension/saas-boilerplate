@@ -7,7 +7,8 @@ title: Assets Management
 
 ### Files storage
 
-By default, backend is configured to use S3 as its files storage. `DEFAULT_FILE_STORAGE` variable in `settings.py` file is set to `common.storages.S3Boto3StorageWithCDN`. This is `S3Boto3Storage` class that comes by default with `django-storages` library, extended with support to CloudFormation distribution as CDN and query string signature to allow access files in private S3 Bucket.
+By default, backend is configured to use S3 as its files storage. `DEFAULT_FILE_STORAGE` variable in `settings.py` file is set to `common.storages.PrivateS3Boto3StorageWithCDN`. This is `S3Boto3Storage` class that comes by default with `django-storages` library, extended with support to CloudFront distribution as CDN and query string signature to allow access files in private S3 Bucket.
+There is also second storage available - `common.storages.PublicS3Boto3StorageWithCDN`. This one is intended for use with files that don't have to be protected with query string signature, like for example users' avatars. Using this storage, files are uploaded with `public-read` acl set. Those files are cached and provided by CDN - everyone who has url can access them.
 
 Both S3 Bucket and CloudFront Distribution are created as a part of the Components Stack. 
 
@@ -38,7 +39,7 @@ file {
 }
 ```
 
-Currently `name` and `url` are only available parameters, but it can be easily extended in `FieldType` class that can be found in `common/graphql/field_conversions.py`, so that if needed, you can easily add fields like `size`, `extension` and more.
+Currently `name` and `url` are only available parameters, but it can be easily extended in `FileFieldType` class that can be found in `common/graphql/field_conversions.py`, so that if needed, you can easily add fields like `size`, `extension` and more.
 
 
 ## Webapp reference

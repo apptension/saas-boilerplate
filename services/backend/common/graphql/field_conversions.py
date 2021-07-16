@@ -1,10 +1,12 @@
-from django.db.models import FileField
-
 import graphene
+from django.db import models
 from graphene_django.converter import convert_django_field
+from graphene_django.rest_framework.serializer_converter import get_graphene_type_from_serializer_field
+from graphene_file_upload.scalars import Upload
+from rest_framework import serializers
 
 
-class FieldType(graphene.ObjectType):
+class FileFieldType(graphene.ObjectType):
     url = graphene.String()
     name = graphene.String()
 
@@ -15,6 +17,11 @@ class FieldType(graphene.ObjectType):
         return self.name.split("/")[-1]
 
 
-@convert_django_field.register(FileField)
-def convert_field_to_string(field, registry=None):
-    return graphene.Field(FieldType)
+@convert_django_field.register(models.FileField)
+def convert_models_file_field_to_file_field_type(field, registry=None):
+    return graphene.Field(FileFieldType)
+
+
+@get_graphene_type_from_serializer_field.register(serializers.FileField)
+def convert_serializers_file_field_to_upload(field):
+    return Upload

@@ -146,7 +146,7 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "FieldType",
+                    "concreteType": "FileFieldType",
                     "kind": "LinkedField",
                     "name": "file",
                     "plural": false,
@@ -219,7 +219,7 @@ return {
           "enumValues": null,
           "nullable": true,
           "plural": false,
-          "type": "FieldType"
+          "type": "FileFieldType"
         },
         "allDocumentDemoItems.edges.node.file.name": (v1/*: any*/),
         "allDocumentDemoItems.edges.node.file.url": (v1/*: any*/),

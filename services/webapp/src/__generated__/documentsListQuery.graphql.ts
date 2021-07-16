@@ -191,7 +191,7 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "FieldType",
+                    "concreteType": "FileFieldType",
                     "kind": "LinkedField",
                     "name": "file",
                     "plural": false,

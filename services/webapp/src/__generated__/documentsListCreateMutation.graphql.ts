@@ -4,7 +4,7 @@
 
 import { ConcreteRequest } from "relay-runtime";
 export type CreateDocumentDemoItemMutationInput = {
-    file?: string | null;
+    file?: unknown | null;
     createdBy?: string | null;
     clientMutationId?: string | null;
 };
@@ -79,7 +79,7 @@ v3 = {
 v4 = {
   "alias": null,
   "args": null,
-  "concreteType": "FieldType",
+  "concreteType": "FileFieldType",
   "kind": "LinkedField",
   "name": "file",
   "plural": false,
