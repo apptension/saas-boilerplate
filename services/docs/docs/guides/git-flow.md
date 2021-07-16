@@ -53,3 +53,17 @@ It is worth to enrich the PR with comments. If you broke internal codebase rules
 * Quick responding to Code Review comments allows to iterate the code fast
 * Take care of the commit messages quality. Good messages can replace description completely - Bitbucket creates a list of them in the description automatically. 
 * Do not alter the history if somebody has already done review. It gives the reviewer possibility to check what has changed in the new commits.  
+
+## Application versioning
+
+When it comes to assigning version numbers, we are following [Semantic Versioning](https://semver.org/) rules.
+
+If you want to release a new version of the application from the current (master) branch, you need to create a new git tag, following the `MAJOR.MINOR.PATCH` pattern, like:
+```
+git tag 1.0.0
+```
+and push that tag to the origin:
+```
+git push origin 1.0.0
+```
+This tag will be automatically pushed by BitBucket Pipeline to CodeCommit repository. To deploy new version open CodeBuild service in AWS Console, enter the main project (the one following the `{project}-{environment}` pattern, like `saas-qa`) and click "Start build with overrides button". In the Source section select "Git tag" as a "Reference type" and select the tag that you want to deploy. Click "Start build" to confirm selection and start new build.

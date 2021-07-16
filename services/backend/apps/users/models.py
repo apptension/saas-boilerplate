@@ -77,4 +77,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     first_name = models.CharField(max_length=40, blank=True, default='')
     last_name = models.CharField(max_length=40, blank=True, default='')
-    avatar = models.OneToOneField(UserAvatar, on_delete=models.SET_NULL, null=True, related_name="user_profile")
+    avatar = models.OneToOneField(
+        UserAvatar, on_delete=models.SET_NULL, null=True, blank=True, related_name="user_profile"
+    )

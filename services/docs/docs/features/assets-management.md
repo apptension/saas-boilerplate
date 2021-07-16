@@ -41,6 +41,24 @@ file {
 
 Currently `name` and `url` are only available parameters, but it can be easily extended in `FileFieldType` class that can be found in `common/graphql/field_conversions.py`, so that if needed, you can easily add fields like `size`, `extension` and more.
 
+### Creating image thumbnail
+
+Backend provides mixin that can be used, when we need to automatically generate thumbnails for uploaded images. Example usage can be found in `UserAvatar` model: 
+```python
+from common.models import ImageWithThumbnailMixin
+
+class UserAvatar(ImageWithThumbnailMixin, models.Model):
+    original = models.ImageField(
+        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars"), null=True
+    )
+    thumbnail = models.ImageField(
+        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
+    )
+
+    THUMBNAIL_SIZE = (128, 128)
+```
+
+Automatic thumbnail creation currently works for `JPEG`, `PNG` and `GIF` files. If other formats are to be accepted, you need to extend the `FILE_FORMATS` dict from `ImageWithThumbnailMixin` class declaration. By default, image is not being saved at all if format is invalid (is not whitelisted). 
 
 ## Webapp reference
 
