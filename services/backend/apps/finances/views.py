@@ -122,4 +122,4 @@ class UserChargeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewse
 
     def get_queryset(self):
         customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
-        return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded)
+        return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")

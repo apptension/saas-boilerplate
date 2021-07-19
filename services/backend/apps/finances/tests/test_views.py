@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 import callee
 import pytest
 from django.urls import reverse
+from django.utils import timezone
 from djstripe import models as djstripe_models
 from rest_framework import status
 
@@ -192,6 +195,20 @@ class TestUserChargesListView:
         charge_ids = [charge['id'] for charge in response.data]
         assert regular_charge.id in charge_ids
         assert other_customer_charge.id not in charge_ids
+
+    def test_return_charges_ordered_by_creation_date_descending(self, api_client, customer, charge_factory):
+        old_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=1))
+        oldest_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=2))
+        new_charge = charge_factory(customer=customer, created=timezone.now())
+        api_client.force_authenticate(customer.subscriber)
+        url = reverse('charge-list')
+
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK, response.data
+        assert len(response.data) == 3
+        charge_ids = [charge['id'] for charge in response.data]
+        assert charge_ids == [new_charge.id, old_charge.id, oldest_charge.id]
 
 
 class TestPaymentMethodDelete:
