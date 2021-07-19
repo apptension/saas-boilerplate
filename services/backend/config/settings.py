@@ -82,7 +82,7 @@ PARENT_HOST = env('PARENT_HOST', default=None)
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR.path('templates')],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -264,3 +264,5 @@ DEFAULT_FILE_STORAGE = 'common.storages.PrivateS3Boto3StorageWithCDN'
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
 AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
 AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

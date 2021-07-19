@@ -36,8 +36,8 @@ authors = [
 ]
 dependencies = [
     "boto3",
-    "Django==3.1.7",
-    "djangorestframework~=3.11",
+    "Django==3.2.5",
+    "djangorestframework~=3.12",
     "djangorestframework-simplejwt==4.6.0",
     "django-environ",
     "django-extensions",

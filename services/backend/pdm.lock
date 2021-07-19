@@ -191,11 +191,11 @@ dependencies = [
 
 [[package]]
 name = "Django"
-version = "3.1.7"
+version = "3.2.5"
 requires_python = ">=3.6"
 summary = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 dependencies = [
-    "asgiref<4,>=3.2.10",
+    "asgiref<4,>=3.3.2",
     "pytz",
     "sqlparse>=0.2.2",
 ]
@@ -1061,7 +1061,7 @@ dependencies = [
 
 [metadata]
 lock_version = "3"
-content_hash = "sha256:cfd45761cf9fc15c840f3b854fc774470d95a6cc47e9bd37fb11fed806700a6e"
+content_hash = "sha256:ea2087c3a23f3a60f8e527db9ce5f7df76059bcaca7e4cb9d212640a08eda358"
 
 [metadata.files]
 "aniso8601 7.0.0" = [
@@ -1212,9 +1212,9 @@ content_hash = "sha256:cfd45761cf9fc15c840f3b854fc774470d95a6cc47e9bd37fb11fed80
     {file = "dj_stripe-2.5.0-py3-none-any.whl", hash = "sha256:09642d82df08de8f8c2bdbf00df4604de86f739a3fcaab8a4c1edb14e219feb9"},
     {file = "dj-stripe-2.5.0.tar.gz", hash = "sha256:29dfd9288bab2bc3ac269deccba5dbe6c1e58dada02e18284c049898e4e0c6de"},
 ]
-"django 3.1.7" = [
-    {file = "Django-3.1.7-py3-none-any.whl", hash = "sha256:baf099db36ad31f970775d0be5587cc58a6256a6771a44eb795b554d45f211b8"},
-    {file = "Django-3.1.7.tar.gz", hash = "sha256:32ce792ee9b6a0cbbec340123e229ac9f765dff8c2a4ae9247a14b2ba3a365a7"},
+"django 3.2.5" = [
+    {file = "Django-3.2.5-py3-none-any.whl", hash = "sha256:c58b5f19c5ae0afe6d75cbdd7df561e6eb929339985dbbda2565e1cabb19a62e"},
+    {file = "Django-3.2.5.tar.gz", hash = "sha256:3da05fea54fdec2315b54a563d5b59f3b4e2b1e69c3a5841dda35019c01855cd"},
 ]
 "django-environ 0.4.5" = [
     {file = "django_environ-0.4.5-py2.py3-none-any.whl", hash = "sha256:c57b3c11ec1f319d9474e3e5a79134f40174b17c7cc024bbb2fad84646b120c4"},
