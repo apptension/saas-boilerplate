@@ -71,10 +71,7 @@ module.exports = {
       {
         type: "category",
         label: "GraphQL",
-        items: [
-          "features/graphql/subscriptions",
-          "features/graphql/subscriptions-mock-server",
-        ],
+        items: ["features/graphql/subscriptions", "features/graphql/relay"],
       },
       {
         type: "category",
