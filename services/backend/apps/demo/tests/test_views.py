@@ -41,3 +41,11 @@ class TestContentfulDemoItemViewSet:
             item=contentful_demo_item_favorite.item, user=user
         )
         assert not favorite_query.exists()
+
+    def test_remove_favorite_with_wrong_id(self, api_client, user):
+        api_client.force_authenticate(user)
+
+        url = reverse('contentful-demo-item-favorite', kwargs={'pk': "unexisting"})
+        response = api_client.delete(url)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
