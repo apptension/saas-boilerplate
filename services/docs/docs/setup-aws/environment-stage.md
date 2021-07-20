@@ -1,5 +1,4 @@
 ---
-id: environment-stage
 title: Creating application stage environment
 ---
 

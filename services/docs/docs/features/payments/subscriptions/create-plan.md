@@ -1,5 +1,4 @@
----
-id: create-plan 
+--- 
 title: Create new subscription plan
 ---
 

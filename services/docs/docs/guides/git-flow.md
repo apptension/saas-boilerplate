@@ -1,5 +1,4 @@
 ---
-id: git-flow
 title: Git flow
 ---
 

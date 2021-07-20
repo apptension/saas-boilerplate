@@ -1,5 +1,4 @@
 ---
-id: initial-setup
 title: Initial setup
 ---
 
@@ -43,3 +42,10 @@ future.
 ```shell
 make deploy-global-infra
 ```
+
+:::tip Dev Tools
+
+This is also a good time to deploy our helper tools.
+More info can be found [here](/features/dev-tools/global-tools)
+
+:::

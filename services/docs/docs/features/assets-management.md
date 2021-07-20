@@ -1,5 +1,4 @@
 ---
-id: assets-management
 title: Assets Management
 ---
 

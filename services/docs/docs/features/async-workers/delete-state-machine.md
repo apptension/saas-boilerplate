@@ -1,5 +1,4 @@
 ---
-id: delete-state-machine
 title: How to delete a state machine?
 ---
 

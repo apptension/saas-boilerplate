@@ -1,5 +1,4 @@
 ---
-id: aws-deployment
 title: Deploy to AWS
 ---
 

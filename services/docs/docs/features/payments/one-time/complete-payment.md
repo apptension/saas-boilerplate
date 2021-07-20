@@ -1,5 +1,4 @@
 ---
-id: complete-payment
 title: Complete the payment
 ---
 

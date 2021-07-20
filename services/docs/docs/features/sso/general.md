@@ -1,5 +1,4 @@
 ---
-id: general
 title: SSO general info
 sidebar_label: General
 ---

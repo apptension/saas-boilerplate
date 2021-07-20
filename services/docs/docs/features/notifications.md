@@ -1,5 +1,4 @@
 ---
-id: notifications
 title: Notifications
 ---
 

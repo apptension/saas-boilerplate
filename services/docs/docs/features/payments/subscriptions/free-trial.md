@@ -1,5 +1,4 @@
 ---
-id: free-trial
 title: Subscriptions Free Trial
 ---
 

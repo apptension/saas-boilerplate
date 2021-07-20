@@ -1,5 +1,4 @@
 ---
-id: contentful-webapp
 title: Contentful Web App Integration
 sidebar_title: Web App Integration
 ---

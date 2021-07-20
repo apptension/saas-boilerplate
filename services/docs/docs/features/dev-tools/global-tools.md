@@ -1,5 +1,4 @@
 ---
-id: global-tools
 title: Global tools
 ---
 

@@ -1,5 +1,4 @@
 ---
-id: aws-exec
 title: SSH into backend container
 ---
 

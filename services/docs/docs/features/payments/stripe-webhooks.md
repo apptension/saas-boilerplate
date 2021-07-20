@@ -1,5 +1,4 @@
 ---
-id: stripe-webhooks
 title: Stripe webhooks
 ---
 

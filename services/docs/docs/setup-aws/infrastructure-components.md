@@ -1,5 +1,4 @@
 ---
-id: infrastructure-components
 title: Infrastructure components
 ---
 

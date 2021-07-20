@@ -1,5 +1,4 @@
 ---
-id: stripe-intro
 title: Payments introduction
 ---
 

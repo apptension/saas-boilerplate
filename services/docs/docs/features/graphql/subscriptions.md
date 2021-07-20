@@ -1,5 +1,4 @@
 ---
-id: subscriptions
 title: Subscriptions
 ---
 

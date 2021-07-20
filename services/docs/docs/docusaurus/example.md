@@ -1,5 +1,4 @@
 ---
-id: example
 title: Example powered by MDX
 ---
 

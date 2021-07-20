@@ -1,5 +1,4 @@
 ---
-id: contentful-migrations
 title: Run Contentful migrations
 ---
 

@@ -1,5 +1,4 @@
 ---
-id: crud-generator
 title: CRUD generator
 ---
 

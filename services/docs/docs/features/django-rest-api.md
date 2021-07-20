@@ -1,5 +1,4 @@
 ---
-id: django-rest-api
 title: Django REST API
 ---
 

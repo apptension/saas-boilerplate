@@ -1,5 +1,4 @@
 ---
-id: create-payment-intent
 title: Create payment intent
 ---
 

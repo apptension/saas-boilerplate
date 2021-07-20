@@ -1,5 +1,4 @@
 ---
-id: emails
 title: Emails
 ---
 

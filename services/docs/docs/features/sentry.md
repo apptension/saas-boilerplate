@@ -1,5 +1,4 @@
 ---
-id: sentry
 title: Sentry
 ---
 
