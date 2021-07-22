@@ -62,6 +62,9 @@ export class MigrationsStack extends core.Stack {
       environment: {
         CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
         CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
+        DB_PROXY_ENDPOINT: Fn.importValue(
+          MainDatabase.getDatabaseProxyEndpointOutputExportName(props.envSettings)
+        ),
       },
       secrets: {
         DB_CONNECTION: EcsSecret.fromSecretsManager(

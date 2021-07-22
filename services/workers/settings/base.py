@@ -24,10 +24,17 @@ def fetch_db_secret(db_secret_arn):
 LAMBDA_TASK_ROOT = env('LAMBDA_TASK_ROOT', '')
 
 DB_CONNECTION = env('DB_CONNECTION', None)
+DB_PROXY_ENDPOINT = env('DB_PROXY_ENDPOINT', None)
+
 if DB_CONNECTION:
     DB_CONNECTION = json.loads(DB_CONNECTION)
 else:
     DB_CONNECTION = fetch_db_secret(env('DB_SECRET_ARN', None))
+
+    if DB_CONNECTION:
+        if DB_PROXY_ENDPOINT:
+            DB_CONNECTION["host"] = DB_PROXY_ENDPOINT
+            DB_CONNECTION["engine"] = "postgresql"
 
 FROM_EMAIL = env('FROM_EMAIL', None)
 

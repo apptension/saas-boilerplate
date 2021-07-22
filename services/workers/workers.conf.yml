@@ -33,6 +33,12 @@ environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
   PYTHONPATH: /var/task/__pypackages__/3.8/lib
 
+envsDb: &envsDb
+  DB_SECRET_ARN:
+    { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+  DB_PROXY_ENDPOINT:
+    { Fn::ImportValue: "${self:custom.projectEnvName}-databaseProxyEndpoint" }
+
 ScheduleTask:
   environment:
     TASK_SCHEDULING_STATE_MACHINE_ARN: { Ref: 'TaskSchedulingStateMachineID' }
@@ -48,16 +54,14 @@ SendEmail:
 
 SynchronizeContentfulContent:
   environment:
-    DB_SECRET_ARN:
-      { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+    <<: *envsDb
     CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID~true}
     CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN~true}
     CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT~true}
 
 WebSocketsHandler:
   environment:
-    DB_SECRET_ARN:
-      { Fn::ImportValue: "${self:custom.projectEnvName}-databaseSecretArn" }
+    <<: *envsDb
     JWT_SECRET: ${ssm:/${self:custom.ssmService}/JWT_SECRET~true}
     HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT~true}
 

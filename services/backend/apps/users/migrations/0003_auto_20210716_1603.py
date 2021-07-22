@@ -24,7 +24,7 @@ def remove_default_superuser(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0011_auto_20210716_1236'),
+        ('users', '0002_default_groups'),
     ]
 
     operations = [migrations.RunPython(create_default_superuser, remove_default_superuser)]

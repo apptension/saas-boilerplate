@@ -109,7 +109,10 @@ export class ApiStack extends core.Stack {
               AWS_STORAGE_BUCKET_NAME: EnvComponentsStack.getFileUploadsBucketName(
                 props.envSettings
               ),
-              AWS_S3_CUSTOM_DOMAIN: props.envSettings.domains.cdn
+              AWS_S3_CUSTOM_DOMAIN: props.envSettings.domains.cdn,
+              DB_PROXY_ENDPOINT: Fn.importValue(
+                MainDatabase.getDatabaseProxyEndpointOutputExportName(props.envSettings)
+              ),
             },
             secrets: {
               DB_CONNECTION: EcsSecret.fromSecretsManager(

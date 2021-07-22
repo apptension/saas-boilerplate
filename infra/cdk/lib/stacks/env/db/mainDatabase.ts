@@ -1,4 +1,4 @@
-import {CfnOutput, Construct} from "@aws-cdk/core";
+import {CfnOutput, Construct, Duration} from "@aws-cdk/core";
 import {DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion} from "@aws-cdk/aws-rds";
 import {
     InstanceClass,
@@ -34,11 +34,21 @@ export class MainDatabase extends Construct {
         return `${envSettings.projectEnvName}-databaseProxyRoleArn`
     }
 
+    static getDatabaseProxyEndpointOutputExportName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-databaseProxyEndpoint`;
+    }
+
+    static getProxyName(envSettings: EnvironmentSettings) {
+        return `${envSettings.projectEnvName}-rds-proxy`;
+    }
+
     constructor(scope: Construct, id: string, props: MainDatabaseProps) {
         super(scope, id);
 
-        this.instance = this.createDbInstance(props);
-        this.createProxyRole(this.instance, props);
+        const securityGroup = this.createSecurityGroup(props);
+        this.instance = this.createDbInstance(props, securityGroup);
+        const role = this.createProxyRole(this.instance, props);
+        this.createRdsProxy(this.instance, props, role, securityGroup);
     }
 
     createSecurityGroup(props: MainDatabaseProps): SecurityGroup {
@@ -59,15 +69,13 @@ export class MainDatabase extends Construct {
         return sg;
     }
 
-    private createDbInstance(props: MainDatabaseProps) {
-        const securityGroup = this.createSecurityGroup(props);
-
+    private createDbInstance(props: MainDatabaseProps, securityGroup: SecurityGroup) {
         const instance = new DatabaseInstance(this, "Instance", {
             instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
             vpc: props.vpc,
             vpcSubnets: {subnetType: SubnetType.PUBLIC},
             engine: DatabaseInstanceEngine.postgres({
-                version: PostgresEngineVersion.VER_12_4
+                version: PostgresEngineVersion.VER_11_12
             }),
             instanceType: InstanceType.of(InstanceClass.T2, InstanceSize.MICRO),
             databaseName: 'main',
@@ -83,6 +91,31 @@ export class MainDatabase extends Construct {
         }
 
         return instance;
+    }
+
+    private createRdsProxy(
+        instance: DatabaseInstance,
+        props: MainDatabaseProps,
+        role: Role,
+        securityGroup: SecurityGroup
+    ) {
+        const proxy = instance.addProxy("proxy", {
+            dbProxyName: MainDatabase.getProxyName(props.envSettings),
+            borrowTimeout: Duration.seconds(30),
+            maxConnectionsPercent: 100,
+            secrets: instance.secret ? [instance.secret] : [],
+            role: role,
+            vpc: props.vpc,
+            securityGroups: [securityGroup],
+            requireTLS: false,
+        });
+
+        new CfnOutput(this, "DbProxyEndpoint", {
+            exportName: MainDatabase.getDatabaseProxyEndpointOutputExportName(props.envSettings),
+            value: proxy.endpoint,
+        });
+
+        return proxy;
     }
 
     private createProxyRole(instance: DatabaseInstance, props: MainDatabaseProps) {
@@ -112,5 +145,7 @@ export class MainDatabase extends Construct {
             exportName: MainDatabase.getDatabaseProxyRoleArnOutputExportName(props.envSettings),
             value: role.roleArn,
         });
+
+        return role;
     }
 }

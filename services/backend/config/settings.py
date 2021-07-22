@@ -122,6 +122,7 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DB_CONNECTION = json.loads(env("DB_CONNECTION"))
+DB_PROXY_ENDPOINT = env("DB_PROXY_ENDPOINT", default=None)
 
 DATABASES = {
     "default": {
@@ -129,7 +130,7 @@ DATABASES = {
         "NAME": DB_CONNECTION["dbname"],
         "USER": DB_CONNECTION["username"],
         "PASSWORD": DB_CONNECTION["password"],
-        "HOST": DB_CONNECTION["host"],
+        "HOST": DB_PROXY_ENDPOINT or DB_CONNECTION["host"],
         "PORT": DB_CONNECTION["port"],
     }
 }

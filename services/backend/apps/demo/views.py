@@ -43,6 +43,6 @@ class ContentfulDemoItemFavoriteViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_201_CREATED, data=serializer.data)
 
     def remove_favorite(self, pk=None):
-        instance = get_object_or_404(models.ContentfulDemoItemFavorite.objects.all(), item=pk, user=self.request.user)
+        instance = get_object_or_404(models.ContentfulDemoItemFavorite, item=pk, user=self.request.user)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
