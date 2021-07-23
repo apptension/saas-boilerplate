@@ -13,3 +13,11 @@ Cypress.Commands.overwrite('type', (originalFn, element, text, options) => {
   const clearedText = `{selectall}{backspace}${text}`;
   return originalFn(element, clearedText, options);
 });
+
+Cypress.Commands.add('interceptGraphQl', (query) => {
+  cy.intercept('POST', '/api/graphql/', (req) => {
+    if (req.body.query.includes(query)) {
+      req.alias = query;
+    }
+  });
+});

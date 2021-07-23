@@ -32,11 +32,15 @@ describe('CRUD', () => {
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
     cy.visit('/en/crud-demo-item/', BASIC_AUTH);
+    cy.interceptGraphQl('addCrudDemoItem');
+    cy.interceptGraphQl('updateCrudDemoItem');
+    cy.interceptGraphQl('crudDemoItemListItemDelete');
   });
 
   it('should create CRUD item', () => {
     addCrudItem(name);
-    expectCrudToBeCreated(name, '@crudCreated');
+    cy.interceptGraphQl('crudDemoItemList');
+    expectCrudToBeCreated(name, '@addCrudDemoItem', '@crudDemoItemList');
   });
 
   it('should preview CRUD item', () => {
@@ -59,19 +63,18 @@ describe('CRUD', () => {
       expectSnackbarToBeDisplayed(CHANGES_SAVED_SNACKBAR_TEXT);
       cy.get('[href$="/crud-demo-item/"]').contains('Go back').click();
 
-      expectEditedCrudToBeDisplayed(newName, id, '@crudEdited');
+      expectEditedCrudToBeDisplayed(newName, id, '@updateCrudDemoItem');
     });
   });
 
   it('should delete CRUD item', () => {
     createCrudWithApi(name).then((res) => {
       const { id } = res.body.data.createCrudDemoItem.crudDemoItemEdge.node;
-      cy.intercept('POST', `/api/graphql/`).as('crudDeleted');
 
       cy.reload();
       deleteCrudItem(id);
 
-      expectCrudToBeDeleted(name, id, '@crudDeleted');
+      expectCrudToBeDeleted(name, id, '@crudDemoItemListItemDelete');
     });
   });
 
@@ -81,7 +84,7 @@ describe('CRUD', () => {
     it(`should not create CRUD item with ${nameState} name`, () => {
       addCrudItem(crudName);
       expectErrorTextToBeDisplayed(errorText);
-      expectRequestNotToHappen('@crudCreated');
+      expectRequestNotToHappen('@addCrudDemoItem');
     });
 
     it(`should not edit CRUD item name to be ${nameState}`, () => {
@@ -91,7 +94,7 @@ describe('CRUD', () => {
         cy.reload();
         editCrudItem(crudName, id);
         expectErrorTextToBeDisplayed(errorText);
-        expectRequestNotToHappen('@crudEdited');
+        expectRequestNotToHappen('@updateCrudDemoItem');
       });
     });
   });

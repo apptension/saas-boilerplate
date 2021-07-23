@@ -34,6 +34,7 @@ export const SIGNUP_SNACKBAR_TEXT = 'Congratulations! Your email has been confir
 export const PROFILE_UPDATED_SNACKBAR_TEXT = 'Personal data successfully changed.';
 export const UNEXPECTED_ERROR_SNACKBAR_TEXT = 'Something went wrong.';
 export const CHANGES_SAVED_SNACKBAR_TEXT = 'Changes saved successfully!';
+export const MARK_ALL_NOTIFICATIONS_TEXT = 'All notifications marked as read';
 
 export const CRUD_NAME_TOO_LONG_ERROR_TEXT = 'Name is too long';
 export const CRUD_NAME_REQUIRED_ERROR_TEXT = 'Name is required';

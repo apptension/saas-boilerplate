@@ -37,5 +37,6 @@ declare namespace Cypress {
      * cy.getTokens().then(tokens => { // do something with tokens });
      */
     getTokens();
+    interceptGraphQl(opName: string): Chainable;
   }
 }

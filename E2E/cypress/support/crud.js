@@ -17,7 +17,6 @@ const setCrudName = (name) => {
 export const addCrudItem = (name) => {
   cy.get(ADD_CRUD_ITEM_BTN).click();
   setCrudName(name);
-  cy.intercept('POST', 'api/graphql').as('crudCreated');
   cy.get(SUBMIT_BTN).click();
 };
 
@@ -25,7 +24,6 @@ export const editCrudItem = (name, id) => {
   cy.get(editCrudSelector(id)).contains('Edit').click();
   cy.location('pathname').should('contain', `/crud-demo-item/${id}/edit`);
   setCrudName(name);
-  cy.intercept('POST', 'api/graphql').as('crudEdited');
   cy.get(SUBMIT_BTN).click();
 };
 
@@ -48,8 +46,8 @@ export const expectEditedCrudToBeDisplayed = (name, id, alias) => {
   cy.get(getCrudSelector(id)).find('p').contains(name);
 };
 
-export const expectCrudToBeCreated = (name, postAlias) => {
-  cy.wait(postAlias).then((res) => {
+export const expectCrudToBeCreated = (name, alias, postAlias) => {
+  cy.wait(alias).then((res) => {
     const { id } = res.response.body.data.createCrudDemoItem.crudDemoItemEdge.node;
     expect(res.response.statusCode).to.equal(200);
     expect(res.response.body.data.createCrudDemoItem.crudDemoItemEdge.node).to.eql({ id, name });
@@ -87,6 +85,24 @@ export const createCrudWithApi = (name) => {
         input: {
           name,
         },
+        connections: ['client:root:__crudDemoItemList_allCrudDemoItems_connection'],
+      },
+    },
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+};
+
+export const editCrudWithApi = (id, name) => {
+  return cy.request({
+    method: 'POST',
+    url: '/api/graphql/',
+    body: {
+      query:
+        'mutation editCrudDemoItemContentMutation(\n  $input: UpdateCrudDemoItemMutationInput!\n) {\n  updateCrudDemoItem(input: $input) {\n    crudDemoItem {\n      id\n      name\n    }\n  }\n}\n',
+      variables: {
+        input: { id, name },
         connections: ['client:root:__crudDemoItemList_allCrudDemoItems_connection'],
       },
     },
