@@ -14,11 +14,14 @@ env = environ.Env(
     DJANGO_DEBUG=(bool, False)
 )
 
+ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
+
 sentry_sdk.init(
     dsn=env("SENTRY_DSN", default=None),
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True,
+    environment=ENVIRONMENT_NAME,
 )
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +30,6 @@ sentry_sdk.init(
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 DEBUG = env("DJANGO_DEBUG")
-ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
 IS_LOCAL_DEBUG = DEBUG and ENVIRONMENT_NAME == "local"
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 

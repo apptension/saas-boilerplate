@@ -128,6 +128,10 @@ export class WebappCiConfig extends ServiceCiConfig {
       environmentVariables: {
         ...this.defaultEnvVariables,
         ...configEnvVariables,
+        REACT_APP_ENVIRONMENT_NAME: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: props.envSettings.envStage,
+        },
         ASSUME_ROLE_ARN: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,

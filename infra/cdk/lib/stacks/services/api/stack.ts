@@ -99,6 +99,7 @@ export class ApiStack extends core.Stack {
               envSettings.version
             ),
             environment: {
+              ENVIRONMENT_NAME: envSettings.envStage,
               CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
               CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
               DJANGO_ALLOWED_HOSTS: allowedHosts,

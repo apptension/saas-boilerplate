@@ -19,7 +19,7 @@ import { setUnsupportedClasses } from './shared/utils/unsupported/support';
 import { setupStoreInterceptors } from './shared/services/api/client';
 import { fontFamily } from './theme';
 
-Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
+Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN, environment: process.env.REACT_APP_ENVIRONMENT_NAME });
 
 // Observe loading of primary font
 const primaryFontObserver = new FontFaceObserver(fontFamily.primary, {});

@@ -21,6 +21,8 @@ def fetch_db_secret(db_secret_arn):
     return json.loads(response['SecretString'])
 
 
+ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
+
 LAMBDA_TASK_ROOT = env('LAMBDA_TASK_ROOT', '')
 
 DB_CONNECTION = env('DB_CONNECTION', None)
