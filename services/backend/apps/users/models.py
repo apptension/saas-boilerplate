@@ -4,14 +4,13 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
+from common.acl.helpers import CommonGroups
 from common.models import ImageWithThumbnailMixin
 from common.storages import UniqueFilePathGenerator, PublicS3Boto3StorageWithCDN
 
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
-        from common.acl.helpers import CommonGroups
-
         if not email:
             raise ValueError("Users must have an email address")
 
@@ -36,6 +35,9 @@ class UserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
+    def filter_admins(self):
+        return self.filter(groups__name=CommonGroups.Admin)
 
 
 class User(AbstractBaseUser, PermissionsMixin):

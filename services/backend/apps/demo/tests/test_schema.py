@@ -130,7 +130,7 @@ class TestCreateCrudDemoItemMutation:
 
     def test_create_new_item_sends_notification(self, graphene_client, user_factory):
         user = user_factory()
-        admin = user_factory(is_superuser=True)
+        admin = user_factory(admin=True)
         input = {'name': 'Item name'}
 
         graphene_client.force_authenticate(user)
@@ -159,7 +159,7 @@ class TestCreateCrudDemoItemMutation:
     ):
         post_to_connection = mocker.patch("apps.websockets.apigateway.post_to_connection")
         user = user_factory()
-        admin = user_factory(is_superuser=True)
+        admin = user_factory(admin=True)
         input = {'name': 'Item name'}
         graph_ql_subscription_factory(
             connection__connection_id="conn-id",
@@ -236,7 +236,7 @@ class TestUpdateCrudDemoItemMutation:
     ):
         user = user_factory()
         other_user = user_factory()
-        admins = user_factory.create_batch(2, is_superuser=True)
+        admins = user_factory.create_batch(2, admin=True)
         crud_demo_item = crud_demo_item_factory(created_by=user)
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         input = {
@@ -268,7 +268,7 @@ class TestUpdateCrudDemoItemMutation:
     ):
         user = user_factory()
         crud_demo_item = crud_demo_item_factory(created_by=user)
-        admins = user_factory.create_batch(2, is_superuser=True)
+        admins = user_factory.create_batch(2, admin=True)
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         input = {
             'name': 'New item name',
@@ -292,7 +292,7 @@ class TestUpdateCrudDemoItemMutation:
         user = user_factory()
         crud_demo_item.user = user
         crud_demo_item.save()
-        admins = user_factory.create_batch(2, is_superuser=True)
+        admins = user_factory.create_batch(2, admin=True)
         item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
         input = {
             'name': 'New item name',

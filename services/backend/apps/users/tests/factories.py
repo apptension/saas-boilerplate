@@ -53,7 +53,6 @@ class UserFactory(factory.DjangoModelFactory):
 
         user_group, created = Group.objects.get_or_create(name=CommonGroups.Admin)
         self.groups.add(user_group)
-        self.is_superuser = True
 
 
 class UserAvatarFactory(factory.DjangoModelFactory):
