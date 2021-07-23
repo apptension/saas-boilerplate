@@ -391,14 +391,31 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     container: ContainerDefinition,
     targets: ApplicationTargetProps[]
   ): ApplicationTargetGroup {
+    interface GroupedTarget {
+      target: {protocol?: Protocol, containerPort: number},
+      hosts: ApplicationTargetProps[],
+    }
+    let groupedTargets: {[id: string]: GroupedTarget} = {};
     targets?.forEach((targetProps, index) => {
-      const idSuffix = index > 0 ? index : "";
+      const key = `${targetProps.protocol}, ${targetProps.containerPort}`;
+      if(!(key in groupedTargets)) {
+        groupedTargets[key] = {
+          target: {
+            protocol: targetProps.protocol,
+            containerPort: targetProps.containerPort
+          },
+          hosts: []
+        };
+      }
+      groupedTargets[key].hosts.push(targetProps);
+    });
+    Object.entries(groupedTargets).forEach(([key, groupedTarget], index) => {
       const targetGroup = new ApplicationTargetGroup(
         this,
-        `TargetGroup${idSuffix}`,
+        `TargetGroup${index}`,
         {
           vpc: service.cluster.vpc,
-          port: targetProps.containerPort,
+          port: groupedTarget.target.containerPort,
           healthCheck: {
             path: "/lbcheck",
             protocol: ELBProtocol.HTTP,
@@ -412,22 +429,25 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
           targets: [
             service.loadBalancerTarget({
               containerName: container.containerName,
-              containerPort: targetProps.containerPort,
-              protocol: targetProps.protocol,
+              containerPort: groupedTarget.target.containerPort,
+              protocol: groupedTarget.target.protocol,
             }),
           ],
         }
       );
 
-      this.findListener(targetProps.listener).addTargetGroups(
-        `ECSTargetGroup${idSuffix}${container.containerName}${targetProps.containerPort}`,
-        {
-          hostHeader: targetProps.hostHeader,
-          pathPattern: targetProps.pathPattern,
-          priority: targetProps.priority,
-          targetGroups: [targetGroup],
-        }
-      );
+      groupedTarget.hosts.forEach((targetProps, nestedIndex) => {
+        this.findListener(targetProps.listener).addTargetGroups(
+          `ECSTargetGroup${index}${nestedIndex}${container.containerName}${targetProps.containerPort}`,
+          {
+            hostHeader: targetProps.hostHeader,
+            pathPattern: targetProps.pathPattern,
+            priority: targetProps.priority,
+            targetGroups: [targetGroup],
+          }
+        );
+      });
+
       this.targetGroups.push(targetGroup);
     });
 
