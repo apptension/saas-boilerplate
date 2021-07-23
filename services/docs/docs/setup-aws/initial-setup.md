@@ -2,30 +2,126 @@
 title: Initial setup
 ---
 
+## Prerequisites
+- You need Your own personal account in devops-apptension AWS organization (IAM user).
+- AWS organization (set it up or get access to one from the client) for Your project
+- Admin role for that organization
+- Assignment of that admin role to your personal IAM user
+- A domain
+
+:::tip Dev-Ops needed
+Probably you are not able (dont have sufficient admin rights) to setup first 4 things on Your own so You need to ask some dev-ops to set it up for You.
+:::
+
+---
+
+## [AWS vault](https://github.com/99designs/aws-vault) profile
+### Create profiles
+This profile will be used by `Make` when running any commands that communicate with AWS platform.
+
+```shell
+aws-vault add <your-personal-user-name>
+```
+
+>You should find your `Enter Access Key Id` and `Enter Secret Key` in <br /> the `My security credentials` section of Your AWS web panel.
+
+
+Next You should create a profile for the project admin (connect Your account with the admin role). 
+For that purpose You need to manually edit aws config file. As this profile name will be vastly used we recommend to keep it very short (max 4 chars, e.g "saas").
+```shell
+open ~/.aws/config
+```
+add new section (example below) and save the file 
+```shell
+[profile saas]
+source_profile = your-personal-user-name
+role_arn = arn:aws:iam::123456789:role/SaaSBoilerplateAdminRole
+```
+
+Values to save:
+
+- `name` of the second aws-vault profile (`saas` from the example above)
+
+### Main config file
+Now you can use that profile name in `.awsboilerplate.json` file
+```shell
+"projectName": "saas",
+"defaultEnv": "qa",
+"aws": {
+    "profile": "saas",
+    "region": "eu-west-1"
+},
+...
+```
+
+### AWS vault usage
+From now on You can use  aws-vault for secure connection with AWS platform.
+Always make sure you are in a proper aws-vault context when you run commands that use AWS CLI.
+We created a `make` rule that simplifies this process:
+
+```shell
+make aws-vault
+```
+
+This command will use default environment (more about them in next section), which is being set as `defaultEnv` in `.awsboilerplate.json`.
+
+You can also manually select environment context by passing it directly:
+
+```shell
+make aws-vault ENV_STAGE=qa
+```
+
+> Check out the [usage docs](https://github.com/99designs/aws-vault/blob/master/USAGE.md) for more info about how You can utilize aws-vault.
+
+---
+
 ## Create a hosted zone
 
-The app is HTTPs only so you will need at least one domain and a hosted zone in Route53.
+In order to access any environment you need to have a public Hosted Zone in AWS Route53.
+AWS boilerplate will use this hosted zone's domain to route traffic to your app.
+
+> A hosted zone is a container for records, and records contain information about how you want to route traffic for a specific domain, such as example.com, and its subdomains (acme.example.com, zenith.example.com). A hosted zone and the corresponding domain have the same name.
+>
+> Source: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
+
+Depending on your use case there are multiple approaches to creating a hosted zone:
+
+1.  You don't have a domain yet.
+
+    - Follow this tutorial prepared by AWS team: [Domain registration docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
+
+2.  You have a domain registered in external DNR (e.g. GoDaddy).
+
+    - Active domain (with users) – follow this tutorial by AWS team: [Migrate active DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-in-use.html)
+    - Inactive domain (no users) – follow this tutorial by AWS team: [Migrate inactive DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html)
+
+3.  You have a domain in Route53 already and want to create a subdomain for the env.
+
+    - Follow this tutorial prepared by AWS team: [Route traffic for subdomains](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html)
+
+4.  You have a domain in Route53 already.
+
+    - You most likely already have a hosted zone! You're good to go.
+    
 
 Values to save:
 
 - `id` of the hosted zone
 - `name` of the hosted zone
 
-## Create an [aws-vault](https://github.com/99designs/aws-vault) profile
-
-This profile will be used by `Make` when running any commands that communicate with AWS platform.
-
-Values to save:
-
-- `name` of the aws-vault profile
+---
 
 ## Bootstrap CDK
 
-Switch to AWS context using aws-vault
+Switch to AWS context using aws-vault to get access to role with admin rights
 
 ```shell
 make aws-vault ENV_STAGE=qa
 ```
+
+:::caution Config issue
+Despite the fact that in this case we don't need any environment context (only admin role), currently there is configuration issue that will use env context any way, so please DONT use `local` env in this case.
+:::
 
 Run CDK bootstrap
 
@@ -35,7 +131,7 @@ make setup-infra
 
 ## Deploy Global Infrastructure to AWS
 
-Next up is the [global infrastructure](./infrastructure-components.md#global-infrastructure) CDK stack to create
+Next up is the [global infrastructure](/setup-aws/infrastructure-components#global-infrastructure) CDK stack to create
 the foundations of your system. Resources created in this step will be used by all environments that you'll create in the
 future.
 

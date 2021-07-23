@@ -1,6 +1,6 @@
 {
   "projectName": "saas",
-  "defaultEnv": "local",
+  "defaultEnv": "qa",
   "aws": {
     "profile": "saas",
     "region": "eu-west-1"

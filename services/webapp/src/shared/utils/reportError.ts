@@ -5,7 +5,9 @@ import * as Sentry from '@sentry/react';
  * Use it in all sagas, so you can later send errors to Sentry.
  */
 export const reportError = (error: any): void => {
-  console.error(error); //eslint-disable-line
+  if (process.env.NODE_ENV !== 'test') {
+    console.error(error); //eslint-disable-line
+  }
   if (!error?.response) {
     Sentry.captureException(error);
   }

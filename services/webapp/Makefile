@@ -11,8 +11,14 @@ install-deploy: install-infra-cdk install-scripts
 pull-base-image:
 	/bin/sh ./scripts/pull-base-image.sh
 
+
 test:
+ifeq ($(CI),true)
 	$(DOCKER_COMPOSE) run webapp sh ./scripts/run_tests.sh
+else
+	sh ./scripts/run_tests.sh
+endif
+
 
 build-image:
 	$(DOCKER_COMPOSE) build --build-arg "BASE_IMAGE=${PROJECT_NAME}-webapp-base:latest" webapp

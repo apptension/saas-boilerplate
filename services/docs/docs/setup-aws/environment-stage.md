@@ -2,37 +2,10 @@
 title: Creating application stage environment
 ---
 
-## Prerequisites
+## Configuration file
 
-### Public hosted zone in Route53
-
-Before we create the environment you need to have a public Hosted Zone in AWS Route53.
-AWS boilerplate will use this hosted zone's domain to route traffic to your app.
-
-> A hosted zone is a container for records, and records contain information about how you want to route traffic for a specific domain, such as example.com, and its subdomains (acme.example.com, zenith.example.com). A hosted zone and the corresponding domain have the same name.
->
-> Source: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
-
-Depending on your use case there are multiple approaches to creating a hosted zone:
-
-1.  You don't have a domain yet.
-
-    - Follow this tutorial prepared by AWS team: [Domain registration docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
-
-2.  You have a domain registered in external DNR (e.g. GoDaddy).
-
-    - Active domain (with users) – follow this tutorial by AWS team: [Migrate active DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-in-use.html)
-    - Inactive domain (no users) – follow this tutorial by AWS team: [Migrate inactive DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html)
-
-3.  You have a domain in Route53 already and want to create a subdomain for the env.
-
-    - Follow this tutorial prepared by AWS team: [Route traffic for subdomains](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html)
-
-4.  You have a domain in Route53 already.
-
-    - You most likely already have a hosted zone! You're good to go.
-
-## Configuration
+AWS boilerplate allows you to deploy multiple versions of your application. Those, for example, could be `qa`, `staging`
+, `production` or whatever else you desire. You decide how to call them and how many you would like to have.
 
 The very first thing you need to do is to generate a configuration file that will describe your
 environment. AWS boilerplate expects such file to exist in a root directory and follow a specific naming pattern to be
