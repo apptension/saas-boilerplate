@@ -22,8 +22,8 @@ export const useGenerateAbsoluteLocalePath = () => {
 
   return (path: string, params: Record<string, string | number> = {}) => {
     const localPath = generatePath(path, { ...params, lang: locale });
-    const WEB_APP_URL = process.env.REACT_APP_WEB_APP_URL ?? ''
-    const separator = WEB_APP_URL.endsWith('/') ? '' : '/';
+    const WEB_APP_URL = process.env.REACT_APP_WEB_APP_URL ?? '';
+    const separator = WEB_APP_URL.endsWith('/') || localPath.startsWith('/') ? '' : '/';
     return [WEB_APP_URL ?? '', localPath].join(separator);
   };
 };

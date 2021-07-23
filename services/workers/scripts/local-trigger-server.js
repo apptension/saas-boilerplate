@@ -49,6 +49,9 @@ app.post("/", (req, res) => {
 
   Object.keys(serverlessConfig.functions).forEach((fnName) => {
     const fnConfig = serverlessConfig.functions[fnName];
+    if (!fnConfig.events) {
+      return;
+    }
     fnConfig.events.forEach((event) => {
       if (
         event.eventBridge &&
