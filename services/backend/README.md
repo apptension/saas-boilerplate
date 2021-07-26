@@ -36,3 +36,8 @@ This rule deploys admin-panel, api, and migrations stacks.
 - [x] Ability to set user notification implementation
 - [x] Health check endpoint with DB migrations validation
 - [x] Two separate hosts, api & admin using django-hosts
+
+
+## Pycharm integration
+One option to configure the python interpreter in pycharm is to add interpreter with docker/docker-compose option.
+The advantage of this solution is independence from using python package manager.

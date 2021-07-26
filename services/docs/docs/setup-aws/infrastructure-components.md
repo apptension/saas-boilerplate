@@ -6,6 +6,7 @@ title: Infrastructure components
 
 A CDK stack that contains resources, which are used by multiple environments.
 If there's no need to create something per environment stage it should end up in this CDK stack.
+We will take care of this part in [Initial setup](/setup-aws/initial-setup) section.
 
 ## Environment stage
 
@@ -17,6 +18,8 @@ A version of your app that represents a specific stage of your pipeline. We typi
 - `staging` – more stable stage used to host a current code that is scheduled for production deployment. QA specialists
   test this environment before approving code to be deployed to production
 - `production` – the thing you don't touch on Friday at 4pm
+
+More details on how to create and deploy those will be described in [Creating application stage environment](/setup-aws/environment-stage) section.
 
 ## Main stack
 

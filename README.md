@@ -2,106 +2,18 @@
 
 <p align="center"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="AWS Boilerplate License" /> <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance" /> </p>
 
-The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you
-would normally have to spend on system infrastructure's configuration. It contains a number of services that a typical
-web application has (frontend, backend api, admin panel, workers) as well as their continuous deployment. Using this
-boilerplate you can deploy multiple environments, each representing a different stage in your pipeline.
+This project uses docusaurus for documentation purposes.
 
-We don't create any new CLIs or APIs that you need to learn. We use existing solutions,
-which you can extend or change however you like:
+## Hosted documentation
+Until You will modify this project, You can use documentation from the source SaaS Boilerplate project which is available [here](https://docs.qa.saas.apptoku.com/)
 
-- Make
-- CDK (TypeScript)
-- Serverless Framework
-- Docker
-
-## Prerequisites
-
-- Install latest [Node.js](https://nodejs.org/en/download/package-manager/#macos) (with NPM >= 6)
-- Install Python 3.8
-
-  > We recommend installing Python using [`pyenv`](https://github.com/pyenv/pyenv)
-
-- Install [PDM](https://github.com/pdm-project/pdm/#installation)
-- Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) version 2
-- Install [Docker](https://docs.docker.com/get-docker)
-
-## Installation
-
-We recommend cloning this repository instead of downloading the ZIP. This way you'll be able to
-merge latest changes without too much hassle by resolving conflicts using your favourite tools.
-
-To setup the project and install local dependencies run following command:
-
+## Local documentation
+In order to run your local documentation server execute following commands:
 ```sh
-sh ./setup.sh
-```
-
-## Running locally
-
-### Run backend services:
-
-```sh
-make up
-```
-
-Backend is running on `http://localhost:5000`.
-
-Admin Panel is running on `http://admin.localhost:5000`.
-
-Workers trigger server is running on `http://localhost:3005`.
-
-### Run webapp service:
-
-```sh
-cd services/webapp
-yarn
+cd services/docs
 yarn start
 ```
+and go to `localhost:3001`.
 
-## System architecture diagram
+### All changes, new features and project related technical information should be documented by being added to the `docs` service!!
 
-<p align="center"> <img src="/docs/images/system-diagram-v1.png" alt="System Diagram" /> </p>
-
-## How do I deploy the app to AWS?
-
-Check out our [deployment to AWS](/docs/guides/aws-deployment.md) documentation
-
-## Services included in boilerplate
-
-The boilerplate contains a number of typical services that are ready to be deployed to AWS.
-Each of them resides in the `services` directory and has to contain a `Makefile`. Do not change the names of the rules
-that are defined in Makefiles unless you know what you're doing. Most of them are used in CodeBuild jobs in your CI
-pipeline.
-
-- React [web application](/services/webapp)
-- Django [backend and admin panel](/services/backend)
-- Serverless [async workers](/services/workers)
-
-## Continuous integration / Continuous Deployment
-
-Each deployed environment comes with a preconfigured CI/CD implemented with AWS CodeCommit, AWS CodeBuild,
-and AWS CodePipeline. The general idea of deployment is for the user to push code to a `master` branch of the CodeCommit
-repository created by the Ci CDK Stack.
-
-Check out the [CI/CD documentation](/docs/cicd) to learn more.
-
-<p align="center"> <img src="/docs/images/cicd-diagram-v3.png" alt="CI/CD Diagram" /> </p>
-
-
-## Pycharm integration
-
-### Backend service
-
-One option to configure the python interpreter in pycharm is to add interpreter with docker/docker-compose option.
-The advantage of this solution is independence from using python package manager.
-
-<p align="center"> <img src="/docs/images/pycharm-python.png" alt="Pycharm" /> </p>
-
-
-## Guides
-
-- [Creating new application environment](/docs/app-environment)
-- [Using optional helper tools](/services/docs/docs/global-tools.md)
-- [Using AWS Exec](/services/docs/docs/guides/aws-exec.md) to run backend commands in existing ECS Container
-- [Creating new Serverless service](/docs/misc/create-new-serverless-service.md)

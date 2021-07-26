@@ -139,6 +139,26 @@ future.
 make deploy-global-infra
 ```
 
+:::info
+In case of deployment failure related to certificate issues. You might simply try to make the deploy again.  
+:::
+
+
+## Setup Docker Hub account
+We need to setup dockerhub credentials in order receive access to their images base.
+You can create new dockerhub account (there is a free tier) or get access to a existing one from the client. 
+Third option is to use guest account (empty credentials) but in that case there is a very limited number daily downloads which is shared with other AWS users which will cause builds to fail randomly (quite often).
+
+To setup dockerhub credentials go to AWS web panel, access `Secrets manager` and select `GlobalBuildSecrets`, now find `Secret value` section and click `Retrieve secret value` and then `edit`.
+
+Secret's value have to be an object:
+```shell
+{
+  "DOCKER_USERNAME": "example@email.com",
+  "DOCKER_PASSWORD": "password123"
+}
+```
+
 :::tip Dev Tools
 
 This is also a good time to deploy our helper tools.

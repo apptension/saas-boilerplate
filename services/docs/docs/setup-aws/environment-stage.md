@@ -5,7 +5,8 @@ title: Creating application stage environment
 ## Configuration file
 
 AWS boilerplate allows you to deploy multiple versions of your application. Those, for example, could be `qa`, `staging`
-, `production` or whatever else you desire. You decide how to call them and how many you would like to have.
+, `production` or whatever else you desire. You decide how to call them and how many you would like to have. 
+The only exception is `local`, which is a special pre-created local environment (it's needed for example for running Serverless services locally).      
 
 The very first thing you need to do is to generate a configuration file that will describe your
 environment. AWS boilerplate expects such file to exist in a root directory and follow a specific naming pattern to be
@@ -17,6 +18,63 @@ You can easily create it with the following `make` rule we've created for you:
 ```sh
 make create-env
 ```
+
+#### Configuration file specification
+
+##### `deployBranches`
+
+A list of branches that will trigger automatic deployment of this environment.
+
+Type: `Array<string>`
+
+Example: `['master']`
+
+##### `hostedZone.id`
+
+Id of a AWS Route53 hosted zone of a domain used to host services of this env.
+
+Type: `string`
+Example: `Z1019320SEC473QW1LV2`
+
+##### `hostedZone.name`
+
+Name of a AWS Route53 hosted zone of a domain used to host services of this env.
+
+Type: `string`
+
+Example: `qa.awsb.apptoku.com`
+
+##### `basicAuth`
+
+This flag controls if basic auth should be used to access services via HTTP.
+
+Type: `string`
+
+Example: `username:password`
+
+##### `domains.adminPanel`
+
+A domain used to host an admin panel service.
+
+Type: `string`
+
+Example: `admin.qa.awsb.apptoku.com`
+
+##### `domains.api`
+
+A domain used to host an API backend service.
+
+Type: `string`
+
+Example: `api.qa.awsb.apptoku.com`
+
+##### `domains.webApp`
+
+A domain used to host the web app.
+
+Type: `string`
+
+Example: `app.qa.awsb.apptoku.com`
 
 ## Infrastructure deployment
 
@@ -81,7 +139,7 @@ REACT_APP_CONTENTFUL_ENV
 ```
 :::info
 
-Those fields can be set at anytime so this step can be skipped in the initial phase.
+Webapp secret fields can be set at anytime so this step can be skipped in the initial phase.
 
 :::
  

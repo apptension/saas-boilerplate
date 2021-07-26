@@ -48,9 +48,21 @@ files located in the same directories:
 
 - `services/webapp/.env` – variables loaded by webpack when you run the local dev server
 
+- `services/workers/.env` – variables loaded by docker-compose when you invoke worker functions locally
+
 - `services/backend/.env` – variables loaded by docker-compose when you run the backend server locally
 
-- `services/workers/.env` – variables loaded by docker-compose when you invoke worker functions locally
+Key values that have to be set in this file:
+
+| Name                   | Example                           | Description                                                                   |
+| ---------------------- | --------------------------------- | ----------------------------------------------------------------------------- |
+| DJANGO_DEBUG           | True                              | [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-DEBUG) |
+| DJANGO_SECRET_KEY      | Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I  | [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#secret-key)        |
+| HASHID_FIELD_SALT      | t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)      |
+| ADMIN_EMAIL            | admin@exmaple.com                 | Will be used to create first super admin user                                 |
+| ADMIN_DEFAULT_PASSWORD | AvPZpabgj9Z8                      | Will be used to create first super admin user                                 |
+| STRIPE_TEST_SECRET_KEY | sk_test_1234                      | [you can get some here](https://stripe.com/docs/keys)                         |
+
 
 ### Run backend services:
 
@@ -60,9 +72,13 @@ make up
 
 Backend is running on `http://localhost:5000`.
 
+Backend endpoint docs are available on `http://localhost:5000/doc`.
+
 Admin Panel is running on `http://admin.localhost:5000`.
 
 Workers trigger server is running on `http://localhost:3005`.
+
+Mailcatcher is running on `http://localhost:1080`. Check [dedicated doc ](/features/dev-tools/mailcatcher) before using.
 
 ### Run webapp service:
 

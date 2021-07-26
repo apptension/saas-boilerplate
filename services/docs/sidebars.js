@@ -84,6 +84,7 @@ module.exports = {
         items: [
           "features/dev-tools/global-tools",
           "features/dev-tools/version-matrix",
+          "features/dev-tools/mailcatcher",
         ],
       },
     ],
