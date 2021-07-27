@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
-import { baseButtonStyle } from '../button/button.styles';
+import { baseButtonStyle } from '../forms/button/button.styles';
 
 export const HtmlLinkContainer = styled.a`
   text-decoration: none;

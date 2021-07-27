@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { sizeUnits } from '../../../../theme/size';
 import { color } from '../../../../theme';
 

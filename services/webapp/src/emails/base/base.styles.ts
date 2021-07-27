@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { fontFamily, fontWeight } from '../../theme';
+import { ENV } from '../../app/config/env';
 import { Image } from './image';
 
 export const Table = styled.table`
@@ -18,14 +19,14 @@ export const Icon = styled(Image)`
 export const injectedFonts = css`
   @font-face {
     font-family: ${fontFamily.primary};
-    src: url('${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/Inter-Regular.woff') format('woff');
+    src: url('${ENV.EMAIL_ASSETS_URL}/Inter-Regular.woff') format('woff');
     font-weight: ${fontWeight.regular};
     font-style: normal;
   }
 
   @font-face {
     font-family: ${fontFamily.primary};
-    src: url('${process.env.REACT_APP_EMAIL_ASSETS_URL ?? ''}/Inter-SemiBold.woff') format('woff');
+    src: url('${ENV.EMAIL_ASSETS_URL}/Inter-SemiBold.woff') format('woff');
     font-weight: ${fontWeight.bold};
     font-style: normal;
   }

@@ -2,9 +2,9 @@ import { AnchorHTMLAttributes, ReactNode } from 'react';
 import { LinkProps as RouterLinkProps, NavLinkProps as RouterNavLinkProps } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { omit } from 'ramda';
-import { ButtonTheme, ButtonVariant } from '../button';
-import { Icon } from '../button/button.styles';
-import { ButtonColor, ButtonSize } from '../button/button.types';
+import { ButtonTheme, ButtonVariant } from '../forms/button';
+import { Icon } from '../forms/button/button.styles';
+import { ButtonColor, ButtonSize } from '../forms/button/button.types';
 import { HtmlLinkContainer, RouterLinkContainer, RouterNavLinkContainer } from './link.styles';
 import { isInternalLink, isInternalNavLink } from './link.utils';
 

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { ComponentProps } from 'react';
 import { microlabel, MicroLabel } from '../../../../theme/typography';
 import { color } from '../../../../theme';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { formFieldWidth, sizeUnits } from '../../../../theme/size';
-import { Checkbox as CheckboxBase } from '../../checkbox';
+import { Checkbox as CheckboxBase } from '../../forms/checkbox';
 import { Link } from '../../link';
 
 export const Container = styled.form.attrs(() => ({ noValidate: true }))`

@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { ROUTES } from '../app.constants';
+import { ROUTES } from '../../app/config/routes';
 import { AllDemoItemsDocument } from '../../shared/services/contentful';
 import { demoItemFactory } from '../../mocks/factories';
 import { prepareState } from '../../mocks/store';

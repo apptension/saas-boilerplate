@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
-import { Input } from '../../../shared/components/input';
-import { Button } from '../../../shared/components/button';
+import { Input } from '../../../shared/components/forms/input';
+import { Button } from '../../../shared/components/forms/button';
 import { {{ pascalCase name }} } from '../../../shared/services/api/{{ camelCase name }}/types';
 import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
 import { Container, ErrorMessage, Label, Form, Row, Value } from './{{ camelCase name }}Form.styles';

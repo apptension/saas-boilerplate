@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FormFieldsRow as FormFieldsRowBase, formFieldWidth, sizeUnits } from '../../../../theme/size';
 import { color } from '../../../../theme';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { Breakpoint, media } from '../../../../theme/media';
 
 export const Container = styled.form.attrs(() => ({ noValidate: true }))`

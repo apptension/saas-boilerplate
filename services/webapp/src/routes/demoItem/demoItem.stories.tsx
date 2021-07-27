@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { generatePath } from 'react-router';
 import { DemoItemDocument } from '../../shared/services/contentful';
 import { demoItemFactory } from '../../mocks/factories';
-import { ROUTES } from '../app.constants';
+import { ROUTES } from '../../app/config/routes';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { DemoItem } from './demoItem.component';
 

@@ -59,33 +59,33 @@ module.exports = [
   },
   {
     type: 'modify',
-    path: 'src/config/reducers.ts',
+    path: 'src/app/config/reducers.ts',
     pattern: /(\/\/<-- IMPORT MODULE REDUCER -->)/g,
     template:
-      "import { reducer as {{ camelCase name }}Reducer } from '../modules/{{ camelCase name }}/{{ camelCase name }}.reducer';\nimport { {{ pascalCase name }}State } from '../modules/{{ camelCase name }}/{{ camelCase name }}.types';\n$1",
+      "import { reducer as {{ camelCase name }}Reducer } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.reducer';\nimport { {{ pascalCase name }}State } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.types';\n$1",
   },
   {
     type: 'modify',
-    path: 'src/config/reducers.ts',
+    path: 'src/app/config/reducers.ts',
     pattern: /(\/\/<-- INJECT MODULE REDUCER -->)/g,
     template: '{{ camelCase name }}: {{ camelCase name }}Reducer,\n    $1',
   },
   {
     type: 'modify',
-    path: 'src/config/reducers.ts',
+    path: 'src/app/config/reducers.ts',
     pattern: /(\/\/<-- INJECT MODULE STATE TYPE -->)/g,
     template: '{{ camelCase name }}: {{ pascalCase name }}State;\n  $1',
   },
   {
     type: 'modify',
-    path: 'src/config/sagas.ts',
+    path: 'src/app/config/sagas.ts',
     pattern: /(\/\/<-- IMPORT MODULE SAGA -->)/g,
     template:
-      "import { watch{{ pascalCase name }} } from '../modules/{{ camelCase name }}/{{ camelCase name }}.sagas';\n$1",
+      "import { watch{{ pascalCase name }} } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.sagas';\n$1",
   },
   {
     type: 'modify',
-    path: 'src/config/sagas.ts',
+    path: 'src/app/config/sagas.ts',
     pattern: /(\/\/<-- INJECT MODULE SAGA -->)/g,
     template: 'fork(watch{{ pascalCase name }}),\n    $1',
   },
@@ -122,11 +122,11 @@ module.exports = [
     type: 'modify',
     path: 'src/mocks/factories/index.ts',
     pattern: /(\/\/<-- INJECT FACTORY -->)/g,
-    template: "export * from './{{ camelCase name }}';\n  $1",
+    template: "export * from './{{ camelCase name }}';\n$1",
   },
   {
     type: 'modify',
-    path: 'src/routes/app.constants.ts',
+    path: 'src/app/config/routes.ts',
     pattern: /(\/\/<-- INJECT ROUTE DEFINITION -->)/g,
     template: `{{ camelCase name }}: nestedPath('/{{ dashCase name }}', {
     list: '/',
@@ -137,29 +137,38 @@ module.exports = [
   },
   {
     type: 'modify',
-    path: 'src/routes/asyncComponents.ts',
+    path: 'src/app/asyncComponents.ts',
     pattern: /(\/\/<-- IMPORT ROUTE -->)/g,
-    template: `export const {{ pascalCase name }}List = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}List'), '{{ pascalCase name }}List');
-export const {{ pascalCase name }}Details = asyncComponent(() => import('./{{ camelCase name }}/{{ camelCase name }}Details'), '{{ pascalCase name }}Details');
-export const Add{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/add{{ pascalCase name }}'), 'Add{{ pascalCase name }}');
-export const Edit{{ pascalCase name }} = asyncComponent(() => import('./{{ camelCase name }}/edit{{ pascalCase name }}'), 'Edit{{ pascalCase name }}');\n  $1`,
+    template: `export const {{ pascalCase name }}List = asyncComponent(() => import('../routes/{{ camelCase name }}/{{ camelCase name }}List'), '{{ pascalCase name }}List');
+export const {{ pascalCase name }}Details = asyncComponent(() => import('../routes/{{ camelCase name }}/{{ camelCase name }}Details'), '{{ pascalCase name }}Details');
+export const Add{{ pascalCase name }} = asyncComponent(() => import('../routes/{{ camelCase name }}/add{{ pascalCase name }}'), 'Add{{ pascalCase name }}');
+export const Edit{{ pascalCase name }} = asyncComponent(() => import('../routes/{{ camelCase name }}/edit{{ pascalCase name }}'), 'Edit{{ pascalCase name }}');\n$1`,
   },
   {
     type: 'modify',
-    path: 'src/routes/index.tsx',
+    path: 'src/app/app.component.tsx',
     pattern: `{/* <-- INJECT ROUTE --> */}`,
-    template: `<AuthRoute exact path={\`\${match.path}\${ROUTES.{{ camelCase name }}.list}\`}>
-          <{{ pascalCase name }}List />
-        </AuthRoute>
-        <AuthRoute exact path={\`\${match.path}\${ROUTES.{{ camelCase name }}.add}\`}>
-          <Add{{ pascalCase name }} />
-        </AuthRoute>
-        <AuthRoute exact path={\`\${match.path}\${ROUTES.{{ camelCase name }}.details}\`}>
-          <{{ pascalCase name }}Details />
-        </AuthRoute>
-        <AuthRoute exact path={\`\${match.path}\${ROUTES.{{ camelCase name }}.edit}\`}>
-          <Edit{{ pascalCase name }} />
-        </AuthRoute>
-        {/* <-- INJECT ROUTE --> */}`,
+    template: `<AuthRoute exact path={ROUTES.{{ camelCase name }}.list}>
+              <{{ pascalCase name }}List />
+            </AuthRoute>
+            <AuthRoute exact path={ROUTES.{{ camelCase name }}.add}>
+              <Add{{ pascalCase name }} />
+            </AuthRoute>
+            <AuthRoute exact path={ROUTES.{{ camelCase name }}.details}>
+              <{{ pascalCase name }}Details />
+            </AuthRoute>
+            <AuthRoute exact path={ROUTES.{{ camelCase name }}.edit}>
+              <Edit{{ pascalCase name }} />
+            </AuthRoute>
+            {/* <-- INJECT ROUTE --> */}`,
+  },
+  {
+    type: 'modify',
+    path: 'src/app/app.component.tsx',
+    pattern: /(\/\/<-- INJECT ROUTE IMPORT -->)/g,
+    template: `{{ pascalCase name}}List,
+  Add{{ pascalCase name}},
+  {{ pascalCase name}}Details,
+  Edit{{ pascalCase name}}, \n  $1`,
   },
 ];

@@ -4,12 +4,12 @@ import interPrimary from '../fonts/Inter-Regular.woff';
 import interBold from '../fonts/Inter-SemiBold.woff';
 import { interFontName } from './font';
 
-function fontFace(
+const fontFace = (
   name: string,
   files: { src: string; format: string }[],
   fontWeight = 'normal',
   fontStyle = 'normal'
-): string {
+) => {
   const sources = files.map(({ src, format }) => `url(${src}) format("${format}")`).join(',');
 
   return `
@@ -20,15 +20,15 @@ function fontFace(
         font-style: ${fontStyle};
     }
   `;
-}
+};
 
-const generateFontsString = (): string =>
+const generateFontsString = () =>
   [
     fontFace(interFontName, [{ src: interPrimary, format: 'woff' }]),
     fontFace(interFontName, [{ src: interBold, format: 'woff' }], '600'),
   ].join('\n');
 
-export default (): void => {
+export const initializeFontFace = () => {
   const style = document.createElement('style');
   style.innerHTML = generateFontsString();
   document.head.appendChild(style);

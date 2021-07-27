@@ -7,13 +7,13 @@ import { ConnectionHandler } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { crudDemoItemListItem$key } from '../../../../__generated__/crudDemoItemListItem.graphql';
 import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
-import { ROUTES } from '../../../app.constants';
-import { useGenerateLocalePath } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../../app/config/routes';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
 import { Link } from '../../../../shared/components/link';
-import { Button, ButtonVariant } from '../../../../shared/components/button';
+import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
+import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
 export type CrudDemoItemListItemProps = {

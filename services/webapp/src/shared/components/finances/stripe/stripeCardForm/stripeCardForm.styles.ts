@@ -4,7 +4,7 @@ import { label } from '../../../../../theme/typography';
 import { input } from '../../../../../theme/color';
 import { sizeUnits } from '../../../../../theme/size';
 import { Breakpoint, media } from '../../../../../theme/media';
-import { Input } from '../../../input';
+import { Input } from '../../../forms/input';
 
 const FIELD_HEIGHT = 40;
 

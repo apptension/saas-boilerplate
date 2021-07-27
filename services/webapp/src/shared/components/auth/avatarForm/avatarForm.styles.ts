@@ -3,7 +3,7 @@ import { Avatar as AvatarBase } from '../../avatar';
 import { sizeUnits } from '../../../../theme/size';
 import { Breakpoint, media } from '../../../../theme/media';
 import { circle, color, elevation } from '../../../../theme';
-import { Message as MessageBase } from '../../input/input.styles';
+import { Message as MessageBase } from '../../forms/input/input.styles';
 
 export const Container = styled.div`
   margin-bottom: ${sizeUnits(2)};

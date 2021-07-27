@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from '../../../../shared/components/button';
+import { Button } from '../../../../shared/components/forms/button';
 import { sizeUnits } from '../../../../theme/size';
 
 export const Form = styled.form.attrs(() => ({ noValidate: true }))`

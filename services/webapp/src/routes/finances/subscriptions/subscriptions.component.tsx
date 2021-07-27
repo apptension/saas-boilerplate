@@ -9,16 +9,16 @@ import {
   selectIsTrialActive,
   selectTrialEnd,
 } from '../../../modules/subscription/subscription.selectors';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import {
   useActiveSubscriptionPlanDetails,
   useSubscriptionPlanDetails,
 } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import { ButtonVariant } from '../../../shared/components/button';
+import { ButtonVariant } from '../../../shared/components/forms/button';
 import { useTransactionHistory } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
-import { Date } from '../../../shared/components/date';
+import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, Header, Link, Row, RowValue, Section, Subheader } from './subscriptions.styles';
 
 export const Subscriptions = () => {
@@ -51,7 +51,7 @@ export const Subscriptions = () => {
           <Row>
             <FormattedMessage defaultMessage="Next renewal:" description="My subscription / Next renewal" />
             <RowValue>
-              <Date value={activeSubscriptionRenewalDate} />
+              <FormattedDate value={activeSubscriptionRenewalDate} />
             </RowValue>
           </Row>
         )}
@@ -60,7 +60,7 @@ export const Subscriptions = () => {
           <Row>
             <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Expiry date" />
             <RowValue>
-              <Date value={activeSubscriptionExpiryDate} />
+              <FormattedDate value={activeSubscriptionExpiryDate} />
             </RowValue>
           </Row>
         )}
@@ -80,7 +80,7 @@ export const Subscriptions = () => {
             <Row>
               <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Trial expiry date" />
               <RowValue>
-                <Date value={trialEnd} />
+                <FormattedDate value={trialEnd} />
               </RowValue>
             </Row>
           </>

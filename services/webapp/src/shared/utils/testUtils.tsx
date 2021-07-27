@@ -11,10 +11,10 @@ import { produce } from 'immer';
 import { MockedProvider } from '@apollo/client/testing';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
-import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../i18n';
+import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../app/config/i18n';
 import { store as fixturesStore } from '../../mocks/store';
-import createReducer, { GlobalState } from '../../config/reducers';
-import { ResponsiveThemeProvider } from '../components/responsiveThemeProvider';
+import createReducer, { GlobalState } from '../../app/config/reducers';
+import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;

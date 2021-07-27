@@ -2,7 +2,8 @@ import path from 'path';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Store } from 'redux';
-import { GlobalState } from '../../../config/reducers';
+import { GlobalState } from '../../../app/config/reducers';
+import { ENV } from '../../../app/config/env';
 import { AUTH_URL, refreshToken } from './auth';
 
 export const validateStatus = (status: number) => (status >= 200 && status < 300) || status === StatusCodes.BAD_REQUEST;
@@ -39,9 +40,7 @@ export type URLParams<T extends string> = Record<T, number | string>;
 
 export type ExtractURLParams<T extends (variables: any) => string> = Parameters<T>[0];
 
-export const baseUrl = process.env.REACT_APP_BASE_API_URL || '/api';
-
-export const apiURL = (value: string) => baseUrl + value;
+export const apiURL = (value: string) => ENV.BASE_API_URL + value;
 
 export const apiURLs = <T extends Record<string, string | ((variables: any) => string)>>(
   root: string,
@@ -57,7 +56,3 @@ export const apiURLs = <T extends Record<string, string | ((variables: any) => s
 };
 
 export const appendId = ({ id }: URLParams<'id'>) => `/${id}`;
-
-if (!baseUrl) {
-  throw new Error('REACT_APP_BASE_API_URL env is missing');
-}

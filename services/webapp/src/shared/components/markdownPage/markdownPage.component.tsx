@@ -1,4 +1,4 @@
-import { BackButton } from '../backButton/backButton.component';
+import { BackButton } from '../backButton';
 import { Container, Markdown } from './markdownPage.styles';
 
 export type MarkdownPageProps = {

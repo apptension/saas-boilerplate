@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
-import { ROUTES } from '../../app.constants';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../app/config/routes';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
 import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
 export type DemoItemListItemProps = {

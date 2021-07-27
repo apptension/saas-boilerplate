@@ -4,7 +4,7 @@ import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { {{ pascalCase name }}Details } from '../{{ camelCase name }}Details.component';
 import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
 import { prepareState } from '../../../../mocks/store';
-import { ROUTES } from '../../../app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 
 const item = {{ camelCase name }}Factory();
 const items = [{{ camelCase name }}Factory(), item, {{ camelCase name }}Factory()];

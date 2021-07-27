@@ -2,7 +2,7 @@ import { createStore } from 'redux';
 import axios, { AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { createRefreshTokenInterceptor, validateStatus } from '../helpers';
-import createReducer from '../../../../config/reducers';
+import createReducer from '../../../../app/config/reducers';
 import { store as fixturesStore } from '../../../../mocks/store';
 import { client } from '../client';
 import { AUTH_URL } from '../auth';

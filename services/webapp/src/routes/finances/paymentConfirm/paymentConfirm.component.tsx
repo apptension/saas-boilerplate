@@ -4,8 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { StripePaymentForm } from '../../../shared/components/finances/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, Header, Subheader } from './paymentConfirm.styles';
 
 export const PaymentConfirm = () => {

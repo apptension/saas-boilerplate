@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
 import { ThemeProvider } from 'styled-components';
-import { ButtonVariant } from '../../button';
+import { ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
 import { ExtractNodeType } from '../../../utils/graphql';
 import { notificationsListContent } from '../../../../__generated__/notificationsListContent.graphql';

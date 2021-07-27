@@ -1,7 +1,7 @@
 import { useHistory, useRouteMatch } from 'react-router';
 import { useSelector } from 'react-redux';
 import { localesSelectors } from '../../../modules/locales';
-import { appLocales, Locale } from '../../../i18n';
+import { appLocales, Locale } from '../../../app/config/i18n';
 
 export const useLanguageRouter = () => {
   const match = useRouteMatch<{ lang: string }>();

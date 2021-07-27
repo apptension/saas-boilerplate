@@ -1,12 +1,14 @@
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
+import { ReactNode } from 'react';
 import { Container } from './backButton.styles';
 
 export type BackButtonProps = {
   to?: string;
+  children?: ReactNode;
 };
 
-export const BackButton = ({ to }: BackButtonProps) => {
+export const BackButton = ({ to, children }: BackButtonProps) => {
   const history = useHistory();
 
   const handleBackClick = () => {
@@ -16,7 +18,7 @@ export const BackButton = ({ to }: BackButtonProps) => {
 
   return (
     <Container to={to} onClick={handleBackClick}>
-      <FormattedMessage defaultMessage="Go back" description="Contentful Item / Bo back button" />
+      {children ?? <FormattedMessage defaultMessage="Go back" description="Back Button / Go back" />}
     </Container>
   );
 };

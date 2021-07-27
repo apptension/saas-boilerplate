@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, ButtonVariant } from '../../button';
+import { Button, ButtonVariant } from '../../forms/button';
 import { FacebookIcon, GoogleIcon } from '../../../../images/icons';
 import { formFieldWidth, sizeUnits } from '../../../../theme/size';
 

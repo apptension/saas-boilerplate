@@ -1,11 +1,11 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { signup } from '../../../../modules/auth/auth.actions';
-import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../../../routes/app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 import { FormFieldsRow } from '../../../../theme/size';
+import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
 
 type SignupFormFields = {

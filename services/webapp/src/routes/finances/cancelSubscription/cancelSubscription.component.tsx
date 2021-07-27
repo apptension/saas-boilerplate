@@ -4,12 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { H2, Label } from '../../../theme/typography';
 import { useActiveSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { selectActiveSubscriptionRenewalDate } from '../../../modules/subscription/subscription.selectors';
-import { Button } from '../../../shared/components/button';
+import { Button } from '../../../shared/components/forms/button';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container } from './cancelSubscription.styles';
 
 export const CancelSubscription = () => {

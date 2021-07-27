@@ -14,16 +14,9 @@ import { RecordSourceSelectorProxy } from 'relay-runtime/lib/store/RelayStoreTyp
 import { graphQlClient } from '../api/client';
 import { apiURL } from '../api/helpers';
 import { refreshToken } from '../api/auth';
+import { ENV } from '../../../app/config/env';
 
-const SUBSCRIPTIONS_URL = (() => {
-  const envValue = process.env['REACT_APP_SUBSCRIPTIONS_URL'];
-  if (!envValue) {
-    throw new Error('Env variable REACT_APP_SUBSCRIPTIONS_URL not set');
-  }
-  return envValue;
-})();
-
-export const subscriptionClient = new SubscriptionClient(SUBSCRIPTIONS_URL, {
+export const subscriptionClient = new SubscriptionClient(ENV.SUBSCRIPTIONS_URL, {
   reconnect: true,
   lazy: true,
   minTimeout: 10000,

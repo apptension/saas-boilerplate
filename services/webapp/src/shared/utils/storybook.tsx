@@ -7,7 +7,7 @@ import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { Suspense } from 'react';
 import { store } from '../../mocks/store';
-import { GlobalState } from '../../config/reducers';
+import { GlobalState } from '../../app/config/reducers';
 import { ContextData, ProvidersWrapper } from './testUtils';
 
 export const withRedux =

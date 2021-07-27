@@ -1,10 +1,10 @@
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { {{ pascalCase name }} } from '../../../../shared/services/api/{{ camelCase name }}/types';
-import { ROUTES } from '../../../app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase name }}';
-import { useLocaleUrl } from '../../../useLanguageFromParams/useLanguageFromParams.hook';
+import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { Container } from './{{ camelCase name }}ListItem.styles';
 
 export type {{ pascalCase name }}ListItemProps = {
@@ -13,8 +13,7 @@ export type {{ pascalCase name }}ListItemProps = {
 
 export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}ListItemProps) => {
   const dispatch = useDispatch();
-  const detailsUrl = useLocaleUrl(ROUTES.{{ camelCase name }}.details);
-  const editUrl = useLocaleUrl(ROUTES.{{ camelCase name }}.edit);
+  const generateLocalePath = useGenerateLocalePath();
 
   const handleDelete = () => {
     dispatch({{ camelCase name }}Actions.delete{{ pascalCase name }}(item.id));
@@ -22,8 +21,8 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
 
   return (
     <Container>
-      <Link to={generatePath(detailsUrl, { id: item.id })}>{item.name}</Link>
-      <Link to={generatePath(editUrl, { id: item.id })}>
+      <Link to={generateLocalePath(ROUTES.{{ camelCase name }}.details, { id: item.id })}>{item.name}</Link>
+      <Link to={generateLocalePath(ROUTES.{{ camelCase name }}.edit, { id: item.id })}>
         [<FormattedMessage description={'{{ pascalCase name }} list / edit link'} defaultMessage={'Edit'} />]
       </Link>
       <button onClick={handleDelete}>

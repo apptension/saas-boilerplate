@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { color } from '../../../../theme';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { formFieldWidth, sizeUnits, FormFieldsRow as FormFieldsRowBase } from '../../../../theme/size';
 import { Breakpoint, media } from '../../../../theme/media';
 

@@ -3,11 +3,11 @@ import { useHistory } from 'react-router';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
-import { useGenerateLocalePath } from '../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../../../routes/app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 import { useSnackbar } from '../../snackbar';
+import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 

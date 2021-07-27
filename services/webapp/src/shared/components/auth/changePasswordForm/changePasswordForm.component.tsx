@@ -1,5 +1,5 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { changePassword } from '../../../../modules/auth/auth.actions';

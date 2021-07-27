@@ -1,6 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { LanguageSwitcher } from '../index';
-import { DEFAULT_LOCALE } from '../../../../i18n';
+import { DEFAULT_LOCALE } from '../../../../app/config/i18n';
 import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
 
 describe('LanguageSwitcher: Component', () => {

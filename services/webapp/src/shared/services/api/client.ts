@@ -1,7 +1,7 @@
 import axios from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 import { Store } from 'redux';
-import { GlobalState } from '../../../config/reducers';
+import { GlobalState } from '../../../app/config/reducers';
 import { createRefreshTokenInterceptor, validateStatus } from './helpers';
 
 export const client = applyCaseMiddleware(

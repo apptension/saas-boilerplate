@@ -8,7 +8,7 @@ import {
   PrepareAction,
 } from '@reduxjs/toolkit';
 import { put } from 'redux-saga/effects';
-import { GlobalState } from '../../config/reducers';
+import { GlobalState } from '../../app/config/reducers';
 
 export interface PromiseActionMeta<A, B> {
   promise: {

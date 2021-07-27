@@ -1,5 +1,5 @@
 import { map } from 'ramda';
-import { appLocales } from '../../i18n';
+import { appLocales } from '../../app/config/i18n';
 
 export const path = (p: string) => `/:lang(${appLocales.join('|')})${p}`;
 

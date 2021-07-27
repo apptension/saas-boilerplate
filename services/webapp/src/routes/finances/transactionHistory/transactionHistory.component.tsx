@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { TransactionHistory as TransactionHistoryList } from '../../../shared/components/finances/stripe/transactionHistory';
-import { BackButton } from '../../../shared/components/backButton/backButton.component';
+import { BackButton } from '../../../shared/components/backButton';
 import { Container, Header } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {

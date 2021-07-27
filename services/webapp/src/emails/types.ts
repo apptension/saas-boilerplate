@@ -12,7 +12,7 @@ export type EmailComponentProps = {
   to: string;
 };
 
-export interface EmailTemplateDefinition {
+export type EmailTemplateDefinition = {
   Template: ComponentType<any>;
   Subject: ComponentType<any>;
 }

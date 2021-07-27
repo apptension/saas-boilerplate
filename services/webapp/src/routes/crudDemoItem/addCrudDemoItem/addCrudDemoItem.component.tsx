@@ -4,12 +4,12 @@ import graphql from 'babel-plugin-relay/macro';
 import { PreloadedQuery } from 'react-relay';
 import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { addCrudDemoItemMutation } from '../../../__generated__/addCrudDemoItemMutation.graphql';
-import { BackButton } from '../../../shared/components/backButton/backButton.component';
+import { BackButton } from '../../../shared/components/backButton';
 import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, Header } from './addCrudDemoItem.styles';
 
 export type AddCrudDemoItemProps = () => {

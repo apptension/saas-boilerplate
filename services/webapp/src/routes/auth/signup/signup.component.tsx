@@ -1,10 +1,10 @@
 import { FormattedMessage } from 'react-intl';
 import { SignupForm } from '../../../shared/components/auth/signupForm';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { Link } from '../../../shared/components/link';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, Header, Links, OrDivider } from './signup.styles';
 
 export const Signup = () => {

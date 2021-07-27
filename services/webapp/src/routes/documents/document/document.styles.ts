@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Button, ButtonVariant } from '../../../shared/components/button';
+import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { labelBold, microlabel } from '../../../theme/typography';
-import { RelativeDate as RelativeDateBase } from '../../../shared/components/relativeDate';
+import { RelativeDate as RelativeDateBase } from '../../../shared/components/dateTime/relativeDate';
 import { border } from '../../../theme';
 import { sizeUnits, verticalPadding } from '../../../theme/size';
 

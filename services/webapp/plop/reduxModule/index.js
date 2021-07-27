@@ -70,33 +70,33 @@ module.exports = (plop) => {
       },
       {
         type: 'modify',
-        path: 'src/config/reducers.ts',
+        path: 'src/app/config/reducers.ts',
         pattern: /(\/\/<-- IMPORT MODULE REDUCER -->)/g,
         template:
-          "import { reducer as {{ camelCase name }}Reducer } from '../modules/{{ camelCase name }}/{{ camelCase name }}.reducer';\nimport { {{ pascalCase name }}State } from '../modules/{{ camelCase name }}/{{ camelCase name }}.types';\n$1",
+          "import { reducer as {{ camelCase name }}Reducer } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.reducer';\nimport { {{ pascalCase name }}State } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.types';\n$1",
       },
       {
         type: 'modify',
-        path: 'src/config/reducers.ts',
+        path: 'src/app/config/reducers.ts',
         pattern: /(\/\/<-- INJECT MODULE REDUCER -->)/g,
         template: '{{ camelCase name }}: {{ camelCase name }}Reducer,\n    $1',
       },
       {
         type: 'modify',
-        path: 'src/config/reducers.ts',
+        path: 'src/app/config/reducers.ts',
         pattern: /(\/\/<-- INJECT MODULE STATE TYPE -->)/g,
         template: '{{ camelCase name }}: {{ pascalCase name }}State;\n  $1',
       },
       {
         type: 'modify',
-        path: 'src/config/sagas.ts',
+        path: 'src/app/config/sagas.ts',
         pattern: /(\/\/<-- IMPORT MODULE SAGA -->)/g,
         template:
-          "import { watch{{ pascalCase name }} } from '../modules/{{ camelCase name }}/{{ camelCase name }}.sagas';\n$1",
+          "import { watch{{ pascalCase name }} } from '../../modules/{{ camelCase name }}/{{ camelCase name }}.sagas';\n$1",
       },
       {
         type: 'modify',
-        path: 'src/config/sagas.ts',
+        path: 'src/app/config/sagas.ts',
         pattern: /(\/\/<-- INJECT MODULE SAGA -->)/g,
         template: 'fork(watch{{ pascalCase name }}),\n    $1',
       },

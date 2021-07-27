@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { Suspense } from 'react';
 import { isEmpty } from 'ramda';
-import { Dropzone } from '../../shared/components/dropzone';
+import { Dropzone } from '../../shared/components/forms/dropzone';
 import DocumentsListQuery, { documentsListQuery } from '../../__generated__/documentsListQuery.graphql';
 import { EmptyState } from '../../shared/components/emptyState';
 import { useMappedConnection } from '../../shared/hooks/useMappedConnection';

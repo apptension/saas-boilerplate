@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { heading3, microlabel, paragraphBold } from '../../../../theme/typography';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { horizontalMargin, sizeUnits } from '../../../../theme/size';
 import { color, size, transition, elevation } from '../../../../theme';
 import { Breakpoint, media } from '../../../../theme/media';

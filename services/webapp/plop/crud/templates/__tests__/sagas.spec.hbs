@@ -56,11 +56,11 @@ describe('{{ pascalCase name }}: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockAdd{{ pascalCase name }}({ isError: true, nonFieldErrors: ['error'] }, StatusCodes.BAD_REQUEST));
+      server.use(mockAdd{{ pascalCase name }}({ isError: true, nonFieldErrors: [{ code: 'error', message: 'error' }] }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watch{{ pascalCase name }})
         .withState(defaultState)
-        .put({{ camelCase name }}Actions.add{{ pascalCase name }}.resolved({ isError: true, nonFieldErrors: ['error'] }))
+        .put({{ camelCase name }}Actions.add{{ pascalCase name }}.resolved({ isError: true, nonFieldErrors: [{ code: 'error', message: 'error' }] }))
         .dispatch({{ camelCase name }}Actions.add{{ pascalCase name }}(item))
         .silentRun();
     });
@@ -80,11 +80,11 @@ describe('{{ pascalCase name }}: sagas', () => {
 
     it('should resolve action with error when failed with BAD_REQUEST', async () => {
       const item = items[0];
-      server.use(mockUpdate{{ pascalCase name }}(item.id, { isError: true, nonFieldErrors: ['error'] }, StatusCodes.BAD_REQUEST));
+      server.use(mockUpdate{{ pascalCase name }}(item.id, { isError: true, nonFieldErrors: [{ code: 'error', message: 'error' }] }, StatusCodes.BAD_REQUEST));
 
       await expectSaga(watch{{ pascalCase name }})
         .withState(defaultState)
-        .put({{ camelCase name }}Actions.update{{ pascalCase name }}.resolved({ isError: true, nonFieldErrors: ['error'] }))
+        .put({{ camelCase name }}Actions.update{{ pascalCase name }}.resolved({ isError: true, nonFieldErrors: [{ code: 'error', message: 'error' }] }))
         .dispatch({{ camelCase name }}Actions.update{{ pascalCase name }}(item))
         .silentRun();
     });

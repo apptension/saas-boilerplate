@@ -1,5 +1,5 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-import { Locale } from '../../i18n';
+import { Locale } from '../../app/config/i18n';
 import * as actions from './locales.actions';
 import { LocalesState } from './locales.types';
 

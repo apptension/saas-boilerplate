@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { GlobalState } from '../../config/reducers';
+import { GlobalState } from '../../app/config/reducers';
 
 export const selectSnackbarDomain = (state: GlobalState) => state.snackbar;
 

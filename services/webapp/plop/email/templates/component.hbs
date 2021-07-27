@@ -1,8 +1,8 @@
 import { FormattedMessage } from 'react-intl';
 import { EmailComponentProps } from '../../types';
 import { Button, Layout } from '../../base';
-import { ROUTES } from '../../../routes/app.constants';
-import { useGenerateAbsoluteLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../app/config/routes';
+import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
 
 export type {{ pascalCase name }}Props = EmailComponentProps & {};
 

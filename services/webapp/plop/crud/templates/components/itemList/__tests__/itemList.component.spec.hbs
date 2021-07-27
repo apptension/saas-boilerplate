@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
-import { {{ pascalCase name }}List, {{ pascalCase name }}ListProps } from '../{{ camelCase name }}List.component';
+import { {{ pascalCase name }}List } from '../{{ camelCase name }}List.component';
 import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
 import { prepareState } from '../../../../mocks/store';
 
@@ -12,9 +12,7 @@ const store = prepareState((state) => {
 });
 
 describe('{{ pascalCase name }}List: Component', () => {
-  const defaultProps: {{ pascalCase name }}ListProps = {};
-
-  const component = (props: Partial<{{ pascalCase name }}ListProps>) => <{{ pascalCase name }}List {...defaultProps} {...props} />;
+  const component = () => <{{ pascalCase name }}List />;
   const render = makeContextRenderer(component);
 
   it('should render all items', () => {

@@ -3,7 +3,7 @@ import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
 import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { useIntl } from 'react-intl';
-import { ButtonProps, ButtonVariant } from '../../button';
+import { ButtonProps, ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
 import NotificationsButtonQuery, {
   notificationsListQuery,

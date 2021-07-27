@@ -1,5 +1,5 @@
 import { actionCreator } from '../helpers/actionCreator';
-import { Locale } from '../../i18n';
+import { Locale } from '../../app/config/i18n';
 
 const { createAction } = actionCreator('LOCALES');
 

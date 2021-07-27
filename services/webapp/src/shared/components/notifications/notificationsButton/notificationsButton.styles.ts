@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Button as ButtonBase } from '../../button';
+import { Button as ButtonBase } from '../../forms/button';
 import { color } from '../../../../theme';
 
 type ButtonProps = { hasUnreadNotifications: boolean };

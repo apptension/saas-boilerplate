@@ -3,9 +3,9 @@ import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { FormattedMessage } from 'react-intl';
 import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
-import { ROUTES } from '../../app.constants';
-import { ButtonVariant } from '../../../shared/components/button';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../../app/config/routes';
+import { ButtonVariant } from '../../../shared/components/forms/button';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { AddNewLink, Container, Header } from './crudDemoItemList.styles';
 import { CrudDemoItemListContent } from './crudDemoItemListContent';
 

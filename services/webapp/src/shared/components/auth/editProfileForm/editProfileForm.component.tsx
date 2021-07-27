@@ -4,7 +4,7 @@ import { selectProfile } from '../../../../modules/auth/auth.selectors';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { updateProfile } from '../../../../modules/auth/auth.actions';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { useSnackbar } from '../../snackbar';
 import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';
 import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';

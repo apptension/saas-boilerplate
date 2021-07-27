@@ -15,7 +15,7 @@ import {
   mockUpdateAvatar,
   mockUpdateProfile,
 } from '../../../mocks/server/handlers';
-import history from '../../../shared/utils/history';
+import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '../../../mocks/factories';
 import { snackbarActions } from '../../snackbar';
@@ -32,7 +32,7 @@ const credentials = {
 
 describe('Auth: sagas', () => {
   const defaultState = prepareState(identity);
-  const mockHistoryPush = history.push as jest.Mock;
+  const mockHistoryPush = browserHistory.push as jest.Mock;
   const profile = userProfileFactory();
 
   const originalLocation = window.location;

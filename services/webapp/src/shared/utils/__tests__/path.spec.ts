@@ -2,8 +2,8 @@ import { nestedPath } from '../path';
 
 describe('Utils: path', () => {
   describe('nestedRoute', () => {
-    jest.mock('../../../i18n.ts', () => ({
-      ...(jest.requireActual('../../../i18n.ts') as any),
+    jest.mock('../../../app/config/i18n', () => ({
+      ...(jest.requireActual('../../../app/config/i18n') as any),
       appLocales: ['en', 'pl'],
     }));
 

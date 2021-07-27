@@ -3,9 +3,9 @@ import { useHistory } from 'react-router-dom';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
-import { BackButton } from '../../../shared/components/backButton/backButton.component';
+import { ROUTES } from '../../../app/config/routes';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
 import { Container, Header, PlanItem, Plans, Subheader } from './editSubscription.styles';
 

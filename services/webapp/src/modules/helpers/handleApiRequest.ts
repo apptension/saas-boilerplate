@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { put } from 'redux-saga/effects';
 import { PromiseAction, rejectPromiseAction, resolvePromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { snackbarActions } from '../snackbar';
-import { ROUTES } from '../../routes/app.constants';
+import { ROUTES } from '../../app/config/routes';
 import { reportError } from '../../shared/utils/reportError';
 import { navigate } from './navigate';
 

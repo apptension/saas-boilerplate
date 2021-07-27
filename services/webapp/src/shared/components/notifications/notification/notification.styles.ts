@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
 import { label, labelBold, microlabel } from '../../../../theme/typography';
 import { color, transition } from '../../../../theme';
-import { Button } from '../../button';
-import { RelativeDate as RelativeDateBase } from '../../relativeDate';
+import { Button } from '../../forms/button';
+import { RelativeDate as RelativeDateBase } from '../../dateTime/relativeDate';
 import { NotificationThemeProps } from './notification.types';
 
 const readColor = color.greyScale.get(55);

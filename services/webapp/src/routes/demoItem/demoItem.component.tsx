@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useDemoItemQuery } from '../../shared/services/contentful/__generated/hooks';
-import { ROUTES } from '../app.constants';
-import { useGenerateLocalePath } from '../useLanguageFromParams/useLanguageFromParams.hook';
+import { ROUTES } from '../../app/config/routes';
 import { imageProps } from '../../shared/services/contentful';
-import { BackButton } from '../../shared/components/backButton/backButton.component';
+import { BackButton } from '../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
 import { Container, Description, Image, Title } from './demoItem.styles';
 
 export const DemoItem = () => {

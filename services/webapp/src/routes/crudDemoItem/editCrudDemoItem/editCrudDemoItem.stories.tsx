@@ -4,7 +4,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import EditCrudDemoItemQuery from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { withProviders } from '../../../shared/utils/storybook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
 const Template: Story = (args) => {

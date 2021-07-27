@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { BreakpointQuery, useMediaQuery } from '../useMediaQuery.hook';
 import { Breakpoint, getActiveBreakpoint } from '../../../../theme/media';
-import { ResponsiveThemeProvider } from '../../../components/responsiveThemeProvider';
+import { ResponsiveThemeProvider } from '../../../../app/providers/responsiveThemeProvider';
 
 jest.mock('../../../../theme/media', () => ({
   ...jest.requireActual<NodeModule>('../../../../theme/media'),

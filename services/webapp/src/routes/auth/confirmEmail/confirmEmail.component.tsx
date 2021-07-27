@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { selectIsLoggedIn } from '../../../modules/auth/auth.selectors';
 import { selectIsProfileStartupCompleted } from '../../../modules/startup/startup.selectors';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 
 export const ConfirmEmail = () => {
   const history = useHistory();

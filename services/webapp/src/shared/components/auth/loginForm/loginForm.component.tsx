@@ -1,7 +1,7 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { login } from '../../../../modules/auth/auth.actions';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';

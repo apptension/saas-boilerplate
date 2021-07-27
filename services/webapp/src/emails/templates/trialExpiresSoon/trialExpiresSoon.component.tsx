@@ -1,9 +1,9 @@
 import { FormattedMessage } from 'react-intl';
-import { ROUTES } from '../../../routes/app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
-import { useGenerateAbsoluteLocalePath } from '../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
-import { Date } from '../../../shared/components/date';
+import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
+import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
 
 export type TrialExpiresSoonProps = EmailComponentProps & {
   expiryDate: string;
@@ -25,7 +25,7 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
         <FormattedMessage
           defaultMessage="Your trial is about to expire on {expiryDate}, please take action"
           description="Email / Trial Expires Soon / Text"
-          values={{ expiryDate: <Date value={expiryDate} /> }}
+          values={{ expiryDate: <FormattedDate value={expiryDate} /> }}
         />
       }
     >

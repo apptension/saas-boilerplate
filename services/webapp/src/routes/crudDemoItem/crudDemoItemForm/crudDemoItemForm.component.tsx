@@ -1,12 +1,12 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PayloadError } from 'relay-runtime';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
-import { Input } from '../../../shared/components/input';
-import { Button, ButtonVariant } from '../../../shared/components/button';
+import { Input } from '../../../shared/components/forms/input';
+import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Link } from '../../../shared/components/link';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
+import { ROUTES } from '../../../app/config/routes';
 import { useSnackbar } from '../../../shared/components/snackbar';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;

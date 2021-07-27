@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { ConfirmEmail } from '../confirmEmail.component';
-import { ROUTES } from '../../../app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 import { confirmEmail } from '../../../../modules/auth/auth.actions';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { prepareState } from '../../../../mocks/store';

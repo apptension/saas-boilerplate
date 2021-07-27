@@ -1,5 +1,5 @@
-import { Button as ButtonBase, ButtonProps } from '../../../button';
-import { ButtonSize } from '../../../button/button.types';
+import { Button as ButtonBase, ButtonProps } from '../../../forms/button';
+import { ButtonSize } from '../../../forms/button/button.types';
 
 export const Button = ({ onClick, ...props }: ButtonProps) => {
   return (

@@ -1,7 +1,7 @@
 const path = require('path');
 const templatesPath = path.join(__dirname, '..', 'templates', 'components');
 
-const componentActions = (name, routeName, templatePath) => [
+const componentActions = (name, templatePath, routeName = `{{ camelCase name }}`) => [
   {
     type: 'add',
     path: `src/routes/${routeName}/${name}/__tests__/${name}.component.spec.tsx`,
@@ -45,11 +45,11 @@ module.exports = [
     path: 'src/routes/{{ camelCase name }}/use{{ pascalCase name }}/__tests__/use{{ pascalCase name }}.hook.spec.tsx',
     templateFile: path.join(templatesPath, 'useItem/__tests__/useItem.hook.spec.hbs'),
   },
-  ...componentActions('edit{{ pascalCase name }}', '{{ camelCase name }}', 'editItem'),
-  ...componentActions('{{ camelCase name }}Form', '{{ camelCase name }}', 'itemForm'),
-  ...componentActions('{{ camelCase name }}Details', '{{ camelCase name }}', 'itemDetails'),
-  ...componentActions('add{{ pascalCase name }}', '{{ camelCase name }}', 'addItem'),
-  ...componentActions('{{ camelCase name }}List', '{{ camelCase name }}', 'itemList'),
+  ...componentActions('edit{{ pascalCase name }}', 'editItem'),
+  ...componentActions('{{ camelCase name }}Form', 'itemForm'),
+  ...componentActions('{{ camelCase name }}Details', 'itemDetails'),
+  ...componentActions('add{{ pascalCase name }}', 'addItem'),
+  ...componentActions('{{ camelCase name }}List', 'itemList'),
   {
     type: 'add',
     path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/__tests__/{{ camelCase name }}ListItem.component.spec.tsx`,

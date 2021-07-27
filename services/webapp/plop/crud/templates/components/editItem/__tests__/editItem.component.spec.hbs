@@ -5,7 +5,7 @@ import { Edit{{ pascalCase name }} } from '../edit{{ pascalCase name }}.componen
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase name }}';
 import { prepareState } from '../../../../mocks/store';
-import { ROUTES } from '../../../app.constants';
+import { ROUTES } from '../../../../app/config/routes';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {

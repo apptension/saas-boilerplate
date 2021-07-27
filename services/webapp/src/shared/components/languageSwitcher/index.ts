@@ -1,1 +1,1 @@
-export { LanguageSwitcherComponent as LanguageSwitcher } from './languageSwitcher.component';
+export { LanguageSwitcher } from './languageSwitcher.component';

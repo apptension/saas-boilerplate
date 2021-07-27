@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from '../../../../shared/components/button';
+import { Button } from '../../../../shared/components/forms/button';
 import { sizeUnits } from '../../../../theme/size';
 import { greyScale, primary } from '../../../../theme/color';
 import { Breakpoint, media } from '../../../../theme/media';

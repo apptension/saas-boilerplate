@@ -1,6 +1,6 @@
 import { Switch } from 'react-router-dom';
-import { AuthRoute } from '../authRoute';
-import { ROUTES } from '../app.constants';
+import { AuthRoute } from '../../shared/components/routes/authRoute';
+import { ROUTES } from '../../app/config/routes';
 import { CrudDemoItemList } from './crudDemoItemList';
 import { CrudDemoItemDetails } from './crudDemoItemDetails';
 import { AddCrudDemoItem } from './addCrudDemoItem';

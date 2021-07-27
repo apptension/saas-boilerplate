@@ -3,7 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { isEmpty } from 'ramda';
-import { ButtonVariant } from '../../button';
+import { ButtonVariant } from '../../forms/button';
 import { NotificationSkeleton } from '../notification';
 import NotificationsListQuery, {
   notificationsListQuery,

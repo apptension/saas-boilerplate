@@ -3,9 +3,9 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useHistory } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { useGenerateLocalePath } from '../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../app.constants';
-import { BackButton } from '../../../shared/components/backButton/backButton.component';
+import { ROUTES } from '../../../app/config/routes';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm';
 

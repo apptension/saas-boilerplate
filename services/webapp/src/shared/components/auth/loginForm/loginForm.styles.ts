@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { MicroLabel } from '../../../../theme/typography';
 import { color } from '../../../../theme';
-import { Button } from '../../button';
+import { Button } from '../../forms/button';
 import { formFieldWidth, sizeUnits } from '../../../../theme/size';
 
 export const Container = styled.form.attrs(() => ({ noValidate: true }))`

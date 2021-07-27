@@ -7,10 +7,10 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { usePromiseMutation } from '../../../../../shared/services/graphqlApi/usePromiseMutation';
 import { Link as ButtonLink } from '../../../../../shared/components/link';
-import { Button, ButtonVariant } from '../../../../../shared/components/button';
+import { Button, ButtonVariant } from '../../../../../shared/components/forms/button';
 import { Icon } from '../../../../../shared/components/icon';
-import { useGenerateLocalePath } from '../../../../useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../../../app.constants';
+import { ROUTES } from '../../../../../app/config/routes';
+import { useGenerateLocalePath } from '../../../../../shared/hooks/localePaths';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export type CrudDropdownMenuProps = {

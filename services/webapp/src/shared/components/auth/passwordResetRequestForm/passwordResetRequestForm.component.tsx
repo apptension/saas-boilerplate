@@ -4,7 +4,7 @@ import throttle from 'lodash.throttle';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { requestPasswordReset } from '../../../../modules/auth/auth.actions';
-import { Input } from '../../input';
+import { Input } from '../../forms/input';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
 import { SUBMIT_THROTTLE } from './passwordResetRequestForm.constants';
 import { ResetPasswordFormFields } from './passwordResetRequestForm.types';

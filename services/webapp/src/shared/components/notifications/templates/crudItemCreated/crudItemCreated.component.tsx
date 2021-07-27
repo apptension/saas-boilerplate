@@ -2,8 +2,8 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { Notification } from '../../notification';
 import { NotificationType } from '../../notifications.types';
-import { useGenerateLocalePath } from '../../../../../routes/useLanguageFromParams/useLanguageFromParams.hook';
-import { ROUTES } from '../../../../../routes/app.constants';
+import { ROUTES } from '../../../../../app/config/routes';
+import { useGenerateLocalePath } from '../../../../hooks/localePaths';
 
 export type CrudItemCreatedProps = NotificationType<{
   id: string;

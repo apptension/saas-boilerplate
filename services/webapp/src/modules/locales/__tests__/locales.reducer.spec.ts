@@ -1,6 +1,6 @@
 import { reducer as localesReducer, INITIAL_STATE as defaultState } from '../locales.reducer';
 import * as actions from '../locales.actions';
-import { Locale } from '../../../i18n';
+import { Locale } from '../../../app/config/i18n';
 
 describe('Locales: reducer', () => {
   it('should return initial state', () => {

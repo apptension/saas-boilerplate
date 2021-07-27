@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { GlobalState } from '../config/reducers';
+import { GlobalState } from '../app/config/reducers';
 import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
@@ -7,7 +7,7 @@ import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
 import { STRIPE_INITIAL_STATE } from '../modules/stripe';
 import { SNACKBAR_INITIAL_STATE } from '../modules/snackbar';
 import { SUBSCRIPTION_INITIAL_STATE } from '../modules/subscription';
-import { DEFAULT_LOCALE } from '../i18n';
+import { DEFAULT_LOCALE } from '../app/config/i18n';
 //<-- IMPORT MODULE STATE -->
 
 export const store: GlobalState = {

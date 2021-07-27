@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 import { TransactionHistoryEntry as TransactionHistoryEntryData } from '../../../../../services/api/stripe/history/types';
-import { Date } from '../../../../date';
+import { FormattedDate } from '../../../../dateTime/formattedDate';
 import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
 import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
@@ -30,7 +30,7 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
   return (
     <Container className={className}>
       <TransactionDate>
-        <Date value={entry.created} />
+        <FormattedDate value={entry.created} />
       </TransactionDate>
       <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
       <Card>
