@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event';
 import { waitFor, screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
-import { prepareState } from '../../../../mocks/store';
 import { subscriptionFactory, subscriptionPhaseFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { subscriptionActions } from '../../../../modules/subscription';
@@ -16,42 +15,44 @@ jest.mock('react-redux', () => {
   };
 });
 
-const store = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({
-    phases: [
-      subscriptionPhaseFactory({
-        endDate: '2020-10-10',
-        item: {
-          price: {
-            product: {
-              name: SubscriptionPlanName.MONTHLY,
-            },
-          },
-        },
-      }),
-      subscriptionPhaseFactory({ startDate: '2020-10-10' }),
-    ],
-  });
-});
-
 describe('CancelSubscription: Component', () => {
   const component = () => <CancelSubscription />;
-  const render = makeContextRenderer(component);
+  const render = makeContextRenderer(component, {
+    store: (state) => {
+      state.subscription.activeSubscription = subscriptionFactory({
+        phases: [
+          subscriptionPhaseFactory({
+            endDate: '2020-10-10',
+            item: {
+              price: {
+                product: {
+                  name: SubscriptionPlanName.MONTHLY,
+                },
+              },
+            },
+          }),
+          subscriptionPhaseFactory({ startDate: '2020-10-10' }),
+        ],
+      });
+    },
+  });
 
   beforeEach(() => {
     mockDispatch.mockReset();
   });
 
   it('should render current plan details', () => {
-    render({}, { store });
+    render();
+
     expect(screen.getByText(/active plan.+monthly/gi)).toBeInTheDocument();
-    expect(screen.getByText(/next renewal.+2020-10-10/gi)).toBeInTheDocument();
+    expect(screen.getByText(/next renewal.+October 10, 2020/gi)).toBeInTheDocument();
   });
 
   describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', () => {
       render();
       userEvent.click(screen.getByText(/cancel subscription/i));
+
       expect(mockDispatch).toHaveBeenCalledWith(subscriptionActions.cancelSubscription());
     });
   });
@@ -59,8 +60,10 @@ describe('CancelSubscription: Component', () => {
   describe('cancel completes successfully', () => {
     it('should show success message and redirect to subscriptions page', async () => {
       const { history, pushSpy } = spiedHistory();
-      render({}, { store, router: { history } });
+      render({}, { router: { history } });
+
       userEvent.click(screen.getByText(/cancel subscription/i));
+
       await waitFor(() => {
         expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
         expect(mockDispatch).toHaveBeenCalledWith(
@@ -79,8 +82,9 @@ describe('CancelSubscription: Component', () => {
         }
       });
 
-      render({}, { store, router: { history } });
+      render({}, { router: { history } });
       userEvent.click(screen.getByText(/cancel subscription/i));
+
       await waitFor(() => {
         expect(pushSpy).not.toHaveBeenCalledWith('/en/subscriptions');
         expect(mockDispatch).not.toHaveBeenCalledWith(

@@ -1,20 +1,19 @@
 import { Story } from '@storybook/react';
-import { prepareState } from '../../../mocks/store';
 import { ProvidersWrapper } from '../../utils/testUtils';
 import { Message } from '../../../modules/snackbar/snackbar.types';
 import { Snackbar } from './snackbar.component';
 
-const Template: Story<{ messages: Message[] }> = ({ messages, ...args }) => {
-  const store = prepareState((state) => {
-    state.snackbar.messages = messages;
-  });
-
-  return (
-    <ProvidersWrapper context={{ store }}>
-      <Snackbar {...args} />
-    </ProvidersWrapper>
-  );
-};
+const Template: Story<{ messages: Message[] }> = ({ messages, ...args }) => (
+  <ProvidersWrapper
+    context={{
+      store: (state) => {
+        state.snackbar.messages = messages;
+      },
+    }}
+  >
+    <Snackbar {...args} />
+  </ProvidersWrapper>
+);
 
 export default {
   title: 'Shared/Snackbar',
@@ -40,8 +39,7 @@ LongMessages.args = {
     { id: 1, text: 'very long message example very long message' },
     {
       id: 2,
-      text:
-        'even longer message example even longer message example even longer message example even longer message example',
+      text: 'even longer message example even longer message example even longer message example even longer message example',
     },
   ],
 };

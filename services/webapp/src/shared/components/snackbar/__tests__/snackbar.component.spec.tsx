@@ -1,8 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer, ProvidersWrapper } from '../../../utils/testUtils';
+import { makeContextRenderer } from '../../../utils/testUtils';
 import { Snackbar } from '../snackbar.component';
-import { prepareState } from '../../../../mocks/store';
 import { snackbarActions } from '../../../../modules/snackbar';
 
 const mockDispatch = jest.fn();
@@ -18,19 +17,15 @@ describe('Snackbar: Component', () => {
     mockDispatch.mockClear();
   });
 
-  const store = prepareState((state) => {
-    state.snackbar.messages = [
-      { id: 1, text: 'first message' },
-      { id: 2, text: 'second message' },
-    ];
+  const component = () => <Snackbar />;
+  const render = makeContextRenderer(component, {
+    store: (state) => {
+      state.snackbar.messages = [
+        { id: 1, text: 'first message' },
+        { id: 2, text: 'second message' },
+      ];
+    },
   });
-
-  const component = () => (
-    <ProvidersWrapper context={{ store }}>
-      <Snackbar />
-    </ProvidersWrapper>
-  );
-  const render = makeContextRenderer(component);
 
   it('should render all messages', () => {
     render();

@@ -58,14 +58,14 @@ describe('Subscriptions: Component', () => {
       expect(screen.getByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
     });
 
-    it('should not render cancelation date', () => {
+    it('should not render cancellation date', () => {
       render({}, { store });
       expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
     });
   });
 
   describe('subscription is canceled', () => {
-    it('should render cancelation date', () => {
+    it('should render cancellation date', () => {
       render({}, { store: storeWithSubscriptionCanceled });
       expect(screen.getByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
     });

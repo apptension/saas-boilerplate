@@ -1,16 +1,17 @@
 import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { prepareState } from '../../mocks/store';
 import { userProfileFactory } from '../../mocks/factories';
 import { Profile } from './profile.component';
 
-const store = prepareState((state) => {
-  state.auth.profile = userProfileFactory();
-});
-
 const Template: Story = (args) => {
   return (
-    <ProvidersWrapper context={{ store }}>
+    <ProvidersWrapper
+      context={{
+        store: (state) => {
+          state.auth.profile = userProfileFactory();
+        },
+      }}
+    >
       <Profile {...args} />
     </ProvidersWrapper>
   );

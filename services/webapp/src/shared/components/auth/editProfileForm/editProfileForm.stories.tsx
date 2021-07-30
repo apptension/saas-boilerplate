@@ -1,14 +1,9 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { prepareState } from '../../../../mocks/store';
 import { userProfileFactory } from '../../../../mocks/factories';
 import { ProvidersWrapper } from '../../../utils/testUtils';
 import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
 import { EditProfileForm } from './editProfileForm.component';
-
-const store = prepareState((state) => {
-  state.auth.profile = userProfileFactory();
-});
 
 const Container = styled.div`
   ${contentWrapper};
@@ -17,7 +12,13 @@ const Container = styled.div`
 
 const Template: Story = (args) => {
   return (
-    <ProvidersWrapper context={{ store }}>
+    <ProvidersWrapper
+      context={{
+        store: (state) => {
+          state.auth.profile = userProfileFactory();
+        },
+      }}
+    >
       <Container>
         <EditProfileForm {...args} />
       </Container>

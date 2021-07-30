@@ -1,16 +1,17 @@
 import { Story } from '@storybook/react';
-import { prepareState } from '../../mocks/store';
 import { appConfigFactory } from '../../mocks/factories';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { TermsAndConditions } from './termsAndConditions.component';
 
-const store = prepareState((state) => {
-  state.config = appConfigFactory();
-});
-
 const Template: Story = (args) => {
   return (
-    <ProvidersWrapper context={{ store }}>
+    <ProvidersWrapper
+      context={{
+        store: (state) => {
+          state.config = appConfigFactory();
+        },
+      }}
+    >
       <TermsAndConditions {...args} />
     </ProvidersWrapper>
   );

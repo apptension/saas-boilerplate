@@ -28,7 +28,7 @@ import {
   SnackbarMessages,
 } from './header.styles';
 
-type HeaderProps = HTMLAttributes<HTMLElement>;
+export type HeaderProps = HTMLAttributes<HTMLElement>;
 
 export const Header = (props: HeaderProps) => {
   const intl = useIntl();

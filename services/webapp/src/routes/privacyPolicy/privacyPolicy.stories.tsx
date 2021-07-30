@@ -1,24 +1,22 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { prepareState } from '../../mocks/store';
 import { appConfigFactory } from '../../mocks/factories';
+import { withProviders } from '../../shared/utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
-const store = prepareState((state) => {
-  state.config = appConfigFactory();
-});
-
 const Template: Story = (args) => {
-  return (
-    <ProvidersWrapper context={{ store }}>
-      <PrivacyPolicy {...args} />
-    </ProvidersWrapper>
-  );
+  return <PrivacyPolicy {...args} />;
 };
 
 export default {
   title: 'Routes/PrivacyPolicy',
   component: PrivacyPolicy,
+  decorators: [
+    withProviders({
+      store: (state) => {
+        state.config = appConfigFactory();
+      },
+    }),
+  ],
 };
 
 export const Default = Template.bind({});

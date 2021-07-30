@@ -10,6 +10,7 @@ import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { ROUTES } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { Container } from './cancelSubscription.styles';
 
 export const CancelSubscription = () => {
@@ -41,16 +42,22 @@ export const CancelSubscription = () => {
         <FormattedMessage defaultMessage="Current plan info" description="Cancel subscription / Current plan header" />
       </H2>
       <Label>
-        <FormattedMessage defaultMessage="Active plan:" description="Cancel subscription / Active plan" />{' '}
-        {activeSubscriptionPlan?.name} [{activeSubscriptionPlan?.price} USD]
+        <FormattedMessage
+          defaultMessage="Active plan: {name} [{price} USD]"
+          description="Cancel subscription / Active plan"
+          values={{ name: activeSubscriptionPlan?.name, price: activeSubscriptionPlan?.price }}
+        />
       </Label>
       <Label>
-        <FormattedMessage defaultMessage="Next renewal / expiry:" description="Cancel subscription / Next renewal" />{' '}
-        {activeSubscriptionRenewalDate}
+        <FormattedMessage
+          defaultMessage="Next renewal / expiry: {date}"
+          description="Cancel subscription / Next renewal"
+          values={{ date: <FormattedDate value={activeSubscriptionRenewalDate} /> }}
+        />
       </Label>
 
       <Button onClick={handleConfirm}>
-        <FormattedMessage defaultMessage="Cancel subscription" description="Cancel subscription / Button label" />{' '}
+        <FormattedMessage defaultMessage="Cancel subscription" description="Cancel subscription / Button label" />
       </Button>
     </Container>
   );

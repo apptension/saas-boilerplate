@@ -34,7 +34,7 @@ export interface ContextData {
     routePath?: string;
     history?: MemoryHistory;
   };
-  store?: GlobalState;
+  store?: GlobalState | ((draft: GlobalState) => void);
   messages?: TranslationMessages;
   relayEnvironment?: RelayMockEnvironment | ((env: RelayMockEnvironment) => void);
   apolloMocks?: any[];
@@ -46,7 +46,7 @@ interface ProvidersWrapperProps {
 }
 
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
-  const { router = {}, store = fixturesStore, messages, apolloMocks = [] } = context;
+  const { router = {}, messages, apolloMocks = [] } = context;
   const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', history } = router;
 
   const routerHistory: MemoryHistory = history ?? createMemoryHistory({ initialEntries: [url] });
@@ -55,6 +55,12 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
     locale: DEFAULT_LOCALE,
     messages: messages ?? translationMessages[DEFAULT_LOCALE],
   };
+
+  const store = (() => {
+    if (!context?.store) return fixturesStore;
+    if (typeof context.store === 'function') return produce(fixturesStore, context.store);
+    return context.store;
+  })();
 
   const relayEnvironment = (() => {
     if (context?.relayEnvironment === undefined) {
@@ -87,10 +93,15 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   );
 };
 
-export function makeContextRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
+export function makeContextRenderer<T>(
+  component: (props: T | Record<string, never>) => ReactElement,
+  baseContext: ContextData = {}
+) {
   return (props?: T, context?: ContextData) =>
     render(component(props ?? {}), {
-      wrapper: ({ children }) => <ProvidersWrapper context={context}>{children}</ProvidersWrapper>,
+      wrapper: ({ children }) => (
+        <ProvidersWrapper context={{ ...baseContext, ...context }}>{children}</ProvidersWrapper>
+      ),
     });
 }
 export function makePropsRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
