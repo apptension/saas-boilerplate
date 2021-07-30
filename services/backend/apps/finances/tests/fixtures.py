@@ -31,6 +31,7 @@ def mock_init_user(mocker):
 def free_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.FREE_PLAN.name,
+        product__active=True,
         unit_amount=constants.FREE_PLAN.initial_price.unit_amount,
         currency=constants.FREE_PLAN.initial_price.currency,
         recurring=constants.FREE_PLAN.initial_price.recurring,
@@ -50,6 +51,7 @@ def free_plan_price(price_factory, plan_factory):
 def monthly_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.MONTHLY_PLAN.name,
+        product__active=True,
         unit_amount=constants.MONTHLY_PLAN.initial_price.unit_amount,
         currency=constants.MONTHLY_PLAN.initial_price.currency,
         recurring=constants.MONTHLY_PLAN.initial_price.recurring,
@@ -69,6 +71,7 @@ def monthly_plan_price(price_factory, plan_factory):
 def yearly_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.YEARLY_PLAN.name,
+        product__active=True,
         unit_amount=constants.YEARLY_PLAN.initial_price.unit_amount,
         currency=constants.YEARLY_PLAN.initial_price.currency,
         recurring=constants.YEARLY_PLAN.initial_price.recurring,

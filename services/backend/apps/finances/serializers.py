@@ -89,15 +89,6 @@ class SubscriptionItemProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class SubscriptionPlansListSerializer(serializers.ModelSerializer):
-    product = SubscriptionItemProductSerializer()
-
-    class Meta:
-        model = djstripe_models.Price
-        fields = ('id', 'product', 'unit_amount')
-        read_only_fields = fields
-
-
 class PriceSerializer(serializers.ModelSerializer):
     product = SubscriptionItemProductSerializer()
 

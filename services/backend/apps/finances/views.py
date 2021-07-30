@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from stripe.error import InvalidRequestError
 
 from common.acl import policies
-from . import serializers, constants
+from . import serializers
 from .services import subscriptions, customers
 
 
@@ -100,20 +100,6 @@ class CancelUserActiveSubscriptionView(generics.GenericAPIView):
 
     def get_object(self):
         return subscriptions.get_schedule(user=self.request.user)
-
-
-class SubscriptionPlansListView(generics.ListAPIView):
-    permission_classes = (policies.AnyoneFullAccess,)
-    serializer_class = serializers.SubscriptionPlansListSerializer
-
-    def get_queryset(self):
-        return djstripe_models.Price.objects.filter(
-            product__name__in=[
-                constants.FREE_PLAN.name,
-                constants.MONTHLY_PLAN.name,
-                constants.YEARLY_PLAN.name,
-            ]
-        )
 
 
 class UserChargeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
