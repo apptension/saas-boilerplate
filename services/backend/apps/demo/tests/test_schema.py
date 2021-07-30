@@ -523,3 +523,142 @@ class TestDeleteDocumentDemoItemMutation:
         assert executed["errors"][0]["path"] == ["deleteDocumentDemoItem"]
         assert executed["data"] == {"deleteDocumentDemoItem": None}
         assert models.DocumentDemoItem.objects.filter(id=document_demo_item.id).exists()
+
+
+class TestAllContentfulDemoItemFavoritesQuery:
+    FAVORITES_LIST_QUERY = '''
+        query  {
+          allContentfulDemoItemFavorites {
+            edges {
+              node {
+                item {
+                  pk
+                }
+              }
+            }
+          }
+        }
+    '''
+
+    def test_returns_all_items(self, graphene_client, contentful_demo_item_favorite_factory, user):
+        favorites = contentful_demo_item_favorite_factory.create_batch(3, user=user)
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(self.FAVORITES_LIST_QUERY)
+
+        assert executed == {
+            'data': {
+                'allContentfulDemoItemFavorites': {
+                    'edges': [{'node': {'item': {'pk': favorite.item_id}}} for favorite in favorites]
+                }
+            }
+        }
+
+    def test_returns_logged_in_user_items(self, graphene_client, contentful_demo_item_favorite_factory, user_factory):
+        user = user_factory()
+        other_user = user_factory()
+        favorites = contentful_demo_item_favorite_factory.create_batch(3, user=user)
+        contentful_demo_item_favorite_factory.create_batch(2, user=other_user)
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(self.FAVORITES_LIST_QUERY)
+
+        assert executed == {
+            'data': {
+                'allContentfulDemoItemFavorites': {
+                    'edges': [{'node': {'item': {'pk': favorite.item_id}}} for favorite in favorites]
+                }
+            }
+        }
+
+
+class TestCreateFavoriteContentfulDemoItemMutation:
+    CREATE_FAVORITE_MUTATION = '''
+        mutation($input: CreateFavoriteContentfulDemoItemMutationInput!)  {
+          createFavoriteContentfulDemoItem(input: $input) {
+            contentfulDemoItemFavorite {
+              item {
+                pk
+              }
+            }
+          }
+        }
+    '''
+
+    def test_create_new_favorite_item(self, graphene_client, user, contentful_demo_item_factory):
+        item = contentful_demo_item_factory()
+        input = {'item': item.id}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_FAVORITE_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['data']['createFavoriteContentfulDemoItem']
+        assert executed['data']['createFavoriteContentfulDemoItem']['contentfulDemoItemFavorite']
+        assert executed['data']['createFavoriteContentfulDemoItem']['contentfulDemoItemFavorite']['item']
+        assert (
+            executed['data']['createFavoriteContentfulDemoItem']['contentfulDemoItemFavorite']['item']['pk'] == item.id
+        )
+
+        assert models.ContentfulDemoItemFavorite.objects.count() == 1
+        assert models.ContentfulDemoItemFavorite.objects.filter(item=item, user=user).exists()
+
+    def test_create_favorite_item_when_it_already_exists(
+        self, graphene_client, user, contentful_demo_item_favorite_factory
+    ):
+        favorite_item = contentful_demo_item_favorite_factory(user=user)
+        input = {'item': favorite_item.item.id}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_FAVORITE_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['errors']
+        assert executed['errors'][0]["message"] == "GraphQlValidationError"
+
+        assert models.ContentfulDemoItemFavorite.objects.count() == 1
+        assert models.ContentfulDemoItemFavorite.objects.filter(item=favorite_item.item, user=user).exists()
+
+
+class TestDeleteFavoriteContentfulDemoItemMutation:
+    DELETE_FAVORITE_MUTATION = '''
+        mutation($input: DeleteFavoriteContentfulDemoItemMutationInput!)  {
+          deleteFavoriteContentfulDemoItem(input: $input) {
+            deletedIds
+          }
+        }
+    '''
+
+    def test_delete_favorite_item(
+        self, graphene_client, user, contentful_demo_item_factory, contentful_demo_item_favorite_factory
+    ):
+        item = contentful_demo_item_factory()
+        contentful_demo_item_favorite_factory(item=item, user=user)
+        input = {'item': item.id}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.DELETE_FAVORITE_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['data']['deleteFavoriteContentfulDemoItem']
+        assert executed['data']['deleteFavoriteContentfulDemoItem']['deletedIds'] == [item.id]
+
+        assert models.ContentfulDemoItemFavorite.objects.count() == 0
+
+    def test_delete_favorite_item_wrong_id(self, graphene_client, user):
+        input = {'item': "unexisting"}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.DELETE_FAVORITE_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "No ContentfulDemoItemFavorite matches the given query."
