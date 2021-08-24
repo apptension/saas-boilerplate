@@ -53,7 +53,7 @@
     "apollo": "^2.33.4",
     "axios": "^0.21.1",
     "axios-case-converter": "^0.8.1",
-    "color": "^4.0.0",
+    "color": "^3.2.1",
     "concurrently": "^6.2.0",
     "core-js": "^3.15.2",
     "dotenv": "^10.0.0",
