@@ -34,7 +34,7 @@ def wraps_resolver_function(fn: Callable, perms: types.PermissionsClasses) -> Ca
         check_permissions(perms=perms, request=info.context, root=root)
         return fn(root, info, *args, **kwargs)
 
-    __wrapped_fns.value.add(fn)
+    __wrapped_fns.value.add(wrapped)
     return wrapped
 
 
