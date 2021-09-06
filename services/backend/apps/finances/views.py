@@ -7,7 +7,7 @@ from stripe.error import InvalidRequestError
 
 from common.acl import policies
 from . import serializers
-from .services import subscriptions, customers
+from .services import customers
 
 
 class StripePaymentIntentViewSet(
@@ -77,21 +77,6 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
         serializer.save()
 
         return response.Response(serializer.data)
-
-
-class CancelUserActiveSubscriptionView(generics.GenericAPIView):
-    permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.CancelUserActiveSubscriptionSerializer
-
-    def post(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return response.Response(serializer.data)
-
-    def get_object(self):
-        return subscriptions.get_schedule(user=self.request.user)
 
 
 class UserChargeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

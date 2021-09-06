@@ -150,6 +150,17 @@ class ChangeActiveSubscriptionMutation(mutations.UpdateModelMutation):
         return subscriptions.get_schedule(user=info.context.user)
 
 
+class CancelActiveSubscriptionMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.CancelUserActiveSubscriptionSerializer
+        edge_class = SubscriptionScheduleConnection.Edge
+        require_id_field = False
+
+    @classmethod
+    def get_object(cls, model_class, root, info, **input):
+        return subscriptions.get_schedule(user=info.context.user)
+
+
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
@@ -171,3 +182,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     change_active_subscription = ChangeActiveSubscriptionMutation.Field()
+    cancel_active_subscription = CancelActiveSubscriptionMutation.Field()
