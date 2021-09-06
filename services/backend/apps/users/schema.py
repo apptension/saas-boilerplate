@@ -97,7 +97,7 @@ class UpdateCurrentUserMutation(mutations.UpdateModelMutation):
         return get_user_from_resolver(info).profile
 
     @classmethod
-    def get_object(cls, model_class, pk, root, info, **input):
+    def get_object(cls, model_class, root, info, **input):
         return get_user_from_resolver(info).profile
 
 

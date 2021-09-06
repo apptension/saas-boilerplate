@@ -8,6 +8,7 @@ from rest_framework.test import APIClient, APIRequestFactory
 from graphene.test import Client as GrapheneClient
 from moto import mock_s3
 
+from common.graphql.views import DRFAuthenticatedGraphQLView
 from config.schema import schema
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -24,6 +25,9 @@ pytest_plugins = [
 
 
 class CustomGrapheneClient(GrapheneClient):
+    def __init__(self, schema, **execute_options):
+        super().__init__(schema, format_error=DRFAuthenticatedGraphQLView.format_error, **execute_options)
+
     def query(self, *args, **kwargs):
         self.execute_options["context_value"].method = "GET"
         return super(CustomGrapheneClient, self).execute(*args, **kwargs)

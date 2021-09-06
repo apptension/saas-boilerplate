@@ -180,6 +180,7 @@ class TestUpdateCurrentUserMutation:
             query,
             variable_values={'input': {"firstName": "Tony", "lastName": "Stark"}},
         )
+        assert "errors" not in executed
         assert executed["data"]["updateCurrentUser"]["userProfile"] == {'firstName': 'Tony', 'lastName': 'Stark'}
 
     def test_update_avatar(self, api_client, user_factory, image_factory):
@@ -208,6 +209,7 @@ class TestUpdateCurrentUserMutation:
         executed = json.loads(response.content)
         user.profile.refresh_from_db()
         user_file_name = os.path.split(user.profile.avatar.thumbnail.name)[1]
+        assert "errors" not in executed
         response_file_name = os.path.split(executed["data"]["updateCurrentUser"]["userProfile"]["user"]["avatar"])[1]
 
         assert user_file_name == response_file_name == "avatar_new.png"
