@@ -1,8 +1,10 @@
+from datetime import timedelta
 import pytest
 import calleee
 from djstripe import models as djstripe_models
 from graphql_relay import to_global_id
 from apps.finances.tests.utils import stripe_encode
+from django.utils import timezone
 
 pytestmark = pytest.mark.django_db
 
@@ -459,3 +461,120 @@ class TestDeletePaymentMethodMutation:
             calleee.Any(),
             stripe_encode({'invoice_settings': {'default_payment_method': other_payment_method.id}}),
         )
+
+
+class TestAllChargesQuery:
+    ALL_CHARGES_QUERY = '''
+        query  {
+          allCharges {
+            edges {
+              node {
+                pk
+              }
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_only_customer_charges(self, graphene_client, customer, charge_factory):
+        other_customer_charge = charge_factory()
+        regular_charge = charge_factory(customer=customer)
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["data"]
+        assert executed["data"]["allCharges"]
+        assert executed["data"]["allCharges"]["edges"]
+        assert len(executed["data"]["allCharges"]["edges"]) == 1
+
+        charge_ids = [charge["node"]["pk"] for charge in executed["data"]["allCharges"]["edges"]]
+        assert regular_charge.id in charge_ids
+        assert other_customer_charge.id not in charge_ids
+
+    def test_return_charges_ordered_by_creation_date_descending(self, graphene_client, customer, charge_factory):
+        old_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=1))
+        oldest_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=2))
+        new_charge = charge_factory(customer=customer, created=timezone.now())
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["data"]
+        assert executed["data"]["allCharges"]
+        assert executed["data"]["allCharges"]["edges"]
+        assert len(executed["data"]["allCharges"]["edges"]) == 3
+
+        charge_ids = [charge["node"]["pk"] for charge in executed["data"]["allCharges"]["edges"]]
+        assert charge_ids == [new_charge.id, old_charge.id, oldest_charge.id]
+
+
+class TestChargeQuery:
+    CHARGE_QUERY = '''
+        query getCharge($id: ID!) {
+          charge(id: $id) {
+            id
+            amount
+            billingDetails
+            currency
+            captured
+            created
+            paid
+            paymentMethodDetails
+            status
+            invoice {
+              id
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client, customer, charge_factory):
+        charge = charge_factory(customer=customer)
+
+        variable_values = {"id": to_global_id('StripeChargeType', str(charge.pk))}
+        executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_charge(self, graphene_client, customer, charge_factory):
+        charge = charge_factory(customer=customer)
+        charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
+        variable_values = {"id": charge_global_id}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
+
+        assert executed["data"]
+        assert executed["data"]["charge"]
+        assert executed["data"]["charge"] == {
+            "id": charge_global_id,
+            "amount": f"{charge.amount:.2f}",
+            "billingDetails": {
+                "address": {
+                    "city": None,
+                    "country": None,
+                    "line1": None,
+                    "line2": None,
+                    "postal_code": charge.billing_details["address"]["postal_code"],
+                    "state": None,
+                },
+                "email": None,
+                "name": charge.billing_details["name"],
+                "phone": None,
+            },
+            "currency": "usd",
+            "captured": True,
+            "created": None,
+            "paid": False,
+            "paymentMethodDetails": None,
+            "status": "SUCCEEDED",
+            "invoice": None,
+        }

@@ -1,4 +1,4 @@
-from djstripe import models as djstripe_models, enums as djstripe_enums
+from djstripe import models as djstripe_models
 from rest_framework import mixins, viewsets
 
 from common.acl import policies
@@ -25,12 +25,3 @@ class StripeSetupIntentViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixi
 
     def get_queryset(self):
         return self.queryset.filter(customer__subscriber=self.request.user)
-
-
-class UserChargeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.UserChargeSerializer
-
-    def get_queryset(self):
-        customer, _ = djstripe_models.Customer.get_or_create(self.request.user)
-        return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")
