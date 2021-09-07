@@ -67,9 +67,6 @@ class Query(graphene.ObjectType):
     all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 
-    def resolve_crud_demo_item(root, info, id):
-        return models.CrudDemoItem.objects.get(pk=id)
-
     def resolve_all_crud_demo_items(root, info, **kwargs):
         return models.CrudDemoItem.objects.all()
 

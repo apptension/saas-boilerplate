@@ -43,18 +43,33 @@ class TestAllCrudDemoItemsQuery:
 
 
 class TestCrudDemoItemQuery:
+    CRUD_DEMO_ITEM_QUERY = '''
+        query($id: ID!)  {
+          crudDemoItem(id: $id) {
+            id
+            name
+          }
+        }
+    '''
+
+    def test_return_error_for_not_authorized_user(self, graphene_client, crud_demo_item):
+        item_global_id = to_global_id('CrudDemoItemType', str(crud_demo_item.id))
+
+        executed = graphene_client.query(
+            self.CRUD_DEMO_ITEM_QUERY,
+            variable_values={'id': item_global_id},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
     def test_return_none_if_item_does_not_exist(self, graphene_client, user):
+        item_global_id = to_global_id('CrudDemoItemType', 'invalid-id')
+
         graphene_client.force_authenticate(user)
         executed = graphene_client.query(
-            '''
-            query($id: ID!)  {
-              crudDemoItem(id: $id) {
-                id
-                name
-              }
-            }
-        ''',
-            variable_values={'id': to_global_id('CrudDemoItemType', 'invalid-id')},
+            self.CRUD_DEMO_ITEM_QUERY,
+            variable_values={'id': item_global_id},
         )
 
         assert executed['data'] == {'crudDemoItem': None}
@@ -64,14 +79,7 @@ class TestCrudDemoItemQuery:
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.query(
-            '''
-            query($id: ID!)  {
-              crudDemoItem(id: $id) {
-                id
-                name
-              }
-            }
-        ''',
+            self.CRUD_DEMO_ITEM_QUERY,
             variable_values={'id': item_global_id},
         )
 
