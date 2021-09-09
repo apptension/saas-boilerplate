@@ -21,9 +21,6 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     tax_exempt = enums.CustomerTaxExempt.none
     subscriber = factory.SubFactory(user_factories.UserFactory)
     email = factory.LazyAttribute(lambda obj: obj.subscriber.email)
-    default_payment_method = factory.RelatedFactory(
-        'apps.finances.tests.factories.PaymentMethodFactory', factory_related_name='customer'
-    )
 
 
 class PaymentIntentFactory(factory.django.DjangoModelFactory):

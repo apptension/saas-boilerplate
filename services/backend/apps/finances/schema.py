@@ -1,6 +1,8 @@
 from datetime import datetime
 
 import graphene
+from django.db import transaction
+from django.http import Http404
 from djstripe import models as djstripe_models
 from graphene import relay, ObjectType
 from graphene.types.generic import GenericScalar
@@ -8,10 +10,13 @@ from graphene_django import DjangoObjectType
 from common.graphql import mutations
 from common.acl.policies import AnyoneFullAccess
 from common.graphql.acl import permission_classes
+from graphql_relay import from_global_id
+from rest_framework.generics import get_object_or_404
+from stripe.error import InvalidRequestError
 
 from . import constants
 from . import utils, serializers
-from .services import subscriptions
+from .services import subscriptions, customers
 
 
 class SubscriptionItemProductType(DjangoObjectType):
@@ -161,9 +166,64 @@ class CancelActiveSubscriptionMutation(mutations.UpdateModelMutation):
         return subscriptions.get_schedule(user=info.context.user)
 
 
+class PaymentMethodConnection(graphene.Connection):
+    class Meta:
+        node = StripePaymentMethodType
+
+
+class PaymentMethodGetObjectMixin:
+    @classmethod
+    def get_payment_method(cls, global_id, user):
+        _, id = from_global_id(global_id)
+        filter_kwargs = {"id": id, "customer__subscriber": user}
+        queryset = djstripe_models.PaymentMethod.objects.filter(**filter_kwargs)
+        if not queryset.exists():
+            try:
+                api_response = djstripe_models.PaymentMethod(id=id).api_retrieve()
+                djstripe_models.PaymentMethod.sync_from_stripe_data(api_response)
+            except InvalidRequestError:
+                raise Http404
+        return get_object_or_404(queryset, **filter_kwargs)
+
+
+class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
+    ok = graphene.Boolean()
+
+    class Input:
+        id = graphene.String()
+
+    class Meta:
+        serializer_class = serializers.UpdateDefaultPaymentMethodSerializer
+        lookup_field = "id"
+        model_class = djstripe_models.PaymentMethod
+
+    @classmethod
+    def get_object(cls, model_class, info, *args, **kwargs):
+        return cls.get_payment_method(kwargs["id"], info.context.user)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        super().mutate_and_get_payload(root, info, **input)
+        return UpdateDefaultPaymentMethodMutation(ok=True)
+
+
+class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteModelMutation):
+    class Meta:
+        model = djstripe_models.PaymentMethod
+
+    @classmethod
+    @transaction.atomic
+    def mutate_and_get_payload(cls, root, info, id):
+        obj = cls.get_payment_method(id, info.context.user)
+        customers.remove_payment_method(payment_method=obj)
+        obj.delete()
+        return cls(deleted_ids=[id])
+
+
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
+    all_payment_methods = graphene.relay.ConnectionField(PaymentMethodConnection)
 
     @permission_classes(AnyoneFullAccess)
     def resolve_all_subscription_plans(root, info, **kwargs):
@@ -179,7 +239,12 @@ class Query(graphene.ObjectType):
     def resolve_active_subscription(root, info):
         return subscriptions.get_schedule(user=info.context.user)
 
+    def resolve_all_payment_methods(root, info, **kwargs):
+        return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.user)
+
 
 class Mutation(graphene.ObjectType):
     change_active_subscription = ChangeActiveSubscriptionMutation.Field()
     cancel_active_subscription = CancelActiveSubscriptionMutation.Field()
+    update_default_payment_method = UpdateDefaultPaymentMethodMutation.Field()
+    delete_payment_method = DeletePaymentMethodMutation.Field()

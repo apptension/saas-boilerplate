@@ -317,13 +317,16 @@ class SerializerMutation(ClientIDMutation):
         super(SerializerMutation, cls).__init_subclass_with_meta__(_meta=_meta, input_fields=input_fields, **options)
 
     @classmethod
+    def get_object(cls, model_class, info, *args, **kwargs):
+        return get_object_or_404(model_class, *args, **kwargs)
+
+    @classmethod
     def get_serializer_kwargs(cls, root, info, **input):
         lookup_field = cls._meta.lookup_field
         model_class = cls._meta.model_class
-
         if model_class:
             if "update" in cls._meta.model_operations and lookup_field in input:
-                instance = get_object_or_404(model_class, **{lookup_field: input[lookup_field]})
+                instance = cls.get_object(model_class, info, **{lookup_field: input[lookup_field]})
                 partial = True
             elif "create" in cls._meta.model_operations:
                 instance = None
