@@ -103,7 +103,7 @@
     "react-relay": "^11.0.2",
     "react-router": "^5",
     "react-router-dom": "^5",
-    "react-scripts": "apptension/react-scripts-apptension#de7d56fd2406390c63b525ccfd2cd901da167526",
+    "react-scripts": "npm:@apptension/react-scripts@5.0.0",
     "react-test-renderer": "^17.0.2",
     "redux": "^4.1.0",
     "redux-saga": "^1.0.2",

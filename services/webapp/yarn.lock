@@ -20116,9 +20116,10 @@ react-router@5.2.0, react-router@^5:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-scripts@apptension/react-scripts-apptension#de7d56fd2406390c63b525ccfd2cd901da167526:
-  version "4.0.3"
-  resolved "https://codeload.github.com/apptension/react-scripts-apptension/tar.gz/de7d56fd2406390c63b525ccfd2cd901da167526"
+"react-scripts@npm:@apptension/react-scripts@5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@apptension/react-scripts/-/react-scripts-5.0.0.tgz#06912a37f17810d5eb5488f25ef161b4abc65ca0"
+  integrity sha512-y2IUCd6SZF/WAQqb0QDO/LVUsvXVXULDk/mIDFXoOK968IhtHHssIfujwDU2WPYlED6Ko89UTNO8U0FTabNUUw==
   dependencies:
     "@babel/core" "7.12.3"
     "@babel/plugin-transform-arrow-functions" "^7.12.1"
