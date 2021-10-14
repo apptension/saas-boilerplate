@@ -1,5 +1,6 @@
 declare namespace Cypress {
   interface Chainable {
+    shouldHaveColor(arg0: string);
     /**
      * Custom command for getting JWT token need for authorization
      * Get the token in before hook - it will be stored in cookies

@@ -31,10 +31,10 @@ describe('CRUD', () => {
 
   beforeEach(() => {
     cy.getJWTtoken(userEmail, password);
-    cy.visit('/en/crud-demo-item/', BASIC_AUTH);
     cy.interceptGraphQl('addCrudDemoItem');
     cy.interceptGraphQl('updateCrudDemoItem');
     cy.interceptGraphQl('crudDemoItemListItemDelete');
+    cy.visit('/en/crud-demo-item/', BASIC_AUTH);
   });
 
   it('should create CRUD item', () => {

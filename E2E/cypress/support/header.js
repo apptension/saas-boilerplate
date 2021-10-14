@@ -1,8 +1,7 @@
 export const MENU_BTN = '[aria-label="Open profile menu"]';
 export const HOME_BTN = '[aria-label="Go back home"]';
 export const NOTIFICATION_BTN = '[aria-label="Open notifications"]';
-export const READ_NOTIFICATION_BTN = 'ul > li > button';
-export const ALL_READ_BTN = 'button';
+export const READ_NOTIFICATION_BTN = "[role='link'] button";
 
 export const expectHeaderToBeDisplayed = () => {
   cy.get(HOME_BTN).should('be.visible');

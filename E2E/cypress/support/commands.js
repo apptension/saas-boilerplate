@@ -21,3 +21,7 @@ Cypress.Commands.add('interceptGraphQl', (query) => {
     }
   });
 });
+
+Cypress.Commands.add('shouldHaveColor', { prevSubject: true }, (subject, color) => {
+  cy.wrap(subject).should('have.css', 'color', color);
+});

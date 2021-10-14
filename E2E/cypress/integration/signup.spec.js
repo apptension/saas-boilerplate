@@ -64,7 +64,7 @@ describe('Signup', () => {
       });
     });
 
-    it.skip('Can confirm a new account using a link from an email', () => {
+    it('Can confirm a new account using a link from an email', () => {
       deleteEmails('Confirm your account');
       const userEmail = randomizeEmail(SIGNUP_EMAIL);
       const password = Cypress.env('PASSWORD');
