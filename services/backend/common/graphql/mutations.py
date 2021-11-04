@@ -221,7 +221,14 @@ class UpdateModelMutation(RelayModelSerializerMutation):
             instance = cls.get_object(model_class, pk, root, info, **input)
             return {
                 "instance": instance,
-                "data": input,
+                "data": {
+                    **input,
+                    **(
+                        {key: info.context.FILES.get(key) for key in info.context.FILES}
+                        if hasattr(info.context, "FILES")
+                        else {}
+                    ),
+                },
                 "context": {"request": info.context},
                 "partial": True,
             }
