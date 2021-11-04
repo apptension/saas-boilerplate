@@ -11,7 +11,6 @@ import {
     SecurityGroup,
     SubnetType
 } from "@aws-cdk/aws-ec2";
-import {Effect, PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";
@@ -30,10 +29,6 @@ export class MainDatabase extends Construct {
         return `${envSettings.projectEnvName}-databaseSecretArn`
     }
 
-    static getDatabaseProxyRoleArnOutputExportName(envSettings: EnvironmentSettings) {
-        return `${envSettings.projectEnvName}-databaseProxyRoleArn`
-    }
-
     static getDatabaseProxyEndpointOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-databaseProxyEndpoint`;
     }
@@ -47,8 +42,7 @@ export class MainDatabase extends Construct {
 
         const securityGroup = this.createSecurityGroup(props);
         this.instance = this.createDbInstance(props, securityGroup);
-        const role = this.createProxyRole(this.instance, props);
-        this.createRdsProxy(this.instance, props, role, securityGroup);
+        this.createRdsProxy(this.instance, props, securityGroup);
     }
 
     createSecurityGroup(props: MainDatabaseProps): SecurityGroup {
@@ -96,7 +90,6 @@ export class MainDatabase extends Construct {
     private createRdsProxy(
         instance: DatabaseInstance,
         props: MainDatabaseProps,
-        role: Role,
         securityGroup: SecurityGroup
     ) {
         const proxy = instance.addProxy("proxy", {
@@ -104,7 +97,6 @@ export class MainDatabase extends Construct {
             borrowTimeout: Duration.seconds(30),
             maxConnectionsPercent: 100,
             secrets: instance.secret ? [instance.secret] : [],
-            role: role,
             vpc: props.vpc,
             securityGroups: [securityGroup],
             requireTLS: false,
@@ -116,36 +108,5 @@ export class MainDatabase extends Construct {
         });
 
         return proxy;
-    }
-
-    private createProxyRole(instance: DatabaseInstance, props: MainDatabaseProps) {
-        const role = new Role(this, "DBProxyRole", {
-            assumedBy: new ServicePrincipal('rds.amazonaws.com'),
-        });
-
-        role.addToPolicy(new PolicyStatement({
-            effect: Effect.ALLOW,
-            actions: [
-                "secretsmanager:GetRandomPassword",
-                "secretsmanager:CreateSecret",
-                "secretsmanager:ListSecrets",
-            ],
-            resources: ['*'],
-        }));
-
-        if (instance.secret) {
-            role.addToPolicy(new PolicyStatement({
-                effect: Effect.ALLOW,
-                actions: ['secretsmanager:*'],
-                resources: [instance.secret.secretArn]
-            }));
-        }
-
-        new CfnOutput(this, "DbProxyRoleArn", {
-            exportName: MainDatabase.getDatabaseProxyRoleArnOutputExportName(props.envSettings),
-            value: role.roleArn,
-        });
-
-        return role;
     }
 }
