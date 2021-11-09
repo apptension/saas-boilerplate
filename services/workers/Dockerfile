@@ -17,7 +17,10 @@ RUN \
 WORKDIR /pkgs
 
 COPY pdm.lock pyproject.toml .pdm.toml /pkgs/
-RUN pdm install
+#When installing the pystache package, pdm creates a virtual environment in which it installs the setuptools and wheel packages by default.
+#It turns out that setuptools has a lower version limit, which causes pystache to throw an error
+RUN sed -i 's/"requires": \["setuptools >= 40.8.0", "wheel"\]/"requires": \["setuptools >= 40.8.0, < 58", "wheel"\]/g' /usr/local/lib/python3.8/site-packages/pdm/builders/base.py && \
+    pdm install
 
 WORKDIR /app
 
