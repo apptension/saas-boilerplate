@@ -1,6 +1,10 @@
+from typing import Optional, List, TypedDict
+
 import factory
+import mimetypes
 from django.contrib.auth import hashers
 from django.contrib.auth.models import Group
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 
 from common.acl.helpers import CommonGroups
 
@@ -17,7 +21,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "users.User"
 
-    id = factory.Sequence(lambda n: n + 1)
     email = factory.Faker("email")
     is_superuser = False
     profile = factory.RelatedFactory("apps.users.tests.factories.UserProfileFactory", factory_related_name="user")
@@ -31,20 +34,12 @@ class UserFactory(factory.django.DjangoModelFactory):
         return user
 
     @factory.post_generation
-    def groups(self, create, extracted, **kwargs):
-        user_group, created = Group.objects.get_or_create(name=CommonGroups.User)
-        self.groups.add(user_group)
-
+    def groups(self, create: bool, extracted: Optional[List[str]], **kwargs):
         if not create:
             return
 
-        if extracted:
-            for group in extracted:
-                if type(group) == str:
-                    group_obj, created = Group.objects.get_or_create(name=group)
-                    self.groups.add(group_obj)
-                else:
-                    self.groups.add(group)
+        group_names = extracted or [CommonGroups.User]
+        self.groups.add(*[Group.objects.get_or_create(name=group_name)[0] for group_name in group_names])
 
     @factory.post_generation
     def admin(self, create, extracted, **kwargs):
@@ -71,3 +66,19 @@ class UserProfileFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name", locale="pl")
     last_name = factory.Faker("last_name", locale="pl")
     avatar = factory.SubFactory(UserAvatarFactory)
+
+
+class ImageFactoryParams(TypedDict):
+    width: int
+    height: int
+    color: str  # default: 'blue'
+    format: str  # default: 'JPEG'
+
+
+def image_factory(name: str, params: Optional[ImageFactoryParams] = None) -> UploadedFile:
+    image_field = factory.django.ImageField(filename=name)
+    return SimpleUploadedFile(
+        name=name,
+        content=image_field._make_data(params or {}),
+        content_type=mimetypes.guess_type(name)[0],
+    )

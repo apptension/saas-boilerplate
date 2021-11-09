@@ -84,6 +84,9 @@ aws-login:
 up:
 	$(DOCKER_COMPOSE) up --build --force-recreate -d backend workers
 
+debug-backend:
+	$(DOCKER_COMPOSE) run --rm --service-ports backend
+
 down:
 	docker-compose down
 

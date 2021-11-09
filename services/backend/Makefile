@@ -47,16 +47,16 @@ migrate:
 	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py migrate"
 
 flake8:
-	$(DOCKER_COMPOSE) run --rm -T backend flake8
+	$(DOCKER_COMPOSE) run --rm -T --no-deps backend flake8
 
 black:
-	$(DOCKER_COMPOSE) run --rm -T backend black --config=pyproject.toml .
+	$(DOCKER_COMPOSE) run --rm -T --no-deps backend black --config=pyproject.toml .
 
 check-migrations:
 	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py makemigrations --check --dry-run"
 
-sync-stripe: 
-	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py djstripe_sync_models" 
+sync-stripe:
+	$(DOCKER_COMPOSE) run --rm -T backend sh -c "python ./manage.py djstripe_sync_models"
 
 secrets: export CHAMBER_SERVICE=backend
 secrets:

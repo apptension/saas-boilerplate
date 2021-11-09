@@ -10,6 +10,7 @@ from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.serializers import PasswordField
 
 from . import models, tokens, jwt, notifications
+from .services.users import get_role_names
 
 UPLOADED_AVATAR_SIZE_LIMIT = 1 * 1024 * 1024
 
@@ -33,7 +34,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return attrs
 
     def get_roles(self, obj):
-        return [group.name for group in obj.user.groups.all()]
+        return get_role_names(obj.user)
 
     def to_representation(self, instance):
         self.fields["avatar"] = serializers.FileField(source="avatar.thumbnail", default="")

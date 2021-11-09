@@ -193,7 +193,9 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         if not model_type:
             raise Exception("No type registered for model: {}".format(model_class.__name__))
 
-        input_fields['id'] = relay.GlobalID(model_type)
+        available_fields = cls.get_available_fields(input_fields, only_fields, exclude_fields)
+        if 'id' in available_fields:
+            input_fields['id'] = relay.GlobalID(model_type)
 
         output_fields = OrderedDict({return_field_name: graphene.Field(model_type)})
 
@@ -217,7 +219,10 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         model_class = cls._meta.model_class
 
         if model_class:
-            _, pk = from_global_id(input['id'])
+            pk = None
+            object_id = input.get('id')
+            if object_id:
+                _, pk = from_global_id(object_id)
             instance = cls.get_object(model_class, pk, root, info, **input)
             return {
                 "instance": instance,
@@ -242,6 +247,15 @@ class UpdateModelMutation(RelayModelSerializerMutation):
     @classmethod
     def get_queryset(cls, model_class, root, info, **input):
         return model_class.objects.all()
+
+    @classmethod
+    def get_available_fields(cls, input_fields: OrderedDict, only_fields: tuple, exclude_fields: tuple) -> set:
+        available_fields = {'id'}.union(set(input_fields.keys()))
+        if only_fields:
+            available_fields = available_fields.intersection(only_fields)
+        if exclude_fields:
+            available_fields = available_fields.difference(exclude_fields)
+        return available_fields
 
 
 class SerializerMutation(ClientIDMutation):
