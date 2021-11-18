@@ -5,7 +5,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   region: "${env:AWS_DEFAULT_REGION}"
 
   iamRoleStatements:
