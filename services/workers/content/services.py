@@ -60,7 +60,9 @@ class ContentfulSync:
                 fields[field_name] = field
 
         instance = Model(id=entry.sys['id'], fields=fields, is_published=True)
-        return self.session.merge(instance)
+        instance = self.session.merge(instance)
+        self.session.commit()
+        return instance
 
     def get_db_model(self, content_type):
         db_engine = self.session.get_bind()
