@@ -1,8 +1,6 @@
-import { getRequiredEnvValue } from '../app.utils';
-
 export const ENV = {
-  BASE_API_URL: getRequiredEnvValue('REACT_APP_BASE_API_URL'),
-  SUBSCRIPTIONS_URL: getRequiredEnvValue('REACT_APP_SUBSCRIPTIONS_URL'),
+  BASE_API_URL: process.env.REACT_APP_BASE_API_URL ?? '',
+  SUBSCRIPTIONS_URL: process.env.REACT_APP_SUBSCRIPTIONS_URL ?? '',
   ENVIRONMENT_NAME: process.env.REACT_APP_ENVIRONMENT_NAME,
   SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
   WEB_APP_URL: process.env.REACT_APP_WEB_APP_URL ?? '',
