@@ -44,8 +44,8 @@ dependencies = [
     "django-hashid-field~=3.1",
     "django-hosts",
     "drf-access-policy",
-    "dj-stripe",
-    "psycopg2-binary",
+    "dj-stripe==2.5.1",
+    "psycopg2-binary~=2.9",
     "requests",
     "sentry-sdk",
     "six",
@@ -59,7 +59,6 @@ dependencies = [
     "pillow~=8.3",
 ]
 requires-python = ">=3.8"
-dynamic = ["classifiers"]
 license = {text = "MIT"}
 
 [project.urls]
