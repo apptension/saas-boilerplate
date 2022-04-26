@@ -18,17 +18,20 @@ class ContentfulSync:
         self.client = client
         self.session = session
         self.content_type_models = {}
+        self.entry_ids = set()
 
     def sync(self):
-        self.init_content_types()
         self.sync_entries()
+        self.unpublish_missing_entries()
 
-    def init_content_types(self):
+    def unpublish_missing_entries(self):
         content_types = self.client.content_types()
         for content_type in content_types:
             Model = self.get_db_model(content_type)
             if Model is not None:
-                self.session.query(Model).update({Model.is_published: False})
+                self.session.query(Model).filter(Model.id.notin_(self.entry_ids)).update(
+                    {Model.is_published: False}, synchronize_session=False
+                )
 
     def sync_entries(self):
         skip = 0
@@ -62,6 +65,7 @@ class ContentfulSync:
         instance = Model(id=entry.sys['id'], fields=fields, is_published=True)
         instance = self.session.merge(instance)
         self.session.commit()
+        self.entry_ids.add(entry.id)
         return instance
 
     def get_db_model(self, content_type):

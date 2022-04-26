@@ -26,6 +26,7 @@ class TestContentfulSync:
 
         def factory(entry_id: str):
             entry = Entry()
+            entry.id = entry_id
             entry.sys = {'id': entry_id}
             entry.content_type = mock_item_content_type
             entry.fields.return_value = {'title': 'Some title', 'description': 'Some description'}
