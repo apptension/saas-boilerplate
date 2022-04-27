@@ -58,3 +58,10 @@ deploy-env-app: deploy-components
 
 stop-task-scheduling-executions:
 	$(MAKE) -C $(SELF_DIR)services/workers stop-task-scheduling-executions
+
+#
+# Helper rules
+#
+
+psql:
+	$(DOCKER_COMPOSE) exec db psql -d'backend' -U'backend'
