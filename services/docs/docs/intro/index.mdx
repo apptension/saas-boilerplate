@@ -35,12 +35,18 @@ merge latest changes without too much hassle by resolving conflicts using your f
 To setup the project and install local dependencies run following command:
 
 ```sh
-sh ./setup.sh
+./setup.sh
 ```
 
 ## Running locally
 
-### Create .env files
+### Setup the local environment
+
+```sh
+make setup
+```
+
+### Adjust .env files
 
 Files with environmental variables are ignored in GIT to avoid secret values being commited and shared
 with everyone. To make the app work as expected you need to initialize following `.env` files from `.env.example`
@@ -52,7 +58,11 @@ files located in the same directories:
 
 - `services/backend/.env` – variables loaded by docker-compose when you run the backend server locally
 
-Key values that have to be set in this file:
+:::tip
+This should be actually done automatically as part of the `make setup`
+:::
+
+Now, adjust the key values that have to be set in the `services/backend/.env`:
 
 | Name                   | Example                           | Description                                                                   |
 | ---------------------- | --------------------------------- | ----------------------------------------------------------------------------- |

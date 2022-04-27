@@ -6,6 +6,7 @@ This project uses docusaurus for documentation purposes.
 
 ## Hosted documentation
 Until You will modify this project, You can use documentation from the source SaaS Boilerplate project which is available [here](https://docs.qa.saas.apptoku.com/)
+⚠️ This may be outdated, prefer the **Local documentation** as documented in then next section.
 
 ## Local documentation
 In order to run your local documentation server execute following commands:

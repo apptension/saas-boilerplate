@@ -36,5 +36,5 @@ CONTENTFUL_ENVIRONMENT=<CHANGE_ME>
 Run following command from the root of the project:
 
 ```shell
-make -C services/contetnful deploy
+make -C services/contentful deploy
 ```
