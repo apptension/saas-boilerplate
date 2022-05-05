@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-import callee
+import calleee
 import pytest
 from django.urls import reverse
 from django.utils import timezone
@@ -222,7 +222,7 @@ class TestPaymentMethodDelete:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         stripe_request.assert_any_call(
-            'get', callee.EndsWith(f'/payment_methods/{other_users_pm.id}'), callee.Any(), None
+            'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
         )
 
     def test_detach_payment_method(self, stripe_request, api_client, payment_method):
@@ -237,8 +237,8 @@ class TestPaymentMethodDelete:
         assert customer.default_payment_method is None
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
-            callee.Any(),
+            calleee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            calleee.Any(),
             '',
         )
 
@@ -256,14 +256,14 @@ class TestPaymentMethodDelete:
         assert response.status_code == status.HTTP_204_NO_CONTENT
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
-            callee.Any(),
+            calleee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            calleee.Any(),
             '',
         )
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith(f'/customers/{customer.id}'),
-            callee.Any(),
+            calleee.EndsWith(f'/customers/{customer.id}'),
+            calleee.Any(),
             stripe_encode({'invoice_settings': {'default_payment_method': other_payment_method.id}}),
         )
 
@@ -279,7 +279,7 @@ class TestPaymentMethodSetDefault:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         stripe_request.assert_any_call(
-            'get', callee.EndsWith(f'/payment_methods/{other_users_pm.id}'), callee.Any(), None
+            'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
         )
 
     def test_set_default_payment_method(self, api_client, payment_method_factory, customer, stripe_request):
@@ -292,7 +292,7 @@ class TestPaymentMethodSetDefault:
         assert response.status_code == status.HTTP_200_OK
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith(f'/customers/{customer.id}'),
-            callee.Any(),
+            calleee.EndsWith(f'/customers/{customer.id}'),
+            calleee.Any(),
             stripe_encode({'invoice_settings': {'default_payment_method': payment_method.id}}),
         )

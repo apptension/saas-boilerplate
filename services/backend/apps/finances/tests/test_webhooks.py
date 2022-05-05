@@ -1,6 +1,6 @@
 import datetime
 
-import callee
+import calleee
 import pytest
 
 from djstripe import models as djstripe_models
@@ -43,8 +43,8 @@ class TestCancelTrialSubscriptionOnPaymentFailure:
 
         stripe_request.assert_any_call(
             'delete',
-            callee.EndsWith(f'/subscriptions/{subscription.id}'),
-            callee.Any(),
+            calleee.EndsWith(f'/subscriptions/{subscription.id}'),
+            calleee.Any(),
             None,
         )
 
@@ -69,8 +69,8 @@ class TestSubscriptionScheduleRelease:
 
         stripe_request.assert_any_call(
             'post',
-            callee.EndsWith('/subscription_schedules'),
-            callee.Any(),
+            calleee.EndsWith('/subscription_schedules'),
+            calleee.Any(),
             stripe_encode({'from_subscription': schedule.customer.subscription.id}),
         )
 

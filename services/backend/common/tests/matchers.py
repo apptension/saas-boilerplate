@@ -1,10 +1,10 @@
 from operator import itemgetter
 
-import callee
+import calleee
 from itertools import starmap
 
 
-class FuzzyDict(callee.base.BaseMatcher):
+class FuzzyDict(calleee.base.BaseMatcher):
     """Matches dicts based on their items.
 
     To match successfully, the dict needs to:
@@ -27,7 +27,7 @@ class FuzzyDict(callee.base.BaseMatcher):
 
         self.attr_names = list(args)
         self.attr_dict = dict(
-            (k, v if isinstance(v, callee.base.BaseMatcher) else callee.Eq(v)) for k, v in kwargs.items()
+            (k, v if isinstance(v, calleee.base.BaseMatcher) else calleee.Eq(v)) for k, v in kwargs.items()
         )
 
     def match(self, value):
@@ -61,7 +61,7 @@ class FuzzyDict(callee.base.BaseMatcher):
             # include the value with attribute name whenever necessary
             if value is sentinel:
                 return name
-            value = value.value if isinstance(value, callee.Eq) else value
+            value = value.value if isinstance(value, calleee.Eq) else value
             return "%s=%r" % (name, value)
 
         return "<%s %s>" % (self.__class__.__name__, " ".join(starmap(attr_repr, attrs)))
