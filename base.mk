@@ -79,7 +79,7 @@ aws-vault:
 	$(AWS_VAULT) $(USER_SHELL)
 
 up:
-	$(DOCKER_COMPOSE) up --build --force-recreate backend workers
+	$(DOCKER_COMPOSE) up --build --force-recreate
 
 down:
 	docker-compose down

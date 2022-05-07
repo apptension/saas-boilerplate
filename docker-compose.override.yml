@@ -7,6 +7,9 @@ volumes:
   web_backend_staticfiles: {}
 
 services:
+  e2e:
+    command: sh -c "echo skip"
+
   db:
     volumes:
       - web_backend_db_data:/var/lib/postgresql/data

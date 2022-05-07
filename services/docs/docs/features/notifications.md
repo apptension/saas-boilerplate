@@ -38,7 +38,6 @@ Mistakes in the data type (e.g., missing nulls) might produce error-prone code. 
 - Delete `src/shared/components/notifications` directory
 - Delete `addNotificationGenerator` call from  the`plopfile.js`
 - Delete `plop/notification` directory
-- [Check if you should delete WebSocket connection](/graphql-subscriptions#removing-the-feature)
 
 
 ## Backend reference
