@@ -78,6 +78,9 @@ shell:
 aws-vault:
 	$(AWS_VAULT) $(USER_SHELL)
 
+aws-login:
+	aws-vault login $(AWS_VAULT_PROFILE)
+
 up:
 	$(DOCKER_COMPOSE) up --build --force-recreate
 
