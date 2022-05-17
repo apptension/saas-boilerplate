@@ -14,6 +14,7 @@ import { ServerlessCiConfig } from "./ciServerless";
 import { UploadVersionCiConfig } from "./ciUploadVersion";
 import { ComponentsCiConfig } from "./ciComponents";
 import { E2ETestsCiConfig } from "./e2eTests";
+import {DocsCiConfig} from "./ciDocs";
 
 export interface CiPipelineProps extends EnvConstructProps {
   entrypointArtifactBucket: Bucket;
@@ -71,6 +72,13 @@ export class CiPipeline extends Construct {
       deployStage,
       inputArtifact: sourceOutputArtifact,
       webappBaseRepository: props.webappBaseRepository,
+    });
+
+    new DocsCiConfig(this, "DocsConfig", {
+      envSettings: props.envSettings,
+      buildStage,
+      deployStage,
+      inputArtifact: sourceOutputArtifact
     });
 
     new ServerlessCiConfig(this, "WorkersConfig", {

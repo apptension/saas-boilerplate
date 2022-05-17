@@ -6,6 +6,8 @@ include $(SELF_DIR)/../../base.mk
 install:
 	yarn install
 
+install-deploy: install-infra-cdk install-scripts
+
 build:
 	yarn build
 
