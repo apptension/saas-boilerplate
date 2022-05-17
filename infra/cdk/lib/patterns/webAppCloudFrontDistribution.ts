@@ -5,10 +5,12 @@ import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from '@a
 import {
     CloudFrontAllowedMethods,
     CloudFrontWebDistribution,
+    FunctionEventType,
     LambdaEdgeEventType,
     LambdaFunctionAssociation,
     OriginProtocolPolicy,
-    SourceConfiguration
+    SourceConfiguration,
+    Function, FunctionCode,
 } from '@aws-cdk/aws-cloudfront';
 import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
@@ -167,6 +169,13 @@ export class WebAppCloudFrontDistribution extends Construct {
         }
         const stack = Stack.of(this);
         const webSocketApiId = Fn.importValue(EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings));
+        const cfFunction = new Function(this, "Function", {code: FunctionCode.fromInline(`
+            function handler(event) {
+                var request = event.request;
+                request.uri = request.uri.replace("/ws", "/${props.envSettings.envStage}");
+                return request;
+            }
+        `)});
         return {
             behaviors: [{
                 pathPattern: '/ws',
@@ -179,6 +188,10 @@ export class WebAppCloudFrontDistribution extends Construct {
                 defaultTtl: Duration.seconds(0),
                 minTtl: Duration.seconds(0),
                 maxTtl: Duration.seconds(0),
+                functionAssociations: [{
+                    function: cfFunction,
+                    eventType: FunctionEventType.VIEWER_REQUEST,
+                }]
             }],
             customOriginSource: {
                 domainName: `${webSocketApiId}.execute-api.${stack.region}.amazonaws.com`,

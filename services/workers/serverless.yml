@@ -129,9 +129,3 @@ stepFunctions:
             Resource:
               Fn::GetAtt: [ ExecuteScheduledTask, Arn ]
             End: true
-
-resources:
-  extensions:
-    WebsocketsDeploymentRBNvo1WzZ4oRRq0W9hknpT7T8If536DEMBg9hyq4o:
-      Properties:
-        StageName: ws

@@ -106,7 +106,7 @@ export class ApiStack extends core.Stack {
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),
-              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/ws`,
+              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/${props.envSettings.envStage}`,
               AWS_STORAGE_BUCKET_NAME: EnvComponentsStack.getFileUploadsBucketName(
                 props.envSettings
               ),

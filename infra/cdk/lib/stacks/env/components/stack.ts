@@ -6,7 +6,8 @@ import {EventBus} from "@aws-cdk/aws-events";
 import {EnvironmentSettings} from "../../../settings";
 import {Bucket} from "@aws-cdk/aws-s3";
 import {
-    CachePolicy, CacheQueryStringBehavior,
+    CachePolicy,
+    CacheQueryStringBehavior,
     CfnDistribution,
     Distribution,
     OriginRequestPolicy,
@@ -17,7 +18,6 @@ import {Certificate} from "@aws-cdk/aws-certificatemanager";
 import {MainCertificates} from "../main/mainCertificates";
 import {ARecord, PublicHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
-import {BlockPublicAccess} from "@aws-cdk/aws-s3/lib/bucket";
 
 export interface EnvComponentsStackProps extends StackProps, EnvConstructProps {
 
@@ -50,7 +50,7 @@ export class EnvComponentsStack extends core.Stack {
         });
 
         new WebSocketStage(this, "WebSocketStage", {
-           stageName: "ws",
+           stageName: props.envSettings.envStage,
            webSocketApi: webSocketApi,
            autoDeploy: true,
         });
