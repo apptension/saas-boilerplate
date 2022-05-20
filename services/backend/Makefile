@@ -2,7 +2,7 @@ SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../base.mk
 
 install:
-	pdm install
+	pdm sync
 
 install-deploy: install-infra-cdk install-infra-functions install-scripts
 

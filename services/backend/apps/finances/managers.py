@@ -1,5 +1,6 @@
 from django.db import models
-from djstripe import settings as djstripe_settings, enums as djstripe_enums
+from djstripe.settings import djstripe_settings
+from djstripe import enums as djstripe_enums
 
 from .constants import SubscriptionPlanConfig
 
