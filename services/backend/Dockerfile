@@ -41,7 +41,7 @@ ENV HASHID_FIELD_SALT='' \
     WORKERS_EVENT_BUS_NAME='' \
     PYTHONPATH=/pkgs/__pypackages__/3.8/lib
 
-RUN python manage.py collectstatic --no-input
+RUN ./scripts/build_static.sh
 
 
 FROM backend_build AS backend
