@@ -14,4 +14,6 @@ else
 fi
 
 ./scripts/wait-for-it.sh db:5432
+
+env $(cat .test.env | xargs) python ./manage.py makemigrations --check --dry-run
 pytest
