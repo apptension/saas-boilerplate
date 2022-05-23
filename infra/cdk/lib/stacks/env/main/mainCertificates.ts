@@ -1,9 +1,9 @@
 import {CfnOutput, Construct} from "@aws-cdk/core";
 import {DnsValidatedCertificate} from '@aws-cdk/aws-certificatemanager';
-import {PublicHostedZone} from "@aws-cdk/aws-route53";
 
 import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";
+import {getHostedZone} from "../../../helpers/domains";
 
 
 export interface MainCertificateProps extends EnvConstructProps {
@@ -17,17 +17,14 @@ export class MainCertificates extends Construct {
         return `${envSettings.projectEnvName}-certificateArn`
     }
 
-    static geCloudFrontCertificateArnOutputExportName(envSettings: EnvironmentSettings) {
+    static getCloudFrontCertificateArnOutputExportName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-cfCertificateArn`
     }
 
     constructor(scope: Construct, id: string, props: MainCertificateProps) {
         super(scope, id);
 
-        const hostedZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
-            hostedZoneId: props.envSettings.hostedZone.id,
-            zoneName: props.envSettings.hostedZone.name,
-        });
+        const hostedZone = getHostedZone(this, props.envSettings)!;
 
         const domainName = `${props.envSettings.envStage}.${props.envSettings.hostedZone.name}`
         this.certificate = new DnsValidatedCertificate(this, "AppsCertificate", {
@@ -50,7 +47,7 @@ export class MainCertificates extends Construct {
 
         new CfnOutput(this, "CloudFrontCertificateArnOutput", {
             value: this.cloudFrontCertificate.certificateArn,
-            exportName: MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings),
+            exportName: MainCertificates.getCloudFrontCertificateArnOutputExportName(props.envSettings),
         });
     }
 }

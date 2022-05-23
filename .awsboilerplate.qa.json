@@ -6,6 +6,10 @@
     "id": "Z08281743N1VR4R6ETETV",
     "name": "saas.apptoku.com"
   },
+  "certificates": {
+    "cloudfrontCertificateArn": "",
+    "loadBalancerCertificateArn": ""
+  },
   "basicAuth": "saas:NVvdHn",
   "domains": {
     "adminPanel": "admin.qa.saas.apptoku.com",

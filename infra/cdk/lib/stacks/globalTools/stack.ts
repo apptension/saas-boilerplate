@@ -1,13 +1,14 @@
 import * as fs from "fs";
 import * as core from '@aws-cdk/core';
-import {IHostedZone, PublicHostedZone} from "@aws-cdk/aws-route53";
+import {IHostedZone} from "@aws-cdk/aws-route53";
 import {Source} from "@aws-cdk/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../types";
 import {WebAppCloudFrontDistribution} from "../../patterns/webAppCloudFrontDistribution";
 import {Bucket, BucketAccessControl, HttpMethods} from "@aws-cdk/aws-s3";
-import {DnsValidatedCertificate, ICertificate} from "@aws-cdk/aws-certificatemanager";
+import {DnsValidatedCertificate} from "@aws-cdk/aws-certificatemanager";
 import {UsEastResourcesStack} from "../usEastResources";
+import {getHostedZone} from "../../helpers/domains";
 
 
 export interface GlobalToolsStackProps extends core.StackProps, EnvConstructProps {
@@ -19,23 +20,26 @@ export class GlobalToolsStack extends core.Stack {
     constructor(scope: core.App, id: string, props: GlobalToolsStackProps) {
         super(scope, id, props);
 
-        const domainZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
-            hostedZoneId: props.envSettings.tools.hostedZone.id,
-            zoneName: props.envSettings.tools.hostedZone.name,
-        });
+        const domainZone = getHostedZone(this, props.envSettings.tools);
 
-        const domainName = props.envSettings.tools.hostedZone.name;
-        const certificate = new DnsValidatedCertificate(this, "ToolsCertificate", {
-            region: 'us-east-1',
-            domainName: domainName,
-            subjectAlternativeNames: [`*.${domainName}`],
-            hostedZone: domainZone
-        });
+        let certificateArn;
+        if (props.envSettings.tools.hostedZone.id) {
+            const domainName = props.envSettings.tools.hostedZone.name;
+            const certificate = new DnsValidatedCertificate(this, "ToolsCertificate", {
+                region: 'us-east-1',
+                domainName: domainName,
+                subjectAlternativeNames: [`*.${domainName}`],
+                hostedZone: domainZone!
+            });
+            certificateArn = certificate.certificateArn;
+        } else {
+            certificateArn = props.envSettings.certificates.cloudfrontCertificateArn;
+        }
 
-        this.createVersionMatrixTool(props, domainZone, certificate);
+        this.createVersionMatrixTool(props, domainZone, certificateArn);
     }
 
-    private createVersionMatrixTool(props: GlobalToolsStackProps, domainZone: IHostedZone, certificate: ICertificate) {
+    private createVersionMatrixTool(props: GlobalToolsStackProps, domainZone: IHostedZone | null, certificateArn: string) {
         new Bucket(this, "VersionMatrixBucket", {
             bucketName: `${props.envSettings.projectName}-version-matrix`,
             publicReadAccess: true,
@@ -52,7 +56,7 @@ export class GlobalToolsStack extends core.Stack {
                 sources: [Source.asset(filesPath)],
                 domainZone,
                 domainName: props.envSettings.tools.domains.versionMatrix,
-                certificateArn: certificate.certificateArn,
+                certificateArn,
                 authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
                 basicAuth: props.envSettings.tools.basicAuth,
             });

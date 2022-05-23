@@ -252,7 +252,7 @@ export interface ApplicationLoadBalancerProps {
    *
    * @default - No Route53 hosted domain zone.
    */
-  readonly domainZone?: IHostedZone;
+  readonly domainZone?: IHostedZone | null;
 }
 
 /**
@@ -519,7 +519,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     loadBalancer: IApplicationLoadBalancer,
     internetFacing: boolean,
     name?: string,
-    zone?: IHostedZone,
+    zone?: IHostedZone | null,
     id?: string
   ) {
     let domainName = loadBalancer.loadBalancerDnsName;
@@ -529,7 +529,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
           "A Route53 hosted domain zone name is required to configure the specified domain name"
         );
       }
-      if (internetFacing) {
+      if (internetFacing && zone) {
         const record = new ARecord(this, `DNS${loadBalancer.node.id}${id}`, {
           zone,
           recordName: name,

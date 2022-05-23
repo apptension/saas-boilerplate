@@ -97,6 +97,18 @@ module.exports = function (plop) {
       },
       {
         type: 'input',
+        name: 'cloudfrontCertificateArn',
+        message: 'ARN of CloudFront certificate (us-east-1)',
+        default: '',
+      },
+      {
+        type: 'input',
+        name: 'loadBalancerCertificateArn',
+        message: 'ARN of Load Balancer certificate',
+        default: '',
+      },
+      {
+        type: 'input',
         name: 'domain',
         message: 'Domain name',
         default: ({ name, hostedZoneName }) => `${name}.${hostedZoneName}`,

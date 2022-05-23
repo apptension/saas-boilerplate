@@ -8,7 +8,6 @@ import {
     ListenerCertificate,
     TargetType
 } from "@aws-cdk/aws-elasticloadbalancingv2";
-import {ICertificate} from "@aws-cdk/aws-certificatemanager";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";
@@ -16,7 +15,7 @@ import {EnvConstructProps} from "../../../types";
 
 export interface MainECSClusterProps extends EnvConstructProps {
     vpc: Vpc,
-    certificate: ICertificate,
+    certificateArn: string,
 }
 
 export class MainECSCluster extends Construct {
@@ -110,9 +109,7 @@ export class MainECSCluster extends Construct {
             })]
         });
 
-        httpsListener.addCertificates("Certificate", [
-            ListenerCertificate.fromCertificateManager(props.certificate),
-        ]);
+        httpsListener.addCertificates("Certificate", [ListenerCertificate.fromArn(props.certificateArn)]);
 
         new CfnOutput(this, "PublicLoadBalancerSecurityGroupIdOutput", {
             exportName: MainECSCluster.getPublicLoadBalancerSecurityGroupIdOutputExportName(props.envSettings),

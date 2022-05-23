@@ -21,11 +21,16 @@ interface ToolsDomains {
     versionMatrix: string;
 }
 
-interface ToolsConfig {
+export interface ToolsConfig {
     enabled: true,
     basicAuth: string,
     hostedZone: EnvConfigHostedZone,
     domains: ToolsDomains
+}
+
+interface CertificatesConfig {
+    cloudfrontCertificateArn: string;
+    loadBalancerCertificateArn: string;
 }
 
 interface EnvironmentVariables {
@@ -48,6 +53,7 @@ export interface EnvironmentSettings {
     tools: ToolsConfig,
     version: string;
     webAppEnvVariables: EnvironmentVariables;
+    certificates: CertificatesConfig;
 }
 
 interface ConfigFileContent {
@@ -61,6 +67,7 @@ export interface EnvConfigFileContent {
     basicAuth: string,
     domains: EnvConfigFileDomains,
     webAppConfig: WebAppConfig,
+    certificates: CertificatesConfig;
 }
 
 async function readConfig(): Promise<ConfigFileContent> {
@@ -128,5 +135,6 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
           ...(config?.webAppConfig?.envVariables || {}),
           ...(envConfig?.webAppConfig?.envVariables || {}),
         },
+        certificates: envConfig.certificates,
     };
 }

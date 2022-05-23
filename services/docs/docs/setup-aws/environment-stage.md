@@ -21,6 +21,10 @@ make create-env
 
 #### Configuration file specification
 
+:::info
+`hostedZone.id` and `hostedZone.name` can be skipped if you are using externally managed DNS. In that case, certificates for CloudFront distribution and Load Balancer should be already generated, and they ARNs provided in `certificates.cloudfrontCertificateArn` and `certificates.loadBalancerCertificateArn` parameters. As the last step, CNAME DNS records pointing to CloudFront distribution and Load Balancer need to be manually added.  
+:::
+
 ##### `deployBranches`
 
 A list of branches that will trigger automatic deployment of this environment.
@@ -43,6 +47,20 @@ Name of a AWS Route53 hosted zone of a domain used to host services of this env.
 Type: `string`
 
 Example: `qa.awsb.apptoku.com`
+
+##### `certificates.cloudfrontCertificateArn`
+
+ARN of already generated certificate that should be attached to CloudFront distribution. This certificate needs to be generated in us-east-1 region.
+
+Type: `string`
+Example: `arn:aws:acm:us-east-1:account:certificate/certificate_id`
+
+##### `certificates.loadBalancerCertificateArn`
+
+ARN of already generated certificate that should be attached to Load Balancer. This certificate needs to be generated in the same region as the application.
+
+Type: `string`
+Example: `arn:aws:acm:region:account:certificate/certificate_id`
 
 ##### `basicAuth`
 

@@ -25,14 +25,23 @@ export class EnvMainStack extends Stack {
         const {envSettings} = props;
 
         this.mainVpc = new MainVpc(this, "MainVPC", {envSettings});
-        this.mainCertificates = new MainCertificates(this, "MainCertificates", {
-            envSettings,
-        });
+
+        let certificateArn;
+
+        if (envSettings.hostedZone.id) {
+            this.mainCertificates = new MainCertificates(this, "MainCertificates", {
+                envSettings,
+            });
+            certificateArn = this.mainCertificates.certificate.certificateArn;
+        } else {
+            certificateArn = envSettings.certificates.loadBalancerCertificateArn;
+        }
+
 
         this.mainEcsCluster = new MainECSCluster(this, "MainECSCluster", {
             envSettings,
             vpc: this.mainVpc.vpc,
-            certificate: this.mainCertificates.certificate,
+            certificateArn,
         });
         this.mainKmsKey = new MainKmsKey(this, "MainKMSKey", {envSettings});
         this.mainLambdaConfig = new MainLambdaConfig(this, "MainLambdaConfig", {

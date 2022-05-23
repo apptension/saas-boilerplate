@@ -21,7 +21,7 @@ import {EnvironmentSettings} from "../settings/index";
 
 export interface WebAppCloudFrontDistributionProps {
     sources: ISource[],
-    domainZone: IHostedZone;
+    domainZone: IHostedZone | null;
     domainName: string;
     apiDomainName?: string;
     certificateArn: string;
@@ -40,7 +40,9 @@ export class WebAppCloudFrontDistribution extends Construct {
         const staticFilesBucket = this.createStaticFilesBucket();
 
         this.distribution = this.createCloudFrontWebDistribution(staticFilesBucket, props);
-        this.createDnsRecord(this.distribution, props);
+        if (props.domainZone) {
+            this.createDnsRecord(this.distribution, props);
+        }
         this.createDeployment(staticFilesBucket, this.distribution, props);
     }
 
@@ -202,7 +204,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
     private createDnsRecord(distribution: CloudFrontWebDistribution, props: WebAppCloudFrontDistributionProps) {
         return new ARecord(this, `DNSRecord`, {
-            zone: props.domainZone,
+            zone: props.domainZone!,
             recordName: props.domainName,
             target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
         });

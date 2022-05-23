@@ -1,13 +1,11 @@
 import * as fs from 'fs';
 import * as core from '@aws-cdk/core';
-import {Fn} from '@aws-cdk/core';
-import {PublicHostedZone} from "@aws-cdk/aws-route53";
 import {Source} from "@aws-cdk/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../../types";
 import {WebAppCloudFrontDistribution} from "../../../patterns/webAppCloudFrontDistribution";
-import {MainCertificates} from "../../env/main/mainCertificates";
 import {UsEastResourcesStack} from "../../usEastResources";
+import {getCloudfrontCertificateArn, getHostedZone} from "../../../helpers/domains";
 
 
 export interface WebAppStackProps extends core.StackProps, EnvConstructProps {
@@ -19,12 +17,9 @@ export class WebAppStack extends core.Stack {
     constructor(scope: core.App, id: string, props: WebAppStackProps) {
         super(scope, id, props);
 
-        const {envSettings} = props;
+        const domainZone = getHostedZone(this, props.envSettings);
+        const certificateArn = getCloudfrontCertificateArn(props.envSettings);
 
-        const domainZone = PublicHostedZone.fromHostedZoneAttributes(this, "DomainZone", {
-            hostedZoneId: envSettings.hostedZone.id,
-            zoneName: envSettings.hostedZone.name,
-        });
 
         const filesPath = `${props.envSettings.projectRootDir}/services/webapp/build`;
         if (fs.existsSync(filesPath)) {
@@ -33,8 +28,7 @@ export class WebAppStack extends core.Stack {
                 domainZone,
                 domainName: props.envSettings.domains.webApp,
                 apiDomainName: props.envSettings.domains.api,
-                certificateArn: Fn.importValue(
-                    MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)),
+                certificateArn,
                 authLambdaSSMParameterName: UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(props.envSettings),
                 basicAuth: props.envSettings.appBasicAuth,
                 envSettings: props.envSettings,

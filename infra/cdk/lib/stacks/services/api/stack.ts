@@ -1,24 +1,22 @@
 import * as core from "@aws-cdk/core";
-import { Fn, Stack } from "@aws-cdk/core";
-import {
-  ContainerImage,
-  Protocol,
-  Secret as EcsSecret,
-} from "@aws-cdk/aws-ecs";
-import { PolicyStatement, Role, ServicePrincipal } from "@aws-cdk/aws-iam";
-import { Secret } from "@aws-cdk/aws-secretsmanager";
-import { ApplicationListener } from "@aws-cdk/aws-elasticloadbalancingv2";
-import { PublicHostedZone } from "@aws-cdk/aws-route53";
+import {Fn, Stack} from "@aws-cdk/core";
+import {ContainerImage, Protocol, Secret as EcsSecret,} from "@aws-cdk/aws-ecs";
+import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
+import {Secret} from "@aws-cdk/aws-secretsmanager";
+import {ApplicationListener} from "@aws-cdk/aws-elasticloadbalancingv2";
 
-import { EnvConstructProps } from "../../../types";
-import { ApplicationMultipleTargetGroupsFargateService } from "../../../patterns/applicationMultipleTargetGroupsFargateService";
-import { MainKmsKey } from "../../env/main/mainKmsKey";
-import { MainDatabase } from "../../env/db/mainDatabase";
-import { FargateServiceResources } from "../../../patterns/fargateServiceResources";
-import { MigrationsStackProps } from "../migrations/stack";
-import { EnvironmentSettings } from "../../../settings";
-import { MainECSCluster } from "../../env/main/mainEcsCluster";
-import { EnvComponentsStack } from "../../env/components";
+import {EnvConstructProps} from "../../../types";
+import {
+    ApplicationMultipleTargetGroupsFargateService
+} from "../../../patterns/applicationMultipleTargetGroupsFargateService";
+import {MainKmsKey} from "../../env/main/mainKmsKey";
+import {MainDatabase} from "../../env/db/mainDatabase";
+import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
+import {MigrationsStackProps} from "../migrations/stack";
+import {EnvironmentSettings} from "../../../settings";
+import {MainECSCluster} from "../../env/main/mainEcsCluster";
+import {EnvComponentsStack} from "../../env/components";
+import {getHostedZone} from "../../../helpers/domains";
 
 export interface ApiStackProps extends core.StackProps, EnvConstructProps {}
 
@@ -50,14 +48,7 @@ export class ApiStack extends core.Stack {
     const dbSecretArn = Fn.importValue(
       MainDatabase.getDatabaseSecretArnOutputExportName(envSettings)
     );
-    const domainZone = PublicHostedZone.fromHostedZoneAttributes(
-      this,
-      "DomainZone",
-      {
-        hostedZoneId: envSettings.hostedZone.id,
-        zoneName: envSettings.hostedZone.name,
-      }
-    );
+    const domainZone = getHostedZone(this, envSettings);
 
     const allowedHosts = [
       envSettings.domains.api,

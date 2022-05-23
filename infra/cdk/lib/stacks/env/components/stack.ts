@@ -1,5 +1,5 @@
 import * as core from '@aws-cdk/core';
-import {CfnOutput, Fn, StackProps} from '@aws-cdk/core';
+import {CfnOutput, StackProps} from '@aws-cdk/core';
 import {WebSocketApi, WebSocketStage} from "@aws-cdk/aws-apigatewayv2";
 import {EnvConstructProps} from "../../../types";
 import {EventBus} from "@aws-cdk/aws-events";
@@ -15,9 +15,9 @@ import {
 } from "@aws-cdk/aws-cloudfront";
 import {S3Origin} from "@aws-cdk/aws-cloudfront-origins";
 import {Certificate} from "@aws-cdk/aws-certificatemanager";
-import {MainCertificates} from "../main/mainCertificates";
-import {ARecord, PublicHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
+import {ARecord, RecordTarget} from "@aws-cdk/aws-route53";
 import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
+import {getCloudfrontCertificateArn, getHostedZone} from "../../../helpers/domains";
 
 export interface EnvComponentsStackProps extends StackProps, EnvConstructProps {
 
@@ -79,14 +79,9 @@ export class EnvComponentsStack extends core.Stack {
     };
 
     private createDnsRecord(props: EnvComponentsStackProps, distribution: Distribution) {
-        const domainZone = PublicHostedZone.fromHostedZoneAttributes(
-            this,"DomainZone",{
-                hostedZoneId: props.envSettings.hostedZone.id,
-                zoneName: props.envSettings.hostedZone.name,
-            }
-        );
+        const domainZone = getHostedZone(this, props.envSettings);
         return new ARecord(this, `DNSRecord`, {
-            zone: domainZone,
+            zone: domainZone!,
             recordName: props.envSettings.domains.cdn,
             target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
         });
@@ -99,6 +94,7 @@ export class EnvComponentsStack extends core.Stack {
         const cachePolicy = new CachePolicy(this, "CachePolicy", {
             queryStringBehavior: CacheQueryStringBehavior.all()
         })
+        const certificateArn = getCloudfrontCertificateArn(props.envSettings);
         const distribution = new Distribution(this,"FileUploadsBucketCdn", {
             defaultBehavior: {
                 origin: new S3Origin(fileUploadsBucket),
@@ -106,14 +102,13 @@ export class EnvComponentsStack extends core.Stack {
                 cachePolicy: cachePolicy,
             },
             domainNames: [props.envSettings.domains.cdn],
-            certificate: Certificate.fromCertificateArn(this, "Certificate", Fn.importValue(
-                MainCertificates.geCloudFrontCertificateArnOutputExportName(props.envSettings)
-              )
-            )
+            certificate: Certificate.fromCertificateArn(this, "Certificate", certificateArn)
         });
         const cfnDistribution = distribution.node.defaultChild as CfnDistribution;
         cfnDistribution.addPropertyOverride("DistributionConfig.Origins.0.S3OriginConfig.OriginAccessIdentity", "");
-        this.createDnsRecord(props, distribution);
+        if (props.envSettings.hostedZone.id) {
+            this.createDnsRecord(props, distribution);
+        }
         return distribution;
     }
 
