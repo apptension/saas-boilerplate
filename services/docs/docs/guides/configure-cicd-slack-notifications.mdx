@@ -24,8 +24,12 @@ as an app.
 
 1. Follow through the OAuth process
 
+  <img src={useBaseUrl("img/guides/cicd-slack-notifications/aws-chatbot-slack-authorization.png")} alt="Authorize Slack" />
+
 1. You should be able to see your client with a Workspace ID
   matching your organisation.
+
+  <img src={useBaseUrl("img/guides/cicd-slack-notifications/aws-chatbot-configured-client.png")} alt="Configured client" />
 
 ## Create a new channel
 
@@ -44,6 +48,7 @@ post the messages from our CI/CD.
 
     * Private – paste the ID from the channel URL ( you can copy it from Slack)
   - Permissions – Create a new IAM role using a template
+    * Channel guardrail policies – Choose `AWSDenyAll`.
   - SNS Topic – leave empty. It'll be created for us.
 
 ## Connect the AWS Chatbot to CodePipeline
