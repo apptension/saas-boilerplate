@@ -13,14 +13,14 @@ verify_ssl = true
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "black==20.8b1",
-    "flake8",
-    "moto",
-    "pytest",
-    "pytest-mock",
-    "pytest-factoryboy",
-    "pytest-dotenv",
-    "python-dotenv",
+    "black==22.3.0",
+    "flake8~=4.0",
+    "moto~=3.1",
+    "pytest~=7.1",
+    "pytest-mock~=3.7",
+    "pytest-factoryboy~=2.3",
+    "pytest-dotenv~=0.5",
+    "python-dotenv~=0.20",
 ]
 [project]
 name = ""
@@ -30,21 +30,22 @@ authors = [
     {name = "", email = ""},
 ]
 dependencies = [
-    "boto3",
-    "pyjwt",
-    "hashids",
-    "contentful",
-    "environs",
+    "boto3~=1.23",
+    "pyjwt~=2.4",
+    "hashids~=1.3",
+    "contentful~=1.13",
+    "environs~=9.5",
     "psycopg2-binary~=2.9",
-    "sentry-sdk",
-    "sqlalchemy==1.3.23"
+    "sentry-sdk~=1.5",
+    "sqlalchemy==1.4.36",
 ]
-requires-python = ">=3.8"
+requires-python = "~=3.8.0"
 license = {text = "MIT"}
 
 [project.urls]
 homepage = ""
 
+[project.optional-dependencies]
 [build-system]
 requires = ["pdm-pep517"]
 build-backend = "pdm.pep517.api"

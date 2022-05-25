@@ -21,7 +21,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 WORKDIR /pkgs
 
 COPY pdm.lock pyproject.toml .pdm.toml /pkgs/
-RUN pdm install
+RUN pdm sync
 
 WORKDIR /app
 

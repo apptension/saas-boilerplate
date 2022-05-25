@@ -7,7 +7,7 @@ install-node:
 	# and proper version is added to package.json, --legacy-peer-deps can be removed
 
 install-python:
-	pdm install
+	pdm sync
 
 install-deploy: install-scripts
 

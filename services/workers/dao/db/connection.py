@@ -9,7 +9,7 @@ db = None
 meta = None
 
 if settings.DB_CONNECTION is not None:
-    db_url = url.URL(
+    db_url = url.URL.create(
         **{
             'drivername': settings.DB_CONNECTION['engine'],
             'host': settings.DB_CONNECTION['host'],

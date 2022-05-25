@@ -11,7 +11,7 @@ def create_test_database():
     env = Env()
     DB_CONNECTION = json.loads(env('DB_CONNECTION'))
     template_engine = create_engine(
-        url.URL(
+        url.URL.create(
             **{
                 'drivername': DB_CONNECTION['engine'],
                 'host': DB_CONNECTION['host'],

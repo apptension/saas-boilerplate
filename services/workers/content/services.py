@@ -2,6 +2,7 @@ import logging
 
 import contentful
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect
 
 from dao.db.models import Base as ModelBase
 from . import models
@@ -74,7 +75,7 @@ class ContentfulSync:
         table_name = f"{table_prefix}_{content_type.id.lower()}"
 
         if content_type.id not in self.content_type_models:
-            if db_engine.dialect.has_table(db_engine, table_name=table_name):
+            if inspect(db_engine).has_table(table_name):
 
                 class ContentModel(models.ContentfulModelMixin, ModelBase):
                     __tablename__ = table_name
