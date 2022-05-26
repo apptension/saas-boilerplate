@@ -64,7 +64,7 @@ interface ConfigFileContent {
 export interface EnvConfigFileContent {
     deployBranches: Array<string>,
     hostedZone: EnvConfigHostedZone,
-    basicAuth: string,
+    basicAuth: string | null,
     domains: EnvConfigFileDomains,
     webAppConfig: WebAppConfig,
     certificates: CertificatesConfig;
