@@ -2,6 +2,8 @@
 title: Initial setup
 ---
 
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
 ## Prerequisites
 - You need Your own personal account in devops-apptension AWS organization (IAM user).
 - AWS organization (set it up or get access to one from the client) for Your project
@@ -31,7 +33,7 @@ For that purpose You need to manually edit aws config file. As this profile name
 ```shell
 open ~/.aws/config
 ```
-add new section (example below) and save the file 
+add new section (example below) and save the file
 ```shell
 [profile saas]
 source_profile = your-personal-user-name
@@ -41,6 +43,37 @@ role_arn = arn:aws:iam::123456789:role/SaaSBoilerplateAdminRole
 Values to save:
 
 - `name` of the second aws-vault profile (`saas` from the example above)
+
+### Multi-factor authentication
+
+It _may_ be also required to configure MFA for your AWS user and AWS Vault profile.
+
+If during the deployment you encounter similar error:
+```
+infra/cdk$ npm run cdk deploy *CiStack
+…
+3:25:45 PM | UPDATE_FAILED        | AWS::CodeBuild::Project     | PipelineConfigWebA...ildProject04B4719B
+AccessDenied. User doesn't have permission to call iam:GetRole
+```
+
+consider configuring MFA, as documented in [the official docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html#enable-virt-mfa-for-root).
+
+Copy the serial MFA device serial number
+
+<img src={useBaseUrl("img/initial-setup-mfa-serial-number.png")} alt="MFA serial number" />
+
+And paste it into the `~/.aws/config` as `mfa_serial` property (example below) and save the file.
+
+```shell {4}
+[profile saas]
+source_profile = your-personal-user-name
+role_arn = arn:aws:iam::123456789:role/SaaSBoilerplateAdminRole
+mfa_serial=arn:aws:iam::123456789:mfa/someone@example.com
+```
+
+:::note
+Unfortunately, from now on, you will have to enter MFA every time you log into the AWS console or run `aws-vault`
+:::
 
 ### Main config file
 Now you can use that profile name in `.awsboilerplate.json` file
