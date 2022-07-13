@@ -6,6 +6,7 @@ RUN apt-get update \
     ruby \
     ruby-dev \
     build-essential \
+  && gem install sqlite3 -v 1.3.4 \
   && gem install --no-ri --no-rdoc mailcatcher \
   && apt-get remove -y build-essential \
   && apt-get autoremove -y \
