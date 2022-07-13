@@ -62,6 +62,13 @@ ARN of already generated certificate that should be attached to Load Balancer. T
 Type: `string`
 Example: `arn:aws:acm:region:account:certificate/certificate_id`
 
+##### `certificates.domain`
+
+The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name e.g. `qa.saas.apptoku.com` 
+
+Type: `string`
+Example: `qa.saas.apptoku.com`
+
 ##### `basicAuth`
 
 This flag controls if basic auth should be used to access services via HTTP.

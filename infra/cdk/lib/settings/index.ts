@@ -31,6 +31,7 @@ export interface ToolsConfig {
 interface CertificatesConfig {
     cloudfrontCertificateArn: string;
     loadBalancerCertificateArn: string;
+    domain: string;
 }
 
 interface EnvironmentVariables {

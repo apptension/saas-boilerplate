@@ -26,7 +26,12 @@ export class MainCertificates extends Construct {
 
         const hostedZone = getHostedZone(this, props.envSettings)!;
 
-        const domainName = `${props.envSettings.envStage}.${props.envSettings.hostedZone.name}`
+        let domainName = props.envSettings.certificates.domain;
+
+        if (!domainName) {
+          domainName = `${props.envSettings.envStage}.${props.envSettings.hostedZone.name}`;
+        }
+
         this.certificate = new DnsValidatedCertificate(this, "AppsCertificate", {
             domainName,
             subjectAlternativeNames: [`*.${domainName}`],

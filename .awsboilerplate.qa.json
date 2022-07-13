@@ -8,7 +8,8 @@
   },
   "certificates": {
     "cloudfrontCertificateArn": "",
-    "loadBalancerCertificateArn": ""
+    "loadBalancerCertificateArn": "",
+    "domain": "qa.saas.apptoku.com"
   },
   "basicAuth": "saas:NVvdHn",
   "domains": {
