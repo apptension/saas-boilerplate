@@ -1,10 +1,23 @@
 import path from 'path';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Store } from 'redux';
 import { GlobalState } from '../../../app/config/reducers';
 import { ENV } from '../../../app/config/env';
 import { AUTH_URL, refreshToken } from './auth';
+import { PendingRequest } from './types';
+
+let pendingRequests: PendingRequest[] = [];
+
+function delayRequest(request: AxiosRequestConfig) {
+  return new Promise((resolve, reject) => {
+    pendingRequests.push({
+      request,
+      resolve,
+      reject,
+    });
+  });
+}
 
 export const validateStatus = (status: number) => (status >= 200 && status < 300) || status === StatusCodes.BAD_REQUEST;
 
@@ -25,12 +38,24 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
     }
 
     try {
-      await refreshToken();
-      return axios.request({
-        ...error.config,
-        baseURL: '/',
-      });
+      const isRequestQueueEmpty = pendingRequests.length === 0;
+      const requestPromise = delayRequest(error.config);
+      if (isRequestQueueEmpty) {
+        await refreshToken();
+        await Promise.all(
+          pendingRequests.map(async ({ request, resolve, reject }: PendingRequest) => {
+            try {
+              resolve(axios.request({ ...request, baseURL: '/' }));
+            } catch (e) {
+              reject(e);
+            }
+          })
+        );
+        pendingRequests = [];
+      }
+      return requestPromise;
     } catch (ex) {
+      pendingRequests = [];
       return forceLogout();
     }
   },
