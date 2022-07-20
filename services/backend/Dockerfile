@@ -24,7 +24,7 @@ COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
 
-COPY pdm.lock pyproject.toml /pkgs/
+COPY pdm.lock pyproject.toml .pdm.toml /pkgs/
 RUN pdm sync \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
