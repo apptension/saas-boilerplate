@@ -1,25 +1,25 @@
 import * as path from "path";
-import * as core from '@aws-cdk/core';
-import {StringParameter} from '@aws-cdk/aws-ssm';
+import {App, Stack, StackProps} from 'aws-cdk-lib';
+import {StringParameter} from 'aws-cdk-lib/aws-ssm';
 import {EnvConstructProps} from "../../types";
-import * as lambda from "@aws-cdk/aws-lambda";
+import * as lambda from "aws-cdk-lib/aws-lambda";
 
 import {EnvironmentSettings} from "../../settings";
-import {CompositePrincipal, ManagedPolicy, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
+import {CompositePrincipal, ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 
 
-export interface UsEastResourcesStackProps extends core.StackProps, EnvConstructProps {
+export interface UsEastResourcesStackProps extends StackProps, EnvConstructProps {
 }
 
 /**
  * Some resources need to be created in us-east-1 because of their limitations
  */
-export class UsEastResourcesStack extends core.Stack {
+export class UsEastResourcesStack extends Stack {
     static getAuthLambdaVersionArnSSMParameterName(envSettings: EnvironmentSettings) {
         return `param-${envSettings.projectName}-auth-lambda-version-arn`
     }
 
-    constructor(scope: core.App, id: string, props: UsEastResourcesStackProps) {
+    constructor(scope: App, id: string, props: UsEastResourcesStackProps) {
         super(scope, id, props);
 
         this.createAuthLambdaFunction(props);

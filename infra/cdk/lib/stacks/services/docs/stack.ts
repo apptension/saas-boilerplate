@@ -1,18 +1,18 @@
 import * as fs from "fs";
-import * as core from "@aws-cdk/core";
-import {Source} from "@aws-cdk/aws-s3-deployment";
+import {App, Stack, StackProps} from "aws-cdk-lib";
+import {Source} from "aws-cdk-lib/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../../types";
 import {WebAppCloudFrontDistribution} from "../../../patterns/webAppCloudFrontDistribution";
 import {UsEastResourcesStack} from "../../usEastResources";
 import {getCloudfrontCertificateArn, getHostedZone} from "../../../helpers/domains";
 
-export interface DocsStackProps extends core.StackProps, EnvConstructProps {}
+export interface DocsStackProps extends StackProps, EnvConstructProps {}
 
-export class DocsStack extends core.Stack {
+export class DocsStack extends Stack {
   webAppCloudFrontDistribution: WebAppCloudFrontDistribution;
 
-  constructor(scope: core.App, id: string, props: DocsStackProps) {
+  constructor(scope: App, id: string, props: DocsStackProps) {
     super(scope, id, props);
 
     const domainZone = getHostedZone(this, props.envSettings);

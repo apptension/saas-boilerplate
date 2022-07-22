@@ -1,9 +1,10 @@
-import { CfnOutput, Construct } from "@aws-cdk/core";
-import { Port, SecurityGroup } from "@aws-cdk/aws-ec2";
+import {Construct} from "constructs";
+import {CfnOutput} from "aws-cdk-lib";
+import {SecurityGroup} from "aws-cdk-lib/aws-ec2";
 
-import { EnvironmentSettings } from "../../../settings";
-import { EnvConstructProps } from "../../../types";
-import { MainVpc } from "./mainVpc";
+import {EnvironmentSettings} from "../../../settings";
+import {EnvConstructProps} from "../../../types";
+import {MainVpc} from "./mainVpc";
 
 export interface MainLambdaConfigProps extends EnvConstructProps {
   mainVpc: MainVpc;

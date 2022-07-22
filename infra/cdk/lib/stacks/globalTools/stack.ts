@@ -1,23 +1,23 @@
 import * as fs from "fs";
-import * as core from '@aws-cdk/core';
-import {IHostedZone} from "@aws-cdk/aws-route53";
-import {Source} from "@aws-cdk/aws-s3-deployment";
+import {App, Stack, StackProps} from "aws-cdk-lib";
+import {IHostedZone} from "aws-cdk-lib/aws-route53";
+import {Source} from "aws-cdk-lib/aws-s3-deployment";
 
 import {EnvConstructProps} from "../../types";
 import {WebAppCloudFrontDistribution} from "../../patterns/webAppCloudFrontDistribution";
-import {Bucket, BucketAccessControl, HttpMethods} from "@aws-cdk/aws-s3";
-import {DnsValidatedCertificate} from "@aws-cdk/aws-certificatemanager";
+import {Bucket, BucketAccessControl, HttpMethods} from "aws-cdk-lib/aws-s3";
+import {DnsValidatedCertificate} from "aws-cdk-lib/aws-certificatemanager";
 import {UsEastResourcesStack} from "../usEastResources";
 import {getHostedZone} from "../../helpers/domains";
 
 
-export interface GlobalToolsStackProps extends core.StackProps, EnvConstructProps {
+export interface GlobalToolsStackProps extends StackProps, EnvConstructProps {
 }
 
-export class GlobalToolsStack extends core.Stack {
+export class GlobalToolsStack extends Stack {
     private versionMatrixCloudFrontDistribution: WebAppCloudFrontDistribution;
 
-    constructor(scope: core.App, id: string, props: GlobalToolsStackProps) {
+    constructor(scope: App, id: string, props: GlobalToolsStackProps) {
         super(scope, id, props);
 
         const domainZone = getHostedZone(this, props.envSettings.tools);

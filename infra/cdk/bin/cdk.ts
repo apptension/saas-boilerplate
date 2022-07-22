@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as cdk from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 
 import { loadEnvSettings } from "../lib/settings";
 import { GlobalStack } from "../lib/stacks/global";
@@ -20,7 +20,7 @@ import { EnvDbStack } from "../lib/stacks/env/db";
   const getStackName = (baseName: string, prefix: string) =>
     `${prefix}-${baseName}`;
 
-  const app = new cdk.App();
+  const app = new App();
 
   // Global stacks
   new GlobalStack(app, getStackName("GlobalStack", envSettings.projectName), {

@@ -1,8 +1,8 @@
-import {FargateService, FargateTaskDefinition} from '@aws-cdk/aws-ecs';
-import {ApplicationTargetGroup} from '@aws-cdk/aws-elasticloadbalancingv2';
-import {Construct} from '@aws-cdk/core';
-import {IRole} from "@aws-cdk/aws-iam";
-import {ISecurityGroup, SubnetType} from "@aws-cdk/aws-ec2";
+import {FargateService, FargateTaskDefinition} from 'aws-cdk-lib/aws-ecs';
+import {ApplicationTargetGroup} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import {Construct} from "constructs";
+import {IRole} from "aws-cdk-lib/aws-iam";
+import {ISecurityGroup, SubnetType} from "aws-cdk-lib/aws-ec2";
 
 import {
     ApplicationMultipleTargetGroupsServiceBase,
@@ -179,8 +179,8 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
             propagateTags: props.propagateTags,
             enableECSManagedTags: props.enableECSManagedTags,
             cloudMapOptions: props.cloudMapOptions,
-            securityGroup: props.securityGroup,
-            vpcSubnets: this.cluster.vpc.selectSubnets({subnetType: SubnetType.PRIVATE}),
+            securityGroups: [props.securityGroup],
+            vpcSubnets: this.cluster.vpc.selectSubnets({subnetType: SubnetType.PRIVATE_WITH_NAT}),
             enableExecuteCommand: true
         });
     };

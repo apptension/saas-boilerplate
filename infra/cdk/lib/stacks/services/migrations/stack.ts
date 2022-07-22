@@ -1,33 +1,22 @@
-import * as core from "@aws-cdk/core";
-import { Duration, Fn, Stack } from "@aws-cdk/core";
-import {
-  AwsLogDriver,
-  ContainerDefinition,
-  ContainerImage,
-  FargateTaskDefinition,
-} from "@aws-cdk/aws-ecs";
-import { RunEcsFargateTask } from "@aws-cdk/aws-stepfunctions-tasks";
-import {
-  ServiceIntegrationPattern,
-  StateMachine,
-  Task,
-} from "@aws-cdk/aws-stepfunctions";
-import { Secret } from "@aws-cdk/aws-secretsmanager";
-import { Secret as EcsSecret } from "@aws-cdk/aws-ecs/lib/container-definition";
-import { PolicyStatement, Role, ServicePrincipal } from "@aws-cdk/aws-iam";
+import {App, Duration, Fn, Stack, StackProps} from "aws-cdk-lib";
+import {AwsLogDriver, ContainerImage, FargateTaskDefinition, Secret as EcsSecret} from "aws-cdk-lib/aws-ecs";
+import {EcsFargateLaunchTarget, EcsRunTask} from "aws-cdk-lib/aws-stepfunctions-tasks";
+import {IntegrationPattern, StateMachine} from "aws-cdk-lib/aws-stepfunctions";
+import {Secret} from "aws-cdk-lib/aws-secretsmanager";
+import {PolicyStatement, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { FargateServiceResources } from "../../../patterns/fargateServiceResources";
-import { MainDatabase } from "../../env/db/mainDatabase";
-import { MainKmsKey } from "../../env/main/mainKmsKey";
-import { EnvironmentSettings } from "../../../settings";
+import {EnvConstructProps} from "../../../types";
+import {FargateServiceResources} from "../../../patterns/fargateServiceResources";
+import {MainDatabase} from "../../env/db/mainDatabase";
+import {MainKmsKey} from "../../env/main/mainKmsKey";
+import {EnvironmentSettings} from "../../../settings";
 
 export interface MigrationsStackProps
-  extends core.StackProps,
+  extends StackProps,
     EnvConstructProps {}
 
-export class MigrationsStack extends core.Stack {
-  constructor(scope: core.App, id: string, props: MigrationsStackProps) {
+export class MigrationsStack extends Stack {
+  constructor(scope: App, id: string, props: MigrationsStackProps) {
     super(scope, id, props);
 
     const { envSettings } = props;
@@ -68,27 +57,26 @@ export class MigrationsStack extends core.Stack {
       },
       secrets: {
         DB_CONNECTION: EcsSecret.fromSecretsManager(
-          Secret.fromSecretArn(this, "DbSecret", dbSecretArn)
+          Secret.fromSecretCompleteArn(this, "DbSecret", dbSecretArn)
         ),
       },
     });
 
     new StateMachine(this, "MigrationsStateMachine", {
       stateMachineName: `${envSettings.projectEnvName}-migrations`,
-      definition: new Task(this, "MigrationsFargateTask", {
-        task: new RunEcsFargateTask({
+      definition: new EcsRunTask(this, "MigrationsFargateTask", {
           cluster: resources.mainCluster,
+          launchTarget: new EcsFargateLaunchTarget(),
           taskDefinition: migrationsTaskDefinition,
           assignPublicIp: false,
-          securityGroup: resources.fargateContainerSecurityGroup,
+          securityGroups: [resources.fargateContainerSecurityGroup],
           containerOverrides: [
             {
               containerDefinition: containerDef,
               command: ["./scripts/run_migrations.sh"],
             },
           ],
-          integrationPattern: ServiceIntegrationPattern.SYNC,
-        }),
+          integrationPattern: IntegrationPattern.RUN_JOB,
       }),
       timeout: Duration.minutes(5),
     });

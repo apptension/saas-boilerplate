@@ -1,7 +1,7 @@
 import {EnvironmentSettings, ToolsConfig} from "../settings";
-import {Fn} from "@aws-cdk/core";
+import {Fn} from "aws-cdk-lib";
 import {MainCertificates} from "../stacks/env/main/mainCertificates";
-import {PublicHostedZone} from "@aws-cdk/aws-route53";
+import {PublicHostedZone} from "aws-cdk-lib/aws-route53";
 import {Construct} from "constructs";
 
 export function getHostedZone(scope: Construct, settings: EnvironmentSettings | ToolsConfig) {

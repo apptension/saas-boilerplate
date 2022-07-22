@@ -1,20 +1,12 @@
-import { Construct, Stack } from "@aws-cdk/core";
-import {
-  BuildSpec,
-  Cache,
-  LinuxBuildImage,
-  LocalCacheMode,
-  Project,
-} from "@aws-cdk/aws-codebuild";
-import {
-  CodeBuildAction,
-  CodeBuildActionProps,
-} from "@aws-cdk/aws-codepipeline-actions";
-import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+import {Construct} from "constructs";
+import {Stack} from "aws-cdk-lib";
+import {BuildSpec, Cache, LinuxBuildImage, LocalCacheMode, Project} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps,} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
+import {EnvConstructProps} from "../../../types";
+import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -63,7 +55,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
@@ -82,7 +74,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
     project.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ["iam:*", "logs:*", "s3:*", "sqs:*", "events:*", "apigateway:*", "cloudfront:*", "route53:*"],
+        actions: ["iam:*", "sts:*", "logs:*", "s3:*", "sqs:*", "events:*", "apigateway:*", "cloudfront:*", "route53:*"],
         resources: ["*"],
       })
     );

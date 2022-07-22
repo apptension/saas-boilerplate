@@ -1,10 +1,9 @@
-import * as core from '@aws-cdk/core';
-import {CfnOutput, StackProps} from '@aws-cdk/core';
-import {WebSocketApi, WebSocketStage} from "@aws-cdk/aws-apigatewayv2";
+import {App, CfnOutput, Stack, StackProps} from 'aws-cdk-lib';
+import {WebSocketApi, WebSocketStage} from "@aws-cdk/aws-apigatewayv2-alpha";
 import {EnvConstructProps} from "../../../types";
-import {EventBus} from "@aws-cdk/aws-events";
+import {EventBus} from "aws-cdk-lib/aws-events";
 import {EnvironmentSettings} from "../../../settings";
-import {Bucket} from "@aws-cdk/aws-s3";
+import {Bucket} from "aws-cdk-lib/aws-s3";
 import {
     CachePolicy,
     CacheQueryStringBehavior,
@@ -12,18 +11,18 @@ import {
     Distribution,
     OriginRequestPolicy,
     OriginRequestQueryStringBehavior
-} from "@aws-cdk/aws-cloudfront";
-import {S3Origin} from "@aws-cdk/aws-cloudfront-origins";
-import {Certificate} from "@aws-cdk/aws-certificatemanager";
-import {ARecord, RecordTarget} from "@aws-cdk/aws-route53";
-import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
+} from "aws-cdk-lib/aws-cloudfront";
+import {S3Origin} from "aws-cdk-lib/aws-cloudfront-origins";
+import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
+import {ARecord, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {CloudFrontTarget} from "aws-cdk-lib/aws-route53-targets";
 import {getCloudfrontCertificateArn, getHostedZone} from "../../../helpers/domains";
 
 export interface EnvComponentsStackProps extends StackProps, EnvConstructProps {
 
 }
 
-export class EnvComponentsStack extends core.Stack {
+export class EnvComponentsStack extends Stack {
     static getWorkersEventBusName(envSettings: EnvironmentSettings) {
         return `${envSettings.projectEnvName}-workers`
     }
@@ -112,7 +111,7 @@ export class EnvComponentsStack extends core.Stack {
         return distribution;
     }
 
-    constructor(scope: core.App, id: string, props: EnvComponentsStackProps) {
+    constructor(scope: App, id: string, props: EnvComponentsStackProps) {
         super(scope, id, props);
 
         this.createEmailEventBus(props);

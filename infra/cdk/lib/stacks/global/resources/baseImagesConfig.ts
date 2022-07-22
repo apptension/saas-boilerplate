@@ -1,20 +1,12 @@
-import { Construct } from "@aws-cdk/core";
-import { IRepository } from "@aws-cdk/aws-codecommit";
-import { Repository as ECRRepository } from "@aws-cdk/aws-ecr";
-import {
-  BuildSpec,
-  Cache,
-  LinuxBuildImage,
-  LocalCacheMode,
-  Project,
-  Source,
-} from "@aws-cdk/aws-codebuild";
-import * as targets from "@aws-cdk/aws-events-targets";
-import { AnyPrincipal } from "@aws-cdk/aws-iam";
-import { User } from "@aws-cdk/aws-iam";
+import {Construct} from "constructs";
+import {IRepository} from "aws-cdk-lib/aws-codecommit";
+import {Repository as ECRRepository} from "aws-cdk-lib/aws-ecr";
+import {BuildSpec, Cache, LinuxBuildImage, LocalCacheMode, Project, Source} from "aws-cdk-lib/aws-codebuild";
+import {aws_events_targets as targets} from "aws-cdk-lib";
+import {AnyPrincipal, User} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { EnvironmentSettings } from "../../../settings";
+import {EnvConstructProps} from "../../../types";
+import {EnvironmentSettings} from "../../../settings";
 
 
 export interface BaseImagesConfigProps extends EnvConstructProps {
@@ -118,7 +110,7 @@ export class BaseImagesConfig extends Construct {
       source: Source.codeCommit({ repository: props.codeRepository }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
     });
   }

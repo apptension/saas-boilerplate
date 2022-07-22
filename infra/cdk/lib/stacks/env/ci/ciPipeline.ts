@@ -1,19 +1,18 @@
-import { Construct } from "@aws-cdk/core";
-import { Artifact, Pipeline } from "@aws-cdk/aws-codepipeline";
-import { S3SourceAction, S3Trigger } from "@aws-cdk/aws-codepipeline-actions";
-import { Bucket } from "@aws-cdk/aws-s3";
-import * as ecr from "@aws-cdk/aws-ecr";
-import * as cc from "@aws-cdk/aws-codecommit";
+import {Construct} from "constructs";
+import {Artifact, Pipeline} from "aws-cdk-lib/aws-codepipeline";
+import {S3SourceAction, S3Trigger} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Bucket} from "aws-cdk-lib/aws-s3";
+import {aws_codecommit as cc, aws_ecr as ecr} from "aws-cdk-lib";
 
-import { EnvConstructProps } from "../../../types";
-import { EnvironmentSettings } from "../../../settings";
-import { CiEntrypoint } from "./ciEntrypoint";
-import { BackendCiConfig } from "./ciBackend";
-import { WebappCiConfig } from "./ciWebApp";
-import { ServerlessCiConfig } from "./ciServerless";
-import { UploadVersionCiConfig } from "./ciUploadVersion";
-import { ComponentsCiConfig } from "./ciComponents";
-import { E2ETestsCiConfig } from "./e2eTests";
+import {EnvConstructProps} from "../../../types";
+import {EnvironmentSettings} from "../../../settings";
+import {CiEntrypoint} from "./ciEntrypoint";
+import {BackendCiConfig} from "./ciBackend";
+import {WebappCiConfig} from "./ciWebApp";
+import {ServerlessCiConfig} from "./ciServerless";
+import {UploadVersionCiConfig} from "./ciUploadVersion";
+import {ComponentsCiConfig} from "./ciComponents";
+import {E2ETestsCiConfig} from "./e2eTests";
 import {DocsCiConfig} from "./ciDocs";
 
 export interface CiPipelineProps extends EnvConstructProps {

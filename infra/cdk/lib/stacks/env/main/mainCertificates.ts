@@ -1,5 +1,6 @@
-import {CfnOutput, Construct} from "@aws-cdk/core";
-import {DnsValidatedCertificate} from '@aws-cdk/aws-certificatemanager';
+import {Construct} from "constructs";
+import {CfnOutput} from "aws-cdk-lib";
+import {DnsValidatedCertificate} from 'aws-cdk-lib/aws-certificatemanager';
 
 import {EnvConstructProps} from "../../../types";
 import {EnvironmentSettings} from "../../../settings";

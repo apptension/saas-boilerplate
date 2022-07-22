@@ -1,9 +1,8 @@
-import * as core from "@aws-cdk/core";
-import {Fn, Stack} from "@aws-cdk/core";
-import {ContainerImage, Protocol, Secret as EcsSecret,} from "@aws-cdk/aws-ecs";
-import {PolicyStatement, Role, ServicePrincipal} from "@aws-cdk/aws-iam";
-import {Secret} from "@aws-cdk/aws-secretsmanager";
-import {ApplicationListener} from "@aws-cdk/aws-elasticloadbalancingv2";
+import {App, Fn, Stack, StackProps} from "aws-cdk-lib";
+import {ContainerImage, Protocol, Secret as EcsSecret} from "aws-cdk-lib/aws-ecs";
+import {PolicyStatement, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
+import {Secret} from "aws-cdk-lib/aws-secretsmanager";
+import {ApplicationListener} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 import {EnvConstructProps} from "../../../types";
 import {
@@ -18,12 +17,12 @@ import {MainECSCluster} from "../../env/main/mainEcsCluster";
 import {EnvComponentsStack} from "../../env/components";
 import {getHostedZone} from "../../../helpers/domains";
 
-export interface ApiStackProps extends core.StackProps, EnvConstructProps {}
+export interface ApiStackProps extends StackProps, EnvConstructProps {}
 
-export class ApiStack extends core.Stack {
+export class ApiStack extends Stack {
   fargateService: ApplicationMultipleTargetGroupsFargateService;
 
-  constructor(scope: core.App, id: string, props: ApiStackProps) {
+  constructor(scope: App, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
     const resources = new FargateServiceResources(this, "ApiResources", props);
@@ -108,7 +107,7 @@ export class ApiStack extends core.Stack {
             },
             secrets: {
               DB_CONNECTION: EcsSecret.fromSecretsManager(
-                Secret.fromSecretArn(this, "DbSecret", dbSecretArn)
+                Secret.fromSecretCompleteArn(this, "DbSecret", dbSecretArn)
               ),
             },
           },

@@ -1,20 +1,22 @@
-import {Construct, Duration, Fn, Stack} from "@aws-cdk/core";
-import {Bucket} from '@aws-cdk/aws-s3';
-import * as lambda from '@aws-cdk/aws-lambda';
-import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from '@aws-cdk/custom-resources';
+import {Construct} from "constructs";
+import {Duration, Fn, Stack} from "aws-cdk-lib";
+import {Bucket} from 'aws-cdk-lib/aws-s3';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from 'aws-cdk-lib/custom-resources';
 import {
     CloudFrontAllowedMethods,
     CloudFrontWebDistribution,
+    Function,
+    FunctionCode,
     FunctionEventType,
     LambdaEdgeEventType,
     LambdaFunctionAssociation,
     OriginProtocolPolicy,
     SourceConfiguration,
-    Function, FunctionCode,
-} from '@aws-cdk/aws-cloudfront';
-import {ARecord, IHostedZone, RecordTarget} from "@aws-cdk/aws-route53";
-import {CloudFrontTarget} from "@aws-cdk/aws-route53-targets";
-import {BucketDeployment, CacheControl, ISource} from "@aws-cdk/aws-s3-deployment";
+} from 'aws-cdk-lib/aws-cloudfront';
+import {ARecord, IHostedZone, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {CloudFrontTarget} from "aws-cdk-lib/aws-route53-targets";
+import {BucketDeployment, CacheControl, ISource} from "aws-cdk-lib/aws-s3-deployment";
 import {EnvComponentsStack} from "../stacks/env/components";
 import {EnvironmentSettings} from "../settings/index";
 
@@ -131,12 +133,12 @@ export class WebAppCloudFrontDistribution extends Construct {
                     queryString: true,
                 }
             }],
-            originPath: '',
             customOriginSource: {
                 domainName: staticFilesBucket.bucketWebsiteDomainName,
                 originProtocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
+                originPath: '',
+                originHeaders,
             },
-            originHeaders,
         };
     }
 

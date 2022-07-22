@@ -1,22 +1,22 @@
 import * as path from "path";
-import { Construct } from "@aws-cdk/core";
-import { Bucket } from "@aws-cdk/aws-s3";
-import { IRepository } from "@aws-cdk/aws-codecommit";
+import {Construct} from "constructs";
+import {Bucket} from "aws-cdk-lib/aws-s3";
+import {IRepository} from "aws-cdk-lib/aws-codecommit";
 import {
-  Artifacts,
-  BuildSpec,
-  Cache,
-  LinuxBuildImage,
-  LocalCacheMode,
-  Project,
-  Source,
-} from "@aws-cdk/aws-codebuild";
-import * as targets from "@aws-cdk/aws-events-targets";
-import {Function, Runtime, Code} from "@aws-cdk/aws-lambda";
-import {PolicyStatement} from "@aws-cdk/aws-iam";
+    Artifacts,
+    BuildSpec,
+    Cache,
+    LinuxBuildImage,
+    LocalCacheMode,
+    Project,
+    Source,
+} from "aws-cdk-lib/aws-codebuild";
+import {aws_events_targets as targets} from "aws-cdk-lib";
+import {Code, Function, Runtime} from "aws-cdk-lib/aws-lambda";
+import {PolicyStatement} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { EnvironmentSettings } from "../../../settings";
+import {EnvConstructProps} from "../../../types";
+import {EnvironmentSettings} from "../../../settings";
 
 export interface CiEntrypointProps extends EnvConstructProps {
   codeRepository: IRepository;
@@ -89,7 +89,7 @@ export class CiEntrypoint extends Construct {
         path: "",
       }),
       environment: {
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
     });
   }

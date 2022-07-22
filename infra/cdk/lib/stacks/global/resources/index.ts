@@ -1,11 +1,11 @@
-import { Construct } from "@aws-cdk/core";
+import {Construct} from "constructs";
 
-import { EnvConstructProps } from "../../../types";
-import { GlobalECR } from "./globalECR";
-import { GlobalCodeCommit } from "./globalCodeCommit";
-import { GlobalBuildSecrets } from "./globalBuildSecrets";
-import { BaseImagesConfig } from "./baseImagesConfig";
-import { User } from "@aws-cdk/aws-iam";
+import {EnvConstructProps} from "../../../types";
+import {GlobalECR} from "./globalECR";
+import {GlobalCodeCommit} from "./globalCodeCommit";
+import {GlobalBuildSecrets} from "./globalBuildSecrets";
+import {BaseImagesConfig} from "./baseImagesConfig";
+import {User} from "aws-cdk-lib/aws-iam";
 
 export class GlobalResources extends Construct {
   ecr: GlobalECR;

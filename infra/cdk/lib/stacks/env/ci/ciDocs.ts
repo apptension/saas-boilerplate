@@ -1,4 +1,5 @@
-import {Construct, Stack} from "@aws-cdk/core";
+import {Construct} from "constructs";
+import {Stack} from "aws-cdk-lib";
 import {
   BuildEnvironmentVariableType,
   BuildSpec,
@@ -6,10 +7,10 @@ import {
   LinuxBuildImage,
   LocalCacheMode,
   Project,
-} from "@aws-cdk/aws-codebuild";
-import {CodeBuildAction, CodeBuildActionProps,} from "@aws-cdk/aws-codepipeline-actions";
-import {Artifact, IStage} from "@aws-cdk/aws-codepipeline";
-import {Effect, PolicyStatement,} from "@aws-cdk/aws-iam";
+} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
 import {EnvConstructProps} from "../../../types";
 import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
@@ -84,7 +85,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -124,7 +125,7 @@ export class DocsCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
 
@@ -144,6 +145,7 @@ export class DocsCiConfig extends ServiceCiConfig {
         effect: Effect.ALLOW,
         actions: [
           "iam:*",
+          "sts:*",
           "cloudfront:*",
           "s3:*",
           "ecs:*",

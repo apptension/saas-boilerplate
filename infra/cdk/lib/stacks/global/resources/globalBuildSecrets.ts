@@ -1,6 +1,6 @@
-import { Construct } from "@aws-cdk/core";
-import { EnvConstructProps } from "../../../types";
-import { Secret } from "@aws-cdk/aws-secretsmanager";
+import {Construct} from "constructs";
+import {EnvConstructProps} from "../../../types";
+import {Secret} from "aws-cdk-lib/aws-secretsmanager";
 
 export class GlobalBuildSecrets extends Construct {
   secret: Secret;

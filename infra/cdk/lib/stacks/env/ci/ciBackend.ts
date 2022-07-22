@@ -1,4 +1,5 @@
-import { Construct, Stack } from "@aws-cdk/core";
+import {Construct} from "constructs";
+import {Stack} from "aws-cdk-lib";
 import {
   BuildEnvironmentVariableType,
   BuildSpec,
@@ -6,17 +7,14 @@ import {
   LinuxBuildImage,
   LocalCacheMode,
   Project,
-} from "@aws-cdk/aws-codebuild";
-import {
-  CodeBuildAction,
-  CodeBuildActionProps,
-} from "@aws-cdk/aws-codepipeline-actions";
-import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import { IRepository } from "@aws-cdk/aws-ecr";
-import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps,} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {IRepository} from "aws-cdk-lib/aws-ecr";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
+import {EnvConstructProps} from "../../../types";
+import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
 
 interface BackendCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -88,7 +86,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -144,7 +142,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
@@ -165,6 +163,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         effect: Effect.ALLOW,
         actions: [
           "iam:*",
+          "sts:*",
           "ec2:*",
           "ecs:*",
           "application-autoscaling:*",
@@ -194,7 +193,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
@@ -215,6 +214,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         effect: Effect.ALLOW,
         actions: [
           "iam:*",
+          "sts:*",
           "ec2:*",
           "ecs:*",
           "states:*",

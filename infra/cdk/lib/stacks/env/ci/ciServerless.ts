@@ -1,4 +1,5 @@
-import { Construct, Stack } from "@aws-cdk/core";
+import {Construct} from "constructs";
+import {Stack} from "aws-cdk-lib";
 import {
   BuildEnvironmentVariableType,
   BuildSpec,
@@ -6,22 +7,14 @@ import {
   LinuxBuildImage,
   LocalCacheMode,
   Project,
-} from "@aws-cdk/aws-codebuild";
-import {
-  CodeBuildAction,
-  CodeBuildActionProps,
-} from "@aws-cdk/aws-codepipeline-actions";
-import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import {
-  AccountRootPrincipal,
-  Effect,
-  PolicyStatement,
-  Role,
-} from "@aws-cdk/aws-iam";
+} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {AccountRootPrincipal, Effect, PolicyStatement, Role} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
-import { IRepository } from "@aws-cdk/aws-ecr";
+import {EnvConstructProps} from "../../../types";
+import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
+import {IRepository} from "aws-cdk-lib/aws-ecr";
 
 interface ServerlessCiConfigProps extends EnvConstructProps {
   name: string;
@@ -114,7 +107,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -204,7 +197,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,

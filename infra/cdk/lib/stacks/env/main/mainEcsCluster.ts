@@ -1,13 +1,14 @@
-import {CfnOutput, Construct, Duration} from "@aws-cdk/core";
-import {Cluster} from '@aws-cdk/aws-ecs';
-import {Peer, Port, SecurityGroup, SubnetType, Vpc} from "@aws-cdk/aws-ec2";
+import {Construct} from "constructs";
+import {CfnOutput, Duration} from "aws-cdk-lib";
+import {Cluster} from 'aws-cdk-lib/aws-ecs';
+import {Peer, Port, SecurityGroup, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2";
 import {
     ApplicationLoadBalancer,
     ApplicationProtocol,
     ApplicationTargetGroup,
     ListenerCertificate,
     TargetType
-} from "@aws-cdk/aws-elasticloadbalancingv2";
+} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";

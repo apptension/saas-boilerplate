@@ -1,20 +1,11 @@
-import { Construct } from "@aws-cdk/core";
-import {
-  BuildSpec,
-  Cache,
-  LinuxBuildImage,
-  LocalCacheMode,
-  Project,
-} from "@aws-cdk/aws-codebuild";
-import {
-  CodeBuildAction,
-  CodeBuildActionProps,
-} from "@aws-cdk/aws-codepipeline-actions";
-import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+import {Construct} from "constructs";
+import {BuildSpec, Cache, LinuxBuildImage, LocalCacheMode, Project} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
-import { EnvConstructProps } from "../../../types";
-import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
+import {EnvConstructProps} from "../../../types";
+import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
 
 interface UploadVersionCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -61,7 +52,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_5_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });

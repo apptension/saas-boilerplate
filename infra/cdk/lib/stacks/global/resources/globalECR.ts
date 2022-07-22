@@ -1,5 +1,5 @@
-import {Repository} from '@aws-cdk/aws-ecr';
-import {Construct} from "@aws-cdk/core";
+import {Construct} from "constructs";
+import {Repository} from 'aws-cdk-lib/aws-ecr';
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";

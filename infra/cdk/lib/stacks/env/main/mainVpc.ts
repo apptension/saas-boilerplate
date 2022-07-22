@@ -1,8 +1,9 @@
-import { SubnetType, Vpc } from "@aws-cdk/aws-ec2";
-import { CfnOutput, Construct } from "@aws-cdk/core";
+import {Construct} from "constructs";
+import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2";
+import {CfnOutput} from "aws-cdk-lib";
 
-import { EnvironmentSettings } from "../../../settings";
-import { EnvConstructProps } from "../../../types";
+import {EnvironmentSettings} from "../../../settings";
+import {EnvConstructProps} from "../../../types";
 
 export interface MainVpcProps extends EnvConstructProps {}
 
@@ -57,7 +58,7 @@ export class MainVpc extends Construct {
       natGateways: 1,
       subnetConfiguration: [
         { cidrMask: 24, name: "PublicSubnet", subnetType: SubnetType.PUBLIC },
-        { cidrMask: 24, name: "PrivateSubnet", subnetType: SubnetType.PRIVATE },
+        { cidrMask: 24, name: "PrivateSubnet", subnetType: SubnetType.PRIVATE_WITH_NAT },
       ],
     });
   }

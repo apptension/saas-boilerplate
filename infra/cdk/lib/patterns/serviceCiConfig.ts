@@ -1,8 +1,8 @@
-import {Construct} from "@aws-cdk/core";
-import {BuildEnvironmentVariable} from "@aws-cdk/aws-codebuild/lib/project";
+import {Construct} from "constructs";
+import {BuildEnvironmentVariable} from "aws-cdk-lib/aws-codebuild/lib/project";
 
 import {EnvConstructProps} from "../types";
-import {BuildEnvironmentVariableType} from "@aws-cdk/aws-codebuild";
+import {BuildEnvironmentVariableType} from "aws-cdk-lib/aws-codebuild";
 
 export interface IServiceCiConfig {
     defaultEnvVariables: {

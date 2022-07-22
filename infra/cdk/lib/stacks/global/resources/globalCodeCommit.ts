@@ -1,6 +1,7 @@
-import {CfnOutput, Construct} from "@aws-cdk/core";
-import {Repository} from "@aws-cdk/aws-codecommit";
-import {User} from "@aws-cdk/aws-iam";
+import {Construct} from "constructs";
+import {CfnOutput} from "aws-cdk-lib";
+import {Repository} from "aws-cdk-lib/aws-codecommit";
+import {User} from "aws-cdk-lib/aws-iam";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";

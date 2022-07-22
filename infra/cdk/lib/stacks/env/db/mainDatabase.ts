@@ -1,5 +1,6 @@
-import {CfnOutput, Construct, Duration} from "@aws-cdk/core";
-import {DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion} from "@aws-cdk/aws-rds";
+import {Construct} from "constructs";
+import {CfnOutput, Duration} from "aws-cdk-lib";
+import {DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion} from "aws-cdk-lib/aws-rds";
 import {
     InstanceClass,
     InstanceSize,
@@ -10,7 +11,7 @@ import {
     Protocol,
     SecurityGroup,
     SubnetType
-} from "@aws-cdk/aws-ec2";
+} from "aws-cdk-lib/aws-ec2";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";

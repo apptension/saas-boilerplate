@@ -1,8 +1,8 @@
-import {App, Fn, Stack, StackProps} from "@aws-cdk/core";
+import {App, Fn, Stack, StackProps} from "aws-cdk-lib";
 
 import {EnvConstructProps} from "../../../types";
 import {MainDatabase} from "./mainDatabase";
-import {SecurityGroup, Vpc} from "@aws-cdk/aws-ec2";
+import {SecurityGroup, Vpc} from "aws-cdk-lib/aws-ec2";
 import {MainVpc} from "../main/mainVpc";
 import {MainECSCluster} from "../main/mainEcsCluster";
 import {MainLambdaConfig} from "../main/mainLambdaConfig";

@@ -1,5 +1,5 @@
-import { ICertificate } from "@aws-cdk/aws-certificatemanager";
-import { IVpc } from "@aws-cdk/aws-ec2";
+import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
+import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {
   AwsLogDriver,
   BaseService,
@@ -11,18 +11,20 @@ import {
   PropagatedTagSource,
   Protocol,
   Secret,
-} from "@aws-cdk/aws-ecs";
+} from "aws-cdk-lib/aws-ecs";
 import {
   ApplicationProtocol,
   ApplicationTargetGroup,
   IApplicationListener,
   IApplicationLoadBalancer,
+  ListenerCondition,
   Protocol as ELBProtocol,
   TargetType,
-} from "@aws-cdk/aws-elasticloadbalancingv2";
-import { ARecord, IHostedZone, RecordTarget } from "@aws-cdk/aws-route53";
-import { Construct, Duration } from "@aws-cdk/core";
-import { LoadBalancerTarget } from "@aws-cdk/aws-route53-targets";
+} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {ARecord, IHostedZone, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {Construct} from "constructs";
+import {Duration} from "aws-cdk-lib";
+import {LoadBalancerTarget} from "aws-cdk-lib/aws-route53-targets";
 
 /**
  * The properties for the base ApplicationMultipleTargetGroupsEc2Service or ApplicationMultipleTargetGroupsFargateService service.
@@ -437,11 +439,17 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
       );
 
       groupedTarget.hosts.forEach((targetProps, nestedIndex) => {
+        const conditions = []
+        if (targetProps.hostHeader) {
+          conditions.push(ListenerCondition.hostHeaders([targetProps.hostHeader]))
+        }
+        if (targetProps.pathPattern) {
+            conditions.push(ListenerCondition.pathPatterns([targetProps.pathPattern]))
+        }
         this.findListener(targetProps.listener).addTargetGroups(
           `ECSTargetGroup${index}${nestedIndex}${container.containerName}${targetProps.containerPort}`,
           {
-            hostHeader: targetProps.hostHeader,
-            pathPattern: targetProps.pathPattern,
+            conditions: conditions,
             priority: targetProps.priority,
             targetGroups: [targetGroup],
           }

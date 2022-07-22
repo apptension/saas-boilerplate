@@ -1,19 +1,17 @@
-import * as core from "@aws-cdk/core";
-import { StackProps } from "@aws-cdk/core";
-import { Repository } from "@aws-cdk/aws-ecr";
-import * as codeCommit from "@aws-cdk/aws-codecommit";
+import {App, aws_codecommit as codeCommit, Stack, StackProps} from "aws-cdk-lib";
+import {Repository} from "aws-cdk-lib/aws-ecr";
 
-import { EnvConstructProps } from "../../../types";
-import { GlobalECR } from "../../global/resources/globalECR";
-import { GlobalCodeCommit } from "../../global/resources/globalCodeCommit";
-import { BaseImagesConfig } from "../../global/resources/baseImagesConfig";
-import { CiPipeline } from "./ciPipeline";
-import { CiEntrypoint } from "./ciEntrypoint";
+import {EnvConstructProps} from "../../../types";
+import {GlobalECR} from "../../global/resources/globalECR";
+import {GlobalCodeCommit} from "../../global/resources/globalCodeCommit";
+import {BaseImagesConfig} from "../../global/resources/baseImagesConfig";
+import {CiPipeline} from "./ciPipeline";
+import {CiEntrypoint} from "./ciEntrypoint";
 
 export interface EnvCiStackProps extends StackProps, EnvConstructProps {}
 
-export class EnvCiStack extends core.Stack {
-  constructor(scope: core.App, id: string, props: EnvCiStackProps) {
+export class EnvCiStack extends Stack {
+  constructor(scope: App, id: string, props: EnvCiStackProps) {
     super(scope, id, props);
 
     const backendRepository = this.retrieveBackendECRRepository(props);

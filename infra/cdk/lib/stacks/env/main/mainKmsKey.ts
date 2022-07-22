@@ -1,6 +1,7 @@
-import {CfnOutput, Construct} from "@aws-cdk/core";
-import {Key} from "@aws-cdk/aws-kms";
-import {AccountRootPrincipal, PolicyStatement} from "@aws-cdk/aws-iam";
+import {Construct} from "constructs";
+import {CfnOutput} from "aws-cdk-lib";
+import {Key} from "aws-cdk-lib/aws-kms";
+import {AccountRootPrincipal, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
 import {EnvironmentSettings} from "../../../settings";
 import {EnvConstructProps} from "../../../types";

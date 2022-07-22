@@ -1,4 +1,4 @@
-import { Construct } from "@aws-cdk/core";
+import {Construct} from "constructs";
 import {
   BuildEnvironmentVariableType,
   BuildSpec,
@@ -7,23 +7,14 @@ import {
   LocalCacheMode,
   Project,
   Source,
-} from "@aws-cdk/aws-codebuild";
-import {
-  CodeBuildAction,
-  CodeBuildActionProps,
-} from "@aws-cdk/aws-codepipeline-actions";
-import { Artifact, IStage } from "@aws-cdk/aws-codepipeline";
-import {
-  AccountRootPrincipal,
-  Effect,
-  PolicyStatement,
-  Role,
-} from "@aws-cdk/aws-iam";
-import * as ecr from "@aws-cdk/aws-ecr";
-import * as cc from "@aws-cdk/aws-codecommit";
+} from "aws-cdk-lib/aws-codebuild";
+import {CodeBuildAction, CodeBuildActionProps} from "aws-cdk-lib/aws-codepipeline-actions";
+import {Artifact, IStage} from "aws-cdk-lib/aws-codepipeline";
+import {AccountRootPrincipal, Effect, PolicyStatement, Role} from "aws-cdk-lib/aws-iam";
+import {aws_codecommit as cc, aws_ecr as ecr} from "aws-cdk-lib";
 
-import { EnvConstructProps } from "../../../types";
-import { ServiceCiConfig } from "../../../patterns/serviceCiConfig";
+import {EnvConstructProps} from "../../../types";
+import {ServiceCiConfig} from "../../../patterns/serviceCiConfig";
 
 interface E2ETestsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -86,7 +77,7 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: LinuxBuildImage.STANDARD_5_0,
+        buildImage: LinuxBuildImage.STANDARD_6_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,

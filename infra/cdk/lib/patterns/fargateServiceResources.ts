@@ -1,17 +1,15 @@
-import { Construct, Fn, Stack } from "@aws-cdk/core";
-import { ISecurityGroup, IVpc, SecurityGroup, Vpc } from "@aws-cdk/aws-ec2";
-import { Cluster, ICluster } from "@aws-cdk/aws-ecs";
-import { IRepository, Repository } from "@aws-cdk/aws-ecr";
-import {
-  ApplicationLoadBalancer,
-  IApplicationLoadBalancer,
-} from "@aws-cdk/aws-elasticloadbalancingv2";
+import {Construct} from "constructs";
+import {Fn, Stack} from "aws-cdk-lib";
+import {ISecurityGroup, IVpc, SecurityGroup, Vpc} from "aws-cdk-lib/aws-ec2";
+import {Cluster, ICluster} from "aws-cdk-lib/aws-ecs";
+import {IRepository, Repository} from "aws-cdk-lib/aws-ecr";
+import {ApplicationLoadBalancer, IApplicationLoadBalancer,} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
-import { MainVpc } from "../stacks/env/main/mainVpc";
-import { GlobalECR } from "../stacks/global/resources/globalECR";
-import { MainECSCluster } from "../stacks/env/main/mainEcsCluster";
-import { EnvConstructProps } from "../types";
-import { EnvironmentSettings } from "../settings";
+import {MainVpc} from "../stacks/env/main/mainVpc";
+import {GlobalECR} from "../stacks/global/resources/globalECR";
+import {MainECSCluster} from "../stacks/env/main/mainEcsCluster";
+import {EnvConstructProps} from "../types";
+import {EnvironmentSettings} from "../settings";
 
 export class FargateServiceResources extends Construct {
   mainVpc: IVpc;
