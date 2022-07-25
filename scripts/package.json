@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-cdk": "^1.51.0",
+    "aws-cdk": "2.33.0",
     "aws-sdk": "^2.708.0",
     "plop": "^2.7.4",
     "ramda": "^0.27.1"
