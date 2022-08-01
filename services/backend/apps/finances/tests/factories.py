@@ -10,7 +10,7 @@ from apps.users.tests import factories as user_factories
 from .. import models, constants
 
 
-class CustomerFactory(factory.DjangoModelFactory):
+class CustomerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Customer
         django_get_or_create = ('id', 'subscriber')
@@ -26,7 +26,7 @@ class CustomerFactory(factory.DjangoModelFactory):
     )
 
 
-class PaymentIntentFactory(factory.DjangoModelFactory):
+class PaymentIntentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.PaymentIntent
         django_get_or_create = ('id',)
@@ -45,7 +45,7 @@ class PaymentIntentFactory(factory.DjangoModelFactory):
     status = enums.PaymentIntentStatus.succeeded
 
 
-class BalanceTransactionFactory(factory.DjangoModelFactory):
+class BalanceTransactionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.BalanceTransaction
         django_get_or_create = ('id',)
@@ -64,7 +64,7 @@ class BalanceTransactionFactory(factory.DjangoModelFactory):
     type = enums.BalanceTransactionType.charge
 
 
-class PaymentMethodFactory(factory.DjangoModelFactory):
+class PaymentMethodFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.PaymentMethod
         django_get_or_create = ('id',)
@@ -95,7 +95,7 @@ class PaymentMethodFactory(factory.DjangoModelFactory):
     }
 
 
-class ChargeFactory(factory.DjangoModelFactory):
+class ChargeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Charge
         django_get_or_create = ('id',)
@@ -152,7 +152,7 @@ class ChargeFactory(factory.DjangoModelFactory):
         )
 
 
-class ProductFactory(factory.DjangoModelFactory):
+class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Product
         django_get_or_create = ('id',)
@@ -163,7 +163,7 @@ class ProductFactory(factory.DjangoModelFactory):
     type = enums.ProductType.service
 
 
-class PriceFactory(factory.DjangoModelFactory):
+class PriceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Price
         django_get_or_create = ('id',)
@@ -176,7 +176,7 @@ class PriceFactory(factory.DjangoModelFactory):
     type = enums.PriceType.one_time
 
 
-class PlanFactory(factory.DjangoModelFactory):
+class PlanFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Plan
         django_get_or_create = ('id',)
@@ -188,7 +188,7 @@ class PlanFactory(factory.DjangoModelFactory):
     product = factory.SubFactory(ProductFactory)
 
 
-class SubscriptionItemFactory(factory.DjangoModelFactory):
+class SubscriptionItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.SubscriptionItem
 
@@ -198,7 +198,7 @@ class SubscriptionItemFactory(factory.DjangoModelFactory):
     quantity = 1
 
 
-class SubscriptionFactory(factory.DjangoModelFactory):
+class SubscriptionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Subscription
         django_get_or_create = ('id',)
@@ -245,7 +245,7 @@ class SubscriptionFactory(factory.DjangoModelFactory):
         )
 
 
-class SubscriptionScheduleFactory(factory.DjangoModelFactory):
+class SubscriptionScheduleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.SubscriptionSchedule
         django_get_or_create = ('id',)
@@ -285,7 +285,7 @@ class SubscriptionScheduleFactory(factory.DjangoModelFactory):
         self.phases = [phase, *rest_phases]
 
 
-class WebhookEventFactory(factory.DjangoModelFactory):
+class WebhookEventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Event
 

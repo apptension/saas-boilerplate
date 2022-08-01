@@ -3,12 +3,12 @@ import factory
 from .. import models
 
 
-class WebSocketConnectionFactory(factory.DjangoModelFactory):
+class WebSocketConnectionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.WebSocketConnection
 
 
-class GraphQlSubscriptionFactory(factory.DjangoModelFactory):
+class GraphQlSubscriptionFactory(factory.django.DjangoModelFactory):
     connection = factory.SubFactory(WebSocketConnectionFactory)
     variables = {}
 

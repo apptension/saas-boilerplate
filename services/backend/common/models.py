@@ -9,7 +9,7 @@ class ImageWithThumbnailMixin:
 
     def make_thumbnail(self):
         image = Image.open(self.original)
-        image.thumbnail(self.THUMBNAIL_SIZE, Image.ANTIALIAS)
+        image.thumbnail(self.THUMBNAIL_SIZE, Image.Resampling.LANCZOS)
 
         file_name = self.original.name.split("/")[-1]
         extension = self.original.name.split(".")[-1]

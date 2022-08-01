@@ -13,7 +13,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Group #%s" % n)
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "users.User"
 
@@ -55,7 +55,7 @@ class UserFactory(factory.DjangoModelFactory):
         self.groups.add(user_group)
 
 
-class UserAvatarFactory(factory.DjangoModelFactory):
+class UserAvatarFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "users.UserAvatar"
 
@@ -63,7 +63,7 @@ class UserAvatarFactory(factory.DjangoModelFactory):
     thumbnail = factory.django.ImageField(filename="thumbnails/avatar.jpg")
 
 
-class UserProfileFactory(factory.DjangoModelFactory):
+class UserProfileFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "users.UserProfile"
 

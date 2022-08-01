@@ -1,3 +1,3 @@
 [python]
-path = "/usr/bin/python3"
 use_venv = false
+path = "/usr/local/bin/python3.8"
