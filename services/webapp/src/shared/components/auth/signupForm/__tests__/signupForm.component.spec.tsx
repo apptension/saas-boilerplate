@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { SignupForm } from '../signupForm.component';
 import { signup } from '../../../../../modules/auth/auth.actions';
@@ -29,10 +29,10 @@ describe('SignupForm: Component', () => {
     mockDispatch.mockResolvedValue({ error: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    userEvent.click(screen.getByLabelText(/accept/gi));
-    act(() => userEvent.click(screen.getByRole('button', { name: /sign up/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), mockCreds.email);
+    await userEvent.type(screen.getByLabelText(/password/i), mockCreds.password);
+    await userEvent.click(screen.getByLabelText(/accept/i));
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(signup(mockCreds));
     });
@@ -40,9 +40,9 @@ describe('SignupForm: Component', () => {
 
   it('should show error if password value is missing', async () => {
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.click(screen.getByLabelText(/accept/gi));
-    userEvent.click(screen.getByRole('button', { name: /sign up/gi }));
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
+    await userEvent.click(screen.getByLabelText(/accept/i));
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Password is required')).toBeInTheDocument();
@@ -51,9 +51,9 @@ describe('SignupForm: Component', () => {
 
   it('should show error if terms are not accepted', async () => {
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
-    userEvent.click(screen.getByRole('button', { name: /sign up/gi }));
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('You need to accept terms and conditions')).toBeInTheDocument();
@@ -67,10 +67,10 @@ describe('SignupForm: Component', () => {
     });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
-    userEvent.click(screen.getByLabelText(/accept/gi));
-    act(() => userEvent.click(screen.getByRole('button', { name: /sign up/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
+    await userEvent.click(screen.getByLabelText(/accept/i));
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
@@ -84,10 +84,10 @@ describe('SignupForm: Component', () => {
     });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.type(screen.getByLabelText(/password/gi), 'abcxyz123456');
-    userEvent.click(screen.getByLabelText(/accept/gi));
-    act(() => userEvent.click(screen.getByRole('button', { name: /sign up/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
+    await userEvent.click(screen.getByLabelText(/accept/i));
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();

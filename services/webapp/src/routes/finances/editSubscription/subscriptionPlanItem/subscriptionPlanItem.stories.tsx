@@ -5,7 +5,7 @@ import { withProviders } from '../../../../shared/utils/storybook';
 import { prepareState } from '../../../../mocks/store';
 import { SubscriptionPlanItem, SubscriptionPlanItemProps } from './subscriptionPlanItem.component';
 
-const Template: Story<SubscriptionPlanItemProps> = (args) => {
+const Template: Story<SubscriptionPlanItemProps> = (args: SubscriptionPlanItemProps) => {
   return <SubscriptionPlanItem {...args} />;
 };
 

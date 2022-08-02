@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { NotificationTypes } from '../../notifications.types';
 import { CrudItemCreated, CrudItemCreatedProps } from './crudItemCreated.component';
 
-const Template: Story<CrudItemCreatedProps> = (args) => {
+const Template: Story<CrudItemCreatedProps> = (args: CrudItemCreatedProps) => {
   return <CrudItemCreated {...args} />;
 };
 

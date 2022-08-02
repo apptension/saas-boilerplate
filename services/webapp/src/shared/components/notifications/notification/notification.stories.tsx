@@ -10,7 +10,7 @@ const Container = styled.div`
   max-width: 320px;
 `;
 
-const Template: Story<NotificationProps> = (args) => {
+const Template: Story<NotificationProps> = (args: NotificationProps) => {
   return (
     <Container>
       <Notification {...args} />

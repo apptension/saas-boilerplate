@@ -1,8 +1,8 @@
 import { Story } from '@storybook/react';
 import { Skeleton } from './skeleton.component';
 
-const Template: Story = (args) => {
-  return <Skeleton {...args} />;
+const Template: Story = () => {
+  return <Skeleton />;
 };
 
 export default {

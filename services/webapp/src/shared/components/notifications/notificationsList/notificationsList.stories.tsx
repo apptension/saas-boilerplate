@@ -5,7 +5,7 @@ import { NotificationTypes } from '../notifications.types';
 import { NotificationsList, NotificationsListProps } from './notificationsList.component';
 import { generateRelayEnvironmentNotifications } from './notificationsList.fixtures';
 
-const Template: Story<NotificationsListProps> = (args) => {
+const Template: Story<NotificationsListProps> = (args: NotificationsListProps) => {
   return <NotificationsList {...args} />;
 };
 

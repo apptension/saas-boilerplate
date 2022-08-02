@@ -35,7 +35,7 @@ describe('Layout: Component', () => {
     describe('on /auth routes', () => {
       it('should not show open menu button', () => {
         render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
-        expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
     });
 
@@ -47,55 +47,55 @@ describe('Layout: Component', () => {
     describe('user is logged out', () => {
       it('should show open menu button', () => {
         render();
-        expect(screen.queryByLabelText(/open menu/gi)).toBeInTheDocument();
+        expect(screen.queryByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
       it('should show privacy menu link', () => {
         render();
-        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+        expect(screen.queryByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show dashboard menu link', () => {
         render();
-        expect(screen.queryByText(/dashboard/gi)).not.toBeInTheDocument();
+        expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged in', () => {
       it('should show open menu button', () => {
         render({}, { store: loggedInState });
-        expect(screen.getByLabelText(/open menu/gi)).toBeVisible();
+        expect(screen.getByLabelText(/open menu/i)).toBeVisible();
       });
 
       it('should not show menu links', () => {
         render({}, { store: loggedInState });
-        expect(screen.queryByText(/privacy policy/gi)).not.toBeVisible();
+        expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
       });
 
       describe('user opens the menu', () => {
-        it('should show menu links', () => {
+        it('should show menu links', async () => {
           const { history, pushSpy } = spiedHistory();
           render({}, { router: { history }, store: loggedInState });
-          userEvent.click(screen.getByLabelText(/open menu/gi));
-          userEvent.click(screen.getByText(/privacy policy/gi));
+          await userEvent.click(screen.getByLabelText(/open menu/i));
+          await userEvent.click(screen.getByText(/privacy policy/i));
           expect(pushSpy).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/en/privacy-policy' }));
         });
 
         it('should close the menu when link is clicked', async () => {
           render({}, { store: loggedInState });
-          userEvent.click(screen.getByLabelText(/open menu/gi));
-          userEvent.click(screen.getByText(/privacy policy/gi));
+          await userEvent.click(screen.getByLabelText(/open menu/i));
+          await userEvent.click(screen.getByText(/privacy policy/i));
 
           await waitFor(() => {
-            expect(screen.queryByText(/privacy policy/gi)).not.toBeVisible();
+            expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
           });
         });
 
         it('should close the menu when close icon is clicked', async () => {
           render({}, { store: loggedInState });
-          userEvent.click(screen.getByLabelText(/open menu/gi));
-          userEvent.click(screen.getByLabelText(/close menu/gi));
-          expect(screen.queryByText(/privacy policy/gi)).not.toBeVisible();
+          await userEvent.click(screen.getByLabelText(/open menu/i));
+          await userEvent.click(screen.getByLabelText(/close menu/i));
+          expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
         });
       });
     });
@@ -114,32 +114,32 @@ describe('Layout: Component', () => {
     describe('on /auth routes', () => {
       it('should not show menu links', () => {
         render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
-        expect(screen.queryByText(/privacy policy/gi)).not.toBeInTheDocument();
+        expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged out', () => {
       it('should not show open menu button', () => {
         render();
-        expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
       it('should show menu links', () => {
         render();
-        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+        expect(screen.queryByText(/privacy policy/i)).toBeInTheDocument();
       });
     });
 
     describe('user is logged in', () => {
       it('should not show open menu button', () => {
         render({}, { store: loggedInState });
-        expect(screen.queryByLabelText(/open menu/gi)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
-      it('should show menu links', () => {
+      it('should show menu links', async () => {
         const { history, pushSpy } = spiedHistory();
         render({}, { router: { history }, store: loggedInState });
-        userEvent.click(screen.getByText(/privacy policy/gi));
+        await userEvent.click(screen.getByText(/privacy policy/i));
         expect(pushSpy).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/en/privacy-policy' }));
       });
     });

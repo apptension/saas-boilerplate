@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
 import { ROUTES } from '../../../../../app/config/routes';
@@ -40,9 +40,9 @@ describe('PasswordResetConfirm: Component', () => {
 
     const { history } = spiedHistory(confirmResetRoute);
     render({}, { router: { history, routePath: ROUTES.passwordReset.confirm } });
-    userEvent.type(screen.getByLabelText(/^new password$/gi), newPassword);
-    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), newPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /confirm the change/gi })));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
+    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
+    await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }))
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(
         confirmPasswordReset({

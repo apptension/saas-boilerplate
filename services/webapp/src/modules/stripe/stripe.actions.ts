@@ -9,7 +9,7 @@ export const fetchStripePaymentMethods = createPromiseAction<void, FetchStripePa
   'FETCH_STRIPE_PAYMENT_METHODS'
 );
 
-export const fetchStripeTransactionHistory = createActionRoutine<void, HistoryListApiResponseData>(
+export const fetchStripeTransactionHistory = createActionRoutine<void, HistoryListApiResponseData, unknown>(
   'FETCH_STRIPE_TRANSACTION_HISTORY'
 );
 

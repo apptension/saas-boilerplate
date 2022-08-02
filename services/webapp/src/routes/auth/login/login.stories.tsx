@@ -2,10 +2,10 @@ import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../../shared/utils/testUtils';
 import { Login } from './login.component';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper>
-      <Login {...args} />
+      <Login />
     </ProvidersWrapper>
   );
 };

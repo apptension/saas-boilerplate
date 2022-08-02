@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { RadioButton, RadioButtonProps } from './radioButton.component';
 
-const Template: Story<RadioButtonProps> = (args) => {
+const Template: Story<RadioButtonProps> = (args: RadioButtonProps) => {
   return <RadioButton {...args} />;
 };
 

@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { NotificationsButton, NotificationsButtonProps } from './notificationsButton.component';
 
-const Template: Story<NotificationsButtonProps> = (args) => {
+const Template: Story<NotificationsButtonProps> = (args: NotificationsButtonProps) => {
   return <NotificationsButton {...args} />;
 };
 

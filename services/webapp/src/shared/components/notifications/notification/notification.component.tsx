@@ -5,12 +5,12 @@ import { ThemeProvider } from 'styled-components';
 import { ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
 import { ExtractNodeType } from '../../../utils/graphql';
-import { notificationsListContent } from '../../../../__generated__/notificationsListContent.graphql';
+import { notificationsListContent$data } from '../../../../__generated__/notificationsListContent.graphql';
 import { NotificationTheme } from './notification.types';
 import { Actions, Avatar, Container, Content, MarkAsReadButton, RelativeDate, Title } from './notification.styles';
 import { useToggleIsRead } from './notification.hooks';
 
-export type NotificationProps = Omit<ExtractNodeType<notificationsListContent['allNotifications']>, 'data'> & {
+export type NotificationProps = Omit<ExtractNodeType<notificationsListContent$data['allNotifications']>, 'data'> & {
   title: ReactNode;
   content: ReactNode;
   children?: ReactNode;
@@ -61,7 +61,7 @@ export const Notification = ({
         <MarkAsReadButton variant={ButtonVariant.RAW} onClick={onToggleIsRead}>
           <Icon icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
         </MarkAsReadButton>
-        <RelativeDate date={new Date(createdAt)} />
+        <RelativeDate date={new Date(createdAt as string)} />
         <Title>{title}</Title>
         <Content>{content}</Content>
         {children && <Actions>{children}</Actions>}

@@ -29,16 +29,16 @@ import {
 } from './stripePaymentMethodSelector.styles';
 
 export type StripePaymentMethodSelectorProps<T extends PaymentFormFields = PaymentFormFields> = {
-  formControls: Pick<ApiFormReturnType<T>, 'control' | 'genericError' | 'hasGenericErrorOnly'> & {
-    formState: Pick<ApiFormReturnType<T>['formState'], 'errors'>;
-  };
+  formControls: ApiFormReturnType<T>;
   initialValue?: StripePaymentMethod | null;
 };
 
 export const StripePaymentMethodSelector = <T extends PaymentFormFields = PaymentFormFields>({
   formControls: {
-    control,
-    formState: { errors },
+    form: {
+      control,
+      formState: { errors },
+    },
     genericError,
     hasGenericErrorOnly,
   },

@@ -23,7 +23,7 @@ describe('useApiForm: Hook', () => {
     });
 
     expect(result.current.genericError).toEqual('custom error');
-    expect(result.current.formState.errors).toEqual({});
+    expect(result.current.form.formState.errors).toEqual({});
   });
 
   it('should set field error from api response', () => {
@@ -36,7 +36,7 @@ describe('useApiForm: Hook', () => {
     });
 
     expect(result.current.genericError).toBeUndefined();
-    expect(result.current.formState.errors).toEqual({ email: { message: 'custom email error' } });
+    expect(result.current.form.formState.errors).toEqual({ email: { message: 'custom email error' } });
   });
 
   describe('custom error messages are provided', () => {
@@ -47,7 +47,7 @@ describe('useApiForm: Hook', () => {
       });
 
       expect(result.current.genericError).toBeUndefined();
-      expect(result.current.formState.errors).toEqual({ email: { message: 'my custom error text' } });
+      expect(result.current.form.formState.errors).toEqual({ email: { message: 'my custom error text' } });
     });
 
     it('should set generic error from api response using custom translations', () => {
@@ -57,7 +57,7 @@ describe('useApiForm: Hook', () => {
       });
 
       expect(result.current.genericError).toEqual('my custom error text');
-      expect(result.current.formState.errors).toEqual({});
+      expect(result.current.form.formState.errors).toEqual({});
     });
   });
 

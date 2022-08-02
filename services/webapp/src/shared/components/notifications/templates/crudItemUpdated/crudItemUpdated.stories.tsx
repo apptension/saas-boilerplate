@@ -3,7 +3,7 @@ import { NotificationTypes } from '../../notifications.types';
 import { withRouter } from '../../../../../../.storybook/decorators';
 import { CrudItemUpdated, CrudItemUpdatedProps } from './crudItemUpdated.component';
 
-const Template: Story<CrudItemUpdatedProps> = (args) => {
+const Template: Story<CrudItemUpdatedProps> = (args: CrudItemUpdatedProps) => {
   return <CrudItemUpdated {...args} />;
 };
 

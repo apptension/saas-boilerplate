@@ -14,7 +14,7 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-const Template: Story<DocumentProps> = (args) => {
+const Template: Story<DocumentProps> = (args: DocumentProps) => {
   const data = useLazyLoadQuery<documentListItemStoryQuery>(
     graphql`
       query documentListItemStoryQuery @relay_test_operation {

@@ -1,37 +1,31 @@
+/**
+ * @generated SignedSource<<00da567d7de0939342d82d7f728f03fa>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type DeleteDocumentDemoItemMutationInput = {
-    id?: string | null;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  id?: string | null;
 };
-export type documentsDeleteMutationVariables = {
-    input: DeleteDocumentDemoItemMutationInput;
-    connections: Array<string>;
+export type documentsDeleteMutation$variables = {
+  connections: ReadonlyArray<string>;
+  input: DeleteDocumentDemoItemMutationInput;
 };
-export type documentsDeleteMutationResponse = {
-    readonly deleteDocumentDemoItem: {
-        readonly deletedIds: ReadonlyArray<string | null> | null;
-    } | null;
+export type documentsDeleteMutation$data = {
+  readonly deleteDocumentDemoItem: {
+    readonly deletedIds: ReadonlyArray<string | null> | null;
+  } | null;
 };
 export type documentsDeleteMutation = {
-    readonly response: documentsDeleteMutationResponse;
-    readonly variables: documentsDeleteMutationVariables;
+  response: documentsDeleteMutation$data;
+  variables: documentsDeleteMutation$variables;
 };
-
-
-
-/*
-mutation documentsDeleteMutation(
-  $input: DeleteDocumentDemoItemMutationInput!
-) {
-  deleteDocumentDemoItem(input: $input) {
-    deletedIds
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -133,5 +127,7 @@ return {
   }
 };
 })();
-(node as any).hash = '64b1e5c621b87af05d96dd2e185f9fe5';
+
+(node as any).hash = "64b1e5c621b87af05d96dd2e185f9fe5";
+
 export default node;

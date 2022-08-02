@@ -34,10 +34,10 @@ describe('Snackbar: Component', () => {
   });
 
   describe('message close icon is clicked', () => {
-    it('should dispatch hideMessage with proper id', () => {
+    it('should dispatch hideMessage with proper id', async () => {
       render();
       const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/gi)[0];
-      userEvent.click(firstMessageCloseButton);
+      await userEvent.click(firstMessageCloseButton);
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.hideMessage(1));
     });
   });

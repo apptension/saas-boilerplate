@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { rest, DefaultBodyType, PathParams } from 'msw';
 import {
   STRIPE_PAYMENT_INTENT_URL,
   StripePaymentIntentGetApiResponseData,
@@ -14,17 +14,17 @@ import {
 import { STRIPE_SETUP_INTENT_URL } from '../../../shared/services/api/stripe/setupIntent';
 
 export const mockGetSetupIntent = (response: StripeSetupIntentGetApiResponseData) =>
-  rest.get<void, StripeSetupIntentGetApiResponseData>(STRIPE_SETUP_INTENT_URL.GET({ id: ':id' }), (req, res, ctx) => {
+  rest.get<DefaultBodyType, PathParams, StripeSetupIntentGetApiResponseData>(STRIPE_SETUP_INTENT_URL.GET({ id: ':id' }), (req, res, ctx) => {
     return res(ctx.json(response));
   });
 
 export const mockCreateSetupIntent = (response: StripeSetupIntentCreateApiResponseData) =>
-  rest.post<void, StripeSetupIntentCreateApiResponseData>(STRIPE_SETUP_INTENT_URL.CREATE, (req, res, ctx) => {
+  rest.post<DefaultBodyType, PathParams, StripeSetupIntentCreateApiResponseData>(STRIPE_SETUP_INTENT_URL.CREATE, (req, res, ctx) => {
     return res(ctx.json(response));
   });
 
 export const mockGetStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.get<void, StripePaymentIntentGetApiResponseData>(
+  rest.get<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(
     STRIPE_PAYMENT_INTENT_URL.GET({ id: ':id' }),
     (req, res, ctx) => {
       return res(ctx.json(response));
@@ -32,12 +32,12 @@ export const mockGetStripePaymentIntent = (response: StripePaymentIntentGetApiRe
   );
 
 export const mockCreateStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.post<void, StripePaymentIntentGetApiResponseData>(STRIPE_PAYMENT_INTENT_URL.CREATE, (req, res, ctx) => {
+  rest.post<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(STRIPE_PAYMENT_INTENT_URL.CREATE, (req, res, ctx) => {
     return res(ctx.json(response));
   });
 
 export const mockUpdateStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.put<void, StripePaymentIntentGetApiResponseData>(
+  rest.put<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(
     STRIPE_PAYMENT_INTENT_URL.UPDATE({ id: ':id' }),
     (req, res, ctx) => {
       return res(ctx.json(response));
@@ -45,6 +45,6 @@ export const mockUpdateStripePaymentIntent = (response: StripePaymentIntentGetAp
   );
 
 export const mockGetStripePaymentMethods = (response: StripePaymentMethodGetApiResponseData[]) =>
-  rest.get<void, StripePaymentMethodGetApiResponseData[]>(STRIPE_PAYMENT_METHOD_URL.LIST, (req, res, ctx) => {
+  rest.get<DefaultBodyType, PathParams, StripePaymentMethodGetApiResponseData[]>(STRIPE_PAYMENT_METHOD_URL.LIST, (req, res, ctx) => {
     return res(ctx.json(response));
   });

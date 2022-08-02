@@ -47,10 +47,10 @@ describe('SubscriptionPlanItem: Component', () => {
         });
       });
 
-      it('should call onSelect', () => {
+      it('should call onSelect', async () => {
         const onSelect = jest.fn();
         render({ onSelect }, { store });
-        userEvent.click(screen.getByText(/select/gi));
+        await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).toHaveBeenCalled();
       });
     });
@@ -66,10 +66,10 @@ describe('SubscriptionPlanItem: Component', () => {
         });
       });
 
-      it('should not call onSelect', () => {
+      it('should not call onSelect', async () => {
         const onSelect = jest.fn();
         render({ onSelect }, { store });
-        userEvent.click(screen.getByText(/select/gi));
+        await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).not.toHaveBeenCalled();
       });
     });
@@ -92,10 +92,10 @@ describe('SubscriptionPlanItem: Component', () => {
         });
       });
 
-      it('should call onSelect', () => {
+      it('should call onSelect', async () => {
         const onSelect = jest.fn();
         render({ onSelect }, { store });
-        userEvent.click(screen.getByText(/select/gi));
+        await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).toHaveBeenCalled();
       });
     });

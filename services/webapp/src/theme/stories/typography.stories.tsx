@@ -6,8 +6,8 @@ const Container = styled.div`
   margin: 20px;
 `;
 
-const Template: Story = (args) => (
-  <Container {...args}>
+const Template: Story = () => (
+  <Container>
     <H1>Heading 1</H1>
     <H2>Heading 2</H2>
     <H3>Heading 3</H3>

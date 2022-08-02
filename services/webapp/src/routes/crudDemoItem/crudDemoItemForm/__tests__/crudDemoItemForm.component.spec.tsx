@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';
@@ -36,9 +36,9 @@ describe('CrudDemoItemForm: Component', () => {
       render({ onSubmit });
 
       const nameField = screen.getByPlaceholderText(/name/gi);
-      userEvent.clear(nameField);
-      userEvent.type(nameField, 'new item name');
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
+      await userEvent.clear(nameField);
+      await userEvent.type(nameField, 'new item name');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }))
 
       await waitFor(() => {
         expect(onSubmit).toHaveBeenCalledWith({ name: 'new item name' });
@@ -50,8 +50,8 @@ describe('CrudDemoItemForm: Component', () => {
         errors: null,
       });
       render({ onSubmit });
-      userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
+      await userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }))
 
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));

@@ -1,55 +1,40 @@
+/**
+ * @generated SignedSource<<bb2eb00221d7a8d381e7aad902173bf9>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type CreateDocumentDemoItemMutationInput = {
-    file?: unknown | null;
-    createdBy?: string | null;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  createdBy?: string | null;
+  file?: any | null;
 };
-export type documentsListCreateMutationVariables = {
-    input: CreateDocumentDemoItemMutationInput;
-    connections: Array<string>;
+export type documentsListCreateMutation$variables = {
+  connections: ReadonlyArray<string>;
+  input: CreateDocumentDemoItemMutationInput;
 };
-export type documentsListCreateMutationResponse = {
-    readonly createDocumentDemoItem: {
-        readonly documentDemoItemEdge: {
-            readonly node: {
-                readonly createdAt: string;
-                readonly file: {
-                    readonly name: string | null;
-                    readonly url: string | null;
-                } | null;
-            } | null;
+export type documentsListCreateMutation$data = {
+  readonly createDocumentDemoItem: {
+    readonly documentDemoItemEdge: {
+      readonly node: {
+        readonly createdAt: String;
+        readonly file: {
+          readonly name: string | null;
+          readonly url: string | null;
         } | null;
+      } | null;
     } | null;
+  } | null;
 };
 export type documentsListCreateMutation = {
-    readonly response: documentsListCreateMutationResponse;
-    readonly variables: documentsListCreateMutationVariables;
+  response: documentsListCreateMutation$data;
+  variables: documentsListCreateMutation$variables;
 };
-
-
-
-/*
-mutation documentsListCreateMutation(
-  $input: CreateDocumentDemoItemMutationInput!
-) {
-  createDocumentDemoItem(input: $input) {
-    documentDemoItemEdge {
-      node {
-        createdAt
-        file {
-          name
-          url
-        }
-        id
-      }
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -229,5 +214,7 @@ return {
   }
 };
 })();
-(node as any).hash = '61e39efb312c3c795ebb4cba04c35562';
+
+(node as any).hash = "61e39efb312c3c795ebb4cba04c35562";
+
 export default node;

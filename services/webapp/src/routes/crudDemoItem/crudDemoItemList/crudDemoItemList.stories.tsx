@@ -6,8 +6,8 @@ import { withProviders } from '../../../shared/utils/storybook';
 import { connectionFromArray } from '../../../shared/utils/testUtils';
 import { CrudDemoItemList } from './crudDemoItemList.component';
 
-const Template: Story = (args) => {
-  return <CrudDemoItemList {...args} />;
+const Template: Story = () => {
+  return <CrudDemoItemList />;
 };
 
 export default {

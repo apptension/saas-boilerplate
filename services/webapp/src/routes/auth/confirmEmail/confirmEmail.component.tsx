@@ -40,7 +40,7 @@ export const ConfirmEmail = () => {
   });
 
   const handleEmailConfirmation = useCallback(
-    async ({ token, user }) => {
+    async ({ token, user }: { token: string, user: string }) => {
       try {
         const res = await dispatch(confirmEmail({ token, user }));
         await showMessage(res.isError ? errorMessage : successMessage);

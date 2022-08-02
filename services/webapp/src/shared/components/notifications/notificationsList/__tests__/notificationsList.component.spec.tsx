@@ -5,7 +5,7 @@ import { NotificationsList, NotificationsListProps } from '../notificationsList.
 import { generateRelayEnvironmentNotifications } from '../notificationsList.fixtures';
 import { notificationFactory } from '../../../../../mocks/factories';
 import { ExtractNodeType } from '../../../../utils/graphql';
-import { notificationsListContent } from '../../../../../__generated__/notificationsListContent.graphql';
+import { notificationsListContent$data } from '../../../../../__generated__/notificationsListContent.graphql';
 
 describe('NotificationsList: Component', () => {
   const component = (props: Partial<NotificationsListProps>) => (
@@ -14,7 +14,7 @@ describe('NotificationsList: Component', () => {
   const render = makeContextRenderer(component);
 
   const renderWithNotifications = (
-    notifications: Array<Partial<ExtractNodeType<notificationsListContent['allNotifications']>>>
+    notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>
   ) => {
     const env = generateRelayEnvironmentNotifications(notifications);
     render(

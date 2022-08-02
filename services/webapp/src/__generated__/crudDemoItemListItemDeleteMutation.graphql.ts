@@ -1,37 +1,31 @@
+/**
+ * @generated SignedSource<<444f9e9f7eed3dce408c90d7ad7ec7ad>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type DeleteCrudDemoItemMutationInput = {
-    id?: string | null;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  id?: string | null;
 };
-export type crudDemoItemListItemDeleteMutationVariables = {
-    input: DeleteCrudDemoItemMutationInput;
-    connections: Array<string>;
+export type crudDemoItemListItemDeleteMutation$variables = {
+  connections: ReadonlyArray<string>;
+  input: DeleteCrudDemoItemMutationInput;
 };
-export type crudDemoItemListItemDeleteMutationResponse = {
-    readonly deleteCrudDemoItem: {
-        readonly deletedIds: ReadonlyArray<string | null> | null;
-    } | null;
+export type crudDemoItemListItemDeleteMutation$data = {
+  readonly deleteCrudDemoItem: {
+    readonly deletedIds: ReadonlyArray<string | null> | null;
+  } | null;
 };
 export type crudDemoItemListItemDeleteMutation = {
-    readonly response: crudDemoItemListItemDeleteMutationResponse;
-    readonly variables: crudDemoItemListItemDeleteMutationVariables;
+  response: crudDemoItemListItemDeleteMutation$data;
+  variables: crudDemoItemListItemDeleteMutation$variables;
 };
-
-
-
-/*
-mutation crudDemoItemListItemDeleteMutation(
-  $input: DeleteCrudDemoItemMutationInput!
-) {
-  deleteCrudDemoItem(input: $input) {
-    deletedIds
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -133,5 +127,7 @@ return {
   }
 };
 })();
-(node as any).hash = '532725e3a1a057cbb00ec31b97faeeb9';
+
+(node as any).hash = "532725e3a1a057cbb00ec31b97faeeb9";
+
 export default node;

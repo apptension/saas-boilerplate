@@ -32,13 +32,15 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
     mode: 'onChange',
   });
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    form: {
+      register,
+      handleSubmit,
+      formState: { errors },
+      formState,
+      watch,
+    },
     setApiResponse,
     setGenericError,
-    formState,
-    watch,
   } = apiFormControls;
   const amountValue = watch('product');
   const onSubmit = async (data: StripePaymentFormFields) => {

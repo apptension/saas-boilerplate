@@ -1,52 +1,26 @@
+/**
+ * @generated SignedSource<<ce6a31279bb08eb0e93fd6db92cee0a1>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type NotificationsListRefetchVariables = {
-    count?: number | null;
-    cursor?: string | null;
+export type NotificationsListRefetch$variables = {
+  count?: number | null;
+  cursor?: string | null;
 };
-export type NotificationsListRefetchResponse = {
-    readonly " $fragmentRefs": FragmentRefs<"notificationsListContent">;
+export type NotificationsListRefetch$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"notificationsListContent">;
 };
 export type NotificationsListRefetch = {
-    readonly response: NotificationsListRefetchResponse;
-    readonly variables: NotificationsListRefetchVariables;
+  response: NotificationsListRefetch$data;
+  variables: NotificationsListRefetch$variables;
 };
-
-
-
-/*
-query NotificationsListRefetch(
-  $count: Int = 20
-  $cursor: String
-) {
-  ...notificationsListContent_1G22uz
-}
-
-fragment notificationsListContent_1G22uz on ApiQuery {
-  hasUnreadNotifications
-  allNotifications(first: $count, after: $cursor) {
-    edges {
-      node {
-        id
-        data
-        createdAt
-        readAt
-        type
-        __typename
-      }
-      cursor
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -241,5 +215,7 @@ return {
   }
 };
 })();
-(node as any).hash = '7d0a73edeae1542fcfb2577b3ce92179';
+
+(node as any).hash = "7d0a73edeae1542fcfb2577b3ce92179";
+
 export default node;

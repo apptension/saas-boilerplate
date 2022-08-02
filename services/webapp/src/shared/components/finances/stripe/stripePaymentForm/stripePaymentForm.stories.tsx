@@ -7,7 +7,7 @@ import { withRedux } from '../../../../utils/storybook';
 import { paymentMethodFactory } from '../../../../../mocks/factories';
 import { StripePaymentForm, StripePaymentFormProps } from './stripePaymentForm.component';
 
-const Template: Story<StripePaymentFormProps> = (args) => {
+const Template: Story<StripePaymentFormProps> = (args: StripePaymentFormProps) => {
   return (
     <Elements stripe={stripePromise}>
       <StripePaymentForm {...args} />

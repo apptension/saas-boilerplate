@@ -1,48 +1,36 @@
+/**
+ * @generated SignedSource<<c60e71d8fdc6a24921f522eae5f890ad>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type UpdateNotificationMutationInput = {
-    isRead?: boolean | null;
-    id: string;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  id: string;
+  isRead?: boolean | null;
 };
-export type notificationMutationVariables = {
-    input: UpdateNotificationMutationInput;
+export type notificationMutation$variables = {
+  input: UpdateNotificationMutationInput;
 };
-export type notificationMutationResponse = {
-    readonly updateNotification: {
-        readonly hasUnreadNotifications: boolean | null;
-        readonly notificationEdge: {
-            readonly node: {
-                readonly readAt: string | null;
-            } | null;
-        } | null;
+export type notificationMutation$data = {
+  readonly updateNotification: {
+    readonly hasUnreadNotifications: boolean | null;
+    readonly notificationEdge: {
+      readonly node: {
+        readonly readAt: String | null;
+      } | null;
     } | null;
+  } | null;
 };
 export type notificationMutation = {
-    readonly response: notificationMutationResponse;
-    readonly variables: notificationMutationVariables;
+  response: notificationMutation$data;
+  variables: notificationMutation$variables;
 };
-
-
-
-/*
-mutation notificationMutation(
-  $input: UpdateNotificationMutationInput!
-) {
-  updateNotification(input: $input) {
-    hasUnreadNotifications
-    notificationEdge {
-      node {
-        readAt
-        id
-      }
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -179,5 +167,7 @@ return {
   }
 };
 })();
-(node as any).hash = '5cd9ac2d454a94770adf70d7155377cd';
+
+(node as any).hash = "5cd9ac2d454a94770adf70d7155377cd";
+
 export default node;

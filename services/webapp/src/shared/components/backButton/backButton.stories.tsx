@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { withRouter } from '../../../../.storybook/decorators';
 import { BackButton, BackButtonProps } from './backButton.component';
 
-const Template: Story<BackButtonProps> = (args) => <BackButton {...args} />;
+const Template: Story<BackButtonProps> = (args: BackButtonProps) => <BackButton {...args} />;
 
 export default {
   title: 'Shared/BackButton',

@@ -12,7 +12,7 @@ pipelines:
 
         - step:
             name: Build and test web app
-            image: atlassian/default-image:2
+            image: atlassian/default-image:3
             size: 2x
             script:
               - apt-get update && apt-get install -y awscli
@@ -25,7 +25,7 @@ pipelines:
 
         - step:
             name: Test backend
-            image: atlassian/default-image:2
+            image: atlassian/default-image:3
             size: 2x
             script:
               - echo "test" > VERSION
@@ -37,7 +37,7 @@ pipelines:
 
         - step:
             name: Test async-workers
-            image: atlassian/default-image:2
+            image: atlassian/default-image:3
             size: 2x
             script:
               - apt-get update && apt-get install -y awscli

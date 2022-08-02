@@ -11,9 +11,11 @@ export const LoginForm = () => {
   const intl = useIntl();
   const dispatch = useAsyncDispatch();
   const {
-    register,
+    form: {
+      register,
+      formState: { errors },
+    },
     handleSubmit,
-    formState: { errors },
     setApiResponse,
     hasGenericErrorOnly,
     genericError,

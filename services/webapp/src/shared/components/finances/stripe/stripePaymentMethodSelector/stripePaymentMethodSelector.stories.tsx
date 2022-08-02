@@ -6,7 +6,7 @@ import { stripePromise } from '../../../../services/stripe';
 import { StripePaymentMethodSelector, StripePaymentMethodSelectorProps } from './stripePaymentMethodSelector.component';
 import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 
-const Template: Story<StripePaymentMethodSelectorProps> = (args) => {
+const Template: Story<StripePaymentMethodSelectorProps> = (args: StripePaymentMethodSelectorProps) => {
   const formControls = useApiForm<PaymentFormFields>();
   return (
     <Elements stripe={stripePromise}>

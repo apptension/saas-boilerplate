@@ -12,7 +12,7 @@ const MockContent = styled.div`
   background-color: lightgray;
 `;
 
-const Template: Story<LayoutProps> = (args) => {
+const Template: Story<LayoutProps> = (args: LayoutProps) => {
   return <Layout {...args} />;
 };
 

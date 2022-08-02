@@ -19,9 +19,11 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   const [isSubmitted, setSubmitted] = useState(false);
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    form: {
+      register,
+      handleSubmit,
+      formState: { errors },
+    },
     setApiResponse,
     hasGenericErrorOnly,
     genericError,

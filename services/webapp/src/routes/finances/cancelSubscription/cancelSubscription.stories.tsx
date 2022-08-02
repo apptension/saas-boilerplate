@@ -3,8 +3,8 @@ import { withProviders } from '../../../shared/utils/storybook';
 import { subscriptionFactory } from '../../../mocks/factories';
 import { CancelSubscription } from './cancelSubscription.component';
 
-const Template: Story = (args) => {
-  return <CancelSubscription {...args} />;
+const Template: Story = () => {
+  return <CancelSubscription />;
 };
 
 export default {

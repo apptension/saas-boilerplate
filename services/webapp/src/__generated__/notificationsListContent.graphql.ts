@@ -1,31 +1,34 @@
+/**
+ * @generated SignedSource<<e34d0398cdee7798364853a13df843b8>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from "relay-runtime";
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type notificationsListContent = {
-    readonly hasUnreadNotifications: boolean | null;
-    readonly allNotifications: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly data: unknown | null;
-                readonly createdAt: string;
-                readonly readAt: string | null;
-                readonly type: string;
-            } | null;
-        } | null>;
-    } | null;
-    readonly " $refType": "notificationsListContent";
+export type notificationsListContent$data = {
+  readonly allNotifications: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly createdAt: String;
+        readonly data: any | null;
+        readonly id: string;
+        readonly readAt: String | null;
+        readonly type: string;
+      } | null;
+    } | null>;
+  } | null;
+  readonly hasUnreadNotifications: boolean | null;
+  readonly " $fragmentType": "notificationsListContent";
 };
-export type notificationsListContent$data = notificationsListContent;
 export type notificationsListContent$key = {
-    readonly " $data"?: notificationsListContent$data;
-    readonly " $fragmentRefs": FragmentRefs<"notificationsListContent">;
+  readonly " $data"?: notificationsListContent$data;
+  readonly " $fragmentSpreads": FragmentRefs<"notificationsListContent">;
 };
-
-
 
 const node: ReaderFragment = (function(){
 var v0 = [
@@ -64,7 +67,7 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": require('./NotificationsListRefetch.graphql.ts')
+      "operation": require('./NotificationsListRefetch.graphql')
     }
   },
   "name": "notificationsListContent",
@@ -188,5 +191,7 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = '7d0a73edeae1542fcfb2577b3ce92179';
+
+(node as any).hash = "7d0a73edeae1542fcfb2577b3ce92179";
+
 export default node;

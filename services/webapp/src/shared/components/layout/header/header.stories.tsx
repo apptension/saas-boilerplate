@@ -7,7 +7,9 @@ import { Header, HeaderProps } from './header.component';
 const loggedInAuthState = loggedInAuthFactory();
 const loggedOutAuthState = loggedOutAuthFactory();
 
-const Template: Story<HeaderProps & { isLoggedIn: boolean }> = ({ isLoggedIn, ...args }) => {
+type StoryArgType = HeaderProps & { isLoggedIn: boolean };
+
+const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
   return (
     <ProvidersWrapper
       context={{

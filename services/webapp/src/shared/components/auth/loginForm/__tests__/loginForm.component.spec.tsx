@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { LoginForm } from '../loginForm.component';
 import { login } from '../../../../../modules/auth/auth.actions';
@@ -29,9 +29,9 @@ describe('LoginForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), mockCreds.email);
+    await userEvent.type(screen.getByLabelText(/password/i), mockCreds.password);
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(login(mockCreds));
     });
@@ -39,8 +39,8 @@ describe('LoginForm: Component', () => {
 
   it('should show error if required value is missing', async () => {
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), 'user@mail.com');
-    userEvent.click(screen.getByRole('button', { name: /log in/gi }));
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Password is required')).toBeInTheDocument();
@@ -59,9 +59,9 @@ describe('LoginForm: Component', () => {
     });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), mockCreds.email);
+    await userEvent.type(screen.getByLabelText(/password/i), mockCreds.password);
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
@@ -80,9 +80,9 @@ describe('LoginForm: Component', () => {
     });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), mockCreds.email);
-    userEvent.type(screen.getByLabelText(/password/gi), mockCreds.password);
-    act(() => userEvent.click(screen.getByRole('button', { name: /log in/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), mockCreds.email);
+    await userEvent.type(screen.getByLabelText(/password/i), mockCreds.password);
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();

@@ -42,7 +42,7 @@ describe('CrudDemoItemListItem: Component', () => {
     mockDispatch.mockReset();
   });
 
-  it('should render link to details page', () => {
+  it('should render link to details page', async () => {
     const relayEnvironment = createMockEnvironment();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -52,11 +52,11 @@ describe('CrudDemoItemListItem: Component', () => {
 
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
-    userEvent.click(screen.getByText(/demo item name/gi));
+    await userEvent.click(screen.getByText(/demo item name/i));
     expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/test-id');
   });
 
-  it('should render link to edit form', () => {
+  it('should render link to edit form', async () => {
     const relayEnvironment = createMockEnvironment();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -66,7 +66,7 @@ describe('CrudDemoItemListItem: Component', () => {
 
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
-    userEvent.click(screen.getByText(/edit/gi));
+    await userEvent.click(screen.getByText(/edit/i));
     expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/test-id/edit');
   });
 });

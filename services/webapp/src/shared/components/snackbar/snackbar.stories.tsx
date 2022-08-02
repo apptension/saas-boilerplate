@@ -3,7 +3,9 @@ import { ProvidersWrapper } from '../../utils/testUtils';
 import { Message } from '../../../modules/snackbar/snackbar.types';
 import { Snackbar } from './snackbar.component';
 
-const Template: Story<{ messages: Message[] }> = ({ messages, ...args }) => (
+type StoryArgsType = { messages: Message[] };
+
+const Template: Story<StoryArgsType> = ({ messages, ...args }: StoryArgsType) => (
   <ProvidersWrapper
     context={{
       store: (state) => {

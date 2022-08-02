@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { Icon, IconProps } from './icon.component';
 
-const Template: Story<IconProps> = (args) => {
+const Template: Story<IconProps> = (args: IconProps) => {
   return <Icon {...args} />;
 };
 

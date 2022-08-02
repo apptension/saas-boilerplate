@@ -4,7 +4,7 @@ import { ProvidersWrapper } from '../../utils/testUtils';
 import { ButtonVariant } from '../forms/button';
 import { Link, LinkProps } from './link.component';
 
-const Template: Story<LinkProps> = (args) => {
+const Template: Story<LinkProps> = (args: LinkProps) => {
   return (
     <ProvidersWrapper>
       <Link {...args} />

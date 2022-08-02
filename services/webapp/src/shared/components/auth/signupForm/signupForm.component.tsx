@@ -20,9 +20,11 @@ export const SignupForm = () => {
   const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    form: {
+      register,
+      handleSubmit,
+      formState: { errors },
+    },
     setApiResponse,
     hasGenericErrorOnly,
     genericError,

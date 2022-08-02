@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 
 // Needed for redux-saga es6 generator support
@@ -14,7 +14,9 @@ import { RouterProvider } from './providers/router';
 const render = () => {
   const { App } = require('./app.component');
 
-  ReactDOM.render(
+  const container = document.getElementById('app');
+  const root = createRoot(container!);
+  root.render(
     <SentryProvider>
       <ReduxProvider>
         <RouterProvider>
@@ -23,8 +25,7 @@ const render = () => {
           </HelmetProvider>
         </RouterProvider>
       </ReduxProvider>
-    </SentryProvider>,
-    document.getElementById('app')
+    </SentryProvider>
   );
 };
 

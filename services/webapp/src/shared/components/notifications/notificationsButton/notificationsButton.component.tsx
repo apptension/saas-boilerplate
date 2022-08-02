@@ -7,7 +7,7 @@ import { ButtonProps, ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
 import NotificationsButtonQuery, {
   notificationsListQuery,
-  notificationsListQueryResponse,
+  notificationsListQuery$data,
 } from '../../../../__generated__/notificationsListQuery.graphql';
 import { notificationsButtonContent$key } from '../../../../__generated__/notificationsButtonContent.graphql';
 import { Button } from './notificationsButton.styles';
@@ -23,7 +23,7 @@ export const NotificationsButton = ({ listQueryRef, ...props }: NotificationsBut
 };
 
 type WrapperProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
-  queryResponse: notificationsListQueryResponse;
+  queryResponse: notificationsListQuery$data;
 };
 
 export const Wrapper = ({ queryResponse, ...props }: WrapperProps) => {

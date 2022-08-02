@@ -7,7 +7,7 @@ import { stripePromise } from '../../../../shared/services/stripe';
 import { paymentMethodFactory } from '../../../../mocks/factories';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 
-const Template: Story<EditPaymentMethodFormProps> = (args) => {
+const Template: Story<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
   return (
     <Elements stripe={stripePromise}>
       <EditPaymentMethodForm {...args} />

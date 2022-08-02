@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../../utils/testUtils';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from './passwordResetConfirmForm.component';
 
-const Template: Story<PasswordResetConfirmFormProps> = (args) => {
+const Template: Story<PasswordResetConfirmFormProps> = (args: PasswordResetConfirmFormProps) => {
   return (
     <ProvidersWrapper>
       <PasswordResetConfirmForm {...args} />

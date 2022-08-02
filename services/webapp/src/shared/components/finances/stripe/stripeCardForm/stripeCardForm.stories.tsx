@@ -4,7 +4,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from '../../../../services/stripe';
 import { StripeCardForm, StripeCardFormProps } from './stripeCardForm.component';
 
-const Template: Story<StripeCardFormProps> = (args) => {
+const Template: Story<StripeCardFormProps> = (args: StripeCardFormProps) => {
   return (
     <Elements stripe={stripePromise}>
       <StripeCardForm {...args} />

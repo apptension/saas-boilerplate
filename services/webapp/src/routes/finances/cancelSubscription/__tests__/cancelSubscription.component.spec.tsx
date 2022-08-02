@@ -44,14 +44,15 @@ describe('CancelSubscription: Component', () => {
   it('should render current plan details', () => {
     render();
 
-    expect(screen.getByText(/active plan.+monthly/gi)).toBeInTheDocument();
-    expect(screen.getByText(/next renewal.+October 10, 2020/gi)).toBeInTheDocument();
+    expect(screen.getByText(/active plan.+monthly/i)).toBeInTheDocument();
+    expect(screen.getByText(/next renewal.+October 10, 2020/i)).toBeInTheDocument();
   });
 
   describe('cancel button is clicked', () => {
-    it('should trigger cancelSubscription action', () => {
+    it('should trigger cancelSubscription action', async () => {
       render();
-      userEvent.click(screen.getByText(/cancel subscription/i));
+
+      await userEvent.click(screen.getByText(/cancel subscription/i));
 
       expect(mockDispatch).toHaveBeenCalledWith(subscriptionActions.cancelSubscription());
     });
@@ -62,7 +63,7 @@ describe('CancelSubscription: Component', () => {
       const { history, pushSpy } = spiedHistory();
       render({}, { router: { history } });
 
-      userEvent.click(screen.getByText(/cancel subscription/i));
+      await userEvent.click(screen.getByText(/cancel subscription/i));
 
       await waitFor(() => {
         expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
@@ -83,7 +84,7 @@ describe('CancelSubscription: Component', () => {
       });
 
       render({}, { router: { history } });
-      userEvent.click(screen.getByText(/cancel subscription/i));
+      await userEvent.click(screen.getByText(/cancel subscription/i));
 
       await waitFor(() => {
         expect(pushSpy).not.toHaveBeenCalledWith('/en/subscriptions');

@@ -3,7 +3,7 @@ import * as faker from 'faker';
 import { RelativeDate, RelativeDateProps } from './relativeDate.component';
 import { dateMinuteAgo, DAY, nowSub } from './relativeDate.fixtures';
 
-const Template: Story<RelativeDateProps> = (args) => {
+const Template: Story<RelativeDateProps> = (args: RelativeDateProps) => {
   return <RelativeDate {...args} />;
 };
 

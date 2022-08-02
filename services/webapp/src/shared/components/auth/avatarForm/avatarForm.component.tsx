@@ -28,12 +28,14 @@ export const AvatarForm = () => {
   );
 
   const {
-    register,
+    form: {
+      formState: { errors },
+      register,
+      setValue,
+      reset,
+    },
     handleSubmit,
-    setValue,
     setApiResponse,
-    reset,
-    formState: { errors },
   } = useApiForm<UpdateAvatarFormFields>({
     defaultValues: {
       avatar: null,

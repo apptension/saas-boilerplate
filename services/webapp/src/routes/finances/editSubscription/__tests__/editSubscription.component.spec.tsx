@@ -44,8 +44,8 @@ describe('EditSubscription: Component', () => {
       const { history, pushSpy } = spiedHistory();
       render({}, { router: { history } });
 
-      userEvent.click(screen.getByText(/monthly/gi));
-      userEvent.click(screen.getByRole('button', { name: /select/gi }));
+      await userEvent.click(screen.getByText(/monthly/i));
+      await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(
@@ -66,8 +66,8 @@ describe('EditSubscription: Component', () => {
 
       render({});
 
-      userEvent.click(screen.getByText(/monthly/gi));
-      userEvent.click(screen.getByRole('button', { name: /select/gi }));
+      await userEvent.click(screen.getByText(/monthly/i));
+      await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(

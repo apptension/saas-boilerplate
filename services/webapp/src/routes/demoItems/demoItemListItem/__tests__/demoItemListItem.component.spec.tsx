@@ -49,13 +49,13 @@ describe('DemoItemListItem: Component', () => {
 
     it('should display checked checkbox', () => {
       render({}, { store });
-      expect(screen.getByLabelText(/is favorite/gi)).toBeChecked();
+      expect(screen.getByLabelText(/is favorite/i)).toBeChecked();
     });
 
     describe('item checkbox is clicked', () => {
-      it('should call setFavorite action with proper arguments', () => {
+      it('should call setFavorite action with proper arguments', async () => {
         render({}, { store });
-        userEvent.click(screen.getByLabelText(/is favorite/gi));
+        await userEvent.click(screen.getByLabelText(/is favorite/i));
         expect(mockDispatch).toHaveBeenCalledWith(demoItemsActions.setFavorite({ id: 'item-1', isFavorite: false }));
       });
     });
@@ -64,13 +64,13 @@ describe('DemoItemListItem: Component', () => {
   describe('item is not marked as favorite', () => {
     it('should display unchecked checkbox', () => {
       render();
-      expect(screen.getByLabelText(/is favorite/gi)).not.toBeChecked();
+      expect(screen.getByLabelText(/is favorite/i)).not.toBeChecked();
     });
 
     describe('item checkbox is clicked', () => {
-      it('should call setFavorite action with proper arguments', () => {
+      it('should call setFavorite action with proper arguments', async () => {
         render();
-        userEvent.click(screen.getByLabelText(/is favorite/gi));
+        await userEvent.click(screen.getByLabelText(/is favorite/i));
         expect(mockDispatch).toHaveBeenCalledWith(demoItemsActions.setFavorite({ id: 'item-1', isFavorite: true }));
       });
     });

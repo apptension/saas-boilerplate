@@ -43,14 +43,14 @@ export const Link = (props: LinkProps) => {
     isInternalNavLink(props) ? (
       <RouterNavLinkContainer {...omit(['navLink'], props)}>{content}</RouterNavLinkContainer>
     ) : (
-      <RouterLinkContainer {...props}>{content}</RouterLinkContainer>
+      <RouterLinkContainer {...(props as InternalLinkProps)}>{content}</RouterLinkContainer>
     );
 
   const renderExternalLink = (props: ExternalLinkProps) => <HtmlLinkContainer {...props}>{content}</HtmlLinkContainer>;
 
   return (
     <ThemeProvider theme={theme}>
-      {isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps)}
+      {isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps as ExternalLinkProps)}
     </ThemeProvider>
   );
 };

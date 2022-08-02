@@ -30,7 +30,7 @@ export const Document = ({ item }: DocumentProps) => {
 
   return (
     <Container>
-      <RelativeDate date={new Date(createdAt)} />
+      <RelativeDate date={new Date(createdAt as string)} />
       <IconContainer>
         <Icon icon={documentIcon} size={32} />
       </IconContainer>

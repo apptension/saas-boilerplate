@@ -1,51 +1,23 @@
+/**
+ * @generated SignedSource<<59b782e2ec22ce477d10615294e33cce>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type notificationsListQueryVariables = {};
-export type notificationsListQueryResponse = {
-    readonly " $fragmentRefs": FragmentRefs<"notificationsListContent" | "notificationsButtonContent">;
+export type notificationsListQuery$variables = {};
+export type notificationsListQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"notificationsButtonContent" | "notificationsListContent">;
 };
 export type notificationsListQuery = {
-    readonly response: notificationsListQueryResponse;
-    readonly variables: notificationsListQueryVariables;
+  response: notificationsListQuery$data;
+  variables: notificationsListQuery$variables;
 };
-
-
-
-/*
-query notificationsListQuery {
-  ...notificationsListContent
-  ...notificationsButtonContent
-}
-
-fragment notificationsButtonContent on ApiQuery {
-  hasUnreadNotifications
-}
-
-fragment notificationsListContent on ApiQuery {
-  hasUnreadNotifications
-  allNotifications(first: 20) {
-    edges {
-      node {
-        id
-        data
-        createdAt
-        readAt
-        type
-        __typename
-      }
-      cursor
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -217,5 +189,7 @@ return {
   }
 };
 })();
-(node as any).hash = '59a5ebcaf95c81627950383be40c15fc';
+
+(node as any).hash = "59a5ebcaf95c81627950383be40c15fc";
+
 export default node;

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { notificationsListMarkAsReadMutation } from '../../../../__generated__/notificationsListMarkAsReadMutation.graphql';
-import { notificationsListQueryResponse } from '../../../../__generated__/notificationsListQuery.graphql';
+import { notificationsListQuery$data } from '../../../../__generated__/notificationsListQuery.graphql';
 import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
 import { notificationsListContent$key } from '../../../../__generated__/notificationsListContent.graphql';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
@@ -58,7 +58,7 @@ const subscription = graphql`
   }
 `;
 
-export const useNotificationsListContent = (queryResponse: notificationsListQueryResponse) => {
+export const useNotificationsListContent = (queryResponse: notificationsListQuery$data) => {
   const fragment = usePaginationFragment<NotificationsListRefetch, notificationsListContent$key>(
     graphql`
       fragment notificationsListContent on ApiQuery

@@ -18,7 +18,7 @@ export default {
   },
 };
 
-const Template: Story<CrudDemoItemListItemProps> = (args) => {
+const Template: Story<CrudDemoItemListItemProps> = (args: CrudDemoItemListItemProps) => {
   const data = useLazyLoadQuery<crudDemoItemListItemDefaultStoryQuery>(
     graphql`
       query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {

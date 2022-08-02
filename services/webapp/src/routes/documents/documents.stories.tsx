@@ -5,8 +5,8 @@ import { documentFactory } from '../../mocks/factories/document';
 import { Documents } from './documents.component';
 import { generateRelayEnvironmentDocuments } from './documents.fixtures';
 
-const Template: Story = (args) => {
-  return <Documents {...args} />;
+const Template: Story = () => {
+  return <Documents />;
 };
 
 export default {

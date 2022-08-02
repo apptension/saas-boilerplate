@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { PasswordResetRequestForm } from '../passwordResetRequestForm.component';
 import { requestPasswordReset } from '../../../../../modules/auth/auth.actions';
@@ -25,8 +25,8 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), email);
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(requestPasswordReset({ email }));
     });
@@ -38,17 +38,17 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), email);
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
-      expect(screen.getByText(/send the link again/gi)).toBeInTheDocument();
+      expect(screen.getByText(/send the link again/i)).toBeInTheDocument();
     });
   });
 
   it('should show error if required value is missing', async () => {
     render();
-    userEvent.click(screen.getByRole('button', { name: /send the link/gi }));
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Email is required')).toBeInTheDocument();
@@ -61,8 +61,8 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, email: [{ message: 'Email is invalid', code: 'invalid' }] });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), email);
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Email is invalid')).toBeInTheDocument();
@@ -75,8 +75,8 @@ describe('PasswordResetRequestForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
 
     render();
-    userEvent.type(screen.getByLabelText(/email/gi), email);
-    act(() => userEvent.click(screen.getByRole('button', { name: /send the link/gi })));
+    await userEvent.type(screen.getByLabelText(/email/i), email);
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid data')).toBeInTheDocument();

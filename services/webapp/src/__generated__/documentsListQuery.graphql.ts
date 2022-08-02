@@ -1,54 +1,30 @@
+/**
+ * @generated SignedSource<<74fea9319218e8b3887046f6fc5d551c>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type documentsListQueryVariables = {};
-export type documentsListQueryResponse = {
-    readonly allDocumentDemoItems: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly " $fragmentRefs": FragmentRefs<"documentListItem">;
-            } | null;
-        } | null>;
-    } | null;
+export type documentsListQuery$variables = {};
+export type documentsListQuery$data = {
+  readonly allDocumentDemoItems: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly id: string;
+        readonly " $fragmentSpreads": FragmentRefs<"documentListItem">;
+      } | null;
+    } | null>;
+  } | null;
 };
 export type documentsListQuery = {
-    readonly response: documentsListQueryResponse;
-    readonly variables: documentsListQueryVariables;
+  response: documentsListQuery$data;
+  variables: documentsListQuery$variables;
 };
-
-
-
-/*
-query documentsListQuery {
-  allDocumentDemoItems(first: 10) {
-    edges {
-      node {
-        id
-        ...documentListItem
-        __typename
-      }
-      cursor
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-
-fragment documentListItem on DocumentDemoItemType {
-  id
-  file {
-    url
-    name
-  }
-  createdAt
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -136,12 +112,12 @@ return {
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
-                  (v1/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "documentListItem"
-                  }
+                  },
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -264,5 +240,7 @@ return {
   }
 };
 })();
-(node as any).hash = '025cade328055ed0c09f27659ae399ba';
+
+(node as any).hash = "025cade328055ed0c09f27659ae399ba";
+
 export default node;

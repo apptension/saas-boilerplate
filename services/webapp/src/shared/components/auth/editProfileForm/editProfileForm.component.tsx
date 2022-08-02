@@ -17,9 +17,11 @@ export const EditProfileForm = () => {
   const profile = useSelector(selectProfile);
 
   const {
-    register,
+    form: {
+      formState: { errors },
+      register,
+    },
     handleSubmit,
-    formState: { errors },
     genericError,
     hasGenericErrorOnly,
     setApiResponse,

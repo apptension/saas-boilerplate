@@ -1,35 +1,29 @@
+/**
+ * @generated SignedSource<<9870531f0f6dfcf2a185b07d147648cd>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type MarkReadAllNotificationsMutationInput = {
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
 };
-export type notificationsListMarkAsReadMutationVariables = {
-    input: MarkReadAllNotificationsMutationInput;
+export type notificationsListMarkAsReadMutation$variables = {
+  input: MarkReadAllNotificationsMutationInput;
 };
-export type notificationsListMarkAsReadMutationResponse = {
-    readonly markReadAllNotifications: {
-        readonly ok: boolean | null;
-    } | null;
+export type notificationsListMarkAsReadMutation$data = {
+  readonly markReadAllNotifications: {
+    readonly ok: boolean | null;
+  } | null;
 };
 export type notificationsListMarkAsReadMutation = {
-    readonly response: notificationsListMarkAsReadMutationResponse;
-    readonly variables: notificationsListMarkAsReadMutationVariables;
+  response: notificationsListMarkAsReadMutation$data;
+  variables: notificationsListMarkAsReadMutation$variables;
 };
-
-
-
-/*
-mutation notificationsListMarkAsReadMutation(
-  $input: MarkReadAllNotificationsMutationInput!
-) {
-  markReadAllNotifications(input: $input) {
-    ok
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -92,5 +86,7 @@ return {
   }
 };
 })();
-(node as any).hash = 'c13a642c1b666f7c94df2c6bdcc7681b';
+
+(node as any).hash = "c13a642c1b666f7c94df2c6bdcc7681b";
+
 export default node;

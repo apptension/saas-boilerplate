@@ -10,7 +10,7 @@ const Container = styled.div`
   ${contentWithLimitedWidth};
 `;
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper
       context={{
@@ -20,7 +20,7 @@ const Template: Story = (args) => {
       }}
     >
       <Container>
-        <EditProfileForm {...args} />
+        <EditProfileForm />
       </Container>
     </ProvidersWrapper>
   );

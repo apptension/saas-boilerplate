@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { StripePaymentMethodSelector } from '../../../../shared/components/finances/stripe';
-import { useApiForm } from '../../../../shared/hooks/useApiForm';
+import { useApiForm} from '../../../../shared/hooks/useApiForm';
 import {
   PaymentFormFields,
   StripePaymentMethodSelectionType,
@@ -27,7 +27,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   const defaultPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
 
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
-  const { handleSubmit, setApiResponse, setGenericError, formState } = apiFormControls;
+  const { handleSubmit, setApiResponse, setGenericError, form: { formState } } = apiFormControls;
 
   const setCardAsDefault = async (cardId: string) => {
     try {
@@ -56,7 +56,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     }
 
     if (result.setupIntent?.status === 'succeeded' && result.setupIntent.payment_method) {
-      await setCardAsDefault(result.setupIntent.payment_method);
+      await setCardAsDefault(result.setupIntent.payment_method as string);
     }
   };
 

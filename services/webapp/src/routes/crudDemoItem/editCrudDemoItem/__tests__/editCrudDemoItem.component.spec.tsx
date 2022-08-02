@@ -61,12 +61,10 @@ describe('EditCrudDemoItem: Component', () => {
 
       render({ relayEnvironment });
 
-      act(() => {
-        const nameField = screen.getByPlaceholderText(/name/gi);
-        userEvent.clear(nameField);
-        userEvent.type(nameField, 'new item name');
-        userEvent.click(screen.getByRole('button', { name: /save/gi }));
-      });
+      const nameField = screen.getByPlaceholderText(/name/gi);
+      await userEvent.clear(nameField);
+      await userEvent.type(nameField, 'new item name');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       await waitFor(() => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -90,8 +88,8 @@ describe('EditCrudDemoItem: Component', () => {
 
       render({ relayEnvironment });
 
-      userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
+      await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       await waitFor(() => {
         const operation = relayEnvironment.mock.getMostRecentOperation();

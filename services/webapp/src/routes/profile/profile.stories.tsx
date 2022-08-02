@@ -3,7 +3,7 @@ import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { userProfileFactory } from '../../mocks/factories';
 import { Profile } from './profile.component';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper
       context={{
@@ -12,7 +12,7 @@ const Template: Story = (args) => {
         },
       }}
     >
-      <Profile {...args} />
+      <Profile />
     </ProvidersWrapper>
   );
 };

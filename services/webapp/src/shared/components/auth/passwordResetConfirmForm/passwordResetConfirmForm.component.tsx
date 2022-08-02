@@ -23,13 +23,15 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const history = useHistory();
   const generateLocalePath = useGenerateLocalePath();
   const {
-    register,
+    form: {
+      register,
+      formState: { errors },
+      getValues,
+    },
     handleSubmit,
-    formState: { errors },
     genericError,
     hasGenericErrorOnly,
     setApiResponse,
-    getValues,
   } = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       nonFieldErrors: {

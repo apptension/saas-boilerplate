@@ -1,7 +1,7 @@
 import { Children, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage, IntlProvider } from 'react-intl';
-import { RelayEnvironmentProvider } from 'react-relay/hooks';
+import { RelayEnvironmentProvider } from 'react-relay';
 import { Helmet } from 'react-helmet-async';
 import { localesSelectors } from '../../../modules/locales';
 import { translationMessages } from '../../config/i18n';

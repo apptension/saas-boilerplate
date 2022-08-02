@@ -7,7 +7,7 @@ import { ButtonVariant } from '../../forms/button';
 import { NotificationSkeleton } from '../notification';
 import NotificationsListQuery, {
   notificationsListQuery,
-  notificationsListQueryResponse,
+  notificationsListQuery$data,
 } from '../../../../__generated__/notificationsListQuery.graphql';
 import { EmptyState } from '../../emptyState';
 import { NotificationTypes } from '../notifications.types';
@@ -61,7 +61,7 @@ export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListPro
 };
 
 type ContentProps = {
-  queryResponse: notificationsListQueryResponse;
+  queryResponse: notificationsListQuery$data;
 };
 
 const Content = ({ queryResponse }: ContentProps) => {

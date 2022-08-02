@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { paymentMethodFactory } from '../../../../../mocks/factories';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from './stripePaymentMethodInfo.component';
 
-const Template: Story<StripePaymentMethodInfoProps> = (args) => {
+const Template: Story<StripePaymentMethodInfoProps> = (args: StripePaymentMethodInfoProps) => {
   return <StripePaymentMethodInfo {...args} />;
 };
 

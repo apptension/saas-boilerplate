@@ -3,7 +3,7 @@ import { withRouter } from '../../../../.storybook/decorators';
 import { withRedux } from '../../utils/storybook';
 import { LanguageSwitcher } from '.';
 
-const Template: Story = (args) => <LanguageSwitcher {...args} />;
+const Template: Story = () => <LanguageSwitcher />;
 
 export default {
   title: 'Shared/LanguageSwitcher',

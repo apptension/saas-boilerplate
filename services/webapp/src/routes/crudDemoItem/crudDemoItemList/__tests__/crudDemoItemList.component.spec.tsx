@@ -25,7 +25,7 @@ describe('CrudDemoItemList: Component', () => {
     expect(screen.getByText('second item')).toBeInTheDocument();
   });
 
-  it('should render link to add new item form', () => {
+  it('should render link to add new item form', async () => {
     const relayEnvironment = createMockEnvironment();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -36,7 +36,7 @@ describe('CrudDemoItemList: Component', () => {
 
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
-    userEvent.click(screen.getByText(/add/gi));
+    await userEvent.click(screen.getByText(/add/i));
     expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/add');
   });
 });

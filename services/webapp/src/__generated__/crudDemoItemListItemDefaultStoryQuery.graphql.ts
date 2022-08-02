@@ -1,35 +1,25 @@
+/**
+ * @generated SignedSource<<7718495c7a35b62f89919d13fb4f0de6>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type crudDemoItemListItemDefaultStoryQueryVariables = {};
-export type crudDemoItemListItemDefaultStoryQueryResponse = {
-    readonly item: {
-        readonly " $fragmentRefs": FragmentRefs<"crudDemoItemListItem">;
-    } | null;
+export type crudDemoItemListItemDefaultStoryQuery$variables = {};
+export type crudDemoItemListItemDefaultStoryQuery$data = {
+  readonly item: {
+    readonly " $fragmentSpreads": FragmentRefs<"crudDemoItemListItem">;
+  } | null;
 };
 export type crudDemoItemListItemDefaultStoryQuery = {
-    readonly response: crudDemoItemListItemDefaultStoryQueryResponse;
-    readonly variables: crudDemoItemListItemDefaultStoryQueryVariables;
+  response: crudDemoItemListItemDefaultStoryQuery$data;
+  variables: crudDemoItemListItemDefaultStoryQuery$variables;
 };
-
-
-
-/*
-query crudDemoItemListItemDefaultStoryQuery {
-  item: crudDemoItem(id: "test-id") {
-    ...crudDemoItemListItem
-    id
-  }
-}
-
-fragment crudDemoItemListItem on CrudDemoItemType {
-  id
-  name
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -130,5 +120,7 @@ return {
   }
 };
 })();
-(node as any).hash = '383d77c869152b2312739b3f0affaac2';
+
+(node as any).hash = "383d77c869152b2312739b3f0affaac2";
+
 export default node;

@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../../shared/utils/testUtils';
 import { CrudDemoItemForm, CrudDemoItemFormProps } from './crudDemoItemForm.component';
 
-const Template: Story<CrudDemoItemFormProps> = (args) => {
+const Template: Story<CrudDemoItemFormProps> = (args: CrudDemoItemFormProps) => {
   return (
     <ProvidersWrapper>
       <CrudDemoItemForm {...args} />

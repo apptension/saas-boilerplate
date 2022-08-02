@@ -4,7 +4,7 @@ import { FacebookIcon } from '../../../../images/icons';
 import { Button, ButtonProps } from './button.component';
 import { ButtonColor, ButtonSize, ButtonVariant } from './button.types';
 
-const Template: Story<ButtonProps> = (args) => <Button {...args} />;
+const Template: Story<ButtonProps> = (args: ButtonProps) => <Button {...args} />;
 
 export default {
   title: 'Shared/Forms/Button',

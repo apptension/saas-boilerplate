@@ -3,15 +3,15 @@ import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
 import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
-import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
+import {GraphQLValidationError, GraphQLGenericError, UseApiFormArgs} from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
-export const useApiForm = <FormData extends Record<string | number, any>>(args?: UseApiFormArgs<FormData>) => {
+export const useApiForm = <FormData>(args?: UseApiFormArgs<FormData>) => {
   const [genericError, setGenericError] = useState<string>();
   const { translateErrorMessage } = useTranslatedErrors<FormData>(args?.errorMessages);
 
-  const formControls = useForm<FormData>(args);
-  const { setError } = formControls;
+  const form = useForm<FormData>(args);
+  const { setError } = form;
 
   const setResponseErrors = useCallback(
     (response: FormSubmitError<FormData>) => {
@@ -22,7 +22,7 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
       keys(response).forEach((field) => {
         if (field !== 'isError' && field !== 'nonFieldErrors') {
           const message = response[field]?.[0];
-          const fieldName = field as Path<FormData>;
+          const fieldName = field as unknown as Path<FormData>;
           if (!isNil(message)) {
             setError(fieldName, { message: translateErrorMessage(fieldName, message) });
           }
@@ -58,24 +58,25 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
   const setApiResponse = useCallback(
     (response: ApiFormSubmitResponse<FormData, unknown>) => {
       if (response.isError) {
-        setResponseErrors(response);
+        const { isError, ...responseErrors } = response;
+        setResponseErrors(responseErrors as unknown as FormSubmitError<FormData>);
       }
     },
     [setResponseErrors]
   );
 
-  const handleSubmit: typeof formControls.handleSubmit = (onValid, onInvalid) => {
+  const handleSubmit: typeof form.handleSubmit = (onValid, onInvalid) => {
     return (event) => {
-      formControls.clearErrors();
+      form.clearErrors();
       setGenericError(undefined);
-      return formControls.handleSubmit(onValid, onInvalid)(event);
+      return form.handleSubmit(onValid, onInvalid)(event);
     };
   };
 
-  const hasGenericErrorOnly = isEmpty(formControls.formState.errors) && genericError !== undefined;
+  const hasGenericErrorOnly = isEmpty(form.formState.errors) && genericError !== undefined;
 
   return {
-    ...formControls,
+    form,
     genericError,
     setApiResponse,
     setGraphQLResponseErrors,
@@ -83,8 +84,7 @@ export const useApiForm = <FormData extends Record<string | number, any>>(args?:
     hasGenericErrorOnly,
     handleSubmit,
     formState: {
-      ...formControls.formState,
-      isSubmitSuccessful: formControls.formState.isSubmitSuccessful && !genericError,
+      isSubmitSuccessful: form.formState.isSubmitSuccessful && !genericError,
     },
   };
 };

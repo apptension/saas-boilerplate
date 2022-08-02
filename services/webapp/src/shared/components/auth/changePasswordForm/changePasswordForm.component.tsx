@@ -17,14 +17,16 @@ export const ChangePasswordForm = () => {
   const snackbar = useSnackbar();
   const dispatch = useAsyncDispatch();
   const {
-    register,
+    form: {
+      formState: { errors },
+      register,
+      getValues,
+      reset,
+    },
     handleSubmit,
-    formState: { errors },
     genericError,
     setApiResponse,
     hasGenericErrorOnly,
-    getValues,
-    reset,
   } = useApiForm<ChangePasswordFormFields>({
     errorMessages: {
       oldPassword: {

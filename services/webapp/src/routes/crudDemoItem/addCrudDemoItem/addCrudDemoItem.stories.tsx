@@ -2,10 +2,10 @@ import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../../shared/utils/testUtils';
 import { AddCrudDemoItem } from './addCrudDemoItem.component';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper>
-      <AddCrudDemoItem {...args} />
+      <AddCrudDemoItem />
     </ProvidersWrapper>
   );
 };

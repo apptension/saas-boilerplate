@@ -4,7 +4,9 @@ import { loggedInAuthFactory, userProfileFactory } from '../../../mocks/factorie
 import { Profile } from '../../../modules/auth/auth.types';
 import { Avatar, AvatarProps } from './avatar.component';
 
-const Template: Story<AvatarProps & { profile: Profile }> = ({ profile, ...args }) => {
+type StoryArgsType = AvatarProps & { profile: Profile };
+
+const Template: Story<StoryArgsType> = ({ profile, ...args }: StoryArgsType) => {
   return (
     <ProvidersWrapper
       context={{

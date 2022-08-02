@@ -7,8 +7,8 @@ import { withProviders } from '../../../shared/utils/storybook';
 import { ROUTES } from '../../../app/config/routes';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
-const Template: Story = (args) => {
-  return <EditCrudDemoItem {...args} />;
+const Template: Story = () => {
+  return <EditCrudDemoItem />;
 };
 
 export default {

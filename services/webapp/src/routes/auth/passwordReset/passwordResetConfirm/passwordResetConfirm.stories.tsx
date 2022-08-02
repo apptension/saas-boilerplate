@@ -2,10 +2,10 @@ import { Story } from '@storybook/react';
 import { ProvidersWrapper } from '../../../../shared/utils/testUtils';
 import { PasswordResetConfirm } from './passwordResetConfirm.component';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper>
-      <PasswordResetConfirm {...args} />
+      <PasswordResetConfirm />
     </ProvidersWrapper>
   );
 };

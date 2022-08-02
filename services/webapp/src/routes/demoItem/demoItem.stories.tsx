@@ -20,7 +20,7 @@ const apolloMocks = [
   },
 ];
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper
       context={{
@@ -28,7 +28,7 @@ const Template: Story = (args) => {
         router: { url: generatePath(ROUTES.demoItem, { lang: 'en', id: 1 }), routePath: ROUTES.demoItem },
       }}
     >
-      <DemoItem {...args} />
+      <DemoItem />
     </ProvidersWrapper>
   );
 };

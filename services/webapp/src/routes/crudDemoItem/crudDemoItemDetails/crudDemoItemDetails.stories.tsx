@@ -7,8 +7,8 @@ import { withProviders } from '../../../shared/utils/storybook';
 import { ROUTES } from '../../../app/config/routes';
 import { CrudDemoItemDetails } from './crudDemoItemDetails.component';
 
-const Template: Story = (args) => {
-  return <CrudDemoItemDetails {...args} />;
+const Template: Story = () => {
+  return <CrudDemoItemDetails />;
 };
 
 export default {

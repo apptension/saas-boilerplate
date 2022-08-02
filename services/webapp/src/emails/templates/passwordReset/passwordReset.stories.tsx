@@ -7,7 +7,7 @@ import {
   Template as PasswordResetEmail,
 } from './passwordReset.component';
 
-const Template: Story<PasswordResetProps> = (args) => (
+const Template: Story<PasswordResetProps> = (args: PasswordResetProps) => (
   <EmailStory type={EmailTemplateType.PASSWORD_RESET} subject={<PasswordResetSubject />} emailData={args}>
     <PasswordResetEmail {...args} />
   </EmailStory>

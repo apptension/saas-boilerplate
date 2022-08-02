@@ -31,9 +31,11 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
   });
 
   const {
-    register,
+    form: {
+      register,
+      formState: { errors },
+    },
     handleSubmit,
-    formState: { errors },
     genericError,
     hasGenericErrorOnly,
     setGraphQLResponseErrors,

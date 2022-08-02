@@ -1,50 +1,30 @@
+/**
+ * @generated SignedSource<<38a054a1dab45b451c04e9650359cdba>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type crudDemoItemListQueryVariables = {};
-export type crudDemoItemListQueryResponse = {
-    readonly allCrudDemoItems: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly " $fragmentRefs": FragmentRefs<"crudDemoItemListItem">;
-            } | null;
-        } | null>;
-    } | null;
+export type crudDemoItemListQuery$variables = {};
+export type crudDemoItemListQuery$data = {
+  readonly allCrudDemoItems: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly id: string;
+        readonly " $fragmentSpreads": FragmentRefs<"crudDemoItemListItem">;
+      } | null;
+    } | null>;
+  } | null;
 };
 export type crudDemoItemListQuery = {
-    readonly response: crudDemoItemListQueryResponse;
-    readonly variables: crudDemoItemListQueryVariables;
+  response: crudDemoItemListQuery$data;
+  variables: crudDemoItemListQuery$variables;
 };
-
-
-
-/*
-query crudDemoItemListQuery {
-  allCrudDemoItems(first: 100) {
-    edges {
-      node {
-        id
-        ...crudDemoItemListItem
-        __typename
-      }
-      cursor
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-
-fragment crudDemoItemListItem on CrudDemoItemType {
-  id
-  name
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -132,12 +112,12 @@ return {
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
-                  (v1/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "crudDemoItemListItem"
-                  }
+                  },
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -235,5 +215,7 @@ return {
   }
 };
 })();
-(node as any).hash = '1f3de162a82d6dc5700f352767f67d18';
+
+(node as any).hash = "1f3de162a82d6dc5700f352767f67d18";
+
 export default node;

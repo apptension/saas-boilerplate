@@ -17,8 +17,8 @@ const storeWithPlans = (activePlan: SubscriptionPlanName) =>
     });
   });
 
-const Template: Story = (args) => {
-  return <EditSubscription {...args} />;
+const Template: Story = () => {
+  return <EditSubscription />;
 };
 
 export default {

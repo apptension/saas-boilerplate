@@ -1,44 +1,35 @@
+/**
+ * @generated SignedSource<<a64a63c0ff897e98c69c4e2538038777>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type UpdateCrudDemoItemMutationInput = {
-    name: string;
-    createdBy?: string | null;
-    id: string;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  createdBy?: string | null;
+  id: string;
+  name: string;
 };
-export type editCrudDemoItemContentMutationVariables = {
-    input: UpdateCrudDemoItemMutationInput;
+export type editCrudDemoItemContentMutation$variables = {
+  input: UpdateCrudDemoItemMutationInput;
 };
-export type editCrudDemoItemContentMutationResponse = {
-    readonly updateCrudDemoItem: {
-        readonly crudDemoItem: {
-            readonly id: string;
-            readonly name: string;
-        } | null;
+export type editCrudDemoItemContentMutation$data = {
+  readonly updateCrudDemoItem: {
+    readonly crudDemoItem: {
+      readonly id: string;
+      readonly name: string;
     } | null;
+  } | null;
 };
 export type editCrudDemoItemContentMutation = {
-    readonly response: editCrudDemoItemContentMutationResponse;
-    readonly variables: editCrudDemoItemContentMutationVariables;
+  response: editCrudDemoItemContentMutation$data;
+  variables: editCrudDemoItemContentMutation$variables;
 };
-
-
-
-/*
-mutation editCrudDemoItemContentMutation(
-  $input: UpdateCrudDemoItemMutationInput!
-) {
-  updateCrudDemoItem(input: $input) {
-    crudDemoItem {
-      id
-      name
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -119,5 +110,7 @@ return {
   }
 };
 })();
-(node as any).hash = '017ba379de1cf90af6eecdadbfd1220f';
+
+(node as any).hash = "017ba379de1cf90af6eecdadbfd1220f";
+
 export default node;

@@ -4,8 +4,8 @@ import { transactionHistoryEntryFactory, transactionHistoryEntryInvoiceFactory }
 import { withProviders } from '../../../../utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 
-const Template: Story = (args) => {
-  return <TransactionHistory {...args} />;
+const Template: Story = () => {
+  return <TransactionHistory />;
 };
 
 export default {

@@ -7,7 +7,7 @@ import {
   TrialExpiresSoonProps,
 } from './trialExpiresSoon.component';
 
-const Template: Story<TrialExpiresSoonProps> = (args) => (
+const Template: Story<TrialExpiresSoonProps> = (args: TrialExpiresSoonProps) => (
   <EmailStory type={EmailTemplateType.TRIAL_EXPIRES_SOON} subject={<TrialExpiresSoonSubject />} emailData={args}>
     <TrialExpiresSoonEmail {...args} />
   </EmailStory>

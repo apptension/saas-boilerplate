@@ -1,47 +1,29 @@
+/**
+ * @generated SignedSource<<82b12edf30589826b0db091ba32d9c79>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type documentsListTestQueryVariables = {};
-export type documentsListTestQueryResponse = {
-    readonly allDocumentDemoItems: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly " $fragmentRefs": FragmentRefs<"documentListItem">;
-            } | null;
-        } | null>;
-    } | null;
+export type documentsListTestQuery$variables = {};
+export type documentsListTestQuery$data = {
+  readonly allDocumentDemoItems: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly " $fragmentSpreads": FragmentRefs<"documentListItem">;
+      } | null;
+    } | null>;
+  } | null;
 };
 export type documentsListTestQuery = {
-    readonly response: documentsListTestQueryResponse;
-    readonly variables: documentsListTestQueryVariables;
+  response: documentsListTestQuery$data;
+  variables: documentsListTestQuery$variables;
 };
-
-
-
-/*
-query documentsListTestQuery {
-  allDocumentDemoItems(first: 1) {
-    edges {
-      node {
-        ...documentListItem
-        id
-      }
-    }
-  }
-}
-
-fragment documentListItem on DocumentDemoItemType {
-  id
-  file {
-    url
-    name
-  }
-  createdAt
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -237,5 +219,7 @@ return {
   }
 };
 })();
-(node as any).hash = '0d2a29d65dba5430a33c5f74d8ea5f25';
+
+(node as any).hash = "0d2a29d65dba5430a33c5f74d8ea5f25";
+
 export default node;

@@ -16,9 +16,9 @@ describe('Checkbox: Component', () => {
     expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(false);
   });
 
-  it('should be checked after clicking', () => {
+  it('should be checked after clicking', async () => {
     render();
-    userEvent.click(screen.getByText('Checkbox label'));
+    await userEvent.click(screen.getByText('Checkbox label'));
     expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(true);
   });
 

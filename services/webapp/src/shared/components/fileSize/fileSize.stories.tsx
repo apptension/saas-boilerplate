@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { FileSize, FileSizeProps } from './fileSize.component';
 
-const Template: Story<FileSizeProps> = (args) => {
+const Template: Story<FileSizeProps> = (args: FileSizeProps) => {
   return <FileSize {...args} />;
 };
 

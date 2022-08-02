@@ -1,46 +1,34 @@
+/**
+ * @generated SignedSource<<11cd7af237577cb4e72924cf83805a3f>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
-export type notificationsListSubscriptionVariables = {
-    connections: Array<string>;
+import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
+export type notificationsListSubscription$variables = {
+  connections: ReadonlyArray<string>;
 };
-export type notificationsListSubscriptionResponse = {
-    readonly notificationCreated: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly type: string;
-                readonly createdAt: string;
-                readonly readAt: string | null;
-                readonly data: unknown | null;
-            } | null;
-        } | null>;
-    } | null;
+export type notificationsListSubscription$data = {
+  readonly notificationCreated: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly createdAt: String;
+        readonly data: any | null;
+        readonly id: string;
+        readonly readAt: String | null;
+        readonly type: string;
+      } | null;
+    } | null>;
+  } | null;
 };
 export type notificationsListSubscription = {
-    readonly response: notificationsListSubscriptionResponse;
-    readonly variables: notificationsListSubscriptionVariables;
+  response: notificationsListSubscription$data;
+  variables: notificationsListSubscription$variables;
 };
-
-
-
-/*
-subscription notificationsListSubscription {
-  notificationCreated {
-    edges {
-      node {
-        id
-        type
-        createdAt
-        readAt
-        data
-      }
-    }
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = [
@@ -176,5 +164,7 @@ return {
   }
 };
 })();
-(node as any).hash = '06eb3bc90a8b827867f2759d65c01d13';
+
+(node as any).hash = "06eb3bc90a8b827867f2759d65c01d13";
+
 export default node;

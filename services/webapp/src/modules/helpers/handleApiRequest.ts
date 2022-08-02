@@ -18,15 +18,16 @@ export function handleApiRequest<Request, Response>(
     redirectToLoginOnFail?: boolean;
   } = { redirectToLoginOnFail: true }
 ) {
-  return function* (action: PromiseAction<Request, Response>) {
+  return function* (action: PromiseAction<Request, Response, unknown>) {
     try {
       const res: Response = yield apiCall(action.payload);
-      yield resolvePromiseAction(action, res);
+      yield resolvePromiseAction<Request, Response, unknown>(action, res);
       yield onResolve?.(res);
     } catch (error) {
-      yield rejectPromiseAction(action, error);
+      yield rejectPromiseAction<Request, Response, unknown>(action, error);
       yield onReject?.(error);
 
+      // @ts-ignore
       if (error.response?.status !== StatusCodes.BAD_REQUEST) {
         yield put(snackbarActions.showMessage(null));
         reportError(error);

@@ -9,11 +9,11 @@ const Container = styled.div`
   ${contentWithLimitedWidth};
 `;
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper>
       <Container>
-        <ChangePasswordForm {...args} />
+        <ChangePasswordForm />
       </Container>
     </ProvidersWrapper>
   );

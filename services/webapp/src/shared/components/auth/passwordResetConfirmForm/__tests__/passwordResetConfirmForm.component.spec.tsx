@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from '../passwordResetConfirmForm.component';
@@ -37,9 +37,9 @@ describe('PasswordResetConfirmForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
-    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), formData.confirmPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /^confirm the change$/gi })));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), formData.newPassword);
+    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), formData.confirmPassword);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(
         confirmPasswordReset({
@@ -55,9 +55,9 @@ describe('PasswordResetConfirmForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: false });
 
     render();
-    userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
-    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), formData.confirmPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /^confirm the change$/gi })));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), formData.newPassword);
+    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), formData.confirmPassword);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Password reset successfully!'));
     });
@@ -65,8 +65,8 @@ describe('PasswordResetConfirmForm: Component', () => {
 
   it('should show error if required value is missing', async () => {
     render();
-    userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
-    userEvent.click(screen.getByRole('button', { name: /^confirm the change$/gi }));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), formData.newPassword);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Repeat new password is required')).toBeInTheDocument();
@@ -80,9 +80,9 @@ describe('PasswordResetConfirmForm: Component', () => {
     });
 
     render();
-    userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
-    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), formData.confirmPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /^confirm the change$/gi })));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), formData.newPassword);
+    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), formData.confirmPassword);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
@@ -93,9 +93,9 @@ describe('PasswordResetConfirmForm: Component', () => {
     mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
 
     render();
-    userEvent.type(screen.getByLabelText(/^new password$/gi), formData.newPassword);
-    userEvent.type(screen.getByLabelText(/^repeat new password$/gi), formData.confirmPassword);
-    act(() => userEvent.click(screen.getByRole('button', { name: /^confirm the change$/gi })));
+    await userEvent.type(screen.getByLabelText(/^new password$/i), formData.newPassword);
+    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), formData.confirmPassword);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
     await waitFor(() => {
       expect(screen.getByText('Invalid data')).toBeInTheDocument();

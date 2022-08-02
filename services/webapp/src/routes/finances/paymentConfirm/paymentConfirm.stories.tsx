@@ -3,8 +3,8 @@ import { withRedux } from '../../../shared/utils/storybook';
 import { withRouter } from '../../../../.storybook/decorators';
 import { PaymentConfirm } from './paymentConfirm.component';
 
-const Template: Story = (args) => {
-  return <PaymentConfirm {...args} />;
+const Template: Story = () => {
+  return <PaymentConfirm />;
 };
 
 export default {

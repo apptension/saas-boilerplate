@@ -77,11 +77,11 @@ describe('Subscriptions: Component', () => {
   });
 
   describe('edit subscription button', () => {
-    it('should navigate to change plan screen', () => {
+    it('should navigate to change plan screen', async () => {
       const { history, pushSpy } = spiedHistory();
       render({}, { router: { history } });
 
-      userEvent.click(screen.getByText(/edit subscription/gi));
+      await userEvent.click(screen.getByText(/edit subscription/i));
       expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions/edit');
     });
   });
@@ -109,7 +109,7 @@ describe('Subscriptions: Component', () => {
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
 
-    it('should navigate to cancel subscription screen', () => {
+    it('should navigate to cancel subscription screen', async () => {
       const store = prepareState((state) => {
         state.subscription.activeSubscription = subscriptionFactory();
       });
@@ -117,7 +117,7 @@ describe('Subscriptions: Component', () => {
       const { history, pushSpy } = spiedHistory();
       render({}, { store, router: { history } });
 
-      userEvent.click(screen.getByText(/cancel subscription/gi));
+      await userEvent.click(screen.getByText(/cancel subscription/i));
       expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions/cancel');
     });
   });

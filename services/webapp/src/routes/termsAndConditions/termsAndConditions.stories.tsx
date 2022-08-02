@@ -3,7 +3,7 @@ import { appConfigFactory } from '../../mocks/factories';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { TermsAndConditions } from './termsAndConditions.component';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
     <ProvidersWrapper
       context={{
@@ -12,7 +12,7 @@ const Template: Story = (args) => {
         },
       }}
     >
-      <TermsAndConditions {...args} />
+      <TermsAndConditions />
     </ProvidersWrapper>
   );
 };

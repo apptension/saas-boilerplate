@@ -12,7 +12,7 @@ const markdown = `
 - and second one
 `;
 
-const Template: Story<MarkdownPageProps> = (args) => {
+const Template: Story<MarkdownPageProps> = (args: MarkdownPageProps) => {
   return <MarkdownPage {...args} />;
 };
 

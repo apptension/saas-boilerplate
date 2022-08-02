@@ -35,10 +35,10 @@ describe('Link: Component', () => {
       expect(screen.getByRole('link')).toHaveAttribute('href', 'http://apptension.com');
     });
 
-    it('shouldnt use react-router navigation when clicked', () => {
+    it('shouldnt use react-router navigation when clicked', async () => {
       const { history, pushSpy } = spiedHistory();
       render({}, { router: { history } });
-      userEvent.click(screen.getByRole('link'));
+      await userEvent.click(screen.getByRole('link'));
       expect(pushSpy).not.toHaveBeenCalled();
     });
   });
@@ -49,10 +49,10 @@ describe('Link: Component', () => {
       expect(screen.getByRole('link')).toHaveAttribute('href', '/home');
     });
 
-    it('should use react-router navigation when clicked', () => {
+    it('should use react-router navigation when clicked', async () => {
       const { history, pushSpy } = spiedHistory();
       render({ href: undefined, to: '/home' }, { router: { history } });
-      userEvent.click(screen.getByRole('link'));
+      await userEvent.click(screen.getByRole('link'));
       expect(pushSpy).toHaveBeenCalledWith('/home');
     });
   });

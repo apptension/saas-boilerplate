@@ -3,8 +3,8 @@ import { appConfigFactory } from '../../mocks/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
-const Template: Story = (args) => {
-  return <PrivacyPolicy {...args} />;
+const Template: Story = () => {
+  return <PrivacyPolicy />;
 };
 
 export default {

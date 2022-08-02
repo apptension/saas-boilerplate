@@ -1,37 +1,31 @@
+/**
+ * @generated SignedSource<<94de220f120880656796b5a289db35fe>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
+import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type DeleteCrudDemoItemMutationInput = {
-    id?: string | null;
-    clientMutationId?: string | null;
+  clientMutationId?: string | null;
+  id?: string | null;
 };
-export type crudDropdownMenuItemDeleteMutationVariables = {
-    input: DeleteCrudDemoItemMutationInput;
-    connections: Array<string>;
+export type crudDropdownMenuItemDeleteMutation$variables = {
+  connections: ReadonlyArray<string>;
+  input: DeleteCrudDemoItemMutationInput;
 };
-export type crudDropdownMenuItemDeleteMutationResponse = {
-    readonly deleteCrudDemoItem: {
-        readonly deletedIds: ReadonlyArray<string | null> | null;
-    } | null;
+export type crudDropdownMenuItemDeleteMutation$data = {
+  readonly deleteCrudDemoItem: {
+    readonly deletedIds: ReadonlyArray<string | null> | null;
+  } | null;
 };
 export type crudDropdownMenuItemDeleteMutation = {
-    readonly response: crudDropdownMenuItemDeleteMutationResponse;
-    readonly variables: crudDropdownMenuItemDeleteMutationVariables;
+  response: crudDropdownMenuItemDeleteMutation$data;
+  variables: crudDropdownMenuItemDeleteMutation$variables;
 };
-
-
-
-/*
-mutation crudDropdownMenuItemDeleteMutation(
-  $input: DeleteCrudDemoItemMutationInput!
-) {
-  deleteCrudDemoItem(input: $input) {
-    deletedIds
-  }
-}
-*/
 
 const node: ConcreteRequest = (function(){
 var v0 = {
@@ -133,5 +127,7 @@ return {
   }
 };
 })();
-(node as any).hash = 'bf0cf0c805b0aa2362d9e0e897296bcc';
+
+(node as any).hash = "bf0cf0c805b0aa2362d9e0e897296bcc";
+
 export default node;

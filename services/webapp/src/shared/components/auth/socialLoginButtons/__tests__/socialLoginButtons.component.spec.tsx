@@ -27,17 +27,17 @@ describe('SocialLoginButtons: Component', () => {
 
   describe('log in variant', () => {
     describe('Google log in button is clicked', () => {
-      it('should trigger google oauth flow', () => {
+      it('should trigger google oauth flow', async () => {
         render({ variant: SignupButtonsVariant.LOGIN });
-        userEvent.click(screen.getByText(/log in with Google/gi));
+        await userEvent.click(screen.getByText(/log in with Google/i));
         expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Google));
       });
     });
 
     describe('Facebook log in button is clicked', () => {
-      it('should trigger facebook oauth flow', () => {
+      it('should trigger facebook oauth flow', async () => {
         render({ variant: SignupButtonsVariant.LOGIN });
-        userEvent.click(screen.getByText(/log in with Facebook/gi));
+        await userEvent.click(screen.getByText(/log in with Facebook/i));
         expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Facebook));
       });
     });
@@ -45,17 +45,17 @@ describe('SocialLoginButtons: Component', () => {
 
   describe('sign up variant', () => {
     describe('Google sign up button is clicked', () => {
-      it('should trigger google oauth flow', () => {
+      it('should trigger google oauth flow', async () => {
         render({ variant: SignupButtonsVariant.SIGNUP });
-        userEvent.click(screen.getByText(/sign up with Google/gi));
+        await userEvent.click(screen.getByText(/sign up with Google/i));
         expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Google));
       });
     });
 
     describe('Facebook sign up button is clicked', () => {
-      it('should trigger facebook oauth flow', () => {
+      it('should trigger facebook oauth flow', async () => {
         render({ variant: SignupButtonsVariant.SIGNUP });
-        userEvent.click(screen.getByText(/sign up with Facebook/gi));
+        await userEvent.click(screen.getByText(/sign up with Facebook/i));
         expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Facebook));
       });
     });

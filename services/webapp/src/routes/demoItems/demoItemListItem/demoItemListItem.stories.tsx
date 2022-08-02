@@ -5,7 +5,7 @@ import { DemoItemListItem, DemoItemListItemProps } from './demoItemListItem.comp
 
 const item = demoItemFactory();
 
-const Template: Story<DemoItemListItemProps> = (args) => {
+const Template: Story<DemoItemListItemProps> = (args: DemoItemListItemProps) => {
   return (
     <ProvidersWrapper>
       <DemoItemListItem {...args} />
