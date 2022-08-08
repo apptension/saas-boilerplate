@@ -151,7 +151,15 @@ Set of **required** fields is presented below:
 | ADMIN_EMAIL            | admin@exmaple.com                 | Will be used to create first super admin user                                 |
 | ADMIN_DEFAULT_PASSWORD | AvPZpabgj9Z8                      | Will be used to create first super admin user                                 |
 
-In order to avoid any typos You can find a `secrets.example.json`, just replace the values and paste it into edited secrets file.
+If you want to use Stripe, you also need to define:
+
+| Name                    | Example                    | Description                                                              |
+| ----------------------- | ---------------------------| ------------------------------------------------------------------------ |
+| STRIPE_TEST_SECRET_KEY  | sk_test_4dEFRCLCgCb        | Use this one for Stripe test mode. [docs](https://stripe.com/docs/keys)  |
+| STRIPE_LIVE_SECRET_KEY  | sk_4dEFRCLCgCbMy6O4FX      | Use this one for Stripe live mode. [docs](https://stripe.com/docs/keys)  |
+| DJSTRIPE_WEBHOOK_SECRET | whsec_12345                | [docs](https://stripe.com/docs/webhooks/best-practices#endpoint-secrets) |
+
+In order to avoid any typos you can find a `secrets.example.json`, just replace the values and paste it into edited secrets file.
 
 ### Webapp
 

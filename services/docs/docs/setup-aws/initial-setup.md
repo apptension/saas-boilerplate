@@ -5,14 +5,14 @@ title: Initial setup
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
 ## Prerequisites
-- You need Your own personal account in devops-apptension AWS organization (IAM user).
-- AWS organization (set it up or get access to one from the client) for Your project
+- You need your own personal account in devops-apptension AWS organization (IAM user).
+- AWS organization (set it up or get access to one from the client) for your project
 - Admin role for that organization
 - Assignment of that admin role to your personal IAM user
 - A domain
 
 :::tip Dev-Ops needed
-Probably you are not able (dont have sufficient admin rights) to setup first 4 things on Your own so You need to ask some dev-ops to set it up for You.
+Probably you are not able (dont have sufficient admin rights) to setup first 4 things on your own so you need to ask some dev-ops to set it up for you.
 :::
 
 ---
@@ -25,11 +25,11 @@ This profile will be used by `Make` when running any commands that communicate w
 aws-vault add <your-personal-user-name>
 ```
 
->You should find your `Enter Access Key Id` and `Enter Secret Key` in <br /> the `My security credentials` section of Your AWS web panel.
+>You should find your `Enter Access Key Id` and `Enter Secret Key` in <br /> the `My security credentials` section of your AWS web panel.
 
 
-Next You should create a profile for the project admin (connect Your account with the admin role). 
-For that purpose You need to manually edit aws config file. As this profile name will be vastly used we recommend to keep it very short (max 4 chars, e.g "saas").
+Next you should create a profile for the project admin (connect your account with the admin role). 
+For that purpose you need to manually edit aws config file. As this profile name will be vastly used we recommend to keep it very short (max 4 chars, e.g "saas").
 ```shell
 open ~/.aws/config
 ```
@@ -42,7 +42,7 @@ role_arn = arn:aws:iam::123456789:role/SaaSBoilerplateAdminRole
 
 Values to save:
 
-- `name` of the second aws-vault profile (`saas` from the example above)
+- `name` of the second aws-vault profile (`saas` from the example above). This is the `AWS Profile name` which you specify when using the setup.sh script.
 
 ### Multi-factor authentication
 
@@ -88,7 +88,7 @@ Now you can use that profile name in `.awsboilerplate.json` file
 ```
 
 ### AWS vault usage
-From now on You can use  aws-vault for secure connection with AWS platform.
+From now on you can use  aws-vault for secure connection with AWS platform.
 Always make sure you are in a proper aws-vault context when you run commands that use AWS CLI.
 We created a `make` rule that simplifies this process:
 
@@ -104,7 +104,7 @@ You can also manually select environment context by passing it directly:
 make aws-vault ENV_STAGE=qa
 ```
 
-> Check out the [usage docs](https://github.com/99designs/aws-vault/blob/master/USAGE.md) for more info about how You can utilize aws-vault.
+> Check out the [usage docs](https://github.com/99designs/aws-vault/blob/master/USAGE.md) for more info about how you can utilize aws-vault.
 
 ---
 
@@ -176,6 +176,8 @@ make deploy-global-infra
 In case of deployment failure related to certificate issues. You might simply try to make the deploy again.  
 :::
 
+Another part of the global infrastructure are the base images for all services. To create them, run the CodeBuild project `<project name>-base-images`.
+
 
 ## Setup Docker Hub account
 We need to setup dockerhub credentials in order receive access to their images base.
@@ -183,6 +185,7 @@ You can create new dockerhub account (there is a free tier) or get access to a e
 Third option is to use guest account (empty credentials) but in that case there is a very limited number daily downloads which is shared with other AWS users which will cause builds to fail randomly (quite often).
 
 To setup dockerhub credentials go to AWS web panel, access `Secrets manager` and select `GlobalBuildSecrets`, now find `Secret value` section and click `Retrieve secret value` and then `edit`.
+This secret may initially be set to a placeholder value, which you can delete.
 
 Secret's value have to be an object:
 ```shell

@@ -8,6 +8,10 @@ sidebar_title: Backend Integration
 Set environmental variables in the `services/workers/.env` file. If it doesn't exist create it
 using `services/workers/.env.example` first.
 
+:::info
+Use the Contentful Delivery API token here.
+:::
+
 ```
 CONTENTFUL_SPACE_ID=<CHANGE_ME>
 CONTENTFUL_ACCESS_TOKEN=<CHANGE_ME>
@@ -55,7 +59,7 @@ subclassing proper class there are three other requirements in order for the syn
 - The name of the django model class needs to be a PascalCase version of the Contentful model name.
 - The model has to be defined in the `apps.content` app models.
 
-For example if Contentful's model is named `demoItem` this is how the class definition would look like:
+For example if Contentful's model is named `demoItem` with a title field of ID `title` this is how the class definition would look like:
 
 ```python
 # apps.content.models

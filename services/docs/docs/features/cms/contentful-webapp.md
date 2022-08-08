@@ -10,6 +10,10 @@ Project is configured with Contentful integration with full GraphQL and Typescri
 Set environmental variables in the `services/webapp/.env` file.
 If it doesn't exist create it using `services/webapp/.env.example` first.
 
+:::info
+Use the Contentful Delivery API token here.
+:::
+
 ```
 REACT_APP_CONTENTFUL_SPACE=<CHANGE_ME>
 REACT_APP_CONTENTFUL_TOKEN=<CHANGE_ME>

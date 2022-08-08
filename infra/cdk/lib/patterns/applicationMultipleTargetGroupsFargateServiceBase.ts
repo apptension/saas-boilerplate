@@ -86,7 +86,7 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
   readonly propagateTags?: PropagatedTagSource;
   /**
    * Specifies whether to enable Amazon ECS managed tags for the tasks within the service. For more information, see
-   * [Tagging Your Amazon ECS Resources](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html)
+   * [Tagging your Amazon ECS Resources](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html)
    *
    * @default false
    */

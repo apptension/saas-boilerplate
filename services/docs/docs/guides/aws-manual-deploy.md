@@ -15,7 +15,7 @@ More info can be found [here](/features/dev-tools/global-tools)
 
 You can build & deploy all services (Webapp, Backend, Workers etc) at once or just a single service.
 If you want all services run commands below in project's main directory, 
-while for single service You need to go to that specific service directory. 
+while for single service you need to go to that specific service directory. 
 
 Build application's code:
 

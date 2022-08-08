@@ -24,7 +24,7 @@ More details on how to create and deploy those will be described in [Creating ap
 ## Main stack
 
 A CDK stack that contains resources of a specific environment stage that will be used by multiple services.
-This includes among others VPC, RDS intsance, and ECS cluster.
+This includes among others VPC, RDS instance, and ECS cluster.
 
 ## Ci stack
 
