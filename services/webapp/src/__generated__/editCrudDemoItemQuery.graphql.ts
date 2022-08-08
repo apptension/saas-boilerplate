@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d1c1115a50df0ce18ad01505a04339c0>>
+ * @generated SignedSource<<c20503472c250ff017c5626f49112079>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -71,7 +71,7 @@ return {
     "metadata": null,
     "name": "editCrudDemoItemQuery",
     "selections": (v1/*: any*/),
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e34d0398cdee7798364853a13df843b8>>
+ * @generated SignedSource<<959cfcdc7f76f3b512e7d56093569902>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -187,11 +187,11 @@ return {
       "storageKey": null
     }
   ],
-  "type": "ApiQuery",
+  "type": "Query",
   "abstractKey": null
 };
 })();
 
-(node as any).hash = "7d0a73edeae1542fcfb2577b3ce92179";
+(node as any).hash = "0ac9f8fb3f597f1fdab6c2a9e947a53f";
 
 export default node;

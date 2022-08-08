@@ -1,30 +1,30 @@
 import { Story } from '@storybook/react';
 import { generatePath } from 'react-router';
-import { DemoItemDocument } from '../../shared/services/contentful';
-import { demoItemFactory } from '../../mocks/factories';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { OperationDescriptor } from 'react-relay/hooks';
+
+import demoItemQueryGraphql from '../../__generated__/demoItemQuery.graphql';
 import { ROUTES } from '../../app/config/routes';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
+import { demoItemFactory } from '../../mocks/factories';
 import { DemoItem } from './demoItem.component';
 
-const apolloMocks = [
-  {
-    request: {
-      query: DemoItemDocument,
-      variables: { itemId: '1' },
+const defaultItemId = 'test-id';
+const relayEnvironment = createMockEnvironment();
+relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+  MockPayloadGenerator.generate(operation, {
+    DemoItem() {
+      return demoItemFactory();
     },
-    result: {
-      data: {
-        demoItem: demoItemFactory(),
-      },
-    },
-  },
-];
+  })
+);
+relayEnvironment.mock.queuePendingOperation(demoItemQueryGraphql, { id: defaultItemId });
 
 const Template: Story = () => {
   return (
     <ProvidersWrapper
       context={{
-        apolloMocks,
+        relayEnvironment,
         router: { url: generatePath(ROUTES.demoItem, { lang: 'en', id: 1 }), routePath: ROUTES.demoItem },
       }}
     >

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ce6a31279bb08eb0e93fd6db92cee0a1>>
+ * @generated SignedSource<<18c96c63dd4642d8d2d7589d9b83bb50>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -71,7 +71,7 @@ return {
         "name": "notificationsListContent"
       }
     ],
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
@@ -206,16 +206,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dd40733704e6371995260cf949b9b06f",
+    "cacheID": "77e2eee70b37880bd290630b4c0e9b17",
     "id": null,
     "metadata": {},
     "name": "NotificationsListRefetch",
     "operationKind": "query",
-    "text": "query NotificationsListRefetch(\n  $count: Int = 20\n  $cursor: String\n) {\n  ...notificationsListContent_1G22uz\n}\n\nfragment notificationsListContent_1G22uz on ApiQuery {\n  hasUnreadNotifications\n  allNotifications(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query NotificationsListRefetch(\n  $count: Int = 20\n  $cursor: String\n) {\n  ...notificationsListContent_1G22uz\n}\n\nfragment notificationsListContent_1G22uz on Query {\n  hasUnreadNotifications\n  allNotifications(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7d0a73edeae1542fcfb2577b3ce92179";
+(node as any).hash = "0ac9f8fb3f597f1fdab6c2a9e947a53f";
 
 export default node;

@@ -1,26 +1,24 @@
 import { Story } from '@storybook/react';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { ROUTES } from '../../app/config/routes';
-import { AllDemoItemsDocument } from '../../shared/services/contentful';
-import { demoItemFactory } from '../../mocks/factories';
 import { prepareState } from '../../mocks/store';
+import demoItemsAllQueryGraphql from '../../__generated__/demoItemsAllQuery.graphql';
+import { demoItemFactory } from '../../mocks/factories';
 import { DemoItems } from './demoItems.component';
 
 const items = [demoItemFactory(), demoItemFactory(), demoItemFactory()];
-const apolloMocks = [
-  {
-    request: {
-      query: AllDemoItemsDocument,
+
+const relayEnvironment = createMockEnvironment();
+relayEnvironment.mock.queueOperationResolver((operation) =>
+  MockPayloadGenerator.generate(operation, {
+    DemoItemCollection() {
+      return {items};
     },
-    result: {
-      data: {
-        demoItemCollection: {
-          items,
-        },
-      },
-    },
-  },
-];
+  })
+);
+relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
 
 const Template: Story = ({ favorited = [], ...args }) => {
   const store = prepareState((state) => {
@@ -31,7 +29,7 @@ const Template: Story = ({ favorited = [], ...args }) => {
     <ProvidersWrapper
       context={{
         store,
-        apolloMocks,
+        relayEnvironment,
         router: { url: `/en${ROUTES.demoItems}`, routePath: `/:lang${ROUTES.demoItems}` },
       }}
     >

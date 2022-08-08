@@ -61,7 +61,7 @@ const subscription = graphql`
 export const useNotificationsListContent = (queryResponse: notificationsListQuery$data) => {
   const fragment = usePaginationFragment<NotificationsListRefetch, notificationsListContent$key>(
     graphql`
-      fragment notificationsListContent on ApiQuery
+      fragment notificationsListContent on Query
       @refetchable(queryName: "NotificationsListRefetch")
       @argumentDefinitions(count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" }) {
         hasUnreadNotifications

@@ -17,7 +17,7 @@ ENV PIP_NO_CACHE_DIR off
 RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq \
   && update-ca-certificates \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir setuptools pdm gunicorn awscli
+  && pip install --no-cache-dir setuptools pdm==2.1.1 gunicorn awscli
 
 
 COPY --from=chamber /chamber /bin/chamber

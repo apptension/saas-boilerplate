@@ -1,13 +1,13 @@
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { ApolloProvider } from '@apollo/client';
+import { RelayEnvironmentProvider } from 'react-relay';
 import { path } from '../shared/utils/path';
-import { apolloClient as contentfulApolloClient } from '../shared/services/contentful';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import { Role } from '../modules/auth/auth.types';
 import { H1 } from '../theme/typography';
 import { AuthRoute } from '../shared/components/routes/authRoute';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
+import { contentfulRelayEnvironment } from '../shared/services/contentful/relayEnvironment';
 import { ROUTES } from './config/routes';
 import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
 import {
@@ -29,7 +29,6 @@ import {
   Subscriptions,
   TermsAndConditions,
   TransactionHistory,
-  //<-- INJECT ROUTE IMPORT -->
 } from './asyncComponents';
 import { ValidRoutesProviders } from './providers/validRoutesProvider';
 
@@ -48,14 +47,14 @@ export const App = () => {
               <Profile />
             </AuthRoute>
             <AuthRoute exact path={ROUTES.demoItems}>
-              <ApolloProvider client={contentfulApolloClient}>
+              <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
                 <DemoItems />
-              </ApolloProvider>
+              </RelayEnvironmentProvider>
             </AuthRoute>
             <AuthRoute exact path={ROUTES.demoItem}>
-              <ApolloProvider client={contentfulApolloClient}>
+              <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
                 <DemoItem />
-              </ApolloProvider>
+              </RelayEnvironmentProvider>
             </AuthRoute>
             <AnonymousRoute exact path={ROUTES.signup}>
               <Signup />

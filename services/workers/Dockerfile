@@ -10,17 +10,14 @@ RUN \
   wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   apt-get update && \
   apt-get install -yqq nodejs yarn && \
-  pip install -U pip==21.3.1 && pip install pdm && \
+  pip install -U pip==21.3.1 && pip install pdm==2.1.1 && \
   npm i -g npm@^6 && \
   rm -rf /var/lib/apt/lists/*
 
 WORKDIR /pkgs
 
-COPY pdm.lock pyproject.toml /pkgs/
-#When installing the pystache package, pdm creates a virtual environment in which it installs the setuptools and wheel packages by default.
-#It turns out that setuptools has a lower version limit, which causes pystache to throw an error
-RUN sed -i 's/"requires": \["setuptools >= 40.8.0", "wheel"\]/"requires": \["setuptools >= 40.8.0, < 58", "wheel"\]/g' "/usr/local/lib/python3.8/site-packages/pdm/builders/base.py" && \
-    pdm sync
+COPY pdm.lock pyproject.toml .pdm.toml /pkgs/
+RUN pdm sync
 
 WORKDIR /app
 

@@ -1,31 +1,23 @@
-import { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router';
-import { useDemoItemQuery } from '../../shared/services/contentful/__generated/hooks';
-import { ROUTES } from '../../app/config/routes';
-import { imageProps } from '../../shared/services/contentful';
-import { BackButton } from '../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
-import { Container, Description, Image, Title } from './demoItem.styles';
+import { Suspense, useEffect } from 'react';
+import { useParams } from 'react-router';
+
+import { DemoItemContent } from './demoItemContent.component';
+import { useDemoItemQuery } from './demoItem.graphql';
 
 export const DemoItem = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, loading } = useDemoItemQuery({ variables: { itemId: id } });
-  const item = data?.demoItem;
-  const generateLocalePath = useGenerateLocalePath();
-  const history = useHistory();
-
+  const [itemQueryRef, loadItem] = useDemoItemQuery();
   useEffect(() => {
-    if (!loading && !item) {
-      history.push(generateLocalePath(ROUTES.notFound));
-    }
-  }, [loading, generateLocalePath, history, item]);
+    loadItem({ id });
+  }, [loadItem, id]);
+
+  if (!itemQueryRef) {
+    return null;
+  }
 
   return (
-    <Container>
-      <BackButton to={generateLocalePath(ROUTES.demoItems)} />
-      <Title>{item?.title}</Title>
-      <Description>{item?.description}</Description>
-      {item?.image && <Image {...imageProps(item.image)} />}
-    </Container>
+    <Suspense fallback={null}>
+      <DemoItemContent itemQueryRef={itemQueryRef} />
+    </Suspense>
   );
 };

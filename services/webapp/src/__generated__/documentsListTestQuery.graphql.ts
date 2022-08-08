@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<82b12edf30589826b0db091ba32d9c79>>
+ * @generated SignedSource<<66e6cc787162a7d47c59c92dfc0f1ba9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -85,7 +85,7 @@ return {
         "storageKey": "allDocumentDemoItems(first:1)"
       }
     ],
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",

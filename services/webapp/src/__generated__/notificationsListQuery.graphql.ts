@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<59b782e2ec22ce477d10615294e33cce>>
+ * @generated SignedSource<<0dd86c46f475ceeb3ffdaf6fcbc94a80>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -45,7 +45,7 @@ return {
         "name": "notificationsButtonContent"
       }
     ],
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
@@ -180,12 +180,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f457baaecfd869a572a038781379740d",
+    "cacheID": "4651b3f2f6ce78aed6fb02fe6ae258ae",
     "id": null,
     "metadata": {},
     "name": "notificationsListQuery",
     "operationKind": "query",
-    "text": "query notificationsListQuery {\n  ...notificationsListContent\n  ...notificationsButtonContent\n}\n\nfragment notificationsButtonContent on ApiQuery {\n  hasUnreadNotifications\n}\n\nfragment notificationsListContent on ApiQuery {\n  hasUnreadNotifications\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query notificationsListQuery {\n  ...notificationsListContent\n  ...notificationsButtonContent\n}\n\nfragment notificationsButtonContent on Query {\n  hasUnreadNotifications\n}\n\nfragment notificationsListContent on Query {\n  hasUnreadNotifications\n  allNotifications(first: 20) {\n    edges {\n      node {\n        id\n        data\n        createdAt\n        readAt\n        type\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

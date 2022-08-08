@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
-import { gql } from '@apollo/client';
-export type Maybe<T> = T | undefined;
+import gql from 'graphql-tag';
+export type Maybe<T> = T | undefined | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -142,8 +142,51 @@ export interface ContentfulAsset {
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetTitleArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetDescriptionArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetContentTypeArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetFileNameArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetSizeArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
 export interface ContentfulAssetUrlArgs {
   transform?: Maybe<ContentfulImageTransformOptions>;
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetWidthArgs {
+  locale?: Maybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetHeightArgs {
+  locale?: Maybe<Scalars['String']>;
 }
 
 
@@ -444,7 +487,8 @@ export enum ContentfulImageFormat {
    */
   PNG8 = 'PNG8',
   /** WebP image format. */
-  WEBP = 'WEBP'
+  WEBP = 'WEBP',
+  AVIF = 'AVIF'
 }
 
 export enum ContentfulImageResizeFocus {

@@ -9,7 +9,7 @@ RUN \
   wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   apt-get update && \
   apt-get install -yqq nodejs yarn && \
-  pip install -U pip==21.3.1 && pip install pdm && \
+  pip install -U pip==21.3.1 && pip install pdm==2.1.1 && \
   npm i -g npm@^6 && \
   rm -rf /var/lib/apt/lists/*
 

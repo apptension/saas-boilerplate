@@ -1,6 +1,6 @@
-"""Exposes a URL that specifies the behaviour of this scalar."""
+"""Exposes a URL that specifies the behavior of this scalar."""
 directive @specifiedBy(
-  """The URL that specifies the behaviour of this scalar."""
+  """The URL that specifies the behavior of this scalar."""
   url: String!
 ) on SCALAR
 
@@ -70,14 +70,14 @@ enum AppConfigOrder {
 type Asset {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
-  title: String
-  description: String
-  contentType: String
-  fileName: String
-  size: Int
-  url(transform: ImageTransformOptions): String
-  width: Int
-  height: Int
+  title(locale: String): String
+  description(locale: String): String
+  contentType(locale: String): String
+  fileName(locale: String): String
+  size(locale: String): Int
+  url(transform: ImageTransformOptions, locale: String): String
+  width(locale: String): Int
+  height(locale: String): Int
   linkedFrom(allowedLocales: [String]): AssetLinkingCollections
 }
 
@@ -327,6 +327,7 @@ enum ImageFormat {
   PNG8
   """WebP image format."""
   WEBP
+  AVIF
 }
 
 enum ImageResizeFocus {
@@ -413,6 +414,18 @@ type Query {
   appConfig(id: String!, preview: Boolean, locale: String): AppConfig
   appConfigCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AppConfigFilter, order: [AppConfigOrder]): AppConfigCollection
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
+  hasUnreadNotifications: Boolean
+  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
+  crudDemoItem(
+    """The ID of the object"""
+    id: ID!
+  ): CrudDemoItemType
+  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
+  node(
+    """The ID of the object"""
+    id: ID!
+  ): Node
 }
 
 type Sys {
@@ -461,6 +474,12 @@ input SysFilter {
   publishedVersion_lte: Float
 }
 
+schema {
+  query: Query
+  mutation: ApiMutation
+  subscription: ApiSubscription
+}
+
 type ApiMutation {
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
@@ -469,15 +488,6 @@ type ApiMutation {
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
   createDocumentDemoItem(input: CreateDocumentDemoItemMutationInput!): CreateDocumentDemoItemMutationPayload
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
-}
-
-type ApiQuery {
-  hasUnreadNotifications: Boolean
-  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
-  """The ID of the object"""
-  crudDemoItem(id: ID!): CrudDemoItemType
-  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
-  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
 }
 
 type ApiSubscription {
@@ -665,9 +675,3 @@ Create scalar that ignores normal serialization/deserialization, since
 that will be handled by the multipart request spec
 """
 scalar Upload
-
-schema {
-  query: ApiQuery
-  mutation: ApiMutation
-  subscription: ApiSubscription
-}

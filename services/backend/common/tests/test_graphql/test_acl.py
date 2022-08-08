@@ -15,21 +15,21 @@ pytestmark = pytest.mark.django_db
 
 def create_query_schema(query_class):
     @graphql_acl.permission_classes(policies.IsAuthenticatedFullAccess)
-    class ApiQuery(query_class, graphene.ObjectType):
+    class Query(query_class, graphene.ObjectType):
         pass
 
     return graphene.Schema(
-        query=ApiQuery,
+        query=Query,
     )
 
 
 def create_mutation_schema(query_class):
     @graphql_acl.permission_classes(policies.IsAuthenticatedFullAccess)
-    class ApiQuery(query_class, graphene.ObjectType):
+    class Query(query_class, graphene.ObjectType):
         pass
 
     return graphene.Schema(
-        mutation=ApiQuery,
+        mutation=Query,
     )
 
 

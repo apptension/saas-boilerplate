@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a01222b7b41f915fb44e29e0be55f62>>
+ * @generated SignedSource<<7c09af3eb8c27556cdcfdb8830ccf6f7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -53,7 +53,7 @@ return {
         "storageKey": "crudDemoItem(id:\"test-id\")"
       }
     ],
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",

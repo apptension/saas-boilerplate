@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<38a054a1dab45b451c04e9650359cdba>>
+ * @generated SignedSource<<e014968911759919bcb87190194b22ee>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -130,7 +130,7 @@ return {
         "storageKey": null
       }
     ],
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",

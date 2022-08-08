@@ -1,6 +1,6 @@
-"""Exposes a URL that specifies the behaviour of this scalar."""
+"""Exposes a URL that specifies the behavior of this scalar."""
 directive @specifiedBy(
-  """The URL that specifies the behaviour of this scalar."""
+  """The URL that specifies the behavior of this scalar."""
   url: String!
 ) on SCALAR
 
@@ -72,14 +72,14 @@ enum AppConfigOrder {
 type Asset {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
-  title: String
-  description: String
-  contentType: String
-  fileName: String
-  size: Int
-  url(transform: ImageTransformOptions): String
-  width: Int
-  height: Int
+  title(locale: String): String
+  description(locale: String): String
+  contentType(locale: String): String
+  fileName(locale: String): String
+  size(locale: String): Int
+  url(transform: ImageTransformOptions, locale: String): String
+  width(locale: String): Int
+  height(locale: String): Int
   linkedFrom(allowedLocales: [String]): AssetLinkingCollections
 }
 
@@ -338,6 +338,7 @@ enum ImageFormat {
 
   """WebP image format."""
   WEBP
+  AVIF
 }
 
 enum ImageResizeFocus {

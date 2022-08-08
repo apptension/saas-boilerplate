@@ -1,5 +1,5 @@
 schema {
-  query: ApiQuery
+  query: Query
   mutation: ApiMutation
   subscription: ApiSubscription
 }
@@ -12,16 +12,6 @@ type ApiMutation {
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
   createDocumentDemoItem(input: CreateDocumentDemoItemMutationInput!): CreateDocumentDemoItemMutationPayload
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
-}
-
-type ApiQuery {
-  hasUnreadNotifications: Boolean
-  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
-
-  """The ID of the object"""
-  crudDemoItem(id: ID!): CrudDemoItemType
-  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
-  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
 }
 
 type ApiSubscription {
@@ -194,6 +184,21 @@ type PageInfo {
 
   """When paginating forwards, the cursor to continue."""
   endCursor: String
+}
+
+type Query {
+  hasUnreadNotifications: Boolean
+  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
+  crudDemoItem(
+    """The ID of the object"""
+    id: ID!
+  ): CrudDemoItemType
+  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
+  node(
+    """The ID of the object"""
+    id: ID!
+  ): Node
 }
 
 input UpdateCrudDemoItemMutationInput {

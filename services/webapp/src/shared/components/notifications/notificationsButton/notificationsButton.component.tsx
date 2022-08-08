@@ -29,7 +29,7 @@ type WrapperProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
 export const Wrapper = ({ queryResponse, ...props }: WrapperProps) => {
   const data = useFragment<notificationsButtonContent$key>(
     graphql`
-      fragment notificationsButtonContent on ApiQuery {
+      fragment notificationsButtonContent on Query {
         hasUnreadNotifications
       }
     `,

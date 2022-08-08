@@ -1,4 +1,12 @@
 {
-  "name": "SaaS GraphQL Schema",
-  "schemaPath": "graphql/schema/schema.graphql"
+  "projects": {
+    "api": {
+      "name": "SaaS GraphQL Schema",
+      "schemaPath": "graphql/schema/api.graphql.chunk"
+    },
+    "contentful": {
+      "name": "Contentful GraphQL Schema",
+      "schemaPath": "graphql/schema/contentful.graphql.chunk"
+    }
+  }
 }

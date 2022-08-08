@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8976eb11eb89ce01f01135ec285306e1>>
+ * @generated SignedSource<<25cfc2d5f6b8d1acb0ba7cae0913ef30>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -71,7 +71,7 @@ return {
     "metadata": null,
     "name": "crudDemoItemDetailsQuery",
     "selections": (v1/*: any*/),
-    "type": "ApiQuery",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",

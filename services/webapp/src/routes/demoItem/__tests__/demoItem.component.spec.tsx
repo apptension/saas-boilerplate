@@ -1,56 +1,42 @@
-import {screen, waitFor} from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { generatePath } from 'react-router';
+
 import { DemoItem } from '../demoItem.component';
-import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
-import { DemoItemDocument } from '../../../shared/services/contentful';
+import { makeContextRenderer } from '../../../shared/utils/testUtils';
+import { ROUTES } from '../../../app/config/routes';
+import demoItemQueryGraphql from '../../../__generated__/demoItemQuery.graphql';
 
 describe('DemoItem: Component', () => {
   const component = () => <DemoItem />;
   const render = makeContextRenderer(component);
 
   it('should render item data', async () => {
-    const apolloMocks = [
-      {
-        request: {
-          query: DemoItemDocument,
-        },
-        result: {
-          data: {
-            demoItem: {
-              title: 'First',
-              description: 'Something more',
-              image: { url: 'http://image.url', title: 'image alt' },
-            },
-          },
-        },
-      },
-    ];
+    const relayEnvironment = createMockEnvironment();
+    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        DemoItem: () => ({
+          title: 'First',
+          description: 'Something more',
+          image: { url: 'http://image.url', title: 'image alt' },
+        }),
+      })
+    );
+    relayEnvironment.mock.queuePendingOperation(demoItemQueryGraphql, { id: 'test-id' });
 
-    render({}, { apolloMocks });
+    render(
+      {},
+      {
+        relayEnvironment,
+        router: { url: generatePath(ROUTES.demoItem, { lang: 'en', id: 'test-id' }), routePath: ROUTES.demoItem },
+      }
+    );
+
     await waitFor(() => {
       expect(screen.getByText('First')).toBeInTheDocument();
     });
     expect(screen.getByText('Something more')).toBeInTheDocument();
     expect(screen.getByAltText('image alt')).toBeInTheDocument();
-  });
-
-  it('should redirect to 404 if item doesnt exist', async () => {
-    const apolloMocks = [
-      {
-        request: {
-          query: DemoItemDocument,
-        },
-        result: {
-          data: {
-            demoItem: null,
-          },
-        },
-      },
-    ];
-    const { pushSpy, history } = spiedHistory();
-
-    render({}, { apolloMocks, router: { history } });
-    await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith('/en/404');
-    });
   });
 });

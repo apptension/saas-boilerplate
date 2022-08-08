@@ -8,9 +8,9 @@ import { createMemoryHistory, MemoryHistory } from 'history';
 import { Route, Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
-import { MockedProvider } from '@apollo/client/testing';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+
 import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../app/config/i18n';
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../app/config/reducers';
@@ -37,7 +37,6 @@ export interface ContextData {
   store?: GlobalState | ((draft: GlobalState) => void);
   messages?: TranslationMessages;
   relayEnvironment?: RelayMockEnvironment | ((env: RelayMockEnvironment) => void);
-  apolloMocks?: any[];
 }
 
 interface ProvidersWrapperProps {
@@ -46,7 +45,7 @@ interface ProvidersWrapperProps {
 }
 
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
-  const { router = {}, messages, apolloMocks = [] } = context;
+  const { router = {}, messages } = context;
   const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', history } = router;
 
   const routerHistory: MemoryHistory = history ?? createMemoryHistory({ initialEntries: [url] });
@@ -79,13 +78,11 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <RelayEnvironmentProvider environment={relayEnvironment}>
-            <MockedProvider mocks={apolloMocks} addTypename={false}>
-              <IntlProvider {...intlProviderMockProps}>
-                <Provider store={createStore(createReducer(), produce(store, identity))}>
-                  <Route path={routePath}>{children}</Route>
-                </Provider>
-              </IntlProvider>
-            </MockedProvider>
+            <IntlProvider {...intlProviderMockProps}>
+              <Provider store={createStore(createReducer(), produce(store, identity))}>
+                <Route path={routePath}>{children}</Route>
+              </Provider>
+            </IntlProvider>
           </RelayEnvironmentProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
@@ -97,13 +94,15 @@ export function makeContextRenderer<T>(
   component: (props: T | Record<string, never>) => ReactElement,
   baseContext: ContextData = {}
 ) {
-  return (props?: T, context?: ContextData) =>
-    render(component(props ?? {}), {
+  return (props?: T, context?: ContextData) => {
+    return render(component(props ?? {}), {
       wrapper: ({ children }) => (
         <ProvidersWrapper context={{ ...baseContext, ...context }}>{children}</ProvidersWrapper>
       ),
     });
+  };
 }
+
 export function makePropsRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
   return (props?: T) => render(component(props ?? {}));
 }

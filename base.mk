@@ -82,7 +82,7 @@ aws-login:
 	aws-vault login $(AWS_VAULT_PROFILE)
 
 up:
-	$(DOCKER_COMPOSE) up --build --force-recreate -d
+	$(DOCKER_COMPOSE) up --build --force-recreate -d backend workers
 
 down:
 	docker-compose down

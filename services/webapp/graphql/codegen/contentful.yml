@@ -6,28 +6,12 @@ documents: ./src/shared/services/contentful/**/*.graphql
 generates:
   src/shared/services/contentful/__generated/types.ts:
     config:
-      gqlImport: '@apollo/client#gql'
       declarationKind: 'interface'
       typesPrefix: 'Contentful'
-      maybeValue: T | undefined
+      maybeValue: T | undefined | null
       namingConvention:
         enumValues: change-case#upperCase
     plugins:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-graphql-request'
-  src/shared/services/contentful/__generated/hooks.ts:
-    preset: import-types
-    presetConfig:
-      typesPath: './types'
-    config:
-      gqlImport: '@apollo/client#gql'
-      declarationKind: 'interface'
-      typesPrefix: 'Contentful'
-      maybeValue: T | undefined
-      namingConvention:
-        enumValues: change-case#upperCase
-    plugins:
-      - add:
-          content: '/* eslint-disable */'
-      - 'typescript-react-apollo'

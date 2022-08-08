@@ -1,31 +1,29 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { useAllDemoItemsQuery } from '../../shared/services/contentful/hooks';
+
 import { demoItemsActions } from '../../modules/demoItems';
-import { Container, Header, List } from './demoItems.styles';
-import { DemoItemListItem } from './demoItemListItem';
+import { useDemoItemsAllQuery } from './demoItems.graphql';
+import { DemoItemsContent } from './demoItems.content';
 
 export const DemoItems = () => {
-  const { data } = useAllDemoItemsQuery();
-  const items = data?.demoItemCollection?.items;
-  const dispatch = useDispatch();
+  const [loadItemsQueryRef, loadItemsQuery] = useDemoItemsAllQuery();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(demoItemsActions.fetchFavoriteDemoItems());
   }, [dispatch]);
 
-  return (
-    <Container>
-      <Header>
-        <FormattedMessage defaultMessage="Contentful items" description="Contentful Items / List header" />
-      </Header>
+  useEffect(() => {
+    loadItemsQuery({});
+  }, [loadItemsQuery]);
 
-      <List>
-        {items?.map((demoItem) => {
-          return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} item={demoItem} /> : null;
-        })}
-      </List>
-    </Container>
+  if (!loadItemsQueryRef) {
+    return null;
+  }
+
+  return (
+    <Suspense fallback={null}>
+      <DemoItemsContent loadItemsQueryRef={loadItemsQueryRef} />
+    </Suspense>
   );
 };
