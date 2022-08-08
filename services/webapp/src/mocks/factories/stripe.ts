@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import {
   StripePaymentMethod,
   StripePaymentMethodCardBrand,
@@ -13,7 +13,7 @@ import { subscriptionPlanFactory } from './subscription';
 
 export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() => ({
   id: faker.datatype.uuid(),
-  type: faker.random.arrayElement([StripePaymentMethodType.Card]),
+  type: faker.helpers.arrayElement([StripePaymentMethodType.Card]),
   billingDetails: {
     name: faker.name.lastName(),
   },

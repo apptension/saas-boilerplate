@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { waitFor, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory } from '../../../../mocks/factories';
@@ -65,12 +65,10 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(screen.getByText(/cancel subscription/i));
 
-      await waitFor(() => {
-        expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
-        expect(mockDispatch).toHaveBeenCalledWith(
-          snackbarActions.showMessage('You will be moved to free plan with the next billing period')
-        );
-      });
+      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage('You will be moved to free plan with the next billing period')
+      );
     });
   });
 
@@ -86,12 +84,10 @@ describe('CancelSubscription: Component', () => {
       render({}, { router: { history } });
       await userEvent.click(screen.getByText(/cancel subscription/i));
 
-      await waitFor(() => {
-        expect(pushSpy).not.toHaveBeenCalledWith('/en/subscriptions');
-        expect(mockDispatch).not.toHaveBeenCalledWith(
-          snackbarActions.showMessage('You will be moved to free plan with the next billing period')
-        );
-      });
+      expect(pushSpy).not.toHaveBeenCalledWith('/en/subscriptions');
+      expect(mockDispatch).not.toHaveBeenCalledWith(
+        snackbarActions.showMessage('You will be moved to free plan with the next billing period')
+      );
     });
   });
 });

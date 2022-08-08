@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import {screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DemoItems } from '../demoItems.component';
 import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
@@ -30,8 +30,8 @@ describe('DemoItems: Component', () => {
     render({}, { apolloMocks });
     await waitFor(() => {
       expect(screen.getByText('First')).toBeInTheDocument();
-      expect(screen.getByText('Second')).toBeInTheDocument();
     });
+    expect(screen.getByText('Second')).toBeInTheDocument();
   });
 
   it('should open single demo item page when link is clicked', async () => {

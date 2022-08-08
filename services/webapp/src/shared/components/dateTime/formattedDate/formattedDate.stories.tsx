@@ -1,5 +1,5 @@
 import { Story } from '@storybook/react';
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { FormattedDate, FormattedDateProps } from './formattedDate.component';
 
 const Template: Story<FormattedDateProps> = (args: FormattedDateProps) => {

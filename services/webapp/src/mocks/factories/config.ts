@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { ConfigState } from '../../modules/config/config.types';
 import { createDeepFactory } from './factoryCreators';
 

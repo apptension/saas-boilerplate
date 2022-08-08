@@ -4,7 +4,7 @@
 
 FROM segment/chamber:2 AS chamber
 
-FROM node:14-alpine
+FROM node:16-alpine
 
 COPY --from=chamber /chamber /bin/chamber
 

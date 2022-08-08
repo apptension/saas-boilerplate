@@ -61,8 +61,8 @@ describe('ConfirmEmail: Component', () => {
       render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
-        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
+      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });
 
@@ -76,8 +76,8 @@ describe('ConfirmEmail: Component', () => {
           expect(mockDispatch).toHaveBeenCalledWith(
             snackbarActions.showMessage('Congratulations! Now you can log in.')
           );
-          expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
         });
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
     });
 
@@ -95,8 +95,8 @@ describe('ConfirmEmail: Component', () => {
           expect(mockDispatch).toHaveBeenCalledWith(
             snackbarActions.showMessage('Congratulations! Your email has been confirmed.')
           );
-          expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
         });
+        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
     });
   });
@@ -107,8 +107,8 @@ describe('ConfirmEmail: Component', () => {
       render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
-        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
       });
+      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
     });
   });
 });

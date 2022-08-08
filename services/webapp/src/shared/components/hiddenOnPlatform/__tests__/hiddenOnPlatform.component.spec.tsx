@@ -42,6 +42,6 @@ describe('HiddenOnPlatform: Component', () => {
   it('should render children if media query doesnt match', () => {
     mockedUseMediaQuery.mockReturnValue({ matches: false });
     render();
-    expect(screen.queryByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
+    expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 });

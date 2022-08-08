@@ -1,5 +1,5 @@
 import { Story } from '@storybook/react';
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { RelativeDate, RelativeDateProps } from './relativeDate.component';
 import { dateMinuteAgo, DAY, nowSub } from './relativeDate.fixtures';
 

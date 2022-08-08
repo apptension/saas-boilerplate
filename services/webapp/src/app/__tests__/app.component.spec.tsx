@@ -14,7 +14,7 @@ describe('App: Component', () => {
 
   it('should render App when language is set', () => {
     render({ children: <span data-testid="content" /> }, { router: { url: '/en' } });
-    expect(screen.queryByTestId('content')).toBeInTheDocument();
+    expect(screen.getByTestId('content')).toBeInTheDocument();
   });
 
   it('should render nothing when language is not set', () => {

@@ -26,7 +26,7 @@ describe('Sidebar: Component', () => {
 
     it('should show link to privacy policy', () => {
       render({}, { store });
-      expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+      expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
     });
 
     it('should not show link to admin page', () => {
@@ -43,12 +43,12 @@ describe('Sidebar: Component', () => {
 
       it('should show link to dashboard', () => {
         render({}, { store });
-        expect(screen.queryByText(/dashboard/gi)).toBeInTheDocument();
+        expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
       });
 
       it('should show link to privacy policy', () => {
         render({}, { store });
-        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show link to admin page', () => {
@@ -64,17 +64,17 @@ describe('Sidebar: Component', () => {
 
       it('should show link to dashboard', () => {
         render({}, { store });
-        expect(screen.queryByText(/dashboard/gi)).toBeInTheDocument();
+        expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
       });
 
       it('should show link to privacy policy', () => {
         render({}, { store });
-        expect(screen.queryByText(/privacy policy/gi)).toBeInTheDocument();
+        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should show link to admin page', () => {
         render({}, { store });
-        expect(screen.queryByText(/admin/gi)).toBeInTheDocument();
+        expect(screen.getByText(/admin/i)).toBeInTheDocument();
       });
     });
   });

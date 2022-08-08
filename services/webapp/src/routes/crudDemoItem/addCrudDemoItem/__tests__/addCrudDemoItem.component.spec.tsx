@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { ConnectionHandler } from 'relay-runtime';
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
@@ -24,7 +24,8 @@ describe('AddCrudDemoItem: Component', () => {
 
   it('should display empty form', () => {
     render();
-    expect(screen.getByPlaceholderText(/name/gi).getAttribute('value')).toBeNull();
+    const value = screen.getByPlaceholderText(/name/i).getAttribute('value');
+    expect(value).toBeNull();
   });
 
   describe('action completes successfully', () => {
@@ -36,17 +37,15 @@ describe('AddCrudDemoItem: Component', () => {
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      await waitFor(() => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
-        expect(operation.fragment.variables).toEqual({
-          input: { name: 'new item name' },
-          connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
-        });
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
+      expect(operation.fragment.variables).toEqual({
+        input: { name: 'new item name' },
+        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
+      });
 
-        act(() => {
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
+      await act(() => {
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
     });
 
@@ -55,20 +54,16 @@ describe('AddCrudDemoItem: Component', () => {
 
       render({}, { relayEnvironment });
 
-      userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item');
+      await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item');
       await userEvent.click(screen.getByRole('button', { name: /save/i }))
 
-      await waitFor(() => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
-        act(() => {
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
+      await act(() => {
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
-      });
+      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
     });
   });
 });

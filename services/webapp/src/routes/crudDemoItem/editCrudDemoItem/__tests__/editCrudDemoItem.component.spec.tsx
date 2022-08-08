@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { generatePath } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
@@ -46,7 +46,7 @@ describe('EditCrudDemoItem: Component', () => {
 
     render({ relayEnvironment });
 
-    expect(screen.getByDisplayValue(/old item/gi)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/old item/i)).toBeInTheDocument();
   });
 
   describe('action completes successfully', () => {
@@ -61,19 +61,17 @@ describe('EditCrudDemoItem: Component', () => {
 
       render({ relayEnvironment });
 
-      const nameField = screen.getByPlaceholderText(/name/gi);
+      const nameField = screen.getByPlaceholderText(/name/i);
       await userEvent.clear(nameField);
       await userEvent.type(nameField, 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      await waitFor(() => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
-        expect(operation.fragment.variables).toEqual({ input: { id: 'test-id', name: 'new item name' } });
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
+      expect(operation.fragment.variables).toEqual({ input: { id: 'test-id', name: 'new item name' } });
 
-        act(() => {
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
+      await act(() => {
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
     });
 
@@ -91,17 +89,13 @@ describe('EditCrudDemoItem: Component', () => {
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      await waitFor(() => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
-        act(() => {
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');
+      await act(() => {
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      await waitFor(() =>
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'))
-      );
+      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'))
     });
   });
 });

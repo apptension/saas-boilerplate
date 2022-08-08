@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { EditProfileForm } from '../editProfileForm.component';
@@ -47,9 +47,7 @@ describe('EditProfileForm: Component', () => {
     await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
     await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(updateProfile(formData));
-    });
+    expect(mockDispatch).toHaveBeenCalledWith(updateProfile(formData));
   });
 
   describe('action completes successfully', () => {
@@ -60,9 +58,7 @@ describe('EditProfileForm: Component', () => {
       await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
       await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
       await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Personal data successfully changed.'));
-      });
+      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Personal data successfully changed.'));
     });
 
     it('should display updated values', async () => {
@@ -72,10 +68,8 @@ describe('EditProfileForm: Component', () => {
       await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
       await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
       await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-      await waitFor(() => {
-        expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
-        expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
-      });
+      expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
+      expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
     });
   });
 
@@ -85,9 +79,7 @@ describe('EditProfileForm: Component', () => {
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
     await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('First name is too long')).toBeInTheDocument();
-    });
+    expect(screen.getByText('First name is too long')).toBeInTheDocument();
   });
 
   it('should show field error if action throws error', async () => {
@@ -101,9 +93,7 @@ describe('EditProfileForm: Component', () => {
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
     await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
@@ -114,8 +104,6 @@ describe('EditProfileForm: Component', () => {
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
     await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
     expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Invalid data')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { waitFor, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
@@ -47,13 +47,11 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(
-          subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' })
-        );
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
-        expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
-      });
+      expect(mockDispatch).toHaveBeenCalledWith(
+        subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' })
+      );
+      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
+      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
     });
   });
 
@@ -69,11 +67,9 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(
-          snackbarActions.showMessage('You need first to add a payment method. Go back and set it there')
-        );
-      });
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage('You need first to add a payment method. Go back and set it there')
+      );
     });
   });
 });

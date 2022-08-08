@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { ContentfulSys } from '../../shared/services/contentful';
 import { createFactory } from './factoryCreators';
 

@@ -25,7 +25,8 @@ describe('CrudDemoItemForm: Component', () => {
 
   it('should display empty form', () => {
     render();
-    expect(screen.getByPlaceholderText(/name/gi).getAttribute('value')).toBeNull();
+    const value = screen.getByPlaceholderText(/name/i).getAttribute('value');
+    expect(value).toBeNull();
   });
 
   describe('action completes successfully', () => {

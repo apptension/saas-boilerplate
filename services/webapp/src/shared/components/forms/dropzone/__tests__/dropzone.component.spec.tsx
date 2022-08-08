@@ -19,11 +19,9 @@ describe('Dropzone: Component', () => {
   const render = makeContextRenderer(component);
 
   const fireInputChange = async (files: File[]) => {
-    await waitFor(() =>
-      fireEvent.change(screen.getByTestId('file-input'), {
-        target: { files },
-      })
-    );
+    fireEvent.change(screen.getByTestId('file-input'), {
+      target: {files},
+    })
   };
 
   const file = new File(['content'], 'file.png', { type: 'image/png' });

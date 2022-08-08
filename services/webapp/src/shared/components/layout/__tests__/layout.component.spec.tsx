@@ -47,12 +47,12 @@ describe('Layout: Component', () => {
     describe('user is logged out', () => {
       it('should show open menu button', () => {
         render();
-        expect(screen.queryByLabelText(/open menu/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
       it('should show privacy menu link', () => {
         render();
-        expect(screen.queryByText(/privacy policy/i)).toBeInTheDocument();
+        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show dashboard menu link', () => {
@@ -126,7 +126,7 @@ describe('Layout: Component', () => {
 
       it('should show menu links', () => {
         render();
-        expect(screen.queryByText(/privacy policy/i)).toBeInTheDocument();
+        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
     });
 

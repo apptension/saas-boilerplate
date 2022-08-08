@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=node:14-alpine
+ARG BASE_IMAGE=node:16-alpine
 FROM ${BASE_IMAGE}
 
 WORKDIR /usr/src/app
