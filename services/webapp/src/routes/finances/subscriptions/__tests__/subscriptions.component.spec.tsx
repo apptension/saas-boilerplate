@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer, matchTextContent, spiedHistory } from '../../../../shared/utils/testUtils';
+import {makeContextRenderer, matchTextContent, packHistoryArgs, spiedHistory} from '../../../../shared/utils/testUtils';
 import { Subscriptions } from '../subscriptions.component';
 import { prepareState } from '../../../../mocks/store';
 import {
@@ -82,7 +82,7 @@ describe('Subscriptions: Component', () => {
       render({}, { router: { history } });
 
       await userEvent.click(screen.getByText(/edit subscription/i));
-      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions/edit');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions/edit'));
     });
   });
 
@@ -118,7 +118,7 @@ describe('Subscriptions: Component', () => {
       render({}, { store, router: { history } });
 
       await userEvent.click(screen.getByText(/cancel subscription/i));
-      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions/cancel');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions/cancel'));
     });
   });
 

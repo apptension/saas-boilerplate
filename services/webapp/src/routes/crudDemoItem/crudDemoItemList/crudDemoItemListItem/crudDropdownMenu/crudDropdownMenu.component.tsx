@@ -9,7 +9,7 @@ import { usePromiseMutation } from '../../../../../shared/services/graphqlApi/us
 import { Link as ButtonLink } from '../../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../../shared/components/forms/button';
 import { Icon } from '../../../../../shared/components/icon';
-import { ROUTES } from '../../../../../app/config/routes';
+import { Routes } from '../../../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../../../shared/hooks/localePaths';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
@@ -71,7 +71,7 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
         <Menu isOpen={isOpen}>
           <ButtonLink
             variant={ButtonVariant.FLAT}
-            to={generateLocalePath(ROUTES.crudDemoItem.edit, { id: itemId })}
+            to={generateLocalePath(Routes.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
           >
             <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />

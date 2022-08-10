@@ -7,29 +7,28 @@ describe('Utils: path', () => {
       appLocales: ['en', 'pl'],
     }));
 
-    const langPart = '/:lang(en|pl)';
-
     it('should create nested route based on provided config', () => {
-      const result = nestedPath('/root', {
-        step: '/step',
-        anotherStep: '/another-step/:id',
+      const result = nestedPath('root', {
+        step: 'step',
+        anotherStep: 'another-step/:id',
       });
 
       expect(result).toEqual({
-        index: `${langPart}/root`,
-        step: `${langPart}/root/step`,
-        anotherStep: `${langPart}/root/another-step/:id`,
+        index: 'root/*',
+        step: 'root/step',
+        anotherStep: 'root/another-step/:id',
         getRelativeUrl: expect.any(Function),
+        getLocalePath: expect.any(Function),
       });
     });
 
     it('should return relative url using getRelativeUrl property', () => {
-      const result = nestedPath('/root', {
-        step: '/step',
-        anotherStep: '/another-step/:id',
+      const result = nestedPath('root', {
+        step: 'step',
+        anotherStep: 'another-step/:id',
       });
 
-      expect(result.getRelativeUrl('anotherStep')).toEqual('/another-step/:id');
+      expect(result.getRelativeUrl('anotherStep')).toEqual('another-step/:id');
     });
   });
 });

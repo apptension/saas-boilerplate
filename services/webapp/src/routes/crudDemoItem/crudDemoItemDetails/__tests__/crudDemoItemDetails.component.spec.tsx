@@ -4,18 +4,20 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDetailsQuery.graphql';
 import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
+import {getLocalePath} from "../../../../shared/utils/path";
 
 describe('CrudDemoItemDetails: Component', () => {
+  const routePath = getLocalePath(Routes.crudDemoItem.edit);
   const render = (context?: Partial<ContextData>) =>
     makeContextRenderer(() => <CrudDemoItemDetails />)(
       {},
       {
         ...context,
         router: {
-          url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: 'test-id' }),
-          routePath: ROUTES.crudDemoItem.edit,
+          url: generatePath(routePath, { lang: 'en', id: 'test-id' }),
+          routePath,
         },
       }
     );
@@ -32,11 +34,11 @@ describe('CrudDemoItemDetails: Component', () => {
     render({
       relayEnvironment,
       router: {
-        url: generatePath(ROUTES.crudDemoItem.details, { lang: 'en', id: 'test-id' }),
-        routePath: ROUTES.crudDemoItem.details,
+        url: generatePath(getLocalePath(Routes.crudDemoItem.details), { lang: 'en', id: 'test-id' }),
+        routePath: Routes.crudDemoItem.details,
       },
     });
 
-    expect(screen.getByText(/demo item name/gi)).toBeInTheDocument();
+    expect(screen.getByText(/demo item name/i)).toBeInTheDocument();
   });
 });

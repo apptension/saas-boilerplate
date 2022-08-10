@@ -5,7 +5,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crudDemoItemListItemTestQuery.graphql';
-import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
+import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../../shared/utils/testUtils';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 
 const mockDispatch = jest.fn();
@@ -53,7 +53,7 @@ describe('CrudDemoItemListItem: Component', () => {
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
     await userEvent.click(screen.getByText(/demo item name/i));
-    expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/test-id');
+    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/crud-demo-item/test-id'));
   });
 
   it('should render link to edit form', async () => {
@@ -67,6 +67,6 @@ describe('CrudDemoItemListItem: Component', () => {
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
     await userEvent.click(screen.getByText(/edit/i));
-    expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/test-id/edit');
+    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/crud-demo-item/test-id/edit'));
   });
 });

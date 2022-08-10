@@ -1,7 +1,7 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
-import { makeContextRenderer, matchTextContent, ProvidersWrapper } from '../../../../../utils/testUtils';
+import { makeContextRenderer, matchTextContent } from '../../../../../utils/testUtils';
 import { useApiForm } from '../../../../../hooks/useApiForm';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
@@ -17,9 +17,7 @@ const StripePaymentMethodSelectorWithControls = () => {
 const component = () => {
   return (
     <Elements stripe={null}>
-      <ProvidersWrapper>
-        <StripePaymentMethodSelectorWithControls />
-      </ProvidersWrapper>
+      <StripePaymentMethodSelectorWithControls />
     </Elements>
   );
 };
@@ -49,7 +47,7 @@ describe('StripePaymentMethodSelector: Component', () => {
       mockUseStripePaymentMethods.mockReturnValue({ isLoading: false, paymentMethods });
 
       render();
-      expect(screen.getByText(/add a new card/gi)).toBeInTheDocument();
+      expect(screen.getByText(/add a new card/i)).toBeInTheDocument();
     });
   });
 
@@ -66,7 +64,7 @@ describe('StripePaymentMethodSelector: Component', () => {
       mockUseStripePaymentMethods.mockReturnValue({ isLoading: false, paymentMethods: [] });
 
       render();
-      expect(screen.queryByText(/add a new card/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/add a new card/i)).not.toBeInTheDocument();
     });
   });
 });

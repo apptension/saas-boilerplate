@@ -1,5 +1,5 @@
 import { all, put, takeLatest, select } from 'redux-saga/effects';
-import { ROUTES } from '../../app/config/routes';
+import { Routes } from '../../app/config/routes';
 import { auth } from '../../shared/services/api';
 import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
@@ -13,7 +13,7 @@ import { selectIsLoggedIn } from './auth.selectors';
 
 function* loginResolve(response: LoginApiResponseData) {
   if (!response.isError) {
-    yield navigate(ROUTES.home);
+    yield navigate(Routes.getLocalePath(['home']));
     yield put(authActions.fetchProfile());
   }
 }
@@ -23,13 +23,13 @@ function* logoutResolve() {
   const isLoggedIn: boolean = yield select(selectIsLoggedIn);
   if (isLoggedIn) {
     yield put(authActions.resetProfile());
-    yield navigate(ROUTES.login);
+    yield navigate(Routes.getLocalePath(['login']));
   }
 }
 
 function* signupResolve(response: SignupApiResponseData) {
   if (!response.isError) {
-    yield navigate(ROUTES.home);
+    yield navigate(Routes.getLocalePath(['home']));
     yield put(authActions.fetchProfile());
   }
 }

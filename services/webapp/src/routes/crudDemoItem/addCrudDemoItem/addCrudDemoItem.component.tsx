@@ -6,7 +6,7 @@ import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQu
 import { addCrudDemoItemMutation } from '../../../__generated__/addCrudDemoItemMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
@@ -42,7 +42,7 @@ export const AddCrudDemoItem = () => {
 
   return (
     <Container>
-      <BackButton to={generateLocalePath(ROUTES.crudDemoItem.list)} />
+      <BackButton to={generateLocalePath(Routes.crudDemoItem.list)} />
       <Header>
         <FormattedMessage defaultMessage="Add CRUD Example Item" description="AddCrudDemoItem / Header" />
       </Header>

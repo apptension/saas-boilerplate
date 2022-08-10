@@ -1,13 +1,16 @@
 import { map } from 'ramda';
-import { appLocales } from '../../app/config/i18n';
 
-export const path = (p: string) => `/:lang(${appLocales.join('|')})${p}`;
+export const getLocalePath = (p: string) => `/:lang/${p}`;
 
 export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<T, string>) => {
-  const absoluteNestedUrls = map<Record<T, string>, Record<T, string>>((value) => path(root + value), nestedRoutes);
+  const absoluteNestedUrls = map<Record<T, string>, Record<T, string>>((value) => root + '/' + value, nestedRoutes);
+  const paths = {
+    index: `${root}/*`,
+    ...absoluteNestedUrls
+  };
   return {
-    index: path(root),
-    ...absoluteNestedUrls,
+    ...paths,
     getRelativeUrl: (route: T) => nestedRoutes[route],
+    getLocalePath: (route: T) => getLocalePath(paths[route]),
   };
 };

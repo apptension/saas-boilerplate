@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
 import { Link } from '../../../../shared/components/link';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { Container, Header, Text, Links } from './passwordResetRequest.styles';
 
@@ -38,7 +38,7 @@ export const PasswordResetRequest = () => {
       <PasswordResetRequestForm onSubmitted={handleSubmit} />
 
       <Links>
-        <Link to={generateLocalePath(ROUTES.login)}>
+        <Link to={generateLocalePath(Routes.login)}>
           <FormattedMessage defaultMessage="Go back to log in" description="Auth / Reset password / login link" />
         </Link>
       </Links>

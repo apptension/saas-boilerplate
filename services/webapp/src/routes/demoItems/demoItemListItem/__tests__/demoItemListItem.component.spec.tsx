@@ -71,7 +71,7 @@ describe('DemoItemListItem: Component', () => {
       expect(screen.getByText('Example title')).toBeInTheDocument();
     });
     await userEvent.click(screen.getByText('Example title'));
-    expect(pushSpy).toHaveBeenCalledWith('/en/demo-items/item-1');
+    expect(pushSpy).toHaveBeenCalledWith({ hash: '', pathname: '/en/demo-items/item-1', search: ''}, undefined);
   });
 
   describe('item is marked as favorite', () => {

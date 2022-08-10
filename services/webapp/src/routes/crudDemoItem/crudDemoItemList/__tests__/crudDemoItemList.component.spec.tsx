@@ -3,7 +3,12 @@ import { screen } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import Query from '../../../../__generated__/crudDemoItemListQuery.graphql';
-import { connectionFromArray, makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import {
+  connectionFromArray,
+  makeContextRenderer,
+  packHistoryArgs,
+  spiedHistory
+} from '../../../../shared/utils/testUtils';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 
 describe('CrudDemoItemList: Component', () => {
@@ -37,6 +42,6 @@ describe('CrudDemoItemList: Component', () => {
     const { pushSpy, history } = spiedHistory();
     render({}, { router: { history }, relayEnvironment });
     await userEvent.click(screen.getByText(/add/i));
-    expect(pushSpy).toHaveBeenCalledWith('/en/crud-demo-item/add');
+    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/crud-demo-item/add'));
   });
 });

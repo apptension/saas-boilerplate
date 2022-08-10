@@ -4,7 +4,7 @@ import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
 import { useFragment } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
 import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
@@ -37,7 +37,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
 
   return (
     <Container>
-      <Link to={generateLocalePath(ROUTES.demoItem, { id })}>
+      <Link to={generateLocalePath(Routes.demoItem, { id })}>
         <FavoriteIcon
           role="checkbox"
           aria-checked={isFavorite}

@@ -1,4 +1,4 @@
-import { Children, ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -12,11 +12,7 @@ import { Layout } from '../../../shared/components/layout';
 import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
-export type ValidRoutesProvidersProps = {
-  children?: ReactNode;
-};
-
-export const ValidRoutesProviders = ({ children }: ValidRoutesProvidersProps) => {
+export const ValidRoutesProviders = () => {
   useStartup();
   useLanguageFromParams();
 
@@ -37,7 +33,9 @@ export const ValidRoutesProviders = ({ children }: ValidRoutesProvidersProps) =>
           <GlobalStyle />
 
           <ResponsiveThemeProvider>
-            <Layout>{Children.only(children)}</Layout>
+            <Layout>
+              <Outlet />
+            </Layout>
           </ResponsiveThemeProvider>
         </>
       </RelayEnvironmentProvider>

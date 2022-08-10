@@ -5,7 +5,8 @@ import { DemoItemContent } from './demoItemContent.component';
 import { useDemoItemQuery } from './demoItem.graphql';
 
 export const DemoItem = () => {
-  const { id } = useParams<{ id: string }>();
+  type Params = { id: string };
+  const { id } = useParams<Params>() as Params;
   const [itemQueryRef, loadItem] = useDemoItemQuery();
   useEffect(() => {
     loadItem({ id });

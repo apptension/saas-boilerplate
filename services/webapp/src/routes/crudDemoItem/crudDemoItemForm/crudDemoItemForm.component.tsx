@@ -4,7 +4,7 @@ import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/forms/input';
 import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Link } from '../../../shared/components/link';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { useSnackbar } from '../../../shared/components/snackbar';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
@@ -90,7 +90,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
         </Fields>
 
         <Buttons>
-          <Link to={generateLocalePath(ROUTES.crudDemoItem.list)} variant={ButtonVariant.SECONDARY}>
+          <Link to={generateLocalePath(Routes.crudDemoItem.list)} variant={ButtonVariant.SECONDARY}>
             <FormattedMessage defaultMessage="Cancel" description="CrudDemoItem form / Cancel button" />
           </Link>
 

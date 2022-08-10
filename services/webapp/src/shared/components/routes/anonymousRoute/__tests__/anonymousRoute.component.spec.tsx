@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
+import { Route } from 'react-router-dom';
 import { AnonymousRoute } from '../anonymousRoute.component';
-import { makeContextRenderer, spiedHistory } from '../../../../utils/testUtils';
+import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../utils/testUtils';
 import { prepareState } from '../../../../../mocks/store';
 import { loggedInAuthFactory, loggedOutAuthFactory } from '../../../../../mocks/factories';
 
@@ -18,11 +19,15 @@ describe('AnonymousRoute: Component', () => {
   });
 
   const component = () => (
-    <AnonymousRoute>
-      <span data-testid="content" />
-    </AnonymousRoute>
+    <AnonymousRoute />
   );
-  const render = makeContextRenderer(component);
+  const routerContext = {
+    children: <Route path="*" element={<span data-testid="content" />}/>,
+    routePath: '*'
+  };
+  const render = makeContextRenderer(component, {
+    router: routerContext
+  });
 
   describe('user is logged out', () => {
     it('should render content', () => {
@@ -31,9 +36,9 @@ describe('AnonymousRoute: Component', () => {
         state.auth = loggedOutAuthFactory();
       });
       const { pushSpy, history } = spiedHistory();
-      render({}, { store, router: { history } });
+      render({}, { store, router: { ...routerContext, history } });
       expect(screen.getByTestId('content')).toBeInTheDocument();
-      expect(pushSpy).not.toHaveBeenCalledWith('/en/home');
+      expect(pushSpy).not.toHaveBeenCalledWith(...packHistoryArgs('/en/home'));
     });
   });
 
@@ -46,7 +51,7 @@ describe('AnonymousRoute: Component', () => {
       const { pushSpy, history } = spiedHistory();
       render({}, { store, router: { history } });
       expect(screen.queryByTestId('content')).not.toBeInTheDocument();
-      expect(pushSpy).toHaveBeenCalledWith('/en/');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/'));
     });
   });
 });

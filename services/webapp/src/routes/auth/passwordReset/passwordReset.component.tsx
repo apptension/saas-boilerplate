@@ -1,5 +1,5 @@
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ROUTES } from '../../../app/config/routes';
+import { Route, Routes as RouterRoutes } from 'react-router-dom';
+import { Routes } from '../../../app/config/routes';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 
 // @ts-ignore
@@ -8,16 +8,10 @@ const PasswordResetRequest = asyncComponent(() => import('./passwordResetRequest
 const PasswordResetConfirm = asyncComponent(() => import('./passwordResetConfirm'), 'PasswordResetConfirm');
 
 export const PasswordReset = () => {
-  const match = useRouteMatch();
-
   return (
-    <Switch>
-      <Route exact path={`${match.path}`}>
-        <PasswordResetRequest />
-      </Route>
-      <Route exact path={`${match.path}${ROUTES.passwordReset.getRelativeUrl('confirm')}`}>
-        <PasswordResetConfirm />
-      </Route>
-    </Switch>
+    <RouterRoutes>
+      <Route index element={<PasswordResetRequest />} />
+      <Route path={`${Routes.passwordReset.getRelativeUrl('confirm')}`} element={<PasswordResetConfirm />} />
+    </RouterRoutes>
   );
 };

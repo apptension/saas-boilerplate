@@ -1,14 +1,13 @@
 import { FormattedMessage, IntlProvider } from 'react-intl';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import { RelayEnvironmentProvider } from 'react-relay';
-import { path } from '../shared/utils/path';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import { Role } from '../modules/auth/auth.types';
 import { H1 } from '../theme/typography';
 import { AuthRoute } from '../shared/components/routes/authRoute';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
 import { contentfulRelayEnvironment } from '../shared/services/contentful/relayEnvironment';
-import { ROUTES } from './config/routes';
+import { LANG_PREFIX, Routes } from './config/routes';
 import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
 import {
   CancelSubscription,
@@ -36,93 +35,61 @@ export const App = () => {
   const { pathname, search } = useLocation();
 
   return (
-    <Switch>
-      <Route path={path('')}>
-        <ValidRoutesProviders>
-          <Switch>
-            <AuthRoute exact path={ROUTES.home}>
-              <Home />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.profile}>
-              <Profile />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.demoItems}>
-              <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
-                <DemoItems />
-              </RelayEnvironmentProvider>
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.demoItem}>
-              <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
-                <DemoItem />
-              </RelayEnvironmentProvider>
-            </AuthRoute>
-            <AnonymousRoute exact path={ROUTES.signup}>
-              <Signup />
-            </AnonymousRoute>
-            <AnonymousRoute exact path={ROUTES.login}>
-              <Login />
-            </AnonymousRoute>
-            <Route exact path={ROUTES.confirmEmail}>
-              <ConfirmEmail />
-            </Route>
-            <Route exact path={ROUTES.privacyPolicy}>
-              <PrivacyPolicy />
-            </Route>
-            <Route exact path={ROUTES.termsAndConditions}>
-              <TermsAndConditions />
-            </Route>
-            <Route path={ROUTES.passwordReset.index}>
-              <PasswordReset />
-            </Route>
-            <AuthRoute path={ROUTES.admin} allowedRoles={Role.ADMIN}>
-              <H1>
-                <FormattedMessage defaultMessage="This page is only visible for admins" description="Admin / Heading" />
-              </H1>
-            </AuthRoute>
-
-            <AuthRoute path={ROUTES.crudDemoItem.index}>
-              <CrudDemoItem />
-            </AuthRoute>
-
-            <AuthRoute exact path={ROUTES.finances.paymentConfirm}>
-              <FinancesPaymentConfirm />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.subscriptions.index}>
-              <Subscriptions />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.subscriptions.changePlan}>
-              <EditSubscription />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.subscriptions.paymentMethod}>
-              <EditPaymentMethod />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.subscriptions.cancel}>
-              <CancelSubscription />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.finances.history}>
-              <TransactionHistory />
-            </AuthRoute>
-            <AuthRoute exact path={ROUTES.documents}>
-              <Documents />
-            </AuthRoute>
-            {/* <-- INJECT ROUTE --> */}
-
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
-        </ValidRoutesProviders>
-      </Route>
-
-      <Route path="/">
-        <Redirect to={`/${DEFAULT_LOCALE}${pathname}${search}`} />
-      </Route>
-
-      <IntlProvider key={DEFAULT_LOCALE} locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
-        <Route>
-          <NotFound />
+    <RouterRoutes>
+      <Route element={<ValidRoutesProviders />}>
+        <Route path={LANG_PREFIX} element={<AnonymousRoute />}>
+          <Route path={Routes.signup} element={<Signup />} />
+          <Route path={Routes.login} element={<Login />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
-      </IntlProvider>
-    </Switch>
+        <Route path={LANG_PREFIX} element={<AuthRoute />}>
+          <Route index element={<Home />} />
+          <Route path={Routes.profile} element={<Profile />} />
+          <Route path={Routes.demoItems} element={
+            <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
+              <DemoItems />
+            </RelayEnvironmentProvider>
+          } />
+          <Route path={Routes.demoItem} element={
+            <RelayEnvironmentProvider environment={contentfulRelayEnvironment}>
+              <DemoItem />
+            </RelayEnvironmentProvider>
+          } />
+          <Route path={Routes.crudDemoItem.index} element={<CrudDemoItem />} />
+          <Route path={Routes.subscriptions.index} element={<Subscriptions />} />
+          <Route path={Routes.subscriptions.changePlan} element={<EditSubscription />} />
+          <Route path={Routes.subscriptions.paymentMethod} element={<EditPaymentMethod />} />
+          <Route path={Routes.subscriptions.cancel} element={<CancelSubscription />} />
+          <Route path={Routes.finances.paymentConfirm} element={<FinancesPaymentConfirm />} />
+          <Route path={Routes.finances.history} element={<TransactionHistory />} />
+          <Route path={Routes.documents} element={<Documents />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+        <Route path={LANG_PREFIX} element={<AuthRoute allowedRoles={Role.ADMIN} />}>
+          <Route path={Routes.admin} element={
+            <H1>
+              <FormattedMessage defaultMessage="This page is only visible for admins" description="Admin / Heading" />
+            </H1>
+          } />
+        </Route>
+
+        <Route path={LANG_PREFIX}>
+          <Route path={Routes.confirmEmail} element={<ConfirmEmail />} />
+          <Route path={Routes.privacyPolicy} element={<PrivacyPolicy />} />
+          <Route path={Routes.termsAndConditions} element={<TermsAndConditions />} />
+          <Route path={Routes.passwordReset.index} element={<PasswordReset />} />
+        </Route>
+
+        {/* <-- INJECT ROUTE --> */}
+
+        <Route path="*" element={
+          <IntlProvider key={DEFAULT_LOCALE} locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
+            <NotFound/>
+          </IntlProvider>
+        }/>
+      </Route>
+
+      <Route path="/" element={<Navigate to={`/${DEFAULT_LOCALE}${pathname}${search}`}/>} />
+    </RouterRoutes>
   );
 };

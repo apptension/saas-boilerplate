@@ -2,7 +2,7 @@ import {screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-import { makeContextRenderer, spiedHistory } from '../../../shared/utils/testUtils';
+import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../shared/utils/testUtils';
 import demoItemsAllQueryGraphql from '../../../__generated__/demoItemsAllQuery.graphql';
 import { demoItemFactory } from '../../../mocks/factories';
 import { DemoItems } from '../demoItems.component';
@@ -52,6 +52,6 @@ describe('DemoItems: Component', () => {
       expect(screen.getByText('First')).toBeInTheDocument();
     });
     await userEvent.click(screen.getByText('First'));
-    expect(pushSpy).toHaveBeenCalledWith('/en/demo-items/test-id-1');
+    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/demo-items/test-id-1'));
   });
 });

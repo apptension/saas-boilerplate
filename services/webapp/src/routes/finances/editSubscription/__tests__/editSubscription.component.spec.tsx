@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
@@ -51,7 +51,7 @@ describe('EditSubscription: Component', () => {
         subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' })
       );
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
-      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
     });
   });
 

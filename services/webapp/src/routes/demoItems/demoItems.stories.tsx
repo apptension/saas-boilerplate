@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { ROUTES } from '../../app/config/routes';
+import { Routes } from '../../app/config/routes';
 import { prepareState } from '../../mocks/store';
 import demoItemsAllQueryGraphql from '../../__generated__/demoItemsAllQuery.graphql';
 import { demoItemFactory } from '../../mocks/factories';
@@ -30,7 +30,7 @@ const Template: Story = ({ favorited = [], ...args }) => {
       context={{
         store,
         relayEnvironment,
-        router: { url: `/en${ROUTES.demoItems}`, routePath: `/:lang${ROUTES.demoItems}` },
+        router: { url: `/en${Routes.demoItems}`, routePath: `/:lang${Routes.demoItems}` },
       }}
     >
       <DemoItems {...args} />

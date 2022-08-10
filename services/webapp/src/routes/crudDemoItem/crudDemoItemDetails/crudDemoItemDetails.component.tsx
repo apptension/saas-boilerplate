@@ -6,7 +6,10 @@ import { crudDemoItemDetailsQuery } from '../../../__generated__/crudDemoItemDet
 import { CrudDemoItemDetailsContent } from './crudDemoItemDetailsContent.component';
 
 export const CrudDemoItemDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  type Params = {
+    id: string;
+  }
+  const { id } = useParams<keyof Params>() as Params;
 
   const [queryRef, loadQuery] = useQueryLoader<crudDemoItemDetailsQuery>(graphql`
     query crudDemoItemDetailsQuery($id: ID!) {

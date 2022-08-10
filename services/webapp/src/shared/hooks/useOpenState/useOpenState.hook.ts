@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { not } from 'ramda';
 
 /*
@@ -20,13 +20,13 @@ export const useOpenState = (initialValue: boolean | (() => boolean)) => {
   };
 
   const clickAway = () => {
-    if (!isOpen || isTogglingRef.current) return;
+    if (!isOpen) return;
+    if (isTogglingRef.current) {
+      isTogglingRef.current = false;
+      return;
+    }
     close();
   };
-
-  useEffect(() => {
-    isTogglingRef.current = false;
-  });
 
   return { isOpen, setIsOpen, close, open, toggle, clickAway };
 };

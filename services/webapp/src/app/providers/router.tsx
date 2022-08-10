@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
-import { Router } from 'react-router';
-import { browserHistory } from '../../shared/utils/history';
+import { BrowserRouter } from 'react-router-dom';
 
 export const RouterProvider = ({ children }: { children: ReactNode }) => (
-  <Router history={browserHistory}>{children}</Router>
+  <BrowserRouter>{children}</BrowserRouter>
 );

@@ -3,7 +3,7 @@ import CrudDemoItemDetailsQuery, {
   crudDemoItemDetailsQuery,
 } from '../../../__generated__/crudDemoItemDetailsQuery.graphql';
 import { BackButton } from '../../../shared/components/backButton';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container, Header } from './crudDemoItemDetails.styles';
 
@@ -19,7 +19,7 @@ export const CrudDemoItemDetailsContent = ({ queryRef }: CrudDemoItemDetailsCont
 
   return (
     <Container>
-      <BackButton to={generateLocalePath(ROUTES.crudDemoItem.list)} />
+      <BackButton to={generateLocalePath(Routes.crudDemoItem.list)} />
       <Header>{itemData?.name}</Header>
     </Container>
   );

@@ -148,16 +148,16 @@ export const Edit{{ pascalCase name }} = asyncComponent(() => import('../routes/
     type: 'modify',
     path: 'src/app/app.component.tsx',
     pattern: `{/* <-- INJECT ROUTE --> */}`,
-    template: `<AuthRoute exact path={ROUTES.{{ camelCase name }}.list}>
+    template: `<AuthRoute exact path={Routes.{{ camelCase name }}.list}>
               <{{ pascalCase name }}List />
             </AuthRoute>
-            <AuthRoute exact path={ROUTES.{{ camelCase name }}.add}>
+            <AuthRoute exact path={Routes.{{ camelCase name }}.add}>
               <Add{{ pascalCase name }} />
             </AuthRoute>
-            <AuthRoute exact path={ROUTES.{{ camelCase name }}.details}>
+            <AuthRoute exact path={Routes.{{ camelCase name }}.details}>
               <{{ pascalCase name }}Details />
             </AuthRoute>
-            <AuthRoute exact path={ROUTES.{{ camelCase name }}.edit}>
+            <AuthRoute exact path={Routes.{{ camelCase name }}.edit}>
               <Edit{{ pascalCase name }} />
             </AuthRoute>
             {/* <-- INJECT ROUTE --> */}`,

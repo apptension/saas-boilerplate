@@ -15,6 +15,6 @@ describe('LanguageSwitcher: Component', () => {
     fireEvent.change(screen.getByRole('combobox'), event);
 
     expect(pushSpy).toHaveBeenCalledTimes(1);
-    expect(pushSpy).toHaveBeenCalledWith('/pl/some/custom/url');
+    expect(pushSpy).toHaveBeenCalledWith({ hash: '', pathname: '/pl/some/custom/url', search: '' }, undefined);
   });
 });

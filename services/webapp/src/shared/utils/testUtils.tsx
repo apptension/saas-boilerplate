@@ -5,7 +5,8 @@ import { createStore } from 'redux';
 import { identity } from 'ramda';
 import { Provider } from 'react-redux';
 import { createMemoryHistory, MemoryHistory } from 'history';
-import { Route, Router } from 'react-router';
+import { Route, Routes } from 'react-router';
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -33,6 +34,7 @@ export interface ContextData {
     url?: string;
     routePath?: string;
     history?: MemoryHistory;
+    children?: ReactNode;
   };
   store?: GlobalState | ((draft: GlobalState) => void);
   messages?: TranslationMessages;
@@ -74,19 +76,23 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   })();
 
   return (
-    <Router history={routerHistory}>
+    <HistoryRouter history={routerHistory}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <RelayEnvironmentProvider environment={relayEnvironment}>
             <IntlProvider {...intlProviderMockProps}>
               <Provider store={createStore(createReducer(), produce(store, identity))}>
-                <Route path={routePath}>{children}</Route>
+                <Routes>
+                  <Route path={routePath} element={children}>
+                    {router.children}
+                  </Route>
+                </Routes>
               </Provider>
             </IntlProvider>
           </RelayEnvironmentProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
-    </Router>
+    </HistoryRouter>
   );
 };
 
@@ -145,3 +151,8 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
     },
   };
 };
+
+export const packHistoryArgs = (pathname: string, other = {}) => ([
+  expect.objectContaining({ pathname, ...other }),
+  undefined
+])

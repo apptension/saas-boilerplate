@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event';
 import { screen, waitFor } from '@testing-library/react';
 import { Layout } from '../layout.component';
-import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
+import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../utils/testUtils';
 import { Breakpoint } from '../../../../theme/media';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory } from '../../../../mocks/factories';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 
 const loggedInState = prepareState((state) => {
   state.auth = loggedInAuthFactory();
@@ -34,7 +34,7 @@ describe('Layout: Component', () => {
 
     describe('on /auth routes', () => {
       it('should not show open menu button', () => {
-        render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
+        render({}, { router: { routePath: `/:lang${Routes.login}` } });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
     });
@@ -78,11 +78,13 @@ describe('Layout: Component', () => {
           render({}, { router: { history }, store: loggedInState });
           await userEvent.click(screen.getByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
-          expect(pushSpy).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/en/privacy-policy' }));
+          expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/privacy-policy'));
         });
 
         it('should close the menu when link is clicked', async () => {
-          render({}, { store: loggedInState });
+          const routePath = Routes.getLocalePath(['privacyPolicy']);
+          const { history } = spiedHistory('/en/privacy-policy');
+          render({}, { store: loggedInState, router: { history, routePath } });
           await userEvent.click(screen.getByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
 
@@ -113,7 +115,7 @@ describe('Layout: Component', () => {
 
     describe('on /auth routes', () => {
       it('should not show menu links', () => {
-        render({}, { router: { routePath: `/:lang${ROUTES.login}` } });
+        render({}, { router: { routePath: `/:lang${Routes.login}` } });
         expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
       });
     });
@@ -140,7 +142,7 @@ describe('Layout: Component', () => {
         const { history, pushSpy } = spiedHistory();
         render({}, { router: { history }, store: loggedInState });
         await userEvent.click(screen.getByText(/privacy policy/i));
-        expect(pushSpy).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/en/privacy-policy' }));
+        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/privacy-policy'));
       });
     });
   });

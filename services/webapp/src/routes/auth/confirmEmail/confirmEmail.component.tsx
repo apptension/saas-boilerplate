@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../../shared/components/snackbar';
@@ -11,7 +11,7 @@ import { selectIsProfileStartupCompleted } from '../../../modules/startup/startu
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 
 export const ConfirmEmail = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useAsyncDispatch();
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
@@ -56,10 +56,10 @@ export const ConfirmEmail = () => {
       const isTokenInUrl = Boolean(params.token && params.user);
       const isTokenSavedFromUrl = Boolean(user && token);
 
-      history.push(generateLocalePath(ROUTES.login));
+      navigate(generateLocalePath(Routes.login));
 
       if (isTokenInUrl) {
-        handleEmailConfirmation(params);
+        handleEmailConfirmation(params as { token: string; user: string });
       }
 
       if (!isTokenSavedFromUrl && !isTokenInUrl) {
@@ -69,7 +69,7 @@ export const ConfirmEmail = () => {
   }, [
     errorMessage,
     handleEmailConfirmation,
-    history,
+    navigate,
     generateLocalePath,
     params,
     showMessage,

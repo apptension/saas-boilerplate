@@ -1,8 +1,8 @@
 import { FormattedMessage } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Notification } from '../../notification';
 import { NotificationType } from '../../notifications.types';
-import { ROUTES } from '../../../../../app/config/routes';
+import { Routes } from '../../../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../../hooks/localePaths';
 
 export type CrudItemUpdatedProps = NotificationType<{
@@ -14,14 +14,14 @@ export type CrudItemUpdatedProps = NotificationType<{
 
 export const CrudItemUpdated = ({ data: { id, name, user, avatar }, ...restProps }: CrudItemUpdatedProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Notification
       {...restProps}
       onClick={() => {
-        const route = generateLocalePath(ROUTES.crudDemoItem.details, { id });
-        history.push(route);
+        const route = generateLocalePath(Routes.crudDemoItem.details, { id });
+        navigate(route);
       }}
       avatar={avatar}
       title={user}

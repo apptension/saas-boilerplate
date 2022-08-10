@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
@@ -65,7 +65,7 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(screen.getByText(/cancel subscription/i));
 
-      expect(pushSpy).toHaveBeenCalledWith('/en/subscriptions');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage('You will be moved to free plan with the next billing period')
       );
@@ -84,7 +84,7 @@ describe('CancelSubscription: Component', () => {
       render({}, { router: { history } });
       await userEvent.click(screen.getByText(/cancel subscription/i));
 
-      expect(pushSpy).not.toHaveBeenCalledWith('/en/subscriptions');
+      expect(pushSpy).not.toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).not.toHaveBeenCalledWith(
         snackbarActions.showMessage('You will be moved to free plan with the next billing period')
       );

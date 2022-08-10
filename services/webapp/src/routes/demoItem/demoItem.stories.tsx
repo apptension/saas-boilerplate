@@ -4,7 +4,7 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 
 import demoItemQueryGraphql from '../../__generated__/demoItemQuery.graphql';
-import { ROUTES } from '../../app/config/routes';
+import { Routes } from '../../app/config/routes';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { demoItemFactory } from '../../mocks/factories';
 import { DemoItem } from './demoItem.component';
@@ -25,7 +25,7 @@ const Template: Story = () => {
     <ProvidersWrapper
       context={{
         relayEnvironment,
-        router: { url: generatePath(ROUTES.demoItem, { lang: 'en', id: 1 }), routePath: ROUTES.demoItem },
+        router: { url: generatePath(Routes.demoItem, { lang: 'en', id: '1' }), routePath: Routes.demoItem },
       }}
     >
       <DemoItem />

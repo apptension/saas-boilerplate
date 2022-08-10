@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer, spiedHistory } from '../../../../utils/testUtils';
+import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../utils/testUtils';
 import { Header } from '../header.component';
 import { prepareState } from '../../../../../mocks/store';
 import { loggedInAuthFactory, userProfileFactory } from '../../../../../mocks/factories';
@@ -32,7 +32,7 @@ describe('Header: Component', () => {
       render({}, { store, router: { history } });
 
       await userEvent.click(screen.getByLabelText(/home/i));
-      expect(pushSpy).toHaveBeenCalledWith('/en/');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/'));
     });
 
     it('should not display "profile" link', () => {
@@ -51,7 +51,7 @@ describe('Header: Component', () => {
 
       await userEvent.click(screen.getByLabelText(/open profile menu/i));
       await userEvent.click(screen.getByText(/profile/i));
-      expect(pushSpy).toHaveBeenCalledWith('/en/profile');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/profile'));
     });
 
     it('should dispatch logout action when clicking on "logout" button', async () => {

@@ -14,7 +14,7 @@ export const Layout = ({ children }: LayoutProps) => {
   const { pathname } = useLocation();
 
   const shouldDisplaySidebar = useMemo(
-    () => NO_NAVIGATION_ROUTES.every((path) => isNil(matchPath(pathname, { path }))),
+    () => NO_NAVIGATION_ROUTES.every((path) => isNil(matchPath({ path }, pathname))),
     [pathname]
   );
 

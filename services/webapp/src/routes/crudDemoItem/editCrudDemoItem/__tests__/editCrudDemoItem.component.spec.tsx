@@ -5,7 +5,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
 import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 
@@ -19,14 +19,15 @@ jest.mock('react-redux', () => {
 
 describe('EditCrudDemoItem: Component', () => {
   const renderWithContext = makeContextRenderer(() => <EditCrudDemoItem />);
+  const routePath = Routes.getLocalePath(['crudDemoItem', 'edit']);
   const render = (context?: Partial<ContextData>) =>
     renderWithContext(
       {},
       {
         ...context,
         router: {
-          url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: 'test-id' }),
-          routePath: ROUTES.crudDemoItem.edit,
+          url: generatePath(routePath, { lang: 'en', id: 'test-id' }),
+          routePath,
         },
       }
     );

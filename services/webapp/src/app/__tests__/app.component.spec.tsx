@@ -1,24 +1,32 @@
 import { screen } from '@testing-library/react';
-import { makeContextRenderer, PLACEHOLDER_CONTENT } from '../../shared/utils/testUtils';
-import { ValidRoutesProviders, ValidRoutesProvidersProps } from '../providers/validRoutesProvider/validRoutesProviders';
-
-const defaultProps: ValidRoutesProvidersProps = {
-  children: PLACEHOLDER_CONTENT,
-};
+import { Route } from 'react-router-dom';
+import { makeContextRenderer } from '../../shared/utils/testUtils';
+import { ValidRoutesProviders } from '../providers/validRoutesProvider';
+import { Routes } from '../config/routes';
 
 describe('App: Component', () => {
-  const component = (props: Partial<ValidRoutesProvidersProps>) => (
-    <ValidRoutesProviders {...defaultProps} {...props} />
+  const component = () => (
+    <ValidRoutesProviders />
   );
-  const render = makeContextRenderer(component);
+  const routePath = Routes.getLocalePath(['home']);
+  const defaultRouterContext = {
+    children: <Route index element={<span data-testid="content" />} />,
+    routePath,
+  };
+  const render = makeContextRenderer(component, {
+    router: defaultRouterContext
+  });
 
   it('should render App when language is set', () => {
-    render({ children: <span data-testid="content" /> }, { router: { url: '/en' } });
+
+    render({ }, { router: { ...defaultRouterContext, url: '/en' } });
     expect(screen.getByTestId('content')).toBeInTheDocument();
   });
 
   it('should render nothing when language is not set', () => {
-    render({ children: <span data-testid="content" /> }, { router: { url: '/' } });
+    render({ children: <span data-testid="content" /> }, {
+      router: {...defaultRouterContext,  url: '/' }
+    });
     expect(screen.queryByTestId('content')).not.toBeInTheDocument();
   });
 });

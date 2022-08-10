@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { Link } from '../../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { Container, Header, Links, Text } from './passwordResetConfirm.styles';
 
 export const PasswordResetConfirm = () => {
-  const history = useHistory();
-  const params = useParams<{ token: string; user: string }>();
-  const [token] = useState(params.token);
-  const [user] = useState(params.user);
+  type Params = {
+    token: string;
+    user: string;
+  }
+  const navigate = useNavigate();
+  const params = useParams<keyof Params>() as Params;
+  const [token] = useState(params.token || '');
+  const [user] = useState(params.user || '');
   const generateLocalePath = useGenerateLocalePath();
 
   const isTokenInUrl = params.token && params.user;
@@ -19,13 +23,13 @@ export const PasswordResetConfirm = () => {
 
   useEffect(() => {
     if (isTokenInUrl) {
-      history.push(generateLocalePath(ROUTES.passwordReset.confirm));
+      navigate(generateLocalePath(Routes.passwordReset.confirmRoot));
     }
 
     if (!isTokenInUrl && !isTokenSavedFromUrl) {
-      history.push(generateLocalePath(ROUTES.login));
+      navigate(generateLocalePath(Routes.login));
     }
-  }, [history, isTokenInUrl, isTokenSavedFromUrl, generateLocalePath]);
+  }, [navigate, isTokenInUrl, isTokenSavedFromUrl, generateLocalePath]);
 
   return (
     <Container>
@@ -42,7 +46,7 @@ export const PasswordResetConfirm = () => {
       <PasswordResetConfirmForm user={user} token={token} />
 
       <Links>
-        <Link to={generateLocalePath(ROUTES.login)}>
+        <Link to={generateLocalePath(Routes.login)}>
           <FormattedMessage
             defaultMessage="Go back to log in"
             description="Auth / Confirm reset password / login link"

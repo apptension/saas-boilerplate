@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
+import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../utils/testUtils';
 import { Link, LinkProps } from '../link.component';
 
 describe('Link: Component', () => {
@@ -53,7 +53,7 @@ describe('Link: Component', () => {
       const { history, pushSpy } = spiedHistory();
       render({ href: undefined, to: '/home' }, { router: { history } });
       await userEvent.click(screen.getByRole('link'));
-      expect(pushSpy).toHaveBeenCalledWith('/home');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/home'));
     });
   });
 });

@@ -6,7 +6,8 @@ import { editCrudDemoItemQuery } from '../../../__generated__/editCrudDemoItemQu
 import { EditCrudDemoItemContent } from './editCrudDemoItemContent.component';
 
 export const EditCrudDemoItem = () => {
-  const { id } = useParams<{ id: string }>();
+  type Params = { id: string };
+  const { id } = useParams<Params>() as Params;
   const [editCrudDemoItemQueryRef, loadEditCrudDemoItemQuery] = useQueryLoader<editCrudDemoItemQuery>(
     graphql`
       query editCrudDemoItemQuery($id: ID!) {

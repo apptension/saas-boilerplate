@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { Route } from 'react-router-dom';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 import { makeContextRenderer, spiedHistory } from '../../../../utils/testUtils';
 import { prepareState } from '../../../../../mocks/store';
@@ -21,11 +22,14 @@ describe('AuthRoute: Component', () => {
   const defaultProps: AuthRouteProps = {};
 
   const component = (props: Partial<AuthRouteProps>) => (
-    <AuthRoute {...defaultProps} {...props}>
-      <span data-testid="content" />
-    </AuthRoute>
+    <AuthRoute {...defaultProps} {...props} />
   );
-  const render = makeContextRenderer(component);
+  const render = makeContextRenderer(component, {
+    router: {
+      children: <Route path="*" element={<span data-testid="content" />} />,
+      routePath: '*',
+    }
+  });
 
   describe('user profile is not fetched yet', () => {
     it('should render nothing', () => {
@@ -69,7 +73,7 @@ describe('AuthRoute: Component', () => {
         const { pushSpy, history } = spiedHistory();
         render({ allowedRoles: Role.ADMIN }, { store, router: { history } });
         expect(screen.queryByTestId('content')).not.toBeInTheDocument();
-        expect(pushSpy).toHaveBeenCalledWith('/en/404');
+        expect(pushSpy).toHaveBeenCalledWith({ hash: '', pathname: '/en/404', 'search': ''}, undefined);
       });
     });
 
@@ -82,7 +86,7 @@ describe('AuthRoute: Component', () => {
         const { pushSpy, history } = spiedHistory();
         render({ allowedRoles: Role.ADMIN }, { store, router: { history } });
         expect(screen.queryByTestId('content')).not.toBeInTheDocument();
-        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+        expect(pushSpy).toHaveBeenCalledWith({ hash: '', pathname: '/en/auth/login', 'search': ''}, undefined);
       });
     });
   });

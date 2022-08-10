@@ -1,9 +1,9 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
@@ -13,7 +13,7 @@ export const EditSubscription = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
   const { plans } = useAvailableSubscriptionPlans();
-  const history = useHistory();
+  const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
 
@@ -36,7 +36,7 @@ export const EditSubscription = () => {
 
     if (!res.isError) {
       await showMessage(successMessage);
-      history.push(generateLocalePath(ROUTES.subscriptions.index));
+      navigate(generateLocalePath(Routes.subscriptions.index));
     } else {
       await showMessage(failMessage);
     }

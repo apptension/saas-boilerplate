@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { put } from 'redux-saga/effects';
 import { PromiseAction, rejectPromiseAction, resolvePromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { snackbarActions } from '../snackbar';
-import { ROUTES } from '../../app/config/routes';
+import { Routes } from '../../app/config/routes';
 import { reportError } from '../../shared/utils/reportError';
 import { navigate } from './navigate';
 
@@ -32,7 +32,7 @@ export function handleApiRequest<Request, Response>(
         yield put(snackbarActions.showMessage(null));
         reportError(error);
       } else if (redirectToLoginOnFail) {
-        yield navigate(ROUTES.login);
+        yield navigate(Routes.login);
       }
     }
   };

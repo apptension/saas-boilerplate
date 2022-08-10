@@ -1,5 +1,5 @@
 import { FormattedMessage } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { Container } from './backButton.styles';
 
@@ -9,11 +9,11 @@ export type BackButtonProps = {
 };
 
 export const BackButton = ({ to, children }: BackButtonProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleBackClick = () => {
     if (to) return;
-    history.goBack();
+    navigate(-1);
   };
 
   return (

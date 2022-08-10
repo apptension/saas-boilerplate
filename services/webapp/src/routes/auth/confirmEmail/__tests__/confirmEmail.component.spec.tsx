@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
-import { makeContextRenderer, spiedHistory } from '../../../../shared/utils/testUtils';
+import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../shared/utils/testUtils';
 import { ConfirmEmail } from '../confirmEmail.component';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { confirmEmail } from '../../../../modules/auth/auth.actions';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { prepareState } from '../../../../mocks/store';
@@ -18,7 +18,7 @@ jest.mock('react-redux', () => {
 const user = 'user_id';
 const token = 'token';
 const confirmTokenRoute = `/en/auth/confirm/${user}/${token}`;
-const confirmTokenRouteNoToken = `/en/auth/confirm`;
+const confirmTokenRouteNoToken = `/en/auth/confirm/${user}/invalid_token`;
 
 const store = prepareState((state) => {
   state.auth = loggedOutAuthFactory();
@@ -35,7 +35,7 @@ describe('ConfirmEmail: Component', () => {
 
   it('should call confirm token action', async () => {
     mockDispatch.mockResolvedValue({ isError: false });
-    render({}, { store, router: { url: confirmTokenRoute, routePath: ROUTES.confirmEmail } });
+    render({}, { store, router: { url: confirmTokenRoute, routePath: Routes.getLocalePath(['confirmEmail']) } });
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(confirmEmail({ token, user }));
     });
@@ -46,9 +46,9 @@ describe('ConfirmEmail: Component', () => {
       isError: false,
     });
     const { pushSpy, history } = spiedHistory(confirmTokenRoute);
-    render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
+    render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
     await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
     });
   });
 
@@ -58,11 +58,11 @@ describe('ConfirmEmail: Component', () => {
         isError: true,
       });
       const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-      render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
+      render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
       });
-      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
     });
   });
 
@@ -71,13 +71,13 @@ describe('ConfirmEmail: Component', () => {
       it('should redirect to login and show success message', async () => {
         mockDispatch.mockResolvedValue({ isError: false });
         const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-        render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
+        render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
         await waitFor(() => {
           expect(mockDispatch).toHaveBeenCalledWith(
             snackbarActions.showMessage('Congratulations! Now you can log in.')
           );
         });
-        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
       });
     });
 
@@ -90,25 +90,25 @@ describe('ConfirmEmail: Component', () => {
       it('should redirect to login and show success message', async () => {
         mockDispatch.mockResolvedValue({ isError: false });
         const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-        render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
+        render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
         await waitFor(() => {
           expect(mockDispatch).toHaveBeenCalledWith(
             snackbarActions.showMessage('Congratulations! Your email has been confirmed.')
           );
         });
-        expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
       });
     });
   });
 
-  describe('token is missing from URL', () => {
+  describe('token is invalid', () => {
     it('should redirect to login and show invalid token error', async () => {
       const { history, pushSpy } = spiedHistory(confirmTokenRouteNoToken);
-      render({}, { store, router: { history, routePath: ROUTES.confirmEmail } });
+      render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
       });
-      expect(pushSpy).toHaveBeenCalledWith('/en/auth/login');
+      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
     });
   });
 });

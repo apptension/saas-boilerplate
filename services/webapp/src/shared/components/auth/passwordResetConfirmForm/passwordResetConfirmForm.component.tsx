@@ -1,11 +1,11 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
-import { ROUTES } from '../../../../app/config/routes';
+import { Routes } from '../../../../app/config/routes';
 import { useSnackbar } from '../../snackbar';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
@@ -20,7 +20,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const intl = useIntl();
   const snackbar = useSnackbar();
   const dispatch = useAsyncDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const {
     form: {
@@ -65,7 +65,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       setApiResponse(res);
 
       if (!res.isError) {
-        history.push(generateLocalePath(ROUTES.login));
+        navigate(generateLocalePath(Routes.login));
         snackbar.showMessage(
           intl.formatMessage({
             defaultMessage: '🎉 Password reset successfully!',

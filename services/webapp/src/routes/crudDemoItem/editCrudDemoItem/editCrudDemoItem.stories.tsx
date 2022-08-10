@@ -4,7 +4,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import EditCrudDemoItemQuery from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { withProviders } from '../../../shared/utils/storybook';
-import { ROUTES } from '../../../app/config/routes';
+import { Routes } from '../../../app/config/routes';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
 const Template: Story = () => {
@@ -34,8 +34,8 @@ export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
     router: {
-      url: generatePath(ROUTES.crudDemoItem.edit, { lang: 'en', id: defaultItemId }),
-      routePath: ROUTES.crudDemoItem.edit,
+      url: generatePath(Routes.crudDemoItem.edit, { lang: 'en', id: defaultItemId }),
+      routePath: Routes.crudDemoItem.edit,
     },
     relayEnvironment: defaultRelayEnv,
   }),
