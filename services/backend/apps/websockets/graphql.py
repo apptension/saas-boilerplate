@@ -15,4 +15,4 @@ def execute_graphql_subscription_query(query, user, **kwargs):
 
 
 def prepare_relay_data_message(relay_subscription_id, data, errors):
-    return {"type": "data", "id": relay_subscription_id, "payload": {"data": data, "errors": errors}}
+    return {"type": "next", "id": relay_subscription_id, "payload": {"data": data, "errors": errors}}

@@ -27,7 +27,7 @@ class TestSendSubscriptionsMessages:
         utils.send_subscriptions_messages(user, "someOperation")
 
         post_to_connection.assert_called_once_with(
-            {"id": "", "type": "data", "payload": {"data": None, "errors": mock.ANY}}, "conn-id"
+            {"id": "", "type": "next", "payload": {"data": None, "errors": mock.ANY}}, "conn-id"
         )
 
     def test_with_existing_subscriptions_and_multiple_subscriptions(self, mocker, user, graph_ql_subscription_factory):
@@ -42,5 +42,5 @@ class TestSendSubscriptionsMessages:
         utils.send_subscriptions_messages(user, "someOperation")
 
         post_to_connection.assert_called_once_with(
-            {"id": "", "type": "data", "payload": {"data": None, "errors": mock.ANY}}, "conn-id"
+            {"id": "", "type": "next", "payload": {"data": None, "errors": mock.ANY}}, "conn-id"
         )

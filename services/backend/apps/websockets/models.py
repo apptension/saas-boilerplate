@@ -9,7 +9,7 @@ class WebSocketConnection(models.Model):
 
 class GraphQLSubscription(models.Model):
     connection: WebSocketConnection = models.ForeignKey(WebSocketConnection, on_delete=models.CASCADE)
-    relay_id: str = models.CharField(max_length=16)
+    relay_id: str = models.CharField(max_length=36)
     operation_name: str = models.CharField(max_length=32)
     query: str = models.TextField()
     variables: dict = models.JSONField(default=dict, blank=True)

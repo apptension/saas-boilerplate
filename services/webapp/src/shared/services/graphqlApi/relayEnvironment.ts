@@ -1,64 +1,73 @@
 import {
   commitLocalUpdate,
   Environment,
-  Network,
   Observable,
   RecordSource,
   RequestParameters,
   Store,
   Variables,
 } from 'relay-runtime';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import {
+  authMiddleware,
+  RelayNetworkLayer,
+  retryMiddleware,
+  urlMiddleware,
+} from 'react-relay-network-modern';
+import { createClient } from 'graphql-ws';
 
-import { FetchFunction } from 'relay-runtime/lib/network/RelayNetworkTypes';
 import { RecordSourceSelectorProxy } from 'relay-runtime/lib/store/RelayStoreTypes';
-import { graphQlClient } from '../api/client';
 import { apiURL } from '../api/helpers';
 import { refreshToken } from '../api/auth';
 import { ENV } from '../../../app/config/env';
 
-export const subscriptionClient = new SubscriptionClient(ENV.SUBSCRIPTIONS_URL, {
-  reconnect: true,
+export const subscriptionClient = createClient({
+  url: ENV.SUBSCRIPTIONS_URL,
   lazy: true,
-  minTimeout: 10000,
-});
-
-subscriptionClient.onError(async () => {
-  await refreshToken();
+  connectionAckWaitTimeout: 10000,
+  connectionParams: () => {
+    return {};
+  },
 });
 
 const subscribe = ({ text, name }: RequestParameters, variables: Variables) => {
-  const subscribeObservable = subscriptionClient.request({
-    query: text === null ? undefined : text,
-    operationName: name,
-    variables,
-  });
-  return Observable.from(subscribeObservable as any) as any;
-};
-
-const fetchQuery: FetchFunction = async (operation, variables, cacheConfig, uploadables) => {
-  const body = (() => {
-    if (uploadables) {
-      const formData = new FormData();
-      formData.append('query', operation.text ?? '');
-      formData.append('variables', JSON.stringify(variables));
-
-      Object.entries(uploadables).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-
-      return formData;
+  return Observable.create((sink) => {
+    if (!text) {
+      return sink.error(new Error('Operation text cannot be empty'));
     }
-
-    return { query: operation.text, variables };
-  })();
-
-  const { data } = await graphQlClient.post(apiURL('/graphql/'), body);
-  return data;
+    return subscriptionClient.subscribe(
+      {
+        operationName: name,
+        query: text,
+        variables,
+      },
+      sink
+    );
+  });
 };
+
+const network = new RelayNetworkLayer(
+  [
+    urlMiddleware({ url: apiURL('/graphql/') }),
+    retryMiddleware({
+      retryDelays: () => 1000,
+      statusCodes: [500, 503, 504],
+      allowMutations: true,
+      allowFormData: true,
+    }),
+    authMiddleware({
+      allowEmptyToken: true,
+      tokenRefreshPromise: async () => {
+        await refreshToken();
+        return '';
+      },
+    }),
+  ],
+  // @ts-ignore
+  { noThrow: true, subscribeFn: subscribe }
+);
 
 export const relayEnvironment = new Environment({
-  network: Network.create(fetchQuery, subscribe),
+  network,
   store: new Store(new RecordSource()),
 });
 

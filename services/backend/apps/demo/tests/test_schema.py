@@ -186,7 +186,7 @@ class TestCreateCrudDemoItemMutation:
         post_to_connection.assert_called_once_with(
             {
                 "id": "1",
-                "type": "data",
+                "type": "next",
                 "payload": {
                     "data": {"notificationCreated": {"edges": [{"node": {"id": notification_global_id}}]}},
                     "errors": None,
@@ -325,7 +325,7 @@ class TestUpdateCrudDemoItemMutation:
         post_to_connection.assert_called_once_with(
             {
                 "id": "1",
-                "type": "data",
+                "type": "next",
                 "payload": {
                     "data": {"notificationCreated": {"edges": [{"node": {"id": notification_global_id}}]}},
                     "errors": None,

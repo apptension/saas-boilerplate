@@ -47,7 +47,7 @@ class DebugMessageSerializer(serializers.Serializer):
                 {"id": str(uuid.uuid4()), "type": "connection_ack", "payload": {"con_id": connection_id}},
                 connection_id,
             )
-        elif operation_type == "start":
+        elif operation_type == "subscribe" or operation_type == "start":
             connection = models.WebSocketConnection.objects.filter(connection_id=connection_id).first()
             if connection:
                 subscription = models.GraphQLSubscription(
@@ -58,7 +58,7 @@ class DebugMessageSerializer(serializers.Serializer):
                     variables=payload.get("variables"),
                 )
                 subscription.save()
-        elif operation_type == "stop":
+        elif operation_type == "complete" or operation_type == "stop":
             models.GraphQLSubscription.filter(
                 connection__connection_id=connection_id, relay_id=subscription_id
             ).delete()
