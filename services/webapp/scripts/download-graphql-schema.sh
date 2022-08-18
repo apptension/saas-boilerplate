@@ -15,8 +15,8 @@ node ./node_modules/.bin/get-graphql-schema "$CONTENTFUL_URL" > graphql/schema/c
 node ./node_modules/.bin/get-graphql-schema "$API_URL" > graphql/schema/api.graphql
 
 # Merge is only for the IntelliJ
-mv ./graphql/schema/contentful.graphql ./graphql/schema/contentful.graphql.chunk
-mv ./graphql/schema/api.graphql ./graphql/schema/api.graphql.chunk
+mv ./graphql/schema/contentful.graphql ./src/shared/services/contentful/contentful.graphql.chunk
+mv ./graphql/schema/api.graphql ./src/shared/services/graphqlApi/api.graphql.chunk
 node ./scripts/merge-schemas.js
 
 # remove empty comments as they break IntelliJ schema parsing

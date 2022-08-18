@@ -5,13 +5,14 @@ import { screen, waitFor } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { act } from 'react-test-renderer';
 import { Suspense } from 'react';
+
 import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { Document } from '../document.component';
 import { documentsListTestQuery } from '../../../../__generated__/documentsListTestQuery.graphql';
 import { mapConnection } from '../../../../shared/utils/graphql';
 import { documentFactory } from '../../../../mocks/factories';
-import { DocumentDemoItemType } from '../../../../../graphql/schema/schemaTypes';
 import { DeepPartial } from '../../../../shared/utils/types';
+import { DocumentDemoItemType } from '../../../../shared/services/graphqlApi/__generated/types';
+import { Document } from '../document.component';
 
 describe('Document: Component', () => {
   const TestRenderer = () => {

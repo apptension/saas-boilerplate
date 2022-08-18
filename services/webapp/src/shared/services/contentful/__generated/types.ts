@@ -1,6 +1,3 @@
-import { GraphQLClient } from 'graphql-request';
-import * as Dom from 'graphql-request/dist/types.dom';
-import gql from 'graphql-tag';
 export type Maybe<T> = T | undefined | null;
 export type InputMaybe<T> = T | undefined | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -31,11 +28,11 @@ export interface Scalars {
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export interface ContentfulAppConfig extends ContentfulEntry {
   __typename?: 'AppConfig';
+  sys: ContentfulSys;
   contentfulMetadata: ContentfulContentfulMetadata;
   linkedFrom?: Maybe<ContentfulAppConfigLinkingCollections>;
   name?: Maybe<Scalars['String']>;
   privacyPolicy?: Maybe<Scalars['String']>;
-  sys: ContentfulSys;
   termsAndConditions?: Maybe<Scalars['String']>;
 }
 
@@ -65,38 +62,38 @@ export interface ContentfulAppConfigTermsAndConditionsArgs {
 
 export interface ContentfulAppConfigCollection {
   __typename?: 'AppConfigCollection';
-  items: Array<Maybe<ContentfulAppConfig>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
   total: Scalars['Int'];
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  items: Array<Maybe<ContentfulAppConfig>>;
 }
 
 export interface ContentfulAppConfigFilter {
-  AND?: InputMaybe<Array<InputMaybe<ContentfulAppConfigFilter>>>;
-  OR?: InputMaybe<Array<InputMaybe<ContentfulAppConfigFilter>>>;
-  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
-  name?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_exists?: InputMaybe<Scalars['Boolean']>;
-  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  name_not?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  privacyPolicy?: InputMaybe<Scalars['String']>;
-  privacyPolicy_contains?: InputMaybe<Scalars['String']>;
-  privacyPolicy_exists?: InputMaybe<Scalars['Boolean']>;
-  privacyPolicy_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  privacyPolicy_not?: InputMaybe<Scalars['String']>;
-  privacyPolicy_not_contains?: InputMaybe<Scalars['String']>;
-  privacyPolicy_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   sys?: InputMaybe<ContentfulSysFilter>;
-  termsAndConditions?: InputMaybe<Scalars['String']>;
-  termsAndConditions_contains?: InputMaybe<Scalars['String']>;
+  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  privacyPolicy_exists?: InputMaybe<Scalars['Boolean']>;
+  privacyPolicy?: InputMaybe<Scalars['String']>;
+  privacyPolicy_not?: InputMaybe<Scalars['String']>;
+  privacyPolicy_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  privacyPolicy_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  privacyPolicy_contains?: InputMaybe<Scalars['String']>;
+  privacyPolicy_not_contains?: InputMaybe<Scalars['String']>;
   termsAndConditions_exists?: InputMaybe<Scalars['Boolean']>;
-  termsAndConditions_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  termsAndConditions?: InputMaybe<Scalars['String']>;
   termsAndConditions_not?: InputMaybe<Scalars['String']>;
-  termsAndConditions_not_contains?: InputMaybe<Scalars['String']>;
+  termsAndConditions_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   termsAndConditions_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  termsAndConditions_contains?: InputMaybe<Scalars['String']>;
+  termsAndConditions_not_contains?: InputMaybe<Scalars['String']>;
+  OR?: InputMaybe<Array<InputMaybe<ContentfulAppConfigFilter>>>;
+  AND?: InputMaybe<Array<InputMaybe<ContentfulAppConfigFilter>>>;
 }
 
 export interface ContentfulAppConfigLinkingCollections {
@@ -106,21 +103,21 @@ export interface ContentfulAppConfigLinkingCollections {
 
 
 export interface ContentfulAppConfigLinkingCollectionsEntryCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
 }
 
 export enum ContentfulAppConfigOrder {
   NAME_ASC = 'name_ASC',
   NAME_DESC = 'name_DESC',
-  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
-  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_ID_ASC = 'sys_id_ASC',
   SYS_ID_DESC = 'sys_id_DESC',
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
+  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
+  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
   SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
 }
@@ -128,22 +125,22 @@ export enum ContentfulAppConfigOrder {
 /** Represents a binary file in a space. An asset can be any file type. */
 export interface ContentfulAsset {
   __typename?: 'Asset';
-  contentType?: Maybe<Scalars['String']>;
-  contentfulMetadata: ContentfulContentfulMetadata;
-  description?: Maybe<Scalars['String']>;
-  fileName?: Maybe<Scalars['String']>;
-  height?: Maybe<Scalars['Int']>;
-  linkedFrom?: Maybe<ContentfulAssetLinkingCollections>;
-  size?: Maybe<Scalars['Int']>;
   sys: ContentfulSys;
+  contentfulMetadata: ContentfulContentfulMetadata;
   title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  contentType?: Maybe<Scalars['String']>;
+  fileName?: Maybe<Scalars['String']>;
+  size?: Maybe<Scalars['Int']>;
   url?: Maybe<Scalars['String']>;
   width?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']>;
+  linkedFrom?: Maybe<ContentfulAssetLinkingCollections>;
 }
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
-export interface ContentfulAssetContentTypeArgs {
+export interface ContentfulAssetTitleArgs {
   locale?: InputMaybe<Scalars['String']>;
 }
 
@@ -155,7 +152,32 @@ export interface ContentfulAssetDescriptionArgs {
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetContentTypeArgs {
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
 export interface ContentfulAssetFileNameArgs {
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetSizeArgs {
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetUrlArgs {
+  transform?: InputMaybe<ContentfulImageTransformOptions>;
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+/** Represents a binary file in a space. An asset can be any file type. */
+export interface ContentfulAssetWidthArgs {
   locale?: InputMaybe<Scalars['String']>;
 }
 
@@ -171,151 +193,126 @@ export interface ContentfulAssetLinkedFromArgs {
   allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 }
 
-
-/** Represents a binary file in a space. An asset can be any file type. */
-export interface ContentfulAssetSizeArgs {
-  locale?: InputMaybe<Scalars['String']>;
-}
-
-
-/** Represents a binary file in a space. An asset can be any file type. */
-export interface ContentfulAssetTitleArgs {
-  locale?: InputMaybe<Scalars['String']>;
-}
-
-
-/** Represents a binary file in a space. An asset can be any file type. */
-export interface ContentfulAssetUrlArgs {
-  locale?: InputMaybe<Scalars['String']>;
-  transform?: InputMaybe<ContentfulImageTransformOptions>;
-}
-
-
-/** Represents a binary file in a space. An asset can be any file type. */
-export interface ContentfulAssetWidthArgs {
-  locale?: InputMaybe<Scalars['String']>;
-}
-
 export interface ContentfulAssetCollection {
   __typename?: 'AssetCollection';
-  items: Array<Maybe<ContentfulAsset>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
   total: Scalars['Int'];
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  items: Array<Maybe<ContentfulAsset>>;
 }
 
 export interface ContentfulAssetFilter {
-  AND?: InputMaybe<Array<InputMaybe<ContentfulAssetFilter>>>;
-  OR?: InputMaybe<Array<InputMaybe<ContentfulAssetFilter>>>;
-  contentType?: InputMaybe<Scalars['String']>;
-  contentType_contains?: InputMaybe<Scalars['String']>;
-  contentType_exists?: InputMaybe<Scalars['Boolean']>;
-  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  contentType_not?: InputMaybe<Scalars['String']>;
-  contentType_not_contains?: InputMaybe<Scalars['String']>;
-  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  sys?: InputMaybe<ContentfulSysFilter>;
   contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
+  title_exists?: InputMaybe<Scalars['Boolean']>;
+  title?: InputMaybe<Scalars['String']>;
+  title_not?: InputMaybe<Scalars['String']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title_contains?: InputMaybe<Scalars['String']>;
+  title_not_contains?: InputMaybe<Scalars['String']>;
   description_exists?: InputMaybe<Scalars['Boolean']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  description?: InputMaybe<Scalars['String']>;
   description_not?: InputMaybe<Scalars['String']>;
-  description_not_contains?: InputMaybe<Scalars['String']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  fileName?: InputMaybe<Scalars['String']>;
-  fileName_contains?: InputMaybe<Scalars['String']>;
-  fileName_exists?: InputMaybe<Scalars['Boolean']>;
-  fileName_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  fileName_not?: InputMaybe<Scalars['String']>;
-  fileName_not_contains?: InputMaybe<Scalars['String']>;
-  fileName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  height?: InputMaybe<Scalars['Int']>;
-  height_exists?: InputMaybe<Scalars['Boolean']>;
-  height_gt?: InputMaybe<Scalars['Int']>;
-  height_gte?: InputMaybe<Scalars['Int']>;
-  height_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  height_lt?: InputMaybe<Scalars['Int']>;
-  height_lte?: InputMaybe<Scalars['Int']>;
-  height_not?: InputMaybe<Scalars['Int']>;
-  height_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  size?: InputMaybe<Scalars['Int']>;
+  description_contains?: InputMaybe<Scalars['String']>;
+  description_not_contains?: InputMaybe<Scalars['String']>;
+  url_exists?: InputMaybe<Scalars['Boolean']>;
+  url?: InputMaybe<Scalars['String']>;
+  url_not?: InputMaybe<Scalars['String']>;
+  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  url_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  url_contains?: InputMaybe<Scalars['String']>;
+  url_not_contains?: InputMaybe<Scalars['String']>;
   size_exists?: InputMaybe<Scalars['Boolean']>;
+  size?: InputMaybe<Scalars['Int']>;
+  size_not?: InputMaybe<Scalars['Int']>;
+  size_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  size_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   size_gt?: InputMaybe<Scalars['Int']>;
   size_gte?: InputMaybe<Scalars['Int']>;
-  size_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   size_lt?: InputMaybe<Scalars['Int']>;
   size_lte?: InputMaybe<Scalars['Int']>;
-  size_not?: InputMaybe<Scalars['Int']>;
-  size_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  sys?: InputMaybe<ContentfulSysFilter>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
-  title_exists?: InputMaybe<Scalars['Boolean']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  title_not?: InputMaybe<Scalars['String']>;
-  title_not_contains?: InputMaybe<Scalars['String']>;
-  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  url?: InputMaybe<Scalars['String']>;
-  url_contains?: InputMaybe<Scalars['String']>;
-  url_exists?: InputMaybe<Scalars['Boolean']>;
-  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  url_not?: InputMaybe<Scalars['String']>;
-  url_not_contains?: InputMaybe<Scalars['String']>;
-  url_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  width?: InputMaybe<Scalars['Int']>;
+  contentType_exists?: InputMaybe<Scalars['Boolean']>;
+  contentType?: InputMaybe<Scalars['String']>;
+  contentType_not?: InputMaybe<Scalars['String']>;
+  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  contentType_contains?: InputMaybe<Scalars['String']>;
+  contentType_not_contains?: InputMaybe<Scalars['String']>;
+  fileName_exists?: InputMaybe<Scalars['Boolean']>;
+  fileName?: InputMaybe<Scalars['String']>;
+  fileName_not?: InputMaybe<Scalars['String']>;
+  fileName_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  fileName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  fileName_contains?: InputMaybe<Scalars['String']>;
+  fileName_not_contains?: InputMaybe<Scalars['String']>;
   width_exists?: InputMaybe<Scalars['Boolean']>;
+  width?: InputMaybe<Scalars['Int']>;
+  width_not?: InputMaybe<Scalars['Int']>;
+  width_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  width_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   width_gt?: InputMaybe<Scalars['Int']>;
   width_gte?: InputMaybe<Scalars['Int']>;
-  width_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   width_lt?: InputMaybe<Scalars['Int']>;
   width_lte?: InputMaybe<Scalars['Int']>;
-  width_not?: InputMaybe<Scalars['Int']>;
-  width_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  height_exists?: InputMaybe<Scalars['Boolean']>;
+  height?: InputMaybe<Scalars['Int']>;
+  height_not?: InputMaybe<Scalars['Int']>;
+  height_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  height_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  height_gt?: InputMaybe<Scalars['Int']>;
+  height_gte?: InputMaybe<Scalars['Int']>;
+  height_lt?: InputMaybe<Scalars['Int']>;
+  height_lte?: InputMaybe<Scalars['Int']>;
+  OR?: InputMaybe<Array<InputMaybe<ContentfulAssetFilter>>>;
+  AND?: InputMaybe<Array<InputMaybe<ContentfulAssetFilter>>>;
 }
 
 export interface ContentfulAssetLinkingCollections {
   __typename?: 'AssetLinkingCollections';
-  demoItemCollection?: Maybe<ContentfulDemoItemCollection>;
   entryCollection?: Maybe<ContentfulEntryCollection>;
-}
-
-
-export interface ContentfulAssetLinkingCollectionsDemoItemCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  demoItemCollection?: Maybe<ContentfulDemoItemCollection>;
 }
 
 
 export interface ContentfulAssetLinkingCollectionsEntryCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+export interface ContentfulAssetLinkingCollectionsDemoItemCollectionArgs {
+  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
 }
 
 export enum ContentfulAssetOrder {
+  URL_ASC = 'url_ASC',
+  URL_DESC = 'url_DESC',
+  SIZE_ASC = 'size_ASC',
+  SIZE_DESC = 'size_DESC',
   CONTENTTYPE_ASC = 'contentType_ASC',
   CONTENTTYPE_DESC = 'contentType_DESC',
   FILENAME_ASC = 'fileName_ASC',
   FILENAME_DESC = 'fileName_DESC',
+  WIDTH_ASC = 'width_ASC',
+  WIDTH_DESC = 'width_DESC',
   HEIGHT_ASC = 'height_ASC',
   HEIGHT_DESC = 'height_DESC',
-  SIZE_ASC = 'size_ASC',
-  SIZE_DESC = 'size_DESC',
-  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
-  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_ID_ASC = 'sys_id_ASC',
   SYS_ID_DESC = 'sys_id_DESC',
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
+  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
+  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
-  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC',
-  URL_ASC = 'url_ASC',
-  URL_DESC = 'url_DESC',
-  WIDTH_ASC = 'width_ASC',
-  WIDTH_DESC = 'width_DESC'
+  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
 }
 
 export interface ContentfulContentfulMetadata {
@@ -324,14 +321,14 @@ export interface ContentfulContentfulMetadata {
 }
 
 export interface ContentfulContentfulMetadataFilter {
-  tags?: InputMaybe<ContentfulContentfulMetadataTagsFilter>;
   tags_exists?: InputMaybe<Scalars['Boolean']>;
+  tags?: InputMaybe<ContentfulContentfulMetadataTagsFilter>;
 }
 
 export interface ContentfulContentfulMetadataTagsFilter {
   id_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  id_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   id_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  id_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 }
 
 /**
@@ -347,25 +344,12 @@ export interface ContentfulContentfulTag {
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export interface ContentfulDemoItem extends ContentfulEntry {
   __typename?: 'DemoItem';
+  sys: ContentfulSys;
   contentfulMetadata: ContentfulContentfulMetadata;
+  linkedFrom?: Maybe<ContentfulDemoItemLinkingCollections>;
+  title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   image?: Maybe<ContentfulAsset>;
-  linkedFrom?: Maybe<ContentfulDemoItemLinkingCollections>;
-  sys: ContentfulSys;
-  title?: Maybe<Scalars['String']>;
-}
-
-
-/** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
-export interface ContentfulDemoItemDescriptionArgs {
-  locale?: InputMaybe<Scalars['String']>;
-}
-
-
-/** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
-export interface ContentfulDemoItemImageArgs {
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
 }
 
 
@@ -380,34 +364,47 @@ export interface ContentfulDemoItemTitleArgs {
   locale?: InputMaybe<Scalars['String']>;
 }
 
+
+/** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
+export interface ContentfulDemoItemDescriptionArgs {
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+/** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
+export interface ContentfulDemoItemImageArgs {
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
+}
+
 export interface ContentfulDemoItemCollection {
   __typename?: 'DemoItemCollection';
-  items: Array<Maybe<ContentfulDemoItem>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
   total: Scalars['Int'];
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  items: Array<Maybe<ContentfulDemoItem>>;
 }
 
 export interface ContentfulDemoItemFilter {
-  AND?: InputMaybe<Array<InputMaybe<ContentfulDemoItemFilter>>>;
-  OR?: InputMaybe<Array<InputMaybe<ContentfulDemoItemFilter>>>;
-  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
-  description_exists?: InputMaybe<Scalars['Boolean']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  description_not?: InputMaybe<Scalars['String']>;
-  description_not_contains?: InputMaybe<Scalars['String']>;
-  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  image_exists?: InputMaybe<Scalars['Boolean']>;
   sys?: InputMaybe<ContentfulSysFilter>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
+  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
   title_exists?: InputMaybe<Scalars['Boolean']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title?: InputMaybe<Scalars['String']>;
   title_not?: InputMaybe<Scalars['String']>;
-  title_not_contains?: InputMaybe<Scalars['String']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title_contains?: InputMaybe<Scalars['String']>;
+  title_not_contains?: InputMaybe<Scalars['String']>;
+  description_exists?: InputMaybe<Scalars['Boolean']>;
+  description?: InputMaybe<Scalars['String']>;
+  description_not?: InputMaybe<Scalars['String']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  description_contains?: InputMaybe<Scalars['String']>;
+  description_not_contains?: InputMaybe<Scalars['String']>;
+  image_exists?: InputMaybe<Scalars['Boolean']>;
+  OR?: InputMaybe<Array<InputMaybe<ContentfulDemoItemFilter>>>;
+  AND?: InputMaybe<Array<InputMaybe<ContentfulDemoItemFilter>>>;
 }
 
 export interface ContentfulDemoItemLinkingCollections {
@@ -417,58 +414,57 @@ export interface ContentfulDemoItemLinkingCollections {
 
 
 export interface ContentfulDemoItemLinkingCollectionsEntryCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
 }
 
 export enum ContentfulDemoItemOrder {
-  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
-  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
+  TITLE_ASC = 'title_ASC',
+  TITLE_DESC = 'title_DESC',
   SYS_ID_ASC = 'sys_id_ASC',
   SYS_ID_DESC = 'sys_id_DESC',
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
+  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
+  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
-  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC',
-  TITLE_ASC = 'title_ASC',
-  TITLE_DESC = 'title_DESC'
+  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
 }
 
 export interface ContentfulEntry {
-  contentfulMetadata: ContentfulContentfulMetadata;
   sys: ContentfulSys;
+  contentfulMetadata: ContentfulContentfulMetadata;
 }
 
 export interface ContentfulEntryCollection {
   __typename?: 'EntryCollection';
-  items: Array<Maybe<ContentfulEntry>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
   total: Scalars['Int'];
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  items: Array<Maybe<ContentfulEntry>>;
 }
 
 export interface ContentfulEntryFilter {
-  AND?: InputMaybe<Array<InputMaybe<ContentfulEntryFilter>>>;
-  OR?: InputMaybe<Array<InputMaybe<ContentfulEntryFilter>>>;
-  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
   sys?: InputMaybe<ContentfulSysFilter>;
+  contentfulMetadata?: InputMaybe<ContentfulContentfulMetadataFilter>;
+  OR?: InputMaybe<Array<InputMaybe<ContentfulEntryFilter>>>;
+  AND?: InputMaybe<Array<InputMaybe<ContentfulEntryFilter>>>;
 }
 
 export enum ContentfulEntryOrder {
-  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
-  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_ID_ASC = 'sys_id_ASC',
   SYS_ID_DESC = 'sys_id_DESC',
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
+  SYS_FIRSTPUBLISHEDAT_ASC = 'sys_firstPublishedAt_ASC',
+  SYS_FIRSTPUBLISHEDAT_DESC = 'sys_firstPublishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
   SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
 }
 
 export enum ContentfulImageFormat {
-  AVIF = 'AVIF',
   /** JPG image format. */
   JPG = 'JPG',
   /**
@@ -486,39 +482,36 @@ export enum ContentfulImageFormat {
    */
   PNG8 = 'PNG8',
   /** WebP image format. */
-  WEBP = 'WEBP'
+  WEBP = 'WEBP',
+  AVIF = 'AVIF'
 }
 
 export enum ContentfulImageResizeFocus {
+  /** Focus the resizing on the center. */
+  CENTER = 'CENTER',
+  /** Focus the resizing on the top. */
+  TOP = 'TOP',
+  /** Focus the resizing on the top right. */
+  TOP_RIGHT = 'TOP_RIGHT',
+  /** Focus the resizing on the right. */
+  RIGHT = 'RIGHT',
+  /** Focus the resizing on the bottom right. */
+  BOTTOM_RIGHT = 'BOTTOM_RIGHT',
   /** Focus the resizing on the bottom. */
   BOTTOM = 'BOTTOM',
   /** Focus the resizing on the bottom left. */
   BOTTOM_LEFT = 'BOTTOM_LEFT',
-  /** Focus the resizing on the bottom right. */
-  BOTTOM_RIGHT = 'BOTTOM_RIGHT',
-  /** Focus the resizing on the center. */
-  CENTER = 'CENTER',
+  /** Focus the resizing on the left. */
+  LEFT = 'LEFT',
+  /** Focus the resizing on the top left. */
+  TOP_LEFT = 'TOP_LEFT',
   /** Focus the resizing on the largest face. */
   FACE = 'FACE',
   /** Focus the resizing on the area containing all the faces. */
-  FACES = 'FACES',
-  /** Focus the resizing on the left. */
-  LEFT = 'LEFT',
-  /** Focus the resizing on the right. */
-  RIGHT = 'RIGHT',
-  /** Focus the resizing on the top. */
-  TOP = 'TOP',
-  /** Focus the resizing on the top left. */
-  TOP_LEFT = 'TOP_LEFT',
-  /** Focus the resizing on the top right. */
-  TOP_RIGHT = 'TOP_RIGHT'
+  FACES = 'FACES'
 }
 
 export enum ContentfulImageResizeStrategy {
-  /** Crops a part of the original image to fit into the specified dimensions. */
-  CROP = 'CROP',
-  /** Resizes the image to the specified dimensions, cropping the image if needed. */
-  FILL = 'FILL',
   /** Resizes the image to fit into the specified dimensions. */
   FIT = 'FIT',
   /**
@@ -526,27 +519,19 @@ export enum ContentfulImageResizeStrategy {
    *         Uses desired background color as padding color.
    */
   PAD = 'PAD',
+  /** Resizes the image to the specified dimensions, cropping the image if needed. */
+  FILL = 'FILL',
   /** Resizes the image to the specified dimensions, changing the original aspect ratio if needed. */
   SCALE = 'SCALE',
+  /** Crops a part of the original image to fit into the specified dimensions. */
+  CROP = 'CROP',
   /** Creates a thumbnail from the image. */
   THUMB = 'THUMB'
 }
 
 export interface ContentfulImageTransformOptions {
-  /**
-   * Desired background color, used with corner radius or `PAD` resize strategy.
-   *         Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
-   */
-  backgroundColor?: InputMaybe<Scalars['HexColor']>;
-  /**
-   * Desired corner radius in pixels.
-   *         Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
-   *         Defaults to `0`. Uses desired background color as padding color,
-   *         unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
-   */
-  cornerRadius?: InputMaybe<Scalars['Int']>;
-  /** Desired image format. Defaults to the original image format. */
-  format?: InputMaybe<ContentfulImageFormat>;
+  /** Desired width in pixels. Defaults to the original image width. */
+  width?: InputMaybe<Scalars['Dimension']>;
   /** Desired height in pixels. Defaults to the original image height. */
   height?: InputMaybe<Scalars['Dimension']>;
   /**
@@ -554,207 +539,141 @@ export interface ContentfulImageTransformOptions {
    *         Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
    */
   quality?: InputMaybe<Scalars['Quality']>;
-  /** Desired resize focus area. Defaults to `CENTER`. */
-  resizeFocus?: InputMaybe<ContentfulImageResizeFocus>;
+  /**
+   * Desired corner radius in pixels.
+   *         Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
+   *         Defaults to `0`. Uses desired background color as padding color,
+   *         unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
+   */
+  cornerRadius?: InputMaybe<Scalars['Int']>;
   /** Desired resize strategy. Defaults to `FIT`. */
   resizeStrategy?: InputMaybe<ContentfulImageResizeStrategy>;
-  /** Desired width in pixels. Defaults to the original image width. */
-  width?: InputMaybe<Scalars['Dimension']>;
+  /** Desired resize focus area. Defaults to `CENTER`. */
+  resizeFocus?: InputMaybe<ContentfulImageResizeFocus>;
+  /**
+   * Desired background color, used with corner radius or `PAD` resize strategy.
+   *         Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
+   */
+  backgroundColor?: InputMaybe<Scalars['HexColor']>;
+  /** Desired image format. Defaults to the original image format. */
+  format?: InputMaybe<ContentfulImageFormat>;
 }
 
 export interface ContentfulQuery {
   __typename?: 'Query';
-  appConfig?: Maybe<ContentfulAppConfig>;
-  appConfigCollection?: Maybe<ContentfulAppConfigCollection>;
   asset?: Maybe<ContentfulAsset>;
   assetCollection?: Maybe<ContentfulAssetCollection>;
   demoItem?: Maybe<ContentfulDemoItem>;
   demoItemCollection?: Maybe<ContentfulDemoItemCollection>;
+  appConfig?: Maybe<ContentfulAppConfig>;
+  appConfigCollection?: Maybe<ContentfulAppConfigCollection>;
   entryCollection?: Maybe<ContentfulEntryCollection>;
-}
-
-
-export interface ContentfulQueryAppConfigArgs {
-  id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-}
-
-
-export interface ContentfulQueryAppConfigCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Array<InputMaybe<ContentfulAppConfigOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<ContentfulAppConfigFilter>;
 }
 
 
 export interface ContentfulQueryAssetArgs {
   id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
 }
 
 
 export interface ContentfulQueryAssetCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Array<InputMaybe<ContentfulAssetOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
   where?: InputMaybe<ContentfulAssetFilter>;
+  order?: InputMaybe<Array<InputMaybe<ContentfulAssetOrder>>>;
 }
 
 
 export interface ContentfulQueryDemoItemArgs {
   id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
   preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
 }
 
 
 export interface ContentfulQueryDemoItemCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Array<InputMaybe<ContentfulDemoItemOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
   where?: InputMaybe<ContentfulDemoItemFilter>;
+  order?: InputMaybe<Array<InputMaybe<ContentfulDemoItemOrder>>>;
+}
+
+
+export interface ContentfulQueryAppConfigArgs {
+  id: Scalars['String'];
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
+}
+
+
+export interface ContentfulQueryAppConfigCollectionArgs {
+  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
+  where?: InputMaybe<ContentfulAppConfigFilter>;
+  order?: InputMaybe<Array<InputMaybe<ContentfulAppConfigOrder>>>;
 }
 
 
 export interface ContentfulQueryEntryCollectionArgs {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Array<InputMaybe<ContentfulEntryOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']>;
   where?: InputMaybe<ContentfulEntryFilter>;
+  order?: InputMaybe<Array<InputMaybe<ContentfulEntryOrder>>>;
 }
 
 export interface ContentfulSys {
   __typename?: 'Sys';
-  environmentId: Scalars['String'];
-  firstPublishedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['String'];
-  publishedAt?: Maybe<Scalars['DateTime']>;
-  publishedVersion?: Maybe<Scalars['Int']>;
   spaceId: Scalars['String'];
+  environmentId: Scalars['String'];
+  publishedAt?: Maybe<Scalars['DateTime']>;
+  firstPublishedAt?: Maybe<Scalars['DateTime']>;
+  publishedVersion?: Maybe<Scalars['Int']>;
 }
 
 export interface ContentfulSysFilter {
-  firstPublishedAt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_exists?: InputMaybe<Scalars['Boolean']>;
-  firstPublishedAt_gt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_gte?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  firstPublishedAt_lt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_lte?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_not?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  id?: InputMaybe<Scalars['String']>;
-  id_contains?: InputMaybe<Scalars['String']>;
   id_exists?: InputMaybe<Scalars['Boolean']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  id?: InputMaybe<Scalars['String']>;
   id_not?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
+  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   id_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  publishedAt?: InputMaybe<Scalars['DateTime']>;
+  id_contains?: InputMaybe<Scalars['String']>;
+  id_not_contains?: InputMaybe<Scalars['String']>;
   publishedAt_exists?: InputMaybe<Scalars['Boolean']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
+  publishedAt_not?: InputMaybe<Scalars['DateTime']>;
+  publishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
+  publishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
   publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
   publishedAt_gte?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
   publishedAt_lt?: InputMaybe<Scalars['DateTime']>;
   publishedAt_lte?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_not?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  publishedVersion?: InputMaybe<Scalars['Float']>;
+  firstPublishedAt_exists?: InputMaybe<Scalars['Boolean']>;
+  firstPublishedAt?: InputMaybe<Scalars['DateTime']>;
+  firstPublishedAt_not?: InputMaybe<Scalars['DateTime']>;
+  firstPublishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
+  firstPublishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
+  firstPublishedAt_gt?: InputMaybe<Scalars['DateTime']>;
+  firstPublishedAt_gte?: InputMaybe<Scalars['DateTime']>;
+  firstPublishedAt_lt?: InputMaybe<Scalars['DateTime']>;
+  firstPublishedAt_lte?: InputMaybe<Scalars['DateTime']>;
   publishedVersion_exists?: InputMaybe<Scalars['Boolean']>;
+  publishedVersion?: InputMaybe<Scalars['Float']>;
+  publishedVersion_not?: InputMaybe<Scalars['Float']>;
+  publishedVersion_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  publishedVersion_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   publishedVersion_gt?: InputMaybe<Scalars['Float']>;
   publishedVersion_gte?: InputMaybe<Scalars['Float']>;
-  publishedVersion_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   publishedVersion_lt?: InputMaybe<Scalars['Float']>;
   publishedVersion_lte?: InputMaybe<Scalars['Float']>;
-  publishedVersion_not?: InputMaybe<Scalars['Float']>;
-  publishedVersion_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
 }
-
-export type ContentfulAppConfigQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ContentfulAppConfigQuery = { __typename?: 'Query', appConfigCollection?: { __typename?: 'AppConfigCollection', items: Array<{ __typename?: 'AppConfig', name?: string | undefined | null, privacyPolicy?: string | undefined | null, termsAndConditions?: string | undefined | null } | undefined | null> } | undefined | null };
-
-export type ContentfulAllDemoItemsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ContentfulAllDemoItemsQuery = { __typename?: 'Query', demoItemCollection?: { __typename?: 'DemoItemCollection', items: Array<{ __typename?: 'DemoItem', title?: string | undefined | null, sys: { __typename?: 'Sys', id: string }, image?: { __typename?: 'Asset', title?: string | undefined | null, url?: string | undefined | null } | undefined | null } | undefined | null> } | undefined | null };
-
-export type ContentfulDemoItemQueryVariables = Exact<{
-  itemId: Scalars['String'];
-}>;
-
-
-export type ContentfulDemoItemQuery = { __typename?: 'Query', demoItem?: { __typename?: 'DemoItem', title?: string | undefined | null, description?: string | undefined | null, image?: { __typename?: 'Asset', title?: string | undefined | null, url?: string | undefined | null } | undefined | null } | undefined | null };
-
-
-export const AppConfigDocument = gql`
-    query appConfig {
-  appConfigCollection(limit: 1) {
-    items {
-      name
-      privacyPolicy
-      termsAndConditions
-    }
-  }
-}
-    `;
-export const AllDemoItemsDocument = gql`
-    query allDemoItems {
-  demoItemCollection {
-    items {
-      sys {
-        id
-      }
-      title
-      image {
-        title
-        url
-      }
-    }
-  }
-}
-    `;
-export const DemoItemDocument = gql`
-    query demoItem($itemId: String!) {
-  demoItem(id: $itemId) {
-    title
-    description
-    image {
-      title
-      url
-    }
-  }
-}
-    `;
-
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
-
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
-
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
-  return {
-    appConfig(variables?: ContentfulAppConfigQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulAppConfigQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulAppConfigQuery>(AppConfigDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'appConfig', 'query');
-    },
-    allDemoItems(variables?: ContentfulAllDemoItemsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulAllDemoItemsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulAllDemoItemsQuery>(AllDemoItemsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'allDemoItems', 'query');
-    },
-    demoItem(variables: ContentfulDemoItemQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ContentfulDemoItemQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ContentfulDemoItemQuery>(DemoItemDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'demoItem', 'query');
-    }
-  };
-}
-export type Sdk = ReturnType<typeof getSdk>;

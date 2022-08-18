@@ -1,12 +1,31 @@
-import { all, takeLatest, put } from 'redux-saga/effects';
+import { all, put, takeLatest } from 'redux-saga/effects';
+import { fetchQuery } from 'relay-runtime';
+import graphql from 'babel-plugin-relay/macro';
+
 import { reportError } from '../../shared/utils/reportError';
+import { configContentfulAppConfigQuery } from '../../__generated__/configContentfulAppConfigQuery.graphql';
+import { relayEnvironment } from '../../shared/services/graphqlApi/relayEnvironment';
 import { startupActions } from '../startup';
-import { client, ContentfulAppConfigQuery } from '../../shared/services/contentful';
 import { configActions } from './index';
 
 function* fetchConfig() {
   try {
-    const { appConfigCollection }: ContentfulAppConfigQuery = yield client.appConfig();
+    const { appConfigCollection }: configContentfulAppConfigQuery['response'] = yield fetchQuery(
+      relayEnvironment,
+      graphql`
+        query configContentfulAppConfigQuery {
+          appConfigCollection(limit: 1) {
+            items {
+              name
+              privacyPolicy
+              termsAndConditions
+            }
+          }
+        }
+      `,
+      {}
+    ).toPromise();
+
     const data = appConfigCollection?.items[0];
     if (data) {
       yield put(configActions.setAppConfig(data));

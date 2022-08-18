@@ -14,6 +14,9 @@ MockDate.set('2020-11-22');
 
 jest.disableAutomock();
 
+jest.mock('./shared/services/contentful/schema');
+jest.mock('./shared/services/graphqlApi/schema');
+
 beforeAll(() => {
   server.listen({
     onUnhandledRequest(req) {

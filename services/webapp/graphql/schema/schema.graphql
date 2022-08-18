@@ -4,7 +4,9 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
-"""[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig)"""
+"""
+[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig)
+"""
 type AppConfig implements Entry {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
@@ -216,7 +218,9 @@ value as specified by
 """
 scalar DateTime
 
-"""[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem)"""
+"""
+[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem)
+"""
 type DemoItem implements Entry {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
@@ -272,7 +276,9 @@ enum DemoItemOrder {
   sys_publishedVersion_DESC
 }
 
-"""The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`."""
+"""
+The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`.
+"""
 scalar Dimension
 
 interface Entry {
@@ -363,11 +369,17 @@ enum ImageResizeStrategy {
           Uses desired background color as padding color.
   """
   PAD
-  """Resizes the image to the specified dimensions, cropping the image if needed."""
+  """
+  Resizes the image to the specified dimensions, cropping the image if needed.
+  """
   FILL
-  """Resizes the image to the specified dimensions, changing the original aspect ratio if needed."""
+  """
+  Resizes the image to the specified dimensions, changing the original aspect ratio if needed.
+  """
   SCALE
-  """Crops a part of the original image to fit into the specified dimensions."""
+  """
+  Crops a part of the original image to fit into the specified dimensions.
+  """
   CROP
   """Creates a thumbnail from the image."""
   THUMB
@@ -403,7 +415,9 @@ input ImageTransformOptions {
   format: ImageFormat
 }
 
-"""The 'Quality' type represents quality as whole numeric values between `1` and `100`."""
+"""
+The 'Quality' type represents quality as whole numeric values between `1` and `100`.
+"""
 scalar Quality
 
 type Query {
@@ -632,7 +646,9 @@ type NotificationType implements Node {
   data: GenericScalar
 }
 
-"""The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."""
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
 type PageInfo {
   """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!

@@ -1,11 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FormattedMessage, IntlProvider } from 'react-intl';
-import { RelayEnvironmentProvider } from 'react-relay';
 import { Helmet } from 'react-helmet-async';
 import { localesSelectors } from '../../../modules/locales';
 import { translationMessages } from '../../config/i18n';
-import { relayEnvironment } from '../../../shared/services/graphqlApi/relayEnvironment';
 import { GlobalStyle } from '../../../theme/global';
 import { ResponsiveThemeProvider } from '../responsiveThemeProvider';
 import { Layout } from '../../../shared/components/layout';
@@ -24,21 +22,19 @@ export const ValidRoutesProviders = () => {
 
   return (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
-      <RelayEnvironmentProvider environment={relayEnvironment}>
-        <>
-          <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
-            {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
-          </FormattedMessage>
+      <>
+        <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
+          {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
+        </FormattedMessage>
 
-          <GlobalStyle />
+        <GlobalStyle />
 
-          <ResponsiveThemeProvider>
-            <Layout>
-              <Outlet />
-            </Layout>
-          </ResponsiveThemeProvider>
-        </>
-      </RelayEnvironmentProvider>
+        <ResponsiveThemeProvider>
+          <Layout>
+            <Outlet />
+          </Layout>
+        </ResponsiveThemeProvider>
+      </>
     </IntlProvider>
   );
 };

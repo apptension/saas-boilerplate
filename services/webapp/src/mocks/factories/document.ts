@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { DocumentDemoItemType } from '../../../graphql/schema/schemaTypes';
+
+import { DocumentDemoItemType } from '../../shared/services/graphqlApi/__generated/types';
 import { createDeepFactory } from './factoryCreators';
 
 export const documentFactory = createDeepFactory<Partial<DocumentDemoItemType>>(() => ({

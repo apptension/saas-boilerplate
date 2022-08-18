@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
-import { NotificationType } from '../../../graphql/schema/schemaTypes';
+import { NotificationType } from '../../shared/services/graphqlApi/__generated/types';
 import { createFactory } from './factoryCreators';
 
 export const notificationFactory = createFactory<NotificationType>(() => ({

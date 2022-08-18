@@ -6,7 +6,7 @@ import { makeContextRenderer } from '../../../shared/utils/testUtils';
 import { generateRelayEnvironmentDocuments } from '../documents.fixtures';
 import { documentFactory } from '../../../mocks/factories';
 import { DeepPartial } from '../../../shared/utils/types';
-import { DocumentDemoItemType } from '../../../../graphql/schema/schemaTypes';
+import { DocumentDemoItemType } from '../../../shared/services/graphqlApi/__generated/types';
 
 describe('Documents: Component', () => {
   const component = () => <Documents />;

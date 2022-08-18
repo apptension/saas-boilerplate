@@ -16,6 +16,7 @@
     "@graphql-codegen/typescript-operations": "^2.5.3",
     "@graphql-tools/merge": "^8.3.3",
     "@graphql-tools/schema": "^9.0.1",
+    "@graphql-tools/stitch": "^8.7.6",
     "@iconify-icons/ion": "^1.2.3",
     "@iconify/react": "^3.2.2",
     "@loadable/component": "^5.15.2",
@@ -137,8 +138,7 @@
     "storybook": "yarn build-emails && start-storybook -s ./public --port 5001",
     "build-storybook": "node ./scripts/build-storybook.js",
     "graphql:download-schema": "/bin/sh ./scripts/download-graphql-schema.sh",
-    "graphql:generate-types": "yarn graphql-codegen -c ./graphql/codegen/contentful.yml",
-    "graphql:extract-schema-types": "yarn graphql-codegen -c graphql/codegen/schemaTypes.yml",
+    "graphql:generate-types": "yarn graphql-codegen -c ./graphql/codegen/contentful.yml && yarn graphql-codegen -c graphql/codegen/schemaTypes.yml",
     "relay": "yarn run relay-compiler"
   },
   "eslintConfig": {
@@ -165,6 +165,8 @@
   "devDependencies": {
     "aws-sdk": "^2.1190.0",
     "babel-plugin-relay": "^14.0.0",
+    "jest-raw-loader": "^1.0.1",
+    "raw-loader": "^4.0.2",
     "relay-compiler": "^14.0.0",
     "terminal-link": "^2.1.1",
     "webpack-cli": "^4.10.0"
@@ -174,7 +176,8 @@
       "/node_modules/(?!(@iconify-icons|react-markdown)/)"
     ],
     "moduleNameMapper": {
-      "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
+      "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js",
+      "^!!raw-loader!.*": "jest-raw-loader"
     }
   },
   "relay": {

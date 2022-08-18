@@ -9,6 +9,7 @@ import { setUnsupportedClasses } from './unsupported/support';
 import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 import { SentryProvider } from './providers/sentry';
 import { ReduxProvider } from './providers/redux';
+import { RelayProvider } from './providers/relay';
 import { RouterProvider } from './providers/router';
 
 const render = () => {
@@ -21,7 +22,9 @@ const render = () => {
       <ReduxProvider>
         <RouterProvider>
           <HelmetProvider>
-            <App />
+            <RelayProvider>
+              <App />
+            </RelayProvider>
           </HelmetProvider>
         </RouterProvider>
       </ReduxProvider>
