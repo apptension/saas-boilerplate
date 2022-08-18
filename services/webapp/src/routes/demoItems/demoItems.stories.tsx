@@ -3,8 +3,8 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { Routes } from '../../app/config/routes';
-import { prepareState } from '../../mocks/store';
 import demoItemsAllQueryGraphql from '../../__generated__/demoItemsAllQuery.graphql';
+import { generateRelayEnvironment } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.fixtures';
 import { demoItemFactory } from '../../mocks/factories';
 import { DemoItems } from './demoItems.component';
 
@@ -20,15 +20,12 @@ relayEnvironment.mock.queueOperationResolver((operation) =>
 );
 relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
 
-const Template: Story = ({ favorited = [], ...args }) => {
-  const store = prepareState((state) => {
-    state.demoItems.favorites = favorited;
-  });
+const Template: Story = ({ hasFavourite = false, ...args }) => {
+  const relayEnvironment = generateRelayEnvironment(hasFavourite ? items[0].sys.id : null);
 
   return (
     <ProvidersWrapper
       context={{
-        store,
         relayEnvironment,
         router: { url: `/en${Routes.demoItems}`, routePath: `/:lang${Routes.demoItems}` },
       }}
@@ -46,4 +43,4 @@ export default {
 export const Default = Template.bind({});
 
 export const WithFavorited = Template.bind({});
-WithFavorited.args = { favorited: [items[0].sys.id, items[2].sys.id] };
+WithFavorited.args = { hasFavourite: true  };

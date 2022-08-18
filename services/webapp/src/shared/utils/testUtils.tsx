@@ -41,7 +41,7 @@ export interface ContextData {
   relayEnvironment?: RelayMockEnvironment | ((env: RelayMockEnvironment) => void);
 }
 
-interface ProvidersWrapperProps {
+export interface ProvidersWrapperProps {
   children: ReactNode;
   context?: ContextData;
 }

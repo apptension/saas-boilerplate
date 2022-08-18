@@ -7,8 +7,6 @@ import { reducer as authReducer } from '../../modules/auth/auth.reducer';
 import { AuthState } from '../../modules/auth/auth.types';
 import { reducer as configReducer } from '../../modules/config/config.reducer';
 import { ConfigState } from '../../modules/config/config.types';
-import { reducer as demoItemsReducer } from '../../modules/demoItems/demoItems.reducer';
-import { DemoItemsState } from '../../modules/demoItems/demoItems.types';
 import { reducer as stripeReducer } from '../../modules/stripe/stripe.reducer';
 import { StripeState } from '../../modules/stripe/stripe.types';
 import { reducer as snackbarReducer } from '../../modules/snackbar/snackbar.reducer';
@@ -22,7 +20,6 @@ export type GlobalState = {
   startup: StartupState;
   auth: AuthState;
   config: ConfigState;
-  demoItems: DemoItemsState;
   stripe: StripeState;
   snackbar: SnackbarState;
   subscription: SubscriptionState;
@@ -35,7 +32,6 @@ export default function createReducer() {
     startup: startupReducer,
     auth: authReducer,
     config: configReducer,
-    demoItems: demoItemsReducer,
     stripe: stripeReducer,
     snackbar: snackbarReducer,
     subscription: subscriptionReducer,
