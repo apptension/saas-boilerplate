@@ -1,5 +1,6 @@
 import graphene
 from django.shortcuts import get_object_or_404
+from graphql_relay import to_global_id
 
 from common.graphql import mutations
 from graphene import relay
@@ -83,8 +84,9 @@ class DeleteFavoriteContentfulDemoItemMutation(mutations.DeleteModelMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, item, *args, **kwargs):
         obj = cls.get_object(item=item, user=info.context.user)
+        deleted_id = obj.id
         obj.delete()
-        return cls(deleted_ids=[item])
+        return cls(deleted_ids=[to_global_id('ContentfulDemoItemFavoriteType', deleted_id)])
 
 
 class DeleteDocumentDemoItemMutation(mutations.DeleteModelMutation):

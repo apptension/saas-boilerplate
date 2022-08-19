@@ -38,45 +38,20 @@ export interface Scalars {
 
 export interface ApiMutation {
   __typename?: 'ApiMutation';
-  createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
-  createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
-  createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
-  deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
-  deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
-  deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
-  markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
-  updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
+  markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
+  createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
+  updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
+  deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
+  createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
+  deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
+  createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
+  deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
 }
 
 
-export interface ApiMutationCreateCrudDemoItemArgs {
-  input: CreateCrudDemoItemMutationInput;
-}
-
-
-export interface ApiMutationCreateDocumentDemoItemArgs {
-  input: CreateDocumentDemoItemMutationInput;
-}
-
-
-export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
-  input: CreateFavoriteContentfulDemoItemMutationInput;
-}
-
-
-export interface ApiMutationDeleteCrudDemoItemArgs {
-  input: DeleteCrudDemoItemMutationInput;
-}
-
-
-export interface ApiMutationDeleteDocumentDemoItemArgs {
-  input: DeleteDocumentDemoItemMutationInput;
-}
-
-
-export interface ApiMutationDeleteFavoriteContentfulDemoItemArgs {
-  input: DeleteFavoriteContentfulDemoItemMutationInput;
+export interface ApiMutationUpdateNotificationArgs {
+  input: UpdateNotificationMutationInput;
 }
 
 
@@ -85,13 +60,38 @@ export interface ApiMutationMarkReadAllNotificationsArgs {
 }
 
 
+export interface ApiMutationCreateCrudDemoItemArgs {
+  input: CreateCrudDemoItemMutationInput;
+}
+
+
 export interface ApiMutationUpdateCrudDemoItemArgs {
   input: UpdateCrudDemoItemMutationInput;
 }
 
 
-export interface ApiMutationUpdateNotificationArgs {
-  input: UpdateNotificationMutationInput;
+export interface ApiMutationDeleteCrudDemoItemArgs {
+  input: DeleteCrudDemoItemMutationInput;
+}
+
+
+export interface ApiMutationCreateDocumentDemoItemArgs {
+  input: CreateDocumentDemoItemMutationInput;
+}
+
+
+export interface ApiMutationDeleteDocumentDemoItemArgs {
+  input: DeleteDocumentDemoItemMutationInput;
+}
+
+
+export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
+  input: CreateFavoriteContentfulDemoItemMutationInput;
+}
+
+
+export interface ApiMutationDeleteFavoriteContentfulDemoItemArgs {
+  input: DeleteFavoriteContentfulDemoItemMutationInput;
 }
 
 export interface ApiSubscription {
@@ -101,128 +101,128 @@ export interface ApiSubscription {
 
 
 export interface ApiSubscriptionNotificationCreatedArgs {
-  after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 }
 
 export interface ContentfulDemoItemFavoriteConnection {
   __typename?: 'ContentfulDemoItemFavoriteConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
 }
 
 /** A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor. */
 export interface ContentfulDemoItemFavoriteEdge {
   __typename?: 'ContentfulDemoItemFavoriteEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<ContentfulDemoItemFavoriteType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
 }
 
 export interface ContentfulDemoItemFavoriteType extends Node {
   __typename?: 'ContentfulDemoItemFavoriteType';
-  createdAt: Scalars['DateTime'];
   /** The ID of the object. */
   id: Scalars['ID'];
   item: ContentfulDemoItemType;
+  createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 }
 
 export interface ContentfulDemoItemFavoriteTypeConnection {
   __typename?: 'ContentfulDemoItemFavoriteTypeConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
 }
 
 /** A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor. */
 export interface ContentfulDemoItemFavoriteTypeEdge {
   __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<ContentfulDemoItemFavoriteType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
 }
 
 export interface ContentfulDemoItemType extends Node {
   __typename?: 'ContentfulDemoItemType';
-  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
-  fields: Scalars['JSONString'];
   /** The ID of the object. */
   id: Scalars['ID'];
+  fields: Scalars['JSONString'];
   isPublished: Scalars['Boolean'];
+  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
   pk?: Maybe<Scalars['String']>;
 }
 
 
 export interface ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs {
-  after?: InputMaybe<Scalars['String']>;
+  offset?: InputMaybe<Scalars['Int']>;
   before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
 }
 
 export interface CreateCrudDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+  createdBy?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface CreateCrudDemoItemMutationPayload {
   __typename?: 'CreateCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CreateDocumentDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
   file?: InputMaybe<Scalars['Upload']>;
+  createdBy?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface CreateDocumentDemoItemMutationPayload {
   __typename?: 'CreateDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   documentDemoItem?: Maybe<DocumentDemoItemType>;
   documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CreateFavoriteContentfulDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
   item: Scalars['String'];
   user?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface CreateFavoriteContentfulDemoItemMutationPayload {
   __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
   contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CrudDemoItemConnection {
   __typename?: 'CrudDemoItemConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<CrudDemoItemEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<CrudDemoItemEdge>>;
 }
 
 /** A Relay edge containing a `CrudDemoItem` and its cursor. */
 export interface CrudDemoItemEdge {
   __typename?: 'CrudDemoItemEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<CrudDemoItemType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
 }
 
 export interface CrudDemoItemType extends Node {
@@ -233,67 +233,67 @@ export interface CrudDemoItemType extends Node {
 }
 
 export interface DeleteCrudDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteCrudDemoItemMutationPayload {
   __typename?: 'DeleteCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface DeleteDocumentDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteDocumentDemoItemMutationPayload {
   __typename?: 'DeleteDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface DeleteFavoriteContentfulDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
   item?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteFavoriteContentfulDemoItemMutationPayload {
   __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface DocumentDemoItemConnection {
   __typename?: 'DocumentDemoItemConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<DocumentDemoItemEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<DocumentDemoItemEdge>>;
 }
 
 /** A Relay edge containing a `DocumentDemoItem` and its cursor. */
 export interface DocumentDemoItemEdge {
   __typename?: 'DocumentDemoItemEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<DocumentDemoItemType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
 }
 
 export interface DocumentDemoItemType extends Node {
   __typename?: 'DocumentDemoItemType';
-  createdAt: Scalars['DateTime'];
-  file?: Maybe<FileFieldType>;
   /** The ID of the object. */
   id: Scalars['ID'];
+  file?: Maybe<FileFieldType>;
+  createdAt: Scalars['DateTime'];
 }
 
 export interface FileFieldType {
   __typename?: 'FileFieldType';
-  name?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
 }
 
 export interface MarkReadAllNotificationsMutationInput {
@@ -302,8 +302,8 @@ export interface MarkReadAllNotificationsMutationInput {
 
 export interface MarkReadAllNotificationsMutationPayload {
   __typename?: 'MarkReadAllNotificationsMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 /** An object with an ID */
@@ -314,83 +314,59 @@ export interface Node {
 
 export interface NotificationConnection {
   __typename?: 'NotificationConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<NotificationEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<NotificationEdge>>;
 }
 
 /** A Relay edge containing a `Notification` and its cursor. */
 export interface NotificationEdge {
   __typename?: 'NotificationEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<NotificationType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
 }
 
 export interface NotificationType extends Node {
   __typename?: 'NotificationType';
-  createdAt: Scalars['DateTime'];
-  data?: Maybe<Scalars['GenericScalar']>;
   /** The ID of the object. */
   id: Scalars['ID'];
-  readAt?: Maybe<Scalars['DateTime']>;
   type: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  readAt?: Maybe<Scalars['DateTime']>;
+  data?: Maybe<Scalars['GenericScalar']>;
 }
 
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 export interface PageInfo {
   __typename?: 'PageInfo';
-  /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['String']>;
   /** When paginating forwards, are there more items? */
   hasNextPage: Scalars['Boolean'];
   /** When paginating backwards, are there more items? */
   hasPreviousPage: Scalars['Boolean'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
 }
 
 export interface Query {
   __typename?: 'Query';
-  allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
-  allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
-  allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   allNotifications?: Maybe<NotificationConnection>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
+  allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
+  allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
+  allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   node?: Maybe<Node>;
 }
 
 
-export interface QueryAllContentfulDemoItemFavoritesArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
-export interface QueryAllCrudDemoItemsArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
-export interface QueryAllDocumentDemoItemsArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
 export interface QueryAllNotificationsArgs {
-  after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 }
@@ -401,34 +377,58 @@ export interface QueryCrudDemoItemArgs {
 }
 
 
+export interface QueryAllCrudDemoItemsArgs {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllContentfulDemoItemFavoritesArgs {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllDocumentDemoItemsArgs {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
 export interface QueryNodeArgs {
   id: Scalars['ID'];
 }
 
 export interface UpdateCrudDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
   createdBy?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
-  name: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface UpdateCrudDemoItemMutationPayload {
   __typename?: 'UpdateCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface UpdateNotificationMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
   isRead?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface UpdateNotificationMutationPayload {
   __typename?: 'UpdateNotificationMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   notification?: Maybe<NotificationType>;
   notificationEdge?: Maybe<NotificationEdge>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f9c3cdf202752b4287478a680a3f515b>>
+ * @generated SignedSource<<d12251fbec4cb68af4a669d23fda3155>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,14 +15,17 @@ export type CreateFavoriteContentfulDemoItemMutationInput = {
   user?: string | null;
 };
 export type useFavoriteDemoItemListCreateMutation$variables = {
+  connections: ReadonlyArray<string>;
   input: CreateFavoriteContentfulDemoItemMutationInput;
 };
 export type useFavoriteDemoItemListCreateMutation$data = {
   readonly createFavoriteContentfulDemoItem: {
-    readonly contentfulDemoItemFavorite: {
-      readonly item: {
-        readonly pk: string | null;
-      };
+    readonly contentfulDemoItemFavoriteEdge: {
+      readonly node: {
+        readonly item: {
+          readonly pk: string | null;
+        };
+      } | null;
     } | null;
   } | null;
 };
@@ -32,28 +35,31 @@ export type useFavoriteDemoItemListCreateMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "input"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
     "kind": "Variable",
     "name": "input",
     "variableName": "input"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "pk",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -62,14 +68,17 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "useFavoriteDemoItemListCreateMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "CreateFavoriteContentfulDemoItemMutationPayload",
         "kind": "LinkedField",
         "name": "createFavoriteContentfulDemoItem",
@@ -78,20 +87,31 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "ContentfulDemoItemFavoriteType",
+            "concreteType": "ContentfulDemoItemFavoriteEdge",
             "kind": "LinkedField",
-            "name": "contentfulDemoItemFavorite",
+            "name": "contentfulDemoItemFavoriteEdge",
             "plural": false,
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "ContentfulDemoItemType",
+                "concreteType": "ContentfulDemoItemFavoriteType",
                 "kind": "LinkedField",
-                "name": "item",
+                "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "ContentfulDemoItemType",
+                    "kind": "LinkedField",
+                    "name": "item",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/)
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -107,13 +127,16 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "useFavoriteDemoItemListCreateMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "CreateFavoriteContentfulDemoItemMutationPayload",
         "kind": "LinkedField",
         "name": "createFavoriteContentfulDemoItem",
@@ -122,27 +145,54 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "ContentfulDemoItemFavoriteType",
+            "concreteType": "ContentfulDemoItemFavoriteEdge",
             "kind": "LinkedField",
-            "name": "contentfulDemoItemFavorite",
+            "name": "contentfulDemoItemFavoriteEdge",
             "plural": false,
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "ContentfulDemoItemType",
+                "concreteType": "ContentfulDemoItemFavoriteType",
                 "kind": "LinkedField",
-                "name": "item",
+                "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "ContentfulDemoItemType",
+                    "kind": "LinkedField",
+                    "name": "item",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/),
+                      (v4/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
-              },
-              (v3/*: any*/)
+              }
             ],
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "appendEdge",
+            "key": "",
+            "kind": "LinkedHandle",
+            "name": "contentfulDemoItemFavoriteEdge",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
           }
         ],
         "storageKey": null
@@ -150,16 +200,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5e31795e48529982d59c677b6334a2b7",
+    "cacheID": "f73e8ce04d4da32d71c596e68259a83d",
     "id": null,
     "metadata": {},
     "name": "useFavoriteDemoItemListCreateMutation",
     "operationKind": "mutation",
-    "text": "mutation useFavoriteDemoItemListCreateMutation(\n  $input: CreateFavoriteContentfulDemoItemMutationInput!\n) {\n  createFavoriteContentfulDemoItem(input: $input) {\n    contentfulDemoItemFavorite {\n      item {\n        pk\n        id\n      }\n      id\n    }\n  }\n}\n"
+    "text": "mutation useFavoriteDemoItemListCreateMutation(\n  $input: CreateFavoriteContentfulDemoItemMutationInput!\n) {\n  createFavoriteContentfulDemoItem(input: $input) {\n    contentfulDemoItemFavoriteEdge {\n      node {\n        item {\n          pk\n          id\n        }\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "65a9863a6d52cd7cb0bae520a4f64ed4";
+(node as any).hash = "a2b13282df0765031f5c8bc4498cb10a";
 
 export default node;

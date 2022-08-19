@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<838f57aab2dd6b9decda90c827f95b03>>
+ * @generated SignedSource<<46e4472c03569f2b25442c51c41cd88f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,7 @@ export type DeleteFavoriteContentfulDemoItemMutationInput = {
   item?: string | null;
 };
 export type useFavoriteDemoItemListDeleteMutation$variables = {
+  connections: ReadonlyArray<string>;
   input: DeleteFavoriteContentfulDemoItemMutationInput;
 };
 export type useFavoriteDemoItemListDeleteMutation$data = {
@@ -27,55 +28,94 @@ export type useFavoriteDemoItemListDeleteMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "input"
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
   }
 ],
-v1 = [
-  {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
-    ],
-    "concreteType": "DeleteFavoriteContentfulDemoItemMutationPayload",
-    "kind": "LinkedField",
-    "name": "deleteFavoriteContentfulDemoItem",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "deletedIds",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
-  }
-];
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "deletedIds",
+  "storageKey": null
+};
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "useFavoriteDemoItemListDeleteMutation",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "DeleteFavoriteContentfulDemoItemMutationPayload",
+        "kind": "LinkedField",
+        "name": "deleteFavoriteContentfulDemoItem",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "ApiMutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "useFavoriteDemoItemListDeleteMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "DeleteFavoriteContentfulDemoItemMutationPayload",
+        "kind": "LinkedField",
+        "name": "deleteFavoriteContentfulDemoItem",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "deleteEdge",
+            "key": "",
+            "kind": "ScalarHandle",
+            "name": "deletedIds",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
     "cacheID": "02425ee75388bc01e074f620291bba67",
@@ -88,6 +128,6 @@ return {
 };
 })();
 
-(node as any).hash = "db83416f7f80115d24f408f0aa4578b2";
+(node as any).hash = "e6262bfe08fadf4d4a888dc51694baa0";
 
 export default node;

@@ -17,12 +17,12 @@ export type DemoItemListItemProps = {
   id: string;
   item: demoItemListItem_item$key | null;
   refreshFavorites: (options?: UseQueryLoaderLoadQueryOptions) => void;
-  queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>
+  queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>;
 };
 
-export const DemoItemListItem = ({ id, item, refreshFavorites, queryRef }: DemoItemListItemProps) => {
+export const DemoItemListItem = ({ id, item, queryRef }: DemoItemListItemProps) => {
   const intl = useIntl();
-  const { setFavorite, isFavorite } = useFavoriteDemoItem(id, queryRef, refreshFavorites);
+  const { setFavorite, isFavorite } = useFavoriteDemoItem(id, queryRef);
   const generateLocalePath = useGenerateLocalePath();
 
   const data = useFragment(
