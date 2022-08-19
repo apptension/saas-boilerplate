@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
-import { useFragment } from 'react-relay';
+import { PreloadedQuery, UseQueryLoaderLoadQueryOptions, useFragment } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 
 import { Routes } from '../../../app/config/routes';
@@ -10,16 +10,19 @@ import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { demoItemListItem_item$key } from '../../../__generated__/demoItemListItem_item.graphql';
+import { useFavoriteDemoItemListQuery } from '../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
 export type DemoItemListItemProps = {
   id: string;
   item: demoItemListItem_item$key | null;
+  refreshFavorites: (options?: UseQueryLoaderLoadQueryOptions) => void;
+  queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>;
 };
 
-export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
+export const DemoItemListItem = ({ id, item, queryRef }: DemoItemListItemProps) => {
   const intl = useIntl();
-  const { setFavorite, isFavorite } = useFavoriteDemoItem(id);
+  const { setFavorite, isFavorite } = useFavoriteDemoItem(id, queryRef);
   const generateLocalePath = useGenerateLocalePath();
 
   const data = useFragment(

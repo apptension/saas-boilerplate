@@ -12,10 +12,65 @@ type ApiMutation {
   deleteCrudDemoItem(input: DeleteCrudDemoItemMutationInput!): DeleteCrudDemoItemMutationPayload
   createDocumentDemoItem(input: CreateDocumentDemoItemMutationInput!): CreateDocumentDemoItemMutationPayload
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
+  createFavoriteContentfulDemoItem(input: CreateFavoriteContentfulDemoItemMutationInput!): CreateFavoriteContentfulDemoItemMutationPayload
+  deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
 }
 
 type ApiSubscription {
   notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+}
+
+type ContentfulDemoItemFavoriteConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [ContentfulDemoItemFavoriteEdge]!
+}
+
+"""A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor."""
+type ContentfulDemoItemFavoriteEdge {
+  """The item at the end of the edge"""
+  node: ContentfulDemoItemFavoriteType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ContentfulDemoItemFavoriteType implements Node {
+  """The ID of the object."""
+  id: ID!
+  item: ContentfulDemoItemType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ContentfulDemoItemFavoriteTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [ContentfulDemoItemFavoriteTypeEdge]!
+}
+
+"""
+A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor.
+"""
+type ContentfulDemoItemFavoriteTypeEdge {
+  """The item at the end of the edge"""
+  node: ContentfulDemoItemFavoriteType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ContentfulDemoItemType implements Node {
+  """The ID of the object."""
+  id: ID!
+  fields: JSONString!
+  isPublished: Boolean!
+  contentfuldemoitemfavoriteSet(offset: Int, before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteTypeConnection!
+  pk: String
 }
 
 input CreateCrudDemoItemMutationInput {
@@ -39,6 +94,18 @@ input CreateDocumentDemoItemMutationInput {
 type CreateDocumentDemoItemMutationPayload {
   documentDemoItem: DocumentDemoItemType
   documentDemoItemEdge: DocumentDemoItemEdge
+  clientMutationId: String
+}
+
+input CreateFavoriteContentfulDemoItemMutationInput {
+  item: String!
+  user: String
+  clientMutationId: String
+}
+
+type CreateFavoriteContentfulDemoItemMutationPayload {
+  contentfulDemoItemFavorite: ContentfulDemoItemFavoriteType
+  contentfulDemoItemFavoriteEdge: ContentfulDemoItemFavoriteEdge
   clientMutationId: String
 }
 
@@ -92,6 +159,16 @@ type DeleteDocumentDemoItemMutationPayload {
   clientMutationId: String
 }
 
+input DeleteFavoriteContentfulDemoItemMutationInput {
+  item: String
+  clientMutationId: String
+}
+
+type DeleteFavoriteContentfulDemoItemMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
 type DocumentDemoItemConnection {
   """Pagination data for this connection."""
   pageInfo: PageInfo!
@@ -127,6 +204,14 @@ GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
 
 input MarkReadAllNotificationsMutationInput {
   clientMutationId: String
@@ -194,6 +279,7 @@ type Query {
     id: ID!
   ): CrudDemoItemType
   allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
   allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
   node(
     """The ID of the object"""

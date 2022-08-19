@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
 import demoItemsAllQueryNode, { demoItemsAllQuery } from '../../__generated__/demoItemsAllQuery.graphql';
+import { useFavoriteDemoItemsLoader } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.hook';
 import { Container, Header, List } from './demoItems.styles';
 import { DemoItemListItem } from './demoItemListItem';
 
@@ -13,6 +14,11 @@ type DemoItemsContentProps = {
 export const DemoItemsContent: FC<DemoItemsContentProps> = ({ loadItemsQueryRef }) => {
   const { demoItemCollection } = usePreloadedQuery(demoItemsAllQueryNode, loadItemsQueryRef);
   const items = demoItemCollection?.items;
+  const [queryRef, refresh] = useFavoriteDemoItemsLoader();
+
+  if (!queryRef) {
+    return null;
+  }
 
   return (
     <Container>
@@ -22,7 +28,11 @@ export const DemoItemsContent: FC<DemoItemsContentProps> = ({ loadItemsQueryRef 
 
       <List>
         {items?.map((demoItem) => {
-          return demoItem ? <DemoItemListItem key={demoItem.sys.id} id={demoItem.sys.id} item={demoItem} /> : null;
+          return demoItem ? (
+            <Suspense key={demoItem.sys.id} fallback={null}>
+              <DemoItemListItem id={demoItem.sys.id} item={demoItem} refreshFavorites={refresh} queryRef={queryRef} />
+            </Suspense>
+          ) : null;
         })}
       </List>
     </Container>

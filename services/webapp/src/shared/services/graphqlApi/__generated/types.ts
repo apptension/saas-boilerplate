@@ -23,6 +23,13 @@ export interface Scalars {
    */
   GenericScalar: any;
   /**
+   * Allows use of a JSON String for input / output from the GraphQL schema.
+   *
+   * Use of this type is *not recommended* as you lose the benefits of having a defined, static
+   * schema (one of the key benefits of GraphQL).
+   */
+  JSONString: any;
+  /**
    * Create scalar that ignores normal serialization/deserialization, since
    * that will be handled by the multipart request spec
    */
@@ -38,6 +45,8 @@ export interface ApiMutation {
   deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
+  createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
+  deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
 }
 
 
@@ -75,6 +84,16 @@ export interface ApiMutationDeleteDocumentDemoItemArgs {
   input: DeleteDocumentDemoItemMutationInput;
 }
 
+
+export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
+  input: CreateFavoriteContentfulDemoItemMutationInput;
+}
+
+
+export interface ApiMutationDeleteFavoriteContentfulDemoItemArgs {
+  input: DeleteFavoriteContentfulDemoItemMutationInput;
+}
+
 export interface ApiSubscription {
   __typename?: 'ApiSubscription';
   notificationCreated?: Maybe<NotificationConnection>;
@@ -82,6 +101,68 @@ export interface ApiSubscription {
 
 
 export interface ApiSubscriptionNotificationCreatedArgs {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+export interface ContentfulDemoItemFavoriteConnection {
+  __typename?: 'ContentfulDemoItemFavoriteConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
+}
+
+/** A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor. */
+export interface ContentfulDemoItemFavoriteEdge {
+  __typename?: 'ContentfulDemoItemFavoriteEdge';
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+}
+
+export interface ContentfulDemoItemFavoriteType extends Node {
+  __typename?: 'ContentfulDemoItemFavoriteType';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  item: ContentfulDemoItemType;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+}
+
+export interface ContentfulDemoItemFavoriteTypeConnection {
+  __typename?: 'ContentfulDemoItemFavoriteTypeConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
+}
+
+/** A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor. */
+export interface ContentfulDemoItemFavoriteTypeEdge {
+  __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+}
+
+export interface ContentfulDemoItemType extends Node {
+  __typename?: 'ContentfulDemoItemType';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  fields: Scalars['JSONString'];
+  isPublished: Scalars['Boolean'];
+  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
+  pk?: Maybe<Scalars['String']>;
+}
+
+
+export interface ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs {
+  offset?: InputMaybe<Scalars['Int']>;
   before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -111,6 +192,19 @@ export interface CreateDocumentDemoItemMutationPayload {
   __typename?: 'CreateDocumentDemoItemMutationPayload';
   documentDemoItem?: Maybe<DocumentDemoItemType>;
   documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
+  clientMutationId?: Maybe<Scalars['String']>;
+}
+
+export interface CreateFavoriteContentfulDemoItemMutationInput {
+  item: Scalars['String'];
+  user?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface CreateFavoriteContentfulDemoItemMutationPayload {
+  __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
+  contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
+  contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
   clientMutationId?: Maybe<Scalars['String']>;
 }
 
@@ -156,6 +250,17 @@ export interface DeleteDocumentDemoItemMutationInput {
 
 export interface DeleteDocumentDemoItemMutationPayload {
   __typename?: 'DeleteDocumentDemoItemMutationPayload';
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']>;
+}
+
+export interface DeleteFavoriteContentfulDemoItemMutationInput {
+  item?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeleteFavoriteContentfulDemoItemMutationPayload {
+  __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
   clientMutationId?: Maybe<Scalars['String']>;
 }
@@ -253,6 +358,7 @@ export interface Query {
   allNotifications?: Maybe<NotificationConnection>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
+  allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   node?: Maybe<Node>;
 }
@@ -272,6 +378,14 @@ export interface QueryCrudDemoItemArgs {
 
 
 export interface QueryAllCrudDemoItemsArgs {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllContentfulDemoItemFavoritesArgs {
   before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;

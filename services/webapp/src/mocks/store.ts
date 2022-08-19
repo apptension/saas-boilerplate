@@ -3,7 +3,6 @@ import { GlobalState } from '../app/config/reducers';
 import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
-import { DEMO_ITEMS_INITIAL_STATE } from '../modules/demoItems';
 import { STRIPE_INITIAL_STATE } from '../modules/stripe';
 import { SNACKBAR_INITIAL_STATE } from '../modules/snackbar';
 import { SUBSCRIPTION_INITIAL_STATE } from '../modules/subscription';
@@ -17,7 +16,6 @@ export const store: GlobalState = {
   startup: STARTUP_INITIAL_STATE,
   auth: AUTH_INITIAL_STATE,
   config: CONFIG_INITIAL_STATE,
-  demoItems: DEMO_ITEMS_INITIAL_STATE,
   snackbar: SNACKBAR_INITIAL_STATE,
   stripe: STRIPE_INITIAL_STATE,
   subscription: SUBSCRIPTION_INITIAL_STATE,

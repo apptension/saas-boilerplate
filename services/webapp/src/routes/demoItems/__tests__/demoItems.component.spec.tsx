@@ -1,9 +1,10 @@
-import {screen, waitFor} from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../shared/utils/testUtils';
 import demoItemsAllQueryGraphql from '../../../__generated__/demoItemsAllQuery.graphql';
+import favoriteDemoItemListQueryGraphql from '../../../__generated__/useFavoriteDemoItemListQuery.graphql'
 import { demoItemFactory } from '../../../mocks/factories';
 import { DemoItems } from '../demoItems.component';
 
@@ -30,7 +31,13 @@ describe('DemoItems: Component', () => {
         },
       })
     );
+    relayEnvironment.mock.queueOperationResolver((operation) =>
+      MockPayloadGenerator.generate(operation, {
+        ContentfulDemoItemFavoriteType: () => ({ item: { pk: 'item-1' } }),
+      })
+    );
     relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
+    relayEnvironment.mock.queuePendingOperation(favoriteDemoItemListQueryGraphql, {});
     return relayEnvironment;
   };
 
@@ -39,18 +46,14 @@ describe('DemoItems: Component', () => {
 
   it('should render all items', async () => {
     render({}, { relayEnvironment: getRelayEnv() });
-    await waitFor(() => {
-      expect(screen.getByText('First')).toBeInTheDocument();
-    });
+    expect(screen.getByText('First')).toBeInTheDocument();
     expect(screen.getByText('Second')).toBeInTheDocument();
   });
 
   it('should open single demo item page when link is clicked', async () => {
     const { pushSpy, history } = spiedHistory();
     render({}, { relayEnvironment: getRelayEnv(), router: { history } });
-    await waitFor(() => {
-      expect(screen.getByText('First')).toBeInTheDocument();
-    });
+    expect(screen.getByText('First')).toBeInTheDocument();
     await userEvent.click(screen.getByText('First'));
     expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/demo-items/test-id-1'));
   });

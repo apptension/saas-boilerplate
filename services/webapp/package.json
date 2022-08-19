@@ -162,6 +162,7 @@
     }
   },
   "devDependencies": {
+    "@types/react-test-renderer": "^18.0.0",
     "@types/invariant": "^2.2.35",
     "aws-sdk": "^2.1190.0",
     "babel-plugin-relay": "^14.0.0",
