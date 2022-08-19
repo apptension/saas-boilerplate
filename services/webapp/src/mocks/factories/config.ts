@@ -1,10 +1,9 @@
-import { faker } from '@faker-js/faker';
 import { ConfigState } from '../../modules/config/config.types';
 import { createDeepFactory } from './factoryCreators';
 
 export const appConfigFactory = createDeepFactory<ConfigState>(() => ({
   contentfulConfig: {
-    privacyPolicy: faker.lorem.paragraphs(2),
-    termsAndConditions: faker.lorem.paragraphs(2),
+    privacyPolicy: 'Lorem ipsum privacy policy',
+    termsAndConditions: 'Lorem ipsum terms and conditions',
   },
 }));

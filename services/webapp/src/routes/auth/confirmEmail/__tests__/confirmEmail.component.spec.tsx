@@ -1,114 +1,125 @@
-import { waitFor } from '@testing-library/react';
-import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../shared/utils/testUtils';
+import { act, screen } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
+import { produce } from 'immer';
 import { ConfirmEmail } from '../confirmEmail.component';
-import { Routes } from '../../../../app/config/routes';
-import { confirmEmail } from '../../../../modules/auth/auth.actions';
-import { snackbarActions } from '../../../../modules/snackbar';
+import { Routes as RoutesConfig } from '../../../../app/config/routes';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory, loggedOutAuthFactory } from '../../../../mocks/factories';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
-
-const user = 'user_id';
-const token = 'token';
-const confirmTokenRoute = `/en/auth/confirm/${user}/${token}`;
-const confirmTokenRouteNoToken = `/en/auth/confirm/${user}/invalid_token`;
-
-const store = prepareState((state) => {
-  state.auth = loggedOutAuthFactory();
-  state.startup.profileStartupCompleted = true;
-});
+import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { server } from '../../../../mocks/server';
+import { mockConfirmEmail } from '../../../../mocks/server/handlers';
+import { unpackPromise } from '../../../../tests/utils/promise';
+import configureStore from '../../../../app/config/store';
 
 describe('ConfirmEmail: Component', () => {
-  const component = () => <ConfirmEmail />;
-  const render = makeContextRenderer(component);
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  const user = 'user_id';
+  const token = 'token';
+  const reduxInitialState = prepareState((state) => {
+    state.auth = loggedOutAuthFactory();
+    state.startup.profileStartupCompleted = true;
   });
 
-  it('should call confirm token action', async () => {
-    mockDispatch.mockResolvedValue({ isError: false });
-    render({}, { store, router: { url: confirmTokenRoute, routePath: Routes.getLocalePath(['confirmEmail']) } });
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(confirmEmail({ token, user }));
-    });
-  });
-
-  it('should hide token and user from URL', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: false,
-    });
-    const { pushSpy, history } = spiedHistory(confirmTokenRoute);
-    render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
-    await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
-    });
-  });
+  const Component = () => (
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(['confirmEmail'])} element={<ConfirmEmail />} />
+      <Route path={RoutesConfig.getLocalePath(['login'])} element={<span>Login page mock</span>} />
+    </Routes>
+  );
 
   describe('token is invalid', () => {
-    it('should redirect to login show invalid token error', async () => {
-      mockDispatch.mockResolvedValue({
-        isError: true,
-      });
-      const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-      render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
-      });
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
+    it('should redirect to login ', async () => {
+      const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+      const { promise, resolve: resolveApiCall } = unpackPromise();
+      server.use(mockConfirmEmail({ isError: true }, 400, promise));
+
+      render(<Component />, { reduxInitialState, routerHistory });
+      await act(async () => resolveApiCall());
+
+      expect(screen.getByText('Login page mock')).toBeInTheDocument();
+    });
+
+    it('should show error message', async () => {
+      const reduxStore = configureStore(reduxInitialState);
+      const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+      const { promise, resolve: resolveApiCall } = unpackPromise();
+      server.use(mockConfirmEmail({ isError: true }, 400, promise));
+
+      render(<Component />, { reduxStore, routerHistory });
+      await act(async () => resolveApiCall());
+
+      expect(reduxStore.getState()).toEqual(
+        produce(reduxInitialState, (state) => {
+          state.snackbar.lastMessageId = 1;
+          state.snackbar.messages = [{ id: 1, text: 'Invalid token.' }];
+        })
+      );
     });
   });
 
   describe('token is valid', () => {
     describe('user is logged out', () => {
-      it('should redirect to login and show success message', async () => {
-        mockDispatch.mockResolvedValue({ isError: false });
-        const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-        render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
-        await waitFor(() => {
-          expect(mockDispatch).toHaveBeenCalledWith(
-            snackbarActions.showMessage('Congratulations! Now you can log in.')
-          );
-        });
-        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
+      it('should redirect to login ', async () => {
+        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const { promise, resolve: resolveApiCall } = unpackPromise();
+        server.use(mockConfirmEmail({ isError: false }, 200, promise));
+
+        render(<Component />, { reduxInitialState, routerHistory });
+        await act(async () => resolveApiCall());
+
+        expect(screen.getByText('Login page mock')).toBeInTheDocument();
+      });
+
+      it('should show success message', async () => {
+        const reduxStore = configureStore(reduxInitialState);
+        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const { promise, resolve: resolveApiCall } = unpackPromise();
+        server.use(mockConfirmEmail({ isError: false }, 200, promise));
+
+        render(<Component />, { reduxStore, routerHistory });
+        await act(async () => resolveApiCall());
+
+        expect(reduxStore.getState()).toEqual(
+          produce(reduxInitialState, (state) => {
+            state.snackbar.lastMessageId = 1;
+            state.snackbar.messages = [{ id: 1, text: 'Congratulations! Now you can log in.' }];
+          })
+        );
       });
     });
 
     describe('user is logged in', () => {
-      const store = prepareState((state) => {
+      const loggedInReduxState = prepareState((state) => {
         state.auth = loggedInAuthFactory();
         state.startup.profileStartupCompleted = true;
       });
 
-      it('should redirect to login and show success message', async () => {
-        mockDispatch.mockResolvedValue({ isError: false });
-        const { history, pushSpy } = spiedHistory(confirmTokenRoute);
-        render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
-        await waitFor(() => {
-          expect(mockDispatch).toHaveBeenCalledWith(
-            snackbarActions.showMessage('Congratulations! Your email has been confirmed.')
-          );
-        });
-        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
-      });
-    });
-  });
+      it('should redirect to login ', async () => {
+        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const { promise, resolve: resolveApiCall } = unpackPromise();
+        server.use(mockConfirmEmail({ isError: false }, 200, promise));
 
-  describe('token is invalid', () => {
-    it('should redirect to login and show invalid token error', async () => {
-      const { history, pushSpy } = spiedHistory(confirmTokenRouteNoToken);
-      render({}, { store, router: { history, routePath: Routes.getLocalePath(['confirmEmail']) } });
-      await waitFor(() => {
-        expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Invalid token.'));
+        render(<Component />, { reduxInitialState: loggedInReduxState, routerHistory });
+        await act(async () => resolveApiCall());
+
+        expect(screen.getByText('Login page mock')).toBeInTheDocument();
       });
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
+
+      it('should show success message', async () => {
+        const reduxStore = configureStore(loggedInReduxState);
+        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const { promise, resolve: resolveApiCall } = unpackPromise();
+        server.use(mockConfirmEmail({ isError: false }, 200, promise));
+
+        render(<Component />, { reduxStore, routerHistory });
+        await act(async () => resolveApiCall());
+
+        expect(reduxStore.getState()).toEqual(
+          produce(loggedInReduxState, (state) => {
+            state.snackbar.lastMessageId = 1;
+            state.snackbar.messages = [{ id: 1, text: 'Congratulations! Your email has been confirmed.' }];
+          })
+        );
+      });
     });
   });
 });

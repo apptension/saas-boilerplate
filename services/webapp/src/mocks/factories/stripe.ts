@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import {
   StripePaymentMethod,
   StripePaymentMethodCardBrand,
@@ -8,23 +7,24 @@ import {
   TransactionHistoryEntry,
   TransactionHistoryEntryInvoice,
 } from '../../shared/services/api/stripe/history/types';
+import { makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory, createFactory } from './factoryCreators';
 import { subscriptionPlanFactory } from './subscription';
 
 export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() => ({
-  id: faker.datatype.uuid(),
-  type: faker.helpers.arrayElement([StripePaymentMethodType.Card]),
+  id: makeId(32),
+  type: StripePaymentMethodType.Card,
   billingDetails: {
-    name: faker.name.lastName(),
+    name: 'MockLastName',
   },
   card: {
-    id: faker.datatype.uuid(),
-    last4: faker.datatype.number({ min: 1000, max: 9999 }).toString(),
+    id: makeId(32),
+    last4: '9999',
     brand: StripePaymentMethodCardBrand.Visa,
     country: 'PL',
     expMonth: 10,
     expYear: 30,
-    fingerprint: faker.random.alphaNumeric(10),
+    fingerprint: makeId(10),
     funding: 'credit',
     generatedFrom: '',
     threeDSecureUsage: {
@@ -39,22 +39,22 @@ export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() =>
 }));
 
 export const transactionHistoryEntryInvoiceFactory = createFactory<TransactionHistoryEntryInvoice>(() => ({
-  id: faker.datatype.uuid(),
+  id: makeId(32),
   items: [
     {
-      id: faker.datatype.uuid(),
+      id: makeId(32),
       price: subscriptionPlanFactory(),
     },
   ],
 }));
 
 export const transactionHistoryEntryFactory = createFactory<TransactionHistoryEntry>(() => ({
-  id: faker.datatype.uuid(),
+  id: makeId(32),
   created: new Date(2020, 5, 5).toString(),
-  amount: faker.datatype.number({ min: 100, max: 1000 }),
+  amount: 500,
   paymentMethodDetails: paymentMethodFactory(),
   billingDetails: {
-    name: faker.name.lastName(),
+    name: 'MockLastName',
   },
   invoice: null,
 }));

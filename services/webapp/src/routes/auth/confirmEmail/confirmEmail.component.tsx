@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { useSnackbar } from '../../../shared/components/snackbar';
 import { selectIsLoggedIn } from '../../../modules/auth/auth.selectors';
 import { selectIsProfileStartupCompleted } from '../../../modules/startup/startup.selectors';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { reportError } from '../../../shared/utils/reportError';
 
 export const ConfirmEmail = () => {
   const navigate = useNavigate();
@@ -16,8 +17,6 @@ export const ConfirmEmail = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const params = useParams<{ token: string; user: string }>();
-  const [token] = useState(params.token);
-  const [user] = useState(params.user);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isProfileStartupComplete = useSelector(selectIsProfileStartupCompleted);
   const { showMessage } = useSnackbar();
@@ -40,43 +39,26 @@ export const ConfirmEmail = () => {
   });
 
   const handleEmailConfirmation = useCallback(
-    async ({ token, user }: { token: string, user: string }) => {
+    async ({ token, user }: { token: string; user: string }) => {
       try {
         const res = await dispatch(confirmEmail({ token, user }));
         await showMessage(res.isError ? errorMessage : successMessage);
       } catch {
         await showMessage(errorMessage);
       }
+
+      navigate(generateLocalePath(Routes.login));
     },
-    [dispatch, errorMessage, showMessage, successMessage]
+    [dispatch, errorMessage, showMessage, successMessage, generateLocalePath, navigate]
   );
 
   useEffect(() => {
     if (isProfileStartupComplete) {
-      const isTokenInUrl = Boolean(params.token && params.user);
-      const isTokenSavedFromUrl = Boolean(user && token);
-
-      navigate(generateLocalePath(Routes.login));
-
-      if (isTokenInUrl) {
-        handleEmailConfirmation(params as { token: string; user: string });
-      }
-
-      if (!isTokenSavedFromUrl && !isTokenInUrl) {
-        showMessage(errorMessage);
+      if (params?.token && params?.user) {
+        handleEmailConfirmation({ token: params.token, user: params.user }).catch(reportError);
       }
     }
-  }, [
-    errorMessage,
-    handleEmailConfirmation,
-    navigate,
-    generateLocalePath,
-    params,
-    showMessage,
-    token,
-    user,
-    isProfileStartupComplete,
-  ]);
+  }, [handleEmailConfirmation, params, isProfileStartupComplete]);
 
   return null;
 };

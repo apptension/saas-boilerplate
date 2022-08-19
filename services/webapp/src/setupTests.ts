@@ -14,6 +14,7 @@ MockDate.set('2020-11-22');
 
 jest.disableAutomock();
 
+jest.mock('./app/config/store');
 jest.mock('./shared/services/contentful/schema');
 jest.mock('./shared/services/graphqlApi/schema');
 

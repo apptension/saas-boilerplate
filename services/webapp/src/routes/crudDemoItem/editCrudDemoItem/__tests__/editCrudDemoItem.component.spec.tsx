@@ -1,42 +1,31 @@
 import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
-import { generatePath } from 'react-router';
+import { Route, Routes } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-import { ContextData, makeContextRenderer } from '../../../../shared/utils/testUtils';
+import { produce } from 'immer';
+
 import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
-import { Routes } from '../../../../app/config/routes';
-import { snackbarActions } from '../../../../modules/snackbar';
+import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { prepareState } from '../../../../mocks/store';
+import { loggedInAuthFactory } from '../../../../mocks/factories';
+import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
-
 describe('EditCrudDemoItem: Component', () => {
-  const renderWithContext = makeContextRenderer(() => <EditCrudDemoItem />);
-  const routePath = Routes.getLocalePath(['crudDemoItem', 'edit']);
-  const render = (context?: Partial<ContextData>) =>
-    renderWithContext(
-      {},
-      {
-        ...context,
-        router: {
-          url: generatePath(routePath, { lang: 'en', id: 'test-id' }),
-          routePath,
-        },
-      }
-    );
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  const routePath = RoutesConfig.getLocalePath(['crudDemoItem', 'edit']);
+  const Component = () => (
+    <Routes>
+      <Route path={routePath} element={<EditCrudDemoItem />} />
+    </Routes>
+  );
+  const reduxInitialState = prepareState((state) => {
+    state.auth = loggedInAuthFactory();
   });
 
   it('should display prefilled form', () => {
+    const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
     const relayEnvironment = createMockEnvironment();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -45,13 +34,14 @@ describe('EditCrudDemoItem: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
 
-    render({ relayEnvironment });
+    render(<Component />, { relayEnvironment, routerHistory });
 
     expect(screen.getByDisplayValue(/old item/i)).toBeInTheDocument();
   });
 
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
+      const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
       const relayEnvironment = createMockEnvironment();
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
         MockPayloadGenerator.generate(operation, {
@@ -60,7 +50,7 @@ describe('EditCrudDemoItem: Component', () => {
       );
       relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
 
-      render({ relayEnvironment });
+      render(<Component />, { relayEnvironment, routerHistory });
 
       const nameField = screen.getByPlaceholderText(/name/i);
       await userEvent.clear(nameField);
@@ -77,7 +67,9 @@ describe('EditCrudDemoItem: Component', () => {
     });
 
     it('should show success message', async () => {
+      const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
       const relayEnvironment = createMockEnvironment();
+      const reduxStore = configureStore(reduxInitialState);
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
         MockPayloadGenerator.generate(operation, {
           CrudDemoItemType: () => ({ name: 'old item' }),
@@ -85,7 +77,7 @@ describe('EditCrudDemoItem: Component', () => {
       );
       relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
 
-      render({ relayEnvironment });
+      render(<Component />, { relayEnvironment, routerHistory, reduxStore });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
@@ -96,7 +88,12 @@ describe('EditCrudDemoItem: Component', () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'))
+      expect(reduxStore.getState()).toEqual(
+        produce(reduxInitialState, (state) => {
+          state.snackbar.lastMessageId = 1;
+          state.snackbar.messages = [{ id: 1, text: '🎉 Changes saved successfully!' }];
+        })
+      );
     });
   });
 });

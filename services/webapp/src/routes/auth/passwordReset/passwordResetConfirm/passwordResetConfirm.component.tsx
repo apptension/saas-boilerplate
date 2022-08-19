@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 import { Routes } from '../../../../app/config/routes';
 import { Link } from '../../../../shared/components/link';
@@ -11,25 +12,22 @@ export const PasswordResetConfirm = () => {
   type Params = {
     token: string;
     user: string;
-  }
+  };
   const navigate = useNavigate();
   const params = useParams<keyof Params>() as Params;
-  const [token] = useState(params.token || '');
-  const [user] = useState(params.user || '');
   const generateLocalePath = useGenerateLocalePath();
 
   const isTokenInUrl = params.token && params.user;
-  const isTokenSavedFromUrl = user && token;
 
   useEffect(() => {
-    if (isTokenInUrl) {
-      navigate(generateLocalePath(Routes.passwordReset.confirmRoot));
-    }
-
-    if (!isTokenInUrl && !isTokenSavedFromUrl) {
+    if (!isTokenInUrl) {
       navigate(generateLocalePath(Routes.login));
     }
-  }, [navigate, isTokenInUrl, isTokenSavedFromUrl, generateLocalePath]);
+  }, [navigate, isTokenInUrl, generateLocalePath]);
+
+  if (!isTokenInUrl) {
+    return null;
+  }
 
   return (
     <Container>
@@ -43,7 +41,7 @@ export const PasswordResetConfirm = () => {
         />
       </Text>
 
-      <PasswordResetConfirmForm user={user} token={token} />
+      <PasswordResetConfirmForm user={params.user} token={params.token} />
 
       <Links>
         <Link to={generateLocalePath(Routes.login)}>

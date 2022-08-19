@@ -16,7 +16,6 @@ const routes = {
   demoItems: 'demo-items',
   demoItem: 'demo-items/:id',
   passwordReset: nestedPath('auth/reset-password', {
-    confirmRoot: 'confirm',
     confirm: 'confirm/:user/:token',
   }),
   crudDemoItem: nestedPath('crud-demo-item', {

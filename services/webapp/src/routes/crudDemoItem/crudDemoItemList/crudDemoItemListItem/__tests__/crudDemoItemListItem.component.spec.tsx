@@ -4,20 +4,25 @@ import graphql from 'babel-plugin-relay/macro';
 import { useLazyLoadQuery } from 'react-relay';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
-import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crudDemoItemListItemTestQuery.graphql';
-import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../../shared/utils/testUtils';
-import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
+import { Route, Routes, useParams } from 'react-router';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crudDemoItemListItemTestQuery.graphql';
+import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
+import { render } from '../../../../../tests/utils/rendering';
+import { Routes as RoutesConfig } from '../../../../../app/config/routes';
 
 describe('CrudDemoItemListItem: Component', () => {
-  const TestRenderer = () => {
+  const EditRouteMock = () => {
+    const params = useParams<{ id: string }>();
+    return <span>Crud demo item edit mock {params?.id}</span>;
+  };
+
+  const DetailsRouteMock = () => {
+    const params = useParams<{ id: string }>();
+    return <span>Crud demo item details mock {params?.id}</span>;
+  };
+
+  const Component = () => {
     const data = useLazyLoadQuery<crudDemoItemListItemTestQuery>(
       graphql`
         query crudDemoItemListItemTestQuery @relay_test_operation {
@@ -33,14 +38,14 @@ describe('CrudDemoItemListItem: Component', () => {
       return <span />;
     }
 
-    return <CrudDemoItemListItem item={data.item} />;
+    return (
+      <Routes>
+        <Route path="/" element={<CrudDemoItemListItem item={data.item} />} />
+        <Route path={RoutesConfig.getLocalePath(['crudDemoItem', 'details'])} element={<DetailsRouteMock />} />
+        <Route path={RoutesConfig.getLocalePath(['crudDemoItem', 'edit'])} element={<EditRouteMock />} />
+      </Routes>
+    );
   };
-
-  const render = makeContextRenderer(() => <TestRenderer />);
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
 
   it('should render link to details page', async () => {
     const relayEnvironment = createMockEnvironment();
@@ -50,10 +55,9 @@ describe('CrudDemoItemListItem: Component', () => {
       })
     );
 
-    const { pushSpy, history } = spiedHistory();
-    render({}, { router: { history }, relayEnvironment });
+    render(<Component />, { relayEnvironment });
     await userEvent.click(screen.getByText(/demo item name/i));
-    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/crud-demo-item/test-id'));
+    expect(screen.getByText('Crud demo item details mock test-id')).toBeInTheDocument();
   });
 
   it('should render link to edit form', async () => {
@@ -64,9 +68,8 @@ describe('CrudDemoItemListItem: Component', () => {
       })
     );
 
-    const { pushSpy, history } = spiedHistory();
-    render({}, { router: { history }, relayEnvironment });
+    render(<Component />, { relayEnvironment });
     await userEvent.click(screen.getByText(/edit/i));
-    expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/crud-demo-item/test-id/edit'));
+    expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();
   });
 });

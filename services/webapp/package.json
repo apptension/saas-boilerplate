@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apptension/eslint-config-react": "^1.0.0",
-    "@faker-js/faker": "^7.4.0",
     "@formatjs/cli": "^5.0.7",
     "@formatjs/intl-getcanonicallocales": "^2.0.2",
     "@formatjs/intl-pluralrules": "^5.0.3",
@@ -163,8 +162,10 @@
     }
   },
   "devDependencies": {
+    "@types/invariant": "^2.2.35",
     "aws-sdk": "^2.1190.0",
     "babel-plugin-relay": "^14.0.0",
+    "invariant": "^2.2.4",
     "jest-raw-loader": "^1.0.1",
     "raw-loader": "^4.0.2",
     "relay-compiler": "^14.0.0",

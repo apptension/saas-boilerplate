@@ -1,66 +1,102 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../../shared/utils/testUtils';
-import { Routes } from '../../../../../app/config/routes';
-import { confirmPasswordReset } from '../../../../../modules/auth/auth.actions';
+import { Route, Routes } from 'react-router-dom';
+import { produce } from 'immer';
+
+import { Routes as RoutesConfig } from '../../../../../app/config/routes';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
-
-const user = 'user_id';
-const token = 'token';
-const confirmResetRoute = `/en/auth/reset-password/confirm/${user}/${token}`;
-const confirmResetRouteNoToken = `/en/auth/reset-password/confirm`;
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { createMockRouterHistory, render } from '../../../../../tests/utils/rendering';
+import { unpackPromise } from '../../../../../tests/utils/promise';
+import { server } from '../../../../../mocks/server';
+import { mockConfirmPasswordReset } from '../../../../../mocks/server/handlers';
+import configureStore from '../../../../../app/config/store';
+import { prepareState } from '../../../../../mocks/store';
+import { loggedOutAuthFactory } from '../../../../../mocks/factories';
 
 describe('PasswordResetConfirm: Component', () => {
-  const component = () => <PasswordResetConfirm />;
-  const render = makeContextRenderer(component);
-  const routePath = Routes.getLocalePath(['passwordReset', 'confirm']);
-  const routePathRoot = Routes.getLocalePath(['passwordReset', 'confirmRoot']);
+  const Component = () => (
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(['passwordReset', 'confirm'])} element={<PasswordResetConfirm />} />
+      <Route path={RoutesConfig.getLocalePath(['login'])} element={<span>Login page mock</span>} />
+    </Routes>
+  );
 
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  const user = 'mock-user';
+  const token = 'mock-token';
+  const routePath = ['passwordReset', 'confirm'];
+  const reduxInitialState = prepareState((state) => {
+    state.auth = loggedOutAuthFactory();
+    state.startup.profileStartupCompleted = true;
   });
 
-  it('should hide token and user from URL', async () => {
-    const { pushSpy, history } = spiedHistory(confirmResetRoute);
-    render({}, { router: { history, routePath } });
-    await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/reset-password/confirm'));
-    });
-  });
-
-  it('should call changePassword action with token and user when submitted', async () => {
+  describe('token is valid', () => {
     const newPassword = 'asdf1234';
-    mockDispatch.mockResolvedValue({ isError: false });
 
-    const { history } = spiedHistory(confirmResetRoute);
-    render({}, { router: { history, routePath } });
-    await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
-    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
-    await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }))
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(
-        confirmPasswordReset({
-          newPassword,
-          token,
-          user,
+    it('should redirect to login', async () => {
+      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const reduxStore = configureStore(reduxInitialState);
+      const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
+      server.use(mockConfirmPasswordReset({ isError: false }, 200, apiDelayPromise));
+
+      render(<Component />, { routerHistory, reduxStore });
+
+      await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
+      await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
+      await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
+
+      await act(async () => resolveApiCall());
+
+      expect(screen.getByText(/login page mock/i)).toBeInTheDocument();
+    });
+
+    it('should show a success message', async () => {
+      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const reduxStore = configureStore(reduxInitialState);
+      const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
+      server.use(mockConfirmPasswordReset({ isError: false }, 200, apiDelayPromise));
+
+      render(<Component />, { routerHistory, reduxStore });
+
+      await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
+      await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
+      await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
+      await act(async () => resolveApiCall());
+
+      expect(reduxStore.getState()).toEqual(
+        produce(reduxInitialState, (state) => {
+          state.snackbar.lastMessageId = 1;
+          state.snackbar.messages = [{ id: 1, text: '🎉 Password reset successfully!' }];
         })
       );
     });
   });
 
-  it('should redirect to login if there is invalid token or user in URL', async () => {
-    const { pushSpy, history } = spiedHistory(confirmResetRouteNoToken);
-    render({}, { router: { history, routePath: routePathRoot } });
-    await waitFor(() => {
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/auth/login'));
+  describe('token is invalid', () => {
+    it('should redirect to login page', async () => {
+      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const reduxStore = configureStore(reduxInitialState);
+      const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
+      server.use(
+        mockConfirmPasswordReset(
+          {
+            isError: true,
+            nonFieldErrors: [{ code: 'invalid_token' }],
+          },
+          400,
+          apiDelayPromise
+        )
+      );
+
+      render(<Component />, { routerHistory, reduxStore });
+
+      await userEvent.type(screen.getByLabelText(/^new password$/i), 'some pass');
+      await userEvent.type(screen.getByLabelText(/^repeat new password$/i), 'some pass');
+      await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
+      await act(async () => {
+        resolveApiCall();
+      });
+
+      expect(screen.getByText(/Malformed password reset token/i)).toBeInTheDocument();
     });
   });
 });

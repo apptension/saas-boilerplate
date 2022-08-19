@@ -1,12 +1,12 @@
-import { faker } from '@faker-js/faker';
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
 import { NotificationType } from '../../shared/services/graphqlApi/__generated/types';
+import { makeId } from '../../tests/utils/fixtures';
 import { createFactory } from './factoryCreators';
 
 export const notificationFactory = createFactory<NotificationType>(() => ({
-  id: faker.datatype.uuid(),
-  type: faker.helpers.arrayElement(Object.values(NotificationTypes)),
+  id: makeId(32),
+  type: NotificationTypes.CRUD_ITEM_CREATED,
   data: {},
-  createdAt: faker.date.past().toISOString(),
+  createdAt: new Date().toISOString(),
   readAt: null,
 }));

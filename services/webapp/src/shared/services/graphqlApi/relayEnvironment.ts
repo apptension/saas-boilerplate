@@ -92,6 +92,7 @@ const getSchemaTypeForRequest = async (req: any) => {
     await graphql({
       schema: gatewaySchema,
       source: operation.text,
+      variableValues: req.variables,
     });
   }
 

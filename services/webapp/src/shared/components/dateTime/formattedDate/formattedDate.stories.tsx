@@ -1,5 +1,4 @@
 import { Story } from '@storybook/react';
-import { faker } from '@faker-js/faker';
 import { FormattedDate, FormattedDateProps } from './formattedDate.component';
 
 const Template: Story<FormattedDateProps> = (args: FormattedDateProps) => {
@@ -12,4 +11,4 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { value: faker.date.recent(1) };
+Default.args = { value: new Date() };

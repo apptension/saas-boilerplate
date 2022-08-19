@@ -1,31 +1,29 @@
+import { FC } from 'react';
 import { screen } from '@testing-library/react';
-import { Route } from 'react-router-dom';
-import { makeContextRenderer } from '../../shared/utils/testUtils';
+import { Route, Routes } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+
 import { ValidRoutesProviders } from '../providers/validRoutesProvider';
-import { Routes } from '../config/routes';
+import { render } from '../../tests/utils/rendering';
+import { Routes as RoutesConfig } from '../config/routes';
 
 describe('App: Component', () => {
-  const component = () => (
-    <ValidRoutesProviders />
+  const Component: FC = () => (
+    <Routes>
+      <Route element={<ValidRoutesProviders />}>
+        <Route path={RoutesConfig.getLocalePath(['home'])} element={<span data-testid="content" />} />
+      </Route>
+    </Routes>
   );
-  const routePath = Routes.getLocalePath(['home']);
-  const defaultRouterContext = {
-    children: <Route index element={<span data-testid="content" />} />,
-    routePath,
-  };
-  const render = makeContextRenderer(component, {
-    router: defaultRouterContext
-  });
 
   it('should render App when language is set', () => {
-
-    render({ }, { router: { ...defaultRouterContext, url: '/en' } });
+    render(<Component />, { routerHistory: createMemoryHistory({ initialEntries: ['/en'] }) });
     expect(screen.getByTestId('content')).toBeInTheDocument();
   });
 
   it('should render nothing when language is not set', () => {
-    render({ children: <span data-testid="content" /> }, {
-      router: {...defaultRouterContext,  url: '/' }
+    render(<Component />, {
+      routerHistory: createMemoryHistory({ initialEntries: ['/'] }),
     });
     expect(screen.queryByTestId('content')).not.toBeInTheDocument();
   });

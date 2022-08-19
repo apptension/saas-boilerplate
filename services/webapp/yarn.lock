@@ -1503,11 +1503,6 @@
   resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.0.0-rc.7.tgz#aded6839c2369883dafa46608a135c82b42ed76b"
   integrity sha512-+1mBLsa+vvlV0lwEAP1hwgmOPkjMnoJ8hyCMfCCJga0sVDwDzrPJjnxZwdDaUmOh/vbFHQGBTk+FxsVjoI/CjQ==
 
-"@faker-js/faker@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-7.4.0.tgz#cac720d860a89d487b47e55e66a4fd114f1d3fe5"
-  integrity sha512-xDd3Tvkt2jgkx1LkuwwxpNBy/Oe+LkZBTwkgEFTiWpVSZgQ5sc/LenbHKRHbFl0dq/KFeeq/szyyPtpJRKY0fg==
-
 "@formatjs/cli@^5.0.7":
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-5.0.7.tgz#3e681fc5c8117a27fd28700adc7819cf144a50e5"
@@ -4140,6 +4135,11 @@
   integrity sha512-HXoFOl+KS4yvmUjisi83VpuSBOeeXIzdJfoT/v2pUruqybpHy0Dz1DyXy3E2jNH0cSVKJZV92VOnFBwJR6k83A==
   dependencies:
     "@types/through" "*"
+
+"@types/invariant@^2.2.35":
+  version "2.2.35"
+  resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.35.tgz#cd3ebf581a6557452735688d8daba6cf0bd5a3be"
+  integrity sha512-DxX1V9P8zdJPYQat1gHyY0xj3efl8gnMVjiM9iCY6y27lj+PoQWkgjt8jDqmovPqULkKVpKRg8J36iQiA+EtEg==
 
 "@types/is-function@^1.0.0":
   version "1.0.1"

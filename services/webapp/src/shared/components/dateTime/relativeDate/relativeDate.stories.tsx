@@ -1,5 +1,4 @@
 import { Story } from '@storybook/react';
-import { faker } from '@faker-js/faker';
 import { RelativeDate, RelativeDateProps } from './relativeDate.component';
 import { dateMinuteAgo, DAY, nowSub } from './relativeDate.fixtures';
 
@@ -13,7 +12,7 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { date: faker.date.recent(1) };
+Default.args = { date: new Date() };
 
 export const MinuteAgo = Template.bind({});
 MinuteAgo.args = { date: dateMinuteAgo() };

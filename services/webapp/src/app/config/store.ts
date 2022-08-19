@@ -1,11 +1,11 @@
-import { configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
+import { configureStore as baseConfigureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import * as Sentry from '@sentry/react';
 import { promiseMiddleware } from '../../shared/utils/reduxSagaPromise';
 import createReducer from './reducers';
 import rootSaga from './sagas';
 
-export default function (initialState = {}): Store {
+export default function configureStore(initialState = {}): Store {
   const sagaMiddleware = createSagaMiddleware();
 
   const middlewares = [promiseMiddleware, sagaMiddleware];
@@ -18,7 +18,7 @@ export default function (initialState = {}): Store {
 
   const sentryReduxEnhancer = Sentry.createReduxEnhancer();
 
-  const store = configureStore({
+  const store = baseConfigureStore({
     reducer: createReducer(),
     preloadedState: initialState,
     enhancers: [sentryReduxEnhancer],

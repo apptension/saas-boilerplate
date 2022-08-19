@@ -1,20 +1,20 @@
-import { faker } from '@faker-js/faker';
 import {
   Subscription,
   SubscriptionPhase,
   SubscriptionPlan,
   SubscriptionPlanName,
 } from '../../shared/services/api/subscription/types';
+import { makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
 
 export const subscriptionPlanFactory = createDeepFactory<SubscriptionPlan>(() => ({
-  id: faker.datatype.uuid(),
+  id: makeId(32),
   product: {
-    id: faker.datatype.uuid(),
+    id: makeId(32),
     name: SubscriptionPlanName.MONTHLY,
   },
-  unitAmount: faker.datatype.number({ min: 1000, max: 2500 }),
+  unitAmount: 1000,
 }));
 
 export const subscriptionPhaseFactory = createDeepFactory<SubscriptionPhase>(() => ({
@@ -22,9 +22,9 @@ export const subscriptionPhaseFactory = createDeepFactory<SubscriptionPhase>(() 
   endDate: new Date(2025, 10, 10).toString(),
   trialEnd: null,
   item: {
-    id: faker.datatype.uuid(),
+    id: makeId(32),
     price: subscriptionPlanFactory(),
-    quantity: faker.datatype.number(10),
+    quantity: 8,
   },
 }));
 
@@ -33,7 +33,7 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
   canActivateTrial: false,
   defaultPaymentMethod: paymentMethodFactory(),
   subscription: {
-    id: faker.datatype.uuid(),
+    id: makeId(32),
     currentPeriodStart: new Date(2020, 5, 5).toString(),
     currentPeriodEnd: new Date(2025, 10, 10).toString(),
     trialStart: null,

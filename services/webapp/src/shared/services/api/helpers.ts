@@ -71,10 +71,19 @@ export const apiURLs = <T extends Record<string, string | ((variables: any) => s
   root: string,
   nestedRoutes: T
 ): T => {
-  const rootWithBase = apiURL(root);
+  const joinURL = (value: string, baseUrl: string) => {
+    const protocolRx = /https?:\/\//;
+    if (protocolRx.test(baseUrl)) {
+      return new URL(value, baseUrl).href;
+    }
+    return path.join(baseUrl, value);
+  };
+
   const newEntries = Object.entries(nestedRoutes).map(([key, value]) => {
     const prefixedValue =
-      typeof value === 'string' ? path.join(rootWithBase, value) : (args: any) => path.join(rootWithBase, value(args));
+      typeof value === 'string'
+        ? joinURL(path.join(root, value), ENV.BASE_API_URL)
+        : (args: any) => joinURL(path.join(root, value(args)), ENV.BASE_API_URL);
     return [key, prefixedValue];
   });
   return Object.fromEntries(newEntries) as T;

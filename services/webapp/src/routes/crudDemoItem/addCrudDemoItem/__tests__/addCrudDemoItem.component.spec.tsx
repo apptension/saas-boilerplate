@@ -2,28 +2,23 @@ import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { ConnectionHandler } from 'relay-runtime';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { snackbarActions } from '../../../../modules/snackbar';
-import { AddCrudDemoItem } from '../addCrudDemoItem.component';
+import { produce } from 'immer';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { render } from '../../../../tests/utils/rendering';
+import { prepareState } from '../../../../mocks/store';
+import { loggedInAuthFactory } from '../../../../mocks/factories';
+import { AddCrudDemoItem } from '../addCrudDemoItem.component';
+import configureStore from '../../../../app/config/store';
 
 describe('AddCrudDemoItem: Component', () => {
-  const component = () => <AddCrudDemoItem />;
-  const render = makeContextRenderer(component);
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  const reduxInitialState = prepareState((state) => {
+    state.auth = loggedInAuthFactory();
   });
 
+  const Component = () => <AddCrudDemoItem />;
+
   it('should display empty form', () => {
-    render();
+    render(<Component />);
     const value = screen.getByPlaceholderText(/name/i).getAttribute('value');
     expect(value).toBeNull();
   });
@@ -32,7 +27,7 @@ describe('AddCrudDemoItem: Component', () => {
     it('should commit mutation', async () => {
       const relayEnvironment = createMockEnvironment();
 
-      render({}, { relayEnvironment });
+      render(<Component />, { relayEnvironment });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
@@ -44,26 +39,32 @@ describe('AddCrudDemoItem: Component', () => {
         connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
       });
 
-      await act(() => {
+      await act(async () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
     });
 
     it('should show success message', async () => {
       const relayEnvironment = createMockEnvironment();
+      const reduxStore = configureStore(reduxInitialState);
 
-      render({}, { relayEnvironment });
+      render(<Component />, { reduxStore, relayEnvironment });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item');
-      await userEvent.click(screen.getByRole('button', { name: /save/i }))
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       const operation = relayEnvironment.mock.getMostRecentOperation();
       expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
-      await act(() => {
+      await act(async () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Changes saved successfully!'));
+      expect(reduxStore.getState()).toEqual(
+        produce(reduxInitialState, (state) => {
+          state.snackbar.lastMessageId = 1;
+          state.snackbar.messages = [{ id: 1, text: '🎉 Changes saved successfully!' }];
+        })
+      );
     });
   });
 });
