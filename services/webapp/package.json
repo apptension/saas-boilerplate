@@ -173,6 +173,9 @@
     "terminal-link": "^2.1.1",
     "webpack-cli": "^4.10.0"
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "jest": {
     "transformIgnorePatterns": [
       "/node_modules/(?!(@iconify-icons|react-markdown)/)"

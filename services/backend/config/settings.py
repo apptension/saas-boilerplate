@@ -65,6 +65,7 @@ SILENCED_SYSTEM_CHECKS = []  # default django value
 MIDDLEWARE = [
     #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
     "common.middleware.HealthCheckMiddleware",
+    "common.middleware.SetAuthTokenCookieMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',

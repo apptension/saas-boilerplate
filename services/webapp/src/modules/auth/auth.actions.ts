@@ -6,8 +6,6 @@ import {
   ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
-  LoginApiRequestData,
-  LoginApiResponseData,
   LogoutApiRequestData,
   LogoutApiResponseData,
   MeApiRequestData,
@@ -26,7 +24,6 @@ import { OAuthProvider } from './auth.types';
 const { createPromiseAction, createActionRoutine, createAction } = actionCreator('AUTH');
 
 export const signup = createPromiseAction<SignupApiRequestData, SignupApiResponseData>('SIGNUP');
-export const login = createPromiseAction<LoginApiRequestData, LoginApiResponseData>('LOGIN');
 export const logout = createActionRoutine<LogoutApiRequestData, LogoutApiResponseData>('LOGOUT');
 export const resetProfile = createAction<void>('RESET_PROFILE');
 export const oAuthLogin = createPromiseAction<OAuthProvider, void>('OAUTH_LOGIN');

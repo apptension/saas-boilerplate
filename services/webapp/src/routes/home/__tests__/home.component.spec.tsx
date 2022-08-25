@@ -8,6 +8,6 @@ describe('Home: Component', () => {
 
   it('should display welcome message', () => {
     render();
-    expect(screen.getByText('Welcome in the app!')).toBeInTheDocument();
+    expect(screen.getByText('Welcome!')).toBeInTheDocument();
   });
 });

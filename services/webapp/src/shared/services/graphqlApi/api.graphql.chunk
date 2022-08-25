@@ -5,6 +5,8 @@ schema {
 }
 
 type ApiMutation {
+  tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
+  signUp(input: SingUpMutationInput!): SingUpMutationPayload
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
@@ -254,6 +256,18 @@ type NotificationType implements Node {
   data: GenericScalar
 }
 
+input ObtainTokenMutationInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type ObtainTokenMutationPayload {
+  access: String
+  refresh: String
+  clientMutationId: String
+}
+
 """
 The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
 """
@@ -285,6 +299,21 @@ type Query {
     """The ID of the object"""
     id: ID!
   ): Node
+}
+
+input SingUpMutationInput {
+  id: String
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type SingUpMutationPayload {
+  id: String
+  email: String
+  access: String
+  refresh: String
+  clientMutationId: String
 }
 
 input UpdateCrudDemoItemMutationInput {

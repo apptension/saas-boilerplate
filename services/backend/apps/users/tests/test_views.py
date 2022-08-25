@@ -20,72 +20,6 @@ def validate_jwt(response_data, user):
     return token[jwt_api_settings.USER_ID_CLAIM] == user.id
 
 
-class TestSignup:
-    def test_return_error_with_missing_email(self, api_client, faker):
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'password': faker.password(),
-            },
-        )
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-
-    def test_return_error_with_invalid_email(self, api_client, faker):
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'email': 'this-is-not-an-email',
-                'password': faker.password(),
-            },
-        )
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-
-    def test_return_error_with_missing_password(self, api_client, faker):
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'email': faker.email(),
-            },
-        )
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-
-    def test_create_user(self, api_client, faker):
-        email = faker.email()
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'email': email,
-                'password': faker.password(),
-            },
-        )
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert models.User.objects.get(email=email)
-
-    def test_create_user_profile_instance(self, api_client, faker):
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'email': faker.email(),
-                'password': faker.password(),
-            },
-        )
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        user = models.User.objects.get(id=response.data['id'])
-        assert user.profile
-
-    def test_add_to_user_group(self, api_client, faker):
-        response = api_client.post(
-            reverse('signup'),
-            {
-                'email': faker.email(),
-                'password': faker.password(),
-            },
-        )
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        user = models.User.objects.get(id=response.data['id'])
-        assert user.has_group(CommonGroups.User)
-
-
 class TestUserProfile:
     def test_user_profile_only_when_authenticated(self, api_client):
         response = api_client.get(reverse("profile"))
@@ -288,24 +222,6 @@ class TestChangePassword:
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-
-class TestObtainToken:
-    def test_return_invalid_credentials_error(self, api_client, user):
-        response = api_client.post(reverse('jwt_token'), {'email': user.email, 'password': 'wrong-password'})
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert 'non_field_errors' in response.data, response.data
-
-    def test_get_jwt(self, api_client, user, faker):
-        password = faker.password()
-        user.set_password(password)
-        user.save()
-
-        response = api_client.post(reverse('jwt_token'), {'email': user.email, 'password': password})
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-        assert validate_jwt(response.data, user), response.data
 
 
 class TestLogout:

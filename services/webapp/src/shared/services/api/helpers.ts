@@ -1,11 +1,11 @@
 import path from 'path';
-import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Store } from 'redux';
 import { GlobalState } from '../../../app/config/reducers';
 import { ENV } from '../../../app/config/env';
-import { AUTH_URL, refreshToken } from './auth';
 import { PendingRequest } from './types';
+import { AUTH_URL, refreshToken } from './auth';
 
 let pendingRequests: PendingRequest[] = [];
 

@@ -1,10 +1,8 @@
-import { client } from '../client';
-import { OAuthProvider } from '../../../../modules/auth/auth.types';
-import { apiURL, apiURLs } from '../helpers';
+import {client} from '../client';
+import {OAuthProvider} from '../../../../modules/auth/auth.types';
+import {apiURL, apiURLs} from '../helpers';
 import {
   SignupApiRequestData,
-  LoginApiRequestData,
-  LoginApiResponseData,
   SignupApiResponseData,
   MeApiResponseData,
   ChangePasswordResponseData,
@@ -23,9 +21,8 @@ import {
 } from './types';
 
 export const AUTH_URL = apiURLs('/auth/', {
-  SIGN_UP: '/signup/',
-  LOGIN: '/token/',
   REFRESH_TOKEN: '/token-refresh/',
+  SIGN_UP: '/signup/',
   LOGOUT: '/logout/',
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
@@ -44,11 +41,6 @@ export const getOauthUrl = (provider: OAuthProvider) =>
 
 export const signup = async (creds: SignupApiRequestData) => {
   const res = await client.post<SignupApiResponseData>(AUTH_URL.SIGN_UP, creds);
-  return res.data;
-};
-
-export const login = async (creds: LoginApiRequestData) => {
-  const res = await client.post<LoginApiResponseData>(AUTH_URL.LOGIN, creds);
   return res.data;
 };
 

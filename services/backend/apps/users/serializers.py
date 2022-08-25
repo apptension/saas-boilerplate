@@ -7,6 +7,7 @@ from hashid_field import rest
 from rest_framework import exceptions, serializers, validators
 from rest_framework_simplejwt import serializers as jwt_serializers, tokens as jwt_tokens, exceptions as jwt_exceptions
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from rest_framework_simplejwt.serializers import PasswordField
 
 from . import models, tokens, jwt, notifications
 
@@ -53,13 +54,13 @@ class UserSignupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[validators.UniqueValidator(queryset=dj_auth.get_user_model().objects.all())],
     )
+    password = serializers.CharField(write_only=True)
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
 
     class Meta:
         model = dj_auth.get_user_model()
         fields = ("id", "email", "password", "access", "refresh")
-        extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, password):
         password_validation.validate_password(password)
@@ -209,6 +210,19 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
 
 
 class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer):
+    username_field = get_user_model().USERNAME_FIELD
+
+    default_error_messages = {'no_active_account': _('No active account found with the given credentials')}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields[self.username_field] = serializers.CharField(write_only=True)
+        self.fields['password'] = PasswordField(write_only=True)
+
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+
     def validate(self, attrs):
         try:
             data = super().validate(attrs)
@@ -217,9 +231,13 @@ class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer)
 
         return data
 
+    def create(self, validated_data):
+        return validated_data
+
 
 class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
-    refresh = None
+    refresh = serializers.CharField(read_only=True)
+    access = serializers.CharField(read_only=True)
 
     def validate(self, attrs):
         request = self.context['request']

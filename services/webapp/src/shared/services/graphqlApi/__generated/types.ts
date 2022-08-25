@@ -38,6 +38,8 @@ export interface Scalars {
 
 export interface ApiMutation {
   __typename?: 'ApiMutation';
+  tokenAuth?: Maybe<ObtainTokenMutationPayload>;
+  signUp?: Maybe<SingUpMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
@@ -47,6 +49,16 @@ export interface ApiMutation {
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
+}
+
+
+export interface ApiMutationTokenAuthArgs {
+  input: ObtainTokenMutationInput;
+}
+
+
+export interface ApiMutationSignUpArgs {
+  input: SingUpMutationInput;
 }
 
 
@@ -339,6 +351,19 @@ export interface NotificationType extends Node {
   data?: Maybe<Scalars['GenericScalar']>;
 }
 
+export interface ObtainTokenMutationInput {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface ObtainTokenMutationPayload {
+  __typename?: 'ObtainTokenMutationPayload';
+  access?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']>;
+}
+
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 export interface PageInfo {
   __typename?: 'PageInfo';
@@ -403,6 +428,22 @@ export interface QueryAllDocumentDemoItemsArgs {
 
 export interface QueryNodeArgs {
   id: Scalars['ID'];
+}
+
+export interface SingUpMutationInput {
+  id?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
+  password: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface SingUpMutationPayload {
+  __typename?: 'SingUpMutationPayload';
+  id?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  access?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface UpdateCrudDemoItemMutationInput {

@@ -14,9 +14,6 @@ interface ApiCredentialsData {
   password: string;
 }
 
-export type LoginApiRequestData = ApiCredentialsData;
-export type LoginApiResponseData = ApiFormSubmitResponse<LoginApiRequestData, void>;
-
 export type SignupApiRequestData = ApiCredentialsData;
 export type SignupApiResponseData = ApiFormSubmitResponse<SignupApiRequestData, void>;
 

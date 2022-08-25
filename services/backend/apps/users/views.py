@@ -12,17 +12,17 @@ from common.acl import policies
 from . import serializers, utils
 
 
-class SignUpView(generics.CreateAPIView):
-    permission_classes = (policies.IsAnonymousFullAccess,)
-    serializer_class = serializers.UserSignupSerializer
+class CookieTokenRefreshView(jwt_views.TokenRefreshView):
+    serializer_class = serializers.CookieTokenRefreshSerializer
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        if not serializer.is_valid(raise_exception=False):
+            response = Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+            utils.reset_auth_cookie(response)
+            return response
 
-        headers = self.get_success_headers(serializer.data)
-        response = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
         utils.set_auth_cookie(response, serializer.data)
         return response
 
@@ -93,41 +93,14 @@ class LogoutView(generics.GenericAPIView):
         return response
 
 
-class CookieTokenObtainPairView(jwt_views.TokenObtainPairView):
-    permission_classes = (policies.AnyoneFullAccess,)
-    serializer_class = serializers.CookieTokenObtainPairSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
-        utils.set_auth_cookie(response, serializer.validated_data)
-        return response
-
-
-class CookieTokenRefreshView(jwt_views.TokenRefreshView):
-    serializer_class = serializers.CookieTokenRefreshSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid(raise_exception=False):
-            response = Response(status=status.HTTP_401_UNAUTHORIZED)
-            utils.reset_auth_cookie(response)
-            return response
-
-        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
-        utils.set_auth_cookie(response, response.data)
-        return response
-
-
 @never_cache
 @csrf_exempt
-@psa('social:complete')
+@psa("social:complete")
 def complete(request, backend, *args, **kwargs):
     """Authentication complete view"""
 
     def _do_login(backend, user, social_user):
-        user.backend = '{0}.{1}'.format(backend.__module__, backend.__class__.__name__)
+        user.backend = "{0}.{1}".format(backend.__module__, backend.__class__.__name__)
         token = jwt_tokens.RefreshToken.for_user(user)
         backend.strategy.set_jwt(token)
 

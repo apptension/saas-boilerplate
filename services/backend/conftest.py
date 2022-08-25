@@ -35,10 +35,16 @@ class CustomGrapheneClient(GrapheneClient):
     def force_authenticate(self, user):
         self.execute_options["context_value"].user = user
 
+    def set_cookies(self, cookies):
+        self.execute_options["context_value"].cookies = cookies
+        self.execute_options["context_value"].COOKIES = {morsel.key: morsel.coded_value for morsel in cookies.values()}
+
     @staticmethod
     def create_context():
         request = APIRequestFactory()
         request.user = AnonymousUser()
+        request._request = request
+
         return request
 
 

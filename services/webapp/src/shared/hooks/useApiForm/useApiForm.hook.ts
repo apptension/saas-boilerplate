@@ -1,6 +1,7 @@
 import { Path, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
+import humps from 'humps';
 import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 import {GraphQLValidationError, GraphQLGenericError, UseApiFormArgs} from './useApiForm.types';
@@ -14,7 +15,9 @@ export const useApiForm = <FormData>(args?: UseApiFormArgs<FormData>) => {
   const { setError } = form;
 
   const setResponseErrors = useCallback(
-    (response: FormSubmitError<FormData>) => {
+    (unsafeResponse: FormSubmitError<FormData>) => {
+      const response = humps.camelizeKeys(unsafeResponse) as FormSubmitError<FormData>;
+
       if (response.nonFieldErrors) {
         setGenericError(translateErrorMessage('nonFieldErrors', response.nonFieldErrors[0]));
       }

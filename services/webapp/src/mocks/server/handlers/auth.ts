@@ -6,8 +6,6 @@ import {
   ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
-  LoginApiRequestData,
-  LoginApiResponseData,
   MeApiResponseData,
   RequestPasswordResetRequestData,
   RequestPasswordResetResponseData,
@@ -31,11 +29,6 @@ const profile = userProfileFactory({
 
 export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
   rest.post<SignupApiRequestData, PathParams, SignupApiResponseData>(AUTH_URL.SIGN_UP, (req, res, ctx) => {
-    return res(ctx.status(status), ctx.json(response));
-  });
-
-export const mockLogin = (status = 200, response: LoginApiResponseData = { isError: false }) =>
-  rest.post<LoginApiRequestData, PathParams, LoginApiResponseData>(AUTH_URL.LOGIN, (req, res, ctx) => {
     return res(ctx.status(status), ctx.json(response));
   });
 

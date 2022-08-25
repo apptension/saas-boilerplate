@@ -21,19 +21,24 @@ import { stitchSchemas } from '@graphql-tools/stitch';
 import { graphql } from 'graphql';
 
 import { RecordSourceSelectorProxy } from 'relay-runtime/lib/store/RelayStoreTypes';
-import { apiURL } from '../api/helpers';
 import { url as contentfulUrl } from '../contentful';
-import { refreshToken } from '../api/auth';
+import { apiURL } from '../api/helpers';
 import { ENV } from '../../../app/config/env';
 import contentfulSchema from '../contentful/schema';
+import { refreshToken } from '../api/auth';
 import apiSchema from './schema';
 
 export const subscriptionClient = createClient({
   url: ENV.SUBSCRIPTIONS_URL,
   lazy: true,
-  connectionAckWaitTimeout: 10000,
+  connectionAckWaitTimeout: 15000,
   connectionParams: () => {
     return {};
+  },
+  on: {
+    error: async () => {
+      await refreshToken();
+    },
   },
 });
 
@@ -123,7 +128,6 @@ const network = new RelayNetworkLayer(
         if (schemaType === SchemaType.API) {
           await refreshToken();
         }
-
         return '';
       },
     }),
@@ -136,6 +140,8 @@ export const relayEnvironment = new Environment({
   network,
   store: new Store(new RecordSource()),
 });
+
+export const getRelayEnvironment = () => relayEnvironment;
 
 export const invalidateRelayStore = () => {
   commitLocalUpdate(relayEnvironment, (store) => {

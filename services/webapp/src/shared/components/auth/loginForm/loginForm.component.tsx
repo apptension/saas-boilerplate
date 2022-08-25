@@ -1,48 +1,24 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useApiForm } from '../../../hooks/useApiForm';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../forms/input';
-import { login } from '../../../../modules/auth/auth.actions';
 import { FormFieldsRow } from '../../../../theme/size';
 import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
-import { LoginFormFields } from './loginForm.types';
+import { useLoginForm } from './loginForm.hooks';
 
 export const LoginForm = () => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
+
   const {
     form: {
       register,
       formState: { errors },
     },
-    handleSubmit,
-    setApiResponse,
     hasGenericErrorOnly,
     genericError,
-  } = useApiForm<LoginFormFields>({
-    errorMessages: {
-      nonFieldErrors: {
-        no_active_account: intl.formatMessage({
-          defaultMessage: 'Incorrect authentication credentials.',
-          description: 'Login form / error / no active account',
-        }),
-        authentication_failed: intl.formatMessage({
-          defaultMessage: 'Incorrect authentication credentials.',
-          description: 'Login form / error / authentication failed',
-        }),
-      },
-    },
-  });
-
-  const onLogin = async (data: LoginFormFields) => {
-    try {
-      const res = await dispatch(login(data));
-      setApiResponse(res);
-    } catch {}
-  };
+    handleLogin,
+  } = useLoginForm();
 
   return (
-    <Container onSubmit={handleSubmit(onLogin)}>
+    <Container onSubmit={handleLogin}>
       <FormFieldsRow>
         <Input
           {...register('email', {

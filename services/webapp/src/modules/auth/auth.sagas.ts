@@ -1,7 +1,7 @@
 import { all, put, takeLatest, select } from 'redux-saga/effects';
 import { Routes } from '../../app/config/routes';
 import { auth } from '../../shared/services/api';
-import { LoginApiResponseData, SignupApiResponseData } from '../../shared/services/api/auth/types';
+import { SignupApiResponseData } from '../../shared/services/api/auth/types';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { getOauthUrl } from '../../shared/services/api/auth';
 import { handleApiRequest } from '../helpers/handleApiRequest';
@@ -10,13 +10,6 @@ import { invalidateRelayStore } from '../../shared/services/graphqlApi/relayEnvi
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
 import { selectIsLoggedIn } from './auth.selectors';
-
-function* loginResolve(response: LoginApiResponseData) {
-  if (!response.isError) {
-    yield navigate(Routes.getLocalePath(['home']));
-    yield put(authActions.fetchProfile());
-  }
-}
 
 function* logoutResolve() {
   invalidateRelayStore();
@@ -41,7 +34,6 @@ function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
 export function* watchAuth() {
   yield all([
     takeLatest(authActions.signup, handleApiRequest(auth.signup, { onResolve: signupResolve })),
-    takeLatest(authActions.login, handleApiRequest(auth.login, { onResolve: loginResolve })),
     takeLatest(authActions.logout, handleApiRequest(auth.logout)),
     takeLatest(authActions.logout.resolved, logoutResolve),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),

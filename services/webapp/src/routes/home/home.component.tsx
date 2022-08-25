@@ -16,7 +16,7 @@ export const Home = () => {
       />
 
       <H1>
-        <FormattedMessage defaultMessage="Welcome in the app!" description="Home / title" />
+        <FormattedMessage defaultMessage="Welcome!" description="Home / title" />
       </H1>
     </Container>
   );

@@ -7,7 +7,6 @@ import {
   mockChangePassword,
   mockConfirmEmail,
   mockConfirmPasswordReset,
-  mockLogin,
   mockLogout,
   mockMe,
   mockRequestPasswordReset,
@@ -52,53 +51,6 @@ describe('Auth: sagas', () => {
   beforeEach(() => {
     mockHistoryPush.mockReset();
     locationAssignSpy.mockReset();
-  });
-
-  describe('login', () => {
-    describe('call completes successfully', () => {
-      it('should resolve action', async () => {
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.login.resolved({ isError: false }))
-          .dispatch(authActions.login(credentials))
-          .silentRun();
-      });
-
-      it('should redirect to homepage', async () => {
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.login(credentials)).silentRun();
-        expect(mockHistoryPush).toHaveBeenCalledWith('/en/');
-      });
-
-      it('should fetch user profile', async () => {
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.fetchProfile())
-          .dispatch(authActions.login(credentials))
-          .silentRun();
-      });
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(
-        mockLogin(StatusCodes.BAD_REQUEST, { isError: true, password: [{ message: 'error', code: 'error' }] })
-      );
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.login.resolved({ isError: true, password: [{ message: 'error', code: 'error' }] }))
-        .dispatch(authActions.login(credentials))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockLogin(StatusCodes.INTERNAL_SERVER_ERROR, { isError: true }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.login(credentials))
-        .silentRun();
-    });
   });
 
   describe('logout', () => {
