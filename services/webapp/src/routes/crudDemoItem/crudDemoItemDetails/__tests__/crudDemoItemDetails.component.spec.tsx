@@ -7,6 +7,7 @@ import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDeta
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('CrudDemoItemDetails: Component', () => {
   const routePath = ['crudDemoItem', 'details'];
@@ -20,6 +21,7 @@ describe('CrudDemoItemDetails: Component', () => {
   it('should render item details', () => {
     const routerHistory = createMockRouterHistory(routePath, { id: 'test-id' });
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemType: () => ({ name: 'demo item name' }),

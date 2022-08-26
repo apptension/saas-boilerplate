@@ -1,9 +1,12 @@
 import { screen } from '@testing-library/react';
+import { createMockEnvironment } from 'relay-test-utils';
+
 import { makeContextRenderer } from '../../../utils/testUtils';
 import { Avatar } from '../avatar.component';
 import { prepareState } from '../../../../mocks/store';
-import { loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
+import { currentUserFactory, loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
 import { Profile } from '../../../../modules/auth/auth.types';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 
 describe('Avatar: Component', () => {
   const component = () => <Avatar />;
@@ -17,7 +20,10 @@ describe('Avatar: Component', () => {
       });
     });
 
-    return { profile, ...render({}, { store }) };
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment, currentUserFactory(overrides));
+
+    return { profile, ...render({}, { store, relayEnvironment }) };
   };
 
   it('should render user avatar', () => {

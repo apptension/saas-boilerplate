@@ -1,10 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {makeContextRenderer, packHistoryArgs, spiedHistory} from '../../../../utils/testUtils';
+import { createMockEnvironment } from 'relay-test-utils';
+
+import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../utils/testUtils';
 import { Header } from '../header.component';
-import { prepareState } from '../../../../../mocks/store';
-import { loggedInAuthFactory, userProfileFactory } from '../../../../../mocks/factories';
+import { currentUserFactory } from '../../../../../mocks/factories';
 import { logout } from '../../../../../modules/auth/auth.actions';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -13,6 +15,12 @@ jest.mock('react-redux', () => {
     useDispatch: () => mockDispatch,
   };
 });
+
+const getRelayEnv = () => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment, currentUserFactory());
+  return relayEnvironment;
+};
 
 describe('Header: Component', () => {
   const component = () => <Header />;
@@ -23,13 +31,10 @@ describe('Header: Component', () => {
   });
 
   describe('user is logged in', () => {
-    const store = prepareState((state) => {
-      state.auth = loggedInAuthFactory({ profile: userProfileFactory({ email: 'user@mail.com' }) });
-    });
-
     it('should open homepage when clicked on "home" link', async () => {
       const { pushSpy, history } = spiedHistory();
-      render({}, { store, router: { history } });
+      const relayEnvironment = getRelayEnv();
+      render({}, { relayEnvironment, router: { history } });
 
       await userEvent.click(screen.getByLabelText(/home/i));
       expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/'));
@@ -47,7 +52,8 @@ describe('Header: Component', () => {
 
     it('should open profile when clicked on "profile" link', async () => {
       const { pushSpy, history } = spiedHistory();
-      render({}, { store, router: { history } });
+      const relayEnvironment = getRelayEnv();
+      render({}, { relayEnvironment, router: { history } });
 
       await userEvent.click(screen.getByLabelText(/open profile menu/i));
       await userEvent.click(screen.getByText(/profile/i));
@@ -55,7 +61,8 @@ describe('Header: Component', () => {
     });
 
     it('should dispatch logout action when clicking on "logout" button', async () => {
-      render({}, { store });
+      const relayEnvironment = getRelayEnv();
+      render({}, { relayEnvironment });
       await userEvent.click(screen.getByLabelText(/open profile menu/i));
       await userEvent.click(screen.getByText(/log out/i));
       expect(mockDispatch).toHaveBeenCalledWith(logout());

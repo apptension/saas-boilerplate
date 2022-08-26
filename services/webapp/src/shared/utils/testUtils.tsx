@@ -16,6 +16,8 @@ import { DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../
 import { store as fixturesStore } from '../../mocks/store';
 import createReducer, { GlobalState } from '../../app/config/reducers';
 import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
+import { CommonQuery } from '../../app/providers/commonQuery';
+import { fillCommonQueryWithUser } from './commonQuery';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
@@ -65,7 +67,9 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
 
   const relayEnvironment = (() => {
     if (context?.relayEnvironment === undefined) {
-      return createMockEnvironment();
+      const env = createMockEnvironment();
+      fillCommonQueryWithUser(env);
+      return env;
     }
     if (typeof context.relayEnvironment === 'function') {
       const mockEnvironment = createMockEnvironment();
@@ -80,15 +84,17 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <RelayEnvironmentProvider environment={relayEnvironment}>
-            <IntlProvider {...intlProviderMockProps}>
-              <Provider store={createStore(createReducer(), produce(store, identity))}>
-                <Routes>
-                  <Route path={routePath} element={children}>
-                    {router.children}
-                  </Route>
-                </Routes>
-              </Provider>
-            </IntlProvider>
+            <CommonQuery>
+              <IntlProvider {...intlProviderMockProps}>
+                <Provider store={createStore(createReducer(), produce(store, identity))}>
+                  <Routes>
+                    <Route path={routePath} element={children}>
+                      {router.children}
+                    </Route>
+                  </Routes>
+                </Provider>
+              </IntlProvider>
+            </CommonQuery>
           </RelayEnvironmentProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
@@ -152,7 +158,7 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
   };
 };
 
-export const packHistoryArgs = (pathname: string, other = {}) => ([
+export const packHistoryArgs = (pathname: string, other = {}) => [
   expect.objectContaining({ pathname, ...other }),
-  undefined
-])
+  undefined,
+];

@@ -10,6 +10,7 @@ import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDet
 import { SentryProvider } from './providers/sentry';
 import { ReduxProvider } from './providers/redux';
 import { RelayProvider } from './providers/relay';
+import { CommonQuery } from './providers/commonQuery';
 import { RouterProvider } from './providers/router';
 
 const render = () => {
@@ -23,7 +24,9 @@ const render = () => {
         <RouterProvider>
           <HelmetProvider>
             <RelayProvider>
-              <App />
+              <CommonQuery>
+                <App />
+              </CommonQuery>
             </RelayProvider>
           </HelmetProvider>
         </RouterProvider>

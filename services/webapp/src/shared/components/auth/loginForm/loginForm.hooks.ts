@@ -5,6 +5,7 @@ import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { loginFormMutation } from '../../../../__generated__/loginFormMutation.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { fetchProfile } from '../../../../modules/auth/auth.actions';
@@ -15,6 +16,7 @@ export const useLoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useAsyncDispatch();
   const generateLocalePath = useGenerateLocalePath();
+  const { reload: reloadCommonQuery } = useCommonQuery();
 
   const form = useApiForm<LoginFormFields>({
     errorMessages: {
@@ -54,6 +56,7 @@ export const useLoginForm = () => {
       if (errors) {
         setGraphQLResponseErrors(errors);
       } else {
+        reloadCommonQuery();
         await dispatch(fetchProfile());
         navigate(generateLocalePath(RoutesConfig.home));
       }

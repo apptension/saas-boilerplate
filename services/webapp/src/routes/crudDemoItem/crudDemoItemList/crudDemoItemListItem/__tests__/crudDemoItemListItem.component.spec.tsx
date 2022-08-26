@@ -10,6 +10,7 @@ import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crud
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 import { render } from '../../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../../app/config/routes';
+import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
 describe('CrudDemoItemListItem: Component', () => {
   const EditRouteMock = () => {
@@ -47,8 +48,14 @@ describe('CrudDemoItemListItem: Component', () => {
     );
   };
 
-  it('should render link to details page', async () => {
+  const getRelayEnv = () => {
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    return relayEnvironment;
+  };
+
+  it('should render link to details page', async () => {
+    const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemType: () => ({ id: 'test-id', name: 'demo item name' }),
@@ -61,7 +68,7 @@ describe('CrudDemoItemListItem: Component', () => {
   });
 
   it('should render link to edit form', async () => {
-    const relayEnvironment = createMockEnvironment();
+    const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemType: () => ({ id: 'test-id', name: 'demo item name' }),

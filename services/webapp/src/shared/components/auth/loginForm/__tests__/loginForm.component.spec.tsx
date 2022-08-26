@@ -3,10 +3,12 @@ import { screen, act } from '@testing-library/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { render } from '../../../../../tests/utils/rendering';
 import { LoginForm } from '../loginForm.component';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 describe('LoginForm: Component', () => {
   const renderWithRelayEnvironment = () => {
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
     return {
       ...render(<LoginForm />, { relayEnvironment }),
       relayEnvironment,

@@ -1,7 +1,6 @@
 import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import closeIcon from '@iconify-icons/ion/close-outline';
-import { useDispatch, useSelector } from 'react-redux';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { RoleAccess } from '../../roleAccess';
 import { Role } from '../../../../modules/auth/auth.types';
@@ -13,25 +12,24 @@ import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
 import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
 import { Button } from '../../forms/button';
-import { logout } from '../../../../modules/auth/auth.actions';
-import { selectIsLoggedIn } from '../../../../modules/auth/auth.selectors';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
+import { useAuth } from '../../../hooks/useAuth/useAuth';
 import { CloseButton, Container, Header, MenuLink, MenuLinks } from './sidebar.styles';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-  const dispatch = useDispatch();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
 
+  const { logout, isLoggedIn } = useAuth();
+
   const handleLogout = useCallback(() => {
     closeSidebar();
-    dispatch(logout());
-  }, [closeSidebar, dispatch]);
+    logout();
+  }, [closeSidebar, logout]);
 
   useEffect(() => {
     if (!isDesktop && isSideMenuOpen) {

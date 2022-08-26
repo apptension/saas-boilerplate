@@ -1,15 +1,13 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { selectIsLoggedIn } from '../../../modules/auth/auth.selectors';
-import { selectIsProfileStartupCompleted } from '../../../modules/startup/startup.selectors';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { reportError } from '../../../shared/utils/reportError';
+import { useAuth } from '../../../shared/hooks/useAuth/useAuth';
 
 export const ConfirmEmail = () => {
   const navigate = useNavigate();
@@ -17,8 +15,7 @@ export const ConfirmEmail = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const params = useParams<{ token: string; user: string }>();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-  const isProfileStartupComplete = useSelector(selectIsProfileStartupCompleted);
+  const { isLoggedIn } = useAuth();
   const { showMessage } = useSnackbar();
 
   const loggedOutSuccessMessage = intl.formatMessage({
@@ -53,12 +50,10 @@ export const ConfirmEmail = () => {
   );
 
   useEffect(() => {
-    if (isProfileStartupComplete) {
-      if (params?.token && params?.user) {
-        handleEmailConfirmation({ token: params.token, user: params.user }).catch(reportError);
-      }
+    if (params?.token && params?.user) {
+      handleEmailConfirmation({ token: params.token, user: params.user }).catch(reportError);
     }
-  }, [handleEmailConfirmation, params, isProfileStartupComplete]);
+  }, [handleEmailConfirmation, params]);
 
   return null;
 };

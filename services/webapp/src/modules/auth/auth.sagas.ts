@@ -1,4 +1,4 @@
-import { all, put, takeLatest, select } from 'redux-saga/effects';
+import { all, put, takeLatest } from 'redux-saga/effects';
 import { RoutesConfig } from '../../app/config/routes';
 import { auth } from '../../shared/services/api';
 import { SignupApiResponseData } from '../../shared/services/api/auth/types';
@@ -9,15 +9,11 @@ import { navigate } from '../helpers/navigate';
 import { invalidateRelayStore } from '../../shared/services/graphqlApi/relayEnvironment';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
-import { selectIsLoggedIn } from './auth.selectors';
 
 function* logoutResolve() {
   invalidateRelayStore();
-  const isLoggedIn: boolean = yield select(selectIsLoggedIn);
-  if (isLoggedIn) {
-    yield put(authActions.resetProfile());
-    yield navigate(RoutesConfig.getLocalePath(['login']));
-  }
+  yield put(authActions.resetProfile());
+  yield navigate(RoutesConfig.getLocalePath(['login']));
 }
 
 function* signupResolve(response: SignupApiResponseData) {

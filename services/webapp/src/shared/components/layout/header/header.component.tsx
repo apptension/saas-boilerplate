@@ -1,11 +1,8 @@
-import { HTMLAttributes, useContext } from 'react';
+import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ClickAwayListener from 'react-click-away-listener';
-import { selectIsLoggedIn } from '../../../../modules/auth/auth.selectors';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { logout } from '../../../../modules/auth/auth.actions';
 import { Button, ButtonVariant } from '../../forms/button';
 import { Link as ButtonLink } from '../../link';
 import { Snackbar } from '../../snackbar';
@@ -15,6 +12,7 @@ import { Breakpoint } from '../../../../theme/media';
 import { useOpenState } from '../../../hooks/useOpenState';
 import { Notifications } from '../../notifications';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
+import { useAuth } from '../../../hooks/useAuth/useAuth';
 import {
   Avatar,
   Container,
@@ -32,17 +30,16 @@ export type HeaderProps = HTMLAttributes<HTMLElement>;
 
 export const Header = (props: HeaderProps) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
   const generateLocalePath = useGenerateLocalePath();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
   const userDropdown = useOpenState(false);
+  const { logout, isLoggedIn } = useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(async () => {
     userDropdown.close();
-    dispatch(logout());
-  };
+    await logout();
+  }, [logout, userDropdown]);
 
   return (
     <Container {...props}>

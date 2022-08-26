@@ -160,12 +160,12 @@ class TestCurrentUserQuery:
         assert executed["data"] == {'currentUser': None}
 
 
-class TestCurrentUserMutation:
+class TestUpdateCurrentUserMutation:
     def test_update_name(self, graphene_client, user_factory):
         user = user_factory(profile__first_name="FIRSTNAME", profile__last_name="LASTNAME")
         query = '''
             mutation($input: UpdateCurrentUserMutationInput!)  {
-              currentUser(input: $input) {
+              updateCurrentUser(input: $input) {
                 userProfile {
                   firstName
                   lastName
@@ -180,14 +180,14 @@ class TestCurrentUserMutation:
             query,
             variable_values={'input': {"firstName": "Tony", "lastName": "Stark"}},
         )
-        assert executed["data"]["currentUser"]["userProfile"] == {'firstName': 'Tony', 'lastName': 'Stark'}
+        assert executed["data"]["updateCurrentUser"]["userProfile"] == {'firstName': 'Tony', 'lastName': 'Stark'}
 
     def test_update_avatar(self, api_client, user_factory, image_factory):
         user = user_factory(profile__first_name="FIRSTNAME", profile__last_name="LASTNAME")
         avatar_file = image_factory(name="avatar_new.png", params={"width": 1})
         query = '''
             mutation($input: UpdateCurrentUserMutationInput!)  {
-              currentUser(input: $input) {
+              updateCurrentUser(input: $input) {
                 userProfile {
                   user {
                     avatar
@@ -208,6 +208,6 @@ class TestCurrentUserMutation:
         executed = json.loads(response.content)
         user.profile.refresh_from_db()
         user_file_name = os.path.split(user.profile.avatar.thumbnail.name)[1]
-        response_file_name = os.path.split(executed["data"]["currentUser"]["userProfile"]["user"]["avatar"])[1]
+        response_file_name = os.path.split(executed["data"]["updateCurrentUser"]["userProfile"]["user"]["avatar"])[1]
 
         assert user_file_name == response_file_name == "avatar_new.png"

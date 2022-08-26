@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'react';
-import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { isNil } from 'ramda';
-import { selectProfileAvatar, selectProfileInitial } from '../../../modules/auth/auth.selectors';
+import { useAuth } from '../../hooks/useAuth/useAuth';
 import { sizeUnitBase } from '../../../theme/size';
+import { ProfileInitial } from '../profileInitial';
 import { Container, Image } from './avatar.styles';
 
 export type AvatarProps = HTMLAttributes<HTMLDivElement> & {
@@ -12,9 +12,9 @@ export type AvatarProps = HTMLAttributes<HTMLDivElement> & {
 
 export const Avatar = ({ size, ...props }: AvatarProps) => {
   const intl = useIntl();
+  const { currentUser } = useAuth();
 
-  const initial = useSelector(selectProfileInitial);
-  const avatar = useSelector(selectProfileAvatar);
+  const avatar = currentUser?.avatar;
 
   return (
     <Container size={size ?? 4 * sizeUnitBase} hasImage={!isNil(avatar)} {...props}>
@@ -24,7 +24,7 @@ export const Avatar = ({ size, ...props }: AvatarProps) => {
           alt={intl.formatMessage({ defaultMessage: 'user avatar', description: 'Avatar / Image alt' })}
         />
       ) : (
-        initial
+        <ProfileInitial profile={currentUser} />
       )}
     </Container>
   );

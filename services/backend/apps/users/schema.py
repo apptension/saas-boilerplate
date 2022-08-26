@@ -2,10 +2,8 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 from common.acl import policies
-from common.graphql import mutations
 from common.graphql.acl.decorators import permission_classes
 
-from . import serializers
 from . import models
 from . import serializers
 from .services.users import get_user_from_resolver, get_role_names, get_user_avatar_url
@@ -111,4 +109,4 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
-    current_user = UpdateCurrentUserMutation.Field()
+    update_current_user = UpdateCurrentUserMutation.Field()

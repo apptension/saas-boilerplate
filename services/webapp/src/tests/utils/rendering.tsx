@@ -15,6 +15,8 @@ import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProv
 import { DEFAULT_LOCALE, Locale, translationMessages, TranslationMessages } from '../../app/config/i18n';
 import configureStore from '../../app/config/store';
 import { RoutesConfig } from '../../app/config/routes';
+import { CommonQuery } from '../../app/providers/commonQuery';
+import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
 const defaultReduxStore = configureStore({});
 
@@ -42,7 +44,9 @@ function DefaultTestProviders<ReduxState>({
         <ResponsiveThemeProvider>
           <IntlProvider locale={intlLocale} messages={intlMessages}>
             <Provider store={reduxStore}>
-              <RelayEnvironmentProvider environment={relayEnvironment}>{children}</RelayEnvironmentProvider>
+              <RelayEnvironmentProvider environment={relayEnvironment}>
+                <CommonQuery>{children}</CommonQuery>
+              </RelayEnvironmentProvider>
             </Provider>
           </IntlProvider>
         </ResponsiveThemeProvider>
@@ -63,6 +67,7 @@ export function getWrapper<
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(WrapperComponent: ComponentClass<P> | FC<P>, wrapperProps: WrapperProps<ReduxState, P>): ComponentType<P> {
   const defaultRelayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(defaultRelayEnvironment);
   const defaultRouterHistory: MemoryHistory = createMemoryHistory({ initialEntries: ['/'] });
   const defaultReduxStore = configureStore(wrapperProps.reduxInitialState);
 
