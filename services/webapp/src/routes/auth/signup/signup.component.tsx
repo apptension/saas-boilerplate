@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { SignupForm } from '../../../shared/components/auth/signupForm';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { Link } from '../../../shared/components/link';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
@@ -25,7 +25,7 @@ export const Signup = () => {
       <SignupForm />
 
       <Links>
-        <Link to={generateLocalePath(Routes.login)}>
+        <Link to={generateLocalePath(RoutesConfig.login)}>
           <FormattedMessage defaultMessage="Log in" description="Auth / Signup / login link" />
         </Link>
       </Links>

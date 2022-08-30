@@ -4,7 +4,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDetailsQuery.graphql';
-import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 

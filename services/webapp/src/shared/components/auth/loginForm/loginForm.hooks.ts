@@ -6,7 +6,7 @@ import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { loginFormMutation } from '../../../../__generated__/loginFormMutation.graphql';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { fetchProfile } from '../../../../modules/auth/auth.actions';
 import { LoginFormFields } from './loginForm.types';
 
@@ -55,7 +55,7 @@ export const useLoginForm = () => {
         setGraphQLResponseErrors(errors);
       } else {
         await dispatch(fetchProfile());
-        navigate(generateLocalePath(Routes.home));
+        navigate(generateLocalePath(RoutesConfig.home));
       }
     } catch {}
   });

@@ -1,5 +1,5 @@
 import { path, Path } from 'ramda';
-import {getLocalePath, nestedPath} from '../../shared/utils/path';
+import { getLocalePath, nestedPath } from '../../shared/utils/path';
 
 export const LANG_PREFIX = `/:lang/*`;
 
@@ -36,7 +36,7 @@ const routes = {
   documents: 'documents',
   //<-- INJECT ROUTE DEFINITION -->
 };
-export const Routes = {
+export const RoutesConfig = {
   ...routes,
   getLocalePath: (routeKey: Path) => {
     const value = path<string>(routeKey, routes) || '';
@@ -44,11 +44,10 @@ export const Routes = {
   },
 };
 
-
 export const NO_NAVIGATION_ROUTES = [
-  Routes.login,
-  Routes.signup,
-  Routes.passwordReset.index,
-  Routes.passwordReset.confirm,
-  Routes.confirmEmail,
+  RoutesConfig.login,
+  RoutesConfig.signup,
+  RoutesConfig.passwordReset.index,
+  RoutesConfig.passwordReset.confirm,
+  RoutesConfig.confirmEmail,
 ];

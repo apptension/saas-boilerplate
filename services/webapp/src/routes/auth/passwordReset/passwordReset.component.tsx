@@ -1,5 +1,5 @@
-import { Route, Routes as RouterRoutes } from 'react-router-dom';
-import { Routes } from '../../../app/config/routes';
+import { Route, Routes } from 'react-router-dom';
+import { RoutesConfig } from '../../../app/config/routes';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 
 // @ts-ignore
@@ -9,9 +9,9 @@ const PasswordResetConfirm = asyncComponent(() => import('./passwordResetConfirm
 
 export const PasswordReset = () => {
   return (
-    <RouterRoutes>
+    <Routes>
       <Route index element={<PasswordResetRequest />} />
-      <Route path={`${Routes.passwordReset.getRelativeUrl('confirm')}`} element={<PasswordResetConfirm />} />
-    </RouterRoutes>
+      <Route path={`${RoutesConfig.passwordReset.getRelativeUrl('confirm')}`} element={<PasswordResetConfirm />} />
+    </Routes>
   );
 };

@@ -7,7 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Query from '../../../../__generated__/crudDemoItemListQuery.graphql';
 import { connectionFromArray } from '../../../../shared/utils/testUtils';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
-import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 
 describe('CrudDemoItemList: Component', () => {

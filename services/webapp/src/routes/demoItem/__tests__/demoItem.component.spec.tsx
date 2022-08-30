@@ -5,7 +5,7 @@ import { generatePath } from 'react-router';
 
 import { DemoItem } from '../demoItem.component';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import demoItemQueryGraphql from '../../../__generated__/demoItemQuery.graphql';
 
 describe('DemoItem: Component', () => {
@@ -25,14 +25,14 @@ describe('DemoItem: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(demoItemQueryGraphql, { id: 'test-id' });
 
-    const routePath = Routes.getLocalePath(['demoItem']);
+    const routePath = RoutesConfig.getLocalePath(['demoItem']);
     render(
       {},
       {
         relayEnvironment,
         router: {
           url: generatePath(routePath, { lang: 'en', id: 'test-id' }),
-          routePath
+          routePath,
         },
       }
     );

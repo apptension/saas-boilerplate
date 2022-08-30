@@ -7,7 +7,7 @@ import { ConnectionHandler } from 'relay-runtime';
 import { useFragment } from 'react-relay';
 import { crudDemoItemListItem$key } from '../../../../__generated__/crudDemoItemListItem.graphql';
 import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
 import { Link } from '../../../../shared/components/link';
@@ -57,7 +57,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     <InlineButtons>
       <Link
         variant={ButtonVariant.RAW}
-        to={generateLocalePath(Routes.crudDemoItem.edit, { id: data.id })}
+        to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />
@@ -73,7 +73,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   return (
     <Container>
       <LinkContainer>
-        <Link variant={ButtonVariant.RAW} to={generateLocalePath(Routes.crudDemoItem.details, { id: data.id })}>
+        <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
           <Text>{data.name}</Text>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}

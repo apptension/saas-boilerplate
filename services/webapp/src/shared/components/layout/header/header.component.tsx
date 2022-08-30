@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ClickAwayListener from 'react-click-away-listener';
 import { selectIsLoggedIn } from '../../../../modules/auth/auth.selectors';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { logout } from '../../../../modules/auth/auth.actions';
 import { Button, ButtonVariant } from '../../forms/button';
 import { Link as ButtonLink } from '../../link';
@@ -64,7 +64,7 @@ export const Header = (props: HeaderProps) => {
 
         <MenuContainer>
           <Link
-            to={generateLocalePath(Routes.home)}
+            to={generateLocalePath(RoutesConfig.home)}
             aria-label={intl.formatMessage({
               description: 'Header / Home link aria label',
               defaultMessage: 'Go back home',
@@ -97,7 +97,7 @@ export const Header = (props: HeaderProps) => {
                 <Menu isOpen={userDropdown.isOpen}>
                   <ButtonLink
                     onClick={userDropdown.close}
-                    to={generateLocalePath(Routes.profile)}
+                    to={generateLocalePath(RoutesConfig.profile)}
                     variant={ButtonVariant.FLAT}
                   >
                     <FormattedMessage defaultMessage="Profile" description="Header / Profile button" />

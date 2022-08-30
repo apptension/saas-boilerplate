@@ -15,7 +15,7 @@ import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.com
 import { useFavoriteDemoItemsLoader } from '../../../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.hook';
 import favoriteDemoItemListQueryGraphql from '../../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { render } from '../../../../tests/utils/rendering';
-import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 
 describe('DemoItemListItem: Component', () => {
   const defaultProps: Omit<DemoItemListItemProps, 'item' | 'queryRef'> = {

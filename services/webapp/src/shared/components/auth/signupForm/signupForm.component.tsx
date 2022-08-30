@@ -3,7 +3,7 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../forms/input';
 import { signup } from '../../../../modules/auth/auth.actions';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { FormFieldsRow } from '../../../../theme/size';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
@@ -144,7 +144,7 @@ export const SignupForm = () => {
           },
           {
             termsLink: (
-              <InlineLink to={generateLocalePath(Routes.termsAndConditions)}>
+              <InlineLink to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                 <FormattedMessage
                   description="Auth / Signup / Accept checkbox / T&C link"
                   defaultMessage="Terms of Use"
@@ -152,7 +152,7 @@ export const SignupForm = () => {
               </InlineLink>
             ),
             policyLink: (
-              <InlineLink to={generateLocalePath(Routes.privacyPolicy)}>
+              <InlineLink to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                 <FormattedMessage
                   description="Auth / Signup / Accept checkbox / Privacy policy link"
                   defaultMessage="Privacy Policy"

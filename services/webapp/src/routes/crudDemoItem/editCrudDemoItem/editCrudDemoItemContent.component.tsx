@@ -5,7 +5,7 @@ import EditCrudDemoItemQuery, { editCrudDemoItemQuery } from '../../../__generat
 import { editCrudDemoItemContentMutation } from '../../../__generated__/editCrudDemoItemContentMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
@@ -44,7 +44,7 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
 
   return (
     <Container>
-      <BackButton to={generateLocalePath(Routes.crudDemoItem.list)} />
+      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
       <Header>
         <FormattedMessage defaultMessage="Edit CRUD Example Item" description="EditCrudDemoItem / Header" />
       </Header>

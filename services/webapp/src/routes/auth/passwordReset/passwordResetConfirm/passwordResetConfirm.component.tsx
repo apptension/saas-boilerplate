@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { Link } from '../../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { Container, Header, Links, Text } from './passwordResetConfirm.styles';
@@ -21,7 +21,7 @@ export const PasswordResetConfirm = () => {
 
   useEffect(() => {
     if (!isTokenInUrl) {
-      navigate(generateLocalePath(Routes.login));
+      navigate(generateLocalePath(RoutesConfig.login));
     }
   }, [navigate, isTokenInUrl, generateLocalePath]);
 
@@ -44,7 +44,7 @@ export const PasswordResetConfirm = () => {
       <PasswordResetConfirmForm user={params.user} token={params.token} />
 
       <Links>
-        <Link to={generateLocalePath(Routes.login)}>
+        <Link to={generateLocalePath(RoutesConfig.login)}>
           <FormattedMessage
             defaultMessage="Go back to log in"
             description="Auth / Confirm reset password / login link"

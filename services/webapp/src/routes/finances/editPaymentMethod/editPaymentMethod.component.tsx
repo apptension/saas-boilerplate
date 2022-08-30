@@ -3,7 +3,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container } from './editPaymentMethod.styles';
@@ -26,7 +26,7 @@ export const EditPaymentMethod = () => {
       <Elements stripe={stripePromise}>
         <EditPaymentMethodForm
           onSuccess={() => {
-            navigate(generateLocalePath(Routes.subscriptions.index));
+            navigate(generateLocalePath(RoutesConfig.subscriptions.index));
             showMessage(successMessage);
           }}
         />

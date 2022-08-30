@@ -6,7 +6,7 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { produce } from 'immer';
 
 import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
-import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory } from '../../../../mocks/factories';

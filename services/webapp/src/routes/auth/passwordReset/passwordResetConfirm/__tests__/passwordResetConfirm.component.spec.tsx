@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { produce } from 'immer';
 
-import { Routes as RoutesConfig } from '../../../../../app/config/routes';
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 import { createMockRouterHistory, render } from '../../../../../tests/utils/rendering';
 import { unpackPromise } from '../../../../../tests/utils/promise';

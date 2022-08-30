@@ -9,7 +9,7 @@ import {
   selectIsTrialActive,
   selectTrialEnd,
 } from '../../../modules/subscription/subscription.selectors';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import {
   useActiveSubscriptionPlanDetails,
   useSubscriptionPlanDetails,
@@ -86,12 +86,12 @@ export const Subscriptions = () => {
           </>
         )}
 
-        <Link to={generateLocalePath(Routes.subscriptions.changePlan)}>
+        <Link to={generateLocalePath(RoutesConfig.subscriptions.changePlan)}>
           <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
         </Link>
 
         {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !isCancelled && (
-          <Link to={generateLocalePath(Routes.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
+          <Link to={generateLocalePath(RoutesConfig.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
             <FormattedMessage
               defaultMessage="Cancel subscription"
               description="My subscription / Cancel subscription"
@@ -115,7 +115,7 @@ export const Subscriptions = () => {
           </RowValue>
         </Row>
 
-        <Link to={generateLocalePath(Routes.subscriptions.paymentMethod)}>
+        <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>
           {activeSubscriptionPaymentMethod ? (
             <FormattedMessage
               defaultMessage="Edit payment method"
@@ -136,7 +136,7 @@ export const Subscriptions = () => {
         </Header>
 
         {transactionsHistory.length > 0 ? (
-          <Link to={generateLocalePath(Routes.finances.history)}>
+          <Link to={generateLocalePath(RoutesConfig.finances.history)}>
             <FormattedMessage
               defaultMessage="View transaction history"
               description="My subscription / View history button"

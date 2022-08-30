@@ -14,7 +14,7 @@ import { generatePath } from 'react-router';
 import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
 import { DEFAULT_LOCALE, Locale, translationMessages, TranslationMessages } from '../../app/config/i18n';
 import configureStore from '../../app/config/store';
-import { Routes as RoutesConfig } from '../../app/config/routes';
+import { RoutesConfig } from '../../app/config/routes';
 
 const defaultReduxStore = configureStore({});
 

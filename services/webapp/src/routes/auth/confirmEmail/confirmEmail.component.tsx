@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { confirmEmail } from '../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../../shared/components/snackbar';
@@ -47,7 +47,7 @@ export const ConfirmEmail = () => {
         await showMessage(errorMessage);
       }
 
-      navigate(generateLocalePath(Routes.login));
+      navigate(generateLocalePath(RoutesConfig.login));
     },
     [dispatch, errorMessage, showMessage, successMessage, generateLocalePath, navigate]
   );

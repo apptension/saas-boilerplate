@@ -8,7 +8,7 @@ import { Button } from '../../../shared/components/forms/button';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { Container } from './cancelSubscription.styles';
@@ -32,7 +32,7 @@ export const CancelSubscription = () => {
     try {
       await dispatch(subscriptionActions.cancelSubscription());
       showMessage(successMessage);
-      navigate(generateLocalePath(Routes.subscriptions.index));
+      navigate(generateLocalePath(RoutesConfig.subscriptions.index));
     } catch {}
   };
 

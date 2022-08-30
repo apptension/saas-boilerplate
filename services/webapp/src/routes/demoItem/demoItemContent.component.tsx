@@ -2,7 +2,7 @@ import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
-import { Routes } from '../../app/config/routes';
+import { RoutesConfig } from '../../app/config/routes';
 import { imageProps } from '../../shared/services/contentful';
 import { BackButton } from '../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
@@ -20,13 +20,13 @@ export const DemoItemContent: FC<DemoItemContentProps> = ({ itemQueryRef }) => {
 
   useEffect(() => {
     if (!item) {
-      navigate(generateLocalePath(Routes.notFound));
+      navigate(generateLocalePath(RoutesConfig.notFound));
     }
   }, [generateLocalePath, navigate, item]);
 
   return (
     <Container>
-      <BackButton to={generateLocalePath(Routes.demoItems)} />
+      <BackButton to={generateLocalePath(RoutesConfig.demoItems)} />
       <Title>{item?.title}</Title>
       <Description>{item?.description}</Description>
       {item?.image && <Image {...imageProps(item.image)} />}

@@ -9,7 +9,7 @@ import { Route, Routes, useParams } from 'react-router';
 import { crudDemoItemListItemTestQuery } from '../../../../../__generated__/crudDemoItemListItemTestQuery.graphql';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 import { render } from '../../../../../tests/utils/rendering';
-import { Routes as RoutesConfig } from '../../../../../app/config/routes';
+import { RoutesConfig } from '../../../../../app/config/routes';
 
 describe('CrudDemoItemListItem: Component', () => {
   const EditRouteMock = () => {

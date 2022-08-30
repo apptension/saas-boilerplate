@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { Routes } from '../../app/config/routes';
+import { RoutesConfig } from '../../app/config/routes';
 import demoItemsAllQueryGraphql from '../../__generated__/demoItemsAllQuery.graphql';
 import { generateRelayEnvironment } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.fixtures';
 import { demoItemFactory } from '../../mocks/factories';
@@ -14,7 +14,7 @@ const relayEnvironment = createMockEnvironment();
 relayEnvironment.mock.queueOperationResolver((operation) =>
   MockPayloadGenerator.generate(operation, {
     DemoItemCollection() {
-      return {items};
+      return { items };
     },
   })
 );
@@ -27,7 +27,7 @@ const Template: Story = ({ hasFavourite = false, ...args }) => {
     <ProvidersWrapper
       context={{
         relayEnvironment,
-        router: { url: `/en${Routes.demoItems}`, routePath: `/:lang${Routes.demoItems}` },
+        router: { url: `/en${RoutesConfig.demoItems}`, routePath: `/:lang${RoutesConfig.demoItems}` },
       }}
     >
       <DemoItems {...args} />
@@ -43,4 +43,4 @@ export default {
 export const Default = Template.bind({});
 
 export const WithFavorited = Template.bind({});
-WithFavorited.args = { hasFavourite: true  };
+WithFavorited.args = { hasFavourite: true };

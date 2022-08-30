@@ -2,7 +2,7 @@ import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { produce } from 'immer';
 import { ConfirmEmail } from '../confirmEmail.component';
-import { Routes as RoutesConfig } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory, loggedOutAuthFactory } from '../../../../mocks/factories';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';

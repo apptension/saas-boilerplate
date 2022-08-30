@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { Notification } from '../../notification';
 import { NotificationType } from '../../notifications.types';
-import { Routes } from '../../../../../app/config/routes';
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../../hooks/localePaths';
 
 export type CrudItemCreatedProps = NotificationType<{
@@ -20,7 +20,7 @@ export const CrudItemCreated = ({ data: { id, name, user, avatar }, ...restProps
     <Notification
       {...restProps}
       onClick={() => {
-        const route = generateLocalePath(Routes.crudDemoItem.details, { id });
+        const route = generateLocalePath(RoutesConfig.crudDemoItem.details, { id });
         navigate(route);
       }}
       avatar={avatar}

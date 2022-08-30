@@ -5,7 +5,7 @@ import { createMemoryHistory } from 'history';
 
 import { ValidRoutesProviders } from '../providers/validRoutesProvider';
 import { render } from '../../tests/utils/rendering';
-import { Routes as RoutesConfig } from '../config/routes';
+import { RoutesConfig } from '../config/routes';
 
 describe('App: Component', () => {
   const Component: FC = () => (

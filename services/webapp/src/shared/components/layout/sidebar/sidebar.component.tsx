@@ -2,7 +2,7 @@ import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { useDispatch, useSelector } from 'react-redux';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { RoleAccess } from '../../roleAccess';
 import { Role } from '../../../../modules/auth/auth.types';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
@@ -50,7 +50,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       <Header>
         {isLoggedIn && (
           <Link
-            to={generateLocalePath(Routes.profile)}
+            to={generateLocalePath(RoutesConfig.profile)}
             onClick={closeSidebar}
             aria-label={intl.formatMessage({
               defaultMessage: 'Open profile',
@@ -73,51 +73,51 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
       <MenuLinks>
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.home)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.home)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="Dashboard" description="Home / dashboard link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.demoItems)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.demoItems)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="Demo Contentful items" description="Home / demo contentful items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.crudDemoItem.list)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.crudDemoItem.list)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="CRUD Example Items" description="Home / CRUD example items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess allowedRoles={Role.ADMIN}>
-          <MenuLink to={generateLocalePath(Routes.admin)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.admin)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="Admin" description="Home / admin link" />
           </MenuLink>
         </RoleAccess>
 
-        <MenuLink to={generateLocalePath(Routes.privacyPolicy)} onClick={closeSidebar}>
+        <MenuLink to={generateLocalePath(RoutesConfig.privacyPolicy)} onClick={closeSidebar}>
           <FormattedMessage defaultMessage="Privacy policy" description="Home / privacy policy link" />
         </MenuLink>
 
-        <MenuLink to={generateLocalePath(Routes.termsAndConditions)} onClick={closeSidebar}>
+        <MenuLink to={generateLocalePath(RoutesConfig.termsAndConditions)} onClick={closeSidebar}>
           <FormattedMessage defaultMessage="Terms and conditions" description="Home / t&c link" />
         </MenuLink>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.finances.paymentConfirm)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.finances.paymentConfirm)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="Payment demo" description="Home / payment demo link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.subscriptions.index)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.subscriptions.index)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="My Subscription" description="Home / my subscriptions link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(Routes.documents)} onClick={closeSidebar}>
+          <MenuLink to={generateLocalePath(RoutesConfig.documents)} onClick={closeSidebar}>
             <FormattedMessage defaultMessage="Documents" description="Home / documents link" />
           </MenuLink>
         </RoleAccess>

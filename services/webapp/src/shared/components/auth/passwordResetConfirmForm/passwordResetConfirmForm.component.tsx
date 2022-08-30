@@ -5,7 +5,7 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
-import { Routes } from '../../../../app/config/routes';
+import { RoutesConfig } from '../../../../app/config/routes';
 import { useSnackbar } from '../../snackbar';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
@@ -65,7 +65,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       setApiResponse(res);
 
       if (!res.isError) {
-        navigate(generateLocalePath(Routes.login));
+        navigate(generateLocalePath(RoutesConfig.login));
         snackbar.showMessage(
           intl.formatMessage({
             defaultMessage: '🎉 Password reset successfully!',

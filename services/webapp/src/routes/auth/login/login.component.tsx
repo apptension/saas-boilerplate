@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { Link } from '../../../shared/components/link';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
@@ -25,11 +25,11 @@ export const Login = () => {
       <LoginForm />
 
       <Links>
-        <Link to={generateLocalePath(Routes.passwordReset.index)}>
+        <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
           <FormattedMessage defaultMessage="Forgot password?" description="Auth / login / reset password link" />
         </Link>
 
-        <Link to={generateLocalePath(Routes.signup)}>
+        <Link to={generateLocalePath(RoutesConfig.signup)}>
           <FormattedMessage defaultMessage="Sign up" description="Auth / Login / signup link" />
         </Link>
       </Links>

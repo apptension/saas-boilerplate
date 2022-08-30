@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
 import { subscriptionActions } from '../../../modules/subscription';
 import { useSnackbar } from '../../../shared/components/snackbar';
-import { Routes } from '../../../app/config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
@@ -36,7 +36,7 @@ export const EditSubscription = () => {
 
     if (!res.isError) {
       await showMessage(successMessage);
-      navigate(generateLocalePath(Routes.subscriptions.index));
+      navigate(generateLocalePath(RoutesConfig.subscriptions.index));
     } else {
       await showMessage(failMessage);
     }
