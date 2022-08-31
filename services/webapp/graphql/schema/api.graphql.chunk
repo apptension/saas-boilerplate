@@ -312,6 +312,72 @@ type PageInfo {
 }
 
 """An enumeration."""
+enum PaymentMethodType {
+  """Acss Dbit"""
+  ACSS_DEBIT
+
+  """Afterpay Clearpay"""
+  AFTERPAY_CLEARPAY
+
+  """Alipay"""
+  ALIPAY
+
+  """BECS Debit (Australia)"""
+  AU_BECS_DEBIT
+
+  """Bacs Direct Debit"""
+  BACS_DEBIT
+
+  """Bancontact"""
+  BANCONTACT
+
+  """Boleto"""
+  BOLETO
+
+  """Card"""
+  CARD
+
+  """Card present"""
+  CARD_PRESENT
+
+  """EPS"""
+  EPS
+
+  """FPX"""
+  FPX
+
+  """Giropay"""
+  GIROPAY
+
+  """Grabpay"""
+  GRABPAY
+
+  """iDEAL"""
+  IDEAL
+
+  """Interac (card present)"""
+  INTERAC_PRESENT
+
+  """Klarna"""
+  KLARNA
+
+  """OXXO"""
+  OXXO
+
+  """Przelewy24"""
+  P24
+
+  """SEPA Direct Debit"""
+  SEPA_DEBIT
+
+  """SOFORT"""
+  SOFORT
+
+  """Wechat Pay"""
+  WECHAT_PAY
+}
+
+"""An enumeration."""
 enum PriceBillingScheme {
   """Per-unit"""
   PER_UNIT
@@ -349,6 +415,7 @@ enum ProductType {
 
 type Query {
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): SubscriptionPlanConnection
+  activeSubscription: SubscriptionScheduleType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -380,7 +447,18 @@ type SingUpMutationPayload {
   clientMutationId: String
 }
 
-type SubscriptionItemProductType implements Node {
+type StripePaymentMethodType implements Node {
+  """The ID of the object."""
+  id: ID!
+  billingDetails: GenericScalar
+
+  """The type of the PaymentMethod."""
+  type: PaymentMethodType!
+  card: GenericScalar
+  pk: String
+}
+
+type StripeProductType implements Node {
   djstripeCreated: DateTime!
   djstripeUpdated: DateTime!
   djstripeId: ID!
@@ -478,6 +556,54 @@ type SubscriptionItemProductType implements Node {
   pk: String
 }
 
+type StripeSubscriptionType implements Node {
+  """The ID of the object."""
+  id: ID!
+
+  """
+  End of the current period for which the subscription has been invoiced. At the
+  end of this period, a new invoice will be created.
+  """
+  currentPeriodEnd: DateTime!
+
+  """
+  Start of the current period for which the subscription has been invoiced.
+  """
+  currentPeriodStart: DateTime!
+
+  """
+  Date when the subscription was first created. The date might differ from the created date due to backdating.
+  """
+  startDate: DateTime
+
+  """The status of this subscription."""
+  status: SubscriptionStatus!
+
+  """If the subscription has a trial, the end of that trial."""
+  trialEnd: DateTime
+
+  """If the subscription has a trial, the beginning of that trial."""
+  trialStart: DateTime
+  pk: String
+}
+
+type StripeSubscriptionTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [StripeSubscriptionTypeEdge]!
+}
+
+"""A Relay edge containing a `StripeSubscriptionType` and its cursor."""
+type StripeSubscriptionTypeEdge {
+  """The item at the end of the edge"""
+  node: StripeSubscriptionType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
 type SubscriptionPlanConnection {
   """Pagination data for this connection."""
   pageInfo: PageInfo!
@@ -532,7 +658,7 @@ type SubscriptionPlanType implements Node {
   nickname: String!
 
   """The product this price is associated with."""
-  product: SubscriptionItemProductType!
+  product: StripeProductType!
 
   """
   The recurring components of a price such as `interval` and `usage_type`.
@@ -605,6 +731,142 @@ type SubscriptionPlanTypeEdge {
 
   """A cursor for use in pagination"""
   cursor: String!
+}
+
+"""An enumeration."""
+enum SubscriptionScheduleEndBehavior {
+  """Cancel"""
+  CANCEL
+
+  """Release"""
+  RELEASE
+}
+
+type SubscriptionSchedulePhaseItemType {
+  price: SubscriptionPlanType
+  quantity: Int
+}
+
+type SubscriptionSchedulePhaseType {
+  startDate: DateTime
+  endDate: String
+  trialEnd: String
+  item: SubscriptionSchedulePhaseItemType
+}
+
+"""An enumeration."""
+enum SubscriptionScheduleStatus {
+  """Active"""
+  ACTIVE
+
+  """Canceled"""
+  CANCELED
+
+  """Completed"""
+  COMPLETED
+
+  """Not started"""
+  NOT_STARTED
+
+  """Released"""
+  RELEASED
+}
+
+type SubscriptionScheduleType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+
+  """The ID of the object."""
+  id: ID!
+
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+
+  """The datetime this object was created in stripe."""
+  created: DateTime
+
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+
+  """A description of this object."""
+  description: String
+
+  """
+  Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
+  """
+  billingThresholds: String
+
+  """Time at which the subscription schedule was canceled."""
+  canceledAt: DateTime
+
+  """Time at which the subscription schedule was completed."""
+  completedAt: DateTime
+
+  """
+  Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
+  """
+  currentPhase: String
+
+  """Object representing the subscription schedule's default settings."""
+  defaultSettings: String
+
+  """
+  Behavior of the subscription schedule and underlying subscription when it ends.
+  """
+  endBehavior: SubscriptionScheduleEndBehavior!
+  phases: [SubscriptionSchedulePhaseType]
+
+  """Time at which the subscription schedule was released."""
+  releasedAt: DateTime
+
+  """
+  The subscription once managed by this subscription schedule (if it is released).
+  """
+  releasedSubscription: StripeSubscriptionType
+
+  """
+  The present status of the subscription schedule. Possible values are
+  `not_started`, `active`, `completed`, `released`, and `canceled`.
+  """
+  status: SubscriptionScheduleStatus!
+
+  """The schedule associated with this subscription."""
+  subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
+  subscription: StripeSubscriptionType
+  defaultPaymentMethod: StripePaymentMethodType
+  canActivateTrial: Boolean
+}
+
+"""An enumeration."""
+enum SubscriptionStatus {
+  """Active"""
+  ACTIVE
+
+  """Canceled"""
+  CANCELED
+
+  """Incomplete"""
+  INCOMPLETE
+
+  """Incomplete Expired"""
+  INCOMPLETE_EXPIRED
+
+  """Past due"""
+  PAST_DUE
+
+  """Trialing"""
+  TRIALING
+
+  """Unpaid"""
+  UNPAID
 }
 
 input UpdateCrudDemoItemMutationInput {

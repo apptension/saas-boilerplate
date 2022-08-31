@@ -81,14 +81,8 @@ class StripeProductType(StripeDjangoObjectType):
         interfaces = (relay.Node,)
 
 
-class StripePriceType(StripeDjangoObjectType):
-    class Meta:
-        model = djstripe_models.Price
-        interfaces = (relay.Node,)
-
-
 class SubscriptionSchedulePhaseItemType(ObjectType):
-    price = graphene.Field(StripePriceType)
+    price = graphene.Field(SubscriptionPlanType)
     quantity = graphene.Int()
 
     def resolve_price(self, info):
@@ -136,7 +130,7 @@ class SubscriptionScheduleType(DjangoObjectType):
 
 class PriceTypeConnection(graphene.Connection):
     class Meta:
-        node = StripePriceType
+        node = SubscriptionPlanType
 
 
 class Query(graphene.ObjectType):

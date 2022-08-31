@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e2b8e86431f378eb44ff7db5207349db>>
+ * @generated SignedSource<<446e6e3373af74e7c29b2e5fa095237c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -132,7 +132,7 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "SubscriptionItemProduct",
+                    "concreteType": "StripeProductType",
                     "kind": "LinkedField",
                     "name": "product",
                     "plural": false,

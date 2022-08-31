@@ -1,11 +1,15 @@
 import { useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import { times } from 'ramda';
+import { useQueryLoader } from 'react-relay';
+
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { selectActiveSubscriptionPlan } from '../../../../modules/subscription/subscription.selectors';
-import { subscriptionActions } from '../../../../modules/subscription';
 import { subscriptionPlanItemFragment$data } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
+import subscriptionActivePlanDetailsQueryGraphql, {
+  subscriptionActivePlanDetailsQuery,
+} from '../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 
 export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$data | SubscriptionPlan) => {
   const intl = useIntl();
@@ -47,18 +51,22 @@ export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$d
 };
 
 export const useActiveSubscriptionPlanDetails = ({ forceRefetch } = { forceRefetch: true }) => {
-  const dispatch = useDispatch();
   const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
-  const [initialActiveSubscriptionPlan] = useState(activeSubscriptionPlan);
-
-  useEffect(() => {
-    if (!initialActiveSubscriptionPlan || forceRefetch) {
-      dispatch(subscriptionActions.fetchActiveSubscription());
-    }
-  }, [initialActiveSubscriptionPlan, dispatch, forceRefetch]);
 
   return {
     ...useSubscriptionPlanDetails(activeSubscriptionPlan),
     isLoading: !activeSubscriptionPlan,
   };
+};
+
+export const useActiveSubscriptionQueryLoader = ({ forceRefetch } = { forceRefetch: false }) => {
+  const [activeSubscriptionQueryRef, loadActiveSubscription] = useQueryLoader<subscriptionActivePlanDetailsQuery>(
+    subscriptionActivePlanDetailsQueryGraphql
+  );
+
+  useEffect(() => {
+    loadActiveSubscription({}, { fetchPolicy: forceRefetch ? 'store-or-network' : 'store-and-network' });
+  }, [loadActiveSubscription, forceRefetch]);
+
+  return activeSubscriptionQueryRef;
 };
