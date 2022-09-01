@@ -2,6 +2,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { produce } from 'immer';
+import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
@@ -12,6 +13,7 @@ import { mockConfirmPasswordReset } from '../../../../../mocks/server/handlers';
 import configureStore from '../../../../../app/config/store';
 import { prepareState } from '../../../../../mocks/store';
 import { loggedOutAuthFactory } from '../../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
 describe('PasswordResetConfirm: Component', () => {
   const Component = () => (
@@ -26,7 +28,13 @@ describe('PasswordResetConfirm: Component', () => {
   const routePath = ['passwordReset', 'confirm'];
   const reduxInitialState = prepareState((state) => {
     state.auth = loggedOutAuthFactory();
-    state.startup.profileStartupCompleted = true;
+  });
+
+  let relayEnvironment: RelayMockEnvironment;
+
+  beforeEach(() => {
+    relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
   });
 
   describe('token is valid', () => {
@@ -34,11 +42,10 @@ describe('PasswordResetConfirm: Component', () => {
 
     it('should redirect to login', async () => {
       const routerHistory = createMockRouterHistory(routePath, { user, token });
-      const reduxStore = configureStore(reduxInitialState);
       const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
       server.use(mockConfirmPasswordReset({ isError: false }, 200, apiDelayPromise));
 
-      render(<Component />, { routerHistory, reduxStore });
+      render(<Component />, { routerHistory, relayEnvironment });
 
       await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
       await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
@@ -55,7 +62,7 @@ describe('PasswordResetConfirm: Component', () => {
       const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
       server.use(mockConfirmPasswordReset({ isError: false }, 200, apiDelayPromise));
 
-      render(<Component />, { routerHistory, reduxStore });
+      render(<Component />, { routerHistory, reduxStore, relayEnvironment });
 
       await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
       await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
@@ -74,7 +81,6 @@ describe('PasswordResetConfirm: Component', () => {
   describe('token is invalid', () => {
     it('should redirect to login page', async () => {
       const routerHistory = createMockRouterHistory(routePath, { user, token });
-      const reduxStore = configureStore(reduxInitialState);
       const { promise: apiDelayPromise, resolve: resolveApiCall } = unpackPromise();
       server.use(
         mockConfirmPasswordReset(
@@ -87,7 +93,7 @@ describe('PasswordResetConfirm: Component', () => {
         )
       );
 
-      render(<Component />, { routerHistory, reduxStore });
+      render(<Component />, { routerHistory, relayEnvironment });
 
       await userEvent.type(screen.getByLabelText(/^new password$/i), 'some pass');
       await userEvent.type(screen.getByLabelText(/^repeat new password$/i), 'some pass');

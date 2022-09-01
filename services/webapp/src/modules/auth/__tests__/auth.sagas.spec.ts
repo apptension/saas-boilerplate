@@ -16,7 +16,7 @@ import {
 } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
-import { loggedInAuthFactory, loggedOutAuthFactory, userProfileFactory } from '../../../mocks/factories';
+import { loggedInAuthFactory, userProfileFactory } from '../../../mocks/factories';
 import { snackbarActions } from '../../snackbar';
 import { OAuthProvider } from '../auth.types';
 import { authActions } from '..';
@@ -72,16 +72,6 @@ describe('Auth: sagas', () => {
 
           await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
           expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
-        });
-      });
-
-      describe('user is logged out', () => {
-        it('should not redirect to login page', async () => {
-          const state = prepareState((state) => {
-            state.auth = loggedOutAuthFactory();
-          });
-          await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
-          expect(mockHistoryPush).not.toHaveBeenCalled();
         });
       });
     });

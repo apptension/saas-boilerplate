@@ -1,11 +1,10 @@
-import { useSelector } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { selectProfile } from '../../../../modules/auth/auth.selectors';
 import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { updateProfile } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../forms/input';
 import { useSnackbar } from '../../snackbar';
+import { useAuth } from '../../../hooks/useAuth/useAuth';
 import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';
 import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';
 import { UpdateProfileFormFields } from './editProfileForm.types';
@@ -14,7 +13,7 @@ export const EditProfileForm = () => {
   const intl = useIntl();
   const snackbar = useSnackbar();
   const dispatch = useAsyncDispatch();
-  const profile = useSelector(selectProfile);
+  const { currentUser } = useAuth();
 
   const {
     form: {
@@ -27,8 +26,8 @@ export const EditProfileForm = () => {
     setApiResponse,
   } = useApiForm<UpdateProfileFormFields>({
     defaultValues: {
-      firstName: profile?.firstName,
-      lastName: profile?.lastName,
+      firstName: currentUser?.firstName ?? '',
+      lastName: currentUser?.lastName ?? '',
     },
   });
 

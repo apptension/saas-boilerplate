@@ -140,6 +140,7 @@ export const relayEnvironment = new Environment({
   network,
   store: new Store(new RecordSource()),
 });
+relayEnvironment.getStore().snapshot();
 
 export const getRelayEnvironment = () => relayEnvironment;
 
@@ -147,4 +148,6 @@ export const invalidateRelayStore = () => {
   commitLocalUpdate(relayEnvironment, (store) => {
     (store as RecordSourceSelectorProxy).invalidateStore();
   });
+  relayEnvironment.getStore().restore();
+  relayEnvironment.getStore().snapshot();
 };

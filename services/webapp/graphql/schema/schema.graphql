@@ -428,6 +428,7 @@ type Query {
   appConfig(id: String!, preview: Boolean, locale: String): AppConfig
   appConfigCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AppConfigFilter, order: [AppConfigOrder]): AppConfigCollection
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
+  currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
   crudDemoItem(
@@ -496,6 +497,7 @@ schema {
 }
 
 type ApiMutation {
+  updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
@@ -532,6 +534,7 @@ type ContentfulDemoItemFavoriteType implements Node {
   """The ID of the object."""
   id: ID!
   item: ContentfulDemoItemType!
+  user: CurrentUserType!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -617,6 +620,24 @@ type CrudDemoItemType implements Node {
   """The ID of the object."""
   id: ID!
   name: String!
+  createdBy: CurrentUserType
+}
+
+"""A Relay edge containing a `CurrentUser` and its cursor."""
+type CurrentUserEdge {
+  """The item at the end of the edge"""
+  node: UserProfileType
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type CurrentUserType {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  roles: [String]
+  avatar: String
 }
 
 input DeleteCrudDemoItemMutationInput {
@@ -668,6 +689,7 @@ type DocumentDemoItemType implements Node {
   """The ID of the object."""
   id: ID!
   file: FileFieldType
+  createdBy: CurrentUserType
   createdAt: DateTime!
 }
 
@@ -724,6 +746,7 @@ type NotificationEdge {
 type NotificationType implements Node {
   """The ID of the object."""
   id: ID!
+  user: CurrentUserType!
   type: String!
   createdAt: DateTime!
   readAt: DateTime
@@ -784,6 +807,19 @@ type UpdateCrudDemoItemMutationPayload {
   clientMutationId: String
 }
 
+input UpdateCurrentUserMutationInput {
+  firstName: String
+  lastName: String
+  avatar: Upload
+  clientMutationId: String
+}
+
+type UpdateCurrentUserMutationPayload {
+  userProfile: UserProfileType
+  userProfileEdge: CurrentUserEdge
+  clientMutationId: String
+}
+
 input UpdateNotificationMutationInput {
   isRead: Boolean
   id: ID!
@@ -802,3 +838,11 @@ Create scalar that ignores normal serialization/deserialization, since
 that will be handled by the multipart request spec
 """
 scalar Upload
+
+type UserProfileType implements Node {
+  """The ID of the object."""
+  id: ID!
+  user: CurrentUserType!
+  firstName: String!
+  lastName: String!
+}

@@ -6,17 +6,19 @@ import { generateRelayEnvironment } from '../useFavoriteDemoItem.fixtures';
 
 const refresh = jest.fn();
 
-const relayEnvironmentWrapper = (relayEnvironment: RelayMockEnvironment) => ({ children }: ProvidersWrapperProps) =>
-  <ProvidersWrapper context={{ relayEnvironment }}>{children} </ProvidersWrapper>
+const relayEnvironmentWrapper =
+  (relayEnvironment: RelayMockEnvironment) =>
+  ({ children }: ProvidersWrapperProps) =>
+    <ProvidersWrapper context={{ relayEnvironment }}>{children} </ProvidersWrapper>;
 
 const renderHookWithContext = (callback: () => ReturnType<typeof useFavoriteDemoItem>) => {
   const relayEnvironment = generateRelayEnvironment();
   const rendered = renderHook(callback, { wrapper: relayEnvironmentWrapper(relayEnvironment) });
   return {
     ...rendered,
-    relayEnvironment
-  }
-}
+    relayEnvironment,
+  };
+};
 
 describe('useFavoriteDemoItem: Hook', () => {
   it('should trigger correct mutation', async () => {

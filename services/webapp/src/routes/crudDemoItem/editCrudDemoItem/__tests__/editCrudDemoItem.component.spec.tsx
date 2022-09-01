@@ -12,6 +12,7 @@ import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory } from '../../../../mocks/factories';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('EditCrudDemoItem: Component', () => {
   const routePath = RoutesConfig.getLocalePath(['crudDemoItem', 'edit']);
@@ -24,9 +25,15 @@ describe('EditCrudDemoItem: Component', () => {
     state.auth = loggedInAuthFactory();
   });
 
+  const getRelayEnv = () => {
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    return relayEnvironment;
+  };
+
   it('should display prefilled form', () => {
     const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
-    const relayEnvironment = createMockEnvironment();
+    const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemType: () => ({ name: 'old item' }),
@@ -42,7 +49,7 @@ describe('EditCrudDemoItem: Component', () => {
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
       const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
-      const relayEnvironment = createMockEnvironment();
+      const relayEnvironment = getRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
         MockPayloadGenerator.generate(operation, {
           CrudDemoItemType: () => ({ id: 'test-id', name: 'old item' }),
@@ -68,8 +75,8 @@ describe('EditCrudDemoItem: Component', () => {
 
     it('should show success message', async () => {
       const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
-      const relayEnvironment = createMockEnvironment();
       const reduxStore = configureStore(reduxInitialState);
+      const relayEnvironment = getRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
         MockPayloadGenerator.generate(operation, {
           CrudDemoItemType: () => ({ name: 'old item' }),

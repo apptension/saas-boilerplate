@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 import { GlobalState } from '../app/config/reducers';
-import { STARTUP_INITIAL_STATE } from '../modules/startup';
 import { AUTH_INITIAL_STATE } from '../modules/auth';
 import { CONFIG_INITIAL_STATE } from '../modules/config';
 import { STRIPE_INITIAL_STATE } from '../modules/stripe';
@@ -13,7 +12,6 @@ export const store: GlobalState = {
   locales: {
     language: DEFAULT_LOCALE,
   },
-  startup: STARTUP_INITIAL_STATE,
   auth: AUTH_INITIAL_STATE,
   config: CONFIG_INITIAL_STATE,
   snackbar: SNACKBAR_INITIAL_STATE,

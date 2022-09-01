@@ -2,6 +2,7 @@ import { NotificationTypes } from '../../shared/components/notifications/notific
 import { NotificationType } from '../../shared/services/graphqlApi/__generated/types';
 import { makeId } from '../../tests/utils/fixtures';
 import { createFactory } from './factoryCreators';
+import { currentUserFactory } from './auth';
 
 export const notificationFactory = createFactory<NotificationType>(() => ({
   id: makeId(32),
@@ -9,4 +10,5 @@ export const notificationFactory = createFactory<NotificationType>(() => ({
   data: {},
   createdAt: new Date().toISOString(),
   readAt: null,
+  user: currentUserFactory(),
 }));

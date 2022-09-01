@@ -7,6 +7,7 @@ import { DemoItem } from '../demoItem.component';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';
 import { RoutesConfig } from '../../../app/config/routes';
 import demoItemQueryGraphql from '../../../__generated__/demoItemQuery.graphql';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 
 describe('DemoItem: Component', () => {
   const component = () => <DemoItem />;
@@ -14,6 +15,7 @@ describe('DemoItem: Component', () => {
 
   it('should render item data', async () => {
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         DemoItem: () => ({

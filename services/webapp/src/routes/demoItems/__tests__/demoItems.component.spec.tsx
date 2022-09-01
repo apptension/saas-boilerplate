@@ -4,13 +4,15 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../shared/utils/testUtils';
 import demoItemsAllQueryGraphql from '../../../__generated__/demoItemsAllQuery.graphql';
-import favoriteDemoItemListQueryGraphql from '../../../__generated__/useFavoriteDemoItemListQuery.graphql'
+import favoriteDemoItemListQueryGraphql from '../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { demoItemFactory } from '../../../mocks/factories';
 import { DemoItems } from '../demoItems.component';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 
 describe('DemoItems: Component', () => {
   const getRelayEnv = () => {
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
     relayEnvironment.mock.queueOperationResolver((operation) =>
       MockPayloadGenerator.generate(operation, {
         DemoItemCollection() {

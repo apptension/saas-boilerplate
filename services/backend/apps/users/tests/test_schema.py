@@ -1,5 +1,12 @@
+import json
+import os
+
 import pytest
+import re
+
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+
+from graphene_file_upload.django.testing import file_graphql_query
 
 from common.acl.helpers import CommonGroups
 from .. import models
@@ -103,3 +110,104 @@ class TestObtainToken:
         )
 
         assert validate_jwt(executed["data"]["tokenAuth"], user)
+
+
+class TestCurrentUserQuery:
+    def test_response_data(self, graphene_client, user_factory):
+        query = '''
+            query {
+              currentUser {
+                id
+                email
+                firstName
+                lastName
+                roles
+                avatar
+              }
+            }
+        '''
+        user = user_factory(
+            email="test@apptension.com",
+            profile__first_name="Grzegorz",
+            profile__last_name="Brzęczyszczykiewicz",
+            groups=[CommonGroups.User, CommonGroups.Admin],
+        )
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.query(query)
+        data = executed["data"]["currentUser"]
+
+        assert data["id"] == user.id
+        assert data["email"] == "test@apptension.com"
+        assert data["firstName"] == "Grzegorz"
+        assert data["lastName"] == "Brzęczyszczykiewicz"
+        assert set(data["roles"]) == {"user", "admin"}
+        assert re.match("https://cdn.example.com/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"])
+
+    def test_not_authenticated(self, graphene_client):
+        executed = graphene_client.query(
+            '''
+            query {
+              currentUser {
+                email
+              }
+            }
+        '''
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["data"] == {'currentUser': None}
+
+
+class TestUpdateCurrentUserMutation:
+    def test_update_name(self, graphene_client, user_factory):
+        user = user_factory(profile__first_name="FIRSTNAME", profile__last_name="LASTNAME")
+        query = '''
+            mutation($input: UpdateCurrentUserMutationInput!)  {
+              updateCurrentUser(input: $input) {
+                userProfile {
+                  firstName
+                  lastName
+                }
+              }
+            }
+        '''
+
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            query,
+            variable_values={'input': {"firstName": "Tony", "lastName": "Stark"}},
+        )
+        assert executed["data"]["updateCurrentUser"]["userProfile"] == {'firstName': 'Tony', 'lastName': 'Stark'}
+
+    def test_update_avatar(self, api_client, user_factory, image_factory):
+        user = user_factory(profile__first_name="FIRSTNAME", profile__last_name="LASTNAME")
+        avatar_file = image_factory(name="avatar_new.png", params={"width": 1})
+        query = '''
+            mutation($input: UpdateCurrentUserMutationInput!)  {
+              updateCurrentUser(input: $input) {
+                userProfile {
+                  user {
+                    avatar
+                  }
+                }
+              }
+            }
+        '''
+
+        api_client.force_authenticate(user)
+        response = file_graphql_query(
+            query,
+            client=api_client,
+            variables={"input": {}},
+            files={"avatar": avatar_file},
+            graphql_url="/api/graphql/",
+        )
+        executed = json.loads(response.content)
+        user.profile.refresh_from_db()
+        user_file_name = os.path.split(user.profile.avatar.thumbnail.name)[1]
+        response_file_name = os.path.split(executed["data"]["updateCurrentUser"]["userProfile"]["user"]["avatar"])[1]
+
+        assert user_file_name == response_file_name == "avatar_new.png"

@@ -1,5 +1,4 @@
 import { all, fork } from 'redux-saga/effects';
-import { watchStartup } from '../../modules/startup/startup.sagas';
 import { watchAuth } from '../../modules/auth/auth.sagas';
 import { watchConfig } from '../../modules/config/config.sagas';
 import { watchSnackbar } from '../../modules/snackbar/snackbar.sagas';
@@ -9,7 +8,6 @@ import { watchSubscription } from '../../modules/subscription/subscription.sagas
 
 export default function* rootSaga() {
   yield all([
-    fork(watchStartup),
     fork(watchAuth),
     fork(watchConfig),
     fork(watchStripe),

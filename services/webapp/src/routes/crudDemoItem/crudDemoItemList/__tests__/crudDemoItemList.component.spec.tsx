@@ -9,6 +9,7 @@ import { connectionFromArray } from '../../../../shared/utils/testUtils';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('CrudDemoItemList: Component', () => {
   const routePath = ['crudDemoItem', 'list'];
@@ -21,9 +22,15 @@ describe('CrudDemoItemList: Component', () => {
     </Routes>
   );
 
+  const getRelayEnv = () => {
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    return relayEnvironment;
+  };
+
   it('should render all items', () => {
     const routerHistory = createMockRouterHistory(routePath);
-    const relayEnvironment = createMockEnvironment();
+    const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemConnection: () => connectionFromArray([{ name: 'first item' }, { name: 'second item' }]),
@@ -39,7 +46,7 @@ describe('CrudDemoItemList: Component', () => {
 
   it('should render link to add new item form', async () => {
     const routerHistory = createMockRouterHistory(routePath);
-    const relayEnvironment = createMockEnvironment();
+    const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         CrudDemoItemConnection: () => connectionFromArray([{ name: 'first item' }, { name: 'second item' }]),

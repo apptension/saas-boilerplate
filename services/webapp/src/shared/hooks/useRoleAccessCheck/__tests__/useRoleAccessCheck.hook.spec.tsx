@@ -1,19 +1,22 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { RelayMockEnvironment } from 'relay-test-utils';
+
 import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 import { Role } from '../../../../modules/auth/auth.types';
 import { ProvidersWrapper } from '../../../utils/testUtils';
-import { prepareState } from '../../../../mocks/store';
-import { userProfileFactory } from '../../../../mocks/factories';
+import { currentUserFactory } from '../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 
 const render = ({ userRoles, allowedRoles }: { userRoles: Role[]; allowedRoles: Role | Role[] }) => {
-  const store = prepareState((state) => {
-    state.auth.profile = userProfileFactory({
-      email: 'user@mail.com',
-      roles: userRoles,
-    });
-  });
+  const relayEnvironment = (env: RelayMockEnvironment) =>
+    fillCommonQueryWithUser(
+      env,
+      currentUserFactory({
+        roles: userRoles,
+      })
+    );
   return renderHook(() => useRoleAccessCheck(allowedRoles), {
-    wrapper: ({ children }) => <ProvidersWrapper context={{ store }}>{children}</ProvidersWrapper>,
+    wrapper: ({ children }) => <ProvidersWrapper context={{ relayEnvironment }}>{children}</ProvidersWrapper>,
   });
 };
 

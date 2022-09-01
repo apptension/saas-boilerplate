@@ -16,6 +16,7 @@ import { useFavoriteDemoItemsLoader } from '../../../../shared/hooks/useFavorite
 import favoriteDemoItemListQueryGraphql from '../../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('DemoItemListItem: Component', () => {
   const defaultProps: Omit<DemoItemListItemProps, 'item' | 'queryRef'> = {
@@ -63,6 +64,7 @@ describe('DemoItemListItem: Component', () => {
   describe('item is marked as favorite', () => {
     const getRelayEnv = () => {
       const relayEnvironment = createMockEnvironment();
+      fillCommonQueryWithUser(relayEnvironment);
       relayEnvironment.mock.queueOperationResolver((operation) =>
         MockPayloadGenerator.generate(operation, {
           DemoItem() {
@@ -141,6 +143,7 @@ describe('DemoItemListItem: Component', () => {
   describe('item is not marked as favorite', () => {
     const getRelayEnv = () => {
       const relayEnvironment = createMockEnvironment();
+      fillCommonQueryWithUser(relayEnvironment);
       relayEnvironment.mock.queueOperationResolver((operation) =>
         MockPayloadGenerator.generate(operation, {
           DemoItem() {

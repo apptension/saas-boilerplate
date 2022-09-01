@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux';
 import { reducer as localesReducer } from '../../modules/locales/locales.reducer';
 import { LocalesState } from '../../modules/locales/locales.types';
-import { reducer as startupReducer } from '../../modules/startup/startup.reducer';
-import { StartupState } from '../../modules/startup/startup.types';
 import { reducer as authReducer } from '../../modules/auth/auth.reducer';
 import { AuthState } from '../../modules/auth/auth.types';
 import { reducer as configReducer } from '../../modules/config/config.reducer';
@@ -17,7 +15,6 @@ import { SubscriptionState } from '../../modules/subscription/subscription.types
 
 export type GlobalState = {
   locales: LocalesState;
-  startup: StartupState;
   auth: AuthState;
   config: ConfigState;
   stripe: StripeState;
@@ -29,7 +26,6 @@ export type GlobalState = {
 export default function createReducer() {
   return combineReducers({
     locales: localesReducer,
-    startup: startupReducer,
     auth: authReducer,
     config: configReducer,
     stripe: stripeReducer,

@@ -9,6 +9,7 @@ import { prepareState } from '../../../../mocks/store';
 import { loggedInAuthFactory } from '../../../../mocks/factories';
 import { AddCrudDemoItem } from '../addCrudDemoItem.component';
 import configureStore from '../../../../app/config/store';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('AddCrudDemoItem: Component', () => {
   const reduxInitialState = prepareState((state) => {
@@ -26,6 +27,7 @@ describe('AddCrudDemoItem: Component', () => {
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
       const relayEnvironment = createMockEnvironment();
+      fillCommonQueryWithUser(relayEnvironment);
 
       render(<Component />, { relayEnvironment });
 
@@ -46,6 +48,7 @@ describe('AddCrudDemoItem: Component', () => {
 
     it('should show success message', async () => {
       const relayEnvironment = createMockEnvironment();
+      fillCommonQueryWithUser(relayEnvironment);
       const reduxStore = configureStore(reduxInitialState);
 
       render(<Component />, { reduxStore, relayEnvironment });

@@ -1,10 +1,24 @@
 import { screen } from '@testing-library/react';
+import { createMockEnvironment } from 'relay-test-utils';
+
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { Sidebar } from '../sidebar.component';
 import { prepareState } from '../../../../../mocks/store';
-import { loggedOutAuthFactory, userProfileFactory } from '../../../../../mocks/factories';
+import { currentUserFactory, loggedOutAuthFactory, userProfileFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { LayoutContext } from '../../layout.context';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+
+const getRelayEnv = (role: Role = Role.USER) => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(
+    relayEnvironment,
+    currentUserFactory({
+      roles: [role],
+    })
+  );
+  return relayEnvironment;
+};
 
 describe('Sidebar: Component', () => {
   const component = () => (
@@ -42,17 +56,20 @@ describe('Sidebar: Component', () => {
       });
 
       it('should show link to dashboard', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv();
+        render({}, { store, relayEnvironment });
         expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
       });
 
       it('should show link to privacy policy', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv();
+        render({}, { store, relayEnvironment });
         expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show link to admin page', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv();
+        render({}, { store, relayEnvironment });
         expect(screen.queryByText(/admin/gi)).not.toBeInTheDocument();
       });
     });
@@ -63,17 +80,20 @@ describe('Sidebar: Component', () => {
       });
 
       it('should show link to dashboard', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv(Role.ADMIN);
+        render({}, { store, relayEnvironment });
         expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
       });
 
       it('should show link to privacy policy', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv(Role.ADMIN);
+        render({}, { store, relayEnvironment });
         expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should show link to admin page', () => {
-        render({}, { store });
+        const relayEnvironment = getRelayEnv(Role.ADMIN);
+        render({}, { store, relayEnvironment });
         expect(screen.getByText(/admin/i)).toBeInTheDocument();
       });
     });

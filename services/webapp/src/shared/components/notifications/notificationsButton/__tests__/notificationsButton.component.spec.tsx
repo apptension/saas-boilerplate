@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import NotificationsListQuery from '../../../../../__generated__/notificationsListQuery.graphql';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 describe('NotificationsButton: Component', () => {
   const defaultProps: Omit<NotificationsButtonProps, 'listQueryRef'> = {};
@@ -15,6 +16,7 @@ describe('NotificationsButton: Component', () => {
 
   it('should render without errors', () => {
     const environment = createMockEnvironment();
+    fillCommonQueryWithUser(environment);
     environment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         hasUnreadNotifications: () => false,

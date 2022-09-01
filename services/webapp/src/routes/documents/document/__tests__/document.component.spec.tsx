@@ -13,6 +13,7 @@ import { documentFactory } from '../../../../mocks/factories';
 import { DeepPartial } from '../../../../shared/utils/types';
 import { DocumentDemoItemType } from '../../../../shared/services/graphqlApi/__generated/types';
 import { Document } from '../document.component';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('Document: Component', () => {
   const TestRenderer = () => {
@@ -42,6 +43,7 @@ describe('Document: Component', () => {
 
   const renderDocument = async (document?: DeepPartial<DocumentDemoItemType>) => {
     const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
     render({}, { relayEnvironment });
 
     await waitFor(() => {

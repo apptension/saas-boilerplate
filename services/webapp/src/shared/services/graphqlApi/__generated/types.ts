@@ -38,37 +38,18 @@ export interface Scalars {
 
 export interface ApiMutation {
   __typename?: 'ApiMutation';
-  tokenAuth?: Maybe<ObtainTokenMutationPayload>;
-  signUp?: Maybe<SingUpMutationPayload>;
-  updateNotification?: Maybe<UpdateNotificationMutationPayload>;
-  markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
-  updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
-  deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
-  deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
+  deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
+  deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
-}
-
-
-export interface ApiMutationTokenAuthArgs {
-  input: ObtainTokenMutationInput;
-}
-
-
-export interface ApiMutationSignUpArgs {
-  input: SingUpMutationInput;
-}
-
-
-export interface ApiMutationUpdateNotificationArgs {
-  input: UpdateNotificationMutationInput;
-}
-
-
-export interface ApiMutationMarkReadAllNotificationsArgs {
-  input: MarkReadAllNotificationsMutationInput;
+  markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
+  signUp?: Maybe<SingUpMutationPayload>;
+  tokenAuth?: Maybe<ObtainTokenMutationPayload>;
+  updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
+  updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
+  updateNotification?: Maybe<UpdateNotificationMutationPayload>;
 }
 
 
@@ -77,23 +58,8 @@ export interface ApiMutationCreateCrudDemoItemArgs {
 }
 
 
-export interface ApiMutationUpdateCrudDemoItemArgs {
-  input: UpdateCrudDemoItemMutationInput;
-}
-
-
-export interface ApiMutationDeleteCrudDemoItemArgs {
-  input: DeleteCrudDemoItemMutationInput;
-}
-
-
 export interface ApiMutationCreateDocumentDemoItemArgs {
   input: CreateDocumentDemoItemMutationInput;
-}
-
-
-export interface ApiMutationDeleteDocumentDemoItemArgs {
-  input: DeleteDocumentDemoItemMutationInput;
 }
 
 
@@ -102,8 +68,48 @@ export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
 }
 
 
+export interface ApiMutationDeleteCrudDemoItemArgs {
+  input: DeleteCrudDemoItemMutationInput;
+}
+
+
+export interface ApiMutationDeleteDocumentDemoItemArgs {
+  input: DeleteDocumentDemoItemMutationInput;
+}
+
+
 export interface ApiMutationDeleteFavoriteContentfulDemoItemArgs {
   input: DeleteFavoriteContentfulDemoItemMutationInput;
+}
+
+
+export interface ApiMutationMarkReadAllNotificationsArgs {
+  input: MarkReadAllNotificationsMutationInput;
+}
+
+
+export interface ApiMutationSignUpArgs {
+  input: SingUpMutationInput;
+}
+
+
+export interface ApiMutationTokenAuthArgs {
+  input: ObtainTokenMutationInput;
+}
+
+
+export interface ApiMutationUpdateCrudDemoItemArgs {
+  input: UpdateCrudDemoItemMutationInput;
+}
+
+
+export interface ApiMutationUpdateCurrentUserArgs {
+  input: UpdateCurrentUserMutationInput;
+}
+
+
+export interface ApiMutationUpdateNotificationArgs {
+  input: UpdateNotificationMutationInput;
 }
 
 export interface ApiSubscription {
@@ -113,199 +119,221 @@ export interface ApiSubscription {
 
 
 export interface ApiSubscriptionNotificationCreatedArgs {
-  before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 }
 
 export interface ContentfulDemoItemFavoriteConnection {
   __typename?: 'ContentfulDemoItemFavoriteConnection';
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
   /** Contains the nodes in this connection. */
   edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
 }
 
 /** A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor. */
 export interface ContentfulDemoItemFavoriteEdge {
   __typename?: 'ContentfulDemoItemFavoriteEdge';
-  /** The item at the end of the edge */
-  node?: Maybe<ContentfulDemoItemFavoriteType>;
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
 }
 
 export interface ContentfulDemoItemFavoriteType extends Node {
   __typename?: 'ContentfulDemoItemFavoriteType';
+  createdAt: Scalars['DateTime'];
   /** The ID of the object. */
   id: Scalars['ID'];
   item: ContentfulDemoItemType;
-  createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  user: CurrentUserType;
 }
 
 export interface ContentfulDemoItemFavoriteTypeConnection {
   __typename?: 'ContentfulDemoItemFavoriteTypeConnection';
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
   /** Contains the nodes in this connection. */
   edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
 }
 
 /** A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor. */
 export interface ContentfulDemoItemFavoriteTypeEdge {
   __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
-  /** The item at the end of the edge */
-  node?: Maybe<ContentfulDemoItemFavoriteType>;
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
 }
 
 export interface ContentfulDemoItemType extends Node {
   __typename?: 'ContentfulDemoItemType';
+  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
+  fields: Scalars['JSONString'];
   /** The ID of the object. */
   id: Scalars['ID'];
-  fields: Scalars['JSONString'];
   isPublished: Scalars['Boolean'];
-  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
   pk?: Maybe<Scalars['String']>;
 }
 
 
 export interface ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs {
-  offset?: InputMaybe<Scalars['Int']>;
-  before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 }
 
 export interface CreateCrudDemoItemMutationInput {
-  name: Scalars['String'];
-  createdBy?: InputMaybe<Scalars['String']>;
   clientMutationId?: InputMaybe<Scalars['String']>;
+  createdBy?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 }
 
 export interface CreateCrudDemoItemMutationPayload {
   __typename?: 'CreateCrudDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
-  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CreateDocumentDemoItemMutationInput {
-  file?: InputMaybe<Scalars['Upload']>;
-  createdBy?: InputMaybe<Scalars['String']>;
   clientMutationId?: InputMaybe<Scalars['String']>;
+  createdBy?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['Upload']>;
 }
 
 export interface CreateDocumentDemoItemMutationPayload {
   __typename?: 'CreateDocumentDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
   documentDemoItem?: Maybe<DocumentDemoItemType>;
   documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
-  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CreateFavoriteContentfulDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
   item: Scalars['String'];
   user?: InputMaybe<Scalars['String']>;
-  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface CreateFavoriteContentfulDemoItemMutationPayload {
   __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
   contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
   contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
-  clientMutationId?: Maybe<Scalars['String']>;
 }
 
 export interface CrudDemoItemConnection {
   __typename?: 'CrudDemoItemConnection';
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
   /** Contains the nodes in this connection. */
   edges: Array<Maybe<CrudDemoItemEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
 }
 
 /** A Relay edge containing a `CrudDemoItem` and its cursor. */
 export interface CrudDemoItemEdge {
   __typename?: 'CrudDemoItemEdge';
-  /** The item at the end of the edge */
-  node?: Maybe<CrudDemoItemType>;
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<CrudDemoItemType>;
 }
 
 export interface CrudDemoItemType extends Node {
   __typename?: 'CrudDemoItemType';
+  createdBy?: Maybe<CurrentUserType>;
   /** The ID of the object. */
   id: Scalars['ID'];
   name: Scalars['String'];
 }
 
+/** A Relay edge containing a `CurrentUser` and its cursor. */
+export interface CurrentUserEdge {
+  __typename?: 'CurrentUserEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<UserProfileType>;
+}
+
+export interface CurrentUserType {
+  __typename?: 'CurrentUserType';
+  avatar?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  lastName?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+}
+
 export interface DeleteCrudDemoItemMutationInput {
-  id?: InputMaybe<Scalars['String']>;
   clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteCrudDemoItemMutationPayload {
   __typename?: 'DeleteCrudDemoItemMutationPayload';
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
   clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
 }
 
 export interface DeleteDocumentDemoItemMutationInput {
-  id?: InputMaybe<Scalars['String']>;
   clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteDocumentDemoItemMutationPayload {
   __typename?: 'DeleteDocumentDemoItemMutationPayload';
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
   clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
 }
 
 export interface DeleteFavoriteContentfulDemoItemMutationInput {
-  item?: InputMaybe<Scalars['String']>;
   clientMutationId?: InputMaybe<Scalars['String']>;
+  item?: InputMaybe<Scalars['String']>;
 }
 
 export interface DeleteFavoriteContentfulDemoItemMutationPayload {
   __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
   clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
 }
 
 export interface DocumentDemoItemConnection {
   __typename?: 'DocumentDemoItemConnection';
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
   /** Contains the nodes in this connection. */
   edges: Array<Maybe<DocumentDemoItemEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
 }
 
 /** A Relay edge containing a `DocumentDemoItem` and its cursor. */
 export interface DocumentDemoItemEdge {
   __typename?: 'DocumentDemoItemEdge';
-  /** The item at the end of the edge */
-  node?: Maybe<DocumentDemoItemType>;
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<DocumentDemoItemType>;
 }
 
 export interface DocumentDemoItemType extends Node {
   __typename?: 'DocumentDemoItemType';
+  createdAt: Scalars['DateTime'];
+  createdBy?: Maybe<CurrentUserType>;
+  file?: Maybe<FileFieldType>;
   /** The ID of the object. */
   id: Scalars['ID'];
-  file?: Maybe<FileFieldType>;
-  createdAt: Scalars['DateTime'];
 }
 
 export interface FileFieldType {
   __typename?: 'FileFieldType';
-  url?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
 }
 
 export interface MarkReadAllNotificationsMutationInput {
@@ -314,8 +342,8 @@ export interface MarkReadAllNotificationsMutationInput {
 
 export interface MarkReadAllNotificationsMutationPayload {
   __typename?: 'MarkReadAllNotificationsMutationPayload';
-  ok?: Maybe<Scalars['Boolean']>;
   clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
 }
 
 /** An object with an ID */
@@ -326,72 +354,98 @@ export interface Node {
 
 export interface NotificationConnection {
   __typename?: 'NotificationConnection';
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
   /** Contains the nodes in this connection. */
   edges: Array<Maybe<NotificationEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
 }
 
 /** A Relay edge containing a `Notification` and its cursor. */
 export interface NotificationEdge {
   __typename?: 'NotificationEdge';
-  /** The item at the end of the edge */
-  node?: Maybe<NotificationType>;
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<NotificationType>;
 }
 
 export interface NotificationType extends Node {
   __typename?: 'NotificationType';
+  createdAt: Scalars['DateTime'];
+  data?: Maybe<Scalars['GenericScalar']>;
   /** The ID of the object. */
   id: Scalars['ID'];
-  type: Scalars['String'];
-  createdAt: Scalars['DateTime'];
   readAt?: Maybe<Scalars['DateTime']>;
-  data?: Maybe<Scalars['GenericScalar']>;
+  type: Scalars['String'];
+  user: CurrentUserType;
 }
 
 export interface ObtainTokenMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   password: Scalars['String'];
-  clientMutationId?: InputMaybe<Scalars['String']>;
 }
 
 export interface ObtainTokenMutationPayload {
   __typename?: 'ObtainTokenMutationPayload';
   access?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
   clientMutationId?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
 }
 
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 export interface PageInfo {
   __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
   /** When paginating forwards, are there more items? */
   hasNextPage: Scalars['Boolean'];
   /** When paginating backwards, are there more items? */
   hasPreviousPage: Scalars['Boolean'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']>;
-  /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['String']>;
 }
 
 export interface Query {
   __typename?: 'Query';
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
+  allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
+  allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
+  allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
-  allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
-  allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
-  allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
+  currentUser?: Maybe<CurrentUserType>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   node?: Maybe<Node>;
 }
 
 
-export interface QueryAllNotificationsArgs {
-  before?: InputMaybe<Scalars['String']>;
+export interface QueryAllContentfulDemoItemFavoritesArgs {
   after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllCrudDemoItemsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllDocumentDemoItemsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllNotificationsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 }
@@ -402,74 +456,73 @@ export interface QueryCrudDemoItemArgs {
 }
 
 
-export interface QueryAllCrudDemoItemsArgs {
-  before?: InputMaybe<Scalars['String']>;
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
-export interface QueryAllContentfulDemoItemFavoritesArgs {
-  before?: InputMaybe<Scalars['String']>;
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
-export interface QueryAllDocumentDemoItemsArgs {
-  before?: InputMaybe<Scalars['String']>;
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-}
-
-
 export interface QueryNodeArgs {
   id: Scalars['ID'];
 }
 
 export interface SingUpMutationInput {
-  id?: InputMaybe<Scalars['String']>;
-  email: Scalars['String'];
-  password: Scalars['String'];
   clientMutationId?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
+  id?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
 }
 
 export interface SingUpMutationPayload {
   __typename?: 'SingUpMutationPayload';
-  id?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
   access?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
   clientMutationId?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
 }
 
 export interface UpdateCrudDemoItemMutationInput {
-  name: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']>;
   createdBy?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 }
 
 export interface UpdateCrudDemoItemMutationPayload {
   __typename?: 'UpdateCrudDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
+}
+
+export interface UpdateCurrentUserMutationInput {
+  avatar?: InputMaybe<Scalars['Upload']>;
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+}
+
+export interface UpdateCurrentUserMutationPayload {
+  __typename?: 'UpdateCurrentUserMutationPayload';
   clientMutationId?: Maybe<Scalars['String']>;
+  userProfile?: Maybe<UserProfileType>;
+  userProfileEdge?: Maybe<CurrentUserEdge>;
 }
 
 export interface UpdateNotificationMutationInput {
-  isRead?: InputMaybe<Scalars['Boolean']>;
-  id: Scalars['ID'];
   clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isRead?: InputMaybe<Scalars['Boolean']>;
 }
 
 export interface UpdateNotificationMutationPayload {
   __typename?: 'UpdateNotificationMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   notification?: Maybe<NotificationType>;
   notificationEdge?: Maybe<NotificationEdge>;
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
-  clientMutationId?: Maybe<Scalars['String']>;
+}
+
+export interface UserProfileType extends Node {
+  __typename?: 'UserProfileType';
+  firstName: Scalars['String'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  lastName: Scalars['String'];
+  user: CurrentUserType;
 }
