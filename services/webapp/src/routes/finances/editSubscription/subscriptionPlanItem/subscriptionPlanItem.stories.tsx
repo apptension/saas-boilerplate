@@ -1,12 +1,57 @@
 import { Story } from '@storybook/react';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { useLazyLoadQuery } from 'react-relay';
+
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { withProviders } from '../../../../shared/utils/storybook';
 import { prepareState } from '../../../../mocks/store';
-import { SubscriptionPlanItem, SubscriptionPlanItemProps } from './subscriptionPlanItem.component';
 
-const Template: Story<SubscriptionPlanItemProps> = (args: SubscriptionPlanItemProps) => {
-  return <SubscriptionPlanItem {...args} />;
+import subscriptionPlansAllQueryGraphql, {
+  subscriptionPlansAllQuery,
+} from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { connectionFromArray, ProvidersWrapper } from '../../../../shared/utils/testUtils';
+import { mapConnection } from '../../../../shared/utils/graphql';
+import { SubscriptionPlanItem } from './subscriptionPlanItem.component';
+
+type StoryProps = {
+  name: string;
+};
+
+const Wrapper = () => {
+  const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
+
+  return (
+    <>
+      {mapConnection(
+        (plan) => (
+          <SubscriptionPlanItem plan={plan} onSelect={console.log} />
+        ),
+        data.allSubscriptionPlans
+      )}
+    </>
+  );
+};
+
+const Template: Story<StoryProps> = ({ name }: StoryProps) => {
+  const relayEnvironment = createMockEnvironment();
+  relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+    MockPayloadGenerator.generate(operation, {
+      SubscriptionPlanConnection: () => connectionFromArray([{ name }]),
+    })
+  );
+  relayEnvironment.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
+
+  return (
+    <ProvidersWrapper
+      context={{
+        relayEnvironment,
+      }}
+    >
+      <Wrapper />
+    </ProvidersWrapper>
+  );
 };
 
 const freePlan = subscriptionPlanFactory();
@@ -37,21 +82,21 @@ export default {
 };
 
 export const Free = Template.bind({});
-Free.args = { plan: freePlan };
+Free.args = { name: SubscriptionPlanName.FREE };
 Free.decorators = [withProviders({ store: storeWithMonthlyPlan })];
 
 export const ActiveFree = Template.bind({});
-ActiveFree.args = { plan: freePlan };
+ActiveFree.args = { name: SubscriptionPlanName.FREE };
 ActiveFree.decorators = [withProviders({ store: storeWithFreePlan })];
 
 export const Paid = Template.bind({});
-Paid.args = { plan: monthlyPlan };
+Paid.args = { name: SubscriptionPlanName.MONTHLY };
 Paid.decorators = [withProviders({ store: storeWithFreePlan })];
 
 export const ActivePaid = Template.bind({});
-ActivePaid.args = { plan: monthlyPlan };
+ActivePaid.args = { name: SubscriptionPlanName.MONTHLY };
 ActivePaid.decorators = [withProviders({ store: storeWithMonthlyPlan })];
 
 export const WithTrialEligible = Template.bind({});
-WithTrialEligible.args = { plan: monthlyPlan };
+WithTrialEligible.args = { name: SubscriptionPlanName.MONTHLY };
 WithTrialEligible.decorators = [withProviders({ store: storeWithTrialEligible })];

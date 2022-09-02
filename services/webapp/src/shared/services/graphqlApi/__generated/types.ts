@@ -16,6 +16,8 @@ export interface Scalars {
    * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
    */
   DateTime: any;
+  /** The `Decimal` scalar type represents a python Decimal. */
+  Decimal: any;
   /**
    * The `GenericScalar` scalar type represents a generic
    * GraphQL scalar value that could be:
@@ -406,12 +408,45 @@ export interface PageInfo {
   startCursor?: Maybe<Scalars['String']>;
 }
 
+/** An enumeration. */
+export enum PriceBillingScheme {
+  /** Per-unit */
+  PerUnit = 'PER_UNIT',
+  /** Tiered */
+  Tiered = 'TIERED'
+}
+
+/** An enumeration. */
+export enum PriceTiersMode {
+  /** Graduated */
+  Graduated = 'GRADUATED',
+  /** Volume-based */
+  Volume = 'VOLUME'
+}
+
+/** An enumeration. */
+export enum PriceType {
+  /** One-time */
+  OneTime = 'ONE_TIME',
+  /** Recurring */
+  Recurring = 'RECURRING'
+}
+
+/** An enumeration. */
+export enum ProductType {
+  /** Good */
+  Good = 'GOOD',
+  /** Service */
+  Service = 'SERVICE'
+}
+
 export interface Query {
   __typename?: 'Query';
   allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
+  allSubscriptionPlans?: Maybe<SubscriptionPlanConnection>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   currentUser?: Maybe<CurrentUserType>;
   hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
@@ -451,6 +486,14 @@ export interface QueryAllNotificationsArgs {
 }
 
 
+export interface QueryAllSubscriptionPlansArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
 export interface QueryCrudDemoItemArgs {
   id: Scalars['ID'];
 }
@@ -474,6 +517,191 @@ export interface SingUpMutationPayload {
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   refresh?: Maybe<Scalars['String']>;
+}
+
+export interface SubscriptionItemProductType extends Node {
+  __typename?: 'SubscriptionItemProductType';
+  /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
+  active?: Maybe<Scalars['Boolean']>;
+  /**
+   * A list of up to 5 attributes that each SKU can provide values for (e.g.,
+   * `["color", "size"]`). Only applicable to products of `type=good`.
+   */
+  attributes?: Maybe<Scalars['String']>;
+  /**
+   * A short one-line description of the product, meant to be displayableto the
+   * customer. Only applicable to products of `type=good`.
+   */
+  caption: Scalars['String'];
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`. */
+  deactivateOn?: Maybe<Scalars['String']>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /**
+   * A list of up to 8 URLs of images for this product, meant to be displayable to
+   * the customer. Only applicable to products of `type=good`.
+   */
+  images?: Maybe<Scalars['String']>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types. */
+  name: Scalars['String'];
+  /**
+   * The dimensions of this product for shipping purposes. A SKU associated with
+   * this product can override this value by having its own `package_dimensions`.
+   * Only applicable to products of `type=good`.
+   */
+  packageDimensions?: Maybe<Scalars['String']>;
+  pk?: Maybe<Scalars['String']>;
+  /** The product this price is associated with. */
+  prices: SubscriptionPlanTypeConnection;
+  /** Whether this product is a shipped good. Only applicable to products of `type=good`. */
+  shippable?: Maybe<Scalars['Boolean']>;
+  /**
+   * Extra information about a product which will appear on your customer's credit
+   * card statement. In the case that multiple products are billed at once, the
+   * first statement descriptor will be used. Only available on products of
+   * type=`service`.
+   */
+  statementDescriptor: Scalars['String'];
+  /**
+   * The type of the product. The product is either of type `good`, which is
+   * eligible for use with Orders and SKUs, or `service`, which is eligible for use
+   * with Subscriptions and Plans.
+   */
+  type: ProductType;
+  unitLabel: Scalars['String'];
+  /** A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`. */
+  url?: Maybe<Scalars['String']>;
+}
+
+
+export interface SubscriptionItemProductTypePricesArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface SubscriptionPlanConnection {
+  __typename?: 'SubscriptionPlanConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<SubscriptionPlanEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `SubscriptionPlan` and its cursor. */
+export interface SubscriptionPlanEdge {
+  __typename?: 'SubscriptionPlanEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<SubscriptionPlanType>;
+}
+
+export interface SubscriptionPlanType extends Node {
+  __typename?: 'SubscriptionPlanType';
+  /** Whether the price can be used for new purchases. */
+  active: Scalars['Boolean'];
+  /**
+   * Describes how to compute the price per period. Either `per_unit` or `tiered`.
+   * `per_unit` indicates that the fixed amount (specified in `unit_amount` or
+   * `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with
+   * `usage_type=licensed`), or per unit of total usage (for prices with
+   * `usage_type=metered`). `tiered` indicates that the unit pricing will be
+   * computed using a tiering strategy as defined using the `tiers` and
+   * `tiers_mode` attributes.
+   */
+  billingScheme?: Maybe<PriceBillingScheme>;
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Three-letter ISO currency code */
+  currency: Scalars['String'];
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /** A lookup key used to retrieve prices dynamically from a static string. */
+  lookupKey?: Maybe<Scalars['String']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** A brief description of the plan, hidden from customers. */
+  nickname: Scalars['String'];
+  pk?: Maybe<Scalars['String']>;
+  /** The product this price is associated with. */
+  product: SubscriptionItemProductType;
+  /** The recurring components of a price such as `interval` and `usage_type`. */
+  recurring?: Maybe<Scalars['String']>;
+  /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
+  tiers?: Maybe<Scalars['String']>;
+  /**
+   * Defines if the tiering price should be `graduated` or `volume` based. In
+   * `volume`-based tiering, the maximum quantity within a period determines the
+   * per unit price, in `graduated` tiering pricing can successively change as the
+   * quantity grows.
+   */
+  tiersMode?: Maybe<PriceTiersMode>;
+  /**
+   * Apply a transformation to the reported usage or set quantity before computing
+   * the amount billed. Cannot be combined with `tiers`.
+   */
+  transformQuantity?: Maybe<Scalars['String']>;
+  /** Whether the price is for a one-time purchase or a recurring (subscription) purchase. */
+  type: PriceType;
+  /**
+   * The unit amount in cents to be charged, represented as a whole integer if
+   * possible. Null if a sub-cent precision is required.
+   */
+  unitAmount?: Maybe<Scalars['Int']>;
+  /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
+  unitAmountDecimal?: Maybe<Scalars['Decimal']>;
+}
+
+export interface SubscriptionPlanTypeConnection {
+  __typename?: 'SubscriptionPlanTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<SubscriptionPlanTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `SubscriptionPlanType` and its cursor. */
+export interface SubscriptionPlanTypeEdge {
+  __typename?: 'SubscriptionPlanTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<SubscriptionPlanType>;
 }
 
 export interface UpdateCrudDemoItemMutationInput {

@@ -4,11 +4,6 @@ import { SubscriptionPlanName } from '../../shared/services/api/subscription/typ
 
 export const selectSubscriptionDomain = (state: GlobalState) => state.subscription;
 
-export const selectAvailableSubscriptionPlans = createSelector(
-  selectSubscriptionDomain,
-  (state) => state.availablePlans
-);
-
 export const selectActiveSubscription = createSelector(selectSubscriptionDomain, (state) => state.activeSubscription);
 
 export const selectActiveSubscriptionPhase = createSelector(

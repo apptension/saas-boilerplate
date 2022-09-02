@@ -8,7 +8,7 @@ from common.graphql.acl import permission_classes
 from . import constants
 
 
-class SubscriptionItemProduct(DjangoObjectType):
+class SubscriptionItemProductType(DjangoObjectType):
     pk = graphene.String()
 
     def resolve_pk(self, info):

@@ -162,6 +162,9 @@ value as specified by
 """
 scalar DateTime
 
+"""The `Decimal` scalar type represents a python Decimal."""
+scalar Decimal
+
 input DeleteCrudDemoItemMutationInput {
   id: String
   clientMutationId: String
@@ -308,7 +311,44 @@ type PageInfo {
   endCursor: String
 }
 
+"""An enumeration."""
+enum PriceBillingScheme {
+  """Per-unit"""
+  PER_UNIT
+
+  """Tiered"""
+  TIERED
+}
+
+"""An enumeration."""
+enum PriceTiersMode {
+  """Graduated"""
+  GRADUATED
+
+  """Volume-based"""
+  VOLUME
+}
+
+"""An enumeration."""
+enum PriceType {
+  """One-time"""
+  ONE_TIME
+
+  """Recurring"""
+  RECURRING
+}
+
+"""An enumeration."""
+enum ProductType {
+  """Good"""
+  GOOD
+
+  """Service"""
+  SERVICE
+}
+
 type Query {
+  allSubscriptionPlans(before: String, after: String, first: Int, last: Int): SubscriptionPlanConnection
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -338,6 +378,233 @@ type SingUpMutationPayload {
   access: String
   refresh: String
   clientMutationId: String
+}
+
+type SubscriptionItemProductType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+
+  """The ID of the object."""
+  id: ID!
+
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+
+  """The datetime this object was created in stripe."""
+  created: DateTime
+
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+
+  """A description of this object."""
+  description: String
+
+  """
+  The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types.
+  """
+  name: String!
+
+  """
+  The type of the product. The product is either of type `good`, which is
+  eligible for use with Orders and SKUs, or `service`, which is eligible for use
+  with Subscriptions and Plans.
+  """
+  type: ProductType!
+
+  """
+  Whether the product is currently available for purchase. Only applicable to products of `type=good`.
+  """
+  active: Boolean
+
+  """
+  A list of up to 5 attributes that each SKU can provide values for (e.g.,
+  `["color", "size"]`). Only applicable to products of `type=good`.
+  """
+  attributes: String
+
+  """
+  A short one-line description of the product, meant to be displayableto the
+  customer. Only applicable to products of `type=good`.
+  """
+  caption: String!
+
+  """
+  An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`.
+  """
+  deactivateOn: String
+
+  """
+  A list of up to 8 URLs of images for this product, meant to be displayable to
+  the customer. Only applicable to products of `type=good`.
+  """
+  images: String
+
+  """
+  The dimensions of this product for shipping purposes. A SKU associated with
+  this product can override this value by having its own `package_dimensions`.
+  Only applicable to products of `type=good`.
+  """
+  packageDimensions: String
+
+  """
+  Whether this product is a shipped good. Only applicable to products of `type=good`.
+  """
+  shippable: Boolean
+
+  """
+  A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`.
+  """
+  url: String
+
+  """
+  Extra information about a product which will appear on your customer's credit
+  card statement. In the case that multiple products are billed at once, the
+  first statement descriptor will be used. Only available on products of
+  type=`service`.
+  """
+  statementDescriptor: String!
+  unitLabel: String!
+
+  """The product this price is associated with."""
+  prices(offset: Int, before: String, after: String, first: Int, last: Int): SubscriptionPlanTypeConnection!
+  pk: String
+}
+
+type SubscriptionPlanConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [SubscriptionPlanEdge]!
+}
+
+"""A Relay edge containing a `SubscriptionPlan` and its cursor."""
+type SubscriptionPlanEdge {
+  """The item at the end of the edge"""
+  node: SubscriptionPlanType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type SubscriptionPlanType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+
+  """The ID of the object."""
+  id: ID!
+
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+
+  """The datetime this object was created in stripe."""
+  created: DateTime
+
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+
+  """A description of this object."""
+  description: String
+
+  """Whether the price can be used for new purchases."""
+  active: Boolean!
+
+  """Three-letter ISO currency code"""
+  currency: String!
+
+  """A brief description of the plan, hidden from customers."""
+  nickname: String!
+
+  """The product this price is associated with."""
+  product: SubscriptionItemProductType!
+
+  """
+  The recurring components of a price such as `interval` and `usage_type`.
+  """
+  recurring: String
+
+  """
+  Whether the price is for a one-time purchase or a recurring (subscription) purchase.
+  """
+  type: PriceType!
+
+  """
+  The unit amount in cents to be charged, represented as a whole integer if
+  possible. Null if a sub-cent precision is required.
+  """
+  unitAmount: Int
+
+  """
+  The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places.
+  """
+  unitAmountDecimal: Decimal
+
+  """
+  Describes how to compute the price per period. Either `per_unit` or `tiered`.
+  `per_unit` indicates that the fixed amount (specified in `unit_amount` or
+  `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with
+  `usage_type=licensed`), or per unit of total usage (for prices with
+  `usage_type=metered`). `tiered` indicates that the unit pricing will be
+  computed using a tiering strategy as defined using the `tiers` and
+  `tiers_mode` attributes.
+  """
+  billingScheme: PriceBillingScheme
+
+  """A lookup key used to retrieve prices dynamically from a static string."""
+  lookupKey: String
+
+  """
+  Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`.
+  """
+  tiers: String
+
+  """
+  Defines if the tiering price should be `graduated` or `volume` based. In
+  `volume`-based tiering, the maximum quantity within a period determines the
+  per unit price, in `graduated` tiering pricing can successively change as the
+  quantity grows.
+  """
+  tiersMode: PriceTiersMode
+
+  """
+  Apply a transformation to the reported usage or set quantity before computing
+  the amount billed. Cannot be combined with `tiers`.
+  """
+  transformQuantity: String
+  pk: String
+}
+
+type SubscriptionPlanTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [SubscriptionPlanTypeEdge]!
+}
+
+"""A Relay edge containing a `SubscriptionPlanType` and its cursor."""
+type SubscriptionPlanTypeEdge {
+  """The item at the end of the edge"""
+  node: SubscriptionPlanType
+
+  """A cursor for use in pagination"""
+  cursor: String!
 }
 
 input UpdateCrudDemoItemMutationInput {

@@ -9,9 +9,10 @@ export enum SubscriptionPlanName {
 
 export interface SubscriptionPlan {
   id: string;
+  pk: string;
   product: {
     id: string;
-    name: SubscriptionPlanName;
+    name: string;
   };
   unitAmount: number;
 }
@@ -40,8 +41,6 @@ export interface Subscription {
 }
 
 export type SubscriptionGetApiResponseData = Subscription;
-
-export type SubscriptionPlansListApiResponseData = SubscriptionPlan[];
 
 export type SubscriptionUpdateApiRequestData = { price: string };
 export type SubscriptionUpdateApiResponseData = ApiFormSubmitResponse<SubscriptionUpdateApiRequestData, Subscription>;

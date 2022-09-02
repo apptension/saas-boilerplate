@@ -10,6 +10,7 @@ import { paymentMethodFactory } from './stripe';
 
 export const subscriptionPlanFactory = createDeepFactory<SubscriptionPlan>(() => ({
   id: makeId(32),
+  pk: makeId(32),
   product: {
     id: makeId(32),
     name: SubscriptionPlanName.MONTHLY,
