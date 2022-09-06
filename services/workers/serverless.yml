@@ -11,6 +11,8 @@ provider:
   environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
   apiGateway:
     websocketApiId: ${file(./${self:custom.confFile.${self:provider.stage}}):websocketApiId}
+  tracing:
+    lambda: true
 
 functions:
   ScheduleTask:

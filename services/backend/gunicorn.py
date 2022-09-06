@@ -1,4 +1,5 @@
 """gunicorn WSGI server configuration."""
+import logging
 from multiprocessing import cpu_count
 
 
@@ -12,3 +13,12 @@ accesslog = "-"
 errorlog = "-"
 workers = max_workers()
 worker_class = "gevent"
+
+
+class HealthCheckFilter(logging.Filter):
+    def filter(self, record):
+        return not record.args['a'].startswith("ELB-HealthChecker")
+
+
+def on_starting(server):
+    server.log.access_log.addFilter(HealthCheckFilter())

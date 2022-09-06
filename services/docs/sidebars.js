@@ -87,6 +87,7 @@ module.exports = {
           "features/dev-tools/mailcatcher",
         ],
       },
+      "features/xray",
     ],
     Docusaurus: ["docusaurus/style-guide", "docusaurus/example"],
   },

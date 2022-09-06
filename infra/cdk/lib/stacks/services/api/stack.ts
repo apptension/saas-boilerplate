@@ -16,11 +16,14 @@ import {EnvironmentSettings} from "../../../settings";
 import {MainECSCluster} from "../../env/main/mainEcsCluster";
 import {EnvComponentsStack} from "../../env/components";
 import {getHostedZone} from "../../../helpers/domains";
+import {Monitoring} from "./monitoring";
+
 
 export interface ApiStackProps extends StackProps, EnvConstructProps {}
 
 export class ApiStack extends Stack {
   fargateService: ApplicationMultipleTargetGroupsFargateService;
+  monitoring: Monitoring;
 
   constructor(scope: App, id: string, props: ApiStackProps) {
     super(scope, id, props);
@@ -34,6 +37,11 @@ export class ApiStack extends Stack {
 
     scaling.scaleOnCpuUtilization("CpuScaling", {
       targetUtilizationPercent: 50,
+    });
+
+    this.monitoring = new Monitoring(this, 'ApiMonitoring', {
+      envSettings: props.envSettings,
+      logGroup: this.fargateService.logGroups[0],
     });
   }
 
@@ -89,6 +97,7 @@ export class ApiStack extends Stack {
               envSettings.version
             ),
             environment: {
+              PROJECT_NAME: envSettings.projectName,
               ENVIRONMENT_NAME: envSettings.envStage,
               CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
               CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
@@ -110,6 +119,12 @@ export class ApiStack extends Stack {
                 Secret.fromSecretCompleteArn(this, "DbSecret", dbSecretArn)
               ),
             },
+          },
+          {
+            containerName: "xray-daemon",
+            image: ContainerImage.fromRegistry("amazon/aws-xray-daemon"),
+            containerPorts: [2000],
+            enableLogging: false,
           },
         ],
         loadBalancers: [
@@ -166,7 +181,7 @@ export class ApiStack extends Stack {
 
     taskRole.addToPolicy(
       new PolicyStatement({
-        actions: ["sqs:*", "s3:*", "cloudformation:DescribeStacks", "events:*", "apigateway:*", "execute-api:*"],
+        actions: ["sqs:*", "s3:*", "cloudformation:DescribeStacks", "events:*", "apigateway:*", "execute-api:*", "xray:*"],
         resources: ["*"],
       })
     );

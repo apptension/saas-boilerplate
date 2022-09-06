@@ -1,8 +1,10 @@
-import {FargateService, FargateTaskDefinition} from 'aws-cdk-lib/aws-ecs';
+import {FargateService, FargateTaskDefinition, AwsLogDriver} from 'aws-cdk-lib/aws-ecs';
 import {ApplicationTargetGroup} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import {Construct} from "constructs";
 import {IRole} from "aws-cdk-lib/aws-iam";
 import {ISecurityGroup, SubnetType} from "aws-cdk-lib/aws-ec2";
+import {ILogGroup, LogGroup} from 'aws-cdk-lib/aws-logs';
+
 
 import {
     ApplicationMultipleTargetGroupsServiceBase,
@@ -110,6 +112,10 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
      * The default target group for the service.
      */
     readonly targetGroup: ApplicationTargetGroup;
+    /**
+     * List of log groups used for CloudWatch dashboards.
+     */
+    logGroups: ILogGroup[]
 
     /**
      * Constructs a new instance of the ApplicationMultipleTargetGroupsFargateService class.
@@ -117,6 +123,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
     constructor(scope: Construct, id: string, props: ApplicationMultipleTargetGroupsFargateServiceProps) {
         super(scope, id, props);
 
+        this.logGroups = [];
         this.assignPublicIp = props.assignPublicIp !== undefined ? props.assignPublicIp : false;
         if (props.taskDefinition && props.taskImageOptions) {
             throw new Error('You must specify only one of TaskDefinition or TaskImageOptions.');
@@ -137,7 +144,8 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
                 const containerName = taskImageOptionsProps.containerName !== undefined ? taskImageOptionsProps.containerName : 'web';
                 const container = this.taskDefinition.addContainer(containerName, {
                     image: taskImageOptionsProps.image,
-                    logging: this.logDriver,
+                    logging: taskImageOptionsProps.enableLogging === false ? 
+                        undefined : (taskImageOptionsProps.logDriver || this.createAWSLogDriver(this.node.id)),
                     environment: taskImageOptionsProps.environment,
                     secrets: taskImageOptionsProps.secrets,
                     command: ["sh", "-c", "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/run.sh"]
@@ -166,6 +174,15 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
             this.addPortMappingForTargets(this.taskDefinition.defaultContainer, props.targetGroups);
             this.targetGroup = this.registerECSTargets(this.service, this.taskDefinition.defaultContainer, props.targetGroups);
         }
+    }
+
+    protected createAWSLogDriver(prefix: string): AwsLogDriver {
+        const logGroup = new LogGroup(this, 'LogGroup')
+        this.logGroups.push(logGroup);
+        return new AwsLogDriver({
+            streamPrefix: prefix,
+            logGroup: logGroup,
+        });
     }
 
     private createFargateService(props: ApplicationMultipleTargetGroupsFargateServiceProps) {

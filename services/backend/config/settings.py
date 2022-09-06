@@ -54,6 +54,7 @@ THIRD_PARTY_APPS = [
     "social_django",
     "whitenoise",
     "graphene_django",
+    "aws_xray_sdk.ext.django",
 ]
 
 LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users", "apps.notifications", "apps.websockets"]
@@ -65,6 +66,7 @@ SILENCED_SYSTEM_CHECKS = []  # default django value
 MIDDLEWARE = [
     #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
     "common.middleware.HealthCheckMiddleware",
+    "aws_xray_sdk.ext.django.middleware.XRayMiddleware",
     "common.middleware.SetAuthTokenCookieMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -271,3 +273,10 @@ AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
 AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+XRAY_RECORDER = {
+    'AWS_XRAY_TRACING_NAME': f'{env("PROJECT_NAME", default="")}-{ENVIRONMENT_NAME}-backend',
+    'AUTO_INSTRUMENT': not DEBUG,
+    'AWS_XRAY_CONTEXT_MISSING': 'IGNORE_ERROR',
+    'PLUGINS': ('ECSPlugin',),
+}

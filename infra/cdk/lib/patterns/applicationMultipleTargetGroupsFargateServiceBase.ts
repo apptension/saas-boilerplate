@@ -1,7 +1,6 @@
 import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
 import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {
-  AwsLogDriver,
   BaseService,
   CloudMapOptions,
   ContainerDefinition,
@@ -312,7 +311,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
    * The cluster that hosts the service.
    */
   readonly cluster: ICluster;
-  protected logDriver?: LogDriver;
   protected listeners: IApplicationListener[];
   protected targetGroups: ApplicationTargetGroup[];
   private readonly loadBalancers: IApplicationLoadBalancer[];
@@ -334,14 +332,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     this.cluster = props.cluster;
 
     this.desiredCount = props.desiredCount || 1;
-    if (props.taskImageOptions) {
-      for (const taskImageOptionsProps of props.taskImageOptions) {
-        this.logDriver = this.createLogDriver(
-          taskImageOptionsProps.enableLogging,
-          taskImageOptionsProps.logDriver
-        );
-      }
-    }
 
     let lbId = 0;
     for (const lbProps of props.loadBalancers) {
@@ -368,10 +358,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     // set up default load balancer and listener.
     this.loadBalancer = this.loadBalancers[0];
     this.listener = this.listeners[0];
-  }
-
-  protected createAWSLogDriver(prefix: string): AwsLogDriver {
-    return new AwsLogDriver({ streamPrefix: prefix });
   }
 
   protected findListener(name?: string): IApplicationListener {
@@ -482,22 +468,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         });
       }
     }
-  }
-
-  /**
-   * Create log driver if logging is enabled.
-   */
-  private createLogDriver(
-    enableLoggingProp?: boolean,
-    logDriverProp?: LogDriver
-  ) {
-    const enableLogging =
-      enableLoggingProp !== undefined ? enableLoggingProp : true;
-    return logDriverProp !== undefined
-      ? logDriverProp
-      : enableLogging
-      ? this.createAWSLogDriver(this.node.id)
-      : undefined;
   }
 
   private validateInput(

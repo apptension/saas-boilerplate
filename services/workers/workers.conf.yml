@@ -28,6 +28,11 @@ iam:
     Action:
       - "execute-api:ManageConnections"
     Resource: "*"
+  - Effect: Allow
+    Action:
+      - xray:PutTraceSegments
+      - xray:PutTelemetryRecords
+    Resource: "*"
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
