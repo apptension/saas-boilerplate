@@ -4,12 +4,9 @@ import { Layout } from '../layout.component';
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../utils/testUtils';
 import { Breakpoint } from '../../../../theme/media';
 import { prepareState } from '../../../../mocks/store';
-import { loggedInAuthFactory } from '../../../../mocks/factories';
 import { RoutesConfig } from '../../../../app/config/routes';
 
-const loggedInState = prepareState((state) => {
-  state.auth = loggedInAuthFactory();
-});
+const loggedInState = prepareState((state) => state);
 
 const mockGetActiveBreakpoint = jest.fn().mockReturnValue(Breakpoint.DESKTOP);
 jest.mock('../../../../theme/media', () => {

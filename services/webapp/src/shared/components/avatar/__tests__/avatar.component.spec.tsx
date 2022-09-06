@@ -4,32 +4,28 @@ import { createMockEnvironment } from 'relay-test-utils';
 import { makeContextRenderer } from '../../../utils/testUtils';
 import { Avatar } from '../avatar.component';
 import { prepareState } from '../../../../mocks/store';
-import { currentUserFactory, loggedInAuthFactory, userProfileFactory } from '../../../../mocks/factories';
-import { Profile } from '../../../../modules/auth/auth.types';
+import { currentUserFactory } from '../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { CurrentUserType } from '../../../services/graphqlApi/__generated/types';
 
 describe('Avatar: Component', () => {
   const component = () => <Avatar />;
   const render = makeContextRenderer(component);
 
-  const renderWithProfile = (overrides?: Partial<Profile>) => {
-    const profile = userProfileFactory(overrides);
-    const store = prepareState((state) => {
-      state.auth = loggedInAuthFactory({
-        profile,
-      });
-    });
+  const renderWithProfile = (overrides?: Partial<CurrentUserType>) => {
+    const store = prepareState((state) => state);
 
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment, currentUserFactory(overrides));
+    const currentUser = currentUserFactory(overrides);
+    fillCommonQueryWithUser(relayEnvironment, currentUser);
 
-    return { profile, ...render({}, { store, relayEnvironment }) };
+    return { currentUser, ...render({}, { store, relayEnvironment }) };
   };
 
   it('should render user avatar', () => {
-    const { profile } = renderWithProfile();
+    const { currentUser } = renderWithProfile();
 
-    expect(screen.getByRole('img')).toHaveAttribute('src', profile.avatar);
+    expect(screen.getByRole('img')).toHaveAttribute('src', currentUser.avatar);
   });
 
   it('should render user initial', () => {

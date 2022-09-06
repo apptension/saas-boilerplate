@@ -8,15 +8,11 @@ import {
   mockConfirmEmail,
   mockConfirmPasswordReset,
   mockLogout,
-  mockMe,
   mockRequestPasswordReset,
   mockSignup,
-  mockUpdateAvatar,
-  mockUpdateProfile,
 } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
-import { loggedInAuthFactory, userProfileFactory } from '../../../mocks/factories';
 import { snackbarActions } from '../../snackbar';
 import { OAuthProvider } from '../auth.types';
 import { authActions } from '..';
@@ -32,7 +28,6 @@ const credentials = {
 describe('Auth: sagas', () => {
   const defaultState = prepareState(identity);
   const mockHistoryPush = browserHistory.push as jest.Mock;
-  const profile = userProfileFactory();
 
   const originalLocation = window.location;
   const locationAssignSpy = jest.fn();
@@ -66,9 +61,7 @@ describe('Auth: sagas', () => {
 
       describe('user is logged in', () => {
         it('should redirect to login page', async () => {
-          const state = prepareState((state) => {
-            state.auth = loggedInAuthFactory();
-          });
+          const state = prepareState((state) => state);
 
           await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
           expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
@@ -82,113 +75,6 @@ describe('Auth: sagas', () => {
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
         expect(mockHistoryPush).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('fetchProfile', () => {
-    describe('call completes successfully', () => {
-      it('should call success action', async () => {
-        server.use(mockMe(profile));
-
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.fetchProfile.resolved(profile))
-          .dispatch(authActions.fetchProfile())
-          .silentRun();
-      });
-    });
-
-    describe('call completes with UNAUTHORIZED error', () => {
-      it('should not call success action', async () => {
-        server.use(mockMe(profile, StatusCodes.UNAUTHORIZED));
-
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .not.put(authActions.fetchProfile.resolved(profile))
-          .dispatch(authActions.fetchProfile())
-          .silentRun();
-      });
-
-      it('should not redirect to login screen', async () => {
-        server.use(mockMe(profile, StatusCodes.UNAUTHORIZED));
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.fetchProfile()).silentRun();
-        expect(mockHistoryPush).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('updateProfile', () => {
-    const updateProfilePayload = {
-      firstName: 'John',
-      lastName: 'Black',
-    };
-    const profile = userProfileFactory({ ...updateProfilePayload });
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockUpdateProfile({ ...profile, isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.updateProfile.resolved({ ...profile, isError: false }))
-        .dispatch(authActions.updateProfile(updateProfilePayload))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(mockUpdateProfile({ isError: true }, StatusCodes.BAD_REQUEST));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.updateProfile.resolved({ isError: true }))
-        .dispatch(authActions.updateProfile(updateProfilePayload))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockUpdateProfile({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.updateProfile(updateProfilePayload))
-        .silentRun();
-    });
-  });
-
-  describe('updateAvatar', () => {
-    const updateAvatar = {
-      avatar: null,
-    };
-    const profile = userProfileFactory({ ...updateAvatar });
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockUpdateAvatar({ ...profile, isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.updateAvatar.resolved({ ...profile, isError: false }))
-        .dispatch(authActions.updateAvatar(updateAvatar))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(mockUpdateAvatar({ isError: true }, StatusCodes.BAD_REQUEST));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.updateAvatar.resolved({ isError: true }))
-        .dispatch(authActions.updateAvatar(updateAvatar))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockUpdateAvatar({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.updateAvatar(updateAvatar))
-        .silentRun();
     });
   });
 
@@ -207,14 +93,6 @@ describe('Auth: sagas', () => {
       it('should redirect to homepage', async () => {
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.signup(credentials)).silentRun();
         expect(mockHistoryPush).toHaveBeenCalledWith('/en/');
-      });
-
-      it('should fetch user profile', async () => {
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.fetchProfile())
-          .dispatch(authActions.signup(credentials))
-          .silentRun();
       });
     });
 

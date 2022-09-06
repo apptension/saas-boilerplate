@@ -27,14 +27,6 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
         return response
 
 
-class UserProfileView(generics.RetrieveUpdateAPIView):
-    permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.UserProfileSerializer
-
-    def get_object(self):
-        return self.request.user.profile
-
-
 class UserAccountConfirmationView(generics.CreateAPIView):
     permission_classes = (policies.AnyoneFullAccess,)
     serializer_class = serializers.UserAccountConfirmationSerializer

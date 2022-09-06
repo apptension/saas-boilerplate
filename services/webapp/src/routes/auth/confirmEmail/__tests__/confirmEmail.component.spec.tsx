@@ -6,7 +6,7 @@ import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { ConfirmEmail } from '../confirmEmail.component';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { prepareState } from '../../../../mocks/store';
-import { currentUserFactory, loggedInAuthFactory, loggedOutAuthFactory } from '../../../../mocks/factories';
+import { currentUserFactory } from '../../../../mocks/factories';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { server } from '../../../../mocks/server';
 import { mockConfirmEmail } from '../../../../mocks/server/handlers';
@@ -18,9 +18,7 @@ import { Role } from '../../../../modules/auth/auth.types';
 describe('ConfirmEmail: Component', () => {
   const user = 'user_id';
   const token = 'token';
-  const reduxInitialState = prepareState((state) => {
-    state.auth = loggedOutAuthFactory();
-  });
+  const reduxInitialState = prepareState((state) => state);
 
   const Component = () => (
     <Routes>
@@ -105,9 +103,7 @@ describe('ConfirmEmail: Component', () => {
     });
 
     describe('user is logged in', () => {
-      const loggedInReduxState = prepareState((state) => {
-        state.auth = loggedInAuthFactory();
-      });
+      const loggedInReduxState = prepareState((state) => state);
 
       let relayEnvironment: RelayMockEnvironment;
 

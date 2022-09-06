@@ -18,8 +18,8 @@ function* logoutResolve() {
 
 function* signupResolve(response: SignupApiResponseData) {
   if (!response.isError) {
+    invalidateRelayStore();
     yield navigate(RoutesConfig.getLocalePath(['home']));
-    yield put(authActions.fetchProfile());
   }
 }
 
@@ -33,9 +33,6 @@ export function* watchAuth() {
     takeLatest(authActions.logout, handleApiRequest(auth.logout)),
     takeLatest(authActions.logout.resolved, logoutResolve),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
-    takeLatest(authActions.fetchProfile, handleApiRequest(auth.me, { redirectToLoginOnFail: false })),
-    takeLatest(authActions.updateProfile, handleApiRequest(auth.updateProfile)),
-    takeLatest(authActions.updateAvatar, handleApiRequest(auth.updateAvatar)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
     takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),
     takeLatest(authActions.confirmPasswordReset, handleApiRequest(auth.confirmPasswordReset)),

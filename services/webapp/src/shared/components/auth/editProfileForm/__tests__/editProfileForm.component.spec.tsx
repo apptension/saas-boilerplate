@@ -1,11 +1,13 @@
-import { screen } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { makeContextRenderer } from '../../../../utils/testUtils';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+
+import { render } from '../../../../../tests/utils/rendering';
 import { EditProfileForm } from '../editProfileForm.component';
-import { userProfileFactory } from '../../../../../mocks/factories';
+import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { updateProfile } from '../../../../../modules/auth/auth.actions';
 import { snackbarActions } from '../../../../../modules/snackbar';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -20,90 +22,152 @@ describe('EditProfileForm: Component', () => {
     mockDispatch.mockReset();
   });
 
-  const component = () => <EditProfileForm />;
-  const originalProfile = userProfileFactory({
-    firstName: 'Jack',
-    lastName: 'White',
-    email: 'jack.white@mail.com',
-    roles: [Role.ADMIN, Role.USER],
-  });
-
-  const render = makeContextRenderer(component);
-
   const formData = {
     firstName: 'updated-first-name',
     lastName: 'updated-last-name',
   };
 
-  const updatedProfile = {
-    ...originalProfile,
-    ...formData,
+  const renderComponent = () => {
+    const relayEnvironment = createMockEnvironment();
+    const currentUser = currentUserFactory({
+      firstName: 'Jack',
+      lastName: 'White',
+      email: 'jack.white@mail.com',
+      roles: [Role.ADMIN, Role.USER],
+    });
+    fillCommonQueryWithUser(relayEnvironment, currentUser);
+    return {
+      ...render(<EditProfileForm />, { relayEnvironment }),
+      relayEnvironment,
+      updatedUser: {
+        ...currentUser,
+        ...formData,
+      },
+    };
+  };
+
+  const getFirstNameField = () => screen.getByLabelText(/first name/i);
+  const getLastNameField = () => screen.getByLabelText(/last name/i);
+
+  const fillForm = async () => {
+    await userEvent.clear(getFirstNameField());
+    await userEvent.clear(getLastNameField());
+    await userEvent.type(getFirstNameField(), formData.firstName);
+    await userEvent.type(getLastNameField(), formData.lastName);
+  };
+
+  const submitForm = async () => {
+    await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
   };
 
   it('should call updateProfile action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
+    const { relayEnvironment } = renderComponent();
 
-    render();
-    await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
-    await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-    await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-    expect(mockDispatch).toHaveBeenCalledWith(updateProfile(formData));
+    await fillForm();
+    await submitForm();
+    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
+    expect(relayEnvironment).toLatestOperationInputEqual(formData);
   });
 
   describe('action completes successfully', () => {
     it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
+      const { relayEnvironment } = renderComponent();
 
-      render();
-      await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
-      await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-      await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
+      await fillForm();
+      await submitForm();
+
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+      });
+
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Personal data successfully changed.'));
     });
 
     it('should display updated values', async () => {
-      mockDispatch.mockResolvedValue({ ...updatedProfile, isError: false });
+      const { relayEnvironment } = renderComponent();
+      await fillForm();
+      await submitForm();
 
-      render();
-      await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
-      await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-      await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+      });
+
       expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
       expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
     });
   });
 
   it('should show error if value is too long', async () => {
-    render();
+    const { relayEnvironment } = renderComponent();
     await userEvent.type(screen.getByLabelText(/first name/i), '_'.repeat(41));
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-    await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
+    await submitForm();
+    expect(relayEnvironment).not.toHaveLatestOperation('authUpdateUserProfileMutation');
     expect(mockDispatch).not.toHaveBeenCalledWith();
     expect(screen.getByText('First name is too long')).toBeInTheDocument();
   });
 
   it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      firstName: [{ message: 'Provided value is invalid', code: 'invalid' }],
+    const { relayEnvironment } = renderComponent();
+    await fillForm();
+    await submitForm();
+
+    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
+
+    const errorMessage = 'Provided value is invalid';
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              firstName: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
     });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
-    await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-    await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
+    const { relayEnvironment } = renderComponent();
+    await fillForm();
+    await submitForm();
 
-    render();
-    await userEvent.type(screen.getByLabelText(/first name/i), formData.firstName);
-    await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
-    await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    expect(screen.getByText('Invalid data')).toBeInTheDocument();
+    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
+    const errorMessage = 'Invalid data';
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              nonFieldErrors: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
+    });
+
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 });

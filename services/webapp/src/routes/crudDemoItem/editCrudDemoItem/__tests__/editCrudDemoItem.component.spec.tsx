@@ -9,7 +9,6 @@ import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQue
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
-import { loggedInAuthFactory } from '../../../../mocks/factories';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
@@ -21,9 +20,7 @@ describe('EditCrudDemoItem: Component', () => {
       <Route path={routePath} element={<EditCrudDemoItem />} />
     </Routes>
   );
-  const reduxInitialState = prepareState((state) => {
-    state.auth = loggedInAuthFactory();
-  });
+  const reduxInitialState = prepareState((state) => state);
 
   const getRelayEnv = () => {
     const relayEnvironment = createMockEnvironment();

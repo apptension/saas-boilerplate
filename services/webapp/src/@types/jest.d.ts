@@ -5,7 +5,7 @@ declare global {
     interface Matchers<R> {
       toHaveOperation(operationName: string): R;
       toHaveLatestOperation(operationName: string): R;
-      toLatestOperationInputEqual(input: Record<string, string>): R;
+      toLatestOperationInputEqual(input: Record<string, string | File>): R;
     }
   }
 }

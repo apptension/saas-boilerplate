@@ -6,26 +6,12 @@ import {
   ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
-  MeApiResponseData,
   RequestPasswordResetRequestData,
   RequestPasswordResetResponseData,
   SignupApiRequestData,
   SignupApiResponseData,
-  UpdateAvatarApiRequestData,
-  UpdateAvatarApiResponseData,
-  UpdateProfileApiRequestData,
-  UpdateProfileApiResponseData,
 } from '../../../shared/services/api/auth/types';
 import { AUTH_PASSWORD_RESET_URL, AUTH_URL } from '../../../shared/services/api/auth';
-import { Role } from '../../../modules/auth/auth.types';
-import { userProfileFactory } from '../../factories';
-
-const profile = userProfileFactory({
-  email: 'user@mail.com',
-  firstName: 'User',
-  lastName: 'White',
-  roles: [Role.ADMIN],
-});
 
 export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
   rest.post<SignupApiRequestData, PathParams, SignupApiResponseData>(AUTH_URL.SIGN_UP, (req, res, ctx) => {
@@ -41,33 +27,6 @@ export const mockLogout = (status = 200) =>
   rest.post<never, PathParams, any>(AUTH_URL.LOGOUT, (req, res, ctx) => {
     return res(ctx.status(status));
   });
-
-export const mockMe = (response: MeApiResponseData = profile, status = 200) =>
-  rest.get<never, PathParams, MeApiResponseData>(AUTH_URL.ME, (req, res, ctx) => {
-    return res(ctx.status(status), ctx.json(response));
-  });
-
-export const mockUpdateProfile = (
-  response: UpdateProfileApiResponseData = { ...profile, isError: false },
-  status = 200
-) =>
-  rest.put<UpdateProfileApiRequestData, PathParams, UpdateProfileApiResponseData>(
-    AUTH_URL.UPDATE_PROFILE,
-    (req, res, ctx) => {
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
-
-export const mockUpdateAvatar = (
-  response: UpdateAvatarApiResponseData = { ...profile, isError: false },
-  status = 200
-) =>
-  rest.put<UpdateAvatarApiRequestData, PathParams, UpdateAvatarApiResponseData>(
-    AUTH_URL.UPDATE_AVATAR,
-    (req, res, ctx) => {
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
 
 export const mockChangePassword = (response: ChangePasswordResponseData = { isError: false }, status = 200) =>
   rest.post<ChangePasswordRequestData, PathParams, ChangePasswordResponseData>(

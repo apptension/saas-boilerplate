@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux';
 import { reducer as localesReducer } from '../../modules/locales/locales.reducer';
 import { LocalesState } from '../../modules/locales/locales.types';
-import { reducer as authReducer } from '../../modules/auth/auth.reducer';
-import { AuthState } from '../../modules/auth/auth.types';
 import { reducer as configReducer } from '../../modules/config/config.reducer';
 import { ConfigState } from '../../modules/config/config.types';
 import { reducer as stripeReducer } from '../../modules/stripe/stripe.reducer';
@@ -15,7 +13,6 @@ import { SubscriptionState } from '../../modules/subscription/subscription.types
 
 export type GlobalState = {
   locales: LocalesState;
-  auth: AuthState;
   config: ConfigState;
   stripe: StripeState;
   snackbar: SnackbarState;
@@ -26,7 +23,6 @@ export type GlobalState = {
 export default function createReducer() {
   return combineReducers({
     locales: localesReducer,
-    auth: authReducer,
     config: configReducer,
     stripe: stripeReducer,
     snackbar: snackbarReducer,

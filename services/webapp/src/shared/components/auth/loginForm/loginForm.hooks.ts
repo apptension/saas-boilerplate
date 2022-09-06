@@ -1,20 +1,17 @@
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import graphql from 'babel-plugin-relay/macro';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { loginFormMutation } from '../../../../__generated__/loginFormMutation.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { fetchProfile } from '../../../../modules/auth/auth.actions';
 import { LoginFormFields } from './loginForm.types';
 
 export const useLoginForm = () => {
   const intl = useIntl();
   const navigate = useNavigate();
-  const dispatch = useAsyncDispatch();
   const generateLocalePath = useGenerateLocalePath();
   const { reload: reloadCommonQuery } = useCommonQuery();
 
@@ -57,7 +54,6 @@ export const useLoginForm = () => {
         setGraphQLResponseErrors(errors);
       } else {
         reloadCommonQuery();
-        await dispatch(fetchProfile());
         navigate(generateLocalePath(RoutesConfig.home));
       }
     } catch {}

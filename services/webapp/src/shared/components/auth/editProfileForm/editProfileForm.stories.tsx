@@ -1,8 +1,11 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { userProfileFactory } from '../../../../mocks/factories';
+import { createMockEnvironment } from 'relay-test-utils';
+
+import { currentUserFactory } from '../../../../mocks/factories';
 import { ProvidersWrapper } from '../../../utils/testUtils';
 import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { EditProfileForm } from './editProfileForm.component';
 
 const Container = styled.div`
@@ -11,12 +14,12 @@ const Container = styled.div`
 `;
 
 const Template: Story = () => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment, currentUserFactory());
   return (
     <ProvidersWrapper
       context={{
-        store: (state) => {
-          state.auth.profile = userProfileFactory();
-        },
+        relayEnvironment,
       }}
     >
       <Container>

@@ -1,8 +1,10 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { withRedux } from '../../utils/storybook';
-import { loggedInAuthFactory } from '../../../mocks/factories';
+import { createMockEnvironment } from 'relay-test-utils';
+
+import { currentUserFactory } from '../../../mocks/factories';
 import { withRouter } from '../../../../.storybook/decorators';
+import { fillCommonQueryWithUser } from '../../utils/commonQuery';
 import { Layout, LayoutProps } from './layout.component';
 
 const MockContent = styled.div`
@@ -12,7 +14,11 @@ const MockContent = styled.div`
   background-color: lightgray;
 `;
 
-const Template: Story<LayoutProps> = (args: LayoutProps) => {
+type StoryArgType = LayoutProps & { isLoggedIn: boolean };
+
+const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment, isLoggedIn ? currentUserFactory() : null);
   return <Layout {...args} />;
 };
 
@@ -22,14 +28,9 @@ export default {
 };
 
 export const LoggedOut = Template.bind({});
-LoggedOut.args = { children: <MockContent /> };
-LoggedOut.decorators = [withRedux(), withRouter()];
+LoggedOut.args = { isLoggedIn: false, children: <MockContent /> };
+LoggedOut.decorators = [withRouter()];
 
 export const LoggedIn = Template.bind({});
-LoggedIn.args = { children: <MockContent /> };
-LoggedIn.decorators = [
-  withRedux((state) => {
-    state.auth = loggedInAuthFactory();
-  }),
-  withRouter(),
-];
+LoggedIn.args = { isLoggedIn: true, children: <MockContent /> };
+LoggedIn.decorators = [withRouter()];

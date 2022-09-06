@@ -1,21 +1,21 @@
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { ProvidersWrapper } from '../../../utils/testUtils';
-import { loggedInAuthFactory, loggedOutAuthFactory } from '../../../../mocks/factories';
-import { Header, HeaderProps } from './header.component';
+import { createMockEnvironment } from 'relay-test-utils';
 
-const loggedInAuthState = loggedInAuthFactory();
-const loggedOutAuthState = loggedOutAuthFactory();
+import { ProvidersWrapper } from '../../../utils/testUtils';
+import { currentUserFactory } from '../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { Header, HeaderProps } from './header.component';
 
 type StoryArgType = HeaderProps & { isLoggedIn: boolean };
 
 const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment, isLoggedIn ? currentUserFactory() : null);
   return (
     <ProvidersWrapper
       context={{
-        store: (state) => {
-          state.auth = isLoggedIn ? loggedInAuthState : loggedOutAuthState;
-        },
+        relayEnvironment,
       }}
     >
       <Header {...args} />

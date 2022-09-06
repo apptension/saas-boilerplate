@@ -7,7 +7,6 @@ from rest_framework import status
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 
-from common.acl.helpers import CommonGroups
 from .. import tokens, models
 
 pytestmark = pytest.mark.django_db
@@ -18,81 +17,6 @@ def validate_jwt(response_data, user):
     token = AuthToken(response_data['access'])
 
     return token[jwt_api_settings.USER_ID_CLAIM] == user.id
-
-
-class TestUserProfile:
-    def test_user_profile_only_when_authenticated(self, api_client):
-        response = api_client.get(reverse("profile"))
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_current_user_can_fetch_profile(self, api_client, user_profile):
-        api_client.force_authenticate(user_profile.user)
-
-        response = api_client.get(reverse("profile"))
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data["id"] == user_profile.user.id
-        assert response.data["email"] == user_profile.user.email
-        assert response.data["first_name"] == user_profile.first_name
-        assert response.data["last_name"] == user_profile.last_name
-        assert response.data["avatar"] == user_profile.avatar.thumbnail.url
-
-    def test_update_user_profile(self, api_client, user_profile):
-        api_client.force_authenticate(user_profile.user)
-        first_name = 'Changed-first-name'
-        last_name = 'Changed-last-name'
-
-        api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
-
-        user_profile.refresh_from_db()
-        assert user_profile.first_name == first_name
-        assert user_profile.last_name == last_name
-
-    def test_update_user_profile_response(self, api_client, user_profile):
-        api_client.force_authenticate(user_profile.user)
-        first_name = 'Changed-first-name'
-        last_name = 'Changed-last-name'
-
-        response = api_client.put(reverse("profile"), {'first_name': first_name, 'last_name': last_name}, format='json')
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data["id"] == user_profile.user.id
-        assert response.data["email"] == user_profile.user.email
-        assert response.data["first_name"] == first_name
-        assert response.data["last_name"] == last_name
-
-    def test_update_user_avatar(self, api_client, user_profile_factory, mocker):
-        mocker.patch("secrets.token_hex", return_value="a1b2")
-        user_profile = user_profile_factory(avatar=None)
-        new_avatar = user_profile_factory().avatar.original
-        api_client.force_authenticate(user_profile.user)
-
-        response = api_client.put(reverse("profile"), {"avatar": new_avatar})
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data["avatar"] == "https://cdn.example.com/avatars/thumbnails/a1b2/avatar.jpg"
-
-        user_profile.refresh_from_db()
-        assert user_profile.avatar.original == new_avatar
-
-    def test_return_roles(self, api_client, user_profile):
-        api_client.force_authenticate(user_profile.user)
-
-        response = api_client.get(reverse("profile"))
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-        assert response.data["roles"] == [CommonGroups.User]
-
-    def test_validate_first_last_name_length(self, api_client, user_profile, faker):
-        api_client.force_authenticate(user_profile.user)
-
-        response = api_client.put(
-            reverse("profile"), {'first_name': faker.pystr(41, 41), 'last_name': faker.pystr(41, 41)}, format='json'
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.data['first_name'][0]['code'] == 'max_length'
-        assert response.data['last_name'][0]['code'] == 'max_length'
 
 
 class TestResetPassword:

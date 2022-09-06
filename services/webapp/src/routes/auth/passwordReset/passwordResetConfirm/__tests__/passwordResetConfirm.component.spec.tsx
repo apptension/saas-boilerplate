@@ -12,7 +12,6 @@ import { server } from '../../../../../mocks/server';
 import { mockConfirmPasswordReset } from '../../../../../mocks/server/handlers';
 import configureStore from '../../../../../app/config/store';
 import { prepareState } from '../../../../../mocks/store';
-import { loggedOutAuthFactory } from '../../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
 describe('PasswordResetConfirm: Component', () => {
@@ -26,9 +25,7 @@ describe('PasswordResetConfirm: Component', () => {
   const user = 'mock-user';
   const token = 'mock-token';
   const routePath = ['passwordReset', 'confirm'];
-  const reduxInitialState = prepareState((state) => {
-    state.auth = loggedOutAuthFactory();
-  });
+  const reduxInitialState = prepareState((state) => state);
 
   let relayEnvironment: RelayMockEnvironment;
 

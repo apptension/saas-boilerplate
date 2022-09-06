@@ -1,10 +1,9 @@
-import {client} from '../client';
-import {OAuthProvider} from '../../../../modules/auth/auth.types';
-import {apiURL, apiURLs} from '../helpers';
+import { client } from '../client';
+import { OAuthProvider } from '../../../../modules/auth/auth.types';
+import { apiURL, apiURLs } from '../helpers';
 import {
   SignupApiRequestData,
   SignupApiResponseData,
-  MeApiResponseData,
   ChangePasswordResponseData,
   ChangePasswordRequestData,
   ConfirmEmailRequestData,
@@ -14,10 +13,6 @@ import {
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
   LogoutApiResponseData,
-  UpdateProfileApiResponseData,
-  UpdateProfileApiRequestData,
-  UpdateAvatarApiRequestData,
-  UpdateAvatarApiResponseData,
 } from './types';
 
 export const AUTH_URL = apiURLs('/auth/', {
@@ -51,25 +46,6 @@ export const refreshToken = async () => {
 
 export const logout = async () => {
   const res = await client.post<LogoutApiResponseData>(AUTH_URL.LOGOUT);
-  return res.data;
-};
-
-export const me = async () => {
-  const res = await client.get<MeApiResponseData>(AUTH_URL.ME);
-  return res.data;
-};
-
-export const updateProfile = async (data: UpdateProfileApiRequestData) => {
-  const res = await client.put<UpdateProfileApiResponseData>(AUTH_URL.UPDATE_PROFILE, data);
-  return res.data;
-};
-
-export const updateAvatar = async (data: UpdateAvatarApiRequestData) => {
-  const formData = new FormData();
-  if (data.avatar) {
-    formData.append('avatar', data.avatar);
-  }
-  const res = await client.put<UpdateAvatarApiResponseData>(AUTH_URL.UPDATE_AVATAR, formData);
   return res.data;
 };
 

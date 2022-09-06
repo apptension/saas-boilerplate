@@ -6,15 +6,12 @@ import { produce } from 'immer';
 
 import { render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
-import { loggedInAuthFactory } from '../../../../mocks/factories';
 import { AddCrudDemoItem } from '../addCrudDemoItem.component';
 import configureStore from '../../../../app/config/store';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('AddCrudDemoItem: Component', () => {
-  const reduxInitialState = prepareState((state) => {
-    state.auth = loggedInAuthFactory();
-  });
+  const reduxInitialState = prepareState((state) => state);
 
   const Component = () => <AddCrudDemoItem />;
 

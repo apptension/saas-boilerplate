@@ -7,17 +7,23 @@ import currentUserQuery, {
 } from '../../../__generated__/commonQueryCurrentUserQuery.graphql';
 import commonDataContext from './commonQuery.context';
 
+graphql`
+  fragment commonQueryCurrentUserFragment on CurrentUserType {
+    id
+    email
+    firstName
+    lastName
+    roles
+    avatar
+  }
+`;
+
 export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) => {
   const [isCurrentUserQueryLoading, currentUserQueryRef, loadCurrentUserQuery] =
     useUnsuspendedQueryLoader<commonQueryCurrentUserQuery>(graphql`
       query commonQueryCurrentUserQuery {
         currentUser {
-          id
-          email
-          firstName
-          lastName
-          roles
-          avatar
+          ...commonQueryCurrentUserFragment
         }
       }
     `);

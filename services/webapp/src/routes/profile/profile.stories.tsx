@@ -1,15 +1,19 @@
 import { Story } from '@storybook/react';
+import { createMockEnvironment } from 'relay-test-utils';
+
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { userProfileFactory } from '../../mocks/factories';
+import { currentUserFactory } from '../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { Profile } from './profile.component';
 
 const Template: Story = () => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment, currentUserFactory());
+
   return (
     <ProvidersWrapper
       context={{
-        store: (state) => {
-          state.auth.profile = userProfileFactory();
-        },
+        relayEnvironment,
       }}
     >
       <Profile />
