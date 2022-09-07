@@ -12,3 +12,12 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation authSignupMutation($input: SingUpMutationInput!) {
+    signUp(input: $input) {
+      access
+      refresh
+    }
+  }
+`;

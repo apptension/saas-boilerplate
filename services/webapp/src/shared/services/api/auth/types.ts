@@ -1,13 +1,5 @@
 import { ApiFormSubmitResponse } from '../types';
 
-interface ApiCredentialsData {
-  email: string;
-  password: string;
-}
-
-export type SignupApiRequestData = ApiCredentialsData;
-export type SignupApiResponseData = ApiFormSubmitResponse<SignupApiRequestData, void>;
-
 export type ChangePasswordRequestData = { oldPassword: string; newPassword: string };
 export type ChangePasswordResponseData = ApiFormSubmitResponse<ChangePasswordRequestData, void>;
 

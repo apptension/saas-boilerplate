@@ -1,96 +1,159 @@
 import userEvent from '@testing-library/user-event';
-import { waitFor, screen } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../utils/testUtils';
-import { SignupForm } from '../signupForm.component';
-import { signup } from '../../../../../modules/auth/auth.actions';
+import { screen, act } from '@testing-library/react';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
+import { render } from '../../../../../tests/utils/rendering';
+import { SignupForm } from '../signupForm.component';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { RoutesConfig } from '../../../../../app/config/routes';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
+    ...jest.requireActual<NodeModule>('react-router-dom'),
+    useNavigate: () => mockNavigate,
   };
 });
 
 describe('SignupForm: Component', () => {
-  const component = () => <SignupForm />;
-  const render = makeContextRenderer(component);
+  const getRelayEnv = () => {
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    return relayEnvironment;
+  };
 
   beforeEach(() => {
-    mockDispatch.mockReset();
+    mockNavigate.mockReset();
   });
 
-  it('should call signup action when submitted', async () => {
+  const getEmailInput = () => screen.getByLabelText(/email/i);
+  const getPasswordInput = () => screen.getByLabelText(/password/i);
+  const getAcceptField = () => screen.getByLabelText(/accept/i);
+  const getSignupButton = () => screen.getByRole('button', { name: /sign up/i });
+  const clickSignupButton = async () => await userEvent.click(getSignupButton());
+
+  it('should call signup mutation when submitted', async () => {
     const mockCreds = {
       email: 'user@mail.com',
       password: 'abcxyz123456',
     };
 
-    mockDispatch.mockResolvedValue({ error: false });
+    const relayEnvironment = getRelayEnv();
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), mockCreds.email);
-    await userEvent.type(screen.getByLabelText(/password/i), mockCreds.password);
-    await userEvent.click(screen.getByLabelText(/accept/i));
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(signup(mockCreds));
+    render(<SignupForm />, { relayEnvironment });
+    await userEvent.type(getEmailInput(), mockCreds.email);
+    await userEvent.type(getPasswordInput(), mockCreds.password);
+    await userEvent.click(getAcceptField());
+    await act(async () => {
+      await clickSignupButton();
     });
+    expect(relayEnvironment).toHaveLatestOperation('authSignupMutation');
+    expect(relayEnvironment).toLatestOperationInputEqual(mockCreds);
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
   });
 
   it('should show error if password value is missing', async () => {
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
-    await userEvent.click(screen.getByLabelText(/accept/i));
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('Password is required')).toBeInTheDocument();
+    const relayEnvironment = getRelayEnv();
+    render(<SignupForm />, { relayEnvironment });
+    await userEvent.type(getEmailInput(), 'user@mail.com');
+    await userEvent.click(getAcceptField());
+    await act(async () => {
+      await clickSignupButton();
     });
+    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
+    expect(screen.getByText('Password is required')).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show error if terms are not accepted', async () => {
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('You need to accept terms and conditions')).toBeInTheDocument();
+    const relayEnvironment = getRelayEnv();
+    render(<SignupForm />, { relayEnvironment });
+    await userEvent.type(getEmailInput(), 'user@mail.com');
+    await userEvent.type(getPasswordInput(), 'abcxyz123456');
+    await act(async () => {
+      await clickSignupButton();
     });
+    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
+    expect(screen.getByText('You need to accept terms and conditions')).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      password: [{ message: 'Provided password is invalid', code: 'invalid' }],
+    const relayEnvironment = getRelayEnv();
+    render(<SignupForm />, { relayEnvironment });
+    await userEvent.type(getEmailInput(), 'user@mail.com');
+    await userEvent.type(getPasswordInput(), 'abcxyz123456');
+    await userEvent.click(getAcceptField());
+    await act(async () => {
+      await clickSignupButton();
     });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
-    await userEvent.click(screen.getByLabelText(/accept/i));
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
+    const errorMessage = 'Provided password is invalid';
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              password: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
     });
+
+    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      nonFieldErrors: [{ message: 'Invalid credentials', code: 'invalid' }],
+    const relayEnvironment = getRelayEnv();
+    render(<SignupForm />, { relayEnvironment });
+
+    await userEvent.type(getEmailInput(), 'user@mail.com');
+    await userEvent.type(getPasswordInput(), 'abcxyz123456');
+    await userEvent.click(getAcceptField());
+    await act(async () => {
+      await clickSignupButton();
     });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@mail.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'abcxyz123456');
-    await userEvent.click(screen.getByLabelText(/accept/i));
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
-    await waitFor(() => {
-      expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
+    const errorMessage = 'Invalid credentials';
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              password: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
     });
+
+    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

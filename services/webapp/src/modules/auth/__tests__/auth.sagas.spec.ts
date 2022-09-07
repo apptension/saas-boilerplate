@@ -9,7 +9,6 @@ import {
   mockConfirmPasswordReset,
   mockLogout,
   mockRequestPasswordReset,
-  mockSignup,
 } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
@@ -19,11 +18,6 @@ import { authActions } from '..';
 import { apiURL } from '../../../shared/services/api/helpers';
 
 jest.mock('../../../shared/utils/history');
-
-const credentials = {
-  email: 'user@mail.com',
-  password: 'password',
-};
 
 describe('Auth: sagas', () => {
   const defaultState = prepareState(identity);
@@ -75,47 +69,6 @@ describe('Auth: sagas', () => {
         await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
         expect(mockHistoryPush).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('signup', () => {
-    describe('call completes successfully', () => {
-      it('should resolve action', async () => {
-        server.use(mockSignup({ isError: false }));
-
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          .put(authActions.signup.resolved({ isError: false }))
-          .dispatch(authActions.signup(credentials))
-          .silentRun();
-      });
-
-      it('should redirect to homepage', async () => {
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.signup(credentials)).silentRun();
-        expect(mockHistoryPush).toHaveBeenCalledWith('/en/');
-      });
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(
-        mockSignup({ isError: true, password: [{ message: 'error', code: 'error' }] }, StatusCodes.BAD_REQUEST)
-      );
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.signup.resolved({ isError: true, password: [{ message: 'error', code: 'error' }] }))
-        .dispatch(authActions.signup(credentials))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockSignup({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.signup(credentials))
-        .silentRun();
     });
   });
 

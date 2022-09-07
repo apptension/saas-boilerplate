@@ -8,15 +8,8 @@ import {
   ConfirmPasswordResetResponseData,
   RequestPasswordResetRequestData,
   RequestPasswordResetResponseData,
-  SignupApiRequestData,
-  SignupApiResponseData,
 } from '../../../shared/services/api/auth/types';
 import { AUTH_PASSWORD_RESET_URL, AUTH_URL } from '../../../shared/services/api/auth';
-
-export const mockSignup = (response: SignupApiResponseData = { isError: false }, status = 200) =>
-  rest.post<SignupApiRequestData, PathParams, SignupApiResponseData>(AUTH_URL.SIGN_UP, (req, res, ctx) => {
-    return res(ctx.status(status), ctx.json(response));
-  });
 
 export const mockRefreshToken = (status = 200) =>
   rest.post<DefaultBodyType, PathParams, DefaultBodyType>(AUTH_URL.REFRESH_TOKEN, (req, res, ctx) => {

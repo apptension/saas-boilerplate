@@ -2,8 +2,6 @@ import { client } from '../client';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import { apiURL, apiURLs } from '../helpers';
 import {
-  SignupApiRequestData,
-  SignupApiResponseData,
   ChangePasswordResponseData,
   ChangePasswordRequestData,
   ConfirmEmailRequestData,
@@ -17,7 +15,6 @@ import {
 
 export const AUTH_URL = apiURLs('/auth/', {
   REFRESH_TOKEN: '/token-refresh/',
-  SIGN_UP: '/signup/',
   LOGOUT: '/logout/',
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
@@ -33,11 +30,6 @@ export const AUTH_PASSWORD_RESET_URL = apiURLs(`/password-reset/`, {
 
 export const getOauthUrl = (provider: OAuthProvider) =>
   apiURL(`/auth/social/login/${provider}?next=${encodeURIComponent(window.location.origin)}`);
-
-export const signup = async (creds: SignupApiRequestData) => {
-  const res = await client.post<SignupApiResponseData>(AUTH_URL.SIGN_UP, creds);
-  return res.data;
-};
 
 export const refreshToken = async () => {
   const res = await client.post<void>(AUTH_URL.REFRESH_TOKEN);

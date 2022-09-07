@@ -1,68 +1,26 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useApiForm } from '../../../hooks/useApiForm';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { Input } from '../../forms/input';
-import { signup } from '../../../../modules/auth/auth.actions';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { FormFieldsRow } from '../../../../theme/size';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { Container, ErrorMessage, SubmitButton, Checkbox, InlineLink } from './signupForm.styles';
-
-type SignupFormFields = {
-  password: string;
-  email: string;
-  acceptTerms: boolean;
-  test: { nested: string };
-};
+import { Checkbox, Container, ErrorMessage, InlineLink, SubmitButton } from './signupForm.styles';
+import { useSignupForm } from './signupForm.hooks';
 
 export const SignupForm = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
-  const dispatch = useAsyncDispatch();
   const {
     form: {
       register,
-      handleSubmit,
       formState: { errors },
     },
-    setApiResponse,
     hasGenericErrorOnly,
     genericError,
-  } = useApiForm<SignupFormFields>({
-    errorMessages: {
-      email: {
-        unique: intl.formatMessage({
-          defaultMessage: 'The email address is already taken',
-          description: 'Auth / Signup / email unique',
-        }),
-      },
-      password: {
-        password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
-          description: 'Auth / Signup / password too common',
-        }),
-        password_entirely_numeric: intl.formatMessage({
-          defaultMessage: "The password can't be entirely numeric.",
-          description: 'Auth / Signup / password entirely numeric',
-        }),
-      },
-    },
-  });
-
-  const onSignup = async (data: SignupFormFields) => {
-    try {
-      const res = await dispatch(
-        signup({
-          password: data.password,
-          email: data.email,
-        })
-      );
-      setApiResponse(res);
-    } catch {}
-  };
+    handleSignup,
+  } = useSignupForm();
 
   return (
-    <Container onSubmit={handleSubmit(onSignup)}>
+    <Container onSubmit={handleSignup}>
       <FormFieldsRow>
         <Input
           {...register('email', {
