@@ -15,6 +15,6 @@ export const StripePaymentMethodInfo = ({ method }: StripePaymentMethodInfoProps
       {method.billingDetails.name} {brandDisplayNames[method.card.brand]} **** {method.card.last4}
     </>
   ) : (
-    <FormattedMessage defaultMessage="None" description="Stripe Payment Method / None" />
+    <FormattedMessage defaultMessage="None" id="Stripe Payment Method / None" />
   );
 };

@@ -92,14 +92,14 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields = Paymen
             if (value.data === null || anyFieldMissing) {
               return intl.formatMessage({
                 defaultMessage: 'Payment method is required',
-                description: 'Stripe / Payment / Method required',
+                id: 'Stripe / Payment / Method required',
               });
             }
 
             if (!value.data.name) {
               return intl.formatMessage({
                 defaultMessage: 'Card name is required',
-                description: 'Stripe / Payment / Card name required',
+                id: 'Stripe / Payment / Card name required',
               });
             }
           }
@@ -169,12 +169,12 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields = Paymen
               {isEmpty(paymentMethods) ? (
                 <FormattedMessage
                   defaultMessage="Enter card details"
-                  description="Stripe / payment method selector / enter card details"
+                  id="Stripe / payment method selector / enter card details"
                 />
               ) : (
                 <FormattedMessage
                   defaultMessage="Select payment method"
-                  description="Stripe / payment method selector / select payment method"
+                  id="Stripe / payment method selector / select payment method"
                 />
               )}
             </Heading>
@@ -224,7 +224,7 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields = Paymen
                   >
                     <FormattedMessage
                       defaultMessage="Add a new card"
-                      description="Stripe / payment method selector / new card option"
+                      id="Stripe / payment method selector / new card option"
                     />
                   </NewPaymentMethodItem>
                 </PaymentMethodListItem>

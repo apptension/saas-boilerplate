@@ -16,21 +16,21 @@ export const PasswordResetRequest = () => {
     <Container>
       <Header>
         {isSubmitted ? (
-          <FormattedMessage defaultMessage="Done!" description="Auth / reset password / request sent heading" />
+          <FormattedMessage defaultMessage="Done!" id="Auth / reset password / request sent heading" />
         ) : (
-          <FormattedMessage defaultMessage="Forgot password?" description="Auth / reset password / heading" />
+          <FormattedMessage defaultMessage="Forgot password?" id="Auth / reset password / heading" />
         )}
       </Header>
       <Text>
         {isSubmitted ? (
           <FormattedMessage
             defaultMessage="We’ve sent a link to the given email address. You should receive it soon."
-            description="Auth / Reset password / request sent description"
+            id="Auth / Reset password / request sent description"
           />
         ) : (
           <FormattedMessage
             defaultMessage="Write down your email and we will send you link to reset your password."
-            description="Auth / Reset password / description"
+            id="Auth / Reset password / description"
           />
         )}
       </Text>
@@ -39,7 +39,7 @@ export const PasswordResetRequest = () => {
 
       <Links>
         <Link to={generateLocalePath(RoutesConfig.login)}>
-          <FormattedMessage defaultMessage="Go back to log in" description="Auth / Reset password / login link" />
+          <FormattedMessage defaultMessage="Go back to log in" id="Auth / Reset password / login link" />
         </Link>
       </Links>
     </Container>

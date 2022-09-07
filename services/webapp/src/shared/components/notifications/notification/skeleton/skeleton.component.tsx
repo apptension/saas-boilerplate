@@ -11,7 +11,7 @@ export const Skeleton = forwardRef<HTMLLIElement, Record<string, unknown>>((_, r
       ref={ref}
       role="status"
       aria-label={intl.formatMessage({
-        description: 'Notifications / Notification / Loading ARIA label',
+        id: 'Notifications / Notification / Loading ARIA label',
         defaultMessage: 'Loading notification',
       })}
     >

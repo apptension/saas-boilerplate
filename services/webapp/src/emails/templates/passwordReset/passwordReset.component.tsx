@@ -18,21 +18,21 @@ export const Template = ({ userId, token }: PasswordResetProps) => {
 
   return (
     <Layout
-      title={<FormattedMessage defaultMessage="Reset the password" description="Email / Reset Password / Title" />}
+      title={<FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Title" />}
       text={
         <FormattedMessage
           defaultMessage="Click the button below to reset the password. "
-          description="Email / Reset Password / Text"
+          id="Email / Reset Password / Text"
         />
       }
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Reset the password" description="Email / Reset Password / Link label" />
+        <FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Reset your password" description="Email / Reset Password / Subject" />
+  <FormattedMessage defaultMessage="Reset your password" id="Email / Reset Password / Subject" />
 );

@@ -2,8 +2,8 @@ import { FC, Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
-import demoItemsAllQueryNode, { demoItemsAllQuery } from '../../__generated__/demoItemsAllQuery.graphql';
 import { useFavoriteDemoItemsLoader } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.hook';
+import demoItemsAllQueryNode, { demoItemsAllQuery } from './__generated__/demoItemsAllQuery.graphql';
 import { Container, Header, List } from './demoItems.styles';
 import { DemoItemListItem } from './demoItemListItem';
 
@@ -23,7 +23,7 @@ export const DemoItemsContent: FC<DemoItemsContentProps> = ({ loadItemsQueryRef 
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Contentful items" description="Contentful Items / List header" />
+        <FormattedMessage defaultMessage="Contentful items" id="Contentful Items / List header" />
       </Header>
 
       <List>

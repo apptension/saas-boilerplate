@@ -4,7 +4,7 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 
-import Query from '../../../../__generated__/crudDemoItemListQuery.graphql';
+import crudDemoItemListQueryGraphql from "../__generated__/crudDemoItemListQuery.graphql";
 import { connectionFromArray } from '../../../../shared/utils/testUtils';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -36,7 +36,7 @@ describe('CrudDemoItemList: Component', () => {
         CrudDemoItemConnection: () => connectionFromArray([{ name: 'first item' }, { name: 'second item' }]),
       })
     );
-    relayEnvironment.mock.queuePendingOperation(Query, { id: 'test-id' });
+    relayEnvironment.mock.queuePendingOperation(crudDemoItemListQueryGraphql, { id: 'test-id' });
 
     render(<Component />, { relayEnvironment, routerHistory });
 
@@ -52,7 +52,7 @@ describe('CrudDemoItemList: Component', () => {
         CrudDemoItemConnection: () => connectionFromArray([{ name: 'first item' }, { name: 'second item' }]),
       })
     );
-    relayEnvironment.mock.queuePendingOperation(Query, { id: 'test-id' });
+    relayEnvironment.mock.queuePendingOperation(crudDemoItemListQueryGraphql, { id: 'test-id' });
 
     render(<Component />, { relayEnvironment, routerHistory });
     await userEvent.click(screen.getByText(/add/i));

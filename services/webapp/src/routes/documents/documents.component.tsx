@@ -3,9 +3,9 @@ import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { Suspense } from 'react';
 import { isEmpty } from 'ramda';
 import { Dropzone } from '../../shared/components/forms/dropzone';
-import DocumentsListQuery, { documentsListQuery } from '../../__generated__/documentsListQuery.graphql';
 import { EmptyState } from '../../shared/components/emptyState';
 import { useMappedConnection } from '../../shared/hooks/useMappedConnection';
+import DocumentsListQuery, { documentsListQuery } from './__generated__/documentsListQuery.graphql';
 import { Container, Header, List } from './documents.styles';
 import { Document, DocumentSkeleton } from './document';
 import { MAX_FILE_SIZE, MAX_FILES } from './documents.constants';
@@ -33,7 +33,7 @@ export const ListContent = ({ listQueryRef }: ListContentProps) => {
           isMaximumSizeExceeded ? (
             <FormattedMessage
               defaultMessage="Cannot upload more than 10 documents"
-              description="Documents / Maximum size exceeded"
+              id="Documents / Maximum size exceeded"
             />
           ) : undefined
         }
@@ -41,7 +41,7 @@ export const ListContent = ({ listQueryRef }: ListContentProps) => {
 
       {isEmpty(documents) ? (
         <EmptyState>
-          <FormattedMessage defaultMessage="No documents" description="Documents / Empty" />
+          <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
         <List>
@@ -60,7 +60,7 @@ export const Documents = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Documents" description="Documents / Header" />
+        <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
       </Header>
       {listQueryRef && (
         <Suspense

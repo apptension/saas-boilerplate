@@ -1,6 +1,6 @@
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-import { demoItemQuery } from '../../__generated__/demoItemQuery.graphql';
+import { demoItemQuery } from './__generated__/demoItemQuery.graphql';
 
 export const useDemoItemQuery = () => {
   return useQueryLoader<demoItemQuery>(graphql`

@@ -27,13 +27,13 @@ export const EditProfileForm = () => {
                 value: FIRST_NAME_MAX_LENGTH,
                 message: intl.formatMessage({
                   defaultMessage: 'First name is too long',
-                  description: 'Auth / Update profile/ First name max length error',
+                  id: 'Auth / Update profile/ First name max length error',
                 }),
               },
             })}
             label={intl.formatMessage({
               defaultMessage: 'First name',
-              description: 'Auth / Update profile / First name label',
+              id: 'Auth / Update profile / First name label',
             })}
             error={errors.firstName?.message}
           />
@@ -46,13 +46,13 @@ export const EditProfileForm = () => {
                 value: LAST_NAME_MAX_LENGTH,
                 message: intl.formatMessage({
                   defaultMessage: 'Last name is too long',
-                  description: 'Auth / Update profile/ Last name max length error',
+                  id: 'Auth / Update profile/ Last name max length error',
                 }),
               },
             })}
             label={intl.formatMessage({
               defaultMessage: 'Last name',
-              description: 'Auth / Update profile / Last name label',
+              id: 'Auth / Update profile / Last name label',
             })}
             error={errors.lastName?.message}
           />
@@ -60,7 +60,7 @@ export const EditProfileForm = () => {
 
         {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
         <SubmitButton>
-          <FormattedMessage defaultMessage="Update personal data" description="Auth / Update profile/ Submit button" />
+          <FormattedMessage defaultMessage="Update personal data" id="Auth / Update profile/ Submit button" />
         </SubmitButton>
       </Form>
     </Container>

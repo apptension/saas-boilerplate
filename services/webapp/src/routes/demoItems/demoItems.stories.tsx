@@ -3,9 +3,9 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { RoutesConfig } from '../../app/config/routes';
-import demoItemsAllQueryGraphql from '../../__generated__/demoItemsAllQuery.graphql';
-import { generateRelayEnvironment } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.fixtures';
 import { demoItemFactory } from '../../mocks/factories';
+import { generateRelayEnvironment } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.fixtures';
+import demoItemsAllQueryGraphql from './__generated__/demoItemsAllQuery.graphql';
 import { DemoItems } from './demoItems.component';
 
 const items = [demoItemFactory(), demoItemFactory(), demoItemFactory()];

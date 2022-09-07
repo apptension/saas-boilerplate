@@ -1,19 +1,19 @@
 import { useCallback } from 'react';
-import { usePreloadedQuery, useFragment } from 'react-relay';
+import { useFragment, usePreloadedQuery } from 'react-relay';
 import { useCommonQuery } from '../../../app/providers/commonQuery';
-import CommonQueryCurrentUserQuery from '../../../__generated__/commonQueryCurrentUserQuery.graphql';
-import CurrentUserFragment, {
-  commonQueryCurrentUserFragment$key,
-} from '../../../__generated__/commonQueryCurrentUserFragment.graphql';
 import { logout as logoutAction } from '../../../modules/auth/auth.actions';
 import { useAsyncDispatch } from '../../utils/reduxSagaPromise';
 import { CurrentUserType } from '../../services/graphqlApi/__generated/types';
+import commonQueryCurrentUserFragmentGraphql, {
+  commonQueryCurrentUserFragment$key,
+} from '../../../app/providers/commonQuery/__generated__/commonQueryCurrentUserFragment.graphql';
+import commonQueryCurrentUserQueryGraphql from '../../../app/providers/commonQuery/__generated__/commonQueryCurrentUserQuery.graphql';
 
 export const useAuth = () => {
   const { currentUserQueryRef, reload } = useCommonQuery();
 
-  const { currentUser } = usePreloadedQuery(CommonQueryCurrentUserQuery, currentUserQueryRef!);
-  const profile = useFragment<commonQueryCurrentUserFragment$key>(CurrentUserFragment, currentUser);
+  const { currentUser } = usePreloadedQuery(commonQueryCurrentUserQueryGraphql, currentUserQueryRef!);
+  const profile = useFragment<commonQueryCurrentUserFragment$key>(commonQueryCurrentUserFragmentGraphql, currentUser);
 
   const isLoggedIn = !!profile;
 

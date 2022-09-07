@@ -19,7 +19,7 @@ export const useGenerateErrorMessages = ({
       [ErrorCodes.FILE_TOO_LARGE]: (file) =>
         intl.formatMessage(
           {
-            description: 'Dropzone / Error messages / File too large',
+            id: 'Dropzone / Error messages / File too large',
             defaultMessage: 'File {fileName} is larger than {maxSize}',
           },
           {
@@ -30,7 +30,7 @@ export const useGenerateErrorMessages = ({
       [ErrorCodes.FILE_TOO_SMALL]: (file) =>
         intl.formatMessage(
           {
-            description: 'Dropzone / Error messages / File too small',
+            id: 'Dropzone / Error messages / File too small',
             defaultMessage: 'File {fileName} is smaller than {minSize}',
           },
           {
@@ -41,7 +41,7 @@ export const useGenerateErrorMessages = ({
       [ErrorCodes.TOO_MANY_FILES]: () =>
         intl.formatMessage(
           {
-            description: 'Dropzone / Error messages / Too many files',
+            id: 'Dropzone / Error messages / Too many files',
             defaultMessage: 'Cannot accept more than {maxFiles} file',
           },
           {
@@ -51,7 +51,7 @@ export const useGenerateErrorMessages = ({
       [ErrorCodes.FILE_INVALID_TYPE]: (file) =>
         intl.formatMessage(
           {
-            description: 'Dropzone / Error messages / File invalid type',
+            id: 'Dropzone / Error messages / File invalid type',
             defaultMessage: 'File {fileName} type cannot be accepted',
           },
           {
@@ -61,7 +61,7 @@ export const useGenerateErrorMessages = ({
       [ErrorCodes.GENERIC]: (file) =>
         intl.formatMessage(
           {
-            description: 'Dropzone / Error messages / Generic',
+            id: 'Dropzone / Error messages / Generic',
             defaultMessage: 'File {fileName} cannot be accepted',
           },
           {

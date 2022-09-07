@@ -49,7 +49,7 @@ export const Header = (props: HeaderProps) => {
             onClick={() => setSideMenuOpen(true)}
             aria-expanded={isSideMenuOpen}
             aria-label={intl.formatMessage({
-              description: 'Header / Home menu link aria label',
+              id: 'Header / Home menu link aria label',
               defaultMessage: 'Open menu',
             })}
           >
@@ -63,7 +63,7 @@ export const Header = (props: HeaderProps) => {
           <Link
             to={generateLocalePath(RoutesConfig.home)}
             aria-label={intl.formatMessage({
-              description: 'Header / Home link aria label',
+              id: 'Header / Home link aria label',
               defaultMessage: 'Go back home',
             })}
           >
@@ -85,7 +85,7 @@ export const Header = (props: HeaderProps) => {
                 tabIndex={0}
                 aria-expanded={userDropdown.isOpen}
                 aria-label={intl.formatMessage({
-                  description: 'Header / Open profile menu aria label',
+                  id: 'Header / Open profile menu aria label',
                   defaultMessage: 'Open profile menu',
                 })}
               />
@@ -97,10 +97,10 @@ export const Header = (props: HeaderProps) => {
                     to={generateLocalePath(RoutesConfig.profile)}
                     variant={ButtonVariant.FLAT}
                   >
-                    <FormattedMessage defaultMessage="Profile" description="Header / Profile button" />
+                    <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
                   </ButtonLink>
                   <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
-                    <FormattedMessage defaultMessage="Log out" description="Header / Logout button" />
+                    <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
                   </Button>
                 </Menu>
               </ClickAwayListener>

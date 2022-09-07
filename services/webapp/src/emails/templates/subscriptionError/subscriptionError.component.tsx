@@ -12,20 +12,20 @@ export const Template = () => {
       title={
         <FormattedMessage
           defaultMessage="Your subscription payment failed"
-          description="Email / Subscription Error / Title"
+          id="Email / Subscription Error / Title"
         />
       }
       text={
         <FormattedMessage
           defaultMessage="Click the button below to review your payment method details"
-          description="Email / Subscription Error / Text"
+          id="Email / Subscription Error / Text"
         />
       }
     >
       <Button linkTo={url}>
         <FormattedMessage
           defaultMessage="See subscription details"
-          description="Email / Subscription Error / Link label"
+          id="Email / Subscription Error / Link label"
         />
       </Button>
     </Layout>
@@ -33,5 +33,5 @@ export const Template = () => {
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Subscription payment failed" description="Email / Subscription Error / Subject" />
+  <FormattedMessage defaultMessage="Subscription payment failed" id="Email / Subscription Error / Subject" />
 );

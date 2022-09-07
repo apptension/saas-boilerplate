@@ -5,13 +5,13 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { isEmpty } from 'ramda';
 import { ButtonVariant } from '../../forms/button';
 import { NotificationSkeleton } from '../notification';
-import NotificationsListQuery, {
-  notificationsListQuery,
-  notificationsListQuery$data,
-} from '../../../../__generated__/notificationsListQuery.graphql';
 import { EmptyState } from '../../emptyState';
 import { NotificationTypes } from '../notifications.types';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
+import notificationsListQueryGraphql, {
+  notificationsListQuery,
+  notificationsListQuery$data,
+} from '../__generated__/notificationsListQuery.graphql';
 import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
@@ -24,24 +24,24 @@ export type NotificationsListProps = {
 
 export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListProps) => {
   const intl = useIntl();
-  const queryResponse = usePreloadedQuery(NotificationsListQuery, listQueryRef);
+  const queryResponse = usePreloadedQuery(notificationsListQueryGraphql, listQueryRef);
 
   const markAllAsRead = useMarkAllAsRead(
     intl.formatMessage({
       defaultMessage: 'All notifications marked as read.',
-      description: 'Notifications / Notifications List / Mark all as read notification',
+      id: 'Notifications / Notifications List / Mark all as read notification',
     })
   );
 
   return (
     <Container isOpen={isOpen}>
       <Title>
-        <FormattedMessage defaultMessage="Notifications" description="Notifications / Notifications List / Title" />
+        <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
       </Title>
       <MarkAllAsReadButton variant={ButtonVariant.RAW} onClick={markAllAsRead}>
         <FormattedMessage
           defaultMessage="Mark all as read"
-          description="Notifications / Notifications List / Mark all as read button"
+          id="Notifications / Notifications List / Mark all as read button"
         />
       </MarkAllAsReadButton>
       <List>
@@ -79,10 +79,7 @@ const Content = ({ queryResponse }: ContentProps) => {
   if (isEmpty(allNotifications)) {
     return (
       <EmptyState>
-        <FormattedMessage
-          defaultMessage="No notifications"
-          description="Notifications / Notifications List / Empty state"
-        />
+        <FormattedMessage defaultMessage="No notifications" id="Notifications / Notifications List / Empty state" />
       </EmptyState>
     );
   }

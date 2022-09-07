@@ -2,9 +2,7 @@ import React, { FunctionComponent, PropsWithChildren, useEffect } from 'react';
 import { graphql } from 'react-relay';
 
 import { useUnsuspendedQueryLoader } from '../../../shared/hooks/useUnsuspendedQueryLoader/useUnsuspendedQueryLoader';
-import currentUserQuery, {
-  commonQueryCurrentUserQuery,
-} from '../../../__generated__/commonQueryCurrentUserQuery.graphql';
+import currentUserQuery, { commonQueryCurrentUserQuery } from './__generated__/commonQueryCurrentUserQuery.graphql';
 import commonDataContext from './commonQuery.context';
 
 graphql`

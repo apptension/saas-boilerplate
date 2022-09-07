@@ -1,8 +1,7 @@
 import { createContext } from 'react';
 import { PreloadedQuery } from 'react-relay';
 import { ConcreteRequest } from 'relay-runtime';
-
-import { commonQueryCurrentUserQuery } from '../../../__generated__/commonQueryCurrentUserQuery.graphql';
+import { commonQueryCurrentUserQuery } from './__generated__/commonQueryCurrentUserQuery.graphql';
 
 type CommonDataContext = {
   currentUserQueryRef: PreloadedQuery<commonQueryCurrentUserQuery> | null;

@@ -37,17 +37,17 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       nonFieldErrors: {
         invalid_token: intl.formatMessage({
           defaultMessage: 'Malformed password reset token',
-          description: 'Auth / Reset password confirm / invalid token',
+          id: 'Auth / Reset password confirm / invalid token',
         }),
       },
       newPassword: {
         password_too_common: intl.formatMessage({
           defaultMessage: 'The password is too common.',
-          description: 'Auth / Reset password confirm / password too common',
+          id: 'Auth / Reset password confirm / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
           defaultMessage: "The password can't be entirely numeric.",
-          description: 'Auth / Reset password confirm / password entirely numeric',
+          id: 'Auth / Reset password confirm / password entirely numeric',
         }),
       },
     },
@@ -69,7 +69,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         snackbar.showMessage(
           intl.formatMessage({
             defaultMessage: '🎉 Password reset successfully!',
-            description: 'Auth / Reset password confirm / Success message',
+            id: 'Auth / Reset password confirm / Success message',
           })
         );
       }
@@ -85,14 +85,14 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
               value: true,
               message: intl.formatMessage({
                 defaultMessage: 'Password is required',
-                description: 'Auth / Reset password confirm / Old password required',
+                id: 'Auth / Reset password confirm / Old password required',
               }),
             },
             minLength: {
               value: 8,
               message: intl.formatMessage({
                 defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                description: 'Auth / Reset password confirm / Password too short',
+                id: 'Auth / Reset password confirm / Password too short',
               }),
             },
           })}
@@ -100,11 +100,11 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
           required
           label={intl.formatMessage({
             defaultMessage: 'New password',
-            description: 'Auth / Reset password confirm / Password label',
+            id: 'Auth / Reset password confirm / Password label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Write new password here...',
-            description: 'Auth / Reset password confirm / Password placeholder',
+            id: 'Auth / Reset password confirm / Password placeholder',
           })}
           error={errors.newPassword?.message}
         />
@@ -117,13 +117,13 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
                 value?.length > 0 ||
                 intl.formatMessage({
                   defaultMessage: 'Repeat new password is required',
-                  description: 'Auth / Reset password confirm / Password required',
+                  id: 'Auth / Reset password confirm / Password required',
                 }),
               mustMatch: (value) =>
                 getValues().newPassword === value ||
                 intl.formatMessage({
                   defaultMessage: 'Passwords must match',
-                  description: 'Auth / Reset password confirm / Password must match',
+                  id: 'Auth / Reset password confirm / Password must match',
                 }),
             },
           })}
@@ -131,11 +131,11 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
           required
           label={intl.formatMessage({
             defaultMessage: 'Repeat new password',
-            description: 'Auth / Login / Confirm password label',
+            id: 'Auth / Login / Confirm password label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Confirm your new password here...',
-            description: 'Auth / Login / Confirm password placeholder',
+            id: 'Auth / Login / Confirm password placeholder',
           })}
           error={errors.confirmPassword?.message}
         />
@@ -146,7 +146,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       <SubmitButton>
         <FormattedMessage
           defaultMessage="Confirm the change"
-          description="Auth / Reset password confirm / Submit button"
+          id="Auth / Reset password confirm / Submit button"
         />
       </SubmitButton>
     </Container>

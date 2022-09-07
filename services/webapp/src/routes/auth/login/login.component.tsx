@@ -13,24 +13,24 @@ export const Login = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Log in" description="Auth / Login / heading" />
+        <FormattedMessage defaultMessage="Log in" id="Auth / Login / heading" />
       </Header>
 
       <SocialLoginButtons variant={SignupButtonsVariant.LOGIN} />
 
       <OrDivider>
-        <FormattedMessage defaultMessage="or" description="Auth / Login / or" />
+        <FormattedMessage defaultMessage="or" id="Auth / Login / or" />
       </OrDivider>
 
       <LoginForm />
 
       <Links>
         <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
-          <FormattedMessage defaultMessage="Forgot password?" description="Auth / login / reset password link" />
+          <FormattedMessage defaultMessage="Forgot password?" id="Auth / login / reset password link" />
         </Link>
 
         <Link to={generateLocalePath(RoutesConfig.signup)}>
-          <FormattedMessage defaultMessage="Sign up" description="Auth / Login / signup link" />
+          <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
         </Link>
       </Links>
     </Container>

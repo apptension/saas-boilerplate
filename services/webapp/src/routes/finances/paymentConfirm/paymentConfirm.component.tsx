@@ -16,17 +16,17 @@ export const PaymentConfirm = () => {
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'Payment successful',
-    description: 'Stripe payment / payment successful',
+    id: 'Stripe payment confirm / payment successful',
   });
 
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Payments" description="Finances / Stripe / Payment confirm / heading" />
+        <FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />
       </Header>
 
       <Subheader>
-        <FormattedMessage defaultMessage="Donate" description="Finances / Stripe / Payment confirm / subheading" />
+        <FormattedMessage defaultMessage="Donate" id="Finances / Stripe / Payment confirm / subheading" />
       </Subheader>
 
       <Elements stripe={stripePromise}>

@@ -11,12 +11,12 @@ export const NotFound = () => {
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'Not found',
-          description: 'Not found / page title',
+          id: 'Not found / page title',
         })}
       />
 
       <H1>
-        <FormattedMessage defaultMessage="Error: 404" description="Not found / error message" />
+        <FormattedMessage defaultMessage="Error: 404" id="Not found / error message" />
       </H1>
     </Container>
   );

@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
 import { ExtractNodeType } from '../../../utils/graphql';
-import { notificationsListContent$data } from '../../../../__generated__/notificationsListContent.graphql';
+import { notificationsListContent$data } from '../notificationsList/__generated__/notificationsListContent.graphql';
 import { NotificationTheme } from './notification.types';
 import { Actions, Avatar, Container, Content, MarkAsReadButton, RelativeDate, Title } from './notification.styles';
 import { useToggleIsRead } from './notification.hooks';

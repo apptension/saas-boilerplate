@@ -1,9 +1,9 @@
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { connectionFromArray } from '../../shared/utils/testUtils';
-import DocumentsListQuery from '../../__generated__/documentsListQuery.graphql';
 import { DeepPartial } from '../../shared/utils/types';
 import { DocumentDemoItemType } from '../../shared/services/graphqlApi/__generated/types';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
+import DocumentsListQuery from './__generated__/documentsListQuery.graphql';
 
 export const generateRelayEnvironmentDocuments = (documents: DeepPartial<DocumentDemoItemType>[]) => {
   const env = createMockEnvironment();

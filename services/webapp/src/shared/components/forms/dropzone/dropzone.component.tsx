@@ -31,7 +31,7 @@ export const Dropzone = ({ label, disabled, onDrop, ...props }: DropzoneProps) =
             {label ?? (
               <FormattedMessage
                 defaultMessage="Drop files here or click to select"
-                description="Dropzone / Default label"
+                id="Dropzone / Default label"
               />
             )}
           </Text>

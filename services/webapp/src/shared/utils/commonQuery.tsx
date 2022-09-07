@@ -1,6 +1,6 @@
 import { RelayMockEnvironment } from 'relay-test-utils';
 import { CurrentUserType } from '../services/graphqlApi/__generated/types';
-import CommonQueryCurrentUserQuery from '../../__generated__/commonQueryCurrentUserQuery.graphql';
+import commonQueryCurrentUserQueryGraphql from '../../app/providers/commonQuery/__generated__/commonQueryCurrentUserQuery.graphql';
 
 export const fillCommonQueryWithUser = (env: RelayMockEnvironment, currentUser: CurrentUserType | null = null) => {
   env.mock.queueOperationResolver((operation) => {
@@ -10,5 +10,5 @@ export const fillCommonQueryWithUser = (env: RelayMockEnvironment, currentUser: 
       },
     };
   });
-  env.mock.queuePendingOperation(CommonQueryCurrentUserQuery, {});
+  env.mock.queuePendingOperation(commonQueryCurrentUserQueryGraphql, {});
 };

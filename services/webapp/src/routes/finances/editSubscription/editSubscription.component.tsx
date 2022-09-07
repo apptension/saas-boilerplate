@@ -18,12 +18,12 @@ export const EditSubscription = () => {
   const dispatch = useAsyncDispatch();
 
   const successMessage = intl.formatMessage({
-    description: 'Change plan / Success message',
+    id: 'Change plan / Success message',
     defaultMessage: 'Plan changed successfully',
   });
 
   const failMessage = intl.formatMessage({
-    description: 'Change plan / Fail message',
+    id: 'Change plan / Fail message',
     defaultMessage: 'You need first to add a payment method. Go back and set it there',
   });
 
@@ -46,11 +46,11 @@ export const EditSubscription = () => {
     <Container>
       <BackButton />
       <Header>
-        <FormattedMessage defaultMessage="Plans" description="Change plan / Heading" />
+        <FormattedMessage defaultMessage="Plans" id="Change plan / Heading" />
       </Header>
 
       <Subheader>
-        <FormattedMessage defaultMessage="Choose a plan" description="Change plan / Subheading" />
+        <FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />
       </Subheader>
 
       <Plans>

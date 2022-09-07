@@ -1,10 +1,10 @@
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { ExtractNodeType } from '../../../utils/graphql';
-import { notificationsListContent$data } from '../../../../__generated__/notificationsListContent.graphql';
 import { connectionFromArray } from '../../../utils/testUtils';
-import NotificationsListQuery from '../../../../__generated__/notificationsListQuery.graphql';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import notificationsListQueryGraphql from '../__generated__/notificationsListQuery.graphql';
+import { notificationsListContent$data } from './__generated__/notificationsListContent.graphql';
 
 export const generateRelayEnvironmentNotifications = (
   notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>
@@ -16,6 +16,6 @@ export const generateRelayEnvironmentNotifications = (
       NotificationConnection: () => connectionFromArray(notifications),
     })
   );
-  environment.mock.queuePendingOperation(NotificationsListQuery, {});
+  environment.mock.queuePendingOperation(notificationsListQueryGraphql, {});
   return environment;
 };

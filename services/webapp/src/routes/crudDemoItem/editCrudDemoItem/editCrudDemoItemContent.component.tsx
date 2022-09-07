@@ -1,14 +1,14 @@
 import { FormattedMessage } from 'react-intl';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-import EditCrudDemoItemQuery, { editCrudDemoItemQuery } from '../../../__generated__/editCrudDemoItemQuery.graphql';
-import { editCrudDemoItemContentMutation } from '../../../__generated__/editCrudDemoItemContentMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { editCrudDemoItemContentMutation } from './__generated__/editCrudDemoItemContentMutation.graphql';
+import EditCrudDemoItemQuery, { editCrudDemoItemQuery } from './__generated__/editCrudDemoItemQuery.graphql';
 import { Container, Header } from './editCrudDemoItem.styles';
 
 type EditCrudDemoItemContentProps = {
@@ -46,7 +46,7 @@ export const EditCrudDemoItemContent = ({ queryRef }: EditCrudDemoItemContentPro
     <Container>
       <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
       <Header>
-        <FormattedMessage defaultMessage="Edit CRUD Example Item" description="EditCrudDemoItem / Header" />
+        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
       </Header>
 
       <CrudDemoItemForm onSubmit={onFormSubmit} initialData={data} />

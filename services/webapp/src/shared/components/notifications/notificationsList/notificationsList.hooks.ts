@@ -3,12 +3,12 @@ import { ConnectionHandler, usePaginationFragment, useSubscription } from 'react
 import { useMemo } from 'react';
 import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import { notificationsListMarkAsReadMutation } from '../../../../__generated__/notificationsListMarkAsReadMutation.graphql';
-import { notificationsListQuery$data } from '../../../../__generated__/notificationsListQuery.graphql';
-import { NotificationsListRefetch } from '../../../../__generated__/NotificationsListRefetch.graphql';
-import { notificationsListContent$key } from '../../../../__generated__/notificationsListContent.graphql';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
-import { notificationsListSubscription } from '../../../../__generated__/notificationsListSubscription.graphql';
+import { notificationsListQuery$data } from '../__generated__/notificationsListQuery.graphql';
+import { notificationsListMarkAsReadMutation } from './__generated__/notificationsListMarkAsReadMutation.graphql';
+import { NotificationsListRefetch } from './__generated__/NotificationsListRefetch.graphql';
+import { notificationsListContent$key } from './__generated__/notificationsListContent.graphql';
+import { notificationsListSubscription } from './__generated__/notificationsListSubscription.graphql';
 
 export const useMarkAllAsRead = (message: string) => {
   const snackbar = useSnackbar();

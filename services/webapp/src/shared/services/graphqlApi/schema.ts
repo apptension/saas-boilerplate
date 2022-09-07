@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import typeDefs from './api.graphql.chunk';
 
 export default makeExecutableSchema({
-  // eslint-disable-next-line
-  typeDefs: require('!!raw-loader!./api.graphql.chunk').default,
+  typeDefs,
 });

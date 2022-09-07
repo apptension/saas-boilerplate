@@ -4,8 +4,8 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { useFragment } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { Icon } from '../../../shared/components/icon';
-import { documentListItem$key } from '../../../__generated__/documentListItem.graphql';
 import { useHandleDelete } from '../documents.hooks';
+import { documentListItem$key } from './__generated__/documentListItem.graphql';
 import { Container, DeleteButton, IconContainer, Name, RelativeDate } from './document.styles';
 
 export type DocumentProps = {
@@ -38,7 +38,7 @@ export const Document = ({ item }: DocumentProps) => {
         {file?.name}
       </Name>
       <DeleteButton icon={<Icon icon={deleteIcon} />} onClick={() => handleDelete(id)}>
-        <FormattedMessage defaultMessage="Delete" description="Documents / Document / Delete button" />
+        <FormattedMessage defaultMessage="Delete" id="Documents / Document / Delete button" />
       </DeleteButton>
     </Container>
   );

@@ -73,7 +73,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
       <StripePaymentMethodSelector formControls={apiFormControls} initialValue={defaultPaymentMethod} />
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
-        <FormattedMessage defaultMessage="Save" description="Subscription / change payment method / submit button" />
+        <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
       </SubmitButton>
     </Form>
   );

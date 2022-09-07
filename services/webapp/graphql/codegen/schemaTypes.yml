@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - ./src/shared/services/graphqlApi/api.graphql.chunk:
+  - ./graphql/schema/api.graphql.chunk:
       loader: ./graphql/schema/loader.js
 generates:
   src/shared/services/graphqlApi/__generated/types.ts:

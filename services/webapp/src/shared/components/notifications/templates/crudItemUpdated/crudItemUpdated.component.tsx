@@ -28,7 +28,7 @@ export const CrudItemUpdated = ({ data: { id, name, user, avatar }, ...restProps
       content={
         <FormattedMessage
           defaultMessage={'CRUD item "{name}" has been updated'}
-          description="Notifications / CrudItemUpdated / Content"
+          id="Notifications / CrudItemUpdated / Content"
           values={{ name }}
         />
       }

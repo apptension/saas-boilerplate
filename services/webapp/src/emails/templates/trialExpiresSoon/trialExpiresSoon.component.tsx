@@ -16,26 +16,23 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
   return (
     <Layout
       title={
-        <FormattedMessage
-          defaultMessage="Your trial is about to expire"
-          description="Email / Trial Expires Soon / Title"
-        />
+        <FormattedMessage defaultMessage="Your trial is about to expire" id="Email / Trial Expires Soon / Title" />
       }
       text={
         <FormattedMessage
           defaultMessage="Your trial is about to expire on {expiryDate}, please take action"
-          description="Email / Trial Expires Soon / Text"
+          id="Email / Trial Expires Soon / Text"
           values={{ expiryDate: <FormattedDate value={expiryDate} /> }}
         />
       }
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Go to the dashboard" description="Email / Trial Expires Soon / Link label" />
+        <FormattedMessage defaultMessage="Go to the dashboard" id="Email / Trial Expires Soon / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Your trial is about to expire" description="Email / Trial Expires Soon / Subject" />
+  <FormattedMessage defaultMessage="Your trial is about to expire" id="Email / Trial Expires Soon / Subject" />
 );

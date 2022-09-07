@@ -17,7 +17,7 @@ export const Snackbar = () => {
         const messageText =
           message.text ??
           intl.formatMessage({
-            description: 'Snackbar / Generic error',
+            id: 'Snackbar / Generic error',
             defaultMessage: 'Something went wrong.',
           });
 

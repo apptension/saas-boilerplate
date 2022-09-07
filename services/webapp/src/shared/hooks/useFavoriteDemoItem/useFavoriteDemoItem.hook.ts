@@ -4,13 +4,13 @@ import { PreloadedQuery, usePreloadedQuery, useQueryLoader, UseQueryLoaderLoadQu
 import { pipe, pluck } from 'ramda';
 import { ConnectionHandler } from 'relay-runtime';
 
+import { usePromiseMutation } from '../../services/graphqlApi/usePromiseMutation';
+import { useMappedConnection } from '../useMappedConnection';
 import UseFavoriteDemoItemListQuery, {
   useFavoriteDemoItemListQuery,
-} from '../../../__generated__/useFavoriteDemoItemListQuery.graphql';
-import { useMappedConnection } from '../useMappedConnection';
-import { usePromiseMutation } from '../../services/graphqlApi/usePromiseMutation';
-import { useFavoriteDemoItemListCreateMutation } from '../../../__generated__/useFavoriteDemoItemListCreateMutation.graphql';
-import { useFavoriteDemoItemListDeleteMutation } from '../../../__generated__/useFavoriteDemoItemListDeleteMutation.graphql';
+} from './__generated__/useFavoriteDemoItemListQuery.graphql';
+import { useFavoriteDemoItemListCreateMutation } from './__generated__/useFavoriteDemoItemListCreateMutation.graphql';
+import { useFavoriteDemoItemListDeleteMutation } from './__generated__/useFavoriteDemoItemListDeleteMutation.graphql';
 
 export const useFavoriteDemoItem = (id: string, queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>) => {
   const handleCreate = useHandleCreate();

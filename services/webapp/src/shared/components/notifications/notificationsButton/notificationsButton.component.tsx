@@ -5,11 +5,11 @@ import graphql from 'babel-plugin-relay/macro';
 import { useIntl } from 'react-intl';
 import { ButtonProps, ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
-import NotificationsButtonQuery, {
+import notificationsListQueryGraphql, {
   notificationsListQuery,
   notificationsListQuery$data,
-} from '../../../../__generated__/notificationsListQuery.graphql';
-import { notificationsButtonContent$key } from '../../../../__generated__/notificationsButtonContent.graphql';
+} from '../__generated__/notificationsListQuery.graphql';
+import { notificationsButtonContent$key } from './__generated__/notificationsButtonContent.graphql';
 import { Button } from './notificationsButton.styles';
 
 export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'> & {
@@ -17,7 +17,7 @@ export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'>
 };
 
 export const NotificationsButton = ({ listQueryRef, ...props }: NotificationsButtonProps) => {
-  const queryResponse = usePreloadedQuery(NotificationsButtonQuery, listQueryRef);
+  const queryResponse = usePreloadedQuery(notificationsListQueryGraphql, listQueryRef);
 
   return <Wrapper queryResponse={queryResponse} {...props} />;
 };
@@ -52,7 +52,7 @@ const Content = ({ hasUnreadNotifications, ...props }: ContentProps) => {
       hasUnreadNotifications={hasUnreadNotifications}
       aria-label={intl.formatMessage({
         defaultMessage: 'Open notifications',
-        description: 'Notifications / Notifications Button / Label',
+        id: 'Notifications / Notifications Button / Label',
       })}
       {...props}
     >

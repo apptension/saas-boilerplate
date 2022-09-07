@@ -23,20 +23,20 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
     <Container {...props}>
       <FacebookButton onClick={handleFacebookLogin}>
         {variant === SignupButtonsVariant.LOGIN ? (
-          <FormattedMessage defaultMessage="Log in with Facebook" description="Auth / Login / Facebook login button" />
+          <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
         ) : (
           <FormattedMessage
             defaultMessage="Sign up with Facebook"
-            description="Auth / Signup / Facebook signup button"
+            id="Auth / Signup / Facebook signup button"
           />
         )}
       </FacebookButton>
 
       <GoogleButton onClick={handleGoogleLogin}>
         {variant === SignupButtonsVariant.LOGIN ? (
-          <FormattedMessage defaultMessage="Log in with Google" description="Auth / Login / Google login button" />
+          <FormattedMessage defaultMessage="Log in with Google" id="Auth / Login / Google login button" />
         ) : (
-          <FormattedMessage defaultMessage="Sign up with Google" description="Auth / Signup / Google signup button" />
+          <FormattedMessage defaultMessage="Sign up with Google" id="Auth / Signup / Google signup button" />
         )}
       </GoogleButton>
     </Container>

@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl';
 
+import authUpdateUserProfileMutationGraphql, {
+  authUpdateUserProfileMutation,
+} from '../../../../modules/auth/__generated__/authUpdateUserProfileMutation.graphql';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAuth } from '../../../hooks/useAuth/useAuth';
-import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import AuthUpdateUserProfileMutation, {
-  authUpdateUserProfileMutation,
-} from '../../../../__generated__/authUpdateUserProfileMutation.graphql';
+import { useSnackbar } from '../../snackbar';
 import { UpdateProfileFormFields } from './editProfileForm.types';
 
 export const useEditProfileForm = () => {
@@ -22,7 +22,9 @@ export const useEditProfileForm = () => {
 
   const { handleSubmit, setGraphQLResponseErrors } = form;
 
-  const [commitUpdateUserMutation] = usePromiseMutation<authUpdateUserProfileMutation>(AuthUpdateUserProfileMutation);
+  const [commitUpdateUserMutation] = usePromiseMutation<authUpdateUserProfileMutation>(
+    authUpdateUserProfileMutationGraphql
+  );
 
   const handleUpdate = handleSubmit(async (input: UpdateProfileFormFields) => {
     try {
@@ -37,7 +39,7 @@ export const useEditProfileForm = () => {
         snackbar.showMessage(
           intl.formatMessage({
             defaultMessage: 'Personal data successfully changed.',
-            description: 'Auth / Update profile/ Success message',
+            id: 'Auth / Update profile/ Success message',
           })
         );
       }

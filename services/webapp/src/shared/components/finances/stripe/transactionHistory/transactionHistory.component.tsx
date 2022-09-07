@@ -9,19 +9,19 @@ export const TransactionHistory = () => {
     <Container>
       <HeaderRow>
         <HeaderCell>
-          <FormattedMessage description="Stripe / Transaction history / Date" defaultMessage="Date" />
+          <FormattedMessage id="Stripe / Transaction history / Date" defaultMessage="Date" />
         </HeaderCell>
         <HeaderCell>
-          <FormattedMessage description="Stripe / Transaction history / Description" defaultMessage="Description" />
+          <FormattedMessage id="Stripe / Transaction history / Description" defaultMessage="Description" />
         </HeaderCell>
         <HeaderCell>
           <FormattedMessage
-            description="Stripe / Transaction history / Payment method"
+            id="Stripe / Transaction history / Payment method"
             defaultMessage="Payment method"
           />
         </HeaderCell>
         <HeaderCell>
-          <FormattedMessage description="Stripe / Transaction history / Amount" defaultMessage="Amount" />
+          <FormattedMessage id="Stripe / Transaction history / Amount" defaultMessage="Amount" />
         </HeaderCell>
       </HeaderRow>
 

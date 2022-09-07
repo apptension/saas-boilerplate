@@ -71,7 +71,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <Heading>
-          <FormattedMessage defaultMessage="Choose the product" description="Stripe / payment form / product label" />
+          <FormattedMessage defaultMessage="Choose the product" id="Stripe / payment form / product label" />
         </Heading>
 
         <ProductListContainer>
@@ -83,7 +83,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
                     value: true,
                     message: intl.formatMessage({
                       defaultMessage: 'Product is required',
-                      description: 'Stripe / Payment / Product required',
+                      id: 'Stripe / Payment / Product required',
                     }),
                   },
                 })}
@@ -105,7 +105,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         <FormattedMessage
           values={{ amount: amountValue ? `${amountValue} USD` : '' }}
           defaultMessage="Pay {amount}"
-          description="Stripe / payment form / pay CTA"
+          id="Stripe / payment form / pay CTA"
         />
       </SubmitButton>
     </Form>

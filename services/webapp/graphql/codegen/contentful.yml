@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - ./src/shared/services/contentful/contentful.graphql.chunk:
+  - ./graphql/schema/contentful.graphql.chunk:
       loader: ./graphql/schema/loader.js
 generates:
   src/shared/services/contentful/__generated/types.ts:

@@ -2,9 +2,9 @@ import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { useEffect } from 'react';
 import { ConnectionHandler } from 'relay-runtime';
-import { documentsListQuery } from '../../__generated__/documentsListQuery.graphql';
 import { usePromiseMutation } from '../../shared/services/graphqlApi/usePromiseMutation';
-import { documentsListCreateMutation } from '../../__generated__/documentsListCreateMutation.graphql';
+import { documentsListQuery } from './__generated__/documentsListQuery.graphql';
+import { documentsListCreateMutation } from './__generated__/documentsListCreateMutation.graphql';
 
 export const useDocumentsListQueryLoader = () => {
   const [listQueryRef, loadListQuery] = useQueryLoader<documentsListQuery>(

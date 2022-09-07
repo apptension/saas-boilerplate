@@ -10,21 +10,21 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
   const intl = useIntl();
 
   const examplePlanFeatureItem = intl.formatMessage({
-    description: 'Subscription plan example feature / Free',
+    id: 'Subscription plan example feature / Free',
     defaultMessage: 'Lorem ipsum dolor sit amet',
   });
 
   const planDisplayNames: Record<SubscriptionPlanName, string> = {
     [SubscriptionPlanName.FREE]: intl.formatMessage({
-      description: 'Subscription plan display name / Free',
+      id: 'Subscription plan display name / Free',
       defaultMessage: 'Free',
     }),
     [SubscriptionPlanName.MONTHLY]: intl.formatMessage({
-      description: 'Subscription plan display name / Monthly',
+      id: 'Subscription plan display name / Monthly',
       defaultMessage: 'Monthly',
     }),
     [SubscriptionPlanName.YEARLY]: intl.formatMessage({
-      description: 'Subscription plan display name / Yearly',
+      id: 'Subscription plan display name / Yearly',
       defaultMessage: 'Yearly',
     }),
   };

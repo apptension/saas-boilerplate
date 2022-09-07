@@ -8,18 +8,18 @@ export const useFormatFileSize = () => {
     () => ({
       zeroBytes: intl.formatMessage({
         defaultMessage: '0 bytes',
-        description: 'File Size / Bytes',
+        id: 'File Size / Bytes',
       }),
       generateSizes: (size: number) => [
-        intl.formatMessage({ defaultMessage: '{size} bytes', description: 'File Size / Units / Bytes' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} KB', description: 'File Size / Units / KB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} MB', description: 'File Size / Units / MB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} GB', description: 'File Size / Units / GB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} TB', description: 'File Size / Units / TB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} PB', description: 'File Size / Units / PB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} EB', description: 'File Size / Units / EB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} ZB', description: 'File Size / Units / ZB' }, { size }),
-        intl.formatMessage({ defaultMessage: '{size} YB', description: 'File Size / Units / YB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} bytes', id: 'File Size / Units / Bytes' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} KB', id: 'File Size / Units / KB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} MB', id: 'File Size / Units / MB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} GB', id: 'File Size / Units / GB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} TB', id: 'File Size / Units / TB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} PB', id: 'File Size / Units / PB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} EB', id: 'File Size / Units / EB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} ZB', id: 'File Size / Units / ZB' }, { size }),
+        intl.formatMessage({ defaultMessage: '{size} YB', id: 'File Size / Units / YB' }, { size }),
       ],
     }),
     [intl]

@@ -1,10 +1,10 @@
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import CrudDemoItemDetailsQuery, {
-  crudDemoItemDetailsQuery,
-} from '../../../__generated__/crudDemoItemDetailsQuery.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import CrudDemoItemDetailsQuery, {
+  crudDemoItemDetailsQuery,
+} from './__generated__/crudDemoItemDetailsQuery.graphql';
 import { Container, Header } from './crudDemoItemDetails.styles';
 
 type CrudDemoItemDetailsContentProps = {

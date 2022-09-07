@@ -3,10 +3,10 @@ import { useLazyLoadQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import styled from 'styled-components';
-import { documentListItemStoryQuery } from '../../../__generated__/documentListItemStoryQuery.graphql';
 import { withRelay } from '../../../shared/utils/storybook';
 import { documentFactory } from '../../../mocks/factories/document';
 import { connectionFromArray } from '../../../shared/utils/testUtils';
+import { documentListItemStoryQuery } from './__generated__/documentListItemStoryQuery.graphql';
 import { Document, DocumentProps } from './document.component';
 
 const Container = styled.div`

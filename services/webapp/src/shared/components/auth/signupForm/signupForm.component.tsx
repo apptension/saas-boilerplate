@@ -28,14 +28,14 @@ export const SignupForm = () => {
               value: true,
               message: intl.formatMessage({
                 defaultMessage: 'Email is required',
-                description: 'Auth / Signup / Email required',
+                id: 'Auth / Signup / Email required',
               }),
             },
             pattern: {
               value: /^\S+@\S+\.\S+$/,
               message: intl.formatMessage({
                 defaultMessage: 'Email format is invalid',
-                description: 'Auth / Signup / Email format error',
+                id: 'Auth / Signup / Email format error',
               }),
             },
           })}
@@ -43,11 +43,11 @@ export const SignupForm = () => {
           required
           label={intl.formatMessage({
             defaultMessage: 'Email',
-            description: 'Auth / Signup / Email label',
+            id: 'Auth / Signup / Email label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Write your email here...',
-            description: 'Auth / Signup / Email placeholder',
+            id: 'Auth / Signup / Email placeholder',
           })}
           error={errors.email?.message}
         />
@@ -60,14 +60,14 @@ export const SignupForm = () => {
               value: true,
               message: intl.formatMessage({
                 defaultMessage: 'Password is required',
-                description: 'Auth / Signup / Password required',
+                id: 'Auth / Signup / Password required',
               }),
             },
             minLength: {
               value: 8,
               message: intl.formatMessage({
                 defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                description: 'Auth / Signup / Password too short',
+                id: 'Auth / Signup / Password too short',
               }),
             },
           })}
@@ -75,11 +75,11 @@ export const SignupForm = () => {
           type="password"
           label={intl.formatMessage({
             defaultMessage: 'Password',
-            description: 'Auth / Signup / Password label',
+            id: 'Auth / Signup / Password label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Minimum 8 characters',
-            description: 'Auth / Signup / Password placeholder',
+            id: 'Auth / Signup / Password placeholder',
           })}
           error={errors.password?.message}
         />
@@ -91,20 +91,20 @@ export const SignupForm = () => {
             value: true,
             message: intl.formatMessage({
               defaultMessage: 'You need to accept terms and conditions',
-              description: 'Auth / Signup / Password required',
+              id: 'Auth / Signup / Terms and conditions required',
             }),
           },
         })}
         label={intl.formatMessage(
           {
             defaultMessage: 'You must accept our {termsLink} and {policyLink}.',
-            description: 'Auth / Signup / Accept terms label',
+            id: 'Auth / Signup / Accept terms label',
           },
           {
             termsLink: (
               <InlineLink to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                 <FormattedMessage
-                  description="Auth / Signup / Accept checkbox / T&C link"
+                  id="Auth / Signup / Accept checkbox / T&C link"
                   defaultMessage="Terms of Use"
                 />
               </InlineLink>
@@ -112,7 +112,7 @@ export const SignupForm = () => {
             policyLink: (
               <InlineLink to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                 <FormattedMessage
-                  description="Auth / Signup / Accept checkbox / Privacy policy link"
+                  id="Auth / Signup / Accept checkbox / Privacy policy link"
                   defaultMessage="Privacy Policy"
                 />
               </InlineLink>
@@ -125,7 +125,7 @@ export const SignupForm = () => {
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        <FormattedMessage defaultMessage="Sign up" description="Auth / signup button" />
+        <FormattedMessage defaultMessage="Sign up" id="Auth / signup button" />
       </SubmitButton>
     </Container>
   );

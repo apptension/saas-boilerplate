@@ -2,9 +2,9 @@ import { Story } from '@storybook/react';
 import { generatePath } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-import EditCrudDemoItemQuery from '../../../__generated__/editCrudDemoItemQuery.graphql';
 import { withProviders } from '../../../shared/utils/storybook';
 import { RoutesConfig } from '../../../app/config/routes';
+import EditCrudDemoItemQuery from './__generated__/editCrudDemoItemQuery.graphql';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
 const Template: Story = () => {

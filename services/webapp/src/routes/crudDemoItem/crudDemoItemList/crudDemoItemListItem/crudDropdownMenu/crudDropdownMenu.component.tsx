@@ -51,7 +51,7 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
         }}
         aria-label={intl.formatMessage({
           defaultMessage: 'Open item actions',
-          description: 'CrudDemoItemList / Open item actions',
+          id: 'CrudDemoItemList.Open item actions',
         })}
         aria-expanded={isOpen}
       >
@@ -74,10 +74,10 @@ export const CrudDropdownMenu = ({ itemId, className }: CrudDropdownMenuProps) =
             to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
           >
-            <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />
+            <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
           </ButtonLink>
           <Button variant={ButtonVariant.FLAT} onClick={handleDelete} icon={<Icon size={14} icon={deleteIcon} />}>
-            <FormattedMessage description="CrudDemoItem list / Delete button" defaultMessage="Delete" />
+            <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
           </Button>
         </Menu>
       </ClickAwayListener>

@@ -5,7 +5,6 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { ConnectionHandler } from 'relay-runtime';
 import { useFragment } from 'react-relay';
-import { crudDemoItemListItem$key } from '../../../../__generated__/crudDemoItemListItem.graphql';
 import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
@@ -14,6 +13,7 @@ import { Link } from '../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
+import { crudDemoItemListItem$key } from './__generated__/crudDemoItemListItem.graphql';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
 export type CrudDemoItemListItemProps = {
@@ -60,10 +60,10 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
-        <FormattedMessage description="CrudDemoItem list / Edit link" defaultMessage="Edit" />
+        <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
       <Button variant={ButtonVariant.RAW} onClick={handleDelete} icon={<Icon size={14} icon={deleteIcon} />}>
-        <FormattedMessage description="CrudDemoItem list / Delete button" defaultMessage="Delete" />
+        <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>
   );

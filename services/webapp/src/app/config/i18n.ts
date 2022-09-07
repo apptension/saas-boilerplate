@@ -13,8 +13,9 @@ export const appLocales = Object.values(Locale);
 
 export interface TranslationMessage {
   defaultMessage: string;
-  description: string;
+  description?: string;
 }
+
 export type TranslationMessagesWithDescriptors = Record<string, TranslationMessage>;
 
 export type TranslationMessages = Record<string, string>;

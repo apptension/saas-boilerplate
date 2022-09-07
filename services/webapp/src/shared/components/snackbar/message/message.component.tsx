@@ -18,7 +18,7 @@ export const Message = ({ text, onDismiss }: MessageProps) => {
         onClick={onDismiss}
         aria-label={intl.formatMessage({
           defaultMessage: 'Dismiss',
-          description: 'Snackbar message / Dismiss',
+          id: 'Snackbar message / Dismiss',
         })}
       >
         <Icon icon={closeIcon} />

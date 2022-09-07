@@ -7,16 +7,17 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { Route, Routes, useParams } from 'react-router';
 import { ConnectionHandler } from 'relay-runtime';
 
-import demoItemListItemTestQueryGraphql, {
-  demoItemListItemTestQuery,
-} from '../../../../__generated__/demoItemListItemTestQuery.graphql';
 import { demoItemFactory } from '../../../../mocks/factories';
 import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.component';
 import { useFavoriteDemoItemsLoader } from '../../../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.hook';
-import favoriteDemoItemListQueryGraphql from '../../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import useFavoriteDemoItemListQueryGraphql from '../../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
+import demoItemListItemTestQueryGraphql, {
+  demoItemListItemTestQuery,
+} from './__generated__/demoItemListItemTestQuery.graphql';
+
 
 describe('DemoItemListItem: Component', () => {
   const defaultProps: Omit<DemoItemListItemProps, 'item' | 'queryRef'> = {
@@ -83,7 +84,7 @@ describe('DemoItemListItem: Component', () => {
       );
 
       relayEnvironment.mock.queuePendingOperation(demoItemListItemTestQueryGraphql, {});
-      relayEnvironment.mock.queuePendingOperation(favoriteDemoItemListQueryGraphql, {});
+      relayEnvironment.mock.queuePendingOperation(useFavoriteDemoItemListQueryGraphql, {});
 
       return relayEnvironment;
     };
@@ -162,7 +163,7 @@ describe('DemoItemListItem: Component', () => {
       );
 
       relayEnvironment.mock.queuePendingOperation(demoItemListItemTestQueryGraphql, {});
-      relayEnvironment.mock.queuePendingOperation(favoriteDemoItemListQueryGraphql, {});
+      relayEnvironment.mock.queuePendingOperation(useFavoriteDemoItemListQueryGraphql, {});
 
       return relayEnvironment;
     };

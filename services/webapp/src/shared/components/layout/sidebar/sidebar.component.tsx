@@ -52,7 +52,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
             onClick={closeSidebar}
             aria-label={intl.formatMessage({
               defaultMessage: 'Open profile',
-              description: 'Home / open profile avatar label',
+              id: 'Home / open profile avatar label',
             })}
           >
             <Avatar />
@@ -62,7 +62,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           onClick={closeSidebar}
           aria-label={intl.formatMessage({
             defaultMessage: 'Close menu',
-            description: 'Home / close sidebar icon label',
+            id: 'Home / close sidebar icon label',
           })}
         >
           <Icon icon={closeIcon} />
@@ -72,58 +72,58 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       <MenuLinks>
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.home)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="Dashboard" description="Home / dashboard link" />
+            <FormattedMessage defaultMessage="Dashboard" id="Home / dashboard link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.demoItems)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="Demo Contentful items" description="Home / demo contentful items link" />
+            <FormattedMessage defaultMessage="Demo Contentful items" id="Home / demo contentful items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.crudDemoItem.list)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="CRUD Example Items" description="Home / CRUD example items link" />
+            <FormattedMessage defaultMessage="CRUD Example Items" id="Home / CRUD example items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess allowedRoles={Role.ADMIN}>
           <MenuLink to={generateLocalePath(RoutesConfig.admin)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="Admin" description="Home / admin link" />
+            <FormattedMessage defaultMessage="Admin" id="Home / admin link" />
           </MenuLink>
         </RoleAccess>
 
         <MenuLink to={generateLocalePath(RoutesConfig.privacyPolicy)} onClick={closeSidebar}>
-          <FormattedMessage defaultMessage="Privacy policy" description="Home / privacy policy link" />
+          <FormattedMessage defaultMessage="Privacy policy" id="Home / privacy policy link" />
         </MenuLink>
 
         <MenuLink to={generateLocalePath(RoutesConfig.termsAndConditions)} onClick={closeSidebar}>
-          <FormattedMessage defaultMessage="Terms and conditions" description="Home / t&c link" />
+          <FormattedMessage defaultMessage="Terms and conditions" id="Home / t&c link" />
         </MenuLink>
 
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.finances.paymentConfirm)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="Payment demo" description="Home / payment demo link" />
+            <FormattedMessage defaultMessage="Payment demo" id="Home / payment demo link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.subscriptions.index)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="My Subscription" description="Home / my subscriptions link" />
+            <FormattedMessage defaultMessage="My Subscription" id="Home / my subscriptions link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
           <MenuLink to={generateLocalePath(RoutesConfig.documents)} onClick={closeSidebar}>
-            <FormattedMessage defaultMessage="Documents" description="Home / documents link" />
+            <FormattedMessage defaultMessage="Documents" id="Home / documents link" />
           </MenuLink>
         </RoleAccess>
 
         {!isDesktop && (
           <RoleAccess>
             <MenuLink as={Button} onClick={handleLogout}>
-              <FormattedMessage defaultMessage="Logout" description="Home / logout link" />
+              <FormattedMessage defaultMessage="Logout" id="Home / logout link" />
             </MenuLink>
           </RoleAccess>
         )}

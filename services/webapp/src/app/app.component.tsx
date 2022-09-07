@@ -60,7 +60,7 @@ export const App = () => {
             path={RoutesConfig.admin}
             element={
               <H1>
-                <FormattedMessage defaultMessage="This page is only visible for admins" description="Admin / Heading" />
+                <FormattedMessage defaultMessage="This page is only visible for admins" id="Admin / Heading" />
               </H1>
             }
           />

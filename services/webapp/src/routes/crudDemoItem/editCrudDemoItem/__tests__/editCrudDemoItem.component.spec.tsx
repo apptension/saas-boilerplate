@@ -5,13 +5,13 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { produce } from 'immer';
 
-import EditCrudDemoItemQuery from '../../../../__generated__/editCrudDemoItemQuery.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import editCrudDemoItemQueryGraphql from '../__generated__/editCrudDemoItemQuery.graphql';
 
 describe('EditCrudDemoItem: Component', () => {
   const routePath = RoutesConfig.getLocalePath(['crudDemoItem', 'edit']);
@@ -36,7 +36,7 @@ describe('EditCrudDemoItem: Component', () => {
         CrudDemoItemType: () => ({ name: 'old item' }),
       })
     );
-    relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
+    relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
     render(<Component />, { relayEnvironment, routerHistory });
 
@@ -52,7 +52,7 @@ describe('EditCrudDemoItem: Component', () => {
           CrudDemoItemType: () => ({ id: 'test-id', name: 'old item' }),
         })
       );
-      relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
+      relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
       render(<Component />, { relayEnvironment, routerHistory });
 
@@ -79,7 +79,7 @@ describe('EditCrudDemoItem: Component', () => {
           CrudDemoItemType: () => ({ name: 'old item' }),
         })
       );
-      relayEnvironment.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: 'test-id' });
+      relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
       render(<Component />, { relayEnvironment, routerHistory, reduxStore });
 

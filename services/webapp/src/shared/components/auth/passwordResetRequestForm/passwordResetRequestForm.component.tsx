@@ -32,7 +32,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
       email: {
         user_not_found: intl.formatMessage({
           defaultMessage: 'The user with specified email does not exist',
-          description: 'Auth / Request password reset / User not found',
+          id: 'Auth / Request password reset / User not found',
         }),
       },
     },
@@ -65,14 +65,14 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
             value: true,
             message: intl.formatMessage({
               defaultMessage: 'Email is required',
-              description: 'Auth / Request password reset  / Email required',
+              id: 'Auth / Request password reset  / Email required',
             }),
           },
           pattern: {
             value: /^\S+@\S+\.\S+$/,
             message: intl.formatMessage({
               defaultMessage: 'Email format is invalid',
-              description: 'Auth / Request password reset / Email format error',
+              id: 'Auth / Request password reset / Email format error',
             }),
           },
         })}
@@ -80,11 +80,11 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
         required
         label={intl.formatMessage({
           defaultMessage: 'Email',
-          description: 'Auth / Request password reset / Email label',
+          id: 'Auth / Request password reset / Email label',
         })}
         placeholder={intl.formatMessage({
           defaultMessage: 'Write your email here...',
-          description: 'Auth / Request password reset / Email placeholder',
+          id: 'Auth / Request password reset / Email placeholder',
         })}
         error={errors.email?.message}
       />
@@ -95,12 +95,12 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
         {isSubmitted ? (
           <FormattedMessage
             defaultMessage="Send the link again"
-            description="Auth / Request password reset / Resend button"
+            id="Auth / Request password reset / Resend button"
           />
         ) : (
           <FormattedMessage
             defaultMessage="Send the link"
-            description="Auth / Request password reset / Submit button"
+            id="Auth / Request password reset / Submit button"
           />
         )}
       </SubmitButton>

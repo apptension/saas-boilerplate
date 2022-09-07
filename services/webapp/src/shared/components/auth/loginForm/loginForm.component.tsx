@@ -26,14 +26,14 @@ export const LoginForm = () => {
               value: true,
               message: intl.formatMessage({
                 defaultMessage: 'Email is required',
-                description: 'Auth / Login / Email required',
+                id: 'Auth / Login / Email required',
               }),
             },
             pattern: {
               value: /^\S+@\S+\.\S+$/,
               message: intl.formatMessage({
                 defaultMessage: 'Email format is invalid',
-                description: 'Auth / Login / Email format error',
+                id: 'Auth / Login / Email format error',
               }),
             },
           })}
@@ -41,11 +41,11 @@ export const LoginForm = () => {
           required
           label={intl.formatMessage({
             defaultMessage: 'Email',
-            description: 'Auth / Login / Email label',
+            id: 'Auth / Login / Email label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Write your email here...',
-            description: 'Auth / Login / Email placeholder',
+            id: 'Auth / Login / Email placeholder',
           })}
           error={errors.email?.message}
         />
@@ -58,7 +58,7 @@ export const LoginForm = () => {
               value: true,
               message: intl.formatMessage({
                 defaultMessage: 'Password is required',
-                description: 'Auth / Login / Password required',
+                id: 'Auth / Login / Password required',
               }),
             },
           })}
@@ -66,11 +66,11 @@ export const LoginForm = () => {
           required
           label={intl.formatMessage({
             defaultMessage: 'Password',
-            description: 'Auth / Login / Password label',
+            id: 'Auth / Login / Password label',
           })}
           placeholder={intl.formatMessage({
             defaultMessage: 'Write your password here...',
-            description: 'Auth / Login / Password placeholder',
+            id: 'Auth / Login / Password placeholder',
           })}
           error={errors.password?.message}
         />
@@ -79,7 +79,7 @@ export const LoginForm = () => {
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        <FormattedMessage defaultMessage="Log in" description="Auth / login button" />
+        <FormattedMessage defaultMessage="Log in" id="Auth / login button" />
       </SubmitButton>
     </Container>
   );

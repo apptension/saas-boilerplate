@@ -17,7 +17,7 @@ export const EditPaymentMethod = () => {
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'Payment method changed successfully',
-    description: 'Stripe payment / payment successful',
+    id: 'Stripe edit payment method / successful message',
   });
 
   return (

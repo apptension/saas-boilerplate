@@ -3,7 +3,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { screen } from '@testing-library/react';
 import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';
 import { makeContextRenderer } from '../../../../utils/testUtils';
-import NotificationsListQuery from '../../../../../__generated__/notificationsListQuery.graphql';
+import notificationsListQueryGraphql from '../../__generated__/notificationsListQuery.graphql';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 describe('NotificationsButton: Component', () => {
@@ -22,7 +22,7 @@ describe('NotificationsButton: Component', () => {
         hasUnreadNotifications: () => false,
       })
     );
-    environment.mock.queuePendingOperation(NotificationsListQuery, {});
+    environment.mock.queuePendingOperation(notificationsListQueryGraphql, {});
 
     render(
       {

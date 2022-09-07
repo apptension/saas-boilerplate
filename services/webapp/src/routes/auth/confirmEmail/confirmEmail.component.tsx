@@ -19,19 +19,19 @@ export const ConfirmEmail = () => {
   const { showMessage } = useSnackbar();
 
   const loggedOutSuccessMessage = intl.formatMessage({
-    description: 'Confirm email / Logged out success message',
+    id: 'ConfirmEmail.LoggedOutSuccessMessage',
     defaultMessage: 'Congratulations! Now you can log in.',
   });
 
   const loggedInSuccessMessage = intl.formatMessage({
-    description: 'Confirm email / Logged in success message',
+    id: 'ConfirmEmail.LoggedInSuccessMessage',
     defaultMessage: 'Congratulations! Your email has been confirmed.',
   });
 
   const successMessage = isLoggedIn ? loggedInSuccessMessage : loggedOutSuccessMessage;
 
   const errorMessage = intl.formatMessage({
-    description: 'Confirm email / Error message',
+    id: 'ConfirmEmail.ErrorMessage',
     defaultMessage: 'Invalid token.',
   });
 

@@ -2,14 +2,14 @@ import { FormattedMessage } from 'react-intl';
 import { ConnectionHandler } from 'relay-runtime';
 import graphql from 'babel-plugin-relay/macro';
 import { PreloadedQuery } from 'react-relay';
-import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
-import { addCrudDemoItemMutation } from '../../../__generated__/addCrudDemoItemMutation.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { crudDemoItemListQuery } from '../crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
+import { addCrudDemoItemMutation } from './__generated__/addCrudDemoItemMutation.graphql';
 import { Container, Header } from './addCrudDemoItem.styles';
 
 export type AddCrudDemoItemProps = () => {
@@ -44,7 +44,7 @@ export const AddCrudDemoItem = () => {
     <Container>
       <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
       <Header>
-        <FormattedMessage defaultMessage="Add CRUD Example Item" description="AddCrudDemoItem / Header" />
+        <FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />
       </Header>
       <CrudDemoItemForm onSubmit={onFormSubmit} />
     </Container>

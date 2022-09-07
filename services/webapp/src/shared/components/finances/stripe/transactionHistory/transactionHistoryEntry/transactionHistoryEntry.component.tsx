@@ -16,13 +16,13 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
 
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',
-    description: 'Stripe / Transaction History / Donation payment description',
+    id: 'Stripe / Transaction History / Donation payment description',
   });
 
   const subscriptionPaymentDescription = intl.formatMessage(
     {
       defaultMessage: '{planName} plan',
-      description: 'Stripe / Transaction History / Subscription payment description',
+      id: 'Stripe / Transaction History / Subscription payment description',
     },
     { planName: entryProductName }
   );

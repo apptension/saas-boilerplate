@@ -2,7 +2,7 @@ import { Suspense, useEffect } from 'react';
 import graphql from 'babel-plugin-relay/macro';
 import { useQueryLoader } from 'react-relay';
 import { useParams } from 'react-router';
-import { crudDemoItemDetailsQuery } from '../../../__generated__/crudDemoItemDetailsQuery.graphql';
+import { crudDemoItemDetailsQuery } from './__generated__/crudDemoItemDetailsQuery.graphql';
 import { CrudDemoItemDetailsContent } from './crudDemoItemDetailsContent.component';
 
 export const CrudDemoItemDetails = () => {

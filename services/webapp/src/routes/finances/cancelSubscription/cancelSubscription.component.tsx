@@ -25,7 +25,7 @@ export const CancelSubscription = () => {
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'You will be moved to free plan with the next billing period',
-    description: 'Cancel subscription / Success message',
+    id: 'Cancel subscription / Success message',
   });
 
   const handleConfirm = async () => {
@@ -39,25 +39,25 @@ export const CancelSubscription = () => {
   return (
     <Container>
       <H2>
-        <FormattedMessage defaultMessage="Current plan info" description="Cancel subscription / Current plan header" />
+        <FormattedMessage defaultMessage="Current plan info" id="Cancel subscription / Current plan header" />
       </H2>
       <Label>
         <FormattedMessage
           defaultMessage="Active plan: {name} [{price} USD]"
-          description="Cancel subscription / Active plan"
+          id="Cancel subscription / Active plan"
           values={{ name: activeSubscriptionPlan?.name, price: activeSubscriptionPlan?.price }}
         />
       </Label>
       <Label>
         <FormattedMessage
           defaultMessage="Next renewal / expiry: {date}"
-          description="Cancel subscription / Next renewal"
+          id="Cancel subscription / Next renewal"
           values={{ date: <FormattedDate value={activeSubscriptionRenewalDate} /> }}
         />
       </Label>
 
       <Button onClick={handleConfirm}>
-        <FormattedMessage defaultMessage="Cancel subscription" description="Cancel subscription / Button label" />
+        <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
       </Button>
     </Container>
   );

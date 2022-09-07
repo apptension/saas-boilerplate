@@ -2,10 +2,10 @@ import { Suspense, useEffect } from 'react';
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { FormattedMessage } from 'react-intl';
-import { crudDemoItemListQuery } from '../../../__generated__/crudDemoItemListQuery.graphql';
 import { RoutesConfig } from '../../../app/config/routes';
 import { ButtonVariant } from '../../../shared/components/forms/button';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { crudDemoItemListQuery } from './__generated__/crudDemoItemListQuery.graphql';
 import { AddNewLink, Container, Header } from './crudDemoItemList.styles';
 import { CrudDemoItemListContent } from './crudDemoItemListContent';
 
@@ -34,7 +34,7 @@ export const CrudDemoItemList = () => {
     <Container>
       <Header>CRUD Example Items</Header>
       <AddNewLink to={generateLocalePath(RoutesConfig.crudDemoItem.add)} variant={ButtonVariant.PRIMARY}>
-        <FormattedMessage description="CrudDemoItemList / Add new" defaultMessage="Add new item" />
+        <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
       </AddNewLink>
 
       {listQueryRef && (

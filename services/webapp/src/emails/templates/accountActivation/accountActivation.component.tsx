@@ -19,22 +19,22 @@ export const Template = ({ userId, token }: AccountActivationProps) => {
   return (
     <Layout
       title={
-        <FormattedMessage defaultMessage="Finish the registration" description="Email / Account Activation / Title" />
+        <FormattedMessage defaultMessage="Finish the registration" id="Email / Account Activation / Title" />
       }
       text={
         <FormattedMessage
           defaultMessage="Click the button below to confirm registration."
-          description="Email / Account Activation / Text"
+          id="Email / Account Activation / Text"
         />
       }
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Confirm registration" description="Email / Account Activation / Link label" />
+        <FormattedMessage defaultMessage="Confirm registration" id="Email / Account Activation / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Confirm registration" description="Email / Account Activation / Subject" />
+  <FormattedMessage defaultMessage="Confirm registration" id="Email / Account Activation / Subject" />
 );

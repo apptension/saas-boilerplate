@@ -50,29 +50,29 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
         required
         label={intl.formatMessage({
           defaultMessage: 'Name',
-          description: 'Stripe form / Name label',
+          id: 'Stripe form / Name label',
         })}
         placeholder={intl.formatMessage({
           defaultMessage: 'Write here...',
-          description: 'Stripe form / Name placeholder',
+          id: 'Stripe form / Name placeholder',
         })}
         onChange={(e) => handleDataChange({ value: e.target.value, elementType: 'name' })}
       />
 
       <StripeField
-        label={intl.formatMessage({ defaultMessage: 'Card number', description: 'Stripe form / card number' })}
+        label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}
       >
         <CardNumberElement onChange={handleDataChange} options={{ style: StripeIframeStyles, showIcon: true }} />
       </StripeField>
 
       <StripeField
         small
-        label={intl.formatMessage({ defaultMessage: 'Year', description: 'Stripe form / expiry date' })}
+        label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}
       >
         <CardExpiryElement onChange={handleDataChange} options={{ style: StripeIframeStyles }} />
       </StripeField>
 
-      <StripeField small label={intl.formatMessage({ defaultMessage: 'CVC', description: 'Stripe form / CVC' })}>
+      <StripeField small label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
         <CardCvcElement onChange={handleDataChange} options={{ style: StripeIframeStyles }} />
       </StripeField>
     </Container>

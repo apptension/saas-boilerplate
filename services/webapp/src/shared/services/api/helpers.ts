@@ -1,7 +1,7 @@
-import path from 'path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Store } from 'redux';
+
 import { GlobalState } from '../../../app/config/reducers';
 import { ENV } from '../../../app/config/env';
 import { PendingRequest } from './types';
@@ -63,11 +63,27 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
 
 export type URLParams<T extends string> = Record<T, number | string>;
 
-export type ExtractURLParams<T extends (variables: any) => string> = Parameters<T>[0];
+export type ExtractURLParams<T extends (constiables: any) => string> = Parameters<T>[0];
 
 export const apiURL = (value: string) => ENV.BASE_API_URL + value;
 
-export const apiURLs = <T extends Record<string, string | ((variables: any) => string)>>(
+function pathJoin(...args: Array<string>) {
+  let parts: Array<string> = [];
+  for (let i = 0, l = arguments.length; i < l; i++) {
+    parts = parts.concat(args[i].split('/'));
+  }
+  const newParts = [];
+  for (let i = 0, l = parts.length; i < l; i++) {
+    const part = parts[i];
+    if (!part || part === '.') continue;
+    if (part === '..') newParts.pop();
+    else newParts.push(part);
+  }
+  if (parts[0] === '') newParts.unshift('');
+  return newParts.join('/') || (newParts.length ? '/' : '.');
+}
+
+export const apiURLs = <T extends Record<string, string | ((constiables: any) => string)>>(
   root: string,
   nestedRoutes: T
 ): T => {
@@ -76,14 +92,14 @@ export const apiURLs = <T extends Record<string, string | ((variables: any) => s
     if (protocolRx.test(baseUrl)) {
       return new URL(value, baseUrl).href;
     }
-    return path.join(baseUrl, value);
+    return pathJoin(baseUrl, value);
   };
 
   const newEntries = Object.entries(nestedRoutes).map(([key, value]) => {
     const prefixedValue =
       typeof value === 'string'
-        ? joinURL(path.join(root, value), ENV.BASE_API_URL)
-        : (args: any) => joinURL(path.join(root, value(args)), ENV.BASE_API_URL);
+        ? joinURL(pathJoin(root, value), ENV.BASE_API_URL) + '/'
+        : (args: any) => joinURL(pathJoin(root, value(args)), ENV.BASE_API_URL) + '/';
     return [key, prefixedValue];
   });
   return Object.fromEntries(newEntries) as T;

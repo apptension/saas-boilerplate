@@ -4,9 +4,9 @@ import { useFormatFileSize } from '../../fileSize';
 import { useSnackbar } from '../../snackbar';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import AuthUpdateUserProfileMutation, {
+import authUpdateUserProfileMutationGraphql, {
   authUpdateUserProfileMutation,
-} from '../../../../__generated__/authUpdateUserProfileMutation.graphql';
+} from '../../../../modules/auth/__generated__/authUpdateUserProfileMutation.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { UpdateAvatarFormFields } from './avatarForm.types';
 
@@ -18,7 +18,7 @@ export const useAvatarForm = () => {
   const fileTooLargeMessage = intl.formatMessage(
     {
       defaultMessage: 'File cannot be larger than {size}',
-      description: 'Auth / Avatar Form / Error / Too large',
+      id: 'Auth / Avatar Form / Error / Too large',
     },
     {
       size: formatFileSize(MAX_AVATAR_SIZE),
@@ -42,7 +42,9 @@ export const useAvatarForm = () => {
     form: { reset },
   } = form;
 
-  const [commitAvatarMutation] = usePromiseMutation<authUpdateUserProfileMutation>(AuthUpdateUserProfileMutation);
+  const [commitAvatarMutation] = usePromiseMutation<authUpdateUserProfileMutation>(
+    authUpdateUserProfileMutationGraphql
+  );
 
   const handleAvatarUpload = handleSubmit(async (data: UpdateAvatarFormFields) => {
     try {
@@ -61,7 +63,7 @@ export const useAvatarForm = () => {
         snackbar.showMessage(
           intl.formatMessage({
             defaultMessage: 'Avatar successfully changed.',
-            description: 'Auth / Avatar Form / Success message',
+            id: 'Auth / Avatar Form / Success message',
           })
         );
       }

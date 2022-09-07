@@ -39,17 +39,17 @@ export const Subscriptions = () => {
     <Container>
       <Section>
         <Header>
-          <FormattedMessage defaultMessage="Subscriptions" description="My subscription / Header" />
+          <FormattedMessage defaultMessage="Subscriptions" id="My subscription / Header" />
         </Header>
 
         <Subheader>
-          <FormattedMessage defaultMessage="Current plan:" description="My subscription / Active plan" />
+          <FormattedMessage defaultMessage="Current plan:" id="My subscription / Active plan" />
           <RowValue>{activeSubscriptionPlan?.name}</RowValue>
         </Subheader>
 
         {activeSubscriptionRenewalDate && (
           <Row>
-            <FormattedMessage defaultMessage="Next renewal:" description="My subscription / Next renewal" />
+            <FormattedMessage defaultMessage="Next renewal:" id="My subscription / Next renewal" />
             <RowValue>
               <FormattedDate value={activeSubscriptionRenewalDate} />
             </RowValue>
@@ -58,7 +58,7 @@ export const Subscriptions = () => {
 
         {!activeSubscriptionRenewalDate && activeSubscriptionExpiryDate && (
           <Row>
-            <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Expiry date" />
+            <FormattedMessage defaultMessage="Expiry date:" id="My subscription / Expiry date" />
             <RowValue>
               <FormattedDate value={activeSubscriptionExpiryDate} />
             </RowValue>
@@ -67,7 +67,7 @@ export const Subscriptions = () => {
 
         {nextSubscriptionPlanDetails && (
           <Row>
-            <FormattedMessage defaultMessage="Next billing plan:" description="My subscription / Next plan" />
+            <FormattedMessage defaultMessage="Next billing plan:" id="My subscription / Next plan" />
             <RowValue>{nextSubscriptionPlanDetails?.name}</RowValue>
           </Row>
         )}
@@ -75,10 +75,10 @@ export const Subscriptions = () => {
         {isTrialActive && trialEnd && (
           <>
             <Subheader>
-              <FormattedMessage defaultMessage="Free trial info" description="My subscription / Trial header" />
+              <FormattedMessage defaultMessage="Free trial info" id="My subscription / Trial header" />
             </Subheader>
             <Row>
-              <FormattedMessage defaultMessage="Expiry date:" description="My subscription / Trial expiry date" />
+              <FormattedMessage defaultMessage="Expiry date:" id="My subscription / Trial expiry date" />
               <RowValue>
                 <FormattedDate value={trialEnd} />
               </RowValue>
@@ -87,14 +87,14 @@ export const Subscriptions = () => {
         )}
 
         <Link to={generateLocalePath(RoutesConfig.subscriptions.changePlan)}>
-          <FormattedMessage defaultMessage="Edit subscription" description="My subscription / Edit subscription" />
+          <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
         </Link>
 
         {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !isCancelled && (
           <Link to={generateLocalePath(RoutesConfig.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
             <FormattedMessage
               defaultMessage="Cancel subscription"
-              description="My subscription / Cancel subscription"
+              id="My subscription / Cancel subscription"
             />
           </Link>
         )}
@@ -102,14 +102,14 @@ export const Subscriptions = () => {
 
       <Section>
         <Header>
-          <FormattedMessage defaultMessage="Payments" description="My subscription / Payments header" />
+          <FormattedMessage defaultMessage="Payments" id="My subscription / Payments header" />
         </Header>
 
         <Subheader>
-          <FormattedMessage defaultMessage="Payment method" description="My subscription / Payment method header" />
+          <FormattedMessage defaultMessage="Payment method" id="My subscription / Payment method header" />
         </Subheader>
         <Row>
-          <FormattedMessage defaultMessage="Current method:" description="My subscription / Current method" />
+          <FormattedMessage defaultMessage="Current method:" id="My subscription / Current method" />
           <RowValue>
             <StripePaymentMethodInfo method={activeSubscriptionPaymentMethod} />
           </RowValue>
@@ -119,12 +119,12 @@ export const Subscriptions = () => {
           {activeSubscriptionPaymentMethod ? (
             <FormattedMessage
               defaultMessage="Edit payment method"
-              description="My subscription / Edit payment method button"
+              id="My subscription / Edit payment method button"
             />
           ) : (
             <FormattedMessage
               defaultMessage="Add payment method"
-              description="My subscription / Add payment method button"
+              id="My subscription / Add payment method button"
             />
           )}
         </Link>
@@ -132,21 +132,21 @@ export const Subscriptions = () => {
 
       <Section>
         <Header>
-          <FormattedMessage defaultMessage="History" description="My subscription / History header" />
+          <FormattedMessage defaultMessage="History" id="My subscription / History header" />
         </Header>
 
         {transactionsHistory.length > 0 ? (
           <Link to={generateLocalePath(RoutesConfig.finances.history)}>
             <FormattedMessage
               defaultMessage="View transaction history"
-              description="My subscription / View history button"
+              id="My subscription / View history button"
             />
           </Link>
         ) : (
           <Row>
             <FormattedMessage
               defaultMessage="You don't have any history to show"
-              description="My subscription / No transaction history"
+              id="My subscription / No transaction history"
             />
           </Row>
         )}

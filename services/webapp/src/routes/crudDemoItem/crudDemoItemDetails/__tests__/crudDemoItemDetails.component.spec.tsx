@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-import CrudDemoItemDetailsQuery from '../../../../__generated__/crudDemoItemDetailsQuery.graphql';
+import crudDemoItemDetailsQueryGraphql from '../__generated__/crudDemoItemDetailsQuery.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
@@ -27,7 +27,7 @@ describe('CrudDemoItemDetails: Component', () => {
         CrudDemoItemType: () => ({ name: 'demo item name' }),
       })
     );
-    relayEnvironment.mock.queuePendingOperation(CrudDemoItemDetailsQuery, { id: 'test-id' });
+    relayEnvironment.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, { id: 'test-id' });
 
     render(<Component />, { routerHistory, relayEnvironment });
 

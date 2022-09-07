@@ -23,7 +23,7 @@ export const ValidRoutesProviders = () => {
   return (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
       <>
-        <FormattedMessage defaultMessage="Apptension Boilerplate" description="App / Page title">
+        <FormattedMessage defaultMessage="Apptension Boilerplate" id="App / Page title">
           {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
         </FormattedMessage>
 

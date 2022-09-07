@@ -3,10 +3,10 @@ import { generatePath } from 'react-router';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 
-import demoItemQueryGraphql from '../../__generated__/demoItemQuery.graphql';
 import { RoutesConfig } from '../../app/config/routes';
 import { ProvidersWrapper } from '../../shared/utils/testUtils';
 import { demoItemFactory } from '../../mocks/factories';
+import demoItemQueryGraphql from './__generated__/demoItemQuery.graphql';
 import { DemoItem } from './demoItem.component';
 
 const defaultItemId = 'test-id';

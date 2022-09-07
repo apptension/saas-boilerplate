@@ -6,7 +6,7 @@ import { generatePath } from 'react-router';
 import { DemoItem } from '../demoItem.component';
 import { makeContextRenderer } from '../../../shared/utils/testUtils';
 import { RoutesConfig } from '../../../app/config/routes';
-import demoItemQueryGraphql from '../../../__generated__/demoItemQuery.graphql';
+import demoItemQueryGraphql from '../__generated__/demoItemQuery.graphql';
 import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 
 describe('DemoItem: Component', () => {

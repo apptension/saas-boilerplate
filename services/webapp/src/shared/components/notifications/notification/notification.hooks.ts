@@ -1,10 +1,10 @@
 import { MouseEvent } from 'react';
 import graphql from 'babel-plugin-relay/macro';
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import {
   notificationMutation,
   UpdateNotificationMutationInput,
-} from '../../../../__generated__/notificationMutation.graphql';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+} from './__generated__/notificationMutation.graphql';
 
 export const useToggleIsRead = (input: UpdateNotificationMutationInput) => {
   const [commitNotificationMutation] = usePromiseMutation<notificationMutation>(graphql`

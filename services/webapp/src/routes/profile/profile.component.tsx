@@ -11,7 +11,7 @@ export const Profile = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="User profile" description="Auth / Profile details / Header" />
+        <FormattedMessage defaultMessage="User profile" id="Auth / Profile details / Header" />
       </Header>
 
       <HeaderInfo>
@@ -20,7 +20,7 @@ export const Profile = () => {
         <EmailLabel>
           <FormattedMessage
             defaultMessage="Email: {email}"
-            description="Auth / Profile details / Email label"
+            id="Auth / Profile details / Email label"
             values={{ email: currentUser?.email }}
           />
         </EmailLabel>
@@ -28,21 +28,21 @@ export const Profile = () => {
         <RolesLabel>
           <FormattedMessage
             defaultMessage="Roles: {roles}"
-            description="Auth / Profile details / Roles label"
+            id="Auth / Profile details / Roles label"
             values={{ roles: currentUser?.roles?.join(',') }}
           />
         </RolesLabel>
       </HeaderInfo>
 
       <FormHeader>
-        <FormattedMessage defaultMessage="Personal data" description="Auth / Profile details / Personal data header" />
+        <FormattedMessage defaultMessage="Personal data" id="Auth / Profile details / Personal data header" />
       </FormHeader>
       <EditProfileForm />
 
       <FormHeader>
         <FormattedMessage
           defaultMessage="Change password"
-          description="Auth / Profile details / Change password header"
+          id="Auth / Profile details / Change password header"
         />
       </FormHeader>
       <ChangePasswordForm />

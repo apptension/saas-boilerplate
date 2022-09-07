@@ -21,7 +21,7 @@ export const Avatar = ({ size, ...props }: AvatarProps) => {
       {!isNil(avatar) ? (
         <Image
           src={avatar}
-          alt={intl.formatMessage({ defaultMessage: 'user avatar', description: 'Avatar / Image alt' })}
+          alt={intl.formatMessage({ defaultMessage: 'user avatar', id: 'Avatar / Image alt' })}
         />
       ) : (
         <ProfileInitial profile={currentUser} />

@@ -1,7 +1,7 @@
 import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
-import UseFavoriteDemoItemListQuery from '../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { fillCommonQueryWithUser } from '../../utils/commonQuery';
+import UseFavoriteDemoItemListQuery from './__generated__/useFavoriteDemoItemListQuery.graphql';
 
 export const generateRelayEnvironment = (
   itemId: string | null = 'item-1',

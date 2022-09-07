@@ -8,7 +8,7 @@ export const TransactionHistory = () => {
     <Container>
       <BackButton />
       <Header>
-        <FormattedMessage defaultMessage="Transaction history" description="Stripe / Transaction History / Header" />
+        <FormattedMessage defaultMessage="Transaction history" id="Stripe / Transaction History / Header" />
       </Header>
 
       <TransactionHistoryList />

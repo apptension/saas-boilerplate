@@ -6,7 +6,9 @@ import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutat
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { RoutesConfig } from '../../../../app/config/routes';
-import AuthSignupMutation, { authSignupMutation } from '../../../../__generated__/authSignupMutation.graphql';
+import authSignupMutationGraphql, {
+  authSignupMutation,
+} from '../../../../modules/auth/__generated__/authSignupMutation.graphql';
 import { SignupFormFields } from './signupForm.types';
 
 export const useSignupForm = () => {
@@ -20,17 +22,17 @@ export const useSignupForm = () => {
       email: {
         unique: intl.formatMessage({
           defaultMessage: 'The email address is already taken',
-          description: 'Auth / Signup / email unique',
+          id: 'Auth / Signup / email unique',
         }),
       },
       password: {
         password_too_common: intl.formatMessage({
           defaultMessage: 'The password is too common.',
-          description: 'Auth / Signup / password too common',
+          id: 'Auth / Signup / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
           defaultMessage: "The password can't be entirely numeric.",
-          description: 'Auth / Signup / password entirely numeric',
+          id: 'Auth / Signup / password entirely numeric',
         }),
       },
     },
@@ -38,7 +40,7 @@ export const useSignupForm = () => {
 
   const { handleSubmit, setGraphQLResponseErrors } = form;
 
-  const [commitSignupMutation] = usePromiseMutation<authSignupMutation>(AuthSignupMutation);
+  const [commitSignupMutation] = usePromiseMutation<authSignupMutation>(authSignupMutationGraphql);
 
   const handleSignup = handleSubmit(async (data: SignupFormFields) => {
     try {

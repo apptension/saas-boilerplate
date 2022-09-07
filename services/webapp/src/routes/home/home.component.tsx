@@ -11,12 +11,12 @@ export const Home = () => {
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'Homepage',
-          description: 'Home / page title',
+          id: 'Home / page title',
         })}
       />
 
       <H1>
-        <FormattedMessage defaultMessage="Welcome!" description="Home / title" />
+        <FormattedMessage defaultMessage="Welcome!" id="Home / title" />
       </H1>
     </Container>
   );

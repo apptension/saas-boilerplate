@@ -13,3 +13,5 @@ public/uploads/**
 .DS_Store
 npm-debug.log
 .idea
+yalc.lock
+.yalc

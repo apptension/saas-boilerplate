@@ -3,9 +3,9 @@ import { fetchQuery } from 'relay-runtime';
 import graphql from 'babel-plugin-relay/macro';
 
 import { reportError } from '../../shared/utils/reportError';
-import { configContentfulAppConfigQuery } from '../../__generated__/configContentfulAppConfigQuery.graphql';
 import { relayEnvironment } from '../../shared/services/graphqlApi/relayEnvironment';
 import { startupActions } from '../startup';
+import { configContentfulAppConfigQuery } from './__generated__/configContentfulAppConfigQuery.graphql';
 import { configActions } from './index';
 
 function* fetchConfig() {

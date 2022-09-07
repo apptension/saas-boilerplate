@@ -13,20 +13,20 @@ export const Signup = () => {
   return (
     <Container>
       <Header>
-        <FormattedMessage defaultMessage="Sign up" description="Auth / Signup / heading" />
+        <FormattedMessage defaultMessage="Sign up" id="Auth / Signup / heading" />
       </Header>
 
       <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />
 
       <OrDivider>
-        <FormattedMessage defaultMessage="or" description="Auth / Signup / or" />
+        <FormattedMessage defaultMessage="or" id="Auth / Signup / or" />
       </OrDivider>
 
       <SignupForm />
 
       <Links>
         <Link to={generateLocalePath(RoutesConfig.login)}>
-          <FormattedMessage defaultMessage="Log in" description="Auth / Signup / login link" />
+          <FormattedMessage defaultMessage="Log in" id="Auth / Signup / login link" />
         </Link>
       </Links>
     </Container>

@@ -40,7 +40,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className }: Subscription
             <Feature>
               <FormattedMessage
                 defaultMessage="Your subscription will start with a trial"
-                description="Change plan item / Trial eligible info"
+                id="Change plan item / Trial eligible info"
               />
             </Feature>
           )}
@@ -50,7 +50,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className }: Subscription
       <SelectButton onClick={onSelect} disabled={isScheduledForNextPeriod || isFree}>
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
-          description="Change plan item / Select button"
+          id="Change plan item / Select button"
           values={{ price }}
         />
       </SelectButton>

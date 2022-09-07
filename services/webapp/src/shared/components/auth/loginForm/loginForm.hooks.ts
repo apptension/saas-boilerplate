@@ -5,9 +5,9 @@ import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
-import { loginFormMutation } from '../../../../__generated__/loginFormMutation.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { LoginFormFields } from './loginForm.types';
+import { loginFormMutation } from './__generated__/loginFormMutation.graphql';
 
 export const useLoginForm = () => {
   const intl = useIntl();
@@ -20,11 +20,11 @@ export const useLoginForm = () => {
       nonFieldErrors: {
         no_active_account: intl.formatMessage({
           defaultMessage: 'Incorrect authentication credentials.',
-          description: 'Login form / error / no active account',
+          id: 'Login form / error / no active account',
         }),
         authentication_failed: intl.formatMessage({
           defaultMessage: 'Incorrect authentication credentials.',
-          description: 'Login form / error / authentication failed',
+          id: 'Login form / error / authentication failed',
         }),
       },
     },

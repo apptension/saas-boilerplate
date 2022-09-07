@@ -3,7 +3,7 @@ import ClickAwayListener from 'react-click-away-listener';
 import { useQueryLoader } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import { useOpenState } from '../../hooks/useOpenState';
-import { notificationsListQuery } from '../../../__generated__/notificationsListQuery.graphql';
+import { notificationsListQuery } from './__generated__/notificationsListQuery.graphql';
 import { NotificationsButton } from './notificationsButton';
 import { NotificationsList } from './notificationsList';
 

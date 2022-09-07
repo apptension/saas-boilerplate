@@ -26,7 +26,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
   const { showMessage } = useSnackbar();
 
   const successMessage = intl.formatMessage({
-    description: 'CrudDemoItem form / Success message',
+    id: 'CrudDemoItem form / Success message',
     defaultMessage: '🎉 Changes saved successfully!',
   });
 
@@ -64,24 +64,24 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
                 value: MAX_NAME_LENGTH,
                 message: intl.formatMessage({
                   defaultMessage: 'Name is too long',
-                  description: 'CrudDemoItem form / Name max length error',
+                  id: 'CrudDemoItem form / Name max length error',
                 }),
               },
               required: {
                 value: true,
                 message: intl.formatMessage({
                   defaultMessage: 'Name is required',
-                  description: 'CrudDemoItem form / Name required',
+                  id: 'CrudDemoItem form / Name required',
                 }),
               },
             })}
             label={intl.formatMessage({
               defaultMessage: 'Name:',
-              description: 'CrudDemoItem Form / Name label',
+              id: 'CrudDemoItem Form / Name label',
             })}
             placeholder={intl.formatMessage({
               defaultMessage: 'Name',
-              description: 'CrudDemoItem form / Name placeholder',
+              id: 'CrudDemoItem form / Name placeholder',
             })}
             error={errors.name?.message}
           />
@@ -91,11 +91,11 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
 
         <Buttons>
           <Link to={generateLocalePath(RoutesConfig.crudDemoItem.list)} variant={ButtonVariant.SECONDARY}>
-            <FormattedMessage defaultMessage="Cancel" description="CrudDemoItem form / Cancel button" />
+            <FormattedMessage defaultMessage="Cancel" id="CrudDemoItem form / Cancel button" />
           </Link>
 
           <Button type="submit">
-            <FormattedMessage defaultMessage="Save changes" description="CrudDemoItem form / Submit button" />
+            <FormattedMessage defaultMessage="Save changes" id="CrudDemoItem form / Submit button" />
           </Button>
         </Buttons>
       </Form>

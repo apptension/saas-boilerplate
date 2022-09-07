@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../shared/utils/testUtils';
-import demoItemsAllQueryGraphql from '../../../__generated__/demoItemsAllQuery.graphql';
-import favoriteDemoItemListQueryGraphql from '../../../__generated__/useFavoriteDemoItemListQuery.graphql';
 import { demoItemFactory } from '../../../mocks/factories';
+import useFavoriteDemoItemListQueryGraphql from '../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
 import { DemoItems } from '../demoItems.component';
 import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import demoItemsAllQueryGraphql from '../__generated__/demoItemsAllQuery.graphql';
 
 describe('DemoItems: Component', () => {
   const getRelayEnv = () => {
@@ -39,7 +39,7 @@ describe('DemoItems: Component', () => {
       })
     );
     relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
-    relayEnvironment.mock.queuePendingOperation(favoriteDemoItemListQueryGraphql, {});
+    relayEnvironment.mock.queuePendingOperation(useFavoriteDemoItemListQueryGraphql, {});
     return relayEnvironment;
   };
 

@@ -6,7 +6,7 @@ import { RoutesConfig } from '../../app/config/routes';
 import { imageProps } from '../../shared/services/contentful';
 import { BackButton } from '../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
-import demoItemQueryNode, { demoItemQuery } from '../../__generated__/demoItemQuery.graphql';
+import demoItemQueryNode, { demoItemQuery } from './__generated__/demoItemQuery.graphql';
 import { Container, Description, Image, Title } from './demoItem.styles';
 
 type DemoItemContentProps = {
