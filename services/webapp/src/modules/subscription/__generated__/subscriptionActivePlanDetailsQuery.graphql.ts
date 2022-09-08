@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<535d12ee6f7e29deff75564a047dfcd1>>
+ * @generated SignedSource<<d98165a1db29ba3bb765c20bc3e39dd1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,23 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type subscriptionActivePlanDetailsQuery$variables = {};
 export type subscriptionActivePlanDetailsQuery$data = {
   readonly activeSubscription: {
-    readonly canActivateTrial: boolean | null;
-    readonly phases: ReadonlyArray<{
-      readonly endDate: string | null;
-      readonly item: {
-        readonly price: {
-          readonly " $fragmentSpreads": FragmentRefs<"subscriptionPlanItemFragment">;
-        } | null;
-        readonly quantity: number | null;
-      } | null;
-      readonly startDate: String | null;
-      readonly trialEnd: string | null;
-    } | null> | null;
-    readonly subscription: {
-      readonly startDate: String | null;
-      readonly trialEnd: String | null;
-      readonly trialStart: String | null;
-    } | null;
+    readonly " $fragmentSpreads": FragmentRefs<"subscriptionActiveSubscriptionFragment">;
   } | null;
 };
 export type subscriptionActivePlanDetailsQuery = {
@@ -49,38 +33,10 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "endDate",
-  "storageKey": null
-},
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "trialEnd",
   "storageKey": null
 },
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "quantity",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "trialStart",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "canActivateTrial",
-  "storageKey": null
-},
-v6 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -103,62 +59,10 @@ return {
         "plural": false,
         "selections": [
           {
-            "alias": null,
             "args": null,
-            "concreteType": "SubscriptionSchedulePhaseType",
-            "kind": "LinkedField",
-            "name": "phases",
-            "plural": true,
-            "selections": [
-              (v0/*: any*/),
-              (v1/*: any*/),
-              (v2/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "SubscriptionSchedulePhaseItemType",
-                "kind": "LinkedField",
-                "name": "item",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "SubscriptionPlanType",
-                    "kind": "LinkedField",
-                    "name": "price",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "args": null,
-                        "kind": "FragmentSpread",
-                        "name": "subscriptionPlanItemFragment"
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  (v3/*: any*/)
-                ],
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "StripeSubscriptionType",
-            "kind": "LinkedField",
-            "name": "subscription",
-            "plural": false,
-            "selections": [
-              (v0/*: any*/),
-              (v2/*: any*/),
-              (v4/*: any*/)
-            ],
-            "storageKey": null
-          },
-          (v5/*: any*/)
+            "kind": "FragmentSpread",
+            "name": "subscriptionActiveSubscriptionFragment"
+          }
         ],
         "storageKey": null
       }
@@ -189,8 +93,14 @@ return {
             "plural": true,
             "selections": [
               (v0/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "endDate",
+                "storageKey": null
+              },
               (v1/*: any*/),
-              (v2/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -207,7 +117,7 @@ return {
                     "name": "price",
                     "plural": false,
                     "selections": [
-                      (v6/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -223,7 +133,7 @@ return {
                         "name": "product",
                         "plural": false,
                         "selections": [
-                          (v6/*: any*/),
+                          (v2/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -244,7 +154,13 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "quantity",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -260,30 +176,42 @@ return {
             "plural": false,
             "selections": [
               (v0/*: any*/),
-              (v2/*: any*/),
-              (v4/*: any*/),
-              (v6/*: any*/)
+              (v1/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "trialStart",
+                "storageKey": null
+              },
+              (v2/*: any*/)
             ],
             "storageKey": null
           },
-          (v5/*: any*/),
-          (v6/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "canActivateTrial",
+            "storageKey": null
+          },
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "962d903b4df0b49aff2401800ff319ea",
+    "cacheID": "634c410d67a9d97595026b5c27ece744",
     "id": null,
     "metadata": {},
     "name": "subscriptionActivePlanDetailsQuery",
     "operationKind": "query",
-    "text": "query subscriptionActivePlanDetailsQuery {\n  activeSubscription {\n    phases {\n      startDate\n      endDate\n      trialEnd\n      item {\n        price {\n          ...subscriptionPlanItemFragment\n          id\n        }\n        quantity\n      }\n    }\n    subscription {\n      startDate\n      trialEnd\n      trialStart\n      id\n    }\n    canActivateTrial\n    id\n  }\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
+    "text": "query subscriptionActivePlanDetailsQuery {\n  activeSubscription {\n    ...subscriptionActiveSubscriptionFragment\n    id\n  }\n}\n\nfragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n  phases {\n    startDate\n    endDate\n    trialEnd\n    item {\n      price {\n        ...subscriptionPlanItemFragment\n        id\n      }\n      quantity\n    }\n  }\n  subscription {\n    startDate\n    trialEnd\n    trialStart\n    id\n  }\n  canActivateTrial\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "985316b8409122ab2baddf2acaa406db";
+(node as any).hash = "285cabd16cd893e21bff335460aec4be";
 
 export default node;

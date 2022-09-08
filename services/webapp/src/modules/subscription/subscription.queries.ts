@@ -22,6 +22,28 @@ graphql`
 `;
 
 graphql`
+  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
+    phases {
+      startDate
+      endDate
+      trialEnd
+      item {
+        price {
+          ...subscriptionPlanItemFragment
+        }
+        quantity
+      }
+    }
+    subscription {
+      startDate
+      trialEnd
+      trialStart
+    }
+    canActivateTrial
+  }
+`;
+
+graphql`
   query subscriptionPlansAllQuery {
     allSubscriptionPlans(first: 100) {
       edges {
@@ -37,23 +59,7 @@ graphql`
 graphql`
   query subscriptionActivePlanDetailsQuery {
     activeSubscription {
-      phases {
-        startDate
-        endDate
-        trialEnd
-        item {
-          price {
-            ...subscriptionPlanItemFragment
-          }
-          quantity
-        }
-      }
-      subscription {
-        startDate
-        trialEnd
-        trialStart
-      }
-      canActivateTrial
+      ...subscriptionActiveSubscriptionFragment
     }
   }
 `;

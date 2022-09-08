@@ -1,10 +1,6 @@
 import { client } from '../client';
 import { apiURLs } from '../helpers';
-import {
-  SubscriptionGetApiResponseData,
-  SubscriptionUpdateApiRequestData,
-  SubscriptionUpdateApiResponseData,
-} from './types';
+import { SubscriptionGetApiResponseData } from './types';
 
 export const SUBSCRIPTION_URL = apiURLs('/finances/', {
   INDEX: '/subscription/me/',
@@ -13,11 +9,6 @@ export const SUBSCRIPTION_URL = apiURLs('/finances/', {
 
 export const get = async () => {
   const res = await client.get<SubscriptionGetApiResponseData>(SUBSCRIPTION_URL.INDEX);
-  return res.data;
-};
-
-export const update = async (data: SubscriptionUpdateApiRequestData) => {
-  const res = await client.put<SubscriptionUpdateApiResponseData>(SUBSCRIPTION_URL.INDEX, data);
   return res.data;
 };
 

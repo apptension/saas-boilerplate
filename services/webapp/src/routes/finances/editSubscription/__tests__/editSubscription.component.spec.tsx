@@ -1,13 +1,12 @@
 import userEvent from '@testing-library/user-event';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { connectionFromArray, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
 import { EditSubscription } from '../editSubscription.component';
-import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
+import { subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { subscriptionActions } from '../../../../modules/subscription';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
@@ -26,10 +25,6 @@ const mockMonthlyPlan = subscriptionPlanFactory({
   product: { name: SubscriptionPlanName.MONTHLY },
 });
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
-
-const userSubscription = subscriptionFactory({
-  phases: [subscriptionPhaseFactory({ item: { price: mockMonthlyPlan } })],
-});
 
 const getRelayEnv = () => {
   const relayEnvironment = createMockEnvironment();
@@ -50,8 +45,6 @@ describe('EditSubscription: Component', () => {
 
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      mockDispatch.mockResolvedValue({ isError: false, ...userSubscription });
-
       const { history, pushSpy } = spiedHistory();
       const relayEnvironment = getRelayEnv();
       render(<EditSubscription />, { relayEnvironment, routerHistory: history });
@@ -59,7 +52,14 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      expect(mockDispatch).toHaveBeenCalledWith(subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' }));
+      expect(relayEnvironment).toHaveLatestOperation('subscriptionChangeActiveSubscriptionMutation');
+      expect(relayEnvironment).toLatestOperationInputEqual({ price: 'plan_monthly' });
+
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+      });
+
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
       expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
     });
@@ -67,16 +67,33 @@ describe('EditSubscription: Component', () => {
 
   describe('plan fails to update', () => {
     it('should show error message', async () => {
-      mockDispatch.mockResolvedValue({
-        isError: true,
-        nonFieldErrors: [{ code: 'error_code', message: 'error message' }],
-      });
       const relayEnvironment = getRelayEnv();
 
       render(<EditSubscription />, { relayEnvironment });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
+
+      const errorMessage = 'Missing payment method';
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, {
+          ...MockPayloadGenerator.generate(operation),
+          errors: [
+            {
+              message: 'GraphQlValidationError',
+              extensions: {
+                id: [
+                  {
+                    message: errorMessage,
+                    code: 'invalid',
+                  },
+                ],
+              },
+            },
+          ],
+        } as any);
+      });
 
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage('You need first to add a payment method. Go back and set it there')
