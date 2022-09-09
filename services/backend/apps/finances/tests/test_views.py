@@ -12,22 +12,6 @@ from .utils import stripe_encode
 pytestmark = pytest.mark.django_db
 
 
-class TestSubscriptionPlanListView:
-    def assert_plan(self, result, price):
-        assert result['id'] == price.id
-        assert result['product'] == {'id': price.product.id, 'name': price.product.name}
-
-    def test_return_available_plans(self, api_client, free_plan_price, monthly_plan_price, yearly_plan_price):
-        url = reverse('subscription-plans-list')
-
-        response = api_client.get(url)
-
-        assert response.status_code == status.HTTP_200_OK
-        self.assert_plan(response.data[0], free_plan_price)
-        self.assert_plan(response.data[1], monthly_plan_price)
-        self.assert_plan(response.data[2], yearly_plan_price)
-
-
 class TestUserActiveSubscriptionView:
     def assert_response(self, response, schedule):
         subscription = schedule.customer.subscription

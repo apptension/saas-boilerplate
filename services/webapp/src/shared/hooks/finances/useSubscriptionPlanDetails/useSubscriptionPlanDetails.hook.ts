@@ -5,8 +5,9 @@ import { times } from 'ramda';
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { selectActiveSubscriptionPlan } from '../../../../modules/subscription/subscription.selectors';
 import { subscriptionActions } from '../../../../modules/subscription';
+import { subscriptionPlanItemFragment$data } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 
-export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
+export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$data | SubscriptionPlan) => {
   const intl = useIntl();
 
   const examplePlanFeatureItem = intl.formatMessage({
@@ -37,9 +38,9 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlan) => {
 
   return plan
     ? {
-        name: planDisplayNames[plan.product.name],
-        features: planFeaturesList[plan.product.name],
-        price: plan.unitAmount / 100,
+        name: planDisplayNames[plan.product.name as SubscriptionPlanName],
+        features: planFeaturesList[plan.product.name as SubscriptionPlanName],
+        price: (plan.unitAmount ?? 0) / 100,
         isFree: plan.product.name === SubscriptionPlanName.FREE,
       }
     : {};

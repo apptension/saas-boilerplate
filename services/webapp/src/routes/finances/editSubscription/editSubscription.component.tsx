@@ -6,13 +6,12 @@ import { useSnackbar } from '../../../shared/components/snackbar';
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useAvailableSubscriptionPlans } from './editSubscription.hooks';
-import { Container, Header, PlanItem, Plans, Subheader } from './editSubscription.styles';
+import { SubscriptionPlans } from './subscriptionPlans';
+import { Container, Header, Subheader } from './editSubscription.styles';
 
 export const EditSubscription = () => {
   const intl = useIntl();
   const { showMessage } = useSnackbar();
-  const { plans } = useAvailableSubscriptionPlans();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const dispatch = useAsyncDispatch();
@@ -27,7 +26,10 @@ export const EditSubscription = () => {
     defaultMessage: 'You need first to add a payment method. Go back and set it there',
   });
 
-  const selectPlan = async (plan: string) => {
+  const selectPlan = async (plan: string | null) => {
+    if (!plan) {
+      return;
+    }
     const res = await dispatch(
       subscriptionActions.updateSubscriptionPlan({
         price: plan,
@@ -53,11 +55,7 @@ export const EditSubscription = () => {
         <FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />
       </Subheader>
 
-      <Plans>
-        {plans.map((plan) => (
-          <PlanItem key={plan.id} plan={plan} onSelect={() => selectPlan(plan.id)} />
-        ))}
-      </Plans>
+      <SubscriptionPlans onPlanSelection={selectPlan} />
     </Container>
   );
 };

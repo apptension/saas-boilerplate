@@ -1,6 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { SubscriptionPlan } from '../../../../shared/services/api/subscription/types';
+import { useFragment } from 'react-relay';
+
 import {
   useActiveSubscriptionPlanDetails,
   useSubscriptionPlanDetails,
@@ -10,16 +11,20 @@ import {
   selectIsSubscriptionCanceled,
   selectIsTrialEligible,
 } from '../../../../modules/subscription/subscription.selectors';
+import subscriptionPlanItemFragmentGraphql, {
+  subscriptionPlanItemFragment$key,
+} from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import { Container, Content, Feature, FeaturesList, SelectButton, Name } from './subscriptionPlanItem.styles';
 
 export type SubscriptionPlanItemProps = {
-  plan: SubscriptionPlan;
-  onSelect: () => void;
+  plan: subscriptionPlanItemFragment$key;
+  onSelect: (id: string | null) => void;
   className?: string;
 };
 
 export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
-  const { name, price, features, isFree } = useSubscriptionPlanDetails(plan);
+  const data = useFragment<subscriptionPlanItemFragment$key>(subscriptionPlanItemFragmentGraphql, plan);
+  const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const activeSubscription = useActiveSubscriptionPlanDetails({ forceRefetch: false });
   const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
   const isActivePlanCancelled = useSelector(selectIsSubscriptionCanceled);
@@ -47,7 +52,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className }: Subscription
         </FeaturesList>
       </Content>
 
-      <SelectButton onClick={onSelect} disabled={isScheduledForNextPeriod || isFree}>
+      <SelectButton onClick={() => onSelect(data.pk)} disabled={isScheduledForNextPeriod || isFree}>
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
           id="Change plan item / Select button"

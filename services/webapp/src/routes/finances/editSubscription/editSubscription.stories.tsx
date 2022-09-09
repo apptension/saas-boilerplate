@@ -1,17 +1,12 @@
 import { Story } from '@storybook/react';
 import { prepareState } from '../../../mocks/store';
-import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../mocks/factories';
+import { subscriptionFactory, subscriptionPhaseFactory } from '../../../mocks/factories';
 import { withProviders } from '../../../shared/utils/storybook';
 import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
 import { EditSubscription } from './editSubscription.component';
 
 const storeWithPlans = (activePlan: SubscriptionPlanName) =>
   prepareState((state) => {
-    state.subscription.availablePlans = [
-      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }),
-      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } }),
-      subscriptionPlanFactory({ product: { name: SubscriptionPlanName.YEARLY } }),
-    ];
     state.subscription.activeSubscription = subscriptionFactory({
       phases: [subscriptionPhaseFactory({ item: { price: { product: { name: activePlan } } } })],
     });

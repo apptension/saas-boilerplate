@@ -1,11 +1,16 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { connectionFromArray, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
+import { render } from '../../../../tests/utils/rendering';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { subscriptionActions } from '../../../../modules/subscription';
 import { snackbarActions } from '../../../../modules/snackbar';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -17,22 +22,28 @@ jest.mock('react-redux', () => {
 
 const mockMonthlyPlan = subscriptionPlanFactory({
   id: 'plan_monthly',
+  pk: 'plan_monthly',
   product: { name: SubscriptionPlanName.MONTHLY },
 });
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
-
-jest.mock('../editSubscription.hooks', () => ({
-  useAvailableSubscriptionPlans: () => ({ plans: [mockMonthlyPlan, mockYearlyPlan], isLoading: false }),
-}));
 
 const userSubscription = subscriptionFactory({
   phases: [subscriptionPhaseFactory({ item: { price: mockMonthlyPlan } })],
 });
 
-describe('EditSubscription: Component', () => {
-  const component = () => <EditSubscription />;
-  const render = makeContextRenderer(component);
+const getRelayEnv = () => {
+  const relayEnvironment = createMockEnvironment();
+  fillCommonQueryWithUser(relayEnvironment);
+  relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+    MockPayloadGenerator.generate(operation, {
+      SubscriptionPlanConnection: () => connectionFromArray([mockMonthlyPlan, mockYearlyPlan]),
+    })
+  );
+  relayEnvironment.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
+  return relayEnvironment;
+};
 
+describe('EditSubscription: Component', () => {
   beforeEach(() => {
     mockDispatch.mockReset();
   });
@@ -42,14 +53,13 @@ describe('EditSubscription: Component', () => {
       mockDispatch.mockResolvedValue({ isError: false, ...userSubscription });
 
       const { history, pushSpy } = spiedHistory();
-      render({}, { router: { history } });
+      const relayEnvironment = getRelayEnv();
+      render(<EditSubscription />, { relayEnvironment, routerHistory: history });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' })
-      );
+      expect(mockDispatch).toHaveBeenCalledWith(subscriptionActions.updateSubscriptionPlan({ price: 'plan_monthly' }));
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
       expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
     });
@@ -61,8 +71,9 @@ describe('EditSubscription: Component', () => {
         isError: true,
         nonFieldErrors: [{ code: 'error_code', message: 'error message' }],
       });
+      const relayEnvironment = getRelayEnv();
 
-      render({});
+      render(<EditSubscription />, { relayEnvironment });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
