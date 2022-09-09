@@ -1,1 +1,5 @@
-export { useSubscriptionPlanDetails, useActiveSubscriptionPlanDetails } from './useSubscriptionPlanDetails.hook';
+export {
+  useSubscriptionPlanDetails,
+  useActiveSubscriptionPlanDetails,
+  useActiveSubscriptionQueryLoader,
+} from './useSubscriptionPlanDetails.hook';

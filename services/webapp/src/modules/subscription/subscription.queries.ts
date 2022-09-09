@@ -13,6 +13,15 @@ graphql`
 `;
 
 graphql`
+  fragment subscriptionStripePaymentMethod on StripePaymentMethodType {
+    id
+    billingDetails
+    type
+    card
+  }
+`;
+
+graphql`
   query subscriptionPlansAllQuery {
     allSubscriptionPlans(first: 100) {
       edges {
@@ -21,6 +30,30 @@ graphql`
           ...subscriptionPlanItemFragment
         }
       }
+    }
+  }
+`;
+
+graphql`
+  query subscriptionActivePlanDetailsQuery {
+    activeSubscription {
+      phases {
+        startDate
+        endDate
+        trialEnd
+        item {
+          price {
+            ...subscriptionPlanItemFragment
+          }
+          quantity
+        }
+      }
+      subscription {
+        startDate
+        trialEnd
+        trialStart
+      }
+      canActivateTrial
     }
   }
 `;

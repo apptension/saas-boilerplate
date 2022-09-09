@@ -409,6 +409,52 @@ export interface PageInfo {
 }
 
 /** An enumeration. */
+export enum PaymentMethodType {
+  /** Acss Dbit */
+  AcssDebit = 'ACSS_DEBIT',
+  /** Afterpay Clearpay */
+  AfterpayClearpay = 'AFTERPAY_CLEARPAY',
+  /** Alipay */
+  Alipay = 'ALIPAY',
+  /** BECS Debit (Australia) */
+  AuBecsDebit = 'AU_BECS_DEBIT',
+  /** Bacs Direct Debit */
+  BacsDebit = 'BACS_DEBIT',
+  /** Bancontact */
+  Bancontact = 'BANCONTACT',
+  /** Boleto */
+  Boleto = 'BOLETO',
+  /** Card */
+  Card = 'CARD',
+  /** Card present */
+  CardPresent = 'CARD_PRESENT',
+  /** EPS */
+  Eps = 'EPS',
+  /** FPX */
+  Fpx = 'FPX',
+  /** Giropay */
+  Giropay = 'GIROPAY',
+  /** Grabpay */
+  Grabpay = 'GRABPAY',
+  /** iDEAL */
+  Ideal = 'IDEAL',
+  /** Interac (card present) */
+  InteracPresent = 'INTERAC_PRESENT',
+  /** Klarna */
+  Klarna = 'KLARNA',
+  /** OXXO */
+  Oxxo = 'OXXO',
+  /** Przelewy24 */
+  P24 = 'P24',
+  /** SEPA Direct Debit */
+  SepaDebit = 'SEPA_DEBIT',
+  /** SOFORT */
+  Sofort = 'SOFORT',
+  /** Wechat Pay */
+  WechatPay = 'WECHAT_PAY'
+}
+
+/** An enumeration. */
 export enum PriceBillingScheme {
   /** Per-unit */
   PerUnit = 'PER_UNIT',
@@ -442,6 +488,7 @@ export enum ProductType {
 
 export interface Query {
   __typename?: 'Query';
+  activeSubscription?: Maybe<SubscriptionScheduleType>;
   allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
@@ -519,8 +566,19 @@ export interface SingUpMutationPayload {
   refresh?: Maybe<Scalars['String']>;
 }
 
-export interface SubscriptionItemProductType extends Node {
-  __typename?: 'SubscriptionItemProductType';
+export interface StripePaymentMethodType extends Node {
+  __typename?: 'StripePaymentMethodType';
+  billingDetails?: Maybe<Scalars['GenericScalar']>;
+  card?: Maybe<Scalars['GenericScalar']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  pk?: Maybe<Scalars['String']>;
+  /** The type of the PaymentMethod. */
+  type: PaymentMethodType;
+}
+
+export interface StripeProductType extends Node {
+  __typename?: 'StripeProductType';
   /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
   active?: Maybe<Scalars['Boolean']>;
   /**
@@ -592,12 +650,51 @@ export interface SubscriptionItemProductType extends Node {
 }
 
 
-export interface SubscriptionItemProductTypePricesArgs {
+export interface StripeProductTypePricesArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface StripeSubscriptionType extends Node {
+  __typename?: 'StripeSubscriptionType';
+  /**
+   * End of the current period for which the subscription has been invoiced. At the
+   * end of this period, a new invoice will be created.
+   */
+  currentPeriodEnd: Scalars['DateTime'];
+  /** Start of the current period for which the subscription has been invoiced. */
+  currentPeriodStart: Scalars['DateTime'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  pk?: Maybe<Scalars['String']>;
+  /** Date when the subscription was first created. The date might differ from the created date due to backdating. */
+  startDate?: Maybe<Scalars['DateTime']>;
+  /** The status of this subscription. */
+  status: SubscriptionStatus;
+  /** If the subscription has a trial, the end of that trial. */
+  trialEnd?: Maybe<Scalars['DateTime']>;
+  /** If the subscription has a trial, the beginning of that trial. */
+  trialStart?: Maybe<Scalars['DateTime']>;
+}
+
+export interface StripeSubscriptionTypeConnection {
+  __typename?: 'StripeSubscriptionTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<StripeSubscriptionTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `StripeSubscriptionType` and its cursor. */
+export interface StripeSubscriptionTypeEdge {
+  __typename?: 'StripeSubscriptionTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripeSubscriptionType>;
 }
 
 export interface SubscriptionPlanConnection {
@@ -659,7 +756,7 @@ export interface SubscriptionPlanType extends Node {
   nickname: Scalars['String'];
   pk?: Maybe<Scalars['String']>;
   /** The product this price is associated with. */
-  product: SubscriptionItemProductType;
+  product: StripeProductType;
   /** The recurring components of a price such as `interval` and `usage_type`. */
   recurring?: Maybe<Scalars['String']>;
   /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
@@ -702,6 +799,120 @@ export interface SubscriptionPlanTypeEdge {
   cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<SubscriptionPlanType>;
+}
+
+/** An enumeration. */
+export enum SubscriptionScheduleEndBehavior {
+  /** Cancel */
+  Cancel = 'CANCEL',
+  /** Release */
+  Release = 'RELEASE'
+}
+
+export interface SubscriptionSchedulePhaseItemType {
+  __typename?: 'SubscriptionSchedulePhaseItemType';
+  price?: Maybe<SubscriptionPlanType>;
+  quantity?: Maybe<Scalars['Int']>;
+}
+
+export interface SubscriptionSchedulePhaseType {
+  __typename?: 'SubscriptionSchedulePhaseType';
+  endDate?: Maybe<Scalars['String']>;
+  item?: Maybe<SubscriptionSchedulePhaseItemType>;
+  startDate?: Maybe<Scalars['DateTime']>;
+  trialEnd?: Maybe<Scalars['String']>;
+}
+
+/** An enumeration. */
+export enum SubscriptionScheduleStatus {
+  /** Active */
+  Active = 'ACTIVE',
+  /** Canceled */
+  Canceled = 'CANCELED',
+  /** Completed */
+  Completed = 'COMPLETED',
+  /** Not started */
+  NotStarted = 'NOT_STARTED',
+  /** Released */
+  Released = 'RELEASED'
+}
+
+export interface SubscriptionScheduleType extends Node {
+  __typename?: 'SubscriptionScheduleType';
+  /** Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period. */
+  billingThresholds?: Maybe<Scalars['String']>;
+  canActivateTrial?: Maybe<Scalars['Boolean']>;
+  /** Time at which the subscription schedule was canceled. */
+  canceledAt?: Maybe<Scalars['DateTime']>;
+  /** Time at which the subscription schedule was completed. */
+  completedAt?: Maybe<Scalars['DateTime']>;
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`. */
+  currentPhase?: Maybe<Scalars['String']>;
+  defaultPaymentMethod?: Maybe<StripePaymentMethodType>;
+  /** Object representing the subscription schedule's default settings. */
+  defaultSettings?: Maybe<Scalars['String']>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** Behavior of the subscription schedule and underlying subscription when it ends. */
+  endBehavior: SubscriptionScheduleEndBehavior;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  phases?: Maybe<Array<Maybe<SubscriptionSchedulePhaseType>>>;
+  /** Time at which the subscription schedule was released. */
+  releasedAt?: Maybe<Scalars['DateTime']>;
+  /** The subscription once managed by this subscription schedule (if it is released). */
+  releasedSubscription?: Maybe<StripeSubscriptionType>;
+  /**
+   * The present status of the subscription schedule. Possible values are
+   * `not_started`, `active`, `completed`, `released`, and `canceled`.
+   */
+  status: SubscriptionScheduleStatus;
+  subscription?: Maybe<StripeSubscriptionType>;
+  /** The schedule associated with this subscription. */
+  subscriptions: StripeSubscriptionTypeConnection;
+}
+
+
+export interface SubscriptionScheduleTypeSubscriptionsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+/** An enumeration. */
+export enum SubscriptionStatus {
+  /** Active */
+  Active = 'ACTIVE',
+  /** Canceled */
+  Canceled = 'CANCELED',
+  /** Incomplete */
+  Incomplete = 'INCOMPLETE',
+  /** Incomplete Expired */
+  IncompleteExpired = 'INCOMPLETE_EXPIRED',
+  /** Past due */
+  PastDue = 'PAST_DUE',
+  /** Trialing */
+  Trialing = 'TRIALING',
+  /** Unpaid */
+  Unpaid = 'UNPAID'
 }
 
 export interface UpdateCrudDemoItemMutationInput {

@@ -79,7 +79,7 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
         return response.Response(serializer.data)
 
 
-class UserActiveSubscriptionView(generics.RetrieveUpdateAPIView):
+class UserActiveSubscriptionView(generics.UpdateAPIView):
     permission_classes = (policies.UserFullAccess,)
     serializer_class = serializers.UserSubscriptionScheduleSerializer
 
