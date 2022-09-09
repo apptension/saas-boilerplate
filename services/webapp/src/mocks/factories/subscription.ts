@@ -1,3 +1,4 @@
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 import {
   Subscription,
   SubscriptionPhase,
@@ -41,3 +42,26 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
     trialEnd: null,
   },
 }));
+
+export const fillSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
+  relayEnvironment.mock.resolveMostRecentOperation((operation) => {
+    return MockPayloadGenerator.generate(operation, {
+      SubscriptionScheduleType: (context, generateId) => ({
+        ...subscription,
+      }),
+    });
+  });
+};
+
+export const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
+  fillSubscriptionScheduleQuery(
+    relayEnvironment,
+    subscriptionFactory({
+      defaultPaymentMethod: paymentMethodFactory({
+        billingDetails: { name: 'Owner' },
+        card: { last4: '1234' },
+      }),
+      phases,
+    })
+  );
+};

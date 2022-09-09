@@ -5,6 +5,7 @@ import { Role } from '../modules/auth/auth.types';
 import { H1 } from '../theme/typography';
 import { AuthRoute } from '../shared/components/routes/authRoute';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
+import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
 import { LANG_PREFIX, RoutesConfig } from './config/routes';
 import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
 import {
@@ -46,10 +47,12 @@ export const App = () => {
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
           <Route path={RoutesConfig.demoItem} element={<DemoItem />} />
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem />} />
-          <Route path={RoutesConfig.subscriptions.index} element={<Subscriptions />} />
-          <Route path={RoutesConfig.subscriptions.changePlan} element={<EditSubscription />} />
-          <Route path={RoutesConfig.subscriptions.paymentMethod} element={<EditPaymentMethod />} />
-          <Route path={RoutesConfig.subscriptions.cancel} element={<CancelSubscription />} />
+          <Route element={<ActiveSubscriptionContext />}>
+            <Route path={RoutesConfig.subscriptions.index} element={<Subscriptions />} />
+            <Route path={RoutesConfig.subscriptions.changePlan} element={<EditSubscription />} />
+            <Route path={RoutesConfig.subscriptions.paymentMethod} element={<EditPaymentMethod />} />
+            <Route path={RoutesConfig.subscriptions.cancel} element={<CancelSubscription />} />
+          </Route>
           <Route path={RoutesConfig.finances.paymentConfirm} element={<FinancesPaymentConfirm />} />
           <Route path={RoutesConfig.finances.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />

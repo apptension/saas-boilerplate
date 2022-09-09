@@ -40,6 +40,7 @@ export interface Scalars {
 
 export interface ApiMutation {
   __typename?: 'ApiMutation';
+  cancelActiveSubscription?: Maybe<CancelActiveSubscriptionMutationPayload>;
   changeActiveSubscription?: Maybe<ChangeActiveSubscriptionMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
@@ -53,6 +54,11 @@ export interface ApiMutation {
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
   updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
+}
+
+
+export interface ApiMutationCancelActiveSubscriptionArgs {
+  input: CancelActiveSubscriptionMutationInput;
 }
 
 
@@ -131,6 +137,17 @@ export interface ApiSubscriptionNotificationCreatedArgs {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+}
+
+export interface CancelActiveSubscriptionMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface CancelActiveSubscriptionMutationPayload {
+  __typename?: 'CancelActiveSubscriptionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  subscriptionSchedule?: Maybe<SubscriptionScheduleType>;
+  subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
 }
 
 export interface ChangeActiveSubscriptionMutationInput {

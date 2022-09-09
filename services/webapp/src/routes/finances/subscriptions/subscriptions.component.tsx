@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { selectActiveSubscriptionPaymentMethod } from '../../../modules/subscription/subscription.selectors';
 import { RoutesConfig } from '../../../app/config/routes';
-import { useActiveSubscriptionQueryLoader } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { useTransactionHistory } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useActiveSubscriptionDetailsQueryRef } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { Container, Header, Link, Row, RowValue, Section, Subheader } from './subscriptions.styles';
 import { SubscriptionsContent } from './subscriptions.content';
 
@@ -15,7 +15,7 @@ export const Subscriptions = () => {
 
   const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
   const transactionsHistory = useTransactionHistory();
-  const activeSubscriptionDetailsQueryRef = useActiveSubscriptionQueryLoader();
+  const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
 
   return (
     <Container>
@@ -24,9 +24,9 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="Subscriptions" id="My subscription / Header" />
         </Header>
 
-        {activeSubscriptionDetailsQueryRef && (
+        {activeSubscriptionDetailsQueryRefContext && activeSubscriptionDetailsQueryRefContext.ref && (
           <Suspense fallback={null}>
-            <SubscriptionsContent activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRef} />
+            <SubscriptionsContent activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref} />
           </Suspense>
         )}
       </Section>
@@ -48,15 +48,9 @@ export const Subscriptions = () => {
 
         <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>
           {activeSubscriptionPaymentMethod ? (
-            <FormattedMessage
-              defaultMessage="Edit payment method"
-              id="My subscription / Edit payment method button"
-            />
+            <FormattedMessage defaultMessage="Edit payment method" id="My subscription / Edit payment method button" />
           ) : (
-            <FormattedMessage
-              defaultMessage="Add payment method"
-              id="My subscription / Add payment method button"
-            />
+            <FormattedMessage defaultMessage="Add payment method" id="My subscription / Add payment method button" />
           )}
         </Link>
       </Section>
@@ -68,10 +62,7 @@ export const Subscriptions = () => {
 
         {transactionsHistory.length > 0 ? (
           <Link to={generateLocalePath(RoutesConfig.finances.history)}>
-            <FormattedMessage
-              defaultMessage="View transaction history"
-              id="My subscription / View history button"
-            />
+            <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
           </Link>
         ) : (
           <Row>

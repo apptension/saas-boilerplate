@@ -1,6 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+import { Routes, Route } from 'react-router-dom';
 
 import { matchTextContent, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
@@ -11,9 +12,12 @@ import {
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
+  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
 } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 
 const getRelayEnv = () => {
   const relayEnvironment = createMockEnvironment();
@@ -32,44 +36,6 @@ const reduxInitialState = prepareState((state) => {
     ],
   });
 });
-
-const reduxInitialStateWithSubscriptionCanceled = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({
-    phases: [
-      subscriptionPhaseFactory({
-        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
-        item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
-      }),
-      subscriptionPhaseFactory({
-        startDate: new Date('Jan 1, 2099 GMT').toISOString(),
-        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
-      }),
-    ],
-  });
-});
-
-const fillSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
-  relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-    return MockPayloadGenerator.generate(operation, {
-      SubscriptionScheduleType: (context, generateId) => ({
-        ...subscription,
-      }),
-    });
-  });
-};
-
-const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
-  fillSubscriptionScheduleQuery(
-    relayEnvironment,
-    subscriptionFactory({
-      defaultPaymentMethod: paymentMethodFactory({
-        billingDetails: { name: 'Owner' },
-        card: { last4: '1234' },
-      }),
-      phases,
-    })
-  );
-};
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
   fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
@@ -93,10 +59,18 @@ const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = (relayEnvironmen
   ]);
 };
 
+const Component = () => (
+  <Routes>
+    <Route element={<ActiveSubscriptionContext />}>
+      <Route index element={<Subscriptions />} />
+    </Route>
+  </Routes>
+);
+
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
     const relayEnvironment = getRelayEnv();
-    render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+    render(<Component />, { relayEnvironment });
 
     await act(() => {
       resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -109,7 +83,7 @@ describe('Subscriptions: Component', () => {
 
   it('should render default payment method', async () => {
     const relayEnvironment = getRelayEnv();
-    render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+    render(<Component />, { reduxInitialState, relayEnvironment });
 
     await act(() => {
       resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -123,7 +97,7 @@ describe('Subscriptions: Component', () => {
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -135,7 +109,7 @@ describe('Subscriptions: Component', () => {
 
     it('should not render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -149,7 +123,7 @@ describe('Subscriptions: Component', () => {
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState: reduxInitialStateWithSubscriptionCanceled, relayEnvironment });
+      render(<Component />, { relayEnvironment });
       await act(() => {
         resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       });
@@ -161,7 +135,7 @@ describe('Subscriptions: Component', () => {
 
     it('should not render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState: reduxInitialStateWithSubscriptionCanceled, relayEnvironment });
+      render(<Component />, { relayEnvironment });
       await act(() => {
         resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       });
@@ -174,10 +148,10 @@ describe('Subscriptions: Component', () => {
 
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
-      const { history, pushSpy } = spiedHistory();
+      const { history, pushSpy } = spiedHistory('/');
 
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment, routerHistory: history });
+      render(<Component />, { relayEnvironment, routerHistory: history });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -191,7 +165,7 @@ describe('Subscriptions: Component', () => {
   describe('cancel subscription button', () => {
     it('should be hidden if subscription is already canceled', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState: reduxInitialStateWithSubscriptionCanceled, relayEnvironment });
+      render(<Component />, { relayEnvironment });
       await act(() => {
         resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       });
@@ -208,14 +182,9 @@ describe('Subscriptions: Component', () => {
           },
         }),
       ];
-      const reduxInitialState = prepareState((state) => {
-        state.subscription.activeSubscription = subscriptionFactory({
-          phases,
-        });
-      });
 
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         fillSubscriptionScheduleQueryWithPhases(relayEnvironment, phases);
@@ -226,13 +195,10 @@ describe('Subscriptions: Component', () => {
 
     it('should navigate to cancel subscription screen', async () => {
       const activeSubscription = subscriptionFactory();
-      const reduxInitialState = prepareState((state) => {
-        state.subscription.activeSubscription = activeSubscription;
-      });
 
       const relayEnvironment = getRelayEnv();
-      const { history, pushSpy } = spiedHistory();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment, routerHistory: history });
+      const { history, pushSpy } = spiedHistory('/');
+      render(<Component />, { relayEnvironment, routerHistory: history });
 
       await act(() => {
         fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
@@ -246,7 +212,7 @@ describe('Subscriptions: Component', () => {
   describe('trial section', () => {
     it('shouldnt be displayed if user has no trial active', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+      render(<Component />, { relayEnvironment });
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
       });
@@ -265,12 +231,9 @@ describe('Subscriptions: Component', () => {
           }),
         ],
       });
-      const reduxInitialState = prepareState((state) => {
-        state.subscription.activeSubscription = activeSubscription;
-      });
 
       const relayEnvironment = getRelayEnv();
-      render(<Subscriptions />, { reduxInitialState, relayEnvironment });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
