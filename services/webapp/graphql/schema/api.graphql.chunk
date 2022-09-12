@@ -5,6 +5,7 @@ schema {
 }
 
 type ApiMutation {
+  changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -21,6 +22,17 @@ type ApiMutation {
 
 type ApiSubscription {
   notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+}
+
+input ChangeActiveSubscriptionMutationInput {
+  price: String!
+  clientMutationId: String
+}
+
+type ChangeActiveSubscriptionMutationPayload {
+  subscriptionSchedule: SubscriptionScheduleType
+  subscriptionScheduleEdge: SubscriptionScheduleEdge
+  clientMutationId: String
 }
 
 type ContentfulDemoItemFavoriteConnection {
@@ -728,6 +740,15 @@ type SubscriptionPlanTypeConnection {
 type SubscriptionPlanTypeEdge {
   """The item at the end of the edge"""
   node: SubscriptionPlanType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""A Relay edge containing a `SubscriptionSchedule` and its cursor."""
+type SubscriptionScheduleEdge {
+  """The item at the end of the edge"""
+  node: SubscriptionScheduleType
 
   """A cursor for use in pagination"""
   cursor: String!

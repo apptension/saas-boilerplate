@@ -5,11 +5,12 @@ from djstripe import models as djstripe_models
 from graphene import relay, ObjectType
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
-
+from common.graphql import mutations
 from common.acl.policies import AnyoneFullAccess
 from common.graphql.acl import permission_classes
+
 from . import constants
-from . import utils
+from . import utils, serializers
 from .services import subscriptions
 
 
@@ -133,6 +134,22 @@ class PriceTypeConnection(graphene.Connection):
         node = SubscriptionPlanType
 
 
+class SubscriptionScheduleConnection(graphene.Connection):
+    class Meta:
+        node = SubscriptionScheduleType
+
+
+class ChangeActiveSubscriptionMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.UserSubscriptionScheduleSerializer
+        edge_class = SubscriptionScheduleConnection.Edge
+        require_id_field = False
+
+    @classmethod
+    def get_object(cls, model_class, root, info, **input):
+        return subscriptions.get_schedule(user=info.context.user)
+
+
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
@@ -150,3 +167,7 @@ class Query(graphene.ObjectType):
 
     def resolve_active_subscription(root, info):
         return subscriptions.get_schedule(user=info.context.user)
+
+
+class Mutation(graphene.ObjectType):
+    change_active_subscription = ChangeActiveSubscriptionMutation.Field()

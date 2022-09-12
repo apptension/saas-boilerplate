@@ -41,6 +41,3 @@ export interface Subscription {
 }
 
 export type SubscriptionGetApiResponseData = Subscription;
-
-export type SubscriptionUpdateApiRequestData = { price: string };
-export type SubscriptionUpdateApiResponseData = ApiFormSubmitResponse<SubscriptionUpdateApiRequestData, Subscription>;

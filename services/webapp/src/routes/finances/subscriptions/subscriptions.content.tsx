@@ -13,6 +13,9 @@ import { ButtonVariant } from '../../../shared/components/forms/button';
 import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import subscriptionActiveSubscriptionFragmentGraphql, {
+  subscriptionActiveSubscriptionFragment$key,
+} from '../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
 import { Link, Row, RowValue, Subheader } from './subscriptions.styles';
 
 type SubscriptionsContentProps = {
@@ -22,7 +25,11 @@ type SubscriptionsContentProps = {
 export const SubscriptionsContent = ({ activeSubscriptionQueryRef }: SubscriptionsContentProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const data = usePreloadedQuery(SubscriptionActivePlanDetailsQuery, activeSubscriptionQueryRef);
-  const phases = data.activeSubscription?.phases || [];
+  const activeSubscription = useFragment<subscriptionActiveSubscriptionFragment$key>(
+    subscriptionActiveSubscriptionFragmentGraphql,
+    data.activeSubscription
+  );
+  const phases = activeSubscription?.phases || [];
   const currentPhasePlan = phases[0]!.item!.price;
   const currentPhasePlanData = useFragment<subscriptionPlanItemFragment$key>(
     subscriptionPlanItemFragmentGraphql,
@@ -39,7 +46,7 @@ export const SubscriptionsContent = ({ activeSubscriptionQueryRef }: Subscriptio
   const activeSubscriptionRenewalDate = activeSubscriptionIsCancelled ? undefined : activeSubscriptionPeriodEndDate;
   const nextSubscriptionPlan = nextPhasePlanData ?? currentPhasePlanData;
   const nextSubscriptionPlanDetails = useSubscriptionPlanDetails(nextSubscriptionPlan || undefined);
-  const trialEnd = data.activeSubscription?.subscription?.trialEnd?.toString();
+  const trialEnd = activeSubscription?.subscription?.trialEnd?.toString();
   const isTrialActive = Boolean(trialEnd && Date.parse(trialEnd.toString()) >= Date.now());
 
   return (

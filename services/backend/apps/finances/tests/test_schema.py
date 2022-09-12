@@ -140,3 +140,91 @@ class TestActiveSubscriptionQuery:
         executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
 
         self.assert_response(executed['data']['activeSubscription'], subscription_schedule)
+
+
+class TestChangeActiveSubscriptionMutation:
+    CHANGE_ACTIVE_SUBSCRIPTION_MUTATION = '''
+        mutation($input: ChangeActiveSubscriptionMutationInput!)  {
+          changeActiveSubscription(input: $input) {
+            subscriptionSchedule {
+              subscription {
+                pk
+                status
+                trialStart
+                trialEnd
+              }
+              phases {
+                startDate
+                endDate
+                trialEnd
+                item {
+                  quantity
+                  price {
+                    pk
+                    unitAmount
+                    product {
+                      pk
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+    '''
+
+    def test_change_active_subscription(self, graphene_client, subscription_schedule, monthly_plan_price):
+        input = {'price': monthly_plan_price.id}
+        user = subscription_schedule.customer.subscriber
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['data']
+        assert "errors" not in executed
+
+    def test_change_when_user_has_no_payment_method_but_can_activate_trial(
+        self, graphene_client, customer_factory, subscription_schedule_factory, free_plan_price, monthly_plan_price
+    ):
+        input = {'price': monthly_plan_price.id}
+        customer = customer_factory(default_payment_method=None)
+        user = customer.subscriber
+        subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
+        djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['data']
+        assert "errors" not in executed
+
+    def test_return_error_on_change_if_customer_has_no_payment_method(
+        self, graphene_client, customer_factory, monthly_plan_price, subscription_schedule_factory
+    ):
+        input = {'price': monthly_plan_price.id}
+        customer = customer_factory(default_payment_method=None)
+        user = customer.subscriber
+        subscription_schedule_factory(
+            customer=customer, phases=[{'items': [{'price': monthly_plan_price.id}], 'trial_completed': True}]
+        )
+        djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["path"] == ["changeActiveSubscription"]
+        assert error["extensions"]["non_field_errors"] == [
+            {'message': 'Customer has no payment method setup', 'code': 'missing_payment_method'}
+        ]

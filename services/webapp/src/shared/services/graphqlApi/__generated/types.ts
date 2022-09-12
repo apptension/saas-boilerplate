@@ -40,6 +40,7 @@ export interface Scalars {
 
 export interface ApiMutation {
   __typename?: 'ApiMutation';
+  changeActiveSubscription?: Maybe<ChangeActiveSubscriptionMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
@@ -52,6 +53,11 @@ export interface ApiMutation {
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
   updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
+}
+
+
+export interface ApiMutationChangeActiveSubscriptionArgs {
+  input: ChangeActiveSubscriptionMutationInput;
 }
 
 
@@ -125,6 +131,18 @@ export interface ApiSubscriptionNotificationCreatedArgs {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+}
+
+export interface ChangeActiveSubscriptionMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  price: Scalars['String'];
+}
+
+export interface ChangeActiveSubscriptionMutationPayload {
+  __typename?: 'ChangeActiveSubscriptionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  subscriptionSchedule?: Maybe<SubscriptionScheduleType>;
+  subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
 }
 
 export interface ContentfulDemoItemFavoriteConnection {
@@ -799,6 +817,15 @@ export interface SubscriptionPlanTypeEdge {
   cursor: Scalars['String'];
   /** The item at the end of the edge */
   node?: Maybe<SubscriptionPlanType>;
+}
+
+/** A Relay edge containing a `SubscriptionSchedule` and its cursor. */
+export interface SubscriptionScheduleEdge {
+  __typename?: 'SubscriptionScheduleEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<SubscriptionScheduleType>;
 }
 
 /** An enumeration. */

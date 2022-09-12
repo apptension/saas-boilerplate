@@ -73,7 +73,9 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = djstripe_models.PaymentMethod
         fields = ('id', 'type', 'card', 'billing_details')
+        exclude_fields = ("id",)
         read_only_fields = fields
+        swagger_schema_fields = {"properties": {key for key in fields if key not in [1, 2, 3]}}
 
 
 class UpdateDefaultPaymentMethodSerializer(serializers.Serializer):
@@ -87,6 +89,7 @@ class SubscriptionItemProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
         fields = ('id', 'name')
+        swagger_schema_fields = {"properties": {}}
 
 
 class PriceSerializer(serializers.ModelSerializer):
@@ -222,7 +225,6 @@ class UserSubscriptionScheduleSerializer(serializers.ModelSerializer):
         updated_phases = [current_phase]
         if next_phase:
             updated_phases.append(next_phase)
-
         return subscriptions.update_schedule(instance, phases=updated_phases)
 
     class Meta:

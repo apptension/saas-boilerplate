@@ -155,10 +155,10 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         edge_class=None,
         edge_field_name=None,
         return_field_name=None,
+        require_id_field=True,
         _meta=None,
         **options,
     ):
-
         if not serializer_class:
             raise Exception("serializer_class is required for the SerializerMutation")
 
@@ -194,7 +194,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
             raise Exception("No type registered for model: {}".format(model_class.__name__))
 
         available_fields = cls.get_available_fields(input_fields, only_fields, exclude_fields)
-        if 'id' in available_fields:
+        if require_id_field and 'id' in available_fields:
             input_fields['id'] = relay.GlobalID(model_type)
 
         output_fields = OrderedDict({return_field_name: graphene.Field(model_type)})
@@ -219,11 +219,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         model_class = cls._meta.model_class
 
         if model_class:
-            pk = None
-            object_id = input.get('id')
-            if object_id:
-                _, pk = from_global_id(object_id)
-            instance = cls.get_object(model_class, pk, root, info, **input)
+            instance = cls.get_object(model_class, root, info, **input)
             return {
                 "instance": instance,
                 "data": {
@@ -241,7 +237,8 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         return {"data": input, "context": {"request": info.context}}
 
     @classmethod
-    def get_object(cls, model_class, pk, root, info, **input):
+    def get_object(cls, model_class, root, info, **input):
+        _, pk = from_global_id(input['id'])
         return get_object_or_404(cls.get_queryset(model_class, root, info, **input), pk=pk)
 
     @classmethod

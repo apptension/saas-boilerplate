@@ -79,14 +79,6 @@ class StripePaymentMethodViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin
         return response.Response(serializer.data)
 
 
-class UserActiveSubscriptionView(generics.UpdateAPIView):
-    permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.UserSubscriptionScheduleSerializer
-
-    def get_object(self):
-        return subscriptions.get_schedule(user=self.request.user)
-
-
 class CancelUserActiveSubscriptionView(generics.GenericAPIView):
     permission_classes = (policies.UserFullAccess,)
     serializer_class = serializers.CancelUserActiveSubscriptionSerializer

@@ -4,55 +4,11 @@ import calleee
 import pytest
 from django.urls import reverse
 from django.utils import timezone
-from djstripe import models as djstripe_models
 from rest_framework import status
 
 from .utils import stripe_encode
 
 pytestmark = pytest.mark.django_db
-
-
-class TestUserActiveSubscriptionView:
-    def test_change_active_subscription(self, api_client, subscription_schedule, monthly_plan_price):
-        user = subscription_schedule.customer.subscriber
-        api_client.force_authenticate(user)
-        url = reverse('user-active-subscription')
-
-        response = api_client.patch(url, {'price': monthly_plan_price.id})
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-
-    def test_change_when_user_has_no_payment_method_but_can_activate_trial(
-        self, api_client, customer_factory, subscription_schedule_factory, free_plan_price, monthly_plan_price
-    ):
-        customer = customer_factory(default_payment_method=None)
-        subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
-        user = customer.subscriber
-        djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
-        api_client.force_authenticate(user)
-
-        url = reverse('user-active-subscription')
-
-        response = api_client.patch(url, {'price': monthly_plan_price.id})
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-
-    def test_return_error_on_change_if_customer_has_no_payment_method(
-        self, api_client, customer_factory, monthly_plan_price, subscription_schedule_factory
-    ):
-        customer = customer_factory(default_payment_method=None)
-        subscription_schedule_factory(
-            customer=customer, phases=[{'items': [{'price': monthly_plan_price.id}], 'trial_completed': True}]
-        )
-        djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
-
-        api_client.force_authenticate(customer.subscriber)
-        url = reverse('user-active-subscription')
-
-        response = api_client.patch(url, {'price': monthly_plan_price.id})
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data['non_field_errors'][0]['code'] == 'missing_payment_method'
 
 
 class TestCancelUserActiveSubscriptionView:
