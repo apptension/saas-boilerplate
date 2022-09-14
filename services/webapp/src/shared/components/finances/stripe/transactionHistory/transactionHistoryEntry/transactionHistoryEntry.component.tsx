@@ -3,6 +3,7 @@ import { TransactionHistoryEntry as TransactionHistoryEntryData } from '../../..
 import { FormattedDate } from '../../../../dateTime/formattedDate';
 import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
+import { stripePaymentMethodFragment$key } from '../../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
 import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
 export type TransactionHistoryEntryProps = {
@@ -27,20 +28,18 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
     { planName: entryProductName }
   );
 
+  // todo: fix below
+  // const method = {
+  //   ...entry.paymentMethodDetails,
+  //   billingDetails: entry.billingDetails,
+  // } as unknown as stripePaymentMethodFragment$key;
   return (
     <Container className={className}>
       <TransactionDate>
         <FormattedDate value={entry.created} />
       </TransactionDate>
       <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
-      <Card>
-        <StripePaymentMethodInfo
-          method={{
-            ...entry.paymentMethodDetails,
-            billingDetails: entry.billingDetails,
-          }}
-        />
-      </Card>
+      <Card>{/*<StripePaymentMethodInfo method={method} />*/}</Card>
       <Amount>{entry.amount} USD</Amount>
     </Container>
   );

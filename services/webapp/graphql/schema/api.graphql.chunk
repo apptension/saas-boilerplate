@@ -7,6 +7,8 @@ schema {
 type ApiMutation {
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
+  updateDefaultPaymentMethod(input: UpdateDefaultPaymentMethodMutationInput!): UpdateDefaultPaymentMethodMutationPayload
+  deletePaymentMethod(input: DeletePaymentMethodMutationInput!): DeletePaymentMethodMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -218,6 +220,16 @@ type DeleteFavoriteContentfulDemoItemMutationPayload {
   clientMutationId: String
 }
 
+input DeletePaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type DeletePaymentMethodMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
 type DocumentDemoItemConnection {
   """Pagination data for this connection."""
   pageInfo: PageInfo!
@@ -334,6 +346,23 @@ type PageInfo {
   endCursor: String
 }
 
+type PaymentMethodConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PaymentMethodEdge]!
+}
+
+"""A Relay edge containing a `PaymentMethod` and its cursor."""
+type PaymentMethodEdge {
+  """The item at the end of the edge"""
+  node: StripePaymentMethodType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
 """An enumeration."""
 enum PaymentMethodType {
   """Acss Dbit"""
@@ -439,6 +468,7 @@ enum ProductType {
 type Query {
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): SubscriptionPlanConnection
   activeSubscription: SubscriptionScheduleType
+  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -924,6 +954,17 @@ input UpdateCurrentUserMutationInput {
 type UpdateCurrentUserMutationPayload {
   userProfile: UserProfileType
   userProfileEdge: CurrentUserEdge
+  clientMutationId: String
+}
+
+input UpdateDefaultPaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type UpdateDefaultPaymentMethodMutationPayload {
+  activeSubscription: SubscriptionScheduleType
+  paymentMethodEdge: PaymentMethodEdge
   clientMutationId: String
 }
 

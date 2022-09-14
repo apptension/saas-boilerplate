@@ -7,7 +7,7 @@ import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { Container } from './editPaymentMethod.styles';
-import { EditPaymentMethodForm } from './editPaymentMethodForm';
+import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';
 
 export const EditPaymentMethod = () => {
   const intl = useIntl();

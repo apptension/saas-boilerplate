@@ -48,11 +48,13 @@ export interface ApiMutation {
   deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
+  deletePaymentMethod?: Maybe<DeletePaymentMethodMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   signUp?: Maybe<SingUpMutationPayload>;
   tokenAuth?: Maybe<ObtainTokenMutationPayload>;
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
   updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
+  updateDefaultPaymentMethod?: Maybe<UpdateDefaultPaymentMethodMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
 }
 
@@ -97,6 +99,11 @@ export interface ApiMutationDeleteFavoriteContentfulDemoItemArgs {
 }
 
 
+export interface ApiMutationDeletePaymentMethodArgs {
+  input: DeletePaymentMethodMutationInput;
+}
+
+
 export interface ApiMutationMarkReadAllNotificationsArgs {
   input: MarkReadAllNotificationsMutationInput;
 }
@@ -119,6 +126,11 @@ export interface ApiMutationUpdateCrudDemoItemArgs {
 
 export interface ApiMutationUpdateCurrentUserArgs {
   input: UpdateCurrentUserMutationInput;
+}
+
+
+export interface ApiMutationUpdateDefaultPaymentMethodArgs {
+  input: UpdateDefaultPaymentMethodMutationInput;
 }
 
 
@@ -341,6 +353,17 @@ export interface DeleteFavoriteContentfulDemoItemMutationPayload {
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
 }
 
+export interface DeletePaymentMethodMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeletePaymentMethodMutationPayload {
+  __typename?: 'DeletePaymentMethodMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
 export interface DocumentDemoItemConnection {
   __typename?: 'DocumentDemoItemConnection';
   /** Contains the nodes in this connection. */
@@ -443,6 +466,23 @@ export interface PageInfo {
   startCursor?: Maybe<Scalars['String']>;
 }
 
+export interface PaymentMethodConnection {
+  __typename?: 'PaymentMethodConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<PaymentMethodEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `PaymentMethod` and its cursor. */
+export interface PaymentMethodEdge {
+  __typename?: 'PaymentMethodEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripePaymentMethodType>;
+}
+
 /** An enumeration. */
 export enum PaymentMethodType {
   /** Acss Dbit */
@@ -528,6 +568,7 @@ export interface Query {
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
+  allPaymentMethods?: Maybe<PaymentMethodConnection>;
   allSubscriptionPlans?: Maybe<SubscriptionPlanConnection>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   currentUser?: Maybe<CurrentUserType>;
@@ -561,6 +602,14 @@ export interface QueryAllDocumentDemoItemsArgs {
 
 
 export interface QueryAllNotificationsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface QueryAllPaymentMethodsArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -985,6 +1034,18 @@ export interface UpdateCurrentUserMutationPayload {
   clientMutationId?: Maybe<Scalars['String']>;
   userProfile?: Maybe<UserProfileType>;
   userProfileEdge?: Maybe<CurrentUserEdge>;
+}
+
+export interface UpdateDefaultPaymentMethodMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+}
+
+export interface UpdateDefaultPaymentMethodMutationPayload {
+  __typename?: 'UpdateDefaultPaymentMethodMutationPayload';
+  activeSubscription?: Maybe<SubscriptionScheduleType>;
+  clientMutationId?: Maybe<Scalars['String']>;
+  paymentMethodEdge?: Maybe<PaymentMethodEdge>;
 }
 
 export interface UpdateNotificationMutationInput {

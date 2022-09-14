@@ -20,7 +20,7 @@ export default {
   component: StripePaymentForm,
   decorators: [
     withRedux((state) => {
-      state.stripe.paymentMethods = times(() => paymentMethodFactory(), 3);
+      // state.stripe.paymentMethods = times(() => paymentMethodFactory(), 3);
     }),
   ],
 };

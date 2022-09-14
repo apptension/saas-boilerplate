@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2fae950ca28f71ed2517024e27135c47>>
+ * @generated SignedSource<<ae3713a8247b8c5f2ac551c59f560b38>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,23 +11,24 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 export type PaymentMethodType = "ACSS_DEBIT" | "AFTERPAY_CLEARPAY" | "ALIPAY" | "AU_BECS_DEBIT" | "BACS_DEBIT" | "BANCONTACT" | "BOLETO" | "CARD" | "CARD_PRESENT" | "EPS" | "FPX" | "GIROPAY" | "GRABPAY" | "IDEAL" | "INTERAC_PRESENT" | "KLARNA" | "OXXO" | "P24" | "SEPA_DEBIT" | "SOFORT" | "WECHAT_PAY" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
-export type subscriptionStripePaymentMethod$data = {
+export type stripePaymentMethodFragment$data = {
   readonly billingDetails: any | null;
   readonly card: any | null;
   readonly id: string;
+  readonly pk: string | null;
   readonly type: PaymentMethodType;
-  readonly " $fragmentType": "subscriptionStripePaymentMethod";
+  readonly " $fragmentType": "stripePaymentMethodFragment";
 };
-export type subscriptionStripePaymentMethod$key = {
-  readonly " $data"?: subscriptionStripePaymentMethod$data;
-  readonly " $fragmentSpreads": FragmentRefs<"subscriptionStripePaymentMethod">;
+export type stripePaymentMethodFragment$key = {
+  readonly " $data"?: stripePaymentMethodFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"stripePaymentMethodFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "subscriptionStripePaymentMethod",
+  "name": "stripePaymentMethodFragment",
   "selections": [
     {
       "alias": null,
@@ -40,7 +41,7 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "billingDetails",
+      "name": "pk",
       "storageKey": null
     },
     {
@@ -56,12 +57,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "card",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "billingDetails",
+      "storageKey": null
     }
   ],
   "type": "StripePaymentMethodType",
   "abstractKey": null
 };
 
-(node as any).hash = "94a7d21d6c32f358c18a937ae9dca444";
+(node as any).hash = "6aeca21adc2e0a1dd77191db8b802dbf";
 
 export default node;

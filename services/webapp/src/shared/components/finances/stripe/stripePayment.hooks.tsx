@@ -1,37 +1,57 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
-import { stripeActions } from '../../../../modules/stripe';
-import { selectStripePaymentMethods } from '../../../../modules/stripe/stripe.selectors';
+import { ConnectionHandler } from 'relay-runtime';
 import { StripePaymentIntent, TestProduct } from '../../../services/api/stripe/paymentIntent';
 import { StripePaymentMethodType } from '../../../services/api/stripe/paymentMethod';
 import { stripe as stripeApi } from '../../../services/api';
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import stripeDeletePaymentMethodMutationGraphql, {
+  stripeDeletePaymentMethodMutation,
+} from '../../../../modules/stripe/__generated__/stripeDeletePaymentMethodMutation.graphql';
+import stripeUpdateDefaultPaymentMethodMutationGraphql, {
+  stripeUpdateDefaultPaymentMethodMutation,
+} from '../../../../modules/stripe/__generated__/stripeUpdateDefaultPaymentMethodMutation.graphql';
 import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 
 export const useStripePaymentMethods = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useAsyncDispatch();
-  const paymentMethods = useSelector(selectStripePaymentMethods);
+  const [commitDeletePaymentMethodMutation] = usePromiseMutation<stripeDeletePaymentMethodMutation>(
+    stripeDeletePaymentMethodMutationGraphql
+  );
+
+  const [commitUpdateDefaultPaymentMethodMutation] = usePromiseMutation<stripeUpdateDefaultPaymentMethodMutation>(
+    stripeUpdateDefaultPaymentMethodMutationGraphql
+  );
 
   const deletePaymentMethod = async (id: string) => {
     try {
-      await dispatch(stripeActions.deleteStripePaymentMethod(id));
+      await commitDeletePaymentMethodMutation({
+        variables: {
+          input: {
+            id,
+          },
+          connections: [ConnectionHandler.getConnectionID('root', 'stripe_allPaymentMethods')],
+        },
+      });
     } catch {}
   };
 
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      await dispatch(stripeActions.fetchStripePaymentMethods());
-      setIsLoading(false);
-    })();
-  }, [dispatch]);
+  const updateDefaultPaymentMethod = async (id: string) => {
+    try {
+      await commitUpdateDefaultPaymentMethodMutation({
+        variables: {
+          input: {
+            id,
+          },
+          connections: [ConnectionHandler.getConnectionID('root', 'stripe_allPaymentMethods')],
+        },
+      });
+    } catch {}
+  };
 
-  return { isLoading, paymentMethods, deletePaymentMethod };
+  return { deletePaymentMethod, updateDefaultPaymentMethod };
 };
 
 /**
@@ -92,8 +112,13 @@ export const useStripePayment = () => {
 
     if (paymentMethod.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD) {
       if (paymentMethod.data.type === StripePaymentMethodType.Card) {
+        if (!paymentMethod.data.pk)
+          return {
+            error: { message: 'Wrong payment method used' },
+            paymentIntent: null,
+          };
         return await stripe.confirmCardPayment(paymentIntent.clientSecret, {
-          payment_method: paymentMethod.data.id,
+          payment_method: paymentMethod.data.pk,
         });
       }
 

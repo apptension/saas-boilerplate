@@ -25,6 +25,7 @@ const getRelayEnv = () => {
   return relayEnvironment;
 };
 
+// todo: check if needed
 const reduxInitialState = prepareState((state) => {
   state.subscription.activeSubscription = subscriptionFactory({
     defaultPaymentMethod: paymentMethodFactory({ billingDetails: { name: 'Owner' }, card: { last4: '1234' } }),

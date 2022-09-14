@@ -13,15 +13,6 @@ graphql`
 `;
 
 graphql`
-  fragment subscriptionStripePaymentMethod on StripePaymentMethodType {
-    id
-    billingDetails
-    type
-    card
-  }
-`;
-
-graphql`
   fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
     phases {
       startDate
@@ -40,6 +31,9 @@ graphql`
       trialStart
     }
     canActivateTrial
+    defaultPaymentMethod {
+      ...stripePaymentMethodFragment
+    }
   }
 `;
 

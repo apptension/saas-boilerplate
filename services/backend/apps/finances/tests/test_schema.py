@@ -324,7 +324,11 @@ class TestUpdateDefaultPaymentMethodMutation:
     UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION = '''
         mutation($input: UpdateDefaultPaymentMethodMutationInput!)  {
           updateDefaultPaymentMethod(input: $input) {
-            ok
+            paymentMethodEdge {
+              node {
+                pk
+              }
+            }
           }
         }
     '''
@@ -341,8 +345,7 @@ class TestUpdateDefaultPaymentMethodMutation:
     def test_fetch_unknown_payment_method_from_stripe(self, graphene_client, stripe_request, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        other_users_pm_global_id = to_global_id('DocumentDemoItemType', str(other_users_pm.id))
-        input = {"id": other_users_pm_global_id}
+        input = {"id": other_users_pm.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
@@ -358,8 +361,7 @@ class TestUpdateDefaultPaymentMethodMutation:
 
     def test_set_default_payment_method(self, graphene_client, payment_method_factory, customer, stripe_request):
         payment_method = payment_method_factory(customer=customer)
-        payment_method_global_id = to_global_id('DocumentDemoItemType', str(payment_method.id))
-        input = {"id": payment_method_global_id}
+        input = {"id": payment_method.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
@@ -369,7 +371,9 @@ class TestUpdateDefaultPaymentMethodMutation:
 
         assert executed["data"]
         assert executed["data"]["updateDefaultPaymentMethod"]
-        assert executed["data"]["updateDefaultPaymentMethod"]["ok"] is True
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]["node"]
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]["node"]["pk"] == payment_method.id
         stripe_request.assert_any_call(
             'post',
             calleee.EndsWith(f'/customers/{customer.id}'),
@@ -390,8 +394,7 @@ class TestDeletePaymentMethodMutation:
     def test_return_error_for_other_users_payment_method(self, graphene_client, stripe_request, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        other_users_pm_global_id = to_global_id('DocumentDemoItemType', str(other_users_pm.id))
-        input = {"id": other_users_pm_global_id}
+        input = {"id": other_users_pm.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
@@ -407,8 +410,8 @@ class TestDeletePaymentMethodMutation:
 
     def test_detach_payment_method(self, graphene_client, stripe_request, payment_method):
         customer = payment_method.customer
-        payment_method_global_id = to_global_id('DocumentDemoItemType', str(payment_method.id))
-        input = {"id": payment_method_global_id}
+        payment_method_global_id = to_global_id('StripePaymentMethodType', str(payment_method.djstripe_id))
+        input = {"id": payment_method.id}
 
         graphene_client.force_authenticate(customer.subscriber)
         executed = graphene_client.mutate(
@@ -430,8 +433,7 @@ class TestDeletePaymentMethodMutation:
         self, graphene_client, stripe_request, customer, payment_method_factory
     ):
         payment_method = payment_method_factory(customer=customer)
-        payment_method_global_id = to_global_id('DocumentDemoItemType', str(payment_method.id))
-        input = {"id": payment_method_global_id}
+        input = {"id": payment_method.id}
         customer.default_payment_method = payment_method
         customer.save()
         other_payment_method = payment_method_factory(customer=customer)

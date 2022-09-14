@@ -10,9 +10,10 @@ from graphene_django import DjangoObjectType
 from common.graphql import mutations
 from common.acl.policies import AnyoneFullAccess
 from common.graphql.acl import permission_classes
-from graphql_relay import from_global_id
+from graphql_relay import to_global_id
 from rest_framework.generics import get_object_or_404
 from stripe.error import InvalidRequestError
+from graphql_relay.connection.arrayconnection import offset_to_cursor
 
 from . import constants
 from . import utils, serializers
@@ -61,13 +62,13 @@ class StripeSubscriptionType(StripeDjangoObjectType):
         model = djstripe_models.Subscription
         interfaces = (relay.Node,)
         fields = (
-            'id',
-            'status',
-            'start_date',
-            'current_period_end',
-            'current_period_start',
-            'trial_start',
-            'trial_end',
+            "id",
+            "status",
+            "start_date",
+            "current_period_end",
+            "current_period_start",
+            "trial_start",
+            "trial_end",
         )
 
 
@@ -78,7 +79,7 @@ class StripePaymentMethodType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.PaymentMethod
         interfaces = (relay.Node,)
-        fields = ('id', 'type', 'card', 'billing_details')
+        fields = ("id", "type", "card", "billing_details")
 
 
 class StripeProductType(StripeDjangoObjectType):
@@ -92,7 +93,7 @@ class SubscriptionSchedulePhaseItemType(ObjectType):
     quantity = graphene.Int()
 
     def resolve_price(self, info):
-        return djstripe_models.Price.objects.filter(id=self['price']).first()
+        return djstripe_models.Price.objects.filter(id=self["price"]).first()
 
 
 class SubscriptionSchedulePhaseType(ObjectType):
@@ -173,8 +174,7 @@ class PaymentMethodConnection(graphene.Connection):
 
 class PaymentMethodGetObjectMixin:
     @classmethod
-    def get_payment_method(cls, global_id, user):
-        _, id = from_global_id(global_id)
+    def get_payment_method(cls, id, user):
         filter_kwargs = {"id": id, "customer__subscriber": user}
         queryset = djstripe_models.PaymentMethod.objects.filter(**filter_kwargs)
         if not queryset.exists():
@@ -187,7 +187,8 @@ class PaymentMethodGetObjectMixin:
 
 
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
-    ok = graphene.Boolean()
+    active_subscription = graphene.Field(SubscriptionScheduleType)
+    payment_method_edge = graphene.Field(PaymentMethodConnection.Edge)
 
     class Input:
         id = graphene.String()
@@ -196,6 +197,7 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
         serializer_class = serializers.UpdateDefaultPaymentMethodSerializer
         lookup_field = "id"
         model_class = djstripe_models.PaymentMethod
+        edge_class = SubscriptionScheduleConnection.Edge
 
     @classmethod
     def get_object(cls, model_class, info, *args, **kwargs):
@@ -204,7 +206,13 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
         super().mutate_and_get_payload(root, info, **input)
-        return UpdateDefaultPaymentMethodMutation(ok=True)
+        return UpdateDefaultPaymentMethodMutation(
+            active_subscription=subscriptions.get_schedule(user=info.context.user),
+            payment_method_edge=SubscriptionScheduleConnection.Edge(
+                cursor=offset_to_cursor(0),
+                node=cls.get_payment_method(input["id"], info.context.user),
+            ),
+        )
 
 
 class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteModelMutation):
@@ -215,9 +223,10 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteM
     @transaction.atomic
     def mutate_and_get_payload(cls, root, info, id):
         obj = cls.get_payment_method(id, info.context.user)
+        pk = obj.pk
         customers.remove_payment_method(payment_method=obj)
         obj.delete()
-        return cls(deleted_ids=[id])
+        return cls(deleted_ids=[to_global_id("StripePaymentMethodType", str(pk))])
 
 
 class Query(graphene.ObjectType):

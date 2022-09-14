@@ -12,4 +12,4 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { method: paymentMethodFactory() };
+// Default.args = { method: paymentMethodFactory() };
