@@ -9,3 +9,13 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation subscriptionCancelActiveSubscriptionMutation($input: CancelActiveSubscriptionMutationInput!) {
+    cancelActiveSubscription(input: $input) {
+      subscriptionSchedule {
+        ...subscriptionActiveSubscriptionFragment
+      }
+    }
+  }
+`;

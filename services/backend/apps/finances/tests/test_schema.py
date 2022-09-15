@@ -228,3 +228,53 @@ class TestChangeActiveSubscriptionMutation:
         assert error["extensions"]["non_field_errors"] == [
             {'message': 'Customer has no payment method setup', 'code': 'missing_payment_method'}
         ]
+
+
+class TestCancelActiveSubscriptionMutation:
+    CANCEL_ACTIVE_SUBSCRIPTION_MUTATION = '''
+        mutation($input: CancelActiveSubscriptionMutationInput!)  {
+          cancelActiveSubscription(input: $input) {
+            subscriptionSchedule {
+              id
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(
+            self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_error_if_customer_has_no_paid_subscription(self, graphene_client, subscription_schedule):
+        graphene_client.force_authenticate(subscription_schedule.customer.subscriber)
+
+        executed = graphene_client.mutate(
+            self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["path"] == ["cancelActiveSubscription"]
+        assert error["extensions"]["non_field_errors"] == [
+            {'message': 'Customer has no paid subscription to cancel', 'code': 'no_paid_subscription'}
+        ]
+
+    def test_cancel_trialing_subscription(self, graphene_client, subscription_schedule_factory, monthly_plan_price):
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
+        )
+        graphene_client.force_authenticate(subscription_schedule.customer.subscriber)
+
+        executed = graphene_client.mutate(
+            self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed['data']
+        assert "errors" not in executed

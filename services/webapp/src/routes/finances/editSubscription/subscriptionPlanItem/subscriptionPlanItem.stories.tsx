@@ -2,17 +2,25 @@ import { Story } from '@storybook/react';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { useLazyLoadQuery } from 'react-relay';
+import { Route } from 'react-router-dom';
 
-import { subscriptionFactory, subscriptionPhaseFactory, subscriptionPlanFactory } from '../../../../mocks/factories';
+import {
+  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { withProviders } from '../../../../shared/utils/storybook';
-import { prepareState } from '../../../../mocks/store';
+import { withRelay } from '../../../../shared/utils/storybook';
 
 import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { connectionFromArray, ProvidersWrapper } from '../../../../shared/utils/testUtils';
 import { mapConnection } from '../../../../shared/utils/graphql';
+import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { useActiveSubscriptionDetailsQueryRef } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { SubscriptionPlanItem } from './subscriptionPlanItem.component';
 
 type StoryProps = {
@@ -21,12 +29,17 @@ type StoryProps = {
 
 const Wrapper = () => {
   const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
+  const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
 
   return (
     <>
       {mapConnection(
         (plan) => (
-          <SubscriptionPlanItem plan={plan} onSelect={console.log} />
+          <SubscriptionPlanItem
+            plan={plan}
+            onSelect={console.log}
+            activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref}
+          />
         ),
         data.allSubscriptionPlans
       )}
@@ -47,9 +60,13 @@ const Template: Story<StoryProps> = ({ name }: StoryProps) => {
     <ProvidersWrapper
       context={{
         relayEnvironment,
+        router: {
+          routePath: undefined,
+          children: <Route element={<Wrapper />} />,
+        },
       }}
     >
-      <Wrapper />
+      <ActiveSubscriptionContext />
     </ProvidersWrapper>
   );
 };
@@ -60,22 +77,6 @@ freePlan.product.name = SubscriptionPlanName.FREE;
 const monthlyPlan = subscriptionPlanFactory();
 monthlyPlan.product.name = SubscriptionPlanName.MONTHLY;
 
-const storeWithFreePlan = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({
-    phases: [subscriptionPhaseFactory({ item: { price: freePlan } })],
-  });
-});
-
-const storeWithMonthlyPlan = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({
-    phases: [subscriptionPhaseFactory({ item: { price: monthlyPlan } })],
-  });
-});
-
-const storeWithTrialEligible = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({ canActivateTrial: true });
-});
-
 export default {
   title: 'Shared/Subscriptions/SubscriptionPlanItem',
   component: SubscriptionPlanItem,
@@ -83,20 +84,66 @@ export default {
 
 export const Free = Template.bind({});
 Free.args = { name: SubscriptionPlanName.FREE };
-Free.decorators = [withProviders({ store: storeWithMonthlyPlan })];
+Free.decorators = [
+  withRelay((env) => {
+    fillSubscriptionScheduleQueryWithPhases(env, [
+      subscriptionPhaseFactory({
+        item: { price: monthlyPlan },
+      }),
+    ]);
+  }),
+];
 
 export const ActiveFree = Template.bind({});
 ActiveFree.args = { name: SubscriptionPlanName.FREE };
-ActiveFree.decorators = [withProviders({ store: storeWithFreePlan })];
+ActiveFree.decorators = [
+  withRelay((env) => {
+    fillSubscriptionScheduleQueryWithPhases(env, [
+      subscriptionPhaseFactory({
+        item: { price: freePlan },
+      }),
+    ]);
+  }),
+];
 
 export const Paid = Template.bind({});
 Paid.args = { name: SubscriptionPlanName.MONTHLY };
-Paid.decorators = [withProviders({ store: storeWithFreePlan })];
+Paid.decorators = [
+  withRelay((env) => {
+    fillSubscriptionScheduleQueryWithPhases(env, [
+      subscriptionPhaseFactory({
+        item: { price: freePlan },
+      }),
+    ]);
+  }),
+];
 
 export const ActivePaid = Template.bind({});
 ActivePaid.args = { name: SubscriptionPlanName.MONTHLY };
-ActivePaid.decorators = [withProviders({ store: storeWithMonthlyPlan })];
+ActivePaid.decorators = [
+  withRelay((env) => {
+    fillSubscriptionScheduleQueryWithPhases(env, [
+      subscriptionPhaseFactory({
+        item: { price: monthlyPlan },
+      }),
+    ]);
+  }),
+];
 
 export const WithTrialEligible = Template.bind({});
 WithTrialEligible.args = { name: SubscriptionPlanName.MONTHLY };
-WithTrialEligible.decorators = [withProviders({ store: storeWithTrialEligible })];
+WithTrialEligible.decorators = [
+  withRelay((env) => {
+    fillSubscriptionScheduleQuery(
+      env,
+      subscriptionFactory({
+        canActivateTrial: true,
+        phases: [
+          subscriptionPhaseFactory({
+            item: { price: monthlyPlan },
+          }),
+        ],
+      })
+    );
+  }),
+];

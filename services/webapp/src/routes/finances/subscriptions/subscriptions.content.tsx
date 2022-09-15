@@ -1,21 +1,12 @@
-import { PreloadedQuery, usePreloadedQuery, useFragment } from 'react-relay';
+import { PreloadedQuery } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 
-import SubscriptionActivePlanDetailsQuery, {
-  subscriptionActivePlanDetailsQuery,
-} from '../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import subscriptionPlanItemFragmentGraphql, {
-  subscriptionPlanItemFragment$key,
-} from '../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
+import { subscriptionActivePlanDetailsQuery } from '../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { RoutesConfig } from '../../../app/config/routes';
 import { ButtonVariant } from '../../../shared/components/forms/button';
-import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useSubscriptionPlanDetails } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import subscriptionActiveSubscriptionFragmentGraphql, {
-  subscriptionActiveSubscriptionFragment$key,
-} from '../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
+import { useActiveSubscriptionDetailsData } from '../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { Link, Row, RowValue, Subheader } from './subscriptions.styles';
 
 type SubscriptionsContentProps = {
@@ -24,30 +15,15 @@ type SubscriptionsContentProps = {
 
 export const SubscriptionsContent = ({ activeSubscriptionQueryRef }: SubscriptionsContentProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const data = usePreloadedQuery(SubscriptionActivePlanDetailsQuery, activeSubscriptionQueryRef);
-  const activeSubscription = useFragment<subscriptionActiveSubscriptionFragment$key>(
-    subscriptionActiveSubscriptionFragmentGraphql,
-    data.activeSubscription
-  );
-  const phases = activeSubscription?.phases || [];
-  const currentPhasePlan = phases[0]!.item!.price;
-  const currentPhasePlanData = useFragment<subscriptionPlanItemFragment$key>(
-    subscriptionPlanItemFragmentGraphql,
-    currentPhasePlan
-  );
-  const activeSubscriptionPlan = useSubscriptionPlanDetails(currentPhasePlanData || undefined);
-  const activeSubscriptionPeriodEndDate = phases[0]?.endDate;
-  const nextPhasePlanData = useFragment<subscriptionPlanItemFragment$key>(
-    subscriptionPlanItemFragmentGraphql,
-    phases.length > 1 ? phases[1]!.item!.price : currentPhasePlan
-  );
-  const activeSubscriptionIsCancelled = phases[1] && nextPhasePlanData?.product.name === SubscriptionPlanName.FREE;
-  const activeSubscriptionExpiryDate = activeSubscriptionIsCancelled ? phases[1]?.startDate?.toString() : undefined;
-  const activeSubscriptionRenewalDate = activeSubscriptionIsCancelled ? undefined : activeSubscriptionPeriodEndDate;
-  const nextSubscriptionPlan = nextPhasePlanData ?? currentPhasePlanData;
-  const nextSubscriptionPlanDetails = useSubscriptionPlanDetails(nextSubscriptionPlan || undefined);
-  const trialEnd = activeSubscription?.subscription?.trialEnd?.toString();
-  const isTrialActive = Boolean(trialEnd && Date.parse(trialEnd.toString()) >= Date.now());
+  const {
+    isTrialActive,
+    trialEnd,
+    nextSubscriptionPlanDetails,
+    activeSubscriptionRenewalDate,
+    activeSubscriptionExpiryDate,
+    activeSubscriptionIsCancelled,
+    activeSubscriptionPlan,
+  } = useActiveSubscriptionDetailsData(activeSubscriptionQueryRef);
 
   return (
     <>

@@ -1,36 +1,33 @@
 import { FormattedMessage } from 'react-intl';
-import { useSelector } from 'react-redux';
-import { useFragment } from 'react-relay';
+import { PreloadedQuery, useFragment } from 'react-relay';
 
-import {
-  useActiveSubscriptionPlanDetails,
-  useSubscriptionPlanDetails,
-} from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
-import {
-  selectActiveSubscriptionNextPlan,
-  selectIsSubscriptionCanceled,
-  selectIsTrialEligible,
-} from '../../../../modules/subscription/subscription.selectors';
+import { useSubscriptionPlanDetails } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import subscriptionPlanItemFragmentGraphql, {
   subscriptionPlanItemFragment$key,
 } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
+import { subscriptionActivePlanDetailsQuery } from '../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
+import { useActiveSubscriptionDetailsData } from '../../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { Container, Content, Feature, FeaturesList, SelectButton, Name } from './subscriptionPlanItem.styles';
 
 export type SubscriptionPlanItemProps = {
   plan: subscriptionPlanItemFragment$key;
   onSelect: (id: string | null) => void;
   className?: string;
+  activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>;
 };
 
-export const SubscriptionPlanItem = ({ plan, onSelect, className }: SubscriptionPlanItemProps) => {
+export const SubscriptionPlanItem = ({
+  plan,
+  onSelect,
+  className,
+  activeSubscriptionQueryRef,
+}: SubscriptionPlanItemProps) => {
   const data = useFragment<subscriptionPlanItemFragment$key>(subscriptionPlanItemFragmentGraphql, plan);
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
-  const activeSubscription = useActiveSubscriptionPlanDetails({ forceRefetch: false });
-  const nextSubscriptionPlan = useSelector(selectActiveSubscriptionNextPlan);
-  const isActivePlanCancelled = useSelector(selectIsSubscriptionCanceled);
-  const isActive = activeSubscription.name === name && !isActivePlanCancelled;
-  const isScheduledForNextPeriod = useSubscriptionPlanDetails(nextSubscriptionPlan).name === name;
-  const isTrialEligible = useSelector(selectIsTrialEligible);
+  const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
+    useActiveSubscriptionDetailsData(activeSubscriptionQueryRef);
+  const isActive = activeSubscriptionPlan.name === name && !activeSubscriptionIsCancelled;
+  const isScheduledForNextPeriod = nextSubscriptionPlanDetails.name === name;
 
   return (
     <Container isActive={isActive} className={className}>

@@ -16,9 +16,4 @@ stripe_urls = [
 
 urlpatterns = [
     path("stripe/", include(stripe_urls)),
-    path(
-        "subscription/me/cancel/",
-        views.CancelUserActiveSubscriptionView.as_view(),
-        name='user-active-subscription-cancel',
-    ),
 ]

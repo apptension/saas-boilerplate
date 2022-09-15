@@ -1,15 +1,18 @@
 import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { Route, Routes } from 'react-router-dom';
+import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+
 import { connectionFromArray, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
 import { EditSubscription } from '../editSubscription.component';
-import { subscriptionPlanFactory } from '../../../../mocks/factories';
+import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -38,6 +41,22 @@ const getRelayEnv = () => {
   return relayEnvironment;
 };
 
+const fillCurrentSubscriptionQuery = (relayEnvironment: RelayMockEnvironment) =>
+  fillSubscriptionScheduleQuery(
+    relayEnvironment,
+    subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })
+  );
+
+const Component = () => {
+  return (
+    <Routes>
+      <Route element={<ActiveSubscriptionContext />}>
+        <Route index element={<EditSubscription />} />
+      </Route>
+    </Routes>
+  );
+};
+
 describe('EditSubscription: Component', () => {
   beforeEach(() => {
     mockDispatch.mockReset();
@@ -45,9 +64,13 @@ describe('EditSubscription: Component', () => {
 
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      const { history, pushSpy } = spiedHistory();
+      const { history, pushSpy } = spiedHistory('/');
       const relayEnvironment = getRelayEnv();
-      render(<EditSubscription />, { relayEnvironment, routerHistory: history });
+      render(<Component />, { relayEnvironment, routerHistory: history });
+
+      await act(() => {
+        fillCurrentSubscriptionQuery(relayEnvironment);
+      });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
@@ -69,7 +92,11 @@ describe('EditSubscription: Component', () => {
     it('should show error message', async () => {
       const relayEnvironment = getRelayEnv();
 
-      render(<EditSubscription />, { relayEnvironment });
+      render(<Component />, { relayEnvironment });
+
+      await act(() => {
+        fillCurrentSubscriptionQuery(relayEnvironment);
+      });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);

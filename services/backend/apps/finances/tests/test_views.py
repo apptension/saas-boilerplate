@@ -11,35 +11,6 @@ from .utils import stripe_encode
 pytestmark = pytest.mark.django_db
 
 
-class TestCancelUserActiveSubscriptionView:
-    def test_return_error_for_unauthorized_user(self, api_client):
-        url = reverse('user-active-subscription-cancel')
-
-        response = api_client.post(url)
-
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_return_error_if_customer_has_no_paid_subscription(self, api_client, subscription_schedule):
-        api_client.force_authenticate(subscription_schedule.customer.subscriber)
-        url = reverse('user-active-subscription-cancel')
-
-        response = api_client.post(url)
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data['non_field_errors'][0]['code'] == 'no_paid_subscription'
-
-    def test_cancel_trialing_subscription(self, api_client, subscription_schedule_factory, monthly_plan_price):
-        subscription_schedule = subscription_schedule_factory(
-            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
-        )
-        api_client.force_authenticate(subscription_schedule.customer.subscriber)
-        url = reverse('user-active-subscription-cancel')
-
-        response = api_client.post(url)
-
-        assert response.status_code == status.HTTP_200_OK, response.data
-
-
 class TestUserChargesListView:
     def test_return_error_for_unauthorized_user(self, api_client):
         url = reverse('charge-list')

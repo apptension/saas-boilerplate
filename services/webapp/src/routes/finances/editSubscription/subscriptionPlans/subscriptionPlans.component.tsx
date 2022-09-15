@@ -3,6 +3,7 @@ import { useQueryLoader } from 'react-relay';
 import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { useActiveSubscriptionDetailsQueryRef } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { SubscriptionPlansContent } from './subscriptionPlans.content';
 
 export type SubscriptionPlansProps = {
@@ -11,16 +12,22 @@ export type SubscriptionPlansProps = {
 
 export const SubscriptionPlans = ({ onPlanSelection }: SubscriptionPlansProps) => {
   const [plansQueryRef, loadPlansQuery] = useQueryLoader<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql);
+  const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
 
   useEffect(() => {
     loadPlansQuery({});
   }, [loadPlansQuery]);
 
-  if (!plansQueryRef) return null;
+  if (!plansQueryRef || !activeSubscriptionDetailsQueryRefContext || !activeSubscriptionDetailsQueryRefContext.ref)
+    return null;
 
   return (
     <Suspense fallback={null}>
-      <SubscriptionPlansContent queryRef={plansQueryRef} onPlanSelection={onPlanSelection} />
+      <SubscriptionPlansContent
+        queryRef={plansQueryRef}
+        onPlanSelection={onPlanSelection}
+        activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref}
+      />
     </Suspense>
   );
 };

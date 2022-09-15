@@ -1,5 +1,4 @@
 import { StripePaymentMethod } from '../stripe/paymentMethod';
-import { ApiFormSubmitResponse } from '../types';
 
 export enum SubscriptionPlanName {
   FREE = 'free_plan',

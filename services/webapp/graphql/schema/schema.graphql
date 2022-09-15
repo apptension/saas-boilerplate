@@ -500,6 +500,7 @@ schema {
 
 type ApiMutation {
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
+  cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -516,6 +517,16 @@ type ApiMutation {
 
 type ApiSubscription {
   notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+}
+
+input CancelActiveSubscriptionMutationInput {
+  clientMutationId: String
+}
+
+type CancelActiveSubscriptionMutationPayload {
+  subscriptionSchedule: SubscriptionScheduleType
+  subscriptionScheduleEdge: SubscriptionScheduleEdge
+  clientMutationId: String
 }
 
 input ChangeActiveSubscriptionMutationInput {

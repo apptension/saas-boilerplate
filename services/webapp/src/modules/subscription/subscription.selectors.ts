@@ -43,26 +43,7 @@ export const selectActiveSubscriptionRenewalDate = createSelector(
 
 export const selectActiveSubscriptionPlan = createSelector(selectActiveSubscriptionPhase, (phase) => phase?.item.price);
 
-export const selectActiveSubscriptionNextPlan = createSelector(
-  selectActiveSubscriptionPlan,
-  selectActiveSubscriptionNextPhase,
-  (activePlan, nextPhase) => nextPhase?.item.price ?? activePlan
-);
-
 export const selectActiveSubscriptionPaymentMethod = createSelector(
   selectActiveSubscription,
   (subscription) => subscription?.defaultPaymentMethod
-);
-
-export const selectTrialEnd = createSelector(
-  selectActiveSubscription,
-  (subscription) => subscription?.subscription?.trialEnd
-);
-
-export const selectIsTrialActive = createSelector(selectTrialEnd, (trialEnd) =>
-  Boolean(trialEnd && Date.parse(trialEnd) >= Date.now())
-);
-
-export const selectIsTrialEligible = createSelector(selectActiveSubscription, (subscription) =>
-  Boolean(subscription?.canActivateTrial)
 );
