@@ -3,8 +3,8 @@ import { action } from '@storybook/addon-actions';
 import { Elements } from '@stripe/react-stripe-js';
 import { times } from 'ramda';
 import { stripePromise } from '../../../../services/stripe';
-import { withRedux } from '../../../../utils/storybook';
-import { paymentMethodFactory } from '../../../../../mocks/factories';
+import { withRelay } from '../../../../utils/storybook';
+import { generateRelayEnvironmentWithPaymentMethods, paymentMethodFactory } from '../../../../../mocks/factories';
 import { StripePaymentForm, StripePaymentFormProps } from './stripePaymentForm.component';
 
 const Template: Story<StripePaymentFormProps> = (args: StripePaymentFormProps) => {
@@ -19,8 +19,11 @@ export default {
   title: 'Shared/Finances/Stripe/StripePaymentForm',
   component: StripePaymentForm,
   decorators: [
-    withRedux((state) => {
-      // state.stripe.paymentMethods = times(() => paymentMethodFactory(), 3);
+    withRelay((env) => {
+      generateRelayEnvironmentWithPaymentMethods(
+        times(() => paymentMethodFactory(), 3),
+        env
+      );
     }),
   ],
 };

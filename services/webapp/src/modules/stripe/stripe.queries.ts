@@ -23,3 +23,36 @@ graphql`
     }
   }
 `;
+
+graphql`
+  fragment stripeChargeFragment on StripeChargeType {
+    id
+    created
+    billingDetails
+    paymentMethod {
+      ...stripePaymentMethodFragment
+    }
+    amount
+    invoice {
+      id
+      subscription {
+        plan {
+          ...subscriptionPlanItemFragment
+        }
+      }
+    }
+  }
+`;
+
+graphql`
+  query stripeAllChargesQuery {
+    allCharges {
+      edges {
+        node {
+          id
+          ...stripeChargeFragment
+        }
+      }
+    }
+  }
+`;

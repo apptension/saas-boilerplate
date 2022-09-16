@@ -1,11 +1,9 @@
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { times } from 'ramda';
 import { useQueryLoader } from 'react-relay';
 
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
-import { selectActiveSubscriptionPlan } from '../../../../modules/subscription/subscription.selectors';
 import { subscriptionPlanItemFragment$data } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import subscriptionActivePlanDetailsQueryGraphql, {
   subscriptionActivePlanDetailsQuery,
@@ -48,15 +46,6 @@ export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$d
         isFree: plan.product.name === SubscriptionPlanName.FREE,
       }
     : {};
-};
-
-export const useActiveSubscriptionPlanDetails = ({ forceRefetch } = { forceRefetch: true }) => {
-  const activeSubscriptionPlan = useSelector(selectActiveSubscriptionPlan);
-
-  return {
-    ...useSubscriptionPlanDetails(activeSubscriptionPlan),
-    isLoading: !activeSubscriptionPlan,
-  };
 };
 
 export const useActiveSubscriptionQueryLoader = ({ forceRefetch } = { forceRefetch: false }) => {

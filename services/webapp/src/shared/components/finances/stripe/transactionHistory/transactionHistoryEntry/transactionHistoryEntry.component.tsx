@@ -1,19 +1,29 @@
 import { useIntl } from 'react-intl';
-import { TransactionHistoryEntry as TransactionHistoryEntryData } from '../../../../../services/api/stripe/history/types';
+import { useFragment } from 'react-relay';
 import { FormattedDate } from '../../../../dateTime/formattedDate';
-import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
-import { stripePaymentMethodFragment$key } from '../../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
+import StripeChargeFragmentGraphql, {
+  stripeChargeFragment$key,
+} from '../../../../../../modules/stripe/__generated__/stripeChargeFragment.graphql';
+import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
+import SubscriptionPlanItemFragmentGraphql, {
+  subscriptionPlanItemFragment$key,
+} from '../../../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
 export type TransactionHistoryEntryProps = {
-  entry: TransactionHistoryEntryData;
+  entry: stripeChargeFragment$key;
   className?: string;
 };
 
 export const TransactionHistoryEntry = ({ entry, className }: TransactionHistoryEntryProps) => {
   const intl = useIntl();
-  const { name: entryProductName } = useSubscriptionPlanDetails(entry.invoice?.items?.[0]?.price);
+  const data = useFragment<stripeChargeFragment$key>(StripeChargeFragmentGraphql, entry);
+  const subscriptionPlanData = useFragment<subscriptionPlanItemFragment$key>(
+    SubscriptionPlanItemFragmentGraphql,
+    data.invoice?.subscription?.plan ?? null
+  );
+  const { name: entryProductName } = useSubscriptionPlanDetails(subscriptionPlanData ?? undefined);
 
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',
@@ -28,19 +38,14 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
     { planName: entryProductName }
   );
 
-  // todo: fix below
-  // const method = {
-  //   ...entry.paymentMethodDetails,
-  //   billingDetails: entry.billingDetails,
-  // } as unknown as stripePaymentMethodFragment$key;
   return (
     <Container className={className}>
-      <TransactionDate>
-        <FormattedDate value={entry.created} />
-      </TransactionDate>
+      <TransactionDate>{data.created && <FormattedDate value={data.created.toString()} />}</TransactionDate>
       <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
-      <Card>{/*<StripePaymentMethodInfo method={method} />*/}</Card>
-      <Amount>{entry.amount} USD</Amount>
+      <Card>
+        <StripePaymentMethodInfo method={data.paymentMethod} />
+      </Card>
+      <Amount>{data.amount} USD</Amount>
     </Container>
   );
 };

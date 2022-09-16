@@ -58,6 +58,8 @@ class StripeDjangoObjectType(DjangoObjectType):
 
 
 class StripeSubscriptionType(StripeDjangoObjectType):
+    plan = graphene.Field(SubscriptionPlanType)
+
     class Meta:
         model = djstripe_models.Subscription
         interfaces = (relay.Node,)

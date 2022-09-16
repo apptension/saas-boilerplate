@@ -22,7 +22,7 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields = Paymen
   );
 
   useEffect(() => {
-    loadAllPaymentMethodsQuery({});
+    loadAllPaymentMethodsQuery({}, { fetchPolicy: 'store-and-network' });
   }, [loadAllPaymentMethodsQuery]);
 
   if (!allPaymentMethodsQueryRef) return null;

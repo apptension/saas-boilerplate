@@ -13,7 +13,7 @@ export interface TransactionHistoryEntry {
   id: string;
   created: string;
   billingDetails: StripeBillingDetails;
-  paymentMethodDetails: StripePaymentMethod;
+  paymentMethod: StripePaymentMethod;
   amount: number;
   invoice: TransactionHistoryEntryInvoice | null;
 }

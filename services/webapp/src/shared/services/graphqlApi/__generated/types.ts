@@ -174,6 +174,211 @@ export interface ChangeActiveSubscriptionMutationPayload {
   subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
 }
 
+export interface ChargeConnection {
+  __typename?: 'ChargeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ChargeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `Charge` and its cursor. */
+export interface ChargeEdge {
+  __typename?: 'ChargeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripeChargeType>;
+}
+
+/** An enumeration. */
+export enum ChargeFailureCode {
+  /** Account already exists */
+  AccountAlreadyExists = 'ACCOUNT_ALREADY_EXISTS',
+  /** Account country invalid address */
+  AccountCountryInvalidAddress = 'ACCOUNT_COUNTRY_INVALID_ADDRESS',
+  /** Account invalid */
+  AccountInvalid = 'ACCOUNT_INVALID',
+  /** Account number invalid */
+  AccountNumberInvalid = 'ACCOUNT_NUMBER_INVALID',
+  /** Alipay upgrade required */
+  AlipayUpgradeRequired = 'ALIPAY_UPGRADE_REQUIRED',
+  /** Amount too large */
+  AmountTooLarge = 'AMOUNT_TOO_LARGE',
+  /** Amount too small */
+  AmountTooSmall = 'AMOUNT_TOO_SMALL',
+  /** Api key expired */
+  ApiKeyExpired = 'API_KEY_EXPIRED',
+  /** Balance insufficient */
+  BalanceInsufficient = 'BALANCE_INSUFFICIENT',
+  /** Bank account exists */
+  BankAccountExists = 'BANK_ACCOUNT_EXISTS',
+  /** Bank account unusable */
+  BankAccountUnusable = 'BANK_ACCOUNT_UNUSABLE',
+  /** Bank account unverified */
+  BankAccountUnverified = 'BANK_ACCOUNT_UNVERIFIED',
+  /** Bitcoin upgrade required */
+  BitcoinUpgradeRequired = 'BITCOIN_UPGRADE_REQUIRED',
+  /** Card was declined */
+  CardDeclined = 'CARD_DECLINED',
+  /** Charge already captured */
+  ChargeAlreadyCaptured = 'CHARGE_ALREADY_CAPTURED',
+  /** Charge already refunded */
+  ChargeAlreadyRefunded = 'CHARGE_ALREADY_REFUNDED',
+  /** Charge disputed */
+  ChargeDisputed = 'CHARGE_DISPUTED',
+  /** Charge exceeds source limit */
+  ChargeExceedsSourceLimit = 'CHARGE_EXCEEDS_SOURCE_LIMIT',
+  /** Charge expired for capture */
+  ChargeExpiredForCapture = 'CHARGE_EXPIRED_FOR_CAPTURE',
+  /** Country unsupported */
+  CountryUnsupported = 'COUNTRY_UNSUPPORTED',
+  /** Coupon expired */
+  CouponExpired = 'COUPON_EXPIRED',
+  /** Customer max subscriptions */
+  CustomerMaxSubscriptions = 'CUSTOMER_MAX_SUBSCRIPTIONS',
+  /** Email invalid */
+  EmailInvalid = 'EMAIL_INVALID',
+  /** Expired card */
+  ExpiredCard = 'EXPIRED_CARD',
+  /** Idempotency key in use */
+  IdempotencyKeyInUse = 'IDEMPOTENCY_KEY_IN_USE',
+  /** Incorrect address */
+  IncorrectAddress = 'INCORRECT_ADDRESS',
+  /** Incorrect security code */
+  IncorrectCvc = 'INCORRECT_CVC',
+  /** Incorrect number */
+  IncorrectNumber = 'INCORRECT_NUMBER',
+  /** ZIP code failed validation */
+  IncorrectZip = 'INCORRECT_ZIP',
+  /** Instant payouts unsupported */
+  InstantPayoutsUnsupported = 'INSTANT_PAYOUTS_UNSUPPORTED',
+  /** Invalid card type */
+  InvalidCardType = 'INVALID_CARD_TYPE',
+  /** Invalid charge amount */
+  InvalidChargeAmount = 'INVALID_CHARGE_AMOUNT',
+  /** Invalid security code */
+  InvalidCvc = 'INVALID_CVC',
+  /** Invalid expiration month */
+  InvalidExpiryMonth = 'INVALID_EXPIRY_MONTH',
+  /** Invalid expiration year */
+  InvalidExpiryYear = 'INVALID_EXPIRY_YEAR',
+  /** Invalid number */
+  InvalidNumber = 'INVALID_NUMBER',
+  /** Invalid source usage */
+  InvalidSourceUsage = 'INVALID_SOURCE_USAGE',
+  /** Invalid swipe data */
+  InvalidSwipeData = 'INVALID_SWIPE_DATA',
+  /** Invoice not editable */
+  InvoiceNotEditable = 'INVOICE_NOT_EDITABLE',
+  /** Invoice no customer line items */
+  InvoiceNoCustomerLineItems = 'INVOICE_NO_CUSTOMER_LINE_ITEMS',
+  /** Invoice no subscription line items */
+  InvoiceNoSubscriptionLineItems = 'INVOICE_NO_SUBSCRIPTION_LINE_ITEMS',
+  /** Invoice upcoming none */
+  InvoiceUpcomingNone = 'INVOICE_UPCOMING_NONE',
+  /** Livemode mismatch */
+  LivemodeMismatch = 'LIVEMODE_MISMATCH',
+  /** No card being charged */
+  Missing = 'MISSING',
+  /** Not allowed on standard account */
+  NotAllowedOnStandardAccount = 'NOT_ALLOWED_ON_STANDARD_ACCOUNT',
+  /** Order creation failed */
+  OrderCreationFailed = 'ORDER_CREATION_FAILED',
+  /** Order required settings */
+  OrderRequiredSettings = 'ORDER_REQUIRED_SETTINGS',
+  /** Order status invalid */
+  OrderStatusInvalid = 'ORDER_STATUS_INVALID',
+  /** Order upstream timeout */
+  OrderUpstreamTimeout = 'ORDER_UPSTREAM_TIMEOUT',
+  /** Out of inventory */
+  OutOfInventory = 'OUT_OF_INVENTORY',
+  /** Parameters exclusive */
+  ParametersExclusive = 'PARAMETERS_EXCLUSIVE',
+  /** Parameter invalid empty */
+  ParameterInvalidEmpty = 'PARAMETER_INVALID_EMPTY',
+  /** Parameter invalid integer */
+  ParameterInvalidInteger = 'PARAMETER_INVALID_INTEGER',
+  /** Parameter invalid string blank */
+  ParameterInvalidStringBlank = 'PARAMETER_INVALID_STRING_BLANK',
+  /** Parameter invalid string empty */
+  ParameterInvalidStringEmpty = 'PARAMETER_INVALID_STRING_EMPTY',
+  /** Parameter missing */
+  ParameterMissing = 'PARAMETER_MISSING',
+  /** Parameter unknown */
+  ParameterUnknown = 'PARAMETER_UNKNOWN',
+  /** Payment intent authentication failure */
+  PaymentIntentAuthenticationFailure = 'PAYMENT_INTENT_AUTHENTICATION_FAILURE',
+  /** Payment intent incompatible payment method */
+  PaymentIntentIncompatiblePaymentMethod = 'PAYMENT_INTENT_INCOMPATIBLE_PAYMENT_METHOD',
+  /** Payment intent invalid parameter */
+  PaymentIntentInvalidParameter = 'PAYMENT_INTENT_INVALID_PARAMETER',
+  /** Payment intent payment attempt failed */
+  PaymentIntentPaymentAttemptFailed = 'PAYMENT_INTENT_PAYMENT_ATTEMPT_FAILED',
+  /** Payment intent unexpected state */
+  PaymentIntentUnexpectedState = 'PAYMENT_INTENT_UNEXPECTED_STATE',
+  /** Payment method unactivated */
+  PaymentMethodUnactivated = 'PAYMENT_METHOD_UNACTIVATED',
+  /** Payment method unexpected state */
+  PaymentMethodUnexpectedState = 'PAYMENT_METHOD_UNEXPECTED_STATE',
+  /** Payouts not allowed */
+  PayoutsNotAllowed = 'PAYOUTS_NOT_ALLOWED',
+  /** Platform api key expired */
+  PlatformApiKeyExpired = 'PLATFORM_API_KEY_EXPIRED',
+  /** Postal code invalid */
+  PostalCodeInvalid = 'POSTAL_CODE_INVALID',
+  /** Processing error */
+  ProcessingError = 'PROCESSING_ERROR',
+  /** Product inactive */
+  ProductInactive = 'PRODUCT_INACTIVE',
+  /** Rate limit */
+  RateLimit = 'RATE_LIMIT',
+  /** Resource already exists */
+  ResourceAlreadyExists = 'RESOURCE_ALREADY_EXISTS',
+  /** Resource missing */
+  ResourceMissing = 'RESOURCE_MISSING',
+  /** Routing number invalid */
+  RoutingNumberInvalid = 'ROUTING_NUMBER_INVALID',
+  /** Secret key required */
+  SecretKeyRequired = 'SECRET_KEY_REQUIRED',
+  /** SEPA unsupported account */
+  SepaUnsupportedAccount = 'SEPA_UNSUPPORTED_ACCOUNT',
+  /** Shipping calculation failed */
+  ShippingCalculationFailed = 'SHIPPING_CALCULATION_FAILED',
+  /** SKU inactive */
+  SkuInactive = 'SKU_INACTIVE',
+  /** State unsupported */
+  StateUnsupported = 'STATE_UNSUPPORTED',
+  /** Taxes calculation failed */
+  TaxesCalculationFailed = 'TAXES_CALCULATION_FAILED',
+  /** Tax id invalid */
+  TaxIdInvalid = 'TAX_ID_INVALID',
+  /** Testmode charges only */
+  TestmodeChargesOnly = 'TESTMODE_CHARGES_ONLY',
+  /** TLS version unsupported */
+  TlsVersionUnsupported = 'TLS_VERSION_UNSUPPORTED',
+  /** Token already used */
+  TokenAlreadyUsed = 'TOKEN_ALREADY_USED',
+  /** Token in use */
+  TokenInUse = 'TOKEN_IN_USE',
+  /** Transfers not allowed */
+  TransfersNotAllowed = 'TRANSFERS_NOT_ALLOWED',
+  /** Upstream order creation failed */
+  UpstreamOrderCreationFailed = 'UPSTREAM_ORDER_CREATION_FAILED',
+  /** URL invalid */
+  UrlInvalid = 'URL_INVALID'
+}
+
+/** An enumeration. */
+export enum ChargeStatus {
+  /** Failed */
+  Failed = 'FAILED',
+  /** Pending */
+  Pending = 'PENDING',
+  /** Succeeded */
+  Succeeded = 'SUCCEEDED'
+}
+
 export interface ContentfulDemoItemFavoriteConnection {
   __typename?: 'ContentfulDemoItemFavoriteConnection';
   /** Contains the nodes in this connection. */
@@ -396,6 +601,56 @@ export interface FileFieldType {
   url?: Maybe<Scalars['String']>;
 }
 
+/** An enumeration. */
+export enum InvoiceBillingReason {
+  /** Manual */
+  Manual = 'MANUAL',
+  /** Subscription */
+  Subscription = 'SUBSCRIPTION',
+  /** Subscription create */
+  SubscriptionCreate = 'SUBSCRIPTION_CREATE',
+  /** Subscription cycle */
+  SubscriptionCycle = 'SUBSCRIPTION_CYCLE',
+  /** Subscription threshold */
+  SubscriptionThreshold = 'SUBSCRIPTION_THRESHOLD',
+  /** Subscription update */
+  SubscriptionUpdate = 'SUBSCRIPTION_UPDATE',
+  /** Upcoming */
+  Upcoming = 'UPCOMING'
+}
+
+/** An enumeration. */
+export enum InvoiceCollectionMethod {
+  /** Charge automatically */
+  ChargeAutomatically = 'CHARGE_AUTOMATICALLY',
+  /** Send invoice */
+  SendInvoice = 'SEND_INVOICE'
+}
+
+/** An enumeration. */
+export enum InvoiceCustomerTaxExempt {
+  /** Exempt */
+  Exempt = 'EXEMPT',
+  /** None */
+  None = 'NONE',
+  /** Reverse */
+  Reverse = 'REVERSE'
+}
+
+/** An enumeration. */
+export enum InvoiceStatus {
+  /** Draft */
+  Draft = 'DRAFT',
+  /** Open */
+  Open = 'OPEN',
+  /** Paid */
+  Paid = 'PAID',
+  /** Uncollectible */
+  Uncollectible = 'UNCOLLECTIBLE',
+  /** Void */
+  Void = 'VOID'
+}
+
 export interface MarkReadAllNotificationsMutationInput {
   clientMutationId?: InputMaybe<Scalars['String']>;
 }
@@ -564,16 +819,26 @@ export enum ProductType {
 export interface Query {
   __typename?: 'Query';
   activeSubscription?: Maybe<SubscriptionScheduleType>;
+  allCharges?: Maybe<ChargeConnection>;
   allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
   allPaymentMethods?: Maybe<PaymentMethodConnection>;
   allSubscriptionPlans?: Maybe<SubscriptionPlanConnection>;
+  charge?: Maybe<StripeChargeType>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   currentUser?: Maybe<CurrentUserType>;
   hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   node?: Maybe<Node>;
+}
+
+
+export interface QueryAllChargesArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 }
 
 
@@ -625,6 +890,11 @@ export interface QueryAllSubscriptionPlansArgs {
 }
 
 
+export interface QueryChargeArgs {
+  id?: InputMaybe<Scalars['ID']>;
+}
+
+
 export interface QueryCrudDemoItemArgs {
   id: Scalars['ID'];
 }
@@ -648,6 +918,363 @@ export interface SingUpMutationPayload {
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   refresh?: Maybe<Scalars['String']>;
+}
+
+export interface StripeChargeType extends Node {
+  __typename?: 'StripeChargeType';
+  /** Amount charged (as decimal). */
+  amount: Scalars['Decimal'];
+  /** Amount (as decimal) captured (can be less than the amount attribute on the charge if a partial capture was issued). */
+  amountCaptured?: Maybe<Scalars['Decimal']>;
+  /** Amount (as decimal) refunded (can be less than the amount attribute on the charge if a partial refund was issued). */
+  amountRefunded: Scalars['Decimal'];
+  /** ID of the Connect application that created the charge. */
+  application: Scalars['String'];
+  /** The amount (as decimal) of the application fee (if any) requested for the charge. */
+  applicationFeeAmount?: Maybe<Scalars['Decimal']>;
+  billingDetails?: Maybe<Scalars['GenericScalar']>;
+  /**
+   * The full statement descriptor that is passed to card networks, and that is
+   * displayed on your customers' credit card and bank statements. Allows you to
+   * see what the statement descriptor looks like after the static and dynamic
+   * portions are combined.
+   */
+  calculatedStatementDescriptor: Scalars['String'];
+  /**
+   * If the charge was created without capturing, this boolean represents whether
+   * or not it is still uncaptured or has since been captured.
+   */
+  captured: Scalars['Boolean'];
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** The currency in which the charge was made. */
+  currency: Scalars['String'];
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  /** Whether the charge has been disputed. */
+  disputed: Scalars['Boolean'];
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** Error code explaining reason for charge failure if available. */
+  failureCode?: Maybe<ChargeFailureCode>;
+  /** Message to user further explaining reason for charge failure if available. */
+  failureMessage: Scalars['String'];
+  /** Hash with information on fraud assessments for the charge. */
+  fraudDetails?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** The invoice this charge is for if one exists. */
+  invoice?: Maybe<StripeInvoiceType>;
+  latestInvoice?: Maybe<StripeInvoiceType>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** Details about whether or not the payment was accepted, and why. */
+  outcome?: Maybe<Scalars['String']>;
+  /** True if the charge succeeded, or was successfully authorized for later capture, False otherwise. */
+  paid: Scalars['Boolean'];
+  /** PaymentMethod used in this charge. */
+  paymentMethod?: Maybe<StripePaymentMethodType>;
+  /** Details about the payment method at the time of the transaction. */
+  paymentMethodDetails?: Maybe<Scalars['String']>;
+  pk?: Maybe<Scalars['String']>;
+  /** The email address that the receipt for this charge was sent to. */
+  receiptEmail: Scalars['String'];
+  /** The transaction number that appears on email receipts sent for this charge. */
+  receiptNumber: Scalars['String'];
+  /**
+   * This is the URL to view the receipt for this charge. The receipt is kept
+   * up-to-date to the latest state of the charge, including any refunds. If the
+   * charge is for an Invoice, the receipt will be stylized as an Invoice receipt.
+   */
+  receiptUrl: Scalars['String'];
+  /**
+   * Whether or not the charge has been fully refunded. If the charge is only
+   * partially refunded, this attribute will still be false.
+   */
+  refunded: Scalars['Boolean'];
+  /** Shipping information for the charge */
+  shipping?: Maybe<Scalars['String']>;
+  /**
+   * For card charges, use statement_descriptor_suffix instead. Otherwise, you can
+   * use this value as the complete description of a charge on your customers'
+   * statements. Must contain at least one letter, maximum 22 characters.
+   */
+  statementDescriptor?: Maybe<Scalars['String']>;
+  /**
+   * Provides information about the charge that customers see on their statements.
+   * Concatenated with the prefix (shortened descriptor) or statement descriptor
+   * that's set on the account to form the complete statement descriptor. Maximum
+   * 22 characters for the concatenated descriptor.
+   */
+  statementDescriptorSuffix?: Maybe<Scalars['String']>;
+  /** The status of the payment. */
+  status: ChargeStatus;
+  /** An optional dictionary including the account to automatically transfer to as part of a destination charge. */
+  transferData?: Maybe<Scalars['String']>;
+  /** A string that identifies this transaction as part of a group. */
+  transferGroup?: Maybe<Scalars['String']>;
+}
+
+export interface StripeChargeTypeConnection {
+  __typename?: 'StripeChargeTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<StripeChargeTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `StripeChargeType` and its cursor. */
+export interface StripeChargeTypeEdge {
+  __typename?: 'StripeChargeTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripeChargeType>;
+}
+
+export interface StripeInvoiceType extends Node {
+  __typename?: 'StripeInvoiceType';
+  /** The country of the business associated with this invoice, most often the business creating the invoice. */
+  accountCountry: Scalars['String'];
+  /** The public name of the business associated with this invoice, most often the business creating the invoice. */
+  accountName: Scalars['String'];
+  /**
+   * Final amount due (as decimal) at this time for this invoice. If the invoice's
+   * total is smaller than the minimum charge amount, for example, or if there is
+   * account credit that can be applied to the invoice, the amount_due may be 0. If
+   * there is a positive starting_balance for the invoice (the customer owes
+   * money), the amount_due will also take that into account. The charge that gets
+   * generated for the invoice will be for the amount specified in amount_due.
+   */
+  amountDue: Scalars['Decimal'];
+  /** The amount, (as decimal), that was paid. */
+  amountPaid?: Maybe<Scalars['Decimal']>;
+  /** The amount remaining, (as decimal), that is due. */
+  amountRemaining?: Maybe<Scalars['Decimal']>;
+  /**
+   * The fee (as decimal) that will be applied to the invoice and transferred to
+   * the application owner's Stripe account when the invoice is paid.
+   */
+  applicationFeeAmount?: Maybe<Scalars['Decimal']>;
+  /**
+   * Number of payment attempts made for this invoice, from the perspective of the
+   * payment retry schedule. Any payment attempt counts as the first attempt, and
+   * subsequently only automatic retries increment the attempt count. In other
+   * words, manual payment attempts after the first attempt do not affect the retry schedule.
+   */
+  attemptCount: Scalars['Int'];
+  /**
+   * Whether or not an attempt has been made to pay the invoice. An invoice is not
+   * attempted until 1 hour after the ``invoice.created`` webhook, for example, so
+   * you might not want to display that invoice as unpaid to your users.
+   */
+  attempted: Scalars['Boolean'];
+  /**
+   * Controls whether Stripe will perform automatic collection of the invoice. When
+   * false, the invoice's state will not automatically advance without an explicit action.
+   */
+  autoAdvance?: Maybe<Scalars['Boolean']>;
+  /**
+   * Indicates the reason why the invoice was created. subscription_cycle indicates
+   * an invoice created by a subscription advancing into a new period.
+   * subscription_create indicates an invoice created due to creating a
+   * subscription. subscription_update indicates an invoice created due to updating
+   * a subscription. subscription is set for all old invoices to indicate either a
+   * change to a subscription or a period advancement. manual is set for all
+   * invoices unrelated to a subscription (for example: created via the invoice
+   * editor). The upcoming value is reserved for simulated invoices per the
+   * upcoming invoice endpoint. subscription_threshold indicates an invoice created
+   * due to a billing threshold being reached.
+   */
+  billingReason?: Maybe<InvoiceBillingReason>;
+  /** The latest charge generated for this invoice, if any. */
+  charge?: Maybe<StripeChargeType>;
+  /** The invoice this charge is for if one exists. */
+  charges: StripeChargeTypeConnection;
+  /**
+   * When charging automatically, Stripe will attempt to pay this invoice using the
+   * default source attached to the customer. When sending an invoice, Stripe will
+   * email this invoice to the customer with payment instructions.
+   */
+  collectionMethod?: Maybe<InvoiceCollectionMethod>;
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Three-letter ISO currency code */
+  currency: Scalars['String'];
+  /**
+   * The customer's address. Until the invoice is finalized, this field will equal
+   * customer.address. Once the invoice is finalized, this field will no longer be updated.
+   */
+  customerAddress?: Maybe<Scalars['String']>;
+  /**
+   * The customer's email. Until the invoice is finalized, this field will equal
+   * customer.email. Once the invoice is finalized, this field will no longer be updated.
+   */
+  customerEmail: Scalars['String'];
+  /**
+   * The customer's name. Until the invoice is finalized, this field will equal
+   * customer.name. Once the invoice is finalized, this field will no longer be updated.
+   */
+  customerName: Scalars['String'];
+  /**
+   * The customer's phone number. Until the invoice is finalized, this field will
+   * equal customer.phone. Once the invoice is finalized, this field will no longer be updated.
+   */
+  customerPhone: Scalars['String'];
+  /**
+   * The customer's shipping information. Until the invoice is finalized, this
+   * field will equal customer.shipping. Once the invoice is finalized, this field
+   * will no longer be updated.
+   */
+  customerShipping?: Maybe<Scalars['String']>;
+  /**
+   * The customer's tax exempt status. Until the invoice is finalized, this field
+   * will equal customer.tax_exempt. Once the invoice is finalized, this field will
+   * no longer be updated.
+   */
+  customerTaxExempt: InvoiceCustomerTaxExempt;
+  /**
+   * Default payment method for the invoice. It must belong to the customer
+   * associated with the invoice. If not set, defaults to the subscription's
+   * default payment method, if any, or to the default payment method in the
+   * customer's invoice settings.
+   */
+  defaultPaymentMethod?: Maybe<StripePaymentMethodType>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  /**
+   * Describes the current discount applied to this subscription, if there is one.
+   * When billing, a discount applied to a subscription overrides a discount
+   * applied on a customer-wide basis.
+   */
+  discount?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /**
+   * The date on which payment for this invoice is due. This value will be null for
+   * invoices where billing=charge_automatically.
+   */
+  dueDate?: Maybe<Scalars['DateTime']>;
+  /**
+   * Ending customer balance (in cents) after attempting to pay invoice. If the
+   * invoice has not been attempted yet, this will be null.
+   */
+  endingBalance?: Maybe<Scalars['Int']>;
+  /** Footer displayed on the invoice. */
+  footer: Scalars['String'];
+  /**
+   * The URL for the hosted invoice page, which allows customers to view and pay an
+   * invoice. If the invoice has not been frozen yet, this will be null.
+   */
+  hostedInvoiceUrl: Scalars['String'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null. */
+  invoicePdf: Scalars['String'];
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** The time at which payment will next be attempted. */
+  nextPaymentAttempt?: Maybe<Scalars['DateTime']>;
+  /**
+   * A unique, identifying string that appears on emails sent to the customer for
+   * this invoice. This starts with the customer's unique invoice_prefix if it is specified.
+   */
+  number: Scalars['String'];
+  /**
+   * Whether payment was successfully collected for this invoice. An invoice can be
+   * paid (most commonly) with a charge or with credit from the customer's account balance.
+   */
+  paid: Scalars['Boolean'];
+  /** End of the usage period during which invoice items were added to this invoice. */
+  periodEnd: Scalars['DateTime'];
+  /** Start of the usage period during which invoice items were added to this invoice. */
+  periodStart: Scalars['DateTime'];
+  pk?: Maybe<Scalars['String']>;
+  /** Total amount (in cents) of all post-payment credit notes issued for this invoice. */
+  postPaymentCreditNotesAmount?: Maybe<Scalars['Int']>;
+  /** Total amount (in cents) of all pre-payment credit notes issued for this invoice. */
+  prePaymentCreditNotesAmount?: Maybe<Scalars['Int']>;
+  /** This is the transaction number that appears on email receipts sent for this invoice. */
+  receiptNumber?: Maybe<Scalars['String']>;
+  /**
+   * Starting customer balance (in cents) before attempting to pay invoice. If the
+   * invoice has not been attempted yet, this will be the current customer balance.
+   */
+  startingBalance: Scalars['Int'];
+  /**
+   * An arbitrary string to be displayed on your customer's credit card statement.
+   * The statement description may not include <>"' characters, and will appear on
+   * your customer's statement in capital letters. Non-ASCII characters are
+   * automatically stripped. While most banks display this information
+   * consistently, some may display it incorrectly or not at all.
+   */
+  statementDescriptor: Scalars['String'];
+  /** The status of the invoice, one of draft, open, paid, uncollectible, or void. */
+  status?: Maybe<InvoiceStatus>;
+  statusTransitions?: Maybe<Scalars['String']>;
+  /** The subscription that this invoice was prepared for, if any. */
+  subscription?: Maybe<StripeSubscriptionType>;
+  /** Only set for upcoming invoices that preview prorations. The time used to calculate prorations. */
+  subscriptionProrationDate?: Maybe<Scalars['DateTime']>;
+  /**
+   * Total (as decimal) of all subscriptions, invoice items, and prorations on the
+   * invoice before any discount or tax is applied.
+   */
+  subtotal: Scalars['Decimal'];
+  /**
+   * The amount (as decimal) of tax included in the total, calculated from
+   * ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null.
+   */
+  tax?: Maybe<Scalars['Decimal']>;
+  /**
+   * This percentage of the subtotal has been added to the total amount of the
+   * invoice, including invoice line items and discounts. This field is inherited
+   * from the subscription's ``tax_percent`` field, but can be changed before the
+   * invoice is paid. This field defaults to null.
+   */
+  taxPercent?: Maybe<Scalars['Decimal']>;
+  /**
+   * If billing_reason is set to subscription_threshold this returns more
+   * information on which threshold rules triggered the invoice.
+   */
+  thresholdReason?: Maybe<Scalars['String']>;
+  total: Scalars['Decimal'];
+  /**
+   * The time at which webhooks for this invoice were successfully delivered (if
+   * the invoice had no webhooks to deliver, this will match `date`). Invoice
+   * payment is delayed until webhooks are delivered, or until all webhook delivery
+   * attempts have been exhausted.
+   */
+  webhooksDeliveredAt?: Maybe<Scalars['DateTime']>;
+}
+
+
+export interface StripeInvoiceTypeChargesArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 }
 
 export interface StripePaymentMethodType extends Node {
@@ -754,6 +1381,7 @@ export interface StripeSubscriptionType extends Node {
   /** The ID of the object. */
   id: Scalars['ID'];
   pk?: Maybe<Scalars['String']>;
+  plan?: Maybe<SubscriptionPlanType>;
   /** Date when the subscription was first created. The date might differ from the created date due to backdating. */
   startDate?: Maybe<Scalars['DateTime']>;
   /** The status of this subscription. */

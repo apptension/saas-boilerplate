@@ -5,6 +5,7 @@ import {
   SubscriptionPlan,
   SubscriptionPlanName,
 } from '../../shared/services/api/subscription/types';
+import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import { makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
@@ -55,6 +56,30 @@ export const fillSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnviron
 
 export const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
   fillSubscriptionScheduleQuery(
+    relayEnvironment,
+    subscriptionFactory({
+      defaultPaymentMethod: paymentMethodFactory({
+        billingDetails: { name: 'Owner' },
+        card: { last4: '1234' },
+      }),
+      phases,
+    })
+  );
+};
+
+export const queueSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
+  relayEnvironment.mock.queueOperationResolver((operation) => {
+    return MockPayloadGenerator.generate(operation, {
+      SubscriptionScheduleType: (context, generateId) => ({
+        ...subscription,
+      }),
+    });
+  });
+  relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
+};
+
+export const queueSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
+  queueSubscriptionScheduleQuery(
     relayEnvironment,
     subscriptionFactory({
       defaultPaymentMethod: paymentMethodFactory({

@@ -1,6 +1,7 @@
 import { Story } from '@storybook/react';
-import { withRedux } from '../../../shared/utils/storybook';
-import { withRouter } from '../../../../.storybook/decorators';
+import { times } from 'ramda';
+import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
+import { generateRelayEnvironmentWithPaymentMethods, paymentMethodFactory } from '../../../mocks/factories';
 import { PaymentConfirm } from './paymentConfirm.component';
 
 const Template: Story = () => {
@@ -10,7 +11,16 @@ const Template: Story = () => {
 export default {
   title: 'Routes/Finances/PaymentConfirm',
   component: PaymentConfirm,
-  decorators: [withRedux(), withRouter()],
+  decorators: [
+    withActiveSubscriptionContext,
+    withRedux(),
+    withRelay((env) => {
+      generateRelayEnvironmentWithPaymentMethods(
+        times(() => paymentMethodFactory(), 3),
+        env
+      );
+    }),
+  ],
 };
 
 export const Default = Template.bind({});

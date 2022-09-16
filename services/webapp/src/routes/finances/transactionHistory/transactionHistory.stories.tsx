@@ -1,7 +1,12 @@
 import { Story } from '@storybook/react';
 import { times } from 'ramda';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { transactionHistoryEntryFactory } from '../../../mocks/factories';
 import { withProviders } from '../../../shared/utils/storybook';
+import { connectionFromArray } from '../../../shared/utils/testUtils';
+import StripeAllChargesQueryGraphql from '../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 import { TransactionHistory } from './transactionHistory.component';
 
 const Template: Story = () => {
@@ -13,8 +18,14 @@ export default {
   component: TransactionHistory,
   decorators: [
     withProviders({
-      store: (state) => {
-        state.stripe.transactionHistory = times(() => transactionHistoryEntryFactory(), 5);
+      relayEnvironment: (env) => {
+        fillCommonQueryWithUser(env);
+        env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+          MockPayloadGenerator.generate(operation, {
+            ChargeConnection: () => connectionFromArray(times(() => transactionHistoryEntryFactory(), 5)),
+          })
+        );
+        env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
       },
     }),
   ],

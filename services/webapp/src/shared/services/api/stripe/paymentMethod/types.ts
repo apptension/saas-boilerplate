@@ -1,5 +1,3 @@
-import { PaymentMethodType } from '../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
-
 export enum StripePaymentMethodCardBrand {
   Visa = 'visa',
 }

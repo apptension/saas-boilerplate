@@ -1,19 +1,19 @@
+import { useEffect } from 'react';
+import { createMockEnvironment } from 'relay-test-utils';
 import { screen, act } from '@testing-library/react';
+import { useFragment, useLazyLoadQuery, useQueryLoader } from 'react-relay';
 import { fillSubscriptionScheduleQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodCardBrand } from '../../../../../services/api/stripe/paymentMethod';
-import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
 import { matchTextContent } from '../../../../../utils/testUtils';
 import { render } from '../../../../../../tests/utils/rendering';
-import { createMockEnvironment } from 'relay-test-utils';
 import { fillCommonQueryWithUser } from '../../../../../utils/commonQuery';
-import { useFragment, useLazyLoadQuery, useQueryLoader } from 'react-relay';
 import subscriptionActivePlanDetailsQueryGraphql, {
   subscriptionActivePlanDetailsQuery,
 } from '../../../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import { useEffect } from 'react';
 import subscriptionActiveSubscriptionFragmentGraphql, {
   subscriptionActiveSubscriptionFragment$key,
 } from '../../../../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
+import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
 
 const getRelayEnv = () => {
   const relayEnvironment = createMockEnvironment();
