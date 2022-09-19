@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<46841ff7f57d45e8aaaa3e89550dd4fd>>
+ * @generated SignedSource<<48c2b6173706b81a4c36a2dc9fb404ca>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,9 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type subscriptionActiveSubscriptionFragment$data = {
   readonly canActivateTrial: boolean | null;
+  readonly defaultPaymentMethod: {
+    readonly " $fragmentSpreads": FragmentRefs<"stripePaymentMethodFragment">;
+  } | null;
   readonly phases: ReadonlyArray<{
     readonly endDate: string | null;
     readonly item: {
@@ -136,6 +139,22 @@ return {
       "kind": "ScalarField",
       "name": "canActivateTrial",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "StripePaymentMethodType",
+      "kind": "LinkedField",
+      "name": "defaultPaymentMethod",
+      "plural": false,
+      "selections": [
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "stripePaymentMethodFragment"
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "SubscriptionScheduleType",
@@ -143,6 +162,6 @@ return {
 };
 })();
 
-(node as any).hash = "ae6ce43163446fa5839fbde53a11bd9b";
+(node as any).hash = "ec9bfff71f327a50ca23c16d1955cc3c";
 
 export default node;

@@ -430,6 +430,9 @@ type Query {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): SubscriptionPlanConnection
   activeSubscription: SubscriptionScheduleType
+  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
+  allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
+  charge(id: ID): StripeChargeType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -501,6 +504,8 @@ schema {
 type ApiMutation {
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
+  updateDefaultPaymentMethod(input: UpdateDefaultPaymentMethodMutationInput!): UpdateDefaultPaymentMethodMutationPayload
+  deletePaymentMethod(input: DeletePaymentMethodMutationInput!): DeletePaymentMethodMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -538,6 +543,209 @@ type ChangeActiveSubscriptionMutationPayload {
   subscriptionSchedule: SubscriptionScheduleType
   subscriptionScheduleEdge: SubscriptionScheduleEdge
   clientMutationId: String
+}
+
+type ChargeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  """Contains the nodes in this connection."""
+  edges: [ChargeEdge]!
+}
+
+"""A Relay edge containing a `Charge` and its cursor."""
+type ChargeEdge {
+  """The item at the end of the edge"""
+  node: StripeChargeType
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""An enumeration."""
+enum ChargeFailureCode {
+  """Account already exists"""
+  ACCOUNT_ALREADY_EXISTS
+  """Account country invalid address"""
+  ACCOUNT_COUNTRY_INVALID_ADDRESS
+  """Account invalid"""
+  ACCOUNT_INVALID
+  """Account number invalid"""
+  ACCOUNT_NUMBER_INVALID
+  """Alipay upgrade required"""
+  ALIPAY_UPGRADE_REQUIRED
+  """Amount too large"""
+  AMOUNT_TOO_LARGE
+  """Amount too small"""
+  AMOUNT_TOO_SMALL
+  """Api key expired"""
+  API_KEY_EXPIRED
+  """Balance insufficient"""
+  BALANCE_INSUFFICIENT
+  """Bank account exists"""
+  BANK_ACCOUNT_EXISTS
+  """Bank account unusable"""
+  BANK_ACCOUNT_UNUSABLE
+  """Bank account unverified"""
+  BANK_ACCOUNT_UNVERIFIED
+  """Bitcoin upgrade required"""
+  BITCOIN_UPGRADE_REQUIRED
+  """Card was declined"""
+  CARD_DECLINED
+  """Charge already captured"""
+  CHARGE_ALREADY_CAPTURED
+  """Charge already refunded"""
+  CHARGE_ALREADY_REFUNDED
+  """Charge disputed"""
+  CHARGE_DISPUTED
+  """Charge exceeds source limit"""
+  CHARGE_EXCEEDS_SOURCE_LIMIT
+  """Charge expired for capture"""
+  CHARGE_EXPIRED_FOR_CAPTURE
+  """Country unsupported"""
+  COUNTRY_UNSUPPORTED
+  """Coupon expired"""
+  COUPON_EXPIRED
+  """Customer max subscriptions"""
+  CUSTOMER_MAX_SUBSCRIPTIONS
+  """Email invalid"""
+  EMAIL_INVALID
+  """Expired card"""
+  EXPIRED_CARD
+  """Idempotency key in use"""
+  IDEMPOTENCY_KEY_IN_USE
+  """Incorrect address"""
+  INCORRECT_ADDRESS
+  """Incorrect security code"""
+  INCORRECT_CVC
+  """Incorrect number"""
+  INCORRECT_NUMBER
+  """ZIP code failed validation"""
+  INCORRECT_ZIP
+  """Instant payouts unsupported"""
+  INSTANT_PAYOUTS_UNSUPPORTED
+  """Invalid card type"""
+  INVALID_CARD_TYPE
+  """Invalid charge amount"""
+  INVALID_CHARGE_AMOUNT
+  """Invalid security code"""
+  INVALID_CVC
+  """Invalid expiration month"""
+  INVALID_EXPIRY_MONTH
+  """Invalid expiration year"""
+  INVALID_EXPIRY_YEAR
+  """Invalid number"""
+  INVALID_NUMBER
+  """Invalid source usage"""
+  INVALID_SOURCE_USAGE
+  """Invalid swipe data"""
+  INVALID_SWIPE_DATA
+  """Invoice no customer line items"""
+  INVOICE_NO_CUSTOMER_LINE_ITEMS
+  """Invoice no subscription line items"""
+  INVOICE_NO_SUBSCRIPTION_LINE_ITEMS
+  """Invoice not editable"""
+  INVOICE_NOT_EDITABLE
+  """Invoice upcoming none"""
+  INVOICE_UPCOMING_NONE
+  """Livemode mismatch"""
+  LIVEMODE_MISMATCH
+  """No card being charged"""
+  MISSING
+  """Not allowed on standard account"""
+  NOT_ALLOWED_ON_STANDARD_ACCOUNT
+  """Order creation failed"""
+  ORDER_CREATION_FAILED
+  """Order required settings"""
+  ORDER_REQUIRED_SETTINGS
+  """Order status invalid"""
+  ORDER_STATUS_INVALID
+  """Order upstream timeout"""
+  ORDER_UPSTREAM_TIMEOUT
+  """Out of inventory"""
+  OUT_OF_INVENTORY
+  """Parameter invalid empty"""
+  PARAMETER_INVALID_EMPTY
+  """Parameter invalid integer"""
+  PARAMETER_INVALID_INTEGER
+  """Parameter invalid string blank"""
+  PARAMETER_INVALID_STRING_BLANK
+  """Parameter invalid string empty"""
+  PARAMETER_INVALID_STRING_EMPTY
+  """Parameter missing"""
+  PARAMETER_MISSING
+  """Parameter unknown"""
+  PARAMETER_UNKNOWN
+  """Parameters exclusive"""
+  PARAMETERS_EXCLUSIVE
+  """Payment intent authentication failure"""
+  PAYMENT_INTENT_AUTHENTICATION_FAILURE
+  """Payment intent incompatible payment method"""
+  PAYMENT_INTENT_INCOMPATIBLE_PAYMENT_METHOD
+  """Payment intent invalid parameter"""
+  PAYMENT_INTENT_INVALID_PARAMETER
+  """Payment intent payment attempt failed"""
+  PAYMENT_INTENT_PAYMENT_ATTEMPT_FAILED
+  """Payment intent unexpected state"""
+  PAYMENT_INTENT_UNEXPECTED_STATE
+  """Payment method unactivated"""
+  PAYMENT_METHOD_UNACTIVATED
+  """Payment method unexpected state"""
+  PAYMENT_METHOD_UNEXPECTED_STATE
+  """Payouts not allowed"""
+  PAYOUTS_NOT_ALLOWED
+  """Platform api key expired"""
+  PLATFORM_API_KEY_EXPIRED
+  """Postal code invalid"""
+  POSTAL_CODE_INVALID
+  """Processing error"""
+  PROCESSING_ERROR
+  """Product inactive"""
+  PRODUCT_INACTIVE
+  """Rate limit"""
+  RATE_LIMIT
+  """Resource already exists"""
+  RESOURCE_ALREADY_EXISTS
+  """Resource missing"""
+  RESOURCE_MISSING
+  """Routing number invalid"""
+  ROUTING_NUMBER_INVALID
+  """Secret key required"""
+  SECRET_KEY_REQUIRED
+  """SEPA unsupported account"""
+  SEPA_UNSUPPORTED_ACCOUNT
+  """Shipping calculation failed"""
+  SHIPPING_CALCULATION_FAILED
+  """SKU inactive"""
+  SKU_INACTIVE
+  """State unsupported"""
+  STATE_UNSUPPORTED
+  """Tax id invalid"""
+  TAX_ID_INVALID
+  """Taxes calculation failed"""
+  TAXES_CALCULATION_FAILED
+  """Testmode charges only"""
+  TESTMODE_CHARGES_ONLY
+  """TLS version unsupported"""
+  TLS_VERSION_UNSUPPORTED
+  """Token already used"""
+  TOKEN_ALREADY_USED
+  """Token in use"""
+  TOKEN_IN_USE
+  """Transfers not allowed"""
+  TRANSFERS_NOT_ALLOWED
+  """Upstream order creation failed"""
+  UPSTREAM_ORDER_CREATION_FAILED
+  """URL invalid"""
+  URL_INVALID
+}
+
+"""An enumeration."""
+enum ChargeStatus {
+  """Failed"""
+  FAILED
+  """Pending"""
+  PENDING
+  """Succeeded"""
+  SUCCEEDED
 }
 
 type ContentfulDemoItemFavoriteConnection {
@@ -698,6 +906,16 @@ type DeleteFavoriteContentfulDemoItemMutationPayload {
   clientMutationId: String
 }
 
+input DeletePaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type DeletePaymentMethodMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
 type DocumentDemoItemConnection {
   """Pagination data for this connection."""
   pageInfo: PageInfo!
@@ -732,6 +950,56 @@ GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
+
+"""An enumeration."""
+enum InvoiceBillingReason {
+  """Manual"""
+  MANUAL
+  """Subscription"""
+  SUBSCRIPTION
+  """Subscription create"""
+  SUBSCRIPTION_CREATE
+  """Subscription cycle"""
+  SUBSCRIPTION_CYCLE
+  """Subscription threshold"""
+  SUBSCRIPTION_THRESHOLD
+  """Subscription update"""
+  SUBSCRIPTION_UPDATE
+  """Upcoming"""
+  UPCOMING
+}
+
+"""An enumeration."""
+enum InvoiceCollectionMethod {
+  """Charge automatically"""
+  CHARGE_AUTOMATICALLY
+  """Send invoice"""
+  SEND_INVOICE
+}
+
+"""An enumeration."""
+enum InvoiceCustomerTaxExempt {
+  """Exempt"""
+  EXEMPT
+  """None"""
+  NONE
+  """Reverse"""
+  REVERSE
+}
+
+"""An enumeration."""
+enum InvoiceStatus {
+  """Draft"""
+  DRAFT
+  """Open"""
+  OPEN
+  """Paid"""
+  PAID
+  """Uncollectible"""
+  UNCOLLECTIBLE
+  """Void"""
+  VOID
+}
 
 """
 Allows use of a JSON String for input / output from the GraphQL schema.
@@ -805,6 +1073,21 @@ type PageInfo {
   startCursor: String
   """When paginating forwards, the cursor to continue."""
   endCursor: String
+}
+
+type PaymentMethodConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  """Contains the nodes in this connection."""
+  edges: [PaymentMethodEdge]!
+}
+
+"""A Relay edge containing a `PaymentMethod` and its cursor."""
+type PaymentMethodEdge {
+  """The item at the end of the edge"""
+  node: StripePaymentMethodType
+  """A cursor for use in pagination"""
+  cursor: String!
 }
 
 """An enumeration."""
@@ -898,6 +1181,384 @@ type SingUpMutationPayload {
   access: String
   refresh: String
   clientMutationId: String
+}
+
+type StripeChargeType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  """The ID of the object."""
+  id: ID!
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+  """The datetime this object was created in stripe."""
+  created: DateTime
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+  """A description of this object."""
+  description: String
+  """Amount charged (as decimal)."""
+  amount: Decimal!
+  """
+  Amount (as decimal) captured (can be less than the amount attribute on the charge if a partial capture was issued).
+  """
+  amountCaptured: Decimal
+  """
+  Amount (as decimal) refunded (can be less than the amount attribute on the charge if a partial refund was issued).
+  """
+  amountRefunded: Decimal!
+  """ID of the Connect application that created the charge."""
+  application: String!
+  """
+  The amount (as decimal) of the application fee (if any) requested for the charge.
+  """
+  applicationFeeAmount: Decimal
+  billingDetails: GenericScalar
+  """
+  The full statement descriptor that is passed to card networks, and that is
+  displayed on your customers' credit card and bank statements. Allows you to
+  see what the statement descriptor looks like after the static and dynamic
+  portions are combined.
+  """
+  calculatedStatementDescriptor: String!
+  """
+  If the charge was created without capturing, this boolean represents whether
+  or not it is still uncaptured or has since been captured.
+  """
+  captured: Boolean!
+  """The currency in which the charge was made."""
+  currency: String!
+  """Whether the charge has been disputed."""
+  disputed: Boolean!
+  """Error code explaining reason for charge failure if available."""
+  failureCode: ChargeFailureCode
+  """
+  Message to user further explaining reason for charge failure if available.
+  """
+  failureMessage: String!
+  """Hash with information on fraud assessments for the charge."""
+  fraudDetails: String
+  """The invoice this charge is for if one exists."""
+  invoice: StripeInvoiceType
+  """Details about whether or not the payment was accepted, and why."""
+  outcome: String
+  """
+  True if the charge succeeded, or was successfully authorized for later capture, False otherwise.
+  """
+  paid: Boolean!
+  """PaymentMethod used in this charge."""
+  paymentMethod: StripePaymentMethodType
+  """Details about the payment method at the time of the transaction."""
+  paymentMethodDetails: String
+  """The email address that the receipt for this charge was sent to."""
+  receiptEmail: String!
+  """
+  The transaction number that appears on email receipts sent for this charge.
+  """
+  receiptNumber: String!
+  """
+  This is the URL to view the receipt for this charge. The receipt is kept
+  up-to-date to the latest state of the charge, including any refunds. If the
+  charge is for an Invoice, the receipt will be stylized as an Invoice receipt.
+  """
+  receiptUrl: String!
+  """
+  Whether or not the charge has been fully refunded. If the charge is only
+  partially refunded, this attribute will still be false.
+  """
+  refunded: Boolean!
+  """Shipping information for the charge"""
+  shipping: String
+  """
+  For card charges, use statement_descriptor_suffix instead. Otherwise, you can
+  use this value as the complete description of a charge on your customers'
+  statements. Must contain at least one letter, maximum 22 characters.
+  """
+  statementDescriptor: String
+  """
+  Provides information about the charge that customers see on their statements.
+  Concatenated with the prefix (shortened descriptor) or statement descriptor
+  that's set on the account to form the complete statement descriptor. Maximum
+  22 characters for the concatenated descriptor.
+  """
+  statementDescriptorSuffix: String
+  """The status of the payment."""
+  status: ChargeStatus!
+  """
+  An optional dictionary including the account to automatically transfer to as part of a destination charge.
+  """
+  transferData: String
+  """A string that identifies this transaction as part of a group."""
+  transferGroup: String
+  latestInvoice: StripeInvoiceType
+  pk: String
+}
+
+type StripeChargeTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  """Contains the nodes in this connection."""
+  edges: [StripeChargeTypeEdge]!
+}
+
+"""A Relay edge containing a `StripeChargeType` and its cursor."""
+type StripeChargeTypeEdge {
+  """The item at the end of the edge"""
+  node: StripeChargeType
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type StripeInvoiceType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  """The ID of the object."""
+  id: ID!
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+  """The datetime this object was created in stripe."""
+  created: DateTime
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+  """A description of this object."""
+  description: String
+  """
+  The country of the business associated with this invoice, most often the business creating the invoice.
+  """
+  accountCountry: String!
+  """
+  The public name of the business associated with this invoice, most often the business creating the invoice.
+  """
+  accountName: String!
+  """
+  Final amount due (as decimal) at this time for this invoice. If the invoice's
+  total is smaller than the minimum charge amount, for example, or if there is
+  account credit that can be applied to the invoice, the amount_due may be 0. If
+  there is a positive starting_balance for the invoice (the customer owes
+  money), the amount_due will also take that into account. The charge that gets
+  generated for the invoice will be for the amount specified in amount_due.
+  """
+  amountDue: Decimal!
+  """The amount, (as decimal), that was paid."""
+  amountPaid: Decimal
+  """The amount remaining, (as decimal), that is due."""
+  amountRemaining: Decimal
+  """
+  The fee (as decimal) that will be applied to the invoice and transferred to
+  the application owner's Stripe account when the invoice is paid.
+  """
+  applicationFeeAmount: Decimal
+  """
+  Number of payment attempts made for this invoice, from the perspective of the
+  payment retry schedule. Any payment attempt counts as the first attempt, and
+  subsequently only automatic retries increment the attempt count. In other
+  words, manual payment attempts after the first attempt do not affect the retry schedule.
+  """
+  attemptCount: Int!
+  """
+  Whether or not an attempt has been made to pay the invoice. An invoice is not
+  attempted until 1 hour after the ``invoice.created`` webhook, for example, so
+  you might not want to display that invoice as unpaid to your users.
+  """
+  attempted: Boolean!
+  """
+  Controls whether Stripe will perform automatic collection of the invoice. When
+  false, the invoice's state will not automatically advance without an explicit action.
+  """
+  autoAdvance: Boolean
+  """
+  Indicates the reason why the invoice was created. subscription_cycle indicates
+  an invoice created by a subscription advancing into a new period.
+  subscription_create indicates an invoice created due to creating a
+  subscription. subscription_update indicates an invoice created due to updating
+  a subscription. subscription is set for all old invoices to indicate either a
+  change to a subscription or a period advancement. manual is set for all
+  invoices unrelated to a subscription (for example: created via the invoice
+  editor). The upcoming value is reserved for simulated invoices per the
+  upcoming invoice endpoint. subscription_threshold indicates an invoice created
+  due to a billing threshold being reached.
+  """
+  billingReason: InvoiceBillingReason
+  """The latest charge generated for this invoice, if any."""
+  charge: StripeChargeType
+  """
+  When charging automatically, Stripe will attempt to pay this invoice using the
+  default source attached to the customer. When sending an invoice, Stripe will
+  email this invoice to the customer with payment instructions.
+  """
+  collectionMethod: InvoiceCollectionMethod
+  """Three-letter ISO currency code"""
+  currency: String!
+  """
+  The customer's address. Until the invoice is finalized, this field will equal
+  customer.address. Once the invoice is finalized, this field will no longer be updated.
+  """
+  customerAddress: String
+  """
+  The customer's email. Until the invoice is finalized, this field will equal
+  customer.email. Once the invoice is finalized, this field will no longer be updated.
+  """
+  customerEmail: String!
+  """
+  The customer's name. Until the invoice is finalized, this field will equal
+  customer.name. Once the invoice is finalized, this field will no longer be updated.
+  """
+  customerName: String!
+  """
+  The customer's phone number. Until the invoice is finalized, this field will
+  equal customer.phone. Once the invoice is finalized, this field will no longer be updated.
+  """
+  customerPhone: String!
+  """
+  The customer's shipping information. Until the invoice is finalized, this
+  field will equal customer.shipping. Once the invoice is finalized, this field
+  will no longer be updated.
+  """
+  customerShipping: String
+  """
+  The customer's tax exempt status. Until the invoice is finalized, this field
+  will equal customer.tax_exempt. Once the invoice is finalized, this field will
+  no longer be updated.
+  """
+  customerTaxExempt: InvoiceCustomerTaxExempt!
+  """
+  Default payment method for the invoice. It must belong to the customer
+  associated with the invoice. If not set, defaults to the subscription's
+  default payment method, if any, or to the default payment method in the
+  customer's invoice settings.
+  """
+  defaultPaymentMethod: StripePaymentMethodType
+  """
+  Describes the current discount applied to this subscription, if there is one.
+  When billing, a discount applied to a subscription overrides a discount
+  applied on a customer-wide basis.
+  """
+  discount: String
+  """
+  The date on which payment for this invoice is due. This value will be null for
+  invoices where billing=charge_automatically.
+  """
+  dueDate: DateTime
+  """
+  Ending customer balance (in cents) after attempting to pay invoice. If the
+  invoice has not been attempted yet, this will be null.
+  """
+  endingBalance: Int
+  """Footer displayed on the invoice."""
+  footer: String!
+  """
+  The URL for the hosted invoice page, which allows customers to view and pay an
+  invoice. If the invoice has not been frozen yet, this will be null.
+  """
+  hostedInvoiceUrl: String!
+  """
+  The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null.
+  """
+  invoicePdf: String!
+  """The time at which payment will next be attempted."""
+  nextPaymentAttempt: DateTime
+  """
+  A unique, identifying string that appears on emails sent to the customer for
+  this invoice. This starts with the customer's unique invoice_prefix if it is specified.
+  """
+  number: String!
+  """
+  Whether payment was successfully collected for this invoice. An invoice can be
+  paid (most commonly) with a charge or with credit from the customer's account balance.
+  """
+  paid: Boolean!
+  """
+  End of the usage period during which invoice items were added to this invoice.
+  """
+  periodEnd: DateTime!
+  """
+  Start of the usage period during which invoice items were added to this invoice.
+  """
+  periodStart: DateTime!
+  """
+  Total amount (in cents) of all post-payment credit notes issued for this invoice.
+  """
+  postPaymentCreditNotesAmount: Int
+  """
+  Total amount (in cents) of all pre-payment credit notes issued for this invoice.
+  """
+  prePaymentCreditNotesAmount: Int
+  """
+  This is the transaction number that appears on email receipts sent for this invoice.
+  """
+  receiptNumber: String
+  """
+  Starting customer balance (in cents) before attempting to pay invoice. If the
+  invoice has not been attempted yet, this will be the current customer balance.
+  """
+  startingBalance: Int!
+  """
+  An arbitrary string to be displayed on your customer's credit card statement.
+  The statement description may not include <>"' characters, and will appear on
+  your customer's statement in capital letters. Non-ASCII characters are
+  automatically stripped. While most banks display this information
+  consistently, some may display it incorrectly or not at all.
+  """
+  statementDescriptor: String!
+  """
+  The status of the invoice, one of draft, open, paid, uncollectible, or void.
+  """
+  status: InvoiceStatus
+  statusTransitions: String
+  """The subscription that this invoice was prepared for, if any."""
+  subscription: StripeSubscriptionType
+  """
+  Only set for upcoming invoices that preview prorations. The time used to calculate prorations.
+  """
+  subscriptionProrationDate: DateTime
+  """
+  Total (as decimal) of all subscriptions, invoice items, and prorations on the
+  invoice before any discount or tax is applied.
+  """
+  subtotal: Decimal!
+  """
+  The amount (as decimal) of tax included in the total, calculated from
+  ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null.
+  """
+  tax: Decimal
+  """
+  This percentage of the subtotal has been added to the total amount of the
+  invoice, including invoice line items and discounts. This field is inherited
+  from the subscription's ``tax_percent`` field, but can be changed before the
+  invoice is paid. This field defaults to null.
+  """
+  taxPercent: Decimal
+  """
+  If billing_reason is set to subscription_threshold this returns more
+  information on which threshold rules triggered the invoice.
+  """
+  thresholdReason: String
+  total: Decimal!
+  """
+  The time at which webhooks for this invoice were successfully delivered (if
+  the invoice had no webhooks to deliver, this will match `date`). Invoice
+  payment is delayed until webhooks are delivered, or until all webhook delivery
+  attempts have been exhausted.
+  """
+  webhooksDeliveredAt: DateTime
+  """The invoice this charge is for if one exists."""
+  charges(offset: Int, before: String, after: String, first: Int, last: Int): StripeChargeTypeConnection!
+  pk: String
 }
 
 type StripePaymentMethodType implements Node {
@@ -1014,6 +1675,7 @@ type StripeSubscriptionType implements Node {
   """If the subscription has a trial, the beginning of that trial."""
   trialStart: DateTime
   pk: String
+  plan: SubscriptionPlanType
 }
 
 type StripeSubscriptionTypeConnection {
@@ -1279,6 +1941,17 @@ input UpdateCurrentUserMutationInput {
 type UpdateCurrentUserMutationPayload {
   userProfile: UserProfileType
   userProfileEdge: CurrentUserEdge
+  clientMutationId: String
+}
+
+input UpdateDefaultPaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+type UpdateDefaultPaymentMethodMutationPayload {
+  activeSubscription: SubscriptionScheduleType
+  paymentMethodEdge: PaymentMethodEdge
   clientMutationId: String
 }
 

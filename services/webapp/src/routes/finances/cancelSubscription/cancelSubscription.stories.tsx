@@ -1,6 +1,10 @@
 import { Story } from '@storybook/react';
-import { withProviders } from '../../../shared/utils/storybook';
-import { subscriptionFactory } from '../../../mocks/factories';
+import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
+import {
+  queueSubscriptionScheduleQueryWithPhases,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../mocks/factories';
 import { CancelSubscription } from './cancelSubscription.component';
 
 const Template: Story = () => {
@@ -11,10 +15,14 @@ export default {
   title: 'Routes/Subscriptions/CancelSubscription',
   component: CancelSubscription,
   decorators: [
-    withProviders({
-      store: (state) => {
-        state.subscription.activeSubscription = subscriptionFactory();
-      },
+    withActiveSubscriptionContext,
+    withRedux(),
+    withRelay((env) => {
+      queueSubscriptionScheduleQueryWithPhases(env, [
+        subscriptionPhaseFactory({
+          item: { price: subscriptionPlanFactory() },
+        }),
+      ]);
     }),
   ],
 };

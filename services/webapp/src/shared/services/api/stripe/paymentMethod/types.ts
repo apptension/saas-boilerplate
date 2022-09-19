@@ -23,7 +23,7 @@ export interface StripePaymentMethodCard {
 }
 
 export enum StripePaymentMethodType {
-  Card = 'card',
+  Card = 'CARD',
 }
 
 export interface StripeBillingDetails {

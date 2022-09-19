@@ -1,26 +1,36 @@
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Elements } from '@stripe/react-stripe-js';
 import { times } from 'ramda';
-import { withRedux } from '../../../../shared/utils/storybook';
-import { stripePromise } from '../../../../shared/services/stripe';
-import { paymentMethodFactory } from '../../../../mocks/factories';
+import { withActiveSubscriptionContext, withRelay } from '../../../../shared/utils/storybook';
+import {
+  generateRelayEnvironmentWithPaymentMethods,
+  queueSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../../mocks/factories';
+import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 
 const Template: Story<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
-  return (
-    <Elements stripe={stripePromise}>
-      <EditPaymentMethodForm {...args} />
-    </Elements>
-  );
+  return <EditPaymentMethodForm {...args} />;
 };
 
 export default {
   title: 'Shared/Subscriptions/EditPaymentMethodForm',
   component: EditPaymentMethodForm,
   decorators: [
-    withRedux((state) => {
-      state.stripe.paymentMethods = times(() => paymentMethodFactory(), 3);
+    withActiveSubscriptionContext,
+    withRelay((env) => {
+      queueSubscriptionScheduleQueryWithPhases(env, [
+        subscriptionPhaseFactory({
+          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+        }),
+      ]);
+      generateRelayEnvironmentWithPaymentMethods(
+        times(() => paymentMethodFactory(), 3),
+        env
+      );
     }),
   ],
 };

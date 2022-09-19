@@ -1,5 +1,10 @@
+from datetime import timedelta
 import pytest
+import calleee
 from djstripe import models as djstripe_models
+from graphql_relay import to_global_id
+from apps.finances.tests.utils import stripe_encode
+from django.utils import timezone
 
 pytestmark = pytest.mark.django_db
 
@@ -278,3 +283,298 @@ class TestCancelActiveSubscriptionMutation:
 
         assert executed['data']
         assert "errors" not in executed
+
+
+class TestAllPaymentMethodsQuery:
+    ALL_PAYMENT_METHODS_QUERY = '''
+        query  {
+          allPaymentMethods {
+            edges {
+              node {
+                pk
+              }
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_only_customer_payment_methods(self, graphene_client, customer, payment_method_factory):
+        payment_method = payment_method_factory(customer=customer)
+        other_customer_payment_method = payment_method_factory()
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+
+        assert executed["data"]
+        assert executed["data"]["allPaymentMethods"]
+        assert executed["data"]["allPaymentMethods"]["edges"]
+        assert len(executed["data"]["allPaymentMethods"]["edges"]) == 1
+
+        charge_ids = [charge["node"]["pk"] for charge in executed["data"]["allPaymentMethods"]["edges"]]
+        customer.refresh_from_db()
+        assert payment_method.id in charge_ids
+        assert other_customer_payment_method.id not in charge_ids
+
+
+class TestUpdateDefaultPaymentMethodMutation:
+    UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION = '''
+        mutation($input: UpdateDefaultPaymentMethodMutationInput!)  {
+          updateDefaultPaymentMethod(input: $input) {
+            paymentMethodEdge {
+              node {
+                pk
+              }
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(
+            self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_fetch_unknown_payment_method_from_stripe(self, graphene_client, stripe_request, payment_method_factory):
+        other_users_pm = payment_method_factory()
+        payment_method = payment_method_factory()
+        input = {"id": other_users_pm.id}
+
+        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        executed = graphene_client.mutate(
+            self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "No PaymentMethod matches the given query."
+        stripe_request.assert_any_call(
+            'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
+        )
+
+    def test_set_default_payment_method(self, graphene_client, payment_method_factory, customer, stripe_request):
+        payment_method = payment_method_factory(customer=customer)
+        input = {"id": payment_method.id}
+
+        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        executed = graphene_client.mutate(
+            self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["data"]
+        assert executed["data"]["updateDefaultPaymentMethod"]
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]["node"]
+        assert executed["data"]["updateDefaultPaymentMethod"]["paymentMethodEdge"]["node"]["pk"] == payment_method.id
+        stripe_request.assert_any_call(
+            'post',
+            calleee.EndsWith(f'/customers/{customer.id}'),
+            calleee.Any(),
+            stripe_encode({'invoice_settings': {'default_payment_method': payment_method.id}}),
+        )
+
+
+class TestDeletePaymentMethodMutation:
+    DELETE_PAYMENT_METHOD_MUTATION = '''
+        mutation($input: DeletePaymentMethodMutationInput!)  {
+          deletePaymentMethod(input: $input) {
+            deletedIds
+          }
+        }
+    '''
+
+    def test_return_error_for_other_users_payment_method(self, graphene_client, stripe_request, payment_method_factory):
+        other_users_pm = payment_method_factory()
+        payment_method = payment_method_factory()
+        input = {"id": other_users_pm.id}
+
+        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        executed = graphene_client.mutate(
+            self.DELETE_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "No PaymentMethod matches the given query."
+        stripe_request.assert_any_call(
+            'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
+        )
+
+    def test_detach_payment_method(self, graphene_client, stripe_request, payment_method):
+        customer = payment_method.customer
+        payment_method_global_id = to_global_id('StripePaymentMethodType', str(payment_method.djstripe_id))
+        input = {"id": payment_method.id}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.mutate(
+            self.DELETE_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input},
+        )
+
+        customer.refresh_from_db()
+        assert executed == {'data': {'deletePaymentMethod': {'deletedIds': [payment_method_global_id]}}}
+        assert customer.default_payment_method is None
+        stripe_request.assert_any_call(
+            'post',
+            calleee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            calleee.Any(),
+            '',
+        )
+
+    def test_set_default_payment_method_to_next_one(
+        self, graphene_client, stripe_request, customer, payment_method_factory
+    ):
+        payment_method = payment_method_factory(customer=customer)
+        input = {"id": payment_method.id}
+        customer.default_payment_method = payment_method
+        customer.save()
+        other_payment_method = payment_method_factory(customer=customer)
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.mutate(
+            self.DELETE_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input},
+        )
+
+        customer.refresh_from_db()
+
+        assert executed["data"]
+        stripe_request.assert_any_call(
+            'post',
+            calleee.EndsWith(f'payment_methods/{payment_method.id}/detach'),
+            calleee.Any(),
+            '',
+        )
+        stripe_request.assert_any_call(
+            'post',
+            calleee.EndsWith(f'/customers/{customer.id}'),
+            calleee.Any(),
+            stripe_encode({'invoice_settings': {'default_payment_method': other_payment_method.id}}),
+        )
+
+
+class TestAllChargesQuery:
+    ALL_CHARGES_QUERY = '''
+        query  {
+          allCharges {
+            edges {
+              node {
+                pk
+              }
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_only_customer_charges(self, graphene_client, customer, charge_factory):
+        other_customer_charge = charge_factory()
+        regular_charge = charge_factory(customer=customer)
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["data"]
+        assert executed["data"]["allCharges"]
+        assert executed["data"]["allCharges"]["edges"]
+        assert len(executed["data"]["allCharges"]["edges"]) == 1
+
+        charge_ids = [charge["node"]["pk"] for charge in executed["data"]["allCharges"]["edges"]]
+        assert regular_charge.id in charge_ids
+        assert other_customer_charge.id not in charge_ids
+
+    def test_return_charges_ordered_by_creation_date_descending(self, graphene_client, customer, charge_factory):
+        old_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=1))
+        oldest_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=2))
+        new_charge = charge_factory(customer=customer, created=timezone.now())
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["data"]
+        assert executed["data"]["allCharges"]
+        assert executed["data"]["allCharges"]["edges"]
+        assert len(executed["data"]["allCharges"]["edges"]) == 3
+
+        charge_ids = [charge["node"]["pk"] for charge in executed["data"]["allCharges"]["edges"]]
+        assert charge_ids == [new_charge.id, old_charge.id, oldest_charge.id]
+
+
+class TestChargeQuery:
+    CHARGE_QUERY = '''
+        query getCharge($id: ID!) {
+          charge(id: $id) {
+            id
+            amount
+            billingDetails
+            currency
+            captured
+            created
+            paid
+            paymentMethodDetails
+            status
+            invoice {
+              id
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client, customer, charge_factory):
+        charge = charge_factory(customer=customer)
+
+        variable_values = {"id": to_global_id('StripeChargeType', str(charge.pk))}
+        executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_charge(self, graphene_client, customer, charge_factory):
+        charge = charge_factory(customer=customer)
+        charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
+        variable_values = {"id": charge_global_id}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
+
+        assert executed["data"]
+        assert executed["data"]["charge"]
+        assert executed["data"]["charge"] == {
+            "id": charge_global_id,
+            "amount": f"{charge.amount:.2f}",
+            "billingDetails": {
+                "address": {
+                    "city": None,
+                    "country": None,
+                    "line1": None,
+                    "line2": None,
+                    "postal_code": charge.billing_details["address"]["postal_code"],
+                    "state": None,
+                },
+                "email": None,
+                "name": charge.billing_details["name"],
+                "phone": None,
+            },
+            "currency": "usd",
+            "captured": True,
+            "created": None,
+            "paid": False,
+            "paymentMethodDetails": None,
+            "status": "SUCCEEDED",
+            "invoice": None,
+        }

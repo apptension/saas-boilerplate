@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ca39d0262199d0bacdc476c9f6605546>>
+ * @generated SignedSource<<11c3a340d6300e6aee086770843829ba>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -62,6 +62,13 @@ v4 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "pk",
   "storageKey": null
 };
 return {
@@ -158,13 +165,7 @@ return {
                         "plural": false,
                         "selections": [
                           (v4/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "pk",
-                            "storageKey": null
-                          },
+                          (v5/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -235,6 +236,40 @@ return {
                 "name": "canActivateTrial",
                 "storageKey": null
               },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "StripePaymentMethodType",
+                "kind": "LinkedField",
+                "name": "defaultPaymentMethod",
+                "plural": false,
+                "selections": [
+                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "type",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "card",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "billingDetails",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
               (v4/*: any*/)
             ],
             "storageKey": null
@@ -245,12 +280,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "155c0f7556e402830f8d722456ecef3f",
+    "cacheID": "857a754c84daba9301b0bcfe6fe77682",
     "id": null,
     "metadata": {},
     "name": "subscriptionCancelActiveSubscriptionMutation",
     "operationKind": "mutation",
-    "text": "mutation subscriptionCancelActiveSubscriptionMutation(\n  $input: CancelActiveSubscriptionMutationInput!\n) {\n  cancelActiveSubscription(input: $input) {\n    subscriptionSchedule {\n      ...subscriptionActiveSubscriptionFragment\n      id\n    }\n  }\n}\n\nfragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n  phases {\n    startDate\n    endDate\n    trialEnd\n    item {\n      price {\n        ...subscriptionPlanItemFragment\n        id\n      }\n      quantity\n    }\n  }\n  subscription {\n    startDate\n    trialEnd\n    trialStart\n    id\n  }\n  canActivateTrial\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
+    "text": "mutation subscriptionCancelActiveSubscriptionMutation(\n  $input: CancelActiveSubscriptionMutationInput!\n) {\n  cancelActiveSubscription(input: $input) {\n    subscriptionSchedule {\n      ...subscriptionActiveSubscriptionFragment\n      id\n    }\n  }\n}\n\nfragment stripePaymentMethodFragment on StripePaymentMethodType {\n  id\n  pk\n  type\n  card\n  billingDetails\n}\n\nfragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n  phases {\n    startDate\n    endDate\n    trialEnd\n    item {\n      price {\n        ...subscriptionPlanItemFragment\n        id\n      }\n      quantity\n    }\n  }\n  subscription {\n    startDate\n    trialEnd\n    trialStart\n    id\n  }\n  canActivateTrial\n  defaultPaymentMethod {\n    ...stripePaymentMethodFragment\n    id\n  }\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
   }
 };
 })();

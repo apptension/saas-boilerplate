@@ -6,8 +6,13 @@ import { Story } from '@storybook/react';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { Suspense } from 'react';
+import { createMemoryHistory } from 'history';
+import { Route, Routes, unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { Elements } from '@stripe/react-stripe-js';
 import { store } from '../../mocks/store';
 import { GlobalState } from '../../app/config/reducers';
+import { ActiveSubscriptionContext } from '../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
+import { stripePromise } from '../services/stripe';
 import { ContextData, ProvidersWrapper } from './testUtils';
 
 export const withRedux =
@@ -56,3 +61,25 @@ export const withSuspense = (StoryComponent: Story) => (
     <StoryComponent />
   </Suspense>
 );
+
+export const withActiveSubscriptionContext = (StoryComponent: Story) => {
+  const routerHistory = createMemoryHistory({ initialEntries: ['/'] });
+  return (
+    <HistoryRouter history={routerHistory}>
+      <Routes>
+        <Route element={<ActiveSubscriptionContext />}>
+          <Route
+            index
+            element={
+              <Elements stripe={stripePromise}>
+                <Suspense fallback={null}>
+                  <StoryComponent />
+                </Suspense>
+              </Elements>
+            }
+          />
+        </Route>
+      </Routes>
+    </HistoryRouter>
+  );
+};

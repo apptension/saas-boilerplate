@@ -10,6 +10,9 @@ import subscriptionPlanItemFragmentGraphql, {
 } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import { SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails';
+import stripePaymentMethodFragmentGraphql, {
+  stripePaymentMethodFragment$key,
+} from '../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
 
 export const useActiveSubscriptionDetailsData = (
   activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>
@@ -41,6 +44,11 @@ export const useActiveSubscriptionDetailsData = (
   const isTrialActive = Boolean(trialEnd && Date.parse(trialEnd.toString()) >= Date.now());
   const isTrialEligible = Boolean(activeSubscription?.canActivateTrial);
 
+  const defaultPaymentMethod = useFragment<stripePaymentMethodFragment$key>(
+    stripePaymentMethodFragmentGraphql,
+    (activeSubscription && activeSubscription.defaultPaymentMethod) || null
+  );
+
   return {
     activeSubscriptionPlan,
     activeSubscriptionIsCancelled,
@@ -50,5 +58,6 @@ export const useActiveSubscriptionDetailsData = (
     trialEnd,
     isTrialActive,
     isTrialEligible,
+    defaultPaymentMethod,
   };
 };

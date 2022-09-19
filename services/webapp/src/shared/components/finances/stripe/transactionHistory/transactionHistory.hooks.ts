@@ -1,19 +1,16 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { selectStripeTransactionHistory } from '../../../../../modules/stripe/stripe.selectors';
-import * as stripeActions from '../../../../../modules/stripe/stripe.actions';
+import { useEffect } from 'react';
+import { useQueryLoader } from 'react-relay';
+import StripeAllChargesQueryGraphql, {
+  stripeAllChargesQuery,
+} from '../../../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
 
-export const useTransactionHistory = () => {
-  const [isFetched, setIsFetched] = useState(false);
-  const dispatch = useDispatch();
-  const transactionsHistory = useSelector(selectStripeTransactionHistory);
+export const useTransactionsHistoryQuery = () => {
+  const [transactionsHistoryQueryRef, loadTransactionsHistoryQuery] =
+    useQueryLoader<stripeAllChargesQuery>(StripeAllChargesQueryGraphql);
 
   useEffect(() => {
-    if (transactionsHistory.length === 0 && !isFetched) {
-      dispatch(stripeActions.fetchStripeTransactionHistory());
-      setIsFetched(true);
-    }
-  }, [dispatch, isFetched, transactionsHistory]);
+    loadTransactionsHistoryQuery({});
+  }, [loadTransactionsHistoryQuery]);
 
-  return transactionsHistory;
+  return { transactionsHistoryQueryRef };
 };

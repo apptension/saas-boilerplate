@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d98165a1db29ba3bb765c20bc3e39dd1>>
+ * @generated SignedSource<<29e9ed3556cf593f8214cdab5cc73e3b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -41,6 +41,13 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "pk",
   "storageKey": null
 };
 return {
@@ -118,13 +125,7 @@ return {
                     "plural": false,
                     "selections": [
                       (v2/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "pk",
-                        "storageKey": null
-                      },
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -195,6 +196,40 @@ return {
             "name": "canActivateTrial",
             "storageKey": null
           },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "StripePaymentMethodType",
+            "kind": "LinkedField",
+            "name": "defaultPaymentMethod",
+            "plural": false,
+            "selections": [
+              (v2/*: any*/),
+              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "type",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "card",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "billingDetails",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
           (v2/*: any*/)
         ],
         "storageKey": null
@@ -202,12 +237,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "634c410d67a9d97595026b5c27ece744",
+    "cacheID": "aba2bce29f2c8d21966ae687c923fcd5",
     "id": null,
     "metadata": {},
     "name": "subscriptionActivePlanDetailsQuery",
     "operationKind": "query",
-    "text": "query subscriptionActivePlanDetailsQuery {\n  activeSubscription {\n    ...subscriptionActiveSubscriptionFragment\n    id\n  }\n}\n\nfragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n  phases {\n    startDate\n    endDate\n    trialEnd\n    item {\n      price {\n        ...subscriptionPlanItemFragment\n        id\n      }\n      quantity\n    }\n  }\n  subscription {\n    startDate\n    trialEnd\n    trialStart\n    id\n  }\n  canActivateTrial\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
+    "text": "query subscriptionActivePlanDetailsQuery {\n  activeSubscription {\n    ...subscriptionActiveSubscriptionFragment\n    id\n  }\n}\n\nfragment stripePaymentMethodFragment on StripePaymentMethodType {\n  id\n  pk\n  type\n  card\n  billingDetails\n}\n\nfragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n  phases {\n    startDate\n    endDate\n    trialEnd\n    item {\n      price {\n        ...subscriptionPlanItemFragment\n        id\n      }\n      quantity\n    }\n  }\n  subscription {\n    startDate\n    trialEnd\n    trialStart\n    id\n  }\n  canActivateTrial\n  defaultPaymentMethod {\n    ...stripePaymentMethodFragment\n    id\n  }\n}\n\nfragment subscriptionPlanItemFragment on SubscriptionPlanType {\n  id\n  pk\n  product {\n    id\n    name\n  }\n  unitAmount\n}\n"
   }
 };
 })();

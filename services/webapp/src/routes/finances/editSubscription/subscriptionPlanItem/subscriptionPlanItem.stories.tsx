@@ -5,8 +5,8 @@ import { useLazyLoadQuery } from 'react-relay';
 import { Route } from 'react-router-dom';
 
 import {
-  fillSubscriptionScheduleQuery,
-  fillSubscriptionScheduleQueryWithPhases,
+  queueSubscriptionScheduleQuery,
+  queueSubscriptionScheduleQueryWithPhases,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
@@ -86,7 +86,7 @@ export const Free = Template.bind({});
 Free.args = { name: SubscriptionPlanName.FREE };
 Free.decorators = [
   withRelay((env) => {
-    fillSubscriptionScheduleQueryWithPhases(env, [
+    queueSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: monthlyPlan },
       }),
@@ -98,7 +98,7 @@ export const ActiveFree = Template.bind({});
 ActiveFree.args = { name: SubscriptionPlanName.FREE };
 ActiveFree.decorators = [
   withRelay((env) => {
-    fillSubscriptionScheduleQueryWithPhases(env, [
+    queueSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: freePlan },
       }),
@@ -110,7 +110,7 @@ export const Paid = Template.bind({});
 Paid.args = { name: SubscriptionPlanName.MONTHLY };
 Paid.decorators = [
   withRelay((env) => {
-    fillSubscriptionScheduleQueryWithPhases(env, [
+    queueSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: freePlan },
       }),
@@ -122,7 +122,7 @@ export const ActivePaid = Template.bind({});
 ActivePaid.args = { name: SubscriptionPlanName.MONTHLY };
 ActivePaid.decorators = [
   withRelay((env) => {
-    fillSubscriptionScheduleQueryWithPhases(env, [
+    queueSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: monthlyPlan },
       }),
@@ -134,7 +134,7 @@ export const WithTrialEligible = Template.bind({});
 WithTrialEligible.args = { name: SubscriptionPlanName.MONTHLY };
 WithTrialEligible.decorators = [
   withRelay((env) => {
-    fillSubscriptionScheduleQuery(
+    queueSubscriptionScheduleQuery(
       env,
       subscriptionFactory({
         canActivateTrial: true,

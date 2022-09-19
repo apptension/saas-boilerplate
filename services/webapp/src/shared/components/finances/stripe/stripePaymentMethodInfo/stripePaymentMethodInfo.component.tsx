@@ -1,8 +1,12 @@
 import { FormattedMessage } from 'react-intl';
-import { StripePaymentMethod, StripePaymentMethodCardBrand } from '../../../../services/api/stripe/paymentMethod';
+import { useFragment } from 'react-relay';
+import { StripePaymentMethodCardBrand } from '../../../../services/api/stripe/paymentMethod';
+import stripePaymentMethodFragmentGraphql, {
+  stripePaymentMethodFragment$key,
+} from '../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
 
 export type StripePaymentMethodInfoProps = {
-  method?: StripePaymentMethod | null;
+  method: stripePaymentMethodFragment$key | null;
 };
 
 const brandDisplayNames: Record<StripePaymentMethodCardBrand, string> = {
@@ -10,9 +14,12 @@ const brandDisplayNames: Record<StripePaymentMethodCardBrand, string> = {
 };
 
 export const StripePaymentMethodInfo = ({ method }: StripePaymentMethodInfoProps) => {
-  return method ? (
+  const paymentMethod = useFragment<stripePaymentMethodFragment$key>(stripePaymentMethodFragmentGraphql, method);
+
+  return paymentMethod ? (
     <>
-      {method.billingDetails.name} {brandDisplayNames[method.card.brand]} **** {method.card.last4}
+      {paymentMethod.billingDetails.name} {brandDisplayNames[paymentMethod.card.brand as StripePaymentMethodCardBrand]}{' '}
+      **** {paymentMethod.card.last4}
     </>
   ) : (
     <FormattedMessage defaultMessage="None" id="Stripe Payment Method / None" />

@@ -6,9 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { matchTextContent, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
-import { prepareState } from '../../../../mocks/store';
 import {
-  paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
@@ -24,18 +22,6 @@ const getRelayEnv = () => {
   fillCommonQueryWithUser(relayEnvironment);
   return relayEnvironment;
 };
-
-const reduxInitialState = prepareState((state) => {
-  state.subscription.activeSubscription = subscriptionFactory({
-    defaultPaymentMethod: paymentMethodFactory({ billingDetails: { name: 'Owner' }, card: { last4: '1234' } }),
-    phases: [
-      subscriptionPhaseFactory({
-        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
-        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
-      }),
-    ],
-  });
-});
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
   fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
@@ -83,7 +69,7 @@ describe('Subscriptions: Component', () => {
 
   it('should render default payment method', async () => {
     const relayEnvironment = getRelayEnv();
-    render(<Component />, { reduxInitialState, relayEnvironment });
+    render(<Component />, { relayEnvironment });
 
     await act(() => {
       resolveSubscriptionDetailsQuery(relayEnvironment);

@@ -1,21 +1,15 @@
 import { Suspense } from 'react';
-import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { selectActiveSubscriptionPaymentMethod } from '../../../modules/subscription/subscription.selectors';
-import { RoutesConfig } from '../../../app/config/routes';
-import { useTransactionHistory } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
-import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useTransactionsHistoryQuery } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
 import { useActiveSubscriptionDetailsQueryRef } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { Container, Header, Link, Row, RowValue, Section, Subheader } from './subscriptions.styles';
+import { Container, Header, Section, Subheader } from './subscriptions.styles';
 import { SubscriptionsContent } from './subscriptions.content';
+import { PaymentMethodContent } from './paymentMethod.content';
+import { TransactionsHistoryContent } from './transactionsHistory.content';
 
 export const Subscriptions = () => {
-  const generateLocalePath = useGenerateLocalePath();
-
-  const activeSubscriptionPaymentMethod = useSelector(selectActiveSubscriptionPaymentMethod);
-  const transactionsHistory = useTransactionHistory();
   const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
+  const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();
 
   return (
     <Container>
@@ -39,20 +33,12 @@ export const Subscriptions = () => {
         <Subheader>
           <FormattedMessage defaultMessage="Payment method" id="My subscription / Payment method header" />
         </Subheader>
-        <Row>
-          <FormattedMessage defaultMessage="Current method:" id="My subscription / Current method" />
-          <RowValue>
-            <StripePaymentMethodInfo method={activeSubscriptionPaymentMethod} />
-          </RowValue>
-        </Row>
 
-        <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>
-          {activeSubscriptionPaymentMethod ? (
-            <FormattedMessage defaultMessage="Edit payment method" id="My subscription / Edit payment method button" />
-          ) : (
-            <FormattedMessage defaultMessage="Add payment method" id="My subscription / Add payment method button" />
-          )}
-        </Link>
+        {activeSubscriptionDetailsQueryRefContext && activeSubscriptionDetailsQueryRefContext.ref && (
+          <Suspense fallback={null}>
+            <PaymentMethodContent activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref} />
+          </Suspense>
+        )}
       </Section>
 
       <Section>
@@ -60,17 +46,10 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="History" id="My subscription / History header" />
         </Header>
 
-        {transactionsHistory.length > 0 ? (
-          <Link to={generateLocalePath(RoutesConfig.finances.history)}>
-            <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
-          </Link>
-        ) : (
-          <Row>
-            <FormattedMessage
-              defaultMessage="You don't have any history to show"
-              id="My subscription / No transaction history"
-            />
-          </Row>
+        {transactionsHistoryQueryRef && (
+          <Suspense fallback={null}>
+            <TransactionsHistoryContent transactionHistoryQueryRef={transactionsHistoryQueryRef} />
+          </Suspense>
         )}
       </Section>
     </Container>

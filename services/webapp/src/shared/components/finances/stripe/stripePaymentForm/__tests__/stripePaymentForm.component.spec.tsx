@@ -1,31 +1,43 @@
 import { Elements } from '@stripe/react-stripe-js';
-import { produce } from 'immer';
 import { times } from 'ramda';
-import { makeContextRenderer } from '../../../../../utils/testUtils';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { act } from '@testing-library/react';
+import { render } from '../../../../../../tests/utils/rendering';
+import { paymentMethodFactory } from '../../../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../../utils/commonQuery';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
-import { paymentMethodFactory } from '../../../../../../mocks/factories/stripe';
-import { store } from '../../../../../../mocks/store';
+import { connectionFromArray } from '../../../../../utils/testUtils';
 
 describe('StripePaymentForm: Component', () => {
   const defaultProps: StripePaymentFormProps = {
     onSuccess: jest.fn(),
   };
 
-  const component = (props: Partial<StripePaymentFormProps>) => (
+  const getRelayEnv = () => {
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    return relayEnvironment;
+  };
+
+  const Component = (props: Partial<StripePaymentFormProps>) => (
     <Elements stripe={null}>
       <StripePaymentForm {...defaultProps} {...props} />
     </Elements>
   );
-  const render = makeContextRenderer(component);
 
-  it('should render without errors', () => {
-    render(
-      {},
-      {
-        store: produce(store, (state) => {
-          state.stripe.paymentMethods = times(() => paymentMethodFactory(), 2);
-        }),
-      }
-    );
+  it('should render without errors', async () => {
+    const relayEnvironment = getRelayEnv();
+
+    render(<Component />, {
+      relayEnvironment,
+    });
+
+    await act(() => {
+      relayEnvironment.mock.resolveMostRecentOperation((operation) => {
+        return MockPayloadGenerator.generate(operation, {
+          PaymentMethodConnection: () => connectionFromArray(times(() => paymentMethodFactory(), 2)),
+        });
+      });
+    });
   });
 });

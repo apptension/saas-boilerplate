@@ -4864,10 +4864,18 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-relay@*", "@types/react-relay@^13.0.2":
+"@types/react-relay@*":
   version "13.0.2"
   resolved "https://registry.yarnpkg.com/@types/react-relay/-/react-relay-13.0.2.tgz#85ac65b13b7a67f8c75fc32dd175160c28d3cc9b"
   integrity sha512-QyPV/BVKyv5/3bZKILIJYa2dM1r2HOMYNe6vuFbs/4G1uWj9RCbJiTcWFK2OxH3y70p1k9/A5gPS3lFDm0CvHQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/relay-runtime" "*"
+
+"@types/react-relay@^14.1.1":
+  version "14.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react-relay/-/react-relay-14.1.1.tgz#78f50309a19cf92bfaece563cc3a6ba43fcb5e23"
+  integrity sha512-uUXlJOjWmLF1awJGTSuolsCU3d9Qf7+YChBo/UvlX/neLaMYuAjHvzqB8EkafIOJtLi0AaKKvDL047rnoino2A==
   dependencies:
     "@types/react" "*"
     "@types/relay-runtime" "*"
