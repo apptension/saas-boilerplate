@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+import { RelayMockEnvironment } from 'relay-test-utils';
 import { Routes, Route } from 'react-router-dom';
 
 import { matchTextContent, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
@@ -14,14 +14,8 @@ import {
   fillSubscriptionScheduleQueryWithPhases,
 } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
+import { getRelayEnv } from '../../../../tests/utils/relay';
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
   fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [

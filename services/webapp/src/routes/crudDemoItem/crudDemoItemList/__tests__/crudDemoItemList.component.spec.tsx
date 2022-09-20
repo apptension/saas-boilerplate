@@ -1,15 +1,15 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 
-import crudDemoItemListQueryGraphql from "../__generated__/crudDemoItemListQuery.graphql";
+import crudDemoItemListQueryGraphql from '../__generated__/crudDemoItemListQuery.graphql';
 import { connectionFromArray } from '../../../../shared/utils/testUtils';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { getRelayEnv } from '../../../../tests/utils/relay';
 
 describe('CrudDemoItemList: Component', () => {
   const routePath = ['crudDemoItem', 'list'];
@@ -21,12 +21,6 @@ describe('CrudDemoItemList: Component', () => {
       <Route path={RoutesConfig.getLocalePath(addRoutePath)} element={<span>CrudDemoItem add page mock</span>} />
     </Routes>
   );
-
-  const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
-    return relayEnvironment;
-  };
 
   it('should render all items', () => {
     const routerHistory = createMockRouterHistory(routePath);

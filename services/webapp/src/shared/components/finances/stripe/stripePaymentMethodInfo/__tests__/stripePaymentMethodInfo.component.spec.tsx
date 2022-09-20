@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
-import { createMockEnvironment } from 'relay-test-utils';
 import { screen, act } from '@testing-library/react';
 import { useFragment, useLazyLoadQuery, useQueryLoader } from 'react-relay';
 import { fillSubscriptionScheduleQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodCardBrand } from '../../../../../services/api/stripe/paymentMethod';
 import { matchTextContent } from '../../../../../utils/testUtils';
 import { render } from '../../../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../../utils/commonQuery';
 import subscriptionActivePlanDetailsQueryGraphql, {
   subscriptionActivePlanDetailsQuery,
 } from '../../../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
@@ -14,12 +12,7 @@ import subscriptionActiveSubscriptionFragmentGraphql, {
   subscriptionActiveSubscriptionFragment$key,
 } from '../../../../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
+import { getRelayEnv } from '../../../../../../tests/utils/relay';
 
 const Component = (props: Partial<StripePaymentMethodInfoProps>) => {
   const [queryRef, loadQuery] = useQueryLoader<subscriptionActivePlanDetailsQuery>(

@@ -2,14 +2,14 @@ import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import graphql from 'babel-plugin-relay/macro';
 import { useLazyLoadQuery } from 'react-relay';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes, useParams } from 'react-router';
 
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 import { render } from '../../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 import { crudDemoItemListItemTestQuery } from './__generated__/crudDemoItemListItemTestQuery.graphql';
 
 describe('CrudDemoItemListItem: Component', () => {
@@ -46,12 +46,6 @@ describe('CrudDemoItemListItem: Component', () => {
         <Route path={RoutesConfig.getLocalePath(['crudDemoItem', 'edit'])} element={<EditRouteMock />} />
       </Routes>
     );
-  };
-
-  const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
-    return relayEnvironment;
   };
 
   it('should render link to details page', async () => {

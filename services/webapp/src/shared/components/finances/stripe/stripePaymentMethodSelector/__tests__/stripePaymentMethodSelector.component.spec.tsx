@@ -1,6 +1,6 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { screen, act } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { render } from '../../../../../../tests/utils/rendering';
 import { connectionFromArray, matchTextContent } from '../../../../../utils/testUtils';
@@ -8,14 +8,8 @@ import { useApiForm } from '../../../../../hooks/useApiForm';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
-import { fillCommonQueryWithUser } from '../../../../../utils/commonQuery';
 import { StripePaymentMethod } from '../../../../../services/api/stripe/paymentMethod';
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
+import { getRelayEnv } from '../../../../../../tests/utils/relay';
 
 const resolvePaymentMethodsQuery = (
   relayEnvironment: RelayMockEnvironment,

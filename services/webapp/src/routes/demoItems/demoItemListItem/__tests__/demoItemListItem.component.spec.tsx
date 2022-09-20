@@ -3,7 +3,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import graphql from 'babel-plugin-relay/macro';
 import { useLazyLoadQuery } from 'react-relay';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { Route, Routes, useParams } from 'react-router';
 import { ConnectionHandler } from 'relay-runtime';
 
@@ -12,12 +12,11 @@ import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.com
 import { useFavoriteDemoItemsLoader } from '../../../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.hook';
 import { render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
 import useFavoriteDemoItemListQueryGraphql from '../../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
 import demoItemListItemTestQueryGraphql, {
   demoItemListItemTestQuery,
 } from './__generated__/demoItemListItemTestQuery.graphql';
-
 
 describe('DemoItemListItem: Component', () => {
   const defaultProps: Omit<DemoItemListItemProps, 'item' | 'queryRef'> = {
@@ -64,8 +63,7 @@ describe('DemoItemListItem: Component', () => {
 
   describe('item is marked as favorite', () => {
     const getRelayEnv = () => {
-      const relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      const relayEnvironment = getBaseRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation) =>
         MockPayloadGenerator.generate(operation, {
           DemoItem() {
@@ -143,8 +141,7 @@ describe('DemoItemListItem: Component', () => {
 
   describe('item is not marked as favorite', () => {
     const getRelayEnv = () => {
-      const relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      const relayEnvironment = getBaseRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation) =>
         MockPayloadGenerator.generate(operation, {
           DemoItem() {

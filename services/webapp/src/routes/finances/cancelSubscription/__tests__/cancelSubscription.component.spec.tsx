@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { packHistoryArgs } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
@@ -9,9 +9,9 @@ import { paymentMethodFactory, subscriptionFactory, subscriptionPhaseFactory } f
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { RoutesConfig } from '../../../../app/config/routes';
+import { getRelayEnv } from '../../../../tests/utils/relay';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -20,12 +20,6 @@ jest.mock('react-redux', () => {
     useDispatch: () => mockDispatch,
   };
 });
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
 
 const fillSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
   relayEnvironment.mock.resolveMostRecentOperation((operation) => {

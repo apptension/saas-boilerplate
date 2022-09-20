@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event';
 import { screen, act } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 
 import { render } from '../../../../../tests/utils/rendering';
 import { SignupForm } from '../signupForm.component';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { RoutesConfig } from '../../../../../app/config/routes';
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -16,12 +16,6 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('SignupForm: Component', () => {
-  const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
-    return relayEnvironment;
-  };
-
   beforeEach(() => {
     mockNavigate.mockReset();
   });

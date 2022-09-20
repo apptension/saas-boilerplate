@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import { useLazyLoadQuery } from 'react-relay';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
@@ -19,9 +19,9 @@ import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { mapConnection } from '../../../../../shared/utils/graphql';
-import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 import { useActiveSubscriptionDetailsQueryRef } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 
 describe('SubscriptionPlanItem: Component', () => {
   const defaultProps: Pick<SubscriptionPlanItemProps, 'onSelect'> = { onSelect: () => jest.fn() };
@@ -55,8 +55,7 @@ describe('SubscriptionPlanItem: Component', () => {
   };
 
   const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
+    const relayEnvironment = getBaseRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         SubscriptionPlanConnection: () =>

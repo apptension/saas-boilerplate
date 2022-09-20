@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { connectionFromArray, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
@@ -10,9 +10,9 @@ import { EditSubscription } from '../editSubscription.component';
 import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -30,8 +30,7 @@ const mockMonthlyPlan = subscriptionPlanFactory({
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
 
 const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
+  const relayEnvironment = getBaseRelayEnv();
   relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
     MockPayloadGenerator.generate(operation, {
       SubscriptionPlanConnection: () => connectionFromArray([mockMonthlyPlan, mockYearlyPlan]),

@@ -1,18 +1,17 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../shared/utils/testUtils';
 import { demoItemFactory } from '../../../mocks/factories';
 import useFavoriteDemoItemListQueryGraphql from '../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
 import { DemoItems } from '../demoItems.component';
-import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 import demoItemsAllQueryGraphql from '../__generated__/demoItemsAllQuery.graphql';
+import { getRelayEnv as getBaseRelayEnv } from '../../../tests/utils/relay';
 
 describe('DemoItems: Component', () => {
   const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
+    const relayEnvironment = getBaseRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation) =>
       MockPayloadGenerator.generate(operation, {
         DemoItemCollection() {

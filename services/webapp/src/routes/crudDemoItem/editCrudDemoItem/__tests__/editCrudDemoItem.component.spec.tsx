@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router';
 import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { produce } from 'immer';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -10,8 +10,8 @@ import { createMockRouterHistory, render } from '../../../../tests/utils/renderi
 import { prepareState } from '../../../../mocks/store';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import editCrudDemoItemQueryGraphql from '../__generated__/editCrudDemoItemQuery.graphql';
+import { getRelayEnv } from '../../../../tests/utils/relay';
 
 describe('EditCrudDemoItem: Component', () => {
   const routePath = RoutesConfig.getLocalePath(['crudDemoItem', 'edit']);
@@ -21,12 +21,6 @@ describe('EditCrudDemoItem: Component', () => {
     </Routes>
   );
   const reduxInitialState = prepareState((state) => state);
-
-  const getRelayEnv = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
-    return relayEnvironment;
-  };
 
   it('should display prefilled form', () => {
     const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });

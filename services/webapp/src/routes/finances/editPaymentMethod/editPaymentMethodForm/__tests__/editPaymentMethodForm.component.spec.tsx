@@ -1,5 +1,5 @@
 import { Elements } from '@stripe/react-stripe-js';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { act } from '@testing-library/react';
 import { times } from 'ramda';
 import { Routes, Route } from 'react-router-dom';
@@ -12,16 +12,10 @@ import {
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 import { connectionFromArray } from '../../../../../shared/utils/testUtils';
 import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 
 describe('EditPaymentMethodForm: Component', () => {
   const defaultProps = {

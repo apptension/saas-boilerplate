@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../utils/testUtils';
 import { Header } from '../header.component';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { logout } from '../../../../../modules/auth/auth.actions';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -16,11 +15,7 @@ jest.mock('react-redux', () => {
   };
 });
 
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment, currentUserFactory());
-  return relayEnvironment;
-};
+const getRelayEnv = () => getBaseRelayEnv(currentUserFactory());
 
 describe('Header: Component', () => {
   const component = () => <Header />;

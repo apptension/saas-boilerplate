@@ -1,19 +1,13 @@
 import { Suspense } from 'react';
 import { screen, act } from '@testing-library/react';
 import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { connectionFromArray } from '../../../../../utils/testUtils';
 import { render } from '../../../../../../tests/utils/rendering';
 import { paymentMethodFactory, transactionHistoryEntryFactory } from '../../../../../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../../../../utils/commonQuery';
 import { TransactionHistory } from '../transactionHistory.component';
 import { useTransactionsHistoryQuery } from '../transactionHistory.hooks';
-
-const getRelayEnv = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment);
-  return relayEnvironment;
-};
+import { getRelayEnv } from '../../../../../../tests/utils/relay';
 
 const Component = () => {
   const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();

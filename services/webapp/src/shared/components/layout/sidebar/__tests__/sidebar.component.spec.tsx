@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { makeContextRenderer } from '../../../../utils/testUtils';
 import { Sidebar } from '../sidebar.component';
@@ -7,18 +6,14 @@ import { prepareState } from '../../../../../mocks/store';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { LayoutContext } from '../../layout.context';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 
-const getRelayEnv = (role: Role = Role.USER) => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(
-    relayEnvironment,
+const getRelayEnv = (role: Role = Role.USER) =>
+  getBaseRelayEnv(
     currentUserFactory({
       roles: [role],
     })
   );
-  return relayEnvironment;
-};
 
 describe('Sidebar: Component', () => {
   const component = () => (
