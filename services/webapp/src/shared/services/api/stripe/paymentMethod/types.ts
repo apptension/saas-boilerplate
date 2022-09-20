@@ -36,5 +36,3 @@ export interface StripePaymentMethod {
   type: StripePaymentMethodType;
   billingDetails: StripeBillingDetails;
 }
-
-export type StripePaymentMethodGetApiResponseData = StripePaymentMethod;

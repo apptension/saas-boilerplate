@@ -56,3 +56,21 @@ graphql`
     }
   }
 `;
+
+graphql`
+  fragment stripePaymentIntentFragment on StripePaymentIntentType @inline {
+    id
+    amount
+    clientSecret
+    currency
+    pk
+  }
+`;
+
+graphql`
+  query stripePaymentIntentQuery($id: ID!) {
+    paymentIntent(id: $id) {
+      ...stripePaymentIntentFragment
+    }
+  }
+`;

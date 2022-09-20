@@ -45,6 +45,7 @@ export interface ApiMutation {
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
+  createPaymentIntent?: Maybe<CreatePaymentIntentMutationPayload>;
   deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
@@ -56,6 +57,7 @@ export interface ApiMutation {
   updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
   updateDefaultPaymentMethod?: Maybe<UpdateDefaultPaymentMethodMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
+  updatePaymentIntent?: Maybe<UpdatePaymentIntentMutationPayload>;
 }
 
 
@@ -81,6 +83,11 @@ export interface ApiMutationCreateDocumentDemoItemArgs {
 
 export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
   input: CreateFavoriteContentfulDemoItemMutationInput;
+}
+
+
+export interface ApiMutationCreatePaymentIntentArgs {
+  input: CreatePaymentIntentMutationInput;
 }
 
 
@@ -136,6 +143,11 @@ export interface ApiMutationUpdateDefaultPaymentMethodArgs {
 
 export interface ApiMutationUpdateNotificationArgs {
   input: UpdateNotificationMutationInput;
+}
+
+
+export interface ApiMutationUpdatePaymentIntentArgs {
+  input: UpdatePaymentIntentMutationInput;
 }
 
 export interface ApiSubscription {
@@ -479,6 +491,17 @@ export interface CreateFavoriteContentfulDemoItemMutationPayload {
   clientMutationId?: Maybe<Scalars['String']>;
   contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
   contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
+}
+
+export interface CreatePaymentIntentMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  product: Scalars['String'];
+}
+
+export interface CreatePaymentIntentMutationPayload {
+  __typename?: 'CreatePaymentIntentMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  paymentIntent?: Maybe<StripePaymentIntentType>;
 }
 
 export interface CrudDemoItemConnection {
@@ -831,6 +854,7 @@ export interface Query {
   currentUser?: Maybe<CurrentUserType>;
   hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   node?: Maybe<Node>;
+  paymentIntent?: Maybe<StripePaymentIntentType>;
 }
 
 
@@ -902,6 +926,11 @@ export interface QueryCrudDemoItemArgs {
 
 export interface QueryNodeArgs {
   id: Scalars['ID'];
+}
+
+
+export interface QueryPaymentIntentArgs {
+  id?: InputMaybe<Scalars['ID']>;
 }
 
 export interface SingUpMutationInput {
@@ -982,6 +1011,8 @@ export interface StripeChargeType extends Node {
   outcome?: Maybe<Scalars['String']>;
   /** True if the charge succeeded, or was successfully authorized for later capture, False otherwise. */
   paid: Scalars['Boolean'];
+  /** PaymentIntent associated with this charge, if one exists. */
+  paymentIntent?: Maybe<StripePaymentIntentType>;
   /** PaymentMethod used in this charge. */
   paymentMethod?: Maybe<StripePaymentMethodType>;
   /** Details about the payment method at the time of the transaction. */
@@ -1205,6 +1236,12 @@ export interface StripeInvoiceType extends Node {
    * paid (most commonly) with a charge or with credit from the customer's account balance.
    */
   paid: Scalars['Boolean'];
+  /**
+   * The PaymentIntent associated with this invoice. The PaymentIntent is generated
+   * when the invoice is finalized, and can then be used to pay the invoice.Note
+   * that voiding an invoice will cancel the PaymentIntent
+   */
+  paymentIntent?: Maybe<StripePaymentIntentType>;
   /** End of the usage period during which invoice items were added to this invoice. */
   periodEnd: Scalars['DateTime'];
   /** Start of the usage period during which invoice items were added to this invoice. */
@@ -1275,6 +1312,19 @@ export interface StripeInvoiceTypeChargesArgs {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface StripePaymentIntentType extends Node {
+  __typename?: 'StripePaymentIntentType';
+  /** Amount (in cents) intended to be collected by this PaymentIntent. */
+  amount: Scalars['Int'];
+  /** The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key. */
+  clientSecret: Scalars['String'];
+  /** Three-letter ISO currency code */
+  currency: Scalars['String'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  pk?: Maybe<Scalars['String']>;
 }
 
 export interface StripePaymentMethodType extends Node {
@@ -1688,6 +1738,18 @@ export interface UpdateNotificationMutationPayload {
   hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
   notification?: Maybe<NotificationType>;
   notificationEdge?: Maybe<NotificationEdge>;
+}
+
+export interface UpdatePaymentIntentMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  product: Scalars['String'];
+}
+
+export interface UpdatePaymentIntentMutationPayload {
+  __typename?: 'UpdatePaymentIntentMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  paymentIntent?: Maybe<StripePaymentIntentType>;
 }
 
 export interface UserProfileType extends Node {

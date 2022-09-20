@@ -1,9 +1,10 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { StripePaymentIntent, TestProduct } from '../../../../services/api/stripe/paymentIntent';
 import { useApiForm } from '../../../../hooks/useApiForm';
 import { useStripePayment, useStripePaymentIntent } from '../stripePayment.hooks';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector';
 import { PaymentFormFields } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.types';
+import { stripePaymentIntentFragment$data } from '../../../../../modules/stripe/__generated__/stripePaymentIntentFragment.graphql';
+import { TestProduct } from '../../../../../modules/stripe/stripe.types';
 import {
   ErrorMessage,
   Form,
@@ -20,7 +21,7 @@ type StripePaymentFormFields = PaymentFormFields & {
 };
 
 export type StripePaymentFormProps = {
-  onSuccess(paymentIntent: StripePaymentIntent): void;
+  onSuccess(paymentIntent: stripePaymentIntentFragment$data): void;
 };
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
@@ -39,31 +40,32 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
       formState,
       watch,
     },
-    setApiResponse,
     setGenericError,
+    setGraphQLResponseErrors,
   } = apiFormControls;
   const amountValue = watch('product');
   const onSubmit = async (data: StripePaymentFormFields) => {
     const paymentIntentResponse = await updateOrCreatePaymentIntent(data.product);
-    if (paymentIntentResponse.isError) {
-      return setApiResponse(paymentIntentResponse);
+    if (paymentIntentResponse && paymentIntentResponse.errors) {
+      return setGraphQLResponseErrors(paymentIntentResponse.errors);
     }
 
-    const result = await confirmPayment({
-      paymentMethod: data.paymentMethod,
-      paymentIntent: paymentIntentResponse,
-    });
+    if (paymentIntentResponse?.paymentIntent) {
+      const result = await confirmPayment({
+        paymentMethod: data.paymentMethod,
+        paymentIntent: paymentIntentResponse?.paymentIntent,
+      });
+      if (!result) {
+        return;
+      }
 
-    if (!result) {
-      return;
-    }
+      if (result.error) {
+        return setGenericError(result.error.message);
+      }
 
-    if (result.error) {
-      return setGenericError(result.error.message);
-    }
-
-    if (result.paymentIntent?.status === 'succeeded') {
-      onSuccess(paymentIntentResponse);
+      if (result.paymentIntent?.status === 'succeeded') {
+        onSuccess(paymentIntentResponse?.paymentIntent);
+      }
     }
   };
 
