@@ -6,8 +6,8 @@ from django.utils.translation import gettext as _
 from hashid_field import rest
 from rest_framework import exceptions, serializers, validators
 from rest_framework_simplejwt import serializers as jwt_serializers, tokens as jwt_tokens, exceptions as jwt_exceptions
-from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.serializers import PasswordField
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 
 from . import models, tokens, jwt, notifications
 from .services.users import get_role_names
@@ -265,3 +265,26 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
             return {'access': str(new_refresh.access_token), 'refresh': str(new_refresh)}
 
         return {'access': str(refresh.access_token)}
+
+
+class LogoutSerializer(serializers.Serializer):
+    ok = serializers.BooleanField(read_only=True)
+
+    def validate(self, attrs):
+        request = self.context['request']
+        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE)
+
+        if not raw_token:
+            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+
+        try:
+            refresh = jwt_tokens.RefreshToken(raw_token)
+        except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
+            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+
+        return {'refresh': refresh}
+
+    def create(self, validated_data):
+        refresh = validated_data.pop('refresh')
+        refresh.blacklist()
+        return {'ok': True}

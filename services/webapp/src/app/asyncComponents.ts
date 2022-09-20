@@ -5,6 +5,7 @@ export const Home = asyncComponent(() => import('../routes/home'), 'Home');
 export const NotFound = asyncComponent(() => import('../routes/notFound'), 'NotFound');
 export const Signup = asyncComponent(() => import('../routes/auth/signup'), 'Signup');
 export const Login = asyncComponent(() => import('../routes/auth/login'), 'Login');
+export const Logout = asyncComponent(() => import('../routes/auth/logout'), 'Logout');
 export const Profile = asyncComponent(() => import('../routes/profile'), 'Profile');
 export const ConfirmEmail = asyncComponent(() => import('../routes/auth/confirmEmail'), 'ConfirmEmail');
 export const PrivacyPolicy = asyncComponent(() => import('../routes/privacyPolicy'), 'PrivacyPolicy');

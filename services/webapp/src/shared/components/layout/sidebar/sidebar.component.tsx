@@ -11,7 +11,6 @@ import { Link } from '../../link';
 import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
 import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
-import { Button } from '../../forms/button';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useAuth } from '../../../hooks/useAuth/useAuth';
 import { CloseButton, Container, Header, MenuLink, MenuLinks } from './sidebar.styles';
@@ -24,12 +23,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
 
-  const { logout, isLoggedIn } = useAuth();
-
-  const handleLogout = useCallback(() => {
-    closeSidebar();
-    logout();
-  }, [closeSidebar, logout]);
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     if (!isDesktop && isSideMenuOpen) {
@@ -122,7 +116,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
         {!isDesktop && (
           <RoleAccess>
-            <MenuLink as={Button} onClick={handleLogout}>
+            <MenuLink to={generateLocalePath(RoutesConfig.logout)} onClick={closeSidebar}>
               <FormattedMessage defaultMessage="Logout" id="Home / logout link" />
             </MenuLink>
           </RoleAccess>

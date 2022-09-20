@@ -1,12 +1,10 @@
 import json
 import os
-
-import pytest
 import re
 
-from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-
+import pytest
 from graphene_file_upload.django.testing import file_graphql_query
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 
 from common.acl.helpers import CommonGroups
 from .. import models

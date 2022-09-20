@@ -5,10 +5,7 @@ import createReducer from '../../../../app/config/reducers';
 import { store as fixturesStore } from '../../../../mocks/store';
 import { client } from '../client';
 import { AUTH_URL } from '../auth';
-import { server } from '../../../../mocks/server';
-import { authActions } from '../../../../modules/auth';
 import { createRefreshTokenInterceptor, validateStatus } from '../helpers';
-import { mockRefreshToken } from '../../../../mocks/server/handlers';
 
 describe('shared / services / api', () => {
   describe('validate status', () => {
@@ -89,22 +86,6 @@ describe('shared / services / api', () => {
               baseURL: '/',
             });
             expect(res).toEqual(requestResponse);
-          });
-        });
-
-        describe('token refresh fails', () => {
-          it('should reject with error', async () => {
-            server.use(mockRefreshToken(403));
-            const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_URL.ME } };
-            axiosRequestSpy.mockRejectedValue(error);
-            await expect(interceptor.onRejected(error as any)).rejects.toEqual(error);
-          });
-
-          it('should dispatch logout.resolved() action', async () => {
-            server.use(mockRefreshToken(403));
-            const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_URL.ME } };
-            await expect(interceptor.onRejected(error as any)).rejects.toBeDefined();
-            expect(mockDispatch).toHaveBeenCalledWith(authActions.logout.resolved());
           });
         });
       });

@@ -20,6 +20,7 @@ import {
   FinancesPaymentConfirm,
   Home,
   Login,
+  Logout,
   NotFound,
   PrivacyPolicy,
   Profile,
@@ -36,6 +37,9 @@ export const App = () => {
   return (
     <Routes>
       <Route element={<ValidRoutesProviders />}>
+        <Route path={LANG_PREFIX}>
+          <Route path={RoutesConfig.logout} element={<Logout />} />
+        </Route>
         <Route path={LANG_PREFIX} element={<AnonymousRoute />}>
           <Route path={RoutesConfig.signup} element={<Signup />} />
           <Route path={RoutesConfig.login} element={<Login />} />

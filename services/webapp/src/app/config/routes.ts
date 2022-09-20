@@ -6,6 +6,7 @@ export const LANG_PREFIX = `/:lang/*`;
 const routes = {
   home: '',
   login: 'auth/login',
+  logout: 'auth/logout',
   signup: 'auth/signup',
   notFound: '404',
   profile: 'profile',
@@ -46,6 +47,7 @@ export const RoutesConfig = {
 
 export const NO_NAVIGATION_ROUTES = [
   RoutesConfig.login,
+  RoutesConfig.logout,
   RoutesConfig.signup,
   RoutesConfig.passwordReset.index,
   RoutesConfig.passwordReset.confirm,

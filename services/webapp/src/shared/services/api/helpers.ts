@@ -4,6 +4,8 @@ import { Store } from 'redux';
 
 import { GlobalState } from '../../../app/config/reducers';
 import { ENV } from '../../../app/config/env';
+import { navigate } from '../../../modules/helpers/navigate';
+import { RoutesConfig } from '../../../app/config/routes';
 import { PendingRequest } from './types';
 import { AUTH_URL, refreshToken } from './auth';
 
@@ -25,7 +27,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
   onFulfilled: (response: AxiosResponse) => response,
   onRejected: async (error: AxiosError) => {
     const forceLogout = () => {
-      store.dispatch({ type: 'AUTH/LOGOUT.RESOLVED' });
+      navigate(RoutesConfig.getLocalePath([RoutesConfig.logout]));
       return Promise.reject(error);
     };
 
@@ -34,7 +36,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
     }
 
     if (error.config.url === AUTH_URL.REFRESH_TOKEN) {
-      return forceLogout();
+      return Promise.reject(error);
     }
 
     try {

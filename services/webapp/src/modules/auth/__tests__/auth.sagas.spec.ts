@@ -7,7 +7,6 @@ import {
   mockChangePassword,
   mockConfirmEmail,
   mockConfirmPasswordReset,
-  mockLogout,
   mockRequestPasswordReset,
 } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
@@ -40,36 +39,6 @@ describe('Auth: sagas', () => {
   beforeEach(() => {
     mockHistoryPush.mockReset();
     locationAssignSpy.mockReset();
-  });
-
-  describe('logout', () => {
-    describe('call completes successfully', () => {
-      it('should resolve action', async () => {
-        await expectSaga(watchAuth)
-          .withState(defaultState)
-          // @ts-ignore
-          .put(authActions.logout.resolved(''))
-          .dispatch(authActions.logout())
-          .silentRun();
-      });
-
-      describe('user is logged in', () => {
-        it('should redirect to login page', async () => {
-          const state = prepareState((state) => state);
-
-          await expectSaga(watchAuth).withState(state).dispatch(authActions.logout()).silentRun();
-          expect(mockHistoryPush).toHaveBeenCalledWith('/en/auth/login');
-        });
-      });
-    });
-
-    describe('call completes with error', () => {
-      it('should not redirect anywhere', async () => {
-        server.use(mockLogout(StatusCodes.INTERNAL_SERVER_ERROR));
-        await expectSaga(watchAuth).withState(defaultState).dispatch(authActions.logout()).silentRun();
-        expect(mockHistoryPush).not.toHaveBeenCalled();
-      });
-    });
   });
 
   describe('changePassword', () => {

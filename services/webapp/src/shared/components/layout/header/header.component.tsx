@@ -1,9 +1,10 @@
-import { HTMLAttributes, useCallback, useContext } from 'react';
+import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import ClickAwayListener from 'react-click-away-listener';
+
 import { RoutesConfig } from '../../../../app/config/routes';
-import { Button, ButtonVariant } from '../../forms/button';
+import { ButtonVariant } from '../../forms/button';
 import { Link as ButtonLink } from '../../link';
 import { Snackbar } from '../../snackbar';
 import { LayoutContext } from '../layout.context';
@@ -17,9 +18,9 @@ import {
   Avatar,
   Container,
   Content,
-  MenuContainer,
   HeaderLogo,
   Menu,
+  MenuContainer,
   MenuLine,
   MenuToggleButton,
   ProfileActions,
@@ -34,12 +35,7 @@ export const Header = (props: HeaderProps) => {
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
   const userDropdown = useOpenState(false);
-  const { logout, isLoggedIn } = useAuth();
-
-  const handleLogout = useCallback(async () => {
-    userDropdown.close();
-    await logout();
-  }, [logout, userDropdown]);
+  const { isLoggedIn } = useAuth();
 
   return (
     <Container {...props}>
@@ -99,9 +95,13 @@ export const Header = (props: HeaderProps) => {
                   >
                     <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
                   </ButtonLink>
-                  <Button onClick={handleLogout} variant={ButtonVariant.FLAT}>
+                  <ButtonLink
+                    onClick={userDropdown.close}
+                    to={generateLocalePath(RoutesConfig.logout)}
+                    variant={ButtonVariant.FLAT}
+                  >
                     <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
-                  </Button>
+                  </ButtonLink>
                 </Menu>
               </ClickAwayListener>
             </ProfileActions>

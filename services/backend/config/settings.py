@@ -200,6 +200,7 @@ SIMPLE_JWT = {
 }
 ACCESS_TOKEN_COOKIE = 'token'
 REFRESH_TOKEN_COOKIE = 'refresh_token'
+REFRESH_TOKEN_LOGOUT_COOKIE = 'refresh_token_logout'
 
 SOCIAL_AUTH_USER_MODEL = "users.User"
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username']

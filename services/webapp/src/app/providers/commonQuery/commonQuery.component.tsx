@@ -1,4 +1,4 @@
-import React, { FunctionComponent, PropsWithChildren, useEffect } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect } from 'react';
 import { graphql } from 'react-relay';
 
 import { useUnsuspendedQueryLoader } from '../../../shared/hooks/useUnsuspendedQueryLoader/useUnsuspendedQueryLoader';
@@ -30,13 +30,13 @@ export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) 
     loadCurrentUserQuery({});
   }, [loadCurrentUserQuery]);
 
+  const reload = useCallback(() => {
+    loadCurrentUserQuery({}, { fetchPolicy: 'network-only' });
+  }, [loadCurrentUserQuery]);
+
   if (!currentUserQueryRef || isCurrentUserQueryLoading) {
     return null;
   }
-
-  const reload = () => {
-    loadCurrentUserQuery({}, { fetchPolicy: 'network-only' });
-  };
 
   return (
     <commonDataContext.Provider

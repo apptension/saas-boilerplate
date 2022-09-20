@@ -22,8 +22,8 @@ import { graphql } from 'graphql';
 
 import { RecordSourceSelectorProxy } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { url as contentfulUrl } from '../contentful';
-import { apiURL } from '../api/helpers';
 import { ENV } from '../../../app/config/env';
+import { apiURL } from '../api/helpers';
 import contentfulSchema from '../contentful/schema';
 import { refreshToken } from '../api/auth';
 import apiSchema from './schema';
@@ -141,8 +141,6 @@ export const relayEnvironment = new Environment({
   store: new Store(new RecordSource()),
 });
 relayEnvironment.getStore().snapshot();
-
-export const getRelayEnvironment = () => relayEnvironment;
 
 export const invalidateRelayStore = () => {
   commitLocalUpdate(relayEnvironment, (store) => {

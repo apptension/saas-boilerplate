@@ -1,19 +1,10 @@
-import { all, put, takeLatest } from 'redux-saga/effects';
-import { RoutesConfig } from '../../app/config/routes';
+import { all, takeLatest } from 'redux-saga/effects';
 import { auth } from '../../shared/services/api';
 import { PromiseAction } from '../../shared/utils/reduxSagaPromise';
 import { getOauthUrl } from '../../shared/services/api/auth';
 import { handleApiRequest } from '../helpers/handleApiRequest';
-import { navigate } from '../helpers/navigate';
-import { invalidateRelayStore } from '../../shared/services/graphqlApi/relayEnvironment';
 import { OAuthProvider } from './auth.types';
 import * as authActions from './auth.actions';
-
-function* logoutResolve() {
-  invalidateRelayStore();
-  yield put(authActions.resetProfile());
-  yield navigate(RoutesConfig.getLocalePath(['login']));
-}
 
 function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
   yield window.location.assign(getOauthUrl(provider));
@@ -21,8 +12,6 @@ function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
 
 export function* watchAuth() {
   yield all([
-    takeLatest(authActions.logout, handleApiRequest(auth.logout)),
-    takeLatest(authActions.logout.resolved, logoutResolve),
     takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
     takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),

@@ -1,77 +1,70 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Route, Routes } from 'react-router-dom';
 
-import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../../utils/testUtils';
-import { Header } from '../header.component';
 import { currentUserFactory } from '../../../../../mocks/factories';
-import { logout } from '../../../../../modules/auth/auth.actions';
+import { render } from '../../../../../tests/utils/rendering';
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { Header } from '../header.component';
 
 const getRelayEnv = () => getBaseRelayEnv(currentUserFactory());
 
 describe('Header: Component', () => {
-  const component = () => <Header />;
-  const render = makeContextRenderer(component);
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
+  const Component = () => (
+    <Routes>
+      <Route path="/" element={<Header />} />
+      <Route path={RoutesConfig.getLocalePath(['home'])} element={<span>Home mock route</span>} />
+      <Route path={RoutesConfig.getLocalePath(['profile'])} element={<span>Profile mock route</span>} />
+      <Route path={RoutesConfig.getLocalePath(['logout'])} element={<span>Logout mock route</span>} />
+    </Routes>
+  );
 
   describe('user is logged in', () => {
     it('should open homepage when clicked on "home" link', async () => {
-      const { pushSpy, history } = spiedHistory();
       const relayEnvironment = getRelayEnv();
-      render({}, { relayEnvironment, router: { history } });
+      render(<Component />, { relayEnvironment });
 
       await userEvent.click(screen.getByLabelText(/home/i));
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/'));
+      expect(screen.getByText('Home mock route')).toBeInTheDocument();
     });
 
     it('should not display "profile" link', () => {
-      render();
+      render(<Component />);
       expect(screen.queryByText(/profile/i)).not.toBeInTheDocument();
     });
 
     it('should not display "logout" link', () => {
-      render();
+      render(<Component />);
       expect(screen.queryByText(/log out/i)).not.toBeInTheDocument();
     });
 
     it('should open profile when clicked on "profile" link', async () => {
-      const { pushSpy, history } = spiedHistory();
       const relayEnvironment = getRelayEnv();
-      render({}, { relayEnvironment, router: { history } });
+      render(<Component />, { relayEnvironment });
 
       await userEvent.click(screen.getByLabelText(/open profile menu/i));
       await userEvent.click(screen.getByText(/profile/i));
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/profile'));
+      expect(screen.getByText('Profile mock route')).toBeInTheDocument();
     });
 
     it('should dispatch logout action when clicking on "logout" button', async () => {
       const relayEnvironment = getRelayEnv();
-      render({}, { relayEnvironment });
+      render(<Component />, { relayEnvironment });
       await userEvent.click(screen.getByLabelText(/open profile menu/i));
       await userEvent.click(screen.getByText(/log out/i));
-      expect(mockDispatch).toHaveBeenCalledWith(logout());
+      expect(screen.getByText('Logout mock route')).toBeInTheDocument();
     });
   });
 
   describe('user is logged out', () => {
     it('should not display "home" link', async () => {
-      render();
+      render(<Component />);
       expect(screen.queryByText(/home/i)).not.toBeInTheDocument();
     });
 
     it('should not display avatar', () => {
-      render();
+      render(<Component />);
       expect(screen.queryByLabelText(/open profile menu/i)).not.toBeInTheDocument();
     });
   });
