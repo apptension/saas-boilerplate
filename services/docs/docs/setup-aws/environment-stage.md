@@ -159,20 +159,85 @@ If you want to use Stripe, you also need to define:
 | STRIPE_LIVE_SECRET_KEY  | sk_4dEFRCLCgCbMy6O4FX      | Use this one for Stripe live mode. [docs](https://stripe.com/docs/keys)  |
 | DJSTRIPE_WEBHOOK_SECRET | whsec_12345                | [docs](https://stripe.com/docs/webhooks/best-practices#endpoint-secrets) |
 
+
+Below is the list of all optional environment variables:
+
+| Name                               | Example                                    | Description                                                                                                                                                                                                              |
+|------------------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SENTRY_DSN                         | https://(...)@(...).ingest.sentry.io/(...) | [Sentry](https://sentry.io/) client key                                                                                                                                                                                  |
+| SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS | app.demo.saas.apptoku.com                  | Allowed hosts for OAuth redirection. Check [Python Social Auth](https://python-social-auth.readthedocs.io/en/latest/configuration/settings.html#processing-redirects-and-urlopen) package documentation for more details |
+| SOCIAL_AUTH_FACEBOOK_KEY           |                                            | Client key for Facebook OAuth integration                                                                                                                                                                                |
+| SOCIAL_AUTH_FACEBOOK_SECRET        |                                            | Client secret for Facebook OAuth integration                                                                                                                                                                             |
+| SOCIAL_AUTH_GOOGLE_OAUTH2_KEY      |                                            | Client key for Google OAuth integration                                                                                                                                                                                  |
+| SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET   |                                            | Client secret for Google OAuth integration                                                                                                                                                                               |
+| SUBSCRIPTION_TRIAL_PERIOD_DAYS     | 1                                          | Number of days for subscription trial. By default set to `7`                                                                                                                                                             |
+
 In order to avoid any typos you can find a `secrets.example.json`, just replace the values and paste it into edited secrets file.
+
+
+### Async workers
+
+Secrets file for Async workers can be set in exactly same way as for Backend.
+
+Set of **required** fields is presented below:
+
+| Name         | Example                           | Description                                                                                                                         |
+|--------------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| FROM_EMAIL   | admin@exmaple.com                 | Email used in `From` email field                                                                                                    |
+| HASHID_SALT  | t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                            |
+| JWT_SECRET   |                                   | Secret used to decode JWT used in subscriptions. The value needs to be the same as `DJANGO_SECRET_KEY` backend environment variable |
+| WEB_APP_URL  | https://app.qa.saas.apptoku.com   |                                                                                                                                     |
+
+
+In order to use contentful or sentry services one needs to set following additional variables:
+
+| Name                    | Description                             |
+|-------------------------|-----------------------------------------|
+| CONTENTFUL_ACCESS_TOKEN | Contentful Space ID                     |
+| CONTENTFUL_ENVIRONMENT  | Contentful API access token             |
+| CONTENTFUL_SPACE_ID     | Contentful environment name             |
+| SENTRY_DSN              | [Sentry](https://sentry.io/) client key |
+
 
 ### Webapp
 
 Secrets file for Web application can be set in exactly same way as for Backend.
-There are no essential or required fields in this service however one needs to set 3 contentful related fields in order to use it.
-```shell
-REACT_APP_CONTENTFUL_SPACE
-REACT_APP_CONTENTFUL_TOKEN
-REACT_APP_CONTENTFUL_ENV
-```
+Set of **required** fields is presented below:
+
+| Name                             | Example | Description                |
+|----------------------------------|---------|----------------------------|
+| REACT_APP_BASE_API_URL           | /api    | Path to access backend API |
+| REACT_APP_EMAIL_ASSETS_URL       |         |                            |
+
+In order to use contentful or stripe services one needs to set following additional variables:
+
+| Name                             | Description                             |
+|----------------------------------|-----------------------------------------|
+| REACT_APP_CONTENTFUL_SPACE       | Contentful Space ID                     |
+| REACT_APP_CONTENTFUL_TOKEN       | Contentful API access token             |
+| REACT_APP_CONTENTFUL_ENV         | Contentful environment name             |
+| REACT_APP_STRIPE_PUBLISHABLE_KEY | Stripe Publishable key                  |
+| REACT_APP_SENTRY_DSN             | [Sentry](https://sentry.io/) client key |
+
 :::info
 
 Webapp secret fields can be set at anytime so this step can be skipped in the initial phase.
 
 :::
  
+
+### E2E
+
+Secrets file for E2E tests can be set in exactly same way as for Backend.
+Set of **required** fields is presented below:
+
+| Name                            | Description                 |
+|---------------------------------|-----------------------------|
+| CYPRESS_CONTENTFUL_SPACE_ID     | Contentful Space ID         |
+| CYPRESS_CONTENTFUL_ACCESS_TOKEN | Contentful API access token |
+| CYPRESS_EMAIL                   |                             |
+| CYPRESS_PASSWORD                |                             |
+| GMAIL_ACCESS_TOKEN              |                             |
+| GMAIL_CLIENT_ID                 |                             |
+| GMAIL_CLIENT_SECRET             |                             |
+| GMAIL_REDIRECT_URIS             |                             |
