@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { ConnectionHandler } from 'relay-runtime';
-import { StripePaymentIntent, TestProduct } from '../../../services/api/stripe/paymentIntent';
+import { ConnectionHandler, readInlineData } from 'relay-runtime';
 import { StripePaymentMethodType } from '../../../services/api/stripe/paymentMethod';
-import { stripe as stripeApi } from '../../../services/api';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import stripeDeletePaymentMethodMutationGraphql, {
   stripeDeletePaymentMethodMutation,
@@ -11,10 +9,22 @@ import stripeDeletePaymentMethodMutationGraphql, {
 import stripeUpdateDefaultPaymentMethodMutationGraphql, {
   stripeUpdateDefaultPaymentMethodMutation,
 } from '../../../../modules/stripe/__generated__/stripeUpdateDefaultPaymentMethodMutation.graphql';
+import stripeCreatePaymentIntentMutationGraphql, {
+  stripeCreatePaymentIntentMutation,
+} from '../../../../modules/stripe/__generated__/stripeCreatePaymentIntentMutation.graphql';
+import stripePaymentIntentFragmentGraphql, {
+  stripePaymentIntentFragment$data,
+  stripePaymentIntentFragment$key,
+} from '../../../../modules/stripe/__generated__/stripePaymentIntentFragment.graphql';
+import stripeUpdatePaymentIntentMutationGraphql, {
+  stripeUpdatePaymentIntentMutation,
+} from '../../../../modules/stripe/__generated__/stripeUpdatePaymentIntentMutation.graphql';
+import { TestProduct } from '../../../../modules/stripe/stripe.types';
 import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
+import { UpdateOrCreatePaymentIntentResult } from './stripePayment.types';
 
 export const useStripePaymentMethods = () => {
   const [commitDeletePaymentMethodMutation] = usePromiseMutation<stripeDeletePaymentMethodMutation>(
@@ -63,7 +73,23 @@ export const useStripePaymentMethods = () => {
  *
  */
 export const useStripePaymentIntent = () => {
-  const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntent | null>(null);
+  const [paymentIntent, setPaymentIntent] = useState<stripePaymentIntentFragment$data | null>(null);
+
+  const [commitCreatePaymentIntentMutation] = usePromiseMutation<stripeCreatePaymentIntentMutation>(
+    stripeCreatePaymentIntentMutationGraphql
+  );
+
+  const [commitUpdatePaymentIntentMutation] = usePromiseMutation<stripeUpdatePaymentIntentMutation>(
+    stripeUpdatePaymentIntentMutationGraphql
+  );
+
+  const readPaymentIntentData = (fragmentRef: stripePaymentIntentFragment$key | null) => {
+    return readInlineData<stripePaymentIntentFragment$key>(
+      // @ts-ignore
+      stripePaymentIntentFragmentGraphql,
+      fragmentRef
+    );
+  };
 
   /**
    * This function is responsible for creating a new payment intent and updating it if it has been created before.
@@ -71,20 +97,44 @@ export const useStripePaymentIntent = () => {
    * @param product This product will be passed to the payment intent create and update API endpoints. Backend should
    * handle amount and currency update based on the ID of this product.
    */
-  const updateOrCreatePaymentIntent = async (product: TestProduct) => {
-    if (!paymentIntent) {
-      const response = await stripeApi.paymentIntent.create({ product });
-      if (!response.isError) {
-        setPaymentIntent(response);
+  const updateOrCreatePaymentIntent = async (
+    product: TestProduct
+  ): Promise<UpdateOrCreatePaymentIntentResult | undefined> => {
+    try {
+      if (!paymentIntent) {
+        const result = await commitCreatePaymentIntentMutation({
+          variables: {
+            input: {
+              product,
+            },
+          },
+        });
+        const { errors, response } = result;
+        if (!errors) {
+          const paymentIntent = readPaymentIntentData(response.createPaymentIntent?.paymentIntent ?? null);
+          setPaymentIntent(paymentIntent);
+          return { ...result, paymentIntent };
+        }
+        return result;
       }
-      return response;
-    }
 
-    const response = await stripeApi.paymentIntent.update(paymentIntent.id, { product });
-    if (!response.isError) {
-      setPaymentIntent(response);
-    }
-    return response;
+      const result = await commitUpdatePaymentIntentMutation({
+        variables: {
+          input: {
+            product,
+            id: paymentIntent.id,
+          },
+        },
+      });
+      const { errors, response } = result;
+      if (!errors) {
+        const paymentIntent = readPaymentIntentData(response.updatePaymentIntent?.paymentIntent ?? null);
+        setPaymentIntent(paymentIntent);
+        return { ...result, paymentIntent };
+      }
+      return result;
+    } catch {}
+    return;
   };
 
   return { paymentIntent, updateOrCreatePaymentIntent };
@@ -103,7 +153,7 @@ export const useStripePayment = () => {
     paymentMethod,
     paymentIntent,
   }: {
-    paymentIntent: StripePaymentIntent;
+    paymentIntent: stripePaymentIntentFragment$data;
     paymentMethod: StripePaymentMethodSelection;
   }) => {
     if (!stripe) {

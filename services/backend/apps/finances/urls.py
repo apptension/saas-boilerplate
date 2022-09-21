@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 stripe_router = DefaultRouter()
-stripe_router.register(r'payment-intent', views.StripePaymentIntentViewSet, basename='payment-intent')
 stripe_router.register(r'setup-intent', views.StripeSetupIntentViewSet, basename='setup-intent')
 
 stripe_urls = [

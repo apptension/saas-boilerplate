@@ -2,7 +2,7 @@ from datetime import timedelta
 import pytest
 import calleee
 from djstripe import models as djstripe_models
-from graphql_relay import to_global_id
+from graphql_relay import to_global_id, from_global_id
 from apps.finances.tests.utils import stripe_encode
 from django.utils import timezone
 
@@ -578,3 +578,184 @@ class TestChargeQuery:
             "status": "SUCCEEDED",
             "invoice": None,
         }
+
+
+class TestPaymentIntentQuery:
+    PAYMENT_INTENT_QUERY = '''
+        query getPaymentIntent($id: ID!) {
+          paymentIntent(id: $id) {
+            id
+            amount
+            currency
+            clientSecret
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client, customer, payment_intent_factory):
+        payment_intent = payment_intent_factory(customer=customer)
+
+        variable_values = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk))}
+        executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_error_if_not_users_payment_intent(self, graphene_client, customer, payment_intent_factory):
+        payment_intent = payment_intent_factory()
+        payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
+        variable_values = {"id": payment_intent_global_id}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "PaymentIntent matching query does not exist."
+
+    def test_return_payment_intent(self, graphene_client, customer, payment_intent_factory):
+        payment_intent = payment_intent_factory(customer=customer)
+        payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
+        variable_values = {"id": payment_intent_global_id}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
+
+        assert executed["data"]
+        assert executed["data"]["paymentIntent"]
+        assert executed["data"]["paymentIntent"] == {
+            "id": payment_intent_global_id,
+            "amount": payment_intent.amount,
+            "currency": "usd",
+            "clientSecret": payment_intent.client_secret,
+        }
+
+
+class TestCreatePaymentIntentMutation:
+    CREATE_PAYMENT_INTENT_MUTATION = '''
+        mutation($input: CreatePaymentIntentMutationInput!)  {
+          createPaymentIntent(input: $input) {
+            paymentIntent {
+              id
+              amount
+              currency
+              clientSecret
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        input = {"product": "A"}
+
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_error_if_product_is_not_passed(self, graphene_client, user):
+        input = {}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == (
+            'Variable "$input" got invalid value {}.\n' 'In field "product": Expected "String!", found null.'
+        )
+
+    def test_return_error_if_product_does_not_exist(self, graphene_client, user):
+        input = {"product": "A"}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert len(executed["errors"]) == 1
+        error = executed["errors"][0]
+        assert error["path"] == ["createPaymentIntent"]
+        assert error["extensions"]["product"] == [{'message': '"A" is not a valid choice.', 'code': 'invalid_choice'}]
+
+    def test_creates_payment_intent(self, graphene_client, user):
+        input = {"product": "5"}
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed['data']['createPaymentIntent']
+        assert executed['data']['createPaymentIntent']['paymentIntent']
+
+        payment_intent_global_id = executed['data']['createPaymentIntent']['paymentIntent']['id']
+        _, pk = from_global_id(payment_intent_global_id)
+        payment_intent = djstripe_models.PaymentIntent.objects.get(pk=pk)
+
+        assert executed['data']['createPaymentIntent']['paymentIntent']['amount'] == 500
+        assert executed['data']['createPaymentIntent']['paymentIntent']['currency'] == "usd"
+        assert executed['data']['createPaymentIntent']['paymentIntent']['clientSecret'] == payment_intent.client_secret
+
+
+class TestUpdatePaymentIntentMutation:
+    UPDATE_PAYMENT_INTENT_MUTATION = '''
+        mutation($input: UpdatePaymentIntentMutationInput!)  {
+          updatePaymentIntent(input: $input) {
+            paymentIntent {
+              id
+              amount
+              currency
+              clientSecret
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client, payment_intent_factory):
+        payment_intent = payment_intent_factory(amount=50)
+        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+
+        executed = graphene_client.mutate(
+            self.UPDATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_error_if_product_belongs_to_other_user(self, graphene_client, payment_intent_factory, customer):
+        payment_intent = payment_intent_factory(amount=50)
+        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.mutate(
+            self.UPDATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "No PaymentIntent matches the given query."
+
+    def test_update_payment_intent_amount(self, graphene_client, payment_intent_factory, customer):
+        payment_intent = payment_intent_factory(amount=50, customer=customer)
+        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+
+        graphene_client.force_authenticate(customer.subscriber)
+        executed = graphene_client.mutate(
+            self.UPDATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input},
+        )
+
+        assert executed["data"]
+        assert executed['data']['updatePaymentIntent']['paymentIntent']
+        assert executed['data']['updatePaymentIntent']['paymentIntent']['amount'] == 1000
+
+        payment_intent.refresh_from_db()
+        assert payment_intent.amount == 1000

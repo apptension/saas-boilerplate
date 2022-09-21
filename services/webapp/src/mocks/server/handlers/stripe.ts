@@ -1,9 +1,5 @@
 import { rest, DefaultBodyType, PathParams } from 'msw';
 import {
-  STRIPE_PAYMENT_INTENT_URL,
-  StripePaymentIntentGetApiResponseData,
-} from '../../../shared/services/api/stripe/paymentIntent';
-import {
   StripeSetupIntentGetApiResponseData,
   StripeSetupIntentCreateApiResponseData,
 } from '../../../shared/services/api/stripe/setupIntent/types';
@@ -20,30 +16,6 @@ export const mockGetSetupIntent = (response: StripeSetupIntentGetApiResponseData
 export const mockCreateSetupIntent = (response: StripeSetupIntentCreateApiResponseData) =>
   rest.post<DefaultBodyType, PathParams, StripeSetupIntentCreateApiResponseData>(
     STRIPE_SETUP_INTENT_URL.CREATE,
-    (req, res, ctx) => {
-      return res(ctx.json(response));
-    }
-  );
-
-export const mockGetStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.get<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(
-    STRIPE_PAYMENT_INTENT_URL.GET({ id: ':id' }),
-    (req, res, ctx) => {
-      return res(ctx.json(response));
-    }
-  );
-
-export const mockCreateStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.post<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(
-    STRIPE_PAYMENT_INTENT_URL.CREATE,
-    (req, res, ctx) => {
-      return res(ctx.json(response));
-    }
-  );
-
-export const mockUpdateStripePaymentIntent = (response: StripePaymentIntentGetApiResponseData) =>
-  rest.put<DefaultBodyType, PathParams, StripePaymentIntentGetApiResponseData>(
-    STRIPE_PAYMENT_INTENT_URL.UPDATE({ id: ':id' }),
     (req, res, ctx) => {
       return res(ctx.json(response));
     }

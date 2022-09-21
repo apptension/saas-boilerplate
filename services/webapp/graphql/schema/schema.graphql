@@ -433,6 +433,7 @@ type Query {
   allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
   allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
   charge(id: ID): StripeChargeType
+  paymentIntent(id: ID): StripePaymentIntentType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -506,6 +507,8 @@ type ApiMutation {
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
   updateDefaultPaymentMethod(input: UpdateDefaultPaymentMethodMutationInput!): UpdateDefaultPaymentMethodMutationPayload
   deletePaymentMethod(input: DeletePaymentMethodMutationInput!): DeletePaymentMethodMutationPayload
+  createPaymentIntent(input: CreatePaymentIntentMutationInput!): CreatePaymentIntentMutationPayload
+  updatePaymentIntent(input: UpdatePaymentIntentMutationInput!): UpdatePaymentIntentMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -831,6 +834,16 @@ input CreateFavoriteContentfulDemoItemMutationInput {
 type CreateFavoriteContentfulDemoItemMutationPayload {
   contentfulDemoItemFavorite: ContentfulDemoItemFavoriteType
   contentfulDemoItemFavoriteEdge: ContentfulDemoItemFavoriteEdge
+  clientMutationId: String
+}
+
+input CreatePaymentIntentMutationInput {
+  product: String!
+  clientMutationId: String
+}
+
+type CreatePaymentIntentMutationPayload {
+  paymentIntent: StripePaymentIntentType
   clientMutationId: String
 }
 
@@ -1253,6 +1266,8 @@ type StripeChargeType implements Node {
   True if the charge succeeded, or was successfully authorized for later capture, False otherwise.
   """
   paid: Boolean!
+  """PaymentIntent associated with this charge, if one exists."""
+  paymentIntent: StripePaymentIntentType
   """PaymentMethod used in this charge."""
   paymentMethod: StripePaymentMethodType
   """Details about the payment method at the time of the transaction."""
@@ -1483,6 +1498,12 @@ type StripeInvoiceType implements Node {
   """
   paid: Boolean!
   """
+  The PaymentIntent associated with this invoice. The PaymentIntent is generated
+  when the invoice is finalized, and can then be used to pay the invoice.Note
+  that voiding an invoice will cancel the PaymentIntent
+  """
+  paymentIntent: StripePaymentIntentType
+  """
   End of the usage period during which invoice items were added to this invoice.
   """
   periodEnd: DateTime!
@@ -1558,6 +1579,20 @@ type StripeInvoiceType implements Node {
   webhooksDeliveredAt: DateTime
   """The invoice this charge is for if one exists."""
   charges(offset: Int, before: String, after: String, first: Int, last: Int): StripeChargeTypeConnection!
+  pk: String
+}
+
+type StripePaymentIntentType implements Node {
+  """The ID of the object."""
+  id: ID!
+  """Amount (in cents) intended to be collected by this PaymentIntent."""
+  amount: Int!
+  """
+  The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key.
+  """
+  clientSecret: String!
+  """Three-letter ISO currency code"""
+  currency: String!
   pk: String
 }
 
@@ -1965,6 +2000,17 @@ type UpdateNotificationMutationPayload {
   notification: NotificationType
   notificationEdge: NotificationEdge
   hasUnreadNotifications: Boolean
+  clientMutationId: String
+}
+
+input UpdatePaymentIntentMutationInput {
+  product: String!
+  id: ID!
+  clientMutationId: String
+}
+
+type UpdatePaymentIntentMutationPayload {
+  paymentIntent: StripePaymentIntentType
   clientMutationId: String
 }
 

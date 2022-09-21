@@ -207,6 +207,13 @@ class PaymentMethodGetObjectMixin:
         return get_object_or_404(queryset, **filter_kwargs)
 
 
+class StripePaymentIntentType(StripeDjangoObjectType):
+    class Meta:
+        model = djstripe_models.PaymentIntent
+        interfaces = (relay.Node,)
+        fields = ("pk", "id", "amount", "currency", "client_secret")
+
+
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
     active_subscription = graphene.Field(SubscriptionScheduleType)
     payment_method_edge = graphene.Field(PaymentMethodConnection.Edge)
@@ -250,12 +257,29 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteM
         return cls(deleted_ids=[to_global_id("StripePaymentMethodType", str(pk))])
 
 
+class CreatePaymentIntentMutation(mutations.CreateModelMutation):
+    class Meta:
+        model = djstripe_models.PaymentIntent
+        serializer_class = serializers.PaymentIntentSerializer
+
+
+class UpdatePaymentIntentMutation(mutations.UpdateModelMutation):
+    class Meta:
+        model = djstripe_models.PaymentIntent
+        serializer_class = serializers.PaymentIntentSerializer
+
+    @classmethod
+    def get_queryset(cls, model_class, root, info, **input):
+        return djstripe_models.PaymentIntent.objects.filter(customer__subscriber=info.context.user)
+
+
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
     all_payment_methods = graphene.relay.ConnectionField(PaymentMethodConnection)
     all_charges = graphene.relay.ConnectionField(ChargeConnection)
     charge = graphene.Field(StripeChargeType, id=graphene.ID())
+    payment_intent = graphene.Field(StripePaymentIntentType, id=graphene.ID())
 
     @permission_classes(AnyoneFullAccess)
     def resolve_all_subscription_plans(root, info, **kwargs):
@@ -283,9 +307,15 @@ class Query(graphene.ObjectType):
         customer, _ = djstripe_models.Customer.get_or_create(info.context.user)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
+    def resolve_payment_intent(root, info, id):
+        _, pk = from_global_id(id)
+        return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.user, pk=pk)
+
 
 class Mutation(graphene.ObjectType):
     change_active_subscription = ChangeActiveSubscriptionMutation.Field()
     cancel_active_subscription = CancelActiveSubscriptionMutation.Field()
     update_default_payment_method = UpdateDefaultPaymentMethodMutation.Field()
     delete_payment_method = DeletePaymentMethodMutation.Field()
+    create_payment_intent = CreatePaymentIntentMutation.Field()
+    update_payment_intent = UpdatePaymentIntentMutation.Field()
