@@ -3,12 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { identity } from 'ramda';
 import { server } from '../../../mocks/server';
 import { watchAuth } from '../auth.sagas';
-import {
-  mockChangePassword,
-  mockConfirmEmail,
-  mockConfirmPasswordReset,
-  mockRequestPasswordReset,
-} from '../../../mocks/server/handlers';
+import { mockConfirmEmail, mockConfirmPasswordReset, mockRequestPasswordReset } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { snackbarActions } from '../../snackbar';
@@ -39,48 +34,6 @@ describe('Auth: sagas', () => {
   beforeEach(() => {
     mockHistoryPush.mockReset();
     locationAssignSpy.mockReset();
-  });
-
-  describe('changePassword', () => {
-    const changePasswordPayload = {
-      oldPassword: 'old-pass',
-      newPassword: 'new-pass',
-    };
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockChangePassword({ isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.changePassword.resolved({ isError: false }))
-        .dispatch(authActions.changePassword(changePasswordPayload))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(
-        mockChangePassword(
-          { isError: true, oldPassword: [{ message: 'error', code: 'error' }] },
-          StatusCodes.BAD_REQUEST
-        )
-      );
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.changePassword.resolved({ isError: true, oldPassword: [{ message: 'error', code: 'error' }] }))
-        .dispatch(authActions.changePassword(changePasswordPayload))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockChangePassword({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.changePassword(changePasswordPayload))
-        .silentRun();
-    });
   });
 
   describe('confirmEmail', () => {

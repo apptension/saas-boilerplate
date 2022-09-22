@@ -1,9 +1,11 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Input } from '../../forms/input';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { changePassword } from '../../../../modules/auth/auth.actions';
 import { useSnackbar } from '../../snackbar';
+import authChangePasswordMutationGraphql, {
+  authChangePasswordMutation,
+} from '../../../../modules/auth/__generated__/authChangePasswordMutation.graphql';
 import { Container, ErrorMessage, SubmitButton, FormFieldsRow } from './changePasswordForm.styles';
 
 type ChangePasswordFormFields = {
@@ -15,7 +17,6 @@ type ChangePasswordFormFields = {
 export const ChangePasswordForm = () => {
   const intl = useIntl();
   const snackbar = useSnackbar();
-  const dispatch = useAsyncDispatch();
   const {
     form: {
       formState: { errors },
@@ -25,7 +26,7 @@ export const ChangePasswordForm = () => {
     },
     handleSubmit,
     genericError,
-    setApiResponse,
+    setGraphQLResponseErrors,
     hasGenericErrorOnly,
   } = useApiForm<ChangePasswordFormFields>({
     errorMessages: {
@@ -48,19 +49,32 @@ export const ChangePasswordForm = () => {
     },
   });
 
-  const onChangePassword = async ({ oldPassword, newPassword }: ChangePasswordFormFields) => {
+  const [commitChangePasswordMutation] = usePromiseMutation<authChangePasswordMutation>(
+    authChangePasswordMutationGraphql
+  );
+
+  const onChangePassword = async ({ newPassword, oldPassword }: ChangePasswordFormFields) => {
     try {
-      const res = await dispatch(changePassword({ oldPassword, newPassword }));
-      setApiResponse(res);
-      if (!res.isError) {
-        reset();
-        snackbar.showMessage(
-          intl.formatMessage({
-            defaultMessage: 'Password successfully changed.',
-            id: 'Auth / Change password / Success message',
-          })
-        );
+      const { errors } = await commitChangePasswordMutation({
+        variables: {
+          input: {
+            newPassword,
+            oldPassword,
+          },
+        },
+      });
+
+      if (errors) {
+        setGraphQLResponseErrors(errors);
+        return;
       }
+      reset();
+      snackbar.showMessage(
+        intl.formatMessage({
+          defaultMessage: 'Password successfully changed.',
+          id: 'Auth / Change password / Success message',
+        })
+      );
     } catch {}
   };
 

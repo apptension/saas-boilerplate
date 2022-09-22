@@ -21,11 +21,6 @@ user_patterns = [
     path("token-refresh/", views.CookieTokenRefreshView.as_view(), name="jwt_token_refresh"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("confirm/", views.UserAccountConfirmationView.as_view(), name="confirmation"),
-    path(
-        "change-password/",
-        views.UserAccountChangePasswordView.as_view(),
-        name="change_password",
-    ),
     path('social/', include((social_patterns, 'social'), namespace='social')),
 ]
 

@@ -111,43 +111,6 @@ class TestResetPassword:
             assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()
 
 
-class TestChangePassword:
-    def test_correct_password(self, api_client, user_factory, faker):
-        old_password = faker.password()
-        user = user_factory(password=old_password)
-        api_client.force_authenticate(user)
-
-        response = api_client.post(
-            reverse("change_password"),
-            {"user": user.pk, "old_password": old_password, "new_password": faker.password()},
-        )
-
-        u = dj_auth.get_user_model().objects.get(pk=user.pk)
-
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        assert validate_jwt(response.data, u)
-
-    def test_wrong_old_password(self, api_client, user, faker):
-        api_client.force_authenticate(user)
-
-        response = api_client.post(
-            reverse("change_password"),
-            {"user": user.pk, "old_password": "wrong_old_password", "new_password": faker.password()},
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.data["is_error"]
-        assert response.data["old_password"][0]['code'] == 'wrong_password'
-
-    def test_user_not_auth(self, api_client, user):
-        response = api_client.post(
-            reverse("change_password"),
-            {"user": user.pk, "old_password": "wrong_old_password", "new_password": "password1234"},
-        )
-
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-
 class TestTokenRefresh:
     def test_return_error_for_invalid_refresh_token(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)

@@ -41,27 +41,6 @@ class UserAccountConfirmationView(generics.CreateAPIView):
     serializer_class = serializers.UserAccountConfirmationSerializer
 
 
-class UserAccountChangePasswordView(generics.CreateAPIView):
-    """Change the password of logged-in user.
-
-    post:
-    Request to change the password of the user, it requires to provide *old_password* and *new_password*
-    parameters.
-    """
-
-    permission_classes = (policies.UserFullAccess,)
-    serializer_class = serializers.UserAccountChangePasswordSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        response = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        utils.set_auth_cookie(response, serializer.data)
-        return response
-
-
 class PasswordResetView(generics.CreateAPIView):
     """Reset the user's password.
 

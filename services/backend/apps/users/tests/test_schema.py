@@ -5,6 +5,7 @@ import re
 import pytest
 from graphene_file_upload.django.testing import file_graphql_query
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from django.contrib import auth as dj_auth
 
 from common.acl.helpers import CommonGroups
 from .. import models
@@ -197,6 +198,7 @@ class TestUpdateCurrentUserMutation:
         '''
 
         api_client.force_authenticate(user)
+
         response = file_graphql_query(
             query,
             client=api_client,
@@ -211,3 +213,75 @@ class TestUpdateCurrentUserMutation:
         response_file_name = os.path.split(executed["data"]["updateCurrentUser"]["userProfile"]["user"]["avatar"])[1]
 
         assert user_file_name == response_file_name == "avatar_new.png"
+
+    def test_not_authenticated(self, graphene_client):
+        query = '''
+            mutation($input: UpdateCurrentUserMutationInput!)  {
+              updateCurrentUser(input: $input) {
+                userProfile {
+                  firstName
+                  lastName
+                }
+              }
+            }
+        '''
+
+        executed = graphene_client.mutate(
+            query,
+            variable_values={'input': {"firstName": "Tony", "lastName": "Stark"}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["data"] == {'updateCurrentUser': None}
+
+
+class TestChangePasswordMutation:
+    MUTATION = '''
+        mutation ChangePassword($input: ChangePasswordMutationInput!) {
+          changePassword(input: $input) {
+            refresh
+            access
+          }
+        }
+    '''
+
+    def test_correct_password(self, graphene_client, user_factory, faker):
+        old_password = faker.password()
+        new_password = faker.password()
+        user = user_factory(password=old_password)
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"oldPassword": old_password, "newPassword": new_password}},
+        )
+
+        u = dj_auth.get_user_model().objects.get(pk=user.pk)
+
+        assert "errors" not in executed
+        assert validate_jwt(executed["data"]["changePassword"], u)
+
+    def test_wrong_old_password(self, graphene_client, user, faker):
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"oldPassword": "wrong_old_password", "newPassword": faker.password()}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'changePassword': None}
+
+    def test_not_authenticated(self, graphene_client, faker):
+        old_password = faker.password()
+        new_password = faker.password()
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"oldPassword": old_password, "newPassword": new_password}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["data"] == {'changePassword': None}

@@ -11,6 +11,7 @@ type ApiMutation {
   deletePaymentMethod(input: DeletePaymentMethodMutationInput!): DeletePaymentMethodMutationPayload
   createPaymentIntent(input: CreatePaymentIntentMutationInput!): CreatePaymentIntentMutationPayload
   updatePaymentIntent(input: UpdatePaymentIntentMutationInput!): UpdatePaymentIntentMutationPayload
+  changePassword(input: ChangePasswordMutationInput!): ChangePasswordMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
@@ -47,6 +48,21 @@ input ChangeActiveSubscriptionMutationInput {
 type ChangeActiveSubscriptionMutationPayload {
   subscriptionSchedule: SubscriptionScheduleType
   subscriptionScheduleEdge: SubscriptionScheduleEdge
+  clientMutationId: String
+}
+
+input ChangePasswordMutationInput {
+  """Old password"""
+  oldPassword: String!
+
+  """New password"""
+  newPassword: String!
+  clientMutationId: String
+}
+
+type ChangePasswordMutationPayload {
+  refresh: String
+  access: String
   clientMutationId: String
 }
 

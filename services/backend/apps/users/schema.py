@@ -101,6 +101,22 @@ class UpdateCurrentUserMutation(mutations.UpdateModelMutation):
         return get_user_from_resolver(info).profile
 
 
+class ChangePasswordMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.UserAccountChangePasswordSerializer
+        exclude_fields = ("user",)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        mutation = super().mutate_and_get_payload(root, info, **input)
+        info.context._request.set_auth_cookie = {
+            "access": mutation.access,
+            "refresh": mutation.refresh,
+        }
+
+        return mutation
+
+
 class Query(graphene.ObjectType):
     current_user = graphene.Field(CurrentUserType)
 
@@ -109,4 +125,5 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(graphene.ObjectType):
+    change_password = ChangePasswordMutation.Field()
     update_current_user = UpdateCurrentUserMutation.Field()

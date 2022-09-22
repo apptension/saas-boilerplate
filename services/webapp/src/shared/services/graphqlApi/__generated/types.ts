@@ -42,6 +42,7 @@ export interface ApiMutation {
   __typename?: 'ApiMutation';
   cancelActiveSubscription?: Maybe<CancelActiveSubscriptionMutationPayload>;
   changeActiveSubscription?: Maybe<ChangeActiveSubscriptionMutationPayload>;
+  changePassword?: Maybe<ChangePasswordMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
@@ -68,6 +69,11 @@ export interface ApiMutationCancelActiveSubscriptionArgs {
 
 export interface ApiMutationChangeActiveSubscriptionArgs {
   input: ChangeActiveSubscriptionMutationInput;
+}
+
+
+export interface ApiMutationChangePasswordArgs {
+  input: ChangePasswordMutationInput;
 }
 
 
@@ -184,6 +190,21 @@ export interface ChangeActiveSubscriptionMutationPayload {
   clientMutationId?: Maybe<Scalars['String']>;
   subscriptionSchedule?: Maybe<SubscriptionScheduleType>;
   subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
+}
+
+export interface ChangePasswordMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** New password */
+  newPassword: Scalars['String'];
+  /** Old password */
+  oldPassword: Scalars['String'];
+}
+
+export interface ChangePasswordMutationPayload {
+  __typename?: 'ChangePasswordMutationPayload';
+  access?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
 }
 
 export interface ChargeConnection {

@@ -21,3 +21,12 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {
+    changePassword(input: $input) {
+      access
+      refresh
+    }
+  }
+`;

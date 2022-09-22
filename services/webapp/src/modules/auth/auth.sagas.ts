@@ -12,7 +12,6 @@ function* oAuthLogin({ payload: provider }: PromiseAction<OAuthProvider>) {
 
 export function* watchAuth() {
   yield all([
-    takeLatest(authActions.changePassword, handleApiRequest(auth.changePassword)),
     takeLatest(authActions.confirmEmail, handleApiRequest(auth.confirmEmail)),
     takeLatest(authActions.requestPasswordReset, handleApiRequest(auth.requestPasswordReset)),
     takeLatest(authActions.confirmPasswordReset, handleApiRequest(auth.confirmPasswordReset)),

@@ -1,7 +1,5 @@
 import { DefaultBodyType, PathParams, rest } from 'msw';
 import {
-  ChangePasswordRequestData,
-  ChangePasswordResponseData,
   ConfirmEmailRequestData,
   ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
@@ -20,14 +18,6 @@ export const mockLogout = (status = 200) =>
   rest.post<never, PathParams, any>(AUTH_URL.LOGOUT, (req, res, ctx) => {
     return res(ctx.status(status));
   });
-
-export const mockChangePassword = (response: ChangePasswordResponseData = { isError: false }, status = 200) =>
-  rest.post<ChangePasswordRequestData, PathParams, ChangePasswordResponseData>(
-    AUTH_URL.CHANGE_PASSWORD,
-    (req, res, ctx) => {
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
 
 export const mockConfirmEmail = (
   response: ConfirmEmailResponseData = { isError: false },

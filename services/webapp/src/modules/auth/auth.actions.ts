@@ -1,7 +1,5 @@
 import { actionCreator } from '../helpers/actionCreator';
 import {
-  ChangePasswordRequestData,
-  ChangePasswordResponseData,
   ConfirmEmailRequestData,
   ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
@@ -14,9 +12,6 @@ import { OAuthProvider } from './auth.types';
 const { createPromiseAction } = actionCreator('AUTH');
 
 export const oAuthLogin = createPromiseAction<OAuthProvider, void>('OAUTH_LOGIN');
-export const changePassword = createPromiseAction<ChangePasswordRequestData, ChangePasswordResponseData>(
-  'CHANGE_PASSWORD'
-);
 export const confirmEmail = createPromiseAction<ConfirmEmailRequestData, ConfirmEmailResponseData>('CONFIRM_EMAIL');
 export const requestPasswordReset = createPromiseAction<
   RequestPasswordResetRequestData,

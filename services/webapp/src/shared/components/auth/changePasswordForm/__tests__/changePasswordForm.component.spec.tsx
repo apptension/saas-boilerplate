@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event';
-import { screen } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../utils/testUtils';
-import { ChangePasswordForm } from '../changePasswordForm.component';
-import { changePassword } from '../../../../../modules/auth/auth.actions';
+import { screen, act } from '@testing-library/react';
+import { MockPayloadGenerator } from 'relay-test-utils';
+import { render } from '../../../../../tests/utils/rendering';
 import { snackbarActions } from '../../../../../modules/snackbar';
+import { ChangePasswordForm } from '../changePasswordForm.component';
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -14,8 +15,7 @@ jest.mock('react-redux', () => {
 });
 
 describe('ChangePasswordForm: Component', () => {
-  const component = () => <ChangePasswordForm />;
-  const render = makeContextRenderer(component);
+  const Component = () => <ChangePasswordForm />;
 
   beforeEach(() => {
     mockDispatch.mockReset();
@@ -27,42 +27,58 @@ describe('ChangePasswordForm: Component', () => {
     confirmNewPassword: 'new-pass',
   };
 
-  it('should call changePassword action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ isError: false });
+  const fillForm = async (override = {}) => {
+    const data = { ...formData, ...override };
+    await userEvent.type(screen.getByLabelText(/old password/i), data.oldPassword);
+    data.newPassword && (await userEvent.type(screen.getByLabelText(/^new password/i), data.newPassword));
+    await userEvent.type(screen.getByLabelText(/confirm new password/i), data.confirmNewPassword);
+  };
 
-    render();
-    await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-    await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-    await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-    await userEvent.click(screen.getByRole('button', { name: /change password/i }));
-    expect(mockDispatch).toHaveBeenCalledWith(
-      changePassword({
-        oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword,
-      })
-    );
+  const submitForm = () => userEvent.click(screen.getByRole('button', { name: /change password/i }));
+
+  it('should call changePassword action when submitted', async () => {
+    const relayEnvironment = getRelayEnv();
+    render(<Component />, { relayEnvironment });
+    await act(async () => {
+      await fillForm();
+      await submitForm();
+    });
+    expect(relayEnvironment).toHaveLatestOperation('authChangePasswordMutation');
+    expect(relayEnvironment).toLatestOperationInputEqual({
+      oldPassword: formData.oldPassword,
+      newPassword: formData.newPassword,
+    });
   });
 
   describe('action completes successfully', () => {
     it('should show success message', async () => {
       mockDispatch.mockResolvedValue({ isError: false });
-
-      render();
-      await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-      await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-      await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-      await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+      const relayEnvironment = getRelayEnv();
+      render(<Component />, { relayEnvironment });
+      await act(async () => {
+        await fillForm();
+        await submitForm();
+      });
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+      });
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Password successfully changed.'));
     });
 
     it('should clear form', async () => {
       mockDispatch.mockResolvedValue({ isError: false });
 
-      render();
-      await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-      await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-      await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-      await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+      const relayEnvironment = getRelayEnv();
+      render(<Component />, { relayEnvironment });
+      await act(async () => {
+        await fillForm();
+        await submitForm();
+      });
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+      });
       expect(screen.queryByDisplayValue(formData.oldPassword)).not.toBeInTheDocument();
       expect(screen.queryByDisplayValue(formData.newPassword)).not.toBeInTheDocument();
       expect(screen.queryByDisplayValue(formData.confirmNewPassword)).not.toBeInTheDocument();
@@ -70,48 +86,94 @@ describe('ChangePasswordForm: Component', () => {
   });
 
   it('should show error if required value is missing', async () => {
-    render();
-    await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-    await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-    await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+    const relayEnvironment = getRelayEnv();
+    render(<Component />, { relayEnvironment });
+    await act(async () => {
+      await fillForm({ newPassword: null });
+      await submitForm();
+    });
+    expect(relayEnvironment).not.toHaveLatestOperation('authChangePasswordMutation');
     expect(mockDispatch).not.toHaveBeenCalledWith();
     expect(screen.getByText('New password is required')).toBeInTheDocument();
   });
 
   it('should show error if new passwords dont match', async () => {
-    render();
-    await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-    await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-    await userEvent.type(screen.getByLabelText(/confirm new password/i), 'misspelled-pass');
-    await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+    const relayEnvironment = getRelayEnv();
+    render(<Component />, { relayEnvironment });
+    await act(async () => {
+      await fillForm({ confirmNewPassword: 'misspelled-pass' });
+      await submitForm();
+    });
+    expect(relayEnvironment).not.toHaveLatestOperation('authChangePasswordMutation');
     expect(mockDispatch).not.toHaveBeenCalledWith();
     expect(screen.getByText('Passwords must match')).toBeInTheDocument();
   });
 
   it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({
-      isError: true,
-      newPassword: [{ message: 'Provided password is invalid', code: 'invalid' }],
+    const relayEnvironment = getRelayEnv();
+    render(<Component />, { relayEnvironment });
+    await act(async () => {
+      await fillForm();
+      await submitForm();
     });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-    await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-    await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-    await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+    const errorMessage = 'Provided value is invalid';
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              newPassword: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
+    });
+
     expect(mockDispatch).not.toHaveBeenCalledWith();
-    expect(screen.getByText('Provided password is invalid')).toBeInTheDocument();
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
+    const relayEnvironment = getRelayEnv();
+    render(<Component />, { relayEnvironment });
+    await act(async () => {
+      await fillForm();
+      await submitForm();
+    });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/old password/i), formData.oldPassword);
-    await userEvent.type(screen.getByLabelText(/^new password/i), formData.newPassword);
-    await userEvent.type(screen.getByLabelText(/confirm new password/i), formData.confirmNewPassword);
-    await userEvent.click(screen.getByRole('button', { name: /change password/i }));
+    expect(relayEnvironment).toHaveLatestOperation('authChangePasswordMutation');
+    const errorMessage = 'Invalid data';
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              nonFieldErrors: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
+    });
+
     expect(mockDispatch).not.toHaveBeenCalledWith();
-    expect(screen.getByText('Invalid data')).toBeInTheDocument();
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 });

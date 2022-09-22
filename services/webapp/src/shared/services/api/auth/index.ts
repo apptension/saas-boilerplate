@@ -2,8 +2,6 @@ import { client } from '../client';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import { apiURL, apiURLs } from '../helpers';
 import {
-  ChangePasswordResponseData,
-  ChangePasswordRequestData,
   ConfirmEmailRequestData,
   ConfirmEmailResponseData,
   RequestPasswordResetRequestData,
@@ -19,7 +17,6 @@ export const AUTH_URL = apiURLs('/auth/', {
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
   UPDATE_AVATAR: '/me/',
-  CHANGE_PASSWORD: '/change-password/',
   CONFIRM_EMAIL: '/confirm/',
 });
 
@@ -38,11 +35,6 @@ export const refreshToken = async () => {
 
 export const logout = async () => {
   const res = await client.post<LogoutApiResponseData>(AUTH_URL.LOGOUT);
-  return res.data;
-};
-
-export const changePassword = async (data: ChangePasswordRequestData) => {
-  const res = await client.post<ChangePasswordResponseData>(AUTH_URL.CHANGE_PASSWORD, data);
   return res.data;
 };
 
