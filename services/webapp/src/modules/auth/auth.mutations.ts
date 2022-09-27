@@ -30,3 +30,11 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {
+    confirm(input: $input) {
+      ok
+    }
+  }
+`;

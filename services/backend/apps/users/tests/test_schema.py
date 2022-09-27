@@ -5,10 +5,9 @@ import re
 import pytest
 from graphene_file_upload.django.testing import file_graphql_query
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-from django.contrib import auth as dj_auth
 
 from common.acl.helpers import CommonGroups
-from .. import models
+from .. import models, tokens
 
 pytestmark = pytest.mark.django_db
 
@@ -257,10 +256,10 @@ class TestChangePasswordMutation:
             variable_values={'input': {"oldPassword": old_password, "newPassword": new_password}},
         )
 
-        u = dj_auth.get_user_model().objects.get(pk=user.pk)
+        user.refresh_from_db()
 
         assert "errors" not in executed
-        assert validate_jwt(executed["data"]["changePassword"], u)
+        assert validate_jwt(executed["data"]["changePassword"], user)
 
     def test_wrong_old_password(self, graphene_client, user, faker):
         graphene_client.force_authenticate(user)
@@ -285,3 +284,70 @@ class TestChangePasswordMutation:
         assert len(executed["errors"]) == 1
         assert executed["errors"][0]["message"] == "permission_denied"
         assert executed["data"] == {'changePassword': None}
+
+
+class TestConfirmEmailMutation:
+    MUTATION = '''
+        mutation ConfirmEmail($input: ConfirmEmailMutationInput!) {
+          confirm(input: $input) {
+            ok
+          }
+        }
+    '''
+
+    def test_correct_token_user_authenticated(self, graphene_client, user_factory, faker):
+        user = user_factory(is_confirmed=False)
+        token = tokens.account_activation_token.make_token(user)
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"user": user.pk, "token": token}},
+        )
+
+        user.refresh_from_db()
+
+        assert "errors" not in executed
+        assert executed["data"]["confirm"]["ok"] is True
+        assert user.is_active is True
+
+    def test_correct_token_unauthorized(self, graphene_client, user_factory, faker):
+        user = user_factory(is_confirmed=False)
+        token = tokens.account_activation_token.make_token(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"user": user.pk, "token": token}},
+        )
+
+        user.refresh_from_db()
+
+        assert "errors" not in executed
+        assert executed["data"]["confirm"]["ok"] is True
+        assert user.is_active is True
+
+    def test_wrong_token(self, graphene_client, user_factory, faker):
+        user = user_factory(is_confirmed=False)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"user": user.pk, "token": "wrong-token-here"}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'confirm': None}
+
+    def test_wrong_user(self, graphene_client, user_factory, faker):
+        user = user_factory(is_confirmed=False)
+        other_user = user_factory(is_confirmed=False)
+        token = tokens.account_activation_token.make_token(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"user": other_user.pk, "token": token}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'confirm': None}

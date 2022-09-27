@@ -1,7 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { EmailComponentProps } from '../../types';
 import { Button, Layout } from '../../base';
-import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
 
 export type AccountActivationProps = EmailComponentProps & {
@@ -11,16 +10,14 @@ export type AccountActivationProps = EmailComponentProps & {
 
 export const Template = ({ userId, token }: AccountActivationProps) => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(RoutesConfig.confirmEmail, {
+  const url = generateLocalePath(['confirmEmail'], {
     token,
     user: userId,
   });
 
   return (
     <Layout
-      title={
-        <FormattedMessage defaultMessage="Finish the registration" id="Email / Account Activation / Title" />
-      }
+      title={<FormattedMessage defaultMessage="Finish the registration" id="Email / Account Activation / Title" />}
       text={
         <FormattedMessage
           defaultMessage="Click the button below to confirm registration."

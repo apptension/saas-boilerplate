@@ -1,19 +1,16 @@
 import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { produce } from 'immer';
-import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { ConfirmEmail } from '../confirmEmail.component';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { prepareState } from '../../../../mocks/store';
 import { currentUserFactory } from '../../../../mocks/factories';
 import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
-import { server } from '../../../../mocks/server';
-import { mockConfirmEmail } from '../../../../mocks/server/handlers';
-import { unpackPromise } from '../../../../tests/utils/promise';
 import configureStore from '../../../../app/config/store';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { Role } from '../../../../modules/auth/auth.types';
+import { getRelayEnv } from '../../../../tests/utils/relay';
 
 describe('ConfirmEmail: Component', () => {
   const user = 'user_id';
@@ -31,17 +28,35 @@ describe('ConfirmEmail: Component', () => {
     let relayEnvironment: RelayMockEnvironment;
 
     beforeEach(() => {
-      relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      relayEnvironment = getRelayEnv();
     });
 
     it('should redirect to login ', async () => {
       const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-      const { promise, resolve: resolveApiCall } = unpackPromise();
-      server.use(mockConfirmEmail({ isError: true }, 400, promise));
 
       render(<Component />, { reduxInitialState, routerHistory, relayEnvironment });
-      await act(async () => resolveApiCall());
+
+      expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, {
+          ...MockPayloadGenerator.generate(operation),
+          errors: [
+            {
+              message: 'GraphQlValidationError',
+              extensions: {
+                password: [
+                  {
+                    message: 'Token is invalid',
+                    code: 'invalid',
+                  },
+                ],
+              },
+            },
+          ],
+        } as any);
+      });
 
       expect(screen.getByText('Login page mock')).toBeInTheDocument();
     });
@@ -49,11 +64,30 @@ describe('ConfirmEmail: Component', () => {
     it('should show error message', async () => {
       const reduxStore = configureStore(reduxInitialState);
       const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-      const { promise, resolve: resolveApiCall } = unpackPromise();
-      server.use(mockConfirmEmail({ isError: true }, 400, promise));
 
       render(<Component />, { reduxStore, routerHistory, relayEnvironment });
-      await act(async () => resolveApiCall());
+
+      expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+
+      await act(async () => {
+        const operation = relayEnvironment.mock.getMostRecentOperation();
+        relayEnvironment.mock.resolve(operation, {
+          ...MockPayloadGenerator.generate(operation),
+          errors: [
+            {
+              message: 'GraphQlValidationError',
+              extensions: {
+                password: [
+                  {
+                    message: 'Token is invalid',
+                    code: 'invalid',
+                  },
+                ],
+              },
+            },
+          ],
+        } as any);
+      });
 
       expect(reduxStore.getState()).toEqual(
         produce(reduxInitialState, (state) => {
@@ -68,18 +102,19 @@ describe('ConfirmEmail: Component', () => {
     let relayEnvironment: RelayMockEnvironment;
 
     beforeEach(() => {
-      relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      relayEnvironment = getRelayEnv();
     });
 
     describe('user is logged out', () => {
       it('should redirect to login ', async () => {
         const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-        const { promise, resolve: resolveApiCall } = unpackPromise();
-        server.use(mockConfirmEmail({ isError: false }, 200, promise));
 
         render(<Component />, { reduxInitialState, routerHistory, relayEnvironment });
-        await act(async () => resolveApiCall());
+
+        await act(async () => {
+          const operation = relayEnvironment.mock.getMostRecentOperation();
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+        });
 
         expect(screen.getByText('Login page mock')).toBeInTheDocument();
       });
@@ -87,11 +122,12 @@ describe('ConfirmEmail: Component', () => {
       it('should show success message', async () => {
         const reduxStore = configureStore(reduxInitialState);
         const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-        const { promise, resolve: resolveApiCall } = unpackPromise();
-        server.use(mockConfirmEmail({ isError: false }, 200, promise));
 
         render(<Component />, { reduxStore, routerHistory, relayEnvironment });
-        await act(async () => resolveApiCall());
+        await act(async () => {
+          const operation = relayEnvironment.mock.getMostRecentOperation();
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+        });
 
         expect(reduxStore.getState()).toEqual(
           produce(reduxInitialState, (state) => {
@@ -108,9 +144,7 @@ describe('ConfirmEmail: Component', () => {
       let relayEnvironment: RelayMockEnvironment;
 
       beforeEach(() => {
-        relayEnvironment = createMockEnvironment();
-        fillCommonQueryWithUser(
-          relayEnvironment,
+        relayEnvironment = getRelayEnv(
           currentUserFactory({
             roles: [Role.ADMIN],
           })
@@ -119,11 +153,15 @@ describe('ConfirmEmail: Component', () => {
 
       it('should redirect to login ', async () => {
         const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-        const { promise, resolve: resolveApiCall } = unpackPromise();
-        server.use(mockConfirmEmail({ isError: false }, 200, promise));
 
         render(<Component />, { reduxInitialState: loggedInReduxState, routerHistory, relayEnvironment });
-        await act(async () => resolveApiCall());
+
+        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+
+        await act(async () => {
+          const operation = relayEnvironment.mock.getMostRecentOperation();
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+        });
 
         expect(screen.getByText('Login page mock')).toBeInTheDocument();
       });
@@ -131,11 +169,15 @@ describe('ConfirmEmail: Component', () => {
       it('should show success message', async () => {
         const reduxStore = configureStore(loggedInReduxState);
         const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
-        const { promise, resolve: resolveApiCall } = unpackPromise();
-        server.use(mockConfirmEmail({ isError: false }, 200, promise));
 
         render(<Component />, { reduxStore, routerHistory, relayEnvironment });
-        await act(async () => resolveApiCall());
+
+        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+
+        await act(async () => {
+          const operation = relayEnvironment.mock.getMostRecentOperation();
+          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+        });
 
         expect(reduxStore.getState()).toEqual(
           produce(loggedInReduxState, (state) => {

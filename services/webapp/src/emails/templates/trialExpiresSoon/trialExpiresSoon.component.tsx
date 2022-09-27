@@ -1,5 +1,4 @@
 import { FormattedMessage } from 'react-intl';
-import { RoutesConfig } from '../../../app/config/routes';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
@@ -11,7 +10,7 @@ export type TrialExpiresSoonProps = EmailComponentProps & {
 
 export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(RoutesConfig.home);
+  const url = generateLocalePath(['home']);
 
   return (
     <Layout

@@ -36,11 +36,6 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
         return response
 
 
-class UserAccountConfirmationView(generics.CreateAPIView):
-    permission_classes = (policies.AnyoneFullAccess,)
-    serializer_class = serializers.UserAccountConfirmationSerializer
-
-
 class PasswordResetView(generics.CreateAPIView):
     """Reset the user's password.
 

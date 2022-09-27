@@ -43,6 +43,7 @@ export interface ApiMutation {
   cancelActiveSubscription?: Maybe<CancelActiveSubscriptionMutationPayload>;
   changeActiveSubscription?: Maybe<ChangeActiveSubscriptionMutationPayload>;
   changePassword?: Maybe<ChangePasswordMutationPayload>;
+  confirm?: Maybe<ConfirmEmailMutationPayload>;
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
@@ -74,6 +75,11 @@ export interface ApiMutationChangeActiveSubscriptionArgs {
 
 export interface ApiMutationChangePasswordArgs {
   input: ChangePasswordMutationInput;
+}
+
+
+export interface ApiMutationConfirmArgs {
+  input: ConfirmEmailMutationInput;
 }
 
 
@@ -410,6 +416,18 @@ export enum ChargeStatus {
   Pending = 'PENDING',
   /** Succeeded */
   Succeeded = 'SUCCEEDED'
+}
+
+export interface ConfirmEmailMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  token: Scalars['String'];
+  user: Scalars['String'];
+}
+
+export interface ConfirmEmailMutationPayload {
+  __typename?: 'ConfirmEmailMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
 }
 
 export interface ContentfulDemoItemFavoriteConnection {

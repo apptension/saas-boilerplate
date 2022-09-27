@@ -1,7 +1,5 @@
 import { DefaultBodyType, PathParams, rest } from 'msw';
 import {
-  ConfirmEmailRequestData,
-  ConfirmEmailResponseData,
   ConfirmPasswordResetRequestData,
   ConfirmPasswordResetResponseData,
   RequestPasswordResetRequestData,
@@ -18,21 +16,6 @@ export const mockLogout = (status = 200) =>
   rest.post<never, PathParams, any>(AUTH_URL.LOGOUT, (req, res, ctx) => {
     return res(ctx.status(status));
   });
-
-export const mockConfirmEmail = (
-  response: ConfirmEmailResponseData = { isError: false },
-  status = 200,
-  delayPromise: Promise<void> | null = null
-) =>
-  rest.post<ConfirmEmailRequestData, PathParams, ConfirmEmailResponseData>(
-    AUTH_URL.CONFIRM_EMAIL,
-    async (req, res, ctx) => {
-      if (delayPromise) {
-        await delayPromise;
-      }
-      return res(ctx.status(status), ctx.json(response));
-    }
-  );
 
 export const mockRequestPasswordReset = (
   response: RequestPasswordResetResponseData = { isError: false },

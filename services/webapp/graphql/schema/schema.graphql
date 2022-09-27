@@ -513,6 +513,7 @@ type ApiMutation {
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
+  confirm(input: ConfirmEmailMutationInput!): ConfirmEmailMutationPayload
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
@@ -764,6 +765,17 @@ enum ChargeStatus {
   PENDING
   """Succeeded"""
   SUCCEEDED
+}
+
+input ConfirmEmailMutationInput {
+  user: String!
+  token: String!
+  clientMutationId: String
+}
+
+type ConfirmEmailMutationPayload {
+  ok: Boolean
+  clientMutationId: String
 }
 
 type ContentfulDemoItemFavoriteConnection {

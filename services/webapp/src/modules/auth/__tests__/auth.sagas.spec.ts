@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { identity } from 'ramda';
 import { server } from '../../../mocks/server';
 import { watchAuth } from '../auth.sagas';
-import { mockConfirmEmail, mockConfirmPasswordReset, mockRequestPasswordReset } from '../../../mocks/server/handlers';
+import { mockConfirmPasswordReset, mockRequestPasswordReset } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
 import { snackbarActions } from '../../snackbar';
@@ -34,33 +34,6 @@ describe('Auth: sagas', () => {
   beforeEach(() => {
     mockHistoryPush.mockReset();
     locationAssignSpy.mockReset();
-  });
-
-  describe('confirmEmail', () => {
-    const confirmEmailPayload = {
-      user: 'user_id',
-      token: 'token_value',
-    };
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockConfirmEmail({ isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.confirmEmail.resolved({ isError: false }))
-        .dispatch(authActions.confirmEmail(confirmEmailPayload))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(mockConfirmEmail({ isError: true }, StatusCodes.BAD_REQUEST));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.confirmEmail.resolved({ isError: true }))
-        .dispatch(authActions.confirmEmail(confirmEmailPayload))
-        .silentRun();
-    });
   });
 
   describe('requestPasswordReset', () => {

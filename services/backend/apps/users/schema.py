@@ -40,10 +40,18 @@ class SingUpMutation(mutations.SerializerMutation):
         return mutation
 
 
+class ConfirmEmailMutation(mutations.SerializerMutation):
+    ok = graphene.Boolean()
+
+    class Meta:
+        serializer_class = serializers.UserAccountConfirmationSerializer
+
+
 @permission_classes(policies.AnyoneFullAccess)
 class AnyoneMutation(graphene.ObjectType):
     token_auth = ObtainTokenMutation.Field()
     sign_up = SingUpMutation.Field()
+    confirm = ConfirmEmailMutation.Field()
 
 
 @permission_classes(policies.AnyoneFullAccess)

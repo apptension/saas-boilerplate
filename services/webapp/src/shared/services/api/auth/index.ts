@@ -2,8 +2,6 @@ import { client } from '../client';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import { apiURL, apiURLs } from '../helpers';
 import {
-  ConfirmEmailRequestData,
-  ConfirmEmailResponseData,
   RequestPasswordResetRequestData,
   RequestPasswordResetResponseData,
   ConfirmPasswordResetRequestData,
@@ -17,7 +15,6 @@ export const AUTH_URL = apiURLs('/auth/', {
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
   UPDATE_AVATAR: '/me/',
-  CONFIRM_EMAIL: '/confirm/',
 });
 
 export const AUTH_PASSWORD_RESET_URL = apiURLs(`/password-reset/`, {
@@ -35,11 +32,6 @@ export const refreshToken = async () => {
 
 export const logout = async () => {
   const res = await client.post<LogoutApiResponseData>(AUTH_URL.LOGOUT);
-  return res.data;
-};
-
-export const confirmEmail = async (data: ConfirmEmailRequestData) => {
-  const res = await client.post<ConfirmEmailResponseData>(AUTH_URL.CONFIRM_EMAIL, data);
   return res.data;
 };
 

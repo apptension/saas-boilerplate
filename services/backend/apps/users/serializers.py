@@ -92,6 +92,7 @@ class UserAccountConfirmationSerializer(serializers.Serializer):
         write_only=True,
     )
     token = serializers.CharField(write_only=True)
+    ok = serializers.BooleanField(read_only=True)
 
     def validate(self, attrs):
         token = attrs["token"]
@@ -109,7 +110,7 @@ class UserAccountConfirmationSerializer(serializers.Serializer):
         user = validated_data.pop("user")
         user.is_confirmed = True
         user.save()
-        return user
+        return {"ok": True}
 
 
 class UserAccountChangePasswordSerializer(serializers.Serializer):

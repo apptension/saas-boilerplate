@@ -1,8 +1,5 @@
 import { ApiFormSubmitResponse } from '../types';
 
-export type ConfirmEmailRequestData = { token: string; user: string };
-export type ConfirmEmailResponseData = ApiFormSubmitResponse<ConfirmEmailRequestData, void>;
-
 export type RequestPasswordResetRequestData = { email: string };
 export type RequestPasswordResetResponseData = ApiFormSubmitResponse<RequestPasswordResetRequestData, void>;
 
