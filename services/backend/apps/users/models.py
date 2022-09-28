@@ -73,6 +73,7 @@ class UserAvatar(ImageWithThumbnailMixin, models.Model):
     )
 
     THUMBNAIL_SIZE = (128, 128)
+    ERROR_FIELD_NAME = "avatar"
 
 
 class UserProfile(models.Model):
