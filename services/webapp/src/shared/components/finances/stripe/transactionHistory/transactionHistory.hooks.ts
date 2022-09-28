@@ -9,7 +9,7 @@ export const useTransactionsHistoryQuery = () => {
     useQueryLoader<stripeAllChargesQuery>(StripeAllChargesQueryGraphql);
 
   useEffect(() => {
-    loadTransactionsHistoryQuery({});
+    loadTransactionsHistoryQuery({}, { fetchPolicy: 'store-and-network' });
   }, [loadTransactionsHistoryQuery]);
 
   return { transactionsHistoryQueryRef };
