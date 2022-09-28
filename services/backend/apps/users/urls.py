@@ -23,13 +23,4 @@ user_patterns = [
     path('social/', include((social_patterns, 'social'), namespace='social')),
 ]
 
-password_reset_patterns = [
-    path("", views.PasswordResetView.as_view(), name="password_reset"),
-    path(
-        "confirm/",
-        views.PasswordResetConfirmationView.as_view(),
-        name="password_reset_confirmation",
-    ),
-]
-
-urlpatterns = [path("auth/", include(user_patterns)), path("password-reset/", include(password_reset_patterns))]
+urlpatterns = [path("auth/", include(user_patterns))]

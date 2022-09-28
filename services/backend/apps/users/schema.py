@@ -47,11 +47,23 @@ class ConfirmEmailMutation(mutations.SerializerMutation):
         serializer_class = serializers.UserAccountConfirmationSerializer
 
 
+class PasswordResetMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.PasswordResetSerializer
+
+
+class PasswordResetConfirmationMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.PasswordResetConfirmationSerializer
+
+
 @permission_classes(policies.AnyoneFullAccess)
 class AnyoneMutation(graphene.ObjectType):
     token_auth = ObtainTokenMutation.Field()
     sign_up = SingUpMutation.Field()
     confirm = ConfirmEmailMutation.Field()
+    password_reset = PasswordResetMutation.Field()
+    password_reset_confirm = PasswordResetConfirmationMutation.Field()
 
 
 @permission_classes(policies.AnyoneFullAccess)

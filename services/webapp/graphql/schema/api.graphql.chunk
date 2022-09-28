@@ -16,6 +16,8 @@ type ApiMutation {
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
   confirm(input: ConfirmEmailMutationInput!): ConfirmEmailMutationPayload
+  passwordReset(input: PasswordResetMutationInput!): PasswordResetMutationPayload
+  passwordResetConfirm(input: PasswordResetConfirmationMutationInput!): PasswordResetConfirmationMutationPayload
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
@@ -740,6 +742,33 @@ type PageInfo {
 
   """When paginating forwards, the cursor to continue."""
   endCursor: String
+}
+
+input PasswordResetConfirmationMutationInput {
+  user: String!
+
+  """New password"""
+  newPassword: String!
+
+  """Token"""
+  token: String!
+  clientMutationId: String
+}
+
+type PasswordResetConfirmationMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
+
+input PasswordResetMutationInput {
+  """User e-mail"""
+  email: String!
+  clientMutationId: String
+}
+
+type PasswordResetMutationPayload {
+  ok: Boolean
+  clientMutationId: String
 }
 
 type PaymentMethodConnection {

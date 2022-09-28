@@ -1,12 +1,8 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { StatusCodes } from 'http-status-codes';
 import { identity } from 'ramda';
-import { server } from '../../../mocks/server';
 import { watchAuth } from '../auth.sagas';
-import { mockConfirmPasswordReset, mockRequestPasswordReset } from '../../../mocks/server/handlers';
 import { browserHistory } from '../../../shared/utils/history';
 import { prepareState } from '../../../mocks/store';
-import { snackbarActions } from '../../snackbar';
 import { OAuthProvider } from '../auth.types';
 import { authActions } from '..';
 import { apiURL } from '../../../shared/services/api/helpers';
@@ -34,80 +30,6 @@ describe('Auth: sagas', () => {
   beforeEach(() => {
     mockHistoryPush.mockReset();
     locationAssignSpy.mockReset();
-  });
-
-  describe('requestPasswordReset', () => {
-    const requestPasswordResetPayload = {
-      email: 'user@mail.com',
-    };
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockRequestPasswordReset({ isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.requestPasswordReset.resolved({ isError: false }))
-        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(mockRequestPasswordReset({ isError: true }, StatusCodes.BAD_REQUEST));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.requestPasswordReset.resolved({ isError: true }))
-        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockRequestPasswordReset({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.requestPasswordReset(requestPasswordResetPayload))
-        .silentRun();
-    });
-  });
-
-  describe('confirmPasswordReset', () => {
-    const confirmPasswordResetPayload = {
-      newPassword: 'user_id',
-      user: 'user-id',
-      token: 'token',
-    };
-
-    it('should resolve action if call completes successfully', async () => {
-      server.use(mockConfirmPasswordReset({ isError: false }));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.confirmPasswordReset.resolved({ isError: false }))
-        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
-        .silentRun();
-    });
-
-    it('should reject action if call completes with error', async () => {
-      server.use(mockConfirmPasswordReset({ isError: true }, StatusCodes.BAD_REQUEST));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(authActions.confirmPasswordReset.resolved({ isError: true }))
-        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
-        .silentRun();
-    });
-
-    it('should prompt snackbar error if call completes with unexpected error', async () => {
-      server.use(mockConfirmPasswordReset({ isError: true }, StatusCodes.INTERNAL_SERVER_ERROR));
-
-      await expectSaga(watchAuth)
-        .withState(defaultState)
-        .put(snackbarActions.showMessage(null))
-        .dispatch(authActions.confirmPasswordReset(confirmPasswordResetPayload))
-        .silentRun();
-    });
   });
 
   describe('oAuthLogin', () => {

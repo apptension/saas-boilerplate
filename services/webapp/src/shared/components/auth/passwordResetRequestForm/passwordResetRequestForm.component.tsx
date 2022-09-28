@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import throttle from 'lodash.throttle';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { requestPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../forms/input';
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import authRequestPasswordResetMutationGraphql, {
+  authRequestPasswordResetMutation,
+} from '../../../../modules/auth/__generated__/authRequestPasswordResetMutation.graphql';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
 import { SUBMIT_THROTTLE } from './passwordResetRequestForm.constants';
 import { ResetPasswordFormFields } from './passwordResetRequestForm.types';
@@ -15,8 +17,10 @@ type PasswordResetRequestFormProps = {
 
 export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
   const [isSubmitted, setSubmitted] = useState(false);
+  const [commitRequestPasswordReset] = usePromiseMutation<authRequestPasswordResetMutation>(
+    authRequestPasswordResetMutationGraphql
+  );
 
   const {
     form: {
@@ -27,6 +31,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
     setApiResponse,
     hasGenericErrorOnly,
     genericError,
+    setGraphQLResponseErrors,
   } = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       email: {
@@ -43,18 +48,23 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
     throttle(
       async (data: ResetPasswordFormFields) => {
         try {
-          const res = await dispatch(requestPasswordReset(data));
-          setApiResponse(res);
-          if (!res.isError) {
+          const { errors } = await commitRequestPasswordReset({
+            variables: {
+              input: data,
+            },
+          });
+          if (!errors) {
             setSubmitted(true);
             onSubmitted?.();
+          } else {
+            setGraphQLResponseErrors(errors);
           }
         } catch {}
       },
       SUBMIT_THROTTLE,
       { leading: true, trailing: true }
     ),
-    [dispatch, onSubmitted, setApiResponse]
+    [commitRequestPasswordReset, onSubmitted, setApiResponse]
   );
 
   return (
@@ -93,15 +103,9 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
 
       <SubmitButton>
         {isSubmitted ? (
-          <FormattedMessage
-            defaultMessage="Send the link again"
-            id="Auth / Request password reset / Resend button"
-          />
+          <FormattedMessage defaultMessage="Send the link again" id="Auth / Request password reset / Resend button" />
         ) : (
-          <FormattedMessage
-            defaultMessage="Send the link"
-            id="Auth / Request password reset / Submit button"
-          />
+          <FormattedMessage defaultMessage="Send the link" id="Auth / Request password reset / Submit button" />
         )}
       </SubmitButton>
     </Container>

@@ -5,6 +5,7 @@ import re
 import pytest
 from graphene_file_upload.django.testing import file_graphql_query
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken
 
 from common.acl.helpers import CommonGroups
 from .. import models, tokens
@@ -351,3 +352,116 @@ class TestConfirmEmailMutation:
         assert len(executed["errors"]) == 1
         assert executed["errors"][0]["message"] == "GraphQlValidationError"
         assert executed["data"] == {'confirm': None}
+
+
+class TestResetPassword:
+    MUTATION = '''
+        mutation PasswordReset($input: PasswordResetMutationInput!) {
+          passwordReset(input: $input) {
+            ok
+          }
+        }
+    '''
+
+    def test_no_email(self, graphene_client):
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert len(executed["errors"]) == 1
+
+    def test_user_not_found(self, graphene_client):
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"email": "wrong_email@example.com"}},
+        )
+
+        assert "errors" not in executed
+        assert executed["data"]["passwordReset"]["ok"] is True
+
+    def test_user_found(self, graphene_client, user):
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"email": user.email}},
+        )
+
+        assert "errors" not in executed
+        assert executed["data"]["passwordReset"]["ok"] is True
+
+
+class TestResetPasswordConfirm:
+    MUTATION = '''
+        mutation PasswordResetConfirm($input: PasswordResetConfirmationMutationInput!) {
+          passwordResetConfirm(input: $input) {
+            ok
+          }
+        }
+    '''
+
+    # Password reset confirmation
+    def test_token_correct(self, graphene_client, user):
+        password_token = tokens.password_reset_token.make_token(user)
+        new_password = "random1234"
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={'input': {"user": str(user.pk), "token": password_token, "newPassword": new_password}},
+        )
+
+        assert "errors" not in executed
+        assert executed["data"]["passwordResetConfirm"]["ok"] is True
+
+        user.refresh_from_db()
+        assert user.check_password(new_password)
+
+    def test_wrong_token(self, graphene_client, user):
+        new_password = "random1234"
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={"input": {"user": str(user.pk), "token": "wrong_token", "newPassword": new_password}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'passwordResetConfirm': None}
+
+    def test_wrong_password(self, graphene_client, user):
+        new_password = "r"
+        password_token = tokens.password_reset_token.make_token(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={"input": {"user": str(user.pk), "token": password_token, "newPassword": new_password}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'passwordResetConfirm': None}
+
+    def test_wrong_user(self, graphene_client, user):
+        new_password = "random1234"
+        password_token = tokens.password_reset_token.make_token(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={"input": {"user": "abc", "token": password_token, "newPassword": new_password}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+        assert executed["data"] == {'passwordResetConfirm': None}
+
+    def test_blacklist_all_jwt(self, graphene_client, user, faker):
+        jwts = [RefreshToken.for_user(user) for _ in range(3)]
+        password_token = tokens.password_reset_token.make_token(user)
+
+        executed = graphene_client.mutate(
+            self.MUTATION,
+            variable_values={"input": {"user": str(user.pk), "token": password_token, "newPassword": faker.password()}},
+        )
+
+        assert "errors" not in executed
+        for jwt in jwts:
+            assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()

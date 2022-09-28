@@ -1,13 +1,7 @@
 import { client } from '../client';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
 import { apiURL, apiURLs } from '../helpers';
-import {
-  RequestPasswordResetRequestData,
-  RequestPasswordResetResponseData,
-  ConfirmPasswordResetRequestData,
-  ConfirmPasswordResetResponseData,
-  LogoutApiResponseData,
-} from './types';
+import { LogoutApiResponseData } from './types';
 
 export const AUTH_URL = apiURLs('/auth/', {
   REFRESH_TOKEN: '/token-refresh/',
@@ -32,15 +26,5 @@ export const refreshToken = async () => {
 
 export const logout = async () => {
   const res = await client.post<LogoutApiResponseData>(AUTH_URL.LOGOUT);
-  return res.data;
-};
-
-export const requestPasswordReset = async (data: RequestPasswordResetRequestData) => {
-  const res = await client.post<RequestPasswordResetResponseData>(AUTH_PASSWORD_RESET_URL.REQUEST, data);
-  return res.data;
-};
-
-export const confirmPasswordReset = async (data: ConfirmPasswordResetRequestData) => {
-  const res = await client.post<ConfirmPasswordResetResponseData>(AUTH_PASSWORD_RESET_URL.CONFIRM, data);
   return res.data;
 };

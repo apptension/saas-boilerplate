@@ -153,6 +153,7 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(write_only=True, help_text=_("User e-mail"))
+    ok = serializers.BooleanField(read_only=True)
 
     def validate(self, attrs):
         user = None
@@ -171,7 +172,7 @@ class PasswordResetSerializer(serializers.Serializer):
                 user=user, data={'user_id': user.id.hashid, 'token': tokens.password_reset_token.make_token(user)}
             ).send()
 
-        return {}
+        return {"ok": True}
 
 
 class PasswordResetConfirmationSerializer(serializers.Serializer):
@@ -180,6 +181,8 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
 
     new_password = serializers.CharField(write_only=True, help_text=_("New password"))
     token = serializers.CharField(write_only=True, help_text=_("Token"))
+
+    ok = serializers.BooleanField(read_only=True)
 
     def validate_new_password(self, new_password):
         password_validation.validate_password(new_password)
@@ -208,7 +211,7 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         user.set_password(new_password)
         jwt.blacklist_user_tokens(user)
         user.save()
-        return user
+        return {'ok': True}
 
 
 class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer):

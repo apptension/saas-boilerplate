@@ -53,6 +53,8 @@ export interface ApiMutation {
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
   deletePaymentMethod?: Maybe<DeletePaymentMethodMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
+  passwordReset?: Maybe<PasswordResetMutationPayload>;
+  passwordResetConfirm?: Maybe<PasswordResetConfirmationMutationPayload>;
   signUp?: Maybe<SingUpMutationPayload>;
   tokenAuth?: Maybe<ObtainTokenMutationPayload>;
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
@@ -125,6 +127,16 @@ export interface ApiMutationDeletePaymentMethodArgs {
 
 export interface ApiMutationMarkReadAllNotificationsArgs {
   input: MarkReadAllNotificationsMutationInput;
+}
+
+
+export interface ApiMutationPasswordResetArgs {
+  input: PasswordResetMutationInput;
+}
+
+
+export interface ApiMutationPasswordResetConfirmArgs {
+  input: PasswordResetConfirmationMutationInput;
 }
 
 
@@ -781,6 +793,33 @@ export interface PageInfo {
   hasPreviousPage: Scalars['Boolean'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']>;
+}
+
+export interface PasswordResetConfirmationMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** New password */
+  newPassword: Scalars['String'];
+  /** Token */
+  token: Scalars['String'];
+  user: Scalars['String'];
+}
+
+export interface PasswordResetConfirmationMutationPayload {
+  __typename?: 'PasswordResetConfirmationMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
+}
+
+export interface PasswordResetMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** User e-mail */
+  email: Scalars['String'];
+}
+
+export interface PasswordResetMutationPayload {
+  __typename?: 'PasswordResetMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
 }
 
 export interface PaymentMethodConnection {

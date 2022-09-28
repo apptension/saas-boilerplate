@@ -1,85 +1,143 @@
 import userEvent from '@testing-library/user-event';
-import { screen, waitFor } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../utils/testUtils';
+import { screen, act, waitFor } from '@testing-library/react';
+import { MockPayloadGenerator } from 'relay-test-utils';
+import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetRequestForm } from '../passwordResetRequestForm.component';
-import { requestPasswordReset } from '../../../../../modules/auth/auth.actions';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 
 describe('PasswordResetRequestForm: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
+  const Component = () => <PasswordResetRequestForm />;
 
-  const component = () => <PasswordResetRequestForm />;
-  const render = makeContextRenderer(component);
+  const email = 'user@mail.com';
+
+  const fillForm = async (emailValue = email) => {
+    await userEvent.type(screen.getByLabelText(/email/i), emailValue);
+  };
+
+  const sendForm = async () => {
+    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
+  };
 
   it('should call requestPasswordReset action when submitted', async () => {
-    const email = 'user@mail.com';
-    mockDispatch.mockResolvedValue({ isError: false });
+    const relayEnvironment = getRelayEnv();
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), email);
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(requestPasswordReset({ email }));
+    render(<Component />, { relayEnvironment });
+
+    await act(async () => {
+      await fillForm();
+      await sendForm();
     });
+
+    expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetMutation');
+    expect(relayEnvironment).toLatestOperationInputEqual({ email });
   });
 
   it('should show resend button if action completes successfully', async () => {
-    const email = 'user@mail.com';
+    const relayEnvironment = getRelayEnv();
 
-    mockDispatch.mockResolvedValue({ isError: false });
+    render(<Component />, { relayEnvironment });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), email);
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    await act(async () => {
+      await fillForm();
+      await sendForm();
+    });
+
+    expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetMutation');
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
+    });
+
     await waitFor(() => {
       expect(screen.getByText(/send the link again/i)).toBeInTheDocument();
     });
   });
 
   it('should show error if required value is missing', async () => {
-    render();
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const relayEnvironment = getRelayEnv();
+
+    render(<Component />, { relayEnvironment });
+
+    await act(async () => {
+      await sendForm();
+    });
+
+    expect(relayEnvironment).not.toHaveLatestOperation('authRequestPasswordResetMutation');
     await waitFor(() => {
       expect(screen.getByText('Email is required')).toBeInTheDocument();
     });
   });
 
   it('should show field error if action throws error', async () => {
-    const email = 'user@mail.com';
+    const relayEnvironment = getRelayEnv();
 
-    mockDispatch.mockResolvedValue({ isError: true, email: [{ message: 'Email is invalid', code: 'invalid' }] });
+    render(<Component />, { relayEnvironment });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), email);
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    await act(async () => {
+      await fillForm();
+      await sendForm();
+    });
+    const errorMessage = 'Email is invalid';
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              email: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
+    });
+
     await waitFor(() => {
-      expect(screen.getByText('Email is invalid')).toBeInTheDocument();
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
   });
 
   it('should show generic form error if action throws error', async () => {
-    const email = 'user@mail.com';
+    const relayEnvironment = getRelayEnv();
 
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: [{ message: 'Invalid data', code: 'invalid' }] });
+    render(<Component />, { relayEnvironment });
 
-    render();
-    await userEvent.type(screen.getByLabelText(/email/i), email);
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    await act(async () => {
+      await fillForm();
+      await sendForm();
+    });
+    const errorMessage = 'Something went wrong';
+
+    await act(async () => {
+      const operation = relayEnvironment.mock.getMostRecentOperation();
+      relayEnvironment.mock.resolve(operation, {
+        ...MockPayloadGenerator.generate(operation),
+        errors: [
+          {
+            message: 'GraphQlValidationError',
+            extensions: {
+              nonFieldErrors: [
+                {
+                  message: errorMessage,
+                  code: 'invalid',
+                },
+              ],
+            },
+          },
+        ],
+      } as any);
+    });
+
     await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
   });
 });

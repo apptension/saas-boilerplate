@@ -1,13 +1,15 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
-import { useAsyncDispatch } from '../../../utils/reduxSagaPromise';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { confirmPasswordReset } from '../../../../modules/auth/auth.actions';
 import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useSnackbar } from '../../snackbar';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import authRequestPasswordResetConfirmMutationGraphql, {
+  authRequestPasswordResetConfirmMutation,
+} from '../../../../modules/auth/__generated__/authRequestPasswordResetConfirmMutation.graphql';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 
@@ -19,9 +21,12 @@ export type PasswordResetConfirmFormProps = {
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
   const snackbar = useSnackbar();
-  const dispatch = useAsyncDispatch();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
+  const [commitPasswordResetConfirm] = usePromiseMutation<authRequestPasswordResetConfirmMutation>(
+    authRequestPasswordResetConfirmMutationGraphql
+  );
+
   const {
     form: {
       register,
@@ -31,7 +36,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
     handleSubmit,
     genericError,
     hasGenericErrorOnly,
-    setApiResponse,
+    setGraphQLResponseErrors,
   } = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       nonFieldErrors: {
@@ -55,16 +60,17 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
   const onResetPassword = async (data: ResetPasswordFormFields) => {
     try {
-      const res = await dispatch(
-        confirmPasswordReset({
-          newPassword: data.newPassword,
-          user,
-          token,
-        })
-      );
-      setApiResponse(res);
+      const { errors } = await commitPasswordResetConfirm({
+        variables: {
+          input: {
+            newPassword: data.newPassword,
+            user,
+            token,
+          },
+        },
+      });
 
-      if (!res.isError) {
+      if (!errors) {
         navigate(generateLocalePath(RoutesConfig.login));
         snackbar.showMessage(
           intl.formatMessage({
@@ -72,6 +78,8 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
             id: 'Auth / Reset password confirm / Success message',
           })
         );
+      } else {
+        setGraphQLResponseErrors(errors);
       }
     } catch {}
   };
@@ -144,10 +152,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
       <SubmitButton>
-        <FormattedMessage
-          defaultMessage="Confirm the change"
-          id="Auth / Reset password confirm / Submit button"
-        />
+        <FormattedMessage defaultMessage="Confirm the change" id="Auth / Reset password confirm / Submit button" />
       </SubmitButton>
     </Container>
   );

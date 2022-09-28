@@ -1,15 +1,13 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt import views as jwt_views, tokens as jwt_tokens
 from rest_framework_simplejwt.views import TokenViewBase
 from social_core.actions import do_complete
 from social_django.utils import psa
 
-from common.acl import policies
 from . import serializers, utils
 
 
@@ -34,29 +32,6 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
         response = Response(serializer.data, status=status.HTTP_200_OK)
         utils.set_auth_cookie(response, serializer.data)
         return response
-
-
-class PasswordResetView(generics.CreateAPIView):
-    """Reset the user's password.
-
-    post:
-    Request to reset the user password. It will generate a token for the confirmation e-mail.
-    """
-
-    throttle_classes = (AnonRateThrottle,)
-    permission_classes = (policies.AnyoneFullAccess,)
-    serializer_class = serializers.PasswordResetSerializer
-
-
-class PasswordResetConfirmationView(generics.CreateAPIView):
-    """Confirm the new password after reset
-
-    post:
-    Set new password, it requires to provide the new password to set.
-    """
-
-    permission_classes = (policies.AnyoneFullAccess,)
-    serializer_class = serializers.PasswordResetConfirmationSerializer
 
 
 class LogoutView(TokenViewBase):

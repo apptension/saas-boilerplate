@@ -1,13 +1,12 @@
 import pytest
 from django.conf import settings
-from django.contrib import auth as dj_auth
 from django.http import SimpleCookie
 from django.urls import reverse
 from rest_framework import status
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 
-from .. import tokens, models
+from .. import models
 
 pytestmark = pytest.mark.django_db
 
@@ -17,98 +16,6 @@ def validate_jwt(response_data, user):
     token = AuthToken(response_data['access'])
 
     return token[jwt_api_settings.USER_ID_CLAIM] == user.id
-
-
-class TestResetPassword:
-    def test_no_email(self, api_client):
-        response = api_client.post(
-            reverse("password_reset"),
-            {},
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data["is_error"]
-
-    def test_user_not_found(self, api_client):
-        response = api_client.post(
-            reverse("password_reset"),
-            {"email": "wrong_email@wp.pl"},
-        )
-
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-
-    def test_user_found(self, api_client, user):
-        response = api_client.post(
-            reverse("password_reset"),
-            {"email": user.email},
-        )
-
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-
-    # Password reset confirmation
-    def test_token_correct(self, api_client, user):
-        password_token = tokens.password_reset_token.make_token(user)
-        new_password = "random1234"
-
-        response = api_client.post(
-            reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": password_token, "new_password": new_password},
-        )
-
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        u = dj_auth.get_user_model().objects.get(pk=user.pk)
-        assert u.check_password(new_password)
-
-    def test_wrong_token(self, api_client, user):
-        new_password = "random1234"
-
-        response = api_client.post(
-            reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": "wrong_token", "new_password": new_password},
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data["is_error"], response.data
-        assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
-
-    def test_wrong_password(self, api_client, user):
-        new_password = "r"
-        password_token = tokens.password_reset_token.make_token(user)
-
-        response = api_client.post(
-            reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": password_token, "new_password": new_password},
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data["is_error"]
-        assert response.data["new_password"][0]['code'] == 'password_too_short', response.data
-
-    def test_wrong_user(self, api_client, user):
-        new_password = "random1234"
-        password_token = tokens.password_reset_token.make_token(user)
-
-        response = api_client.post(
-            reverse("password_reset_confirmation"),
-            {"user": "abc", "token": password_token, "new_password": new_password},
-        )
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.data
-        assert response.data["is_error"]
-        assert response.data["non_field_errors"][0]['code'] == "invalid_token", response.data
-
-    def test_blacklist_all_jwt(self, api_client, user, faker):
-        jwts = [RefreshToken.for_user(user) for _ in range(3)]
-        password_token = tokens.password_reset_token.make_token(user)
-
-        response = api_client.post(
-            reverse("password_reset_confirmation"),
-            {"user": str(user.pk), "token": password_token, "new_password": faker.password()},
-        )
-
-        assert response.status_code == status.HTTP_201_CREATED, response.data
-        for jwt in jwts:
-            assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()
 
 
 class TestTokenRefresh:

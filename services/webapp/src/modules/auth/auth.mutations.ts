@@ -38,3 +38,19 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation authRequestPasswordResetMutation($input: PasswordResetMutationInput!) {
+    passwordReset(input: $input) {
+      ok
+    }
+  }
+`;
+
+graphql`
+  mutation authRequestPasswordResetConfirmMutation($input: PasswordResetConfirmationMutationInput!) {
+    passwordResetConfirm(input: $input) {
+      ok
+    }
+  }
+`;
