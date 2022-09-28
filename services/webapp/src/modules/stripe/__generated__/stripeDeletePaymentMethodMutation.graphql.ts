@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<807a8b193517498cd1f9427a31198f34>>
+ * @generated SignedSource<<53745289d4b2cf08b8869a661022249b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type DeletePaymentMethodMutationInput = {
   clientMutationId?: string | null;
   id?: string | null;
@@ -19,6 +20,11 @@ export type stripeDeletePaymentMethodMutation$variables = {
 };
 export type stripeDeletePaymentMethodMutation$data = {
   readonly deletePaymentMethod: {
+    readonly activeSubscription: {
+      readonly defaultPaymentMethod: {
+        readonly " $fragmentSpreads": FragmentRefs<"stripePaymentMethodFragment">;
+      } | null;
+    } | null;
     readonly deletedIds: ReadonlyArray<string | null> | null;
   } | null;
 };
@@ -51,6 +57,13 @@ v3 = {
   "kind": "ScalarField",
   "name": "deletedIds",
   "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -70,7 +83,34 @@ return {
         "name": "deletePaymentMethod",
         "plural": false,
         "selections": [
-          (v3/*: any*/)
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "SubscriptionScheduleType",
+            "kind": "LinkedField",
+            "name": "activeSubscription",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "StripePaymentMethodType",
+                "kind": "LinkedField",
+                "name": "defaultPaymentMethod",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "stripePaymentMethodFragment"
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
@@ -111,6 +151,58 @@ return {
                 "variableName": "connections"
               }
             ]
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "SubscriptionScheduleType",
+            "kind": "LinkedField",
+            "name": "activeSubscription",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "StripePaymentMethodType",
+                "kind": "LinkedField",
+                "name": "defaultPaymentMethod",
+                "plural": false,
+                "selections": [
+                  (v4/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "pk",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "type",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "card",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "billingDetails",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              (v4/*: any*/)
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -118,16 +210,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1a5d21eef69407c30b8f021471841b3a",
+    "cacheID": "c67da08d23ced950062d6d6edb64071e",
     "id": null,
     "metadata": {},
     "name": "stripeDeletePaymentMethodMutation",
     "operationKind": "mutation",
-    "text": "mutation stripeDeletePaymentMethodMutation(\n  $input: DeletePaymentMethodMutationInput!\n) {\n  deletePaymentMethod(input: $input) {\n    deletedIds\n  }\n}\n"
+    "text": "mutation stripeDeletePaymentMethodMutation(\n  $input: DeletePaymentMethodMutationInput!\n) {\n  deletePaymentMethod(input: $input) {\n    deletedIds\n    activeSubscription {\n      defaultPaymentMethod {\n        ...stripePaymentMethodFragment\n        id\n      }\n      id\n    }\n  }\n}\n\nfragment stripePaymentMethodFragment on StripePaymentMethodType {\n  id\n  pk\n  type\n  card\n  billingDetails\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b7e2d40cd2ddcb6eda3bfcbb1b0843bf";
+(node as any).hash = "2ee1283ee14fd1be38705543fa1e28bc";
 
 export default node;

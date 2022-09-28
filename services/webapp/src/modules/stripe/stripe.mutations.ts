@@ -4,6 +4,11 @@ graphql`
   mutation stripeDeletePaymentMethodMutation($input: DeletePaymentMethodMutationInput!, $connections: [ID!]!) {
     deletePaymentMethod(input: $input) {
       deletedIds @deleteEdge(connections: $connections)
+      activeSubscription {
+        defaultPaymentMethod {
+          ...stripePaymentMethodFragment
+        }
+      }
     }
   }
 `;

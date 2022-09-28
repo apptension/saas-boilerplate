@@ -639,6 +639,7 @@ export interface DeletePaymentMethodMutationInput {
 
 export interface DeletePaymentMethodMutationPayload {
   __typename?: 'DeletePaymentMethodMutationPayload';
+  activeSubscription?: Maybe<SubscriptionScheduleType>;
   clientMutationId?: Maybe<Scalars['String']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
 }

@@ -562,6 +562,7 @@ input DeletePaymentMethodMutationInput {
 
 type DeletePaymentMethodMutationPayload {
   deletedIds: [ID]
+  activeSubscription: SubscriptionScheduleType
   clientMutationId: String
 }
 

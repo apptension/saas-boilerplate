@@ -244,6 +244,8 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
 
 
 class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteModelMutation):
+    active_subscription = graphene.Field(SubscriptionScheduleType)
+
     class Meta:
         model = djstripe_models.PaymentMethod
 
@@ -254,7 +256,10 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteM
         pk = obj.pk
         customers.remove_payment_method(payment_method=obj)
         obj.delete()
-        return cls(deleted_ids=[to_global_id("StripePaymentMethodType", str(pk))])
+        return cls(
+            active_subscription=subscriptions.get_schedule(user=info.context.user),
+            deleted_ids=[to_global_id("StripePaymentMethodType", str(pk))],
+        )
 
 
 class CreatePaymentIntentMutation(mutations.CreateModelMutation):
