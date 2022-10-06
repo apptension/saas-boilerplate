@@ -17,5 +17,3 @@ export interface TransactionHistoryEntry {
   amount: number;
   invoice: TransactionHistoryEntryInvoice | null;
 }
-
-export type HistoryListApiResponseData = TransactionHistoryEntry[];

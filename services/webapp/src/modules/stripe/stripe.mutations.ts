@@ -51,3 +51,13 @@ graphql`
     }
   }
 `;
+
+graphql`
+  mutation stripeCreateSetupIntentMutation($input: CreateSetupIntentMutationInput!) {
+    createSetupIntent(input: $input) {
+      setupIntent {
+        ...stripeSetupIntentFragment
+      }
+    }
+  }
+`;

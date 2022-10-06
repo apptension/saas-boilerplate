@@ -11,6 +11,7 @@ type ApiMutation {
   deletePaymentMethod(input: DeletePaymentMethodMutationInput!): DeletePaymentMethodMutationPayload
   createPaymentIntent(input: CreatePaymentIntentMutationInput!): CreatePaymentIntentMutationPayload
   updatePaymentIntent(input: UpdatePaymentIntentMutationInput!): UpdatePaymentIntentMutationPayload
+  createSetupIntent(input: CreateSetupIntentMutationInput!): CreateSetupIntentMutationPayload
   changePassword(input: ChangePasswordMutationInput!): ChangePasswordMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
@@ -473,6 +474,15 @@ type CreatePaymentIntentMutationPayload {
   clientMutationId: String
 }
 
+input CreateSetupIntentMutationInput {
+  clientMutationId: String
+}
+
+type CreateSetupIntentMutationPayload {
+  setupIntent: StripeSetupIntentType
+  clientMutationId: String
+}
+
 type CrudDemoItemConnection {
   """Pagination data for this connection."""
   pageInfo: PageInfo!
@@ -912,6 +922,52 @@ type Query {
     """The ID of the object"""
     id: ID!
   ): Node
+}
+
+"""An enumeration."""
+enum SetupIntentCancellationReason {
+  """Abandoned"""
+  ABANDONED
+
+  """Duplicate"""
+  DUPLICATE
+
+  """Requested by Customer"""
+  REQUESTED_BY_CUSTOMER
+}
+
+"""An enumeration."""
+enum SetupIntentStatus {
+  """
+  Cancellation invalidates the intent for future confirmation and cannot be undone.
+  """
+  CANCELED
+
+  """Required actions have been handled."""
+  PROCESSING
+
+  """Payment Method require additional action, such as 3D secure."""
+  REQUIRES_ACTION
+
+  """Intent is ready to be confirmed."""
+  REQUIRES_CONFIRMATION
+
+  """Intent created and requires a Payment Method to be attached."""
+  REQUIRES_PAYMENT_METHOD
+
+  """
+  Setup was successful and the payment method is optimized for future payments.
+  """
+  SUCCEEDED
+}
+
+"""An enumeration."""
+enum SetupIntentUsage {
+  """Off session"""
+  OFF_SESSION
+
+  """On session"""
+  ON_SESSION
 }
 
 input SingUpMutationInput {
@@ -1524,6 +1580,73 @@ type StripeProductType implements Node {
 
   """The product this price is associated with."""
   prices(offset: Int, before: String, after: String, first: Int, last: Int): SubscriptionPlanTypeConnection!
+  pk: String
+}
+
+type StripeSetupIntentType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+
+  """The ID of the object."""
+  id: ID!
+
+  """
+  Null here indicates that the livemode status is unknown or was previously
+  unrecorded. Otherwise, this field indicates whether this record comes from
+  Stripe test mode or live mode operation.
+  """
+  livemode: Boolean
+
+  """The datetime this object was created in stripe."""
+  created: DateTime
+
+  """
+  A set of key/value pairs that you can attach to an object. It can be useful
+  for storing additional information about an object in a structured format.
+  """
+  metadata: String
+
+  """A description of this object."""
+  description: String
+
+  """ID of the Connect application that created the SetupIntent."""
+  application: String!
+
+  """
+  Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate
+  """
+  cancellationReason: SetupIntentCancellationReason
+
+  """
+  The client secret of this SetupIntent. Used for client-side retrieval using a publishable key.
+  """
+  clientSecret: String!
+
+  """The error encountered in the previous SetupIntent confirmation."""
+  lastSetupError: String
+
+  """
+  If present, this property tells you what actions you need to take inorder for your customer to continue payment setup.
+  """
+  nextAction: String
+
+  """Payment method used in this PaymentIntent."""
+  paymentMethod: StripePaymentMethodType
+
+  """
+  The list of payment method types (e.g. card) that this PaymentIntent is allowed to use.
+  """
+  paymentMethodTypes: String!
+
+  """
+  Status of this SetupIntent, one of requires_payment_method,
+  requires_confirmation, requires_action, processing, canceled, or succeeded.
+  """
+  status: SetupIntentStatus!
+
+  """Indicates how the payment method is intended to be used in the future."""
+  usage: SetupIntentUsage!
   pk: String
 }
 

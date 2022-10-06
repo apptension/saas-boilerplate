@@ -59,16 +59,11 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
         onChange={(e) => handleDataChange({ value: e.target.value, elementType: 'name' })}
       />
 
-      <StripeField
-        label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}
-      >
+      <StripeField label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}>
         <CardNumberElement onChange={handleDataChange} options={{ style: StripeIframeStyles, showIcon: true }} />
       </StripeField>
 
-      <StripeField
-        small
-        label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}
-      >
+      <StripeField small label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
         <CardExpiryElement onChange={handleDataChange} options={{ style: StripeIframeStyles }} />
       </StripeField>
 

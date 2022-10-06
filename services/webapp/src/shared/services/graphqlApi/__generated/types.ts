@@ -48,6 +48,7 @@ export interface ApiMutation {
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
   createPaymentIntent?: Maybe<CreatePaymentIntentMutationPayload>;
+  createSetupIntent?: Maybe<CreateSetupIntentMutationPayload>;
   deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
@@ -102,6 +103,11 @@ export interface ApiMutationCreateFavoriteContentfulDemoItemArgs {
 
 export interface ApiMutationCreatePaymentIntentArgs {
   input: CreatePaymentIntentMutationInput;
+}
+
+
+export interface ApiMutationCreateSetupIntentArgs {
+  input: CreateSetupIntentMutationInput;
 }
 
 
@@ -553,6 +559,16 @@ export interface CreatePaymentIntentMutationPayload {
   __typename?: 'CreatePaymentIntentMutationPayload';
   clientMutationId?: Maybe<Scalars['String']>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
+}
+
+export interface CreateSetupIntentMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface CreateSetupIntentMutationPayload {
+  __typename?: 'CreateSetupIntentMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  setupIntent?: Maybe<StripeSetupIntentType>;
 }
 
 export interface CrudDemoItemConnection {
@@ -1010,6 +1026,40 @@ export interface QueryNodeArgs {
 
 export interface QueryPaymentIntentArgs {
   id?: InputMaybe<Scalars['ID']>;
+}
+
+/** An enumeration. */
+export enum SetupIntentCancellationReason {
+  /** Abandoned */
+  Abandoned = 'ABANDONED',
+  /** Duplicate */
+  Duplicate = 'DUPLICATE',
+  /** Requested by Customer */
+  RequestedByCustomer = 'REQUESTED_BY_CUSTOMER'
+}
+
+/** An enumeration. */
+export enum SetupIntentStatus {
+  /** Cancellation invalidates the intent for future confirmation and cannot be undone. */
+  Canceled = 'CANCELED',
+  /** Required actions have been handled. */
+  Processing = 'PROCESSING',
+  /** Payment Method require additional action, such as 3D secure. */
+  RequiresAction = 'REQUIRES_ACTION',
+  /** Intent is ready to be confirmed. */
+  RequiresConfirmation = 'REQUIRES_CONFIRMATION',
+  /** Intent created and requires a Payment Method to be attached. */
+  RequiresPaymentMethod = 'REQUIRES_PAYMENT_METHOD',
+  /** Setup was successful and the payment method is optimized for future payments. */
+  Succeeded = 'SUCCEEDED'
+}
+
+/** An enumeration. */
+export enum SetupIntentUsage {
+  /** Off session */
+  OffSession = 'OFF_SESSION',
+  /** On session */
+  OnSession = 'ON_SESSION'
 }
 
 export interface SingUpMutationInput {
@@ -1496,6 +1546,52 @@ export interface StripeProductTypePricesArgs {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface StripeSetupIntentType extends Node {
+  __typename?: 'StripeSetupIntentType';
+  /** ID of the Connect application that created the SetupIntent. */
+  application: Scalars['String'];
+  /** Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate */
+  cancellationReason?: Maybe<SetupIntentCancellationReason>;
+  /** The client secret of this SetupIntent. Used for client-side retrieval using a publishable key. */
+  clientSecret: Scalars['String'];
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** The error encountered in the previous SetupIntent confirmation. */
+  lastSetupError?: Maybe<Scalars['String']>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** If present, this property tells you what actions you need to take inorder for your customer to continue payment setup. */
+  nextAction?: Maybe<Scalars['String']>;
+  /** Payment method used in this PaymentIntent. */
+  paymentMethod?: Maybe<StripePaymentMethodType>;
+  /** The list of payment method types (e.g. card) that this PaymentIntent is allowed to use. */
+  paymentMethodTypes: Scalars['String'];
+  pk?: Maybe<Scalars['String']>;
+  /**
+   * Status of this SetupIntent, one of requires_payment_method,
+   * requires_confirmation, requires_action, processing, canceled, or succeeded.
+   */
+  status: SetupIntentStatus;
+  /** Indicates how the payment method is intended to be used in the future. */
+  usage: SetupIntentUsage;
 }
 
 export interface StripeSubscriptionType extends Node {

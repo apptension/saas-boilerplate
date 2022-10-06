@@ -1,26 +1,48 @@
 import { useState } from 'react';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { StripeSetupIntent } from '../../../../shared/services/api/stripe/setupIntent/types';
-import { stripe as stripeApi } from '../../../../shared/services/api';
+import { PayloadError, readInlineData } from 'relay-runtime';
 import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 import { StripePaymentMethodType } from '../../../../shared/services/api/stripe/paymentMethod';
+import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
+import stripeCreateSetupIntentMutationGraphql, {
+  stripeCreateSetupIntentMutation,
+} from '../../../../modules/stripe/__generated__/stripeCreateSetupIntentMutation.graphql';
+import stripeSetupIntentFragmentGraphql, {
+  stripeSetupIntentFragment$data,
+  stripeSetupIntentFragment$key,
+} from '../../../../modules/stripe/__generated__/stripeSetupIntentFragment.graphql';
 
 export const useStripeSetupIntent = () => {
-  const [setupIntent, setSetupIntent] = useState<StripeSetupIntent | null>(null);
+  const [setupIntent, setSetupIntent] = useState<{
+    data: stripeSetupIntentFragment$data | null;
+    errors: PayloadError[] | null;
+  } | null>(null);
+  const [commitCreateSetupIntentMutation] = usePromiseMutation<stripeCreateSetupIntentMutation>(
+    stripeCreateSetupIntentMutationGraphql
+  );
 
   const createSetupIntent = async () => {
     if (!setupIntent) {
-      const response = await stripeApi.setupIntent.create();
-      if (!response.isError) {
-        setSetupIntent(response);
+      const { response, errors } = await commitCreateSetupIntentMutation({ variables: { input: {} } });
+
+      if (!errors) {
+        const intent = readInlineData<stripeSetupIntentFragment$key>(
+          // @ts-ignore
+          stripeSetupIntentFragmentGraphql,
+          response.createSetupIntent?.setupIntent ?? null
+        );
+
+        const result = { data: intent, errors };
+        setSetupIntent(result);
+        return result;
       }
-      return response;
+      return { data: null, errors };
     }
 
-    return { ...setupIntent, isError: false };
+    return setupIntent;
   };
 
   return { setupIntent, createSetupIntent };
@@ -34,7 +56,7 @@ export const useStripeCardSetup = () => {
     paymentMethod,
     setupIntent,
   }: {
-    setupIntent: StripeSetupIntent;
+    setupIntent: stripeSetupIntentFragment$data;
     paymentMethod: StripePaymentMethodSelection;
   }) => {
     if (!stripe) {

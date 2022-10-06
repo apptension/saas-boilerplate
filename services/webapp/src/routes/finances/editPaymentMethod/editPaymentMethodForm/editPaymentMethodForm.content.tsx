@@ -30,8 +30,8 @@ export const EditPaymentMethodContentForm = ({
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const {
     handleSubmit,
-    setApiResponse,
     setGenericError,
+    setGraphQLResponseErrors,
     form: { formState },
   } = apiFormControls;
 
@@ -44,13 +44,18 @@ export const EditPaymentMethodContentForm = ({
 
   const setupNewCard = async (data: ChangePaymentFormFields) => {
     const setupIntentResponse = await createSetupIntent();
-    if (setupIntentResponse.isError) {
-      return setApiResponse(setupIntentResponse);
+    if (setupIntentResponse.errors) {
+      return setGraphQLResponseErrors(setupIntentResponse.errors);
+    }
+
+    const intent = setupIntentResponse.data;
+    if (!intent) {
+      return;
     }
 
     const result = await confirmCardSetup({
       paymentMethod: data.paymentMethod,
-      setupIntent: setupIntentResponse,
+      setupIntent: intent,
     });
 
     if (!result) {

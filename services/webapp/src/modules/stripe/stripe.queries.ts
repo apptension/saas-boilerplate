@@ -74,3 +74,10 @@ graphql`
     }
   }
 `;
+
+graphql`
+  fragment stripeSetupIntentFragment on StripeSetupIntentType @inline {
+    id
+    clientSecret
+  }
+`;

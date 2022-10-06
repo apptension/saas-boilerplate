@@ -759,3 +759,41 @@ class TestUpdatePaymentIntentMutation:
 
         payment_intent.refresh_from_db()
         assert payment_intent.amount == 1000
+
+
+class TestCreateSetupIntentMutation:
+    CREATE_PAYMENT_INTENT_MUTATION = '''
+        mutation($input: CreateSetupIntentMutationInput!)  {
+          createSetupIntent(input: $input) {
+            setupIntent {
+              id
+              clientSecret
+            }
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_creates_payment_intent(self, graphene_client, user):
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed['data']['createSetupIntent']
+        assert executed['data']['createSetupIntent']['setupIntent']
+
+        setup_intent_global_id = executed['data']['createSetupIntent']['setupIntent']['id']
+        _, pk = from_global_id(setup_intent_global_id)
+        setup_intent = djstripe_models.SetupIntent.objects.get(pk=pk)
+
+        assert executed['data']['createSetupIntent']['setupIntent']['clientSecret'] == setup_intent.client_secret

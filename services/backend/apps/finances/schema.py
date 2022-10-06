@@ -214,6 +214,13 @@ class StripePaymentIntentType(StripeDjangoObjectType):
         fields = ("pk", "id", "amount", "currency", "client_secret")
 
 
+class StripeSetupIntentType(StripeDjangoObjectType):
+    class Meta:
+        model = djstripe_models.SetupIntent
+        interfaces = (relay.Node,)
+        exclude_fields = ('setup_intents',)
+
+
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
     active_subscription = graphene.Field(SubscriptionScheduleType)
     payment_method_edge = graphene.Field(PaymentMethodConnection.Edge)
@@ -278,6 +285,12 @@ class UpdatePaymentIntentMutation(mutations.UpdateModelMutation):
         return djstripe_models.PaymentIntent.objects.filter(customer__subscriber=info.context.user)
 
 
+class CreateSetupIntentMutation(mutations.CreateModelMutation):
+    class Meta:
+        model = djstripe_models.SetupIntent
+        serializer_class = serializers.SetupIntentSerializer
+
+
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
@@ -324,3 +337,4 @@ class Mutation(graphene.ObjectType):
     delete_payment_method = DeletePaymentMethodMutation.Field()
     create_payment_intent = CreatePaymentIntentMutation.Field()
     update_payment_intent = UpdatePaymentIntentMutation.Field()
+    create_setup_intent = CreateSetupIntentMutation.Field()
