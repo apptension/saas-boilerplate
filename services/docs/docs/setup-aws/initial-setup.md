@@ -5,15 +5,8 @@ title: Initial setup
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
 ## Prerequisites
-- You need your own personal account in devops-apptension AWS organization (IAM user).
-- AWS organization (set it up or get access to one from the client) for your project
-- Admin role for that organization
-- Assignment of that admin role to your personal IAM user
+- AWS account with admin role
 - A domain
-
-:::tip Dev-Ops needed
-Probably you are not able (dont have sufficient admin rights) to setup first 4 things on your own so you need to ask some dev-ops to set it up for you.
-:::
 
 ---
 
