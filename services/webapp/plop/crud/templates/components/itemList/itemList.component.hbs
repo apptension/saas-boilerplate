@@ -23,7 +23,7 @@ export const {{ pascalCase name }}List = () => {
     <Container>
       <h1>{{ pascalCase name }}List component</h1>
       <Link to={generateLocalePath(ROUTES.{{ camelCase name }}.add)}>
-        <FormattedMessage description={'{{ pascalCase name }}List / Add new'} defaultMessage={'Add new'} />
+        <FormattedMessage id={'{{ pascalCase name }}List / Add new'} defaultMessage={'Add new'} />
       </Link>
 
       {items.map((item) => (

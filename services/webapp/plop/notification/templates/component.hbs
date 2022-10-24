@@ -18,8 +18,8 @@ export const {{ pascalCase name }} = ({ data: {}, ...restProps }: {{ pascalCase 
         const route = generateLocalePath(ROUTES, {});
         history.push(route);
       }}
-      title={<FormattedMessage defaultMessage="Title" description="Notifications / {{ pascalCase name }} / Title" />}
-      content={<FormattedMessage defaultMessage="Content" description="Notifications / {{ pascalCase name }} / Content" />}
+      title={<FormattedMessage defaultMessage="Title" id="Notifications / {{ pascalCase name }} / Title" />}
+      content={<FormattedMessage defaultMessage="Content" id="Notifications / {{ pascalCase name }} / Content" />}
     />
   );
 };

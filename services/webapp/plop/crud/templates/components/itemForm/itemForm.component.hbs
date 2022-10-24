@@ -48,7 +48,7 @@ export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormPro
       <Form onSubmit={handleSubmit(onFormSubmit)}>
         <Row>
           <Label>
-            <FormattedMessage defaultMessage="Name:" description="{{ pascalCase name }} Form / Name label" />
+            <FormattedMessage defaultMessage="Name:" id="{{ pascalCase name }} Form / Name label" />
           </Label>
           <Input
             {...register('name', {
@@ -70,11 +70,11 @@ export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormPro
 
         {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
         <Button type="submit">
-          <FormattedMessage defaultMessage="Save" description="{{ pascalCase name }} form / Submit button" />
+          <FormattedMessage defaultMessage="Save" id="{{ pascalCase name }} form / Submit button" />
         </Button>
 
         {formState.isSubmitSuccessful && (
-          <FormattedMessage defaultMessage="Saved successfully" description="{{ pascalCase name }} form / Success message" />
+          <FormattedMessage defaultMessage="Saved successfully" id="{{ pascalCase name }} form / Success message" />
         )}
       </Form>
     </Container>

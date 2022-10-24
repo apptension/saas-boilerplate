@@ -23,10 +23,10 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
     <Container>
       <Link to={generateLocalePath(ROUTES.{{ camelCase name }}.details, { id: item.id })}>{item.name}</Link>
       <Link to={generateLocalePath(ROUTES.{{ camelCase name }}.edit, { id: item.id })}>
-        [<FormattedMessage description={'{{ pascalCase name }} list / edit link'} defaultMessage={'Edit'} />]
+        [<FormattedMessage id={'{{ pascalCase name }} list / edit link'} defaultMessage={'Edit'} />]
       </Link>
       <button onClick={handleDelete}>
-        <FormattedMessage description={'{{ pascalCase name }} list / delete button'} defaultMessage={'Delete'} />
+        <FormattedMessage id={'{{ pascalCase name }} list / delete button'} defaultMessage={'Delete'} />
       </button>
     </Container>
   );
