@@ -78,7 +78,12 @@ describe('PasswordResetConfirmForm: Component', () => {
     });
 
     await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('🎉 Password reset successfully!'));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage({
+          text: '🎉 Password reset successfully!',
+          id: 1,
+        })
+      );
     });
   });
 

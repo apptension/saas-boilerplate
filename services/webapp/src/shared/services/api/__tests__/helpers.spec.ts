@@ -5,7 +5,8 @@ import createReducer from '../../../../app/config/reducers';
 import { store as fixturesStore } from '../../../../mocks/store';
 import { client } from '../client';
 import { AUTH_URL } from '../auth';
-import { createRefreshTokenInterceptor, validateStatus } from '../helpers';
+import { validateStatus } from '../helpers';
+import { createRefreshTokenInterceptor } from '../interceptors';
 
 describe('shared / services / api', () => {
   describe('validate status', () => {

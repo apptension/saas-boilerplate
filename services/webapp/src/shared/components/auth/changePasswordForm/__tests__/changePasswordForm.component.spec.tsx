@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import { render } from '../../../../../tests/utils/rendering';
 import { snackbarActions } from '../../../../../modules/snackbar';
@@ -63,7 +63,12 @@ describe('ChangePasswordForm: Component', () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Password successfully changed.'));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage({
+          text: 'Password successfully changed.',
+          id: 1,
+        })
+      );
     });
 
     it('should clear form', async () => {

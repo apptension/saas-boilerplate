@@ -1,9 +1,9 @@
 import graphql from 'babel-plugin-relay/macro';
 import { ConnectionHandler, usePaginationFragment, useSubscription } from 'react-relay';
 import { useMemo } from 'react';
-import { useSnackbar } from '../../snackbar';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
+import { useSnackbar } from '../../../../modules/snackbar';
 import { notificationsListQuery$data } from '../__generated__/notificationsListQuery.graphql';
 import { notificationsListMarkAsReadMutation } from './__generated__/notificationsListMarkAsReadMutation.graphql';
 import { NotificationsListRefetch } from './__generated__/NotificationsListRefetch.graphql';

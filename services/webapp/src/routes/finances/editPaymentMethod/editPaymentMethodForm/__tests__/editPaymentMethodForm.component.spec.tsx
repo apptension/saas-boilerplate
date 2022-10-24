@@ -4,17 +4,17 @@ import { MockPayloadGenerator } from 'relay-test-utils';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { times } from 'ramda';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
 import {
+  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
-  fillSubscriptionScheduleQuery,
-  fillSubscriptionScheduleQueryWithPhases,
 } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { connectionFromArray } from '../../../../../shared/utils/testUtils';
@@ -22,10 +22,6 @@ import { SubscriptionPlanName } from '../../../../../shared/services/api/subscri
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
 import stripeAllPaymentMethodsQueryGraphql from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-import {
-  StripePaymentMethodChangeEvent,
-  StripePaymentMethodSelectionType,
-} from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 
 jest.mock('@stripe/react-stripe-js', () => ({
   ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),

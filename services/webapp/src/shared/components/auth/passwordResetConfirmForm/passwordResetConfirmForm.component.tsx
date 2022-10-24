@@ -4,9 +4,9 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useSnackbar } from '../../snackbar';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import { useSnackbar } from '../../../../modules/snackbar';
 import authRequestPasswordResetConfirmMutationGraphql, {
   authRequestPasswordResetConfirmMutation,
 } from '../../../../modules/auth/__generated__/authRequestPasswordResetConfirmMutation.graphql';

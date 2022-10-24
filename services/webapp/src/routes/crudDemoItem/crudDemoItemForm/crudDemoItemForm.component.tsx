@@ -5,8 +5,8 @@ import { Input } from '../../../shared/components/forms/input';
 import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Link } from '../../../shared/components/link';
 import { RoutesConfig } from '../../../app/config/routes';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;

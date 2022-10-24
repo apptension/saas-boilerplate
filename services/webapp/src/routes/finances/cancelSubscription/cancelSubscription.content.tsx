@@ -4,7 +4,6 @@ import { PreloadedQuery } from 'react-relay';
 
 import { H3 } from '../../../theme/typography';
 import { Button } from '../../../shared/components/forms/button';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
@@ -15,6 +14,7 @@ import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromi
 import { subscriptionActivePlanDetailsQuery } from '../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import { BackButton } from '../../../shared/components/backButton';
 import { useActiveSubscriptionDetailsData } from '../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
+import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
 import { Container, Row, RowValue } from './cancelSubscription.styles';
 
 type CancelSubscriptionContentProps = {

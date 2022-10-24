@@ -1,7 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 
-// Needed for redux-saga es6 generator support
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 

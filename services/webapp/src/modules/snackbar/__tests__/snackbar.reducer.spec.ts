@@ -17,8 +17,8 @@ describe('Snackbar: reducer', () => {
 
   describe('showMessage.resolved', () => {
     it('should add new message to the list', () => {
-      const addFirstAction = snackbarActions.showMessage.resolved({ id: 1, text: 'First message' });
-      const addSecondAction = snackbarActions.showMessage.resolved({ id: 2, text: 'Second message' });
+      const addFirstAction = snackbarActions.showMessage({ id: 1, text: 'First message' });
+      const addSecondAction = snackbarActions.showMessage({ id: 2, text: 'Second message' });
 
       let resultState = reducer(defaultState, addFirstAction);
       expect(resultState.messages).toEqual([{ id: 1, text: 'First message' }]);
@@ -31,8 +31,8 @@ describe('Snackbar: reducer', () => {
     });
 
     it('should update lastMessageId to match the message id', () => {
-      const addFirstAction = snackbarActions.showMessage.resolved({ id: 1, text: 'First message' });
-      const addSecondAction = snackbarActions.showMessage.resolved({ id: 2, text: 'Second message' });
+      const addFirstAction = snackbarActions.showMessage({ id: 1, text: 'First message' });
+      const addSecondAction = snackbarActions.showMessage({ id: 2, text: 'Second message' });
 
       let resultState = reducer(defaultState, addFirstAction);
       expect(resultState.lastMessageId).toEqual(1);

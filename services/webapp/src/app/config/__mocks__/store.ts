@@ -1,27 +1,16 @@
-import { configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-import { promiseMiddleware } from '../../../shared/utils/reduxSagaPromise';
+import { configureStore, Store } from '@reduxjs/toolkit';
 import createReducer from '../reducers';
-import rootSaga from '../sagas';
 
 export default function (initialState = {}): Store {
-  const sagaMiddleware = createSagaMiddleware();
-
-  const middlewares = [promiseMiddleware, sagaMiddleware];
-
   const defaultMiddlewareOptions = {
     serializableCheck: {
       ignoredActionPaths: ['meta.promise'],
     },
   };
 
-  const store = configureStore({
+  return configureStore({
     reducer: createReducer(),
     preloadedState: initialState,
-    middleware: getDefaultMiddleware(defaultMiddlewareOptions).concat(middlewares),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware(defaultMiddlewareOptions),
   });
-
-  sagaMiddleware.run(rootSaga);
-
-  return store;
 }

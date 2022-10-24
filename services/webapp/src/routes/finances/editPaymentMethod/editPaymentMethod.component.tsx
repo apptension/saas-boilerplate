@@ -2,10 +2,10 @@ import { useIntl } from 'react-intl';
 import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useSnackbar } from '../../../modules/snackbar';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';
 

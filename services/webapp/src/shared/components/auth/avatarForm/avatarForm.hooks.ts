@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl';
 
 import { useFormatFileSize } from '../../fileSize';
-import { useSnackbar } from '../../snackbar';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import authUpdateUserProfileMutationGraphql, {
   authUpdateUserProfileMutation,
 } from '../../../../modules/auth/__generated__/authUpdateUserProfileMutation.graphql';
+import { useSnackbar } from '../../../../modules/snackbar';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { UpdateAvatarFormFields } from './avatarForm.types';
 
@@ -72,3 +72,4 @@ export const useAvatarForm = () => {
 
   return { ...form, handleAvatarUpload, fileTooLargeMessage };
 };
+

@@ -6,7 +6,7 @@ import authUpdateUserProfileMutationGraphql, {
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAuth } from '../../../hooks/useAuth/useAuth';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import { useSnackbar } from '../../snackbar';
+import { useSnackbar } from '../../../../modules/snackbar';
 import { UpdateProfileFormFields } from './editProfileForm.types';
 
 export const useEditProfileForm = () => {

@@ -1,4 +1,4 @@
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
@@ -81,7 +81,12 @@ describe('EditProfileForm: Component', () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Personal data successfully changed.'));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage({
+          text: 'Personal data successfully changed.',
+          id: 1,
+        })
+      );
     });
 
     it('should display updated values', async () => {

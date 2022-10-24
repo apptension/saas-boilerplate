@@ -2,11 +2,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Input } from '../../forms/input';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { useSnackbar } from '../../snackbar';
+import { useSnackbar } from '../../../../modules/snackbar';
 import authChangePasswordMutationGraphql, {
   authChangePasswordMutation,
 } from '../../../../modules/auth/__generated__/authChangePasswordMutation.graphql';
-import { Container, ErrorMessage, SubmitButton, FormFieldsRow } from './changePasswordForm.styles';
+import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
 
 type ChangePasswordFormFields = {
   oldPassword: string;

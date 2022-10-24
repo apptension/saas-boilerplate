@@ -7,11 +7,9 @@ import { translationMessages } from '../../config/i18n';
 import { GlobalStyle } from '../../../theme/global';
 import { ResponsiveThemeProvider } from '../responsiveThemeProvider';
 import { Layout } from '../../../shared/components/layout';
-import { useStartup } from './useStartup';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
 export const ValidRoutesProviders = () => {
-  useStartup();
   useLanguageFromParams();
 
   const language = useSelector(localesSelectors.selectLocalesLanguage);

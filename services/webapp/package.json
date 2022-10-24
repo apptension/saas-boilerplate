@@ -44,8 +44,6 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "redux": "^4.2.0",
-    "redux-saga": "^1.0.2",
-    "redux-saga-test-plan": "^4.0.5",
     "regenerator-runtime": "^0.13.9",
     "relay-runtime": "^14.0.0",
     "semver-compare": "^1.0.0",

@@ -12,6 +12,13 @@ import { Elements } from '@stripe/react-stripe-js';
 import { store } from '../../mocks/store';
 import { GlobalState } from '../../app/config/reducers';
 import { ActiveSubscriptionContext } from '../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
+import {
+  DefaultReduxState,
+  DefaultTestProviders,
+  DefaultTestProvidersProps,
+  getWrapper,
+  WrapperProps,
+} from '../../tests/utils/rendering';
 import { stripePromise } from '../services/stripe';
 import { ContextData, ProvidersWrapper } from './testUtils';
 
@@ -83,3 +90,20 @@ export const withActiveSubscriptionContext = (StoryComponent: Story) => {
     </HistoryRouter>
   );
 };
+
+export function withModernProviders<
+  ReduxState = DefaultReduxState,
+  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
+>(wrapperProps: WrapperProps<ReduxState, P>) {
+  const WrapperComponent = getWrapper(DefaultTestProviders, wrapperProps) as any;
+
+  return (StoryComponent: Story) => {
+    return (
+      <WrapperComponent>
+        <StoryComponent />
+      </WrapperComponent>
+    );
+  };
+}
+
+withModernProviders({})

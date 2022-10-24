@@ -1,7 +1,8 @@
 import ReactDropzone, { DropzoneProps as ReactDropzoneProps } from 'react-dropzone';
 import { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useSnackbar } from '../../snackbar';
+
+import { useSnackbar } from '../../../../modules/snackbar';
 import { Container, Text } from './dropzone.styles';
 import { ErrorMessagesRecord } from './dropzone.types';
 import { useGenerateErrorMessages } from './dropzone.hooks';
@@ -29,10 +30,7 @@ export const Dropzone = ({ label, disabled, onDrop, ...props }: DropzoneProps) =
           <input {...getInputProps()} data-testid="file-input" />
           <Text>
             {label ?? (
-              <FormattedMessage
-                defaultMessage="Drop files here or click to select"
-                id="Dropzone / Default label"
-              />
+              <FormattedMessage defaultMessage="Drop files here or click to select" id="Dropzone / Default label" />
             )}
           </Text>
         </Container>

@@ -1,20 +1,26 @@
 import { screen } from '@testing-library/react';
+import { createMockEnvironment } from 'relay-test-utils';
 import { PrivacyPolicy } from '../privacyPolicy.component';
-import { makeContextRenderer } from '../../../shared/utils/testUtils';
-import { prepareState } from '../../../mocks/store';
-import { appConfigFactory } from '../../../mocks/factories';
+import { render } from '../../../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import { appConfigFactory, fillContentfulAppConfigQuery } from '../../../mocks/factories';
 
 describe('PrivacyPolicy: Component', () => {
   const privacyPolicy = 'Content example';
-  const store = prepareState((state) => {
-    state.config = appConfigFactory({ contentfulConfig: { privacyPolicy } });
-  });
 
-  const component = () => <PrivacyPolicy />;
-  const render = makeContextRenderer(component);
+  const Component = () => <PrivacyPolicy />;
 
   it('should render privacy policy content', () => {
-    render({}, { store });
+    const relayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(relayEnvironment);
+    fillContentfulAppConfigQuery(relayEnvironment, {
+      items: [appConfigFactory({ privacyPolicy })],
+      limit: 1,
+      skip: 0,
+      total: 1,
+    });
+
+    render(<Component />, { relayEnvironment });
     expect(screen.getByText(privacyPolicy)).toBeInTheDocument();
   });
 });

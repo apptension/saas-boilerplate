@@ -1,4 +1,4 @@
-import { screen, waitFor, act } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { times } from 'ramda';
 import userEvent from '@testing-library/user-event';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
@@ -57,7 +57,12 @@ describe('AvatarForm: Component', () => {
     });
 
     await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Avatar successfully changed.'));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage({
+          text: 'Avatar successfully changed.',
+          id: 1,
+        })
+      );
     });
   });
 

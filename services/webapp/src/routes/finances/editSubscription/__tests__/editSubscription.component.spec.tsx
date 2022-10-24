@@ -82,7 +82,12 @@ describe('EditSubscription: Component', () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage('Plan changed successfully'));
+      expect(mockDispatch).toHaveBeenCalledWith(
+        snackbarActions.showMessage({
+          text: 'Plan changed successfully',
+          id: 1,
+        })
+      );
       expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
     });
   });
@@ -122,7 +127,10 @@ describe('EditSubscription: Component', () => {
       });
 
       expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage('You need first to add a payment method. Go back and set it there')
+        snackbarActions.showMessage({
+          text: 'You need first to add a payment method. Go back and set it there',
+          id: 1,
+        })
       );
     });
   });

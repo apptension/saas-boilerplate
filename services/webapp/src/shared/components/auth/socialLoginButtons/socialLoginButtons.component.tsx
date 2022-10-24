@@ -1,8 +1,7 @@
 import { HTMLAttributes } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useDispatch } from 'react-redux';
-import { oAuthLogin } from '../../../../modules/auth/auth.actions';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
+import { useOAuthLogin } from '../../../../modules/auth/auth.hooks';
 import { Container, FacebookButton, GoogleButton } from './socialLoginButtons.styles';
 
 export enum SignupButtonsVariant {
@@ -15,9 +14,9 @@ export type SocialLoginButtonsProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProps) => {
-  const dispatch = useDispatch();
-  const handleGoogleLogin = () => dispatch(oAuthLogin(OAuthProvider.Google));
-  const handleFacebookLogin = () => dispatch(oAuthLogin(OAuthProvider.Facebook));
+  const oAuthLogin = useOAuthLogin();
+  const handleGoogleLogin = () => oAuthLogin(OAuthProvider.Google);
+  const handleFacebookLogin = () => oAuthLogin(OAuthProvider.Facebook);
 
   return (
     <Container {...props}>
@@ -25,10 +24,7 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
         ) : (
-          <FormattedMessage
-            defaultMessage="Sign up with Facebook"
-            id="Auth / Signup / Facebook signup button"
-          />
+          <FormattedMessage defaultMessage="Sign up with Facebook" id="Auth / Signup / Facebook signup button" />
         )}
       </FacebookButton>
 

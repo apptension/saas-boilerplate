@@ -3,9 +3,9 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { StripePaymentForm } from '../../../shared/components/finances/stripe';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useSnackbar } from '../../../modules/snackbar';
 import { Container, Header, Subheader } from './paymentConfirm.styles';
 
 export const PaymentConfirm = () => {

@@ -17,6 +17,6 @@ const handleHideMessage = (state: SnackbarState, { payload }: PayloadAction<numb
 };
 
 export const reducer = createReducer(INITIAL_STATE, (builder) => {
-  builder.addCase(snackbarActions.showMessage.resolved, handleShowMessage);
+  builder.addCase(snackbarActions.showMessage, handleShowMessage);
   builder.addCase(snackbarActions.hideMessage, handleHideMessage);
 });

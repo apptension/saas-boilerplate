@@ -1,15 +1,15 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { SignupButtonsVariant, SocialLoginButtons, SocialLoginButtonsProps } from '../socialLoginButtons.component';
-import { makeContextRenderer } from '../../../../utils/testUtils';
-import { oAuthLogin } from '../../../../../modules/auth/auth.actions';
-import { OAuthProvider } from '../../../../../modules/auth/auth.types';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
+import { OAuthProvider } from '../../../../../modules/auth/auth.types';
+import { render } from '../../../../../tests/utils/rendering';
+import { SignupButtonsVariant, SocialLoginButtons, SocialLoginButtonsProps } from '../socialLoginButtons.component';
+
+const mockOAuthLogin = jest.fn();
+jest.mock('../../../../../modules/auth/auth.hooks', () => {
   return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
+    ...jest.requireActual<NodeModule>('../../../../../modules/auth/auth.hooks'),
+    useOAuthLogin: () => mockOAuthLogin,
   };
 });
 
@@ -18,27 +18,22 @@ describe('SocialLoginButtons: Component', () => {
     variant: SignupButtonsVariant.SIGNUP,
   };
 
-  const component = (props: Partial<SocialLoginButtonsProps>) => <SocialLoginButtons {...defaultProps} {...props} />;
-  const render = makeContextRenderer(component);
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
+  const Component = (props: Partial<SocialLoginButtonsProps>) => <SocialLoginButtons {...defaultProps} {...props} />;
 
   describe('log in variant', () => {
     describe('Google log in button is clicked', () => {
       it('should trigger google oauth flow', async () => {
-        render({ variant: SignupButtonsVariant.LOGIN });
+        render(<Component variant={SignupButtonsVariant.LOGIN} />);
         await userEvent.click(screen.getByText(/log in with Google/i));
-        expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Google));
+        expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Google);
       });
     });
 
     describe('Facebook log in button is clicked', () => {
       it('should trigger facebook oauth flow', async () => {
-        render({ variant: SignupButtonsVariant.LOGIN });
+        render(<Component variant={SignupButtonsVariant.LOGIN} />);
         await userEvent.click(screen.getByText(/log in with Facebook/i));
-        expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Facebook));
+        expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Facebook);
       });
     });
   });
@@ -46,17 +41,17 @@ describe('SocialLoginButtons: Component', () => {
   describe('sign up variant', () => {
     describe('Google sign up button is clicked', () => {
       it('should trigger google oauth flow', async () => {
-        render({ variant: SignupButtonsVariant.SIGNUP });
+        render(<Component variant={SignupButtonsVariant.SIGNUP} />);
         await userEvent.click(screen.getByText(/sign up with Google/i));
-        expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Google));
+        expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Google);
       });
     });
 
     describe('Facebook sign up button is clicked', () => {
       it('should trigger facebook oauth flow', async () => {
-        render({ variant: SignupButtonsVariant.SIGNUP });
+        render(<Component variant={SignupButtonsVariant.SIGNUP} />);
         await userEvent.click(screen.getByText(/sign up with Facebook/i));
-        expect(mockDispatch).toHaveBeenCalledWith(oAuthLogin(OAuthProvider.Facebook));
+        expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Facebook);
       });
     });
   });

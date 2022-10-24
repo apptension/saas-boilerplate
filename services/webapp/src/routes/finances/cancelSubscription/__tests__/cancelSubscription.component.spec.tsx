@@ -124,7 +124,10 @@ describe('CancelSubscription: Component', () => {
 
       expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage('You will be moved to free plan with the next billing period')
+        snackbarActions.showMessage({
+          text: 'You will be moved to free plan with the next billing period',
+          id: 1,
+        })
       );
     });
   });
@@ -166,7 +169,10 @@ describe('CancelSubscription: Component', () => {
 
       expect(pushSpy).not.toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).not.toHaveBeenCalledWith(
-        snackbarActions.showMessage('You will be moved to free plan with the next billing period')
+        snackbarActions.showMessage({
+          text: 'You will be moved to free plan with the next billing period',
+          id: 1,
+        })
       );
     });
   });

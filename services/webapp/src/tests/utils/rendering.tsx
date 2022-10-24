@@ -20,9 +20,9 @@ import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
 const defaultReduxStore = configureStore({});
 
-type DefaultReduxState = typeof defaultReduxStore;
+export type DefaultReduxState = typeof defaultReduxStore;
 
-type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
+export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
   relayEnvironment: Environment;
   routerHistory: History;
   intlLocale: Locale;
@@ -30,7 +30,7 @@ type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
   reduxStore: ReduxStore<ReduxState>;
 }>;
 
-function DefaultTestProviders<ReduxState>({
+export function DefaultTestProviders<ReduxState>({
   children,
   relayEnvironment,
   routerHistory,
@@ -55,7 +55,7 @@ function DefaultTestProviders<ReduxState>({
   );
 }
 
-type WrapperProps<
+export type WrapperProps<
   ReduxState = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 > = Partial<P> & {

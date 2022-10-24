@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../app/config/routes';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { reportError } from '../../../shared/utils/reportError';
 import { useAuth } from '../../../shared/hooks/useAuth/useAuth';
@@ -10,6 +9,7 @@ import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromi
 import authConfirmUserEmailMutationGraphql, {
   authConfirmUserEmailMutation,
 } from '../../../modules/auth/__generated__/authConfirmUserEmailMutation.graphql';
+import { useSnackbar } from '../../../modules/snackbar';
 
 export const ConfirmEmail = () => {
   const navigate = useNavigate();

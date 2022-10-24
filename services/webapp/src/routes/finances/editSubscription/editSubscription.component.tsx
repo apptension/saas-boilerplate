@@ -1,6 +1,5 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from '../../../shared/components/snackbar';
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
@@ -8,6 +7,7 @@ import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromi
 import subscriptionChangeActiveSubscriptionMutationGraphql, {
   subscriptionChangeActiveSubscriptionMutation,
 } from '../../../modules/subscription/__generated__/subscriptionChangeActiveSubscriptionMutation.graphql';
+import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
 import { SubscriptionPlans } from './subscriptionPlans';
 import { Container, Header, Subheader } from './editSubscription.styles';
 
