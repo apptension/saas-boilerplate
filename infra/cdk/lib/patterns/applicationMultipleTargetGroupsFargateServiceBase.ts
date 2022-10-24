@@ -1,5 +1,5 @@
-import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
-import {IVpc} from "aws-cdk-lib/aws-ec2";
+import {ICertificate} from 'aws-cdk-lib/aws-certificatemanager';
+import {IVpc} from 'aws-cdk-lib/aws-ec2';
 import {
   BaseService,
   CloudMapOptions,
@@ -10,7 +10,7 @@ import {
   PropagatedTagSource,
   Protocol,
   Secret,
-} from "aws-cdk-lib/aws-ecs";
+} from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationProtocol,
   ApplicationTargetGroup,
@@ -18,12 +18,13 @@ import {
   IApplicationLoadBalancer,
   ListenerCondition,
   Protocol as ELBProtocol,
+  SslPolicy,
   TargetType,
-} from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {ARecord, IHostedZone, RecordTarget} from "aws-cdk-lib/aws-route53";
-import {Construct} from "constructs";
-import {Duration} from "aws-cdk-lib";
-import {LoadBalancerTarget} from "aws-cdk-lib/aws-route53-targets";
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import {ARecord, IHostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
+import {LoadBalancerTarget} from 'aws-cdk-lib/aws-route53-targets';
+import {Duration} from 'aws-cdk-lib';
+import {Construct} from 'constructs';
 
 /**
  * The properties for the base ApplicationMultipleTargetGroupsEc2Service or ApplicationMultipleTargetGroupsFargateService service.
@@ -37,6 +38,7 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
    * @default - create a new cluster; if both cluster and vpc are omitted, a new VPC will be created for you.
    */
   readonly cluster: ICluster;
+
   /**
    * The VPC where the container instances will be launched or the elastic network interfaces (ENIs) will be deployed.
    *
@@ -45,18 +47,23 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
    * @default - uses the VPC defined in the cluster or creates a new VPC.
    */
   readonly vpc?: IVpc;
+
   /**
    * The properties required to create a new task definition. Only one of TaskDefinition or TaskImageOptions must be specified.
    *
    * @default none
    */
   readonly taskImageOptions?: ApplicationLoadBalancedTaskImageProps[];
+
   /**
    * The desired number of instantiations of the task definition to keep running on the service.
    *
-   * @default 1
+   * @default - If the feature flag, ECS_REMOVE_DEFAULT_DESIRED_COUNT is false, the default is 1;
+   * if true, the default is 1 for all new services and uses the existing services desired count
+   * when updating an existing service.
    */
   readonly desiredCount?: number;
+
   /**
    * The period of time, in seconds, that the Amazon ECS service scheduler ignores unhealthy
    * Elastic Load Balancing target health checks after a task has first started.
@@ -64,18 +71,21 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
    * @default - defaults to 60 seconds if at least one load balancer is in-use and it is not already set
    */
   readonly healthCheckGracePeriod?: Duration;
+
   /**
    * The name of the service.
    *
    * @default - CloudFormation-generated name.
    */
   readonly serviceName?: string;
+
   /**
    * The application load balancer that will serve traffic to the service.
    *
    * @default - a new load balancer with a listener will be created.
    */
   readonly loadBalancers: ApplicationLoadBalancerProps[];
+
   /**
    * Specifies whether to propagate the tags from the task definition or the service to the tasks in the service.
    * Tags can only be propagated to the tasks within the service during service creation.
@@ -83,6 +93,7 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
    * @default - none
    */
   readonly propagateTags?: PropagatedTagSource;
+
   /**
    * Specifies whether to enable Amazon ECS managed tags for the tasks within the service. For more information, see
    * [Tagging your Amazon ECS Resources](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html)
@@ -90,18 +101,27 @@ export interface ApplicationMultipleTargetGroupsServiceBaseProps {
    * @default false
    */
   readonly enableECSManagedTags?: boolean;
+
   /**
    * The options for configuring an Amazon ECS service to use service discovery.
    *
    * @default - AWS Cloud Map service discovery is not enabled.
    */
   readonly cloudMapOptions?: CloudMapOptions;
+
   /**
    * Properties to specify ALB target groups.
    *
    * @default - default portMapping registered as target group and attached to the first defined listener
    */
   readonly targetGroups?: ApplicationTargetProps[];
+
+  /**
+   * Whether ECS Exec should be enabled
+   *
+   * @default - false
+   */
+  readonly enableExecuteCommand?: boolean;
 }
 
 /**
@@ -114,40 +134,42 @@ export interface ApplicationLoadBalancedTaskImageProps {
    * @default - none
    */
   readonly image: ContainerImage;
+
   /**
    * The environment variables to pass to the container.
    *
    * @default - No environment variables.
    */
-  readonly environment?: {
-    [key: string]: string;
-  };
+  readonly environment?: { [key: string]: string };
+
   /**
    * The secrets to expose to the container as an environment variable.
    *
    * @default - No secret environment variables.
    */
-  readonly secrets?: {
-    [key: string]: Secret;
-  };
+  readonly secrets?: { [key: string]: Secret };
+
   /**
    * Flag to indicate whether to enable logging.
    *
    * @default true
    */
   readonly enableLogging?: boolean;
+
   /**
    * The log driver to use.
    *
    * @default - AwsLogDriver if enableLogging is true
    */
   readonly logDriver?: LogDriver;
+
   /**
    * The container name value to be specified in the task definition.
    *
    * @default - web
    */
   readonly containerName?: string;
+
   /**
    * A list of port numbers on the container that is bound to the user-specified or automatically assigned host port.
    *
@@ -163,6 +185,13 @@ export interface ApplicationLoadBalancedTaskImageProps {
    * @default - [80]
    */
   readonly containerPorts?: number[];
+
+  /**
+   * A key/value map of labels to add to the container.
+   *
+   * @default - No labels.
+   */
+  readonly dockerLabels?: { [key: string]: string };
 }
 
 /**
@@ -173,18 +202,21 @@ export interface ApplicationTargetProps {
    * The port number of the container. Only applicable when using application/network load balancers.
    */
   readonly containerPort: number;
+
   /**
    * The protocol used for the port mapping. Only applicable when using application load balancers.
    *
    * @default ecs.Protocol.TCP
    */
   readonly protocol?: Protocol;
+
   /**
    * Name of the listener the target group attached to.
    *
    * @default - default listener (first added listener)
    */
   readonly listener?: string;
+
   /**
    * Priority of this target group.
    *
@@ -197,6 +229,7 @@ export interface ApplicationTargetProps {
    * @default Target groups are used as defaults
    */
   readonly priority?: number;
+
   /**
    * Rule applies if the requested host matches the indicated host.
    *
@@ -209,6 +242,7 @@ export interface ApplicationTargetProps {
    * @default No host condition
    */
   readonly hostHeader?: string;
+
   /**
    * Rule applies if the requested path matches the given path pattern.
    *
@@ -228,26 +262,34 @@ export interface ApplicationTargetProps {
  */
 export interface ApplicationLoadBalancerProps {
   /**
-   * Listeners (at least one listener) attached to this load balancer.
-   */
-  readonly listeners: IApplicationListener[];
-  readonly loadBalancer: IApplicationLoadBalancer;
-  /**
    * Name of the load balancer.
    */
   readonly name?: string;
+
+  /**
+   * Listeners (at least one listener) attached to this load balancer.
+   */
+  readonly listeners: IApplicationListener[];
+
+  /**
+   * Existing load balancer to be re-used.
+   */
+  readonly loadBalancer: IApplicationLoadBalancer;
+
   /**
    * Determines whether the Load Balancer will be internet-facing.
    *
    * @default true
    */
   readonly publicLoadBalancer?: boolean;
+
   /**
    * The domain name for the service, e.g. "api.example.com."
    *
    * @default - No domain name.
    */
   readonly domainName?: string;
+
   /**
    * The Route53 hosted zone for the domain, e.g. "example.com."
    *
@@ -264,6 +306,7 @@ export interface ApplicationListenerProps {
    * Name of the listener.
    */
   readonly name: string;
+
   /**
    * The protocol for connections from clients to the load balancer.
    * The load balancer port is determined from the protocol (port 80 for
@@ -274,12 +317,14 @@ export interface ApplicationListenerProps {
    * set by default to ApplicationProtocol.HTTPS.
    */
   readonly protocol?: ApplicationProtocol;
+
   /**
    * The port on which the listener listens for requests.
    *
    * @default - Determined from protocol if known.
    */
   readonly port?: number;
+
   /**
    * Certificate Manager certificate to associate with the load balancer.
    * Setting this option will set the load balancer protocol to HTTPS.
@@ -289,49 +334,65 @@ export interface ApplicationListenerProps {
    * created for the load balancer's specified domain name.
    */
   readonly certificate?: ICertificate;
+
+  /**
+   * The security policy that defines which ciphers and protocols are supported by the ALB Listener.
+   *
+   * @default - The recommended elastic load balancing security policy
+   */
+  readonly sslPolicy?: SslPolicy;
 }
 
 /**
  * The base class for ApplicationMultipleTargetGroupsEc2Service and ApplicationMultipleTargetGroupsFargateService classes.
  */
 export abstract class ApplicationMultipleTargetGroupsServiceBase extends Construct {
+
   /**
    * The desired number of instantiations of the task definition to keep running on the service.
+   * @deprecated - Use `internalDesiredCount` instead.
    */
-  readonly desiredCount: number;
+  public readonly desiredCount: number;
+
+  /**
+   * The desired number of instantiations of the task definition to keep running on the service.
+   * The default is 1 for all new services and uses the existing services desired count
+   * when updating an existing service, if one is not provided.
+   */
+  public readonly internalDesiredCount?: number;
+
   /**
    * The default Application Load Balancer for the service (first added load balancer).
    */
-  readonly loadBalancer: IApplicationLoadBalancer;
+  public readonly loadBalancer: IApplicationLoadBalancer;
+
   /**
    * The default listener for the service (first added listener).
    */
-  readonly listener: IApplicationListener;
+  public readonly listener: IApplicationListener;
+
   /**
    * The cluster that hosts the service.
    */
-  readonly cluster: ICluster;
-  protected listeners: IApplicationListener[];
-  protected targetGroups: ApplicationTargetGroup[];
-  private readonly loadBalancers: IApplicationLoadBalancer[];
+  public readonly cluster: ICluster;
+
+  protected listeners = new Array<IApplicationListener>();
+  protected targetGroups = new Array<ApplicationTargetGroup>();
+
+  private loadBalancers = new Array<IApplicationLoadBalancer>();
 
   /**
    * Constructs a new instance of the ApplicationMultipleTargetGroupsServiceBase class.
    */
-  protected constructor(
-    scope: Construct,
-    id: string,
-    props: ApplicationMultipleTargetGroupsServiceBaseProps
-  ) {
+  constructor(scope: Construct, id: string, props: ApplicationMultipleTargetGroupsServiceBaseProps) {
     super(scope, id);
-    this.listeners = [];
-    this.targetGroups = [];
-    this.loadBalancers = [];
+
     this.validateInput(props);
 
     this.cluster = props.cluster;
 
     this.desiredCount = props.desiredCount || 1;
+    this.internalDesiredCount = props.desiredCount;
 
     let lbId = 0;
     for (const lbProps of props.loadBalancers) {
@@ -339,7 +400,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         lbProps.publicLoadBalancer !== undefined
           ? lbProps.publicLoadBalancer
           : true;
-      const { loadBalancer: lb } = lbProps;
+      const {loadBalancer: lb} = lbProps;
 
       this.loadBalancers.push(lb);
 
@@ -348,7 +409,6 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
       }
       this.createDomainName(
         lb,
-        internetFacing,
         lbProps.domainName,
         lbProps.domainZone,
         `${lbId}`
@@ -369,24 +429,19 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         return listener;
       }
     }
-    throw new Error(
-      `Listener ${name} is not defined. Did you define listener with name ${name}?`
-    );
+    throw new Error(`Listener ${name} is not defined. Did you define listener with name ${name}?`);
   }
 
-  protected registerECSTargets(
-    service: BaseService,
-    container: ContainerDefinition,
-    targets: ApplicationTargetProps[]
-  ): ApplicationTargetGroup {
+  protected registerECSTargets(service: BaseService, container: ContainerDefinition, targets: ApplicationTargetProps[]): ApplicationTargetGroup {
     interface GroupedTarget {
-      target: {protocol?: Protocol, containerPort: number},
+      target: { protocol?: Protocol, containerPort: number },
       hosts: ApplicationTargetProps[],
     }
-    let groupedTargets: {[id: string]: GroupedTarget} = {};
+
+    let groupedTargets: { [id: string]: GroupedTarget } = {};
     targets?.forEach((targetProps, index) => {
       const key = `${targetProps.protocol}, ${targetProps.containerPort}`;
-      if(!(key in groupedTargets)) {
+      if (!(key in groupedTargets)) {
         groupedTargets[key] = {
           target: {
             protocol: targetProps.protocol,
@@ -425,12 +480,12 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
       );
 
       groupedTarget.hosts.forEach((targetProps, nestedIndex) => {
-        const conditions = []
+        const conditions: Array<ListenerCondition> = [];
         if (targetProps.hostHeader) {
           conditions.push(ListenerCondition.hostHeaders([targetProps.hostHeader]))
         }
         if (targetProps.pathPattern) {
-            conditions.push(ListenerCondition.pathPatterns([targetProps.pathPattern]))
+          conditions.push(ListenerCondition.pathPatterns([targetProps.pathPattern]))
         }
         this.findListener(targetProps.listener).addTargetGroups(
           `ECSTargetGroup${index}${nestedIndex}${container.containerName}${targetProps.containerPort}`,
@@ -451,17 +506,9 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     return this.targetGroups[0];
   }
 
-  protected addPortMappingForTargets(
-    container: ContainerDefinition,
-    targets: ApplicationTargetProps[]
-  ): void {
+  protected addPortMappingForTargets(container: ContainerDefinition, targets: ApplicationTargetProps[]) {
     for (const target of targets) {
-      if (
-        !container.findPortMapping(
-          target.containerPort,
-          target.protocol || Protocol.TCP
-        )
-      ) {
+      if (!container.findPortMapping(target.containerPort, target.protocol || Protocol.TCP)) {
         container.addPortMappings({
           containerPort: target.containerPort,
           protocol: target.protocol,
@@ -470,44 +517,35 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     }
   }
 
-  private validateInput(
-    props: ApplicationMultipleTargetGroupsServiceBaseProps
-  ) {
+  private validateInput(props: ApplicationMultipleTargetGroupsServiceBaseProps) {
     if (props.cluster && props.vpc) {
-      throw new Error(
-        "You can only specify either vpc or cluster. Alternatively, you can leave both blank"
-      );
+      throw new Error('You can only specify either vpc or cluster. Alternatively, you can leave both blank');
     }
+
     if (props.desiredCount !== undefined && props.desiredCount < 1) {
-      throw new Error("You must specify a desiredCount greater than 0");
+      throw new Error('You must specify a desiredCount greater than 0');
     }
+
     if (props.loadBalancers) {
       if (props.loadBalancers.length === 0) {
-        throw new Error("At least one load balancer must be specified");
+        throw new Error('At least one load balancer must be specified');
       }
       for (const lbProps of props.loadBalancers) {
         if (lbProps.listeners.length === 0) {
-          throw new Error("At least one listener must be specified");
+          throw new Error('At least one listener must be specified');
         }
       }
     }
   }
 
-  private createDomainName(
-    loadBalancer: IApplicationLoadBalancer,
-    internetFacing: boolean,
-    name?: string,
-    zone?: IHostedZone | null,
-    id?: string
-  ) {
+  private createDomainName(loadBalancer: IApplicationLoadBalancer, name?: string, zone?: IHostedZone | null, id?: string): string {
     let domainName = loadBalancer.loadBalancerDnsName;
-    if (typeof name !== "undefined") {
-      if (typeof zone === "undefined") {
-        throw new Error(
-          "A Route53 hosted domain zone name is required to configure the specified domain name"
-        );
+    if (typeof name !== 'undefined') {
+      if (typeof zone === 'undefined') {
+        throw new Error('A Route53 hosted domain zone name is required to configure the specified domain name');
       }
-      if (internetFacing && zone) {
+
+      if (zone) {
         const record = new ARecord(this, `DNS${loadBalancer.node.id}${id}`, {
           zone,
           recordName: name,
