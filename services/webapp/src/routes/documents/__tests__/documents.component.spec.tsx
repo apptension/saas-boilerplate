@@ -1,41 +1,33 @@
 import { times } from 'ramda';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MockPayloadGenerator } from 'relay-test-utils';
+
 import { Documents } from '../documents.component';
-import { makeContextRenderer } from '../../../shared/utils/testUtils';
 import { generateRelayEnvironmentDocuments } from '../documents.fixtures';
 import { documentFactory } from '../../../mocks/factories';
-import { DeepPartial } from '../../../shared/utils/types';
-import { DocumentDemoItemType } from '../../../shared/services/graphqlApi/__generated/types';
+import { render } from '../../../tests/utils/rendering';
 
 describe('Documents: Component', () => {
-  const component = () => <Documents />;
-  const render = makeContextRenderer(component);
-
-  const renderDocuments = (documents: DeepPartial<DocumentDemoItemType>[]) => {
-    const relayEnvironment = generateRelayEnvironmentDocuments(documents);
-    const rendered = render({}, { relayEnvironment });
-    return {
-      ...rendered,
-      relayEnvironment,
-    };
-  };
+  const Component = () => <Documents />;
 
   it('should render list of documents', () => {
     const documentsLength = 3;
-    renderDocuments(times(() => documentFactory(), documentsLength));
+    const relayEnvironment = generateRelayEnvironmentDocuments(times(() => documentFactory(), documentsLength));
+    render(<Component />, { relayEnvironment });
 
     expect(screen.getAllByRole('listitem')).toHaveLength(documentsLength);
   });
 
   it('should render empty state', () => {
-    renderDocuments([]);
+    const relayEnvironment = generateRelayEnvironmentDocuments([]);
+    render(<Component />, { relayEnvironment });
 
     expect(screen.getByText('No documents')).toBeInTheDocument();
   });
 
   it('should add new item to the list', async () => {
-    const { relayEnvironment } = renderDocuments([documentFactory()]);
+    const relayEnvironment = generateRelayEnvironmentDocuments([documentFactory()]);
+    render(<Component />, { relayEnvironment });
 
     const file = new File(['content'], 'file.png', { type: 'image/png' });
     fireEvent.change(screen.getByTestId('file-input'), {
@@ -61,7 +53,8 @@ describe('Documents: Component', () => {
 
   it('should remove new item from the list', async () => {
     const document = documentFactory();
-    const { relayEnvironment } = renderDocuments([document]);
+    const relayEnvironment = generateRelayEnvironmentDocuments([document]);
+    render(<Component />, { relayEnvironment });
 
     fireEvent.click(screen.getByRole('button', { name: /delete/i }));
 

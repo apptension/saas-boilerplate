@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../utils/testUtils';
+import { render } from '../../../../../tests/utils/rendering';
 import { Dropzone, DropzoneProps } from '../dropzone.component';
 import { ErrorCodes } from '../dropzone.types';
 import { snackbarActions } from '../../../../../modules/snackbar';
@@ -15,13 +15,12 @@ jest.mock('react-redux', () => {
 describe('Dropzone: Component', () => {
   const defaultProps: DropzoneProps = {};
 
-  const component = (props: Partial<DropzoneProps>) => <Dropzone {...defaultProps} {...props} />;
-  const render = makeContextRenderer(component);
+  const Component = (props: Partial<DropzoneProps>) => <Dropzone {...defaultProps} {...props} />;
 
   const fireInputChange = async (files: File[]) => {
     fireEvent.change(screen.getByTestId('file-input'), {
-      target: {files},
-    })
+      target: { files },
+    });
   };
 
   const file = new File(['content'], 'file.png', { type: 'image/png' });
@@ -29,9 +28,7 @@ describe('Dropzone: Component', () => {
 
   it('should call onDrop', async () => {
     const onDrop = jest.fn();
-    render({
-      onDrop,
-    });
+    render(<Component onDrop={onDrop} />);
 
     await fireInputChange([file]);
 
@@ -41,10 +38,7 @@ describe('Dropzone: Component', () => {
 
   it('should call onDrop with invalidated files and print snackbar message', async () => {
     const onDrop = jest.fn();
-    render({
-      onDrop,
-      maxFiles: 1,
-    });
+    render(<Component onDrop={onDrop} maxFiles={1} />);
 
     await fireInputChange([file, secondFile]);
 

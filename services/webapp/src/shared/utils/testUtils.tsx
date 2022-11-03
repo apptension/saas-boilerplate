@@ -102,19 +102,6 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   );
 };
 
-export function makeContextRenderer<T>(
-  component: (props: T | Record<string, never>) => ReactElement,
-  baseContext: ContextData = {}
-) {
-  return (props?: T, context?: ContextData) => {
-    return render(component(props ?? {}), {
-      wrapper: ({ children }) => (
-        <ProvidersWrapper context={{ ...baseContext, ...context }}>{children}</ProvidersWrapper>
-      ),
-    });
-  };
-}
-
 export function makePropsRenderer<T>(component: (props: T | Record<string, never>) => ReactElement) {
   return (props?: T) => render(component(props ?? {}));
 }

@@ -1,12 +1,14 @@
 import userEvent from '@testing-library/user-event';
-import { screen, waitFor } from '@testing-library/react';
-import { Layout } from '../layout.component';
-import { makeContextRenderer, packHistoryArgs, spiedHistory } from '../../../utils/testUtils';
-import { Breakpoint } from '../../../../theme/media';
-import { prepareState } from '../../../../mocks/store';
-import { RoutesConfig } from '../../../../app/config/routes';
+import { screen } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
 
-const loggedInState = prepareState((state) => state);
+import { Layout } from '../layout.component';
+import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { Breakpoint } from '../../../../theme/media';
+import { RoutesConfig } from '../../../../app/config/routes';
+import { getRelayEnv } from '../../../../tests/utils/relay';
+import { currentUserFactory } from '../../../../mocks/factories';
+import { Role } from '../../../../modules/auth/auth.types';
 
 const mockGetActiveBreakpoint = jest.fn().mockReturnValue(Breakpoint.DESKTOP);
 jest.mock('../../../../theme/media', () => {
@@ -17,12 +19,29 @@ jest.mock('../../../../theme/media', () => {
 });
 
 describe('Layout: Component', () => {
-  const component = () => (
-    <Layout>
-      <span data-testid="content" />
-    </Layout>
+  const homeRoutePath = ['home'];
+  const privacyPolicyPlaceholder = 'PP placeholder';
+
+  const Component = ({ routeKey = homeRoutePath }) => (
+    <Routes>
+      <Route
+        path={RoutesConfig.getLocalePath(routeKey)}
+        element={
+          <Layout>
+            <span data-testid="content" />
+          </Layout>
+        }
+      />
+      <Route
+        path={RoutesConfig.getLocalePath(['privacyPolicy'])}
+        element={
+          <Layout>
+            <span>{privacyPolicyPlaceholder}</span>
+          </Layout>
+        }
+      />
+    </Routes>
   );
-  const render = makeContextRenderer(component);
 
   describe('on mobile', () => {
     beforeEach(() => {
@@ -31,67 +50,88 @@ describe('Layout: Component', () => {
 
     describe('on /auth routes', () => {
       it('should not show open menu button', () => {
-        render({}, { router: { routePath: `/:lang${RoutesConfig.login}` } });
+        const authPath = ['login'];
+        const routerHistory = createMockRouterHistory(authPath);
+        render(<Component routeKey={authPath} />, { routerHistory });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
     });
 
     it('should show content', () => {
-      render();
+      const relayEnvironment = getRelayEnv();
+      const routerHistory = createMockRouterHistory(homeRoutePath);
+      render(<Component />, { relayEnvironment, routerHistory });
       expect(screen.getByTestId('content')).toBeVisible();
     });
 
     describe('user is logged out', () => {
       it('should show open menu button', () => {
-        render();
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
       it('should show privacy menu link', () => {
-        render();
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show dashboard menu link', () => {
-        render();
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged in', () => {
       it('should show open menu button', () => {
-        render({}, { store: loggedInState });
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.getByLabelText(/open menu/i)).toBeVisible();
       });
 
       it('should not show menu links', () => {
-        render({}, { store: loggedInState });
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
       });
 
       describe('user opens the menu', () => {
         it('should show menu links', async () => {
-          const { history, pushSpy } = spiedHistory();
-          render({}, { router: { history }, store: loggedInState });
+          const relayEnvironment = getRelayEnv(
+            currentUserFactory({
+              roles: [Role.USER],
+            })
+          );
+          const routerHistory = createMockRouterHistory(homeRoutePath);
+          render(<Component />, { relayEnvironment, routerHistory });
           await userEvent.click(screen.getByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
-          expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/privacy-policy'));
+          expect(screen.getByText(privacyPolicyPlaceholder)).toBeInTheDocument();
         });
 
         it('should close the menu when link is clicked', async () => {
-          const routePath = RoutesConfig.getLocalePath(['privacyPolicy']);
-          const { history } = spiedHistory('/en/privacy-policy');
-          render({}, { store: loggedInState, router: { history, routePath } });
+          const relayEnvironment = getRelayEnv(
+            currentUserFactory({
+              roles: [Role.USER],
+            })
+          );
+          const routerHistory = createMockRouterHistory(homeRoutePath);
+          render(<Component />, { relayEnvironment, routerHistory });
           await userEvent.click(screen.getByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
-
-          await waitFor(() => {
-            expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
-          });
+          expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
         });
 
         it('should close the menu when close icon is clicked', async () => {
-          render({}, { store: loggedInState });
+          const relayEnvironment = getRelayEnv(
+            currentUserFactory({
+              roles: [Role.USER],
+            })
+          );
+          const routerHistory = createMockRouterHistory(homeRoutePath);
+          render(<Component />, { relayEnvironment, routerHistory });
           await userEvent.click(screen.getByLabelText(/open menu/i));
           await userEvent.click(screen.getByLabelText(/close menu/i));
           expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
@@ -106,40 +146,51 @@ describe('Layout: Component', () => {
     });
 
     it('should show content', () => {
-      render();
+      const routerHistory = createMockRouterHistory(homeRoutePath);
+      render(<Component />, { routerHistory });
       expect(screen.getByTestId('content')).toBeVisible();
     });
 
     describe('on /auth routes', () => {
       it('should not show menu links', () => {
-        render({}, { router: { routePath: `/:lang${RoutesConfig.login}` } });
+        const authPath = ['login'];
+        const routerHistory = createMockRouterHistory(authPath);
+        render(<Component routeKey={authPath} />, { routerHistory });
         expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged out', () => {
       it('should not show open menu button', () => {
-        render();
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
       it('should show menu links', () => {
-        render();
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
       });
     });
 
     describe('user is logged in', () => {
       it('should not show open menu button', () => {
-        render({}, { store: loggedInState });
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { routerHistory });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
       it('should show menu links', async () => {
-        const { history, pushSpy } = spiedHistory();
-        render({}, { router: { history }, store: loggedInState });
+        const relayEnvironment = getRelayEnv(
+          currentUserFactory({
+            roles: [Role.USER],
+          })
+        );
+        const routerHistory = createMockRouterHistory(homeRoutePath);
+        render(<Component />, { relayEnvironment, routerHistory });
         await userEvent.click(screen.getByText(/privacy policy/i));
-        expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/privacy-policy'));
+        expect(screen.getByText(privacyPolicyPlaceholder)).toBeInTheDocument();
       });
     });
   });

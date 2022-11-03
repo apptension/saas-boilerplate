@@ -18,6 +18,9 @@ import { RoutesConfig } from '../../app/config/routes';
 import { CommonQuery } from '../../app/providers/commonQuery';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
+export const PLACEHOLDER_TEST_ID = 'content';
+export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
+
 const defaultReduxStore = configureStore({});
 
 export type DefaultReduxState = typeof defaultReduxStore;

@@ -6,11 +6,9 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { act } from 'react-test-renderer';
 import { Suspense } from 'react';
 
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
+import { render } from '../../../../tests/utils/rendering';
 import { mapConnection } from '../../../../shared/utils/graphql';
 import { documentFactory } from '../../../../mocks/factories';
-import { DeepPartial } from '../../../../shared/utils/types';
-import { DocumentDemoItemType } from '../../../../shared/services/graphqlApi/__generated/types';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { Document } from '../document.component';
 import { documentsListTestQuery } from './__generated__/documentsListTestQuery.graphql';
@@ -35,35 +33,31 @@ describe('Document: Component', () => {
     const [document] = mapConnection(identity, data.allDocumentDemoItems);
     return <Document item={document} />;
   };
-  const render = makeContextRenderer(() => (
+  const Component = () => (
     <Suspense fallback="Loading">
       <TestRenderer />
     </Suspense>
-  ));
+  );
 
-  const renderDocument = async (document?: DeepPartial<DocumentDemoItemType>) => {
+  it('should render file link', async () => {
+    const { file } = documentFactory();
     const relayEnvironment = createMockEnvironment();
     fillCommonQueryWithUser(relayEnvironment);
-    render({}, { relayEnvironment });
+    render(<Component />, { relayEnvironment });
 
     await waitFor(() => {
       act(() => {
         relayEnvironment.mock.resolveMostRecentOperation((operation) =>
           MockPayloadGenerator.generate(operation, {
             DocumentDemoItemType: (context, generateId) => ({
-              ...documentFactory(document),
+              ...documentFactory({
+                file,
+              }),
               id: `${generateId()}`,
             }),
           })
         );
       });
-    });
-  };
-
-  it('should render file link', async () => {
-    const { file } = documentFactory();
-    await renderDocument({
-      file,
     });
 
     const fileLink = await screen.findByRole('link', { name: file?.name ?? '' });

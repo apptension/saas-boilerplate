@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { makeContextRenderer } from '../../../utils/testUtils';
+import { render } from '../../../../tests/utils/rendering';
 import { FileSize, FileSizeProps } from '../fileSize.component';
 
 describe('FileSize: Component', () => {
@@ -7,30 +7,22 @@ describe('FileSize: Component', () => {
     size: 1,
   };
 
-  const component = (props: Partial<FileSizeProps>) => <FileSize {...defaultProps} {...props} />;
-  const render = makeContextRenderer(component);
+  const Component = (props: Partial<FileSizeProps>) => <FileSize {...defaultProps} {...props} />;
 
   it('should render bytes', () => {
-    render({
-      size: 1000,
-    });
+    render(<Component size={1000} />);
 
     expect(screen.getByText('1000 bytes')).toBeInTheDocument();
   });
 
   it('should render kiloBytes', () => {
-    render({
-      size: 1024,
-    });
+    render(<Component size={1024} />);
 
     expect(screen.getByText('1 KB')).toBeInTheDocument();
   });
 
   it('should render no decimals', () => {
-    render({
-      size: 1200,
-      decimals: 0,
-    });
+    render(<Component size={1200} decimals={0} />);
 
     expect(screen.getByText('1 KB')).toBeInTheDocument();
   });

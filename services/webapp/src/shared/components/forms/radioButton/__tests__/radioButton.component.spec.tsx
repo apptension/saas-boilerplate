@@ -1,23 +1,22 @@
 import { screen } from '@testing-library/react';
 import { empty } from 'ramda';
-import { makeContextRenderer } from '../../../../utils/testUtils';
+import { render } from '../../../../../tests/utils/rendering';
 import { RadioButton, RadioButtonProps } from '../radioButton.component';
 
 describe('RadioButton: Component', () => {
   const defaultProps: RadioButtonProps = { children: 'label' };
 
-  const component = (props: Partial<RadioButtonProps>) => {
+  const Component = (props: Partial<RadioButtonProps>) => {
     return <RadioButton {...defaultProps} {...props} />;
   };
-  const render = makeContextRenderer(component);
 
   it('should render with correct label', () => {
-    render();
+    render(<Component />);
     expect(screen.getByLabelText('label')).toBeInTheDocument();
   });
 
   it('should pass props to input element', () => {
-    render({ checked: true, onChange: empty });
+    render(<Component checked onChange={empty} />);
     expect(screen.getByRole('radio')).toHaveAttribute('checked');
   });
 });

@@ -1,16 +1,14 @@
 import { screen } from '@testing-library/react';
 import { createMockEnvironment } from 'relay-test-utils';
 
-import { makeContextRenderer } from '../../../shared/utils/testUtils';
+import { render } from '../../../tests/utils/rendering';
 import { Profile } from '../profile.component';
 import { currentUserFactory } from '../../../mocks/factories';
 import { Role } from '../../../modules/auth/auth.types';
 import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 
 describe('Profile: Component', () => {
-  const component = () => <Profile />;
-
-  const render = makeContextRenderer(component);
+  const Component = () => <Profile />;
 
   it('should display profile data', () => {
     const relayEnvironment = createMockEnvironment();
@@ -23,7 +21,7 @@ describe('Profile: Component', () => {
         roles: [Role.ADMIN, Role.USER],
       })
     );
-    render({}, { relayEnvironment });
+    render(<Component />, { relayEnvironment });
     expect(screen.getByDisplayValue('Jack')).toBeInTheDocument();
     expect(screen.getByDisplayValue('White')).toBeInTheDocument();
     expect(screen.getByText(/jack.white@mail.com/i)).toBeInTheDocument();

@@ -46,10 +46,10 @@ export const RoutesConfig = {
 };
 
 export const NO_NAVIGATION_ROUTES = [
-  RoutesConfig.login,
-  RoutesConfig.logout,
-  RoutesConfig.signup,
-  RoutesConfig.passwordReset.index,
-  RoutesConfig.passwordReset.confirm,
-  RoutesConfig.confirmEmail,
-];
+  ['login'],
+  ['logout'],
+  ['signup'],
+  ['passwordReset', 'index'],
+  ['passwordReset', 'confirm'],
+  ['confirmEmail'],
+].map(RoutesConfig.getLocalePath);

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { times } from 'ramda';
-import { makeContextRenderer } from '../../../../utils/testUtils';
+import { render } from '../../../../../tests/utils/rendering';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 import { generateRelayEnvironmentNotifications } from '../notificationsList.fixtures';
 import { notificationFactory } from '../../../../../mocks/factories';
@@ -8,25 +8,24 @@ import { ExtractNodeType } from '../../../../utils/graphql';
 import { notificationsListContent$data } from '../__generated__/notificationsListContent.graphql';
 
 describe('NotificationsList: Component', () => {
-  const component = (props: Partial<NotificationsListProps>) => (
+  const Component = (props: Partial<NotificationsListProps>) => (
     <NotificationsList isOpen listQueryRef={{} as any} {...props} />
   );
-  const render = makeContextRenderer(component);
 
   const renderWithNotifications = (
     notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>
   ) => {
     const env = generateRelayEnvironmentNotifications(notifications);
     render(
-      {
-        listQueryRef: {
-          environment: env,
-          isDisposed: false,
-        } as any,
-      },
-      {
-        relayEnvironment: env,
-      }
+      <Component
+        listQueryRef={
+          {
+            environment: env,
+            isDisposed: false,
+          } as any
+        }
+      />,
+      { relayEnvironment: env }
     );
   };
 

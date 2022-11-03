@@ -1,13 +1,12 @@
 import { screen } from '@testing-library/react';
 import { Home } from '../home.component';
-import { makeContextRenderer } from '../../../shared/utils/testUtils';
+import { render } from '../../../tests/utils/rendering';
 
 describe('Home: Component', () => {
-  const component = () => <Home />;
-  const render = makeContextRenderer(component);
+  const Component = () => <Home />;
 
   it('should display welcome message', () => {
-    render();
+    render(<Component />);
     expect(screen.getByText('Welcome!')).toBeInTheDocument();
   });
 });

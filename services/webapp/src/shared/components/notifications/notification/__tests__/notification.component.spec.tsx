@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { Notification, NotificationProps } from '../notification.component';
-import { makeContextRenderer, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../utils/testUtils';
+import { render, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../../tests/utils/rendering';
 import { mockedNotificationProps } from '../notification.fixtures';
 
 describe('Notification: Component', () => {
@@ -8,30 +8,23 @@ describe('Notification: Component', () => {
     ...mockedNotificationProps,
   };
 
-  const component = (props: Partial<NotificationProps>) => <Notification {...defaultProps} {...props} />;
-  const render = makeContextRenderer(component);
+  const Component = (props: Partial<NotificationProps>) => <Notification {...defaultProps} {...props} />;
 
   it('should render title', () => {
-    render({
-      title: PLACEHOLDER_CONTENT,
-    });
+    render(<Component title={PLACEHOLDER_CONTENT} />);
 
     expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 
   it('should render content', () => {
-    render({
-      content: PLACEHOLDER_CONTENT,
-    });
+    render(<Component>{PLACEHOLDER_CONTENT}</Component>);
 
     expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 
   it('should call onClick', () => {
     const onClick = jest.fn();
-    render({
-      onClick,
-    });
+    render(<Component onClick={onClick} />);
 
     const container = screen.getByRole('link');
     fireEvent.click(container);

@@ -1,20 +1,30 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Routes, Route } from 'react-router';
+import { createMemoryHistory } from 'history';
+
 import { LanguageSwitcher } from '../index';
-import { DEFAULT_LOCALE } from '../../../../app/config/i18n';
-import { makeContextRenderer, spiedHistory } from '../../../utils/testUtils';
+import { render } from '../../../../tests/utils/rendering';
 
 describe('LanguageSwitcher: Component', () => {
-  const component = () => <LanguageSwitcher />;
-  const render = makeContextRenderer(component);
+  const enPath = '/';
+  const plPath = '/pl/';
+  const placeholder = 'pl placeholder';
+  const Component = () => (
+    <Routes>
+      <Route path={enPath} element={<LanguageSwitcher />} />
+      <Route path={plPath} element={<span>{placeholder}</span>} />
+    </Routes>
+  );
 
-  it('should redirect after option click', () => {
-    const { history, pushSpy } = spiedHistory(`/${DEFAULT_LOCALE}/some/custom/url`);
-    render({}, { router: { history, routePath: '/:lang/some/custom/url' } });
+  it('should redirect after option click', async () => {
+    const routerHistory = createMemoryHistory({
+      initialEntries: [enPath],
+    });
+    render(<Component />, { routerHistory });
 
-    const event = { target: { value: 'pl' } };
-    fireEvent.change(screen.getByRole('combobox'), event);
+    await userEvent.selectOptions(screen.getByRole('combobox'), 'pl');
 
-    expect(pushSpy).toHaveBeenCalledTimes(1);
-    expect(pushSpy).toHaveBeenCalledWith({ hash: '', pathname: '/pl/some/custom/url', search: '' }, undefined);
+    expect(screen.getByText(placeholder)).toBeInTheDocument();
   });
 });
