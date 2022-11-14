@@ -1,13 +1,12 @@
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { produce } from 'immer';
-import { createReducer, Reducer } from '@reduxjs/toolkit';
+import { createReducer, Reducer, Store } from '@reduxjs/toolkit';
 import { Story } from '@storybook/react';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { Suspense } from 'react';
-import { createMemoryHistory } from 'history';
-import { Route, Routes, unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { Route, Routes, MemoryRouter } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { store } from '../../mocks/store';
 import { GlobalState } from '../../app/config/reducers';
@@ -70,9 +69,8 @@ export const withSuspense = (StoryComponent: Story) => (
 );
 
 export const withActiveSubscriptionContext = (StoryComponent: Story) => {
-  const routerHistory = createMemoryHistory({ initialEntries: ['/'] });
   return (
-    <HistoryRouter history={routerHistory}>
+    <MemoryRouter initialEntries={['/']}>
       <Routes>
         <Route element={<ActiveSubscriptionContext />}>
           <Route
@@ -87,12 +85,12 @@ export const withActiveSubscriptionContext = (StoryComponent: Story) => {
           />
         </Route>
       </Routes>
-    </HistoryRouter>
+    </MemoryRouter>
   );
 };
 
 export function withModernProviders<
-  ReduxState = DefaultReduxState,
+  ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(wrapperProps: WrapperProps<ReduxState, P>) {
   const WrapperComponent = getWrapper(DefaultTestProviders, wrapperProps) as any;
@@ -106,4 +104,4 @@ export function withModernProviders<
   };
 }
 
-withModernProviders({})
+withModernProviders({});

@@ -5,7 +5,7 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import crudDemoItemDetailsQueryGraphql from '../__generated__/crudDemoItemDetailsQuery.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
@@ -19,7 +19,7 @@ describe('CrudDemoItemDetails: Component', () => {
   );
 
   it('should render item details', () => {
-    const routerHistory = createMockRouterHistory(routePath, { id: 'test-id' });
+    const routerProps = createMockRouterProps(routePath, { id: 'test-id' });
     const relayEnvironment = createMockEnvironment();
     fillCommonQueryWithUser(relayEnvironment);
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
@@ -29,7 +29,7 @@ describe('CrudDemoItemDetails: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, { id: 'test-id' });
 
-    render(<Component />, { routerHistory, relayEnvironment });
+    render(<Component />, { routerProps, relayEnvironment });
 
     expect(screen.getByText(/demo item name/i)).toBeInTheDocument();
   });

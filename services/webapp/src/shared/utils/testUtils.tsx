@@ -4,9 +4,8 @@ import { render } from '@testing-library/react';
 import { createStore } from 'redux';
 import { identity } from 'ramda';
 import { Provider } from 'react-redux';
-import { createMemoryHistory, MemoryHistory } from 'history';
 import { Route, Routes } from 'react-router';
-import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { produce } from 'immer';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -22,20 +21,11 @@ import { fillCommonQueryWithUser } from './commonQuery';
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
-export const spiedHistory = (route = `/${DEFAULT_LOCALE}`) => {
-  const history = createMemoryHistory({ initialEntries: [route] });
-  history.push = jest.fn();
-  return {
-    history,
-    pushSpy: history.push as jest.Mock,
-  };
-};
-
 export interface ContextData {
   router?: {
     url?: string;
     routePath?: string;
-    history?: MemoryHistory;
+    routerProps?: MemoryRouterProps;
     children?: ReactNode;
   };
   store?: GlobalState | ((draft: GlobalState) => void);
@@ -50,9 +40,9 @@ export interface ProvidersWrapperProps {
 
 export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperProps) => {
   const { router = {}, messages } = context;
-  const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', history } = router;
+  const { url = `/${DEFAULT_LOCALE}`, routePath = '/:lang/', routerProps: rProps } = router;
 
-  const routerHistory: MemoryHistory = history ?? createMemoryHistory({ initialEntries: [url] });
+  const routerProps: MemoryRouterProps = rProps ?? { initialEntries: [url] };
 
   const intlProviderMockProps = {
     locale: DEFAULT_LOCALE,
@@ -80,7 +70,7 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
   })();
 
   return (
-    <HistoryRouter history={routerHistory}>
+    <MemoryRouter {...routerProps}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <RelayEnvironmentProvider environment={relayEnvironment}>
@@ -98,7 +88,7 @@ export const ProvidersWrapper = ({ children, context = {} }: ProvidersWrapperPro
           </RelayEnvironmentProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
-    </HistoryRouter>
+    </MemoryRouter>
   );
 };
 
@@ -144,8 +134,3 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
     },
   };
 };
-
-export const packHistoryArgs = (pathname: string, other = {}) => [
-  expect.objectContaining({ pathname, ...other }),
-  undefined,
-];

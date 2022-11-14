@@ -1,10 +1,9 @@
 import { Store } from 'redux';
 import { StatusCodes } from 'http-status-codes';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { generatePath } from 'react-router-dom';
+import { generatePath, redirect } from 'react-router-dom';
 
 import { GlobalState } from '../../../app/config/reducers';
-import { browserHistory } from '../../utils/history';
 import { DEFAULT_LOCALE, Locale } from '../../../app/config/i18n';
 import { RoutesConfig } from '../../../app/config/routes';
 import { AUTH_URL, refreshToken } from './auth';
@@ -27,7 +26,7 @@ export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
   onRejected: async (error: AxiosError) => {
     const forceLogout = () => {
       const lang: Locale = store.getState().locales.language ?? DEFAULT_LOCALE;
-      browserHistory.push(generatePath(RoutesConfig.getLocalePath([RoutesConfig.logout]), { lang }));
+      redirect(generatePath(RoutesConfig.getLocalePath([RoutesConfig.logout]), { lang }));
       return Promise.reject(error);
     };
 

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { RelayMockEnvironment } from 'relay-test-utils';
 import { Routes, Route } from 'react-router-dom';
 
-import { matchTextContent, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
+import { matchTextContent } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
 import {
@@ -39,10 +39,15 @@ const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = (relayEnvironmen
   ]);
 };
 
+const CANCEL_PLACEHOLDER_ID = 'cancel';
+const EDIT_PLACEHOLDER_ID = 'edit';
+
 const Component = () => (
   <Routes>
     <Route element={<ActiveSubscriptionContext />}>
       <Route index element={<Subscriptions />} />
+      <Route path="/en/subscriptions/cancel" element={<span data-testid={CANCEL_PLACEHOLDER_ID} />} />
+      <Route path="/en/subscriptions/edit" element={<span data-testid={EDIT_PLACEHOLDER_ID} />} />
     </Route>
   </Routes>
 );
@@ -128,17 +133,15 @@ describe('Subscriptions: Component', () => {
 
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
-      const { history, pushSpy } = spiedHistory('/');
-
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment, routerHistory: history });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
       });
 
       await userEvent.click(screen.getByText(/edit subscription/i));
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions/edit'));
+      expect(screen.getByTestId(EDIT_PLACEHOLDER_ID)).toBeInTheDocument();
     });
   });
 
@@ -177,15 +180,14 @@ describe('Subscriptions: Component', () => {
       const activeSubscription = subscriptionFactory();
 
       const relayEnvironment = getRelayEnv();
-      const { history, pushSpy } = spiedHistory('/');
-      render(<Component />, { relayEnvironment, routerHistory: history });
+      render(<Component />, { relayEnvironment });
 
       await act(() => {
         fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
       });
 
       await userEvent.click(screen.getByText(/cancel subscription/i));
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions/cancel'));
+      expect(screen.getByTestId(CANCEL_PLACEHOLDER_ID)).toBeInTheDocument();
     });
   });
 

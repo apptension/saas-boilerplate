@@ -24,14 +24,13 @@ export type GraphQLGenericError = PayloadError & {
   extensions?: { readonly code: string; readonly message: string };
 };
 
-class UseApiFormWrapper<FormData> {
+class UseApiFormWrapper<FormData extends FieldValues = FieldValues> {
   wrapped(e: FormData) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useApiForm<FormData>()
+    return useApiForm<FormData>();
   }
 }
 
-
 export type ApiFormReturnType<FormData extends FieldValues = FieldValues> =
-// eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/ban-types
   ReturnType<UseApiFormWrapper<FormData>['wrapped']> & { form: UseFormReturn<FormData, object> };

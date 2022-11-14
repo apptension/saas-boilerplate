@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 
 import { ValidRoutesProviders } from '../providers/validRoutesProvider';
 import { render } from '../../tests/utils/rendering';
@@ -17,13 +16,13 @@ describe('App: Component', () => {
   );
 
   it('should render App when language is set', () => {
-    render(<Component />, { routerHistory: createMemoryHistory({ initialEntries: ['/en'] }) });
+    render(<Component />, { routerProps: { initialEntries: ['/en'] } });
     expect(screen.getByTestId('content')).toBeInTheDocument();
   });
 
   it('should render nothing when language is not set', () => {
     render(<Component />, {
-      routerHistory: createMemoryHistory({ initialEntries: ['/'] }),
+      routerProps: { initialEntries: ['/'] },
     });
     expect(screen.queryByTestId('content')).not.toBeInTheDocument();
   });

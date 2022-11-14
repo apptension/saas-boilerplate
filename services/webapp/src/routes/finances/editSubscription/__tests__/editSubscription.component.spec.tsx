@@ -4,8 +4,8 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { connectionFromArray, packHistoryArgs, spiedHistory } from '../../../../shared/utils/testUtils';
-import { render } from '../../../../tests/utils/rendering';
+import { connectionFromArray } from '../../../../shared/utils/testUtils';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditSubscription } from '../editSubscription.component';
 import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
@@ -46,11 +46,14 @@ const fillCurrentSubscriptionQuery = (relayEnvironment: RelayMockEnvironment) =>
     subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })
   );
 
+const placeholder = 'Subscriptions placeholder';
+
 const Component = () => {
   return (
     <Routes>
-      <Route element={<ActiveSubscriptionContext />}>
+      <Route path="/en" element={<ActiveSubscriptionContext />}>
         <Route index element={<EditSubscription />} />
+        <Route path="/en/subscriptions" element={<span>{placeholder}</span>} />
       </Route>
     </Routes>
   );
@@ -63,9 +66,9 @@ describe('EditSubscription: Component', () => {
 
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      const { history, pushSpy } = spiedHistory('/');
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment, routerHistory: history });
+      const routerProps = createMockRouterProps(['home']);
+      render(<Component />, { relayEnvironment, routerProps });
 
       await act(() => {
         fillCurrentSubscriptionQuery(relayEnvironment);
@@ -88,7 +91,7 @@ describe('EditSubscription: Component', () => {
           id: 1,
         })
       );
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
+      expect(screen.getByText(placeholder)).toBeInTheDocument();
     });
   });
 
@@ -96,7 +99,8 @@ describe('EditSubscription: Component', () => {
     it('should show error message', async () => {
       const relayEnvironment = getRelayEnv();
 
-      render(<Component />, { relayEnvironment });
+      const routerProps = createMockRouterProps(['home']);
+      render(<Component />, { relayEnvironment, routerProps });
 
       await act(() => {
         fillCurrentSubscriptionQuery(relayEnvironment);

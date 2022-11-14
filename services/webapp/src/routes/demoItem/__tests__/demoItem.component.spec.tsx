@@ -3,7 +3,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { Route, Routes } from 'react-router';
 
-import { createMockRouterHistory, render } from '../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { DemoItem } from '../demoItem.component';
 import { RoutesConfig } from '../../../app/config/routes';
 import demoItemQueryGraphql from '../__generated__/demoItemQuery.graphql';
@@ -19,7 +19,7 @@ describe('DemoItem: Component', () => {
   );
 
   it('should render item data', async () => {
-    const routerHistory = createMockRouterHistory(routePath, { id: 'test-id' });
+    const routerProps = createMockRouterProps(routePath, { id: 'test-id' });
     const relayEnvironment = createMockEnvironment();
     fillCommonQueryWithUser(relayEnvironment);
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
@@ -33,7 +33,7 @@ describe('DemoItem: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(demoItemQueryGraphql, { id: 'test-id' });
 
-    render(<Component />, { relayEnvironment, routerHistory });
+    render(<Component />, { relayEnvironment, routerProps });
 
     await waitFor(() => {
       expect(screen.getByText('First')).toBeInTheDocument();

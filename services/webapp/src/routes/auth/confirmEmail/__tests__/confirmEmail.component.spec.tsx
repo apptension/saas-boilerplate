@@ -7,7 +7,7 @@ import { ConfirmEmail } from '../confirmEmail.component';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { prepareState } from '../../../../mocks/store';
 import { currentUserFactory } from '../../../../mocks/factories';
-import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import configureStore from '../../../../app/config/store';
 import { Role } from '../../../../modules/auth/auth.types';
 import { getRelayEnv } from '../../../../tests/utils/relay';
@@ -32,9 +32,9 @@ describe('ConfirmEmail: Component', () => {
     });
 
     it('should redirect to login ', async () => {
-      const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+      const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-      render(<Component />, { reduxInitialState, routerHistory, relayEnvironment });
+      render(<Component />, { reduxInitialState, routerProps, relayEnvironment });
 
       expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
 
@@ -63,9 +63,9 @@ describe('ConfirmEmail: Component', () => {
 
     it('should show error message', async () => {
       const reduxStore = configureStore(reduxInitialState);
-      const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+      const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-      render(<Component />, { reduxStore, routerHistory, relayEnvironment });
+      render(<Component />, { reduxStore, routerProps, relayEnvironment });
 
       expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
 
@@ -107,9 +107,9 @@ describe('ConfirmEmail: Component', () => {
 
     describe('user is logged out', () => {
       it('should redirect to login ', async () => {
-        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxInitialState, routerHistory, relayEnvironment });
+        render(<Component />, { reduxInitialState, routerProps, relayEnvironment });
 
         await act(async () => {
           const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -121,9 +121,9 @@ describe('ConfirmEmail: Component', () => {
 
       it('should show success message', async () => {
         const reduxStore = configureStore(reduxInitialState);
-        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxStore, routerHistory, relayEnvironment });
+        render(<Component />, { reduxStore, routerProps, relayEnvironment });
         await act(async () => {
           const operation = relayEnvironment.mock.getMostRecentOperation();
           relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
@@ -152,9 +152,9 @@ describe('ConfirmEmail: Component', () => {
       });
 
       it('should redirect to login ', async () => {
-        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxInitialState: loggedInReduxState, routerHistory, relayEnvironment });
+        render(<Component />, { reduxInitialState: loggedInReduxState, routerProps, relayEnvironment });
 
         expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
 
@@ -168,9 +168,9 @@ describe('ConfirmEmail: Component', () => {
 
       it('should show success message', async () => {
         const reduxStore = configureStore(loggedInReduxState);
-        const routerHistory = createMockRouterHistory('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxStore, routerHistory, relayEnvironment });
+        render(<Component />, { reduxStore, routerProps, relayEnvironment });
 
         expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
 

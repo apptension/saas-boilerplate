@@ -6,7 +6,7 @@ import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } fro
 
 import { RoutesConfig } from '../../../../../app/config/routes';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
-import { createMockRouterHistory, render } from '../../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
 import configureStore from '../../../../../app/config/store';
 import { prepareState } from '../../../../../mocks/store';
 import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
@@ -44,9 +44,9 @@ describe('PasswordResetConfirm: Component', () => {
     const newPassword = 'asdf1234';
 
     it('should redirect to login', async () => {
-      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const routerProps = createMockRouterProps(routePath, { user, token });
 
-      render(<Component />, { routerHistory, relayEnvironment });
+      render(<Component />, { routerProps, relayEnvironment });
 
       await act(async () => {
         await fillForm(newPassword);
@@ -62,10 +62,10 @@ describe('PasswordResetConfirm: Component', () => {
     });
 
     it('should show a success message', async () => {
-      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const routerProps = createMockRouterProps(routePath, { user, token });
       const reduxStore = configureStore(reduxInitialState);
 
-      render(<Component />, { routerHistory, reduxStore, relayEnvironment });
+      render(<Component />, { routerProps, reduxStore, relayEnvironment });
 
       await act(async () => {
         await fillForm(newPassword);
@@ -88,9 +88,9 @@ describe('PasswordResetConfirm: Component', () => {
 
   describe('token is invalid', () => {
     it('should redirect to login page', async () => {
-      const routerHistory = createMockRouterHistory(routePath, { user, token });
+      const routerProps = createMockRouterProps(routePath, { user, token });
 
-      render(<Component />, { routerHistory, relayEnvironment });
+      render(<Component />, { routerProps, relayEnvironment });
 
       await act(async () => {
         await fillForm('some pass');

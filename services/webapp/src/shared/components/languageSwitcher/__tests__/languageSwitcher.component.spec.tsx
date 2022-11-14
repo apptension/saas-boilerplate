@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Routes, Route } from 'react-router';
-import { createMemoryHistory } from 'history';
 
 import { LanguageSwitcher } from '../index';
 import { render } from '../../../../tests/utils/rendering';
@@ -18,10 +17,7 @@ describe('LanguageSwitcher: Component', () => {
   );
 
   it('should redirect after option click', async () => {
-    const routerHistory = createMemoryHistory({
-      initialEntries: [enPath],
-    });
-    render(<Component />, { routerHistory });
+    render(<Component />, { routerProps: { initialEntries: [enPath] } });
 
     await userEvent.selectOptions(screen.getByRole('combobox'), 'pl');
 

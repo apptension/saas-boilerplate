@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import crudDemoItemListQueryGraphql from '../__generated__/crudDemoItemListQuery.graphql';
 import { connectionFromArray } from '../../../../shared/utils/testUtils';
-import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 import { getRelayEnv } from '../../../../tests/utils/relay';
@@ -23,7 +23,7 @@ describe('CrudDemoItemList: Component', () => {
   );
 
   it('should render all items', () => {
-    const routerHistory = createMockRouterHistory(routePath);
+    const routerProps = createMockRouterProps(routePath);
     const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -32,14 +32,14 @@ describe('CrudDemoItemList: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(crudDemoItemListQueryGraphql, { id: 'test-id' });
 
-    render(<Component />, { relayEnvironment, routerHistory });
+    render(<Component />, { relayEnvironment, routerProps });
 
     expect(screen.getByText('first item')).toBeInTheDocument();
     expect(screen.getByText('second item')).toBeInTheDocument();
   });
 
   it('should render link to add new item form', async () => {
-    const routerHistory = createMockRouterHistory(routePath);
+    const routerProps = createMockRouterProps(routePath);
     const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -48,7 +48,7 @@ describe('CrudDemoItemList: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(crudDemoItemListQueryGraphql, { id: 'test-id' });
 
-    render(<Component />, { relayEnvironment, routerHistory });
+    render(<Component />, { relayEnvironment, routerProps });
     await userEvent.click(screen.getByText(/add/i));
 
     expect(screen.getByText('CrudDemoItem add page mock')).toBeInTheDocument();

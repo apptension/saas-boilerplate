@@ -3,12 +3,11 @@ import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { packHistoryArgs } from '../../../../shared/utils/testUtils';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { paymentMethodFactory, subscriptionFactory, subscriptionPhaseFactory } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
-import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { getRelayEnv } from '../../../../tests/utils/relay';
@@ -73,8 +72,8 @@ describe('CancelSubscription: Component', () => {
 
   it('should render current plan details', async () => {
     const relayEnvironment = getRelayEnv();
-    const routerHistory = createMockRouterHistory(routePath);
-    render(<Component />, { relayEnvironment, routerHistory });
+    const routerProps = createMockRouterProps(routePath);
+    render(<Component />, { relayEnvironment, routerProps });
 
     await act(() => {
       resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -89,8 +88,8 @@ describe('CancelSubscription: Component', () => {
   describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', async () => {
       const relayEnvironment = getRelayEnv();
-      const routerHistory = createMockRouterHistory(routePath);
-      render(<Component />, { relayEnvironment, routerHistory });
+      const routerProps = createMockRouterProps(routePath);
+      render(<Component />, { relayEnvironment, routerProps });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -105,11 +104,9 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes successfully', () => {
     it('should show success message and redirect to subscriptions page', async () => {
-      const routerHistory = createMockRouterHistory(routePath);
-      const pushSpy = jest.fn();
-      routerHistory.push = pushSpy;
+      const routerProps = createMockRouterProps(routePath);
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment, routerHistory });
+      render(<Component />, { relayEnvironment, routerProps });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -122,7 +119,6 @@ describe('CancelSubscription: Component', () => {
         relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
       });
 
-      expect(pushSpy).toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage({
           text: 'You will be moved to free plan with the next billing period',
@@ -135,10 +131,8 @@ describe('CancelSubscription: Component', () => {
   describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
       const relayEnvironment = getRelayEnv();
-      const routerHistory = createMockRouterHistory(routePath);
-      const pushSpy = jest.fn();
-      routerHistory.push = pushSpy;
-      render(<Component />, { relayEnvironment, routerHistory });
+      const routerProps = createMockRouterProps(routePath);
+      render(<Component />, { relayEnvironment, routerProps });
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
@@ -167,7 +161,6 @@ describe('CancelSubscription: Component', () => {
         } as any);
       });
 
-      expect(pushSpy).not.toHaveBeenCalledWith(...packHistoryArgs('/en/subscriptions'));
       expect(mockDispatch).not.toHaveBeenCalledWith(
         snackbarActions.showMessage({
           text: 'You will be moved to free plan with the next billing period',

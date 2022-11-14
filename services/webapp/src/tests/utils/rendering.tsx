@@ -1,12 +1,12 @@
 import { FC, PropsWithChildren, ComponentClass, ComponentType, ReactElement } from 'react';
 import { Environment, RelayEnvironmentProvider } from 'react-relay';
-import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import { createMockEnvironment } from 'relay-test-utils';
-import { createMemoryHistory, History, MemoryHistory } from 'history';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { Store as ReduxStore } from 'redux';
+import { Store } from '@reduxjs/toolkit';
 import { render, RenderOptions } from '@testing-library/react';
 import invariant from 'invariant';
 import { generatePath } from 'react-router';
@@ -27,7 +27,7 @@ export type DefaultReduxState = typeof defaultReduxStore;
 
 export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
   relayEnvironment: Environment;
-  routerHistory: History;
+  routerProps: MemoryRouterProps;
   intlLocale: Locale;
   intlMessages: TranslationMessages;
   reduxStore: ReduxStore<ReduxState>;
@@ -36,13 +36,13 @@ export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
 export function DefaultTestProviders<ReduxState>({
   children,
   relayEnvironment,
-  routerHistory,
+  routerProps,
   intlMessages,
   intlLocale,
   reduxStore,
 }: DefaultTestProvidersProps<ReduxState>) {
   return (
-    <HistoryRouter history={routerHistory}>
+    <MemoryRouter {...routerProps}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <IntlProvider locale={intlLocale} messages={intlMessages}>
@@ -54,7 +54,7 @@ export function DefaultTestProviders<ReduxState>({
           </IntlProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
-    </HistoryRouter>
+    </MemoryRouter>
   );
 }
 
@@ -66,12 +66,12 @@ export type WrapperProps<
 };
 
 export function getWrapper<
-  ReduxState = DefaultReduxState,
+  ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(WrapperComponent: ComponentClass<P> | FC<P>, wrapperProps: WrapperProps<ReduxState, P>): ComponentType<P> {
   const defaultRelayEnvironment = createMockEnvironment();
   fillCommonQueryWithUser(defaultRelayEnvironment);
-  const defaultRouterHistory: MemoryHistory = createMemoryHistory({ initialEntries: ['/'] });
+  const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
   const defaultReduxStore = configureStore(wrapperProps.reduxInitialState);
 
   invariant(
@@ -84,7 +84,7 @@ export function getWrapper<
       <WrapperComponent
         {...props}
         relayEnvironment={defaultRelayEnvironment}
-        routerHistory={defaultRouterHistory}
+        routerProps={defaultRouterProps}
         intlLocale={DEFAULT_LOCALE}
         intlMessages={translationMessages[DEFAULT_LOCALE]}
         reduxStore={defaultReduxStore}
@@ -100,7 +100,7 @@ export type CustomRenderOptions<
 > = RenderOptions & WrapperProps<ReduxState, P>;
 
 function customRender<
-  ReduxState = DefaultReduxState,
+  ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(ui: ReactElement, options: CustomRenderOptions<ReduxState, P> = {}) {
   return render(ui, {
@@ -111,13 +111,16 @@ function customRender<
 
 export { customRender as render };
 
-export const createMockRouterHistory = (pathName: string | Array<string>, params?: Record<string, any>) => {
-  return createMemoryHistory({
+export const createMockRouterProps = (
+  pathName: string | Array<string>,
+  params?: Record<string, any>
+): MemoryRouterProps => {
+  return {
     initialEntries: [
       generatePath(RoutesConfig.getLocalePath(Array.isArray(pathName) ? pathName : [pathName]), {
         lang: 'en',
         ...(params ?? {}),
       }),
     ],
-  });
+  };
 };

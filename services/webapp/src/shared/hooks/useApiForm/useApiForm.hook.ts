@@ -1,13 +1,13 @@
-import { Path, useForm } from 'react-hook-form';
+import { FieldValues, Path, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
 import humps from 'humps';
 import { PayloadError } from 'relay-runtime';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
-import {GraphQLValidationError, GraphQLGenericError, UseApiFormArgs} from './useApiForm.types';
+import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
-export const useApiForm = <FormData>(args?: UseApiFormArgs<FormData>) => {
+export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: UseApiFormArgs<FormData>) => {
   const [genericError, setGenericError] = useState<string>();
   const { translateErrorMessage } = useTranslatedErrors<FormData>(args?.errorMessages);
 

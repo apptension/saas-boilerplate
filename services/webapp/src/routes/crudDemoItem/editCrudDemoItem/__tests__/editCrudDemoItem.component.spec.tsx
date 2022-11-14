@@ -6,7 +6,7 @@ import { MockPayloadGenerator } from 'relay-test-utils';
 import { produce } from 'immer';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { createMockRouterHistory, render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
@@ -23,7 +23,7 @@ describe('EditCrudDemoItem: Component', () => {
   const reduxInitialState = prepareState((state) => state);
 
   it('should display prefilled form', () => {
-    const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
+    const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: 'test-id' });
     const relayEnvironment = getRelayEnv();
     relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
@@ -32,14 +32,14 @@ describe('EditCrudDemoItem: Component', () => {
     );
     relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
-    render(<Component />, { relayEnvironment, routerHistory });
+    render(<Component />, { relayEnvironment, routerProps });
 
     expect(screen.getByDisplayValue(/old item/i)).toBeInTheDocument();
   });
 
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
-      const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
+      const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: 'test-id' });
       const relayEnvironment = getRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
         MockPayloadGenerator.generate(operation, {
@@ -48,7 +48,7 @@ describe('EditCrudDemoItem: Component', () => {
       );
       relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
-      render(<Component />, { relayEnvironment, routerHistory });
+      render(<Component />, { relayEnvironment, routerProps });
 
       const nameField = screen.getByPlaceholderText(/name/i);
       await userEvent.clear(nameField);
@@ -65,7 +65,7 @@ describe('EditCrudDemoItem: Component', () => {
     });
 
     it('should show success message', async () => {
-      const routerHistory = createMockRouterHistory(['crudDemoItem', 'edit'], { id: 'test-id' });
+      const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: 'test-id' });
       const reduxStore = configureStore(reduxInitialState);
       const relayEnvironment = getRelayEnv();
       relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
@@ -75,7 +75,7 @@ describe('EditCrudDemoItem: Component', () => {
       );
       relayEnvironment.mock.queuePendingOperation(editCrudDemoItemQueryGraphql, { id: 'test-id' });
 
-      render(<Component />, { relayEnvironment, routerHistory, reduxStore });
+      render(<Component />, { relayEnvironment, routerProps, reduxStore });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));

@@ -9,7 +9,7 @@ import { DemoItems } from '../demoItems.component';
 import demoItemsAllQueryGraphql from '../__generated__/demoItemsAllQuery.graphql';
 import { getRelayEnv as getBaseRelayEnv } from '../../../tests/utils/relay';
 import { RoutesConfig } from '../../../app/config/routes';
-import { createMockRouterHistory, render } from '../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 
 describe('DemoItems: Component', () => {
   const routePath = ['demoItems'];
@@ -54,15 +54,15 @@ describe('DemoItems: Component', () => {
   };
 
   it('should render all items', async () => {
-    const routerHistory = createMockRouterHistory(routePath);
-    render(<Component />, { relayEnvironment: getRelayEnv(), routerHistory });
+    const routerProps = createMockRouterProps(routePath);
+    render(<Component />, { relayEnvironment: getRelayEnv(), routerProps });
     expect(screen.getByText('First')).toBeInTheDocument();
     expect(screen.getByText('Second')).toBeInTheDocument();
   });
 
   it('should open single demo item page when link is clicked', async () => {
-    const routerHistory = createMockRouterHistory(routePath);
-    render(<Component />, { relayEnvironment: getRelayEnv(), routerHistory });
+    const routerProps = createMockRouterProps(routePath);
+    render(<Component />, { relayEnvironment: getRelayEnv(), routerProps });
     expect(screen.getByText('First')).toBeInTheDocument();
     await userEvent.click(screen.getByText('First'));
     expect(screen.getByText('DemoItem details page mock')).toBeInTheDocument();
