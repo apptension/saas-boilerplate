@@ -80,7 +80,7 @@ export class MainDatabase extends Construct {
       vpc: props.vpc,
       vpcSubnets: { subnetType: SubnetType.PUBLIC },
       engine: DatabaseInstanceEngine.postgres({
-        version: PostgresEngineVersion.of("14.4", "14", {
+        version: PostgresEngineVersion.of("13.7", "13", {
           s3Import: true,
           s3Export: true,
         }),

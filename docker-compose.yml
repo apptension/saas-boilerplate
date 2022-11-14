@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   db:
-    image: postgres:14.4
+    image: postgres:13.7
     ports:
       - "5432:5432"
     restart: unless-stopped
