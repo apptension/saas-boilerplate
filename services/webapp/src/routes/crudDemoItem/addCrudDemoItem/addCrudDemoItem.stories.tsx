@@ -1,13 +1,9 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import { withProviders } from '../../../shared/utils/storybook';
 import { AddCrudDemoItem } from './addCrudDemoItem.component';
 
 const Template: Story = () => {
-  return (
-    <ProvidersWrapper>
-      <AddCrudDemoItem />
-    </ProvidersWrapper>
-  );
+  return <AddCrudDemoItem />;
 };
 
 export default {
@@ -16,3 +12,4 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [withProviders({})];

@@ -1,34 +1,31 @@
 import { Story } from '@storybook/react';
-import { createMockEnvironment } from 'relay-test-utils';
 
-import { ProvidersWrapper } from '../../utils/testUtils';
 import { currentUserFactory } from '../../../mocks/factories';
 import { CurrentUserType } from '../../services/graphqlApi/__generated/types';
 import { fillCommonQueryWithUser } from '../../utils/commonQuery';
+import { withProviders } from '../../utils/storybook';
 import { Avatar, AvatarProps } from './avatar.component';
 
 type StoryArgsType = AvatarProps & { profile: CurrentUserType };
 
 const Template: Story<StoryArgsType> = ({ profile, ...args }: StoryArgsType) => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment, profile);
-  return (
-    <ProvidersWrapper
-      context={{
-        relayEnvironment,
-      }}
-    >
-      <Avatar {...args} />
-    </ProvidersWrapper>
-  );
+  return <Avatar {...args} />;
 };
 
 export default {
   title: 'Shared/Avatar',
   component: Avatar,
+  decorators: [
+    withProviders({
+      relayEnvironment: (env, { args: { profile } }: any) => {
+        fillCommonQueryWithUser(env, profile);
+      },
+    }),
+  ],
 };
 
 export const Default = Template.bind({});
+Default.args = { profile: currentUserFactory() };
 
 export const NoAvatarUser = Template.bind({});
 NoAvatarUser.args = { profile: currentUserFactory({ avatar: null }) };

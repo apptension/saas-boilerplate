@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { createMockEnvironment } from 'relay-test-utils';
 import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/factories';
-import { withModernProviders } from '../../shared/utils/storybook';
+import { withProviders } from '../../shared/utils/storybook';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
@@ -82,7 +82,7 @@ const Template: Story = () => {
 export default {
   title: 'Routes/PrivacyPolicy',
   component: PrivacyPolicy,
-  decorators: [withModernProviders({ relayEnvironment })],
+  decorators: [withProviders({ relayEnvironment })],
 };
 
 export const Default = Template.bind({});

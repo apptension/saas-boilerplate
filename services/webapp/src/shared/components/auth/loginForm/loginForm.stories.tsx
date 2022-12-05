@@ -1,13 +1,9 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../utils/testUtils';
+import { withProviders } from '../../../utils/storybook';
 import { LoginForm } from './loginForm.component';
 
 const Template: Story = () => {
-  return (
-    <ProvidersWrapper>
-      <LoginForm />
-    </ProvidersWrapper>
-  );
+  return <LoginForm />;
 };
 
 export default {
@@ -16,3 +12,4 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [withProviders({})];

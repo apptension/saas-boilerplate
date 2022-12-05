@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../utils/testUtils';
 import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
+import { withProviders } from '../../../utils/storybook';
 import { ChangePasswordForm } from './changePasswordForm.component';
 
 const Container = styled.div`
@@ -11,11 +11,9 @@ const Container = styled.div`
 
 const Template: Story = () => {
   return (
-    <ProvidersWrapper>
-      <Container>
-        <ChangePasswordForm />
-      </Container>
-    </ProvidersWrapper>
+    <Container>
+      <ChangePasswordForm />
+    </Container>
   );
 };
 
@@ -25,3 +23,4 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [withProviders({})];

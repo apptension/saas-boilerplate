@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { screen, act } from '@testing-library/react';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { connectionFromArray } from '../../../../../utils/testUtils';
+import { screen } from '@testing-library/react';
 import { render } from '../../../../../../tests/utils/rendering';
-import { paymentMethodFactory, transactionHistoryEntryFactory } from '../../../../../../mocks/factories';
+import {
+  fillAllStripeChargesQuery,
+  paymentMethodFactory,
+  transactionHistoryEntryFactory,
+} from '../../../../../../mocks/factories';
 import { TransactionHistory } from '../transactionHistory.component';
 import { useTransactionsHistoryQuery } from '../transactionHistory.hooks';
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
@@ -48,15 +49,8 @@ describe('TransactionHistory: Component', () => {
 
   it('should render all items', async () => {
     const relayEnvironment = getRelayEnv();
+    fillAllStripeChargesQuery(relayEnvironment, transactionHistory);
     render(<Component />, { relayEnvironment });
-
-    await act(() => {
-      relayEnvironment.mock.resolveMostRecentOperation((operation: OperationDescriptor) =>
-        MockPayloadGenerator.generate(operation, {
-          ChargeConnection: () => connectionFromArray(transactionHistory),
-        })
-      );
-    });
 
     expect(screen.getByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
     expect(screen.getByText('50 USD')).toBeInTheDocument();

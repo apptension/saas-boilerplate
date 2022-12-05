@@ -1,14 +1,21 @@
 import { Story } from '@storybook/react';
-import { generatePath } from 'react-router';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { Route, Routes } from 'react-router';
 import { withProviders } from '../../../shared/utils/storybook';
 import { RoutesConfig } from '../../../app/config/routes';
-import EditCrudDemoItemQuery from './__generated__/editCrudDemoItemQuery.graphql';
+import { createMockRouterProps } from '../../../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import { fillEditCrudDemoItemQuery } from '../../../mocks/factories/crudDemoItem';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
+const routePath = ['crudDemoItem', 'edit'];
+const defaultItemId = 'test-id';
+
 const Template: Story = () => {
-  return <EditCrudDemoItem />;
+  return (
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<EditCrudDemoItem />} />
+    </Routes>
+  );
 };
 
 export default {
@@ -16,27 +23,19 @@ export default {
   component: EditCrudDemoItem,
 };
 
-const defaultItemId = 'test-id';
-
-const defaultRelayEnv = createMockEnvironment();
-defaultRelayEnv.mock.queueOperationResolver((operation: OperationDescriptor) =>
-  MockPayloadGenerator.generate(operation, {
-    CrudDemoItemType() {
-      return {
-        name: 'Default name',
-      };
-    },
-  })
-);
-defaultRelayEnv.mock.queuePendingOperation(EditCrudDemoItemQuery, { id: defaultItemId });
-
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    router: {
-      url: generatePath(RoutesConfig.crudDemoItem.edit, { lang: 'en', id: defaultItemId }),
-      routePath: RoutesConfig.crudDemoItem.edit,
+    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
+    relayEnvironment: (env) => {
+      fillCommonQueryWithUser(env);
+      fillEditCrudDemoItemQuery(
+        env,
+        {
+          name: 'Default name',
+        },
+        { id: defaultItemId }
+      );
     },
-    relayEnvironment: defaultRelayEnv,
   }),
 ];

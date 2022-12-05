@@ -1,8 +1,9 @@
 import { Story } from '@storybook/react';
 import { useLazyLoadQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { withProviders, withSuspense } from '../../../../shared/utils/storybook';
+import { withSuspense, withProviders } from '../../../../shared/utils/storybook';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { fillCrudDemoItemDetailsQuery } from '../../../../mocks/factories/crudDemoItem';
 import { crudDemoItemListItemDefaultStoryQuery } from './__generated__/crudDemoItemListItemDefaultStoryQuery.graphql';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
@@ -37,7 +38,10 @@ Default.decorators = [
   withSuspense,
   withProviders({
     relayEnvironment: (env) => {
-      env.mock.queueOperationResolver((operation) => MockPayloadGenerator.generate(operation));
+      fillCommonQueryWithUser(env);
+      fillCrudDemoItemDetailsQuery(env, {
+        name: 'Demo item name',
+      });
     },
   }),
 ];

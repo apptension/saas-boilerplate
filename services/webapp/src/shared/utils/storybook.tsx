@@ -19,7 +19,6 @@ import {
   WrapperProps,
 } from '../../tests/utils/rendering';
 import { stripePromise } from '../services/stripe';
-import { ContextData, ProvidersWrapper } from './testUtils';
 
 export const withRedux =
   (initialState: GlobalState | ((draft: GlobalState) => void) = store, reducer: Reducer | null = null) =>
@@ -54,14 +53,6 @@ export const withRelay =
     );
   };
 
-export const withProviders = (context?: ContextData) => (StoryComponent: Story) => {
-  return (
-    <ProvidersWrapper context={context}>
-      <StoryComponent />
-    </ProvidersWrapper>
-  );
-};
-
 export const withSuspense = (StoryComponent: Story) => (
   <Suspense fallback={<span>Loading</span>}>
     <StoryComponent />
@@ -89,13 +80,12 @@ export const withActiveSubscriptionContext = (StoryComponent: Story) => {
   );
 };
 
-export function withModernProviders<
+export function withProviders<
   ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
->(wrapperProps: WrapperProps<ReduxState, P>) {
-  const WrapperComponent = getWrapper(DefaultTestProviders, wrapperProps) as any;
-
-  return (StoryComponent: Story) => {
+>(wrapperProps: WrapperProps<ReduxState, P> = {}) {
+  return (StoryComponent: Story, storyContext: any) => {
+    const WrapperComponent = getWrapper(DefaultTestProviders, wrapperProps, storyContext) as any;
     return (
       <WrapperComponent>
         <StoryComponent />
@@ -103,5 +93,3 @@ export function withModernProviders<
     );
   };
 }
-
-withModernProviders({});

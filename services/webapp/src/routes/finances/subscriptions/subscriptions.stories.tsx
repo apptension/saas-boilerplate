@@ -2,13 +2,13 @@ import { Story } from '@storybook/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import {
-  queueSubscriptionScheduleQueryWithPhases,
+  fillSubscriptionScheduleQueryWithPhases,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../mocks/factories';
 import { withActiveSubscriptionContext, withRelay } from '../../../shared/utils/storybook';
-import { connectionFromArray } from '../../../shared/utils/testUtils';
 import StripeAllChargesQueryGraphql from '../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
+import { connectionFromArray } from '../../../tests/utils/fixtures';
 import { Subscriptions } from './subscriptions.component';
 
 const Template: Story = () => {
@@ -27,7 +27,7 @@ export default {
         })
       );
       env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
-      queueSubscriptionScheduleQueryWithPhases(env, [
+      fillSubscriptionScheduleQueryWithPhases(env, [
         subscriptionPhaseFactory({
           item: { price: subscriptionPlanFactory() },
         }),

@@ -1,16 +1,16 @@
 import { Route, Routes } from 'react-router';
 import { screen } from '@testing-library/react';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { createMockEnvironment } from 'relay-test-utils';
 
-import crudDemoItemDetailsQueryGraphql from '../__generated__/crudDemoItemDetailsQuery.graphql';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { fillCrudDemoItemDetailsQuery } from '../../../../mocks/factories/crudDemoItem';
 
 describe('CrudDemoItemDetails: Component', () => {
   const routePath = ['crudDemoItem', 'details'];
+  const defaultItemId = 'test-id';
 
   const Component = () => (
     <Routes>
@@ -19,15 +19,10 @@ describe('CrudDemoItemDetails: Component', () => {
   );
 
   it('should render item details', () => {
-    const routerProps = createMockRouterProps(routePath, { id: 'test-id' });
+    const routerProps = createMockRouterProps(routePath, { id: defaultItemId });
     const relayEnvironment = createMockEnvironment();
     fillCommonQueryWithUser(relayEnvironment);
-    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        CrudDemoItemType: () => ({ name: 'demo item name' }),
-      })
-    );
-    relayEnvironment.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, { id: 'test-id' });
+    fillCrudDemoItemDetailsQuery(relayEnvironment, { name: 'demo item name' }, { id: defaultItemId });
 
     render(<Component />, { routerProps, relayEnvironment });
 

@@ -1,20 +1,17 @@
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { ProvidersWrapper } from '../../utils/testUtils';
 import { ButtonVariant } from '../forms/button';
+import { withProviders } from '../../utils/storybook';
 import { Link, LinkProps } from './link.component';
 
 const Template: Story<LinkProps> = (args: LinkProps) => {
-  return (
-    <ProvidersWrapper>
-      <Link {...args} />
-    </ProvidersWrapper>
-  );
+  return <Link {...args} />;
 };
 
 export default {
   title: 'Shared/Link',
   component: Link,
+  decorators: [withProviders()],
 };
 
 const defaultArgs = {

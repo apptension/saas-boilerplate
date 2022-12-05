@@ -1,9 +1,8 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { RelayMockEnvironment } from 'relay-test-utils';
 
 import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 import { Role } from '../../../../modules/auth/auth.types';
-import { ProvidersWrapper } from '../../../utils/testUtils';
+import { renderHook } from '../../../../tests/utils/rendering';
 import { currentUserFactory } from '../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 
@@ -16,7 +15,7 @@ const render = ({ userRoles, allowedRoles }: { userRoles: Role[]; allowedRoles: 
       })
     );
   return renderHook(() => useRoleAccessCheck(allowedRoles), {
-    wrapper: ({ children }) => <ProvidersWrapper context={{ relayEnvironment }}>{children}</ProvidersWrapper>,
+    relayEnvironment,
   });
 };
 

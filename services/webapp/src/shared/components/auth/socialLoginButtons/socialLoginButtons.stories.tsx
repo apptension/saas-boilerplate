@@ -1,18 +1,15 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../utils/testUtils';
+import { withProviders } from '../../../utils/storybook';
 import { SocialLoginButtons, SocialLoginButtonsProps, SignupButtonsVariant } from './socialLoginButtons.component';
 
 const Template: Story<SocialLoginButtonsProps> = (args: SocialLoginButtonsProps) => {
-  return (
-    <ProvidersWrapper>
-      <SocialLoginButtons {...args} />
-    </ProvidersWrapper>
-  );
+  return <SocialLoginButtons {...args} />;
 };
 
 export default {
   title: 'Shared/Auth/SocialLoginButtons',
   component: SocialLoginButtons,
+  decorators: [withProviders()],
 };
 
 export const Login = Template.bind({});

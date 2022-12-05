@@ -1,9 +1,7 @@
 import { Story } from '@storybook/react';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { withProviders } from '../../../shared/utils/storybook';
-import { connectionFromArray } from '../../../shared/utils/testUtils';
-import CrudDemoItemListQuery from './__generated__/crudDemoItemListQuery.graphql';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import { fillCrudDemoItemListQuery } from '../../../mocks/factories/crudDemoItem';
 import { CrudDemoItemList } from './crudDemoItemList.component';
 
 const Template: Story = () => {
@@ -15,17 +13,12 @@ export default {
   component: CrudDemoItemList,
 };
 
-const environment = createMockEnvironment();
-environment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-  MockPayloadGenerator.generate(operation, {
-    CrudDemoItemConnection: (...args) => connectionFromArray([{ name: 'First item' }, { name: 'Second item' }]),
-  })
-);
-environment.mock.queuePendingOperation(CrudDemoItemListQuery, {});
-
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    relayEnvironment: environment,
+    relayEnvironment: (env) => {
+      fillCommonQueryWithUser(env);
+      fillCrudDemoItemListQuery(env);
+    },
   }),
 ];

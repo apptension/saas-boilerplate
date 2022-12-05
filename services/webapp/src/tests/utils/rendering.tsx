@@ -1,15 +1,16 @@
 import { FC, PropsWithChildren, ComponentClass, ComponentType, ReactElement } from 'react';
 import { Environment, RelayEnvironmentProvider } from 'react-relay';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import { createMockEnvironment } from 'relay-test-utils';
+import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { Store as ReduxStore } from 'redux';
 import { Store } from '@reduxjs/toolkit';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, renderHook, RenderOptions } from '@testing-library/react';
 import invariant from 'invariant';
 import { generatePath } from 'react-router';
+import { StoryContext } from '@storybook/react';
 
 import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
 import { DEFAULT_LOCALE, Locale, translationMessages, TranslationMessages } from '../../app/config/i18n';
@@ -61,16 +62,33 @@ export function DefaultTestProviders<ReduxState>({
 export type WrapperProps<
   ReduxState = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
-> = Partial<P> & {
+> = Partial<Omit<P, 'relayEnvironment'>> & {
   reduxInitialState?: ReduxState;
+  relayEnvironment?: Environment | ((env: RelayMockEnvironment, storyContext?: StoryContext) => void);
 };
 
 export function getWrapper<
   ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
->(WrapperComponent: ComponentClass<P> | FC<P>, wrapperProps: WrapperProps<ReduxState, P>): ComponentType<P> {
-  const defaultRelayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(defaultRelayEnvironment);
+>(
+  WrapperComponent: ComponentClass<P> | FC<P>,
+  wrapperProps: WrapperProps<ReduxState, P>,
+  storyContext?: StoryContext
+): ComponentType<P> {
+  const relayEnvironment = (() => {
+    if (typeof wrapperProps.relayEnvironment === 'function') {
+      const envToMutate = createMockEnvironment();
+      wrapperProps.relayEnvironment(envToMutate, storyContext);
+      return envToMutate;
+    }
+    if (wrapperProps.relayEnvironment !== undefined) {
+      return wrapperProps.relayEnvironment;
+    }
+    const defaultRelayEnvironment = createMockEnvironment();
+    fillCommonQueryWithUser(defaultRelayEnvironment);
+    return defaultRelayEnvironment;
+  })();
+
   const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
   const defaultReduxStore = configureStore(wrapperProps.reduxInitialState);
 
@@ -83,12 +101,12 @@ export function getWrapper<
     return (
       <WrapperComponent
         {...props}
-        relayEnvironment={defaultRelayEnvironment}
         routerProps={defaultRouterProps}
         intlLocale={DEFAULT_LOCALE}
         intlMessages={translationMessages[DEFAULT_LOCALE]}
         reduxStore={defaultReduxStore}
         {...(wrapperProps ?? {})}
+        relayEnvironment={relayEnvironment}
       />
     );
   };
@@ -109,7 +127,19 @@ function customRender<
   });
 }
 
-export { customRender as render };
+function customRenderHook<
+  Result,
+  Props,
+  ReduxState extends Store = DefaultReduxState,
+  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
+>(hook: (initialProps: Props) => Result, options: CustomRenderOptions<ReduxState, P> = {}) {
+  return renderHook(hook, {
+    ...options,
+    wrapper: getWrapper(DefaultTestProviders, options),
+  });
+}
+
+export { customRender as render, customRenderHook as renderHook };
 
 export const createMockRouterProps = (
   pathName: string | Array<string>,

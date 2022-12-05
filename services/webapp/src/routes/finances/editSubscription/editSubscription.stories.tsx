@@ -2,14 +2,14 @@ import { Story } from '@storybook/react';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import {
-  queueSubscriptionScheduleQueryWithPhases,
+  fillSubscriptionScheduleQueryWithPhases,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../mocks/factories';
 import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
 import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
-import { connectionFromArray } from '../../../shared/utils/testUtils';
 import SubscriptionPlansAllQueryGraphql from '../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { connectionFromArray } from '../../../tests/utils/fixtures';
 import { EditSubscription } from './editSubscription.component';
 
 const Template: Story = () => {
@@ -40,7 +40,7 @@ FreeActive.decorators = [
       })
     );
     env.mock.queuePendingOperation(SubscriptionPlansAllQueryGraphql, {});
-    queueSubscriptionScheduleQueryWithPhases(env, [
+    fillSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
       }),
@@ -60,7 +60,7 @@ MonthlyActive.decorators = [
       })
     );
     env.mock.queuePendingOperation(SubscriptionPlansAllQueryGraphql, {});
-    queueSubscriptionScheduleQueryWithPhases(env, [
+    fillSubscriptionScheduleQueryWithPhases(env, [
       subscriptionPhaseFactory({
         item: { price: subscriptionPlanFactory() },
       }),

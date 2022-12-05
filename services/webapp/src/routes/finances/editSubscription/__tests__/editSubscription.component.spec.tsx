@@ -4,7 +4,6 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { connectionFromArray } from '../../../../shared/utils/testUtils';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditSubscription } from '../editSubscription.component';
 import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
@@ -13,6 +12,7 @@ import { snackbarActions } from '../../../../modules/snackbar';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
+import { connectionFromArray } from '../../../../tests/utils/fixtures';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -67,12 +67,9 @@ describe('EditSubscription: Component', () => {
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
       const relayEnvironment = getRelayEnv();
+      fillCurrentSubscriptionQuery(relayEnvironment);
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, { relayEnvironment, routerProps });
-
-      await act(() => {
-        fillCurrentSubscriptionQuery(relayEnvironment);
-      });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
@@ -98,13 +95,10 @@ describe('EditSubscription: Component', () => {
   describe('plan fails to update', () => {
     it('should show error message', async () => {
       const relayEnvironment = getRelayEnv();
+      fillCurrentSubscriptionQuery(relayEnvironment);
 
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, { relayEnvironment, routerProps });
-
-      await act(() => {
-        fillCurrentSubscriptionQuery(relayEnvironment);
-      });
 
       await userEvent.click(screen.getByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);

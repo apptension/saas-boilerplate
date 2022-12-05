@@ -5,7 +5,7 @@ import { MockPayloadGenerator } from 'relay-test-utils';
 import styled from 'styled-components';
 import { withRelay } from '../../../shared/utils/storybook';
 import { documentFactory } from '../../../mocks/factories/document';
-import { connectionFromArray } from '../../../shared/utils/testUtils';
+import { connectionFromArray } from '../../../tests/utils/fixtures';
 import { documentListItemStoryQuery } from './__generated__/documentListItemStoryQuery.graphql';
 import { Document, DocumentProps } from './document.component';
 

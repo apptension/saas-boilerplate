@@ -17,11 +17,11 @@ import {
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import { connectionFromArray } from '../../../../../shared/utils/testUtils';
 import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
 import stripeAllPaymentMethodsQueryGraphql from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
+import { connectionFromArray } from '../../../../../tests/utils/fixtures';
 
 jest.mock('@stripe/react-stripe-js', () => ({
   ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),
@@ -134,50 +134,47 @@ describe('EditPaymentMethodForm: Component', () => {
 
   it('should render without errors', async () => {
     const relayEnvironment = getRelayEnv();
-    render(<Component />, { relayEnvironment });
-
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-
-    await act(() => {
-      fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
-        subscriptionPhaseFactory({
-          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-        }),
-      ]);
-      relayEnvironment.mock.queueOperationResolver((operation) => {
-        return MockPayloadGenerator.generate(operation, {
-          PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-        });
+    fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
+      subscriptionPhaseFactory({
+        item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+      }),
+    ]);
+    relayEnvironment.mock.queueOperationResolver((operation) => {
+      return MockPayloadGenerator.generate(operation, {
+        PaymentMethodConnection: () => connectionFromArray(paymentMethods),
       });
-      relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
     });
+    relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
+    render(<Component />, { relayEnvironment });
   });
 
   it('should set default card if selected other already added card', async () => {
     const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
-    render(<Component onSuccess={onSuccess} />, { relayEnvironment });
+    const phases = [
+      subscriptionPhaseFactory({
+        item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+      }),
+    ];
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-
-    await act(() => {
-      const phases = [
-        subscriptionPhaseFactory({
-          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-        }),
-      ];
-      fillSubscriptionScheduleQuery(
-        relayEnvironment,
-        subscriptionFactory({
-          defaultPaymentMethod: paymentMethods[0],
-          phases,
-        })
-      );
-      relayEnvironment.mock.queueOperationResolver((operation) => {
-        return MockPayloadGenerator.generate(operation, {
-          PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-        });
+    relayEnvironment.mock.queueOperationResolver((operation) => {
+      return MockPayloadGenerator.generate(operation, {
+        PaymentMethodConnection: () => connectionFromArray(paymentMethods),
       });
-      relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
+    });
+    relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
+    fillSubscriptionScheduleQuery(
+      relayEnvironment,
+      subscriptionFactory({
+        defaultPaymentMethod: paymentMethods[0],
+        phases,
+      })
+    );
+    render(<Component onSuccess={onSuccess} />, { relayEnvironment });
+
+    await act(async () => {
+      expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
     });
 
     await act(async () => {
@@ -197,29 +194,26 @@ describe('EditPaymentMethodForm: Component', () => {
   it('should call create setup intent if added new card', async () => {
     const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
-    render(<Component onSuccess={onSuccess} />, { relayEnvironment });
+    const phases = [
+      subscriptionPhaseFactory({
+        item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+      }),
+    ];
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-
-    await act(() => {
-      const phases = [
-        subscriptionPhaseFactory({
-          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-        }),
-      ];
-      fillSubscriptionScheduleQuery(
-        relayEnvironment,
-        subscriptionFactory({
-          defaultPaymentMethod: paymentMethods[0],
-          phases,
-        })
-      );
-      relayEnvironment.mock.queueOperationResolver((operation) => {
-        return MockPayloadGenerator.generate(operation, {
-          PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-        });
+    fillSubscriptionScheduleQuery(
+      relayEnvironment,
+      subscriptionFactory({
+        defaultPaymentMethod: paymentMethods[0],
+        phases,
+      })
+    );
+    relayEnvironment.mock.queueOperationResolver((operation) => {
+      return MockPayloadGenerator.generate(operation, {
+        PaymentMethodConnection: () => connectionFromArray(paymentMethods),
       });
-      relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
     });
+    relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
+    render(<Component onSuccess={onSuccess} />, { relayEnvironment });
 
     await act(async () => {
       await pressNewCardButton();

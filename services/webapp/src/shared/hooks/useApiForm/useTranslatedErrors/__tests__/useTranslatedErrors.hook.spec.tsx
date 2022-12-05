@@ -1,13 +1,9 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { ProvidersWrapper } from '../../../../utils/testUtils';
+import { renderHook } from '../../../../../tests/utils/rendering';
 import { ErrorMessages } from '../../useApiForm.types';
 import { useTranslatedErrors } from '../useTranslatedErrors.hook';
 
 describe('useTranslatedErrors: Hook', () => {
-  const render = (args?: ErrorMessages) =>
-    renderHook(() => useTranslatedErrors(args), {
-      wrapper: ({ children }) => <ProvidersWrapper>{children}</ProvidersWrapper>,
-    });
+  const render = (args?: ErrorMessages) => renderHook(() => useTranslatedErrors(args));
 
   describe('provided with custom messages', () => {
     const customMessages = { email: { CUSTOM_ERROR: 'custom error message' } };

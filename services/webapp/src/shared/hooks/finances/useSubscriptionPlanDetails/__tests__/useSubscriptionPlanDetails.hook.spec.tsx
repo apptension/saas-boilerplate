@@ -1,7 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails.hook';
 import { subscriptionPlanFactory } from '../../../../../mocks/factories';
-import { ProvidersWrapper } from '../../../../utils/testUtils';
+import { renderHook } from '../../../../../tests/utils/rendering';
 import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
 
 const plan = subscriptionPlanFactory({
@@ -12,10 +11,7 @@ const plan = subscriptionPlanFactory({
 });
 
 describe('useSubscriptionPlanDetails: Hook', () => {
-  const render = () =>
-    renderHook(() => useSubscriptionPlanDetails(plan), {
-      wrapper: ({ children }) => <ProvidersWrapper>{children}</ProvidersWrapper>,
-    });
+  const render = () => renderHook(() => useSubscriptionPlanDetails(plan));
 
   it('should return plan price in USD units', () => {
     const { result } = render();

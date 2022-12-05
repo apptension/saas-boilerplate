@@ -4,7 +4,7 @@ import { times } from 'ramda';
 import { withActiveSubscriptionContext, withRelay } from '../../../../shared/utils/storybook';
 import {
   generateRelayEnvironmentWithPaymentMethods,
-  queueSubscriptionScheduleQueryWithPhases,
+  fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
@@ -22,7 +22,7 @@ export default {
   decorators: [
     withActiveSubscriptionContext,
     withRelay((env) => {
-      queueSubscriptionScheduleQueryWithPhases(env, [
+      fillSubscriptionScheduleQueryWithPhases(env, [
         subscriptionPhaseFactory({
           item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
         }),

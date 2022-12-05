@@ -1,4 +1,7 @@
 import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { times } from 'ramda';
+import { OperationDescriptor } from 'react-relay/hooks';
+
 import {
   StripePaymentMethod,
   StripePaymentMethodCardBrand,
@@ -8,13 +11,13 @@ import {
   TransactionHistoryEntry,
   TransactionHistoryEntryInvoice,
 } from '../../shared/services/api/stripe/history/types';
-import { makeId } from '../../tests/utils/fixtures';
+import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
 import { DeepPartial } from '../../shared/utils/types';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
-import { connectionFromArray } from '../../shared/utils/testUtils';
 import StripeAllPaymentMethodsQueryGraphql from '../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-import { createDeepFactory, createFactory } from './factoryCreators';
+import StripeAllChargesQueryGraphql from '../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
 import { subscriptionPlanFactory } from './subscription';
+import { createDeepFactory, createFactory } from './factoryCreators';
 
 export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() => ({
   id: makeId(32),
@@ -79,4 +82,16 @@ export const generateRelayEnvironmentWithPaymentMethods = (
   );
   env.mock.queuePendingOperation(StripeAllPaymentMethodsQueryGraphql, {});
   return env;
+};
+
+export const fillAllStripeChargesQuery = (
+  env: RelayMockEnvironment,
+  data = times(() => transactionHistoryEntryFactory(), 5)
+) => {
+  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+    MockPayloadGenerator.generate(operation, {
+      ChargeConnection: () => connectionFromArray(data),
+    })
+  );
+  env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
 };

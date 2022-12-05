@@ -1,6 +1,6 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react-hooks';
 import { useApiForm } from '../useApiForm.hook';
-import { ProvidersWrapper } from '../../../utils/testUtils';
+import { renderHook } from '../../../../tests/utils/rendering';
 import { UseApiFormArgs } from '../useApiForm.types';
 
 interface TestFormFields {
@@ -8,10 +8,7 @@ interface TestFormFields {
 }
 
 describe('useApiForm: Hook', () => {
-  const render = (args?: UseApiFormArgs<TestFormFields>) =>
-    renderHook(() => useApiForm<TestFormFields>(args), {
-      wrapper: ({ children }) => <ProvidersWrapper>{children}</ProvidersWrapper>,
-    });
+  const render = (args?: UseApiFormArgs<TestFormFields>) => renderHook(() => useApiForm<TestFormFields>(args));
 
   it('should set generic form error from api response', () => {
     const { result } = render();

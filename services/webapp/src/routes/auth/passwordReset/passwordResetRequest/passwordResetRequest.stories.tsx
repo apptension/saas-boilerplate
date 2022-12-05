@@ -1,18 +1,15 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../../shared/utils/testUtils';
+import { withProviders } from '../../../../shared/utils/storybook';
 import { PasswordResetRequest } from './passwordResetRequest.component';
 
 const Template: Story = () => {
-  return (
-    <ProvidersWrapper>
-      <PasswordResetRequest />
-    </ProvidersWrapper>
-  );
+  return <PasswordResetRequest />;
 };
 
 export default {
-  title: 'Shared/Auth/PasswordResetRequest',
+  title: 'Routes/Auth/PasswordResetRequest',
   component: PasswordResetRequest,
 };
 
 export const Default = Template.bind({});
+Default.decorators = [withProviders({})];

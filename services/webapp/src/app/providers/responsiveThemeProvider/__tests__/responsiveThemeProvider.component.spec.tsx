@@ -1,7 +1,7 @@
 import { useTheme } from 'styled-components';
 import { screen, getNodeText } from '@testing-library/react';
 import { ResponsiveThemeProvider, ResponsiveThemeProviderProps } from '../responsiveThemeProvider.component';
-import { makePropsRenderer } from '../../../../shared/utils/testUtils';
+import { render } from '../../../../tests/utils/rendering';
 import { Breakpoint, getActiveBreakpoint } from '../../../../theme/media';
 
 jest.mock('../../../../theme/media');
@@ -20,14 +20,12 @@ describe('ResponsiveThemeProvider: Component', () => {
     (getActiveBreakpoint as jest.Mock).mockReturnValue(Breakpoint.DESKTOP);
   });
 
-  const component = (props: Partial<ResponsiveThemeProviderProps>) => (
+  const Component = (props: Partial<ResponsiveThemeProviderProps>) => (
     <ResponsiveThemeProvider {...defaultProps} {...props} />
   );
 
-  const render = makePropsRenderer(component);
-
   it('should pass theme to child elements', () => {
-    render();
+    render(<Component />);
     const content = screen.getByTestId('content');
     expect(getNodeText(content)).toEqual(Breakpoint.DESKTOP);
   });

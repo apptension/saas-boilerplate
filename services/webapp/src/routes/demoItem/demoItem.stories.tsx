@@ -1,35 +1,21 @@
 import { Story } from '@storybook/react';
-import { generatePath } from 'react-router';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-import { OperationDescriptor } from 'react-relay/hooks';
+import { Route, Routes } from 'react-router';
 
+import { demoItemFactory, fillDemoItemQuery } from '../../mocks/factories';
+import { withProviders } from '../../shared/utils/storybook';
+import { createMockRouterProps } from '../../tests/utils/rendering';
 import { RoutesConfig } from '../../app/config/routes';
-import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { demoItemFactory } from '../../mocks/factories';
-import demoItemQueryGraphql from './__generated__/demoItemQuery.graphql';
+import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { DemoItem } from './demoItem.component';
 
+const routePath = ['demoItem'];
 const defaultItemId = 'test-id';
-const relayEnvironment = createMockEnvironment();
-relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-  MockPayloadGenerator.generate(operation, {
-    DemoItem() {
-      return demoItemFactory();
-    },
-  })
-);
-relayEnvironment.mock.queuePendingOperation(demoItemQueryGraphql, { id: defaultItemId });
 
 const Template: Story = () => {
   return (
-    <ProvidersWrapper
-      context={{
-        relayEnvironment,
-        router: { url: generatePath(RoutesConfig.demoItem, { lang: 'en', id: '1' }), routePath: RoutesConfig.demoItem },
-      }}
-    >
-      <DemoItem />
-    </ProvidersWrapper>
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<DemoItem />} />
+    </Routes>
   );
 };
 
@@ -39,3 +25,12 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [
+  withProviders({
+    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
+    relayEnvironment: (env) => {
+      fillCommonQueryWithUser(env);
+      fillDemoItemQuery(env, demoItemFactory(), { id: defaultItemId });
+    },
+  }),
+];

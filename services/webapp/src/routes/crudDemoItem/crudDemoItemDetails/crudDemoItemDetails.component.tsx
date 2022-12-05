@@ -8,7 +8,7 @@ import { CrudDemoItemDetailsContent } from './crudDemoItemDetailsContent.compone
 export const CrudDemoItemDetails = () => {
   type Params = {
     id: string;
-  }
+  };
   const { id } = useParams<keyof Params>() as Params;
 
   const [queryRef, loadQuery] = useQueryLoader<crudDemoItemDetailsQuery>(graphql`

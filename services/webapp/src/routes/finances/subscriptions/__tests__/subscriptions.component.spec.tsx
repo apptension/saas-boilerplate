@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { RelayMockEnvironment } from 'relay-test-utils';
 import { Routes, Route } from 'react-router-dom';
 
-import { matchTextContent } from '../../../../shared/utils/testUtils';
 import { render } from '../../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
 import {
@@ -16,6 +15,7 @@ import {
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv } from '../../../../tests/utils/relay';
+import { matchTextContent } from '../../../../tests/utils/match';
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
   fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
@@ -55,11 +55,8 @@ const Component = () => (
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
     const relayEnvironment = getRelayEnv();
+    resolveSubscriptionDetailsQuery(relayEnvironment);
     render(<Component />, { relayEnvironment });
-
-    await act(() => {
-      resolveSubscriptionDetailsQuery(relayEnvironment);
-    });
 
     await waitFor(() => {
       expect(screen.getByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
@@ -68,11 +65,8 @@ describe('Subscriptions: Component', () => {
 
   it('should render default payment method', async () => {
     const relayEnvironment = getRelayEnv();
+    resolveSubscriptionDetailsQuery(relayEnvironment);
     render(<Component />, { relayEnvironment });
-
-    await act(() => {
-      resolveSubscriptionDetailsQuery(relayEnvironment);
-    });
 
     await waitFor(() => {
       expect(screen.getByText('Owner Visa **** 1234')).toBeInTheDocument();
@@ -82,11 +76,9 @@ describe('Subscriptions: Component', () => {
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQuery(relayEnvironment);
       render(<Component />, { relayEnvironment });
 
-      await act(() => {
-        resolveSubscriptionDetailsQuery(relayEnvironment);
-      });
       await waitFor(() => {
         expect(screen.getByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
       });
@@ -94,11 +86,9 @@ describe('Subscriptions: Component', () => {
 
     it('should not render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQuery(relayEnvironment);
       render(<Component />, { relayEnvironment });
 
-      await act(() => {
-        resolveSubscriptionDetailsQuery(relayEnvironment);
-      });
       await waitFor(() => {
         expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
       });
@@ -108,10 +98,8 @@ describe('Subscriptions: Component', () => {
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       render(<Component />, { relayEnvironment });
-      await act(() => {
-        resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      });
 
       await waitFor(() => {
         expect(screen.getByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
@@ -120,10 +108,8 @@ describe('Subscriptions: Component', () => {
 
     it('should not render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       render(<Component />, { relayEnvironment });
-      await act(() => {
-        resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      });
 
       await waitFor(() => {
         expect(screen.queryByText(/next renewal/gi)).not.toBeInTheDocument();
@@ -134,11 +120,8 @@ describe('Subscriptions: Component', () => {
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQuery(relayEnvironment);
       render(<Component />, { relayEnvironment });
-
-      await act(() => {
-        resolveSubscriptionDetailsQuery(relayEnvironment);
-      });
 
       await userEvent.click(screen.getByText(/edit subscription/i));
       expect(screen.getByTestId(EDIT_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -148,10 +131,8 @@ describe('Subscriptions: Component', () => {
   describe('cancel subscription button', () => {
     it('should be hidden if subscription is already canceled', async () => {
       const relayEnvironment = getRelayEnv();
+      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
       render(<Component />, { relayEnvironment });
-      await act(() => {
-        resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      });
       await waitFor(() => {
         expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
       });
@@ -167,11 +148,8 @@ describe('Subscriptions: Component', () => {
       ];
 
       const relayEnvironment = getRelayEnv();
+      fillSubscriptionScheduleQueryWithPhases(relayEnvironment, phases);
       render(<Component />, { relayEnvironment });
-
-      await act(() => {
-        fillSubscriptionScheduleQueryWithPhases(relayEnvironment, phases);
-      });
 
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
@@ -180,11 +158,8 @@ describe('Subscriptions: Component', () => {
       const activeSubscription = subscriptionFactory();
 
       const relayEnvironment = getRelayEnv();
+      fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
       render(<Component />, { relayEnvironment });
-
-      await act(() => {
-        fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
-      });
 
       await userEvent.click(screen.getByText(/cancel subscription/i));
       expect(screen.getByTestId(CANCEL_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -215,11 +190,8 @@ describe('Subscriptions: Component', () => {
       });
 
       const relayEnvironment = getRelayEnv();
+      fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
       render(<Component />, { relayEnvironment });
-
-      await act(() => {
-        fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
-      });
 
       expect(
         screen.getByText(matchTextContent(/free trial info.*expiry date.*january 01, 2099/gi))

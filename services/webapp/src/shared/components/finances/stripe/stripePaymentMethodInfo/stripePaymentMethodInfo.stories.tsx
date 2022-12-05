@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import {
-  queueSubscriptionScheduleQueryWithPhases,
+  fillSubscriptionScheduleQueryWithPhases,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
@@ -29,7 +29,7 @@ export default {
   component: StripePaymentMethodInfo,
   decorators: [
     withRelay((env) => {
-      queueSubscriptionScheduleQueryWithPhases(env, [
+      fillSubscriptionScheduleQueryWithPhases(env, [
         subscriptionPhaseFactory({
           item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
         }),

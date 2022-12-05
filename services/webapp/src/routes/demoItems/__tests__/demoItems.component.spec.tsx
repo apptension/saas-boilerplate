@@ -1,12 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MockPayloadGenerator } from 'relay-test-utils';
 import { Routes, Route } from 'react-router';
 
-import { demoItemFactory } from '../../../mocks/factories';
-import useFavoriteDemoItemListQueryGraphql from '../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
+import { demoItemFactory, fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../mocks/factories';
 import { DemoItems } from '../demoItems.component';
-import demoItemsAllQueryGraphql from '../__generated__/demoItemsAllQuery.graphql';
 import { getRelayEnv as getBaseRelayEnv } from '../../../tests/utils/relay';
 import { RoutesConfig } from '../../../app/config/routes';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
@@ -23,33 +20,23 @@ describe('DemoItems: Component', () => {
 
   const getRelayEnv = () => {
     const relayEnvironment = getBaseRelayEnv();
-    relayEnvironment.mock.queueOperationResolver((operation) =>
-      MockPayloadGenerator.generate(operation, {
-        DemoItemCollection() {
-          return {
-            items: [
-              demoItemFactory({
-                sys: { id: 'test-id-1' },
-                title: 'First',
-                image: { title: 'first image title', url: 'https://image.url' },
-              }),
-              demoItemFactory({
-                sys: { id: 'test-id-2' },
-                title: 'Second',
-                image: { title: 'second image title', url: 'https://image.url' },
-              }),
-            ],
-          };
-        },
-      })
-    );
-    relayEnvironment.mock.queueOperationResolver((operation) =>
-      MockPayloadGenerator.generate(operation, {
-        ContentfulDemoItemFavoriteType: () => ({ item: { pk: 'item-1' } }),
-      })
-    );
-    relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
-    relayEnvironment.mock.queuePendingOperation(useFavoriteDemoItemListQueryGraphql, {});
+    const data = {
+      items: [
+        demoItemFactory({
+          sys: { id: 'test-id-1' },
+          title: 'First',
+          image: { title: 'first image title', url: 'https://image.url' },
+        }),
+        demoItemFactory({
+          sys: { id: 'test-id-2' },
+          title: 'Second',
+          image: { title: 'second image title', url: 'https://image.url' },
+        }),
+      ],
+    };
+
+    fillDemoItemsAllQuery(relayEnvironment, data);
+    fillUseFavouriteDemoItemListQuery(relayEnvironment, { item: { pk: 'item-1' } });
     return relayEnvironment;
   };
 

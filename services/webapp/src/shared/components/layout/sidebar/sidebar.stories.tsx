@@ -1,15 +1,13 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../utils/testUtils';
 import { LayoutContext } from '../layout.context';
+import { withProviders } from '../../../utils/storybook';
 import { Sidebar } from './sidebar.component';
 
 const Template: Story = () => {
   return (
-    <ProvidersWrapper>
-      <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
-        <Sidebar />
-      </LayoutContext.Provider>
-    </ProvidersWrapper>
+    <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+      <Sidebar />
+    </LayoutContext.Provider>
   );
 };
 
@@ -20,3 +18,4 @@ export default {
 
 export const Default = Template.bind({});
 Default.args = {};
+Default.decorators = [withProviders({})];

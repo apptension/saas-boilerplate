@@ -1,13 +1,9 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import { withProviders } from '../../../shared/utils/storybook';
 import { CrudDemoItemForm, CrudDemoItemFormProps } from './crudDemoItemForm.component';
 
 const Template: Story<CrudDemoItemFormProps> = (args: CrudDemoItemFormProps) => {
-  return (
-    <ProvidersWrapper>
-      <CrudDemoItemForm {...args} />
-    </ProvidersWrapper>
-  );
+  return <CrudDemoItemForm {...args} />;
 };
 
 export default {
@@ -21,6 +17,8 @@ WithInitialData.args = {
     name: 'initial name',
   },
 };
+WithInitialData.decorators = [withProviders({})];
 
 export const WithoutData = Template.bind({});
 WithoutData.args = {};
+WithoutData.decorators = [withProviders({})];

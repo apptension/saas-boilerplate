@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { useLazyLoadQuery } from 'react-relay';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
@@ -13,7 +13,6 @@ import {
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
-import { connectionFromArray } from '../../../../../shared/utils/testUtils';
 import { render } from '../../../../../tests/utils/rendering';
 import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
@@ -22,6 +21,7 @@ import { mapConnection } from '../../../../../shared/utils/graphql';
 import { useActiveSubscriptionDetailsQueryRef } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
+import { connectionFromArray } from '../../../../../tests/utils/fixtures';
 
 describe('SubscriptionPlanItem: Component', () => {
   const defaultProps: Pick<SubscriptionPlanItemProps, 'onSelect'> = { onSelect: () => jest.fn() };
@@ -98,19 +98,15 @@ describe('SubscriptionPlanItem: Component', () => {
 
   it('should render name', async () => {
     const relayEnvironment = getRelayEnv();
+    fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
     render(<Wrapper />, { relayEnvironment });
-    await act(() => {
-      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-    });
     expect(screen.getByText(/monthly/i)).toBeInTheDocument();
   });
 
   it('should render plan price', async () => {
     const relayEnvironment = getRelayEnv();
+    fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
     render(<Wrapper />, { relayEnvironment });
-    await act(() => {
-      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-    });
     expect(screen.getByText(/2\.5 USD/i)).toBeInTheDocument();
   });
 
@@ -119,10 +115,8 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
+        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionMigrationToYearly);
         render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
-        await act(() => {
-          fillSubscriptionScheduleQuery(relayEnvironment, subscriptionMigrationToYearly);
-        });
         await userEvent.click(screen.getByText(/select/i));
         await waitFor(() => {
           expect(onSelect).toHaveBeenCalled();
@@ -134,10 +128,8 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should not call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
+        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
         render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
-        await act(() => {
-          fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-        });
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).not.toHaveBeenCalled();
       });
@@ -147,18 +139,16 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
+        fillSubscriptionScheduleQuery(
+          relayEnvironment,
+          subscriptionFactory({
+            phases: [
+              subscriptionPhaseFactory({ item: { price: monthlyPlan } }),
+              subscriptionPhaseFactory({ item: { price: freePlan } }),
+            ],
+          })
+        );
         render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
-        await act(() => {
-          fillSubscriptionScheduleQuery(
-            relayEnvironment,
-            subscriptionFactory({
-              phases: [
-                subscriptionPhaseFactory({ item: { price: monthlyPlan } }),
-                subscriptionPhaseFactory({ item: { price: freePlan } }),
-              ],
-            })
-          );
-        });
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).toHaveBeenCalled();
       });
@@ -168,10 +158,8 @@ describe('SubscriptionPlanItem: Component', () => {
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
       const relayEnvironment = getRelayEnv();
+      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: true }));
       render(<Wrapper />, { relayEnvironment });
-      await act(() => {
-        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: true }));
-      });
       expect(screen.getByText(/will start with a trial/i)).toBeInTheDocument();
     });
   });
@@ -179,10 +167,8 @@ describe('SubscriptionPlanItem: Component', () => {
   describe('trial is illegible', () => {
     it('should not show trial info', async () => {
       const relayEnvironment = getRelayEnv();
+      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: false }));
       render(<Wrapper />, { relayEnvironment });
-      await act(() => {
-        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: false }));
-      });
       expect(screen.queryByText(/will start with a trial/gi)).not.toBeInTheDocument();
     });
   });

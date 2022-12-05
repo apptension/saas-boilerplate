@@ -3,13 +3,14 @@ import { screen, act } from '@testing-library/react';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { render } from '../../../../../../tests/utils/rendering';
-import { connectionFromArray, matchTextContent } from '../../../../../utils/testUtils';
 import { useApiForm } from '../../../../../hooks/useApiForm';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
 import { StripePaymentMethod } from '../../../../../services/api/stripe/paymentMethod';
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
+import { connectionFromArray } from '../../../../../../tests/utils/fixtures';
+import { matchTextContent } from '../../../../../../tests/utils/match';
 
 const resolvePaymentMethodsQuery = (
   relayEnvironment: RelayMockEnvironment,

@@ -1,13 +1,9 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../utils/testUtils';
+import { withProviders } from '../../../utils/storybook';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from './passwordResetConfirmForm.component';
 
 const Template: Story<PasswordResetConfirmFormProps> = (args: PasswordResetConfirmFormProps) => {
-  return (
-    <ProvidersWrapper>
-      <PasswordResetConfirmForm {...args} />
-    </ProvidersWrapper>
-  );
+  return <PasswordResetConfirmForm {...args} />;
 };
 
 export default {
@@ -20,3 +16,4 @@ Default.args = {
   token: 'token',
   user: 'user',
 };
+Default.decorators = [withProviders({})];

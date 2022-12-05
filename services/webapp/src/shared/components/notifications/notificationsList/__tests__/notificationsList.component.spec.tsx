@@ -2,10 +2,10 @@ import { screen } from '@testing-library/react';
 import { times } from 'ramda';
 import { render } from '../../../../../tests/utils/rendering';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
-import { generateRelayEnvironmentNotifications } from '../notificationsList.fixtures';
-import { notificationFactory } from '../../../../../mocks/factories';
+import { fillNotificationsListQuery, notificationFactory } from '../../../../../mocks/factories';
 import { ExtractNodeType } from '../../../../utils/graphql';
 import { notificationsListContent$data } from '../__generated__/notificationsListContent.graphql';
+import { getRelayEnv } from '../../../../../tests/utils/relay';
 
 describe('NotificationsList: Component', () => {
   const Component = (props: Partial<NotificationsListProps>) => (
@@ -15,7 +15,9 @@ describe('NotificationsList: Component', () => {
   const renderWithNotifications = (
     notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>
   ) => {
-    const env = generateRelayEnvironmentNotifications(notifications);
+    const env = getRelayEnv();
+    fillNotificationsListQuery(env, notifications);
+
     render(
       <Component
         listQueryRef={

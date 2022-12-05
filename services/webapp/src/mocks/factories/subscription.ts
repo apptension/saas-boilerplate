@@ -1,4 +1,6 @@
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { OperationDescriptor } from 'react-relay/hooks';
+
 import {
   Subscription,
   SubscriptionPhase,
@@ -6,7 +8,8 @@ import {
   SubscriptionPlanName,
 } from '../../shared/services/api/subscription/types';
 import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import { makeId } from '../../tests/utils/fixtures';
+import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
 
@@ -44,17 +47,24 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
   },
 }));
 
-export const fillSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
-  relayEnvironment.mock.resolveMostRecentOperation((operation) => {
+export const fillSubscriptionScheduleQuery = (
+  relayEnvironment: RelayMockEnvironment,
+  subscription: Partial<Subscription>
+) => {
+  relayEnvironment.mock.queueOperationResolver((operation) => {
     return MockPayloadGenerator.generate(operation, {
       SubscriptionScheduleType: (context, generateId) => ({
         ...subscription,
       }),
     });
   });
+  relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
 };
 
-export const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
+export const fillSubscriptionScheduleQueryWithPhases = (
+  relayEnvironment: RelayMockEnvironment,
+  phases: SubscriptionPhase[]
+) => {
   fillSubscriptionScheduleQuery(
     relayEnvironment,
     subscriptionFactory({
@@ -67,26 +77,11 @@ export const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayM
   );
 };
 
-export const queueSubscriptionScheduleQuery = (relayEnvironment: RelayMockEnvironment, subscription: any) => {
-  relayEnvironment.mock.queueOperationResolver((operation) => {
-    return MockPayloadGenerator.generate(operation, {
-      SubscriptionScheduleType: (context, generateId) => ({
-        ...subscription,
-      }),
-    });
-  });
-  relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
-};
-
-export const queueSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
-  queueSubscriptionScheduleQuery(
-    relayEnvironment,
-    subscriptionFactory({
-      defaultPaymentMethod: paymentMethodFactory({
-        billingDetails: { name: 'Owner' },
-        card: { last4: '1234' },
-      }),
-      phases,
+export const fillSubscriptionPlansAllQuery = (env: RelayMockEnvironment, data: SubscriptionPlan[] = []) => {
+  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+    MockPayloadGenerator.generate(operation, {
+      SubscriptionPlanConnection: () => connectionFromArray(data),
     })
   );
+  env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
 };

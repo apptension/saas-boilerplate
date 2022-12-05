@@ -1,5 +1,9 @@
-import { DocumentDemoItemType } from '../../shared/services/graphqlApi/__generated/types';
-import { makeId } from '../../tests/utils/fixtures';
+import { times } from 'ramda';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+
+import { DocumentDemoItemType } from '../../shared/services/graphqlApi';
+import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import DocumentsListQuery from '../../routes/documents/__generated__/documentsListQuery.graphql';
 import { createDeepFactory } from './factoryCreators';
 
 export const documentFactory = createDeepFactory<Partial<DocumentDemoItemType>>(() => ({
@@ -10,3 +14,12 @@ export const documentFactory = createDeepFactory<Partial<DocumentDemoItemType>>(
     url: `http://localhost/image/${makeId(32)}.pdf`,
   },
 }));
+
+export const fillDocumentsListQuery = (env: RelayMockEnvironment, data = times(() => documentFactory(), 3)) => {
+  env.mock.queueOperationResolver((operation) =>
+    MockPayloadGenerator.generate(operation, {
+      DocumentDemoItemConnection: () => connectionFromArray(data),
+    })
+  );
+  env.mock.queuePendingOperation(DocumentsListQuery, {});
+};

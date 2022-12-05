@@ -1,11 +1,10 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { currentUserFactory } from '../../../../mocks/factories';
-import { ProvidersWrapper } from '../../../utils/testUtils';
 import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { withProviders } from '../../../utils/storybook';
 import { EditProfileForm } from './editProfileForm.component';
 
 const Container = styled.div`
@@ -14,18 +13,10 @@ const Container = styled.div`
 `;
 
 const Template: Story = () => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment, currentUserFactory());
   return (
-    <ProvidersWrapper
-      context={{
-        relayEnvironment,
-      }}
-    >
-      <Container>
-        <EditProfileForm />
-      </Container>
-    </ProvidersWrapper>
+    <Container>
+      <EditProfileForm />
+    </Container>
   );
 };
 
@@ -35,3 +26,10 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [
+  withProviders({
+    relayEnvironment: (env) => {
+      fillCommonQueryWithUser(env, currentUserFactory());
+    },
+  }),
+];

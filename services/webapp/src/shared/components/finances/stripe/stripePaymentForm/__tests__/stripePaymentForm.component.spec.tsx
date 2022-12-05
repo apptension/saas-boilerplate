@@ -6,9 +6,9 @@ import { screen, act } from '@testing-library/react';
 import { render } from '../../../../../../tests/utils/rendering';
 import { paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
-import { connectionFromArray } from '../../../../../utils/testUtils';
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
+import { connectionFromArray } from '../../../../../../tests/utils/fixtures';
 
 const mockConfirmPayment = jest.fn();
 jest.mock('../../stripePayment.hooks', () => {

@@ -1,19 +1,14 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { act } from '@testing-library/react-hooks';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import { useFavoriteDemoItem } from '../useFavoriteDemoItem.hook';
-import { ProvidersWrapper, ProvidersWrapperProps } from '../../../utils/testUtils';
+import { renderHook } from '../../../../tests/utils/rendering';
 import { generateRelayEnvironment } from '../useFavoriteDemoItem.fixtures';
 
 const refresh = jest.fn();
 
-const relayEnvironmentWrapper =
-  (relayEnvironment: RelayMockEnvironment) =>
-  ({ children }: ProvidersWrapperProps) =>
-    <ProvidersWrapper context={{ relayEnvironment }}>{children} </ProvidersWrapper>;
-
 const renderHookWithContext = (callback: () => ReturnType<typeof useFavoriteDemoItem>) => {
   const relayEnvironment = generateRelayEnvironment();
-  const rendered = renderHook(callback, { wrapper: relayEnvironmentWrapper(relayEnvironment) });
+  const rendered = renderHook(callback, { relayEnvironment });
   return {
     ...rendered,
     relayEnvironment,

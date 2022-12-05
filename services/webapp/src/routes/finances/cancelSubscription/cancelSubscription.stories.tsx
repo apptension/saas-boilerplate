@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
 import {
-  queueSubscriptionScheduleQueryWithPhases,
+  fillSubscriptionScheduleQueryWithPhases,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../mocks/factories';
@@ -18,7 +18,7 @@ export default {
     withActiveSubscriptionContext,
     withRedux(),
     withRelay((env) => {
-      queueSubscriptionScheduleQueryWithPhases(env, [
+      fillSubscriptionScheduleQueryWithPhases(env, [
         subscriptionPhaseFactory({
           item: { price: subscriptionPlanFactory() },
         }),

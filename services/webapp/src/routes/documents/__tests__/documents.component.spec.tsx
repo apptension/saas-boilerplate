@@ -1,11 +1,18 @@
 import { times } from 'ramda';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { MockPayloadGenerator } from 'relay-test-utils';
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
 import { Documents } from '../documents.component';
-import { generateRelayEnvironmentDocuments } from '../documents.fixtures';
-import { documentFactory } from '../../../mocks/factories';
+import { documentFactory, fillDocumentsListQuery } from '../../../mocks/factories';
 import { render } from '../../../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+
+const generateRelayEnvironmentDocuments = (documents: any) => {
+  const env = createMockEnvironment();
+  fillCommonQueryWithUser(env);
+  fillDocumentsListQuery(env, documents);
+  return env;
+};
 
 describe('Documents: Component', () => {
   const Component = () => <Documents />;

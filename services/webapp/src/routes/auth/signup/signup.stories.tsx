@@ -1,18 +1,15 @@
 import { Story } from '@storybook/react';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+import { withProviders } from '../../../shared/utils/storybook';
 import { Signup } from './signup.component';
 
 const Template: Story = () => {
-  return (
-    <ProvidersWrapper>
-      <Signup />
-    </ProvidersWrapper>
-  );
+  return <Signup />;
 };
 
 export default {
-  title: 'Routes/Signup',
+  title: 'Routes/Auth/Signup',
   component: Signup,
 };
 
 export const Default = Template.bind({});
+Default.decorators = [withProviders({})];

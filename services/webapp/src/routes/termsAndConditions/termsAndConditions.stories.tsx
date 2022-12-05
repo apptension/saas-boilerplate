@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { createMockEnvironment } from 'relay-test-utils';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/factories';
-import { withModernProviders } from '../../shared/utils/storybook';
+import { withProviders } from '../../shared/utils/storybook';
 import { TermsAndConditions } from './termsAndConditions.component';
 
 const relayEnvironment = createMockEnvironment();
@@ -82,7 +82,7 @@ const Template: Story = () => {
 export default {
   title: 'Routes/TermsAndConditions',
   component: TermsAndConditions,
-  decorators: [withModernProviders({ relayEnvironment })],
+  decorators: [withProviders({ relayEnvironment })],
 };
 
 export const Default = Template.bind({});

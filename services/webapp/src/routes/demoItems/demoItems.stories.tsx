@@ -1,38 +1,29 @@
 import { Story } from '@storybook/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { RelayMockEnvironment } from 'relay-test-utils';
 
-import { ProvidersWrapper } from '../../shared/utils/testUtils';
-import { RoutesConfig } from '../../app/config/routes';
-import { demoItemFactory } from '../../mocks/factories';
-import { generateRelayEnvironment } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.fixtures';
-import demoItemsAllQueryGraphql from './__generated__/demoItemsAllQuery.graphql';
+import {
+  contentfulDemoItemFavoriteFactory,
+  demoItemFactory,
+  fillDemoItemsAllQuery,
+  fillUseFavouriteDemoItemListQuery,
+} from '../../mocks/factories';
+import { withProviders } from '../../shared/utils/storybook';
+import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { DemoItems } from './demoItems.component';
 
-const items = [demoItemFactory(), demoItemFactory(), demoItemFactory()];
+const data = { items: [demoItemFactory(), demoItemFactory(), demoItemFactory()] };
 
-const relayEnvironment = createMockEnvironment();
-relayEnvironment.mock.queueOperationResolver((operation) =>
-  MockPayloadGenerator.generate(operation, {
-    DemoItemCollection() {
-      return { items };
-    },
-  })
-);
-relayEnvironment.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
+const relayEnvironment = (env: RelayMockEnvironment, { args: { hasFavourite = false } }: any) => {
+  fillCommonQueryWithUser(env);
+  fillDemoItemsAllQuery(env, data);
+  fillUseFavouriteDemoItemListQuery(
+    env,
+    hasFavourite ? contentfulDemoItemFavoriteFactory({ item: { pk: data.items[0].sys.id } }) : undefined
+  );
+};
 
 const Template: Story = ({ hasFavourite = false, ...args }) => {
-  const relayEnvironment = generateRelayEnvironment(hasFavourite ? items[0].sys.id : null);
-
-  return (
-    <ProvidersWrapper
-      context={{
-        relayEnvironment,
-        router: { url: `/en${RoutesConfig.demoItems}`, routePath: `/:lang${RoutesConfig.demoItems}` },
-      }}
-    >
-      <DemoItems {...args} />
-    </ProvidersWrapper>
-  );
+  return <DemoItems {...args} />;
 };
 
 export default {
@@ -41,6 +32,16 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.decorators = [
+  withProviders({
+    relayEnvironment,
+  }),
+];
 
 export const WithFavorited = Template.bind({});
 WithFavorited.args = { hasFavourite: true };
+WithFavorited.decorators = [
+  withProviders({
+    relayEnvironment,
+  }),
+];
