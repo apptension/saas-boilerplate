@@ -1,18 +1,11 @@
-FROM debian:buster
+FROM dockage/alpine:3.15.4
 
-RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
-    libsqlite3-dev \
-    ruby \
-    ruby-dev \
-    build-essential \
-  && gem install sqlite3 -v 1.3.4 \
-  && gem install --no-ri --no-rdoc mailcatcher \
-  && apt-get remove -y build-essential \
-  && apt-get autoremove -y \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists
+ENV MAILCATCHER_VERSION=0.8.2
 
-EXPOSE 1080 1025
+RUN apk --no-cache --update add build-base ruby ruby-dev ruby-json ruby-etc sqlite-dev \
+    && gem install mailcatcher:${MAILCATCHER_VERSION} --no-document \
+    && apk del --rdepends --purge build-base
+
+EXPOSE 1025 1080
 
 ENTRYPOINT ["mailcatcher", "--smtp-ip=0.0.0.0", "--http-ip=0.0.0.0", "--foreground"]
