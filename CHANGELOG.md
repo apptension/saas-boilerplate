@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://bitbucket.org/apptension/saas-boilerplate-app/compare/1.1.0...1.1.1) (2022-12-09)
+
+
+### Features
+
+* [SB-675] Update postgres version to 14.4 ([9c7b3ba](https://bitbucket.org/apptension/saas-boilerplate-app/commit/9c7b3ba8b3690b299d47262ca0ebceb1a3b23490))
+* Refreshed ApplicationMultipleTargetGroupsFargateService ECS pattern. ([fecb6e5](https://bitbucket.org/apptension/saas-boilerplate-app/commit/fecb6e549526922f68d8219a2fb725929252e803))
+* SB-640 Remove makeContextRederer in favour of custom render method (pull request [#394](https://bitbucket.org/apptension/saas-boilerplate-app/issues/394)) ([2d7dba9](https://bitbucket.org/apptension/saas-boilerplate-app/commit/2d7dba9a26143ed61e9c034a3b6310f07e332a53))
+* SB-709 Remove redux-saga from the project ([93926f3](https://bitbucket.org/apptension/saas-boilerplate-app/commit/93926f3b2dab1a66c81c49bfc6bf1360b800fa01))
+* Update web app dependencies ([a646e3f](https://bitbucket.org/apptension/saas-boilerplate-app/commit/a646e3f401cd771324508611d7196e1e62b5a700))
+
+
+### Bug Fixes
+
+* SB-640, SB-661 Fix and refactor storybooks ([660c00c](https://bitbucket.org/apptension/saas-boilerplate-app/commit/660c00c04574e8b72c7832c8678d3e5b6842c221))
+* SB-707 Fix plop templates with invalid <FormattedMessage /> definitions ([dff783a](https://bitbucket.org/apptension/saas-boilerplate-app/commit/dff783aeb18d656e73b34ab0c2cde705a2eab66d))
+* SB-712 Use signed CloudFront URLs instead of signed S3 URLs ([96282e6](https://bitbucket.org/apptension/saas-boilerplate-app/commit/96282e6ccbd2c7a30d5ab62dea5bfe96bc8455a1))
+* SB-724 Revert Postgres to 13.7 ([9015e08](https://bitbucket.org/apptension/saas-boilerplate-app/commit/9015e080cab193d85b5510389329e6a8142606a8))
+* SB-726 Fix failing mailcatcher docker image ([c83374e](https://bitbucket.org/apptension/saas-boilerplate-app/commit/c83374e055b7f1ee194955c7769719ed49fa2859))
+
 ## [1.1.0](https://bitbucket.org/apptension/saas-boilerplate-app/compare/1.0.2...1.1.0) (2022-10-11)
 
 
