@@ -112,7 +112,7 @@ class TestObtainToken:
 
 
 class TestCurrentUserQuery:
-    def test_response_data(self, graphene_client, user_factory):
+    def test_response_data(self, graphene_client, user_factory, user_avatar_factory):
         query = '''
             query {
               currentUser {
@@ -126,6 +126,7 @@ class TestCurrentUserQuery:
             }
         '''
         user = user_factory(
+            has_avatar=True,
             email="test@apptension.com",
             profile__first_name="Grzegorz",
             profile__last_name="Brzęczyszczykiewicz",
@@ -141,7 +142,9 @@ class TestCurrentUserQuery:
         assert data["firstName"] == "Grzegorz"
         assert data["lastName"] == "Brzęczyszczykiewicz"
         assert set(data["roles"]) == {"user", "admin"}
-        assert re.match("https://cdn.example.com/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"])
+        assert re.match("https://cdn.example.com/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"]), data[
+            "avatar"
+        ]
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(

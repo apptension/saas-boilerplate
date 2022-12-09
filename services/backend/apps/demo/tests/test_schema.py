@@ -142,7 +142,7 @@ class TestCreateCrudDemoItemMutation:
         assert item.name == input["name"]
 
     def test_create_new_item_sends_notification(self, graphene_client, user_factory):
-        user = user_factory()
+        user = user_factory(has_avatar=True)
         admin = user_factory(admin=True)
         input = {"name": "Item name"}
 
@@ -247,8 +247,8 @@ class TestUpdateCrudDemoItemMutation:
     def test_update_existing_item_sends_notification_to_admins_and_creator(
         self, graphene_client, crud_demo_item_factory, user_factory
     ):
-        user = user_factory()
-        other_user = user_factory()
+        user = user_factory(has_avatar=True)
+        other_user = user_factory(has_avatar=True)
         admins = user_factory.create_batch(2, admin=True)
         crud_demo_item = crud_demo_item_factory(created_by=user)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))

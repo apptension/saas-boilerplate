@@ -4,7 +4,7 @@ from django.conf import settings
 from moto import mock_events
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def aws_events():
     with mock_events():
         client = boto3.client('events')

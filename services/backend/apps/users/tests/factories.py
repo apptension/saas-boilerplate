@@ -25,6 +25,11 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_superuser = False
     profile = factory.RelatedFactory("apps.users.tests.factories.UserProfileFactory", factory_related_name="user")
 
+    class Params:
+        has_avatar = factory.Trait(
+            profile__avatar=factory.SubFactory("apps.users.tests.factories.UserAvatarFactory"),
+        )
+
     @classmethod
     def _create(cls, *args, **kwargs):
         plain_password = kwargs.pop('password', 'secret')
@@ -59,13 +64,17 @@ class UserAvatarFactory(factory.django.DjangoModelFactory):
 
 
 class UserProfileFactory(factory.django.DjangoModelFactory):
+    """
+    Note: do not add the UserAvatarFactory as SubFactory here. It is very slow and UserProfile is created for almost
+    every test causing severe performance degradation
+    """
+
     class Meta:
         model = "users.UserProfile"
 
     user = factory.SubFactory(UserFactory, profile=None)
     first_name = factory.Faker("first_name", locale="pl")
     last_name = factory.Faker("last_name", locale="pl")
-    avatar = factory.SubFactory(UserAvatarFactory)
 
 
 class ImageFactoryParams(TypedDict):
