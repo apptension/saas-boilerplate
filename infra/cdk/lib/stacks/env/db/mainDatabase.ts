@@ -45,6 +45,10 @@ export class MainDatabase extends Construct {
     return `${envSettings.projectEnvName}-rds-proxy`;
   }
 
+  static getInstanceIdentifier(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectEnvName}-main`
+  }
+
   constructor(scope: Construct, id: string, props: MainDatabaseProps) {
     super(scope, id);
 
@@ -76,7 +80,7 @@ export class MainDatabase extends Construct {
     securityGroup: SecurityGroup
   ) {
     const instance = new DatabaseInstance(this, "Instance", {
-      instanceIdentifier: `${props.envSettings.projectEnvName}-main`,
+      instanceIdentifier: MainDatabase.getInstanceIdentifier(props.envSettings),
       vpc: props.vpc,
       vpcSubnets: { subnetType: SubnetType.PUBLIC },
       engine: DatabaseInstanceEngine.postgres({

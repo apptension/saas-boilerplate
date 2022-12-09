@@ -86,7 +86,7 @@ export class ApiStack extends Stack {
       "ApiService",
       {
         securityGroup: resources.fargateContainerSecurityGroup,
-        serviceName: `${props.envSettings.projectEnvName}-api`,
+        serviceName: ApiStack.getServiceName(props.envSettings),
         cluster: resources.mainCluster,
         cpu: 512,
         memoryLimitMiB: 1024,
@@ -187,6 +187,10 @@ export class ApiStack extends Stack {
         ],
       }
     );
+  }
+
+  public static getServiceName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectEnvName}-api`;
   }
 
   protected createTaskRole(props: MigrationsStackProps): Role {

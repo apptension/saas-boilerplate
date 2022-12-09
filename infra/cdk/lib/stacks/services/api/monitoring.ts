@@ -1,13 +1,16 @@
 import {
   Dashboard,
-  Metric,
   GraphWidget,
-  Unit,
   GraphWidgetView,
+  Metric,
+  Unit,
 } from "aws-cdk-lib/aws-cloudwatch";
 import { FilterPattern, ILogGroup, MetricFilter } from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 import { EnvConstructProps } from "../../../types";
+import { MainDatabase } from "../../env/db/mainDatabase";
+import { MainECSCluster } from "../../env/main/mainEcsCluster";
+import { ApiStack } from "./stack";
 
 export interface CustomDashboardProps extends EnvConstructProps {
   logGroup?: ILogGroup;
@@ -42,8 +45,8 @@ export class Monitoring extends Construct {
       statistic: "Average",
       unit: Unit.PERCENT,
       dimensionsMap: {
-        ClusterName: `${props.envSettings.projectName}-${props.envSettings.envStage}-main`,
-        ServiceName: `${props.envSettings.projectName}-${props.envSettings.envStage}-api`,
+        ClusterName: MainECSCluster.getClusterName(props.envSettings),
+        ServiceName: ApiStack.getServiceName(props.envSettings),
       },
     });
 
@@ -53,8 +56,8 @@ export class Monitoring extends Construct {
       statistic: "Average",
       unit: Unit.PERCENT,
       dimensionsMap: {
-        ClusterName: `${props.envSettings.projectName}-${props.envSettings.envStage}-main`,
-        ServiceName: `${props.envSettings.projectName}-${props.envSettings.envStage}-api`,
+        ClusterName: MainECSCluster.getClusterName(props.envSettings),
+        ServiceName: ApiStack.getServiceName(props.envSettings),
       },
     });
 
@@ -71,7 +74,9 @@ export class Monitoring extends Construct {
       statistic: "Average",
       unit: Unit.PERCENT,
       dimensionsMap: {
-        DBInstanceIdentifier: `${props.envSettings.projectName}-${props.envSettings.envStage}-main`,
+        DBInstanceIdentifier: MainDatabase.getInstanceIdentifier(
+          props.envSettings
+        ),
       },
     });
 
@@ -81,7 +86,9 @@ export class Monitoring extends Construct {
       statistic: "Average",
       unit: Unit.COUNT,
       dimensionsMap: {
-        DBInstanceIdentifier: `${props.envSettings.projectName}-${props.envSettings.envStage}-main`,
+        DBInstanceIdentifier: MainDatabase.getInstanceIdentifier(
+          props.envSettings
+        ),
       },
     });
 
