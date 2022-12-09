@@ -1,10 +1,8 @@
-from tempfile import SpooledTemporaryFile
-
 import os
 import secrets
-from django.conf import settings
-from django.utils.deconstruct import deconstructible
+from tempfile import SpooledTemporaryFile
 
+from django.utils.deconstruct import deconstructible
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
@@ -30,11 +28,3 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 class PublicS3Boto3StorageWithCDN(CustomS3Boto3Storage):
     default_acl = "public-read"
     querystring_auth = False
-
-
-class PrivateS3Boto3StorageWithCDN(CustomS3Boto3Storage):
-    custom_domain = False
-
-    def url(self, name, parameters=None, expire=None, http_method=None):
-        url = super().url(name, parameters, expire, http_method)
-        return url.replace(f"{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com", f"{settings.AWS_S3_CUSTOM_DOMAIN}")

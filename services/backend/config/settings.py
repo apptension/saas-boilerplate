@@ -268,10 +268,13 @@ SHELL_PLUS_IMPORTS = ["from config.schema import schema"]
 
 WEB_SOCKET_API_ENDPOINT_URL = env("WEB_SOCKET_API_ENDPOINT_URL", default="")
 
-DEFAULT_FILE_STORAGE = 'common.storages.PrivateS3Boto3StorageWithCDN'
+DEFAULT_FILE_STORAGE = 'common.storages.CustomS3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
-AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
 AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL
+AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
+AWS_QUERYSTRING_EXPIRE = env("AWS_QUERYSTRING_EXPIRE", default=60 * 60 * 24)
+AWS_CLOUDFRONT_KEY = os.environ.get('AWS_CLOUDFRONT_KEY', '').encode('ascii')
+AWS_CLOUDFRONT_KEY_ID = os.environ.get('AWS_CLOUDFRONT_KEY_ID', None)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 

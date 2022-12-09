@@ -443,7 +443,7 @@ class TestCreateDocumentDemoItemMutation:
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]["name"] == "test.txt"
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]["url"].startswith(
-            "https://cdn.example.com/documents/a1b2/test.txt?"
+            "https://cdn.example.com/documents/a1b2/test.txt"
         )
 
         item_global_id = executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["id"]
@@ -452,7 +452,7 @@ class TestCreateDocumentDemoItemMutation:
 
         assert item.created_by == user
         assert item.file.name == "documents/a1b2/test.txt"
-        assert item.file.url.startswith("https://cdn.example.com/documents/a1b2/test.txt?")
+        assert item.file.url.startswith("https://cdn.example.com/documents/a1b2/test.txt")
 
     def test_create_new_item_when_limit_already_reached(self, user, api_client, document_demo_item_factory):
         api_client.force_authenticate(user)
