@@ -66,3 +66,14 @@ and push that tag to the origin:
 git push origin 1.0.0
 ```
 This tag will be automatically pushed by BitBucket Pipeline to CodeCommit repository. To deploy new version open CodeBuild service in AWS Console, enter the main project (the one following the `{project}-{environment}` pattern, like `saas-qa`) and click "Start build with overrides button". In the Source section select "Git tag" as a "Reference type" and select the tag that you want to deploy. Click "Start build" to confirm selection and start new build.
+
+### Versioning using `standard-version` package
+
+To automate assigning correct versions we recommend using npm `standard-version` package. The following command:
+
+```shell
+npx standard-version --release-as 1.0.0
+```
+
+called in root folder of the application will add a git tag, change version in appropriate `package.json` files,
+generate or update CHANGELOG.md file automatically and commit all changes.
