@@ -5,4 +5,3 @@ import { initApp } from './app/initApp';
 
 observeFont();
 initApp();
-export { TestProduct } from './modules/stripe/stripe.types';
