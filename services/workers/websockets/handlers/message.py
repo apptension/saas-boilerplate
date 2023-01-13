@@ -26,7 +26,7 @@ def handle(event, context):
             {"id": str(uuid.uuid4()), "type": "connection_ack", "payload": {"con_id": connection_id}},
         )
 
-    elif operation.get("type") == "start":
+    elif operation.get("type") == "subscribe":
         subscription_id = operation.get("id")
         payload = operation.get("payload", {})
 

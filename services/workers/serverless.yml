@@ -88,12 +88,11 @@ functions:
       - websocket: $disconnect
 
 plugins:
-  - serverless-pseudo-parameters
   - serverless-step-functions
 
 custom:
   projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
-  eventBusArn: "arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/${self:custom.projectEnvName}-workers"
+  eventBusArn: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.projectEnvName}-workers"
   pythonRequirements:
     dockerizePip: non-linux
     useDownloadCache: true

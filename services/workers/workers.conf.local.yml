@@ -24,4 +24,9 @@ SynchronizeContentfulContent:
     CONTENTFUL_ACCESS_TOKEN: "${env:CONTENTFUL_ACCESS_TOKEN}"
     CONTENTFUL_ENVIRONMENT: "${env:CONTENTFUL_ENVIRONMENT}"
 
+WebSocketsHandler:
+  environment: []
+
 vpc: {}
+
+websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }

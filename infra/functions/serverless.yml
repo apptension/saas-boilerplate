@@ -1,7 +1,9 @@
 service: "${env:PROJECT_NAME}-functions"
 
+frameworkVersion: '3'
+
 custom:
-  migrationsStateMachineArn: arn:aws:states:#{AWS::Region}:#{AWS::AccountId}:stateMachine:${env:PROJECT_NAME}-${opt:stage}-migrations
+  migrationsStateMachineArn: arn:aws:states:#{aws:region}:#{aws:accountId}:stateMachine:${env:PROJECT_NAME}-${opt:stage}-migrations
 
 provider:
   name: aws
@@ -33,6 +35,3 @@ functions:
     handler: deployment/triggerMigrationsJob.handler
     environment:
       STATE_MACHINE_ARN: ${self:custom.migrationsStateMachineArn}
-
-plugins:
-  - serverless-pseudo-parameters

@@ -27,7 +27,7 @@ def test_handler_connect(user_factory):
     assert response == {
         "statusCode": 200,
         "body": "conn-id",
-        "headers": {"Sec-WebSocket-Protocol": "graphql-ws"},
+        "headers": {"Sec-WebSocket-Protocol": "graphql-transport-ws"},
     }
     with db_session() as session:
         assert session.query(models.WebSocketConnection).filter_by(user_id=1, connection_id="conn-id").count() == 1
@@ -51,7 +51,7 @@ def test_handler_connect_without_existing_user():
     assert response == {
         "statusCode": 400,
         "body": "User doesn't exist.",
-        "headers": {"Sec-WebSocket-Protocol": "graphql-ws"},
+        "headers": {"Sec-WebSocket-Protocol": "graphql-transport-ws"},
     }
     with db_session() as session:
         assert session.query(models.WebSocketConnection).filter_by(connection_id="conn-id").count() == 0
@@ -77,14 +77,14 @@ def test_handler_message_connection_init(mocker, user_factory):
     )
 
 
-def test_handler_message_start(web_socket_connection_factory):
+def test_handler_message_subscribe(web_socket_connection_factory):
     web_socket_connection_factory(id=1, connection_id="conn-id")
 
     message.handle(
         {
             "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": "example.com"},
             "body": (
-                '{\"id\":\"1\",\"type\":\"start\",\"payload\":{\"query\":\"subscription '
+                '{\"id\":\"1\",\"type\":\"subscribe\",\"payload\":{\"query\":\"subscription '
                 'notificationsListSubscription {\\n  notificationCreated {\\n    id\\n  }\\n}\\n\",\"'
                 'operationName\":\"notificationsListSubscription\",\"variables\":{}}}'
             ),

@@ -8,10 +8,7 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "serverless-pseudo-parameters": "^2.5.0"
-  },
   "devDependencies": {
-    "serverless": "^2.33.1"
+    "serverless": "^3.25.1"
   }
 }

@@ -35,7 +35,7 @@ iam:
     Resource: "*"
 
 environment:
-  SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN~true}
+  SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN}
   PYTHONPATH: /var/task/__pypackages__/3.8/lib
   ENVIRONMENT_NAME: ${self:provider.stage}
 
@@ -50,26 +50,26 @@ ScheduleTask:
     TASK_SCHEDULING_STATE_MACHINE_ARN: { Ref: 'TaskSchedulingStateMachineID' }
 
 ExecuteScheduledTask:
-  environment: [ ]
+  environment: {}
 
 SendEmail:
   handler: emails/handlers.sendEmail
   environment:
-    FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL~true}
-    WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL~true}
+    FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL}
+    WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL}
 
 SynchronizeContentfulContent:
   environment:
     <<: *envsDb
-    CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID~true}
-    CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN~true}
-    CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT~true}
+    CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID}
+    CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN}
+    CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT}
 
 WebSocketsHandler:
   environment:
     <<: *envsDb
-    JWT_SECRET: ${ssm:/${self:custom.ssmService}/JWT_SECRET~true}
-    HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT~true}
+    JWT_SECRET: ${ssm:/${self:custom.ssmService}/JWT_SECRET}
+    HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
 
 vpc:
   securityGroupIds:

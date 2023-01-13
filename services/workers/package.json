@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "sls": "sls",
+    "serverless": "serverless",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,11 +16,10 @@
     "express": "^4.17.1",
     "nodemailer": "^6.4.18",
     "react-scripts": "npm:@apptension/react-scripts",
-    "serverless-pseudo-parameters": "^2.5.0",
-    "serverless-step-functions": "^2.29.0",
+    "serverless-step-functions": "^3.11.1",
     "yaml": "^2.0.0-3"
   },
   "devDependencies": {
-    "serverless": "^2.33.1"
+    "serverless": "^3.25.1"
   }
 }
