@@ -18,14 +18,19 @@ describe('CrudDemoItemDetails: Component', () => {
     </Routes>
   );
 
-  it('should render item details', () => {
+  it('should render item details', async () => {
     const routerProps = createMockRouterProps(routePath, { id: defaultItemId });
     const relayEnvironment = createMockEnvironment();
     fillCommonQueryWithUser(relayEnvironment);
-    fillCrudDemoItemDetailsQuery(relayEnvironment, { name: 'demo item name' }, { id: defaultItemId });
+    const variables = { id: defaultItemId };
+    const data = { name: 'demo item name' };
+    const mockRequest = fillCrudDemoItemDetailsQuery(relayEnvironment, data, variables);
 
-    render(<Component />, { routerProps, relayEnvironment });
+    const apolloMocks = [mockRequest];
 
-    expect(screen.getByText(/demo item name/i)).toBeInTheDocument();
+    render(<Component />, { routerProps, relayEnvironment, apolloMocks });
+
+    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
+    expect(await screen.findByText(/demo item name/i)).toBeInTheDocument();
   });
 });

@@ -5,7 +5,8 @@ import { RoutesConfig } from '../../../app/config/routes';
 import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { fillCrudDemoItemDetailsQuery } from '../../../mocks/factories/crudDemoItem';
-import { CrudDemoItemDetails } from './crudDemoItemDetails.component';
+import { composeMockedQueryResult } from '../../../tests/utils/fixtures';
+import { CRUD_DEMO_ITEM_DETAILS_QUERY, CrudDemoItemDetails } from './crudDemoItemDetails.component';
 
 const routePath = ['crudDemoItem', 'details'];
 const defaultItemId = 'test-id';
@@ -24,18 +25,25 @@ export default {
 };
 
 export const Default = Template.bind({});
+const variables = { id: defaultItemId };
+const data = {
+  name: 'Demo item name',
+};
 Default.decorators = [
   withProviders({
-    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
+    routerProps: createMockRouterProps(routePath, variables),
     relayEnvironment: (env) => {
       fillCommonQueryWithUser(env);
-      fillCrudDemoItemDetailsQuery(
-        env,
-        {
-          name: 'Demo item name',
-        },
-        { id: defaultItemId }
-      );
+      // todo: replace composeMockedQueryResult with fillCrudDemoItemDetailsQuery during relay removal
+      fillCrudDemoItemDetailsQuery(env, data, variables);
     },
+    apolloMocks: [
+      composeMockedQueryResult(CRUD_DEMO_ITEM_DETAILS_QUERY, {
+        variables: variables,
+        data: {
+          crudDemoItem: data,
+        },
+      }),
+    ],
   }),
 ];

@@ -1,3 +1,6 @@
+import { MockedResponse } from '@apollo/client/testing';
+import { DocumentNode } from 'graphql/language';
+
 export function makeId(length: number) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -35,3 +38,21 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
     },
   };
 };
+
+type ComposeMockedQueryResultProps = {
+  data: Record<string, any>;
+  variables?: Record<string, any>;
+};
+
+export const composeMockedQueryResult = (
+  query: DocumentNode,
+  { variables, data }: ComposeMockedQueryResultProps
+): MockedResponse => ({
+  request: {
+    query,
+    variables,
+  },
+  result: {
+    data,
+  },
+});

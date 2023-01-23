@@ -15,14 +15,6 @@
         "command": "cp .env.example .env"
       }
     },
-    "relay": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/webapp",
-        "color": true,
-        "command": "node_modules/.bin/relay-compiler"
-      }
-    },
     "graphql": {
       "executor": "nx:run-commands",
       "options": {
@@ -31,7 +23,10 @@
       },
       "configurations": {
         "generate-types": {
-          "command": "node_modules/.bin/graphql-codegen -c ./graphql/codegen/contentful.yml && yarn graphql-codegen -c graphql/codegen/schemaTypes.yml"
+          "command": "node_modules/.bin/graphql-codegen -c ./graphql/codegen/contentful.yml && node_modules/.bin/graphql-codegen -c graphql/codegen/schemaTypes.yml && node_modules/.bin/graphql-codegen -c ./graphql/codegen/client.yml"
+        },
+        "generate-types:watch": {
+          "command": "node_modules/.bin/graphql-codegen -w -c ./graphql/codegen/client.yml"
         },
         "download-schema": {
           "command": "/bin/sh ./scripts/download-graphql-schema.sh"
@@ -45,7 +40,7 @@
         "color": true,
         "commands": [
           "node_modules/.bin/craco start",
-          "node_modules/.bin/relay-compiler --watch"
+          "nx run webapp:graphql:generate-types:watch"
         ]
       },
       "dependsOn": [
@@ -68,8 +63,7 @@
         }
       },
       "dependsOn": [
-        "graphql:generate-types",
-        "relay"
+        "graphql:generate-types"
       ]
     },
     "build": {

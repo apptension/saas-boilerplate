@@ -9,6 +9,7 @@ import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDet
 import { SentryProvider } from './providers/sentry';
 import { ReduxProvider } from './providers/redux';
 import { RelayProvider } from './providers/relay';
+import { ApolloProvider } from './providers/apollo';
 import { CommonQuery } from './providers/commonQuery';
 import { RouterProvider } from './providers/router';
 
@@ -24,9 +25,11 @@ const render = () => {
         <RouterProvider>
           <HelmetProvider>
             <RelayProvider>
-              <CommonQuery>
-                <App />
-              </CommonQuery>
+              <ApolloProvider>
+                <CommonQuery>
+                  <App />
+                </CommonQuery>
+              </ApolloProvider>
             </RelayProvider>
           </HelmetProvider>
         </RouterProvider>

@@ -24,7 +24,8 @@ graphql`
       }
       paymentMethodEdge @appendEdge(connections: $connections) {
         node {
-          ...stripePaymentMethodFragment @relay(mask: false)
+          # commented only because of the broken apollo types: need to fix it after migration
+          #          ...stripePaymentMethodFragment @relay(mask: false)
           ...stripePaymentMethodFragment
         }
       }

@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren, ComponentClass, ComponentType, ReactElement } from 'react';
 import { Environment, RelayEnvironmentProvider } from 'react-relay';
+import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
 import { HelmetProvider } from 'react-helmet-async';
@@ -28,6 +29,8 @@ export type DefaultReduxState = typeof defaultReduxStore;
 
 export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
   relayEnvironment: Environment;
+  apolloMocks?: ReadonlyArray<MockedResponse>;
+  apolloProviderProps: MockedProviderProps;
   routerProps: MemoryRouterProps;
   intlLocale: Locale;
   intlMessages: TranslationMessages;
@@ -37,6 +40,8 @@ export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
 export function DefaultTestProviders<ReduxState>({
   children,
   relayEnvironment,
+  apolloMocks = [],
+  apolloProviderProps = {},
   routerProps,
   intlMessages,
   intlLocale,
@@ -49,7 +54,9 @@ export function DefaultTestProviders<ReduxState>({
           <IntlProvider locale={intlLocale} messages={intlMessages}>
             <Provider store={reduxStore}>
               <RelayEnvironmentProvider environment={relayEnvironment}>
-                <CommonQuery>{children}</CommonQuery>
+                <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
+                  <CommonQuery>{children}</CommonQuery>
+                </MockedApolloProvider>
               </RelayEnvironmentProvider>
             </Provider>
           </IntlProvider>

@@ -16,7 +16,8 @@ graphql`
     allPaymentMethods(first: 100) @connection(key: "stripe_allPaymentMethods") {
       edges {
         node {
-          ...stripePaymentMethodFragment @relay(mask: false)
+          # commented only because of the broken apollo types: need to fix it after migration
+          #          ...stripePaymentMethodFragment @relay(mask: false)
           ...stripePaymentMethodFragment
         }
       }

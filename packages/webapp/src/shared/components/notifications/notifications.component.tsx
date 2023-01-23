@@ -12,7 +12,7 @@ export const Notifications = () => {
 
   const [listQueryRef, loadListQuery] = useQueryLoader<notificationsListQuery>(
     graphql`
-      query notificationsListQuery {
+      query notificationsListQuery($count: Int = 20, $cursor: String) {
         ...notificationsListContent
         ...notificationsButtonContent
       }

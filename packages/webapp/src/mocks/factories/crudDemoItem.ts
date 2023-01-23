@@ -3,8 +3,9 @@ import { OperationDescriptor } from 'react-relay/hooks';
 
 import crudDemoItemDetailsQueryGraphql from '../../routes/crudDemoItem/crudDemoItemDetails/__generated__/crudDemoItemDetailsQuery.graphql';
 import EditCrudDemoItemQuery from '../../routes/crudDemoItem/editCrudDemoItem/__generated__/editCrudDemoItemQuery.graphql';
-import { connectionFromArray } from '../../tests/utils/fixtures';
+import { composeMockedQueryResult, connectionFromArray } from '../../tests/utils/fixtures';
 import CrudDemoItemListQuery from '../../routes/crudDemoItem/crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
+import { CRUD_DEMO_ITEM_DETAILS_QUERY } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
 
 export const fillCrudDemoItemDetailsQuery = (
   env: RelayMockEnvironment,
@@ -21,6 +22,12 @@ export const fillCrudDemoItemDetailsQuery = (
     })
   );
   env.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, variables);
+  return composeMockedQueryResult(CRUD_DEMO_ITEM_DETAILS_QUERY, {
+    variables,
+    data: {
+      crudDemoItem: data,
+    },
+  });
 };
 
 export const fillEditCrudDemoItemQuery = (

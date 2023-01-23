@@ -3,6 +3,7 @@ import graphql from 'babel-plugin-relay/macro';
 import { demoItemQuery } from './__generated__/demoItemQuery.graphql';
 
 export const useDemoItemQuery = () => {
+  // todo: pass context: { schemaType = SchemaType.Contentful } when use Apollo client
   return useQueryLoader<demoItemQuery>(graphql`
     query demoItemQuery($id: String!) {
       demoItem(id: $id) {

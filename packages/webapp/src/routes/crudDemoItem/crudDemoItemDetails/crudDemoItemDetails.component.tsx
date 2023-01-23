@@ -1,36 +1,48 @@
-import { Suspense, useEffect } from 'react';
-import graphql from 'babel-plugin-relay/macro';
-import { useQueryLoader } from 'react-relay';
+import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router';
-import { crudDemoItemDetailsQuery } from './__generated__/crudDemoItemDetailsQuery.graphql';
-import { CrudDemoItemDetailsContent } from './crudDemoItemDetailsContent.component';
+import { FormattedMessage } from 'react-intl';
+import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { BackButton } from '../../../shared/components/backButton';
+import { RoutesConfig } from '../../../app/config/routes';
+import { Container, Header } from './crudDemoItemDetails.styles';
+
+export const CRUD_DEMO_ITEM_DETAILS_QUERY = gql(/* GraphQL */ `
+  query crudDemoItemDetailsQuery($id: ID!) {
+    crudDemoItem(id: $id) {
+      id
+      name
+    }
+  }
+`);
 
 export const CrudDemoItemDetails = () => {
   type Params = {
     id: string;
   };
+  const generateLocalePath = useGenerateLocalePath();
   const { id } = useParams<keyof Params>() as Params;
 
-  const [queryRef, loadQuery] = useQueryLoader<crudDemoItemDetailsQuery>(graphql`
-    query crudDemoItemDetailsQuery($id: ID!) {
-      crudDemoItem(id: $id) {
-        id
-        name
-      }
-    }
-  `);
+  const { loading, data } = useQuery(CRUD_DEMO_ITEM_DETAILS_QUERY, {
+    variables: {
+      id,
+    },
+  });
 
-  useEffect(() => {
-    loadQuery({ id });
-  }, [loadQuery, id]);
-
-  if (!queryRef) {
-    return null;
+  if (loading) {
+    return (
+      <span>
+        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
+      </span>
+    );
   }
 
+  const itemData = data?.crudDemoItem;
+
   return (
-    <Suspense fallback={<span>Loading ...</span>}>
-      <CrudDemoItemDetailsContent queryRef={queryRef} />
-    </Suspense>
+    <Container>
+      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
+      <Header>{itemData?.name}</Header>
+    </Container>
   );
 };
