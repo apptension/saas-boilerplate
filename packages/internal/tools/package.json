@@ -1,0 +1,20 @@
+{
+  "name": "@saas-boilerplate/tools",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "generators": "./generators.json",
+  "executors": "./executors.json",
+  "scripts": {
+    "create-env": "nx exec -skip-nx-cache=true -- plop --plopfile src/plopfile.js createEnv"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.708.0",
+    "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.33.0",
+    "ts-node": "^9.1.1",
+    "plop": "^2.7.4"
+  },
+  "nx": {}
+}

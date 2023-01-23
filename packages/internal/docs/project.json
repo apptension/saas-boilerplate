@@ -1,0 +1,25 @@
+{
+  "name": "docs",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/internal/docs/src",
+  "projectType": "library",
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/docs",
+        "command": ""
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/docs",
+        "command": "nx run infra:deploy:docs"
+      }
+    }
+  },
+  "tags": []
+}

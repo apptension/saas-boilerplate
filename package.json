@@ -1,0 +1,31 @@
+{
+  "name": "saas-boilerplate-app",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "aws-vault:shell": "aws-vault exec $AWS_VAULT_PROFILE -- $SHELL",
+    "login:qa": "env-cmd -f .env env-cmd -f .env.qa npm run aws-vault:shell"
+  },
+  "devDependencies": {
+    "@nrwl/devkit": "15.5.2",
+    "@nrwl/eslint-plugin-nx": "^15.5.1",
+    "@nrwl/js": "15.5.2",
+    "@nrwl/nx-plugin": "^15.5.1",
+    "@swc-node/register": "^1.4.2",
+    "@swc/cli": "~0.1.55",
+    "@swc/core": "^1.2.173",
+    "@swc/helpers": "~0.4.11",
+    "@types/node": "16.11.7",
+    "env-cmd": "^10.1.0",
+    "jsonc-eslint-parser": "^2.1.0",
+    "nx": "^15.4.5",
+    "prettier": "^2.6.2",
+    "ts-node": "10.9.1",
+    "tslib": "^2.3.0",
+    "typescript": "~4.8.2"
+  },
+  "dependencies": {
+    "@nrwl/nx-cloud": "^15.0.2"
+  }
+}

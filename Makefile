@@ -1,67 +1,54 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-include $(SELF_DIR)/base.mk
+include $(SELF_DIR)/Makefile.base.mk
 
-install: install-infra-cdk install-infra-functions install-scripts
-	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) install;)
+bootstrap-infra:
+	nx run tools:bootstrap-infra
 
-setup-tools:
-	cd $(SELF_DIR)scripts/setup && ../node_modules/.bin/plop configTools
-
-setup-infra:
-	chmod +x ./scripts/*.sh
-	cd $(SELF_DIR)scripts && $(SHELL) cdk-bootstrap.sh
-
-rm-docker-volume:
-	docker volume rm $(PROJECT_NAME)-web-backend-db-data
-
-create-docker-volume:
-	docker volume create --name=$(PROJECT_NAME)-web-backend-db-data
-
-setup: create-docker-volume
-	$(foreach file, $(wildcard $(SERVICES_DIR)/*), cp $(file)/.env.example $(file)/.env 2>/dev/null || :;)
-
-create-env:
-	cd scripts/setup && ../node_modules/.bin/plop createEnv
-
-create-repo-auth-url:
-	node $(SELF_DIR)scripts/create-cicd-creds.js
+setup:
+	cp $(BASE_DIR).env.example $(BASE_DIR).env
+	nx run-many --skip-nx-cache --target=setup
 
 #
 # Infrastructure deployment
 #
 
 deploy-global-infra:
-	$(MAKE) -C $(SELF_DIR)infra deploy-global-infra
+	nx run infra:deploy:global
 
 deploy-global-tools:
-	$(MAKE) -C $(SELF_DIR)infra deploy-global-tools
+	nx run infra:deploy:global-tools
 
 deploy-env-infra:
-	$(MAKE) -C $(SELF_DIR)infra deploy-env-infra
+	nx run infra:deploy:env
 
 upload-version:
-	node $(BASE_DIR)/scripts/upload-version.js migrations,api,workers,webapp
+	nx run tools:upload-version migrations,api,workers,webapp
 
 #
-# Services deployment
+# Packages deployment
 #
 
 build:
-	@echo Build version: $(VERSION)
-	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) build;)
+	nx run-many --target=build
 
 deploy-components:
-	$(MAKE) -C $(SELF_DIR)infra/cdk deploy-components
+	nx run infra:deploy:components
 
 deploy-env-app: deploy-components
-	$(foreach file, $(wildcard $(SERVICES_DIR)/*), make -C $(file) deploy;)
+	nx run-many --target=deploy --projects=backend,workers,webapp
 
 stop-task-scheduling-executions:
-	$(MAKE) -C $(SELF_DIR)services/workers stop-task-scheduling-executions
+	nx run workers:stop-task-scheduling-executions
 
 #
 # Helper rules
 #
 
 psql:
-	$(DOCKER_COMPOSE) exec db psql -d'backend' -U'backend'
+	docker compose exec db psql -d'backend' -U'backend'
+
+create-repo-auth-url:
+	nx run tools:create-cicd-creds
+
+create-docker-volume:
+	nx run core:docker-create-volumes

@@ -1,0 +1,91 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/backend",
+  "projectType": "application",
+  "sourceRoot": "packages/backend",
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "command": "cp .env.example .env"
+      }
+    },
+    "compose-build-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "nx run core:docker-login",
+          "docker-compose build backend"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "command": "docker-compose run --rm -T backend ./scripts/run_tests.sh"
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "/bin/bash scripts/build.sh"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        "test"
+      ]
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "nx deploy:api",
+          "nx deploy:migrations"
+        ],
+        "parallel": false
+      },
+      "configurations": {
+        "api": {
+          "commands": [
+            "nx run infra:deploy:api",
+            "nx run tools:upload-service-version api \"url=https://${DOMAIN_API}\""
+          ],
+          "parallel": false
+        },
+        "migrations": {
+          "commands": [
+            "nx run infra:deploy:migrations",
+            "nx run infra-functions:invoke -f TriggerMigrationsJob",
+            "nx run tools:upload-service-version migrations"
+          ],
+          "parallel": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/backend/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "service"
+  ]
+}

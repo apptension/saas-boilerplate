@@ -1,0 +1,122 @@
+{
+  "name": "webapp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp/src",
+  "projectType": "application",
+  "implicitDependencies": [
+    "tools"
+  ],
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "command": "cp .env.example .env"
+      }
+    },
+    "relay": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "command": "node_modules/.bin/relay-compiler"
+      }
+    },
+    "graphql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true
+      },
+      "configurations": {
+        "generate-types": {
+          "command": "node_modules/.bin/graphql-codegen -c ./graphql/codegen/contentful.yml && yarn graphql-codegen -c graphql/codegen/schemaTypes.yml"
+        },
+        "download-schema": {
+          "command": "/bin/sh ./scripts/download-graphql-schema.sh"
+        }
+      }
+    },
+    "start:app": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "commands": [
+          "node_modules/.bin/craco start",
+          "node_modules/.bin/relay-compiler --watch"
+        ]
+      },
+      "dependsOn": [
+        "graphql:generate-types",
+        "relay"
+      ]
+    },
+    "cra-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true
+      },
+      "configurations": {
+        "app": {
+          "command": "node_modules/.bin/craco build"
+        },
+        "emails": {
+          "command": "node_modules/.bin/craco build --config ./craco.emails.config.ts"
+        }
+      },
+      "dependsOn": [
+        "graphql:generate-types",
+        "relay"
+      ]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true
+      },
+      "configurations": {
+        "app": {
+          "command": "nx run tools:chamber-exec webapp nx run webapp:cra-build:app"
+        },
+        "emails": {
+          "command": "nx run tools:chamber-exec webapp nx run webapp:cra-build:emails"
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "command": "node_modules/.bin/craco test"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/webapp/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "commands": [
+          "nx run infra:deploy:webapp",
+          "nx run tools:upload-service-version webapp \"url=https://${DOMAIN_WEB_APP}\""
+        ]
+      }
+    }
+  },
+  "tags": []
+}

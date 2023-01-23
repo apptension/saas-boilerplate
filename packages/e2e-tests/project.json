@@ -1,0 +1,130 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/e2e-tests",
+  "projectType": "application",
+  "sourceRoot": "packages/e2e-tests",
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/e2e-tests",
+        "color": true,
+        "command": "cp .env.example .env"
+      }
+    },
+    "compose-build-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "command": "docker-compose build e2e-tests"
+      }
+    },
+    "pull-base-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/e2e-tests",
+        "color": true,
+        "command": "echo"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "command": "docker-compose run --rm -T e2e-tests sh -c \"/bin/chamber exec env-${PROJECT_NAME}-${ENV_STAGE}-e2e -- ./scripts/run_tests.sh\""
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    },
+    "pretest-clear": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "rm -rf mochareports/* || true",
+          "rm -rf cypress/reports/* || true"
+        ]
+      }
+    },
+    "generate-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "mkdir -p mochareports",
+          "mochawesome-merge cypress/reports/mocha/*.json > mochareports/report.json",
+          "marge mochareports/report.json -f report -o mochareports"
+        ],
+        "parallel": false
+      }
+    },
+    "all:headless:chrome:qa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/e2e-tests",
+        "commands": [
+          "cypress run --env configFile=qa --browser chrome --headless",
+          "nx generate:report"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        "pretest-clear"
+      ]
+    },
+    "all:headless:ff:qa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/e2e-tests",
+        "commands": [
+          "cypress run --env configFile=qa --browser firefox --headless",
+          "nx generate:report"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        "pretest-clear"
+      ]
+    },
+    "all:headless:edge:qa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/e2e-tests",
+        "commands": [
+          "cypress run --env configFile=qa --browser edge --headless",
+          "nx generate:report"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        "pretest-clear"
+      ]
+    },
+    "open:qa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/e2e-tests",
+        "commands": [
+          "cypress open --env configFile=qa"
+        ],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/e2e-tests/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "service"
+  ]
+}

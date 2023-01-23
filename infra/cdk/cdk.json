@@ -1,4 +1,0 @@
-{
-  "app": "npx ts-node bin/cdk.ts",
-  "requireApproval": "never"
-}

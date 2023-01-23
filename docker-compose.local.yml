@@ -1,0 +1,106 @@
+version: "3.4"
+
+volumes:
+  web_backend_db_data:
+    name: "${PROJECT_NAME}-web-backend-db-data"
+    external: true
+
+  web_backend_staticfiles: {}
+  workers_node_modules: {}
+
+services:
+  e2e-tests:
+    command: sh -c "echo skip"
+    env_file:
+      - .env
+      - ./packages/e2e-tests/.env
+
+  db:
+    volumes:
+      - web_backend_db_data:/var/lib/postgresql/data
+
+  backend:
+    volumes:
+      - ./packages/backend/:/app
+      - /app/__pypackages__
+    env_file:
+      - ./packages/backend/.env
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - WORKERS_EVENT_BUS_NAME=${PROJECT_NAME}-${ENV_STAGE}-workers
+    depends_on:
+      - db
+      - localstack
+      - mailcatcher
+      - workers
+      - localwsserver
+
+  workers:
+#    volumes:
+#      - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
+#      - ./packages/workers/:/app/packages/workers/
+#      - workers_node_modules:/app/packages/workers/node_modules/
+#      - /app/packages/workers/__pypackages__/
+    env_file:
+      - .env
+      - ./packages/workers/.env
+
+    depends_on:
+      - db
+      - mailcatcher
+    ports:
+      - "3005:3005"
+
+  localstack:
+    image: localstack/localstack:0.11.3
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=serverless,events,cloudformation,ses,secretsmanager
+      - DEFAULT_REGION=eu-west-1
+      - DEBUG=1
+      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_REMOTE_DOCKER=true
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - HOST_TMP_FOLDER=/tmp
+    volumes:
+      - "/tmp/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    privileged: true
+    depends_on:
+      - db
+    links:
+      - db
+
+  mailcatcher:
+    build: ./packages/internal/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    restart: always
+
+  ssm-editor:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./packages/internal/ssm-editor
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME:-}
+      - ENV_STAGE=${ENV_STAGE:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN:-}
+      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION:-}
+
+  localwsserver:
+    build: ./packages/internal/local-ws-server
+    ports:
+      - "8080:8080"
+    environment:
+      - BE_ENDPOINT_URL=http://backend:5000/
+    volumes:
+      - ./tools/localWSServer/:/app/

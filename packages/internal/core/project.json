@@ -1,0 +1,83 @@
+{
+  "name": "core",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/internal/core/src",
+  "projectType": "library",
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/core",
+        "command": "nx docker-create-volumes"
+      }
+    },
+
+    "docker-create-volumes": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/core",
+        "command": "/bin/bash ./scripts/docker-create-volumes.sh"
+      }
+    },
+    "docker-login": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/core",
+        "command": "/bin/bash ./scripts/docker-login.sh"
+      }
+    },
+    "docker-compose": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "parallel": false
+      },
+      "configurations": {
+        "up": {
+          "commands": [
+            "nx run-many --target=compose-build-image --projects=backend,workers",
+            "docker-compose up --force-recreate -d backend workers"
+          ]
+        },
+        "down": {
+          "command": "docker-compose down"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "nx up"
+        ],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/internal/core/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "packages/internal/core/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

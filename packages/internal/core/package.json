@@ -1,0 +1,7 @@
+{
+  "name": "core",
+  "version": "0.0.0",
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
+  }
+}

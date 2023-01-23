@@ -13,7 +13,7 @@ services:
 
   backend:
     build:
-      context: ./services/backend
+      context: ./packages/backend
       target: backend
     command: ["./scripts/run_local.sh"]
     ports:
@@ -28,15 +28,15 @@ services:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
       - AWS_DEFAULT_REGION=eu-west-1
-      - PROJECT_NAME=${PROJECT_NAME}
     stdin_open: true
     tty: true
 
   workers:
     build:
-      context: ./services/workers
+      context: .
+      dockerfile: ./packages/workers/Dockerfile
     volumes:
-      - ./services/webapp/build/email-renderer/:/app/emails/renderer
+      - ./packages/webapp/build/email-renderer/:/app/emails/renderer
     depends_on:
       - db
     links:
@@ -44,25 +44,14 @@ services:
 
   webapp:
     build:
-      context: ./services/webapp
+      context: ./packages/webapp
     volumes:
-      - ./services/webapp/build:/usr/src/app/build/
+      - ./packages/webapp/build:/usr/src/app/build/
 
-  e2e:
+  e2e-tests:
     build:
-      context: ./E2E
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - ENV_STAGE=${ENV_STAGE}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
-      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
-      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
-      - CYPRESS_BASIC_AUTH_LOGIN=${CYPRESS_BASIC_AUTH_LOGIN}
-      - CYPRESS_BASIC_AUTH_PASSWORD=${CYPRESS_BASIC_AUTH_PASSWORD}
-      - CYPRESS_BASIC_AUTH_HEADER=${CYPRESS_BASIC_AUTH_HEADER}
+      context: .
+      dockerfile: ./packages/e2e-tests/Dockerfile
 
   stripemock:
     image: stripemock/stripe-mock:v0.103.0

@@ -1,0 +1,41 @@
+{
+  "name": "status-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
+    "aws-sdk": "^2.703.0",
+    "core-js": "^3.6.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "regenerator-runtime": "^0.13.11",
+    "styled-components": "^5.1.1"
+  },
+  "devDependencies": {
+    "@nrwl/react": "^15.4.5",
+    "@nrwl/webpack": "^15.4.5",
+    "@nrwl/web": "^15.4.5",
+    "@svgr/webpack": "^6.5.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "babel-plugin-styled-components": "^2.0.7"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

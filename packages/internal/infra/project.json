@@ -1,0 +1,28 @@
+{
+  "root": "packages/internal/infra",
+  "projectType": "application",
+  "sourceRoot": "packages/internal/infra",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/internal/infra/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/internal/infra"
+      ],
+      "options": {
+        "jestConfig": "services/auth/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [
+    "service"
+  ]
+}

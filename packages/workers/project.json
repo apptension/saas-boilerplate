@@ -1,0 +1,80 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/workers",
+  "projectType": "application",
+  "sourceRoot": "packages/workers",
+  "targets": {
+    "setup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/workers",
+        "color": true,
+        "command": "cp .env.example .env"
+      }
+    },
+    "compose-build-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "nx run core:docker-login",
+          "docker-compose build workers"
+        ],
+        "parallel": false
+      }
+    },
+    "shell": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/workers",
+        "color": true,
+        "command": "docker-compose run --rm workers /bin/bash"
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/workers",
+        "color": true,
+        "command": "node ./scripts/local-trigger-server.js"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": [
+          "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/deploy.sh"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/workers/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_tests.sh"
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    }
+  },
+  "tags": [
+    "service"
+  ]
+}

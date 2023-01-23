@@ -1,3 +1,38 @@
+definitions:
+  services:
+    docker:
+      memory: 7128
+  caches:
+    pnpmbackend: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
+    clis: ~/.clicache
+
+  scripts:
+    initializeStep: &initializeStep
+                      cp .env.test .env
+                      && echo "VERSION=test >> .env"
+                      && npm -g config set user root
+                      && npm i -g nx@^15.4.5 pnpm@^7.25.0
+    setupAwsCli: &setupAwsCli
+                   export AWS_CLI_VERSION=2.8.8
+                   export AWS_CLI_DEST_PATH=~/.clicache/awscli-${AWS_CLI_VERSION}.zip
+                   mkdir -p AWS_CLI_DEST_PATH
+                   && wget --no-verbose --no-clobber "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" \
+                   && --output-document "${AWS_CLI_DEST_PATH}" || true
+                   && unzip "${AWS_CLI_DEST_PATH}"
+                   && rm "${AWS_CLI_DEST_PATH}"
+                   && /bin/sh ./aws/install
+                   && aws --version
+    installWebappDeps: &installWebappDeps
+                         pnpm install
+                         --include-workspace-root
+                         --frozen-lockfile
+                         --filter=!e2e-tests
+                         --filter=!docs
+                         --filter=!status-dashboard
+                         --filter=!local-ws-server
+
 pipelines:
   default:
     - parallel:
@@ -11,44 +46,63 @@ pipelines:
               - git push codecommit --tags --force
 
         - step:
-            name: Build and test web app
+            name: Lint & test web app
             image: atlassian/default-image:3
-            size: 2x
             script:
-              - apt-get update && apt-get install -y awscli
-              - echo "test" > VERSION
-              - make -C services/webapp build-test ENV_STAGE=test
-            services:
-              - docker
+              - *initializeStep
+              - *installWebappDeps
+              - nx run webapp:lint
+              - nx run webapp:test --watchAll=false --maxWorkers=20%
             caches:
-              - docker
+              - pnpmwebapp
+              - clis
+        - step:
+            name: Build web app
+            image: atlassian/default-image:3
+            script:
+              - *initializeStep
+              - *installWebappDeps
+              - nx run webapp:build:app
+            caches:
+              - pnpmwebapp
+              - clis
 
         - step:
             name: Test backend
             image: atlassian/default-image:3
             size: 2x
             script:
-              - echo "test" > VERSION
-              - make -C services/backend test ENV_STAGE=test
+              - *initializeStep
+              - *setupAwsCli
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=core
+                --filter=tools
+              - nx run backend:test
             services:
               - docker
             caches:
               - docker
+              - pnpmbackend
+              - clis
 
         - step:
             name: Test async-workers
             image: atlassian/default-image:3
             size: 2x
             script:
-              - apt-get update && apt-get install -y awscli
-              - echo "test" > VERSION
-              - make -C services/workers test ENV_STAGE=test
+              - *initializeStep
+              - *setupAwsCli
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=core
+                --filter=tools
+              - nx run workers:test
             services:
               - docker
             caches:
               - docker
-
-definitions:
-  services:
-    docker:
-      memory: 7128
+              - pnpmworkers
+              - clis
