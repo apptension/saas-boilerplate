@@ -4,7 +4,7 @@
  */
 export function unpackPromise<P = void>() {
   let _resolve: (param: P) => void = () => null;
-  let _reject: () => void = () => null;
+  let _reject: (error?: Error) => void = () => null;
 
   const promise = new Promise<P>((resolve, reject) => {
     _resolve = resolve;

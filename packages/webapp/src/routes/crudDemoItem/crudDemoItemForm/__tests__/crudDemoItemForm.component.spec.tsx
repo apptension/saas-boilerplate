@@ -2,6 +2,8 @@ import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import { produce } from 'immer';
 import { PayloadError } from 'relay-runtime';
+import { ApolloError } from '@apollo/client';
+import { GraphQLError } from 'graphql/error/GraphQLError';
 
 import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';
 import { render } from '../../../../tests/utils/rendering';
@@ -65,7 +67,7 @@ describe('CrudDemoItemForm: Component', () => {
 
   it('should show field error if action throws error', async () => {
     const reduxStore = configureStore(reduxInitialState);
-    const { resolve: resolveSubmit, promise } = unpackPromise<{ errors?: PayloadError[] | null }>();
+    const { promise, reject: rejectSubmit } = unpackPromise<{ errors?: PayloadError[] | null }>();
     const onSubmit = jest.fn().mockReturnValue(promise);
 
     render(<Component onSubmit={onSubmit} />, { reduxStore });
@@ -74,7 +76,8 @@ describe('CrudDemoItemForm: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
     await act(async () => {
-      resolveSubmit({ errors: [{ message: 'Provided value is invalid' }] });
+      const error = new ApolloError({ graphQLErrors: [new GraphQLError('Provided value is invalid')] });
+      rejectSubmit(error);
     });
 
     expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();

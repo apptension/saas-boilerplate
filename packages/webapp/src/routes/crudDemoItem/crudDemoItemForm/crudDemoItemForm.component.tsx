@@ -1,12 +1,12 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { PayloadError } from 'relay-runtime';
+import { ApolloError, FetchResult } from '@apollo/client';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/forms/input';
 import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Link } from '../../../shared/components/link';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
+import { useSnackbar } from '../../../modules/snackbar';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;
@@ -17,7 +17,7 @@ export type CrudDemoItemFormFields = {
 
 export type CrudDemoItemFormProps = {
   initialData?: CrudDemoItemFormFields | null;
-  onSubmit: (formData: CrudDemoItemFormFields) => Promise<{ errors?: PayloadError[] | null }>;
+  onSubmit: (formData: CrudDemoItemFormFields) => Promise<FetchResult>;
 };
 
 export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProps) => {
@@ -38,7 +38,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
     handleSubmit,
     genericError,
     hasGenericErrorOnly,
-    setGraphQLResponseErrors,
+    setApolloGraphQLResponseErrors,
   } = useApiForm<CrudDemoItemFormFields>({
     defaultValues: {
       name: initialData?.name,
@@ -46,11 +46,13 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
   });
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
-    const { errors } = await onSubmit(formData);
-    if (errors) {
-      setGraphQLResponseErrors(errors);
-    } else {
+    try {
+      await onSubmit(formData);
       await showMessage(successMessage);
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     }
   };
 

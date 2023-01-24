@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
 import humps from 'humps';
 import { PayloadError } from 'relay-runtime';
+import { GraphQLError } from 'graphql/error/GraphQLError';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
@@ -59,6 +60,28 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     [setResponseErrors]
   );
 
+  const setApolloGraphQLResponseErrors = useCallback(
+    (errors: ReadonlyArray<GraphQLError>) => {
+      const validationError = errors.find(({ message }) => message === 'GraphQlValidationError') as
+        | GraphQLValidationError<FormData>
+        | undefined;
+
+      if (validationError) {
+        setResponseErrors(validationError.extensions);
+      } else {
+        setResponseErrors({
+          nonFieldErrors: errors.map((error) => {
+            return {
+              message: (error.extensions?.message ?? error.message) as string,
+              code: (error.extensions?.code ?? error.message) as string,
+            };
+          }),
+        });
+      }
+    },
+    [setResponseErrors]
+  );
+
   const setApiResponse = useCallback(
     (response: ApiFormSubmitResponse<FormData, unknown>) => {
       if (response.isError) {
@@ -84,6 +107,7 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     genericError,
     setApiResponse,
     setGraphQLResponseErrors,
+    setApolloGraphQLResponseErrors,
     setGenericError,
     hasGenericErrorOnly,
     handleSubmit,

@@ -1,41 +1,56 @@
 import { FormattedMessage } from 'react-intl';
-import { ConnectionHandler } from 'relay-runtime';
-import graphql from 'babel-plugin-relay/macro';
-import { PreloadedQuery } from 'react-relay';
+import { useMutation } from '@apollo/client';
 import { BackButton } from '../../../shared/components/backButton';
-import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { crudDemoItemListQuery } from '../crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
-import { addCrudDemoItemMutation } from './__generated__/addCrudDemoItemMutation.graphql';
+import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
+import { CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT } from '../crudDemoItemList/crudDemoItemListItem';
 import { Container, Header } from './addCrudDemoItem.styles';
 
-export type AddCrudDemoItemProps = () => {
-  listQueryRef?: PreloadedQuery<crudDemoItemListQuery> | null;
-};
-
-export const AddCrudDemoItem = () => {
-  const generateLocalePath = useGenerateLocalePath();
-  const [commitCrudDemoItemFormMutation] = usePromiseMutation<addCrudDemoItemMutation>(graphql`
-    mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!, $connections: [ID!]!) {
-      createCrudDemoItem(input: $input) {
-        crudDemoItemEdge @appendEdge(connections: $connections) {
-          node {
-            id
-            name
-          }
+export const ADD_CRUD_DEMO_ITEM_MUTATION = gql(/* GraphQL */ `
+  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
+    createCrudDemoItem(input: $input) {
+      crudDemoItemEdge {
+        node {
+          id
+          name
         }
       }
     }
-  `);
+  }
+`);
+
+export const AddCrudDemoItem = () => {
+  const generateLocalePath = useGenerateLocalePath();
+  const [commitCrudDemoItemFormMutation] = useMutation(ADD_CRUD_DEMO_ITEM_MUTATION, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allCrudDemoItems(existingConnection = { edges: [] }) {
+            const node = data?.createCrudDemoItem?.crudDemoItemEdge?.node;
+            if (!node) {
+              return existingConnection;
+            }
+            const newItem = {
+              node: cache.writeFragment({
+                data: node,
+                fragment: CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT,
+              }),
+              __typename: 'CrudDemoItemEdge',
+            };
+            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
+          },
+        },
+      });
+    },
+  });
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
     return await commitCrudDemoItemFormMutation({
       variables: {
         input: { name: formData.name },
-        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
       },
     });
   };

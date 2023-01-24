@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event';
-import { act, screen } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-import { ConnectionHandler } from 'relay-runtime';
+import { screen } from '@testing-library/react';
+import { createMockEnvironment } from 'relay-test-utils';
 import { produce } from 'immer';
 
 import { render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
-import { AddCrudDemoItem } from '../addCrudDemoItem.component';
+import { AddCrudDemoItem, ADD_CRUD_DEMO_ITEM_MUTATION } from '../addCrudDemoItem.component';
 import configureStore from '../../../../app/config/store';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 
 describe('AddCrudDemoItem: Component', () => {
   const reduxInitialState = prepareState((state) => state);
@@ -26,21 +26,33 @@ describe('AddCrudDemoItem: Component', () => {
       const relayEnvironment = createMockEnvironment();
       fillCommonQueryWithUser(relayEnvironment);
 
-      render(<Component />, { relayEnvironment });
+      const variables = {
+        input: { name: 'new item name' },
+      };
+      const data = {
+        createCrudDemoItem: {
+          crudDemoItemEdge: {
+            node: {
+              id: 1,
+              ...variables.input,
+            },
+          },
+        },
+      };
+      const requestMock = composeMockedQueryResult(ADD_CRUD_DEMO_ITEM_MUTATION, {
+        variables,
+        data,
+      });
+
+      requestMock.newData = jest.fn(() => ({
+        data,
+      }));
+
+      render(<Component />, { relayEnvironment, apolloMocks: [requestMock] });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
-
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
-      expect(operation.fragment.variables).toEqual({
-        input: { name: 'new item name' },
-        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
-      });
-
-      await act(async () => {
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
+      expect(requestMock.newData).toHaveBeenCalled();
     });
 
     it('should show success message', async () => {
@@ -48,16 +60,28 @@ describe('AddCrudDemoItem: Component', () => {
       fillCommonQueryWithUser(relayEnvironment);
       const reduxStore = configureStore(reduxInitialState);
 
-      render(<Component />, { reduxStore, relayEnvironment });
+      const variables = {
+        input: { name: 'new item' },
+      };
+      const data = {
+        createCrudDemoItem: {
+          crudDemoItemEdge: {
+            node: {
+              id: 1,
+              ...variables.input,
+            },
+          },
+        },
+      };
+      const requestMock = composeMockedQueryResult(ADD_CRUD_DEMO_ITEM_MUTATION, {
+        variables,
+        data,
+      });
+
+      render(<Component />, { reduxStore, relayEnvironment, apolloMocks: [requestMock] });
 
       await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
-
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      expect(operation.fragment.node.name).toEqual('addCrudDemoItemMutation');
-      await act(async () => {
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
 
       expect(reduxStore.getState()).toEqual(
         produce(reduxInitialState, (state) => {
