@@ -8,9 +8,10 @@
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
     "verify": "node ./scripts/verify.js",
-    "storybook": "yarn build-emails && start-storybook -s ./public --port 5001",
+    "storybook": "nx run webapp:cra-build:emails && start-storybook -s ./public --port 5001",
     "build-storybook": "node ./scripts/build-storybook.js",
-    "start": "nx start:app"
+    "start": "nx start:app",
+    "test": "nx test:app"
   },
   "dependencies": {
     "@apollo/client": "^3.7.4",
@@ -21,7 +22,6 @@
     "@loadable/component": "^5.15.2",
     "@reduxjs/toolkit": "^1.8.6",
     "@sentry/react": "^7.17.4",
-    "@storybook/react": "^6.5.15",
     "@stripe/react-stripe-js": "^1.14.2",
     "@stripe/stripe-js": "^1.42.1",
     "axios": "^0.27.2",
@@ -92,7 +92,7 @@
     "@storybook/builder-webpack5": "^6.5.13",
     "@storybook/manager-webpack5": "^6.5.13",
     "@storybook/preset-create-react-app": "^4.1.2",
-    "@storybook/react": "^6.5.13",
+    "@storybook/react": "^6.5.15",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",

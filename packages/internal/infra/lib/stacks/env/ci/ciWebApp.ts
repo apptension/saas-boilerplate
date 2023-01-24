@@ -93,7 +93,7 @@ export class WebappCiConfig extends ServiceCiConfig {
           build: {
             commands: [
               'nx run webapp:lint',
-              'nx run webapp:test --watchAll=false',
+              'nx run webapp:test:app --watchAll=false',
               'nx run webapp:build:app',
             ],
           },

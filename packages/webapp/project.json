@@ -81,7 +81,7 @@
         }
       }
     },
-    "test": {
+    "test:app": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",
