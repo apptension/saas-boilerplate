@@ -3,10 +3,10 @@ from graphene import relay
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 
+from common.graphql import mutations
 from . import models
 from . import serializers
 from . import services
-from common.graphql import mutations
 
 
 class HasUnreadNotificationsMixin:
@@ -22,6 +22,7 @@ class NotificationType(DjangoObjectType):
     class Meta:
         model = models.Notification
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class NotificationConnection(graphene.Connection):

@@ -666,7 +666,7 @@ class TestCreatePaymentIntentMutation:
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == (
-            'Variable "$input" got invalid value {}.\n' 'In field "product": Expected "String!", found null.'
+            "Variable '$input' got invalid value {}; Field 'product' of required type 'String!' was not provided."
         )
 
     def test_return_error_if_product_does_not_exist(self, graphene_client, user):

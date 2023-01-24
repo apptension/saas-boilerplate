@@ -1,7 +1,7 @@
 from typing import List
 
-import graphql.execution.base
 from django.contrib.auth import get_user_model
+from graphql.type import GraphQLResolveInfo
 from rest_framework import serializers
 
 User = get_user_model()
@@ -16,5 +16,5 @@ def get_user_avatar_url(user: User) -> str:
     return field.to_representation(user.profile.avatar.thumbnail) if user.profile.avatar else None
 
 
-def get_user_from_resolver(info: graphql.execution.base.ResolveInfo):
+def get_user_from_resolver(info: GraphQLResolveInfo):
     return info.context.user

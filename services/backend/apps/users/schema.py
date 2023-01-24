@@ -98,6 +98,7 @@ class UserProfileType(DjangoObjectType):
     class Meta:
         model = models.UserProfile
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class CurrentUserConnection(graphene.Connection):

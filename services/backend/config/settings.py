@@ -270,6 +270,9 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7
 GRAPHENE = {
     "SCHEMA": "config.schema.schema",
     "DEFAULT_PERMISSION_CLASSES": ("common.acl.policies.IsAuthenticatedFullAccess",),
+    # It looks like DjangoDebugMiddleware is being passed by default, and it stops error propagation. Added empty list
+    # as a workaround. Related open issue: https://github.com/graphql-python/graphene-django/issues/1384
+    "MIDDLEWARE": [],
 }
 
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]

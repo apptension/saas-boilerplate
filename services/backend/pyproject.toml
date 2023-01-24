@@ -52,7 +52,7 @@ dependencies = [
     "social-auth-app-django==5.0.0",
     "social-auth-core==4.3.0",
     "whitenoise~=6.1",
-    "graphene-django~=2.15",
+    "graphene-django~=3.0",
     "gevent~=21.1",
     "graphene-file-upload~=1.3",
     "django-storages~=1.11",

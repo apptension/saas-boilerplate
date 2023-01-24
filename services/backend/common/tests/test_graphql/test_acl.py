@@ -1,14 +1,13 @@
 import graphene
+import pytest
 from graphene import relay
 from graphene_django import DjangoObjectType
-import pytest
 from graphql_relay import from_global_id, to_global_id
 
 from apps.demo import models, serializers
 from common.acl import policies
-from common.graphql import mutations
 from common.graphql import acl as graphql_acl
-
+from common.graphql import mutations
 
 pytestmark = pytest.mark.django_db
 
@@ -16,21 +15,20 @@ pytestmark = pytest.mark.django_db
 def create_query_schema(query_class):
     @graphql_acl.permission_classes(policies.IsAuthenticatedFullAccess)
     class Query(query_class, graphene.ObjectType):
-        pass
+        node = graphene.relay.Node.Field()
 
-    return graphene.Schema(
-        query=Query,
-    )
+    return graphene.Schema(query=Query)
 
 
-def create_mutation_schema(query_class):
+def create_mutation_schema(mutation_class):
+    class Query(graphene.ObjectType):
+        node = graphene.relay.Node.Field()
+
     @graphql_acl.permission_classes(policies.IsAuthenticatedFullAccess)
-    class Query(query_class, graphene.ObjectType):
+    class ApiMutation(mutation_class, graphene.ObjectType):
         pass
 
-    return graphene.Schema(
-        mutation=Query,
-    )
+    return graphene.Schema(query=Query, mutation=ApiMutation)
 
 
 class TestPermissionClassesForQueryConnectionField:
@@ -107,6 +105,7 @@ class TestPermissionClassesForQueryConnectionField:
             class Meta:
                 model = models.CrudDemoItem
                 interfaces = (relay.Node,)
+                fields = "__all__"
 
         class TestCrudDemoItemConnection(graphene.Connection):
             class Meta:
@@ -191,6 +190,7 @@ class TestPermissionClassesForQueryField:
             class Meta:
                 model = models.CrudDemoItem
                 interfaces = (relay.Node,)
+                fields = "__all__"
 
         class Query(graphene.ObjectType):
             crud_demo_item_by_id = graphene.Field(TestCrudDemoItemType, id=graphene.String())
@@ -258,6 +258,7 @@ class TestPermissionClassesForMutationField:
             class Meta:
                 model = models.CrudDemoItem
                 interfaces = (relay.Node,)
+                fields = "__all__"
 
         class TestCrudDemoItemConnection(graphene.Connection):
             class Meta:
