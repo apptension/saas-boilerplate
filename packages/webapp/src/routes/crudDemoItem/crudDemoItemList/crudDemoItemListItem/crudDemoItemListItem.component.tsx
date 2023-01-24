@@ -4,7 +4,6 @@ import graphql from 'babel-plugin-relay/macro';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { ConnectionHandler } from 'relay-runtime';
-import { useFragment } from 'react-relay';
 import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
@@ -13,11 +12,18 @@ import { Link } from '../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
-import { crudDemoItemListItem$key } from './__generated__/crudDemoItemListItem.graphql';
+import { FragmentType, gql, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
+export const CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT = gql(/* GraphQL */ `
+  fragment crudDemoItemListItem on CrudDemoItemType {
+    id
+    name
+  }
+`);
+
 export type CrudDemoItemListItemProps = {
-  item: crudDemoItemListItem$key;
+  item: FragmentType<typeof CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT>;
 };
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
@@ -33,15 +39,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     `
   );
 
-  const data = useFragment<crudDemoItemListItem$key>(
-    graphql`
-      fragment crudDemoItemListItem on CrudDemoItemType {
-        id
-        name
-      }
-    `,
-    item
-  );
+  const data = useFragment(CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT, item);
 
   const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

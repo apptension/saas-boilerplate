@@ -42,11 +42,11 @@ const documents = {
     "\n  query subscriptionActivePlanDetailsQuery {\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n    }\n  }\n": types.SubscriptionActivePlanDetailsQueryDocument,
     "\n    mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!, $connections: [ID!]!) {\n      createCrudDemoItem(input: $input) {\n        crudDemoItemEdge @appendEdge(connections: $connections) {\n          node {\n            id\n            name\n          }\n        }\n      }\n    }\n  ": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
-    "\n      query crudDemoItemListQuery {\n        allCrudDemoItems(first: 100) @connection(key: \"crudDemoItemList_allCrudDemoItems\") {\n          edges {\n            node {\n              id\n              ...crudDemoItemListItem\n            }\n          }\n        }\n      }\n    ": types.CrudDemoItemListQueryDocument,
-    "\n        query crudDemoItemListItemTestQuery @relay_test_operation {\n          item: crudDemoItem(id: \"test-id\") {\n            ...crudDemoItemListItem\n          }\n        }\n      ": types.CrudDemoItemListItemTestQueryDocument,
+    "\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
+    "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemTestQueryDocument,
+    "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
     "\n      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.CrudDemoItemListItemDeleteMutationDocument,
-    "\n      fragment crudDemoItemListItem on CrudDemoItemType {\n        id\n        name\n      }\n    ": types.CrudDemoItemListItemFragmentDoc,
-    "\n      query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {\n        item: crudDemoItem(id: \"test-id\") {\n          ...crudDemoItemListItem\n        }\n      }\n    ": types.CrudDemoItemListItemDefaultStoryQueryDocument,
+    "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
     "\n      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.CrudDropdownMenuItemDeleteMutationDocument,
     "\n      query editCrudDemoItemQuery($id: ID!) {\n        crudDemoItem(id: $id) {\n          id\n          name\n        }\n      }\n    ": types.EditCrudDemoItemQueryDocument,
     "\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  ": types.EditCrudDemoItemContentMutationDocument,
@@ -206,11 +206,15 @@ export function gql(source: "\n  query crudDemoItemDetailsQuery($id: ID!) {\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      query crudDemoItemListQuery {\n        allCrudDemoItems(first: 100) @connection(key: \"crudDemoItemList_allCrudDemoItems\") {\n          edges {\n            node {\n              id\n              ...crudDemoItemListItem\n            }\n          }\n        }\n      }\n    "): (typeof documents)["\n      query crudDemoItemListQuery {\n        allCrudDemoItems(first: 100) @connection(key: \"crudDemoItemList_allCrudDemoItems\") {\n          edges {\n            node {\n              id\n              ...crudDemoItemListItem\n            }\n          }\n        }\n      }\n    "];
+export function gql(source: "\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n        query crudDemoItemListItemTestQuery @relay_test_operation {\n          item: crudDemoItem(id: \"test-id\") {\n            ...crudDemoItemListItem\n          }\n        }\n      "): (typeof documents)["\n        query crudDemoItemListItemTestQuery @relay_test_operation {\n          item: crudDemoItem(id: \"test-id\") {\n            ...crudDemoItemListItem\n          }\n        }\n      "];
+export function gql(source: "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"): (typeof documents)["\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -218,11 +222,7 @@ export function gql(source: "\n      mutation crudDemoItemListItemDeleteMutation
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      fragment crudDemoItemListItem on CrudDemoItemType {\n        id\n        name\n      }\n    "): (typeof documents)["\n      fragment crudDemoItemListItem on CrudDemoItemType {\n        id\n        name\n      }\n    "];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n      query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {\n        item: crudDemoItem(id: \"test-id\") {\n          ...crudDemoItemListItem\n        }\n      }\n    "): (typeof documents)["\n      query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {\n        item: crudDemoItem(id: \"test-id\") {\n          ...crudDemoItemListItem\n        }\n      }\n    "];
+export function gql(source: "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

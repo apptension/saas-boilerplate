@@ -3,9 +3,14 @@ import { OperationDescriptor } from 'react-relay/hooks';
 
 import crudDemoItemDetailsQueryGraphql from '../../routes/crudDemoItem/crudDemoItemDetails/__generated__/crudDemoItemDetailsQuery.graphql';
 import EditCrudDemoItemQuery from '../../routes/crudDemoItem/editCrudDemoItem/__generated__/editCrudDemoItemQuery.graphql';
-import { composeMockedQueryResult, connectionFromArray } from '../../tests/utils/fixtures';
+import {
+  composeMockedListQueryResult,
+  composeMockedQueryResult,
+  connectionFromArray,
+} from '../../tests/utils/fixtures';
 import CrudDemoItemListQuery from '../../routes/crudDemoItem/crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
 import { CRUD_DEMO_ITEM_DETAILS_QUERY } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
+import { CRUD_DEMO_ITEM_LIST_QUERY } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
 
 export const fillCrudDemoItemDetailsQuery = (
   env: RelayMockEnvironment,
@@ -49,7 +54,10 @@ export const fillEditCrudDemoItemQuery = (
 
 export const fillCrudDemoItemListQuery = (
   env: RelayMockEnvironment,
-  data = [{ name: 'First item' }, { name: 'Second item' }]
+  data = [
+    { id: 1, name: 'First item' },
+    { id: 2, name: 'Second item' },
+  ]
 ) => {
   env.mock.queueOperationResolver((operation: OperationDescriptor) =>
     MockPayloadGenerator.generate(operation, {
@@ -57,4 +65,8 @@ export const fillCrudDemoItemListQuery = (
     })
   );
   env.mock.queuePendingOperation(CrudDemoItemListQuery, {});
+
+  return composeMockedListQueryResult(CRUD_DEMO_ITEM_LIST_QUERY, 'allCrudDemoItems', 'CrudDemoItemType', {
+    data,
+  });
 };

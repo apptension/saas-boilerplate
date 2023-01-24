@@ -19,15 +19,17 @@ describe('CrudDemoItemList: Component', () => {
     </Routes>
   );
 
-  it('should render all items', () => {
+  it('should render all items', async () => {
     const routerProps = createMockRouterProps(routePath);
     const relayEnvironment = getRelayEnv();
-    fillCrudDemoItemListQuery(relayEnvironment);
+    const mockRequest = fillCrudDemoItemListQuery(relayEnvironment);
 
-    render(<Component />, { relayEnvironment, routerProps });
+    const apolloMocks = [mockRequest];
+    render(<Component />, { relayEnvironment, routerProps, apolloMocks });
 
-    expect(screen.getByText('First item')).toBeInTheDocument();
-    expect(screen.getByText('Second item')).toBeInTheDocument();
+    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
+    expect(await screen.findByText('First item')).toBeInTheDocument();
+    expect(await screen.findByText('Second item')).toBeInTheDocument();
   });
 
   it('should render link to add new item form', async () => {

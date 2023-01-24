@@ -1,10 +1,9 @@
 import { Story } from '@storybook/react';
-import { useLazyLoadQuery } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
-import { withSuspense, withProviders } from '../../../../shared/utils/storybook';
+import { useQuery } from '@apollo/client';
+import { withProviders } from '../../../../shared/utils/storybook';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
-import { fillCrudDemoItemDetailsQuery } from '../../../../mocks/factories/crudDemoItem';
-import { crudDemoItemListItemDefaultStoryQuery } from './__generated__/crudDemoItemListItemDefaultStoryQuery.graphql';
+import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
 export default {
@@ -19,30 +18,36 @@ export default {
   },
 };
 
+const CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY = gql(/* GraphQL */ `
+  query crudDemoItemListItemDefaultStoryQuery {
+    item: crudDemoItem(id: "test-id") {
+      ...crudDemoItemListItem
+    }
+  }
+`);
+
 const Template: Story<CrudDemoItemListItemProps> = (args: CrudDemoItemListItemProps) => {
-  const data = useLazyLoadQuery<crudDemoItemListItemDefaultStoryQuery>(
-    graphql`
-      query crudDemoItemListItemDefaultStoryQuery @relay_test_operation {
-        item: crudDemoItem(id: "test-id") {
-          ...crudDemoItemListItem
-        }
-      }
-    `,
-    {}
-  );
-  return data.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
+  const { loading, data } = useQuery(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY);
+  return !loading && data?.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
 };
 
 export const Default = Template.bind({});
 Default.decorators = [
-  withSuspense,
   withProviders({
     relayEnvironment: (env) => {
       fillCommonQueryWithUser(env);
-      fillCrudDemoItemDetailsQuery(env, {
-        name: 'Demo item name',
-      });
     },
+    apolloMocks: [
+      composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
+        data: {
+          item: {
+            __typename: 'CrudDemoItemType',
+            id: 1,
+            name: 'Demo item name',
+          },
+        },
+      }),
+    ],
   }),
 ];
 Default.args = {};

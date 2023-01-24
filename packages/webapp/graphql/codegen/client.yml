@@ -6,10 +6,6 @@ schema:
 generates:
   src/shared/services/graphqlApi/__generated/gql/:
     documents: ['src/**/*.ts', 'src/**/*.tsx', '!src/shared/services/**/__generated/*', '!src/**/__generated__/*.graphql.ts']
-    pluckConfig:
-      modules:
-        - name: babel-plugin-relay/macro
-          identifier: graphql
     preset: 'client'
     plugins: []
     presetConfig:

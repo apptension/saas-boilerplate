@@ -56,3 +56,22 @@ export const composeMockedQueryResult = (
     data,
   },
 });
+
+type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
+  data: Array<any>;
+};
+
+export const composeMockedListQueryResult = (
+  query: DocumentNode,
+  key: string,
+  typename: string,
+  { variables, data }: ComposeMockedListQueryResultProps
+): MockedResponse =>
+  composeMockedQueryResult(query, {
+    variables,
+    data: {
+      [key]: {
+        edges: data.map((obj) => ({ node: { __typename: typename, ...obj } })),
+      },
+    },
+  });
