@@ -35,8 +35,8 @@ class TestSignup:
     def test_return_error_with_missing_email(self, graphene_client, faker):
         password = faker.password()
         executed = graphene_client.mutate(self.MUTATION, variable_values={'input': {'password': password}})
-        err1 = f'Variable "$input" got invalid value {{"password": "{password}"}}.'
-        err2 = '\nIn field "email": Expected "String!", found null.'
+        err1 = f"Variable '$input' got invalid value {{'password': '{password}'}}; "
+        err2 = "Field 'email' of required type 'String!' was not provided."
 
         assert len(executed["errors"]) == 1
         assert executed["errors"][0]["message"] == err1 + err2
@@ -51,9 +51,9 @@ class TestSignup:
         assert executed["errors"][0]["message"] == "GraphQlValidationError"
 
     def test_return_error_with_missing_password(self, graphene_client, faker):
-        executed = graphene_client.mutate(self.MUTATION, variable_values={'input': {'email': 'test@email.com'}})
-        err1 = 'Variable "$input" got invalid value {"email": "test@email.com"}.'
-        err2 = '\nIn field "password": Expected "String!", found null.'
+        executed = graphene_client.mutate(self.MUTATION, variable_values={'input': {'email': 'test@example.com'}})
+        err1 = "Variable '$input' got invalid value {'email': 'test@example.com'}; "
+        err2 = "Field 'password' of required type 'String!' was not provided."
 
         assert len(executed["errors"]) == 1
         assert executed["errors"][0]["message"] == err1 + err2
@@ -306,7 +306,7 @@ class TestConfirmEmailMutation:
 
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': {"user": user.pk, "token": token}},
+            variable_values={'input': {"user": user.pk.hashid, "token": token}},
         )
 
         user.refresh_from_db()
@@ -321,7 +321,7 @@ class TestConfirmEmailMutation:
 
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': {"user": user.pk, "token": token}},
+            variable_values={'input': {"user": user.pk.hashid, "token": token}},
         )
 
         user.refresh_from_db()
@@ -335,7 +335,7 @@ class TestConfirmEmailMutation:
 
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': {"user": user.pk, "token": "wrong-token-here"}},
+            variable_values={'input': {"user": user.pk.hashid, "token": "wrong-token-here"}},
         )
 
         assert len(executed["errors"]) == 1
@@ -349,7 +349,7 @@ class TestConfirmEmailMutation:
 
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': {"user": other_user.pk, "token": token}},
+            variable_values={'input': {"user": other_user.pk.hashid, "token": token}},
         )
 
         assert len(executed["errors"]) == 1

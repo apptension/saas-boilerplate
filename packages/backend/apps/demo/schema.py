@@ -1,12 +1,11 @@
 import graphene
 from django.shortcuts import get_object_or_404
-from graphql_relay import to_global_id
-
-from common.graphql import mutations
 from graphene import relay
 from graphene_django import DjangoObjectType
+from graphql_relay import to_global_id
 
 from apps.content import models as content_models
+from common.graphql import mutations
 from . import models, serializers
 
 
@@ -14,12 +13,14 @@ class CrudDemoItemType(DjangoObjectType):
     class Meta:
         model = models.CrudDemoItem
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class ContentfulDemoItemFavoriteType(DjangoObjectType):
     class Meta:
         model = models.ContentfulDemoItemFavorite
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class ContentfulDemoItemType(DjangoObjectType):
@@ -28,6 +29,7 @@ class ContentfulDemoItemType(DjangoObjectType):
     class Meta:
         model = content_models.DemoItem
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class CrudDemoItemConnection(graphene.Connection):
@@ -50,6 +52,7 @@ class DocumentDemoItemType(DjangoObjectType):
     class Meta:
         model = models.DocumentDemoItem
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class DocumentDemoItemConnection(graphene.Connection):

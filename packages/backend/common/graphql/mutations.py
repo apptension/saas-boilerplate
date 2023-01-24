@@ -7,9 +7,9 @@ from graphene.types.mutation import MutationOptions
 from graphene.types.utils import yank_fields_from_attrs
 from graphene_django.registry import Registry, get_global_registry
 from graphene_django.rest_framework.mutation import SerializerMutationOptions, fields_for_serializer
-from graphql_relay import from_global_id
-from graphql_relay.connection.arrayconnection import offset_to_cursor
+from graphql_relay import from_global_id, offset_to_cursor
 from rest_framework import serializers
+
 from . import exceptions
 
 

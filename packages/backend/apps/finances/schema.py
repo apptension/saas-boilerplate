@@ -7,14 +7,13 @@ from djstripe import models as djstripe_models, enums as djstripe_enums
 from graphene import relay, ObjectType
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
-from common.graphql import mutations
-from common.acl.policies import AnyoneFullAccess
-from common.graphql.acl import permission_classes
-from graphql_relay import to_global_id, from_global_id
+from graphql_relay import to_global_id, from_global_id, offset_to_cursor
 from rest_framework.generics import get_object_or_404
 from stripe.error import InvalidRequestError
-from graphql_relay.connection.arrayconnection import offset_to_cursor
 
+from common.acl.policies import AnyoneFullAccess
+from common.graphql import mutations
+from common.graphql.acl import permission_classes
 from . import constants
 from . import utils, serializers
 from .services import subscriptions, customers
@@ -29,6 +28,7 @@ class SubscriptionItemProductType(DjangoObjectType):
     class Meta:
         model = djstripe_models.Product
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class SubscriptionPlanType(DjangoObjectType):
@@ -40,6 +40,7 @@ class SubscriptionPlanType(DjangoObjectType):
     class Meta:
         model = djstripe_models.Price
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class SubscriptionPlanConnection(graphene.Connection):
@@ -88,6 +89,7 @@ class StripeProductType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.Product
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class SubscriptionSchedulePhaseItemType(ObjectType):
@@ -135,6 +137,7 @@ class SubscriptionScheduleType(DjangoObjectType):
     class Meta:
         model = djstripe_models.SubscriptionSchedule
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class PriceTypeConnection(graphene.Connection):
@@ -153,12 +156,14 @@ class StripeChargeType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.Charge
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class StripeInvoiceType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.Invoice
         interfaces = (relay.Node,)
+        fields = "__all__"
 
 
 class ChargeConnection(graphene.Connection):

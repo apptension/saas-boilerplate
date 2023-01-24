@@ -1,14 +1,14 @@
 import json
 
 import six
-from common.acl import policies
 from graphene_file_upload.django import FileUploadGraphQLView
 from graphene_file_upload.utils import place_files_in_operations
-from graphql import GraphQLError
-from graphql.error import format_error as format_graphql_error
+from graphql.error import GraphQLError
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.exceptions import APIException
 from rest_framework.settings import api_settings
+
+from common.acl import policies
 
 
 class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
@@ -26,7 +26,7 @@ class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
             error.extensions = error.original_error.get_full_details()
 
         if isinstance(error, GraphQLError):
-            return format_graphql_error(error)
+            return error.formatted
 
         return {"message": six.text_type(error)}
 
