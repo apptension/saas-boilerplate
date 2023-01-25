@@ -1,36 +1,35 @@
-import { Suspense, useEffect } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
-import { useQueryLoader } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
+import { NetworkStatus, useQuery } from '@apollo/client';
 import { useOpenState } from '../../hooks/useOpenState';
-import { notificationsListQuery } from './__generated__/notificationsListQuery.graphql';
 import { NotificationsButton } from './notificationsButton';
 import { NotificationsList } from './notificationsList';
+import { NOTIFICATIONS_LIST_QUERY } from './notifications.graphql';
+import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.constants';
 
 export const Notifications = () => {
   const notifications = useOpenState(false);
 
-  const [listQueryRef, loadListQuery] = useQueryLoader<notificationsListQuery>(
-    graphql`
-      query notificationsListQuery($count: Int = 20, $cursor: String) {
-        ...notificationsListContent
-        ...notificationsButtonContent
-      }
-    `
-  );
+  const { loading, data, fetchMore, networkStatus } = useQuery(NOTIFICATIONS_LIST_QUERY);
 
-  useEffect(() => {
-    loadListQuery({});
-  }, [loadListQuery]);
+  if (loading && networkStatus === NetworkStatus.loading) {
+    return <NotificationsButton.Fallback />;
+  }
 
-  if (!listQueryRef) return null;
+  const onLoadMore = (cursor, count = NOTIFICATIONS_PER_PAGE) => {
+    fetchMore({
+      variables: {
+        cursor,
+        count,
+      },
+    });
+  };
 
   return (
-    <Suspense fallback={<NotificationsButton.Fallback />}>
-      <NotificationsButton listQueryRef={listQueryRef} onClick={notifications.toggle} />
+    <>
+      <NotificationsButton queryResult={data} onClick={notifications.toggle} />
       <ClickAwayListener onClickAway={notifications.clickAway}>
-        <NotificationsList isOpen={notifications.isOpen} listQueryRef={listQueryRef} />
+        <NotificationsList isOpen={notifications.isOpen} queryResult={data} loading={loading} onLoadMore={onLoadMore} />
       </ClickAwayListener>
-    </Suspense>
+    </>
   );
 };

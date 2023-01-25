@@ -75,3 +75,32 @@ export const composeMockedListQueryResult = (
       },
     },
   });
+
+export const composeMockedPaginatedListQueryResult = (
+  query: DocumentNode,
+  key: string,
+  typename: string,
+  resultProps: ComposeMockedListQueryResultProps,
+  pageInfo: { endCursor: string; hasNextPage: boolean }
+): MockedResponse => {
+  const {
+    request,
+    result = { data: { [key]: {} } },
+    ...other
+  } = composeMockedListQueryResult(query, key, typename, resultProps);
+  return {
+    request,
+    result: {
+      data: {
+        [key]: {
+          edges: result.data[key].edges ?? [],
+          pageInfo: {
+            __typename: 'PageInfo',
+            ...pageInfo,
+          },
+        },
+      },
+    },
+    ...other,
+  };
+};

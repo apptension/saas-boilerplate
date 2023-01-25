@@ -1,6 +1,5 @@
-import { ElementType, Suspense } from 'react';
+import { ElementType } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { isEmpty } from 'ramda';
 import { ButtonVariant } from '../../forms/button';
@@ -8,23 +7,22 @@ import { NotificationSkeleton } from '../notification';
 import { EmptyState } from '../../emptyState';
 import { NotificationTypes } from '../notifications.types';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
-import notificationsListQueryGraphql, {
-  notificationsListQuery,
-  notificationsListQuery$data,
-} from '../__generated__/notificationsListQuery.graphql';
-import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
+import { FragmentType } from '../../../services/graphqlApi/__generated/gql';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
+import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
+import { notificationsListContentFragment } from './notificationsList.graphql';
 
 export type NotificationsListProps = {
   isOpen: boolean;
-  listQueryRef: PreloadedQuery<notificationsListQuery>;
+  queryResult?: FragmentType<typeof notificationsListContentFragment>;
+  loading: boolean;
+  onLoadMore: (cursor: string, count: number) => void;
 };
 
-export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListProps) => {
+export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) => {
   const intl = useIntl();
-  const queryResponse = usePreloadedQuery(notificationsListQueryGraphql, listQueryRef);
 
   const markAllAsRead = useMarkAllAsRead(
     intl.formatMessage({
@@ -45,33 +43,31 @@ export const NotificationsList = ({ listQueryRef, isOpen }: NotificationsListPro
         />
       </MarkAllAsReadButton>
       <List>
-        <Suspense
-          fallback={
-            <>
-              <NotificationSkeleton />
-              <NotificationSkeleton />
-            </>
-          }
-        >
-          <Content queryResponse={queryResponse} />
-        </Suspense>
+        {props.loading ? (
+          <>
+            <NotificationSkeleton />
+            <NotificationSkeleton />
+          </>
+        ) : (
+          <Content {...props} />
+        )}
       </List>
     </Container>
   );
 };
 
-type ContentProps = {
-  queryResponse: notificationsListQuery$data;
-};
+type ContentProps = Pick<NotificationsListProps, 'queryResult' | 'loading' | 'onLoadMore'>;
 
-const Content = ({ queryResponse }: ContentProps) => {
-  const { allNotifications, loadNext, hasNext, isLoadingNext } = useNotificationsListContent(queryResponse);
+const Content = ({ queryResult, loading, onLoadMore }: ContentProps) => {
+  const { allNotifications, hasNext, endCursor } = useNotificationsListContent(queryResult);
 
   const [scrollSensorRef] = useInfiniteScroll({
-    loading: isLoadingNext,
+    loading,
     hasNextPage: hasNext,
     onLoadMore: () => {
-      loadNext(NOTIFICATIONS_PER_PAGE);
+      if (hasNext && endCursor) {
+        onLoadMore(endCursor, NOTIFICATIONS_PER_PAGE);
+      }
     },
     disabled: false,
   });
@@ -90,7 +86,7 @@ const Content = ({ queryResponse }: ContentProps) => {
         const NotificationComponent = NOTIFICATIONS_STRATEGY[notification.type as NotificationTypes] as
           | ElementType
           | undefined;
-        if (!NotificationComponent) {
+        if (!notification.data || !NotificationComponent) {
           return null;
         }
         return (
@@ -99,7 +95,7 @@ const Content = ({ queryResponse }: ContentProps) => {
           </NotificationErrorBoundary>
         );
       })}
-      {(hasNext || isLoadingNext) && (
+      {(hasNext || loading) && (
         <>
           <NotificationSkeleton ref={scrollSensorRef} />
           <NotificationSkeleton />

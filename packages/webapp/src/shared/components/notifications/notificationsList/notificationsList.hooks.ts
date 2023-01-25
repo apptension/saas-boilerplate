@@ -1,14 +1,11 @@
 import graphql from 'babel-plugin-relay/macro';
-import { ConnectionHandler, usePaginationFragment, useSubscription } from 'react-relay';
-import { useMemo } from 'react';
+import { ConnectionHandler } from 'react-relay';
 import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
 import { useSnackbar } from '../../../../modules/snackbar';
-import { notificationsListQuery$data } from '../__generated__/notificationsListQuery.graphql';
+import { FragmentType, useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { notificationsListMarkAsReadMutation } from './__generated__/notificationsListMarkAsReadMutation.graphql';
-import { NotificationsListRefetch } from './__generated__/NotificationsListRefetch.graphql';
-import { notificationsListContent$key } from './__generated__/notificationsListContent.graphql';
-import { notificationsListSubscription } from './__generated__/notificationsListSubscription.graphql';
+import { notificationsListContentFragment } from './notificationsList.graphql';
 
 export const useMarkAllAsRead = (message: string) => {
   const snackbar = useSnackbar();
@@ -42,61 +39,46 @@ export const useMarkAllAsRead = (message: string) => {
   };
 };
 
-const subscription = graphql`
-  subscription notificationsListSubscription($connections: [ID!]!) {
-    notificationCreated {
-      edges @prependEdge(connections: $connections) {
-        node {
-          id
-          type
-          createdAt
-          readAt
-          data
-        }
-      }
-    }
-  }
-`;
+// const subscription = graphql`
+//   subscription notificationsListSubscription($connections: [ID!]!) {
+//     notificationCreated {
+//       edges @prependEdge(connections: $connections) {
+//         node {
+//           id
+//           type
+//           createdAt
+//           readAt
+//           data
+//         }
+//       }
+//     }
+//   }
+// `;
 
-export const useNotificationsListContent = (queryResponse: notificationsListQuery$data) => {
-  const fragment = usePaginationFragment<NotificationsListRefetch, notificationsListContent$key>(
-    graphql`
-      fragment notificationsListContent on Query
-      @refetchable(queryName: "NotificationsListRefetch")
-      @argumentDefinitions(count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" }) {
-        hasUnreadNotifications
-        allNotifications(first: $count, after: $cursor) @connection(key: "notificationsList_allNotifications") {
-          edges {
-            node {
-              id
-              data
-              createdAt
-              readAt
-              type
-            }
-          }
-        }
-      }
-    `,
-    queryResponse
-  );
+export const useNotificationsListContent = (queryResult?: FragmentType<typeof notificationsListContentFragment>) => {
+  const data = useFragment(notificationsListContentFragment, queryResult);
 
-  const allNotifications = useMappedConnection(fragment.data.allNotifications);
+  const allNotifications = useMappedConnection(data?.allNotifications);
 
-  useSubscription<notificationsListSubscription>(
-    useMemo(
-      () => ({
-        variables: {
-          connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
-        },
-        subscription,
-        updater: (store) => {
-          store.getRoot().setValue(true, 'hasUnreadNotifications');
-        },
-      }),
-      []
-    )
-  );
+  // todo: update hasUnreadNotifications in store
+  // useSubscription<notificationsListSubscription>(
+  //   useMemo(
+  //     () => ({
+  //       variables: {
+  //         connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
+  //       },
+  //       subscription,
+  //       updater: (store) => {
+  //         store.getRoot().setValue(true, 'hasUnreadNotifications');
+  //       },
+  //     }),
+  //     []
+  //   )
+  // );
 
-  return { ...fragment, allNotifications };
+  return {
+    allNotifications,
+    hasNext: data?.allNotifications?.pageInfo.hasNextPage || false,
+    endCursor: data?.allNotifications?.pageInfo.endCursor,
+  };
 };

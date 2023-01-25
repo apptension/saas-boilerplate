@@ -2,7 +2,7 @@ import { ApolloClient, HttpLink, InMemoryCache, split, from, Observable } from '
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
@@ -96,7 +96,15 @@ const retryLink = new RetryLink({
 
 export const client = new ApolloClient({
   link: from([retryLink, splitLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          allNotifications: relayStylePagination(),
+        },
+      },
+    },
+  }),
 });
 
 export const invalidateApolloStore = () => {

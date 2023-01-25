@@ -2,11 +2,12 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
-import { NotificationType } from '../../shared/services/graphqlApi/__generated/types';
-import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import { NotificationType } from '../../shared/services/graphqlApi';
+import { composeMockedPaginatedListQueryResult, connectionFromArray, makeId } from '../../tests/utils/fixtures';
 import { ExtractNodeType } from '../../shared/utils/graphql';
 import { notificationsListContent$data } from '../../shared/components/notifications/notificationsList/__generated__/notificationsListContent.graphql';
 import notificationsListQueryGraphql from '../../shared/components/notifications/__generated__/notificationsListQuery.graphql';
+import { NOTIFICATIONS_LIST_QUERY } from '../../shared/components/notifications/notifications.graphql';
 
 import { createFactory } from './factoryCreators';
 import { currentUserFactory } from './auth';
@@ -30,4 +31,17 @@ export const fillNotificationsListQuery = (
     })
   );
   env.mock.queuePendingOperation(notificationsListQueryGraphql, {});
+
+  return composeMockedPaginatedListQueryResult(
+    NOTIFICATIONS_LIST_QUERY,
+    'allNotifications',
+    'NotificationType',
+    {
+      data: notifications,
+      variables: {
+        count: 20,
+      },
+    },
+    { endCursor: 'test', hasNextPage: false }
+  );
 };

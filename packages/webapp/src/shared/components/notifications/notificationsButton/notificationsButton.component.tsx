@@ -1,45 +1,28 @@
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
-import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
 import { useIntl } from 'react-intl';
 import { ButtonProps, ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
-import notificationsListQueryGraphql, {
-  notificationsListQuery,
-  notificationsListQuery$data,
-} from '../__generated__/notificationsListQuery.graphql';
-import { notificationsButtonContent$key } from './__generated__/notificationsButtonContent.graphql';
+import { gql, useFragment, FragmentType } from '../../../services/graphqlApi/__generated/gql';
 import { Button } from './notificationsButton.styles';
 
+export const NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT = gql(/* GraphQL */ `
+  fragment notificationsButtonContent on Query {
+    hasUnreadNotifications
+  }
+`);
+
 export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'> & {
-  listQueryRef: PreloadedQuery<notificationsListQuery>;
+  queryResult?: FragmentType<typeof NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT>;
 };
 
-export const NotificationsButton = ({ listQueryRef, ...props }: NotificationsButtonProps) => {
-  const queryResponse = usePreloadedQuery(notificationsListQueryGraphql, listQueryRef);
+export const NotificationsButton = ({ queryResult, ...props }: NotificationsButtonProps) => {
+  const data = useFragment(NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT, queryResult);
 
-  return <Wrapper queryResponse={queryResponse} {...props} />;
+  return <Content hasUnreadNotifications={data?.hasUnreadNotifications ?? false} {...props} />;
 };
 
-type WrapperProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
-  queryResponse: notificationsListQuery$data;
-};
-
-export const Wrapper = ({ queryResponse, ...props }: WrapperProps) => {
-  const data = useFragment<notificationsButtonContent$key>(
-    graphql`
-      fragment notificationsButtonContent on Query {
-        hasUnreadNotifications
-      }
-    `,
-    queryResponse
-  );
-
-  return <Content hasUnreadNotifications={data.hasUnreadNotifications ?? false} {...props} />;
-};
-
-type ContentProps = Omit<NotificationsButtonProps, 'listQueryRef'> & {
+type ContentProps = Omit<NotificationsButtonProps, 'queryResult'> & {
   hasUnreadNotifications: boolean;
 };
 
