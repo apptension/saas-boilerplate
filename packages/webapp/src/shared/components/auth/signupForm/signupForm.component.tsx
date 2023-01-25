@@ -16,6 +16,7 @@ export const SignupForm = () => {
     },
     hasGenericErrorOnly,
     genericError,
+    loading,
     handleSignup,
   } = useSignupForm();
 
@@ -103,10 +104,7 @@ export const SignupForm = () => {
           {
             termsLink: (
               <InlineLink to={generateLocalePath(RoutesConfig.termsAndConditions)}>
-                <FormattedMessage
-                  id="Auth / Signup / Accept checkbox / T&C link"
-                  defaultMessage="Terms of Use"
-                />
+                <FormattedMessage id="Auth / Signup / Accept checkbox / T&C link" defaultMessage="Terms of Use" />
               </InlineLink>
             ),
             policyLink: (
@@ -124,7 +122,7 @@ export const SignupForm = () => {
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton>
+      <SubmitButton disabled={loading}>
         <FormattedMessage defaultMessage="Sign up" id="Auth / signup button" />
       </SubmitButton>
     </Container>

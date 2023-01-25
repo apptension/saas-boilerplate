@@ -1,14 +1,13 @@
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
 
+import { authSingupMutation } from '../../../../modules/auth/auth.mutations';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { RoutesConfig } from '../../../../app/config/routes';
-import authSignupMutationGraphql, {
-  authSignupMutation,
-} from '../../../../modules/auth/__generated__/authSignupMutation.graphql';
+
 import { SignupFormFields } from './signupForm.types';
 
 export const useSignupForm = () => {
@@ -38,13 +37,12 @@ export const useSignupForm = () => {
     },
   });
 
-  const { handleSubmit, setGraphQLResponseErrors } = form;
-
-  const [commitSignupMutation] = usePromiseMutation<authSignupMutation>(authSignupMutationGraphql);
+  const { handleSubmit, setApolloGraphQLResponseErrors } = form;
+  const [commitSignupMutation, { error, loading }] = useMutation(authSingupMutation);
 
   const handleSignup = handleSubmit(async (data: SignupFormFields) => {
     try {
-      const { errors } = await commitSignupMutation({
+      await commitSignupMutation({
         variables: {
           input: {
             email: data.email,
@@ -52,15 +50,16 @@ export const useSignupForm = () => {
           },
         },
       });
-
-      if (errors) {
-        setGraphQLResponseErrors(errors);
+      if (error) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
       } else {
         reloadCommonQuery();
         navigate(generateLocalePath(RoutesConfig.home));
       }
-    } catch {}
+    } catch (error) {
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    }
   });
 
-  return { ...form, handleSignup };
+  return { ...form, loading, handleSignup };
 };

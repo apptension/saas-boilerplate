@@ -1,6 +1,6 @@
-import graphql from 'babel-plugin-relay/macro';
+import { gql } from '../../shared/services/graphqlApi/__generated/gql';
 
-graphql`
+export const authUpdateUserProfileMutation = gql(/* GraphQL */ `
   mutation authUpdateUserProfileMutation($input: UpdateCurrentUserMutationInput!) {
     updateCurrentUser(input: $input) {
       userProfile {
@@ -11,46 +11,46 @@ graphql`
       }
     }
   }
-`;
+`);
 
-graphql`
+export const authSingupMutation = gql(/* GraphQL */ `
   mutation authSignupMutation($input: SingUpMutationInput!) {
     signUp(input: $input) {
       access
       refresh
     }
   }
-`;
+`);
 
-graphql`
+export const authChangePasswordMutation = gql(/* GraphQL */ `
   mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {
     changePassword(input: $input) {
       access
       refresh
     }
   }
-`;
+`);
 
-graphql`
+export const authConfirmUserEmailMutation = gql(/* GraphQL */ `
   mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {
     confirm(input: $input) {
       ok
     }
   }
-`;
+`);
 
-graphql`
+export const authRequestPasswordResetMutation = gql(/* GraphQL */ `
   mutation authRequestPasswordResetMutation($input: PasswordResetMutationInput!) {
     passwordReset(input: $input) {
       ok
     }
   }
-`;
+`);
 
-graphql`
+export const authRequestPasswordResetConfirmMutation = gql(/* GraphQL */ `
   mutation authRequestPasswordResetConfirmMutation($input: PasswordResetConfirmationMutationInput!) {
     passwordResetConfirm(input: $input) {
       ok
     }
   }
-`;
+`);

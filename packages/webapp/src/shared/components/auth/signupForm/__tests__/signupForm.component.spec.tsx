@@ -1,11 +1,14 @@
 import userEvent from '@testing-library/user-event';
-import { screen, act } from '@testing-library/react';
-import { MockPayloadGenerator } from 'relay-test-utils';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+
+import { screen, waitFor } from '@testing-library/react';
 
 import { render } from '../../../../../tests/utils/rendering';
 import { SignupForm } from '../signupForm.component';
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { authSingupMutation } from '../../../../../modules/auth/auth.mutations';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -15,6 +18,13 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+const Component = () => <SignupForm />;
+const defaultVariables = {
+  input: {
+    email: 'user@mail.com',
+    password: 'abcxyz123456',
+  },
+};
 describe('SignupForm: Component', () => {
   beforeEach(() => {
     mockNavigate.mockReset();
@@ -23,131 +33,118 @@ describe('SignupForm: Component', () => {
   const getEmailInput = () => screen.getByLabelText(/email/i);
   const getPasswordInput = () => screen.getByLabelText(/password/i);
   const getAcceptField = () => screen.getByLabelText(/accept/i);
-  const getSignupButton = () => screen.getByRole('button', { name: /sign up/i });
-  const clickSignupButton = async () => await userEvent.click(getSignupButton());
+
+  const clickSignupButton = () => userEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
   it('should call signup mutation when submitted', async () => {
-    const mockCreds = {
-      email: 'user@mail.com',
-      password: 'abcxyz123456',
-    };
+    const requestMock = composeMockedQueryResult(authSingupMutation, {
+      variables: defaultVariables,
+      data: {},
+    });
 
-    const relayEnvironment = getRelayEnv();
-
-    render(<SignupForm />, { relayEnvironment });
-    await userEvent.type(getEmailInput(), mockCreds.email);
-    await userEvent.type(getPasswordInput(), mockCreds.password);
+    render(<Component />, { apolloMocks: [requestMock] });
+    await userEvent.type(getEmailInput(), defaultVariables.input.email);
+    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
     await userEvent.click(getAcceptField());
-    await act(async () => {
-      await clickSignupButton();
-    });
-    expect(relayEnvironment).toHaveLatestOperation('authSignupMutation');
-    expect(relayEnvironment).toLatestOperationInputEqual(mockCreds);
 
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-    });
+    await clickSignupButton();
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`));
   });
 
   it('should show error if password value is missing', async () => {
-    const relayEnvironment = getRelayEnv();
-    render(<SignupForm />, { relayEnvironment });
-    await userEvent.type(getEmailInput(), 'user@mail.com');
-    await userEvent.click(getAcceptField());
-    await act(async () => {
-      await clickSignupButton();
+    const variables = {
+      input: {
+        email: 'user@mail.com',
+      },
+    };
+
+    const requestMock = composeMockedQueryResult(authSingupMutation, {
+      variables,
+      data: {},
     });
-    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
-    expect(screen.getByText('Password is required')).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
+
+    render(<Component />, { apolloMocks: [requestMock] });
+    await userEvent.type(getEmailInput(), variables.input.email);
+    await userEvent.click(getAcceptField());
+
+    await clickSignupButton();
+
+    expect(await screen.findByText('Password is required')).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show error if terms are not accepted', async () => {
-    const relayEnvironment = getRelayEnv();
-    render(<SignupForm />, { relayEnvironment });
-    await userEvent.type(getEmailInput(), 'user@mail.com');
-    await userEvent.type(getPasswordInput(), 'abcxyz123456');
-    await act(async () => {
-      await clickSignupButton();
+    const requestMock = composeMockedQueryResult(authSingupMutation, {
+      variables: defaultVariables,
+      data: {},
     });
-    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
-    expect(screen.getByText('You need to accept terms and conditions')).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
+
+    render(<Component />, { apolloMocks: [requestMock] });
+
+    await userEvent.type(getEmailInput(), defaultVariables.input.email);
+    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+
+    await clickSignupButton();
+
+    expect(await screen.findByText('You need to accept terms and conditions')).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('should show field error if action throws error', async () => {
-    const relayEnvironment = getRelayEnv();
-    render(<SignupForm />, { relayEnvironment });
-    await userEvent.type(getEmailInput(), 'user@mail.com');
-    await userEvent.type(getPasswordInput(), 'abcxyz123456');
-    await userEvent.click(getAcceptField());
-    await act(async () => {
-      await clickSignupButton();
-    });
+  it('should show field error if password is too common', async () => {
+    const errorMessage = 'The password is too common.';
 
-    const errorMessage = 'Provided password is invalid';
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
+    const requestMock = {
+      request: {
+        query: authSingupMutation,
+        variables: defaultVariables,
+      },
+      result: {
+        data: {},
         errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              password: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
+          new GraphQLError('GraphQlValidationError', {
+            extensions: { password: [{ message: errorMessage, code: 'password_too_common' }] },
+          }),
         ],
-      } as any);
-    });
+      },
+    };
 
-    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
+    render(<Component />, { apolloMocks: [requestMock] });
+    await userEvent.type(getEmailInput(), defaultVariables.input.email);
+    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.click(getAcceptField());
+
+    await clickSignupButton();
+
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('should show generic form error if action throws error', async () => {
-    const relayEnvironment = getRelayEnv();
-    render(<SignupForm />, { relayEnvironment });
+  it('should show field error if email is already taken', async () => {
+    const errorMessage = 'The email address is already taken';
 
-    await userEvent.type(getEmailInput(), 'user@mail.com');
-    await userEvent.type(getPasswordInput(), 'abcxyz123456');
-    await userEvent.click(getAcceptField());
-    await act(async () => {
-      await clickSignupButton();
-    });
-
-    const errorMessage = 'Invalid credentials';
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
+    const requestMock = {
+      request: {
+        query: authSingupMutation,
+        variables: defaultVariables,
+      },
+      result: {
+        data: {},
         errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              password: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
+          new GraphQLError('GraphQlValidationError', {
+            extensions: { email: [{ message: errorMessage, code: 'unique' }] },
+          }),
         ],
-      } as any);
-    });
+      },
+    };
 
-    expect(relayEnvironment).not.toHaveLatestOperation('authSignupMutation');
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalled();
+    render(<Component />, { apolloMocks: [requestMock] });
+    await userEvent.type(getEmailInput(), defaultVariables.input.email);
+    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.click(getAcceptField());
+
+    await clickSignupButton();
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 });

@@ -54,6 +54,7 @@ export const composeMockedQueryResult = (
   },
   result: {
     data,
+    /*TODO: ADD ERRORS */
   },
 });
 
