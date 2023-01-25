@@ -95,6 +95,7 @@ const retryLink = new RetryLink({
 });
 
 export const client = new ApolloClient({
+  connectToDevTools: ENV.ENVIRONMENT_NAME === 'local',
   link: from([retryLink, splitLink]),
   cache: new InMemoryCache({
     typePolicies: {
