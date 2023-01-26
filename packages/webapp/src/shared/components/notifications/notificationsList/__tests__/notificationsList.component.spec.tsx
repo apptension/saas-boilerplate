@@ -7,11 +7,11 @@ import { fillNotificationsListQuery, notificationFactory } from '../../../../../
 import { ExtractNodeType } from '../../../../utils/graphql';
 import { notificationsListContent$data } from '../__generated__/notificationsListContent.graphql';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
-import { NOTIFICATIONS_LIST_QUERY } from '../../notifications.graphql';
+import { notificationsListQuery } from '../../notifications.graphql';
 
 describe('NotificationsList: Component', () => {
   const Component = (props: Partial<NotificationsListProps>) => {
-    const { loading, data } = useQuery(NOTIFICATIONS_LIST_QUERY);
+    const { loading, data } = useQuery(notificationsListQuery);
     return <NotificationsList isOpen onLoadMore={() => null} loading={loading} queryResult={data} {...props} />;
   };
 

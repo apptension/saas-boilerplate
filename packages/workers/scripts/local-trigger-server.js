@@ -1,49 +1,52 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const { spawn } = require("child_process");
-const YAML = require("yaml");
-const fs = require("fs");
+const express = require('express');
+const bodyParser = require('body-parser');
+const { spawn } = require('child_process');
+const YAML = require('yaml');
+const fs = require('fs');
 
 const app = express();
 const port = 3005;
-const hostname = "0.0.0.0";
+const hostname = '0.0.0.0';
 
 app.use(bodyParser.json());
 
 function invokeFunction(name, data) {
   const sls = spawn(
-    "/app/node_modules/.bin/sls",
-    ["invoke", "local", "-f", name, "-d", JSON.stringify(data)],
+    '/app/packages/workers/node_modules/.bin/sls',
+    ['invoke', 'local', '-f', name, '-d', JSON.stringify(data)],
     {
-      cwd: "/app/packages/workers",
+      cwd: '/app/packages/workers',
     }
   );
 
-  sls.stdout.on("data", (data) => {
+  sls.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
   });
 
-  sls.stderr.on("data", (data) => {
+  sls.stderr.on('data', (data) => {
     console.log(`stderr: ${data}`);
   });
 
-  sls.on("error", (error) => {
+  sls.on('error', (error) => {
     console.log(`error: ${error.message}`);
   });
 
-  sls.on("close", (code) => {
+  sls.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
   });
 }
 
-app.post("/", (req, res) => {
+app.post('/', (req, res) => {
   const source = req.body.Source;
-  const serverlessConfigFile = fs.readFileSync("/app/packages/workers/serverless.yml", "utf8");
+  const serverlessConfigFile = fs.readFileSync(
+    '/app/packages/workers/serverless.yml',
+    'utf8'
+  );
   const serverlessConfig = YAML.parse(serverlessConfigFile);
 
   const invokeData = {
     source: source,
-    "detail-type": req.body.DetailType,
+    'detail-type': req.body.DetailType,
     detail: req.body.Detail ? JSON.parse(req.body.Detail) : {},
   };
 
@@ -64,7 +67,7 @@ app.post("/", (req, res) => {
     });
   });
 
-  res.send({ message: "OK" });
+  res.send({ message: 'OK' });
 });
 
 app.listen(port, hostname, () => {

@@ -7,7 +7,7 @@ import { composeMockedPaginatedListQueryResult, connectionFromArray, makeId } fr
 import { ExtractNodeType } from '../../shared/utils/graphql';
 import { notificationsListContent$data } from '../../shared/components/notifications/notificationsList/__generated__/notificationsListContent.graphql';
 import notificationsListQueryGraphql from '../../shared/components/notifications/__generated__/notificationsListQuery.graphql';
-import { NOTIFICATIONS_LIST_QUERY } from '../../shared/components/notifications/notifications.graphql';
+import { notificationsListQuery } from '../../shared/components/notifications/notifications.graphql';
 
 import { createFactory } from './factoryCreators';
 import { currentUserFactory } from './auth';
@@ -33,7 +33,7 @@ export const fillNotificationsListQuery = (
   env.mock.queuePendingOperation(notificationsListQueryGraphql, {});
 
   return composeMockedPaginatedListQueryResult(
-    NOTIFICATIONS_LIST_QUERY,
+    notificationsListQuery,
     'allNotifications',
     'NotificationType',
     {

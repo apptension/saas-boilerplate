@@ -36,11 +36,11 @@ services:
       - localwsserver
 
   workers:
-#    volumes:
-#      - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
-#      - ./packages/workers/:/app/packages/workers/
-#      - workers_node_modules:/app/packages/workers/node_modules/
-#      - /app/packages/workers/__pypackages__/
+    volumes:
+      - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
+      - ./packages/workers/:/app/packages/workers/
+      - workers_node_modules:/app/packages/workers/node_modules/
+      - /app/packages/workers/__pypackages__/
     env_file:
       - .env
       - ./packages/workers/.env
@@ -103,4 +103,4 @@ services:
     environment:
       - BE_ENDPOINT_URL=http://backend:5000/
     volumes:
-      - ./tools/localWSServer/:/app/
+      - ./packages/internal/local-ws-server/:/app/

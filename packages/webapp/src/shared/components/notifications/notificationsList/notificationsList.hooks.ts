@@ -42,42 +42,10 @@ export const useMarkAllAsRead = (message: string) => {
   };
 };
 
-// const subscription = graphql`
-//   subscription notificationsListSubscription($connections: [ID!]!) {
-//     notificationCreated {
-//       edges @prependEdge(connections: $connections) {
-//         node {
-//           id
-//           type
-//           createdAt
-//           readAt
-//           data
-//         }
-//       }
-//     }
-//   }
-// `;
-
 export const useNotificationsListContent = (queryResult?: FragmentType<typeof notificationsListContentFragment>) => {
   const data = useFragment(notificationsListContentFragment, queryResult);
 
   const allNotifications = useMappedConnection(data?.allNotifications);
-
-  // todo: update hasUnreadNotifications in store
-  // useSubscription<notificationsListSubscription>(
-  //   useMemo(
-  //     () => ({
-  //       variables: {
-  //         connections: [ConnectionHandler.getConnectionID('root', 'notificationsList_allNotifications')],
-  //       },
-  //       subscription,
-  //       updater: (store) => {
-  //         store.getRoot().setValue(true, 'hasUnreadNotifications');
-  //       },
-  //     }),
-  //     []
-  //   )
-  // );
 
   return {
     allNotifications,
