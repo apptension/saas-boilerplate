@@ -1,0 +1,9 @@
+[run]
+concurrency = multiprocessing
+parallel = true
+sigterm = true
+branch = true
+source = .
+
+[report]
+include = content/*, dao/*, emails/*, scheduler/*, settings/*, userauth/*, utils/*, websockets/*

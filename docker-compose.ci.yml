@@ -2,10 +2,14 @@ version: "3.4"
 
 services:
   backend:
+    volumes:
+      - ./packages/backend/cov:/app/cov
     environment:
       - CI=true
 
   workers:
+    volumes:
+      - ./packages/workers/cov:/app/packages/workers/cov
     environment:
       - CI=true
       - PROJECT_NAME=${PROJECT_NAME}

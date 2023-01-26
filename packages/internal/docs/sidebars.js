@@ -16,6 +16,7 @@ module.exports = {
       "guides/git-flow",
       "guides/aws-manual-deploy",
       "guides/configure-cicd-slack-notifications",
+      "guides/sonar-cloud-integration",
     ],
     Features: [
       "features/sentry",

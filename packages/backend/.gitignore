@@ -5,3 +5,6 @@ db.sqlite3
 .pytest_cache/
 .env
 .pdm.toml
+
+# Coverage
+.coverage

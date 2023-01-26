@@ -43,7 +43,7 @@ def create_test_database():
     template_engine.dispose()
 
 
-class PyTest(Command):
+class CreateTestDB(Command):
     user_options = []
 
     def initialize_options(self):
@@ -53,12 +53,8 @@ class PyTest(Command):
         pass
 
     def run(self):
-        import subprocess
-
         load_dotenv(dotenv_path='.env.test', override=True)
         create_test_database()
-        errno = subprocess.call(['pytest'])
-        raise SystemExit(errno)
 
 
-setup(cmdclass={'test': PyTest})
+setup(cmdclass={'create_db': CreateTestDB})

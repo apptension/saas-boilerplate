@@ -25,3 +25,7 @@ var/
 
 # Node directories
 node_modules
+
+
+# Coverage
+.coverage

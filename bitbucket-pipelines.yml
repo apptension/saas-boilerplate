@@ -1,3 +1,6 @@
+clone:
+  depth: full
+
 definitions:
   services:
     docker:
@@ -7,6 +10,7 @@ definitions:
     pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     clis: ~/.clicache
+    sonar: ~/.sonar/cache
 
   scripts:
     initializeStep: &initializeStep
@@ -52,14 +56,20 @@ pipelines:
               changesets:
                 includePaths:
                   - "packages/webapp/**"
+            size: 2x
             script:
               - *initializeStep
               - *installWebappDeps
               - nx run webapp:lint
               - nx run webapp:test --watchAll=false --maxWorkers=20%
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp'
             caches:
               - pnpmwebapp
               - clis
+              - sonar
         - step:
             name: Build web app
             image: atlassian/default-image:3
@@ -92,12 +102,17 @@ pipelines:
                 --filter=core
                 --filter=tools
               - nx run backend:test
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/backend'
             services:
               - docker
             caches:
               - docker
               - pnpmbackend
               - clis
+              - sonar
 
         - step:
             name: Test async-workers
@@ -116,9 +131,14 @@ pipelines:
                 --filter=core
                 --filter=tools
               - nx run workers:test
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/workers'
             services:
               - docker
             caches:
               - docker
               - pnpmworkers
               - clis
+              - sonar
