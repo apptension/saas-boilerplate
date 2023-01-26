@@ -1,38 +1,41 @@
-import graphql from 'babel-plugin-relay/macro';
-import { ConnectionHandler } from 'react-relay';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import { useMutation } from '@apollo/client';
 import { useMappedConnection } from '../../../hooks/useMappedConnection';
 import { useSnackbar } from '../../../../modules/snackbar';
 import { FragmentType, useFragment } from '../../../services/graphqlApi/__generated/gql';
-import { notificationsListMarkAsReadMutation } from './__generated__/notificationsListMarkAsReadMutation.graphql';
-import { notificationsListContentFragment } from './notificationsList.graphql';
+import { notificationsListContentFragment, notificationsListMarkAsReadMutation } from './notificationsList.graphql';
 
 export const useMarkAllAsRead = (message: string) => {
   const snackbar = useSnackbar();
 
-  const [commitMarkAsReadMutation] = usePromiseMutation<notificationsListMarkAsReadMutation>(graphql`
-    mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {
-      markReadAllNotifications(input: $input) {
-        ok
-      }
-    }
-  `);
+  const [commitMarkAsReadMutation] = useMutation(notificationsListMarkAsReadMutation);
 
   return async () => {
     await commitMarkAsReadMutation({
       variables: {
         input: {},
       },
-      updater: (store) => {
-        store.getRoot().setValue(false, 'hasUnreadNotifications');
-
-        const readAt = new Date().toISOString();
-        ConnectionHandler.getConnection(store.getRoot(), 'notificationsList_allNotifications')
-          ?.getLinkedRecords('edges')
-          ?.forEach((edge) => {
-            const notification = edge.getLinkedRecord('node');
-            notification?.setValue(readAt, 'readAt');
-          });
+      update(cache, { data }) {
+        cache.modify({
+          fields: {
+            hasUnreadNotifications() {
+              return false;
+            },
+            allNotifications(connection = { edges: [] }) {
+              const readAt = new Date().toISOString();
+              connection.edges.forEach((edge) => {
+                cache.modify({
+                  id: edge.node.__ref,
+                  fields: {
+                    readAt() {
+                      return readAt;
+                    },
+                  },
+                });
+              });
+              return connection;
+            },
+          },
+        });
       },
     });
     snackbar.showMessage(message);

@@ -20,3 +20,11 @@ export const notificationsListContentFragment = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const notificationsListMarkAsReadMutation = gql(/* GraphQL */ `
+  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {
+    markReadAllNotifications(input: $input) {
+      ok
+    }
+  }
+`);

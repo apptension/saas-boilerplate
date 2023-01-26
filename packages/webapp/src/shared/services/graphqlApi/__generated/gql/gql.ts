@@ -65,7 +65,7 @@ const documents = {
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n": types.NotificationsButtonContentFragmentDoc,
     "\n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          data\n          createdAt\n          readAt\n          type\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.NotificationsListContentFragmentFragmentDoc,
-    "\n    mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n      markReadAllNotifications(input: $input) {\n        ok\n      }\n    }\n  ": types.NotificationsListMarkAsReadMutationDocument,
+    "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
     "\n      mutation useFavoriteDemoItemListCreateMutation(\n        $input: CreateFavoriteContentfulDemoItemMutationInput!\n        $connections: [ID!]!\n      ) {\n        createFavoriteContentfulDemoItem(input: $input) {\n          contentfulDemoItemFavoriteEdge @appendEdge(connections: $connections) {\n            node {\n              ...useFavoriteDemoItem_item @relay(mask: false)\n            }\n          }\n        }\n      }\n    ": types.UseFavoriteDemoItemListCreateMutationDocument,
     "\n      mutation useFavoriteDemoItemListDeleteMutation(\n        $input: DeleteFavoriteContentfulDemoItemMutationInput!\n        $connections: [ID!]!\n      ) {\n        deleteFavoriteContentfulDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.UseFavoriteDemoItemListDeleteMutationDocument,
     "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    item {\n      pk\n    }\n  }\n": types.UseFavoriteDemoItem_ItemFragmentDoc,
@@ -297,7 +297,7 @@ export function gql(source: "\n  fragment notificationsListContentFragment on Qu
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n      markReadAllNotifications(input: $input) {\n        ok\n      }\n    }\n  "): (typeof documents)["\n    mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n      markReadAllNotifications(input: $input) {\n        ok\n      }\n    }\n  "];
+export function gql(source: "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
