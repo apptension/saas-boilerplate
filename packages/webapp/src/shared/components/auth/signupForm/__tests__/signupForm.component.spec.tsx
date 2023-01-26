@@ -8,7 +8,7 @@ import { SignupForm } from '../signupForm.component';
 import { RoutesConfig } from '../../../../../app/config/routes';
 
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
-import { authSingupMutation } from '../../../../../modules/auth/auth.mutations';
+import { authSingupMutation } from '../signUpForm.graphql';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -19,7 +19,7 @@ jest.mock('react-router-dom', () => {
 });
 
 const Component = () => <SignupForm />;
-const defaultVariables = {
+const mockCredentials = {
   input: {
     email: 'user@mail.com',
     password: 'abcxyz123456',
@@ -38,13 +38,13 @@ describe('SignupForm: Component', () => {
 
   it('should call signup mutation when submitted', async () => {
     const requestMock = composeMockedQueryResult(authSingupMutation, {
-      variables: defaultVariables,
+      variables: mockCredentials,
       data: {},
     });
 
     render(<Component />, { apolloMocks: [requestMock] });
-    await userEvent.type(getEmailInput(), defaultVariables.input.email);
-    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
     await userEvent.click(getAcceptField());
 
     await clickSignupButton();
@@ -76,14 +76,14 @@ describe('SignupForm: Component', () => {
 
   it('should show error if terms are not accepted', async () => {
     const requestMock = composeMockedQueryResult(authSingupMutation, {
-      variables: defaultVariables,
+      variables: mockCredentials,
       data: {},
     });
 
     render(<Component />, { apolloMocks: [requestMock] });
 
-    await userEvent.type(getEmailInput(), defaultVariables.input.email);
-    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
 
     await clickSignupButton();
 
@@ -97,7 +97,7 @@ describe('SignupForm: Component', () => {
     const requestMock = {
       request: {
         query: authSingupMutation,
-        variables: defaultVariables,
+        variables: mockCredentials,
       },
       result: {
         data: {},
@@ -110,8 +110,8 @@ describe('SignupForm: Component', () => {
     };
 
     render(<Component />, { apolloMocks: [requestMock] });
-    await userEvent.type(getEmailInput(), defaultVariables.input.email);
-    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
     await userEvent.click(getAcceptField());
 
     await clickSignupButton();
@@ -126,7 +126,7 @@ describe('SignupForm: Component', () => {
     const requestMock = {
       request: {
         query: authSingupMutation,
-        variables: defaultVariables,
+        variables: mockCredentials,
       },
       result: {
         data: {},
@@ -139,8 +139,8 @@ describe('SignupForm: Component', () => {
     };
 
     render(<Component />, { apolloMocks: [requestMock] });
-    await userEvent.type(getEmailInput(), defaultVariables.input.email);
-    await userEvent.type(getPasswordInput(), defaultVariables.input.password);
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
     await userEvent.click(getAcceptField());
 
     await clickSignupButton();

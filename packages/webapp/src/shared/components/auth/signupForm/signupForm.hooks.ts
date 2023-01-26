@@ -2,11 +2,11 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 
-import { authSingupMutation } from '../../../../modules/auth/auth.mutations';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { RoutesConfig } from '../../../../app/config/routes';
+import { authSingupMutation } from './signUpForm.graphql';
 
 import { SignupFormFields } from './signupForm.types';
 

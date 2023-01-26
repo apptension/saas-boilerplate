@@ -13,15 +13,6 @@ export const authUpdateUserProfileMutation = gql(/* GraphQL */ `
   }
 `);
 
-export const authSingupMutation = gql(/* GraphQL */ `
-  mutation authSignupMutation($input: SingUpMutationInput!) {
-    signUp(input: $input) {
-      access
-      refresh
-    }
-  }
-`);
-
 export const authChangePasswordMutation = gql(/* GraphQL */ `
   mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {
     changePassword(input: $input) {

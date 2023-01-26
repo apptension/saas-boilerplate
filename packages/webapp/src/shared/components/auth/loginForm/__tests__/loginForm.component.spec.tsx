@@ -1,117 +1,120 @@
 import userEvent from '@testing-library/user-event';
-import { screen, act } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { screen, waitFor } from '@testing-library/react';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+
 import { render } from '../../../../../tests/utils/rendering';
 import { LoginForm } from '../loginForm.component';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
-describe('LoginForm: Component', () => {
-  const renderWithRelayEnvironment = () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
-    return {
-      ...render(<LoginForm />, { relayEnvironment }),
-      relayEnvironment,
-    };
+import { RoutesConfig } from '../../../../../app/config/routes';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { authSinginMutation } from '../loginForm.graphql';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual<NodeModule>('react-router-dom'),
+    useNavigate: () => mockNavigate,
   };
+});
+const Component = () => <LoginForm />;
+describe('LoginForm: Component', () => {
+  beforeEach(() => {
+    mockNavigate.mockReset();
+  });
 
-  const mockCreds = {
-    email: 'user@mail.com',
-    password: 'abcxyz',
+  const mockCredentials = {
+    input: {
+      email: 'user@mail.com',
+      password: 'abcxyz123456',
+    },
   };
 
   const getEmailInput = () => screen.getByLabelText(/email/i);
   const getPasswordInput = () => screen.getByLabelText(/password/i);
-  const clickLoginButton = async () => await userEvent.click(screen.getByRole('button', { name: /log in/i }));
+  const clickLoginButton = () => userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
   it('should call login action when submitted', async () => {
-    const { relayEnvironment } = renderWithRelayEnvironment();
-
-    await userEvent.type(getEmailInput(), mockCreds.email);
-    await userEvent.type(getPasswordInput(), mockCreds.password);
-    await act(async () => {
-      await clickLoginButton();
+    const requestMock = composeMockedQueryResult(authSinginMutation, {
+      variables: mockCredentials,
+      data: {},
     });
-    expect(relayEnvironment).toHaveLatestOperation('loginFormMutation');
-    expect(relayEnvironment).toLatestOperationInputEqual(mockCreds);
+    render(<Component />, { apolloMocks: [requestMock] });
+
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
+
+    await clickLoginButton();
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`));
   });
 
   it('should show error if required value is missing', async () => {
-    const { relayEnvironment } = renderWithRelayEnvironment();
+    const variables = {
+      input: {
+        email: 'user@mail.com',
+      },
+    };
+    const requestMock = composeMockedQueryResult(authSinginMutation, {
+      variables,
+      data: {},
+    });
+    render(<Component />, { apolloMocks: [requestMock] });
+
     await userEvent.type(getEmailInput(), 'user@mail.com');
-    await act(async () => {
-      await clickLoginButton();
-    });
-    expect(relayEnvironment).not.toHaveOperation('loginFormMutation');
-    expect(screen.getByText('Password is required')).toBeInTheDocument();
-  });
 
-  it('should show field error if action throws error', async () => {
-    const { relayEnvironment } = renderWithRelayEnvironment();
+    await clickLoginButton();
 
-    const errorMessage = 'Provided password is invalid';
-
-    await userEvent.type(getEmailInput(), mockCreds.email);
-    await userEvent.type(getPasswordInput(), mockCreds.password);
-    await act(async () => {
-      await clickLoginButton();
-    });
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
-        errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              password: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
-        ],
-      } as any);
-    });
-
-    expect(relayEnvironment).not.toHaveOperation('loginFormMutation');
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(await screen.findByText('Password is required')).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show generic form error if action throws error', async () => {
-    const { relayEnvironment } = renderWithRelayEnvironment();
+    const errorMessage = 'Incorrect authentication credentials.';
 
-    const errorMessage = 'Invalid credentials';
-
-    await userEvent.type(getEmailInput(), mockCreds.email);
-    await userEvent.type(getPasswordInput(), mockCreds.password);
-    await act(async () => {
-      await clickLoginButton();
-    });
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
+    const requestMock = {
+      request: {
+        query: authSinginMutation,
+        variables: mockCredentials,
+      },
+      result: {
+        data: {},
         errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              nonFieldErrors: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
+          new GraphQLError('GraphQlValidationError', {
+            extensions: { nonFieldErrors: [{ message: errorMessage, code: 'Incorrect authentication credentials.' }] },
+          }),
         ],
-      } as any);
-    });
+      },
+    };
+
+    render(<Component />, { apolloMocks: [requestMock] });
+
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
+
+    await clickLoginButton();
 
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('should show common error if action throws error', async () => {
+    const errorMessage = 'Server error';
+    const requestMock = {
+      request: {
+        query: authSinginMutation,
+        variables: mockCredentials,
+      },
+      data: {},
+      result: { errors: [new GraphQLError(errorMessage)] },
+    };
+
+    render(<Component />, { apolloMocks: [requestMock] });
+
+    await userEvent.type(getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(getPasswordInput(), mockCredentials.input.password);
+
+    await clickLoginButton();
+
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 });

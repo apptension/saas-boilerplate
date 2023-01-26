@@ -1,13 +1,15 @@
 import { useIntl } from 'react-intl';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import graphql from 'babel-plugin-relay/macro';
+
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { LoginFormFields } from './loginForm.types';
-import { loginFormMutation } from './__generated__/loginFormMutation.graphql';
+
+import { authSinginMutation } from './loginForm.graphql';
 
 export const useLoginForm = () => {
   const intl = useIntl();
@@ -29,34 +31,27 @@ export const useLoginForm = () => {
       },
     },
   });
-  const { handleSubmit, setGraphQLResponseErrors } = form;
+  const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
-  const [commitLoginMutation] = usePromiseMutation<loginFormMutation>(
-    graphql`
-      mutation loginFormMutation($input: ObtainTokenMutationInput!) {
-        tokenAuth(input: $input) {
-          access
-          refresh
-        }
-      }
-    `
-  );
+  const [commitLoginMutation, { error }] = useMutation(authSinginMutation);
 
   const handleLogin = handleSubmit(async (data: LoginFormFields) => {
     try {
-      const { errors } = await commitLoginMutation({
+      await commitLoginMutation({
         variables: {
           input: data,
         },
       });
 
-      if (errors) {
-        setGraphQLResponseErrors(errors);
+      if (error) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
       } else {
         reloadCommonQuery();
         navigate(generateLocalePath(RoutesConfig.home));
       }
-    } catch {}
+    } catch (error) {
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    }
   });
 
   return { ...form, handleLogin };

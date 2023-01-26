@@ -16,7 +16,6 @@ const documents = {
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n      query commonQueryCurrentUserQuery {\n        currentUser {\n          ...commonQueryCurrentUserFragment\n        }\n      }\n    ": types.CommonQueryCurrentUserQueryDocument,
     "\n  mutation authUpdateUserProfileMutation($input: UpdateCurrentUserMutationInput!) {\n    updateCurrentUser(input: $input) {\n      userProfile {\n        id\n        user {\n          ...commonQueryCurrentUserFragment\n        }\n      }\n    }\n  }\n": types.AuthUpdateUserProfileMutationDocument,
-    "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthSignupMutationDocument,
     "\n  mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {\n    changePassword(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthChangePasswordMutationDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
     "\n  mutation authRequestPasswordResetMutation($input: PasswordResetMutationInput!) {\n    passwordReset(input: $input) {\n      ok\n    }\n  }\n": types.AuthRequestPasswordResetMutationDocument,
@@ -60,7 +59,8 @@ const documents = {
     "\n      query documentsListQuery {\n        allDocumentDemoItems(first: 10) @connection(key: \"documentsList_allDocumentDemoItems\") {\n          edges {\n            node {\n              id\n              ...documentListItem\n            }\n          }\n        }\n      }\n    ": types.DocumentsListQueryDocument,
     "\n      mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!, $connections: [ID!]!) {\n        createDocumentDemoItem(input: $input) {\n          documentDemoItemEdge @appendEdge(connections: $connections) {\n            node {\n              createdAt\n              file {\n                name\n                url\n              }\n            }\n          }\n        }\n      }\n    ": types.DocumentsListCreateMutationDocument,
     "\n    mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!, $connections: [ID!]!) {\n      deleteDocumentDemoItem(input: $input) {\n        deletedIds @deleteEdge(connections: $connections)\n      }\n    }\n  ": types.DocumentsDeleteMutationDocument,
-    "\n      mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n        tokenAuth(input: $input) {\n          access\n          refresh\n        }\n      }\n    ": types.LoginFormMutationDocument,
+    "\n  mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n    tokenAuth(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.LoginFormMutationDocument,
+    "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthSignupMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n": types.NotificationsButtonContentFragmentDoc,
@@ -98,10 +98,6 @@ export function gql(source: "\n      query commonQueryCurrentUserQuery {\n      
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation authUpdateUserProfileMutation($input: UpdateCurrentUserMutationInput!) {\n    updateCurrentUser(input: $input) {\n      userProfile {\n        id\n        user {\n          ...commonQueryCurrentUserFragment\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation authUpdateUserProfileMutation($input: UpdateCurrentUserMutationInput!) {\n    updateCurrentUser(input: $input) {\n      userProfile {\n        id\n        user {\n          ...commonQueryCurrentUserFragment\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n"): (typeof documents)["\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -277,7 +273,11 @@ export function gql(source: "\n    mutation documentsDeleteMutation($input: Dele
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n        tokenAuth(input: $input) {\n          access\n          refresh\n        }\n      }\n    "): (typeof documents)["\n      mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n        tokenAuth(input: $input) {\n          access\n          refresh\n        }\n      }\n    "];
+export function gql(source: "\n  mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n    tokenAuth(input: $input) {\n      access\n      refresh\n    }\n  }\n"): (typeof documents)["\n  mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n    tokenAuth(input: $input) {\n      access\n      refresh\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n"): (typeof documents)["\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
