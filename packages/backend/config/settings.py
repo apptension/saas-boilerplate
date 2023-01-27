@@ -1,10 +1,10 @@
+import datetime
 import json
 import os
-import datetime
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 import environ
+
+from . import monitoring
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = environ.Path(__file__) - 2
@@ -16,13 +16,9 @@ env = environ.Env(
 
 ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
 
-sentry_sdk.init(
-    dsn=env("SENTRY_DSN", default=None),
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=True,
-    environment=ENVIRONMENT_NAME,
-)
+SENTRY_DSN = env("SENTRY_DSN", default=None)
+SENTRY_TRACES_SAMPLE_RATE = env("SENTRY_TRACES_SAMPLE_RATE", default=0.2)
+monitoring.init(SENTRY_DSN, ENVIRONMENT_NAME, SENTRY_TRACES_SAMPLE_RATE)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -270,9 +266,7 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7
 GRAPHENE = {
     "SCHEMA": "config.schema.schema",
     "DEFAULT_PERMISSION_CLASSES": ("common.acl.policies.IsAuthenticatedFullAccess",),
-    # It looks like DjangoDebugMiddleware is being passed by default, and it stops error propagation. Added empty list
-    # as a workaround. Related open issue: https://github.com/graphql-python/graphene-django/issues/1384
-    "MIDDLEWARE": [],
+    "MIDDLEWARE": ["common.middleware.SentryMiddleware"],
 }
 
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
