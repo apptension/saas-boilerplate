@@ -4,6 +4,7 @@ from distutils.core import setup, Command
 from dotenv import load_dotenv
 from environs import Env
 from sqlalchemy import create_engine, exc
+from sqlalchemy import text
 from sqlalchemy.engine import url
 
 
@@ -27,17 +28,17 @@ def create_test_database():
     conn = template_engine.connect()
 
     conn = conn.execution_options(autocommit=False)
-    conn.execute("ROLLBACK")
+    conn.execute(text("ROLLBACK"))
     try:
-        conn.execute(f"DROP DATABASE {DB_CONNECTION['dbname']}")
+        conn.execute(text(f"DROP DATABASE {DB_CONNECTION['dbname']}"))
     except exc.ProgrammingError:
         # Could not drop the database, probably does not exist
-        conn.execute("ROLLBACK")
+        conn.execute(text("ROLLBACK"))
     except exc.OperationalError:
         # Could not drop database because it's being accessed by other users (psql prompt open?)
-        conn.execute("ROLLBACK")
+        conn.execute(text("ROLLBACK"))
 
-    conn.execute(f"CREATE DATABASE {DB_CONNECTION['dbname']}")
+    conn.execute(text(f"CREATE DATABASE {DB_CONNECTION['dbname']}"))
     conn.close()
 
     template_engine.dispose()

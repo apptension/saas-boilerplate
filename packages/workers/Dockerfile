@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=python:3.8-slim-buster
+ARG BASE_IMAGE=python:3.9-slim-bullseye
 FROM ${BASE_IMAGE}
 
 ENV APP_PATH=/app
@@ -14,7 +14,7 @@ RUN \
   wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   apt-get update && \
   apt-get install -yqq nodejs && \
-  pip install -U pip==21.3.1 && pip install pdm==2.1.1 && \
+  pip install -U pip==22.3.1 && pip install pdm==2.4.1 && \
   npm i -g npm@^8 nx@^15.4.5 pnpm@^7.25.0 && \
   rm -rf /var/lib/apt/lists/*
 
@@ -33,8 +33,8 @@ COPY $SRC_CORE_PATH $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH $DEST_WORKERS_PATH/
 RUN chmod +x $DEST_WORKERS_PATH/scripts/*.sh
 
-ENV PYTHONPATH=/pkgs/__pypackages__/3.8/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.8/bin
+ENV PYTHONPATH=/pkgs/__pypackages__/3.9/lib \
+    PATH=$PATH:/pkgs/__pypackages__/3.9/bin
 
 WORKDIR $DEST_WORKERS_PATH
 

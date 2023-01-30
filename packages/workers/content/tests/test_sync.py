@@ -42,7 +42,7 @@ class TestContentfulSync:
 
         contentful_sync.sync()
 
-        entry_instance = db_session.query(MockContentfulItem).get(entry_id)
+        entry_instance = db_session.get(MockContentfulItem, entry_id)
         assert entry_instance.fields == entry.fields()
         assert entry_instance.is_published
 
@@ -58,8 +58,8 @@ class TestContentfulSync:
 
         contentful_sync.sync()
 
-        old_entry_instance = db_session.query(MockContentfulItem).get(old_entry_id)
+        old_entry_instance = db_session.get(MockContentfulItem, old_entry_id)
         assert not old_entry_instance.is_published
 
-        entry_instance = db_session.query(MockContentfulItem).get(entry_id)
+        entry_instance = db_session.get(MockContentfulItem, entry_id)
         assert entry_instance.is_published

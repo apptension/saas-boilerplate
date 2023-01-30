@@ -17,7 +17,7 @@ provider:
 functions:
   ScheduleTask:
     handler: scheduler.handlers.schedule_task
-    runtime: python3.8
+    runtime: python3.9
     timeout: 20
     memorySize: 128
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ScheduleTask.environment}
@@ -30,7 +30,7 @@ functions:
 
   ExecuteScheduledTask:
     handler: scheduler.handlers.execute_task
-    runtime: python3.8
+    runtime: python3.9
     timeout: 6
     memorySize: 128
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ExecuteScheduledTask.environment}
@@ -49,7 +49,7 @@ functions:
 
   SynchronizeContentfulContent:
     handler: content.handlers.synchronize_content
-    runtime: python3.8
+    runtime: python3.9
     timeout: 30
     memorySize: 256
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):SynchronizeContentfulContent.environment}
@@ -64,7 +64,7 @@ functions:
 
   WebSocketsConnectHandler:
     handler: websockets.handlers.connect.handle
-    runtime: python3.8
+    runtime: python3.9
     timeout: 30
     memorySize: 256
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
@@ -74,7 +74,7 @@ functions:
 
   WebSocketsMessageHandler:
     handler: websockets.handlers.message.handle
-    runtime: python3.8
+    runtime: python3.9
     timeout: 30
     memorySize: 256
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
@@ -84,7 +84,7 @@ functions:
 
   WebSocketsDisconnectHandler:
     handler: websockets.handlers.disconnect.handle
-    runtime: python3.8
+    runtime: python3.9
     timeout: 30
     memorySize: 256
     environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}

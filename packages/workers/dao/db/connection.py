@@ -1,4 +1,3 @@
-from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.engine import url
 
@@ -6,7 +5,6 @@ import settings
 
 db_url = None
 db = None
-meta = None
 
 if settings.DB_CONNECTION is not None:
     db_url = url.URL.create(
@@ -21,4 +19,3 @@ if settings.DB_CONNECTION is not None:
     )
 
     db = create_engine(db_url)
-    meta = MetaData(db)
