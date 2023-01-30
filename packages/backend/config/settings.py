@@ -78,7 +78,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "config.urls_api"
 ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "api"
-PARENT_HOST = env('PARENT_HOST', default=None)
+PARENT_HOST = env('PARENT_HOST', default="")
 
 TEMPLATES = [
     {
@@ -162,10 +162,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 

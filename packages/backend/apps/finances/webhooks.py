@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.utils import timezone
@@ -87,5 +88,5 @@ def send_email_on_subscription_payment_failure(event: djstripe_models.Event):
 @webhooks.handler('customer.subscription.trial_will_end')
 def send_email_trial_expires_soon(event: djstripe_models.Event):
     obj = event.data['object']
-    expiry_date = timezone.datetime.fromtimestamp(obj['trial_end'], tz=timezone.timezone.utc)
+    expiry_date = timezone.datetime.fromtimestamp(obj['trial_end'], tz=datetime.timezone.utc)
     notifications.TrialExpiresSoonEmail(customer=event.customer, data={'expiry_date': expiry_date}).send()

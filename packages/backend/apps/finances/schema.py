@@ -223,7 +223,7 @@ class StripeSetupIntentType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.SetupIntent
         interfaces = (relay.Node,)
-        exclude_fields = ('setup_intents',)
+        exclude = ('setup_intents',)
 
 
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):

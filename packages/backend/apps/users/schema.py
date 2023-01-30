@@ -125,7 +125,7 @@ class UpdateCurrentUserMutation(mutations.UpdateModelMutation):
 class ChangePasswordMutation(mutations.SerializerMutation):
     class Meta:
         serializer_class = serializers.UserAccountChangePasswordSerializer
-        exclude_fields = ("user",)
+        exclude = ("user",)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):

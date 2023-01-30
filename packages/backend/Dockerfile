@@ -8,7 +8,7 @@ FROM segment/chamber:2 AS chamber
 # App build stage
 ##
 
-FROM python:3.8-slim-buster AS backend_build
+FROM python:3.11-slim-bullseye AS backend_build
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off
@@ -17,7 +17,7 @@ ENV PIP_NO_CACHE_DIR off
 RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq \
   && update-ca-certificates \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir setuptools pdm==2.1.1 gunicorn awscli
+  && pip install --no-cache-dir setuptools pdm==2.4.0 gunicorn awscli
 
 
 COPY --from=chamber /chamber /bin/chamber
@@ -40,14 +40,14 @@ ENV HASHID_FIELD_SALT='' \
     DJANGO_SECRET_KEY='build' \
     DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
     WORKERS_EVENT_BUS_NAME='' \
-    PYTHONPATH=/pkgs/__pypackages__/3.8/lib
+    PYTHONPATH=/pkgs/__pypackages__/3.11/lib
 
 RUN ./scripts/build_static.sh
 
 
 FROM backend_build AS backend
 COPY --from=static_files /app/static /app/static
-ENV PYTHONPATH=/pkgs/__pypackages__/3.8/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.8/bin
+ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
+    PATH=$PATH:/pkgs/__pypackages__/3.11/bin
 
 CMD ["./scripts/run.sh"]

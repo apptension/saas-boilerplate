@@ -62,7 +62,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
         cls,
         serializer_class=None,
         only_fields=(),
-        exclude_fields=(),
+        exclude=(),
         convert_choices_to_enum=False,
         edge_class=None,
         edge_field_name=None,
@@ -94,7 +94,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
         input_fields = fields_for_serializer(
             serializer,
             only_fields,
-            exclude_fields,
+            exclude,
             is_input=True,
             convert_choices_to_enum=convert_choices_to_enum,
         )
@@ -150,7 +150,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         serializer_class=None,
         model_class=None,
         only_fields=(),
-        exclude_fields=(),
+        exclude=(),
         convert_choices_to_enum=False,
         edge_class=None,
         edge_field_name=None,
@@ -182,7 +182,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         input_fields = fields_for_serializer(
             serializer,
             only_fields,
-            exclude_fields,
+            exclude,
             is_input=True,
             convert_choices_to_enum=convert_choices_to_enum,
         )
@@ -193,7 +193,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         if not model_type:
             raise Exception("No type registered for model: {}".format(model_class.__name__))
 
-        available_fields = cls.get_available_fields(input_fields, only_fields, exclude_fields)
+        available_fields = cls.get_available_fields(input_fields, only_fields, exclude)
         if require_id_field and 'id' in available_fields:
             input_fields['id'] = relay.GlobalID(model_type)
 
@@ -246,12 +246,12 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         return model_class.objects.all()
 
     @classmethod
-    def get_available_fields(cls, input_fields: OrderedDict, only_fields: tuple, exclude_fields: tuple) -> set:
+    def get_available_fields(cls, input_fields: OrderedDict, only_fields: tuple, exclude: tuple) -> set:
         available_fields = {'id'}.union(set(input_fields.keys()))
         if only_fields:
             available_fields = available_fields.intersection(only_fields)
-        if exclude_fields:
-            available_fields = available_fields.difference(exclude_fields)
+        if exclude:
+            available_fields = available_fields.difference(exclude)
         return available_fields
 
 
@@ -267,7 +267,7 @@ class SerializerMutation(ClientIDMutation):
         model_class=None,
         model_operations=("create", "update"),
         only_fields=(),
-        exclude_fields=(),
+        exclude=(),
         convert_choices_to_enum=True,
         _meta=None,
         **options,
@@ -291,7 +291,7 @@ class SerializerMutation(ClientIDMutation):
         input_fields = fields_for_serializer(
             serializer,
             only_fields,
-            exclude_fields,
+            exclude,
             is_input=True,
             convert_choices_to_enum=convert_choices_to_enum,
             lookup_field=lookup_field,
@@ -299,7 +299,7 @@ class SerializerMutation(ClientIDMutation):
         output_fields = fields_for_serializer(
             serializer,
             only_fields,
-            exclude_fields,
+            exclude,
             is_input=False,
             convert_choices_to_enum=convert_choices_to_enum,
             lookup_field=lookup_field,
