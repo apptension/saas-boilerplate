@@ -6,7 +6,6 @@ volumes:
     external: true
 
   web_backend_staticfiles: {}
-  workers_node_modules: {}
 
 services:
   e2e-tests:
@@ -39,7 +38,7 @@ services:
     volumes:
       - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
       - ./packages/workers/:/app/packages/workers/
-      - workers_node_modules:/app/packages/workers/node_modules/
+      - /app/packages/workers/node_modules/
       - /app/packages/workers/__pypackages__/
     env_file:
       - .env

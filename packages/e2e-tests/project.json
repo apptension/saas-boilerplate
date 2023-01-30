@@ -5,11 +5,9 @@
   "sourceRoot": "packages/e2e-tests",
   "targets": {
     "setup": {
-      "executor": "nx:run-commands",
+      "executor": "@saas-boilerplate-app/tools:setup",
       "options": {
-        "cwd": "packages/e2e-tests",
-        "color": true,
-        "command": "cp .env.example .env"
+        "cwd": "packages/e2e-tests"
       }
     },
     "compose-build-image": {

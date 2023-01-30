@@ -5,11 +5,9 @@
   "sourceRoot": "packages/workers",
   "targets": {
     "setup": {
-      "executor": "nx:run-commands",
+      "executor": "@saas-boilerplate-app/tools:setup",
       "options": {
-        "cwd": "packages/workers",
-        "color": true,
-        "command": "cp .env.example .env"
+        "cwd": "packages/workers"
       }
     },
     "compose-build-image": {
@@ -21,7 +19,10 @@
           "docker-compose build workers"
         ],
         "parallel": false
-      }
+      },
+      "dependsOn": [
+        "setup"
+      ]
     },
     "shell": {
       "executor": "nx:run-commands",

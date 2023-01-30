@@ -4,15 +4,23 @@
   "sourceRoot": "packages/internal/core/src",
   "projectType": "library",
   "targets": {
+    "setup-env": {
+      "executor": "@saas-boilerplate-app/tools:setup",
+      "options": {
+        "cwd": "./"
+      }
+    },
     "setup": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
         "command": "nx docker-create-volumes"
-      }
+      },
+      "dependsOn": [
+        "setup-env"
+      ]
     },
-
     "docker-create-volumes": {
       "executor": "nx:run-commands",
       "options": {
@@ -29,22 +37,28 @@
         "command": "/bin/bash ./scripts/docker-login.sh"
       }
     },
-    "docker-compose": {
+    "docker-compose:up": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "parallel": false
+        "parallel": false,
+        "commands": [
+          "nx run-many --target=compose-build-image --projects=backend,workers",
+          "docker-compose up --force-recreate -d backend workers"
+        ]
       },
-      "configurations": {
-        "up": {
-          "commands": [
-            "nx run-many --target=compose-build-image --projects=backend,workers",
-            "docker-compose up --force-recreate -d backend workers"
-          ]
-        },
-        "down": {
-          "command": "docker-compose down"
-        }
+      "dependsOn": [
+        "setup"
+      ]
+    },
+    "docker-compose:down": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "parallel": false,
+        "commands": [
+          "docker-compose down"
+        ]
       }
     },
     "serve": {
@@ -52,7 +66,8 @@
       "options": {
         "color": true,
         "commands": [
-          "nx up"
+          "nx docker-compose:up",
+          "nx run webapp:start"
         ],
         "parallel": false
       }

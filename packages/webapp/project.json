@@ -8,11 +8,9 @@
   ],
   "targets": {
     "setup": {
-      "executor": "nx:run-commands",
+      "executor": "@saas-boilerplate-app/tools:setup",
       "options": {
-        "cwd": "packages/webapp",
-        "color": true,
-        "command": "cp .env.example .env"
+        "cwd": "packages/webapp"
       }
     },
     "graphql": {

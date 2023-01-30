@@ -6,6 +6,7 @@
       "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": [
+          "setup",
           "build",
           "lint",
           "test",
@@ -48,6 +49,12 @@
       "inputs": [
         "default",
         "^production"
+      ]
+    },
+    "setup": {
+      "inputs": [
+        "{projectRoot}/.env",
+        "{projectRoot}/.env.*"
       ]
     }
   },

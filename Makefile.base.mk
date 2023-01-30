@@ -42,6 +42,11 @@ up:
 down:
 	nx run core:docker-compose:down
 
+serve:
+	nx run core:serve
+
+
+
 clean:
 	# remove created images
 	@docker-compose -p  down --remove-orphans --rmi all 2>/dev/null \

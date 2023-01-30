@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate/tools",
+  "name": "@saas-boilerplate-app/tools",
   "version": "0.0.1",
   "main": "src/index.js",
   "generators": "./generators.json",
@@ -9,12 +9,15 @@
   },
   "dependencies": {
     "aws-sdk": "^2.708.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.28.0"
   },
   "devDependencies": {
+    "@types/prompts": "^2.4.2",
     "aws-cdk": "2.33.0",
     "ts-node": "^9.1.1",
-    "plop": "^2.7.4"
+    "plop": "^2.7.4",
+    "dotenv": "^16.0.3",
+    "@types/ramda": "^0.28.22"
   },
   "nx": {}
 }

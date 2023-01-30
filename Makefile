@@ -5,8 +5,7 @@ bootstrap-infra:
 	nx run tools:bootstrap-infra
 
 setup:
-	cp $(BASE_DIR).env.example $(BASE_DIR).env
-	nx run-many --skip-nx-cache --target=setup
+	nx run-many --skip-nx-cache --target=setup --projects=core,backend,workers,webapp,e2e-tests
 
 #
 # Infrastructure deployment

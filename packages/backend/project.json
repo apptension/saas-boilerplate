@@ -5,11 +5,9 @@
   "sourceRoot": "packages/backend",
   "targets": {
     "setup": {
-      "executor": "nx:run-commands",
+      "executor": "@saas-boilerplate-app/tools:setup",
       "options": {
-        "cwd": "packages/backend",
-        "color": true,
-        "command": "cp .env.example .env"
+        "cwd": "packages/backend"
       }
     },
     "compose-build-image": {
@@ -21,7 +19,8 @@
           "docker-compose build backend"
         ],
         "parallel": false
-      }
+      },
+      "dependsOn": ["setup"]
     },
     "test": {
       "executor": "nx:run-commands",
