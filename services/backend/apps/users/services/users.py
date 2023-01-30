@@ -13,7 +13,7 @@ def get_role_names(user: User) -> List[str]:
 
 def get_user_avatar_url(user: User) -> str:
     field = serializers.FileField(default="")
-    return field.to_representation(user.profile.avatar.thumbnail)
+    return field.to_representation(user.profile.avatar.thumbnail) if user.profile.avatar else None
 
 
 def get_user_from_resolver(info: graphql.execution.base.ResolveInfo):

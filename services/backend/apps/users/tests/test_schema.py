@@ -127,7 +127,7 @@ class TestCurrentUserQuery:
         '''
         user = user_factory(
             has_avatar=True,
-            email="test@apptension.com",
+            email="test@example.com",
             profile__first_name="Grzegorz",
             profile__last_name="Brzęczyszczykiewicz",
             groups=[CommonGroups.User, CommonGroups.Admin],
@@ -138,7 +138,7 @@ class TestCurrentUserQuery:
         data = executed["data"]["currentUser"]
 
         assert data["id"] == user.id
-        assert data["email"] == "test@apptension.com"
+        assert data["email"] == "test@example.com"
         assert data["firstName"] == "Grzegorz"
         assert data["lastName"] == "Brzęczyszczykiewicz"
         assert set(data["roles"]) == {"user", "admin"}
@@ -169,8 +169,11 @@ class TestUpdateCurrentUserMutation:
             mutation($input: UpdateCurrentUserMutationInput!)  {
               updateCurrentUser(input: $input) {
                 userProfile {
-                  firstName
-                  lastName
+                  user {
+                    firstName
+                    lastName
+                    avatar
+                  }
                 }
               }
             }
@@ -183,7 +186,11 @@ class TestUpdateCurrentUserMutation:
             variable_values={'input': {"firstName": "Tony", "lastName": "Stark"}},
         )
         assert "errors" not in executed
-        assert executed["data"]["updateCurrentUser"]["userProfile"] == {'firstName': 'Tony', 'lastName': 'Stark'}
+        assert executed["data"]["updateCurrentUser"]["userProfile"]["user"] == {
+            'firstName': 'Tony',
+            'lastName': 'Stark',
+            'avatar': None,
+        }
 
     def test_update_avatar(self, api_client, user_factory, image_factory):
         user = user_factory(profile__first_name="FIRSTNAME", profile__last_name="LASTNAME")
@@ -222,8 +229,10 @@ class TestUpdateCurrentUserMutation:
             mutation($input: UpdateCurrentUserMutationInput!)  {
               updateCurrentUser(input: $input) {
                 userProfile {
-                  firstName
-                  lastName
+                  user {
+                    firstName
+                    lastName
+                  }
                 }
               }
             }
