@@ -34,7 +34,7 @@ export default async function runExecutor(
   options: SetupExecutorSchema,
   context: ExecutorContext
 ): Promise<{ success: boolean }> {
-  if (process.env.ENV_STAGE !== 'local') {
+  if (process.env.ENV_STAGE && process.env.ENV_STAGE !== 'local') {
     console.log('Skipping setup for non-local env');
     return { success: true };
   }
