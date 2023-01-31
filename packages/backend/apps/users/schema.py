@@ -138,11 +138,12 @@ class ChangePasswordMutation(mutations.SerializerMutation):
         return mutation
 
 
+@permission_classes(policies.AnyoneFullAccess)
 class Query(graphene.ObjectType):
     current_user = graphene.Field(CurrentUserType)
 
     def resolve_current_user(self, info, **kwargs):
-        return info.context.user
+        return info.context.user if info.context.user.is_authenticated else None
 
 
 class Mutation(graphene.ObjectType):

@@ -157,8 +157,6 @@ class TestCurrentUserQuery:
         '''
         )
 
-        assert len(executed["errors"]) == 1
-        assert executed["errors"][0]["message"] == "permission_denied"
         assert executed["data"] == {'currentUser': None}
 
 
