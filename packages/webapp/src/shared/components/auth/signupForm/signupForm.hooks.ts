@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
+import { ApolloError, useMutation } from '@apollo/client';
 
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
@@ -38,27 +38,25 @@ export const useSignupForm = () => {
   });
 
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
-  const [commitSignupMutation, { error, loading }] = useMutation(authSingupMutation);
+  const [commitSignupMutation, { loading }] = useMutation(authSingupMutation, {
+    onCompleted: () => {
+      reloadCommonQuery();
+      navigate(generateLocalePath(RoutesConfig.home));
+    },
+    onError: (error) => {
+      if (error instanceof ApolloError) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    },
+  });
 
-  const handleSignup = handleSubmit(async (data: SignupFormFields) => {
-    try {
-      await commitSignupMutation({
-        variables: {
-          input: {
-            email: data.email,
-            password: data.password,
-          },
+  const handleSignup = handleSubmit((data: SignupFormFields) => {
+    commitSignupMutation({
+      variables: {
+        input: {
+          email: data.email,
+          password: data.password,
         },
-      });
-      if (error) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
-      } else {
-        reloadCommonQuery();
-        navigate(generateLocalePath(RoutesConfig.home));
-      }
-    } catch (error) {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
-    }
+      },
+    });
   });
 
   return { ...form, loading, handleSignup };

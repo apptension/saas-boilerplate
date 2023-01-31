@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl';
-import { useMutation } from '@apollo/client';
+import { ApolloError, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
@@ -33,26 +33,23 @@ export const useLoginForm = () => {
   });
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
-  const [commitLoginMutation, { error }] = useMutation(authSinginMutation);
-
-  const handleLogin = handleSubmit(async (data: LoginFormFields) => {
-    try {
-      await commitLoginMutation({
-        variables: {
-          input: data,
-        },
-      });
-
-      if (error) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
-      } else {
-        reloadCommonQuery();
-        navigate(generateLocalePath(RoutesConfig.home));
-      }
-    } catch (error) {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
-    }
+  const [commitLoginMutation, { loading }] = useMutation(authSinginMutation, {
+    onCompleted: () => {
+      reloadCommonQuery();
+      navigate(generateLocalePath(RoutesConfig.home));
+    },
+    onError: (error) => {
+      if (error instanceof ApolloError) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    },
   });
 
-  return { ...form, handleLogin };
+  const handleLogin = handleSubmit((data: LoginFormFields) => {
+    commitLoginMutation({
+      variables: {
+        input: data,
+      },
+    });
+  });
+
+  return { ...form, loading, handleLogin };
 };

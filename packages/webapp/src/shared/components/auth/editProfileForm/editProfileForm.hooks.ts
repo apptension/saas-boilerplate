@@ -1,12 +1,11 @@
 import { useIntl } from 'react-intl';
+import { ApolloError, useMutation } from '@apollo/client';
 
-import authUpdateUserProfileMutationGraphql, {
-  authUpdateUserProfileMutation,
-} from '../../../../modules/auth/__generated__/authUpdateUserProfileMutation.graphql';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAuth } from '../../../hooks/useAuth/useAuth';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+
 import { useSnackbar } from '../../../../modules/snackbar';
+import { authUpdateUserProfileMutation } from './editProfileForm.graphql';
 import { UpdateProfileFormFields } from './editProfileForm.types';
 
 export const useEditProfileForm = () => {
@@ -20,31 +19,29 @@ export const useEditProfileForm = () => {
     },
   });
 
-  const { handleSubmit, setGraphQLResponseErrors } = form;
+  const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
-  const [commitUpdateUserMutation] = usePromiseMutation<authUpdateUserProfileMutation>(
-    authUpdateUserProfileMutationGraphql
-  );
-
-  const handleUpdate = handleSubmit(async (input: UpdateProfileFormFields) => {
-    try {
-      const { errors } = await commitUpdateUserMutation({
-        variables: {
-          input,
-        },
-      });
-      if (errors) {
-        setGraphQLResponseErrors(errors);
-      } else {
-        snackbar.showMessage(
-          intl.formatMessage({
-            defaultMessage: 'Personal data successfully changed.',
-            id: 'Auth / Update profile/ Success message',
-          })
-        );
-      }
-    } catch {}
+  const [commitUpdateUserMutation, { loading }] = useMutation(authUpdateUserProfileMutation, {
+    onCompleted: () => {
+      snackbar.showMessage(
+        intl.formatMessage({
+          defaultMessage: 'Personal data successfully changed.',
+          id: 'Auth / Update profile/ Success message',
+        })
+      );
+    },
+    onError: (error) => {
+      if (error instanceof ApolloError) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    },
   });
 
-  return { ...form, handleUpdate };
+  const handleUpdate = handleSubmit((input: UpdateProfileFormFields) => {
+    commitUpdateUserMutation({
+      variables: {
+        input,
+      },
+    });
+  });
+
+  return { ...form, loading, handleUpdate };
 };

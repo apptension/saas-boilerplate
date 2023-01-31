@@ -14,6 +14,7 @@ export const EditProfileForm = () => {
     },
     genericError,
     hasGenericErrorOnly,
+    loading,
     handleUpdate,
   } = useEditProfileForm();
 
@@ -59,7 +60,7 @@ export const EditProfileForm = () => {
         </FormFieldsRow>
 
         {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        <SubmitButton>
+        <SubmitButton disabled={loading}>
           <FormattedMessage defaultMessage="Update personal data" id="Auth / Update profile/ Submit button" />
         </SubmitButton>
       </Form>

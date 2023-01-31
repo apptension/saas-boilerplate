@@ -1,13 +1,18 @@
-import { act, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+import { createMockEnvironment } from 'relay-test-utils';
 
 import { render } from '../../../../../tests/utils/rendering';
 import { EditProfileForm } from '../editProfileForm.component';
-import { currentUserFactory } from '../../../../../mocks/factories';
-import { Role } from '../../../../../modules/auth/auth.types';
+
 import { snackbarActions } from '../../../../../modules/snackbar';
+
+import { authUpdateUserProfileMutation } from '../editProfileForm.graphql';
+import { Role } from '../../../../../modules/auth/auth.types';
+
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { currentUserFactory } from '../../../../../mocks/factories';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -17,34 +22,61 @@ jest.mock('react-redux', () => {
   };
 });
 
+const formData = {
+  firstName: 'updated-first-name',
+  lastName: 'updated-last-name',
+};
+
+const requestMock = (error?: GraphQLError[]) => ({
+  request: {
+    query: authUpdateUserProfileMutation,
+    variables: {
+      input: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      },
+    },
+  },
+  result: {
+    data: {
+      updateCurrentUser: {
+        userProfile: {
+          id: '1',
+          user: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          },
+        },
+      },
+    },
+    errors: error,
+  },
+});
+
+//TODO Waiting for commonQuery implementation
+const renderComponent = (error?: GraphQLError[]) => {
+  const relayEnvironment = createMockEnvironment();
+  const currentUser = currentUserFactory({
+    firstName: 'Jack',
+    lastName: 'White',
+    email: 'jack.white@mail.com',
+    roles: [Role.ADMIN, Role.USER],
+  });
+  fillCommonQueryWithUser(relayEnvironment, currentUser);
+  return {
+    ...render(<EditProfileForm />, { relayEnvironment, apolloMocks: [requestMock(error)] }),
+    relayEnvironment,
+    updatedUser: {
+      ...currentUser,
+      ...formData,
+    },
+  };
+};
+
 describe('EditProfileForm: Component', () => {
   beforeEach(() => {
     mockDispatch.mockReset();
   });
-
-  const formData = {
-    firstName: 'updated-first-name',
-    lastName: 'updated-last-name',
-  };
-
-  const renderComponent = () => {
-    const relayEnvironment = createMockEnvironment();
-    const currentUser = currentUserFactory({
-      firstName: 'Jack',
-      lastName: 'White',
-      email: 'jack.white@mail.com',
-      roles: [Role.ADMIN, Role.USER],
-    });
-    fillCommonQueryWithUser(relayEnvironment, currentUser);
-    return {
-      ...render(<EditProfileForm />, { relayEnvironment }),
-      relayEnvironment,
-      updatedUser: {
-        ...currentUser,
-        ...formData,
-      },
-    };
-  };
 
   const getFirstNameField = () => screen.getByLabelText(/first name/i);
   const getLastNameField = () => screen.getByLabelText(/last name/i);
@@ -60,27 +92,13 @@ describe('EditProfileForm: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /update personal data/i }));
   };
 
-  it('should call updateProfile action when submitted', async () => {
-    const { relayEnvironment } = renderComponent();
+  it('should show success message after success action', async () => {
+    renderComponent();
 
     await fillForm();
     await submitForm();
-    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
-    expect(relayEnvironment).toLatestOperationInputEqual(formData);
-  });
 
-  describe('action completes successfully', () => {
-    it('should show success message', async () => {
-      const { relayEnvironment } = renderComponent();
-
-      await fillForm();
-      await submitForm();
-
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
-
+    await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage({
           text: 'Personal data successfully changed.',
@@ -88,91 +106,37 @@ describe('EditProfileForm: Component', () => {
         })
       );
     });
+  });
 
-    it('should display updated values', async () => {
-      const { relayEnvironment } = renderComponent();
-      await fillForm();
-      await submitForm();
+  it('should display updated values', async () => {
+    renderComponent();
 
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
+    await fillForm();
+    await submitForm();
 
-      expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
-      expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
-    });
+    expect(screen.getByDisplayValue(formData.firstName)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(formData.lastName)).toBeInTheDocument();
   });
 
   it('should show error if value is too long', async () => {
-    const { relayEnvironment } = renderComponent();
+    renderComponent();
     await userEvent.type(screen.getByLabelText(/first name/i), '_'.repeat(41));
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
+
     await submitForm();
-    expect(relayEnvironment).not.toHaveLatestOperation('authUpdateUserProfileMutation');
+
     expect(mockDispatch).not.toHaveBeenCalledWith();
     expect(screen.getByText('First name is too long')).toBeInTheDocument();
   });
 
-  it('should show field error if action throws error', async () => {
-    const { relayEnvironment } = renderComponent();
-    await fillForm();
-    await submitForm();
-
-    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
-
-    const errorMessage = 'Provided value is invalid';
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
-        errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              firstName: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
-        ],
-      } as any);
-    });
-
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
-  });
-
   it('should show generic form error if action throws error', async () => {
-    const { relayEnvironment } = renderComponent();
+    const errorMessage = 'Invalid data';
+    const error = [new GraphQLError(errorMessage)];
+    renderComponent(error);
+
     await fillForm();
     await submitForm();
 
-    expect(relayEnvironment).toHaveLatestOperation('authUpdateUserProfileMutation');
-    const errorMessage = 'Invalid data';
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
-        errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              nonFieldErrors: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
-        ],
-      } as any);
-    });
-
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 });

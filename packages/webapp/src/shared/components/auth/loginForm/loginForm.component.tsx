@@ -14,6 +14,7 @@ export const LoginForm = () => {
     },
     hasGenericErrorOnly,
     genericError,
+    loading,
     handleLogin,
   } = useLoginForm();
 
@@ -78,7 +79,7 @@ export const LoginForm = () => {
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton>
+      <SubmitButton disabled={loading}>
         <FormattedMessage defaultMessage="Log in" id="Auth / login button" />
       </SubmitButton>
     </Container>
