@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import * as dotenv from 'dotenv';
 import type { ExecutorContext } from '@nrwl/devkit';
 import * as R from 'ramda';
 
@@ -23,11 +22,23 @@ const readEnvFile = async (envFilePath: string, required = false) => {
   return await fs.readFile(envFilePath);
 };
 
-const parseEnvFile = (contents: Buffer | null): dotenv.DotenvParseOutput => {
+const parseEnvFile = (contents: Buffer | null) => {
   if (!contents) {
     return {};
   }
-  return dotenv.parse(contents);
+
+  const lines = contents.toString().split('\n');
+  return lines.reduce((result, line) => {
+    const pattern = new RegExp(/(.+)=(.+)/);
+    const groups = line.match(pattern);
+    if (!groups) {
+      return result;
+    }
+    return {
+      ...result,
+      [groups[1]]: groups[2],
+    };
+  }, {});
 };
 
 export default async function runExecutor(
@@ -64,7 +75,7 @@ export default async function runExecutor(
 
   const modifiedSharedFile = Object.keys(envs).reduce((result, envKey) => {
     const pattern = new RegExp(`${envKey}=.+`);
-    return result.replace(pattern, `${envKey}="${envs[envKey]}"`);
+    return result.replace(pattern, `${envKey}=${envs[envKey]}`);
   }, envSharedFileContents.toString());
 
   const output = additionalEnvKeys.reduce((result, envKey) => {

@@ -52,10 +52,6 @@ pipelines:
         - step:
             name: Lint & test web app
             image: atlassian/default-image:3
-            condition:
-              changesets:
-                includePaths:
-                  - "packages/webapp/**"
             size: 2x
             script:
               - *initializeStep
@@ -73,10 +69,6 @@ pipelines:
         - step:
             name: Build web app
             image: atlassian/default-image:3
-            condition:
-              changesets:
-                includePaths:
-                  - "packages/webapp/**"
             script:
               - *initializeStep
               - *installWebappDeps
@@ -89,10 +81,6 @@ pipelines:
             name: Test backend
             image: atlassian/default-image:3
             size: 2x
-            condition:
-              changesets:
-                includePaths:
-                  - "packages/backend/**"
             script:
               - *initializeStep
               - *setupAwsCli
@@ -118,10 +106,6 @@ pipelines:
             name: Test async-workers
             image: atlassian/default-image:3
             size: 2x
-            condition:
-              changesets:
-                includePaths:
-                  - "packages/workers/**"
             script:
               - *initializeStep
               - *setupAwsCli
