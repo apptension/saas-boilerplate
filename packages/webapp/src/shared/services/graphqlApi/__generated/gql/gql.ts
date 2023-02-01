@@ -53,10 +53,9 @@ const documents = {
     "\n        query demoItemListItemTestQuery @relay_test_operation {\n          testItem: demoItem(id: \"contentful-item-1\") {\n            ...demoItemListItem_item\n          }\n        }\n      ": types.DemoItemListItemTestQueryDocument,
     "\n      fragment demoItemListItem_item on DemoItem {\n        title\n        image {\n          title\n          url\n        }\n      }\n    ": types.DemoItemListItem_ItemFragmentDoc,
     "\n    query demoItemsAllQuery {\n      demoItemCollection {\n        items {\n          sys {\n            id\n          }\n          ...demoItemListItem_item\n        }\n      }\n    }\n  ": types.DemoItemsAllQueryDocument,
-    "\n        query documentsListTestQuery @relay_test_operation {\n          allDocumentDemoItems(first: 1) {\n            edges {\n              node {\n                ...documentListItem\n              }\n            }\n          }\n        }\n      ": types.DocumentsListTestQueryDocument,
-    "\n      fragment documentListItem on DocumentDemoItemType {\n        id\n        file {\n          url\n          name\n        }\n        createdAt\n      }\n    ": types.DocumentListItemFragmentDoc,
     "\n      query documentListItemStoryQuery @relay_test_operation {\n        allDocumentDemoItems(first: 1) {\n          edges {\n            node {\n              ...documentListItem\n            }\n          }\n        }\n      }\n    ": types.DocumentListItemStoryQueryDocument,
-    "\n      query documentsListQuery {\n        allDocumentDemoItems(first: 10) @connection(key: \"documentsList_allDocumentDemoItems\") {\n          edges {\n            node {\n              id\n              ...documentListItem\n            }\n          }\n        }\n      }\n    ": types.DocumentsListQueryDocument,
+    "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
+    "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
     "\n      mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!, $connections: [ID!]!) {\n        createDocumentDemoItem(input: $input) {\n          documentDemoItemEdge @appendEdge(connections: $connections) {\n            node {\n              createdAt\n              file {\n                name\n                url\n              }\n            }\n          }\n        }\n      }\n    ": types.DocumentsListCreateMutationDocument,
     "\n    mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!, $connections: [ID!]!) {\n      deleteDocumentDemoItem(input: $input) {\n        deletedIds @deleteEdge(connections: $connections)\n      }\n    }\n  ": types.DocumentsDeleteMutationDocument,
     "\n  mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n    tokenAuth(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.LoginFormMutationDocument,
@@ -250,19 +249,15 @@ export function gql(source: "\n    query demoItemsAllQuery {\n      demoItemColl
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n        query documentsListTestQuery @relay_test_operation {\n          allDocumentDemoItems(first: 1) {\n            edges {\n              node {\n                ...documentListItem\n              }\n            }\n          }\n        }\n      "): (typeof documents)["\n        query documentsListTestQuery @relay_test_operation {\n          allDocumentDemoItems(first: 1) {\n            edges {\n              node {\n                ...documentListItem\n              }\n            }\n          }\n        }\n      "];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n      fragment documentListItem on DocumentDemoItemType {\n        id\n        file {\n          url\n          name\n        }\n        createdAt\n      }\n    "): (typeof documents)["\n      fragment documentListItem on DocumentDemoItemType {\n        id\n        file {\n          url\n          name\n        }\n        createdAt\n      }\n    "];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n      query documentListItemStoryQuery @relay_test_operation {\n        allDocumentDemoItems(first: 1) {\n          edges {\n            node {\n              ...documentListItem\n            }\n          }\n        }\n      }\n    "): (typeof documents)["\n      query documentListItemStoryQuery @relay_test_operation {\n        allDocumentDemoItems(first: 1) {\n          edges {\n            node {\n              ...documentListItem\n            }\n          }\n        }\n      }\n    "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      query documentsListQuery {\n        allDocumentDemoItems(first: 10) @connection(key: \"documentsList_allDocumentDemoItems\") {\n          edges {\n            node {\n              id\n              ...documentListItem\n            }\n          }\n        }\n      }\n    "): (typeof documents)["\n      query documentsListQuery {\n        allDocumentDemoItems(first: 10) @connection(key: \"documentsList_allDocumentDemoItems\") {\n          edges {\n            node {\n              id\n              ...documentListItem\n            }\n          }\n        }\n      }\n    "];
+export function gql(source: "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"): (typeof documents)["\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

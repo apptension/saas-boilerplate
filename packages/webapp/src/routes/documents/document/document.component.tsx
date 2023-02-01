@@ -1,31 +1,18 @@
 import { FormattedMessage } from 'react-intl';
 import documentIcon from '@iconify-icons/ion/document-text-outline';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { useFragment } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
 import { Icon } from '../../../shared/components/icon';
 import { useHandleDelete } from '../documents.hooks';
-import { documentListItem$key } from './__generated__/documentListItem.graphql';
+import { DocumentListItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, DeleteButton, IconContainer, Name, RelativeDate } from './document.styles';
 
 export type DocumentProps = {
-  item: documentListItem$key;
+  item: DocumentListItemFragment;
 };
 
 export const Document = ({ item }: DocumentProps) => {
-  const { id, file, createdAt } = useFragment(
-    graphql`
-      fragment documentListItem on DocumentDemoItemType {
-        id
-        file {
-          url
-          name
-        }
-        createdAt
-      }
-    `,
-    item
-  );
+  const { id, file, createdAt } = item;
+
   const handleDelete = useHandleDelete();
 
   return (

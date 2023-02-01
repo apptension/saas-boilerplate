@@ -1,22 +1,21 @@
 import { FormattedMessage } from 'react-intl';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Suspense } from 'react';
+import { useQuery } from '@apollo/client';
 import { isEmpty } from 'ramda';
 import { Dropzone } from '../../shared/components/forms/dropzone';
 import { EmptyState } from '../../shared/components/emptyState';
 import { useMappedConnection } from '../../shared/hooks/useMappedConnection';
-import DocumentsListQuery, { documentsListQuery } from './__generated__/documentsListQuery.graphql';
+import { DocumentsListQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, Header, List } from './documents.styles';
 import { Document, DocumentSkeleton } from './document';
 import { MAX_FILE_SIZE, MAX_FILES } from './documents.constants';
-import { useDocumentsListQueryLoader, useHandleDrop } from './documents.hooks';
+import { useHandleDrop } from './documents.hooks';
+import { documentsListQuery } from './documents.graphql';
 
 type ListContentProps = {
-  listQueryRef: PreloadedQuery<documentsListQuery>;
+  data: DocumentsListQueryQuery;
 };
 
-export const ListContent = ({ listQueryRef }: ListContentProps) => {
-  const data = usePreloadedQuery(DocumentsListQuery, listQueryRef);
+export const ListContent = ({ data }: ListContentProps) => {
   const documents = useMappedConnection(data.allDocumentDemoItems);
   const handleDrop = useHandleDrop();
 
@@ -55,27 +54,23 @@ export const ListContent = ({ listQueryRef }: ListContentProps) => {
 };
 
 export const Documents = () => {
-  const listQueryRef = useDocumentsListQueryLoader();
+  const { data } = useQuery(documentsListQuery);
 
   return (
     <Container>
       <Header>
         <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
       </Header>
-      {listQueryRef && (
-        <Suspense
-          fallback={
-            <>
-              <Dropzone disabled />
-              <List>
-                <DocumentSkeleton />
-                <DocumentSkeleton />
-              </List>
-            </>
-          }
-        >
-          <ListContent listQueryRef={listQueryRef} />
-        </Suspense>
+      {data ? (
+        <ListContent data={data} />
+      ) : (
+        <>
+          <Dropzone disabled />
+          <List>
+            <DocumentSkeleton />
+            <DocumentSkeleton />
+          </List>
+        </>
       )}
     </Container>
   );

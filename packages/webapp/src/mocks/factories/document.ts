@@ -2,8 +2,9 @@ import { times } from 'ramda';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { DocumentDemoItemType } from '../../shared/services/graphqlApi';
-import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import { connectionFromArray, makeId, composeMockedListQueryResult } from '../../tests/utils/fixtures';
 import DocumentsListQuery from '../../routes/documents/__generated__/documentsListQuery.graphql';
+import { documentsListQuery } from '../../routes/documents/documents.graphql';
 import { createDeepFactory } from './factoryCreators';
 
 export const documentFactory = createDeepFactory<Partial<DocumentDemoItemType>>(() => ({
@@ -22,4 +23,6 @@ export const fillDocumentsListQuery = (env: RelayMockEnvironment, data = times((
     })
   );
   env.mock.queuePendingOperation(DocumentsListQuery, {});
+
+  return composeMockedListQueryResult(documentsListQuery, 'allDocumentDemoItems', 'DocumentDemoItemType', { data });
 };
