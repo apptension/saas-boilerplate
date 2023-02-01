@@ -10,26 +10,18 @@ import { prepareState } from '../../../../mocks/store';
 import configureStore from '../../../../app/config/store';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { getRelayEnv } from '../../../../tests/utils/relay';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
-import { CRUD_DEMO_ITEM_EDIT_QUERY } from '../editCrudDemoItem.graphql';
+import { fillEditCrudDemoItemQuery } from '../../../../mocks/factories/crudDemoItem';
 
 describe('EditCrudDemoItem: Component', () => {
   const defaultItemId = 'test-id';
   const routePath = RoutesConfig.getLocalePath(['crudDemoItem', 'edit']);
 
   const data = {
-    crudDemoItem: {
-      id: defaultItemId,
-      name: 'old item',
-      __typename: 'CrudDemoItemType',
-    },
+    id: defaultItemId,
+    name: 'old item',
+    __typename: 'CrudDemoItemType',
   };
   const variables = { id: defaultItemId };
-
-  const queryMock = composeMockedQueryResult(CRUD_DEMO_ITEM_EDIT_QUERY, {
-    variables,
-    data,
-  });
 
   const Component = () => (
     <Routes>
@@ -40,9 +32,12 @@ describe('EditCrudDemoItem: Component', () => {
 
   it('should display prefilled form', async () => {
     const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
-    const relayEnvironment = getRelayEnv();
+    const queryMock = fillEditCrudDemoItemQuery(undefined, data, variables);
 
-    render(<Component />, { relayEnvironment, routerProps, apolloMocks: [queryMock] });
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock),
+    });
 
     expect(await screen.findByDisplayValue(/old item/i)).toBeInTheDocument();
   });
@@ -51,11 +46,15 @@ describe('EditCrudDemoItem: Component', () => {
     it('should commit mutation', async () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
       const relayEnvironment = getRelayEnv();
+      const queryMock = fillEditCrudDemoItemQuery(undefined, data, variables);
 
-      render(<Component />, { relayEnvironment, routerProps, apolloMocks: [queryMock] });
+      render(<Component />, {
+        relayEnvironment,
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock),
+      });
 
       const nameField = await screen.findByPlaceholderText(/name/i);
-
       await userEvent.clear(nameField);
       await userEvent.type(nameField, 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
@@ -73,14 +72,18 @@ describe('EditCrudDemoItem: Component', () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
       const reduxStore = configureStore(reduxInitialState);
       const relayEnvironment = getRelayEnv();
+      const queryMock = fillEditCrudDemoItemQuery(undefined, data, variables);
 
-      render(<Component />, { relayEnvironment, routerProps, reduxStore, apolloMocks: [queryMock] });
+      render(<Component />, {
+        relayEnvironment,
+        routerProps,
+        reduxStore,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock),
+      });
 
       expect(await screen.findByDisplayValue(/old item/i)).toBeInTheDocument();
 
-      const nameField = await screen.findByPlaceholderText(/name/i);
-
-      await userEvent.type(nameField, 'new item name');
+      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
       const operation = relayEnvironment.mock.getMostRecentOperation();
       expect(operation.fragment.node.name).toEqual('editCrudDemoItemContentMutation');

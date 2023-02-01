@@ -11,11 +11,11 @@ describe('PasswordResetRequestForm: Component', () => {
   const email = 'user@mail.com';
 
   const fillForm = async (emailValue = email) => {
-    await userEvent.type(screen.getByLabelText(/email/i), emailValue);
+    await userEvent.type(await screen.findByLabelText(/email/i), emailValue);
   };
 
   const sendForm = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /send the link/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /send the link/i }));
   };
 
   it('should call requestPasswordReset action when submitted', async () => {
@@ -23,10 +23,8 @@ describe('PasswordResetRequestForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetMutation');
     expect(relayEnvironment).toLatestOperationInputEqual({ email });
@@ -37,10 +35,8 @@ describe('PasswordResetRequestForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetMutation');
 
@@ -59,11 +55,9 @@ describe('PasswordResetRequestForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await sendForm();
-    });
+    await sendForm();
 
-    expect(relayEnvironment).not.toHaveLatestOperation('authRequestPasswordResetMutation');
+    expect(relayEnvironment.mock.getAllOperations().length).toEqual(0);
     await waitFor(() => {
       expect(screen.getByText('Email is required')).toBeInTheDocument();
     });
@@ -74,10 +68,8 @@ describe('PasswordResetRequestForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
     const errorMessage = 'Email is invalid';
 
     await act(async () => {
@@ -110,10 +102,8 @@ describe('PasswordResetRequestForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
     const errorMessage = 'Something went wrong';
 
     await act(async () => {

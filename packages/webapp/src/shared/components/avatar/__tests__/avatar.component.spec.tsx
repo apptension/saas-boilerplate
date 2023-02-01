@@ -1,45 +1,43 @@
 import { screen } from '@testing-library/react';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { render } from '../../../../tests/utils/rendering';
 import { Avatar } from '../avatar.component';
 import { currentUserFactory } from '../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
-import { CurrentUserType } from '../../../services/graphqlApi/__generated/types';
+import { CurrentUserType } from '../../../services/graphqlApi';
 
 describe('Avatar: Component', () => {
   const Component = () => <Avatar />;
 
   const renderWithProfile = (overrides?: Partial<CurrentUserType>) => {
-    const relayEnvironment = createMockEnvironment();
     const currentUser = currentUserFactory(overrides);
-    fillCommonQueryWithUser(relayEnvironment, currentUser);
+    const apolloMocks = [fillCommonQueryWithUser(undefined, currentUser)];
 
-    return { currentUser, ...render(<Component />, { relayEnvironment }) };
+    return { currentUser, ...render(<Component />, { apolloMocks }) };
   };
 
-  it('should render user avatar', () => {
+  it('should render user avatar', async () => {
     const { currentUser } = renderWithProfile();
 
-    expect(screen.getByRole('img')).toHaveAttribute('src', currentUser.avatar);
+    expect(await screen.findByRole('img')).toHaveAttribute('src', currentUser.avatar);
   });
 
-  it('should render user initial', () => {
+  it('should render user initial', async () => {
     renderWithProfile({
       firstName: 'John',
       avatar: null,
     });
 
-    expect(screen.getByText('J')).toBeInTheDocument();
+    expect(await screen.findByText('J')).toBeInTheDocument();
   });
 
-  it('should render U if user has no name', () => {
+  it('should render U if user has no name', async () => {
     renderWithProfile({
       firstName: '',
       lastName: '',
       avatar: null,
     });
 
-    expect(screen.getByText('U')).toBeInTheDocument();
+    expect(await screen.findByText('U')).toBeInTheDocument();
   });
 });

@@ -9,26 +9,26 @@ describe('MarkdownPage: Component', () => {
 
   const Component = (props: Partial<MarkdownPageProps>) => <MarkdownPage {...defaultProps} {...props} />;
 
-  it('should render simple paragraph text', () => {
+  it('should render simple paragraph text', async () => {
     render(<Component markdown="Paragraph content" />);
-    expect(screen.getByText('Paragraph content')).toBeInTheDocument();
+    expect(await screen.findByText('Paragraph content')).toBeInTheDocument();
   });
 
-  it('should render headings', () => {
+  it('should render headings', async () => {
     render(<Component markdown="### Title" />);
-    expect(screen.getByRole('heading', { name: 'Title' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Title' })).toBeInTheDocument();
   });
 
-  it('should render unordered list', () => {
+  it('should render unordered list', async () => {
     render(<Component markdown={'* item \n * another item'} />);
-    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(await screen.findByRole('list')).toBeInTheDocument();
     const allListItems = screen.getAllByRole('listitem').map((i) => i.textContent);
     expect(allListItems).toEqual(['item', 'another item']);
   });
 
-  it('should render ordered list', () => {
+  it('should render ordered list', async () => {
     render(<Component markdown={'1) item \n 2) another item'} />);
-    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(await screen.findByRole('list')).toBeInTheDocument();
     const allListItems = screen.getAllByRole('listitem').map((i) => i.textContent);
     expect(allListItems).toEqual(['item', 'another item']);
   });

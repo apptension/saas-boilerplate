@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { invalidateRelayStore } from '../../../shared/services/graphqlApi/relayEnvironment';
+import { invalidateApolloStore } from '../../../shared/services/graphqlApi/apolloClient';
 import { auth } from '../../../shared/services/api';
 import { useCommonQuery } from '../../../app/providers/commonQuery';
 import { RoutesConfig } from '../../../app/config/routes';
@@ -19,6 +20,7 @@ export const Logout = () => {
       } catch {}
 
       invalidateRelayStore();
+      invalidateApolloStore();
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.login));
     })();

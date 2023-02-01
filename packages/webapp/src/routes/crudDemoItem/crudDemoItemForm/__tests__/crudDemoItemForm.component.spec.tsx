@@ -23,9 +23,9 @@ describe('CrudDemoItemForm: Component', () => {
 
   const reduxInitialState = prepareState((state) => state);
 
-  it('should display empty form', () => {
+  it('should display empty form', async () => {
     render(<Component />);
-    const value = screen.getByPlaceholderText(/name/i).getAttribute('value');
+    const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
     expect(value).toBeNull();
   });
 
@@ -34,7 +34,7 @@ describe('CrudDemoItemForm: Component', () => {
       const onSubmit = jest.fn().mockReturnValue({ errors: null });
       render(<Component onSubmit={onSubmit} />);
 
-      const nameField = screen.getByPlaceholderText(/name/gi);
+      const nameField = await screen.findByPlaceholderText(/name/gi);
       await userEvent.clear(nameField);
       await userEvent.type(nameField, 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
@@ -49,7 +49,7 @@ describe('CrudDemoItemForm: Component', () => {
 
       render(<Component onSubmit={onSubmit} />, { reduxStore });
 
-      await userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
+      await userEvent.type(await screen.findByPlaceholderText(/name/gi), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       await act(async () => {
@@ -72,7 +72,7 @@ describe('CrudDemoItemForm: Component', () => {
 
     render(<Component onSubmit={onSubmit} />, { reduxStore });
 
-    await userEvent.type(screen.getByPlaceholderText(/name/gi), 'new item name');
+    await userEvent.type(await screen.findByPlaceholderText(/name/gi), 'new item name');
     await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
     await act(async () => {

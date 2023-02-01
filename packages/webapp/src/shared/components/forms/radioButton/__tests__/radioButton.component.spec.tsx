@@ -10,13 +10,13 @@ describe('RadioButton: Component', () => {
     return <RadioButton {...defaultProps} {...props} />;
   };
 
-  it('should render with correct label', () => {
+  it('should render with correct label', async () => {
     render(<Component />);
-    expect(screen.getByLabelText('label')).toBeInTheDocument();
+    expect(await screen.findByLabelText('label')).toBeInTheDocument();
   });
 
-  it('should pass props to input element', () => {
+  it('should pass props to input element', async () => {
     render(<Component checked onChange={empty} />);
-    expect(screen.getByRole('radio')).toHaveAttribute('checked');
+    expect(await screen.findByRole('radio')).toHaveAttribute('checked');
   });
 });

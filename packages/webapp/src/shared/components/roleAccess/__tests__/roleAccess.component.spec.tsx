@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { render, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../tests/utils/rendering';
 import { Role } from '../../../../modules/auth/auth.types';
@@ -15,17 +14,16 @@ describe('RoleAccess: Component', () => {
 
   const Component = (props: Partial<RoleAccessProps>) => <RoleAccess {...defaultProps} {...props} />;
 
-  it('should render children if user has allowed role', () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment, currentUserFactory({ roles: [Role.ADMIN] }));
-    render(<Component allowedRoles={Role.ADMIN} />, { relayEnvironment });
-    expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
+  it('should render children if user has allowed role', async () => {
+    const apolloMocks = [fillCommonQueryWithUser(undefined, currentUserFactory({ roles: [Role.ADMIN] }))];
+    render(<Component allowedRoles={Role.ADMIN} />, { apolloMocks });
+    expect(await screen.findByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 
-  it('should render nothing if user doesnt have allowed role', () => {
-    const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment, currentUserFactory({ roles: [Role.USER] }));
-    render(<Component allowedRoles={Role.ADMIN} />, { relayEnvironment });
+  it('should render nothing if user doesnt have allowed role', async () => {
+    const apolloMocks = [fillCommonQueryWithUser(undefined, currentUserFactory({ roles: [Role.USER] }))];
+    const { waitForApolloMocks } = render(<Component allowedRoles={Role.ADMIN} />, { apolloMocks });
+    await waitForApolloMocks();
     expect(screen.queryByTestId(PLACEHOLDER_TEST_ID)).not.toBeInTheDocument();
   });
 });

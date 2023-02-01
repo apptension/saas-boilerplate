@@ -43,14 +43,14 @@ describe('DemoItems: Component', () => {
   it('should render all items', async () => {
     const routerProps = createMockRouterProps(routePath);
     render(<Component />, { relayEnvironment: getRelayEnv(), routerProps });
-    expect(screen.getByText('First')).toBeInTheDocument();
+    expect(await screen.findByText('First')).toBeInTheDocument();
     expect(screen.getByText('Second')).toBeInTheDocument();
   });
 
   it('should open single demo item page when link is clicked', async () => {
     const routerProps = createMockRouterProps(routePath);
     render(<Component />, { relayEnvironment: getRelayEnv(), routerProps });
-    expect(screen.getByText('First')).toBeInTheDocument();
+    expect(await screen.findByText('First')).toBeInTheDocument();
     await userEvent.click(screen.getByText('First'));
     expect(screen.getByText('DemoItem details page mock')).toBeInTheDocument();
   });

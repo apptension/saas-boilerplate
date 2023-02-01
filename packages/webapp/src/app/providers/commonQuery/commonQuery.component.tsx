@@ -1,9 +1,9 @@
-import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useCallback } from 'react';
 import { graphql } from 'react-relay';
+import { useQuery } from '@apollo/client';
 
-import { useUnsuspendedQueryLoader } from '../../../shared/hooks/useUnsuspendedQueryLoader/useUnsuspendedQueryLoader';
-import currentUserQuery, { commonQueryCurrentUserQuery } from './__generated__/commonQueryCurrentUserQuery.graphql';
 import commonDataContext from './commonQuery.context';
+import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
 
 graphql`
   fragment commonQueryCurrentUserFragment on CurrentUserType {
@@ -17,32 +17,20 @@ graphql`
 `;
 
 export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) => {
-  const [isCurrentUserQueryLoading, currentUserQueryRef, loadCurrentUserQuery] =
-    useUnsuspendedQueryLoader<commonQueryCurrentUserQuery>(graphql`
-      query commonQueryCurrentUserQuery {
-        currentUser {
-          ...commonQueryCurrentUserFragment
-        }
-      }
-    `);
+  const { loading, data, refetch } = useQuery(commonQueryCurrentUserQuery, { nextFetchPolicy: 'network-only' });
 
-  useEffect(() => {
-    loadCurrentUserQuery({});
-  }, [loadCurrentUserQuery]);
+  const reload = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
-  const reload = useCallback(() => {
-    loadCurrentUserQuery({}, { fetchPolicy: 'network-only' });
-  }, [loadCurrentUserQuery]);
-
-  if (!currentUserQueryRef || isCurrentUserQueryLoading) {
+  if (loading || !data) {
     return null;
   }
 
   return (
     <commonDataContext.Provider
       value={{
-        currentUserQueryRef,
-        currentUserQuery,
+        data,
         reload,
       }}
     >

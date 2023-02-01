@@ -24,9 +24,9 @@ describe('ResponsiveThemeProvider: Component', () => {
     <ResponsiveThemeProvider {...defaultProps} {...props} />
   );
 
-  it('should pass theme to child elements', () => {
+  it('should pass theme to child elements', async () => {
     render(<Component />);
-    const content = screen.getByTestId('content');
+    const content = await screen.findByTestId('content');
     expect(getNodeText(content)).toEqual(Breakpoint.DESKTOP);
   });
 });

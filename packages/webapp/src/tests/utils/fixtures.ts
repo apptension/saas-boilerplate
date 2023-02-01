@@ -40,6 +40,8 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
   };
 };
 
+type PageInfo = { endCursor: string; hasNextPage: boolean; __typename: string };
+
 type ComposeMockedQueryResultProps = {
   data: Record<string, any>;
   variables?: Record<string, any>;
@@ -54,56 +56,51 @@ export const composeMockedQueryResult = (
     query,
     variables,
   },
-  result: {
+  result: jest.fn(() => ({
     data,
     errors,
-  },
+  })),
 });
 
 type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
   data: Array<any>;
+  pageInfo?: PageInfo;
+  additionalData?: Record<string, any>;
 };
 
 export const composeMockedListQueryResult = (
   query: DocumentNode,
   key: string,
   typename: string,
-  { variables, data }: ComposeMockedListQueryResultProps
-): MockedResponse =>
-  composeMockedQueryResult(query, {
-    variables,
-    data: {
-      [key]: {
-        edges: data.map((obj) => ({ node: { __typename: typename, ...obj } })),
-      },
+  { variables, data, pageInfo, additionalData = {} }: ComposeMockedListQueryResultProps
+): MockedResponse => {
+  const composedData = {
+    [key]: {
+      edges: data.map((obj) => ({ node: { __typename: typename, ...obj } })),
     },
+    ...additionalData,
+  } as Record<string, any>;
+  if (pageInfo) {
+    composedData[key].pageInfo = pageInfo;
+  }
+  return composeMockedQueryResult(query, {
+    variables,
+    data: composedData,
   });
+};
 
 export const composeMockedPaginatedListQueryResult = (
   query: DocumentNode,
   key: string,
   typename: string,
   resultProps: ComposeMockedListQueryResultProps,
-  pageInfo: { endCursor: string; hasNextPage: boolean }
+  pageInfo: Pick<PageInfo, 'endCursor' | 'hasNextPage'>
 ): MockedResponse => {
-  const {
-    request,
-    result = { data: { [key]: {} } },
-    ...other
-  } = composeMockedListQueryResult(query, key, typename, resultProps);
-  return {
-    request,
-    result: {
-      data: {
-        [key]: {
-          edges: result.data[key].edges ?? [],
-          pageInfo: {
-            __typename: 'PageInfo',
-            ...pageInfo,
-          },
-        },
-      },
+  return composeMockedListQueryResult(query, key, typename, {
+    ...resultProps,
+    pageInfo: {
+      __typename: 'PageInfo',
+      ...pageInfo,
     },
-    ...other,
-  };
+  });
 };

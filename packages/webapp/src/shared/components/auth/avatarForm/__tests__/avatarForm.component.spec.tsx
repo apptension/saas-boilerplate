@@ -6,7 +6,6 @@ import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 import { AvatarForm } from '../avatarForm.component';
 import { snackbarActions } from '../../../../../modules/snackbar';
 import { MAX_AVATAR_SIZE } from '../avatarForm.constants';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { render } from '../../../../../tests/utils/rendering';
 
 const mockDispatch = jest.fn();
@@ -24,7 +23,6 @@ describe('AvatarForm: Component', () => {
 
   const renderComponent = () => {
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
 
     return {
       ...render(<AvatarForm />, { relayEnvironment }),
@@ -34,7 +32,7 @@ describe('AvatarForm: Component', () => {
 
   const createImageFile = (content: string) => new File([content], 'file.png', { type: 'image/png' });
   const fireAvatarChange = async (file = createImageFile('content')) => {
-    await userEvent.upload(screen.getByTestId('file-input'), file);
+    await userEvent.upload(await screen.findByTestId('file-input'), file);
     return file;
   };
 
@@ -74,6 +72,6 @@ describe('AvatarForm: Component', () => {
 
     const sizeInMegabytes = MAX_AVATAR_SIZE / (1024 * 1024);
     expect(await screen.findByText(`File cannot be larger than ${sizeInMegabytes} MB`)).toBeInTheDocument();
-    expect(relayEnvironment).not.toHaveLatestOperation('authUpdateUserProfileMutation');
+    expect(relayEnvironment.mock.getAllOperations().length).toEqual(0);
   });
 });

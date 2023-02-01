@@ -4,7 +4,6 @@ import { screen } from '@testing-library/react';
 import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';
 import { render } from '../../../../../tests/utils/rendering';
 import notificationsListQueryGraphql from '../../__generated__/notificationsListQuery.graphql';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 describe('NotificationsButton: Component', () => {
   const defaultProps: Omit<NotificationsButtonProps, 'listQueryRef'> = {};
@@ -13,9 +12,8 @@ describe('NotificationsButton: Component', () => {
     <NotificationsButton listQueryRef={{} as any} {...defaultProps} {...props} />
   );
 
-  it('should render without errors', () => {
+  it('should render without errors', async () => {
     const environment = createMockEnvironment();
-    fillCommonQueryWithUser(environment);
     environment.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
         hasUnreadNotifications: () => false,
@@ -35,6 +33,6 @@ describe('NotificationsButton: Component', () => {
       { relayEnvironment: environment }
     );
 
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(await screen.findByRole('button')).toBeInTheDocument();
   });
 });

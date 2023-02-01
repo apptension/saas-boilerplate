@@ -15,15 +15,16 @@ describe('App: Component', () => {
     </Routes>
   );
 
-  it('should render App when language is set', () => {
+  it('should render App when language is set', async () => {
     render(<Component />, { routerProps: { initialEntries: ['/en'] } });
-    expect(screen.getByTestId('content')).toBeInTheDocument();
+    expect(await screen.findByTestId('content')).toBeInTheDocument();
   });
 
-  it('should render nothing when language is not set', () => {
-    render(<Component />, {
+  it('should render nothing when language is not set', async () => {
+    const { waitForApolloMocks } = render(<Component />, {
       routerProps: { initialEntries: ['/'] },
     });
+    await waitForApolloMocks();
     expect(screen.queryByTestId('content')).not.toBeInTheDocument();
   });
 });

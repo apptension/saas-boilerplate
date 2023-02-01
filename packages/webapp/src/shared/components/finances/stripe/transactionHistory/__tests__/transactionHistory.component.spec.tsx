@@ -52,7 +52,7 @@ describe('TransactionHistory: Component', () => {
     fillAllStripeChargesQuery(relayEnvironment, transactionHistory);
     render(<Component />, { relayEnvironment });
 
-    expect(screen.getByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
+    expect(await screen.findByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
     expect(screen.getByText('50 USD')).toBeInTheDocument();
     expect(screen.getByText('June 05, 2020')).toBeInTheDocument();
 

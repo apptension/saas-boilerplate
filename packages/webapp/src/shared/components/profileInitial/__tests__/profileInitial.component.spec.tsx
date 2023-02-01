@@ -5,22 +5,22 @@ import { ProfileInitial, formatProfileInitial } from '../profileInitial.componen
 import { currentUserFactory } from '../../../../mocks/factories';
 
 describe('ProfileInitial: Component', () => {
-  it('should render user initial', () => {
+  it('should render user initial', async () => {
     const profile = currentUserFactory({
       firstName: 'John',
     });
     render(<ProfileInitial profile={profile} />);
 
-    expect(screen.getByText('J')).toBeInTheDocument();
+    expect(await screen.findByText('J')).toBeInTheDocument();
   });
 
-  it('should render U if user has no name', () => {
+  it('should render U if user has no name', async () => {
     const profile = currentUserFactory({
       firstName: '',
     });
     render(<ProfileInitial profile={profile} />);
 
-    expect(screen.getByText('U')).toBeInTheDocument();
+    expect(await screen.findByText('U')).toBeInTheDocument();
   });
 });
 

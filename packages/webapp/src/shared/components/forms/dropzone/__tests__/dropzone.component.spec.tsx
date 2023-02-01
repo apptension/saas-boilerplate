@@ -18,7 +18,7 @@ describe('Dropzone: Component', () => {
   const Component = (props: Partial<DropzoneProps>) => <Dropzone {...defaultProps} {...props} />;
 
   const fireInputChange = async (files: File[]) => {
-    fireEvent.change(screen.getByTestId('file-input'), {
+    fireEvent.change(await screen.findByTestId('file-input'), {
       target: { files },
     });
   };

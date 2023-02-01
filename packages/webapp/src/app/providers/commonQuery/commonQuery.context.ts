@@ -1,17 +1,13 @@
 import { createContext } from 'react';
-import { PreloadedQuery } from 'react-relay';
-import { ConcreteRequest } from 'relay-runtime';
-import { commonQueryCurrentUserQuery } from './__generated__/commonQueryCurrentUserQuery.graphql';
+import { CommonQueryCurrentUserQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 
 type CommonDataContext = {
-  currentUserQueryRef: PreloadedQuery<commonQueryCurrentUserQuery> | null;
-  currentUserQuery: ConcreteRequest | null;
+  data: CommonQueryCurrentUserQueryQuery | null;
   reload: () => void;
 };
 
 export default createContext<CommonDataContext>({
-  currentUserQueryRef: null,
-  currentUserQuery: null,
+  data: null,
   reload: () => {
     return;
   },

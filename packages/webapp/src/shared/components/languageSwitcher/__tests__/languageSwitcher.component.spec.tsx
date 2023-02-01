@@ -19,7 +19,7 @@ describe('LanguageSwitcher: Component', () => {
   it('should redirect after option click', async () => {
     render(<Component />, { routerProps: { initialEntries: [enPath] } });
 
-    await userEvent.selectOptions(screen.getByRole('combobox'), 'pl');
+    await userEvent.selectOptions(await screen.findByRole('combobox'), 'pl');
 
     expect(screen.getByText(placeholder)).toBeInTheDocument();
   });

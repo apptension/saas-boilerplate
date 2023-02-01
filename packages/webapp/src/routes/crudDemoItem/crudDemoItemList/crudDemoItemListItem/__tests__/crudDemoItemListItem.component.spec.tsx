@@ -11,6 +11,7 @@ import { RoutesConfig } from '../../../../../app/config/routes';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
 import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
 const CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY = gql(/* GraphQL */ `
   query crudDemoItemListItemTestQuery {
@@ -57,6 +58,7 @@ describe('CrudDemoItemListItem: Component', () => {
     });
 
     const apolloMocks = [
+      fillCommonQueryWithUser(),
       composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
         data: {
           item: {
@@ -83,6 +85,7 @@ describe('CrudDemoItemListItem: Component', () => {
     });
 
     const apolloMocks = [
+      fillCommonQueryWithUser(),
       composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
         data: {
           item: {

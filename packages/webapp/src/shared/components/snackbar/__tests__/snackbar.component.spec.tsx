@@ -26,16 +26,17 @@ describe('Snackbar: Component', () => {
     return state;
   });
 
-  it('should render all messages', () => {
+  it('should render all messages', async () => {
     render(<Snackbar />, { reduxInitialState });
-    expect(screen.getByText('first message')).toBeInTheDocument();
+    expect(await screen.findByText('first message')).toBeInTheDocument();
     expect(screen.getByText('second message')).toBeInTheDocument();
   });
 
   describe('message close icon is clicked', () => {
     it('should dispatch hideMessage with proper id', async () => {
-      render(<Snackbar />, { reduxInitialState });
-      const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/gi)[0];
+      const { waitForApolloMocks } = render(<Snackbar />, { reduxInitialState });
+      await waitForApolloMocks();
+      const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/i)[0];
       await userEvent.click(firstMessageCloseButton);
       expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.hideMessage(1));
     });

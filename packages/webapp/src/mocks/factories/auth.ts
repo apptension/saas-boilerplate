@@ -1,5 +1,5 @@
 import { Role } from '../../modules/auth/auth.types';
-import { CurrentUserType } from '../../shared/services/graphqlApi/__generated/types';
+import { CurrentUserType } from '../../shared/services/graphqlApi';
 import { makeId } from '../../tests/utils/fixtures';
 import { createFactory } from './factoryCreators';
 

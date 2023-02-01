@@ -1,7 +1,9 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { produce } from 'immer';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { MockedResponse } from '@apollo/client/testing';
+import { OperationDescriptor } from 'react-relay/hooks';
 
 import { ConfirmEmail } from '../confirmEmail.component';
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -11,6 +13,7 @@ import { createMockRouterProps, render } from '../../../../tests/utils/rendering
 import configureStore from '../../../../app/config/store';
 import { Role } from '../../../../modules/auth/auth.types';
 import { getRelayEnv } from '../../../../tests/utils/relay';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('ConfirmEmail: Component', () => {
   const user = 'user_id';
@@ -36,7 +39,9 @@ describe('ConfirmEmail: Component', () => {
 
       render(<Component />, { reduxInitialState, routerProps, relayEnvironment });
 
-      expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+      await waitFor(() => {
+        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+      });
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -58,7 +63,7 @@ describe('ConfirmEmail: Component', () => {
         } as any);
       });
 
-      expect(screen.getByText('Login page mock')).toBeInTheDocument();
+      expect(await screen.findByText('Login page mock')).toBeInTheDocument();
     });
 
     it('should show error message', async () => {
@@ -67,7 +72,9 @@ describe('ConfirmEmail: Component', () => {
 
       render(<Component />, { reduxStore, routerProps, relayEnvironment });
 
-      expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+      await waitFor(() => {
+        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+      });
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -99,42 +106,43 @@ describe('ConfirmEmail: Component', () => {
   });
 
   describe('token is valid', () => {
-    let relayEnvironment: RelayMockEnvironment;
-
-    beforeEach(() => {
-      relayEnvironment = getRelayEnv();
-    });
-
     describe('user is logged out', () => {
+      let relayEnvironment: RelayMockEnvironment;
+
+      beforeEach(() => {
+        relayEnvironment = getRelayEnv();
+      });
+
       it('should redirect to login ', async () => {
         const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
+        relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+          MockPayloadGenerator.generate(operation)
+        );
+
         render(<Component />, { reduxInitialState, routerProps, relayEnvironment });
 
-        await act(async () => {
-          const operation = relayEnvironment.mock.getMostRecentOperation();
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
-
-        expect(screen.getByText('Login page mock')).toBeInTheDocument();
+        expect(await screen.findByText('Login page mock')).toBeInTheDocument();
       });
 
       it('should show success message', async () => {
         const reduxStore = configureStore(reduxInitialState);
         const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxStore, routerProps, relayEnvironment });
-        await act(async () => {
-          const operation = relayEnvironment.mock.getMostRecentOperation();
-          relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-        });
-
-        expect(reduxStore.getState()).toEqual(
-          produce(reduxInitialState, (state) => {
-            state.snackbar.lastMessageId = 1;
-            state.snackbar.messages = [{ id: 1, text: 'Congratulations! Now you can log in.' }];
-          })
+        relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
+          MockPayloadGenerator.generate(operation)
         );
+
+        render(<Component />, { reduxStore, routerProps, relayEnvironment });
+
+        await waitFor(() => {
+          expect(reduxStore.getState()).toEqual(
+            produce(reduxInitialState, (state) => {
+              state.snackbar.lastMessageId = 1;
+              state.snackbar.messages = [{ id: 1, text: 'Congratulations! Now you can log in.' }];
+            })
+          );
+        });
       });
     });
 
@@ -142,21 +150,28 @@ describe('ConfirmEmail: Component', () => {
       const loggedInReduxState = prepareState((state) => state);
 
       let relayEnvironment: RelayMockEnvironment;
+      let apolloMocks: ReadonlyArray<MockedResponse>;
 
       beforeEach(() => {
-        relayEnvironment = getRelayEnv(
-          currentUserFactory({
-            roles: [Role.ADMIN],
-          })
-        );
+        relayEnvironment = getRelayEnv();
+        apolloMocks = [
+          fillCommonQueryWithUser(
+            createMockEnvironment(),
+            currentUserFactory({
+              roles: [Role.ADMIN],
+            })
+          ),
+        ];
       });
 
       it('should redirect to login ', async () => {
         const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxInitialState: loggedInReduxState, routerProps, relayEnvironment });
+        render(<Component />, { reduxInitialState: loggedInReduxState, routerProps, relayEnvironment, apolloMocks });
 
-        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+        await waitFor(() => {
+          expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+        });
 
         await act(async () => {
           const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -170,9 +185,11 @@ describe('ConfirmEmail: Component', () => {
         const reduxStore = configureStore(loggedInReduxState);
         const routerProps = createMockRouterProps('confirmEmail', { user, token });
 
-        render(<Component />, { reduxStore, routerProps, relayEnvironment });
+        render(<Component />, { reduxStore, routerProps, relayEnvironment, apolloMocks });
 
-        expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+        await waitFor(() => {
+          expect(relayEnvironment).toHaveOperation('authConfirmUserEmailMutation');
+        });
 
         await act(async () => {
           const operation = relayEnvironment.mock.getMostRecentOperation();

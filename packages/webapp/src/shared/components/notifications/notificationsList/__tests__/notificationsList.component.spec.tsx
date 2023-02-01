@@ -7,6 +7,7 @@ import { fillNotificationsListQuery, notificationFactory } from '../../../../../
 import { ExtractNodeType } from '../../../../utils/graphql';
 import { notificationsListContent$data } from '../__generated__/notificationsListContent.graphql';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { notificationsListQuery } from '../../notifications.graphql';
 
 describe('NotificationsList: Component', () => {
@@ -16,21 +17,20 @@ describe('NotificationsList: Component', () => {
   };
 
   const renderWithNotifications = (
-    notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>
+    notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>,
+    additionalData?: Record<string, any>
   ) => {
     const env = getRelayEnv();
-    const mockRequest = fillNotificationsListQuery(env, notifications);
+    const mockRequest = fillNotificationsListQuery(env, notifications, additionalData);
 
-    if (mockRequest.result?.data) {
-      mockRequest.result.data.hasUnreadNotifications = false;
-    }
-    const apolloMocks = [mockRequest];
+    const apolloMocks = [fillCommonQueryWithUser(), mockRequest];
 
-    render(<Component />, { relayEnvironment: env, apolloMocks });
+    return render(<Component />, { relayEnvironment: env, apolloMocks });
   };
 
   it('should render no items correctly', async () => {
-    renderWithNotifications([]);
+    const { waitForApolloMocks } = renderWithNotifications([], { hasUnreadNotifications: false });
+    await waitForApolloMocks(0);
 
     expect(screen.getAllByLabelText('Loading notification')).toHaveLength(2);
     expect(await screen.findByText('Mark all as read')).toBeInTheDocument();
@@ -50,7 +50,9 @@ describe('NotificationsList: Component', () => {
 
   it('should render correct notifications', async () => {
     const notifications = times(() => notificationFactory(), 3);
-    renderWithNotifications(notifications);
+    const { waitForApolloMocks } = renderWithNotifications(notifications, { hasUnreadNotifications: false });
+
+    await waitForApolloMocks(0);
 
     expect(screen.getAllByLabelText('Loading notification')).toHaveLength(2);
     expect(await screen.findByText('Mark all as read')).toBeInTheDocument();
@@ -62,7 +64,7 @@ describe('NotificationsList: Component', () => {
     const malformedNotification = notificationFactory({
       data: null,
     });
-    renderWithNotifications([...correctNotifications, malformedNotification]);
+    renderWithNotifications([...correctNotifications, malformedNotification], { hasUnreadNotifications: false });
 
     expect(await screen.findAllByRole('link')).toHaveLength(correctNotifications.length);
   });

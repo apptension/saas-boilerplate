@@ -10,19 +10,19 @@ describe('Checkbox: Component', () => {
 
   const Component = (props: Partial<CheckboxProps>) => <Checkbox {...defaultProps} {...props} />;
 
-  it('should be unchecked by default', () => {
+  it('should be unchecked by default', async () => {
     render(<Component />);
-    expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(false);
+    expect(((await screen.findByRole('checkbox', { hidden: true })) as HTMLInputElement).checked).toEqual(false);
   });
 
   it('should be checked after clicking', async () => {
     render(<Component />);
-    await userEvent.click(screen.getByText('Checkbox label'));
+    await userEvent.click(await screen.findByText('Checkbox label'));
     expect((screen.getByRole('checkbox', { hidden: true }) as HTMLInputElement).checked).toEqual(true);
   });
 
-  it('should render provided error message', () => {
+  it('should render provided error message', async () => {
     render(<Component error="Invalid value" />);
-    expect(screen.getByText('Invalid value')).toBeInTheDocument();
+    expect(await screen.findByText('Invalid value')).toBeInTheDocument();
   });
 });

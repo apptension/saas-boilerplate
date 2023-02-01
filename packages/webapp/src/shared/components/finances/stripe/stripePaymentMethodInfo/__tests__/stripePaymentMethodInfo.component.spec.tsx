@@ -51,7 +51,7 @@ describe('StripePaymentMethodInfo: Component', () => {
       }),
     });
     render(<Component />, { relayEnvironment });
-    expect(screen.getByText(matchTextContent('Owner Visa **** 1234'))).toBeInTheDocument();
+    expect(await screen.findByText(matchTextContent('Owner Visa **** 1234'))).toBeInTheDocument();
   });
 
   describe('method is not specified', () => {
@@ -61,8 +61,8 @@ describe('StripePaymentMethodInfo: Component', () => {
         defaultPaymentMethod: null,
       });
       render(<Component />, { relayEnvironment });
+      expect(await screen.findByText('None'));
       expect(screen.queryByText(matchTextContent('Owner Visa **** 1234'))).not.toBeInTheDocument();
-      expect(screen.getByText('None'));
     });
   });
 });

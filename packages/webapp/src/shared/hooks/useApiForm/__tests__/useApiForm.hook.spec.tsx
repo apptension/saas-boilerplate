@@ -10,8 +10,9 @@ interface TestFormFields {
 describe('useApiForm: Hook', () => {
   const render = (args?: UseApiFormArgs<TestFormFields>) => renderHook(() => useApiForm<TestFormFields>(args));
 
-  it('should set generic form error from api response', () => {
-    const { result } = render();
+  it('should set generic form error from api response', async () => {
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
     act(() => {
       result.current.setApiResponse({
         isError: true,
@@ -23,8 +24,9 @@ describe('useApiForm: Hook', () => {
     expect(result.current.form.formState.errors).toEqual({});
   });
 
-  it('should set field error from api response', () => {
-    const { result } = render();
+  it('should set field error from api response', async () => {
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
     act(() => {
       result.current.setApiResponse({
         isError: true,
@@ -37,8 +39,11 @@ describe('useApiForm: Hook', () => {
   });
 
   describe('custom error messages are provided', () => {
-    it('should set field error from api response using custom translations', () => {
-      const { result } = render({ errorMessages: { email: { custom_error: 'my custom error text' } } });
+    it('should set field error from api response using custom translations', async () => {
+      const { result, waitForApolloMocks } = render({
+        errorMessages: { email: { custom_error: 'my custom error text' } },
+      });
+      await waitForApolloMocks();
       act(() => {
         result.current.setApiResponse({ isError: true, email: [{ message: '', code: 'custom_error' }] });
       });
@@ -47,8 +52,11 @@ describe('useApiForm: Hook', () => {
       expect(result.current.form.formState.errors).toEqual({ email: { message: 'my custom error text' } });
     });
 
-    it('should set generic error from api response using custom translations', () => {
-      const { result } = render({ errorMessages: { nonFieldErrors: { custom_error: 'my custom error text' } } });
+    it('should set generic error from api response using custom translations', async () => {
+      const { result, waitForApolloMocks } = render({
+        errorMessages: { nonFieldErrors: { custom_error: 'my custom error text' } },
+      });
+      await waitForApolloMocks();
       act(() => {
         result.current.setApiResponse({ isError: true, nonFieldErrors: [{ message: '', code: 'custom_error' }] });
       });
@@ -59,14 +67,16 @@ describe('useApiForm: Hook', () => {
   });
 
   describe('hasGenericErrorOnly utility flag', () => {
-    it('should return false if no generic error at all', () => {
-      const { result } = render();
+    it('should return false if no generic error at all', async () => {
+      const { result, waitForApolloMocks } = render();
+      await waitForApolloMocks();
 
       expect(result.current.hasGenericErrorOnly).toBe(false);
     });
 
-    it('should return false if has some fields error', () => {
-      const { result } = render();
+    it('should return false if has some fields error', async () => {
+      const { result, waitForApolloMocks } = render();
+      await waitForApolloMocks();
 
       act(() => {
         result.current.setApiResponse({
@@ -79,8 +89,9 @@ describe('useApiForm: Hook', () => {
       expect(result.current.hasGenericErrorOnly).toBe(false);
     });
 
-    it('should return true if has non field error only', () => {
-      const { result } = render();
+    it('should return true if has non field error only', async () => {
+      const { result, waitForApolloMocks } = render();
+      await waitForApolloMocks();
 
       act(() => {
         result.current.setApiResponse({ isError: true, nonFieldErrors: [{ message: '', code: 'custom_error' }] });

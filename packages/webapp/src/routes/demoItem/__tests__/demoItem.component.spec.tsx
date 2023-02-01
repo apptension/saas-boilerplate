@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { createMockEnvironment } from 'relay-test-utils';
 import { Route, Routes } from 'react-router';
 
@@ -20,7 +20,7 @@ describe('DemoItem: Component', () => {
   it('should render item data', async () => {
     const routerProps = createMockRouterProps(routePath, { id: 'test-id' });
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
+    const apolloMocks = [fillCommonQueryWithUser()];
     const data = {
       ...demoItemFactory(),
       title: 'First',
@@ -28,11 +28,9 @@ describe('DemoItem: Component', () => {
     };
     fillDemoItemQuery(relayEnvironment, data, { id: 'test-id' });
 
-    render(<Component />, { relayEnvironment, routerProps });
+    render(<Component />, { relayEnvironment, apolloMocks, routerProps });
 
-    await waitFor(() => {
-      expect(screen.getByText('First')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('First')).toBeInTheDocument();
     expect(screen.getByText('Something more')).toBeInTheDocument();
     // @ts-ignore
     expect(screen.getByAltText(data.image?.title)).toBeInTheDocument();

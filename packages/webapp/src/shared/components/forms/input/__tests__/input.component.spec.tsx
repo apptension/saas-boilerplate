@@ -10,12 +10,12 @@ describe('Input: Component', () => {
 
   it('should display entered value', async () => {
     render(<Component />);
-    await userEvent.type(screen.getByRole('textbox'), 'My value');
+    await userEvent.type(await screen.findByRole('textbox'), 'My value');
     expect(screen.getByDisplayValue('My value')).toBeInTheDocument();
   });
 
-  it('should render provided error message', () => {
+  it('should render provided error message', async () => {
     render(<Component error="Invalid value" />);
-    expect(screen.getByText('Invalid value')).toBeInTheDocument();
+    expect(await screen.findByText('Invalid value')).toBeInTheDocument();
   });
 });

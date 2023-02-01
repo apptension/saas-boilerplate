@@ -7,6 +7,7 @@ import { RoutesConfig } from '../../../../app/config/routes';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 import { getRelayEnv } from '../../../../tests/utils/relay';
 import { fillCrudDemoItemListQuery } from '../../../../mocks/factories/crudDemoItem';
+import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 
 describe('CrudDemoItemList: Component', () => {
   const routePath = ['crudDemoItem', 'list'];
@@ -24,8 +25,8 @@ describe('CrudDemoItemList: Component', () => {
     const relayEnvironment = getRelayEnv();
     const mockRequest = fillCrudDemoItemListQuery(relayEnvironment);
 
-    const apolloMocks = [mockRequest];
-    render(<Component />, { relayEnvironment, routerProps, apolloMocks });
+    const apolloMocks = [fillCommonQueryWithUser(relayEnvironment), mockRequest];
+    render(<Component />, { routerProps, apolloMocks });
 
     expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
     expect(await screen.findByText('First item')).toBeInTheDocument();
@@ -38,7 +39,7 @@ describe('CrudDemoItemList: Component', () => {
     fillCrudDemoItemListQuery(relayEnvironment);
 
     render(<Component />, { relayEnvironment, routerProps });
-    await userEvent.click(screen.getByText(/add/i));
+    await userEvent.click(await screen.findByText(/add/i));
 
     expect(screen.getByText('CrudDemoItem add page mock')).toBeInTheDocument();
   });

@@ -11,16 +11,18 @@ import { StripePaymentMethod } from '../../../../../services/api/stripe/paymentM
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { connectionFromArray } from '../../../../../../tests/utils/fixtures';
 import { matchTextContent } from '../../../../../../tests/utils/match';
+import stripeAllPaymentMethodsQueryGraphql from '../../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
 
 const resolvePaymentMethodsQuery = (
   relayEnvironment: RelayMockEnvironment,
   paymentMethods: StripePaymentMethod[] = []
 ) => {
-  relayEnvironment.mock.resolveMostRecentOperation((operation) => {
+  relayEnvironment.mock.queueOperationResolver((operation) => {
     return MockPayloadGenerator.generate(operation, {
       PaymentMethodConnection: () => connectionFromArray(paymentMethods),
     });
   });
+  relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
 };
 
 const StripePaymentMethodSelectorWithControls = () => {
@@ -45,24 +47,23 @@ describe('StripePaymentMethodSelector: Component', () => {
   describe('there are payment methods available already', () => {
     it('should list possible payment methods', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment });
+      resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
+      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
 
-      await act(() => {
-        resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
-      });
+      await waitForApolloMocks();
 
-      expect(screen.getByText(matchTextContent('First Owner Visa **** 1234'))).toBeInTheDocument();
+      expect(await screen.findByText(matchTextContent('First Owner Visa **** 1234'))).toBeInTheDocument();
       expect(screen.getByText(matchTextContent('Second Owner Visa **** 9999'))).toBeInTheDocument();
     });
 
     it('should show add new method button', async () => {
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment });
+      resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
+      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
 
-      await act(() => {
-        resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
-      });
-      expect(screen.getByText(/add a new card/i)).toBeInTheDocument();
+      await waitForApolloMocks();
+
+      expect(await screen.findByText(/add a new card/i)).toBeInTheDocument();
     });
   });
 

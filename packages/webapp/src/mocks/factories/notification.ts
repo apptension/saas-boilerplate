@@ -1,5 +1,5 @@
 import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
 import { NotificationType } from '../../shared/services/graphqlApi';
@@ -22,9 +22,13 @@ export const notificationFactory = createFactory<NotificationType>(() => ({
 }));
 
 export const fillNotificationsListQuery = (
-  env: RelayMockEnvironment,
-  notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>> = []
+  env?: RelayMockEnvironment,
+  notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>> = [],
+  additionalData?: Record<string, any>
 ) => {
+  if (!env) {
+    env = createMockEnvironment();
+  }
   env.mock.queueOperationResolver((operation: OperationDescriptor) =>
     MockPayloadGenerator.generate(operation, {
       NotificationConnection: () => connectionFromArray(notifications),
@@ -41,6 +45,7 @@ export const fillNotificationsListQuery = (
       variables: {
         count: 20,
       },
+      additionalData,
     },
     { endCursor: 'test', hasNextPage: false }
   );

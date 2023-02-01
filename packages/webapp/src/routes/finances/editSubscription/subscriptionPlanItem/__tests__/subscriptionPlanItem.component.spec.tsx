@@ -100,14 +100,14 @@ describe('SubscriptionPlanItem: Component', () => {
     const relayEnvironment = getRelayEnv();
     fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
     render(<Wrapper />, { relayEnvironment });
-    expect(screen.getByText(/monthly/i)).toBeInTheDocument();
+    expect(await screen.findByText(/monthly/i)).toBeInTheDocument();
   });
 
   it('should render plan price', async () => {
     const relayEnvironment = getRelayEnv();
     fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
     render(<Wrapper />, { relayEnvironment });
-    expect(screen.getByText(/2\.5 USD/i)).toBeInTheDocument();
+    expect(await screen.findByText(/2\.5 USD/i)).toBeInTheDocument();
   });
 
   describe('button is clicked', () => {
@@ -116,7 +116,8 @@ describe('SubscriptionPlanItem: Component', () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
         fillSubscriptionScheduleQuery(relayEnvironment, subscriptionMigrationToYearly);
-        render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
         await waitFor(() => {
           expect(onSelect).toHaveBeenCalled();
@@ -129,7 +130,8 @@ describe('SubscriptionPlanItem: Component', () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
         fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-        render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).not.toHaveBeenCalled();
       });
@@ -148,7 +150,8 @@ describe('SubscriptionPlanItem: Component', () => {
             ],
           })
         );
-        render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).toHaveBeenCalled();
       });
@@ -160,7 +163,7 @@ describe('SubscriptionPlanItem: Component', () => {
       const relayEnvironment = getRelayEnv();
       fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: true }));
       render(<Wrapper />, { relayEnvironment });
-      expect(screen.getByText(/will start with a trial/i)).toBeInTheDocument();
+      expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();
     });
   });
 
@@ -168,7 +171,8 @@ describe('SubscriptionPlanItem: Component', () => {
     it('should not show trial info', async () => {
       const relayEnvironment = getRelayEnv();
       fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: false }));
-      render(<Wrapper />, { relayEnvironment });
+      const { waitForApolloMocks } = render(<Wrapper />, { relayEnvironment });
+      await waitForApolloMocks();
       expect(screen.queryByText(/will start with a trial/gi)).not.toBeInTheDocument();
     });
   });

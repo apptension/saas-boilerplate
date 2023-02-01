@@ -10,19 +10,19 @@ describe('RelativeDate: Component', () => {
 
   const Component = (props: Partial<RelativeDateProps>) => <RelativeDate {...defaultProps} {...props} />;
 
-  it('should render formatted relative days', () => {
+  it('should render formatted relative days', async () => {
     const date = nowSub(DAY);
     render(<Component date={date} />);
 
-    expect(screen.getByTitle(date.getFullYear(), { exact: false })).toBeInTheDocument();
+    expect(await screen.findByTitle(date.getFullYear(), { exact: false })).toBeInTheDocument();
     expect(screen.getByText('1 day ago')).toBeInTheDocument();
   });
 
-  it('should render absolute date if more than week ago', () => {
+  it('should render absolute date if more than week ago', async () => {
     const date = nowSub(DAY * 8);
     render(<Component date={date} />);
 
+    expect(await screen.findByText(date.getFullYear(), { exact: false })).toBeInTheDocument();
     expect(screen.queryByText('7 days ago')).not.toBeInTheDocument();
-    expect(screen.getByText(date.getFullYear(), { exact: false })).toBeInTheDocument();
   });
 });

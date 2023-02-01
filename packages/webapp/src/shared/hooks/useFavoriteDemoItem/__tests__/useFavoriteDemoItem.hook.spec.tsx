@@ -17,7 +17,10 @@ const renderHookWithContext = (callback: () => ReturnType<typeof useFavoriteDemo
 
 describe('useFavoriteDemoItem: Hook', () => {
   it('should trigger correct mutation', async () => {
-    const { result, relayEnvironment } = renderHookWithContext(() => useFavoriteDemoItem('item-1', refresh));
+    const { result, relayEnvironment, waitForApolloMocks } = renderHookWithContext(() =>
+      useFavoriteDemoItem('item-1', refresh)
+    );
+    await waitForApolloMocks();
     act(() => {
       result.current.setFavorite(false);
       const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -27,15 +30,17 @@ describe('useFavoriteDemoItem: Hook', () => {
   });
 
   describe('item is favorited', () => {
-    it('should return { isFavorite: true }', () => {
-      const { result } = renderHookWithContext(() => useFavoriteDemoItem('item-1', refresh));
+    it('should return { isFavorite: true }', async () => {
+      const { result, waitForApolloMocks } = renderHookWithContext(() => useFavoriteDemoItem('item-1', refresh));
+      await waitForApolloMocks();
       expect(result.current.isFavorite).toBe(true);
     });
   });
 
   describe('item is not favorited', () => {
-    it('should return { isFavorite: false }', () => {
-      const { result } = renderHookWithContext(() => useFavoriteDemoItem('item-999', refresh));
+    it('should return { isFavorite: false }', async () => {
+      const { result, waitForApolloMocks } = renderHookWithContext(() => useFavoriteDemoItem('item-999', refresh));
+      await waitForApolloMocks();
       expect(result.current.isFavorite).toBe(false);
     });
   });

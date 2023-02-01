@@ -7,12 +7,12 @@ describe('Button: Component', () => {
 
   const Component = (props: Partial<ButtonProps>) => <Button {...defaultProps} {...props} />;
 
-  it('should call onClick prop when clicked', () => {
+  it('should call onClick prop when clicked', async () => {
     const label = <span>PRESS HERE</span>;
     const onClick = jest.fn();
     render(<Component onClick={onClick}>{label}</Component>);
 
-    fireEvent.click(screen.getByText('PRESS HERE'));
+    fireEvent.click(await screen.findByText('PRESS HERE'));
     expect(onClick).toHaveBeenCalled();
     onClick.mockReset();
 
@@ -20,8 +20,8 @@ describe('Button: Component', () => {
     expect(onClick).toHaveBeenCalled();
   });
 
-  it('should pass native HTML props directly to the button element', () => {
+  it('should pass native HTML props directly to the button element', async () => {
     render(<Component aria-label="some-label" />);
-    expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'some-label');
+    expect(await screen.findByRole('button')).toHaveAttribute('aria-label', 'some-label');
   });
 });

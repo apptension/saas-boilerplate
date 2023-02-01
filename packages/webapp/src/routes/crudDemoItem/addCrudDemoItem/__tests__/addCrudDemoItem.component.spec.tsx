@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { createMockEnvironment } from 'relay-test-utils';
 import { produce } from 'immer';
 
 import { render } from '../../../../tests/utils/rendering';
@@ -15,16 +14,16 @@ describe('AddCrudDemoItem: Component', () => {
 
   const Component = () => <AddCrudDemoItem />;
 
-  it('should display empty form', () => {
-    render(<Component />);
-    const value = screen.getByPlaceholderText(/name/i).getAttribute('value');
+  it('should display empty form', async () => {
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
+    const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
     expect(value).toBeNull();
   });
 
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
-      const relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      const commonQueryMock = fillCommonQueryWithUser();
 
       const variables = {
         input: { name: 'new item name' },
@@ -43,21 +42,19 @@ describe('AddCrudDemoItem: Component', () => {
         variables,
         data,
       });
-
       requestMock.newData = jest.fn(() => ({
         data,
       }));
 
-      render(<Component />, { relayEnvironment, apolloMocks: [requestMock] });
+      render(<Component />, { apolloMocks: [commonQueryMock, requestMock] });
 
-      await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item name');
+      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
       expect(requestMock.newData).toHaveBeenCalled();
     });
 
     it('should show success message', async () => {
-      const relayEnvironment = createMockEnvironment();
-      fillCommonQueryWithUser(relayEnvironment);
+      const commonQueryMock = fillCommonQueryWithUser();
       const reduxStore = configureStore(reduxInitialState);
 
       const variables = {
@@ -78,9 +75,9 @@ describe('AddCrudDemoItem: Component', () => {
         data,
       });
 
-      render(<Component />, { reduxStore, relayEnvironment, apolloMocks: [requestMock] });
+      render(<Component />, { reduxStore, apolloMocks: [commonQueryMock, requestMock] });
 
-      await userEvent.type(screen.getByPlaceholderText(/name/i), 'new item');
+      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       expect(reduxStore.getState()).toEqual(

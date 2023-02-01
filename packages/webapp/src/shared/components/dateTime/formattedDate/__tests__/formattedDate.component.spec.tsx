@@ -9,13 +9,13 @@ describe('FormattedDate: Component', () => {
 
   const Component = (props: Partial<FormattedDateProps>) => <FormattedDate {...defaultProps} {...props} />;
 
-  it('should properly format string date', () => {
+  it('should properly format string date', async () => {
     render(<Component />);
-    expect(screen.getByText('October 10, 2010')).toBeInTheDocument();
+    expect(await screen.findByText('October 10, 2010')).toBeInTheDocument();
   });
 
-  it('should properly format object date', () => {
+  it('should properly format object date', async () => {
     render(<Component value={new Date('2010-10-10')} />);
-    expect(screen.getByText('October 10, 2010')).toBeInTheDocument();
+    expect(await screen.findByText('October 10, 2010')).toBeInTheDocument();
   });
 });

@@ -10,16 +10,16 @@ describe('TermsAndConditions: Component', () => {
 
   const Component = () => <TermsAndConditions />;
 
-  it('should render terms and conditions content', () => {
+  it('should render terms and conditions content', async () => {
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
     fillContentfulAppConfigQuery(relayEnvironment, {
       items: [appConfigFactory({ termsAndConditions })],
       limit: 1,
       skip: 0,
       total: 1,
     });
-    render(<Component />, { relayEnvironment });
-    expect(screen.getByText(termsAndConditions)).toBeInTheDocument();
+    const apolloMocks = [fillCommonQueryWithUser()];
+    render(<Component />, { relayEnvironment, apolloMocks });
+    expect(await screen.findByText(termsAndConditions)).toBeInTheDocument();
   });
 });

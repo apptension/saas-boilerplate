@@ -28,21 +28,24 @@ describe('HiddenOnPlatform: Component', () => {
     mockedUseMediaQuery.mockReset();
   });
 
-  it('should pass query to useMediaQuery hook', () => {
+  it('should pass query to useMediaQuery hook', async () => {
     mockedUseMediaQuery.mockReturnValue({ matches: true });
-    render(<Component />);
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
     expect(useMediaQuery).toHaveBeenCalledWith(defaultQuery);
   });
 
-  it('should render nothing if media query matches', () => {
+  it('should render nothing if media query matches', async () => {
     mockedUseMediaQuery.mockReturnValue({ matches: true });
-    render(<Component />);
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
     expect(screen.queryByTestId(PLACEHOLDER_TEST_ID)).not.toBeInTheDocument();
   });
 
-  it('should render children if media query doesnt match', () => {
+  it('should render children if media query doesnt match', async () => {
     mockedUseMediaQuery.mockReturnValue({ matches: false });
-    render(<Component />);
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
     expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 });

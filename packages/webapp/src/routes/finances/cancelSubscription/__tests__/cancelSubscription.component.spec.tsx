@@ -73,13 +73,15 @@ describe('CancelSubscription: Component', () => {
   it('should render current plan details', async () => {
     const relayEnvironment = getRelayEnv();
     const routerProps = createMockRouterProps(routePath);
-    render(<Component />, { relayEnvironment, routerProps });
+    const { waitForApolloMocks } = render(<Component />, { relayEnvironment, routerProps });
+
+    await waitForApolloMocks(0);
 
     await act(() => {
       resolveSubscriptionDetailsQuery(relayEnvironment);
     });
 
-    expect(screen.getByText(/Active plan:/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Active plan:/i)).toBeInTheDocument();
     expect(screen.getByText(/Monthly/i)).toBeInTheDocument();
     expect(screen.getByText(/next renewal/i)).toBeInTheDocument();
     expect(screen.getByText(/October 10, 2020/i)).toBeInTheDocument();
@@ -89,13 +91,15 @@ describe('CancelSubscription: Component', () => {
     it('should trigger cancelSubscription action', async () => {
       const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(routePath);
-      render(<Component />, { relayEnvironment, routerProps });
+      const { waitForApolloMocks } = render(<Component />, { relayEnvironment, routerProps });
+
+      await waitForApolloMocks(0);
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
       });
 
-      await userEvent.click(screen.getByText(/cancel subscription/i));
+      await userEvent.click(await screen.findByText(/cancel subscription/i));
 
       expect(relayEnvironment).toHaveLatestOperation('subscriptionCancelActiveSubscriptionMutation');
       expect(relayEnvironment).toLatestOperationInputEqual({});
@@ -106,13 +110,15 @@ describe('CancelSubscription: Component', () => {
     it('should show success message and redirect to subscriptions page', async () => {
       const routerProps = createMockRouterProps(routePath);
       const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment, routerProps });
+      const { waitForApolloMocks } = render(<Component />, { relayEnvironment, routerProps });
+
+      await waitForApolloMocks(0);
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
       });
 
-      await userEvent.click(screen.getByText(/cancel subscription/i));
+      await userEvent.click(await screen.findByText(/cancel subscription/i));
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -132,13 +138,15 @@ describe('CancelSubscription: Component', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
       const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(routePath);
-      render(<Component />, { relayEnvironment, routerProps });
+      const { waitForApolloMocks } = render(<Component />, { relayEnvironment, routerProps });
+
+      await waitForApolloMocks(0);
 
       await act(() => {
         resolveSubscriptionDetailsQuery(relayEnvironment);
       });
 
-      await userEvent.click(screen.getByText(/cancel subscription/i));
+      await userEvent.click(await screen.findByText(/cancel subscription/i));
 
       const errorMessage = 'Bad Error';
       await act(async () => {

@@ -18,12 +18,12 @@ describe('Link: Component', () => {
     </Routes>
   );
 
-  it('should call onClick prop when clicked', () => {
+  it('should call onClick prop when clicked', async () => {
     const label = <span>PRESS HERE</span>;
     const onClick = jest.fn();
     render(<Component onClick={onClick}>{label}</Component>);
 
-    fireEvent.click(screen.getByText('PRESS HERE'));
+    fireEvent.click(await screen.findByText('PRESS HERE'));
     expect(onClick).toHaveBeenCalled();
     onClick.mockReset();
 
@@ -31,27 +31,27 @@ describe('Link: Component', () => {
     expect(onClick).toHaveBeenCalled();
   });
 
-  it('should pass native HTML props directly to the element', () => {
+  it('should pass native HTML props directly to the element', async () => {
     render(<Component aria-label="some-label" />);
-    expect(screen.getByRole('link')).toHaveAttribute('aria-label', 'some-label');
+    expect(await screen.findByRole('link')).toHaveAttribute('aria-label', 'some-label');
   });
 
   describe('with external link', () => {
-    it('should display link with correct URL', () => {
+    it('should display link with correct URL', async () => {
       render(<Component />);
-      expect(screen.getByRole('link')).toHaveAttribute('href', 'http://apptension.com');
+      expect(await screen.findByRole('link')).toHaveAttribute('href', 'http://apptension.com');
     });
   });
 
   describe('with internal link', () => {
-    it('should display link with correct URL', () => {
+    it('should display link with correct URL', async () => {
       render(<Component href={undefined} to="example-path" />);
-      expect(screen.getByRole('link')).toHaveAttribute('href', '/example-path');
+      expect(await screen.findByRole('link')).toHaveAttribute('href', '/example-path');
     });
 
     it('should use react-router navigation when clicked', async () => {
       render(<Component href={undefined} to="example-path" />);
-      await userEvent.click(screen.getByRole('link'));
+      await userEvent.click(await screen.findByRole('link'));
       expect(screen.getByText(placeholder)).toBeInTheDocument();
     });
   });

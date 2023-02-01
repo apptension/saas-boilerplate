@@ -1,7 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { render } from '../../../../../tests/utils/rendering';
 import { EditProfileForm } from '../editProfileForm.component';
@@ -53,19 +52,16 @@ const requestMock = (error?: GraphQLError[]) => ({
   },
 });
 
-//TODO Waiting for commonQuery implementation
 const renderComponent = (error?: GraphQLError[]) => {
-  const relayEnvironment = createMockEnvironment();
   const currentUser = currentUserFactory({
     firstName: 'Jack',
     lastName: 'White',
     email: 'jack.white@mail.com',
     roles: [Role.ADMIN, Role.USER],
   });
-  fillCommonQueryWithUser(relayEnvironment, currentUser);
+  const apolloMocks = [fillCommonQueryWithUser(undefined, currentUser), requestMock(error)];
   return {
-    ...render(<EditProfileForm />, { relayEnvironment, apolloMocks: [requestMock(error)] }),
-    relayEnvironment,
+    ...render(<EditProfileForm />, { apolloMocks }),
     updatedUser: {
       ...currentUser,
       ...formData,
@@ -78,13 +74,13 @@ describe('EditProfileForm: Component', () => {
     mockDispatch.mockReset();
   });
 
-  const getFirstNameField = () => screen.getByLabelText(/first name/i);
+  const getFirstNameField = () => screen.findByLabelText(/first name/i);
   const getLastNameField = () => screen.getByLabelText(/last name/i);
 
   const fillForm = async () => {
-    await userEvent.clear(getFirstNameField());
+    await userEvent.clear(await getFirstNameField());
     await userEvent.clear(getLastNameField());
-    await userEvent.type(getFirstNameField(), formData.firstName);
+    await userEvent.type(await getFirstNameField(), formData.firstName);
     await userEvent.type(getLastNameField(), formData.lastName);
   };
 
@@ -120,7 +116,7 @@ describe('EditProfileForm: Component', () => {
 
   it('should show error if value is too long', async () => {
     renderComponent();
-    await userEvent.type(screen.getByLabelText(/first name/i), '_'.repeat(41));
+    await userEvent.type(await screen.findByLabelText(/first name/i), '_'.repeat(41));
     await userEvent.type(screen.getByLabelText(/last name/i), formData.lastName);
 
     await submitForm();

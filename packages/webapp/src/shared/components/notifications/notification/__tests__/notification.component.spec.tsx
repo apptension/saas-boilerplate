@@ -10,23 +10,23 @@ describe('Notification: Component', () => {
 
   const Component = (props: Partial<NotificationProps>) => <Notification {...defaultProps} {...props} />;
 
-  it('should render title', () => {
+  it('should render title', async () => {
     render(<Component title={PLACEHOLDER_CONTENT} />);
 
-    expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
+    expect(await screen.findByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 
-  it('should render content', () => {
+  it('should render content', async () => {
     render(<Component>{PLACEHOLDER_CONTENT}</Component>);
 
-    expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
+    expect(await screen.findByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 
-  it('should call onClick', () => {
+  it('should call onClick', async () => {
     const onClick = jest.fn();
     render(<Component onClick={onClick} />);
 
-    const container = screen.getByRole('link');
+    const container = await screen.findByRole('link');
     fireEvent.click(container);
 
     expect(onClick).toBeCalledTimes(1);

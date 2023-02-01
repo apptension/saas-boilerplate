@@ -31,7 +31,7 @@ describe('PasswordResetConfirmForm: Component', () => {
 
   const fillForm = async (data = {}) => {
     const d = { ...formData, ...data };
-    await userEvent.type(screen.getByLabelText(/^new password$/i), d.newPassword);
+    await userEvent.type(await screen.findByLabelText(/^new password$/i), d.newPassword);
     if (d.confirmPassword) {
       await userEvent.type(screen.getByLabelText(/^repeat new password$/i), d.confirmPassword);
     }
@@ -49,10 +49,8 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetConfirmMutation');
     expect(relayEnvironment).toLatestOperationInputEqual({
@@ -67,10 +65,8 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     await act(async () => {
       const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -92,12 +88,10 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm({ confirmPassword: null });
-      await sendForm();
-    });
+    await fillForm({ confirmPassword: null });
+    await sendForm();
 
-    expect(relayEnvironment).not.toHaveLatestOperation('authRequestPasswordResetConfirmMutation');
+    expect(relayEnvironment.mock.getAllOperations().length).toEqual(0);
     await waitFor(() => {
       expect(screen.getByText('Repeat new password is required')).toBeInTheDocument();
     });
@@ -108,10 +102,8 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     const errorMessage = 'Provided password is invalid';
 
@@ -145,10 +137,8 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     render(<Component />, { relayEnvironment });
 
-    await act(async () => {
-      await fillForm();
-      await sendForm();
-    });
+    await fillForm();
+    await sendForm();
 
     const errorMessage = 'Invalid data';
 

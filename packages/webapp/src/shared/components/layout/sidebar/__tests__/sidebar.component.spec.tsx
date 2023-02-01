@@ -5,14 +5,16 @@ import { Sidebar } from '../sidebar.component';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { LayoutContext } from '../../layout.context';
-import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
-const getRelayEnv = (role: Role = Role.USER) =>
-  getBaseRelayEnv(
+const getApolloMocks = (role: Role = Role.USER) => [
+  fillCommonQueryWithUser(
+    undefined,
     currentUserFactory({
       roles: [role],
     })
-  );
+  ),
+];
 
 describe('Sidebar: Component', () => {
   const Component = () => (
@@ -21,60 +23,63 @@ describe('Sidebar: Component', () => {
     </LayoutContext.Provider>
   );
   describe('user is logged out', () => {
-    it('should not show link to dashboard', () => {
-      render(<Component />);
+    it('should not show link to dashboard', async () => {
+      const { waitForApolloMocks } = render(<Component />);
+      await waitForApolloMocks();
       expect(screen.queryByText(/dashboard/gi)).not.toBeInTheDocument();
     });
 
-    it('should show link to privacy policy', () => {
+    it('should show link to privacy policy', async () => {
       render(<Component />);
-      expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+      expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
     });
 
-    it('should not show link to admin page', () => {
-      render(<Component />);
+    it('should not show link to admin page', async () => {
+      const { waitForApolloMocks } = render(<Component />);
+      await waitForApolloMocks();
       expect(screen.queryByText(/admin/gi)).not.toBeInTheDocument();
     });
   });
 
   describe('user is logged in', () => {
     describe('with user role', () => {
-      it('should show link to dashboard', () => {
-        const relayEnvironment = getRelayEnv();
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
+      it('should show link to dashboard', async () => {
+        const apolloMocks = getApolloMocks();
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByText(/dashboard/i)).toBeInTheDocument();
       });
 
-      it('should show link to privacy policy', () => {
-        const relayEnvironment = getRelayEnv();
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+      it('should show link to privacy policy', async () => {
+        const apolloMocks = getApolloMocks();
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
 
-      it('should not show link to admin page', () => {
-        const relayEnvironment = getRelayEnv();
-        render(<Component />, { relayEnvironment });
+      it('should not show link to admin page', async () => {
+        const apolloMocks = getApolloMocks();
+        const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+        await waitForApolloMocks();
         expect(screen.queryByText(/admin/gi)).not.toBeInTheDocument();
       });
     });
 
     describe('with admin role', () => {
-      it('should show link to dashboard', () => {
-        const relayEnvironment = getRelayEnv(Role.ADMIN);
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
+      it('should show link to dashboard', async () => {
+        const apolloMocks = getApolloMocks(Role.ADMIN);
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByText(/dashboard/i)).toBeInTheDocument();
       });
 
-      it('should show link to privacy policy', () => {
-        const relayEnvironment = getRelayEnv(Role.ADMIN);
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+      it('should show link to privacy policy', async () => {
+        const apolloMocks = getApolloMocks(Role.ADMIN);
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
 
-      it('should show link to admin page', () => {
-        const relayEnvironment = getRelayEnv(Role.ADMIN);
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByText(/admin/i)).toBeInTheDocument();
+      it('should show link to admin page', async () => {
+        const apolloMocks = getApolloMocks(Role.ADMIN);
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByText(/admin/i)).toBeInTheDocument();
       });
     });
   });

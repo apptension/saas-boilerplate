@@ -91,17 +91,17 @@ describe('DemoItemListItem: Component', () => {
       const relayEnvironment = getRelayEnv();
       render(<Component />, { relayEnvironment });
 
-      expect(screen.getByText('Example title')).toBeInTheDocument();
+      expect(await screen.findByText('Example title')).toBeInTheDocument();
       expect(screen.getByLabelText(/is favorite/i)).toBeChecked();
       await userEvent.click(screen.getByText('Example title'));
 
       expect(screen.getByText('Demo item mock route item-1')).toBeInTheDocument();
     });
 
-    it('should display checked checkbox', () => {
+    it('should display checked checkbox', async () => {
       const relayEnvironment = getRelayEnv();
       render(<Component />, { relayEnvironment });
-      expect(screen.getByLabelText(/is favorite/i)).toBeChecked();
+      expect(await screen.findByLabelText(/is favorite/i)).toBeChecked();
     });
 
     describe('item checkbox is clicked', () => {
@@ -109,7 +109,7 @@ describe('DemoItemListItem: Component', () => {
         const relayEnvironment = getRelayEnv();
         render(<Component />, { relayEnvironment });
 
-        const checkbox = screen.getByLabelText(/is favorite/i);
+        const checkbox = await screen.findByLabelText(/is favorite/i);
         expect(checkbox).toBeChecked();
         await userEvent.click(checkbox);
 
@@ -168,7 +168,7 @@ describe('DemoItemListItem: Component', () => {
     it('should display unchecked checkbox', async () => {
       const relayEnvironment = getRelayEnv();
       render(<Component />, { relayEnvironment });
-      expect(screen.getByLabelText(/is favorite/i)).not.toBeChecked();
+      expect(await screen.findByLabelText(/is favorite/i)).not.toBeChecked();
     });
 
     describe('item checkbox is clicked', () => {
@@ -176,7 +176,7 @@ describe('DemoItemListItem: Component', () => {
         const relayEnvironment = getRelayEnv();
         render(<Component />, { relayEnvironment });
 
-        const checkbox = screen.getByLabelText(/is favorite/i);
+        const checkbox = await screen.findByLabelText(/is favorite/i);
         expect(checkbox).not.toBeChecked();
 
         await userEvent.click(checkbox);

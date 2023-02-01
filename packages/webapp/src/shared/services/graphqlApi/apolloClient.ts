@@ -1,6 +1,7 @@
-import { ApolloClient, HttpLink, InMemoryCache, split, from, Observable } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, split, from, Observable, ServerError } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { RetryLink } from '@apollo/client/link/retry';
+import { FetchResult } from '@apollo/client/link/core';
 import { onError } from '@apollo/client/link/error';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
@@ -35,35 +36,42 @@ const httpApiLink = new HttpLink({
 });
 
 const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+  const callRefresh = (): Observable<FetchResult> | void =>
+    new Observable((observer) => {
+      (async () => {
+        try {
+          await refreshToken();
+
+          // Retry the failed request
+          const subscriber = {
+            next: observer.next.bind(observer),
+            error: observer.error.bind(observer),
+            complete: observer.complete.bind(observer),
+          };
+
+          forward(operation).subscribe(subscriber);
+        } catch (err) {
+          observer.error(err);
+        }
+      })();
+    });
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       switch (err.extensions.code) {
         case 'UNAUTHENTICATED':
-          return new Observable((observer) => {
-            (async () => {
-              try {
-                await refreshToken();
-
-                // Retry the failed request
-                const subscriber = {
-                  next: observer.next.bind(observer),
-                  error: observer.error.bind(observer),
-                  complete: observer.complete.bind(observer),
-                };
-
-                forward(operation).subscribe(subscriber);
-              } catch (err) {
-                observer.error(err);
-              }
-            })();
-          });
+          return callRefresh();
         default:
           console.log(`[GraphQL error]`, err);
       }
     }
   }
 
-  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (networkError) {
+    if ((networkError as ServerError).result.code.code === 'token_not_valid') {
+      return callRefresh();
+    }
+    console.log(`[Network error]: ${networkError}`);
+  }
 });
 
 const httpContentfulLink = new HttpLink({

@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { authChangePasswordMutation } from '../changePasswordForm.graphql';
 import { render } from '../../../../../tests/utils/rendering';
@@ -57,18 +57,18 @@ describe('ChangePasswordForm: Component', () => {
       variables: defaultValues,
       data: defaultResult,
     });
-    render(<Component />, { apolloMocks: [requestMock] });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'Password successfully changed.',
-          id: 1,
-        })
-      );
-    });
+    await waitForApolloMocks();
+    expect(mockDispatch).toHaveBeenCalledWith(
+      snackbarActions.showMessage({
+        text: 'Password successfully changed.',
+        id: 1,
+      })
+    );
   });
 
   it('should clear form', async () => {
@@ -76,18 +76,22 @@ describe('ChangePasswordForm: Component', () => {
       variables: defaultValues,
       data: defaultResult,
     });
-    render(<Component />, { apolloMocks: [requestMock] });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
 
-    await waitFor(() => expect(screen.queryByDisplayValue(formData.oldPassword)).not.toBeInTheDocument());
-    await waitFor(() => expect(screen.queryByDisplayValue(formData.newPassword)).not.toBeInTheDocument());
-    await waitFor(() => expect(screen.queryByDisplayValue(formData.confirmNewPassword)).not.toBeInTheDocument());
+    await waitForApolloMocks();
+
+    expect(screen.queryByDisplayValue(formData.oldPassword)).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue(formData.newPassword)).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue(formData.confirmNewPassword)).not.toBeInTheDocument();
   });
 
   it('should show error if required value is missing', async () => {
-    render(<Component />);
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
 
     await fillForm({ newPassword: null });
     await submitForm();
@@ -97,7 +101,8 @@ describe('ChangePasswordForm: Component', () => {
   });
 
   it('should show error if new passwords dont match', async () => {
-    render(<Component />);
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
 
     await fillForm({ confirmNewPassword: 'misspelled-pass' });
     await submitForm();
@@ -119,7 +124,8 @@ describe('ChangePasswordForm: Component', () => {
       errors,
     });
 
-    render(<Component />, { apolloMocks: [requestMock] });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
@@ -137,7 +143,8 @@ describe('ChangePasswordForm: Component', () => {
       errors,
     });
 
-    render(<Component />, { apolloMocks: [requestMock] });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();

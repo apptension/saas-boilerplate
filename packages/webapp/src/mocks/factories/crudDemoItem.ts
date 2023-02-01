@@ -11,6 +11,7 @@ import {
 import CrudDemoItemListQuery from '../../routes/crudDemoItem/crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
 import { CRUD_DEMO_ITEM_DETAILS_QUERY } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
 import { CRUD_DEMO_ITEM_LIST_QUERY } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
+import { CRUD_DEMO_ITEM_EDIT_QUERY } from '../../routes/crudDemoItem/editCrudDemoItem/editCrudDemoItem.graphql';
 
 export const fillCrudDemoItemDetailsQuery = (
   env: RelayMockEnvironment,
@@ -36,20 +37,29 @@ export const fillCrudDemoItemDetailsQuery = (
 };
 
 export const fillEditCrudDemoItemQuery = (
-  env: RelayMockEnvironment,
+  env?: RelayMockEnvironment,
   data: object = {
     name: 'Default name',
   },
   variables = {}
 ) => {
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      CrudDemoItemType() {
-        return data;
-      },
-    })
-  );
-  env.mock.queuePendingOperation(EditCrudDemoItemQuery, variables);
+  if (env) {
+    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        CrudDemoItemType() {
+          return data;
+        },
+      })
+    );
+    env.mock.queuePendingOperation(EditCrudDemoItemQuery, variables);
+  }
+
+  return composeMockedQueryResult(CRUD_DEMO_ITEM_EDIT_QUERY, {
+    data: {
+      crudDemoItem: data,
+    },
+    variables,
+  });
 };
 
 export const fillCrudDemoItemListQuery = (

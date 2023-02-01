@@ -35,7 +35,12 @@ export const EditCrudDemoItem = () => {
     }
   `);
 
-  if (!crudDemoItem) return <span>Loading ...</span>;
+  if (!crudDemoItem)
+    return (
+      <span>
+        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
+      </span>
+    );
 
   const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
     if (!crudDemoItem) return {};

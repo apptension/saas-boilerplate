@@ -5,7 +5,7 @@ import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 import { render } from '../../../../../tests/utils/rendering';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
@@ -34,47 +34,56 @@ describe('AuthRoute: Component', () => {
 
   describe('user profile is fetched', () => {
     describe('no allowedRoles prop is specified', () => {
-      it('should render content', () => {
-        const relayEnvironment = getRelayEnv(
-          currentUserFactory({
-            roles: [Role.ADMIN],
-          })
-        );
-        render(<Component />, { relayEnvironment });
-        expect(screen.getByTestId('content')).toBeInTheDocument();
+      it('should render content', async () => {
+        const apolloMocks = [
+          fillCommonQueryWithUser(
+            undefined,
+            currentUserFactory({
+              roles: [Role.ADMIN],
+            })
+          ),
+        ];
+        render(<Component />, { apolloMocks });
+        expect(await screen.findByTestId('content')).toBeInTheDocument();
       });
     });
 
     describe('user has required role', () => {
-      it('should render content', () => {
-        const relayEnvironment = getRelayEnv(
-          currentUserFactory({
-            roles: [Role.ADMIN],
-          })
-        );
-        render(<Component allowedRoles={Role.ADMIN} />, { relayEnvironment });
-        expect(screen.getByTestId('content')).toBeInTheDocument();
+      it('should render content', async () => {
+        const apolloMocks = [
+          fillCommonQueryWithUser(
+            undefined,
+            currentUserFactory({
+              roles: [Role.ADMIN],
+            })
+          ),
+        ];
+        render(<Component allowedRoles={Role.ADMIN} />, { apolloMocks });
+        expect(await screen.findByTestId('content')).toBeInTheDocument();
       });
     });
 
     describe('user doesnt have required role', () => {
-      it('should redirect to not found page', () => {
-        const relayEnvironment = getRelayEnv(
-          currentUserFactory({
-            roles: [Role.USER],
-          })
-        );
-        render(<Component allowedRoles={Role.ADMIN} />, { relayEnvironment });
+      it('should redirect to not found page', async () => {
+        const apolloMocks = [
+          fillCommonQueryWithUser(
+            undefined,
+            currentUserFactory({
+              roles: [Role.USER],
+            })
+          ),
+        ];
+        render(<Component allowedRoles={Role.ADMIN} />, { apolloMocks });
+        expect(await screen.findByTestId('404-content')).toBeInTheDocument();
         expect(screen.queryByTestId('content')).not.toBeInTheDocument();
-        expect(screen.getByTestId('404-content')).toBeInTheDocument();
       });
     });
 
     describe('user is not logged in', () => {
-      it('should redirect to login page', () => {
+      it('should redirect to login page', async () => {
         render(<Component allowedRoles={Role.ADMIN} />);
+        expect(await screen.findByTestId('login-content')).toBeInTheDocument();
         expect(screen.queryByTestId('content')).not.toBeInTheDocument();
-        expect(screen.getByTestId('login-content')).toBeInTheDocument();
       });
     });
   });

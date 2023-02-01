@@ -110,11 +110,11 @@ describe('EditPaymentMethodForm: Component', () => {
   );
 
   const submitForm = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /save/i }));
   };
 
   const pressNewCardButton = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /Add a new card/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /Add a new card/i }));
   };
 
   const newCardData = {
@@ -126,7 +126,7 @@ describe('EditPaymentMethodForm: Component', () => {
 
   const fillForm = async (override = {}) => {
     const data = { ...newCardData, ...override };
-    await userEvent.type(screen.getByLabelText(/^name/i), data.name);
+    await userEvent.type(await screen.findByLabelText(/^name/i), data.name);
     await userEvent.type(screen.getByLabelText(/^Card number/i), data.number);
     await userEvent.type(screen.getByLabelText(/^Year/i), data.expiry);
     await userEvent.type(screen.getByLabelText(/^cvc/i), data.cvc);
@@ -173,13 +173,9 @@ describe('EditPaymentMethodForm: Component', () => {
     );
     render(<Component onSuccess={onSuccess} />, { relayEnvironment });
 
-    await act(async () => {
-      expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
-    });
+    expect(await screen.findByRole('button', { name: /save/i })).toBeDisabled();
 
-    await act(async () => {
-      await submitForm();
-    });
+    await submitForm();
 
     expect(relayEnvironment).toHaveOperation('stripeUpdateDefaultPaymentMethodMutation');
 
@@ -215,17 +211,9 @@ describe('EditPaymentMethodForm: Component', () => {
     relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
     render(<Component onSuccess={onSuccess} />, { relayEnvironment });
 
-    await act(async () => {
-      await pressNewCardButton();
-    });
-
-    await act(async () => {
-      await fillForm();
-    });
-
-    await act(async () => {
-      await submitForm();
-    });
+    await pressNewCardButton();
+    await fillForm();
+    await submitForm();
 
     expect(relayEnvironment).toHaveOperation('stripeCreateSetupIntentMutation');
     await act(async () => {

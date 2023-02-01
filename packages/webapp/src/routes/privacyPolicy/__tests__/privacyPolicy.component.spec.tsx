@@ -10,17 +10,17 @@ describe('PrivacyPolicy: Component', () => {
 
   const Component = () => <PrivacyPolicy />;
 
-  it('should render privacy policy content', () => {
+  it('should render privacy policy content', async () => {
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
     fillContentfulAppConfigQuery(relayEnvironment, {
       items: [appConfigFactory({ privacyPolicy })],
       limit: 1,
       skip: 0,
       total: 1,
     });
+    const apolloMocks = [fillCommonQueryWithUser()];
 
-    render(<Component />, { relayEnvironment });
-    expect(screen.getByText(privacyPolicy)).toBeInTheDocument();
+    render(<Component />, { relayEnvironment, apolloMocks });
+    expect(await screen.findByText(privacyPolicy)).toBeInTheDocument();
   });
 });

@@ -27,7 +27,7 @@ describe('PasswordResetConfirm: Component', () => {
   let relayEnvironment: RelayMockEnvironment;
 
   const fillForm = async (newPassword: string) => {
-    await userEvent.type(screen.getByLabelText(/^new password$/i), newPassword);
+    await userEvent.type(await screen.findByLabelText(/^new password$/i), newPassword);
     await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
   };
 
@@ -37,7 +37,6 @@ describe('PasswordResetConfirm: Component', () => {
 
   beforeEach(() => {
     relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
   });
 
   describe('token is valid', () => {
@@ -45,13 +44,12 @@ describe('PasswordResetConfirm: Component', () => {
 
     it('should redirect to login', async () => {
       const routerProps = createMockRouterProps(routePath, { user, token });
+      const apolloMocks = [fillCommonQueryWithUser()];
 
-      render(<Component />, { routerProps, relayEnvironment });
+      render(<Component />, { routerProps, relayEnvironment, apolloMocks });
 
-      await act(async () => {
-        await fillForm(newPassword);
-        await sendForm();
-      });
+      await fillForm(newPassword);
+      await sendForm();
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -64,13 +62,12 @@ describe('PasswordResetConfirm: Component', () => {
     it('should show a success message', async () => {
       const routerProps = createMockRouterProps(routePath, { user, token });
       const reduxStore = configureStore(reduxInitialState);
+      const apolloMocks = [fillCommonQueryWithUser()];
 
-      render(<Component />, { routerProps, reduxStore, relayEnvironment });
+      render(<Component />, { routerProps, reduxStore, relayEnvironment, apolloMocks });
 
-      await act(async () => {
-        await fillForm(newPassword);
-        await sendForm();
-      });
+      await fillForm(newPassword);
+      await sendForm();
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -89,13 +86,12 @@ describe('PasswordResetConfirm: Component', () => {
   describe('token is invalid', () => {
     it('should redirect to login page', async () => {
       const routerProps = createMockRouterProps(routePath, { user, token });
+      const apolloMocks = [fillCommonQueryWithUser()];
 
-      render(<Component />, { routerProps, relayEnvironment });
+      render(<Component />, { routerProps, relayEnvironment, apolloMocks });
 
-      await act(async () => {
-        await fillForm('some pass');
-        await sendForm();
-      });
+      await fillForm('some pass');
+      await sendForm();
 
       const errorMessage = 'Invalid Token';
 

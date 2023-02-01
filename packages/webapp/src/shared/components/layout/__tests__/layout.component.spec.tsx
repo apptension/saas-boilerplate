@@ -9,6 +9,7 @@ import { RoutesConfig } from '../../../../app/config/routes';
 import { getRelayEnv } from '../../../../tests/utils/relay';
 import { currentUserFactory } from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 
 const mockGetActiveBreakpoint = jest.fn().mockReturnValue(Breakpoint.DESKTOP);
 jest.mock('../../../../theme/media', () => {
@@ -49,90 +50,105 @@ describe('Layout: Component', () => {
     });
 
     describe('on /auth routes', () => {
-      it('should not show open menu button', () => {
+      it('should not show open menu button', async () => {
         const authPath = ['login'];
         const routerProps = createMockRouterProps(authPath);
-        render(<Component routeKey={authPath} />, { routerProps });
+        const { waitForApolloMocks } = render(<Component routeKey={authPath} />, { routerProps });
+        await waitForApolloMocks();
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
     });
 
-    it('should show content', () => {
+    it('should show content', async () => {
       const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(homeRoutePath);
       render(<Component />, { relayEnvironment, routerProps });
-      expect(screen.getByTestId('content')).toBeVisible();
+      expect(await screen.findByTestId('content')).toBeVisible();
     });
 
     describe('user is logged out', () => {
-      it('should show open menu button', () => {
+      it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         render(<Component />, { routerProps });
-        expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument();
+        expect(await screen.findByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
-      it('should show privacy menu link', () => {
+      it('should show privacy menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         render(<Component />, { routerProps });
-        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+        expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
 
-      it('should not show dashboard menu link', () => {
+      it('should not show dashboard menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const { waitForApolloMocks } = render(<Component />, { routerProps });
+        await waitForApolloMocks();
         expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged in', () => {
-      it('should show open menu button', () => {
+      it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         render(<Component />, { routerProps });
-        expect(screen.getByLabelText(/open menu/i)).toBeVisible();
+        expect(await screen.findByLabelText(/open menu/i)).toBeVisible();
       });
 
-      it('should not show menu links', () => {
+      it('should not show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const { waitForApolloMocks } = render(<Component />, { routerProps });
+        await waitForApolloMocks();
         expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
       });
 
       describe('user opens the menu', () => {
         it('should show menu links', async () => {
-          const relayEnvironment = getRelayEnv(
-            currentUserFactory({
-              roles: [Role.USER],
-            })
-          );
+          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
-          render(<Component />, { relayEnvironment, routerProps });
-          await userEvent.click(screen.getByLabelText(/open menu/i));
+          const apolloMocks = [
+            fillCommonQueryWithUser(
+              relayEnvironment,
+              currentUserFactory({
+                roles: [Role.USER],
+              })
+            ),
+          ];
+          render(<Component />, { apolloMocks, routerProps });
+          await userEvent.click(await screen.findByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
           expect(screen.getByText(privacyPolicyPlaceholder)).toBeInTheDocument();
         });
 
         it('should close the menu when link is clicked', async () => {
-          const relayEnvironment = getRelayEnv(
-            currentUserFactory({
-              roles: [Role.USER],
-            })
-          );
+          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
-          render(<Component />, { relayEnvironment, routerProps });
-          await userEvent.click(screen.getByLabelText(/open menu/i));
+          const apolloMocks = [
+            fillCommonQueryWithUser(
+              relayEnvironment,
+              currentUserFactory({
+                roles: [Role.USER],
+              })
+            ),
+          ];
+          render(<Component />, { apolloMocks, routerProps });
+          await userEvent.click(await screen.findByLabelText(/open menu/i));
           await userEvent.click(screen.getByText(/privacy policy/i));
           expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
         });
 
         it('should close the menu when close icon is clicked', async () => {
-          const relayEnvironment = getRelayEnv(
-            currentUserFactory({
-              roles: [Role.USER],
-            })
-          );
+          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
-          render(<Component />, { relayEnvironment, routerProps });
-          await userEvent.click(screen.getByLabelText(/open menu/i));
+          const apolloMocks = [
+            fillCommonQueryWithUser(
+              relayEnvironment,
+              currentUserFactory({
+                roles: [Role.USER],
+              })
+            ),
+          ];
+          render(<Component />, { apolloMocks, routerProps });
+          await userEvent.click(await screen.findByLabelText(/open menu/i));
           await userEvent.click(screen.getByLabelText(/close menu/i));
           expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
         });
@@ -145,51 +161,58 @@ describe('Layout: Component', () => {
       mockGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
     });
 
-    it('should show content', () => {
+    it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
       render(<Component />, { routerProps });
-      expect(screen.getByTestId('content')).toBeVisible();
+      expect(await screen.findByTestId('content')).toBeVisible();
     });
 
     describe('on /auth routes', () => {
-      it('should not show menu links', () => {
+      it('should not show menu links', async () => {
         const authPath = ['login'];
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component routeKey={authPath} />, { routerProps });
+        const { waitForApolloMocks } = render(<Component routeKey={authPath} />, { routerProps });
+        await waitForApolloMocks();
         expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
       });
     });
 
     describe('user is logged out', () => {
-      it('should not show open menu button', () => {
+      it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
-        expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
-      });
-
-      it('should show menu links', () => {
-        const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
-        expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
-      });
-    });
-
-    describe('user is logged in', () => {
-      it('should not show open menu button', () => {
-        const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const { waitForApolloMocks } = render(<Component />, { routerProps });
+        await waitForApolloMocks();
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
       it('should show menu links', async () => {
-        const relayEnvironment = getRelayEnv(
-          currentUserFactory({
-            roles: [Role.USER],
-          })
-        );
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { relayEnvironment, routerProps });
-        await userEvent.click(screen.getByText(/privacy policy/i));
+        render(<Component />, { routerProps });
+        expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
+      });
+    });
+
+    describe('user is logged in', () => {
+      it('should not show open menu button', async () => {
+        const routerProps = createMockRouterProps(homeRoutePath);
+        const { waitForApolloMocks } = render(<Component />, { routerProps });
+        await waitForApolloMocks();
+        expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
+      });
+
+      it('should show menu links', async () => {
+        const relayEnvironment = getRelayEnv();
+        const apolloMocks = [
+          fillCommonQueryWithUser(
+            relayEnvironment,
+            currentUserFactory({
+              roles: [Role.USER],
+            })
+          ),
+        ];
+        const routerProps = createMockRouterProps(homeRoutePath);
+        render(<Component />, { apolloMocks, routerProps });
+        await userEvent.click(await screen.findByText(/privacy policy/i));
         expect(screen.getByText(privacyPolicyPlaceholder)).toBeInTheDocument();
       });
     });

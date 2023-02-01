@@ -21,12 +21,11 @@ describe('CrudDemoItemDetails: Component', () => {
   it('should render item details', async () => {
     const routerProps = createMockRouterProps(routePath, { id: defaultItemId });
     const relayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(relayEnvironment);
     const variables = { id: defaultItemId };
-    const data = { name: 'demo item name' };
+    const data = { id: defaultItemId, name: 'demo item name' };
     const mockRequest = fillCrudDemoItemDetailsQuery(relayEnvironment, data, variables);
 
-    const apolloMocks = [mockRequest];
+    const apolloMocks = [fillCommonQueryWithUser(relayEnvironment), mockRequest];
 
     render(<Component />, { routerProps, relayEnvironment, apolloMocks });
 

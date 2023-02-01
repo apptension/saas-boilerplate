@@ -5,8 +5,8 @@ import { render } from '../../../tests/utils/rendering';
 describe('Home: Component', () => {
   const Component = () => <Home />;
 
-  it('should display welcome message', () => {
+  it('should display welcome message', async () => {
     render(<Component />);
-    expect(screen.getByText('Welcome!')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome!')).toBeInTheDocument();
   });
 });

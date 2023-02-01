@@ -13,13 +13,15 @@ const plan = subscriptionPlanFactory({
 describe('useSubscriptionPlanDetails: Hook', () => {
   const render = () => renderHook(() => useSubscriptionPlanDetails(plan));
 
-  it('should return plan price in USD units', () => {
-    const { result } = render();
+  it('should return plan price in USD units', async () => {
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
     expect(result.current?.price).toBe(2.5);
   });
 
-  it('should return plan display name', () => {
-    const { result } = render();
+  it('should return plan display name', async () => {
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
     expect(result.current?.name).toBe('Monthly');
   });
 });

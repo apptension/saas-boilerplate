@@ -8,7 +8,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { Store as ReduxStore } from 'redux';
 import { Store } from '@reduxjs/toolkit';
-import { render, renderHook, RenderOptions } from '@testing-library/react';
+import { render, renderHook, RenderOptions, waitFor } from '@testing-library/react';
 import invariant from 'invariant';
 import { generatePath } from 'react-router';
 import { StoryContext } from '@storybook/react';
@@ -69,9 +69,12 @@ export function DefaultTestProviders<ReduxState>({
 export type WrapperProps<
   ReduxState = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
-> = Partial<Omit<P, 'relayEnvironment'>> & {
+> = Partial<Omit<P, 'relayEnvironment' | 'apolloMocks'>> & {
   reduxInitialState?: ReduxState;
   relayEnvironment?: Environment | ((env: RelayMockEnvironment, storyContext?: StoryContext) => void);
+  apolloMocks?:
+    | ReadonlyArray<MockedResponse>
+    | ((mocks: ReadonlyArray<MockedResponse>) => ReadonlyArray<MockedResponse>);
 };
 
 export function getWrapper<
@@ -81,7 +84,10 @@ export function getWrapper<
   WrapperComponent: ComponentClass<P> | FC<P>,
   wrapperProps: WrapperProps<ReduxState, P>,
   storyContext?: StoryContext
-): ComponentType<P> {
+): {
+  wrapper: ComponentType<P>;
+  waitForApolloMocks: (mockIndex?: number) => Promise<void>;
+} {
   const relayEnvironment = (() => {
     if (typeof wrapperProps.relayEnvironment === 'function') {
       const envToMutate = createMockEnvironment();
@@ -96,6 +102,17 @@ export function getWrapper<
     return defaultRelayEnvironment;
   })();
 
+  const apolloMocks = (() => {
+    const defaultApolloMocks = [fillCommonQueryWithUser()];
+    if (typeof wrapperProps.apolloMocks === 'function') {
+      return wrapperProps.apolloMocks(defaultApolloMocks);
+    }
+    if (wrapperProps.apolloMocks !== undefined) {
+      return wrapperProps.apolloMocks;
+    }
+    return defaultApolloMocks;
+  })();
+
   const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
   const defaultReduxStore = configureStore(wrapperProps.reduxInitialState);
 
@@ -104,7 +121,14 @@ export function getWrapper<
     'Both redux store and initial redux state have been provided while they are exclusive. Define the initial state directly while configuring your store'
   );
 
-  return (props) => {
+  const waitForApolloMocks = async (mockIndex: number = apolloMocks.length - 1) => {
+    if (!apolloMocks.length) {
+      return Promise.resolve();
+    }
+    await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
+  };
+
+  const wrapper = (props) => {
     return (
       <WrapperComponent
         {...props}
@@ -114,8 +138,13 @@ export function getWrapper<
         reduxStore={defaultReduxStore}
         {...(wrapperProps ?? {})}
         relayEnvironment={relayEnvironment}
+        apolloMocks={apolloMocks}
       />
     );
+  };
+  return {
+    wrapper,
+    waitForApolloMocks,
   };
 }
 
@@ -128,10 +157,14 @@ function customRender<
   ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(ui: ReactElement, options: CustomRenderOptions<ReduxState, P> = {}) {
-  return render(ui, {
-    ...options,
-    wrapper: getWrapper(DefaultTestProviders, options),
-  });
+  const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+  return {
+    ...render(ui, {
+      ...options,
+      wrapper,
+    }),
+    waitForApolloMocks,
+  };
 }
 
 function customRenderHook<
@@ -140,10 +173,14 @@ function customRenderHook<
   ReduxState extends Store = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(hook: (initialProps: Props) => Result, options: CustomRenderOptions<ReduxState, P> = {}) {
-  return renderHook(hook, {
-    ...options,
-    wrapper: getWrapper(DefaultTestProviders, options),
-  });
+  const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+  return {
+    ...renderHook(hook, {
+      ...options,
+      wrapper,
+    }),
+    waitForApolloMocks,
+  };
 }
 
 export { customRender as render, customRenderHook as renderHook };

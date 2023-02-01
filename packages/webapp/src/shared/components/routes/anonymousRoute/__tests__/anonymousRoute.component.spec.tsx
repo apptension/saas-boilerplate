@@ -6,6 +6,7 @@ import { render } from '../../../../../tests/utils/rendering';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 
 const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
@@ -30,22 +31,27 @@ describe('AnonymousRoute: Component', () => {
   );
 
   describe('user is logged out', () => {
-    it('should render content', () => {
-      const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment });
-      expect(screen.getByTestId('content')).toBeInTheDocument();
+    it('should render content', async () => {
+      render(<Component />);
+      expect(await screen.findByTestId('content')).toBeInTheDocument();
     });
   });
 
   describe('user is logged in', () => {
-    it('should redirect to homepage', () => {
-      const relayEnvironment = getRelayEnv(
-        currentUserFactory({
-          roles: [Role.ADMIN],
-        })
-      );
+    it('should redirect to homepage', async () => {
+      const relayEnvironment = getRelayEnv();
 
-      render(<Component />, { relayEnvironment });
+      const apolloMocks = [
+        fillCommonQueryWithUser(
+          relayEnvironment,
+          currentUserFactory({
+            roles: [Role.ADMIN],
+          })
+        ),
+      ];
+
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+      await waitForApolloMocks();
       expect(screen.queryByTestId('content')).not.toBeInTheDocument();
       expect(screen.queryByTestId('home-content')).not.toBeInTheDocument();
     });

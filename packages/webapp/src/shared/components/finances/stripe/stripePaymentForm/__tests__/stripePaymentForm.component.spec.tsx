@@ -34,15 +34,18 @@ describe('StripePaymentForm: Component', () => {
     </Elements>
   );
 
-  const selectProduct = (value = TestProduct.A) => userEvent.click(screen.getByRole('radio', { name: `${value} USD` }));
-  const sendForm = () => userEvent.click(screen.getByRole('button', { name: /Pay \d+ USD/i }));
+  const selectProduct = async (value = TestProduct.A) =>
+    userEvent.click(await screen.findByRole('radio', { name: `${value} USD` }));
+  const sendForm = async () => userEvent.click(await screen.findByRole('button', { name: /Pay \d+ USD/i }));
 
   it('should render without errors', async () => {
     const relayEnvironment = getRelayEnv();
 
-    render(<Component />, {
+    const { waitForApolloMocks } = render(<Component />, {
       relayEnvironment,
     });
+
+    await waitForApolloMocks();
 
     await act(() => {
       relayEnvironment.mock.resolveMostRecentOperation((operation) => {
@@ -57,9 +60,11 @@ describe('StripePaymentForm: Component', () => {
     it('should call create payment intent mutation', async () => {
       const relayEnvironment = getRelayEnv();
 
-      render(<Component />, {
+      const { waitForApolloMocks } = render(<Component />, {
         relayEnvironment,
       });
+
+      await waitForApolloMocks();
 
       await act(() => {
         relayEnvironment.mock.resolveMostRecentOperation((operation) => {
@@ -69,13 +74,8 @@ describe('StripePaymentForm: Component', () => {
         });
       });
 
-      await act(async () => {
-        await selectProduct();
-      });
-
-      await act(async () => {
-        await sendForm();
-      });
+      await selectProduct();
+      await sendForm();
 
       expect(relayEnvironment).toHaveLatestOperation('stripeCreatePaymentIntentMutation');
       expect(relayEnvironment).toLatestOperationInputEqual({ product: TestProduct.A });
@@ -92,9 +92,10 @@ describe('StripePaymentForm: Component', () => {
       mockConfirmPayment.mockReturnValue({ paymentIntent: { status: 'succeeded' } });
       const onSuccess = jest.fn();
 
-      render(<Component onSuccess={onSuccess} />, {
+      const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
       });
+      await waitForApolloMocks();
       await act(() => {
         relayEnvironment.mock.resolveMostRecentOperation((operation) => {
           return MockPayloadGenerator.generate(operation, {
@@ -103,13 +104,8 @@ describe('StripePaymentForm: Component', () => {
         });
       });
 
-      await act(async () => {
-        await selectProduct();
-      });
-
-      await act(async () => {
-        await sendForm();
-      });
+      await selectProduct();
+      await sendForm();
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();
@@ -135,9 +131,10 @@ describe('StripePaymentForm: Component', () => {
       const relayEnvironment = getRelayEnv();
       const onSuccess = jest.fn();
 
-      render(<Component onSuccess={onSuccess} />, {
+      const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
       });
+      await waitForApolloMocks();
       await act(() => {
         relayEnvironment.mock.resolveMostRecentOperation((operation) => {
           return MockPayloadGenerator.generate(operation, {
@@ -146,13 +143,8 @@ describe('StripePaymentForm: Component', () => {
         });
       });
 
-      await act(async () => {
-        await selectProduct();
-      });
-
-      await act(async () => {
-        await sendForm();
-      });
+      await selectProduct();
+      await sendForm();
 
       const errorMessage = 'Something went wrong';
 
@@ -192,9 +184,10 @@ describe('StripePaymentForm: Component', () => {
       mockConfirmPayment.mockReturnValue({ error: { message: errorMessage } });
       const onSuccess = jest.fn();
 
-      render(<Component onSuccess={onSuccess} />, {
+      const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
       });
+      await waitForApolloMocks();
       await act(() => {
         relayEnvironment.mock.resolveMostRecentOperation((operation) => {
           return MockPayloadGenerator.generate(operation, {
@@ -203,13 +196,8 @@ describe('StripePaymentForm: Component', () => {
         });
       });
 
-      await act(async () => {
-        await selectProduct();
-      });
-
-      await act(async () => {
-        await sendForm();
-      });
+      await selectProduct();
+      await sendForm();
 
       await act(async () => {
         const operation = relayEnvironment.mock.getMostRecentOperation();

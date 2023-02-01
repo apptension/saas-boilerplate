@@ -1,24 +1,19 @@
 import { useCallback } from 'react';
-import { useFragment, usePreloadedQuery } from 'react-relay';
 import { useNavigate } from 'react-router';
 
 import { useCommonQuery } from '../../../app/providers/commonQuery';
 import { CurrentUserType } from '../../services/graphqlApi';
-import commonQueryCurrentUserFragmentGraphql, {
-  commonQueryCurrentUserFragment$key,
-} from '../../../app/providers/commonQuery/__generated__/commonQueryCurrentUserFragment.graphql';
-import commonQueryCurrentUserQueryGraphql from '../../../app/providers/commonQuery/__generated__/commonQueryCurrentUserQuery.graphql';
+import { useFragment } from '../../services/graphqlApi/__generated/gql';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../localePaths';
+import { commonQueryCurrentUserFragment } from '../../../app/providers/commonQuery/commonQuery.graphql';
 
 export const useAuth = () => {
-  const { currentUserQueryRef } = useCommonQuery();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
+  const { data } = useCommonQuery();
+  const profile = useFragment(commonQueryCurrentUserFragment, data?.currentUser);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { currentUser } = usePreloadedQuery(commonQueryCurrentUserQueryGraphql, currentUserQueryRef!);
-  const profile = useFragment<commonQueryCurrentUserFragment$key>(commonQueryCurrentUserFragmentGraphql, currentUser);
   const isLoggedIn = !!profile;
 
   const logout = useCallback(() => {

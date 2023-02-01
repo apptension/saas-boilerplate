@@ -71,7 +71,7 @@ describe('EditSubscription: Component', () => {
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, { relayEnvironment, routerProps });
 
-      await userEvent.click(screen.getByText(/monthly/i));
+      await userEvent.click(await screen.findByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
       expect(relayEnvironment).toHaveLatestOperation('subscriptionChangeActiveSubscriptionMutation');
@@ -100,7 +100,7 @@ describe('EditSubscription: Component', () => {
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, { relayEnvironment, routerProps });
 
-      await userEvent.click(screen.getByText(/monthly/i));
+      await userEvent.click(await screen.findByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
       const errorMessage = 'Missing payment method';

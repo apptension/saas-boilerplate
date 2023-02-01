@@ -8,9 +8,9 @@ describe('EmptyState: Component', () => {
 
   const Component = (props: Partial<EmptyStateProps>) => <EmptyState {...defaultProps} {...props} />;
 
-  it('should render passed children', () => {
+  it('should render passed children', async () => {
     render(<Component>{PLACEHOLDER_CONTENT}</Component>);
 
-    expect(screen.getByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
+    expect(await screen.findByTestId(PLACEHOLDER_TEST_ID)).toBeInTheDocument();
   });
 });
