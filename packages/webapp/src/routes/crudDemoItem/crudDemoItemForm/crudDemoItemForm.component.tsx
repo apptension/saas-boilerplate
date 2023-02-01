@@ -1,5 +1,5 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { ApolloError, FetchResult } from '@apollo/client';
+import { FetchResult } from '@apollo/client';
 import { useApiForm } from '../../../shared/hooks/useApiForm';
 import { Input } from '../../../shared/components/forms/input';
 import { Button, ButtonVariant } from '../../../shared/components/forms/button';
@@ -50,9 +50,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
       await onSubmit(formData);
       await showMessage(successMessage);
     } catch (error) {
-      if (error instanceof ApolloError) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
-      }
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
     }
   };
 

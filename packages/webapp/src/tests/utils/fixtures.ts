@@ -1,4 +1,5 @@
 import { MockedResponse } from '@apollo/client/testing';
+import { GraphQLError } from 'graphql/error';
 import { DocumentNode } from 'graphql/language';
 
 export function makeId(length: number) {
@@ -42,11 +43,12 @@ export const connectionFromArray = <T extends Record<string, any>>(arr: T[] = []
 type ComposeMockedQueryResultProps = {
   data: Record<string, any>;
   variables?: Record<string, any>;
+  errors?: GraphQLError[];
 };
 
 export const composeMockedQueryResult = (
   query: DocumentNode,
-  { variables, data }: ComposeMockedQueryResultProps
+  { variables, data, errors }: ComposeMockedQueryResultProps
 ): MockedResponse => ({
   request: {
     query,
@@ -54,7 +56,7 @@ export const composeMockedQueryResult = (
   },
   result: {
     data,
-    /*TODO: ADD ERRORS */
+    errors,
   },
 });
 

@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl';
-import { ApolloError, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useAuth } from '../../../hooks/useAuth/useAuth';
@@ -31,7 +31,7 @@ export const useEditProfileForm = () => {
       );
     },
     onError: (error) => {
-      if (error instanceof ApolloError) setApolloGraphQLResponseErrors(error.graphQLErrors);
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
     },
   });
 

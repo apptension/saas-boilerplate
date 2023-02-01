@@ -1,85 +1,26 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Input } from '../../forms/input';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import { useApiForm } from '../../../hooks/useApiForm';
-import { useSnackbar } from '../../../../modules/snackbar';
-import authChangePasswordMutationGraphql, {
-  authChangePasswordMutation,
-} from '../../../../modules/auth/__generated__/authChangePasswordMutation.graphql';
-import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
 
-type ChangePasswordFormFields = {
-  oldPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
-};
+import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
+import { useChangePasswordForm } from './changePasswordForm.hooks';
 
 export const ChangePasswordForm = () => {
   const intl = useIntl();
-  const snackbar = useSnackbar();
+
   const {
     form: {
       formState: { errors },
       register,
       getValues,
-      reset,
     },
-    handleSubmit,
     genericError,
-    setGraphQLResponseErrors,
     hasGenericErrorOnly,
-  } = useApiForm<ChangePasswordFormFields>({
-    errorMessages: {
-      oldPassword: {
-        wrong_password: intl.formatMessage({
-          defaultMessage: 'The password is invalid.',
-          id: 'Auth / Change password / wrong old password',
-        }),
-      },
-      newPassword: {
-        password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
-          id: 'Auth / Change password / password too common',
-        }),
-        password_entirely_numeric: intl.formatMessage({
-          defaultMessage: "The password can't be entirely numeric.",
-          id: 'Auth / Change password / password entirely numeric',
-        }),
-      },
-    },
-  });
-
-  const [commitChangePasswordMutation] = usePromiseMutation<authChangePasswordMutation>(
-    authChangePasswordMutationGraphql
-  );
-
-  const onChangePassword = async ({ newPassword, oldPassword }: ChangePasswordFormFields) => {
-    try {
-      const { errors } = await commitChangePasswordMutation({
-        variables: {
-          input: {
-            newPassword,
-            oldPassword,
-          },
-        },
-      });
-
-      if (errors) {
-        setGraphQLResponseErrors(errors);
-        return;
-      }
-      reset();
-      snackbar.showMessage(
-        intl.formatMessage({
-          defaultMessage: 'Password successfully changed.',
-          id: 'Auth / Change password / Success message',
-        })
-      );
-    } catch {}
-  };
+    loading,
+    handleChangePassword,
+  } = useChangePasswordForm();
 
   return (
-    <Container onSubmit={handleSubmit(onChangePassword)}>
+    <Container onSubmit={handleChangePassword}>
       <FormFieldsRow>
         <Input
           {...register('oldPassword', {
@@ -163,7 +104,7 @@ export const ChangePasswordForm = () => {
       </FormFieldsRow>
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton>
+      <SubmitButton disabled={loading}>
         <FormattedMessage defaultMessage="Change password" id="Auth / Change password / Submit button" />
       </SubmitButton>
     </Container>

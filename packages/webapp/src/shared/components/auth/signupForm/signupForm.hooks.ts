@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { ApolloError, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { useApiForm } from '../../../hooks/useApiForm';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
@@ -44,7 +44,7 @@ export const useSignupForm = () => {
       navigate(generateLocalePath(RoutesConfig.home));
     },
     onError: (error) => {
-      if (error instanceof ApolloError) setApolloGraphQLResponseErrors(error.graphQLErrors);
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
     },
   });
 
