@@ -1,35 +1,60 @@
-import { Suspense, useEffect } from 'react';
-import graphql from 'babel-plugin-relay/macro';
 import { useParams } from 'react-router';
-import { useQueryLoader } from 'react-relay';
-import { editCrudDemoItemQuery } from './__generated__/editCrudDemoItemQuery.graphql';
-import { EditCrudDemoItemContent } from './editCrudDemoItemContent.component';
+import { useQuery } from '@apollo/client';
+import { FormattedMessage } from 'react-intl';
+import { graphql } from 'react-relay';
+
+import { BackButton } from '../../../shared/components/backButton';
+import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
+import { RoutesConfig } from '../../../app/config/routes';
+import { CrudDemoItemForm } from '../crudDemoItemForm';
+import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { editCrudDemoItemContentMutation } from './__generated__/editCrudDemoItemContentMutation.graphql';
+
+import { Container, Header } from './editCrudDemoItem.styles';
+
+import { CRUD_DEMO_ITEM_EDIT_QUERY } from './editCrudDemoItem.graphql';
+
+type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
-  type Params = { id: string };
-  const { id } = useParams<Params>() as Params;
-  const [editCrudDemoItemQueryRef, loadEditCrudDemoItemQuery] = useQueryLoader<editCrudDemoItemQuery>(
-    graphql`
-      query editCrudDemoItemQuery($id: ID!) {
-        crudDemoItem(id: $id) {
+  const { id } = useParams<Params>();
+
+  const { data } = useQuery(CRUD_DEMO_ITEM_EDIT_QUERY, { variables: { id } });
+  const crudDemoItem = data?.crudDemoItem;
+
+  const generateLocalePath = useGenerateLocalePath();
+  const [commitEditCrudDemoItemMutation] = usePromiseMutation<editCrudDemoItemContentMutation>(graphql`
+    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {
+      updateCrudDemoItem(input: $input) {
+        crudDemoItem {
           id
           name
         }
       }
-    `
-  );
+    }
+  `);
 
-  useEffect(() => {
-    loadEditCrudDemoItemQuery({ id });
-  }, [loadEditCrudDemoItemQuery, id]);
+  if (!crudDemoItem) return <span>Loading ...</span>;
 
-  if (!editCrudDemoItemQueryRef) {
-    return null;
-  }
+  const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
+    if (!crudDemoItem) return {};
+
+    return await commitEditCrudDemoItemMutation({
+      variables: {
+        input: { id: crudDemoItem.id, name: formData.name },
+      },
+    });
+  };
 
   return (
-    <Suspense fallback={<span>Loading ...</span>}>
-      <EditCrudDemoItemContent queryRef={editCrudDemoItemQueryRef} />
-    </Suspense>
+    <Container>
+      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
+      <Header>
+        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
+      </Header>
+
+      <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} />
+    </Container>
   );
 };
