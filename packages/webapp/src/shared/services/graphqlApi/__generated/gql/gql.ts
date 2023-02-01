@@ -43,8 +43,8 @@ const documents = {
     "\n  query crudDemoItemDetailsQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
     "\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
     "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemTestQueryDocument,
+    "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
-    "\n      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
     "\n      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.CrudDropdownMenuItemDeleteMutationDocument,
     "\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  ": types.EditCrudDemoItemContentMutationDocument,
@@ -209,11 +209,11 @@ export function gql(source: "\n  query crudDemoItemListItemTestQuery {\n    item
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"): (typeof documents)["\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"];
+export function gql(source: "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    "): (typeof documents)["\n      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    "];
+export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"): (typeof documents)["\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

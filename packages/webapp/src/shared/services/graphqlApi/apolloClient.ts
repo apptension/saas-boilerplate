@@ -57,7 +57,7 @@ const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forw
     });
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
-      switch (err.extensions.code) {
+      switch (err.extensions?.code) {
         case 'UNAUTHENTICATED':
           return callRefresh();
         default:

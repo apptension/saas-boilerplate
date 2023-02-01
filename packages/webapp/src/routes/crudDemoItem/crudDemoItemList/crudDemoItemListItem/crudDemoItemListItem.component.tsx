@@ -1,10 +1,9 @@
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import graphql from 'babel-plugin-relay/macro';
+import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { ConnectionHandler } from 'relay-runtime';
-import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
+
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
 import { Breakpoint } from '../../../../theme/media';
@@ -12,15 +11,10 @@ import { Link } from '../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
-import { FragmentType, gql, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
-import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 
-export const CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT = gql(/* GraphQL */ `
-  fragment crudDemoItemListItem on CrudDemoItemType {
-    id
-    name
-  }
-`);
+import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT } from './crudDemoItemListItem.graphql';
 
 export type CrudDemoItemListItemProps = {
   item: FragmentType<typeof CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT>;
@@ -29,24 +23,30 @@ export type CrudDemoItemListItemProps = {
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
-  const [commitDeleteMutation] = usePromiseMutation(
-    graphql`
-      mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {
-        deleteCrudDemoItem(input: $input) {
-          deletedIds @deleteEdge(connections: $connections)
-        }
-      }
-    `
-  );
+  const [commitDeleteMutation] = useMutation(CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allCrudDemoItems(existingConnection = { edges: [] }) {
+            const deletedId = data?.deleteCrudDemoItem?.deletedIds?.[0];
+            if (!deletedId) return existingConnection;
+
+            const normalizedId = cache.identify({ id: deletedId, __typename: 'CrudDemoItemType' });
+            cache.evict({ id: normalizedId });
+            cache.gc();
+          },
+        },
+      });
+    },
+  });
 
   const data = useFragment(CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT, item);
 
-  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await commitDeleteMutation({
+    commitDeleteMutation({
       variables: {
         input: { id: data.id },
-        connections: [ConnectionHandler.getConnectionID('root', 'crudDemoItemList_allCrudDemoItems')],
       },
     });
   };
