@@ -46,7 +46,6 @@ const documents = {
     "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
     "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
-    "\n      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    ": types.CrudDropdownMenuItemDeleteMutationDocument,
     "\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  ": types.EditCrudDemoItemContentMutationDocument,
     "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
     "\n    query demoItemQuery($id: String!) {\n      demoItem(id: $id) {\n        title\n        description\n        image {\n          url\n          title\n          description\n        }\n      }\n    }\n  ": types.DemoItemQueryDocument,
@@ -218,10 +217,6 @@ export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemTy
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    "): (typeof documents)["\n      mutation crudDropdownMenuItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!, $connections: [ID!]!) {\n        deleteCrudDemoItem(input: $input) {\n          deletedIds @deleteEdge(connections: $connections)\n        }\n      }\n    "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

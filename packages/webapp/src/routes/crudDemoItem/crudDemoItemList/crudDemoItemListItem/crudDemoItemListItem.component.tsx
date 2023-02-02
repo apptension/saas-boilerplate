@@ -23,7 +23,7 @@ export type CrudDemoItemListItemProps = {
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
-  const [commitDeleteMutation] = useMutation(CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, {
+  const [commitDeleteMutation, { loading }] = useMutation(CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, {
     update(cache, { data }) {
       cache.modify({
         fields: {
@@ -32,8 +32,10 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
             if (!deletedId) return existingConnection;
 
             const normalizedId = cache.identify({ id: deletedId, __typename: 'CrudDemoItemType' });
-            cache.evict({ id: normalizedId });
-            cache.gc();
+            return {
+              ...existingConnection,
+              edges: existingConnection.edges.filter(({ node }) => node.__ref !== normalizedId),
+            };
           },
         },
       });
@@ -60,13 +62,18 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button variant={ButtonVariant.RAW} onClick={handleDelete} icon={<Icon size={14} icon={deleteIcon} />}>
+      <Button
+        variant={ButtonVariant.RAW}
+        onClick={handleDelete}
+        disabled={loading}
+        icon={<Icon size={14} icon={deleteIcon} />}
+      >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>
   );
 
-  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} />;
+  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
 
   return (
     <Container>
