@@ -1,13 +1,14 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { FetchResult } from '@apollo/client';
-import { useApiForm } from '../../../shared/hooks/useApiForm';
+import { ApolloError } from '@apollo/client';
+
 import { Input } from '../../../shared/components/forms/input';
 import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Link } from '../../../shared/components/link';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useSnackbar } from '../../../modules/snackbar';
+
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
+import { useCrudDemoItemForm } from './crudDemoItemForm.hook';
 
 const MAX_NAME_LENGTH = 255;
 
@@ -16,47 +17,29 @@ export type CrudDemoItemFormFields = {
 };
 
 export type CrudDemoItemFormProps = {
+  onSubmit: (formData: CrudDemoItemFormFields) => void;
+  loading: boolean;
   initialData?: CrudDemoItemFormFields | null;
-  onSubmit: (formData: CrudDemoItemFormFields) => Promise<FetchResult>;
+  error?: ApolloError;
 };
 
-export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProps) => {
+export const CrudDemoItemForm = ({ initialData, onSubmit, error, loading }: CrudDemoItemFormProps) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
-  const { showMessage } = useSnackbar();
-
-  const successMessage = intl.formatMessage({
-    id: 'CrudDemoItem form / Success message',
-    defaultMessage: '🎉 Changes saved successfully!',
-  });
 
   const {
     form: {
       register,
       formState: { errors },
     },
-    handleSubmit,
     genericError,
     hasGenericErrorOnly,
-    setApolloGraphQLResponseErrors,
-  } = useApiForm<CrudDemoItemFormFields>({
-    defaultValues: {
-      name: initialData?.name,
-    },
-  });
-
-  const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
-    try {
-      await onSubmit(formData);
-      await showMessage(successMessage);
-    } catch (error) {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
-    }
-  };
+    handleFormSubmit,
+  } = useCrudDemoItemForm({ initialData, onSubmit, error });
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onFormSubmit)}>
+      <Form onSubmit={handleFormSubmit}>
         <Fields>
           <Input
             {...register('name', {
@@ -94,7 +77,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit }: CrudDemoItemFormProp
             <FormattedMessage defaultMessage="Cancel" id="CrudDemoItem form / Cancel button" />
           </Link>
 
-          <Button type="submit">
+          <Button type="submit" disabled={loading}>
             <FormattedMessage defaultMessage="Save changes" id="CrudDemoItem form / Submit button" />
           </Button>
         </Buttons>

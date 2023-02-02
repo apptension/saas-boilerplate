@@ -1,55 +1,50 @@
-import { useParams } from 'react-router';
-import { useQuery } from '@apollo/client';
-import { FormattedMessage } from 'react-intl';
-import { graphql } from 'react-relay';
+import { Navigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@apollo/client';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { BackButton } from '../../../shared/components/backButton';
-import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { editCrudDemoItemContentMutation } from './__generated__/editCrudDemoItemContentMutation.graphql';
+import { useSnackbar } from '../../../modules/snackbar';
 
 import { Container, Header } from './editCrudDemoItem.styles';
-
-import { CRUD_DEMO_ITEM_EDIT_QUERY } from './editCrudDemoItem.graphql';
+import { CRUD_DEMO_ITEM_EDIT_MUTATION, CRUD_DEMO_ITEM_EDIT_QUERY } from './editCrudDemoItem.graphql';
 
 type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
   const { id } = useParams<Params>();
-
-  const { data } = useQuery(CRUD_DEMO_ITEM_EDIT_QUERY, { variables: { id } });
+  const { data, loading } = useQuery(CRUD_DEMO_ITEM_EDIT_QUERY, { variables: { id } });
   const crudDemoItem = data?.crudDemoItem;
 
+  const { showMessage } = useSnackbar();
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    id: 'CrudDemoItem form / Success message',
+    defaultMessage: '🎉 Changes saved successfully!',
+  });
+
   const generateLocalePath = useGenerateLocalePath();
-  const [commitEditCrudDemoItemMutation] = usePromiseMutation<editCrudDemoItemContentMutation>(graphql`
-    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {
-      updateCrudDemoItem(input: $input) {
-        crudDemoItem {
-          id
-          name
-        }
-      }
+  const [commitEditCrudDemoItemMutation, { error, loading: loadingMutation }] = useMutation(
+    CRUD_DEMO_ITEM_EDIT_MUTATION,
+    {
+      onCompleted: () => showMessage(successMessage),
     }
-  `);
+  );
 
-  if (!crudDemoItem)
+  if (loading)
     return (
-      <span>
+      <Container>
         <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </span>
+      </Container>
     );
+  if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
-  const onFormSubmit = async (formData: CrudDemoItemFormFields) => {
-    if (!crudDemoItem) return {};
-
-    return await commitEditCrudDemoItemMutation({
-      variables: {
-        input: { id: crudDemoItem.id, name: formData.name },
-      },
-    });
+  const onFormSubmit = (formData: CrudDemoItemFormFields) => {
+    commitEditCrudDemoItemMutation({ variables: { input: { id: crudDemoItem.id, name: formData.name } } });
   };
 
   return (
@@ -59,7 +54,7 @@ export const EditCrudDemoItem = () => {
         <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
       </Header>
 
-      <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} />
+      <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
     </Container>
   );
 };

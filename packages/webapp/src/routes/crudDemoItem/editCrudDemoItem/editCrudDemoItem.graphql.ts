@@ -8,3 +8,14 @@ export const CRUD_DEMO_ITEM_EDIT_QUERY = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const CRUD_DEMO_ITEM_EDIT_MUTATION = gql(/* GraphQL */ `
+  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {
+    updateCrudDemoItem(input: $input) {
+      crudDemoItem {
+        id
+        name
+      }
+    }
+  }
+`);

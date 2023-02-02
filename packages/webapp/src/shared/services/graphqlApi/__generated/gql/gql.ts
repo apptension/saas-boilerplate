@@ -46,8 +46,8 @@ const documents = {
     "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
     "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
-    "\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  ": types.EditCrudDemoItemContentMutationDocument,
     "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
+    "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
     "\n    query demoItemQuery($id: String!) {\n      demoItem(id: $id) {\n        title\n        description\n        image {\n          url\n          title\n          description\n        }\n      }\n    }\n  ": types.DemoItemQueryDocument,
     "\n        query demoItemListItemTestQuery @relay_test_operation {\n          testItem: demoItem(id: \"contentful-item-1\") {\n            ...demoItemListItem_item\n          }\n        }\n      ": types.DemoItemListItemTestQueryDocument,
     "\n      fragment demoItemListItem_item on DemoItem {\n        title\n        image {\n          title\n          url\n        }\n      }\n    ": types.DemoItemListItem_ItemFragmentDoc,
@@ -220,11 +220,11 @@ export function gql(source: "\n  query crudDemoItemListItemDefaultStoryQuery {\n
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  "): (typeof documents)["\n    mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n      updateCrudDemoItem(input: $input) {\n        crudDemoItem {\n          id\n          name\n        }\n      }\n    }\n  "];
+export function gql(source: "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n"];
+export function gql(source: "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
