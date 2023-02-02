@@ -1,15 +1,10 @@
-import { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import throttle from 'lodash.throttle';
-import { useApiForm } from '../../../hooks/useApiForm';
+
 import { Input } from '../../forms/input';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import authRequestPasswordResetMutationGraphql, {
-  authRequestPasswordResetMutation,
-} from '../../../../modules/auth/__generated__/authRequestPasswordResetMutation.graphql';
+
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
-import { SUBMIT_THROTTLE } from './passwordResetRequestForm.constants';
-import { ResetPasswordFormFields } from './passwordResetRequestForm.types';
+
+import { usePasswordResetRequestForm } from './passwordResetRequestForm.hooks';
 
 type PasswordResetRequestFormProps = {
   onSubmitted?: () => void;
@@ -17,58 +12,21 @@ type PasswordResetRequestFormProps = {
 
 export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFormProps) => {
   const intl = useIntl();
-  const [isSubmitted, setSubmitted] = useState(false);
-  const [commitRequestPasswordReset] = usePromiseMutation<authRequestPasswordResetMutation>(
-    authRequestPasswordResetMutationGraphql
-  );
 
   const {
     form: {
-      register,
-      handleSubmit,
       formState: { errors },
+      register,
     },
-    setApiResponse,
-    hasGenericErrorOnly,
     genericError,
-    setGraphQLResponseErrors,
-  } = useApiForm<ResetPasswordFormFields>({
-    errorMessages: {
-      email: {
-        user_not_found: intl.formatMessage({
-          defaultMessage: 'The user with specified email does not exist',
-          id: 'Auth / Request password reset / User not found',
-        }),
-      },
-    },
-  });
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onSubmit = useCallback(
-    throttle(
-      async (data: ResetPasswordFormFields) => {
-        try {
-          const { errors } = await commitRequestPasswordReset({
-            variables: {
-              input: data,
-            },
-          });
-          if (!errors) {
-            setSubmitted(true);
-            onSubmitted?.();
-          } else {
-            setGraphQLResponseErrors(errors);
-          }
-        } catch {}
-      },
-      SUBMIT_THROTTLE,
-      { leading: true, trailing: true }
-    ),
-    [commitRequestPasswordReset, onSubmitted, setApiResponse]
-  );
+    hasGenericErrorOnly,
+    loading,
+    isSubmitted,
+    handleResetRequestPassword,
+  } = usePasswordResetRequestForm(onSubmitted);
 
   return (
-    <Container onSubmit={handleSubmit(onSubmit)}>
+    <Container onSubmit={handleResetRequestPassword}>
       <Input
         {...register('email', {
           required: {
@@ -101,7 +59,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton>
+      <SubmitButton disabled={loading}>
         {isSubmitted ? (
           <FormattedMessage defaultMessage="Send the link again" id="Auth / Request password reset / Resend button" />
         ) : (
