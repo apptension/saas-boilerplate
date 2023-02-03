@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
-import { PreloadedQuery, UseQueryLoaderLoadQueryOptions, useFragment } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
+import { PreloadedQuery, UseQueryLoaderLoadQueryOptions } from 'react-relay';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
@@ -10,33 +9,20 @@ import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useFavoriteDemoItemListQuery } from '../../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
-import { demoItemListItem_item$key } from './__generated__/demoItemListItem_item.graphql';
+import { DemoItemListItem_ItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
 export type DemoItemListItemProps = {
   id: string;
-  item: demoItemListItem_item$key | null;
+  item: DemoItemListItem_ItemFragment;
   refreshFavorites: (options?: UseQueryLoaderLoadQueryOptions) => void;
   queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>;
 };
 
-export const DemoItemListItem = ({ id, item, queryRef }: DemoItemListItemProps) => {
+export const DemoItemListItem = ({ id, queryRef, item }: DemoItemListItemProps) => {
   const intl = useIntl();
   const { setFavorite, isFavorite } = useFavoriteDemoItem(id, queryRef);
   const generateLocalePath = useGenerateLocalePath();
-
-  const data = useFragment(
-    graphql`
-      fragment demoItemListItem_item on DemoItem {
-        title
-        image {
-          title
-          url
-        }
-      }
-    `,
-    item
-  );
 
   return (
     <Container>
@@ -56,8 +42,8 @@ export const DemoItemListItem = ({ id, item, queryRef }: DemoItemListItemProps) 
           <Icon icon={isFavorite ? favoriteIconFilled : favoriteIconOutlined} />
         </FavoriteIcon>
 
-        {data?.image && <Thumbnail {...imageProps(data.image, { size: { height: 50 } })} role="presentation" />}
-        <Title>{data?.title}</Title>
+        {item.image && <Thumbnail {...imageProps(item.image, { size: { height: 50 } })} role="presentation" />}
+        <Title>{item.title}</Title>
       </Link>
     </Container>
   );

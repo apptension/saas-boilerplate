@@ -89,6 +89,26 @@ export const composeMockedListQueryResult = (
   });
 };
 
+export const composeMockedNestedListQueryResult = (
+  query: DocumentNode,
+  key: string,
+  listKey: string,
+  typename: string,
+  { data, variables }: ComposeMockedListQueryResultProps
+): MockedResponse =>
+  composeMockedQueryResult(query, {
+    variables,
+    data: {
+      [key]: {
+        [listKey]: data.map((obj) => {
+          const result = { __typename: typename, ...obj };
+          if (listKey === 'edges') return { node: result };
+          return result;
+        }),
+      },
+    },
+  });
+
 export const composeMockedPaginatedListQueryResult = (
   query: DocumentNode,
   key: string,

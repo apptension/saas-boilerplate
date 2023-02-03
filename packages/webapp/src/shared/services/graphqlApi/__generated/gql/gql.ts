@@ -50,8 +50,8 @@ const documents = {
     "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
     "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": types.DemoItemQueryDocument,
     "\n        query demoItemListItemTestQuery @relay_test_operation {\n          testItem: demoItem(id: \"contentful-item-1\") {\n            ...demoItemListItem_item\n          }\n        }\n      ": types.DemoItemListItemTestQueryDocument,
-    "\n      fragment demoItemListItem_item on DemoItem {\n        title\n        image {\n          title\n          url\n        }\n      }\n    ": types.DemoItemListItem_ItemFragmentDoc,
-    "\n    query demoItemsAllQuery {\n      demoItemCollection {\n        items {\n          sys {\n            id\n          }\n          ...demoItemListItem_item\n        }\n      }\n    }\n  ": types.DemoItemsAllQueryDocument,
+    "\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItem_ItemFragmentDoc,
+    "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n      query documentListItemStoryQuery @relay_test_operation {\n        allDocumentDemoItems(first: 1) {\n          edges {\n            node {\n              ...documentListItem\n            }\n          }\n        }\n      }\n    ": types.DocumentListItemStoryQueryDocument,
     "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
     "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
@@ -236,11 +236,11 @@ export function gql(source: "\n        query demoItemListItemTestQuery @relay_te
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      fragment demoItemListItem_item on DemoItem {\n        title\n        image {\n          title\n          url\n        }\n      }\n    "): (typeof documents)["\n      fragment demoItemListItem_item on DemoItem {\n        title\n        image {\n          title\n          url\n        }\n      }\n    "];
+export function gql(source: "\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"): (typeof documents)["\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    query demoItemsAllQuery {\n      demoItemCollection {\n        items {\n          sys {\n            id\n          }\n          ...demoItemListItem_item\n        }\n      }\n    }\n  "): (typeof documents)["\n    query demoItemsAllQuery {\n      demoItemCollection {\n        items {\n          sys {\n            id\n          }\n          ...demoItemListItem_item\n        }\n      }\n    }\n  "];
+export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
