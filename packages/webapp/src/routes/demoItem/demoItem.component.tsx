@@ -1,24 +1,28 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import { useParams } from 'react-router';
+import { useQuery } from '@apollo/client';
+
+import { SchemaType } from '../../shared/services/graphqlApi/apolloClient';
 
 import { DemoItemContent } from './demoItemContent.component';
-import { useDemoItemQuery } from './demoItem.graphql';
+import { demoItemQuery } from './demoItem.graphql';
+
+type Params = { id: string };
 
 export const DemoItem = () => {
-  type Params = { id: string };
   const { id } = useParams<Params>() as Params;
-  const [itemQueryRef, loadItem] = useDemoItemQuery();
-  useEffect(() => {
-    loadItem({ id });
-  }, [loadItem, id]);
+  const { data } = useQuery(demoItemQuery, {
+    variables: { id },
+    context: { schemaType: SchemaType.Contentful },
+  });
 
-  if (!itemQueryRef) {
+  if (!data) {
     return null;
   }
 
   return (
     <Suspense fallback={null}>
-      <DemoItemContent itemQueryRef={itemQueryRef} />
+      <DemoItemContent data={data} />
     </Suspense>
   );
 };

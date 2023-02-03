@@ -1,20 +1,20 @@
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
 import { RoutesConfig } from '../../app/config/routes';
 import { imageProps } from '../../shared/services/contentful';
 import { BackButton } from '../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
-import demoItemQueryNode, { demoItemQuery } from './__generated__/demoItemQuery.graphql';
+import { DemoItemQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, Description, Image, Title } from './demoItem.styles';
 
 type DemoItemContentProps = {
-  itemQueryRef: PreloadedQuery<demoItemQuery>;
+  data: DemoItemQueryQuery;
 };
 
-export const DemoItemContent: FC<DemoItemContentProps> = ({ itemQueryRef }) => {
-  const { demoItem: item } = usePreloadedQuery(demoItemQueryNode, itemQueryRef);
+export const DemoItemContent: FC<DemoItemContentProps> = ({ data }) => {
+  const item = data.demoItem;
+
   const generateLocalePath = useGenerateLocalePath();
   const navigate = useNavigate();
 
