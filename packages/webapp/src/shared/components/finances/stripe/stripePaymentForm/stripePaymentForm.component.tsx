@@ -55,6 +55,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         paymentMethod: data.paymentMethod,
         paymentIntent: paymentIntentResponse?.paymentIntent,
       });
+
       if (!result) {
         return;
       }

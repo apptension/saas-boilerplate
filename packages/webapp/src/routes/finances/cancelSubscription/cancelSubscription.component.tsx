@@ -1,13 +1,15 @@
 import { Suspense } from 'react';
-import { useActiveSubscriptionDetailsQueryRef } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { CancelSubscriptionContent } from './cancelSubscription.content';
 
 export const CancelSubscription = () => {
-  const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
+  const { activeSubscriptionQueryRef } = useActiveSubscriptionDetails();
 
-  return activeSubscriptionDetailsQueryRefContext.ref ? (
+  if (!activeSubscriptionQueryRef) return null;
+
+  return (
     <Suspense fallback={null}>
-      <CancelSubscriptionContent activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref} />
+      <CancelSubscriptionContent activeSubscriptionQueryRef={activeSubscriptionQueryRef} />
     </Suspense>
-  ) : null;
+  );
 };

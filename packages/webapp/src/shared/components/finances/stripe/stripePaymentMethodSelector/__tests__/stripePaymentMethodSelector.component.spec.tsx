@@ -1,29 +1,14 @@
 import { Elements } from '@stripe/react-stripe-js';
-import { screen, act } from '@testing-library/react';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { screen } from '@testing-library/react';
+import { append } from 'ramda';
 
 import { render } from '../../../../../../tests/utils/rendering';
 import { useApiForm } from '../../../../../hooks/useApiForm';
-import { paymentMethodFactory } from '../../../../../../mocks/factories';
+import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
-import { StripePaymentMethod } from '../../../../../services/api/stripe/paymentMethod';
-import { getRelayEnv } from '../../../../../../tests/utils/relay';
-import { connectionFromArray } from '../../../../../../tests/utils/fixtures';
 import { matchTextContent } from '../../../../../../tests/utils/match';
-import stripeAllPaymentMethodsQueryGraphql from '../../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-
-const resolvePaymentMethodsQuery = (
-  relayEnvironment: RelayMockEnvironment,
-  paymentMethods: StripePaymentMethod[] = []
-) => {
-  relayEnvironment.mock.queueOperationResolver((operation) => {
-    return MockPayloadGenerator.generate(operation, {
-      PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-    });
-  });
-  relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
-};
+import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 
 const StripePaymentMethodSelectorWithControls = () => {
   const formControls = useApiForm<PaymentFormFields>();
@@ -46,9 +31,8 @@ const paymentMethods = [
 describe('StripePaymentMethodSelector: Component', () => {
   describe('there are payment methods available already', () => {
     it('should list possible payment methods', async () => {
-      const relayEnvironment = getRelayEnv();
-      resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
+      const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
 
       await waitForApolloMocks();
 
@@ -57,9 +41,8 @@ describe('StripePaymentMethodSelector: Component', () => {
     });
 
     it('should show add new method button', async () => {
-      const relayEnvironment = getRelayEnv();
-      resolvePaymentMethodsQuery(relayEnvironment, paymentMethods);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
+      const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
 
       await waitForApolloMocks();
 
@@ -69,23 +52,15 @@ describe('StripePaymentMethodSelector: Component', () => {
 
   describe('there are no saved payment methods', () => {
     it('should not list possible payment methods', async () => {
-      const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment });
+      render(<Component />);
 
-      await act(() => {
-        resolvePaymentMethodsQuery(relayEnvironment);
-      });
       expect(screen.queryByText(matchTextContent('First Owner Visa **** 1234'))).not.toBeInTheDocument();
       expect(screen.queryByText(matchTextContent('Second Owner Visa **** 9999'))).not.toBeInTheDocument();
     });
 
     it('should not show add new method button', async () => {
-      const relayEnvironment = getRelayEnv();
-      render(<Component />, { relayEnvironment });
+      render(<Component />);
 
-      await act(() => {
-        resolvePaymentMethodsQuery(relayEnvironment);
-      });
       expect(screen.queryByText(/add a new card/i)).not.toBeInTheDocument();
     });
   });

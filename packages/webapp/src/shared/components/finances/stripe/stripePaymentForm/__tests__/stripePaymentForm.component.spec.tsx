@@ -1,14 +1,15 @@
 import { Elements } from '@stripe/react-stripe-js';
 import userEvent from '@testing-library/user-event';
-import { times } from 'ramda';
+import { append, times } from 'ramda';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import { screen, act } from '@testing-library/react';
 import { render } from '../../../../../../tests/utils/rendering';
-import { paymentMethodFactory } from '../../../../../../mocks/factories';
+import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
-import { connectionFromArray } from '../../../../../../tests/utils/fixtures';
+
+import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 
 const mockConfirmPayment = jest.fn();
 jest.mock('../../stripePayment.hooks', () => {
@@ -22,7 +23,7 @@ describe('StripePaymentForm: Component', () => {
   beforeEach(() => {
     mockConfirmPayment.mockClear();
   });
-  const paymentMethods = times(() => paymentMethodFactory(), 2);
+  const allPaymentsMock = times(() => paymentMethodFactory(), 2);
 
   const defaultProps: StripePaymentFormProps = {
     onSuccess: jest.fn(),
@@ -39,40 +40,27 @@ describe('StripePaymentForm: Component', () => {
   const sendForm = async () => userEvent.click(await screen.findByRole('button', { name: /Pay \d+ USD/i }));
 
   it('should render without errors', async () => {
-    const relayEnvironment = getRelayEnv();
+    const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
 
     const { waitForApolloMocks } = render(<Component />, {
-      relayEnvironment,
+      apolloMocks: append(requestMock),
     });
 
     await waitForApolloMocks();
 
-    await act(() => {
-      relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-        return MockPayloadGenerator.generate(operation, {
-          PaymentMethodConnection: () => connectionFromArray(times(() => paymentMethodFactory(), 2)),
-        });
-      });
-    });
+    expect(await screen.findAllByRole('list')).toHaveLength(2);
   });
 
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
       const relayEnvironment = getRelayEnv();
+      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
 
       const { waitForApolloMocks } = render(<Component />, {
         relayEnvironment,
+        apolloMocks: append(requestMock),
       });
-
       await waitForApolloMocks();
-
-      await act(() => {
-        relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-          return MockPayloadGenerator.generate(operation, {
-            PaymentMethodConnection: () => connectionFromArray(times(() => paymentMethodFactory(), 2)),
-          });
-        });
-      });
 
       await selectProduct();
       await sendForm();
@@ -83,6 +71,7 @@ describe('StripePaymentForm: Component', () => {
 
     it('should call confirm payment and onSuccess', async () => {
       const relayEnvironment = getRelayEnv();
+      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
       const paymentIntent = {
         amount: 5,
         clientSecret: 'client-test-secret',
@@ -94,15 +83,9 @@ describe('StripePaymentForm: Component', () => {
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
+        apolloMocks: append(requestMock),
       });
       await waitForApolloMocks();
-      await act(() => {
-        relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-          return MockPayloadGenerator.generate(operation, {
-            PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-          });
-        });
-      });
 
       await selectProduct();
       await sendForm();
@@ -129,19 +112,14 @@ describe('StripePaymentForm: Component', () => {
   describe('when something goes wrong', () => {
     it('should show error message if creating payment intent throws error', async () => {
       const relayEnvironment = getRelayEnv();
+      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
+        apolloMocks: append(requestMock),
       });
       await waitForApolloMocks();
-      await act(() => {
-        relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-          return MockPayloadGenerator.generate(operation, {
-            PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-          });
-        });
-      });
 
       await selectProduct();
       await sendForm();
@@ -174,6 +152,7 @@ describe('StripePaymentForm: Component', () => {
 
     it('should show error message if confirm payment return error', async () => {
       const relayEnvironment = getRelayEnv();
+      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
       const paymentIntent = {
         amount: 5,
         clientSecret: 'client-test-secret',
@@ -186,15 +165,9 @@ describe('StripePaymentForm: Component', () => {
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
         relayEnvironment,
+        apolloMocks: append(requestMock),
       });
       await waitForApolloMocks();
-      await act(() => {
-        relayEnvironment.mock.resolveMostRecentOperation((operation) => {
-          return MockPayloadGenerator.generate(operation, {
-            PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-          });
-        });
-      });
 
       await selectProduct();
       await sendForm();

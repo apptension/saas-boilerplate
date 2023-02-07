@@ -3,7 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { Controller } from 'react-hook-form';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
+
 import { isEmpty } from 'ramda';
 
 import { StripeCardForm } from '../stripeCardForm';
@@ -11,11 +11,13 @@ import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import { Icon } from '../../../icon';
 import { ApiFormReturnType } from '../../../../hooks/useApiForm';
-import stripeAllPaymentMethodsQueryGraphql, {
-  stripeAllPaymentMethodsQuery,
-} from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-import { stripePaymentMethodFragment$data } from '../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
+
 import { mapConnection } from '../../../../utils/graphql';
+import {
+  StripeAllPaymentsMethodsQueryQuery,
+  StripePaymentMethodFragmentFragment,
+} from '../../../../services/graphqlApi/__generated/gql/graphql';
+
 import {
   PaymentFormFields,
   StripePaymentMethodChangeEvent,
@@ -34,13 +36,13 @@ import {
   PaymentMethodListItem,
 } from './stripePaymentMethodSelector.styles';
 
-export type StripePaymentMethodSelectorContentProps<T extends PaymentFormFields = PaymentFormFields> = {
+export interface StripePaymentMethodSelectorContentProps<T extends PaymentFormFields> {
   formControls: ApiFormReturnType<T>;
-  initialValue?: stripePaymentMethodFragment$data | null;
-  allPaymentMethodsQueryRef: PreloadedQuery<stripeAllPaymentMethodsQuery>;
-};
+  initialValue?: StripePaymentMethodFragmentFragment | null;
+  allPaymentMethods?: StripeAllPaymentsMethodsQueryQuery['allPaymentMethods'];
+}
 
-export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields = PaymentFormFields>({
+export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields>({
   formControls: {
     form: {
       control,
@@ -50,11 +52,9 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
     hasGenericErrorOnly,
   },
   initialValue,
-  allPaymentMethodsQueryRef,
+  allPaymentMethods,
 }: StripePaymentMethodSelectorContentProps<T>) => {
   const intl = useIntl();
-
-  const { allPaymentMethods } = usePreloadedQuery(stripeAllPaymentMethodsQueryGraphql, allPaymentMethodsQueryRef);
 
   const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
 
@@ -73,16 +73,10 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
     }
 
     const savedPaymentMethod = initialValue && paymentMethods.find((method) => method.id === initialValue.id);
-    if (savedPaymentMethod) {
-      return {
-        type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-        data: savedPaymentMethod as unknown as stripePaymentMethodFragment$data,
-      };
-    }
 
     return {
       type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-      data: paymentMethods[0] as unknown as stripePaymentMethodFragment$data,
+      data: savedPaymentMethod || paymentMethods[0],
     };
   }, [paymentMethods, initialValue]);
 
@@ -94,27 +88,27 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
       rules={{
         required: true,
         validate: (value) => {
-          if (value.type === StripePaymentMethodSelectionType.NEW_CARD) {
-            const anyFieldMissing = Object.values(value.data.cardMissingFields ?? {}).some((isMissing) => isMissing);
-            const fieldError = Object.values(value.data.cardErrors ?? {}).filter((error) => !!error)[0];
+          if (value.type !== StripePaymentMethodSelectionType.NEW_CARD) return true;
 
-            if (fieldError) {
-              return fieldError.message;
-            }
+          const anyFieldMissing = Object.values(value.data.cardMissingFields ?? {}).some((isMissing) => isMissing);
+          const fieldError = Object.values(value.data.cardErrors ?? {}).filter((error) => !!error)[0];
 
-            if (value.data === null || anyFieldMissing) {
-              return intl.formatMessage({
-                defaultMessage: 'Payment method is required',
-                id: 'Stripe / Payment / Method required',
-              });
-            }
+          if (fieldError) {
+            return fieldError.message;
+          }
 
-            if (!value.data.name) {
-              return intl.formatMessage({
-                defaultMessage: 'Card name is required',
-                id: 'Stripe / Payment / Card name required',
-              });
-            }
+          if (value.data === null || anyFieldMissing) {
+            return intl.formatMessage({
+              defaultMessage: 'Payment method is required',
+              id: 'Stripe / Payment / Method required',
+            });
+          }
+
+          if (!value.data.name) {
+            return intl.formatMessage({
+              defaultMessage: 'Card name is required',
+              id: 'Stripe / Payment / Card name required',
+            });
           }
 
           return true;
@@ -123,8 +117,7 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
       render={({ field: { onChange, value } }) => {
         const handleChange = (event: StripePaymentMethodChangeEvent) => {
           if (event.type !== StripePaymentMethodSelectionType.NEW_CARD) {
-            onChange(event);
-            return;
+            return onChange(event);
           }
 
           const data =
@@ -139,13 +132,15 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
               : value.data;
 
           if (event.data?.elementType === 'name') {
-            onChange({ type: event.type, data: { ...data, name: event.data.value } });
-          } else if (typeof event.data?.elementType === 'string') {
+            return onChange({ type: event.type, data: { ...data, name: event.data.value } });
+          }
+
+          if (typeof event.data?.elementType === 'string') {
             const stripeFieldData = event.data as StripeElementChangeEvent;
-            const fieldName = event.data.elementType;
+            const fieldName = stripeFieldData.elementType;
             const cardErrors = (value?.data as any)?.cardErrors ?? {};
 
-            onChange({
+            return onChange({
               type: event.type,
               data: {
                 ...data,
@@ -156,9 +151,9 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
                 },
               },
             });
-          } else {
-            onChange({ type: event.type, data });
           }
+
+          onChange({ type: event.type, data });
         };
 
         const handleMethodRemoved = (id: string) => {
@@ -167,14 +162,15 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
               type: StripePaymentMethodSelectionType.NEW_CARD,
               data: null,
             });
-          } else if ((value.data as any).id === id) {
+          }
+
+          if ((value.data as StripePaymentMethodFragmentFragment).id === id) {
             handleChange({
               type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-              data: paymentMethods.filter(
-                (method) => method.id !== id
-              )[0] as unknown as stripePaymentMethodFragment$data,
+              data: paymentMethods.filter((method) => method.id !== id)[0],
             });
           }
+
           deletePaymentMethod(id);
         };
 
@@ -208,7 +204,7 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
                       onChange={() => {
                         handleChange({
                           type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-                          data: paymentMethod as unknown as stripePaymentMethodFragment$data,
+                          data: paymentMethod,
                         });
                       }}
                     >
@@ -254,7 +250,7 @@ export const StripePaymentMethodSelectorContent = <T extends PaymentFormFields =
               </CardElementContainer>
             )}
 
-            <ErrorMessage>{(errors.paymentMethod as any)?.message}</ErrorMessage>
+            <ErrorMessage>{errors.paymentMethod?.message?.toString()}</ErrorMessage>
             {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
           </Container>
         );

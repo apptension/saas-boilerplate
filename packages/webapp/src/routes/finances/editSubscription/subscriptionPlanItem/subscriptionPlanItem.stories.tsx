@@ -20,7 +20,7 @@ import subscriptionPlansAllQueryGraphql, {
 } from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { mapConnection } from '../../../../shared/utils/graphql';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
-import { useActiveSubscriptionDetailsQueryRef } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { createMockRouterProps } from '../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
@@ -34,9 +34,9 @@ const defaultProvidersOptions = {
 
 const Wrapper = () => {
   const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
-  const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
+  const { activeSubscriptionQueryRef } = useActiveSubscriptionDetails();
 
-  if (!activeSubscriptionDetailsQueryRefContext || !activeSubscriptionDetailsQueryRefContext.ref) {
+  if (!activeSubscriptionQueryRef) {
     return null;
   }
 
@@ -47,7 +47,7 @@ const Wrapper = () => {
           <SubscriptionPlanItem
             plan={plan}
             onSelect={console.log}
-            activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref}
+            activeSubscriptionQueryRef={activeSubscriptionQueryRef}
             key={plan.id}
           />
         ),

@@ -1,35 +1,34 @@
-import { useEffect, Suspense } from 'react';
-import { useQueryLoader } from 'react-relay';
-import stripeAllPaymentMethodsQueryGraphql, {
-  stripeAllPaymentMethodsQuery,
-} from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
+import { Suspense } from 'react';
+import { useQuery } from '@apollo/client';
+import { FormattedMessage } from 'react-intl';
+
 import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 import {
   StripePaymentMethodSelectorContent,
   StripePaymentMethodSelectorContentProps,
 } from './stripePaymentMethodSelector.content';
+import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from './stripePaymentMethodSelector.graphql';
 
-export type StripePaymentMethodSelectorProps<T extends PaymentFormFields = PaymentFormFields> = Omit<
+export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = Omit<
   StripePaymentMethodSelectorContentProps<T>,
   'allPaymentMethodsQueryRef'
 >;
 
-export const StripePaymentMethodSelector = <T extends PaymentFormFields = PaymentFormFields>(
+export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
   props: StripePaymentMethodSelectorProps<T>
 ) => {
-  const [allPaymentMethodsQueryRef, loadAllPaymentMethodsQuery] = useQueryLoader<stripeAllPaymentMethodsQuery>(
-    stripeAllPaymentMethodsQueryGraphql
-  );
+  const { data, loading } = useQuery(STRIPE_ALL_PAYMENTS_METHODS_QUERY, { nextFetchPolicy: 'cache-and-network' });
 
-  useEffect(() => {
-    loadAllPaymentMethodsQuery({}, { fetchPolicy: 'store-and-network' });
-  }, [loadAllPaymentMethodsQuery]);
-
-  if (!allPaymentMethodsQueryRef) return null;
+  if (loading)
+    return (
+      <span>
+        <FormattedMessage defaultMessage="Loading..." id="Loading message" />
+      </span>
+    );
 
   return (
     <Suspense fallback={null}>
-      <StripePaymentMethodSelectorContent {...props} allPaymentMethodsQueryRef={allPaymentMethodsQueryRef} />
+      <StripePaymentMethodSelectorContent {...props} allPaymentMethods={data?.allPaymentMethods} />
     </Suspense>
   );
 };

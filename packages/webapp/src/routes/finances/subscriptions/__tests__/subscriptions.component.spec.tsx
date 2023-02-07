@@ -11,11 +11,25 @@ import {
   subscriptionPlanFactory,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
+  fillAllPaymentsMethodsQuery,
+  fillActivePlanDetailsQuery,
+  paymentMethodFactory,
 } from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import {
+  SubscriptionPlanName,
+  Subscription as SubscriptionType,
+} from '../../../../shared/services/api/subscription/types';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv } from '../../../../tests/utils/relay';
 import { matchTextContent } from '../../../../tests/utils/match';
+
+const defaultPaymentPlan = [paymentMethodFactory()];
+
+const defaultActivePlan = {
+  defaultPaymentMethod: {
+    id: defaultPaymentPlan[0].id,
+  },
+};
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
   fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
@@ -62,11 +76,13 @@ describe('Subscriptions: Component', () => {
   });
 
   it('should render default payment method', async () => {
-    const relayEnvironment = getRelayEnv();
-    resolveSubscriptionDetailsQuery(relayEnvironment);
-    render(<Component />, { relayEnvironment });
+    const requestPaymentsMock = fillAllPaymentsMethodsQuery(defaultPaymentPlan as Partial<SubscriptionType>[]);
+    const requestPlanDetailsMock = fillActivePlanDetailsQuery(defaultActivePlan as SubscriptionType);
+    render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat([requestPaymentsMock, requestPlanDetailsMock]),
+    });
 
-    expect(await screen.findByText('Owner Visa **** 1234')).toBeInTheDocument();
+    expect(await screen.findByText('MockLastName Visa **** 9999')).toBeInTheDocument();
   });
 
   describe('subscription is active', () => {

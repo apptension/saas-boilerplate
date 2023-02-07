@@ -1,6 +1,7 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
-import { stripePaymentMethodFragment$data } from '../../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
+
+import { StripePaymentMethodFragmentFragment } from '../../../../../shared/services/graphqlApi/__generated/gql/graphql';
 
 export enum StripePaymentMethodSelectionType {
   SAVED_PAYMENT_METHOD,
@@ -15,7 +16,7 @@ export type StripeBillingInfoChangeEvent = {
 export type StripePaymentMethodChangeEvent =
   | {
       type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD;
-      data: StripePaymentMethod | stripePaymentMethodFragment$data;
+      data: StripePaymentMethod | StripePaymentMethodFragmentFragment;
     }
   | {
       type: StripePaymentMethodSelectionType.NEW_CARD;
@@ -25,7 +26,7 @@ export type StripePaymentMethodChangeEvent =
 export type StripePaymentMethodSelection =
   | {
       type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD;
-      data: stripePaymentMethodFragment$data;
+      data: StripePaymentMethodFragmentFragment;
     }
   | {
       type: StripePaymentMethodSelectionType.NEW_CARD;

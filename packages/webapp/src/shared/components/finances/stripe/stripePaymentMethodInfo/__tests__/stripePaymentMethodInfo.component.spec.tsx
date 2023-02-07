@@ -1,68 +1,37 @@
-import { useEffect } from 'react';
 import { screen } from '@testing-library/react';
-import { useFragment, useLazyLoadQuery, useQueryLoader } from 'react-relay';
-import { fillSubscriptionScheduleQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
-import { StripePaymentMethodCardBrand } from '../../../../../services/api/stripe/paymentMethod';
+import { useQuery } from '@apollo/client';
+import { append } from 'ramda';
+
+import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { render } from '../../../../../../tests/utils/rendering';
-import subscriptionActivePlanDetailsQueryGraphql, {
-  subscriptionActivePlanDetailsQuery,
-} from '../../../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import subscriptionActiveSubscriptionFragmentGraphql, {
-  subscriptionActiveSubscriptionFragment$key,
-} from '../../../../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
-import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { matchTextContent } from '../../../../../../tests/utils/match';
+import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { mapConnection } from '../../../../../../shared/utils/graphql';
+import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 
 const Component = (props: Partial<StripePaymentMethodInfoProps>) => {
-  const [queryRef, loadQuery] = useQueryLoader<subscriptionActivePlanDetailsQuery>(
-    subscriptionActivePlanDetailsQueryGraphql
-  );
-  useEffect(() => {
-    loadQuery({});
-  }, [loadQuery]);
-  const data = useLazyLoadQuery<subscriptionActivePlanDetailsQuery>(
-    subscriptionActivePlanDetailsQueryGraphql,
-    queryRef || {}
-  );
+  const { data } = useQuery(STRIPE_ALL_PAYMENTS_METHODS_QUERY, { nextFetchPolicy: 'cache-and-network' });
 
-  const activeSubscription = useFragment<subscriptionActiveSubscriptionFragment$key>(
-    subscriptionActiveSubscriptionFragmentGraphql,
-    data.activeSubscription
-  );
+  const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
+  const firstPaymentMethod = paymentMethods?.[0];
 
-  if (!activeSubscription) return null;
-
-  return <StripePaymentMethodInfo {...props} method={activeSubscription.defaultPaymentMethod} />;
+  return <StripePaymentMethodInfo {...props} method={firstPaymentMethod} />;
 };
 
 describe('StripePaymentMethodInfo: Component', () => {
+  const paymentMethods = [paymentMethodFactory()];
+
   it('should render all info', async () => {
-    const relayEnvironment = getRelayEnv();
-    fillSubscriptionScheduleQuery(relayEnvironment, {
-      defaultPaymentMethod: paymentMethodFactory({
-        billingDetails: {
-          name: 'Owner',
-        },
-        card: {
-          last4: '1234',
-          brand: StripePaymentMethodCardBrand.Visa,
-        },
-      }),
-    });
-    render(<Component />, { relayEnvironment });
-    expect(await screen.findByText(matchTextContent('Owner Visa **** 1234'))).toBeInTheDocument();
+    const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    render(<Component />, { apolloMocks: append(requestMock) });
+    expect(await screen.findByText(matchTextContent('MockLastName Visa **** 9999'))).toBeInTheDocument();
   });
 
   describe('method is not specified', () => {
     it('should render "None" string', async () => {
-      const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQuery(relayEnvironment, {
-        defaultPaymentMethod: null,
-      });
-      render(<Component />, { relayEnvironment });
+      render(<Component />);
       expect(await screen.findByText('None'));
-      expect(screen.queryByText(matchTextContent('Owner Visa **** 1234'))).not.toBeInTheDocument();
     });
   });
 });

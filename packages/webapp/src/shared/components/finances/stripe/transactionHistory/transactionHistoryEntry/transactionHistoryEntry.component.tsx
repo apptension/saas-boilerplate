@@ -1,14 +1,15 @@
 import { useIntl } from 'react-intl';
 import { useFragment } from 'react-relay';
+
 import { FormattedDate } from '../../../../dateTime/formattedDate';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
 import StripeChargeFragmentGraphql, {
   stripeChargeFragment$key,
 } from '../../../../../../modules/stripe/__generated__/stripeChargeFragment.graphql';
-import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import SubscriptionPlanItemFragmentGraphql, {
   subscriptionPlanItemFragment$key,
 } from '../../../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
+
 import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
 export type TransactionHistoryEntryProps = {
@@ -43,7 +44,8 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
       <TransactionDate>{data.created && <FormattedDate value={data.created.toString()} />}</TransactionDate>
       <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
       <Card>
-        <StripePaymentMethodInfo method={data.paymentMethod} />
+        {/* FIXME: recover this code after converting to apollo */}
+        {/* <StripePaymentMethodInfo method={data.paymentMethod} /> */}
       </Card>
       <Amount>{data.amount} USD</Amount>
     </Container>

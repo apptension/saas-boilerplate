@@ -7,6 +7,7 @@ import { Container, Header } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {
   const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();
+
   return (
     <Container>
       <BackButton />

@@ -1,39 +1,44 @@
-import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
-import subscriptionActivePlanDetailsQueryGraphql, {
-  subscriptionActivePlanDetailsQuery,
-} from '../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
+import { useQuery } from '@apollo/client';
+
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import { RoutesConfig } from '../../../app/config/routes';
-import subscriptionActiveSubscriptionFragmentGraphql, {
-  subscriptionActiveSubscriptionFragment$key,
-} from '../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+
+import { mapConnection } from '../../../shared/utils/graphql';
+import { StripeAllPaymentsMethodsQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
+
+import {
+  SUBSCRIPTION_ACTIVE_FRAGMENT,
+  SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY,
+} from '../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
+
 import { Link, Row, RowValue } from './subscriptions.styles';
 
 export type PaymentMethodContentProps = {
-  activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>;
+  allPaymentMethods?: StripeAllPaymentsMethodsQueryQuery['allPaymentMethods'];
 };
 
-export const PaymentMethodContent = ({ activeSubscriptionQueryRef }: PaymentMethodContentProps) => {
+export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContentProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const data = usePreloadedQuery(subscriptionActivePlanDetailsQueryGraphql, activeSubscriptionQueryRef);
-  const activeSubscription = useFragment<subscriptionActiveSubscriptionFragment$key>(
-    subscriptionActiveSubscriptionFragmentGraphql,
-    data.activeSubscription
-  );
+
+  const { data } = useQuery(SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY);
+  const activeSubscription = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, data?.activeSubscription);
 
   if (!activeSubscription) return null;
+
+  const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
+  const firstPaymentMethod = paymentMethods?.[0];
 
   return (
     <>
       <Row>
         <FormattedMessage defaultMessage="Current method:" id="My subscription / Current method" />
         <RowValue>
-          <StripePaymentMethodInfo method={activeSubscription.defaultPaymentMethod} />
+          <StripePaymentMethodInfo method={firstPaymentMethod} />
         </RowValue>
       </Row>
-
       <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>
         {activeSubscription.defaultPaymentMethod ? (
           <FormattedMessage defaultMessage="Edit payment method" id="My subscription / Edit payment method button" />

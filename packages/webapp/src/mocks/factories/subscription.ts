@@ -8,8 +8,16 @@ import {
   SubscriptionPlanName,
 } from '../../shared/services/api/subscription/types';
 import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import {
+  composeMockedListQueryResult,
+  composeMockedQueryResult,
+  connectionFromArray,
+  makeId,
+} from '../../tests/utils/fixtures';
+import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
 
@@ -85,3 +93,17 @@ export const fillSubscriptionPlansAllQuery = (env: RelayMockEnvironment, data: S
   );
   env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
 };
+
+// Apollo Mocks
+
+export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[]) =>
+  composeMockedListQueryResult(STRIPE_ALL_PAYMENTS_METHODS_QUERY, 'allPaymentMethods', 'StripePaymentMethodType', {
+    data,
+  });
+
+export const fillActivePlanDetailsQuery = (data: Partial<Subscription>) =>
+  composeMockedQueryResult(SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY, {
+    data: {
+      activeSubscription: data,
+    },
+  });

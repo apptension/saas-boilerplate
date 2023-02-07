@@ -18,7 +18,7 @@ import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { mapConnection } from '../../../../../shared/utils/graphql';
-import { useActiveSubscriptionDetailsQueryRef } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 import { connectionFromArray } from '../../../../../tests/utils/fixtures';
@@ -28,9 +28,9 @@ describe('SubscriptionPlanItem: Component', () => {
 
   const Component = (props: Partial<SubscriptionPlanItemProps>) => {
     const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
-    const activeSubscriptionDetailsQueryRefContext = useActiveSubscriptionDetailsQueryRef();
+    const { activeSubscriptionQueryRef } = useActiveSubscriptionDetails();
 
-    if (!activeSubscriptionDetailsQueryRefContext || !activeSubscriptionDetailsQueryRefContext.ref) return null;
+    if (!activeSubscriptionQueryRef) return null;
 
     const plans = mapConnection((plan) => plan, data.allSubscriptionPlans);
 
@@ -38,7 +38,7 @@ describe('SubscriptionPlanItem: Component', () => {
       <SubscriptionPlanItem
         {...defaultProps}
         plan={plans[0]}
-        activeSubscriptionQueryRef={activeSubscriptionDetailsQueryRefContext.ref}
+        activeSubscriptionQueryRef={activeSubscriptionQueryRef}
         {...props}
       />
     );

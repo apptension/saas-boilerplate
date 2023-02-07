@@ -2,12 +2,15 @@ import { useIntl } from 'react-intl';
 import { useEffect } from 'react';
 import { times } from 'ramda';
 import { useQueryLoader } from 'react-relay';
+import { useQuery } from '@apollo/client';
 
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { subscriptionPlanItemFragment$data } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import subscriptionActivePlanDetailsQueryGraphql, {
   subscriptionActivePlanDetailsQuery,
 } from '../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
+import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from '../../../components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { ActiveSubscriptionDetailsContextType } from '../../../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.hooks';
 
 export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$data | SubscriptionPlan) => {
   const intl = useIntl();
@@ -48,14 +51,18 @@ export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$d
     : {};
 };
 
-export const useActiveSubscriptionQueryLoader = ({ forceRefetch } = { forceRefetch: false }) => {
+export const useActiveSubscriptionQueryLoader = (
+  { forceRefetch } = { forceRefetch: false }
+): ActiveSubscriptionDetailsContextType => {
   const [activeSubscriptionQueryRef, loadActiveSubscription] = useQueryLoader<subscriptionActivePlanDetailsQuery>(
     subscriptionActivePlanDetailsQueryGraphql
   );
+
+  const { data } = useQuery(STRIPE_ALL_PAYMENTS_METHODS_QUERY, { nextFetchPolicy: 'cache-and-network' });
 
   useEffect(() => {
     loadActiveSubscription({}, { fetchPolicy: forceRefetch ? 'store-or-network' : 'store-and-network' });
   }, [loadActiveSubscription, forceRefetch]);
 
-  return activeSubscriptionQueryRef;
+  return { activeSubscriptionQueryRef, allPaymentMethods: data?.allPaymentMethods };
 };
