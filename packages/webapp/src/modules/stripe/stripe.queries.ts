@@ -59,7 +59,7 @@ graphql`
 `;
 
 graphql`
-  fragment stripePaymentIntentFragment on StripePaymentIntentType @inline {
+  fragment stripePaymentIntentFragment on StripePaymentIntentType {
     id
     amount
     clientSecret

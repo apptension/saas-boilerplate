@@ -25,6 +25,7 @@ export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() =>
   billingDetails: {
     name: 'MockLastName',
   },
+  pk: 'pk-test-id',
   card: {
     id: makeId(32),
     last4: '9999',

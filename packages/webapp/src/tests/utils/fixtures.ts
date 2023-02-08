@@ -68,6 +68,12 @@ type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
   additionalData?: Record<string, any>;
 };
 
+const defaultPageInfo = {
+  endCursor: 'YXJyYXljb25uZWN0aW9uOjM=',
+  hasNextPage: false,
+  __typename: 'PageInfo',
+};
+
 export const composeMockedListQueryResult = (
   query: DocumentNode,
   key: string,
@@ -76,13 +82,11 @@ export const composeMockedListQueryResult = (
 ): MockedResponse => {
   const composedData = {
     [key]: {
-      edges: data.map((obj) => ({ node: { __typename: typename, ...obj } })),
+      edges: data.map((obj) => ({ node: { __typename: typename, ...obj }, cursor: defaultPageInfo.endCursor })),
+      pageInfo: pageInfo || defaultPageInfo,
     },
     ...additionalData,
   } as Record<string, any>;
-  if (pageInfo) {
-    composedData[key].pageInfo = pageInfo;
-  }
   return composeMockedQueryResult(query, {
     variables,
     data: composedData,

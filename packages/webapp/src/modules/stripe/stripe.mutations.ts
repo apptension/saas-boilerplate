@@ -34,26 +34,6 @@ graphql`
 `;
 
 graphql`
-  mutation stripeCreatePaymentIntentMutation($input: CreatePaymentIntentMutationInput!) {
-    createPaymentIntent(input: $input) {
-      paymentIntent {
-        ...stripePaymentIntentFragment
-      }
-    }
-  }
-`;
-
-graphql`
-  mutation stripeUpdatePaymentIntentMutation($input: UpdatePaymentIntentMutationInput!) {
-    updatePaymentIntent(input: $input) {
-      paymentIntent {
-        ...stripePaymentIntentFragment
-      }
-    }
-  }
-`;
-
-graphql`
   mutation stripeCreateSetupIntentMutation($input: CreateSetupIntentMutationInput!) {
     createSetupIntent(input: $input) {
       setupIntent {

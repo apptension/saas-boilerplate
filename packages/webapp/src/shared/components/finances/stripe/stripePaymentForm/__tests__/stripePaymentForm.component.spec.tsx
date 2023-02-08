@@ -1,28 +1,53 @@
 import { Elements } from '@stripe/react-stripe-js';
+import { GraphQLError } from 'graphql';
 import userEvent from '@testing-library/user-event';
 import { append, times } from 'ramda';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { screen, act } from '@testing-library/react';
+
+import { screen } from '@testing-library/react';
 import { render } from '../../../../../../tests/utils/rendering';
 import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
-import { getRelayEnv } from '../../../../../../tests/utils/relay';
+
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
 
 import { Subscription } from '../../../../../../shared/services/api/subscription/types';
+import { composeMockedQueryResult } from '../../../../../../tests/utils/fixtures';
+
+import { STRIPE_CREATE_PAYMENT_INTENT_MUTATION } from '../stripePaymentForm.graphql';
 
 const mockConfirmPayment = jest.fn();
-jest.mock('../../stripePayment.hooks', () => {
+
+jest.mock('../../stripePayment.stripe.hook', () => {
   return {
-    ...jest.requireActual<NodeModule>('../../stripePayment.hooks'),
+    ...jest.requireActual<NodeModule>('../../stripePayment.stripe.hook'),
     useStripePayment: () => ({ confirmPayment: mockConfirmPayment }),
   };
 });
+
+const mutationVariables = {
+  input: {
+    product: '5',
+  },
+};
+const mutationData = {
+  createPaymentIntent: {
+    paymentIntent: {
+      id: 'test-id',
+      amount: 500,
+      clientSecret: 'test-client-secret',
+      currency: 'usd',
+      pk: 'pk-test-id',
+      __typename: 'StripePaymentIntentType',
+    },
+    __typename: 'CreatePaymentIntentMutationPayload',
+  },
+};
 
 describe('StripePaymentForm: Component', () => {
   beforeEach(() => {
     mockConfirmPayment.mockClear();
   });
+
   const allPaymentsMock = times(() => paymentMethodFactory(), 2);
 
   const defaultProps: StripePaymentFormProps = {
@@ -53,52 +78,46 @@ describe('StripePaymentForm: Component', () => {
 
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-
-      const { waitForApolloMocks } = render(<Component />, {
-        relayEnvironment,
-        apolloMocks: append(requestMock),
+      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+        variables: mutationVariables,
+        data: mutationData,
       });
-      await waitForApolloMocks();
+
+      requestPaymentMutation.newData = jest.fn(() => ({
+        data: mutationData,
+      }));
+
+      render(<Component />, {
+        apolloMocks: (defaultProps) => defaultProps.concat(requestAllPaymentsMock, requestPaymentMutation),
+      });
 
       await selectProduct();
+      expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).not.toBeDisabled();
       await sendForm();
+      expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).toBeDisabled();
 
-      expect(relayEnvironment).toHaveLatestOperation('stripeCreatePaymentIntentMutation');
-      expect(relayEnvironment).toLatestOperationInputEqual({ product: TestProduct.A });
+      expect(requestPaymentMutation.newData).toHaveBeenCalled();
     });
 
     it('should call confirm payment and onSuccess', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const paymentIntent = {
-        amount: 5,
-        clientSecret: 'client-test-secret',
-        currency: 'USD',
-        pk: 1,
-      };
+      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+        variables: mutationVariables,
+        data: mutationData,
+      });
+
       mockConfirmPayment.mockReturnValue({ paymentIntent: { status: 'succeeded' } });
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        relayEnvironment,
-        apolloMocks: append(requestMock),
+        apolloMocks: (defaultProps) => defaultProps.concat(requestAllPaymentsMock, requestPaymentMutation),
       });
-      await waitForApolloMocks();
 
       await selectProduct();
       await sendForm();
 
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(
-          operation,
-          MockPayloadGenerator.generate(operation, {
-            StripePaymentIntentType: () => paymentIntent,
-          })
-        );
-      });
+      await waitForApolloMocks();
 
       expect(mockConfirmPayment).toBeCalledWith({
         paymentMethod: expect.anything(),
@@ -111,76 +130,47 @@ describe('StripePaymentForm: Component', () => {
 
   describe('when something goes wrong', () => {
     it('should show error message if creating payment intent throws error', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const errorMessage = 'Something went wrong';
+      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+        variables: mutationVariables,
+        data: [],
+        errors: [new GraphQLError(errorMessage)],
+      });
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        relayEnvironment,
-        apolloMocks: append(requestMock),
+        apolloMocks: (defaultProps) => defaultProps.concat(requestAllPaymentsMock, requestPaymentMutation),
       });
-      await waitForApolloMocks();
 
       await selectProduct();
       await sendForm();
 
-      const errorMessage = 'Something went wrong';
+      await waitForApolloMocks();
 
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, {
-          ...MockPayloadGenerator.generate(operation),
-          errors: [
-            {
-              message: 'GraphQlValidationError',
-              extensions: {
-                nonFieldErrors: [
-                  {
-                    message: errorMessage,
-                    code: 'invalid',
-                  },
-                ],
-              },
-            },
-          ],
-        } as any);
-      });
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
       expect(mockConfirmPayment).not.toHaveBeenCalled();
       expect(onSuccess).not.toHaveBeenCalled();
     });
 
     it('should show error message if confirm payment return error', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const paymentIntent = {
-        amount: 5,
-        clientSecret: 'client-test-secret',
-        currency: 'USD',
-        pk: 1,
-      };
+      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+        variables: mutationVariables,
+        data: mutationData,
+      });
       const errorMessage = 'Something went wrong';
       mockConfirmPayment.mockReturnValue({ error: { message: errorMessage } });
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        relayEnvironment,
-        apolloMocks: append(requestMock),
+        apolloMocks: (defaultProps) => defaultProps.concat(requestAllPaymentsMock, requestPaymentMutation),
       });
-      await waitForApolloMocks();
 
       await selectProduct();
       await sendForm();
 
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(
-          operation,
-          MockPayloadGenerator.generate(operation, {
-            StripePaymentIntentType: () => paymentIntent,
-          })
-        );
-      });
+      await waitForApolloMocks();
 
       expect(mockConfirmPayment).toBeCalledWith({
         paymentMethod: expect.anything(),

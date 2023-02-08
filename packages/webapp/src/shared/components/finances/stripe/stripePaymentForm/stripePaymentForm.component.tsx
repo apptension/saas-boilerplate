@@ -1,10 +1,8 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useApiForm } from '../../../../hooks/useApiForm';
-import { useStripePayment, useStripePaymentIntent } from '../stripePayment.hooks';
-import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector';
-import { PaymentFormFields } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { stripePaymentIntentFragment$data } from '../../../../../modules/stripe/__generated__/stripePaymentIntentFragment.graphql';
+
 import { TestProduct } from '../../../../../modules/stripe/stripe.types';
+import { useStripePaymentIntent, UseStripePaymentIntentProps } from '../stripePayment.hooks';
+import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector';
 import {
   ErrorMessage,
   Form,
@@ -12,66 +10,31 @@ import {
   ProductListContainer,
   ProductListItem,
   ProductListItemButton,
-  SubmitButton,
   StripePaymentFormContainer,
+  SubmitButton,
 } from './stripePaymentForm.styles';
 
-type StripePaymentFormFields = PaymentFormFields & {
-  product: TestProduct;
-};
-
 export type StripePaymentFormProps = {
-  onSuccess(paymentIntent: stripePaymentIntentFragment$data): void;
+  onSuccess: UseStripePaymentIntentProps;
 };
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();
-  const { updateOrCreatePaymentIntent } = useStripePaymentIntent();
-  const { confirmPayment } = useStripePayment();
+  const { onSubmit, apiFormControls, loading } = useStripePaymentIntent(onSuccess);
 
-  const apiFormControls = useApiForm<StripePaymentFormFields>({
-    mode: 'onChange',
-  });
   const {
     form: {
       register,
-      handleSubmit,
       formState: { errors },
       formState,
       watch,
     },
-    setGenericError,
-    setGraphQLResponseErrors,
   } = apiFormControls;
+
   const amountValue = watch('product');
-  const onSubmit = async (data: StripePaymentFormFields) => {
-    const paymentIntentResponse = await updateOrCreatePaymentIntent(data.product);
-    if (paymentIntentResponse && paymentIntentResponse.errors) {
-      return setGraphQLResponseErrors(paymentIntentResponse.errors);
-    }
-
-    if (paymentIntentResponse?.paymentIntent) {
-      const result = await confirmPayment({
-        paymentMethod: data.paymentMethod,
-        paymentIntent: paymentIntentResponse?.paymentIntent,
-      });
-
-      if (!result) {
-        return;
-      }
-
-      if (result.error) {
-        return setGenericError(result.error.message);
-      }
-
-      if (result.paymentIntent?.status === 'succeeded') {
-        onSuccess(paymentIntentResponse?.paymentIntent);
-      }
-    }
-  };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={onSubmit}>
       <div>
         <Heading>
           <FormattedMessage defaultMessage="Choose the product" id="Stripe / payment form / product label" />
@@ -104,7 +67,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         <StripePaymentMethodSelector formControls={apiFormControls} />
       </StripePaymentFormContainer>
 
-      <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
+      <SubmitButton disabled={!formState.isValid || formState.isSubmitting || loading}>
         <FormattedMessage
           values={{ amount: amountValue ? `${amountValue} USD` : '' }}
           defaultMessage="Pay {amount}"
