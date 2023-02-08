@@ -1,21 +1,22 @@
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
+
 import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { StripeSubscriptionQueryQuery } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { mapConnection } from '../../../../shared/utils/graphql';
-import { subscriptionActivePlanDetailsQuery } from '../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import { Plans, PlanItem } from './subscriptionPlans.styles';
+import { PlanItem, Plans } from './subscriptionPlans.styles';
 
 export type SubscriptionPlansContentProps = {
   queryRef: PreloadedQuery<subscriptionPlansAllQuery>;
   onPlanSelection: (id: string | null) => void;
-  activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>;
+  activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
 };
 
 export const SubscriptionPlansContent = ({
   queryRef,
   onPlanSelection,
-  activeSubscriptionQueryRef,
+  activeSubscription,
 }: SubscriptionPlansContentProps) => {
   const { allSubscriptionPlans } = usePreloadedQuery(subscriptionPlansAllQueryGraphql, queryRef);
 
@@ -23,12 +24,7 @@ export const SubscriptionPlansContent = ({
     <Plans>
       {mapConnection((plan) => {
         return (
-          <PlanItem
-            key={plan.id}
-            plan={plan}
-            onSelect={onPlanSelection}
-            activeSubscriptionQueryRef={activeSubscriptionQueryRef}
-          />
+          <PlanItem key={plan.id} plan={plan} onSelect={onPlanSelection} activeSubscription={activeSubscription} />
         );
       }, allSubscriptionPlans)}
     </Plans>

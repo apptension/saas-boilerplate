@@ -10,7 +10,7 @@ import { PaymentMethodContent } from './paymentMethod.content';
 import { TransactionsHistoryContent } from './transactionsHistory.content';
 
 export const Subscriptions = () => {
-  const { activeSubscriptionQueryRef, allPaymentMethods } = useActiveSubscriptionDetails();
+  const { allPaymentMethods, activeSubscription } = useActiveSubscriptionDetails();
   const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();
 
   return (
@@ -20,11 +20,7 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="Subscriptions" id="My subscription / Header" />
         </Header>
 
-        {activeSubscriptionQueryRef && (
-          <Suspense fallback={null}>
-            <SubscriptionsContent activeSubscriptionQueryRef={activeSubscriptionQueryRef} />
-          </Suspense>
-        )}
+        <SubscriptionsContent activeSubscription={activeSubscription} />
       </Section>
 
       <Section>

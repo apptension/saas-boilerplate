@@ -119,6 +119,7 @@
     "@types/semver-compare": "^1.0.1",
     "@types/styled-components": "^5.1.26",
     "@types/styled-theming": "^2.2.2",
+    "@types/testing-library__jest-dom": "^5.14.5",
     "@types/ua-parser-js": "^0.7.36",
     "aws-sdk": "^2.1246.0",
     "babel-plugin-relay": "^14.1.0",

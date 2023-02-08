@@ -1,53 +1,31 @@
-import { PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import SubscriptionActivePlanDetailsQuery, {
-  subscriptionActivePlanDetailsQuery,
-} from '../../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import subscriptionActiveSubscriptionFragmentGraphql, {
-  subscriptionActiveSubscriptionFragment$key,
-} from '../../../../modules/subscription/__generated__/subscriptionActiveSubscriptionFragment.graphql';
-import subscriptionPlanItemFragmentGraphql, {
-  subscriptionPlanItemFragment$key,
-} from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
-import { SubscriptionPlanName } from '../../../services/api/subscription/types';
+import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
+import { StripeAllPaymentsMethodsQueryQuery } from '../../../services/graphqlApi/__generated/gql/graphql';
+import { useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails';
-import stripePaymentMethodFragmentGraphql, {
-  stripePaymentMethodFragment$key,
-} from '../../../../modules/stripe/__generated__/stripePaymentMethodFragment.graphql';
+import { SUBSCRIPTION_ACTIVE_FRAGMENT } from './useActiveSubscriptionDetailsData.graphql';
 
 export const useActiveSubscriptionDetailsData = (
-  activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>
+  activeSubscriptionQuery: StripeAllPaymentsMethodsQueryQuery['activeSubscription']
 ) => {
-  const data = usePreloadedQuery(SubscriptionActivePlanDetailsQuery, activeSubscriptionQueryRef);
-  const activeSubscription = useFragment<subscriptionActiveSubscriptionFragment$key>(
-    subscriptionActiveSubscriptionFragmentGraphql,
-    data.activeSubscription
-  );
+  const activeSubscription = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscriptionQuery);
+
   const phases = activeSubscription?.phases || [];
-  const currentPhasePlan = phases[0]?.item?.price ?? null;
-  const currentPhasePlanData = useFragment<subscriptionPlanItemFragment$key>(
-    subscriptionPlanItemFragmentGraphql,
-    currentPhasePlan
-  );
-  const activeSubscriptionPlan = useSubscriptionPlanDetails(currentPhasePlanData || undefined);
+  const currentPhasePlan = (phases[0]?.item?.price as SubscriptionPlan) ?? null;
+
+  const activeSubscriptionPlan = useSubscriptionPlanDetails(currentPhasePlan || undefined);
   const activeSubscriptionPeriodEndDate = phases[0]?.endDate;
-  const nextPhasePlan = phases[1]?.item?.price ?? null;
-  const nextPhasePlanData = useFragment<subscriptionPlanItemFragment$key>(
-    subscriptionPlanItemFragmentGraphql,
-    phases.length > 1 ? nextPhasePlan : currentPhasePlan
-  );
-  const activeSubscriptionIsCancelled = phases[1] && nextPhasePlanData?.product.name === SubscriptionPlanName.FREE;
+  const nextPhasePlan = (phases[1]?.item?.price as SubscriptionPlan) ?? currentPhasePlan;
+
+  const activeSubscriptionIsCancelled = phases[1] && nextPhasePlan?.product.name === SubscriptionPlanName.FREE;
   const activeSubscriptionExpiryDate = activeSubscriptionIsCancelled ? phases[1]?.startDate?.toString() : undefined;
   const activeSubscriptionRenewalDate = activeSubscriptionIsCancelled ? undefined : activeSubscriptionPeriodEndDate;
-  const nextSubscriptionPlan = nextPhasePlanData ?? currentPhasePlanData;
+  const nextSubscriptionPlan = nextPhasePlan ?? currentPhasePlan;
   const nextSubscriptionPlanDetails = useSubscriptionPlanDetails(nextSubscriptionPlan || undefined);
   const trialEnd = activeSubscription?.subscription?.trialEnd?.toString();
   const isTrialActive = Boolean(trialEnd && Date.parse(trialEnd.toString()) >= Date.now());
   const isTrialEligible = Boolean(activeSubscription?.canActivateTrial);
 
-  const defaultPaymentMethod = useFragment<stripePaymentMethodFragment$key>(
-    stripePaymentMethodFragmentGraphql,
-    (activeSubscription && activeSubscription.defaultPaymentMethod) || null
-  );
+  const defaultPaymentMethod = activeSubscription?.defaultPaymentMethod;
 
   return {
     activeSubscriptionPlan,

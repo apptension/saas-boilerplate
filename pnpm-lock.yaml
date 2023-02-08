@@ -321,6 +321,7 @@ importers:
       '@types/semver-compare': ^1.0.1
       '@types/styled-components': ^5.1.26
       '@types/styled-theming': ^2.2.2
+      '@types/testing-library__jest-dom': ^5.14.5
       '@types/ua-parser-js': ^0.7.36
       aws-sdk: ^2.1246.0
       axios: ^0.27.2
@@ -500,6 +501,7 @@ importers:
       '@types/semver-compare': 1.0.1
       '@types/styled-components': 5.1.26
       '@types/styled-theming': 2.2.5
+      '@types/testing-library__jest-dom': 5.14.5
       '@types/ua-parser-js': 0.7.36
       aws-sdk: 2.1299.0
       babel-plugin-relay: 14.1.0
@@ -13145,7 +13147,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.6_wcqkhtmu7mswc6yz4uyexck3ty
+      styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
 
   /babel-plugin-syntax-jsx/6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
@@ -30763,6 +30765,7 @@ packages:
       react-dom: 16.14.0_react@16.14.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
+    dev: false
 
   /styled-theming/2.2.0:
     resolution: {integrity: sha512-5nqUoCR/BJ6ziJ39xN/K5nmrzMn37BgPc693vgeQlO0hMaat/hJvJ0/u0vtm1ZQxU82sdltEbynqjkoYYMVwaA==}

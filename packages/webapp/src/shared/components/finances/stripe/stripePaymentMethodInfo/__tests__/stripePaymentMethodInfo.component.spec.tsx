@@ -6,12 +6,12 @@ import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../.
 import { render } from '../../../../../../tests/utils/rendering';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
 import { matchTextContent } from '../../../../../../tests/utils/match';
-import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { STRIPE_SUBSCRIPTION_QUERY } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { mapConnection } from '../../../../../../shared/utils/graphql';
 import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 
 const Component = (props: Partial<StripePaymentMethodInfoProps>) => {
-  const { data } = useQuery(STRIPE_ALL_PAYMENTS_METHODS_QUERY, { nextFetchPolicy: 'cache-and-network' });
+  const { data } = useQuery(STRIPE_SUBSCRIPTION_QUERY, { nextFetchPolicy: 'cache-and-network' });
 
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
   const firstPaymentMethod = paymentMethods?.[0];

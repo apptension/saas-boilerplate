@@ -7,7 +7,7 @@ import {
   StripePaymentMethodSelectorContent,
   StripePaymentMethodSelectorContentProps,
 } from './stripePaymentMethodSelector.content';
-import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from './stripePaymentMethodSelector.graphql';
+import { STRIPE_SUBSCRIPTION_QUERY } from './stripePaymentMethodSelector.graphql';
 
 export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = Omit<
   StripePaymentMethodSelectorContentProps<T>,
@@ -17,7 +17,7 @@ export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = Omit
 export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
   props: StripePaymentMethodSelectorProps<T>
 ) => {
-  const { data, loading } = useQuery(STRIPE_ALL_PAYMENTS_METHODS_QUERY, { nextFetchPolicy: 'cache-and-network' });
+  const { data, loading } = useQuery(STRIPE_SUBSCRIPTION_QUERY, { nextFetchPolicy: 'cache-and-network' });
 
   if (loading)
     return (

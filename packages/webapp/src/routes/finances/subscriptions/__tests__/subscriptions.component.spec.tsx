@@ -2,6 +2,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RelayMockEnvironment } from 'relay-test-utils';
 import { Routes, Route } from 'react-router-dom';
+import { append } from 'ramda';
 
 import { render } from '../../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
@@ -32,7 +33,7 @@ const defaultActivePlan = {
 };
 
 const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
-  fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
+  return fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
     subscriptionPhaseFactory({
       endDate: new Date('Jan 1, 2099 GMT').toISOString(),
       item: { price: { product: { name: SubscriptionPlanName.FREE } } },
@@ -41,7 +42,7 @@ const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment)
 };
 
 const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = (relayEnvironment: RelayMockEnvironment) => {
-  fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
+  return fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
     subscriptionPhaseFactory({
       endDate: new Date('Jan 1, 2099 GMT').toISOString(),
       item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
@@ -69,8 +70,8 @@ const Component = () => (
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
     const relayEnvironment = getRelayEnv();
-    resolveSubscriptionDetailsQuery(relayEnvironment);
-    render(<Component />, { relayEnvironment });
+    const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+    render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
     expect(await screen.findByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
   });
@@ -88,17 +89,16 @@ describe('Subscriptions: Component', () => {
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQuery(relayEnvironment);
-      render(<Component />, { relayEnvironment });
+      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       expect(await screen.findByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
     });
 
     it('should not render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQuery(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
-      await waitForApolloMocks();
+      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
     });
@@ -107,17 +107,16 @@ describe('Subscriptions: Component', () => {
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      render(<Component />, { relayEnvironment });
+      const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       expect(await screen.findByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
     });
 
     it('should not render next renewal date', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
-      await waitForApolloMocks();
+      const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       expect(screen.queryByText(/next renewal/gi)).not.toBeInTheDocument();
     });
@@ -126,8 +125,8 @@ describe('Subscriptions: Component', () => {
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQuery(relayEnvironment);
-      render(<Component />, { relayEnvironment });
+      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       await userEvent.click(await screen.findByText(/edit subscription/i));
       expect(screen.getByTestId(EDIT_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -137,9 +136,9 @@ describe('Subscriptions: Component', () => {
   describe('cancel subscription button', () => {
     it('should be hidden if subscription is already canceled', async () => {
       const relayEnvironment = getRelayEnv();
-      resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
-      await waitForApolloMocks();
+      const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled(relayEnvironment);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
+
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
 
@@ -153,9 +152,9 @@ describe('Subscriptions: Component', () => {
       ];
 
       const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQueryWithPhases(relayEnvironment, phases);
-      const { waitForApolloMocks } = render(<Component />, { relayEnvironment });
-      await waitForApolloMocks();
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(relayEnvironment, phases);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
+
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
 
@@ -163,8 +162,8 @@ describe('Subscriptions: Component', () => {
       const activeSubscription = subscriptionFactory();
 
       const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
-      render(<Component />, { relayEnvironment });
+      const requestMock = fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
       expect(screen.getByTestId(CANCEL_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -196,8 +195,8 @@ describe('Subscriptions: Component', () => {
       });
 
       const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
-      render(<Component />, { relayEnvironment });
+      const requestMock = fillSubscriptionScheduleQuery(relayEnvironment, activeSubscription);
+      render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
 
       expect(
         await screen.findByText(matchTextContent(/free trial info.*expiry date.*january 01, 2099/gi))

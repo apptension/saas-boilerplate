@@ -12,20 +12,20 @@ export type SubscriptionPlansProps = {
 
 export const SubscriptionPlans = ({ onPlanSelection }: SubscriptionPlansProps) => {
   const [plansQueryRef, loadPlansQuery] = useQueryLoader<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql);
-  const { activeSubscriptionQueryRef } = useActiveSubscriptionDetails();
+  const { activeSubscription } = useActiveSubscriptionDetails();
 
   useEffect(() => {
     loadPlansQuery({});
   }, [loadPlansQuery]);
 
-  if (!plansQueryRef || !activeSubscriptionQueryRef) return null;
+  if (!plansQueryRef) return null;
 
   return (
     <Suspense fallback={null}>
       <SubscriptionPlansContent
         queryRef={plansQueryRef}
         onPlanSelection={onPlanSelection}
-        activeSubscriptionQueryRef={activeSubscriptionQueryRef}
+        activeSubscription={activeSubscription}
       />
     </Suspense>
   );

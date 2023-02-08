@@ -14,7 +14,7 @@ import {
   connectionFromArray,
   makeId,
 } from '../../tests/utils/fixtures';
-import { STRIPE_ALL_PAYMENTS_METHODS_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 
@@ -67,13 +67,17 @@ export const fillSubscriptionScheduleQuery = (
     });
   });
   relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
+
+  return composeMockedQueryResult(STRIPE_SUBSCRIPTION_QUERY, {
+    data: { activeSubscription: subscription },
+  });
 };
 
 export const fillSubscriptionScheduleQueryWithPhases = (
   relayEnvironment: RelayMockEnvironment,
   phases: SubscriptionPhase[]
 ) => {
-  fillSubscriptionScheduleQuery(
+  return fillSubscriptionScheduleQuery(
     relayEnvironment,
     subscriptionFactory({
       defaultPaymentMethod: paymentMethodFactory({
@@ -97,7 +101,7 @@ export const fillSubscriptionPlansAllQuery = (env: RelayMockEnvironment, data: S
 // Apollo Mocks
 
 export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[]) =>
-  composeMockedListQueryResult(STRIPE_ALL_PAYMENTS_METHODS_QUERY, 'allPaymentMethods', 'StripePaymentMethodType', {
+  composeMockedListQueryResult(STRIPE_SUBSCRIPTION_QUERY, 'allPaymentMethods', 'StripePaymentMethodType', {
     data,
   });
 

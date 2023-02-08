@@ -4,6 +4,7 @@ import { MockPayloadGenerator } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
+import { append } from 'ramda';
 
 import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscriptionPlanItem.component';
 import {
@@ -28,19 +29,12 @@ describe('SubscriptionPlanItem: Component', () => {
 
   const Component = (props: Partial<SubscriptionPlanItemProps>) => {
     const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
-    const { activeSubscriptionQueryRef } = useActiveSubscriptionDetails();
-
-    if (!activeSubscriptionQueryRef) return null;
+    const { activeSubscription } = useActiveSubscriptionDetails();
 
     const plans = mapConnection((plan) => plan, data.allSubscriptionPlans);
 
     return (
-      <SubscriptionPlanItem
-        {...defaultProps}
-        plan={plans[0]}
-        activeSubscriptionQueryRef={activeSubscriptionQueryRef}
-        {...props}
-      />
+      <SubscriptionPlanItem {...defaultProps} plan={plans[0]} activeSubscription={activeSubscription} {...props} />
     );
   };
 
@@ -129,9 +123,14 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should not call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
-        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        const requestMock = fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
+
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
+          relayEnvironment,
+          apolloMocks: append(requestMock),
+        });
         await waitForApolloMocks();
+
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).not.toHaveBeenCalled();
       });
@@ -161,8 +160,11 @@ describe('SubscriptionPlanItem: Component', () => {
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
       const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: true }));
-      render(<Wrapper />, { relayEnvironment });
+      const requestMock = fillSubscriptionScheduleQuery(
+        relayEnvironment,
+        subscriptionFactory({ canActivateTrial: true })
+      );
+      render(<Wrapper />, { relayEnvironment, apolloMocks: append(requestMock) });
       expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();
     });
   });

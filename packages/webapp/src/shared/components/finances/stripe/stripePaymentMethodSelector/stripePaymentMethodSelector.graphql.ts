@@ -1,7 +1,7 @@
 import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 
-export const STRIPE_ALL_PAYMENTS_METHODS_QUERY = gql(/* GraphQL */ `
-  query stripeAllPaymentsMethodsQuery {
+export const STRIPE_SUBSCRIPTION_QUERY = gql(/* GraphQL */ `
+  query stripeSubscriptionQuery {
     allPaymentMethods(first: 100) {
       edges {
         node {
@@ -19,6 +19,12 @@ export const STRIPE_ALL_PAYMENTS_METHODS_QUERY = gql(/* GraphQL */ `
         endCursor
         hasNextPage
       }
+    }
+
+    activeSubscription {
+      ...subscriptionActiveSubscriptionFragment_
+      id
+      __typename
     }
   }
 `);

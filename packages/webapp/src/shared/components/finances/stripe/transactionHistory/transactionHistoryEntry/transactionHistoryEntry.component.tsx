@@ -26,6 +26,10 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
   );
   const { name: entryProductName } = useSubscriptionPlanDetails(subscriptionPlanData ?? undefined);
 
+  // const { allPaymentMethods } = useActiveSubscriptionDetails();
+  // const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
+  // const firstPaymentMethod = paymentMethods?.[0];
+
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',
     id: 'Stripe / Transaction History / Donation payment description',

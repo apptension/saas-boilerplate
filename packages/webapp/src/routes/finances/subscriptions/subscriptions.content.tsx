@@ -1,19 +1,18 @@
-import { PreloadedQuery } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 
-import { subscriptionActivePlanDetailsQuery } from '../../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { RoutesConfig } from '../../../app/config/routes';
+import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { ButtonVariant } from '../../../shared/components/forms/button';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useActiveSubscriptionDetailsData } from '../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Link, Row, RowValue, Subheader } from './subscriptions.styles';
 
 type SubscriptionsContentProps = {
-  activeSubscriptionQueryRef: PreloadedQuery<subscriptionActivePlanDetailsQuery>;
+  activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
 };
 
-export const SubscriptionsContent = ({ activeSubscriptionQueryRef }: SubscriptionsContentProps) => {
+export const SubscriptionsContent = ({ activeSubscription }: SubscriptionsContentProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const {
     isTrialActive,
@@ -23,7 +22,7 @@ export const SubscriptionsContent = ({ activeSubscriptionQueryRef }: Subscriptio
     activeSubscriptionExpiryDate,
     activeSubscriptionIsCancelled,
     activeSubscriptionPlan,
-  } = useActiveSubscriptionDetailsData(activeSubscriptionQueryRef);
+  } = useActiveSubscriptionDetailsData(activeSubscription);
 
   return (
     <>
