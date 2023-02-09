@@ -1,17 +1,11 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router';
-import { useApiForm } from '../../../hooks/useApiForm';
+
 import { Input } from '../../forms/input';
 import { FormFieldsRow } from '../../../../theme/size';
-import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import { useSnackbar } from '../../../../modules/snackbar';
-import authRequestPasswordResetConfirmMutationGraphql, {
-  authRequestPasswordResetConfirmMutation,
-} from '../../../../modules/auth/__generated__/authRequestPasswordResetConfirmMutation.graphql';
+
 import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
-import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
+
+import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';
 
 export type PasswordResetConfirmFormProps = {
   user: string;
@@ -20,72 +14,21 @@ export type PasswordResetConfirmFormProps = {
 
 export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
-  const snackbar = useSnackbar();
-  const navigate = useNavigate();
-  const generateLocalePath = useGenerateLocalePath();
-  const [commitPasswordResetConfirm] = usePromiseMutation<authRequestPasswordResetConfirmMutation>(
-    authRequestPasswordResetConfirmMutationGraphql
-  );
 
   const {
     form: {
-      register,
       formState: { errors },
+      register,
       getValues,
     },
-    handleSubmit,
     genericError,
     hasGenericErrorOnly,
-    setGraphQLResponseErrors,
-  } = useApiForm<ResetPasswordFormFields>({
-    errorMessages: {
-      nonFieldErrors: {
-        invalid_token: intl.formatMessage({
-          defaultMessage: 'Malformed password reset token',
-          id: 'Auth / Reset password confirm / invalid token',
-        }),
-      },
-      newPassword: {
-        password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
-          id: 'Auth / Reset password confirm / password too common',
-        }),
-        password_entirely_numeric: intl.formatMessage({
-          defaultMessage: "The password can't be entirely numeric.",
-          id: 'Auth / Reset password confirm / password entirely numeric',
-        }),
-      },
-    },
-  });
-
-  const onResetPassword = async (data: ResetPasswordFormFields) => {
-    try {
-      const { errors } = await commitPasswordResetConfirm({
-        variables: {
-          input: {
-            newPassword: data.newPassword,
-            user,
-            token,
-          },
-        },
-      });
-
-      if (!errors) {
-        navigate(generateLocalePath(RoutesConfig.login));
-        snackbar.showMessage(
-          intl.formatMessage({
-            defaultMessage: '🎉 Password reset successfully!',
-            id: 'Auth / Reset password confirm / Success message',
-          })
-        );
-      } else {
-        setGraphQLResponseErrors(errors);
-      }
-    } catch {}
-  };
+    loading,
+    handlePasswordResetConfirm,
+  } = usePasswordResetConfirmForm(user, token);
 
   return (
-    <Container onSubmit={handleSubmit(onResetPassword)}>
+    <Container onSubmit={handlePasswordResetConfirm}>
       <FormFieldsRow>
         <Input
           {...register('newPassword', {
@@ -151,7 +94,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton>
+      <SubmitButton disabled={loading}>
         <FormattedMessage defaultMessage="Confirm the change" id="Auth / Reset password confirm / Submit button" />
       </SubmitButton>
     </Container>

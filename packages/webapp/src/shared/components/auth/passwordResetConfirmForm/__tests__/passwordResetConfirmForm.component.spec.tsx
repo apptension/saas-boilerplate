@@ -1,10 +1,14 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MockPayloadGenerator } from 'relay-test-utils';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+import { append } from 'ramda';
+
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from '../passwordResetConfirmForm.component';
 import { snackbarActions } from '../../../../../modules/snackbar';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { authRequestPasswordResetConfirmMutation } from '../passwordResetConfirmForm.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -20,6 +24,9 @@ describe('PasswordResetConfirmForm: Component', () => {
     token: 'token-value',
   };
 
+  const defaultVariables = {
+    input: { newPassword: 'new-password', user: 'user-id', token: 'token-value' },
+  };
   beforeEach(() => {
     mockDispatch.mockReset();
   });
@@ -44,125 +51,78 @@ describe('PasswordResetConfirmForm: Component', () => {
   const Component = (props: Partial<PasswordResetConfirmFormProps>) => (
     <PasswordResetConfirmForm {...defaultProps} {...props} />
   );
-  it('should call changePassword action when submitted', async () => {
-    const relayEnvironment = getRelayEnv();
-
-    render(<Component />, { relayEnvironment });
-
-    await fillForm();
-    await sendForm();
-
-    expect(relayEnvironment).toHaveLatestOperation('authRequestPasswordResetConfirmMutation');
-    expect(relayEnvironment).toLatestOperationInputEqual({
-      newPassword: formData.newPassword,
-      token: defaultProps.token,
-      user: defaultProps.user,
-    });
-  });
 
   it('should show success message if action completes successfully', async () => {
-    const relayEnvironment = getRelayEnv();
-
-    render(<Component />, { relayEnvironment });
+    const requestMock = composeMockedQueryResult(authRequestPasswordResetConfirmMutation, {
+      variables: defaultVariables,
+      data: {
+        passwordResetConfirm: {
+          ok: true,
+        },
+      },
+    });
+    render(<Component />, { apolloMocks: append(requestMock) });
 
     await fillForm();
     await sendForm();
 
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-    });
-
-    await waitFor(() => {
+    await waitFor(() =>
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage({
           text: '🎉 Password reset successfully!',
           id: 1,
         })
-      );
-    });
+      )
+    );
   });
 
   it('should show error if required value is missing', async () => {
-    const relayEnvironment = getRelayEnv();
-
-    render(<Component />, { relayEnvironment });
+    const requestMock = composeMockedQueryResult(authRequestPasswordResetConfirmMutation, {
+      variables: defaultVariables,
+      data: {},
+    });
+    render(<Component />, { apolloMocks: append(requestMock) });
 
     await fillForm({ confirmPassword: null });
     await sendForm();
 
-    expect(relayEnvironment.mock.getAllOperations().length).toEqual(0);
-    await waitFor(() => {
-      expect(screen.getByText('Repeat new password is required')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Repeat new password is required')).toBeInTheDocument();
   });
 
   it('should show field error if action throws error', async () => {
-    const relayEnvironment = getRelayEnv();
+    const errorMessage = 'The password is too common.';
 
-    render(<Component />, { relayEnvironment });
+    const requestMock = composeMockedQueryResult(authRequestPasswordResetConfirmMutation, {
+      variables: defaultVariables,
+      data: {},
+      errors: [
+        new GraphQLError('GraphQlValidationError', {
+          extensions: { nonFieldErrors: [{ message: errorMessage, code: errorMessage }] },
+        }),
+      ],
+    });
+    render(<Component />, { apolloMocks: append(requestMock) });
 
     await fillForm();
     await sendForm();
 
-    const errorMessage = 'Provided password is invalid';
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
-        errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              newPassword: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
-        ],
-      } as any);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
-    const relayEnvironment = getRelayEnv();
+    const errorMessage = 'Server error';
 
-    render(<Component />, { relayEnvironment });
+    const requestMock = composeMockedQueryResult(authRequestPasswordResetConfirmMutation, {
+      variables: defaultVariables,
+      data: {},
+      errors: [new GraphQLError(errorMessage)],
+    });
+
+    render(<Component />, { apolloMocks: append(requestMock) });
 
     await fillForm();
     await sendForm();
 
-    const errorMessage = 'Invalid data';
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, {
-        ...MockPayloadGenerator.generate(operation),
-        errors: [
-          {
-            message: 'GraphQlValidationError',
-            extensions: {
-              nonFieldErrors: [
-                {
-                  message: errorMessage,
-                  code: 'invalid',
-                },
-              ],
-            },
-          },
-        ],
-      } as any);
-    });
-    await waitFor(() => {
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 });

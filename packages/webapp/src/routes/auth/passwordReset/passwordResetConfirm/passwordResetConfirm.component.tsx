@@ -35,20 +35,14 @@ export const PasswordResetConfirm = () => {
         <FormattedMessage defaultMessage="Change your password" id="Auth / Confirm reset password / heading" />
       </Header>
       <Text>
-        <FormattedMessage
-          defaultMessage="Set your new password."
-          id="Auth / Confirm reset password / description"
-        />
+        <FormattedMessage defaultMessage="Set your new password." id="Auth / Confirm reset password / description" />
       </Text>
 
       <PasswordResetConfirmForm user={params.user} token={params.token} />
 
       <Links>
         <Link to={generateLocalePath(RoutesConfig.login)}>
-          <FormattedMessage
-            defaultMessage="Go back to log in"
-            id="Auth / Confirm reset password / login link"
-          />
+          <FormattedMessage defaultMessage="Go back to log in" id="Auth / Confirm reset password / login link" />
         </Link>
       </Links>
     </Container>

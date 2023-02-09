@@ -1,4 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { RoutesConfig } from '../../../app/config/routes';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 
@@ -8,10 +9,13 @@ const PasswordResetRequest = asyncComponent(() => import('./passwordResetRequest
 const PasswordResetConfirm = asyncComponent(() => import('./passwordResetConfirm'));
 
 export const PasswordReset = () => {
+  const generateLocalePath = useGenerateLocalePath();
+
   return (
     <Routes>
       <Route index element={<PasswordResetRequest />} />
       <Route path={`${RoutesConfig.passwordReset.getRelativeUrl('confirm')}`} element={<PasswordResetConfirm />} />
+      <Route path="*" element={<Navigate to={generateLocalePath(RoutesConfig.login)} />} />
     </Routes>
   );
 };

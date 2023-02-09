@@ -76,6 +76,7 @@ services:
       - db
 
   mailcatcher:
+    platform: linux/amd64
     build: ./packages/internal/mailcatcher
     ports:
       - "1080:1080"

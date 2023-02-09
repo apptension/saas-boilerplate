@@ -1,30 +1,44 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
-import { produce } from 'immer';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { append } from 'ramda';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
-import configureStore from '../../../../../app/config/store';
-import { prepareState } from '../../../../../mocks/store';
-import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { authRequestPasswordResetConfirmMutation } from '../../../../../shared/components/auth/passwordResetConfirmForm/passwordResetConfirmForm.graphql';
+
+const newPassword = 'new-password';
+const user = 'user-id';
+const token = 'token-value';
+
+const defaultVariables = {
+  input: { newPassword, user, token },
+};
+
+const mockDispatch = jest.fn();
+jest.mock('react-redux', () => {
+  return {
+    ...jest.requireActual<NodeModule>('react-redux'),
+    useDispatch: () => mockDispatch,
+  };
+});
+const LoginPageMock = <span>Login page mock</span>;
 describe('PasswordResetConfirm: Component', () => {
+  beforeEach(() => {
+    mockDispatch.mockReset();
+  });
   const Component = () => (
     <Routes>
       <Route path={RoutesConfig.getLocalePath(['passwordReset', 'confirm'])} element={<PasswordResetConfirm />} />
-      <Route path={RoutesConfig.getLocalePath(['login'])} element={<span>Login page mock</span>} />
+      <Route path={RoutesConfig.getLocalePath(['login'])} element={LoginPageMock} />
+      <Route path="*" element={LoginPageMock} />
     </Routes>
   );
 
-  const user = 'mock-user';
-  const token = 'mock-token';
   const routePath = ['passwordReset', 'confirm'];
-  const reduxInitialState = prepareState((state) => state);
-
-  let relayEnvironment: RelayMockEnvironment;
 
   const fillForm = async (newPassword: string) => {
     await userEvent.type(await screen.findByLabelText(/^new password$/i), newPassword);
@@ -35,87 +49,34 @@ describe('PasswordResetConfirm: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
   };
 
-  beforeEach(() => {
-    relayEnvironment = createMockEnvironment();
-  });
-
   describe('token is valid', () => {
-    const newPassword = 'asdf1234';
-
     it('should redirect to login', async () => {
       const routerProps = createMockRouterProps(routePath, { user, token });
-      const apolloMocks = [fillCommonQueryWithUser()];
+      const requestMock = composeMockedQueryResult(authRequestPasswordResetConfirmMutation, {
+        variables: defaultVariables,
+        data: {
+          passwordResetConfirm: {
+            ok: true,
+          },
+        },
+      });
 
-      render(<Component />, { routerProps, relayEnvironment, apolloMocks });
+      render(<Component />, { routerProps, apolloMocks: append(requestMock) });
 
       await fillForm(newPassword);
       await sendForm();
 
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
-
-      expect(screen.getByText(/login page mock/i)).toBeInTheDocument();
-    });
-
-    it('should show a success message', async () => {
-      const routerProps = createMockRouterProps(routePath, { user, token });
-      const reduxStore = configureStore(reduxInitialState);
-      const apolloMocks = [fillCommonQueryWithUser()];
-
-      render(<Component />, { routerProps, reduxStore, relayEnvironment, apolloMocks });
-
-      await fillForm(newPassword);
-      await sendForm();
-
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-      });
-
-      expect(reduxStore.getState()).toEqual(
-        produce(reduxInitialState, (state) => {
-          state.snackbar.lastMessageId = 1;
-          state.snackbar.messages = [{ id: 1, text: '🎉 Password reset successfully!' }];
-        })
-      );
+      expect(await screen.findByText(/login page mock/i)).toBeInTheDocument();
     });
   });
 
-  describe('token is invalid', () => {
+  describe('token is missing', () => {
     it('should redirect to login page', async () => {
-      const routerProps = createMockRouterProps(routePath, { user, token });
-      const apolloMocks = [fillCommonQueryWithUser()];
+      const routerProps = createMockRouterProps(routePath, { user, token: '' });
 
-      render(<Component />, { routerProps, relayEnvironment, apolloMocks });
+      render(<Component />, { routerProps });
 
-      await fillForm('some pass');
-      await sendForm();
-
-      const errorMessage = 'Invalid Token';
-
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, {
-          ...MockPayloadGenerator.generate(operation),
-          errors: [
-            {
-              message: 'GraphQlValidationError',
-              extensions: {
-                nonFieldErrors: [
-                  {
-                    message: errorMessage,
-                    code: 'invalid_token',
-                  },
-                ],
-              },
-            },
-          ],
-        } as any);
-      });
-
-      expect(screen.getByText(/Malformed password reset token/i)).toBeInTheDocument();
+      expect(await screen.findByText(/login page mock/i)).toBeInTheDocument();
     });
   });
 });
