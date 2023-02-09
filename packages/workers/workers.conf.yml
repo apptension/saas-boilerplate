@@ -36,7 +36,7 @@ iam:
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN}
-  PYTHONPATH: /var/task/__pypackages__/3.8/lib
+  PYTHONPATH: /var/task/__pypackages__/3.9/lib
   ENVIRONMENT_NAME: ${self:provider.stage}
 
 envsDb: &envsDb
