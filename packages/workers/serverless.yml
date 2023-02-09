@@ -47,6 +47,20 @@ functions:
             source:
               - backend.email
 
+  ExportUsers:
+    handler: userauth.handlers.user_data_export
+    runtime: python3.9
+    timeout: 30
+    memorySize: 256
+    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ExportUsers.environment}
+    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    events:
+      - eventBridge:
+          eventBus: "${self:custom.eventBusArn}"
+          pattern:
+            source:
+              - backend.export_user
+
   SynchronizeContentfulContent:
     handler: content.handlers.synchronize_content
     runtime: python3.9

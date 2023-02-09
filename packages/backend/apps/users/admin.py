@@ -1,10 +1,10 @@
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
+from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.token_blacklist import admin as token_admin, models as token_models
-
+from . import tasks
 from . import models
 
 admin.site.unregister(token_models.OutstandingToken)
@@ -80,3 +80,16 @@ class UserAdmin(BaseUserAdmin):
     inlines = [
         UserProfileInline,
     ]
+    actions = ["export_user_data"]
+
+    def export_user_data(self, request, queryset):
+        data = {
+            "user_ids": [str(user_id) for user_id in queryset.values_list("id", flat=True)],
+            "admin_email": request.user.email,
+        }
+        export_user_data_task = tasks.ExportUserData()
+        export_user_data_task.apply(data=data)
+
+        self.message_user(request, "Exported user data will be sent to you via e-mail", messages.SUCCESS)
+
+    export_user_data.short_description = _('Export selected %(verbose_name_plural)s')

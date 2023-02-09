@@ -39,6 +39,7 @@ dependencies = [
     "psycopg2-binary~=2.9",
     "sentry-sdk~=1.14",
     "sqlalchemy~=2.0",
+    "pydantic>=1.10.4",
 ]
 requires-python = "~=3.9.0"
 license = {text = "MIT"}

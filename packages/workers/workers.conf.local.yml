@@ -27,6 +27,11 @@ SynchronizeContentfulContent:
 WebSocketsHandler:
   environment: []
 
+ExportUsers:
+  environment:
+    AWS_ENDPOINT_URL: "https://localstack:4566"
+    AWS_EXPORTS_STORAGE_BUCKET_NAME: "exports-bucket"
+
 vpc: {}
 
 esbuild:

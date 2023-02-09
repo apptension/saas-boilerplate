@@ -1,18 +1,15 @@
-import { App, CfnOutput, Stack, StackProps } from "aws-cdk-lib";
-import { WebSocketApi, WebSocketStage } from "@aws-cdk/aws-apigatewayv2-alpha";
-import { EnvConstructProps } from "../../../types";
-import { EventBus } from "aws-cdk-lib/aws-events";
-import { EnvironmentSettings } from "../../../settings";
-import { Bucket } from "aws-cdk-lib/aws-s3";
+import {App, CfnOutput, Stack, StackProps} from "aws-cdk-lib";
+import {WebSocketApi, WebSocketStage} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {EnvConstructProps} from "../../../types";
+import {EventBus} from "aws-cdk-lib/aws-events";
+import {EnvironmentSettings} from "../../../settings";
+import {BlockPublicAccess, Bucket, BucketAccessControl} from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { ARecord, RecordTarget } from "aws-cdk-lib/aws-route53";
-import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
-import {
-  getCloudfrontCertificateArn,
-  getHostedZone,
-} from "../../../helpers/domains";
+import {S3Origin} from "aws-cdk-lib/aws-cloudfront-origins";
+import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
+import {ARecord, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {CloudFrontTarget} from "aws-cdk-lib/aws-route53-targets";
+import {getCloudfrontCertificateArn, getHostedZone,} from "../../../helpers/domains";
 import * as ec2KeyPair from "cdk-ec2-key-pair";
 
 export interface EnvComponentsStackProps
@@ -61,6 +58,10 @@ export class EnvComponentsStack extends Stack {
       return short;
     }
     return `ec2-ssh-key/${short}`;
+  }
+
+  static getExportsBucketName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectEnvName}-exports-bucket`;
   }
 
   private createNewWebSocketApi(props: EnvComponentsStackProps) {
@@ -178,6 +179,16 @@ export class EnvComponentsStack extends Stack {
     return distribution;
   }
 
+  private createExportsBucket(props: EnvComponentsStackProps) {
+    return new Bucket(this, "ExportsBucket", {
+      bucketName: EnvComponentsStack.getExportsBucketName(
+        props.envSettings
+      ),
+      accessControl: BucketAccessControl.PRIVATE,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL
+    });
+  }
+
   constructor(scope: App, id: string, props: EnvComponentsStackProps) {
     super(scope, id, props);
 
@@ -186,6 +197,7 @@ export class EnvComponentsStack extends Stack {
     this.createNewWebSocketApi(props);
     const keyGroup = this.createSigningKeyGroup(props);
     this.createCloudfrontDistribution(props, { fileUploadsBucket, keyGroup });
+    this.createExportsBucket(props);
   }
 
   private createSigningKeyGroup(props: EnvComponentsStackProps) {

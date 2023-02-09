@@ -33,6 +33,13 @@ iam:
       - xray:PutTraceSegments
       - xray:PutTelemetryRecords
     Resource: "*"
+  - Effect: "Allow"
+    Action:
+      - "s3:PutObject"
+      - "s3:GetObject"
+    Resource:
+      - "arn:aws:s3:::${self:custom.projectEnvName}-exports-bucket"
+      - "arn:aws:s3:::${self:custom.projectEnvName}-exports-bucket/*"
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN}
@@ -70,6 +77,12 @@ WebSocketsHandler:
     <<: *envsDb
     JWT_SECRET: ${ssm:/${self:custom.ssmService}/JWT_SECRET}
     HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
+
+ExportUsers:
+  environment:
+    <<: *envsDb
+    HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
+    AWS_EXPORTS_STORAGE_BUCKET_NAME: "${self:custom.projectEnvName}-exports-bucket"
 
 vpc:
   securityGroupIds:
