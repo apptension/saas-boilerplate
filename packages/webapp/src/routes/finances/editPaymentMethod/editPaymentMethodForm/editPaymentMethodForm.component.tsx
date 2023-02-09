@@ -8,6 +8,7 @@ import {
 import { SUBSCRIPTION_ACTIVE_FRAGMENT } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { useApiForm } from '../../../../shared/hooks/useApiForm';
 import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 import { Form, SubmitButton } from './editPaymentMethodForm.styles';
@@ -21,44 +22,23 @@ type EditPaymentMethodFormProps = {
 export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps) => {
   const { activeSubscription } = useActiveSubscriptionDetails();
 
-  const { createSetupIntent } = useStripeSetupIntent();
-  const { confirmCardSetup } = useStripeCardSetup();
-
-  const { updateDefaultPaymentMethod } = useStripePaymentMethods({ onUpdateSuccess: onSuccess });
-
-  const activeSubscriptionFragment = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscription);
-
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const {
     handleSubmit,
     setGenericError,
-    setGraphQLResponseErrors,
-    form: { formState },
+    setApolloGraphQLResponseErrors,
+    form: { formState, getValues },
   } = apiFormControls;
 
-  const setCardAsDefault = (cardId: string) => {
-    updateDefaultPaymentMethod(cardId);
-  };
-
-  const setupNewCard = async (data: ChangePaymentFormFields) => {
-    const setupIntentResponse = await createSetupIntent();
-    if (setupIntentResponse.errors) {
-      return setGraphQLResponseErrors(setupIntentResponse.errors);
-    }
-
-    const intent = setupIntentResponse.data;
-    if (!intent) {
-      return;
-    }
+  const onCreateSetupIntentSuccess = async (setupIntent: StripeSetupIntentFragmentFragment) => {
+    if (!setupIntent) return;
 
     const result = await confirmCardSetup({
-      paymentMethod: data.paymentMethod,
-      setupIntent: intent,
+      paymentMethod: getValues().paymentMethod,
+      setupIntent: setupIntent,
     });
 
-    if (!result) {
-      return;
-    }
+    if (!result) return;
 
     if (result.error) {
       return setGenericError(result.error.message);
@@ -69,13 +49,26 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     }
   };
 
+  const { createSetupIntent } = useStripeSetupIntent({
+    onSuccess: onCreateSetupIntentSuccess,
+    onError: setApolloGraphQLResponseErrors,
+  });
+  const { confirmCardSetup } = useStripeCardSetup();
+  const { updateDefaultPaymentMethod } = useStripePaymentMethods({ onUpdateSuccess: onSuccess });
+
+  const activeSubscriptionFragment = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscription);
+
+  const setCardAsDefault = (cardId: string) => {
+    updateDefaultPaymentMethod(cardId);
+  };
+
   const onSubmit = async (data: ChangePaymentFormFields) => {
     if (data.paymentMethod.type === StripePaymentMethodSelectionType.NEW_CARD) {
-      return setupNewCard(data);
-    } else {
-      if (!data.paymentMethod.data.pk) return;
-      return setCardAsDefault(data.paymentMethod.data.pk);
+      return createSetupIntent();
     }
+
+    if (!data.paymentMethod.data.pk) return;
+    return setCardAsDefault(data.paymentMethod.data.pk);
   };
 
   return (

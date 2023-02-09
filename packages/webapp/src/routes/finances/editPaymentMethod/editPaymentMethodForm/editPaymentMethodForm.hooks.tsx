@@ -1,70 +1,49 @@
-import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { PayloadError, readInlineData } from 'relay-runtime';
+import { GraphQLError } from 'graphql';
+
 import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 import { StripePaymentMethodType } from '../../../../shared/services/api/stripe/paymentMethod';
-import { usePromiseMutation } from '../../../../shared/services/graphqlApi/usePromiseMutation';
-import stripeCreateSetupIntentMutationGraphql, {
-  stripeCreateSetupIntentMutation,
-} from '../../../../modules/stripe/__generated__/stripeCreateSetupIntentMutation.graphql';
-import stripeSetupIntentFragmentGraphql, {
-  stripeSetupIntentFragment$data,
-  stripeSetupIntentFragment$key,
-} from '../../../../modules/stripe/__generated__/stripeSetupIntentFragment.graphql';
+import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { STRIPE_CREATE_SETUP_INTENT_MUTTION } from './editPaymentMethodForm.graphql';
 
-export const useStripeSetupIntent = () => {
-  const [setupIntent, setSetupIntent] = useState<{
-    data: stripeSetupIntentFragment$data | null;
-    errors: PayloadError[] | null;
-  } | null>(null);
-  const [commitCreateSetupIntentMutation] = usePromiseMutation<stripeCreateSetupIntentMutation>(
-    stripeCreateSetupIntentMutationGraphql
-  );
+interface UseStripeSetupIntentProps {
+  onSuccess: (data: StripeSetupIntentFragmentFragment) => void;
+  onError: (error: readonly GraphQLError[]) => void;
+}
 
-  const createSetupIntent = async () => {
-    if (!setupIntent) {
-      const { response, errors } = await commitCreateSetupIntentMutation({ variables: { input: {} } });
+export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupIntentProps) => {
+  const [commitCreateSetupIntentMutation, { data }] = useMutation(STRIPE_CREATE_SETUP_INTENT_MUTTION, {
+    onCompleted: (data) => onSuccess(data.createSetupIntent?.setupIntent as StripeSetupIntentFragmentFragment),
+    onError: (error) => onError(error.graphQLErrors),
+  });
 
-      if (!errors) {
-        const intent = readInlineData<stripeSetupIntentFragment$key>(
-          // @ts-ignore
-          stripeSetupIntentFragmentGraphql,
-          response.createSetupIntent?.setupIntent ?? null
-        );
-
-        const result = { data: intent, errors };
-        setSetupIntent(result);
-        return result;
-      }
-      return { data: null, errors };
-    }
-
-    return setupIntent;
+  const createSetupIntent = () => {
+    if (!data?.createSetupIntent?.setupIntent) commitCreateSetupIntentMutation({ variables: { input: {} } });
   };
 
-  return { setupIntent, createSetupIntent };
+  return { createSetupIntent };
 };
+
+interface ConfirmCardSetupProps {
+  setupIntent: StripeSetupIntentFragmentFragment;
+  paymentMethod: StripePaymentMethodSelection;
+}
 
 export const useStripeCardSetup = () => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const confirmCardSetup = async ({
-    paymentMethod,
-    setupIntent,
-  }: {
-    setupIntent: stripeSetupIntentFragment$data;
-    paymentMethod: StripePaymentMethodSelection;
-  }) => {
+  const confirmCardSetup = async ({ paymentMethod, setupIntent }: ConfirmCardSetupProps) => {
     if (!stripe) {
       return null;
     }
 
     if (paymentMethod.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD) {
-      if (paymentMethod.data.type === StripePaymentMethodType.Card) {
+      if (paymentMethod.data.type === (StripePaymentMethodType.Card as string)) {
         return await stripe.confirmCardSetup(setupIntent.clientSecret, {
           payment_method: paymentMethod.data.id,
         });

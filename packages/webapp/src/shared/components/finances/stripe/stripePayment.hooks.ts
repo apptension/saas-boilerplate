@@ -22,9 +22,7 @@ interface UseStripePaymentMethodsProps {
   onUpdateSuccess?: () => void;
 }
 
-export const useStripePaymentMethods = (props: UseStripePaymentMethodsProps = {}) => {
-  const onUpdateSuccess = props.onUpdateSuccess;
-
+export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMethodsProps = {}) => {
   const [commitDeletePaymentMethodMutation] = useMutation(STRIPE_DELETE_PAYMENT_METHOD_MUTATION, {
     update(cache, { data }) {
       cache.modify({
@@ -46,6 +44,25 @@ export const useStripePaymentMethods = (props: UseStripePaymentMethodsProps = {}
 
   const [commitUpdateDefaultPaymentMethodMutation] = useMutation(STRIPE_UPDATE_PAYMENT_METHOD_MUTATION, {
     onCompleted: () => onUpdateSuccess?.(),
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allPaymentMethods(existingConnection = { edges: [] }) {
+            const newPaymentMethod = data?.updateDefaultPaymentMethod?.paymentMethodEdge?.node;
+            if (!newPaymentMethod) return existingConnection;
+
+            const normalizedId = cache.identify({ id: newPaymentMethod.id, __typename: 'StripePaymentMethodType' });
+            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.__ref === normalizedId);
+            if (isAlreadyInStore) return existingConnection;
+
+            return {
+              ...existingConnection,
+              edges: [...existingConnection.edges, { node: { __ref: normalizedId } }],
+            };
+          },
+        },
+      });
+    },
   });
 
   const deletePaymentMethod = (id: string) => {
