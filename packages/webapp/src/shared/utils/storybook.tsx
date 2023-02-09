@@ -85,7 +85,7 @@ export function withProviders<
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
 >(wrapperProps: WrapperProps<ReduxState, P> = {}) {
   return (StoryComponent: Story, storyContext: any) => {
-    const WrapperComponent = getWrapper(DefaultTestProviders, wrapperProps, storyContext) as any;
+    const { wrapper: WrapperComponent } = getWrapper(DefaultTestProviders, wrapperProps, storyContext) as any;
     return (
       <WrapperComponent>
         <StoryComponent />

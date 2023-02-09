@@ -1,1 +1,1 @@
-export { PrivacyPolicy } from './privacyPolicy.component';
+export { PrivacyPolicy as default } from './privacyPolicy.component';

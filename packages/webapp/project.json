@@ -3,9 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/webapp/src",
   "projectType": "application",
-  "implicitDependencies": [
-    "tools"
-  ],
+  "implicitDependencies": ["tools"],
   "targets": {
     "setup": {
       "executor": "@saas-boilerplate-app/tools:setup",
@@ -36,33 +34,43 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "commands": [
-          "node_modules/.bin/craco start",
-          "nx run webapp:graphql:generate-types:watch"
-        ]
+        "commands": ["node_modules/.bin/vite", "nx run webapp:graphql:generate-types:watch"]
       },
-      "dependsOn": [
-        "graphql:generate-types",
-        "relay"
-      ]
+      "dependsOn": ["graphql:generate-types", "relay"]
     },
-    "cra-build": {
+    "vite-build-old": {
       "executor": "nx:run-commands",
+      "defaultConfiguration": "app",
       "options": {
         "cwd": "packages/webapp",
         "color": true
       },
       "configurations": {
         "app": {
-          "command": "node_modules/.bin/craco build"
+          "command": "node_modules/.bin/vite build"
         },
         "emails": {
-          "command": "node_modules/.bin/craco build --config ./craco.emails.config.ts"
+          "command": "node_modules/.bin/vite build -c ./vite.emails.config.ts"
         }
       },
-      "dependsOn": [
-        "graphql:generate-types"
-      ]
+      "dependsOn": ["graphql:generate-types"]
+    },
+    "vite-build": {
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "app",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true
+      },
+      "configurations": {
+        "app": {
+          "command": "vite -c vite.config.ts build"
+        },
+        "emails": {
+          "command": "vite -c vite.emails.config.ts build"
+        }
+      },
+      "dependsOn": ["graphql:generate-types"]
     },
     "build": {
       "executor": "nx:run-commands",
@@ -72,30 +80,19 @@
       },
       "configurations": {
         "app": {
-          "command": "nx run tools:chamber-exec webapp nx run webapp:cra-build:app"
+          "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:app"
         },
         "emails": {
-          "command": "nx run tools:chamber-exec webapp nx run webapp:cra-build:emails"
+          "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:emails"
         }
-      }
-    },
-    "test:app": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/webapp",
-        "color": true,
-        "command": "node_modules/.bin/craco test"
-      }
+      },
+      "dependsOn": ["graphql:generate-types"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/webapp/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/webapp/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "deploy": {

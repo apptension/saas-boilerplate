@@ -18,10 +18,11 @@
     "yaml": "^2.0.0-3"
   },
   "devDependencies": {
+    "esbuild": "0.16.17",
     "serverless": "^3.25.1",
-    "serverless-step-functions": "^3.11.1",
     "serverless-esbuild": "^1.37.0",
-    "esbuild": "0.16.17"
+    "serverless-localstack": "^1.0.2",
+    "serverless-step-functions": "^3.11.1"
   },
   "nx": {}
 }

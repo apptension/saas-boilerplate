@@ -1,1 +1,1 @@
-export { CrudDemoItem } from './crudDemoItem.component';
+export { CrudDemoItem as default } from './crudDemoItem.component';

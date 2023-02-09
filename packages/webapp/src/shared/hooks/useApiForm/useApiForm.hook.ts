@@ -1,10 +1,10 @@
 import { FieldValues, Path, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
-import humps from 'humps';
 import { PayloadError } from 'relay-runtime';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
+import { camelCaseKeys } from '../../utils/object';
 import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
@@ -17,7 +17,7 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
 
   const setResponseErrors = useCallback(
     (unsafeResponse: FormSubmitError<FormData>) => {
-      const response = humps.camelizeKeys(unsafeResponse) as FormSubmitError<FormData>;
+      const response = camelCaseKeys(unsafeResponse) as FormSubmitError<FormData>;
 
       if (response.nonFieldErrors) {
         setGenericError(translateErrorMessage('nonFieldErrors', response.nonFieldErrors[0]));

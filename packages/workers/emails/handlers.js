@@ -1,8 +1,7 @@
-const AWS = require("aws-sdk");
-const nodemailer = require("nodemailer");
+const AWS = require('aws-sdk');
+const nodemailer = require('nodemailer');
 
-// const { renderEmail } = require("./renderer");
-const renderEmail = () => {};
+const { renderEmail } = require('./renderer/index.umd.js');
 
 const config = {
   awsEndpoint: process.env.AWS_ENDPOINT_URL,
@@ -25,8 +24,8 @@ exports.sendEmail = async function (event, context) {
       Destination: { ToAddresses: [to] },
       ReplyToAddresses: [config.fromEmail],
       Message: {
-        Subject: { Charset: "UTF-8", Data: subject },
-        Body: { Html: { Charset: "UTF-8", Data: html } },
+        Subject: { Charset: 'UTF-8', Data: subject },
+        Body: { Html: { Charset: 'UTF-8', Data: html } },
       },
     })
     .promise();
@@ -40,7 +39,7 @@ exports.sendEmailLocal = async function (event, context) {
   });
 
   const transport = nodemailer.createTransport({
-    host: "mailcatcher",
+    host: 'mailcatcher',
     port: 1025,
   });
   transport.sendMail({ to, subject, html, from: config.fromEmail });

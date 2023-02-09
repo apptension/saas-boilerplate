@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 
 import { currentUserFactory } from '../../../mocks/factories';
-import { CurrentUserType } from '../../services/graphqlApi/__generated/types';
+import { CurrentUserType } from '../../services/graphqlApi';
 import { fillCommonQueryWithUser } from '../../utils/commonQuery';
 import { withProviders } from '../../utils/storybook';
 import { Avatar, AvatarProps } from './avatar.component';

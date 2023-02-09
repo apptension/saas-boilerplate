@@ -74,7 +74,7 @@ export type WrapperProps<
   relayEnvironment?: Environment | ((env: RelayMockEnvironment, storyContext?: StoryContext) => void);
   apolloMocks?:
     | ReadonlyArray<MockedResponse>
-    | ((mocks: ReadonlyArray<MockedResponse>) => ReadonlyArray<MockedResponse>);
+    | ((mocks: ReadonlyArray<MockedResponse>, storyContext?: StoryContext) => ReadonlyArray<MockedResponse>);
 };
 
 export function getWrapper<
@@ -105,7 +105,7 @@ export function getWrapper<
   const apolloMocks = (() => {
     const defaultApolloMocks = [fillCommonQueryWithUser()];
     if (typeof wrapperProps.apolloMocks === 'function') {
-      return wrapperProps.apolloMocks(defaultApolloMocks);
+      return wrapperProps.apolloMocks(defaultApolloMocks, storyContext);
     }
     if (wrapperProps.apolloMocks !== undefined) {
       return wrapperProps.apolloMocks;

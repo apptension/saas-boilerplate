@@ -1,1 +1,1 @@
-export { DemoItems } from './demoItems.component';
+export { DemoItems as default } from './demoItems.component';

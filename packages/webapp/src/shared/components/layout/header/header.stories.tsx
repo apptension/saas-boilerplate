@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { Story, StoryContext } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
 import { currentUserFactory } from '../../../../mocks/factories';
@@ -17,8 +17,8 @@ export default {
   component: Header,
   decorators: [
     withProviders({
-      relayEnvironment: (env, { args: { isLoggedIn } }: any) => {
-        fillCommonQueryWithUser(env, isLoggedIn ? currentUserFactory() : null);
+      apolloMocks: (defaultMocks, { args: { isLoggedIn = false } }: any) => {
+        return [fillCommonQueryWithUser(undefined, isLoggedIn ? currentUserFactory() : null)];
       },
     }),
   ],

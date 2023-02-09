@@ -1,1 +1,1 @@
-export { CancelSubscription } from './cancelSubscription.component';
+export { CancelSubscription as default } from './cancelSubscription.component';

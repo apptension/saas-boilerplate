@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
+import { Suspense, lazy } from 'react';
 
-import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
 import { setUnsupportedClasses } from './unsupported/support';
@@ -14,7 +14,7 @@ import { CommonQuery } from './providers/commonQuery';
 import { RouterProvider } from './providers/router';
 
 const render = () => {
-  const { App } = require('./app.component');
+  const App = lazy(() => import('./app.component'));
 
   const container = document.getElementById('root');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -27,7 +27,9 @@ const render = () => {
             <RelayProvider>
               <ApolloProvider>
                 <CommonQuery>
-                  <App />
+                  <Suspense>
+                    <App />
+                  </Suspense>
                 </CommonQuery>
               </ApolloProvider>
             </RelayProvider>
@@ -51,7 +53,7 @@ export const initApp = async () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       resolve(require('intl'));
     })
-      .then(() => Promise.all([require('intl/locale-data/jsonp/en.js'), require('intl/locale-data/jsonp/pl.js')]))
+      .then(() => Promise.all([import('intl/locale-data/jsonp/en.js'), import('intl/locale-data/jsonp/pl.js')]))
       .then(() => render())
       .catch((err) => {
         throw err;

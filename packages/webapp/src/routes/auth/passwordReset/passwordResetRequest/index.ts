@@ -1,1 +1,1 @@
-export { PasswordResetRequest } from './passwordResetRequest.component';
+export { PasswordResetRequest as default } from './passwordResetRequest.component';

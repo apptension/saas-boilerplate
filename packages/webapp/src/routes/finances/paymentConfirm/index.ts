@@ -1,1 +1,1 @@
-export { PaymentConfirm } from './paymentConfirm.component';
+export { PaymentConfirm as default } from './paymentConfirm.component';

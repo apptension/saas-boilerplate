@@ -51,16 +51,19 @@ type ComposeMockedQueryResultProps = {
 export const composeMockedQueryResult = (
   query: DocumentNode,
   { variables, data, errors }: ComposeMockedQueryResultProps
-): MockedResponse => ({
-  request: {
-    query,
-    variables,
-  },
-  result: jest.fn(() => ({
+): MockedResponse => {
+  const result = {
     data,
     errors,
-  })),
-});
+  };
+  return {
+    request: {
+      query,
+      variables,
+    },
+    result: jest.fn ? jest.fn(() => result) : () => result,
+  };
+};
 
 type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
   data: Array<any>;

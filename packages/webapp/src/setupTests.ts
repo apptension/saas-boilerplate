@@ -2,7 +2,6 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import '@testing-library/jest-dom';
 import 'isomorphic-fetch';
-import 'jest-styled-components';
 import axios from 'axios';
 import MockDate from 'mockdate';
 import './mocks/reactIntl';
@@ -10,7 +9,15 @@ import './mocks/icons';
 import { RelayMockEnvironment } from 'relay-test-utils';
 import { printDiffOrStringify, matcherHint } from 'jest-matcher-utils';
 import { equals } from 'ramda';
-import { server } from './mocks/server';
+
+import { server } from './mocks/server'
+// Establish API mocking before all tests.
+beforeAll(() => server.listen())
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers())
+// Clean up after the tests are finished.
+afterAll(() => server.close())
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -22,18 +29,6 @@ jest.mock('./app/config/store');
 jest.mock('./shared/services/contentful/schema');
 jest.mock('./shared/services/graphqlApi/schema');
 jest.mock('./shared/services/graphqlApi/relayEnvironment');
-
-beforeAll(() => {
-  server.listen({
-    onUnhandledRequest(req) {
-      console.error('Found an unhandled %s request to %s', req.method, req.url.href);
-    },
-  });
-});
-
-afterEach(() => server.resetHandlers());
-
-afterAll(() => server.close());
 
 window.matchMedia =
   window.matchMedia ||

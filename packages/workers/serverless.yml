@@ -95,6 +95,7 @@ functions:
 plugins:
   - serverless-step-functions
   - serverless-esbuild
+  - serverless-localstack
 
 custom:
   projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
@@ -113,6 +114,14 @@ custom:
     dev: workers.conf.yml
     qa: workers.conf.yml
     prod: workers.conf.yml
+
+  localstack:
+    stages:
+      # list of stages for which the plugin should be enabled
+      - local
+    host: http://localstack  # optional - LocalStack host to connect to
+    edgePort: 4566  # optional - LocalStack edge port to connect to
+    autostart: false  # optional - Start LocalStack in Docker on Serverless deploy
 
 package:
   individually: true

@@ -2,6 +2,7 @@ module.exports = {
   src: './src',
   schema: './graphql/schema/schema.graphql',
   language: 'typescript',
+  eagerEsModules: true,
   customScalars: {
     DateTime: 'String',
   },

@@ -3,9 +3,9 @@ import { RoutesConfig } from '../../../app/config/routes';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 
 // @ts-ignore
-const PasswordResetRequest = asyncComponent(() => import('./passwordResetRequest'), 'PasswordResetRequest');
+const PasswordResetRequest = asyncComponent(() => import('./passwordResetRequest'));
 // @ts-ignore
-const PasswordResetConfirm = asyncComponent(() => import('./passwordResetConfirm'), 'PasswordResetConfirm');
+const PasswordResetConfirm = asyncComponent(() => import('./passwordResetConfirm'));
 
 export const PasswordReset = () => {
   return (

@@ -1,1 +1,1 @@
-export { TermsAndConditions } from './termsAndConditions.component';
+export { TermsAndConditions as default } from './termsAndConditions.component';

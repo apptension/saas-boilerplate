@@ -1,1 +1,1 @@
-export { ConfirmEmail } from './confirmEmail.component';
+export { ConfirmEmail as default } from './confirmEmail.component';

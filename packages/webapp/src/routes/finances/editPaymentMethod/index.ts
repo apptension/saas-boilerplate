@@ -1,1 +1,1 @@
-export { EditPaymentMethod } from './editPaymentMethod.component';
+export { EditPaymentMethod as default } from './editPaymentMethod.component';

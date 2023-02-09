@@ -1,5 +1,5 @@
 const path = require('path');
-const humps = require('humps');
+const Str = require('@supercharge/strings');
 const { complement, isEmpty } = require('ramda');
 
 const templatesPath = path.join(__dirname, 'templates');
@@ -64,7 +64,7 @@ module.exports = (plop) => {
                   .slice(path.length + 1)
                   .split('/')
                   .filter(complement(isEmpty))
-                  .map((name) => humps.pascalize(name));
+                  .map((name) => Str(name).pascal().get());
 
                 return [base, ...nestedComponentsPaths, ''].join('/');
               }

@@ -1,1 +1,1 @@
-export { PasswordResetConfirm } from './passwordResetConfirm.component';
+export { PasswordResetConfirm as default } from './passwordResetConfirm.component';

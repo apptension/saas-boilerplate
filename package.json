@@ -17,13 +17,18 @@
     "@swc/core": "^1.2.173",
     "@swc/helpers": "~0.4.11",
     "@types/node": "16.11.7",
+    "babel-plugin-relay": "^14.1.0",
     "env-cmd": "^10.1.0",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "^15.4.5",
     "prettier": "^2.6.2",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
-    "typescript": "~4.8.2"
+    "typescript": "~4.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0"
   },
   "dependencies": {
     "@nrwl/nx-cloud": "^15.0.2"

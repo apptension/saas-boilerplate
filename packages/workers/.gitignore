@@ -18,6 +18,7 @@ var/
 .installed.cfg
 *.egg
 .env
+.esbuild
 
 
 # Serverless directories
