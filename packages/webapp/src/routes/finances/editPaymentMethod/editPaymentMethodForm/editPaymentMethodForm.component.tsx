@@ -1,30 +1,32 @@
 import { FormattedMessage } from 'react-intl';
 
 import { StripePaymentMethodSelector, useStripePaymentMethods } from '../../../../shared/components/finances/stripe';
-import { useApiForm } from '../../../../shared/hooks/useApiForm';
-import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import {
   PaymentFormFields,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-
-import { Form, SubmitButton } from './editPaymentMethodForm.styles';
+import { SUBSCRIPTION_ACTIVE_FRAGMENT } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
+import { useApiForm } from '../../../../shared/hooks/useApiForm';
+import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
+import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 
 type ChangePaymentFormFields = PaymentFormFields;
 
 type EditPaymentMethodFormProps = {
   onSuccess: () => void;
-  allPaymentMethods?: any;
 };
 
 export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps) => {
-  const { allPaymentMethods } = useActiveSubscriptionDetails();
+  const { activeSubscription } = useActiveSubscriptionDetails();
 
   const { createSetupIntent } = useStripeSetupIntent();
   const { confirmCardSetup } = useStripeCardSetup();
 
-  const { updateDefaultPaymentMethod } = useStripePaymentMethods();
+  const { updateDefaultPaymentMethod } = useStripePaymentMethods({ onUpdateSuccess: onSuccess });
+
+  const activeSubscriptionFragment = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscription);
 
   const apiFormControls = useApiForm<ChangePaymentFormFields>({ mode: 'onChange' });
   const {
@@ -34,11 +36,8 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     form: { formState },
   } = apiFormControls;
 
-  const setCardAsDefault = async (cardId: string) => {
-    try {
-      await updateDefaultPaymentMethod(cardId);
-      onSuccess();
-    } catch {}
+  const setCardAsDefault = (cardId: string) => {
+    updateDefaultPaymentMethod(cardId);
   };
 
   const setupNewCard = async (data: ChangePaymentFormFields) => {
@@ -65,8 +64,8 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
       return setGenericError(result.error.message);
     }
 
-    if (result.setupIntent?.status === 'succeeded' && result.setupIntent.payment_method) {
-      await setCardAsDefault(result.setupIntent.payment_method as string);
+    if (result.setupIntent?.status === 'succeeded' && typeof result.setupIntent.payment_method === 'string') {
+      setCardAsDefault(result.setupIntent.payment_method);
     }
   };
 
@@ -81,7 +80,10 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <StripePaymentMethodSelector formControls={apiFormControls} initialValue={allPaymentMethods?.edges[0]?.node} />
+      <StripePaymentMethodSelector
+        formControls={apiFormControls}
+        initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
+      />
 
       <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
         <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />

@@ -1,23 +1,20 @@
-import { FormattedMessage } from 'react-intl';
 import { useQuery } from '@apollo/client';
+import { FormattedMessage } from 'react-intl';
 
-import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-
-import { mapConnection } from '../../../shared/utils/graphql';
-import { StripeAllPaymentsMethodsQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
-import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
-
+import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import {
   SUBSCRIPTION_ACTIVE_FRAGMENT,
   SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY,
 } from '../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
-
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
+import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { mapConnection } from '../../../shared/utils/graphql';
 import { Link, Row, RowValue } from './subscriptions.styles';
 
 export type PaymentMethodContentProps = {
-  allPaymentMethods?: StripeAllPaymentsMethodsQueryQuery['allPaymentMethods'];
+  allPaymentMethods?: StripeSubscriptionQueryQuery['allPaymentMethods'];
 };
 
 export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContentProps) => {
@@ -29,14 +26,15 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
   if (!activeSubscription) return null;
 
   const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
-  const firstPaymentMethod = paymentMethods?.[0];
+  const defaultMethod =
+    paymentMethods.find(({ id }) => id === activeSubscription.defaultPaymentMethod?.id) || paymentMethods[0];
 
   return (
     <>
       <Row>
         <FormattedMessage defaultMessage="Current method:" id="My subscription / Current method" />
         <RowValue>
-          <StripePaymentMethodInfo method={firstPaymentMethod} />
+          <StripePaymentMethodInfo method={defaultMethod} />
         </RowValue>
       </Row>
       <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>

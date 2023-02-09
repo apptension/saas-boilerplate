@@ -1,26 +1,30 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { ConnectionHandler } from 'relay-runtime';
 
-import stripeUpdateDefaultPaymentMethodMutationGraphql, {
-  stripeUpdateDefaultPaymentMethodMutation,
-} from '../../../../modules/stripe/__generated__/stripeUpdateDefaultPaymentMethodMutation.graphql';
 import { TestProduct } from '../../../../modules/stripe/stripe.types';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { StripePaymentIntentType } from '../../../services/graphqlApi/__generated/gql/graphql';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
 import { useStripePayment } from './stripePayment.stripe.hook';
 import {
   STRIPE_CREATE_PAYMENT_INTENT_MUTATION,
   STRIPE_UPDATE_PAYMENT_INTENT_MUTATION,
 } from './stripePaymentForm/stripePaymentForm.graphql';
-import { STRIPE_DELETE_PAYMENT_METHOD_MUTATION } from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import {
+  STRIPE_DELETE_PAYMENT_METHOD_MUTATION,
+  STRIPE_UPDATE_PAYMENT_METHOD_MUTATION,
+} from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import {
   PaymentFormFields,
   StripePaymentMethodSelection,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 
-export const useStripePaymentMethods = () => {
+interface UseStripePaymentMethodsProps {
+  onUpdateSuccess?: () => void;
+}
+
+export const useStripePaymentMethods = (props: UseStripePaymentMethodsProps = {}) => {
+  const onUpdateSuccess = props.onUpdateSuccess;
+
   const [commitDeletePaymentMethodMutation] = useMutation(STRIPE_DELETE_PAYMENT_METHOD_MUTATION, {
     update(cache, { data }) {
       cache.modify({
@@ -40,9 +44,9 @@ export const useStripePaymentMethods = () => {
     },
   });
 
-  const [commitUpdateDefaultPaymentMethodMutation] = usePromiseMutation<stripeUpdateDefaultPaymentMethodMutation>(
-    stripeUpdateDefaultPaymentMethodMutationGraphql
-  );
+  const [commitUpdateDefaultPaymentMethodMutation] = useMutation(STRIPE_UPDATE_PAYMENT_METHOD_MUTATION, {
+    onCompleted: () => onUpdateSuccess?.(),
+  });
 
   const deletePaymentMethod = (id: string) => {
     commitDeletePaymentMethodMutation({
@@ -54,17 +58,14 @@ export const useStripePaymentMethods = () => {
     });
   };
 
-  const updateDefaultPaymentMethod = async (id: string) => {
-    try {
-      await commitUpdateDefaultPaymentMethodMutation({
-        variables: {
-          input: {
-            id,
-          },
-          connections: [ConnectionHandler.getConnectionID('root', 'stripe_allPaymentMethods')],
+  const updateDefaultPaymentMethod = (id: string) => {
+    commitUpdateDefaultPaymentMethodMutation({
+      variables: {
+        input: {
+          id,
         },
-      });
-    } catch {}
+      },
+    });
   };
 
   return { deletePaymentMethod, updateDefaultPaymentMethod };

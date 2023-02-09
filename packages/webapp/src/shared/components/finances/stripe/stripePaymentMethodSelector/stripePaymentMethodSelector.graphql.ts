@@ -41,3 +41,22 @@ export const STRIPE_DELETE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const STRIPE_UPDATE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
+  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {
+    updateDefaultPaymentMethod(input: $input) {
+      activeSubscription {
+        ...subscriptionActiveSubscriptionFragment_
+        id
+      }
+      paymentMethodEdge {
+        node {
+          # commented only because of the broken apollo types: need to fix it after migration
+          #          ...stripePaymentMethodFragment @relay(mask: false)
+          ...stripePaymentMethodFragment
+          id
+        }
+      }
+    }
+  }
+`);
