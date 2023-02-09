@@ -28,3 +28,16 @@ export const STRIPE_SUBSCRIPTION_QUERY = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const STRIPE_DELETE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
+  mutation stripeDeletePaymentMethodMutation($input: DeletePaymentMethodMutationInput!) {
+    deletePaymentMethod(input: $input) {
+      deletedIds
+      activeSubscription {
+        defaultPaymentMethod {
+          ...stripePaymentMethodFragment
+        }
+      }
+    }
+  }
+`);

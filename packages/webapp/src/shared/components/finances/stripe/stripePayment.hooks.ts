@@ -1,51 +1,57 @@
-import { useState } from 'react';
-
 import { useMutation } from '@apollo/client';
+import { useState } from 'react';
 import { ConnectionHandler } from 'relay-runtime';
 
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import stripeDeletePaymentMethodMutationGraphql, {
-  stripeDeletePaymentMethodMutation,
-} from '../../../../modules/stripe/__generated__/stripeDeletePaymentMethodMutation.graphql';
 import stripeUpdateDefaultPaymentMethodMutationGraphql, {
   stripeUpdateDefaultPaymentMethodMutation,
 } from '../../../../modules/stripe/__generated__/stripeUpdateDefaultPaymentMethodMutation.graphql';
-
 import { TestProduct } from '../../../../modules/stripe/stripe.types';
 import { useApiForm } from '../../../hooks/useApiForm';
 import { StripePaymentIntentType } from '../../../services/graphqlApi/__generated/gql/graphql';
-
+import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
+import { useStripePayment } from './stripePayment.stripe.hook';
+import {
+  STRIPE_CREATE_PAYMENT_INTENT_MUTATION,
+  STRIPE_UPDATE_PAYMENT_INTENT_MUTATION,
+} from './stripePaymentForm/stripePaymentForm.graphql';
+import { STRIPE_DELETE_PAYMENT_METHOD_MUTATION } from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import {
   PaymentFormFields,
   StripePaymentMethodSelection,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 
-import {
-  STRIPE_CREATE_PAYMENT_INTENT_MUTATION,
-  STRIPE_UPDATE_PAYMENT_INTENT_MUTATION,
-} from './stripePaymentForm/stripePaymentForm.graphql';
-import { useStripePayment } from './stripePayment.stripe.hook';
-
 export const useStripePaymentMethods = () => {
-  const [commitDeletePaymentMethodMutation] = usePromiseMutation<stripeDeletePaymentMethodMutation>(
-    stripeDeletePaymentMethodMutationGraphql
-  );
+  const [commitDeletePaymentMethodMutation] = useMutation(STRIPE_DELETE_PAYMENT_METHOD_MUTATION, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allPaymentMethods(existingConnection = { edges: [] }) {
+            const deletedId = data?.deletePaymentMethod?.deletedIds?.[0];
+            if (!deletedId) return existingConnection;
+
+            const normalizedId = cache.identify({ id: deletedId, __typename: 'StripePaymentMethodType' });
+            return {
+              ...existingConnection,
+              edges: existingConnection.edges.filter(({ node }) => node.__ref !== normalizedId),
+            };
+          },
+        },
+      });
+    },
+  });
 
   const [commitUpdateDefaultPaymentMethodMutation] = usePromiseMutation<stripeUpdateDefaultPaymentMethodMutation>(
     stripeUpdateDefaultPaymentMethodMutationGraphql
   );
 
-  const deletePaymentMethod = async (id: string) => {
-    try {
-      await commitDeletePaymentMethodMutation({
-        variables: {
-          input: {
-            id,
-          },
-          connections: [ConnectionHandler.getConnectionID('root', 'stripe_allPaymentMethods')],
+  const deletePaymentMethod = (id: string) => {
+    commitDeletePaymentMethodMutation({
+      variables: {
+        input: {
+          id,
         },
-      });
-    } catch {}
+      },
+    });
   };
 
   const updateDefaultPaymentMethod = async (id: string) => {
