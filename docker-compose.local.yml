@@ -43,6 +43,8 @@ services:
     env_file:
       - .env
       - ./packages/workers/.env
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
 
     depends_on:
       - db
