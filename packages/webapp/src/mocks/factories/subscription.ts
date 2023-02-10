@@ -3,6 +3,7 @@ import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
 import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import {
@@ -96,16 +97,21 @@ export const fillSubscriptionScheduleQueryWithPhases = (
 };
 
 export const fillSubscriptionPlansAllQuery = (env: RelayMockEnvironment, data: SubscriptionPlan[] = []) => {
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      SubscriptionPlanConnection: () => connectionFromArray(data),
-    })
-  );
-  env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
+  if (env) {
+    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        SubscriptionPlanConnection: () => connectionFromArray(data),
+      })
+    );
+    env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
+  }
+
+  return composeMockedListQueryResult(SUBSCRIPTION_PLANS_ALL_QUERY, 'allSubscriptionPlans', 'SubscriptionPlanType', {
+    data,
+  });
 };
 
 // Apollo Mocks
-
 export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[]) =>
   composeMockedListQueryResult(STRIPE_SUBSCRIPTION_QUERY, 'allPaymentMethods', 'StripePaymentMethodType', {
     data,

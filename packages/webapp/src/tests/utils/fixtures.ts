@@ -56,6 +56,7 @@ export const composeMockedQueryResult = (
     data,
     errors,
   };
+
   return {
     request: {
       query,
@@ -90,6 +91,7 @@ export const composeMockedListQueryResult = (
     },
     ...additionalData,
   } as Record<string, any>;
+
   return composeMockedQueryResult(query, {
     variables,
     data: composedData,

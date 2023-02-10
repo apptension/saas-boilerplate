@@ -1,17 +1,15 @@
 import { FormattedMessage } from 'react-intl';
-import { useFragment } from 'react-relay';
 
-import subscriptionPlanItemFragmentGraphql, {
-  subscriptionPlanItemFragment$key,
-} from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
 import { useActiveSubscriptionDetailsData } from '../../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { useSubscriptionPlanDetails } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSubscriptionQueryQuery } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { SUBSRIPTION_PLAN_ITEM_FRAGMENT } from '../subscriptionPlans/subscriptionPlans.graphql';
 import { Container, Content, Feature, FeaturesList, Name, SelectButton } from './subscriptionPlanItem.styles';
 
 export type SubscriptionPlanItemProps = {
-  plan: subscriptionPlanItemFragment$key;
-  onSelect: (id: string | null) => void;
+  plan: FragmentType<typeof SUBSRIPTION_PLAN_ITEM_FRAGMENT>;
+  onSelect: (id: string | null | undefined) => void;
   className?: string;
   activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
   loading: boolean;
@@ -24,12 +22,14 @@ export const SubscriptionPlanItem = ({
   activeSubscription,
   loading,
 }: SubscriptionPlanItemProps) => {
-  const data = useFragment<subscriptionPlanItemFragment$key>(subscriptionPlanItemFragmentGraphql, plan);
+  const data = useFragment(SUBSRIPTION_PLAN_ITEM_FRAGMENT, plan);
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
     useActiveSubscriptionDetailsData(activeSubscription);
   const isActive = activeSubscriptionPlan.name === name && !activeSubscriptionIsCancelled;
   const isScheduledForNextPeriod = nextSubscriptionPlanDetails.name === name;
+
+  const handleSelect = () => onSelect(data.pk);
 
   return (
     <Container isActive={isActive} className={className}>
@@ -51,7 +51,7 @@ export const SubscriptionPlanItem = ({
         </FeaturesList>
       </Content>
 
-      <SelectButton onClick={() => onSelect(data.pk)} disabled={isScheduledForNextPeriod || isFree || loading}>
+      <SelectButton onClick={handleSelect} disabled={isScheduledForNextPeriod || isFree || loading}>
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
           id="Change plan item / Select button"

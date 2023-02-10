@@ -1,13 +1,13 @@
-import { useIntl } from 'react-intl';
-import { times } from 'ramda';
 import { useQuery } from '@apollo/client';
+import { times } from 'ramda';
+import { useIntl } from 'react-intl';
 
-import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
-import { subscriptionPlanItemFragment$data } from '../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
-import { STRIPE_SUBSCRIPTION_QUERY } from '../../../components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { ActiveSubscriptionDetailsContextType } from '../../../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { STRIPE_SUBSCRIPTION_QUERY } from '../../../components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
+import { SubscriptionPlanItemFragmentFragment } from '../../../services/graphqlApi/__generated/gql/graphql';
 
-export const useSubscriptionPlanDetails = (plan?: subscriptionPlanItemFragment$data | SubscriptionPlan) => {
+export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFragment | SubscriptionPlan) => {
   const intl = useIntl();
 
   const examplePlanFeatureItem = intl.formatMessage({

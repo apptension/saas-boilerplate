@@ -22,7 +22,7 @@ export const STRIPE_SUBSCRIPTION_QUERY = gql(/* GraphQL */ `
     }
 
     activeSubscription {
-      ...subscriptionActiveSubscriptionFragment_
+      ...subscriptionActiveSubscriptionFragment
       id
       __typename
     }
@@ -46,7 +46,7 @@ export const STRIPE_UPDATE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
   mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {
     updateDefaultPaymentMethod(input: $input) {
       activeSubscription {
-        ...subscriptionActiveSubscriptionFragment_
+        ...subscriptionActiveSubscriptionFragment
         id
       }
       paymentMethodEdge {

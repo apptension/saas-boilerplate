@@ -1,35 +1,34 @@
-import { Suspense, useEffect } from 'react';
-import { useQueryLoader } from 'react-relay';
+import { useQuery } from '@apollo/client';
 
-import subscriptionPlansAllQueryGraphql, {
-  subscriptionPlansAllQuery,
-} from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { mapConnection } from '../../../../shared/utils/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { SubscriptionPlansContent } from './subscriptionPlans.content';
+import { SUBSCRIPTION_PLANS_ALL_QUERY } from './subscriptionPlans.graphql';
+import { PlanItem, Plans } from './subscriptionPlans.styles';
 
 export type SubscriptionPlansProps = {
-  onPlanSelection: (id: string | null) => void;
+  onPlanSelection: (id: string | null | undefined) => void;
   loading: boolean;
 };
 
 export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlansProps) => {
-  const [plansQueryRef, loadPlansQuery] = useQueryLoader<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql);
   const { activeSubscription } = useActiveSubscriptionDetails();
 
-  useEffect(() => {
-    loadPlansQuery({});
-  }, [loadPlansQuery]);
-
-  if (!plansQueryRef) return null;
+  const { data } = useQuery(SUBSCRIPTION_PLANS_ALL_QUERY);
 
   return (
-    <Suspense fallback={null}>
-      <SubscriptionPlansContent
-        queryRef={plansQueryRef}
-        onPlanSelection={onPlanSelection}
-        activeSubscription={activeSubscription}
-        loading={loading}
-      />
-    </Suspense>
+    <Plans>
+      {mapConnection(
+        (plan) => (
+          <PlanItem
+            key={plan.id}
+            plan={plan}
+            onSelect={onPlanSelection}
+            activeSubscription={activeSubscription}
+            loading={loading}
+          />
+        ),
+        data?.allSubscriptionPlans
+      )}
+    </Plans>
   );
 };

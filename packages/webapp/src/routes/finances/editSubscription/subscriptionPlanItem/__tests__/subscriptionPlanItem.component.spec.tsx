@@ -1,40 +1,46 @@
+import { useQuery } from '@apollo/client';
 import { screen, waitFor } from '@testing-library/react';
-import { useLazyLoadQuery } from 'react-relay';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { OperationDescriptor } from 'react-relay/hooks';
 import userEvent from '@testing-library/user-event';
-import { Route, Routes } from 'react-router-dom';
 import { append } from 'ramda';
+import { OperationDescriptor } from 'react-relay/hooks';
+import { Route, Routes } from 'react-router-dom';
+import { MockPayloadGenerator } from 'relay-test-utils';
 
-import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscriptionPlanItem.component';
 import {
+  fillSubscriptionPlansAllQuery,
   fillSubscriptionScheduleQuery,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
+import subscriptionPlansAllQueryGraphql from '../../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
-import { render } from '../../../../../tests/utils/rendering';
-import subscriptionPlansAllQueryGraphql, {
-  subscriptionPlansAllQuery,
-} from '../../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { mapConnection } from '../../../../../shared/utils/graphql';
-import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
-import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 import { connectionFromArray } from '../../../../../tests/utils/fixtures';
+import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
+import { render } from '../../../../../tests/utils/rendering';
+import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../../subscriptionPlans/subscriptionPlans.graphql';
+import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscriptionPlanItem.component';
 
 describe('SubscriptionPlanItem: Component', () => {
   const defaultProps: Pick<SubscriptionPlanItemProps, 'onSelect'> = { onSelect: () => jest.fn() };
 
   const Component = (props: Partial<SubscriptionPlanItemProps>) => {
-    const data = useLazyLoadQuery<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql, {});
     const { activeSubscription } = useActiveSubscriptionDetails();
+    const { data } = useQuery(SUBSCRIPTION_PLANS_ALL_QUERY);
 
-    const plans = mapConnection((plan) => plan, data.allSubscriptionPlans);
+    const plans = mapConnection((plan) => plan, data?.allSubscriptionPlans);
 
     return (
-      <SubscriptionPlanItem {...defaultProps} plan={plans[0]} activeSubscription={activeSubscription} {...props} />
+      <SubscriptionPlanItem
+        {...defaultProps}
+        plan={plans[0]}
+        activeSubscription={activeSubscription}
+        loading={false}
+        {...props}
+      />
     );
   };
 
@@ -67,41 +73,32 @@ describe('SubscriptionPlanItem: Component', () => {
     return relayEnvironment;
   };
 
-  const freePlan = subscriptionPlanFactory({
-    id: 'plan_free',
-    product: { name: SubscriptionPlanName.FREE },
-  });
-
   const monthlyPlan = subscriptionPlanFactory({
     id: 'plan_monthly',
+    pk: 'price_monthly',
     product: { name: SubscriptionPlanName.MONTHLY },
   });
-
-  const yearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
 
   const subscriptionWithMonthlyPlan = subscriptionFactory({
     phases: [subscriptionPhaseFactory({ item: { price: monthlyPlan } })],
   });
 
-  const subscriptionMigrationToYearly = subscriptionFactory({
-    phases: [
-      subscriptionPhaseFactory({ item: { price: monthlyPlan } }),
-      subscriptionPhaseFactory({ item: { price: yearlyPlan } }),
-    ],
-  });
-
   it('should render name', async () => {
     const relayEnvironment = getRelayEnv();
-    fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-    render(<Wrapper />, { relayEnvironment });
+    const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+    render(<Wrapper />, {
+      relayEnvironment,
+      apolloMocks: append(requestPlansMock),
+    });
+
     expect(await screen.findByText(/monthly/i)).toBeInTheDocument();
   });
 
   it('should render plan price', async () => {
     const relayEnvironment = getRelayEnv();
-    fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-    render(<Wrapper />, { relayEnvironment });
-    expect(await screen.findByText(/2\.5 USD/i)).toBeInTheDocument();
+    const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+    render(<Wrapper />, { relayEnvironment, apolloMocks: append(requestPlansMock) });
+    expect(await screen.findByText(/10 USD/i)).toBeInTheDocument();
   });
 
   describe('button is clicked', () => {
@@ -109,8 +106,11 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
-        fillSubscriptionScheduleQuery(relayEnvironment, subscriptionMigrationToYearly);
-        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
+          relayEnvironment,
+          apolloMocks: append(requestPlansMock),
+        });
         await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
         await waitFor(() => {
@@ -124,10 +124,11 @@ describe('SubscriptionPlanItem: Component', () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
         const requestMock = fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
+        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
 
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
           relayEnvironment,
-          apolloMocks: append(requestMock),
+          apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
         });
         await waitForApolloMocks();
 
@@ -140,16 +141,11 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
         const relayEnvironment = getRelayEnv();
-        fillSubscriptionScheduleQuery(
+        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
           relayEnvironment,
-          subscriptionFactory({
-            phases: [
-              subscriptionPhaseFactory({ item: { price: monthlyPlan } }),
-              subscriptionPhaseFactory({ item: { price: freePlan } }),
-            ],
-          })
-        );
-        const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, { relayEnvironment });
+          apolloMocks: append(requestPlansMock),
+        });
         await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
         expect(onSelect).toHaveBeenCalled();

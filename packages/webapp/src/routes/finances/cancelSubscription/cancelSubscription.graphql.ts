@@ -11,27 +11,27 @@ export const SUBSCRIPTION_CANCEL_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-gql(/* GraphQL */ `
-  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
-    phases {
-      startDate
-      endDate
-      trialEnd
-      item {
-        price {
-          ...subscriptionPlanItemFragment
-        }
-        quantity
-      }
-    }
-    subscription {
-      startDate
-      trialEnd
-      trialStart
-    }
-    canActivateTrial
-    defaultPaymentMethod {
-      ...stripePaymentMethodFragment
-    }
-  }
-`);
+// gql(/* GraphQL */ `
+//   fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
+//     phases {
+//       startDate
+//       endDate
+//       trialEnd
+//       item {
+//         price {
+//           ...subscriptionPlanItemFragment
+//         }
+//         quantity
+//       }
+//     }
+//     subscription {
+//       startDate
+//       trialEnd
+//       trialStart
+//     }
+//     canActivateTrial
+//     defaultPaymentMethod {
+//       ...stripePaymentMethodFragment
+//     }
+//   }
+// `);

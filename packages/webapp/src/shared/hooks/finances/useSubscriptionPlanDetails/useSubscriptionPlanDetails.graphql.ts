@@ -1,14 +1,14 @@
 import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
 
 export const SUBSCRIPTION_ACTIVE_FRAGMENT = gql(/* GraphQL */ `
-  fragment subscriptionActiveSubscriptionFragment_ on SubscriptionScheduleType {
+  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
     phases {
       startDate
       endDate
       trialEnd
       item {
         price {
-          ...subscriptionPlanItemFragment_
+          ...subscriptionPlanItemFragment
           id
         }
         quantity
@@ -27,7 +27,7 @@ export const SUBSCRIPTION_ACTIVE_FRAGMENT = gql(/* GraphQL */ `
     }
   }
 
-  fragment subscriptionPlanItemFragment_ on SubscriptionPlanType {
+  fragment subscriptionPlanItemFragment on SubscriptionPlanType {
     id
     pk
     product {
@@ -49,7 +49,7 @@ export const SUBSCRIPTION_ACTIVE_FRAGMENT = gql(/* GraphQL */ `
 export const SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY = gql(/* GraphQL */ `
   query subscriptionActivePlanDetailsQuery_ {
     activeSubscription {
-      ...subscriptionActiveSubscriptionFragment_
+      ...subscriptionActiveSubscriptionFragment
       id
     }
   }

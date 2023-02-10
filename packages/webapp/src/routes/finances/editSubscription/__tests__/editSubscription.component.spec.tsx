@@ -5,7 +5,11 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
+import {
+  fillSubscriptionPlansAllQuery,
+  fillSubscriptionScheduleQuery,
+  subscriptionPlanFactory,
+} from '../../../../mocks/factories';
 import { snackbarActions } from '../../../../modules/snackbar';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
@@ -92,13 +96,14 @@ describe('EditSubscription: Component', () => {
     it('should show success message and redirect to my subscription page', async () => {
       const relayEnvironment = getRelayEnv();
       const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
+      const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [mockMonthlyPlan]);
       const requestMockMutation = fillChangeSubscriptionMutation();
 
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, {
         relayEnvironment,
         routerProps,
-        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation),
+        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
       });
 
       await userEvent.click(await screen.findByText(/monthly/i));
@@ -123,13 +128,14 @@ describe('EditSubscription: Component', () => {
 
       const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
       const errorMessage = 'Missing payment method';
+      const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [mockMonthlyPlan]);
       const requestMockMutation = fillChangeSubscriptionMutation([new GraphQLError(errorMessage)]);
 
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, {
         relayEnvironment,
         routerProps,
-        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation),
+        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
       });
 
       await userEvent.click(await screen.findByText(/monthly/i));
