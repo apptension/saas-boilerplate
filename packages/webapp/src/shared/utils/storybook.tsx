@@ -1,22 +1,23 @@
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { produce } from 'immer';
-import { createReducer, Reducer, Store } from '@reduxjs/toolkit';
+import { Reducer, Store, createReducer } from '@reduxjs/toolkit';
 import { Story } from '@storybook/react';
-import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
-import { RelayEnvironmentProvider } from 'react-relay';
-import { Suspense } from 'react';
-import { Route, Routes, MemoryRouter } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
-import { store } from '../../mocks/store';
+import { produce } from 'immer';
+import { Suspense } from 'react';
+import { Provider } from 'react-redux';
+import { RelayEnvironmentProvider } from 'react-relay';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { createStore } from 'redux';
+import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
+
 import { GlobalState } from '../../app/config/reducers';
+import { store } from '../../mocks/store';
 import { ActiveSubscriptionContext } from '../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
 import {
   DefaultReduxState,
   DefaultTestProviders,
   DefaultTestProvidersProps,
-  getWrapper,
   WrapperProps,
+  getWrapper,
 } from '../../tests/utils/rendering';
 import { stripePromise } from '../services/stripe';
 
@@ -61,22 +62,20 @@ export const withSuspense = (StoryComponent: Story) => (
 
 export const withActiveSubscriptionContext = (StoryComponent: Story) => {
   return (
-    <MemoryRouter initialEntries={['/']}>
-      <Routes>
-        <Route element={<ActiveSubscriptionContext />}>
-          <Route
-            index
-            element={
-              <Elements stripe={stripePromise}>
-                <Suspense fallback={null}>
-                  <StoryComponent />
-                </Suspense>
-              </Elements>
-            }
-          />
-        </Route>
-      </Routes>
-    </MemoryRouter>
+    <Routes>
+      <Route element={<ActiveSubscriptionContext />}>
+        <Route
+          index
+          element={
+            <Elements stripe={stripePromise}>
+              <Suspense fallback={null}>
+                <StoryComponent />
+              </Suspense>
+            </Elements>
+          }
+        />
+      </Route>
+    </Routes>
   );
 };
 

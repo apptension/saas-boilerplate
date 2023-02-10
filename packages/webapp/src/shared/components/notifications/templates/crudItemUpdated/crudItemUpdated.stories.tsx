@@ -1,6 +1,7 @@
 import { Story } from '@storybook/react';
+
+import { withProviders } from '../../../../utils/storybook';
 import { NotificationTypes } from '../../notifications.types';
-import { withRouter } from '../../../../../../.storybook/decorators';
 import { CrudItemUpdated, CrudItemUpdatedProps } from './crudItemUpdated.component';
 
 const Template: Story<CrudItemUpdatedProps> = (args: CrudItemUpdatedProps) => {
@@ -10,7 +11,6 @@ const Template: Story<CrudItemUpdatedProps> = (args: CrudItemUpdatedProps) => {
 export default {
   title: 'Notifications/CrudItemUpdated',
   component: CrudItemUpdated,
-  decorators: [withRouter()],
 };
 
 export const Default = Template.bind({});
@@ -26,3 +26,4 @@ Default.args = {
     avatar: 'https://picsum.photos/24/24',
   },
 };
+Default.decorators = [withProviders()];

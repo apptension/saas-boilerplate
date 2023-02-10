@@ -58,17 +58,19 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
 }));
 
 export const fillSubscriptionScheduleQuery = (
-  relayEnvironment: RelayMockEnvironment,
+  relayEnvironment?: RelayMockEnvironment,
   subscription: Partial<Subscription>
 ) => {
-  relayEnvironment.mock.queueOperationResolver((operation) => {
-    return MockPayloadGenerator.generate(operation, {
-      SubscriptionScheduleType: (context, generateId) => ({
-        ...subscription,
-      }),
+  if (relayEnvironment) {
+    relayEnvironment.mock.queueOperationResolver((operation) => {
+      return MockPayloadGenerator.generate(operation, {
+        SubscriptionScheduleType: (context, generateId) => ({
+          ...subscription,
+        }),
+      });
     });
-  });
-  relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
+    relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
+  }
 
   const defaultPaymentMethod = subscription.defaultPaymentMethod || {};
 
@@ -81,7 +83,7 @@ export const fillSubscriptionScheduleQuery = (
 };
 
 export const fillSubscriptionScheduleQueryWithPhases = (
-  relayEnvironment: RelayMockEnvironment,
+  relayEnvironment?: RelayMockEnvironment,
   phases: SubscriptionPhase[]
 ) => {
   return fillSubscriptionScheduleQuery(

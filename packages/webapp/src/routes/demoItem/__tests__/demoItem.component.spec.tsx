@@ -1,10 +1,11 @@
 import { screen } from '@testing-library/react';
+import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
-import { createMockRouterProps, render } from '../../../tests/utils/rendering';
-import { DemoItem } from '../demoItem.component';
 import { RoutesConfig } from '../../../app/config/routes';
 import { demoItemFactory, fillDemoItemQuery } from '../../../mocks/factories';
+import { createMockRouterProps, render } from '../../../tests/utils/rendering';
+import { DemoItem } from '../demoItem.component';
 
 describe('DemoItem: Component', () => {
   const routePath = ['demoItem'];
@@ -30,7 +31,7 @@ describe('DemoItem: Component', () => {
     const imageTitle = demoItem.image?.title as string;
 
     render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+      apolloMocks: append(requestMock),
       routerProps,
     });
 

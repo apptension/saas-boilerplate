@@ -15,7 +15,7 @@ import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 
 type ChangePaymentFormFields = PaymentFormFields;
 
-type EditPaymentMethodFormProps = {
+export type EditPaymentMethodFormProps = {
   onSuccess: () => void;
 };
 

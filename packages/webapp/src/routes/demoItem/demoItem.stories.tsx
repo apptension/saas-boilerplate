@@ -1,11 +1,11 @@
 import { Story } from '@storybook/react';
+import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
+import { RoutesConfig } from '../../app/config/routes';
 import { demoItemFactory, fillDemoItemQuery } from '../../mocks/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { createMockRouterProps } from '../../tests/utils/rendering';
-import { RoutesConfig } from '../../app/config/routes';
-import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { DemoItem } from './demoItem.component';
 
 const routePath = ['demoItem'];
@@ -28,9 +28,6 @@ export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
     routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env);
-      fillDemoItemQuery(env, demoItemFactory(), { id: defaultItemId });
-    },
+    apolloMocks: append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId })),
   }),
 ];

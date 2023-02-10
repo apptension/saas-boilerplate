@@ -1,4 +1,5 @@
 import type { StorybookViteConfig } from '@storybook/builder-vite';
+
 const { mergeConfig } = require('vite');
 
 const config: StorybookViteConfig = {
@@ -20,21 +21,21 @@ const config: StorybookViteConfig = {
     '../src/routes/crudDemoItem/crudDemoItemList/crudDemoItemList.stories.tsx',
     '../src/routes/crudDemoItem/crudDemoItemList/crudDemoItemListItem/crudDemoItemListItem.stories.tsx',
     '../src/routes/crudDemoItem/editCrudDemoItem/editCrudDemoItem.stories.tsx',
-    // '../src/routes/demoItem/demoItem.stories.tsx',
+    '../src/routes/demoItem/demoItem.stories.tsx',
     // '../src/routes/demoItems/demoItems.stories.tsx',
     // '../src/routes/documents/document/document.stories.tsx',
     // '../src/routes/documents/document/skeleton/skeleton.stories.tsx',
     // '../src/routes/documents/documents.stories.tsx',
     '../src/routes/finances/cancelSubscription/cancelSubscription.stories.tsx',
-    '../src/routes/finances/editPaymentMethod/editPaymentMethodForm/editPaymentMethodForm.stories.tsx',
-    '../src/routes/finances/editSubscription/editSubscription.stories.tsx',
-    '../src/routes/finances/editSubscription/subscriptionPlanItem/subscriptionPlanItem.stories.tsx',
-    '../src/routes/finances/paymentConfirm/paymentConfirm.stories.tsx',
-    '../src/routes/finances/subscriptions/subscriptions.stories.tsx',
-    '../src/routes/finances/transactionHistory/transactionHistory.stories.tsx',
-    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx',
+    '../src/routes/finances/editPaymentMethod/editPaymentMethodForm/editPaymentMethodForm.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/editSubscription/editSubscription.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/editSubscription/subscriptionPlanItem/subscriptionPlanItem.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/paymentConfirm/paymentConfirm.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/subscriptions/subscriptions.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/transactionHistory/transactionHistory.stories.tsx', // todo: need rebase to finish
+    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx', // todo: need rebase to finish
     '../src/routes/profile/profile.stories.tsx',
-    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx',
+    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx', // todo: need rebase to finish
     '../src/shared/components/auth/avatarForm/avatarForm.stories.tsx',
     '../src/shared/components/auth/changePasswordForm/changePasswordForm.stories.tsx',
     '../src/shared/components/auth/editProfileForm/editProfileForm.stories.tsx',
@@ -50,10 +51,10 @@ const config: StorybookViteConfig = {
     '../src/shared/components/emptyState/emptyState.stories.tsx',
     '../src/shared/components/fileSize/fileSize.stories.tsx',
     '../src/shared/components/finances/stripe/stripeCardForm/stripeCardForm.stories.tsx',
-    '../src/shared/components/finances/stripe/stripePaymentForm/stripePaymentForm.stories.tsx',
-    '../src/shared/components/finances/stripe/stripePaymentMethodInfo/stripePaymentMethodInfo.stories.tsx',
-    '../src/shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.stories.tsx',
-    '../src/shared/components/finances/stripe/transactionHistory/transactionHistory.stories.tsx',
+    '../src/shared/components/finances/stripe/stripePaymentForm/stripePaymentForm.stories.tsx', // todo: need rebase to finish
+    '../src/shared/components/finances/stripe/stripePaymentMethodInfo/stripePaymentMethodInfo.stories.tsx', // todo: need rebase to finish
+    '../src/shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.stories.tsx', // todo: need rebase to finish
+    '../src/shared/components/finances/stripe/transactionHistory/transactionHistory.stories.tsx', // todo: need rebase to finish
     '../src/shared/components/forms/button/button.stories.tsx',
     '../src/shared/components/forms/checkbox/checkbox.stories.tsx',
     // '../src/shared/components/forms/dropzone/dropzone.stories.tsx',
@@ -69,7 +70,7 @@ const config: StorybookViteConfig = {
     // '../src/shared/components/notifications/notification/notification.stories.tsx',
     // '../src/shared/components/notifications/notification/skeleton/skeleton.stories.tsx',
     '../src/shared/components/notifications/notificationsButton/notificationsButton.stories.tsx',
-    '../src/shared/components/notifications/notificationsList/notificationsList.stories.tsx',
+    '../src/shared/components/notifications/notificationsList/notificationsList.stories.tsx', // todo: need rebase to finish
     '../src/shared/components/notifications/templates/crudItemCreated/crudItemCreated.stories.tsx',
     '../src/shared/components/notifications/templates/crudItemUpdated/crudItemUpdated.stories.tsx',
     '../src/shared/components/snackbar/snackbar.stories.tsx',

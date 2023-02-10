@@ -1,7 +1,8 @@
 import { Story } from '@storybook/react';
 import { times } from 'ramda';
+
+import { fillStripeAllPaymentMethodsQuery, paymentMethodFactory } from '../../../mocks/factories';
 import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
-import { generateRelayEnvironmentWithPaymentMethods, paymentMethodFactory } from '../../../mocks/factories';
 import { PaymentConfirm } from './paymentConfirm.component';
 
 const Template: Story = () => {
@@ -15,7 +16,7 @@ export default {
     withActiveSubscriptionContext,
     withRedux(),
     withRelay((env) => {
-      generateRelayEnvironmentWithPaymentMethods(
+      fillStripeAllPaymentMethodsQuery(
         times(() => paymentMethodFactory(), 3),
         env
       );

@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
+import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
-import { withProviders } from '../../../shared/utils/storybook';
+
 import { RoutesConfig } from '../../../app/config/routes';
-import { createMockRouterProps } from '../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 import { fillEditCrudDemoItemQuery } from '../../../mocks/factories/crudDemoItem';
+import { withProviders } from '../../../shared/utils/storybook';
+import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
 const routePath = ['crudDemoItem', 'edit'];
@@ -26,16 +27,15 @@ export default {
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env);
+    apolloMocks: append(
       fillEditCrudDemoItemQuery(
-        env,
+        undefined,
         {
           name: 'Default name',
         },
         { id: defaultItemId }
-      );
-    },
+      )
+    ),
+    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
   }),
 ];

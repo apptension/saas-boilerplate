@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
-import { useLazyLoadQuery } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
+import { useLazyLoadQuery } from 'react-relay';
 import { MockPayloadGenerator } from 'relay-test-utils';
 import styled from 'styled-components';
+
+import { documentFactory } from '../../../mocks/factories';
 import { withRelay } from '../../../shared/utils/storybook';
-import { documentFactory } from '../../../mocks/factories/document';
 import { connectionFromArray } from '../../../tests/utils/fixtures';
 import { documentListItemStoryQuery } from './__generated__/documentListItemStoryQuery.graphql';
 import { Document, DocumentProps } from './document.component';

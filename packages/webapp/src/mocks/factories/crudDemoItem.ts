@@ -1,33 +1,35 @@
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import crudDemoItemDetailsQueryGraphql from '../../routes/crudDemoItem/crudDemoItemDetails/__generated__/crudDemoItemDetailsQuery.graphql';
+import { CRUD_DEMO_ITEM_DETAILS_QUERY } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
+import CrudDemoItemListQuery from '../../routes/crudDemoItem/crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
+import { CRUD_DEMO_ITEM_LIST_QUERY } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
 import EditCrudDemoItemQuery from '../../routes/crudDemoItem/editCrudDemoItem/__generated__/editCrudDemoItemQuery.graphql';
+import { CRUD_DEMO_ITEM_EDIT_QUERY } from '../../routes/crudDemoItem/editCrudDemoItem/editCrudDemoItem.graphql';
 import {
   composeMockedListQueryResult,
   composeMockedQueryResult,
   connectionFromArray,
 } from '../../tests/utils/fixtures';
-import CrudDemoItemListQuery from '../../routes/crudDemoItem/crudDemoItemList/__generated__/crudDemoItemListQuery.graphql';
-import { CRUD_DEMO_ITEM_DETAILS_QUERY } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
-import { CRUD_DEMO_ITEM_LIST_QUERY } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
-import { CRUD_DEMO_ITEM_EDIT_QUERY } from '../../routes/crudDemoItem/editCrudDemoItem/editCrudDemoItem.graphql';
 
 export const fillCrudDemoItemDetailsQuery = (
-  env: RelayMockEnvironment,
+  env?: RelayMockEnvironment,
   data = {
     name: 'Demo item name',
   },
   variables = {}
 ) => {
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      CrudDemoItemType() {
-        return data;
-      },
-    })
-  );
-  env.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, variables);
+  if (env) {
+    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        CrudDemoItemType() {
+          return data;
+        },
+      })
+    );
+    env.mock.queuePendingOperation(crudDemoItemDetailsQueryGraphql, variables);
+  }
   return composeMockedQueryResult(CRUD_DEMO_ITEM_DETAILS_QUERY, {
     variables,
     data: {
@@ -63,18 +65,20 @@ export const fillEditCrudDemoItemQuery = (
 };
 
 export const fillCrudDemoItemListQuery = (
-  env: RelayMockEnvironment,
+  env?: RelayMockEnvironment,
   data = [
     { id: 1, name: 'First item' },
     { id: 2, name: 'Second item' },
   ]
 ) => {
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      CrudDemoItemConnection: (...args) => connectionFromArray(data),
-    })
-  );
-  env.mock.queuePendingOperation(CrudDemoItemListQuery, {});
+  if (env) {
+    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
+      MockPayloadGenerator.generate(operation, {
+        CrudDemoItemConnection: (...args) => connectionFromArray(data),
+      })
+    );
+    env.mock.queuePendingOperation(CrudDemoItemListQuery, {});
+  }
 
   return composeMockedListQueryResult(CRUD_DEMO_ITEM_LIST_QUERY, 'allCrudDemoItems', 'CrudDemoItemType', {
     data,

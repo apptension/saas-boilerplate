@@ -70,7 +70,7 @@ export const transactionHistoryEntryFactory = createFactory<TransactionHistoryEn
   invoice: null,
 }));
 
-export const generateRelayEnvironmentWithPaymentMethods = (
+export const fillStripeAllPaymentMethodsQuery = (
   paymentMethods: DeepPartial<StripePaymentMethod>[],
   relayEnv?: RelayMockEnvironment
 ) => {

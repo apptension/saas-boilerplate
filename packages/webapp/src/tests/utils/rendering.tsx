@@ -1,23 +1,23 @@
-import { FC, PropsWithChildren, ComponentClass, ComponentType, ReactElement } from 'react';
-import { Environment, RelayEnvironmentProvider } from 'react-relay';
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
-import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import { createMockEnvironment, RelayMockEnvironment } from 'relay-test-utils';
+import { Store } from '@reduxjs/toolkit';
+import { StoryContext } from '@storybook/react';
+import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
+import invariant from 'invariant';
+import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
-import { Store as ReduxStore } from 'redux';
-import { Store } from '@reduxjs/toolkit';
-import { render, renderHook, RenderOptions, waitFor } from '@testing-library/react';
-import invariant from 'invariant';
+import { Environment, RelayEnvironmentProvider } from 'react-relay';
 import { generatePath } from 'react-router';
-import { StoryContext } from '@storybook/react';
+import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { Store as ReduxStore } from 'redux';
+import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 
-import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
-import { DEFAULT_LOCALE, Locale, translationMessages, TranslationMessages } from '../../app/config/i18n';
-import configureStore from '../../app/config/store';
+import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../app/config/i18n';
 import { RoutesConfig } from '../../app/config/routes';
+import configureStore from '../../app/config/store';
 import { CommonQuery } from '../../app/providers/commonQuery';
+import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
 export const PLACEHOLDER_TEST_ID = 'content';

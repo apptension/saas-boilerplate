@@ -62,7 +62,7 @@ export const composeMockedQueryResult = (
       query,
       variables,
     },
-    result: jest.fn ? jest.fn(() => result) : () => result,
+    result: jest.fn ? jest.fn(() => result) : () => structuredClone(result),
   };
 };
 

@@ -1,8 +1,9 @@
 import { Story } from '@storybook/react';
-import { withProviders } from '../../../utils/storybook';
+import { append } from 'ramda';
+
 import { fillNotificationsListQuery, notificationFactory } from '../../../../mocks/factories';
+import { withProviders } from '../../../utils/storybook';
 import { NotificationTypes } from '../notifications.types';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { NotificationsList, NotificationsListProps } from './notificationsList.component';
 
 const Template: Story<NotificationsListProps> = (args: NotificationsListProps) => {
@@ -15,12 +16,11 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { isOpen: true, listQueryRef: {} as any };
+Default.args = { isOpen: true };
 Default.decorators = [
   withProviders({
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env);
-      fillNotificationsListQuery(env, [
+    apolloMocks: append(
+      fillNotificationsListQuery(undefined, [
         notificationFactory({
           type: NotificationTypes.CRUD_ITEM_CREATED,
           data: {
@@ -38,18 +38,15 @@ Default.decorators = [
             name: 'Lorem ipsum',
           },
         }),
-      ]);
-    },
+      ])
+    ),
   }),
 ];
 
 export const Empty = Template.bind({});
-Empty.args = { isOpen: true, listQueryRef: {} as any };
+Empty.args = { isOpen: true };
 Empty.decorators = [
   withProviders({
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env);
-      fillNotificationsListQuery(env, []);
-    },
+    apolloMocks: append(fillNotificationsListQuery(undefined, [])),
   }),
 ];

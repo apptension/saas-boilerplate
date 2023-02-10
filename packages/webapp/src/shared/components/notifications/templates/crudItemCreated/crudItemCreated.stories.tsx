@@ -1,4 +1,6 @@
 import { Story } from '@storybook/react';
+
+import { withProviders } from '../../../../utils/storybook';
 import { NotificationTypes } from '../../notifications.types';
 import { CrudItemCreated, CrudItemCreatedProps } from './crudItemCreated.component';
 
@@ -24,3 +26,4 @@ Default.args = {
     avatar: 'https://picsum.photos/24/24',
   },
 };
+Default.decorators = [withProviders()];

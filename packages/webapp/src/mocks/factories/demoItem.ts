@@ -2,13 +2,13 @@ import { times } from 'ramda';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { ContentfulDemoItem } from '../../shared/services/contentful';
-import { makeId, composeMockedQueryResult } from '../../tests/utils/fixtures';
 import demoItemQueryGraphql from '../../routes/demoItem/__generated__/demoItemQuery.graphql';
+import { demoItemQuery } from '../../routes/demoItem/demoItem.graphql';
 import demoItemsAllQueryGraphql from '../../routes/demoItems/__generated__/demoItemsAllQuery.graphql';
 import UseFavoriteDemoItemListQuery from '../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
+import { ContentfulDemoItem } from '../../shared/services/contentful';
 import { ContentfulDemoItemFavoriteType } from '../../shared/services/graphqlApi';
-import { demoItemQuery } from '../../routes/demoItem/demoItem.graphql';
+import { composeMockedQueryResult, makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { contentfulSysFactory } from './helpers';
 
@@ -19,6 +19,7 @@ export const demoItemFactory = createDeepFactory<ContentfulDemoItem>(() => ({
   image: {
     sys: contentfulSysFactory(),
     title: 'Image title mock',
+    description: '',
     url: `http://localhost/image/${makeId(32)}.png`,
     contentfulMetadata: { tags: [] },
   },

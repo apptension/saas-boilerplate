@@ -1,8 +1,8 @@
 import { Story } from '@storybook/react';
 
-import { withProviders } from '../../shared/utils/storybook';
 import { currentUserFactory } from '../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
+import { withProviders } from '../../shared/utils/storybook';
 import { Profile } from './profile.component';
 
 const Template: Story = () => {
@@ -17,8 +17,6 @@ export default {
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env, currentUserFactory());
-    },
+    apolloMocks: [fillCommonQueryWithUser(undefined, currentUserFactory())],
   }),
 ];

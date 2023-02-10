@@ -17,8 +17,8 @@ export default {
   component: Avatar,
   decorators: [
     withProviders({
-      relayEnvironment: (env, { args: { profile } }: any) => {
-        fillCommonQueryWithUser(env, profile);
+      apolloMocks: (defaultMocks, { args: { profile } }: any) => {
+        return [fillCommonQueryWithUser(undefined, profile)];
       },
     }),
   ],

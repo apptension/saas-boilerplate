@@ -1,15 +1,16 @@
-import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { times } from 'ramda';
-import { withActiveSubscriptionContext, withRelay } from '../../../../shared/utils/storybook';
+import { Story } from '@storybook/react';
+import { append, times } from 'ramda';
+
 import {
-  generateRelayEnvironmentWithPaymentMethods,
+  fillStripeAllPaymentMethodsQuery,
   fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import { withActiveSubscriptionContext, withProviders, withRelay } from '../../../../shared/utils/storybook';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 
 const Template: Story<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
@@ -21,13 +22,19 @@ export default {
   component: EditPaymentMethodForm,
   decorators: [
     withActiveSubscriptionContext,
+    withProviders({
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat(
+          fillSubscriptionScheduleQueryWithPhases(undefined, [
+            subscriptionPhaseFactory({
+              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+            }),
+          ])
+        ),
+    }),
+    // todo: finish after rebase
     withRelay((env) => {
-      fillSubscriptionScheduleQueryWithPhases(env, [
-        subscriptionPhaseFactory({
-          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-        }),
-      ]);
-      generateRelayEnvironmentWithPaymentMethods(
+      fillStripeAllPaymentMethodsQuery(
         times(() => paymentMethodFactory(), 3),
         env
       );

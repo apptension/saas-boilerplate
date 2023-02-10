@@ -1,8 +1,9 @@
-import { Story } from '@storybook/react';
 import { useQuery } from '@apollo/client';
-import { withProviders } from '../../../../shared/utils/storybook';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { Story } from '@storybook/react';
+import { append } from 'ramda';
+
 import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { withProviders } from '../../../../shared/utils/storybook';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
@@ -34,10 +35,7 @@ const Template: Story<CrudDemoItemListItemProps> = (args: CrudDemoItemListItemPr
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env);
-    },
-    apolloMocks: [
+    apolloMocks: append(
       composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
         data: {
           item: {
@@ -46,8 +44,8 @@ Default.decorators = [
             name: 'Demo item name',
           },
         },
-      }),
-    ],
+      })
+    ),
   }),
 ];
 Default.args = {};

@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
+
 import { RoutesConfig } from '../../../app/config/routes';
 import { ButtonVariant } from '../../../shared/components/forms/button';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';

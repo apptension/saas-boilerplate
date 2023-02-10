@@ -28,8 +28,6 @@ export default {
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    relayEnvironment: (env) => {
-      fillCommonQueryWithUser(env, currentUserFactory());
-    },
+    apolloMocks: [fillCommonQueryWithUser(undefined, currentUserFactory())],
   }),
 ];

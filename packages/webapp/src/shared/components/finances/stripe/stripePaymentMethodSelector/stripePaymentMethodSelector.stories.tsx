@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { times } from 'ramda';
-import { withActiveSubscriptionContext, withRelay } from '../../../../utils/storybook';
+
+import { fillStripeAllPaymentMethodsQuery, paymentMethodFactory } from '../../../../../mocks/factories';
 import { useApiForm } from '../../../../hooks/useApiForm';
 import { stripePromise } from '../../../../services/stripe';
-import { generateRelayEnvironmentWithPaymentMethods, paymentMethodFactory } from '../../../../../mocks/factories';
+import { withActiveSubscriptionContext, withRelay } from '../../../../utils/storybook';
 import { StripePaymentMethodSelector, StripePaymentMethodSelectorProps } from './stripePaymentMethodSelector.component';
 import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 
@@ -23,7 +24,7 @@ export default {
   decorators: [
     withActiveSubscriptionContext,
     withRelay((env) => {
-      generateRelayEnvironmentWithPaymentMethods(
+      fillStripeAllPaymentMethodsQuery(
         times(() => paymentMethodFactory(), 3),
         env
       );
