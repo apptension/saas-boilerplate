@@ -1,32 +1,18 @@
-import { Suspense } from 'react';
 import { screen } from '@testing-library/react';
-import { append } from 'ramda';
 
-import { render } from '../../../../../../tests/utils/rendering';
 import {
   fillAllPaymentsMethodsQuery,
   fillAllStripeChargesQuery,
   paymentMethodFactory,
   transactionHistoryEntryFactory,
 } from '../../../../../../mocks/factories';
-import { TransactionHistory } from '../transactionHistory.component';
-import { useTransactionsHistoryQuery } from '../transactionHistory.hooks';
-import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { Subscription } from '../../../../../../shared/services/api/subscription/types';
+import { getRelayEnv } from '../../../../../../tests/utils/relay';
+import { render } from '../../../../../../tests/utils/rendering';
+import { TransactionHistory } from '../transactionHistory.component';
 
-const Component = () => {
-  const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();
+const Component = () => <TransactionHistory />;
 
-  if (!transactionsHistoryQueryRef) return null;
-
-  return (
-    <Suspense fallback={null}>
-      <TransactionHistory transactionHistoryQueryRef={transactionsHistoryQueryRef} />;
-    </Suspense>
-  );
-};
-
-// TODO: test > unskip in next PR
 describe('TransactionHistory: Component', () => {
   const paymentMethods = [
     paymentMethodFactory({ billingDetails: { name: 'Owner 1' }, card: { last4: '1234' } }),
@@ -46,18 +32,20 @@ describe('TransactionHistory: Component', () => {
     }),
   ];
 
-  // FIXME: test > recover commented lines
   it('should render all items', async () => {
     const relayEnvironment = getRelayEnv();
-    fillAllStripeChargesQuery(relayEnvironment, transactionHistory);
-    const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
-    render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
+    const requestChargesMock = fillAllStripeChargesQuery(relayEnvironment, transactionHistory);
+    const requestPaymentsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    render(<Component />, {
+      relayEnvironment,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestChargesMock, requestPaymentsMock),
+    });
 
-    // expect(await screen.findByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
+    expect(await screen.findByText('Owner 1 Visa **** 1234')).toBeInTheDocument();
     expect(await screen.findByText('50 USD')).toBeInTheDocument();
     expect(screen.getByText('June 05, 2020')).toBeInTheDocument();
 
-    // expect(screen.getByText('Owner 2 Visa **** 9876')).toBeInTheDocument();
+    expect(screen.getByText('Owner 2 Visa **** 9876')).toBeInTheDocument();
     expect(screen.getByText('100 USD')).toBeInTheDocument();
     expect(screen.getByText('June 05, 2020')).toBeInTheDocument();
   });

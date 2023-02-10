@@ -1,22 +1,16 @@
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
+import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
 
-import StripeAllChargesQueryGraphql, {
-  stripeAllChargesQuery,
-} from '../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { STRIPE_ALL_CHARGES } from './subscriptions.graphql';
 import { Link, Row } from './subscriptions.styles';
 
-export type TransactionHistoryContentProps = {
-  transactionHistoryQueryRef: PreloadedQuery<stripeAllChargesQuery>;
-};
-
-export const TransactionsHistoryContent = ({ transactionHistoryQueryRef }: TransactionHistoryContentProps) => {
+export const TransactionsHistoryContent = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const data = usePreloadedQuery(StripeAllChargesQueryGraphql, transactionHistoryQueryRef);
+  const { data } = useQuery(STRIPE_ALL_CHARGES);
 
-  const length = data.allCharges?.edges?.length ?? 0;
+  const length = data?.allCharges?.edges?.length ?? 0;
 
   if (!length)
     return (

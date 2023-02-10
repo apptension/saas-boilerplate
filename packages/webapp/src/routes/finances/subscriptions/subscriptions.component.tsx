@@ -1,17 +1,13 @@
-import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useTransactionsHistoryQuery } from '../../../shared/components/finances/stripe/transactionHistory/transactionHistory.hooks';
 
 import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { Container, Header, Section, Subheader } from './subscriptions.styles';
-import { SubscriptionsContent } from './subscriptions.content';
 import { PaymentMethodContent } from './paymentMethod.content';
-
+import { SubscriptionsContent } from './subscriptions.content';
+import { Container, Header, Section, Subheader } from './subscriptions.styles';
 import { TransactionsHistoryContent } from './transactionsHistory.content';
 
 export const Subscriptions = () => {
   const { allPaymentMethods, activeSubscription } = useActiveSubscriptionDetails();
-  const { transactionsHistoryQueryRef } = useTransactionsHistoryQuery();
 
   return (
     <Container>
@@ -40,11 +36,7 @@ export const Subscriptions = () => {
           <FormattedMessage defaultMessage="History" id="My subscription / History header" />
         </Header>
 
-        {transactionsHistoryQueryRef && (
-          <Suspense fallback={null}>
-            <TransactionsHistoryContent transactionHistoryQueryRef={transactionsHistoryQueryRef} />
-          </Suspense>
-        )}
+        <TransactionsHistoryContent />
       </Section>
     </Container>
   );

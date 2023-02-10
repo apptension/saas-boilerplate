@@ -1,34 +1,26 @@
 import { useIntl } from 'react-intl';
-import { useFragment } from 'react-relay';
 
-import { FormattedDate } from '../../../../dateTime/formattedDate';
+import {
+  STRIPE_CHARGE_FRAGMENT,
+  SUBSCRIPTION_PLAN_ITEM_FRAGMENT,
+} from '../../../../../../routes/finances/subscriptions/subscriptions.graphql';
+import { FragmentType, useFragment } from '../../../../../../shared/services/graphqlApi/__generated/gql';
 import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
-import StripeChargeFragmentGraphql, {
-  stripeChargeFragment$key,
-} from '../../../../../../modules/stripe/__generated__/stripeChargeFragment.graphql';
-import SubscriptionPlanItemFragmentGraphql, {
-  subscriptionPlanItemFragment$key,
-} from '../../../../../../modules/subscription/__generated__/subscriptionPlanItemFragment.graphql';
-
-import { Container, Amount, Card, Details, TransactionDate } from './transactionHistoryEntry.styles';
+import { FormattedDate } from '../../../../dateTime/formattedDate';
+import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
+import { Amount, Card, Container, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
 export type TransactionHistoryEntryProps = {
-  entry: stripeChargeFragment$key;
+  entry: FragmentType<typeof STRIPE_CHARGE_FRAGMENT>;
   className?: string;
 };
 
 export const TransactionHistoryEntry = ({ entry, className }: TransactionHistoryEntryProps) => {
   const intl = useIntl();
-  const data = useFragment<stripeChargeFragment$key>(StripeChargeFragmentGraphql, entry);
-  const subscriptionPlanData = useFragment<subscriptionPlanItemFragment$key>(
-    SubscriptionPlanItemFragmentGraphql,
-    data.invoice?.subscription?.plan ?? null
-  );
-  const { name: entryProductName } = useSubscriptionPlanDetails(subscriptionPlanData ?? undefined);
+  const data = useFragment(STRIPE_CHARGE_FRAGMENT, entry);
 
-  // const { allPaymentMethods } = useActiveSubscriptionDetails();
-  // const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
-  // const firstPaymentMethod = paymentMethods?.[0];
+  const subscriptionPlanData = useFragment(SUBSCRIPTION_PLAN_ITEM_FRAGMENT, data.invoice?.subscription?.plan);
+  const { name: entryProductName } = useSubscriptionPlanDetails(subscriptionPlanData ?? undefined);
 
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',
@@ -47,10 +39,7 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
     <Container className={className}>
       <TransactionDate>{data.created && <FormattedDate value={data.created.toString()} />}</TransactionDate>
       <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
-      <Card>
-        {/* FIXME: recover this code after converting to apollo */}
-        {/* <StripePaymentMethodInfo method={data.paymentMethod} /> */}
-      </Card>
+      <Card>{data.paymentMethod && <StripePaymentMethodInfo method={data.paymentMethod} />}</Card>
       <Amount>{data.amount} USD</Amount>
     </Container>
   );

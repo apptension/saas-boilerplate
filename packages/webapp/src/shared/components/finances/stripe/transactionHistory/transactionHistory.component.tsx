@@ -1,17 +1,12 @@
+import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import stripeAllChargesQueryGraphql, {
-  stripeAllChargesQuery,
-} from '../../../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
+
+import { STRIPE_ALL_CHARGES } from '../../../../../routes/finances/subscriptions/subscriptions.graphql';
 import { mapConnection } from '../../../../utils/graphql';
-import { Container, HeaderCell, Entry, HeaderRow } from './transactionHistory.styles';
+import { Container, Entry, HeaderCell, HeaderRow } from './transactionHistory.styles';
 
-export type TransactionHistoryProps = {
-  transactionHistoryQueryRef: PreloadedQuery<stripeAllChargesQuery>;
-};
-
-export const TransactionHistory = ({ transactionHistoryQueryRef }: TransactionHistoryProps) => {
-  const data = usePreloadedQuery(stripeAllChargesQueryGraphql, transactionHistoryQueryRef);
+export const TransactionHistory = () => {
+  const { data } = useQuery(STRIPE_ALL_CHARGES);
 
   return (
     <Container>
@@ -32,7 +27,7 @@ export const TransactionHistory = ({ transactionHistoryQueryRef }: TransactionHi
 
       {mapConnection((entry) => {
         return <Entry key={entry.id} entry={entry} />;
-      }, data.allCharges)}
+      }, data?.allCharges)}
     </Container>
   );
 };

@@ -1,23 +1,24 @@
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 import { times } from 'ramda';
 import { OperationDescriptor } from 'react-relay/hooks';
+import { MockPayloadGenerator, RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 
+import StripeAllChargesQueryGraphql from '../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
+import StripeAllPaymentMethodsQueryGraphql from '../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
+import { STRIPE_ALL_CHARGES } from '../../routes/finances/subscriptions/subscriptions.graphql';
+import {
+  TransactionHistoryEntry,
+  TransactionHistoryEntryInvoice,
+} from '../../shared/services/api/stripe/history/types';
 import {
   StripePaymentMethod,
   StripePaymentMethodCardBrand,
   StripePaymentMethodType,
 } from '../../shared/services/api/stripe/paymentMethod';
-import {
-  TransactionHistoryEntry,
-  TransactionHistoryEntryInvoice,
-} from '../../shared/services/api/stripe/history/types';
-import { connectionFromArray, makeId } from '../../tests/utils/fixtures';
-import { DeepPartial } from '../../shared/utils/types';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
-import StripeAllPaymentMethodsQueryGraphql from '../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-import StripeAllChargesQueryGraphql from '../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
-import { subscriptionPlanFactory } from './subscription';
+import { DeepPartial } from '../../shared/utils/types';
+import { composeMockedListQueryResult, connectionFromArray, makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory, createFactory } from './factoryCreators';
+import { subscriptionPlanFactory } from './subscription';
 
 export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() => ({
   id: makeId(32),
@@ -45,6 +46,7 @@ export const paymentMethodFactory = createDeepFactory<StripePaymentMethod>(() =>
       cvcCheck: 'pass',
     },
   },
+  __typename: 'StripePaymentMethodType',
 }));
 
 export const transactionHistoryEntryInvoiceFactory = createFactory<TransactionHistoryEntryInvoice>(() => ({
@@ -95,4 +97,8 @@ export const fillAllStripeChargesQuery = (
     })
   );
   env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
+
+  return composeMockedListQueryResult(STRIPE_ALL_CHARGES, 'allCharges', 'StripeChargeType', {
+    data,
+  });
 };
