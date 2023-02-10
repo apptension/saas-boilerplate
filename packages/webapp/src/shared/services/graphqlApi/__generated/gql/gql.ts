@@ -28,7 +28,6 @@ const documents = {
     "\n  query stripeAllChargesQuery {\n    allCharges {\n      edges {\n        node {\n          id\n          ...stripeChargeFragment\n        }\n      }\n    }\n  }\n": types.StripeAllChargesQueryDocument,
     "\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n": types.StripePaymentIntentFragmentFragmentDoc,
     "\n  query stripePaymentIntentQuery($id: ID!) {\n    paymentIntent(id: $id) {\n      ...stripePaymentIntentFragment\n    }\n  }\n": types.StripePaymentIntentQueryDocument,
-    "\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n      }\n    }\n  }\n": types.SubscriptionChangeActiveSubscriptionMutationDocument,
     "\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    unitAmount\n  }\n": types.SubscriptionPlanItemFragmentFragmentDoc,
     "\n  query subscriptionPlansAllQuery {\n    allSubscriptionPlans(first: 100) {\n      edges {\n        node {\n          id\n          ...subscriptionPlanItemFragment\n        }\n      }\n    }\n  }\n": types.SubscriptionPlansAllQueryDocument,
     "\n  query subscriptionActivePlanDetailsQuery {\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n    }\n  }\n": types.SubscriptionActivePlanDetailsQueryDocument,
@@ -53,6 +52,7 @@ const documents = {
     "\n  mutation subscriptionCancelActiveSubscriptionMutation($input: CancelActiveSubscriptionMutationInput!) {\n    cancelActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n": types.SubscriptionCancelActiveSubscriptionMutationDocument,
     "\n  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {\n    phases {\n      startDate\n      endDate\n      trialEnd\n      item {\n        price {\n          ...subscriptionPlanItemFragment\n        }\n        quantity\n      }\n    }\n    subscription {\n      startDate\n      trialEnd\n      trialStart\n    }\n    canActivateTrial\n    defaultPaymentMethod {\n      ...stripePaymentMethodFragment\n    }\n  }\n": types.SubscriptionActiveSubscriptionFragmentFragmentDoc,
     "\n  mutation stripeCreateSetupIntentMutation_($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        id\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n\n  fragment stripeSetupIntentFragment on StripeSetupIntentType {\n    id\n    clientSecret\n  }\n": types.StripeCreateSetupIntentMutation_Document,
+    "\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n": types.SubscriptionChangeActiveSubscriptionMutationDocument,
     "\n  mutation loginFormMutation($input: ObtainTokenMutationInput!) {\n    tokenAuth(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.LoginFormMutationDocument,
     "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthSignupMutationDocument,
     "\n  mutation stripeCreatePaymentIntentMutation_($input: CreatePaymentIntentMutationInput!) {\n    createPaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n": types.StripeCreatePaymentIntentMutation_Document,
@@ -152,10 +152,6 @@ export function gql(source: "\n  query stripePaymentIntentQuery($id: ID!) {\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    unitAmount\n  }\n"): (typeof documents)["\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    unitAmount\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -249,6 +245,10 @@ export function gql(source: "\n  fragment subscriptionActiveSubscriptionFragment
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation stripeCreateSetupIntentMutation_($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        id\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n\n  fragment stripeSetupIntentFragment on StripeSetupIntentType {\n    id\n    clientSecret\n  }\n"): (typeof documents)["\n  mutation stripeCreateSetupIntentMutation_($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        id\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n\n  fragment stripeSetupIntentFragment on StripeSetupIntentType {\n    id\n    clientSecret\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

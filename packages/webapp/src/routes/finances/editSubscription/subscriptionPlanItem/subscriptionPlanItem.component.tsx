@@ -14,9 +14,16 @@ export type SubscriptionPlanItemProps = {
   onSelect: (id: string | null) => void;
   className?: string;
   activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
+  loading: boolean;
 };
 
-export const SubscriptionPlanItem = ({ plan, onSelect, className, activeSubscription }: SubscriptionPlanItemProps) => {
+export const SubscriptionPlanItem = ({
+  plan,
+  onSelect,
+  className,
+  activeSubscription,
+  loading,
+}: SubscriptionPlanItemProps) => {
   const data = useFragment<subscriptionPlanItemFragment$key>(subscriptionPlanItemFragmentGraphql, plan);
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
@@ -44,7 +51,7 @@ export const SubscriptionPlanItem = ({ plan, onSelect, className, activeSubscrip
         </FeaturesList>
       </Content>
 
-      <SelectButton onClick={() => onSelect(data.pk)} disabled={isScheduledForNextPeriod || isFree}>
+      <SelectButton onClick={() => onSelect(data.pk)} disabled={isScheduledForNextPeriod || isFree || loading}>
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
           id="Change plan item / Select button"

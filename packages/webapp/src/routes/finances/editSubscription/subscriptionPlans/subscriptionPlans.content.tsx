@@ -11,12 +11,14 @@ export type SubscriptionPlansContentProps = {
   queryRef: PreloadedQuery<subscriptionPlansAllQuery>;
   onPlanSelection: (id: string | null) => void;
   activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
+  loading: boolean;
 };
 
 export const SubscriptionPlansContent = ({
   queryRef,
   onPlanSelection,
   activeSubscription,
+  loading,
 }: SubscriptionPlansContentProps) => {
   const { allSubscriptionPlans } = usePreloadedQuery(subscriptionPlansAllQueryGraphql, queryRef);
 
@@ -24,7 +26,13 @@ export const SubscriptionPlansContent = ({
     <Plans>
       {mapConnection((plan) => {
         return (
-          <PlanItem key={plan.id} plan={plan} onSelect={onPlanSelection} activeSubscription={activeSubscription} />
+          <PlanItem
+            key={plan.id}
+            plan={plan}
+            onSelect={onPlanSelection}
+            activeSubscription={activeSubscription}
+            loading={loading}
+          />
         );
       }, allSubscriptionPlans)}
     </Plans>

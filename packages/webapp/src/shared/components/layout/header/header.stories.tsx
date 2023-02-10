@@ -1,5 +1,5 @@
-import { Story, StoryContext } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { Story } from '@storybook/react';
 
 import { currentUserFactory } from '../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';

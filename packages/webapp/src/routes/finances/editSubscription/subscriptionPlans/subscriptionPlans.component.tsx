@@ -1,5 +1,6 @@
-import { useEffect, Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useQueryLoader } from 'react-relay';
+
 import subscriptionPlansAllQueryGraphql, {
   subscriptionPlansAllQuery,
 } from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
@@ -8,9 +9,10 @@ import { SubscriptionPlansContent } from './subscriptionPlans.content';
 
 export type SubscriptionPlansProps = {
   onPlanSelection: (id: string | null) => void;
+  loading: boolean;
 };
 
-export const SubscriptionPlans = ({ onPlanSelection }: SubscriptionPlansProps) => {
+export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlansProps) => {
   const [plansQueryRef, loadPlansQuery] = useQueryLoader<subscriptionPlansAllQuery>(subscriptionPlansAllQueryGraphql);
   const { activeSubscription } = useActiveSubscriptionDetails();
 
@@ -26,6 +28,7 @@ export const SubscriptionPlans = ({ onPlanSelection }: SubscriptionPlansProps) =
         queryRef={plansQueryRef}
         onPlanSelection={onPlanSelection}
         activeSubscription={activeSubscription}
+        loading={loading}
       />
     </Suspense>
   );

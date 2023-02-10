@@ -1,19 +1,20 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act, screen } from '@testing-library/react';
-import { append } from 'ramda';
+import { GraphQLError } from 'graphql';
 import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
-import { EditSubscription } from '../editSubscription.component';
 import { fillSubscriptionScheduleQuery, subscriptionPlanFactory } from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
 import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
-import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import { composeMockedQueryResult, connectionFromArray } from '../../../../tests/utils/fixtures';
 import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
-import { connectionFromArray } from '../../../../tests/utils/fixtures';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { EditSubscription } from '../editSubscription.component';
+import { SUBSCRIPTION_CHANGE_ACTIVE_MUTATION } from '../editSubscription.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -29,6 +30,21 @@ const mockMonthlyPlan = subscriptionPlanFactory({
   product: { name: SubscriptionPlanName.MONTHLY },
 });
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
+
+const mockMutationVariables = { input: { price: 'plan_monthly' } };
+
+const mockMutationData = {
+  changeActiveSubscription: {
+    subscriptionSchedule: {
+      phases: [],
+      subscription: null,
+      canActivateTrial: true,
+      defaultPaymentMethod: {},
+      __typename: 'SubscriptionScheduleType',
+    },
+    __typename: 'ChangeActiveSubscriptionMutationPayload',
+  },
+};
 
 const getRelayEnv = () => {
   const relayEnvironment = getBaseRelayEnv();
@@ -46,6 +62,13 @@ const fillCurrentSubscriptionQuery = (relayEnvironment: RelayMockEnvironment) =>
     relayEnvironment,
     subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })
   );
+
+const fillChangeSubscriptionMutation = (errors?: GraphQLError[]) =>
+  composeMockedQueryResult(SUBSCRIPTION_CHANGE_ACTIVE_MUTATION, {
+    data: mockMutationData,
+    variables: mockMutationVariables,
+    errors,
+  });
 
 const placeholder = 'Subscriptions placeholder';
 
@@ -69,11 +92,20 @@ describe('EditSubscription: Component', () => {
     it('should show success message and redirect to my subscription page', async () => {
       const relayEnvironment = getRelayEnv();
       const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
+      const requestMockMutation = fillChangeSubscriptionMutation();
+
       const routerProps = createMockRouterProps(['home']);
-      render(<Component />, { relayEnvironment, routerProps, apolloMocks: append(requestMock) });
+      render(<Component />, {
+        relayEnvironment,
+        routerProps,
+        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation),
+      });
 
       await userEvent.click(await screen.findByText(/monthly/i));
-      await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
+      const monthlyButton = screen.getAllByRole('button', { name: /select/i })[0];
+      expect(monthlyButton).not.toBeDisabled();
+      await userEvent.click(monthlyButton);
+      expect(monthlyButton).toBeDisabled();
 
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage({
@@ -85,38 +117,23 @@ describe('EditSubscription: Component', () => {
     });
   });
 
-  // TODO: test > unskip on mutation implementation
-  describe.skip('plan fails to update', () => {
+  describe('plan fails to update', () => {
     it('should show error message', async () => {
       const relayEnvironment = getRelayEnv();
 
       const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
+      const errorMessage = 'Missing payment method';
+      const requestMockMutation = fillChangeSubscriptionMutation([new GraphQLError(errorMessage)]);
 
       const routerProps = createMockRouterProps(['home']);
-      render(<Component />, { relayEnvironment, routerProps, apolloMocks: append(requestMock) });
+      render(<Component />, {
+        relayEnvironment,
+        routerProps,
+        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation),
+      });
 
       await userEvent.click(await screen.findByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
-      const errorMessage = 'Missing payment method';
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, {
-          ...MockPayloadGenerator.generate(operation),
-          errors: [
-            {
-              message: 'GraphQlValidationError',
-              extensions: {
-                id: [
-                  {
-                    message: errorMessage,
-                    code: 'invalid',
-                  },
-                ],
-              },
-            },
-          ],
-        } as any);
-      });
 
       expect(mockDispatch).toHaveBeenCalledWith(
         snackbarActions.showMessage({
