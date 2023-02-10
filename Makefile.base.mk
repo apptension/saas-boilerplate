@@ -4,7 +4,12 @@ BASE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 export PROJECT_ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 export PACKAGES_DIR := $(BASE_DIR)packages
 
--include $(BASE_DIR).env
+ifndef ENV_STAGE:
+	-include $(BASE_DIR).env
+else
+	-include $(BASE_DIR).env.$(ENV_STAGE)
+	export ENV_STAGE
+endif
 
 ifeq ($(user),)
 # USER retrieved from env, UID from shell.
@@ -28,24 +33,17 @@ export HOST_UID
 # As such, default shell of the user has to be get the other way.
 USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
-
-version: VERSION=$(shell git describe --tags --first-parent --abbrev=11 --long --dirty --always)
-version:
-	@echo $(VERSION)
-
 aws-login:
 	aws-vault login $(AWS_VAULT_PROFILE)
 
 up:
-	nx run core:docker-compose:up
+	nx run --output-style=stream core:docker-compose:up
 
 down:
-	nx run core:docker-compose:down
+	nx run --output-style=stream core:docker-compose:down
 
 serve:
-	nx run core:serve
-
-
+	nx run --output-style=stream core:serve
 
 clean:
 	# remove created images
@@ -57,3 +55,6 @@ prune:
 	# clean all that is not actively used
 	docker system prune -af
 
+
+login:
+	aws-vault exec $(AWS_VAULT_PROFILE) -- $(USER_SHELL)

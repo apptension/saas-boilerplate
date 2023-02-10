@@ -12,8 +12,8 @@ app.use(bodyParser.json());
 
 function invokeFunction(name, data) {
   const sls = spawn(
-    '/app/packages/workers/node_modules/.bin/sls',
-    ['invoke', 'local', '-f', name, '-d', JSON.stringify(data)],
+    'pnpm',
+    ['run', 'sls', 'invoke', 'local', '-f', name, '-d', JSON.stringify(data)],
     {
       cwd: '/app/packages/workers',
     }

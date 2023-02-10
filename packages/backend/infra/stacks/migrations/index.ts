@@ -1,0 +1,1 @@
+export { MigrationsStack } from './stack';

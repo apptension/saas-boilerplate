@@ -9,6 +9,7 @@ services:
 
   workers:
     volumes:
+      - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
       - ./packages/workers/cov:/app/packages/workers/cov
     environment:
       - CI=true
@@ -20,19 +21,6 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
-
-  webapp:
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - ENV_STAGE=${ENV_STAGE}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
-      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
-      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
-      - REACT_APP_SUBSCRIPTIONS_URL
-      - REACT_APP_ENVIRONMENT_NAME
 
   e2e-tests:
     environment:

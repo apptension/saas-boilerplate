@@ -1,0 +1,39 @@
+service: "${env:PROJECT_NAME}-infra-functions"
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  versionFunctions: false
+  stage: "${env:ENV_STAGE}"
+  region: "${env:AWS_DEFAULT_REGION}"
+  stackName: ${file(./${self:custom.confFile.${self:provider.stage}}):stackName}
+  iamRoleStatements: ${file(./${self:custom.confFile.${self:provider.stage}}):iam}
+  environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
+
+functions:
+  TriggerMigrationsJob:
+    handler: deployment/triggerMigrationsJob.handler
+    environment:
+      STATE_MACHINE_ARN: ${self:custom.migrationsStateMachineArn}
+
+  TriggerEntrypoint:
+    handler: deployment/triggerEntrypoint.handler
+
+
+custom:
+  projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
+  migrationsStateMachineArn: arn:aws:states:${aws:region}:${aws:accountId}:stateMachine:${env:PROJECT_NAME}-${env:ENV_STAGE}-migrations
+  entrypointCodeBuildProjectArn: arn:aws:codebuild:${aws:region}:${aws:accountId}:project/${self:custom.projectEnvName}
+
+  esbuild: ${file(./${self:custom.confFile.${self:provider.stage}}):esbuild}
+
+  confFile:
+    local: infra-functions.conf.local.yml
+    dev: infra-functions.conf.yml
+    qa: infra-functions.conf.yml
+    prod: infra-functions.conf.yml
+
+plugins:
+  - serverless-esbuild

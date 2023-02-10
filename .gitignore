@@ -2,6 +2,7 @@
 dist
 tmp
 /out-tsc
+cdk.out
 
 # dependencies
 node_modules

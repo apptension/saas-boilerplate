@@ -18,8 +18,14 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
+      "@saas-boilerplate-app/infra-core": [
+        "packages/infra/infra-core/src/index.ts"
+      ],
+      "@saas-boilerplate-app/infra-shared": [
+        "packages/infra/infra-shared/src/index.ts"
+      ],
       "@saas-boilerplate-app/tools": ["packages/internal/tools/src/index.ts"]
     }
   },

@@ -1,0 +1,4 @@
+{
+  "app": "ts-node --project tsconfig.lib.json -r tsconfig-paths/register src/main.ts",
+  "requireApproval": "never"
+}

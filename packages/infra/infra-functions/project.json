@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/infra/infra-functions",
+  "projectType": "application",
+  "sourceRoot": "packages/infra/infra-functions",
+  "targets": {
+    "invoke": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/infra/infra-functions",
+        "color": true,
+        "command": "node_modules/.bin/sls invoke --stage $ENV_STAGE"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/infra/infra-functions/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/infra/infra-functions"
+      ],
+      "options": {
+        "jestConfig": "services/auth/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [
+    "service"
+  ]
+}

@@ -3,7 +3,7 @@
   "npmScope": "saas-boilerplate-app",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx/tasks-runners/default",
+      "runner": "@saas-boilerplate-app/core/custom-task-runner",
       "options": {
         "cacheableOperations": [
           "setup",

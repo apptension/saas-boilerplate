@@ -18,6 +18,8 @@
     "yaml": "^2.0.0-3"
   },
   "devDependencies": {
+    "@saas-boilerplate-app/core": "*",
+    "@saas-boilerplate-app/tools": "*",
     "esbuild": "0.16.17",
     "serverless": "^3.25.1",
     "serverless-esbuild": "^1.37.0",

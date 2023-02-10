@@ -35,18 +35,10 @@ services:
     build:
       context: .
       dockerfile: ./packages/workers/Dockerfile
-    volumes:
-      - ./packages/webapp/build/email-renderer/:/app/emails/renderer
     depends_on:
       - db
     links:
       - db
-
-  webapp:
-    build:
-      context: ./packages/webapp
-    volumes:
-      - ./packages/webapp/build:/usr/src/app/build/
 
   e2e-tests:
     build:

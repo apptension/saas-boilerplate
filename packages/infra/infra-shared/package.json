@@ -1,0 +1,26 @@
+{
+  "name": "@saas-boilerplate-app/infra-shared",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "scripts": {
+    "deploy:global": "cdk deploy *GlobalStack && cdk deploy *UsEastResourcesStack",
+    "diff:global": "cdk diff *GlobalStack && cdk diff *UsEastResourcesStack",
+    "deploy:main": "cdk deploy *MainStack",
+    "diff:main": "cdk diff *MainStack",
+    "deploy:db": "cdk deploy *DbStack",
+    "diff:db": "cdk diff *DbStack",
+    "deploy:ci": "cdk deploy *CiStack",
+    "diff:ci": "cdk diff *CiStack",
+    "deploy:components": "cdk deploy *ComponentsStack",
+    "diff:components": "cdk diff *ComponentsStack"
+  },
+  "devDependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "2.33.0-alpha.0",
+    "@saas-boilerplate-app/core": "*",
+    "@saas-boilerplate-app/infra-core": "*",
+    "aws-cdk": "2.33.0",
+    "aws-cdk-lib": "2.33.0",
+    "cdk-ec2-key-pair": "^3.3.1",
+    "constructs": "^10.1.225"
+  }
+}

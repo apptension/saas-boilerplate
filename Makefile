@@ -12,32 +12,33 @@ setup:
 #
 
 deploy-global-infra:
-	nx run infra:deploy:global
-
-deploy-global-tools:
-	nx run infra:deploy:global-tools
+	nx run --output-style=stream infra-shared:deploy:global
 
 deploy-env-infra:
-	nx run infra:deploy:env
+	nx run --output-style=stream infra-shared:deploy:main
+	nx run --output-style=stream infra-shared:deploy:db
+	nx run --output-style=stream infra-functions:deploy
+	nx run --output-style=stream infra-shared:deploy:ci
+	nx run --output-style=stream infra-shared:deploy:components
 
 upload-version:
-	nx run tools:upload-version migrations,api,workers,webapp
+	nx run --output-style=stream tools:upload-version migrations,api,workers,webapp
 
 #
 # Packages deployment
 #
 
 build:
-	nx run-many --target=build
+	nx run-many --output-style=stream --target=build
 
 deploy-components:
-	nx run infra:deploy:components
+	nx run --output-style=stream infra-shared:deploy:components
 
 deploy-env-app: deploy-components
-	nx run-many --target=deploy --projects=backend,workers,webapp
+	nx run-many --output-style=stream --target=deploy --projects=backend,workers,webapp
 
 stop-task-scheduling-executions:
-	nx run workers:stop-task-scheduling-executions
+	nx run --output-style=stream workers:stop-task-scheduling-executions
 
 #
 # Helper rules
@@ -47,7 +48,7 @@ psql:
 	docker compose exec db psql -d'backend' -U'backend'
 
 create-repo-auth-url:
-	nx run tools:create-cicd-creds
+	nx run --output-style=stream tools:create-cicd-creds
 
 create-docker-volume:
-	nx run core:docker-create-volumes
+	nx run --output-style=stream core:docker-create-volumes

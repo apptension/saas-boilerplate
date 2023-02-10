@@ -82,16 +82,6 @@
           "packages/internal/core/**/*.ts"
         ]
       }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
-      "options": {
-        "jestConfig": "packages/internal/core/jest.config.ts",
-        "passWithNoTests": true
-      }
     }
   },
   "tags": []

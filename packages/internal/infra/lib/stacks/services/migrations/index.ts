@@ -1,1 +1,0 @@
-export {MigrationsStack} from './stack';

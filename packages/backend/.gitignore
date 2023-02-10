@@ -8,3 +8,4 @@ db.sqlite3
 
 # Coverage
 .coverage
+coverage.xml

@@ -12,7 +12,7 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/packages/internal/status-dashboard",
+        "outputPath": "packages/internal/status-dashboard/build",
         "index": "packages/internal/status-dashboard/src/index.html",
         "baseHref": "/",
         "main": "packages/internal/status-dashboard/src/main.tsx",

@@ -21,7 +21,8 @@
     "src/**/__mocks__/**/*.ts",
     "src/mocks/reactIntl.tsx",
     "src/mocks/icons.tsx",
-    "src/setupTests.ts"
+    "src/setupTests.ts",
+    "infra/**/*"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "infra/**/*.tsx"]
 }

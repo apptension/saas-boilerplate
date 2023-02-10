@@ -1,0 +1,10 @@
+{
+  "name": "@saas-boilerplate-app/infra-core",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "devDependencies": {
+    "aws-cdk": "2.33.0",
+    "aws-cdk-lib": "2.33.0",
+    "constructs": "^10.1.225"
+  }
+}

@@ -13,6 +13,9 @@
       "path": "./tsconfig.app.json"
     },
     {
+      "path": "./tsconfig.infra.json"
+    },
+    {
       "path": "./tsconfig.spec.json"
     }
   ],

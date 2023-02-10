@@ -1,0 +1,20 @@
+{
+  "name": "@saas-boilerplate-app/backend",
+  "version": "1.0.0",
+  "scripts": {
+    "cdk:deploy:api": "cdk deploy *ApiStack",
+    "diff:api": "cdk diff *ApiStack",
+    "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
+    "diff:migrations": "cdk diff *MigrationsStack"
+  },
+  "devDependencies": {
+    "@saas-boilerplate-app/core": "*",
+    "@saas-boilerplate-app/infra-core": "*",
+    "@saas-boilerplate-app/infra-shared": "*",
+    "@saas-boilerplate-app/infra-functions": "*",
+    "@saas-boilerplate-app/tools": "*",
+    "aws-cdk": "2.33.0",
+    "aws-cdk-lib": "2.33.0",
+    "constructs": "^10.1.225"
+  }
+}

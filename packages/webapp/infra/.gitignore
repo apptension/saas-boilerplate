@@ -1,0 +1,15 @@
+*.js
+!lib/stacks/usEastResources/authLambda/*.js
+!jest.config.js
+!lib/stacks/env/ci/functions/**/*.js
+*.d.ts
+node_modules
+.idea
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# Parcel build directories
+.cache
+.build

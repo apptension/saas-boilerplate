@@ -2,6 +2,10 @@
   "name": "status-dashboard",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "deploy": "env-cmd -f ../../../.env.tools cdk deploy *StatusDashboardStack",
+    "diff": "env-cmd -f ../../../.env.tools cdk diff *StatusDashboardStack"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.4.0",
     "aws-sdk": "^2.703.0",
@@ -17,10 +21,16 @@
     "@nrwl/react": "^15.4.5",
     "@nrwl/webpack": "^15.4.5",
     "@nrwl/web": "^15.4.5",
+    "@saas-boilerplate-app/core": "*",
+    "@saas-boilerplate-app/tools": "*",
+    "@saas-boilerplate-app/infra-core": "*",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "aws-cdk": "2.33.0",
+    "aws-cdk-lib": "2.33.0",
+    "constructs": "^10.1.225",
     "babel-plugin-styled-components": "^2.0.7"
   },
   "eslintConfig": {
@@ -37,5 +47,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "nx": {}
 }

@@ -12,7 +12,11 @@
     "build-storybook": "node ./scripts/build-storybook.js",
     "start": "nx start:app",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "cdk": "cdk",
+    "diff": "cdk deploy *WebAppStack",
+    "vite": "vite",
+    "graphql-codegen": "graphql-codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.7.4",
@@ -90,6 +94,10 @@
     "@graphql-tools/stitch": "^8.7.19",
     "@graphql-typed-document-node/core": "^3.1.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@saas-boilerplate-app/core": "*",
+    "@saas-boilerplate-app/tools": "*",
+    "@saas-boilerplate-app/infra-core": "*",
+    "@saas-boilerplate-app/infra-shared": "*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-backgrounds": "^6.5.16",
     "@storybook/addon-docs": "^6.5.16",
@@ -130,6 +138,8 @@
     "@vitejs/plugin-legacy": "^4.0.1",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/ui": "^0.28.4",
+    "aws-cdk": "2.33.0",
+    "aws-cdk-lib": "2.33.0",
     "aws-sdk": "^2.1246.0",
     "babel-jest": "28.1.3",
     "babel-plugin-relay": "^14.1.0",

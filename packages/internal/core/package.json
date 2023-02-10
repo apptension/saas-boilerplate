@@ -1,7 +1,8 @@
 {
-  "name": "core",
+  "name": "@saas-boilerplate-app/core",
   "version": "0.0.0",
   "devDependencies": {
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "dotenv": "^16.0.3"
   }
 }

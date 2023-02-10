@@ -52,22 +52,22 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": [
-          "nx deploy:api",
-          "nx deploy:migrations"
+          "nx cdk:deploy:api",
+          "nx cdk:deploy:migrations"
         ],
         "parallel": false
       },
       "configurations": {
         "api": {
           "commands": [
-            "nx run infra:deploy:api",
+            "nx cdk:deploy:api",
             "nx run tools:upload-service-version api \"url=https://${DOMAIN_API}\""
           ],
           "parallel": false
         },
         "migrations": {
           "commands": [
-            "nx run infra:deploy:migrations",
+            "nx cdk:deploy:migrations",
             "nx run infra-functions:invoke -f TriggerMigrationsJob",
             "nx run tools:upload-service-version migrations"
           ],

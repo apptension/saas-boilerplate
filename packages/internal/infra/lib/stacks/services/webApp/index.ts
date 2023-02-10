@@ -1,1 +1,0 @@
-export {WebAppStack} from './stack';

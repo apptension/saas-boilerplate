@@ -1,0 +1,21 @@
+{
+  "name": "@saas-boilerplate-app/infra-functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "sls package",
+    "deploy": "sls deploy",
+    "remove": "sls remove"
+  },
+  "dependencies": {
+     "glob-to-regexp": "^0.4.1"
+  },
+  "devDependencies": {
+    "serverless": "^3.25.1",
+    "serverless-esbuild": "^1.37.0",
+    "esbuild": "^0.16.17"
+  }
+}

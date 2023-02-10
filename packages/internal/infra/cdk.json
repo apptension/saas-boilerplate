@@ -1,4 +1,0 @@
-{
-  "app": "ts-node --project tsconfig.app.json main.ts",
-  "requireApproval": "never"
-}

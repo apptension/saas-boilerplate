@@ -1,5 +1,4 @@
-ARG BASE_IMAGE=python:3.9-slim-bullseye
-FROM ${BASE_IMAGE}
+FROM python:3.9-slim-bullseye
 
 ENV APP_PATH=/app
 ENV SRC_CORE_PATH=packages/internal/core
@@ -26,7 +25,7 @@ WORKDIR $APP_PATH
 COPY package.json pnpm*.yaml $APP_PATH/
 COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
-RUN pnpm install --include-workspace-root --frozen-lockfile --filter=core --filter=workers
+RUN pnpm install --include-workspace-root --frozen-lockfile --filter=workers...
 
 COPY nx.json tsconfig* jest* babel* .eslintrc* .prettier* $APP_PATH/
 COPY $SRC_CORE_PATH $DEST_CORE_PATH/

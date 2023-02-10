@@ -7,5 +7,5 @@ deploy:
 	node ${SELF_DIR}scripts/run_migrations.js
 
 secrets:
-	$(DOCKER_COMPOSE) build ssmeditor
-	$(DOCKER_COMPOSE) run --rm ssmeditor
+	docker-compose build ssmeditor
+	docker-compose run --rm ssmeditor

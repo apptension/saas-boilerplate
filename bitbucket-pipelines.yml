@@ -7,6 +7,7 @@ definitions:
       memory: 7128
   caches:
     pnpmbackend: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmdocs: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     clis: ~/.clicache
@@ -15,9 +16,11 @@ definitions:
   scripts:
     initializeStep: &initializeStep
                       cp .env.test .env
-                      && echo "VERSION=test >> .env"
                       && npm -g config set user root
-                      && npm i -g nx@^15.4.5 pnpm@^7.25.0
+                      && curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=7.25.0 bash -
+                      && export PNPM_HOME="/root/.local/share/pnpm"
+                      && export PATH="$PNPM_HOME:$PATH"
+
     setupAwsCli: &setupAwsCli
                    export AWS_CLI_VERSION=2.8.8
                    export AWS_CLI_DEST_PATH=~/.clicache/awscli-${AWS_CLI_VERSION}.zip
@@ -32,10 +35,7 @@ definitions:
                          pnpm install
                          --include-workspace-root
                          --frozen-lockfile
-                         --filter=!e2e-tests
-                         --filter=!docs
-                         --filter=!status-dashboard
-                         --filter=!local-ws-server
+                         --filter=webapp...
 
 pipelines:
   default:
@@ -51,13 +51,13 @@ pipelines:
 
         - step:
             name: Lint & test web app
-            image: atlassian/default-image:3
+            image: atlassian/default-image:4
             size: 2x
             script:
               - *initializeStep
               - *installWebappDeps
-              - nx run webapp:lint
-              - nx run webapp:test --watchAll=false --maxWorkers=20%
+              - node_modules/.bin/nx run webapp:lint
+              - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20%
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
                   SONAR_TOKEN: ${SONAR_TOKEN}
@@ -68,13 +68,27 @@ pipelines:
               - sonar
         - step:
             name: Build web app
-            image: atlassian/default-image:3
+            image: atlassian/default-image:4
             script:
               - *initializeStep
               - *installWebappDeps
-              - nx run webapp:build:app
+              - node_modules/.bin/nx run webapp:build:app
             caches:
               - pnpmwebapp
+              - clis
+
+        - step:
+            name: Build docs
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=docs...
+              - node_modules/.bin/nx run docs:build
+            caches:
+              - pnpmdocs
               - clis
 
         - step:
@@ -87,9 +101,8 @@ pipelines:
               - pnpm install
                 --include-workspace-root
                 --frozen-lockfile
-                --filter=core
-                --filter=tools
-              - nx run backend:test
+                --filter=backend...
+              - node_modules/.bin/nx run backend:test
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
                   SONAR_TOKEN: ${SONAR_TOKEN}
@@ -112,9 +125,8 @@ pipelines:
               - pnpm install
                 --include-workspace-root
                 --frozen-lockfile
-                --filter=core
-                --filter=tools
-              - nx run workers:test
+                --filter=workers...
+              - node_modules/.bin/nx run workers:test
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
                   SONAR_TOKEN: ${SONAR_TOKEN}

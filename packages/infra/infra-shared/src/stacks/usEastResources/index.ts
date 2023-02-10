@@ -1,0 +1,1 @@
+export { UsEastResourcesStack } from './stack';

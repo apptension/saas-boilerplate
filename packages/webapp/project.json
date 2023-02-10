@@ -3,7 +3,9 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/webapp/src",
   "projectType": "application",
-  "implicitDependencies": ["tools"],
+  "implicitDependencies": [
+    "tools"
+  ],
   "targets": {
     "setup": {
       "executor": "@saas-boilerplate-app/tools:setup",
@@ -19,10 +21,15 @@
       },
       "configurations": {
         "generate-types": {
-          "command": "node_modules/.bin/graphql-codegen -c ./graphql/codegen/contentful.yml && node_modules/.bin/graphql-codegen -c graphql/codegen/schemaTypes.yml && node_modules/.bin/graphql-codegen -c ./graphql/codegen/client.yml"
+          "commands": [
+            "pnpm run graphql-codegen -c ./graphql/codegen/contentful.yml",
+            "pnpm run graphql-codegen -c ./graphql/codegen/schemaTypes.yml",
+            "pnpm run graphql-codegen -c ./graphql/codegen/client.yml"
+          ],
+          "parallel": false
         },
         "generate-types:watch": {
-          "command": "node_modules/.bin/graphql-codegen -w -c ./graphql/codegen/client.yml"
+          "command": "pnpm run graphql-codegen -w -c ./graphql/codegen/client.yml"
         },
         "download-schema": {
           "command": "/bin/sh ./scripts/download-graphql-schema.sh"
@@ -34,9 +41,15 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "commands": ["node_modules/.bin/vite", "nx run webapp:graphql:generate-types:watch"]
+        "commands": [
+          "pnpm run vite",
+          "nx run webapp:graphql:generate-types:watch"
+        ]
       },
-      "dependsOn": ["graphql:generate-types", "relay"]
+      "dependsOn": [
+        "graphql:generate-types",
+        "relay"
+      ]
     },
     "vite-build-old": {
       "executor": "nx:run-commands",
@@ -47,13 +60,15 @@
       },
       "configurations": {
         "app": {
-          "command": "node_modules/.bin/vite build"
+          "command": "pnpm run vite build"
         },
         "emails": {
-          "command": "node_modules/.bin/vite build -c ./vite.emails.config.ts"
+          "command": "pnpm run vite build -c ./vite.emails.config.ts"
         }
       },
-      "dependsOn": ["graphql:generate-types"]
+      "dependsOn": [
+        "graphql:generate-types"
+      ]
     },
     "vite-build": {
       "executor": "nx:run-commands",
@@ -64,13 +79,15 @@
       },
       "configurations": {
         "app": {
-          "command": "vite -c vite.config.ts build"
+          "command": "pnpm run vite -c vite.config.ts build"
         },
         "emails": {
-          "command": "vite -c vite.emails.config.ts build"
+          "command": "pnpm run vite -c vite.emails.config.ts build"
         }
       },
-      "dependsOn": ["graphql:generate-types"]
+      "dependsOn": [
+        "graphql:generate-types"
+      ]
     },
     "build": {
       "executor": "nx:run-commands",
@@ -86,13 +103,19 @@
           "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:emails"
         }
       },
-      "dependsOn": ["graphql:generate-types"]
+      "dependsOn": [
+        "graphql:generate-types"
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["packages/webapp/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/webapp/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "deploy": {
@@ -101,9 +124,10 @@
         "cwd": "packages/webapp",
         "color": true,
         "commands": [
-          "nx run infra:deploy:webapp",
+          "pnpm run cdk deploy *WebAppStack",
           "nx run tools:upload-service-version webapp \"url=https://${DOMAIN_WEB_APP}\""
-        ]
+        ],
+        "parallel": false
       }
     }
   },

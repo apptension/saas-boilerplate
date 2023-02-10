@@ -1,0 +1,4 @@
+{
+  "app": "ts-node --project tsconfig.infra.json -r tsconfig-paths/register infra/main.ts",
+  "requireApproval": "never"
+}
