@@ -1,22 +1,25 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act, screen } from '@testing-library/react';
-import { Route, Routes } from 'react-router-dom';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
+import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
+import { Route, Routes } from 'react-router-dom';
+import { RelayMockEnvironment } from 'relay-test-utils';
 
-import { CancelSubscription } from '../cancelSubscription.component';
+import { RoutesConfig } from '../../../../app/config/routes';
 import {
   fillSubscriptionScheduleQuery,
   paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
 } from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { snackbarActions } from '../../../../modules/snackbar';
+import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { getRelayEnv } from '../../../../tests/utils/relay';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
-import { RoutesConfig } from '../../../../app/config/routes';
-import { getRelayEnv } from '../../../../tests/utils/relay';
+import { CancelSubscription } from '../cancelSubscription.component';
+import { SUBSCRIPTION_CANCEL_MUTATION } from '../cancelSubscription.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -49,6 +52,31 @@ const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment)
   ]);
 };
 
+const mutationData = {
+  cancelActiveSubscription: {
+    subscriptionSchedule: {
+      __typename: 'SubscriptionScheduleType',
+      id: 'test-id',
+      phases: [],
+      subscription: null,
+      canActivateTrial: true,
+      defaultPaymentMethod: {},
+    },
+    __typename: 'SubscriptionScheduleType',
+  },
+  __typename: 'CancelActiveSubscriptionMutationPayload',
+};
+
+const mutationVariables = { input: {} };
+
+const resolveSubscriptionCancelMutation = (errors?: GraphQLError[]) => {
+  return composeMockedQueryResult(SUBSCRIPTION_CANCEL_MUTATION, {
+    variables: mutationVariables,
+    data: mutationData,
+    errors,
+  });
+};
+
 const routePath = ['subscriptions', 'list'];
 
 const Component = () => {
@@ -71,7 +99,6 @@ describe('CancelSubscription: Component', () => {
     const routerProps = createMockRouterProps(routePath);
     const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
     const { waitForApolloMocks } = render(<Component />, {
-      relayEnvironment,
       routerProps,
       apolloMocks: append(requestMock),
     });
@@ -84,24 +111,24 @@ describe('CancelSubscription: Component', () => {
     expect(screen.getByText(/October 10, 2020/i)).toBeInTheDocument();
   });
 
-  // TODO: test > unskip after apollo mutation implement
-  describe.skip('cancel button is clicked', () => {
+  describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', async () => {
       const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(routePath);
       const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, {
-        relayEnvironment,
-        routerProps,
-        apolloMocks: append(requestMock),
-      });
+      const requestCancelMock = resolveSubscriptionCancelMutation();
+      requestCancelMock.newData = jest.fn(() => ({
+        data: mutationData,
+      }));
 
-      await waitForApolloMocks(0);
+      render(<Component />, {
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+      });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      expect(relayEnvironment).toHaveLatestOperation('subscriptionCancelActiveSubscriptionMutation');
-      expect(relayEnvironment).toLatestOperationInputEqual({});
+      expect(requestCancelMock.newData).toHaveBeenCalled();
     });
   });
 
@@ -110,13 +137,12 @@ describe('CancelSubscription: Component', () => {
       const routerProps = createMockRouterProps(routePath);
       const relayEnvironment = getRelayEnv();
       const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, {
-        relayEnvironment,
-        routerProps,
-        apolloMocks: append(requestMock),
-      });
+      const requestCancelMock = resolveSubscriptionCancelMutation();
 
-      await waitForApolloMocks(0);
+      render(<Component />, {
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+      });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
@@ -129,49 +155,22 @@ describe('CancelSubscription: Component', () => {
     });
   });
 
-  // TODO: test > unskip after apollo mutation implement
-  describe.skip('cancel completes with error', () => {
+  describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
       const relayEnvironment = getRelayEnv();
+      const errors = [new GraphQLError('Bad Error')];
       const routerProps = createMockRouterProps(routePath);
       const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
-      const { waitForApolloMocks } = render(<Component />, {
-        relayEnvironment,
-        routerProps,
-        apolloMocks: append(requestMock),
-      });
+      const requestCancelMock = resolveSubscriptionCancelMutation(errors);
 
-      await waitForApolloMocks(0);
+      render(<Component />, {
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+      });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      const errorMessage = 'Bad Error';
-      await act(async () => {
-        const operation = relayEnvironment.mock.getMostRecentOperation();
-        relayEnvironment.mock.resolve(operation, {
-          ...MockPayloadGenerator.generate(operation),
-          errors: [
-            {
-              message: 'GraphQlValidationError',
-              extensions: {
-                id: [
-                  {
-                    message: errorMessage,
-                    code: 'invalid',
-                  },
-                ],
-              },
-            },
-          ],
-        } as any);
-      });
-
-      expect(mockDispatch).not.toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'You will be moved to free plan with the next billing period',
-          id: 1,
-        })
-      );
+      expect(mockDispatch).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,23 +1,22 @@
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 import { OperationDescriptor } from 'react-relay/hooks';
+import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
+import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
+import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
+import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import {
   Subscription,
   SubscriptionPhase,
   SubscriptionPlan,
   SubscriptionPlanName,
 } from '../../shared/services/api/subscription/types';
-import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import {
   composeMockedListQueryResult,
   composeMockedQueryResult,
   connectionFromArray,
   makeId,
 } from '../../tests/utils/fixtures';
-import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
-import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
-
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
 
@@ -43,9 +42,11 @@ export const subscriptionPhaseFactory = createDeepFactory<SubscriptionPhase>(() 
 }));
 
 export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
+  id: makeId(32),
   phases: [subscriptionPhaseFactory()],
   canActivateTrial: false,
   defaultPaymentMethod: paymentMethodFactory(),
+  __typename: 'typename',
   subscription: {
     id: makeId(32),
     currentPeriodStart: new Date(2020, 5, 5).toString(),
@@ -68,8 +69,13 @@ export const fillSubscriptionScheduleQuery = (
   });
   relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
 
+  const defaultPaymentMethod = subscription.defaultPaymentMethod || {};
+
   return composeMockedQueryResult(STRIPE_SUBSCRIPTION_QUERY, {
-    data: { activeSubscription: subscription },
+    data: {
+      activeSubscription: subscription,
+      allPaymentMethods: [defaultPaymentMethod],
+    },
   });
 };
 

@@ -1,56 +1,23 @@
-import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
-import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { H3 } from '../../../theme/typography';
-import { Button } from '../../../shared/components/forms/button';
-import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
-import subscriptionCancelActiveSubscriptionMutationGraphql, {
-  subscriptionCancelActiveSubscriptionMutation,
-} from '../../../modules/subscription/__generated__/subscriptionCancelActiveSubscriptionMutation.graphql';
-import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
 import { BackButton } from '../../../shared/components/backButton';
+import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
+import { Button } from '../../../shared/components/forms/button';
 import { useActiveSubscriptionDetailsData } from '../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
-import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
+import { H3 } from '../../../theme/typography';
+import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { useCancelSubscription } from './cancelSubscription.hook';
 import { Container, Row, RowValue } from './cancelSubscription.styles';
 
 export const CancelSubscription = () => {
   const { activeSubscription } = useActiveSubscriptionDetails();
-  const intl = useIntl();
-  const { showMessage } = useSnackbar();
-  const navigate = useNavigate();
-  const generateLocalePath = useGenerateLocalePath();
 
   const { activeSubscriptionRenewalDate, activeSubscriptionPlan } =
     useActiveSubscriptionDetailsData(activeSubscription);
 
-  const successMessage = intl.formatMessage({
-    defaultMessage: 'You will be moved to free plan with the next billing period',
-    id: 'Cancel subscription / Success message',
-  });
+  const { handleCancel } = useCancelSubscription();
 
-  const [commitCancelActiveSubscriptionMutation] = usePromiseMutation<subscriptionCancelActiveSubscriptionMutation>(
-    subscriptionCancelActiveSubscriptionMutationGraphql
-  );
-
-  const handleConfirm = async () => {
-    try {
-      const { errors } = await commitCancelActiveSubscriptionMutation({
-        variables: {
-          input: {},
-        },
-      });
-
-      if (!errors) {
-        showMessage(successMessage);
-        navigate(generateLocalePath(RoutesConfig.subscriptions.index));
-      }
-    } catch {}
-  };
-
-  if (!activeSubscription) return <p>IMGwwwwww</p>;
+  if (!activeSubscription) return null;
 
   return (
     <Container>
@@ -76,7 +43,7 @@ export const CancelSubscription = () => {
       )}
 
       <Row>
-        <Button onClick={handleConfirm}>
+        <Button onClick={handleCancel}>
           <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
         </Button>
       </Row>

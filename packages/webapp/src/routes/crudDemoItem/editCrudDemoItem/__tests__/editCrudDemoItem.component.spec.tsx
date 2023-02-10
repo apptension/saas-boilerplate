@@ -1,15 +1,15 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { Route, Routes } from 'react-router';
+import userEvent from '@testing-library/user-event';
 import { produce } from 'immer';
+import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
-import { prepareState } from '../../../../mocks/store';
 import configureStore from '../../../../app/config/store';
-import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { fillEditCrudDemoItemQuery } from '../../../../mocks/factories/crudDemoItem';
+import { prepareState } from '../../../../mocks/store';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { CRUD_DEMO_ITEM_EDIT_MUTATION } from '../editCrudDemoItem.graphql';
 
 describe('EditCrudDemoItem: Component', () => {
@@ -27,9 +27,7 @@ describe('EditCrudDemoItem: Component', () => {
 
   const mutationVariables = { input: { id: defaultItemId, name: newName } };
   const mutationData = {
-    id: defaultItemId,
-    name: newName,
-    __typename: 'CrudDemoItemType',
+    updateCrudDemoItem: { crudDemoItem: { id: defaultItemId, name: newName, __typename: 'CrudDemoItemType' } },
   };
 
   const Component = () => (

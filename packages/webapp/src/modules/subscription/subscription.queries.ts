@@ -13,31 +13,6 @@ graphql`
 `;
 
 graphql`
-  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
-    phases {
-      startDate
-      endDate
-      trialEnd
-      item {
-        price {
-          ...subscriptionPlanItemFragment
-        }
-        quantity
-      }
-    }
-    subscription {
-      startDate
-      trialEnd
-      trialStart
-    }
-    canActivateTrial
-    defaultPaymentMethod {
-      ...stripePaymentMethodFragment
-    }
-  }
-`;
-
-graphql`
   query subscriptionPlansAllQuery {
     allSubscriptionPlans(first: 100) {
       edges {
