@@ -1,13 +1,12 @@
-import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { append, times } from 'ramda';
-import { Route, Routes } from 'react-router-dom';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
+import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { times } from 'ramda';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { MockPayloadGenerator } from 'relay-test-utils';
 
-import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
 import {
   fillAllPaymentsMethodsQuery,
   fillSubscriptionScheduleQuery,
@@ -17,12 +16,15 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
-import { render } from '../../../../../tests/utils/rendering';
-import { Subscription, SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
-import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
 import stripeAllPaymentMethodsQueryGraphql from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
-import { connectionFromArray } from '../../../../../tests/utils/fixtures';
+import { STRIPE_UPDATE_PAYMENT_METHOD_MUTATION } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { Subscription, SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
+import { composeMockedQueryResult, connectionFromArray } from '../../../../../tests/utils/fixtures';
+import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { render } from '../../../../../tests/utils/rendering';
+import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
+import { STRIPE_CREATE_SETUP_INTENT_MUTTION } from '../editPaymentMethodForm.graphql';
 
 jest.mock('@stripe/react-stripe-js', () => ({
   ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),
@@ -150,12 +152,15 @@ describe('EditPaymentMethodForm: Component', () => {
     render(<Component />, { relayEnvironment });
   });
 
-  // TODO: skip > fix test related to toHaveOperation
-  it.skip('should set default card if selected other already added card', async () => {
+  it('should set default card if selected other already added card', async () => {
     const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-    const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const requestUpdateMutationMock = composeMockedQueryResult(STRIPE_UPDATE_PAYMENT_METHOD_MUTATION, {
+      data: { updateDefaultPaymentMethod: {} },
+      variables: { input: { id: 'pk-test-id' } },
+    });
 
     const phases = [
       subscriptionPhaseFactory({
@@ -163,37 +168,31 @@ describe('EditPaymentMethodForm: Component', () => {
       }),
     ];
 
-    // relayEnvironment.mock.queueOperationResolver((operation) => {
-    //   return MockPayloadGenerator.generate(operation, {
-    //     PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-    //   });
-    // });
-    // relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
-    fillSubscriptionScheduleQuery(
+    const requestScheduleMock = fillSubscriptionScheduleQuery(
       relayEnvironment,
       subscriptionFactory({
         defaultPaymentMethod: paymentMethods[0],
         phases,
       })
     );
-    render(<Component onSuccess={onSuccess} />, { relayEnvironment, apolloMocks: append(requestMock) });
+    const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
+      relayEnvironment,
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat(requestMethodsMock, requestScheduleMock, requestUpdateMutationMock),
+    });
 
-    expect(await screen.findByRole('button', { name: /save/i })).toBeDisabled();
+    await waitForApolloMocks(1);
+
+    const secondMethod = screen.getAllByRole('radio')[1];
+    await fireEvent.click(secondMethod);
+    expect(await screen.findByRole('button', { name: /save/i })).not.toBeDisabled();
 
     await submitForm();
-
-    expect(relayEnvironment).toHaveOperation('stripeUpdateDefaultPaymentMethodMutation');
-
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-    });
 
     expect(onSuccess).toHaveBeenCalled();
   });
 
-  // TODO: skip > fix test related to toHaveOperation
-  it.skip('should call create setup intent if added new card', async () => {
+  it('should call create setup intent if added new card', async () => {
     const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
     const phases = [
@@ -202,7 +201,7 @@ describe('EditPaymentMethodForm: Component', () => {
       }),
     ];
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-    const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
     fillSubscriptionScheduleQuery(
       relayEnvironment,
       subscriptionFactory({
@@ -210,22 +209,27 @@ describe('EditPaymentMethodForm: Component', () => {
         phases,
       })
     );
-    relayEnvironment.mock.queueOperationResolver((operation) => {
-      return MockPayloadGenerator.generate(operation, {
-        PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-      });
+
+    const requestCreateIntentMock = composeMockedQueryResult(STRIPE_CREATE_SETUP_INTENT_MUTTION, {
+      data: { createSetupIntent: {} },
+      variables: { input: {} },
     });
-    relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
-    render(<Component onSuccess={onSuccess} />, { relayEnvironment, apolloMocks: append(requestMock) });
+
+    requestCreateIntentMock.newData = jest.fn(() => ({
+      data: { createSetupIntent: {} },
+    }));
+
+    const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
+      relayEnvironment,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMethodsMock, requestCreateIntentMock),
+    });
+
+    await waitForApolloMocks(1);
 
     await pressNewCardButton();
     await fillForm();
     await submitForm();
 
-    expect(relayEnvironment).toHaveOperation('stripeCreateSetupIntentMutation');
-    await act(async () => {
-      const operation = relayEnvironment.mock.getMostRecentOperation();
-      relayEnvironment.mock.resolve(operation, MockPayloadGenerator.generate(operation));
-    });
+    expect(requestCreateIntentMock.newData).toBeCalled();
   });
 });
