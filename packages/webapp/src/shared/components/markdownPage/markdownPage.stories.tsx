@@ -1,4 +1,6 @@
 import { Story } from '@storybook/react';
+
+import { withProviders } from '../../utils/storybook';
 import { MarkdownPage, MarkdownPageProps } from './markdownPage.component';
 
 const markdown = `
@@ -19,6 +21,7 @@ const Template: Story<MarkdownPageProps> = (args: MarkdownPageProps) => {
 export default {
   title: 'Shared/MarkdownPage',
   component: MarkdownPage,
+  decorators: [withProviders()],
 };
 
 export const Default = Template.bind({});

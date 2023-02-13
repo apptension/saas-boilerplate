@@ -1,5 +1,7 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
+
+import { withProviders } from '../../../../shared/utils/storybook';
 import { Skeleton } from './skeleton.component';
 
 const Container = styled.div`
@@ -18,6 +20,7 @@ const Template: Story = () => {
 export default {
   title: 'Routes/Documents/Document/Skeleton',
   component: Skeleton,
+  decorators: [withProviders()],
 };
 
 export const Default = Template.bind({});

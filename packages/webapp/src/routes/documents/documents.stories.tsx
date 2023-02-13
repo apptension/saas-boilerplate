@@ -1,7 +1,8 @@
 import { Story } from '@storybook/react';
-import { withProviders } from '../../shared/utils/storybook';
+import { append } from 'ramda';
+
 import { fillDocumentsListQuery } from '../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
+import { withProviders } from '../../shared/utils/storybook';
 import { Documents } from './documents.component';
 
 const Template: Story = () => {
@@ -13,10 +14,7 @@ export default {
   component: Documents,
   decorators: [
     withProviders({
-      relayEnvironment: (env) => {
-        fillCommonQueryWithUser(env);
-        fillDocumentsListQuery(env);
-      },
+      apolloMocks: append(fillDocumentsListQuery(undefined)),
     }),
   ],
 };

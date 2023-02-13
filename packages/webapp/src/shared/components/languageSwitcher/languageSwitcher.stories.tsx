@@ -1,13 +1,13 @@
 import { Story } from '@storybook/react';
-import { withRouter } from '../../../../.storybook/decorators';
-import { withRedux } from '../../utils/storybook';
+
+import { withProviders } from '../../utils/storybook';
 import { LanguageSwitcher } from '.';
 
 const Template: Story = () => <LanguageSwitcher />;
 
 export default {
   title: 'Shared/LanguageSwitcher',
-  decorators: [withRedux(), withRouter()],
+  decorators: [withProviders()],
 };
 
 export const Default = Template.bind({});

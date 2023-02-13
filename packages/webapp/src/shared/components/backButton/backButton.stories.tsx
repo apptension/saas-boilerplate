@@ -1,5 +1,6 @@
 import { Story } from '@storybook/react';
-import { withRouter } from '../../../../.storybook/decorators';
+
+import { withProviders } from '../../utils/storybook';
 import { BackButton, BackButtonProps } from './backButton.component';
 
 const Template: Story<BackButtonProps> = (args: BackButtonProps) => <BackButton {...args} />;
@@ -7,7 +8,7 @@ const Template: Story<BackButtonProps> = (args: BackButtonProps) => <BackButton 
 export default {
   title: 'Shared/BackButton',
   component: BackButton,
-  decorators: [withRouter()],
+  decorators: [withProviders()],
 };
 
 export const Primary = Template.bind({});

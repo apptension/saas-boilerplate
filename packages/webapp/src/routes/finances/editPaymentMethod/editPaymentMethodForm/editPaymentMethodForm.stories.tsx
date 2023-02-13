@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
-import { append, times } from 'ramda';
+import { times } from 'ramda';
 
 import {
   fillStripeAllPaymentMethodsQuery,

@@ -5,7 +5,7 @@ import { produce } from 'immer';
 import { Suspense } from 'react';
 import { Provider } from 'react-redux';
 import { RelayEnvironmentProvider } from 'react-relay';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { createStore } from 'redux';
 import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 

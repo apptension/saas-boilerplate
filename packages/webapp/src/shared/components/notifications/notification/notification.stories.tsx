@@ -1,7 +1,8 @@
-import styled from 'styled-components';
-import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withRelay } from '../../../utils/storybook';
+import { Story } from '@storybook/react';
+import styled from 'styled-components';
+
+import { withProviders } from '../../../utils/storybook';
 import { Notification, NotificationProps } from './notification.component';
 import { mockedNotificationProps } from './notification.fixtures';
 import { NotificationButton } from './index';
@@ -21,7 +22,7 @@ const Template: Story<NotificationProps> = (args: NotificationProps) => {
 export default {
   title: 'Shared/Notifications/Notification',
   component: Notification,
-  decorators: [withRelay()],
+  decorators: [withProviders()],
 };
 
 export const Default = Template.bind({});

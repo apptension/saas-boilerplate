@@ -1,10 +1,9 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
-import { createMockEnvironment } from 'relay-test-utils';
 
-import { currentUserFactory } from '../../../mocks/factories';
-import { withRouter } from '../../../../.storybook/decorators';
+import { currentUserFactory, fillNotificationsListQuery } from '../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../utils/commonQuery';
+import { withProviders } from '../../utils/storybook';
 import { Layout, LayoutProps } from './layout.component';
 
 const MockContent = styled.div`
@@ -17,20 +16,24 @@ const MockContent = styled.div`
 type StoryArgType = LayoutProps & { isLoggedIn: boolean };
 
 const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
-  const relayEnvironment = createMockEnvironment();
-  fillCommonQueryWithUser(relayEnvironment, isLoggedIn ? currentUserFactory() : null);
   return <Layout {...args} />;
 };
 
 export default {
   title: 'Shared/Layout',
   component: Layout,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks, { args: { isLoggedIn } }: any) => [
+        fillCommonQueryWithUser(undefined, isLoggedIn ? currentUserFactory() : null),
+        fillNotificationsListQuery(undefined, [], { hasUnreadNotifications: false }),
+      ],
+    }),
+  ],
 };
 
 export const LoggedOut = Template.bind({});
 LoggedOut.args = { isLoggedIn: false, children: <MockContent /> };
-LoggedOut.decorators = [withRouter()];
 
 export const LoggedIn = Template.bind({});
 LoggedIn.args = { isLoggedIn: true, children: <MockContent /> };
-LoggedIn.decorators = [withRouter()];
