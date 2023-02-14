@@ -1,15 +1,14 @@
+import { useMutation } from '@apollo/client';
 import { useCallback, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
+import { useNavigate, useParams } from 'react-router';
+
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { reportError } from '../../../shared/utils/reportError';
-import { useAuth } from '../../../shared/hooks/useAuth/useAuth';
-import { usePromiseMutation } from '../../../shared/services/graphqlApi/usePromiseMutation';
-import authConfirmUserEmailMutationGraphql, {
-  authConfirmUserEmailMutation,
-} from '../../../modules/auth/__generated__/authConfirmUserEmailMutation.graphql';
 import { useSnackbar } from '../../../modules/snackbar';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useAuth } from '../../../shared/hooks/useAuth/useAuth';
+import { reportError } from '../../../shared/utils/reportError';
+import { authConfirmUserEmailMutation } from './confirmEmail.graphql';
 
 export const ConfirmEmail = () => {
   const navigate = useNavigate();
@@ -18,9 +17,16 @@ export const ConfirmEmail = () => {
   const params = useParams<{ token: string; user: string }>();
   const { isLoggedIn } = useAuth();
   const { showMessage } = useSnackbar();
-  const [commitConfirmUserEmailMutation] = usePromiseMutation<authConfirmUserEmailMutation>(
-    authConfirmUserEmailMutationGraphql
-  );
+  const [commitConfirmUserEmailMutation] = useMutation(authConfirmUserEmailMutation, {
+    onCompleted: () => {
+      showMessage(successMessage);
+      navigate(generateLocalePath(RoutesConfig.login));
+    },
+    onError: () => {
+      showMessage(errorMessage);
+      navigate(generateLocalePath(RoutesConfig.login));
+    },
+  });
 
   const loggedOutSuccessMessage = intl.formatMessage({
     id: 'ConfirmEmail.LoggedOutSuccessMessage',
@@ -41,21 +47,14 @@ export const ConfirmEmail = () => {
 
   const handleEmailConfirmation = useCallback(
     async ({ token, user }: { token: string; user: string }) => {
-      try {
-        const { errors } = await commitConfirmUserEmailMutation({
-          variables: {
-            input: {
-              user,
-              token,
-            },
+      await commitConfirmUserEmailMutation({
+        variables: {
+          input: {
+            user,
+            token,
           },
-        });
-        await showMessage(errors ? errorMessage : successMessage);
-      } catch {
-        await showMessage(errorMessage);
-      }
-
-      navigate(generateLocalePath(RoutesConfig.login));
+        },
+      });
     },
     [commitConfirmUserEmailMutation, errorMessage, showMessage, successMessage, generateLocalePath, navigate]
   );
