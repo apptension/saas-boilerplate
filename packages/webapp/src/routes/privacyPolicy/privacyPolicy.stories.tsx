@@ -1,13 +1,11 @@
 import { Story } from '@storybook/react';
-import { createMockEnvironment } from 'relay-test-utils';
+import { append } from 'ramda';
+
 import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/factories';
 import { withProviders } from '../../shared/utils/storybook';
-import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
-const relayEnvironment = createMockEnvironment();
-fillCommonQueryWithUser(relayEnvironment);
-fillContentfulAppConfigQuery(relayEnvironment, {
+const requestMock = fillContentfulAppConfigQuery(undefined, {
   items: [
     appConfigFactory({
       privacyPolicy: `
@@ -82,7 +80,7 @@ const Template: Story = () => {
 export default {
   title: 'Routes/PrivacyPolicy',
   component: PrivacyPolicy,
-  decorators: [withProviders({ relayEnvironment })],
+  decorators: [withProviders({ apolloMocks: append(requestMock) })],
 };
 
 export const Default = Template.bind({});

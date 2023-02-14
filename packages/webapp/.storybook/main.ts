@@ -33,9 +33,9 @@ const config: StorybookViteConfig = {
     '../src/routes/finances/paymentConfirm/paymentConfirm.stories.tsx',
     '../src/routes/finances/subscriptions/subscriptions.stories.tsx',
     '../src/routes/finances/transactionHistory/transactionHistory.stories.tsx',
-    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx', // todo: fix after migration to apollo
+    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx',
     '../src/routes/profile/profile.stories.tsx',
-    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx', // todo: fix after migration to apollo
+    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx',
     '../src/shared/components/auth/avatarForm/avatarForm.stories.tsx',
     '../src/shared/components/auth/changePasswordForm/changePasswordForm.stories.tsx',
     '../src/shared/components/auth/editProfileForm/editProfileForm.stories.tsx',
