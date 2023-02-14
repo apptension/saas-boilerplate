@@ -1,7 +1,8 @@
 import { Story } from '@storybook/react';
-import { withProviders } from '../../../shared/utils/storybook';
-import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import { append } from 'ramda';
+
 import { fillAllStripeChargesQuery } from '../../../mocks/factories';
+import { withProviders } from '../../../shared/utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 
 const Template: Story = () => {
@@ -13,10 +14,7 @@ export default {
   component: TransactionHistory,
   decorators: [
     withProviders({
-      relayEnvironment: (env) => {
-        fillCommonQueryWithUser(env);
-        fillAllStripeChargesQuery(env);
-      },
+      apolloMocks: append(fillAllStripeChargesQuery()),
     }),
   ],
 };

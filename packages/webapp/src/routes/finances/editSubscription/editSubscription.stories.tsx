@@ -1,15 +1,13 @@
 import { Story } from '@storybook/react';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator } from 'relay-test-utils';
+
 import {
+  fillSubscriptionPlansAllQuery,
   fillSubscriptionScheduleQueryWithPhases,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../mocks/factories';
-import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
 import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
-import SubscriptionPlansAllQueryGraphql from '../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
-import { connectionFromArray } from '../../../tests/utils/fixtures';
+import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { EditSubscription } from './editSubscription.component';
 
 const Template: Story = () => {
@@ -31,39 +29,33 @@ const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { n
 export const FreeActive = Template.bind({});
 FreeActive.args = { children: 'text' };
 FreeActive.decorators = [
-  withRedux(),
   withActiveSubscriptionContext,
-  withRelay((env) => {
-    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        SubscriptionPlanConnection: () => connectionFromArray([mockMonthlyPlan, mockYearlyPlan]),
-      })
-    );
-    env.mock.queuePendingOperation(SubscriptionPlansAllQueryGraphql, {});
-    fillSubscriptionScheduleQueryWithPhases(env, [
-      subscriptionPhaseFactory({
-        item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-      }),
-    ]);
+  withProviders({
+    apolloMocks: (defaultMocks) =>
+      defaultMocks.concat([
+        fillSubscriptionPlansAllQuery(undefined, [mockMonthlyPlan, mockYearlyPlan]),
+        fillSubscriptionScheduleQueryWithPhases(undefined, [
+          subscriptionPhaseFactory({
+            item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+          }),
+        ]),
+      ]),
   }),
 ];
 
 export const MonthlyActive = Template.bind({});
 MonthlyActive.args = { children: 'text' };
 MonthlyActive.decorators = [
-  withRedux(),
   withActiveSubscriptionContext,
-  withRelay((env) => {
-    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        SubscriptionPlanConnection: () => connectionFromArray([mockMonthlyPlan, mockYearlyPlan]),
-      })
-    );
-    env.mock.queuePendingOperation(SubscriptionPlansAllQueryGraphql, {});
-    fillSubscriptionScheduleQueryWithPhases(env, [
-      subscriptionPhaseFactory({
-        item: { price: subscriptionPlanFactory() },
-      }),
-    ]);
+  withProviders({
+    apolloMocks: (defaultMocks) =>
+      defaultMocks.concat([
+        fillSubscriptionPlansAllQuery(undefined, [mockMonthlyPlan, mockYearlyPlan]),
+        fillSubscriptionScheduleQueryWithPhases(undefined, [
+          subscriptionPhaseFactory({
+            item: { price: subscriptionPlanFactory() },
+          }),
+        ]),
+      ]),
   }),
 ];

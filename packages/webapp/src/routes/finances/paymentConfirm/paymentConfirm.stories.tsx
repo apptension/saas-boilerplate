@@ -1,8 +1,14 @@
 import { Story } from '@storybook/react';
-import { times } from 'ramda';
+import { append, times } from 'ramda';
 
-import { fillStripeAllPaymentMethodsQuery, paymentMethodFactory } from '../../../mocks/factories';
-import { withActiveSubscriptionContext, withRedux, withRelay } from '../../../shared/utils/storybook';
+import {
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../mocks/factories';
+import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
+import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { PaymentConfirm } from './paymentConfirm.component';
 
 const Template: Story = () => {
@@ -14,12 +20,18 @@ export default {
   component: PaymentConfirm,
   decorators: [
     withActiveSubscriptionContext,
-    withRedux(),
-    withRelay((env) => {
-      fillStripeAllPaymentMethodsQuery(
-        times(() => paymentMethodFactory(), 3),
-        env
-      );
+    withProviders({
+      apolloMocks: append(
+        fillSubscriptionScheduleQueryWithPhases(
+          undefined,
+          [
+            subscriptionPhaseFactory({
+              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+            }),
+          ],
+          times(() => paymentMethodFactory(), 3)
+        )
+      ),
     }),
   ],
 };

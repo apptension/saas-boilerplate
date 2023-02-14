@@ -27,15 +27,15 @@ const config: StorybookViteConfig = {
     '../src/routes/documents/document/skeleton/skeleton.stories.tsx',
     // '../src/routes/documents/documents.stories.tsx',
     '../src/routes/finances/cancelSubscription/cancelSubscription.stories.tsx',
-    '../src/routes/finances/editPaymentMethod/editPaymentMethodForm/editPaymentMethodForm.stories.tsx', // todo: need rebase to finish
-    '../src/routes/finances/editSubscription/editSubscription.stories.tsx', // todo: need rebase to finish
-    '../src/routes/finances/editSubscription/subscriptionPlanItem/subscriptionPlanItem.stories.tsx', // todo: need rebase to finish
-    '../src/routes/finances/paymentConfirm/paymentConfirm.stories.tsx', // todo: need rebase to finish
-    '../src/routes/finances/subscriptions/subscriptions.stories.tsx', // todo: need rebase to finish
-    '../src/routes/finances/transactionHistory/transactionHistory.stories.tsx', // todo: need rebase to finish
-    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx', // todo: need rebase to finish
+    '../src/routes/finances/editPaymentMethod/editPaymentMethodForm/editPaymentMethodForm.stories.tsx',
+    '../src/routes/finances/editSubscription/editSubscription.stories.tsx',
+    '../src/routes/finances/editSubscription/subscriptionPlanItem/subscriptionPlanItem.stories.tsx',
+    '../src/routes/finances/paymentConfirm/paymentConfirm.stories.tsx',
+    '../src/routes/finances/subscriptions/subscriptions.stories.tsx',
+    '../src/routes/finances/transactionHistory/transactionHistory.stories.tsx',
+    '../src/routes/privacyPolicy/privacyPolicy.stories.tsx', // todo: fix after migration to apollo
     '../src/routes/profile/profile.stories.tsx',
-    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx', // todo: need rebase to finish
+    '../src/routes/termsAndConditions/termsAndConditions.stories.tsx', // todo: fix after migration to apollo
     '../src/shared/components/auth/avatarForm/avatarForm.stories.tsx',
     '../src/shared/components/auth/changePasswordForm/changePasswordForm.stories.tsx',
     '../src/shared/components/auth/editProfileForm/editProfileForm.stories.tsx',
@@ -51,10 +51,10 @@ const config: StorybookViteConfig = {
     '../src/shared/components/emptyState/emptyState.stories.tsx',
     '../src/shared/components/fileSize/fileSize.stories.tsx',
     '../src/shared/components/finances/stripe/stripeCardForm/stripeCardForm.stories.tsx',
-    '../src/shared/components/finances/stripe/stripePaymentForm/stripePaymentForm.stories.tsx', // todo: need rebase to finish
-    '../src/shared/components/finances/stripe/stripePaymentMethodInfo/stripePaymentMethodInfo.stories.tsx', // todo: need rebase to finish
-    '../src/shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.stories.tsx', // todo: need rebase to finish
-    '../src/shared/components/finances/stripe/transactionHistory/transactionHistory.stories.tsx', // todo: need rebase to finish
+    '../src/shared/components/finances/stripe/stripePaymentForm/stripePaymentForm.stories.tsx',
+    '../src/shared/components/finances/stripe/stripePaymentMethodInfo/stripePaymentMethodInfo.stories.tsx',
+    '../src/shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.stories.tsx',
+    '../src/shared/components/finances/stripe/transactionHistory/transactionHistory.stories.tsx',
     '../src/shared/components/forms/button/button.stories.tsx',
     '../src/shared/components/forms/checkbox/checkbox.stories.tsx',
     '../src/shared/components/forms/dropzone/dropzone.stories.tsx',

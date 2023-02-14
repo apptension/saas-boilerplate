@@ -1,11 +1,17 @@
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
-import { times } from 'ramda';
+import { append, times } from 'ramda';
 
-import { fillStripeAllPaymentMethodsQuery, paymentMethodFactory } from '../../../../../mocks/factories';
+import {
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '../../../../../mocks/factories';
+import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
 import { stripePromise } from '../../../../services/stripe';
-import { withRelay } from '../../../../utils/storybook';
+import { withProviders } from '../../../../utils/storybook';
 import { StripePaymentForm, StripePaymentFormProps } from './stripePaymentForm.component';
 
 const Template: Story<StripePaymentFormProps> = (args: StripePaymentFormProps) => {
@@ -20,11 +26,18 @@ export default {
   title: 'Shared/Finances/Stripe/StripePaymentForm',
   component: StripePaymentForm,
   decorators: [
-    withRelay((env) => {
-      fillStripeAllPaymentMethodsQuery(
-        times(() => paymentMethodFactory(), 3),
-        env
-      );
+    withProviders({
+      apolloMocks: append(
+        fillSubscriptionScheduleQueryWithPhases(
+          undefined,
+          [
+            subscriptionPhaseFactory({
+              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+            }),
+          ],
+          times(() => paymentMethodFactory(), 3)
+        )
+      ),
     }),
   ],
 };

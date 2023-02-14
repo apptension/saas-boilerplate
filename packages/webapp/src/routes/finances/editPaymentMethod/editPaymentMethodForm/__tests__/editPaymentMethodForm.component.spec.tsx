@@ -2,10 +2,9 @@ import { Elements } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { times } from 'ramda';
+import { append, times } from 'ramda';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { MockPayloadGenerator } from 'relay-test-utils';
 
 import {
   fillAllPaymentsMethodsQuery,
@@ -16,11 +15,9 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
-import stripeAllPaymentMethodsQueryGraphql from '../../../../../modules/stripe/__generated__/stripeAllPaymentMethodsQuery.graphql';
 import { STRIPE_UPDATE_PAYMENT_METHOD_MUTATION } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { Subscription, SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
-import { composeMockedQueryResult, connectionFromArray } from '../../../../../tests/utils/fixtures';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
@@ -136,24 +133,20 @@ describe('EditPaymentMethodForm: Component', () => {
   };
 
   it('should render without errors', async () => {
-    const relayEnvironment = getRelayEnv();
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-    fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
-      subscriptionPhaseFactory({
-        item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-      }),
-    ]);
-    relayEnvironment.mock.queueOperationResolver((operation) => {
-      return MockPayloadGenerator.generate(operation, {
-        PaymentMethodConnection: () => connectionFromArray(paymentMethods),
-      });
-    });
-    relayEnvironment.mock.queuePendingOperation(stripeAllPaymentMethodsQueryGraphql, {});
-    render(<Component />, { relayEnvironment });
+    const requestMock = fillSubscriptionScheduleQueryWithPhases(
+      undefined,
+      [
+        subscriptionPhaseFactory({
+          item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+        }),
+      ],
+      paymentMethods
+    );
+    render(<Component />, { apolloMocks: append(requestMock) });
   });
 
   it('should set default card if selected other already added card', async () => {
-    const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
     const paymentMethods = times(() => paymentMethodFactory(), 2);
     const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
@@ -169,14 +162,13 @@ describe('EditPaymentMethodForm: Component', () => {
     ];
 
     const requestScheduleMock = fillSubscriptionScheduleQuery(
-      relayEnvironment,
+      undefined,
       subscriptionFactory({
         defaultPaymentMethod: paymentMethods[0],
         phases,
       })
     );
     const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-      relayEnvironment,
       apolloMocks: (defaultMocks) =>
         defaultMocks.concat(requestMethodsMock, requestScheduleMock, requestUpdateMutationMock),
     });
@@ -193,7 +185,6 @@ describe('EditPaymentMethodForm: Component', () => {
   });
 
   it('should call create setup intent if added new card', async () => {
-    const relayEnvironment = getRelayEnv();
     const onSuccess = jest.fn();
     const phases = [
       subscriptionPhaseFactory({
@@ -203,7 +194,7 @@ describe('EditPaymentMethodForm: Component', () => {
     const paymentMethods = times(() => paymentMethodFactory(), 2);
     const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
     fillSubscriptionScheduleQuery(
-      relayEnvironment,
+      undefined,
       subscriptionFactory({
         defaultPaymentMethod: paymentMethods[0],
         phases,
@@ -220,7 +211,6 @@ describe('EditPaymentMethodForm: Component', () => {
     }));
 
     const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-      relayEnvironment,
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestMethodsMock, requestCreateIntentMock),
     });
 

@@ -6,7 +6,7 @@ import {
   paymentMethodFactory,
   transactionHistoryEntryFactory,
 } from '../../../../../../mocks/factories';
-import { Subscription } from '../../../../../../shared/services/api/subscription/types';
+import { Subscription } from '../../../../../services/api/subscription/types';
 import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { render } from '../../../../../../tests/utils/rendering';
 import { TransactionHistory } from '../transactionHistory.component';

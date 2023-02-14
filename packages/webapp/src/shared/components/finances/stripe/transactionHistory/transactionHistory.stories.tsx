@@ -1,6 +1,4 @@
 import { Story } from '@storybook/react';
-import { useQueryLoader } from 'react-relay';
-import { Suspense, useEffect } from 'react';
 
 import {
   fillAllStripeChargesQuery,
@@ -8,28 +6,10 @@ import {
   transactionHistoryEntryFactory,
 } from '../../../../../mocks/factories';
 import { withProviders } from '../../../../utils/storybook';
-import stripeAllChargesQueryGraphql, {
-  stripeAllChargesQuery,
-} from '../../../../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { TransactionHistory } from './transactionHistory.component';
 
 const Template: Story = () => {
-  const [queryRef, loadQuery] = useQueryLoader<stripeAllChargesQuery>(stripeAllChargesQueryGraphql);
-  useEffect(() => {
-    loadQuery({});
-  }, [loadQuery]);
-
-  const loader = <div>Loading...</div>;
-
-  if (!queryRef) {
-    return loader;
-  }
-  return (
-    <Suspense fallback={loader}>
-      <TransactionHistory transactionHistoryQueryRef={queryRef} />
-    </Suspense>
-  );
+  return <TransactionHistory />;
 };
 
 export default {
@@ -37,8 +17,7 @@ export default {
   component: TransactionHistory,
   decorators: [
     withProviders({
-      relayEnvironment: (defaultRelayEnv) => {
-        fillCommonQueryWithUser(defaultRelayEnv);
+      apolloMocks: (defaultMocks) => {
         const data = [
           transactionHistoryEntryFactory({
             created: new Date(2020, 5, 5).toString(),
@@ -51,7 +30,7 @@ export default {
             paymentMethod: paymentMethodFactory({ card: { last4: '9876' }, billingDetails: { name: 'Owner 2' } }),
           }),
         ];
-        fillAllStripeChargesQuery(defaultRelayEnv, data);
+        return defaultMocks.concat([fillAllStripeChargesQuery(undefined, data)]);
       },
     }),
   ],

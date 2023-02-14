@@ -78,6 +78,13 @@ const defaultPageInfo = {
   __typename: 'PageInfo',
 };
 
+export const mapRelayEdges = (data: Array<any>, typename: string, pageInfo?: PageInfo) => {
+  return {
+    edges: data.map((obj) => ({ node: { __typename: typename, ...obj }, cursor: defaultPageInfo.endCursor })),
+    pageInfo: pageInfo || defaultPageInfo,
+  };
+};
+
 export const composeMockedListQueryResult = (
   query: DocumentNode,
   key: string,
@@ -85,10 +92,7 @@ export const composeMockedListQueryResult = (
   { variables, data, pageInfo, additionalData = {} }: ComposeMockedListQueryResultProps
 ): MockedResponse => {
   const composedData = {
-    [key]: {
-      edges: data.map((obj) => ({ node: { __typename: typename, ...obj }, cursor: defaultPageInfo.endCursor })),
-      pageInfo: pageInfo || defaultPageInfo,
-    },
+    [key]: mapRelayEdges(data, typename, pageInfo),
     ...additionalData,
   } as Record<string, any>;
 

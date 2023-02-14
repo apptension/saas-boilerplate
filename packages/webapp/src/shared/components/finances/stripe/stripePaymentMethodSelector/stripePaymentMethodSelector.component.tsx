@@ -6,8 +6,8 @@ import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { ApiFormReturnType } from '../../../../../shared/hooks/useApiForm';
-import { StripePaymentMethodFragmentFragment } from '../../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { ApiFormReturnType } from '../../../../hooks/useApiForm';
+import { StripePaymentMethodFragmentFragment } from '../../../../services/graphqlApi/__generated/gql/graphql';
 import { mapConnection } from '../../../../utils/graphql';
 import { Icon } from '../../../icon';
 import { StripeCardForm } from '../stripeCardForm';

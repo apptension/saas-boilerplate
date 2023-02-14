@@ -3,14 +3,13 @@ import { Story } from '@storybook/react';
 import { times } from 'ramda';
 
 import {
-  fillStripeAllPaymentMethodsQuery,
   fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../mocks/factories';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { withActiveSubscriptionContext, withProviders, withRelay } from '../../../../shared/utils/storybook';
+import { withActiveSubscriptionContext, withProviders } from '../../../../shared/utils/storybook';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 
 const Template: Story<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
@@ -23,21 +22,20 @@ export default {
   decorators: [
     withActiveSubscriptionContext,
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat(
-          fillSubscriptionScheduleQueryWithPhases(undefined, [
-            subscriptionPhaseFactory({
-              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
-            }),
-          ])
-        ),
-    }),
-    // todo: finish after rebase
-    withRelay((env) => {
-      fillStripeAllPaymentMethodsQuery(
-        times(() => paymentMethodFactory(), 3),
-        env
-      );
+      apolloMocks: (defaultMocks) => {
+        const paymentMethods = times(() => paymentMethodFactory(), 3);
+        return defaultMocks.concat(
+          fillSubscriptionScheduleQueryWithPhases(
+            undefined,
+            [
+              subscriptionPhaseFactory({
+                item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+              }),
+            ],
+            paymentMethods
+          )
+        );
+      },
     }),
   ],
 };

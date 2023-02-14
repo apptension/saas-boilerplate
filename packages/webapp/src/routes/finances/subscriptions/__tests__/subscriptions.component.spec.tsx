@@ -1,28 +1,28 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RelayMockEnvironment } from 'relay-test-utils';
-import { Routes, Route } from 'react-router-dom';
 import { append } from 'ramda';
+import { Route, Routes } from 'react-router-dom';
+import { RelayMockEnvironment } from 'relay-test-utils';
 
-import { render } from '../../../../tests/utils/rendering';
-import { Subscriptions } from '../subscriptions.component';
 import {
+  fillActivePlanDetailsQuery,
+  fillAllPaymentsMethodsQuery,
+  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
-  fillSubscriptionScheduleQuery,
-  fillSubscriptionScheduleQueryWithPhases,
-  fillAllPaymentsMethodsQuery,
-  fillActivePlanDetailsQuery,
-  paymentMethodFactory,
 } from '../../../../mocks/factories';
 import {
   SubscriptionPlanName,
   Subscription as SubscriptionType,
 } from '../../../../shared/services/api/subscription/types';
-import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
-import { getRelayEnv } from '../../../../tests/utils/relay';
 import { matchTextContent } from '../../../../tests/utils/match';
+import { getRelayEnv } from '../../../../tests/utils/relay';
+import { render } from '../../../../tests/utils/rendering';
+import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
+import { Subscriptions } from '../subscriptions.component';
 
 const defaultPaymentPlan = [paymentMethodFactory()];
 
@@ -69,9 +69,8 @@ const Component = () => (
 
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
-    const relayEnvironment = getRelayEnv();
-    const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
-    render(<Component />, { relayEnvironment, apolloMocks: append(requestMock) });
+    const requestMock = resolveSubscriptionDetailsQuery(undefined);
+    render(<Component />, { apolloMocks: append(requestMock) });
 
     expect(await screen.findByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
   });

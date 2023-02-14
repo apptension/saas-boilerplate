@@ -6,6 +6,7 @@ import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__gener
 import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
 import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
+import { StripePaymentMethod } from '../../shared/services/api/stripe/paymentMethod';
 import {
   Subscription,
   SubscriptionPhase,
@@ -17,6 +18,7 @@ import {
   composeMockedQueryResult,
   connectionFromArray,
   makeId,
+  mapRelayEdges,
 } from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { paymentMethodFactory } from './stripe';
@@ -59,7 +61,8 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
 
 export const fillSubscriptionScheduleQuery = (
   relayEnvironment?: RelayMockEnvironment,
-  subscription: Partial<Subscription>
+  subscription: Partial<Subscription>,
+  paymentMethods?: StripePaymentMethod[]
 ) => {
   if (relayEnvironment) {
     relayEnvironment.mock.queueOperationResolver((operation) => {
@@ -72,19 +75,23 @@ export const fillSubscriptionScheduleQuery = (
     relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
   }
 
-  const defaultPaymentMethod = subscription.defaultPaymentMethod || {};
+  const defaultPaymentMethod = subscription.defaultPaymentMethod || ({} as StripePaymentMethod);
+  if (!paymentMethods) {
+    paymentMethods = [defaultPaymentMethod];
+  }
 
   return composeMockedQueryResult(STRIPE_SUBSCRIPTION_QUERY, {
     data: {
-      activeSubscription: subscription,
-      allPaymentMethods: [defaultPaymentMethod],
+      activeSubscription: { ...subscription, __typename: 'SubscriptionScheduleType' },
+      allPaymentMethods: mapRelayEdges(paymentMethods, 'StripePaymentMethodType'),
     },
   });
 };
 
 export const fillSubscriptionScheduleQueryWithPhases = (
   relayEnvironment?: RelayMockEnvironment,
-  phases: SubscriptionPhase[]
+  phases: SubscriptionPhase[],
+  paymentMethods?: StripePaymentMethod[]
 ) => {
   return fillSubscriptionScheduleQuery(
     relayEnvironment,
@@ -94,11 +101,12 @@ export const fillSubscriptionScheduleQueryWithPhases = (
         card: { last4: '1234' },
       }),
       phases,
-    })
+    }),
+    paymentMethods
   );
 };
 
-export const fillSubscriptionPlansAllQuery = (env: RelayMockEnvironment, data: SubscriptionPlan[] = []) => {
+export const fillSubscriptionPlansAllQuery = (env?: RelayMockEnvironment, data: SubscriptionPlan[] = []) => {
   if (env) {
     env.mock.queueOperationResolver((operation: OperationDescriptor) =>
       MockPayloadGenerator.generate(operation, {
