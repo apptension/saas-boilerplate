@@ -1,12 +1,10 @@
+import { useMutation } from '@apollo/client';
 import { useIntl } from 'react-intl';
 
-import { useFormatFileSize } from '../../fileSize';
-import { useApiForm } from '../../../hooks/useApiForm';
-import { usePromiseMutation } from '../../../services/graphqlApi/usePromiseMutation';
-import authUpdateUserProfileMutationGraphql, {
-  authUpdateUserProfileMutation,
-} from '../../../../modules/auth/__generated__/authUpdateUserProfileMutation.graphql';
 import { useSnackbar } from '../../../../modules/snackbar';
+import { useApiForm } from '../../../hooks/useApiForm';
+import { useFormatFileSize } from '../../fileSize';
+import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { UpdateAvatarFormFields } from './avatarForm.types';
 
@@ -38,38 +36,35 @@ export const useAvatarForm = () => {
 
   const {
     handleSubmit,
-    setGraphQLResponseErrors,
+    setApolloGraphQLResponseErrors,
     form: { reset },
   } = form;
 
-  const [commitAvatarMutation] = usePromiseMutation<authUpdateUserProfileMutation>(
-    authUpdateUserProfileMutationGraphql
-  );
+  const [commitAvatarMutation] = useMutation(authUpdateUserProfileMutation, {
+    onCompleted: (data) => {
+      reset();
+      snackbar.showMessage(
+        intl.formatMessage({
+          defaultMessage: 'Avatar successfully changed.',
+          id: 'Auth / Avatar Form / Success message',
+        })
+      );
+    },
+    onError: (error) => {
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    },
+  });
 
   const handleAvatarUpload = handleSubmit(async (data: UpdateAvatarFormFields) => {
-    try {
-      if (!data.avatar?.[0]) return;
-      const { errors } = await commitAvatarMutation({
-        variables: {
-          input: {},
+    if (!data.avatar?.[0]) return;
+    await commitAvatarMutation({
+      variables: {
+        input: {
+          avatar: data.avatar?.[0],
         },
-        uploadables: { avatar: data.avatar?.[0] },
-      });
-
-      if (errors) {
-        setGraphQLResponseErrors(errors);
-      } else {
-        reset();
-        snackbar.showMessage(
-          intl.formatMessage({
-            defaultMessage: 'Avatar successfully changed.',
-            id: 'Auth / Avatar Form / Success message',
-          })
-        );
-      }
-    } catch {}
+      },
+    });
   });
 
   return { ...form, handleAvatarUpload, fileTooLargeMessage };
 };
-

@@ -1,9 +1,10 @@
-import { ApolloClient, HttpLink, InMemoryCache, split, from, Observable, ServerError } from '@apollo/client';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { RetryLink } from '@apollo/client/link/retry';
+import { ApolloClient, HttpLink, InMemoryCache, Observable, ServerError, from, split } from '@apollo/client';
 import { FetchResult } from '@apollo/client/link/core';
 import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
+import { createUploadLink } from 'apollo-upload-client';
 import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
@@ -31,7 +32,7 @@ export const subscriptionClient = createClient({
   },
 });
 
-const httpApiLink = new HttpLink({
+const httpApiLink = createUploadLink({
   uri: apiURL('/graphql/'),
 });
 
