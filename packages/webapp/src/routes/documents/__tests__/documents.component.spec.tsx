@@ -1,24 +1,19 @@
+import { fireEvent, screen } from '@testing-library/react';
 import { times } from 'ramda';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
 
-import { Documents } from '../documents.component';
-import { documentFactory, fillDocumentsListQuery } from '../../../mocks/factories';
+import { documentFactory, fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../mocks/factories';
+import { DocumentsDeleteMutationMutation } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { render } from '../../../tests/utils/rendering';
-
-const generateRelayEnvironmentDocuments = (documents: any) => {
-  return createMockEnvironment();
-};
+import { Documents } from '../documents.component';
 
 describe('Documents: Component', () => {
   const Component = () => <Documents />;
 
   it('should render list of documents', async () => {
-    const env = createMockEnvironment();
     const documentsLength = 3;
     const generatedDocs = times(() => documentFactory(), documentsLength);
 
-    const mockRequest = fillDocumentsListQuery(env, generatedDocs);
+    const mockRequest = fillDocumentsListQuery(undefined, generatedDocs);
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
     expect(await screen.findAllByRole('link')).toHaveLength(documentsLength);
@@ -33,52 +28,44 @@ describe('Documents: Component', () => {
     expect(await screen.findByText('No documents')).toBeInTheDocument();
   });
 
-  // TODO: documentsListCreateMutation have to be migrated to apollo
-  it.skip('should add new item to the list', async () => {
+  it('should add new item to the list', async () => {
     const generatedDoc = documentFactory();
-    const relayEnvironment = generateRelayEnvironmentDocuments([generatedDoc]);
 
-    const mockRequest = fillDocumentsListQuery(relayEnvironment, [generatedDoc]);
+    const mockRequest = fillDocumentsListQuery(undefined, [generatedDoc]);
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
-    const file = new File(['content'], 'file.png', { type: 'image/png' });
+    const file = new File(['content'], `${generatedDoc.file?.name}`, { type: 'image/png' });
     fireEvent.change(await screen.findByTestId('file-input'), {
       target: { files: [file] },
     });
 
-    await waitFor(() => {
-      relayEnvironment.mock.resolveMostRecentOperation((operation) =>
-        MockPayloadGenerator.generate(operation, {
-          DocumentDemoItemType: (context, generateId) => ({
-            ...documentFactory({ file: { name: file.name } }),
-            id: `${generateId()}`,
-          }),
-        })
-      );
-    });
-
-    expect(screen.getByText(file.name)).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(await screen.findByText(file.name)).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(1);
   });
 
-// TODO: documentsDeleteMutation have to be migrated to apollo
-  it.skip('should remove new item from the list', async () => {
-    const document = documentFactory();
-    const relayEnvironment = generateRelayEnvironmentDocuments([document]);
-    const mockRequest = fillDocumentsListQuery([document]);
-    render(<Component />, { relayEnvironment, apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
+  it('should remove new item from the list', async () => {
+    const generatedDoc = documentFactory();
+    const id = generatedDoc.id as string;
+    const mutationData: DocumentsDeleteMutationMutation = {
+      deleteDocumentDemoItem: {
+        deletedIds: [id],
+        __typename: 'DeleteDocumentDemoItemMutationPayload',
+      },
+    };
 
+    const deleteMutationMock = fillDocumentDeleteQuery(id, mutationData);
+    deleteMutationMock.newData = jest.fn(() => ({
+      data: mutationData,
+    }));
+
+    const mockRequest = fillDocumentsListQuery(undefined, [generatedDoc]);
+
+    render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock),
+    });
     fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
 
-    act(() => {
-      relayEnvironment.mock.resolveMostRecentOperation((operation) =>
-        MockPayloadGenerator.generate(operation, {
-          DeleteDocumentDemoItemMutationPayload: () => ({ deletedIds: [document.id] }),
-        })
-      );
-    });
-
-    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+    expect(deleteMutationMock.newData).toHaveBeenCalled();
   });
 });

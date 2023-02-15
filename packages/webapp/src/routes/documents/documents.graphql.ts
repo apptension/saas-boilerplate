@@ -24,3 +24,24 @@ export const documentsListQuery = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const documentsListCreateMutation = gql(/* GraphQL */ `
+  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {
+    createDocumentDemoItem(input: $input) {
+      documentDemoItemEdge {
+        node {
+          createdAt
+          ...documentListItem
+        }
+      }
+    }
+  }
+`);
+
+export const documentsListDeleteMutation = gql(/* GraphQL */ `
+  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {
+    deleteDocumentDemoItem(input: $input) {
+      deletedIds
+    }
+  }
+`);

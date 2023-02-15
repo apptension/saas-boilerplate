@@ -1,15 +1,16 @@
-import { FormattedMessage } from 'react-intl';
 import { useQuery } from '@apollo/client';
 import { isEmpty } from 'ramda';
-import { Dropzone } from '../../shared/components/forms/dropzone';
+import { FormattedMessage } from 'react-intl';
+
 import { EmptyState } from '../../shared/components/emptyState';
+import { Dropzone } from '../../shared/components/forms/dropzone';
 import { useMappedConnection } from '../../shared/hooks/useMappedConnection';
 import { DocumentsListQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
-import { Container, Header, List } from './documents.styles';
 import { Document, DocumentSkeleton } from './document';
-import { MAX_FILE_SIZE, MAX_FILES } from './documents.constants';
-import { useHandleDrop } from './documents.hooks';
+import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';
 import { documentsListQuery } from './documents.graphql';
+import { useHandleDrop } from './documents.hooks';
+import { Container, Header, List } from './documents.styles';
 
 type ListContentProps = {
   data: DocumentsListQueryQuery;

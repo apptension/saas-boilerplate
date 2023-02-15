@@ -1,36 +1,46 @@
-import graphql from 'babel-plugin-relay/macro';
-import { ConnectionHandler } from 'relay-runtime';
-import { usePromiseMutation } from '../../shared/services/graphqlApi/usePromiseMutation';
-import { documentsListCreateMutation } from './__generated__/documentsListCreateMutation.graphql';
+import { useMutation } from '@apollo/client';
+
+import {
+  documentListItemFragment,
+  documentsListCreateMutation,
+  documentsListDeleteMutation,
+} from './documents.graphql';
 
 export const useHandleDrop = () => {
-  const [commitDropMutation] = usePromiseMutation<documentsListCreateMutation>(
-    graphql`
-      mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!, $connections: [ID!]!) {
-        createDocumentDemoItem(input: $input) {
-          documentDemoItemEdge @appendEdge(connections: $connections) {
-            node {
-              createdAt
-              file {
-                name
-                url
-              }
-            }
-          }
-        }
-      }
-    `
-  );
+  const [commitMutation] = useMutation(documentsListCreateMutation, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allDocumentDemoItems(existingConnection = { edges: [] }) {
+            const node = data?.createDocumentDemoItem?.documentDemoItemEdge?.node;
+            if (!node) return existingConnection;
+
+            const normalizedId = cache.identify(node);
+
+            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.__ref === normalizedId);
+            if (isAlreadyInStore) return existingConnection;
+
+            const newFile = {
+              node: cache.writeFragment({
+                data: node,
+                fragment: documentListItemFragment,
+              }),
+            };
+
+            return { ...existingConnection, edges: [...existingConnection.edges, newFile] };
+          },
+        },
+      });
+    },
+  });
 
   return async (files: File[]) => {
     for (const file of files) {
-      await commitDropMutation({
+      await commitMutation({
         variables: {
-          input: {},
-          connections: [ConnectionHandler.getConnectionID('root', 'documentsList_allDocumentDemoItems')],
-        },
-        uploadables: {
-          file,
+          input: {
+            file,
+          },
         },
       });
     }
@@ -38,13 +48,13 @@ export const useHandleDrop = () => {
 };
 
 export const useHandleDelete = () => {
-  const [commitDeleteMutation] = usePromiseMutation(graphql`
-    mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!, $connections: [ID!]!) {
-      deleteDocumentDemoItem(input: $input) {
-        deletedIds @deleteEdge(connections: $connections)
-      }
-    }
-  `);
+  const [commitDeleteMutation] = useMutation(documentsListDeleteMutation, {
+    update(cache, { data }) {
+      const deletedId = data?.deleteDocumentDemoItem?.deletedIds?.[0];
+      const normalizedId = cache.identify({ id: deletedId, __typename: 'DocumentDemoItemType' });
+      cache.evict({ id: normalizedId });
+    },
+  });
 
   return async (id: string) => {
     await commitDeleteMutation({
@@ -52,7 +62,6 @@ export const useHandleDelete = () => {
         input: {
           id,
         },
-        connections: [ConnectionHandler.getConnectionID('root', 'documentsList_allDocumentDemoItems')],
       },
     });
   };

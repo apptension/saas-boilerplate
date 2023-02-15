@@ -1,13 +1,8 @@
 import { Story } from '@storybook/react';
-import graphql from 'babel-plugin-relay/macro';
-import { useLazyLoadQuery } from 'react-relay';
-import { MockPayloadGenerator } from 'relay-test-utils';
 import styled from 'styled-components';
 
 import { documentFactory } from '../../../mocks/factories';
-import { withRelay } from '../../../shared/utils/storybook';
-import { connectionFromArray } from '../../../tests/utils/fixtures';
-import { documentListItemStoryQuery } from './__generated__/documentListItemStoryQuery.graphql';
+import { withProviders } from '../../../shared/utils/storybook';
 import { Document, DocumentProps } from './document.component';
 
 const Container = styled.div`
@@ -16,38 +11,17 @@ const Container = styled.div`
 `;
 
 const Template: Story<DocumentProps> = (args: DocumentProps) => {
-  const data = useLazyLoadQuery<documentListItemStoryQuery>(
-    graphql`
-      query documentListItemStoryQuery @relay_test_operation {
-        allDocumentDemoItems(first: 1) {
-          edges {
-            node {
-              ...documentListItem
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
+  const generatedDoc = documentFactory();
+  const { file, createdAt } = generatedDoc;
+  const id = generatedDoc.id as string;
 
-  const item = data.allDocumentDemoItems?.edges[0]?.node;
-
-  return <Container>{item && <Document {...args} item={item} />}</Container>;
+  return <Container>{generatedDoc && <Document {...args} item={{ id, file, createdAt }} />}</Container>;
 };
 
 export default {
   title: 'Routes/Documents/Document',
   component: Document,
-  decorators: [
-    withRelay((env) => {
-      env.mock.queueOperationResolver((operation) =>
-        MockPayloadGenerator.generate(operation, {
-          DocumentDemoItemConnection: () => connectionFromArray([documentFactory()]),
-        })
-      );
-    }),
-  ],
+  decorators: [withProviders({})],
   argTypes: {
     item: {
       control: {
