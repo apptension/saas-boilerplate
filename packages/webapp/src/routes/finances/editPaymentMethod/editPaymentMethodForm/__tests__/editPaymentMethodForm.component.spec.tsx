@@ -15,13 +15,13 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
-import { STRIPE_UPDATE_PAYMENT_METHOD_MUTATION } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { stripeUpdateDefaultPaymentMethodMutation } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { Subscription, SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
-import { STRIPE_CREATE_SETUP_INTENT_MUTTION } from '../editPaymentMethodForm.graphql';
+import { stripeCreateSetupIntentMutation } from '../editPaymentMethodForm.graphql';
 
 jest.mock('@stripe/react-stripe-js', () => ({
   ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),
@@ -150,7 +150,7 @@ describe('EditPaymentMethodForm: Component', () => {
     const onSuccess = jest.fn();
     const paymentMethods = times(() => paymentMethodFactory(), 2);
     const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
-    const requestUpdateMutationMock = composeMockedQueryResult(STRIPE_UPDATE_PAYMENT_METHOD_MUTATION, {
+    const requestUpdateMutationMock = composeMockedQueryResult(stripeUpdateDefaultPaymentMethodMutation, {
       data: { updateDefaultPaymentMethod: {} },
       variables: { input: { id: 'pk-test-id' } },
     });
@@ -201,7 +201,7 @@ describe('EditPaymentMethodForm: Component', () => {
       })
     );
 
-    const requestCreateIntentMock = composeMockedQueryResult(STRIPE_CREATE_SETUP_INTENT_MUTTION, {
+    const requestCreateIntentMock = composeMockedQueryResult(stripeCreateSetupIntentMutation, {
       data: { createSetupIntent: {} },
       variables: { input: {} },
     });

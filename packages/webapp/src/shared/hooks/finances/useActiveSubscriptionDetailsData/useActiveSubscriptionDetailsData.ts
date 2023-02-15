@@ -1,13 +1,13 @@
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
-import { StripeAllPaymentsMethodsQueryQuery } from '../../../services/graphqlApi/__generated/gql/graphql';
+import { SubscriptionActivePlanDetailsQuery_Query } from '../../../services/graphqlApi/__generated/gql/graphql';
 import { useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails';
-import { SUBSCRIPTION_ACTIVE_FRAGMENT } from './useActiveSubscriptionDetailsData.graphql';
+import { subscriptionActiveSubscriptionFragment } from './useActiveSubscriptionDetailsData.graphql';
 
 export const useActiveSubscriptionDetailsData = (
-  activeSubscriptionQuery: StripeAllPaymentsMethodsQueryQuery['activeSubscription']
+  activeSubscriptionQuery: SubscriptionActivePlanDetailsQuery_Query['activeSubscription']
 ) => {
-  const activeSubscription = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscriptionQuery);
+  const activeSubscription = useFragment(subscriptionActiveSubscriptionFragment, activeSubscriptionQuery);
 
   const phases = activeSubscription?.phases || [];
   const currentPhasePlan = (phases[0]?.item?.price as SubscriptionPlan) ?? null;

@@ -4,7 +4,7 @@ import { produce } from 'immer';
 
 import { render } from '../../../../tests/utils/rendering';
 import { prepareState } from '../../../../mocks/store';
-import { AddCrudDemoItem, ADD_CRUD_DEMO_ITEM_MUTATION } from '../addCrudDemoItem.component';
+import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
 import configureStore from '../../../../app/config/store';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
@@ -38,7 +38,7 @@ describe('AddCrudDemoItem: Component', () => {
           },
         },
       };
-      const requestMock = composeMockedQueryResult(ADD_CRUD_DEMO_ITEM_MUTATION, {
+      const requestMock = composeMockedQueryResult(addCrudDemoItemMutation, {
         variables,
         data,
       });
@@ -70,7 +70,7 @@ describe('AddCrudDemoItem: Component', () => {
           },
         },
       };
-      const requestMock = composeMockedQueryResult(ADD_CRUD_DEMO_ITEM_MUTATION, {
+      const requestMock = composeMockedQueryResult(addCrudDemoItemMutation, {
         variables,
         data,
       });

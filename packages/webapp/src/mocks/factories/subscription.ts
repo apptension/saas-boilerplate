@@ -3,9 +3,9 @@ import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
 import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
-import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
-import { STRIPE_SUBSCRIPTION_QUERY } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
+import { subscriptionPlansAllQuery } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
+import { stripeSubscriptionQuery } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { subscriptionActivePlanDetailsQuery } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { StripePaymentMethod } from '../../shared/services/api/stripe/paymentMethod';
 import {
   Subscription,
@@ -80,7 +80,7 @@ export const fillSubscriptionScheduleQuery = (
     paymentMethods = [defaultPaymentMethod];
   }
 
-  return composeMockedQueryResult(STRIPE_SUBSCRIPTION_QUERY, {
+  return composeMockedQueryResult(stripeSubscriptionQuery, {
     data: {
       activeSubscription: { ...subscription, __typename: 'SubscriptionScheduleType' },
       allPaymentMethods: mapRelayEdges(paymentMethods, 'StripePaymentMethodType'),
@@ -116,19 +116,19 @@ export const fillSubscriptionPlansAllQuery = (env?: RelayMockEnvironment, data: 
     env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
   }
 
-  return composeMockedListQueryResult(SUBSCRIPTION_PLANS_ALL_QUERY, 'allSubscriptionPlans', 'SubscriptionPlanType', {
+  return composeMockedListQueryResult(subscriptionPlansAllQuery, 'allSubscriptionPlans', 'SubscriptionPlanType', {
     data,
   });
 };
 
 // Apollo Mocks
 export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[]) =>
-  composeMockedListQueryResult(STRIPE_SUBSCRIPTION_QUERY, 'allPaymentMethods', 'StripePaymentMethodType', {
+  composeMockedListQueryResult(stripeSubscriptionQuery, 'allPaymentMethods', 'StripePaymentMethodType', {
     data,
   });
 
 export const fillActivePlanDetailsQuery = (data: Partial<Subscription>) =>
-  composeMockedQueryResult(SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY, {
+  composeMockedQueryResult(subscriptionActivePlanDetailsQuery, {
     data: {
       activeSubscription: data,
     },

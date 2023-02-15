@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 import { StripePaymentMethodType } from '../../../../shared/services/api/stripe/paymentMethod';
 import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
-import { STRIPE_CREATE_SETUP_INTENT_MUTTION } from './editPaymentMethodForm.graphql';
+import { stripeCreateSetupIntentMutation } from './editPaymentMethodForm.graphql';
 
 interface UseStripeSetupIntentProps {
   onSuccess: (data: StripeSetupIntentFragmentFragment) => void;
@@ -16,7 +16,7 @@ interface UseStripeSetupIntentProps {
 }
 
 export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupIntentProps) => {
-  const [commitCreateSetupIntentMutation, { data }] = useMutation(STRIPE_CREATE_SETUP_INTENT_MUTTION, {
+  const [commitCreateSetupIntentMutation, { data }] = useMutation(stripeCreateSetupIntentMutation, {
     onCompleted: (data) => onSuccess(data.createSetupIntent?.setupIntent as StripeSetupIntentFragmentFragment),
     onError: (error) => onError(error.graphQLErrors),
   });

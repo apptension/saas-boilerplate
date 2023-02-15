@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
 
-import { STRIPE_ALL_CHARGES } from '../../../../../routes/finances/subscriptions/subscriptions.graphql';
+import { stripeAllChargesQuery } from '../../../../../routes/finances/subscriptions/subscriptions.graphql';
 import { mapConnection } from '../../../../utils/graphql';
 import { Container, Entry, HeaderCell, HeaderRow } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {
-  const { data } = useQuery(STRIPE_ALL_CHARGES);
+  const { data } = useQuery(stripeAllChargesQuery);
 
   return (
     <Container>

@@ -4,8 +4,8 @@ import { FormattedMessage } from 'react-intl';
 import { RoutesConfig } from '../../../app/config/routes';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
 import {
-  SUBSCRIPTION_ACTIVE_FRAGMENT,
-  SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY,
+  subscriptionActiveFragment,
+  subscriptionActivePlanDetailsQuery,
 } from '../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
@@ -20,8 +20,8 @@ export type PaymentMethodContentProps = {
 export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContentProps) => {
   const generateLocalePath = useGenerateLocalePath();
 
-  const { data } = useQuery(SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY);
-  const activeSubscription = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, data?.activeSubscription);
+  const { data } = useQuery(subscriptionActivePlanDetailsQuery);
+  const activeSubscription = useFragment(subscriptionActiveFragment, data?.activeSubscription);
 
   if (!activeSubscription) return null;
 

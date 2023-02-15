@@ -10,7 +10,7 @@ import { prepareState } from '../../../../mocks/store';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
-import { CRUD_DEMO_ITEM_EDIT_MUTATION } from '../editCrudDemoItem.graphql';
+import { editCrudDemoItemMutation } from '../editCrudDemoItem.graphql';
 
 describe('EditCrudDemoItem: Component', () => {
   const defaultItemId = 'test-id';
@@ -54,7 +54,7 @@ describe('EditCrudDemoItem: Component', () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
 
       const queryMock = fillEditCrudDemoItemQuery(undefined, queryData, queryVariables);
-      const requestMock = composeMockedQueryResult(CRUD_DEMO_ITEM_EDIT_MUTATION, {
+      const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
         variables: mutationVariables,
         data: mutationData,
       });
@@ -80,7 +80,7 @@ describe('EditCrudDemoItem: Component', () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
       const reduxStore = configureStore(reduxInitialState);
       const queryMock = fillEditCrudDemoItemQuery(undefined, queryData, queryVariables);
-      const requestMock = composeMockedQueryResult(CRUD_DEMO_ITEM_EDIT_MUTATION, {
+      const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
         variables: mutationVariables,
         data: mutationData,
       });

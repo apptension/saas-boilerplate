@@ -10,11 +10,11 @@ import {
 import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
 import { mapConnection } from '../../../../utils/graphql';
 import { withProviders } from '../../../../utils/storybook';
-import { STRIPE_SUBSCRIPTION_QUERY } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { stripeSubscriptionQuery } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from './stripePaymentMethodInfo.component';
 
 const Template: Story<StripePaymentMethodInfoProps> = (args: StripePaymentMethodInfoProps) => {
-  const { data } = useQuery(STRIPE_SUBSCRIPTION_QUERY, { nextFetchPolicy: 'cache-and-network' });
+  const { data } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
 
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
   const firstPaymentMethod = paymentMethods?.[0];

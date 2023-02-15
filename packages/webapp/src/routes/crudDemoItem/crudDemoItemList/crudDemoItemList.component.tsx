@@ -9,7 +9,7 @@ import { mapConnection } from '../../../shared/utils/graphql';
 import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
 
-export const CRUD_DEMO_ITEM_LIST_QUERY = gql(/* GraphQL */ `
+export const crudDemoItemListQuery = gql(/* GraphQL */ `
   query crudDemoItemListQuery {
     allCrudDemoItems(first: 100) {
       edges {
@@ -24,7 +24,7 @@ export const CRUD_DEMO_ITEM_LIST_QUERY = gql(/* GraphQL */ `
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { loading, data } = useQuery(CRUD_DEMO_ITEM_LIST_QUERY);
+  const { loading, data } = useQuery(crudDemoItemListQuery);
 
   const renderList = () => {
     if (data) {

@@ -13,7 +13,7 @@ import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
 
-const CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY = gql(/* GraphQL */ `
+const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   query crudDemoItemListItemTestQuery {
     item: crudDemoItem(id: "test-id") {
       ...crudDemoItemListItem
@@ -33,7 +33,7 @@ describe('CrudDemoItemListItem: Component', () => {
   };
 
   const Component = () => {
-    const { loading, data } = useQuery(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY);
+    const { loading, data } = useQuery(crudDemoItemListItemTestQuery);
 
     if (loading || !data?.item) {
       return <span />;
@@ -59,7 +59,7 @@ describe('CrudDemoItemListItem: Component', () => {
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
         data: {
           item: {
             __typename: 'CrudDemoItemType',
@@ -86,7 +86,7 @@ describe('CrudDemoItemListItem: Component', () => {
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
         data: {
           item: {
             ...item,

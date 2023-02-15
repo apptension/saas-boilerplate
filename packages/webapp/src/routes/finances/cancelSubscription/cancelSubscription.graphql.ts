@@ -1,6 +1,6 @@
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 
-export const SUBSCRIPTION_CANCEL_MUTATION = gql(/* GraphQL */ `
+export const subscriptionCancelMutation = gql(/* GraphQL */ `
   mutation subscriptionCancelActiveSubscriptionMutation($input: CancelActiveSubscriptionMutationInput!) {
     cancelActiveSubscription(input: $input) {
       subscriptionSchedule {

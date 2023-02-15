@@ -1,22 +1,21 @@
-import { Navigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Navigate, useParams } from 'react-router';
 
-import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
+import { useSnackbar } from '../../../modules/snackbar';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useSnackbar } from '../../../modules/snackbar';
-
+import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoItem.graphql';
 import { Container, Header } from './editCrudDemoItem.styles';
-import { CRUD_DEMO_ITEM_EDIT_MUTATION, CRUD_DEMO_ITEM_EDIT_QUERY } from './editCrudDemoItem.graphql';
 
 type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
   const { id } = useParams<Params>();
-  const { data, loading } = useQuery(CRUD_DEMO_ITEM_EDIT_QUERY, { variables: { id } });
+  const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id } });
   const crudDemoItem = data?.crudDemoItem;
 
   const { showMessage } = useSnackbar();
@@ -28,12 +27,9 @@ export const EditCrudDemoItem = () => {
   });
 
   const generateLocalePath = useGenerateLocalePath();
-  const [commitEditCrudDemoItemMutation, { error, loading: loadingMutation }] = useMutation(
-    CRUD_DEMO_ITEM_EDIT_MUTATION,
-    {
-      onCompleted: () => showMessage(successMessage),
-    }
-  );
+  const [commitEditCrudDemoItemMutation, { error, loading: loadingMutation }] = useMutation(editCrudDemoItemMutation, {
+    onCompleted: () => showMessage(successMessage),
+  });
 
   if (loading)
     return (

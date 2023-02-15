@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutesConfig } from '../../../app/config/routes';
 import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { SUBSCRIPTION_CHANGE_ACTIVE_MUTATION } from './editSubscription.graphql';
+import { subscriptionChangeActiveMutation } from './editSubscription.graphql';
 
 export const useEditSubscription = () => {
   const intl = useIntl();
@@ -23,7 +23,7 @@ export const useEditSubscription = () => {
     defaultMessage: 'You need first to add a payment method. Go back and set it there',
   });
 
-  const [commitChangeActiveSubscriptionMutation, { loading }] = useMutation(SUBSCRIPTION_CHANGE_ACTIVE_MUTATION, {
+  const [commitChangeActiveSubscriptionMutation, { loading }] = useMutation(subscriptionChangeActiveMutation, {
     onError: () => {
       showMessage(failMessage);
     },

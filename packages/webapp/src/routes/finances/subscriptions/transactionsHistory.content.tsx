@@ -3,12 +3,12 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { STRIPE_ALL_CHARGES } from './subscriptions.graphql';
+import { stripeAllChargesQuery } from './subscriptions.graphql';
 import { Link, Row } from './subscriptions.styles';
 
 export const TransactionsHistoryContent = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { data } = useQuery(STRIPE_ALL_CHARGES);
+  const { data } = useQuery(stripeAllChargesQuery);
 
   const length = data?.allCharges?.edges?.length ?? 0;
 

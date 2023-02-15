@@ -1,6 +1,6 @@
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 
-export const STRIPE_ALL_CHARGES = gql(/* GraphQL */ `
+export const stripeAllChargesQuery = gql(/* GraphQL */ `
   query stripeAllChargesQuery {
     allCharges {
       edges {

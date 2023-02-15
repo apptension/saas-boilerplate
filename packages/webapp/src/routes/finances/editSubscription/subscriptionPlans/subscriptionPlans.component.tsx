@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 
 import { mapConnection } from '../../../../shared/utils/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { SUBSCRIPTION_PLANS_ALL_QUERY } from './subscriptionPlans.graphql';
+import { subscriptionPlansAllQuery } from './subscriptionPlans.graphql';
 import { PlanItem, Plans } from './subscriptionPlans.styles';
 
 export type SubscriptionPlansProps = {
@@ -13,7 +13,7 @@ export type SubscriptionPlansProps = {
 export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlansProps) => {
   const { activeSubscription } = useActiveSubscriptionDetails();
 
-  const { data } = useQuery(SUBSCRIPTION_PLANS_ALL_QUERY);
+  const { data } = useQuery(subscriptionPlansAllQuery);
 
   return (
     <Plans>

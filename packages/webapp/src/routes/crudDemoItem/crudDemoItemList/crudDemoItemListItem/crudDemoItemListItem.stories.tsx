@@ -19,7 +19,7 @@ export default {
   },
 };
 
-const CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY = gql(/* GraphQL */ `
+const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   query crudDemoItemListItemDefaultStoryQuery {
     item: crudDemoItem(id: "test-id") {
       ...crudDemoItemListItem
@@ -28,7 +28,7 @@ const CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY = gql(/* GraphQL */ `
 `);
 
 const Template: Story<CrudDemoItemListItemProps> = (args: CrudDemoItemListItemProps) => {
-  const { loading, data } = useQuery(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY);
+  const { loading, data } = useQuery(crudDemoItemListItemTestQuery);
   return !loading && data?.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
 };
 
@@ -36,7 +36,7 @@ export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
     apolloMocks: append(
-      composeMockedQueryResult(CRUD_DEMO_ITEM_LIST_ITEM_TEST_QUERY, {
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
         data: {
           item: {
             __typename: 'CrudDemoItemType',

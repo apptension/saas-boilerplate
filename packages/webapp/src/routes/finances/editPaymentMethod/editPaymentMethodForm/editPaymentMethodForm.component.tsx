@@ -5,7 +5,7 @@ import {
   PaymentFormFields,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { SUBSCRIPTION_ACTIVE_FRAGMENT } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
+import { subscriptionActiveFragment } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { useApiForm } from '../../../../shared/hooks/useApiForm';
 import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
@@ -56,7 +56,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   const { confirmCardSetup } = useStripeCardSetup();
   const { updateDefaultPaymentMethod } = useStripePaymentMethods({ onUpdateSuccess: onSuccess });
 
-  const activeSubscriptionFragment = useFragment(SUBSCRIPTION_ACTIVE_FRAGMENT, activeSubscription);
+  const activeSubscriptionFragment = useFragment(subscriptionActiveFragment, activeSubscription);
 
   const setCardAsDefault = (cardId: string) => {
     updateDefaultPaymentMethod(cardId);

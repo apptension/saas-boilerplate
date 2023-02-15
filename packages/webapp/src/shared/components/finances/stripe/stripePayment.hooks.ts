@@ -6,12 +6,12 @@ import { useApiForm } from '../../../hooks/useApiForm';
 import { StripePaymentIntentType } from '../../../services/graphqlApi/__generated/gql/graphql';
 import { useStripePayment } from './stripePayment.stripe.hook';
 import {
-  STRIPE_CREATE_PAYMENT_INTENT_MUTATION,
-  STRIPE_UPDATE_PAYMENT_INTENT_MUTATION,
+  stripeCreatePaymentIntentMutation,
+  stripeUpdatePaymentIntentMutation,
 } from './stripePaymentForm/stripePaymentForm.graphql';
 import {
-  STRIPE_DELETE_PAYMENT_METHOD_MUTATION,
-  STRIPE_UPDATE_PAYMENT_METHOD_MUTATION,
+  stripeDeletePaymentMethodMutation,
+  stripeUpdateDefaultPaymentMethodMutation,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import {
   PaymentFormFields,
@@ -23,7 +23,7 @@ interface UseStripePaymentMethodsProps {
 }
 
 export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMethodsProps = {}) => {
-  const [commitDeletePaymentMethodMutation] = useMutation(STRIPE_DELETE_PAYMENT_METHOD_MUTATION, {
+  const [commitDeletePaymentMethodMutation] = useMutation(stripeDeletePaymentMethodMutation, {
     update(cache, { data }) {
       cache.modify({
         fields: {
@@ -42,7 +42,7 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
     },
   });
 
-  const [commitUpdateDefaultPaymentMethodMutation] = useMutation(STRIPE_UPDATE_PAYMENT_METHOD_MUTATION, {
+  const [commitUpdateDefaultPaymentMethodMutation] = useMutation(stripeUpdateDefaultPaymentMethodMutation, {
     onCompleted: () => onUpdateSuccess?.(),
     update(cache, { data }) {
       cache.modify({
@@ -113,7 +113,7 @@ export const useStripePaymentIntent = (onSuccess: UseStripePaymentIntentProps) =
   const { setGenericError, setApolloGraphQLResponseErrors, handleSubmit } = apiFormControls;
 
   const [commitCreatePaymentIntentMutation, { loading: createLoading }] = useMutation(
-    STRIPE_CREATE_PAYMENT_INTENT_MUTATION,
+    stripeCreatePaymentIntentMutation,
     {
       onCompleted: ({ createPaymentIntent }) => {
         handleCompletedPaymentIntent(createPaymentIntent?.paymentIntent as StripePaymentIntentType);
@@ -125,7 +125,7 @@ export const useStripePaymentIntent = (onSuccess: UseStripePaymentIntentProps) =
   );
 
   const [commitUpdatePaymentIntentMutation, { loading: updateLoading }] = useMutation(
-    STRIPE_UPDATE_PAYMENT_INTENT_MUTATION,
+    stripeUpdatePaymentIntentMutation,
     {
       onCompleted: ({ updatePaymentIntent }) =>
         handleCompletedPaymentIntent(updatePaymentIntent?.paymentIntent as StripePaymentIntentType),

@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
 
-import { CONFIG_CONTENTFUL_APP_CONFIG_QUERY } from '../../modules/config/config.graphql';
+import { configContentfulAppQuery } from '../../modules/config/config.graphql';
 import { MarkdownPage } from '../../shared/components/markdownPage';
 import { SchemaType } from '../../shared/services/graphqlApi/apolloClient';
 
 export const TermsAndConditions = () => {
-  const { data, loading } = useQuery(CONFIG_CONTENTFUL_APP_CONFIG_QUERY, {
+  const { data, loading } = useQuery(configContentfulAppQuery, {
     context: { schemaType: SchemaType.Contentful },
   });
 

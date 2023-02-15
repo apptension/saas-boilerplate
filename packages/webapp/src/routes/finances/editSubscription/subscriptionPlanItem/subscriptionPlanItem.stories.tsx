@@ -20,7 +20,7 @@ import { withProviders } from '../../../../shared/utils/storybook';
 import { createMockRouterProps } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../subscriptionPlans/subscriptionPlans.graphql';
+import { subscriptionPlansAllQuery } from '../subscriptionPlans/subscriptionPlans.graphql';
 import { SubscriptionPlanItem } from './subscriptionPlanItem.component';
 
 const routePath = ['subscriptions', 'index'];
@@ -30,7 +30,7 @@ const defaultProvidersOptions = {
 };
 
 const Wrapper = () => {
-  const { data, loading } = useQuery(SUBSCRIPTION_PLANS_ALL_QUERY);
+  const { data, loading } = useQuery(subscriptionPlansAllQuery);
   const { activeSubscription } = useActiveSubscriptionDetails();
 
   return (

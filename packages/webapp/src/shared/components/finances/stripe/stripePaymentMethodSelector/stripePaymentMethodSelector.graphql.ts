@@ -1,6 +1,6 @@
 import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 
-export const STRIPE_SUBSCRIPTION_QUERY = gql(/* GraphQL */ `
+export const stripeSubscriptionQuery = gql(/* GraphQL */ `
   query stripeSubscriptionQuery {
     allPaymentMethods(first: 100) {
       edges {
@@ -29,7 +29,7 @@ export const STRIPE_SUBSCRIPTION_QUERY = gql(/* GraphQL */ `
   }
 `);
 
-export const STRIPE_DELETE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
+export const stripeDeletePaymentMethodMutation = gql(/* GraphQL */ `
   mutation stripeDeletePaymentMethodMutation($input: DeletePaymentMethodMutationInput!) {
     deletePaymentMethod(input: $input) {
       deletedIds
@@ -42,7 +42,7 @@ export const STRIPE_DELETE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-export const STRIPE_UPDATE_PAYMENT_METHOD_MUTATION = gql(/* GraphQL */ `
+export const stripeUpdateDefaultPaymentMethodMutation = gql(/* GraphQL */ `
   mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {
     updateDefaultPaymentMethod(input: $input) {
       activeSubscription {

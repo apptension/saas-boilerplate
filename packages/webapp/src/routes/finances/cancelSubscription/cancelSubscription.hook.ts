@@ -6,7 +6,7 @@ import { RoutesConfig } from '../../../app/config/routes';
 import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { reportError } from '../../../shared/utils/reportError';
-import { SUBSCRIPTION_CANCEL_MUTATION } from './cancelSubscription.graphql';
+import { subscriptionCancelMutation } from './cancelSubscription.graphql';
 
 export const useCancelSubscription = () => {
   const intl = useIntl();
@@ -19,7 +19,7 @@ export const useCancelSubscription = () => {
     id: 'Cancel subscription / Success message',
   });
 
-  const [commitCancelActiveSubscriptionMutation] = useMutation(SUBSCRIPTION_CANCEL_MUTATION, {
+  const [commitCancelActiveSubscriptionMutation] = useMutation(subscriptionCancelMutation, {
     onCompleted: () => {
       showMessage(successMessage);
       navigate(generateLocalePath(RoutesConfig.subscriptions.index));

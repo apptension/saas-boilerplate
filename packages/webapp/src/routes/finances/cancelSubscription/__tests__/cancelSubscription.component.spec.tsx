@@ -19,7 +19,7 @@ import { getRelayEnv } from '../../../../tests/utils/relay';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { CancelSubscription } from '../cancelSubscription.component';
-import { SUBSCRIPTION_CANCEL_MUTATION } from '../cancelSubscription.graphql';
+import { subscriptionCancelMutation } from '../cancelSubscription.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -70,7 +70,7 @@ const mutationData = {
 const mutationVariables = { input: {} };
 
 const resolveSubscriptionCancelMutation = (errors?: GraphQLError[]) => {
-  return composeMockedQueryResult(SUBSCRIPTION_CANCEL_MUTATION, {
+  return composeMockedQueryResult(subscriptionCancelMutation, {
     variables: mutationVariables,
     data: mutationData,
     errors,

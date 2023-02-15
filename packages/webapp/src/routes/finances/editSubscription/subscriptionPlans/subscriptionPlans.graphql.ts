@@ -1,6 +1,6 @@
 import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
 
-export const SUBSCRIPTION_PLANS_ALL_QUERY = gql(/* GraphQL */ `
+export const subscriptionPlansAllQuery = gql(/* GraphQL */ `
   query subscriptionPlansAllQuery {
     allSubscriptionPlans(first: 100) {
       edges {

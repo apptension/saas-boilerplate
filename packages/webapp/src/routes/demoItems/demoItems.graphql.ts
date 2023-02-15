@@ -10,7 +10,7 @@ export const demoItemListItemFragment = gql(/* GraphQL */ `
   }
 `);
 
-export const demoItemsAll = gql(/* GraphQL */ `
+export const demoItemsAllQuery = gql(/* GraphQL */ `
   query demoItemsAllQuery {
     demoItemCollection {
       items {

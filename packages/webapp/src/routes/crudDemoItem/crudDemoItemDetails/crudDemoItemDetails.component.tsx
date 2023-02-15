@@ -7,7 +7,7 @@ import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
 import { Container, Header } from './crudDemoItemDetails.styles';
 
-export const CRUD_DEMO_ITEM_DETAILS_QUERY = gql(/* GraphQL */ `
+export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `
   query crudDemoItemDetailsQuery($id: ID!) {
     crudDemoItem(id: $id) {
       id
@@ -23,7 +23,7 @@ export const CrudDemoItemDetails = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { id } = useParams<keyof Params>() as Params;
 
-  const { loading, data } = useQuery(CRUD_DEMO_ITEM_DETAILS_QUERY, {
+  const { loading, data } = useQuery(crudDemoItemDetailsQuery, {
     variables: {
       id,
     },

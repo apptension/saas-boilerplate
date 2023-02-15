@@ -1,6 +1,6 @@
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 
-export const SUBSCRIPTION_CHANGE_ACTIVE_MUTATION = gql(/* GraphQL */ `
+export const subscriptionChangeActiveMutation = gql(/* GraphQL */ `
   mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {
     changeActiveSubscription(input: $input) {
       subscriptionSchedule {

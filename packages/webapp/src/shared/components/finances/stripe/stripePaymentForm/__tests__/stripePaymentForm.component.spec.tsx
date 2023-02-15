@@ -13,7 +13,7 @@ import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
 import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../../../tests/utils/fixtures';
 
-import { STRIPE_CREATE_PAYMENT_INTENT_MUTATION } from '../stripePaymentForm.graphql';
+import { stripeCreatePaymentIntentMutation } from '../stripePaymentForm.graphql';
 
 const mockConfirmPayment = jest.fn();
 
@@ -79,7 +79,7 @@ describe('StripePaymentForm: Component', () => {
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+      const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
         data: mutationData,
       });
@@ -102,7 +102,7 @@ describe('StripePaymentForm: Component', () => {
 
     it('should call confirm payment and onSuccess', async () => {
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+      const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
         data: mutationData,
       });
@@ -132,7 +132,7 @@ describe('StripePaymentForm: Component', () => {
     it('should show error message if creating payment intent throws error', async () => {
       const errorMessage = 'Something went wrong';
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+      const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
         data: [],
         errors: [new GraphQLError(errorMessage)],
@@ -155,7 +155,7 @@ describe('StripePaymentForm: Component', () => {
 
     it('should show error message if confirm payment return error', async () => {
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-      const requestPaymentMutation = composeMockedQueryResult(STRIPE_CREATE_PAYMENT_INTENT_MUTATION, {
+      const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
         data: mutationData,
       });

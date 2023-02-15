@@ -14,16 +14,16 @@ import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
-import { CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT } from './crudDemoItemListItem.graphql';
+import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
 
 export type CrudDemoItemListItemProps = {
-  item: FragmentType<typeof CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT>;
+  item: FragmentType<typeof crudDemoItemListItemFragment>;
 };
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
-  const [commitDeleteMutation, { loading }] = useMutation(CRUD_DEMO_ITEM_LIST_DELETE_MUTATION, {
+  const [commitDeleteMutation, { loading }] = useMutation(crudDemoItemListItemDeleteMutation, {
     update(cache, { data }) {
       cache.modify({
         fields: {
@@ -42,7 +42,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     },
   });
 
-  const data = useFragment(CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT, item);
+  const data = useFragment(crudDemoItemListItemFragment, item);
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

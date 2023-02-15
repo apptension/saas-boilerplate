@@ -18,7 +18,7 @@ import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditSubscription } from '../editSubscription.component';
-import { SUBSCRIPTION_CHANGE_ACTIVE_MUTATION } from '../editSubscription.graphql';
+import { subscriptionChangeActiveMutation } from '../editSubscription.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -68,7 +68,7 @@ const fillCurrentSubscriptionQuery = (relayEnvironment: RelayMockEnvironment) =>
   );
 
 const fillChangeSubscriptionMutation = (errors?: GraphQLError[]) =>
-  composeMockedQueryResult(SUBSCRIPTION_CHANGE_ACTIVE_MUTATION, {
+  composeMockedQueryResult(subscriptionChangeActiveMutation, {
     data: mockMutationData,
     variables: mockMutationVariables,
     errors,

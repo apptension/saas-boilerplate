@@ -7,7 +7,7 @@ import { DemoItems } from '../demoItems.component';
 import { getRelayEnv as getBaseRelayEnv } from '../../../tests/utils/relay';
 import { RoutesConfig } from '../../../app/config/routes';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
-import { demoItemsAll } from '../demoItems.graphql';
+import { demoItemsAllQuery } from '../demoItems.graphql';
 import { composeMockedNestedListQueryResult } from '../../../tests/utils/fixtures';
 
 const mockedItems = [
@@ -27,7 +27,7 @@ const mockedItems = [
   },
 ];
 const requestMock = () =>
-  composeMockedNestedListQueryResult(demoItemsAll, 'demoItemCollection', 'items', 'DemoItem', {
+  composeMockedNestedListQueryResult(demoItemsAllQuery, 'demoItemCollection', 'items', 'DemoItem', {
     data: mockedItems,
   });
 

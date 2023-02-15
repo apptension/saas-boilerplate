@@ -21,7 +21,7 @@ import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { SUBSCRIPTION_PLANS_ALL_QUERY } from '../../subscriptionPlans/subscriptionPlans.graphql';
+import { subscriptionPlansAllQuery } from '../../subscriptionPlans/subscriptionPlans.graphql';
 import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscriptionPlanItem.component';
 
 describe('SubscriptionPlanItem: Component', () => {
@@ -29,7 +29,7 @@ describe('SubscriptionPlanItem: Component', () => {
 
   const Component = (props: Partial<SubscriptionPlanItemProps>) => {
     const { activeSubscription } = useActiveSubscriptionDetails();
-    const { data } = useQuery(SUBSCRIPTION_PLANS_ALL_QUERY);
+    const { data } = useQuery(subscriptionPlansAllQuery);
 
     const plans = mapConnection((plan) => plan, data?.allSubscriptionPlans);
 

@@ -1,6 +1,6 @@
 import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
 
-export const SUBSCRIPTION_ACTIVE_FRAGMENT = gql(/* GraphQL */ `
+export const subscriptionActiveFragment = gql(/* GraphQL */ `
   fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
     phases {
       startDate
@@ -46,7 +46,7 @@ export const SUBSCRIPTION_ACTIVE_FRAGMENT = gql(/* GraphQL */ `
   }
 `);
 
-export const SUBSCRIPTION_ACTIVE_PLAN_DETAILS_QUERY = gql(/* GraphQL */ `
+export const subscriptionActivePlanDetailsQuery = gql(/* GraphQL */ `
   query subscriptionActivePlanDetailsQuery_ {
     activeSubscription {
       ...subscriptionActiveSubscriptionFragment

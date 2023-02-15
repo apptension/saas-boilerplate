@@ -13,7 +13,7 @@ import { Icon } from '../../../icon';
 import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
-import { STRIPE_SUBSCRIPTION_QUERY } from './stripePaymentMethodSelector.graphql';
+import { stripeSubscriptionQuery } from './stripePaymentMethodSelector.graphql';
 import {
   CardElementContainer,
   Container,
@@ -40,7 +40,7 @@ export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = {
 export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
   props: StripePaymentMethodSelectorProps<T>
 ) => {
-  const { data, loading } = useQuery(STRIPE_SUBSCRIPTION_QUERY, { nextFetchPolicy: 'cache-and-network' });
+  const { data, loading } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
 
   const {
     formControls: {

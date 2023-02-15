@@ -7,11 +7,11 @@ import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { useSnackbar } from '../../../modules/snackbar';
-import { CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT } from '../crudDemoItemList/crudDemoItemListItem';
+import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
 
 import { Container, Header } from './addCrudDemoItem.styles';
 
-export const ADD_CRUD_DEMO_ITEM_MUTATION = gql(/* GraphQL */ `
+export const addCrudDemoItemMutation = gql(/* GraphQL */ `
   mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
     createCrudDemoItem(input: $input) {
       crudDemoItemEdge {
@@ -35,7 +35,7 @@ export const AddCrudDemoItem = () => {
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(
-    ADD_CRUD_DEMO_ITEM_MUTATION,
+    addCrudDemoItemMutation,
     {
       update(cache, { data }) {
         cache.modify({
@@ -48,7 +48,7 @@ export const AddCrudDemoItem = () => {
               const newItem = {
                 node: cache.writeFragment({
                   data: node,
-                  fragment: CRUD_DEMO_ITEM_LIST_ITEM_FRAGMENT,
+                  fragment: crudDemoItemListItemFragment,
                 }),
                 __typename: 'CrudDemoItemEdge',
               };

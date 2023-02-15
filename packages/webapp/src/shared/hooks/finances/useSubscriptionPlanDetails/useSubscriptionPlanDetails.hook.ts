@@ -3,7 +3,7 @@ import { times } from 'ramda';
 import { useIntl } from 'react-intl';
 
 import { ActiveSubscriptionDetailsContextType } from '../../../../routes/finances/activeSubscriptionContext/activeSubscriptionContext.hooks';
-import { STRIPE_SUBSCRIPTION_QUERY } from '../../../components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { stripeSubscriptionQuery } from '../../../components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
 import { SubscriptionPlanItemFragmentFragment } from '../../../services/graphqlApi/__generated/gql/graphql';
 
@@ -47,7 +47,7 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFr
 };
 
 export const useActiveSubscriptionQueryLoader = (): ActiveSubscriptionDetailsContextType => {
-  const { data } = useQuery(STRIPE_SUBSCRIPTION_QUERY, { nextFetchPolicy: 'cache-and-network' });
+  const { data } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
 
   return { allPaymentMethods: data?.allPaymentMethods, activeSubscription: data?.activeSubscription };
 };

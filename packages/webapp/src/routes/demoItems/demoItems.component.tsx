@@ -5,10 +5,10 @@ import { useQuery } from '@apollo/client';
 import { SchemaType } from '../../shared/services/graphqlApi/apolloClient';
 import { Container, Header, List } from './demoItems.styles';
 import { DemoItemListItem } from './demoItemListItem';
-import { demoItemsAll } from './demoItems.graphql';
+import { demoItemsAllQuery } from './demoItems.graphql';
 
 export const DemoItems: FC = () => {
-  const { data } = useQuery(demoItemsAll, { context: { schemaType: SchemaType.Contentful } });
+  const { data } = useQuery(demoItemsAllQuery, { context: { schemaType: SchemaType.Contentful } });
   const items = data?.demoItemCollection?.items;
 
   return (

@@ -3,7 +3,7 @@ import { OperationDescriptor } from 'react-relay/hooks';
 import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import StripeAllChargesQueryGraphql from '../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
-import { STRIPE_ALL_CHARGES } from '../../routes/finances/subscriptions/subscriptions.graphql';
+import { stripeAllChargesQuery } from '../../routes/finances/subscriptions/subscriptions.graphql';
 import {
   TransactionHistoryEntry,
   TransactionHistoryEntryInvoice,
@@ -80,7 +80,7 @@ export const fillAllStripeChargesQuery = (
     env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
   }
 
-  return composeMockedListQueryResult(STRIPE_ALL_CHARGES, 'allCharges', 'StripeChargeType', {
+  return composeMockedListQueryResult(stripeAllChargesQuery, 'allCharges', 'StripeChargeType', {
     data,
   });
 };
