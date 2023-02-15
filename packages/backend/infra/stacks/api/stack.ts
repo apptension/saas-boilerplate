@@ -65,6 +65,8 @@ export class ApiStack extends Stack {
       envSettings.domains.www,
     ].join(',');
 
+    const csrfTrustedOrigins = [`https://${envSettings.domains.adminPanel}`].join(',');
+
     const httpsListener =
       elb2.ApplicationListener.fromApplicationListenerAttributes(
         this,
@@ -106,6 +108,7 @@ export class ApiStack extends Stack {
               CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
               CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
               DJANGO_ALLOWED_HOSTS: allowedHosts,
+              CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),
