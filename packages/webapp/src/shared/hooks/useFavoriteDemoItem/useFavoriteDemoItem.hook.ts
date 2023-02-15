@@ -1,24 +1,23 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import graphql from 'babel-plugin-relay/macro';
-import { PreloadedQuery, usePreloadedQuery, useQueryLoader, UseQueryLoaderLoadQueryOptions } from 'react-relay';
+import { useMutation, useQuery } from '@apollo/client';
 import { pipe, pluck } from 'ramda';
-import { ConnectionHandler } from 'relay-runtime';
+import { useMemo } from 'react';
 
-import { usePromiseMutation } from '../../services/graphqlApi/usePromiseMutation';
 import { useMappedConnection } from '../useMappedConnection';
-import UseFavoriteDemoItemListQuery, {
+import {
+  useFavoriteDemoItemFragment,
+  useFavoriteDemoItemListCreateMutation,
+  useFavoriteDemoItemListDeleteMutation,
   useFavoriteDemoItemListQuery,
-} from './__generated__/useFavoriteDemoItemListQuery.graphql';
-import { useFavoriteDemoItemListCreateMutation } from './__generated__/useFavoriteDemoItemListCreateMutation.graphql';
-import { useFavoriteDemoItemListDeleteMutation } from './__generated__/useFavoriteDemoItemListDeleteMutation.graphql';
+} from './useFavoriteDemoItem.graphql';
 
-export const useFavoriteDemoItem = (id: string, queryRef: PreloadedQuery<useFavoriteDemoItemListQuery>) => {
+export const useFavoriteDemoItem = (id: string) => {
   const handleCreate = useHandleCreate();
   const handleDelete = useHandleDelete();
 
-  const data = usePreloadedQuery(UseFavoriteDemoItemListQuery, queryRef);
+  const { data } = useQuery(useFavoriteDemoItemListQuery, { fetchPolicy: 'cache-and-network' });
+
   const getIds = pipe<any, any, string[]>(pluck('item'), pluck('pk'));
-  const favorites = useMappedConnection(data.allContentfulDemoItemFavorites);
+  const favorites = useMappedConnection(data?.allContentfulDemoItemFavorites);
   const favoritesIds = getIds(favorites);
   const isFavorite = useMemo(() => favoritesIds.includes(id), [id, favoritesIds]);
 
@@ -37,22 +36,34 @@ export const useFavoriteDemoItem = (id: string, queryRef: PreloadedQuery<useFavo
 };
 
 export const useHandleCreate = () => {
-  const [commitCreateMutation] = usePromiseMutation<useFavoriteDemoItemListCreateMutation>(
-    graphql`
-      mutation useFavoriteDemoItemListCreateMutation(
-        $input: CreateFavoriteContentfulDemoItemMutationInput!
-        $connections: [ID!]!
-      ) {
-        createFavoriteContentfulDemoItem(input: $input) {
-          contentfulDemoItemFavoriteEdge @appendEdge(connections: $connections) {
-            node {
-              ...useFavoriteDemoItem_item @relay(mask: false)
-            }
-          }
-        }
-      }
-    `
-  );
+  const [commitCreateMutation] = useMutation(useFavoriteDemoItemListCreateMutation, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allContentfulDemoItemFavorites(existingConnection = { edges: [] }) {
+            const node = data?.createFavoriteContentfulDemoItem?.contentfulDemoItemFavoriteEdge?.node;
+            if (!node) return existingConnection;
+
+            const normalizedId = cache.identify({ id: node.id, __typename: 'ContentfulDemoItemFavoriteType' });
+
+            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.id === normalizedId);
+            if (isAlreadyInStore) return existingConnection;
+
+            const newItem = {
+              node: cache.writeFragment({
+                id: normalizedId,
+                data: node,
+                fragment: useFavoriteDemoItemFragment,
+              }),
+              __typename: 'contentfulDemoItemFavoriteEdge',
+            };
+
+            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
+          },
+        },
+      });
+    },
+  });
 
   return async (id: string) => {
     return await commitCreateMutation({
@@ -60,27 +71,20 @@ export const useHandleCreate = () => {
         input: {
           item: id,
         },
-        connections: [
-          ConnectionHandler.getConnectionID('root', 'useFavoriteDemoItemListQuery__allContentfulDemoItemFavorites'),
-        ],
       },
     });
   };
 };
 
 export const useHandleDelete = () => {
-  const [commitDeleteMutation] = usePromiseMutation<useFavoriteDemoItemListDeleteMutation>(
-    graphql`
-      mutation useFavoriteDemoItemListDeleteMutation(
-        $input: DeleteFavoriteContentfulDemoItemMutationInput!
-        $connections: [ID!]!
-      ) {
-        deleteFavoriteContentfulDemoItem(input: $input) {
-          deletedIds @deleteEdge(connections: $connections)
-        }
-      }
-    `
-  );
+  const [commitDeleteMutation] = useMutation(useFavoriteDemoItemListDeleteMutation, {
+    update(cache, { data }) {
+      const deletedId = data?.deleteFavoriteContentfulDemoItem?.deletedIds?.[0];
+      const normalizedId = cache.identify({ id: deletedId, __typename: 'ContentfulDemoItemFavoriteType' });
+
+      cache.evict({ id: normalizedId });
+    },
+  });
 
   return async (id: string) => {
     await commitDeleteMutation({
@@ -88,48 +92,7 @@ export const useHandleDelete = () => {
         input: {
           item: id,
         },
-        connections: [
-          ConnectionHandler.getConnectionID('root', 'useFavoriteDemoItemListQuery__allContentfulDemoItemFavorites'),
-        ],
       },
     });
   };
-};
-
-graphql`
-  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {
-    item {
-      pk
-    }
-  }
-`;
-
-export const useFavoriteDemoItemsLoader = () => {
-  const [queryRef, loadQuery] = useQueryLoader<useFavoriteDemoItemListQuery>(
-    graphql`
-      query useFavoriteDemoItemListQuery {
-        allContentfulDemoItemFavorites(first: 100)
-          @connection(key: "useFavoriteDemoItemListQuery__allContentfulDemoItemFavorites") {
-          edges {
-            node {
-              ...useFavoriteDemoItem_item @relay(mask: false)
-            }
-          }
-        }
-      }
-    `
-  );
-
-  const refresh = useCallback(
-    (options: UseQueryLoaderLoadQueryOptions = { fetchPolicy: 'store-and-network' }) => {
-      loadQuery({}, options);
-    },
-    [loadQuery]
-  );
-
-  useEffect(() => {
-    refresh({ fetchPolicy: 'store-or-network' });
-  }, [refresh]);
-
-  return [queryRef, refresh] as const;
 };

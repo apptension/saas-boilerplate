@@ -6,8 +6,16 @@ import demoItemQueryGraphql from '../../routes/demoItem/__generated__/demoItemQu
 import { demoItemQuery } from '../../routes/demoItem/demoItem.graphql';
 import demoItemsAllQueryGraphql from '../../routes/demoItems/__generated__/demoItemsAllQuery.graphql';
 import UseFavoriteDemoItemListQuery from '../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
+import {
+  useFavoriteDemoItemListCreateMutation,
+  useFavoriteDemoItemListDeleteMutation,
+} from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.graphql';
 import { ContentfulDemoItem } from '../../shared/services/contentful';
 import { ContentfulDemoItemFavoriteType } from '../../shared/services/graphqlApi';
+import {
+  UseFavoriteDemoItemListCreateMutationMutation,
+  UseFavoriteDemoItemListDeleteMutationMutation,
+} from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { composeMockedQueryResult, makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { contentfulSysFactory } from './helpers';
@@ -83,4 +91,22 @@ export const fillUseFavouriteDemoItemListQuery = (
     })
   );
   env.mock.queuePendingOperation(UseFavoriteDemoItemListQuery, {});
+};
+
+export const fillRemoveFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListDeleteMutationMutation) => {
+  const removeFavoriteItemMockResponse = composeMockedQueryResult(useFavoriteDemoItemListDeleteMutation, {
+    variables: { input: { item: id } },
+    data,
+  });
+
+  return removeFavoriteItemMockResponse;
+};
+
+export const fillCreateFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListCreateMutationMutation) => {
+  const createFavoriteItemMockResponse = composeMockedQueryResult(useFavoriteDemoItemListCreateMutation, {
+    variables: { input: { item: id } },
+    data: data,
+  });
+
+  return createFavoriteItemMockResponse;
 };
