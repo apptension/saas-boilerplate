@@ -13,7 +13,7 @@ describe('PrivacyPolicy: Component', () => {
   it('should render privacy policy content', async () => {
     render(<Component />, {
       apolloMocks: append(
-        fillContentfulAppConfigQuery(undefined, {
+        fillContentfulAppConfigQuery({
           items: [appConfigFactory({ privacyPolicy })],
           limit: 1,
           skip: 0,

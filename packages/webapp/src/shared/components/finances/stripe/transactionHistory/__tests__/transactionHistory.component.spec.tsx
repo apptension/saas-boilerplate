@@ -6,9 +6,8 @@ import {
   paymentMethodFactory,
   transactionHistoryEntryFactory,
 } from '../../../../../../mocks/factories';
-import { Subscription } from '../../../../../services/api/subscription/types';
-import { getRelayEnv } from '../../../../../../tests/utils/relay';
 import { render } from '../../../../../../tests/utils/rendering';
+import { Subscription } from '../../../../../services/api/subscription/types';
 import { TransactionHistory } from '../transactionHistory.component';
 
 const Component = () => <TransactionHistory />;
@@ -33,11 +32,9 @@ describe('TransactionHistory: Component', () => {
   ];
 
   it('should render all items', async () => {
-    const relayEnvironment = getRelayEnv();
-    const requestChargesMock = fillAllStripeChargesQuery(relayEnvironment, transactionHistory);
+    const requestChargesMock = fillAllStripeChargesQuery(transactionHistory);
     const requestPaymentsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
     render(<Component />, {
-      relayEnvironment,
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestChargesMock, requestPaymentsMock),
     });
 

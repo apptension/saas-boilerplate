@@ -1,13 +1,12 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
-import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { CrudDemoItemList } from '../crudDemoItemList.component';
-import { getRelayEnv } from '../../../../tests/utils/relay';
 import { fillCrudDemoItemListQuery } from '../../../../mocks/factories/crudDemoItem';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { CrudDemoItemList } from '../crudDemoItemList.component';
 
 describe('CrudDemoItemList: Component', () => {
   const routePath = ['crudDemoItem', 'list'];
@@ -22,10 +21,8 @@ describe('CrudDemoItemList: Component', () => {
 
   it('should render all items', async () => {
     const routerProps = createMockRouterProps(routePath);
-    const relayEnvironment = getRelayEnv();
-    const mockRequest = fillCrudDemoItemListQuery(relayEnvironment);
 
-    const apolloMocks = [fillCommonQueryWithUser(relayEnvironment), mockRequest];
+    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemListQuery()];
     render(<Component />, { routerProps, apolloMocks });
 
     expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
@@ -35,10 +32,9 @@ describe('CrudDemoItemList: Component', () => {
 
   it('should render link to add new item form', async () => {
     const routerProps = createMockRouterProps(routePath);
-    const relayEnvironment = getRelayEnv();
-    fillCrudDemoItemListQuery(relayEnvironment);
+    fillCrudDemoItemListQuery();
 
-    render(<Component />, { relayEnvironment, routerProps });
+    render(<Component />, { routerProps });
     await userEvent.click(await screen.findByText(/add/i));
 
     expect(screen.getByText('CrudDemoItem add page mock')).toBeInTheDocument();

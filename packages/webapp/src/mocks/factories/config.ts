@@ -1,6 +1,3 @@
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
-
-import configContentfulAppConfigQueryGraphql from '../../modules/config/__generated__/configContentfulAppConfigQuery.graphql';
 import { configContentfulAppQuery } from '../../modules/config/config.graphql';
 import { ContentfulAppConfig, ContentfulAppConfigCollection } from '../../shared/services/contentful';
 import { composeMockedQueryResult } from '../../tests/utils/fixtures';
@@ -14,18 +11,7 @@ export const appConfigFactory = createDeepFactory<ContentfulAppConfig>(() => ({
   name: 'Global App Config',
 }));
 
-export const fillContentfulAppConfigQuery = (
-  relayEnvironment?: RelayMockEnvironment,
-  appConfigCollection: ContentfulAppConfigCollection
-) => {
-  if (relayEnvironment) {
-    relayEnvironment.mock.queueOperationResolver((operation) =>
-      MockPayloadGenerator.generate(operation, {
-        AppConfigCollection: () => appConfigCollection,
-      })
-    );
-    relayEnvironment.mock.queuePendingOperation(configContentfulAppConfigQueryGraphql, {});
-  }
+export const fillContentfulAppConfigQuery = (appConfigCollection: ContentfulAppConfigCollection) => {
   return composeMockedQueryResult(configContentfulAppQuery, {
     data: {
       appConfigCollection,

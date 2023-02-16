@@ -1,16 +1,9 @@
-import { OperationDescriptor } from 'react-relay/hooks';
-import { createMockEnvironment, MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
-
+import { notificationsListQuery } from '../../shared/components/notifications/notifications.graphql';
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
 import { NotificationType } from '../../shared/services/graphqlApi';
-import { composeMockedPaginatedListQueryResult, connectionFromArray, makeId } from '../../tests/utils/fixtures';
-import { ExtractNodeType } from '../../shared/utils/graphql';
-import { notificationsListContent$data } from '../../shared/components/notifications/notificationsList/__generated__/notificationsListContent.graphql';
-import notificationsListQueryGraphql from '../../shared/components/notifications/__generated__/notificationsListQuery.graphql';
-import { notificationsListQuery } from '../../shared/components/notifications/notifications.graphql';
-
-import { createFactory } from './factoryCreators';
+import { composeMockedPaginatedListQueryResult, makeId } from '../../tests/utils/fixtures';
 import { currentUserFactory } from './auth';
+import { createFactory } from './factoryCreators';
 
 export const notificationFactory = createFactory<NotificationType>(() => ({
   id: makeId(32),
@@ -22,20 +15,9 @@ export const notificationFactory = createFactory<NotificationType>(() => ({
 }));
 
 export const fillNotificationsListQuery = (
-  env?: RelayMockEnvironment,
-  notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>> = [],
+  notifications: Array<Partial<NotificationType>> = [],
   additionalData?: Record<string, any>
 ) => {
-  if (!env) {
-    env = createMockEnvironment();
-  }
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      NotificationConnection: () => connectionFromArray(notifications),
-    })
-  );
-  env.mock.queuePendingOperation(notificationsListQueryGraphql, {});
-
   return composeMockedPaginatedListQueryResult(
     notificationsListQuery,
     'allNotifications',

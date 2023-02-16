@@ -1,5 +1,5 @@
-import { client } from '../client';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
+import { client } from '../client';
 import { apiURL, apiURLs } from '../helpers';
 import { LogoutApiResponseData } from './types';
 
@@ -9,11 +9,6 @@ export const AUTH_URL = apiURLs('/auth/', {
   ME: '/me/',
   UPDATE_PROFILE: '/me/',
   UPDATE_AVATAR: '/me/',
-});
-
-export const AUTH_PASSWORD_RESET_URL = apiURLs(`/password-reset/`, {
-  REQUEST: '',
-  CONFIRM: '/confirm/',
 });
 
 export const getOauthUrl = (provider: OAuthProvider) =>

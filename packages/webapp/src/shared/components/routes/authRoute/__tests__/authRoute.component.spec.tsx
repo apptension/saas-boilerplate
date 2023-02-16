@@ -1,11 +1,11 @@
 import { screen } from '@testing-library/react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import { AuthRoute, AuthRouteProps } from '../authRoute.component';
-import { render } from '../../../../../tests/utils/rendering';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
+import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 
 const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
@@ -37,7 +37,6 @@ describe('AuthRoute: Component', () => {
       it('should render content', async () => {
         const apolloMocks = [
           fillCommonQueryWithUser(
-            undefined,
             currentUserFactory({
               roles: [Role.ADMIN],
             })
@@ -52,7 +51,6 @@ describe('AuthRoute: Component', () => {
       it('should render content', async () => {
         const apolloMocks = [
           fillCommonQueryWithUser(
-            undefined,
             currentUserFactory({
               roles: [Role.ADMIN],
             })
@@ -67,7 +65,6 @@ describe('AuthRoute: Component', () => {
       it('should redirect to not found page', async () => {
         const apolloMocks = [
           fillCommonQueryWithUser(
-            undefined,
             currentUserFactory({
               roles: [Role.USER],
             })

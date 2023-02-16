@@ -1,17 +1,15 @@
+import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import { Suspense, lazy } from 'react';
-
 import 'regenerator-runtime/runtime';
 
-import { setUnsupportedClasses } from './unsupported/support';
-import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
-import { SentryProvider } from './providers/sentry';
-import { ReduxProvider } from './providers/redux';
-import { RelayProvider } from './providers/relay';
 import { ApolloProvider } from './providers/apollo';
 import { CommonQuery } from './providers/commonQuery';
+import { ReduxProvider } from './providers/redux';
 import { RouterProvider } from './providers/router';
+import { SentryProvider } from './providers/sentry';
+import { setUnsupportedClasses } from './unsupported/support';
+import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 
 const render = () => {
   const App = lazy(() => import('./app.component'));
@@ -24,15 +22,13 @@ const render = () => {
       <ReduxProvider>
         <RouterProvider>
           <HelmetProvider>
-            <RelayProvider>
-              <ApolloProvider>
-                <CommonQuery>
-                  <Suspense>
-                    <App />
-                  </Suspense>
-                </CommonQuery>
-              </ApolloProvider>
-            </RelayProvider>
+            <ApolloProvider>
+              <CommonQuery>
+                <Suspense>
+                  <App />
+                </Suspense>
+              </CommonQuery>
+            </ApolloProvider>
           </HelmetProvider>
         </RouterProvider>
       </ReduxProvider>

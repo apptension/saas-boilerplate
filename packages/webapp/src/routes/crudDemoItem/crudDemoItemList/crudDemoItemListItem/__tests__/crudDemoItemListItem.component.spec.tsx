@@ -1,14 +1,11 @@
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
-import { MockPayloadGenerator } from 'relay-test-utils';
-import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes, useParams } from 'react-router';
 
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 import { render } from '../../../../../tests/utils/rendering';
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
 import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { fillCommonQueryWithUser } from '../../../../../shared/utils/commonQuery';
@@ -49,13 +46,7 @@ describe('CrudDemoItemListItem: Component', () => {
   };
 
   it('should render link to details page', async () => {
-    const relayEnvironment = getRelayEnv();
     const item = { id: 'test-id', name: 'demo item name' };
-    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) => {
-      return MockPayloadGenerator.generate(operation, {
-        CrudDemoItemType: () => item,
-      });
-    });
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
@@ -69,20 +60,14 @@ describe('CrudDemoItemListItem: Component', () => {
       }),
     ];
 
-    render(<Component />, { relayEnvironment, apolloMocks });
+    render(<Component />, { apolloMocks });
     expect(await screen.findByText(item.name)).toBeInTheDocument();
     await userEvent.click(screen.getByText(/demo item name/i));
     expect(screen.getByText('Crud demo item details mock test-id')).toBeInTheDocument();
   });
 
   it('should render link to edit form', async () => {
-    const relayEnvironment = getRelayEnv();
     const item = { id: 'test-id', name: 'demo item name' };
-    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) => {
-      return MockPayloadGenerator.generate(operation, {
-        CrudDemoItemType: () => item,
-      });
-    });
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
@@ -96,7 +81,7 @@ describe('CrudDemoItemListItem: Component', () => {
       }),
     ];
 
-    render(<Component />, { relayEnvironment, apolloMocks });
+    render(<Component />, { apolloMocks });
     expect(await screen.findByText(item.name)).toBeInTheDocument();
     await userEvent.click(screen.getByText(/edit/i));
     expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();

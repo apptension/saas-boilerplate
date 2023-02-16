@@ -1,8 +1,5 @@
 import { times } from 'ramda';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import StripeAllChargesQueryGraphql from '../../modules/stripe/__generated__/stripeAllChargesQuery.graphql';
 import { stripeAllChargesQuery } from '../../routes/finances/subscriptions/subscriptions.graphql';
 import {
   TransactionHistoryEntry,
@@ -13,7 +10,7 @@ import {
   StripePaymentMethodCardBrand,
   StripePaymentMethodType,
 } from '../../shared/services/api/stripe/paymentMethod';
-import { composeMockedListQueryResult, connectionFromArray, makeId } from '../../tests/utils/fixtures';
+import { composeMockedListQueryResult, makeId } from '../../tests/utils/fixtures';
 import { createDeepFactory, createFactory } from './factoryCreators';
 import { subscriptionPlanFactory } from './subscription';
 
@@ -67,19 +64,7 @@ export const transactionHistoryEntryFactory = createFactory<TransactionHistoryEn
   invoice: null,
 }));
 
-export const fillAllStripeChargesQuery = (
-  env?: RelayMockEnvironment,
-  data = times(() => transactionHistoryEntryFactory(), 5)
-) => {
-  if (env) {
-    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        ChargeConnection: () => connectionFromArray(data),
-      })
-    );
-    env.mock.queuePendingOperation(StripeAllChargesQueryGraphql, {});
-  }
-
+export const fillAllStripeChargesQuery = (data = times(() => transactionHistoryEntryFactory(), 5)) => {
   return composeMockedListQueryResult(stripeAllChargesQuery, 'allCharges', 'StripeChargeType', {
     data,
   });

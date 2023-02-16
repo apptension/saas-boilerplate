@@ -61,13 +61,12 @@ Automatic thumbnail creation currently works for `JPEG`, `PNG` and `GIF` files. 
 
 ## Webapp reference
 
-Webapp is configured with `relayEnvironment` handling files out of the box. This behavior is determined in the `fetchQuery` function under  `src/shared/packages/graphqlApi/relayEnvironment.ts` path. 
-
-To upload file simply pass it to the relay's mutator `uploadables`:
+Webapp is configured with `apollo-upload-client` package that handles requests with files.
+To upload file simply pass it to the Apollo's mutator file in payload object:
 
 ```javascript
-const [commitFileMutation] = usePromiseMutation(
-    graphql`
+const [commitFileMutation] = useMutation(
+    gql(`
       ...
       node {
         file {
@@ -80,9 +79,7 @@ const [commitFileMutation] = usePromiseMutation(
 
 const handleUpload = (file: File) => {
     commitFileMutation({
-      uploadables: {
-        file
-      }
+      file
     })
 }
 ```

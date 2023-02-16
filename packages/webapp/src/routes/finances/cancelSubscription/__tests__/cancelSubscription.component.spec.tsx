@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
-import { RelayMockEnvironment } from 'relay-test-utils';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import {
@@ -15,7 +14,6 @@ import {
 import { snackbarActions } from '../../../../modules/snackbar';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
-import { getRelayEnv } from '../../../../tests/utils/relay';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { CancelSubscription } from '../cancelSubscription.component';
@@ -29,9 +27,8 @@ jest.mock('react-redux', () => {
   };
 });
 
-const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvironment, phases: any) => {
+const fillSubscriptionScheduleQueryWithPhases = (phases: any) => {
   return fillSubscriptionScheduleQuery(
-    relayEnvironment,
     subscriptionFactory({
       defaultPaymentMethod: paymentMethodFactory({
         billingDetails: { name: 'Owner' },
@@ -42,8 +39,8 @@ const fillSubscriptionScheduleQueryWithPhases = (relayEnvironment: RelayMockEnvi
   );
 };
 
-const resolveSubscriptionDetailsQuery = (relayEnvironment: RelayMockEnvironment) => {
-  return fillSubscriptionScheduleQueryWithPhases(relayEnvironment, [
+const resolveSubscriptionDetailsQuery = () => {
+  return fillSubscriptionScheduleQueryWithPhases([
     subscriptionPhaseFactory({
       endDate: '2020-10-10',
       item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
@@ -95,9 +92,8 @@ describe('CancelSubscription: Component', () => {
   });
 
   it('should render current plan details', async () => {
-    const relayEnvironment = getRelayEnv();
     const routerProps = createMockRouterProps(routePath);
-    const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+    const requestMock = resolveSubscriptionDetailsQuery();
     const { waitForApolloMocks } = render(<Component />, {
       routerProps,
       apolloMocks: append(requestMock),
@@ -113,9 +109,8 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', async () => {
-      const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(routePath);
-      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      const requestMock = resolveSubscriptionDetailsQuery();
       const requestCancelMock = resolveSubscriptionCancelMutation();
       requestCancelMock.newData = jest.fn(() => ({
         data: mutationData,
@@ -135,8 +130,7 @@ describe('CancelSubscription: Component', () => {
   describe('cancel completes successfully', () => {
     it('should show success message and redirect to subscriptions page', async () => {
       const routerProps = createMockRouterProps(routePath);
-      const relayEnvironment = getRelayEnv();
-      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      const requestMock = resolveSubscriptionDetailsQuery();
       const requestCancelMock = resolveSubscriptionCancelMutation();
 
       render(<Component />, {
@@ -157,10 +151,9 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
-      const relayEnvironment = getRelayEnv();
       const errors = [new GraphQLError('Bad Error')];
       const routerProps = createMockRouterProps(routePath);
-      const requestMock = resolveSubscriptionDetailsQuery(relayEnvironment);
+      const requestMock = resolveSubscriptionDetailsQuery();
       const requestCancelMock = resolveSubscriptionCancelMutation(errors);
 
       render(<Component />, {

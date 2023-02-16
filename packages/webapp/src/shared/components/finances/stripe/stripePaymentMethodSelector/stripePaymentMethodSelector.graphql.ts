@@ -1,4 +1,4 @@
-import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
+import { gql } from '../../../../services/graphqlApi/__generated/gql';
 
 export const stripeSubscriptionQuery = gql(/* GraphQL */ `
   query stripeSubscriptionQuery {
@@ -51,8 +51,6 @@ export const stripeUpdateDefaultPaymentMethodMutation = gql(/* GraphQL */ `
       }
       paymentMethodEdge {
         node {
-          # commented only because of the broken apollo types: need to fix it after migration
-          #          ...stripePaymentMethodFragment @relay(mask: false)
           ...stripePaymentMethodFragment
           id
         }

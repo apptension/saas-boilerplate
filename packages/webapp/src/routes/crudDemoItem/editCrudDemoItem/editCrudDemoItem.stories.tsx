@@ -29,7 +29,6 @@ Default.decorators = [
   withProviders({
     apolloMocks: append(
       fillEditCrudDemoItemQuery(
-        undefined,
         {
           name: 'Default name',
         },

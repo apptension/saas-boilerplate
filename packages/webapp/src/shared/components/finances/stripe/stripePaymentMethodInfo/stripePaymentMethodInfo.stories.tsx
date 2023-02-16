@@ -28,7 +28,7 @@ export default {
   decorators: [
     withProviders({
       apolloMocks: append(
-        fillSubscriptionScheduleQueryWithPhases(undefined, [
+        fillSubscriptionScheduleQueryWithPhases([
           subscriptionPhaseFactory({
             item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
           }),

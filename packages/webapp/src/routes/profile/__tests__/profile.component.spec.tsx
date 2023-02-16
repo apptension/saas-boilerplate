@@ -1,10 +1,10 @@
 import { screen } from '@testing-library/react';
 
-import { render } from '../../../tests/utils/rendering';
-import { Profile } from '../profile.component';
 import { currentUserFactory } from '../../../mocks/factories';
 import { Role } from '../../../modules/auth/auth.types';
 import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
+import { render } from '../../../tests/utils/rendering';
+import { Profile } from '../profile.component';
 
 describe('Profile: Component', () => {
   const Component = () => <Profile />;
@@ -12,7 +12,6 @@ describe('Profile: Component', () => {
   it('should display profile data', async () => {
     const apolloMocks = [
       fillCommonQueryWithUser(
-        undefined,
         currentUserFactory({
           firstName: 'Jack',
           lastName: 'White',

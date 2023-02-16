@@ -47,8 +47,7 @@
         ]
       },
       "dependsOn": [
-        "graphql:generate-types",
-        "relay"
+        "graphql:generate-types"
       ]
     },
     "vite-build-old": {

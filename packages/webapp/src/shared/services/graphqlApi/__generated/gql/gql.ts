@@ -16,12 +16,6 @@ const documents = {
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
-    "\n  mutation stripeCreateSetupIntentMutation($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n": types.StripeCreateSetupIntentMutationDocument,
-    "\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n": types.StripePaymentMethodFragmentFragmentDoc,
-    "\n  query stripeAllPaymentMethodsQuery {\n    allPaymentMethods(first: 100) @connection(key: \"stripe_allPaymentMethods\") {\n      edges {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n        }\n      }\n    }\n  }\n": types.StripeAllPaymentMethodsQueryDocument,
-    "\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n": types.StripePaymentIntentFragmentFragmentDoc,
-    "\n  query stripePaymentIntentQuery($id: ID!) {\n    paymentIntent(id: $id) {\n      ...stripePaymentIntentFragment\n    }\n  }\n": types.StripePaymentIntentQueryDocument,
-    "\n  query subscriptionActivePlanDetailsQuery {\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n    }\n  }\n": types.SubscriptionActivePlanDetailsQueryDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
@@ -33,11 +27,11 @@ const documents = {
     "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
     "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
     "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": types.DemoItemQueryDocument,
-    "\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItem_ItemFragmentDoc,
-    "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
+    "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItemFragmentFragmentDoc,
+    "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
-    "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
-    "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListCreateMutationDocument,
+    "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
+    "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListCreateMutationDocument,
     "\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.DocumentsDeleteMutationDocument,
     "\n  mutation subscriptionCancelActiveSubscriptionMutation($input: CancelActiveSubscriptionMutationInput!) {\n    cancelActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n": types.SubscriptionCancelActiveSubscriptionMutationDocument,
     "\n  mutation stripeCreateSetupIntentMutation_($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        id\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n\n  fragment stripeSetupIntentFragment on StripeSetupIntentType {\n    id\n    clientSecret\n  }\n": types.StripeCreateSetupIntentMutation_Document,
@@ -52,11 +46,13 @@ const documents = {
     "\n  mutation authRequestPasswordResetConfirmMutation($input: PasswordResetConfirmationMutationInput!) {\n    passwordResetConfirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthRequestPasswordResetConfirmMutationDocument,
     "\n  mutation authRequestPasswordResetMutation($input: PasswordResetMutationInput!) {\n    passwordReset(input: $input) {\n      ok\n    }\n  }\n": types.AuthRequestPasswordResetMutationDocument,
     "\n  mutation authSignupMutation($input: SingUpMutationInput!) {\n    signUp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthSignupMutationDocument,
+    "\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n": types.StripePaymentIntentFragmentFragmentDoc,
     "\n  mutation stripeCreatePaymentIntentMutation_($input: CreatePaymentIntentMutationInput!) {\n    createPaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n": types.StripeCreatePaymentIntentMutation_Document,
     "\n  mutation stripeUpdatePaymentIntentMutation_($input: UpdatePaymentIntentMutationInput!) {\n    updatePaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n": types.StripeUpdatePaymentIntentMutation_Document,
+    "\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n": types.StripePaymentMethodFragmentFragmentDoc,
     "\n  query stripeSubscriptionQuery {\n    allPaymentMethods(first: 100) {\n      edges {\n        node {\n          id\n          pk\n          type\n          card\n          billingDetails\n          ...stripePaymentMethodFragment\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n      id\n      __typename\n    }\n  }\n": types.StripeSubscriptionQueryDocument,
     "\n  mutation stripeDeletePaymentMethodMutation($input: DeletePaymentMethodMutationInput!) {\n    deletePaymentMethod(input: $input) {\n      deletedIds\n      activeSubscription {\n        defaultPaymentMethod {\n          ...stripePaymentMethodFragment\n        }\n      }\n    }\n  }\n": types.StripeDeletePaymentMethodMutationDocument,
-    "\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n": types.StripeUpdateDefaultPaymentMethodMutationDocument,
+    "\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n": types.StripeUpdateDefaultPaymentMethodMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  subscription notificationsListSubscription {\n    notificationCreated {\n      edges {\n        node {\n          id\n          type\n          createdAt\n          readAt\n          data\n        }\n      }\n    }\n  }\n": types.NotificationsListSubscriptionDocument,
@@ -98,30 +94,6 @@ export function gql(source: "\n  query commonQueryCurrentUserQuery {\n    curren
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"): (typeof documents)["\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation stripeCreateSetupIntentMutation($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation stripeCreateSetupIntentMutation($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n"): (typeof documents)["\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query stripeAllPaymentMethodsQuery {\n    allPaymentMethods(first: 100) @connection(key: \"stripe_allPaymentMethods\") {\n      edges {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query stripeAllPaymentMethodsQuery {\n    allPaymentMethods(first: 100) @connection(key: \"stripe_allPaymentMethods\") {\n      edges {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n"): (typeof documents)["\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query stripePaymentIntentQuery($id: ID!) {\n    paymentIntent(id: $id) {\n      ...stripePaymentIntentFragment\n    }\n  }\n"): (typeof documents)["\n  query stripePaymentIntentQuery($id: ID!) {\n    paymentIntent(id: $id) {\n      ...stripePaymentIntentFragment\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query subscriptionActivePlanDetailsQuery {\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n    }\n  }\n"): (typeof documents)["\n  query subscriptionActivePlanDetailsQuery {\n    activeSubscription {\n      ...subscriptionActiveSubscriptionFragment\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -169,11 +141,11 @@ export function gql(source: "\n  query demoItemQuery($id: String!) {\n    demoIt
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"): (typeof documents)["\n  fragment demoItemListItem_item on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"];
+export function gql(source: "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"): (typeof documents)["\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItem_item\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -181,11 +153,11 @@ export function gql(source: "\n  fragment documentListItem on DocumentDemoItemTy
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          createdAt\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -245,11 +217,19 @@ export function gql(source: "\n  mutation authSignupMutation($input: SingUpMutat
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n"): (typeof documents)["\n  fragment stripePaymentIntentFragment on StripePaymentIntentType {\n    id\n    amount\n    clientSecret\n    currency\n    pk\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation stripeCreatePaymentIntentMutation_($input: CreatePaymentIntentMutationInput!) {\n    createPaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation stripeCreatePaymentIntentMutation_($input: CreatePaymentIntentMutationInput!) {\n    createPaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation stripeUpdatePaymentIntentMutation_($input: UpdatePaymentIntentMutationInput!) {\n    updatePaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation stripeUpdatePaymentIntentMutation_($input: UpdatePaymentIntentMutationInput!) {\n    updatePaymentIntent(input: $input) {\n      paymentIntent {\n        ...stripePaymentIntentFragment\n        id\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n"): (typeof documents)["\n  fragment stripePaymentMethodFragment on StripePaymentMethodType {\n    id\n    pk\n    type\n    card\n    billingDetails\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -261,7 +241,7 @@ export function gql(source: "\n  mutation stripeDeletePaymentMethodMutation($inp
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          # commented only because of the broken apollo types: need to fix it after migration\n          #          ...stripePaymentMethodFragment @relay(mask: false)\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation stripeUpdateDefaultPaymentMethodMutation($input: UpdateDefaultPaymentMethodMutationInput!) {\n    updateDefaultPaymentMethod(input: $input) {\n      activeSubscription {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n      paymentMethodEdge {\n        node {\n          ...stripePaymentMethodFragment\n          id\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

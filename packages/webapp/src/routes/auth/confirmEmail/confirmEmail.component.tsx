@@ -17,17 +17,6 @@ export const ConfirmEmail = () => {
   const params = useParams<{ token: string; user: string }>();
   const { isLoggedIn } = useAuth();
   const { showMessage } = useSnackbar();
-  const [commitConfirmUserEmailMutation] = useMutation(authConfirmUserEmailMutation, {
-    onCompleted: () => {
-      showMessage(successMessage);
-      navigate(generateLocalePath(RoutesConfig.login));
-    },
-    onError: () => {
-      showMessage(errorMessage);
-      navigate(generateLocalePath(RoutesConfig.login));
-    },
-  });
-
   const loggedOutSuccessMessage = intl.formatMessage({
     id: 'ConfirmEmail.LoggedOutSuccessMessage',
     defaultMessage: 'Congratulations! Now you can log in.',
@@ -45,6 +34,17 @@ export const ConfirmEmail = () => {
     defaultMessage: 'Invalid token.',
   });
 
+  const [commitConfirmUserEmailMutation] = useMutation(authConfirmUserEmailMutation, {
+    onCompleted: () => {
+      showMessage(successMessage);
+      navigate(generateLocalePath(RoutesConfig.login));
+    },
+    onError: () => {
+      showMessage(errorMessage);
+      navigate(generateLocalePath(RoutesConfig.login));
+    },
+  });
+
   const handleEmailConfirmation = useCallback(
     async ({ token, user }: { token: string; user: string }) => {
       await commitConfirmUserEmailMutation({
@@ -56,7 +56,7 @@ export const ConfirmEmail = () => {
         },
       });
     },
-    [commitConfirmUserEmailMutation, errorMessage, showMessage, successMessage, generateLocalePath, navigate]
+    [commitConfirmUserEmailMutation]
   );
 
   useEffect(() => {

@@ -1,14 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Routes, Route } from 'react-router';
+import { Route, Routes } from 'react-router';
 
-import { demoItemFactory, fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../mocks/factories';
-import { DemoItems } from '../demoItems.component';
-import { getRelayEnv as getBaseRelayEnv } from '../../../tests/utils/relay';
 import { RoutesConfig } from '../../../app/config/routes';
+import { demoItemFactory, fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../mocks/factories';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
-import { demoItemsAllQuery } from '../demoItems.graphql';
-import { composeMockedNestedListQueryResult } from '../../../tests/utils/fixtures';
+import { DemoItems } from '../demoItems.component';
 
 const mockedItems = [
   {
@@ -26,10 +23,14 @@ const mockedItems = [
     }),
   },
 ];
-const requestMock = () =>
-  composeMockedNestedListQueryResult(demoItemsAllQuery, 'demoItemCollection', 'items', 'DemoItem', {
-    data: mockedItems,
-  });
+const getApolloMocks = () => [
+  fillDemoItemsAllQuery(mockedItems),
+  fillUseFavouriteDemoItemListQuery([
+    {
+      item: { pk: 'item-1' },
+    },
+  ]),
+];
 
 describe('DemoItems: Component', () => {
   const routePath = ['demoItems'];
@@ -41,36 +42,12 @@ describe('DemoItems: Component', () => {
     </Routes>
   );
 
-  const getRelayEnv = () => {
-    const relayEnvironment = getBaseRelayEnv();
-    const data = {
-      items: [
-        demoItemFactory({
-          sys: { id: 'test-id-1' },
-          title: 'First',
-          image: { title: 'first image title', url: 'https://image.url' },
-        }),
-        demoItemFactory({
-          sys: { id: 'test-id-2' },
-          title: 'Second',
-          image: { title: 'second image title', url: 'https://image.url' },
-        }),
-      ],
-    };
-
-    fillDemoItemsAllQuery(relayEnvironment, data);
-    fillUseFavouriteDemoItemListQuery(relayEnvironment, { item: { pk: 'item-1' } });
-    return relayEnvironment;
-  };
-
   it('should render all items', async () => {
-    const relayEnvironment = getRelayEnv();
     const routerProps = createMockRouterProps(routePath);
 
     const { waitForApolloMocks } = render(<Component />, {
-      relayEnvironment,
       routerProps,
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock()),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(getApolloMocks()),
     });
     await waitForApolloMocks();
 
@@ -80,13 +57,11 @@ describe('DemoItems: Component', () => {
   });
 
   it('should open single demo item page when link is clicked', async () => {
-    const relayEnvironment = getRelayEnv();
     const routerProps = createMockRouterProps(routePath);
 
     const { waitForApolloMocks } = render(<Component />, {
-      relayEnvironment,
       routerProps,
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock()),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(getApolloMocks()),
     });
     await waitForApolloMocks();
 

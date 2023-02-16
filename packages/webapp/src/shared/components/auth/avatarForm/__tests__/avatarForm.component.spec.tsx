@@ -1,7 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { times } from 'ramda';
-import { createMockEnvironment } from 'relay-test-utils';
 
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
@@ -26,15 +25,6 @@ describe('AvatarForm: Component', () => {
     mockDispatch.mockReset();
   });
 
-  const renderComponent = () => {
-    const relayEnvironment = createMockEnvironment();
-
-    return {
-      ...render(<AvatarForm />, { relayEnvironment }),
-      relayEnvironment,
-    };
-  };
-
   const createImageFile = (content: string) => new File([content], 'file.png', { type: 'image/png' });
   const fireAvatarChange = async (file = createImageFile('content')) => {
     await userEvent.upload(await screen.findByTestId('file-input'), file);
@@ -55,7 +45,7 @@ describe('AvatarForm: Component', () => {
     const { waitForApolloMocks } = render(<AvatarForm />, {
       apolloMocks: () => {
         return [
-          fillCommonQueryWithUser(undefined, currentUser),
+          fillCommonQueryWithUser(currentUser),
           composeMockedQueryResult(authUpdateUserProfileMutation, {
             variables: {
               input: {
@@ -98,7 +88,7 @@ describe('AvatarForm: Component', () => {
   });
 
   it('should show error message if file size exceeds maximum size', async () => {
-    renderComponent();
+    render(<AvatarForm />);
 
     const file = createImageFile(times(() => 'x', MAX_AVATAR_SIZE + 100).join(''));
     await fireAvatarChange(file);

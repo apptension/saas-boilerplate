@@ -18,7 +18,7 @@ export default {
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { isLoggedIn = false } }: any) => {
-        return [fillCommonQueryWithUser(undefined, isLoggedIn ? currentUserFactory() : null)];
+        return [fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null)];
       },
     }),
   ],

@@ -1,14 +1,13 @@
+import { useQuery } from '@apollo/client';
 import { screen } from '@testing-library/react';
 import { times } from 'ramda';
-import { useQuery } from '@apollo/client';
-import { render } from '../../../../../tests/utils/rendering';
-import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
+
 import { fillNotificationsListQuery, notificationFactory } from '../../../../../mocks/factories';
-import { ExtractNodeType } from '../../../../utils/graphql';
-import { notificationsListContent$data } from '../__generated__/notificationsListContent.graphql';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { render } from '../../../../../tests/utils/rendering';
+import { NotificationType } from '../../../../services/graphqlApi';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { notificationsListQuery } from '../../notifications.graphql';
+import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 
 describe('NotificationsList: Component', () => {
   const Component = (props: Partial<NotificationsListProps>) => {
@@ -17,15 +16,14 @@ describe('NotificationsList: Component', () => {
   };
 
   const renderWithNotifications = (
-    notifications: Array<Partial<ExtractNodeType<notificationsListContent$data['allNotifications']>>>,
+    notifications: Array<Partial<NotificationType>>,
     additionalData?: Record<string, any>
   ) => {
-    const env = getRelayEnv();
-    const mockRequest = fillNotificationsListQuery(env, notifications, additionalData);
+    const mockRequest = fillNotificationsListQuery(notifications, additionalData);
 
     const apolloMocks = [fillCommonQueryWithUser(), mockRequest];
 
-    return render(<Component />, { relayEnvironment: env, apolloMocks });
+    return render(<Component />, { apolloMocks });
   };
 
   it('should render no items correctly', async () => {

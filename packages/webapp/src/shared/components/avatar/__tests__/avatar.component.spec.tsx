@@ -1,17 +1,17 @@
 import { screen } from '@testing-library/react';
 
-import { render } from '../../../../tests/utils/rendering';
-import { Avatar } from '../avatar.component';
 import { currentUserFactory } from '../../../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { render } from '../../../../tests/utils/rendering';
 import { CurrentUserType } from '../../../services/graphqlApi';
+import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { Avatar } from '../avatar.component';
 
 describe('Avatar: Component', () => {
   const Component = () => <Avatar />;
 
   const renderWithProfile = (overrides?: Partial<CurrentUserType>) => {
     const currentUser = currentUserFactory(overrides);
-    const apolloMocks = [fillCommonQueryWithUser(undefined, currentUser)];
+    const apolloMocks = [fillCommonQueryWithUser(currentUser)];
 
     return { currentUser, ...render(<Component />, { apolloMocks }) };
   };

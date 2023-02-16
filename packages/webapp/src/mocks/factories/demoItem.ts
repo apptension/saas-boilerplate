@@ -1,14 +1,11 @@
 import { times } from 'ramda';
-import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
-import demoItemQueryGraphql from '../../routes/demoItem/__generated__/demoItemQuery.graphql';
 import { demoItemQuery } from '../../routes/demoItem/demoItem.graphql';
-import demoItemsAllQueryGraphql from '../../routes/demoItems/__generated__/demoItemsAllQuery.graphql';
-import UseFavoriteDemoItemListQuery from '../../shared/hooks/useFavoriteDemoItem/__generated__/useFavoriteDemoItemListQuery.graphql';
+import { demoItemsAllQuery } from '../../routes/demoItems/demoItems.graphql';
 import {
   useFavoriteDemoItemListCreateMutation,
   useFavoriteDemoItemListDeleteMutation,
+  useFavoriteDemoItemListQuery,
 } from '../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.graphql';
 import { ContentfulDemoItem } from '../../shared/services/contentful';
 import { ContentfulDemoItemFavoriteType } from '../../shared/services/graphqlApi';
@@ -16,7 +13,12 @@ import {
   UseFavoriteDemoItemListCreateMutationMutation,
   UseFavoriteDemoItemListDeleteMutationMutation,
 } from '../../shared/services/graphqlApi/__generated/gql/graphql';
-import { composeMockedQueryResult, makeId } from '../../tests/utils/fixtures';
+import {
+  composeMockedListQueryResult,
+  composeMockedNestedListQueryResult,
+  composeMockedQueryResult,
+  makeId,
+} from '../../tests/utils/fixtures';
 import { createDeepFactory } from './factoryCreators';
 import { contentfulSysFactory } from './helpers';
 
@@ -49,64 +51,38 @@ export const contentfulDemoItemFavoriteFactory = createDeepFactory<Partial<Conte
   },
 }));
 
-export const fillDemoItemQuery = (data = demoItemFactory(), variables = {}, env?: RelayMockEnvironment) => {
-  if (env) {
-    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        DemoItem() {
-          return data;
-        },
-      })
-    );
-    env.mock.queuePendingOperation(demoItemQueryGraphql, variables);
-  }
-
+export const fillDemoItemQuery = (data = demoItemFactory(), variables = {}) => {
   return composeMockedQueryResult(demoItemQuery, {
     variables: { id: 'test-id' },
     data: { demoItem: data },
   });
 };
 
-export const fillDemoItemsAllQuery = (
-  env: RelayMockEnvironment,
-  data = { items: times(() => demoItemFactory(), 3) }
-) => {
-  env.mock.queueOperationResolver((operation) =>
-    MockPayloadGenerator.generate(operation, {
-      DemoItemCollection() {
-        return data;
-      },
-    })
-  );
-  env.mock.queuePendingOperation(demoItemsAllQueryGraphql, {});
+export const fillDemoItemsAllQuery = (data = times(() => demoItemFactory(), 3)) => {
+  return composeMockedNestedListQueryResult(demoItemsAllQuery, 'demoItemCollection', 'items', 'DemoItem', {
+    data,
+  });
 };
 
-export const fillUseFavouriteDemoItemListQuery = (
-  env: RelayMockEnvironment,
-  data: Partial<ContentfulDemoItemFavoriteType> = {}
-) => {
-  env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      ContentfulDemoItemFavoriteType: () => data,
-    })
+export const fillUseFavouriteDemoItemListQuery = (data: Array<Partial<ContentfulDemoItemFavoriteType>> = []) => {
+  return composeMockedListQueryResult(
+    useFavoriteDemoItemListQuery,
+    'allContentfulDemoItemFavorites',
+    'UseFavoriteDemoItemListQueryQuery',
+    {
+      data,
+    }
   );
-  env.mock.queuePendingOperation(UseFavoriteDemoItemListQuery, {});
 };
 
-export const fillRemoveFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListDeleteMutationMutation) => {
-  const removeFavoriteItemMockResponse = composeMockedQueryResult(useFavoriteDemoItemListDeleteMutation, {
+export const fillRemoveFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListDeleteMutationMutation) =>
+  composeMockedQueryResult(useFavoriteDemoItemListDeleteMutation, {
     variables: { input: { item: id } },
     data,
   });
 
-  return removeFavoriteItemMockResponse;
-};
-
-export const fillCreateFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListCreateMutationMutation) => {
-  const createFavoriteItemMockResponse = composeMockedQueryResult(useFavoriteDemoItemListCreateMutation, {
+export const fillCreateFavouriteDemoItemQuery = (id: string, data: UseFavoriteDemoItemListCreateMutationMutation) =>
+  composeMockedQueryResult(useFavoriteDemoItemListCreateMutation, {
     variables: { input: { item: id } },
     data: data,
   });
-
-  return createFavoriteItemMockResponse;
-};

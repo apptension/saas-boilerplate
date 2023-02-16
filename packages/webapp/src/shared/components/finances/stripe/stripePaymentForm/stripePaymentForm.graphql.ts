@@ -1,4 +1,14 @@
-import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
+import { gql } from '../../../../services/graphqlApi/__generated/gql';
+
+gql(/* GraphQL */ `
+  fragment stripePaymentIntentFragment on StripePaymentIntentType {
+    id
+    amount
+    clientSecret
+    currency
+    pk
+  }
+`);
 
 export const stripeCreatePaymentIntentMutation = gql(/* GraphQL */ `
   mutation stripeCreatePaymentIntentMutation_($input: CreatePaymentIntentMutationInput!) {

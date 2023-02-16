@@ -135,7 +135,6 @@ describe('EditPaymentMethodForm: Component', () => {
   it('should render without errors', async () => {
     const paymentMethods = times(() => paymentMethodFactory(), 2);
     const requestMock = fillSubscriptionScheduleQueryWithPhases(
-      undefined,
       [
         subscriptionPhaseFactory({
           item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
@@ -143,7 +142,8 @@ describe('EditPaymentMethodForm: Component', () => {
       ],
       paymentMethods
     );
-    render(<Component />, { apolloMocks: append(requestMock) });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
+    await waitForApolloMocks();
   });
 
   it('should set default card if selected other already added card', async () => {
@@ -162,7 +162,6 @@ describe('EditPaymentMethodForm: Component', () => {
     ];
 
     const requestScheduleMock = fillSubscriptionScheduleQuery(
-      undefined,
       subscriptionFactory({
         defaultPaymentMethod: paymentMethods[0],
         phases,
@@ -194,7 +193,6 @@ describe('EditPaymentMethodForm: Component', () => {
     const paymentMethods = times(() => paymentMethodFactory(), 2);
     const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
     fillSubscriptionScheduleQuery(
-      undefined,
       subscriptionFactory({
         defaultPaymentMethod: paymentMethods[0],
         phases,

@@ -5,7 +5,7 @@ import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/fact
 import { withProviders } from '../../shared/utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
-const requestMock = fillContentfulAppConfigQuery(undefined, {
+const requestMock = fillContentfulAppConfigQuery({
   items: [
     appConfigFactory({
       privacyPolicy: `

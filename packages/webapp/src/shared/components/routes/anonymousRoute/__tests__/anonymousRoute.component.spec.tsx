@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import { AnonymousRoute } from '../anonymousRoute.component';
-import { render } from '../../../../../tests/utils/rendering';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { getRelayEnv } from '../../../../../tests/utils/relay';
+import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { AnonymousRoute } from '../anonymousRoute.component';
 
 const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
@@ -39,11 +38,8 @@ describe('AnonymousRoute: Component', () => {
 
   describe('user is logged in', () => {
     it('should redirect to homepage', async () => {
-      const relayEnvironment = getRelayEnv();
-
       const apolloMocks = [
         fillCommonQueryWithUser(
-          relayEnvironment,
           currentUserFactory({
             roles: [Role.ADMIN],
           })

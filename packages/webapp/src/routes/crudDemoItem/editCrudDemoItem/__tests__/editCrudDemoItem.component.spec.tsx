@@ -39,7 +39,7 @@ describe('EditCrudDemoItem: Component', () => {
 
   it('should display prefilled form', async () => {
     const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
-    const queryMock = fillEditCrudDemoItemQuery(undefined, queryData, queryVariables);
+    const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
 
     render(<Component />, {
       routerProps,
@@ -53,7 +53,7 @@ describe('EditCrudDemoItem: Component', () => {
     it('should commit mutation', async () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
 
-      const queryMock = fillEditCrudDemoItemQuery(undefined, queryData, queryVariables);
+      const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
         variables: mutationVariables,
         data: mutationData,
@@ -79,7 +79,7 @@ describe('EditCrudDemoItem: Component', () => {
     it('should show success message', async () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
       const reduxStore = configureStore(reduxInitialState);
-      const queryMock = fillEditCrudDemoItemQuery(undefined, queryData, queryVariables);
+      const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
         variables: mutationVariables,
         data: mutationData,

@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { invalidateRelayStore } from '../../../shared/services/graphqlApi/relayEnvironment';
-import { invalidateApolloStore } from '../../../shared/services/graphqlApi/apolloClient';
-import { auth } from '../../../shared/services/api';
-import { useCommonQuery } from '../../../app/providers/commonQuery';
 import { RoutesConfig } from '../../../app/config/routes';
+import { useCommonQuery } from '../../../app/providers/commonQuery';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { auth } from '../../../shared/services/api';
+import { invalidateApolloStore } from '../../../shared/services/graphqlApi/apolloClient';
 
 export const Logout = () => {
   const { reload: reloadCommonQuery } = useCommonQuery();
@@ -19,7 +18,6 @@ export const Logout = () => {
         await auth.logout();
       } catch {}
 
-      invalidateRelayStore();
       invalidateApolloStore();
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.login));

@@ -33,8 +33,8 @@ FreeActive.decorators = [
   withProviders({
     apolloMocks: (defaultMocks) =>
       defaultMocks.concat([
-        fillSubscriptionPlansAllQuery(undefined, [mockMonthlyPlan, mockYearlyPlan]),
-        fillSubscriptionScheduleQueryWithPhases(undefined, [
+        fillSubscriptionPlansAllQuery([mockMonthlyPlan, mockYearlyPlan]),
+        fillSubscriptionScheduleQueryWithPhases([
           subscriptionPhaseFactory({
             item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
           }),
@@ -50,8 +50,8 @@ MonthlyActive.decorators = [
   withProviders({
     apolloMocks: (defaultMocks) =>
       defaultMocks.concat([
-        fillSubscriptionPlansAllQuery(undefined, [mockMonthlyPlan, mockYearlyPlan]),
-        fillSubscriptionScheduleQueryWithPhases(undefined, [
+        fillSubscriptionPlansAllQuery([mockMonthlyPlan, mockYearlyPlan]),
+        fillSubscriptionScheduleQueryWithPhases([
           subscriptionPhaseFactory({
             item: { price: subscriptionPlanFactory() },
           }),

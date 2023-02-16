@@ -25,8 +25,8 @@ export default {
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { isLoggedIn } }: any) => [
-        fillCommonQueryWithUser(undefined, isLoggedIn ? currentUserFactory() : null),
-        fillNotificationsListQuery(undefined, [], { hasUnreadNotifications: false }),
+        fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null),
+        fillNotificationsListQuery([], { hasUnreadNotifications: false }),
       ],
     }),
   ],

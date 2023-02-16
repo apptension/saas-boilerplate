@@ -1,5 +1,3 @@
-import { UnknownObject } from './types';
-
 export type ConnectionType<ITEM> = {
   readonly edges?: ReadonlyArray<{
     readonly node?: ITEM | null;
@@ -21,12 +19,3 @@ export const mapConnection = <ITEM, RETURN>(
 
   return existingNodes;
 };
-
-export type ExtractNodeType<
-  T extends {
-    readonly edges: ReadonlyArray<{
-      readonly node: ITEM | null;
-    } | null>;
-  } | null,
-  ITEM extends UnknownObject = UnknownObject
-> = NonNullable<NonNullable<NonNullable<NonNullable<T>['edges']>[number]>['node']>;

@@ -30,7 +30,7 @@ export default {
             paymentMethod: paymentMethodFactory({ card: { last4: '9876' }, billingDetails: { name: 'Owner 2' } }),
           }),
         ];
-        return defaultMocks.concat([fillAllStripeChargesQuery(undefined, data)]);
+        return defaultMocks.concat([fillAllStripeChargesQuery(data)]);
       },
     }),
   ],

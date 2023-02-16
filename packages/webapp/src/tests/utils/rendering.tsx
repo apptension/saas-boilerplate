@@ -7,11 +7,9 @@ import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } fr
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
-import { Environment, RelayEnvironmentProvider } from 'react-relay';
 import { generatePath } from 'react-router';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import { Store as ReduxStore } from 'redux';
-import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../app/config/i18n';
 import { RoutesConfig } from '../../app/config/routes';
@@ -28,7 +26,6 @@ const defaultReduxStore = configureStore({});
 export type DefaultReduxState = typeof defaultReduxStore;
 
 export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
-  relayEnvironment: Environment;
   apolloMocks?: ReadonlyArray<MockedResponse>;
   apolloProviderProps: MockedProviderProps;
   routerProps: MemoryRouterProps;
@@ -39,7 +36,6 @@ export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
 
 export function DefaultTestProviders<ReduxState>({
   children,
-  relayEnvironment,
   apolloMocks = [],
   apolloProviderProps = {},
   routerProps,
@@ -53,11 +49,9 @@ export function DefaultTestProviders<ReduxState>({
         <ResponsiveThemeProvider>
           <IntlProvider locale={intlLocale} messages={intlMessages}>
             <Provider store={reduxStore}>
-              <RelayEnvironmentProvider environment={relayEnvironment}>
-                <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
-                  <CommonQuery>{children}</CommonQuery>
-                </MockedApolloProvider>
-              </RelayEnvironmentProvider>
+              <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
+                <CommonQuery>{children}</CommonQuery>
+              </MockedApolloProvider>
             </Provider>
           </IntlProvider>
         </ResponsiveThemeProvider>
@@ -69,9 +63,8 @@ export function DefaultTestProviders<ReduxState>({
 export type WrapperProps<
   ReduxState = DefaultReduxState,
   P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
-> = Partial<Omit<P, 'relayEnvironment' | 'apolloMocks'>> & {
+> = Partial<Omit<P, 'apolloMocks'>> & {
   reduxInitialState?: ReduxState;
-  relayEnvironment?: Environment | ((env: RelayMockEnvironment, storyContext?: StoryContext) => void);
   apolloMocks?:
     | ReadonlyArray<MockedResponse>
     | ((mocks: ReadonlyArray<MockedResponse>, storyContext?: StoryContext) => ReadonlyArray<MockedResponse>);
@@ -88,20 +81,6 @@ export function getWrapper<
   wrapper: ComponentType<P>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
-  const relayEnvironment = (() => {
-    if (typeof wrapperProps.relayEnvironment === 'function') {
-      const envToMutate = createMockEnvironment();
-      wrapperProps.relayEnvironment(envToMutate, storyContext);
-      return envToMutate;
-    }
-    if (wrapperProps.relayEnvironment !== undefined) {
-      return wrapperProps.relayEnvironment;
-    }
-    const defaultRelayEnvironment = createMockEnvironment();
-    fillCommonQueryWithUser(defaultRelayEnvironment);
-    return defaultRelayEnvironment;
-  })();
-
   const apolloMocks = (() => {
     const defaultApolloMocks = [fillCommonQueryWithUser()];
     if (typeof wrapperProps.apolloMocks === 'function') {
@@ -137,7 +116,6 @@ export function getWrapper<
         intlMessages={translationMessages[DEFAULT_LOCALE]}
         reduxStore={defaultReduxStore}
         {...(wrapperProps ?? {})}
-        relayEnvironment={relayEnvironment}
         apolloMocks={apolloMocks}
       />
     );

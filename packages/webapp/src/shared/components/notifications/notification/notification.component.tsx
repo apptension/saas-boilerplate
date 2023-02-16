@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
-import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
+import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
+import { ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
+
+import { NotificationType } from '../../../services/graphqlApi';
 import { ButtonVariant } from '../../forms/button';
 import { Icon } from '../../icon';
-import { ExtractNodeType } from '../../../utils/graphql';
-import { notificationsListContent$data } from '../notificationsList/__generated__/notificationsListContent.graphql';
-import { NotificationTheme } from './notification.types';
-import { Actions, Avatar, Container, Content, MarkAsReadButton, RelativeDate, Title } from './notification.styles';
 import { useToggleIsRead } from './notification.hooks';
+import { Actions, Avatar, Container, Content, MarkAsReadButton, RelativeDate, Title } from './notification.styles';
+import { NotificationTheme } from './notification.types';
 
-export type NotificationProps = Omit<ExtractNodeType<notificationsListContent$data['allNotifications']>, 'data'> & {
+export type NotificationProps = Omit<NotificationType, 'data'> & {
   title: ReactNode;
   content: ReactNode;
   children?: ReactNode;

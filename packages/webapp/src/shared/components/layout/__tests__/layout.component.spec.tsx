@@ -1,15 +1,14 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
-import { Layout } from '../layout.component';
-import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
-import { Breakpoint } from '../../../../theme/media';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { getRelayEnv } from '../../../../tests/utils/relay';
 import { currentUserFactory } from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { Breakpoint } from '../../../../theme/media';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { Layout } from '../layout.component';
 
 const mockGetActiveBreakpoint = jest.fn().mockReturnValue(Breakpoint.DESKTOP);
 jest.mock('../../../../theme/media', () => {
@@ -60,9 +59,8 @@ describe('Layout: Component', () => {
     });
 
     it('should show content', async () => {
-      const relayEnvironment = getRelayEnv();
       const routerProps = createMockRouterProps(homeRoutePath);
-      render(<Component />, { relayEnvironment, routerProps });
+      render(<Component />, { routerProps });
       expect(await screen.findByTestId('content')).toBeVisible();
     });
 
@@ -103,11 +101,9 @@ describe('Layout: Component', () => {
 
       describe('user opens the menu', () => {
         it('should show menu links', async () => {
-          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
           const apolloMocks = [
             fillCommonQueryWithUser(
-              relayEnvironment,
               currentUserFactory({
                 roles: [Role.USER],
               })
@@ -120,11 +116,9 @@ describe('Layout: Component', () => {
         });
 
         it('should close the menu when link is clicked', async () => {
-          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
           const apolloMocks = [
             fillCommonQueryWithUser(
-              relayEnvironment,
               currentUserFactory({
                 roles: [Role.USER],
               })
@@ -137,11 +131,9 @@ describe('Layout: Component', () => {
         });
 
         it('should close the menu when close icon is clicked', async () => {
-          const relayEnvironment = getRelayEnv();
           const routerProps = createMockRouterProps(homeRoutePath);
           const apolloMocks = [
             fillCommonQueryWithUser(
-              relayEnvironment,
               currentUserFactory({
                 roles: [Role.USER],
               })
@@ -201,10 +193,8 @@ describe('Layout: Component', () => {
       });
 
       it('should show menu links', async () => {
-        const relayEnvironment = getRelayEnv();
         const apolloMocks = [
           fillCommonQueryWithUser(
-            relayEnvironment,
             currentUserFactory({
               roles: [Role.USER],
             })

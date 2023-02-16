@@ -5,7 +5,7 @@ import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/fact
 import { withProviders } from '../../shared/utils/storybook';
 import { TermsAndConditions } from './termsAndConditions.component';
 
-const requestMock = fillContentfulAppConfigQuery(undefined, {
+const requestMock = fillContentfulAppConfigQuery({
   items: [
     appConfigFactory({
       termsAndConditions: `

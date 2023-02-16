@@ -1,11 +1,10 @@
 import { FieldValues, Path, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { isEmpty, isNil, keys } from 'ramda';
-import { PayloadError } from 'relay-runtime';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
 import { camelCaseKeys } from '../../utils/object';
-import { GraphQLValidationError, GraphQLGenericError, UseApiFormArgs } from './useApiForm.types';
+import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
 export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: UseApiFormArgs<FormData>) => {
@@ -35,29 +34,6 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
       });
     },
     [setError, translateErrorMessage]
-  );
-
-  const setGraphQLResponseErrors = useCallback(
-    (errors: PayloadError[]) => {
-      const validationError = errors.find(({ message }) => message === 'GraphQlValidationError') as
-        | GraphQLValidationError<FormData>
-        | undefined;
-
-      if (validationError) {
-        setResponseErrors(validationError.extensions);
-      } else {
-        setResponseErrors({
-          nonFieldErrors: errors.map((error) => {
-            const genericError = error as GraphQLGenericError;
-            return {
-              message: genericError.extensions?.message ?? error.message,
-              code: genericError.extensions?.code ?? error.message,
-            };
-          }),
-        });
-      }
-    },
-    [setResponseErrors]
   );
 
   const setApolloGraphQLResponseErrors = useCallback(
@@ -106,7 +82,6 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     form,
     genericError,
     setApiResponse,
-    setGraphQLResponseErrors,
     setApolloGraphQLResponseErrors,
     setGenericError,
     hasGenericErrorOnly,

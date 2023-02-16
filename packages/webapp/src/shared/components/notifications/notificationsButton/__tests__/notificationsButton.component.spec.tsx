@@ -1,37 +1,24 @@
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils';
-import { OperationDescriptor } from 'react-relay/hooks';
+import { useQuery } from '@apollo/client';
 import { screen } from '@testing-library/react';
-import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';
+import { append } from 'ramda';
+
+import { fillNotificationsListQuery } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import notificationsListQueryGraphql from '../../__generated__/notificationsListQuery.graphql';
+import { notificationsListQuery } from '../../notifications.graphql';
+import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';
 
 describe('NotificationsButton: Component', () => {
   const defaultProps: Omit<NotificationsButtonProps, 'listQueryRef'> = {};
 
-  const Component = (props: Partial<NotificationsButtonProps>) => (
-    <NotificationsButton listQueryRef={{} as any} {...defaultProps} {...props} />
-  );
+  const Component = (props: Partial<NotificationsButtonProps>) => {
+    const { data } = useQuery(notificationsListQuery);
+    return <NotificationsButton queryResult={data} {...defaultProps} {...props} />;
+  };
 
   it('should render without errors', async () => {
-    const environment = createMockEnvironment();
-    environment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        hasUnreadNotifications: () => false,
-      })
-    );
-    environment.mock.queuePendingOperation(notificationsListQueryGraphql, {});
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(fillNotificationsListQuery([])) });
 
-    render(
-      <Component
-        listQueryRef={
-          {
-            environment,
-            isDisposed: false,
-          } as any
-        }
-      />,
-      { relayEnvironment: environment }
-    );
+    await waitForApolloMocks();
 
     expect(await screen.findByRole('button')).toBeInTheDocument();
   });

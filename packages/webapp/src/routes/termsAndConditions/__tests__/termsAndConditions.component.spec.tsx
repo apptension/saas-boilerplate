@@ -13,7 +13,7 @@ describe('TermsAndConditions: Component', () => {
   it('should render terms and conditions content', async () => {
     render(<Component />, {
       apolloMocks: append(
-        fillContentfulAppConfigQuery(undefined, {
+        fillContentfulAppConfigQuery({
           items: [appConfigFactory({ termsAndConditions })],
           limit: 1,
           skip: 0,

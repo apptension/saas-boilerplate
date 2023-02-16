@@ -1,16 +1,15 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { render } from '../../../../../tests/utils/rendering';
-import { LoginForm } from '../loginForm.component';
-
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
-import { authSinginMutation } from '../loginForm.graphql';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { render } from '../../../../../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { LoginForm } from '../loginForm.component';
+import { authSinginMutation } from '../loginForm.graphql';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -43,7 +42,7 @@ describe('LoginForm: Component', () => {
   });
 
   it('should call login action when submitted', async () => {
-    const refreshQueryMock = fillCommonQueryWithUser(undefined, user);
+    const refreshQueryMock = fillCommonQueryWithUser(user);
     const requestMock = composeMockedQueryResult(authSinginMutation, {
       variables: mockCredentials,
       data: {

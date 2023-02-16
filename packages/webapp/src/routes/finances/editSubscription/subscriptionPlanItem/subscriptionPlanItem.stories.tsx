@@ -77,11 +77,9 @@ Free.decorators = [
   withProviders({
     ...defaultProvidersOptions,
     apolloMocks: () => [
-      fillCommonQueryWithUser(undefined, currentUserFactory()),
-      fillSubscriptionPlansAllQuery(undefined, [
-        subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }),
-      ]),
-      fillSubscriptionScheduleQueryWithPhases(undefined, [
+      fillCommonQueryWithUser(currentUserFactory()),
+      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })]),
+      fillSubscriptionScheduleQueryWithPhases([
         subscriptionPhaseFactory({
           item: { price: monthlyPlan },
         }),
@@ -95,11 +93,9 @@ ActiveFree.decorators = [
   withProviders({
     ...defaultProvidersOptions,
     apolloMocks: () => [
-      fillCommonQueryWithUser(undefined, currentUserFactory()),
-      fillSubscriptionPlansAllQuery(undefined, [
-        subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }),
-      ]),
-      fillSubscriptionScheduleQueryWithPhases(undefined, [
+      fillCommonQueryWithUser(currentUserFactory()),
+      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })]),
+      fillSubscriptionScheduleQueryWithPhases([
         subscriptionPhaseFactory({
           item: { price: freePlan },
         }),
@@ -113,11 +109,9 @@ Paid.decorators = [
   withProviders({
     ...defaultProvidersOptions,
     apolloMocks: () => [
-      fillCommonQueryWithUser(undefined, currentUserFactory()),
-      fillSubscriptionPlansAllQuery(undefined, [
-        subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } }),
-      ]),
-      fillSubscriptionScheduleQueryWithPhases(undefined, [
+      fillCommonQueryWithUser(currentUserFactory()),
+      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
+      fillSubscriptionScheduleQueryWithPhases([
         subscriptionPhaseFactory({
           item: { price: freePlan },
         }),
@@ -131,11 +125,9 @@ ActivePaid.decorators = [
   withProviders({
     ...defaultProvidersOptions,
     apolloMocks: () => [
-      fillCommonQueryWithUser(undefined, currentUserFactory()),
-      fillSubscriptionPlansAllQuery(undefined, [
-        subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } }),
-      ]),
-      fillSubscriptionScheduleQueryWithPhases(undefined, [
+      fillCommonQueryWithUser(currentUserFactory()),
+      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
+      fillSubscriptionScheduleQueryWithPhases([
         subscriptionPhaseFactory({
           item: { price: monthlyPlan },
         }),
@@ -149,12 +141,9 @@ WithTrialEligible.decorators = [
   withProviders({
     ...defaultProvidersOptions,
     apolloMocks: () => [
-      fillCommonQueryWithUser(undefined, currentUserFactory()),
-      fillSubscriptionPlansAllQuery(undefined, [
-        subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } }),
-      ]),
+      fillCommonQueryWithUser(currentUserFactory()),
+      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
       fillSubscriptionScheduleQuery(
-        undefined,
         subscriptionFactory({
           canActivateTrial: true,
           phases: [

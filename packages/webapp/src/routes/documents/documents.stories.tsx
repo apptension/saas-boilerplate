@@ -14,7 +14,7 @@ export default {
   component: Documents,
   decorators: [
     withProviders({
-      apolloMocks: append(fillDocumentsListQuery(undefined)),
+      apolloMocks: append(fillDocumentsListQuery()),
     }),
   ],
 };

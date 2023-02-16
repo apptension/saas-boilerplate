@@ -18,7 +18,7 @@ export default {
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { profile } }: any) => {
-        return [fillCommonQueryWithUser(undefined, profile)];
+        return [fillCommonQueryWithUser(profile)];
       },
     }),
   ],

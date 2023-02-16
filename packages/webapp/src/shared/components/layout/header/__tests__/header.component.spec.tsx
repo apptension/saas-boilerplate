@@ -2,15 +2,15 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { currentUserFactory, fillNotificationsListQuery } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import { RoutesConfig } from '../../../../../app/config/routes';
-import { Header } from '../header.component';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { Header } from '../header.component';
 
 const getApolloMocks = () => [
-  fillCommonQueryWithUser(undefined, currentUserFactory()),
-  fillNotificationsListQuery(undefined, [], { hasUnreadNotifications: false }),
+  fillCommonQueryWithUser(currentUserFactory()),
+  fillNotificationsListQuery([], { hasUnreadNotifications: false }),
 ];
 
 describe('Header: Component', () => {

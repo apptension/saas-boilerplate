@@ -32,6 +32,6 @@ const data = {
 Default.decorators = [
   withProviders({
     routerProps: createMockRouterProps(routePath, variables),
-    apolloMocks: append(fillCrudDemoItemDetailsQuery(undefined, data, variables)),
+    apolloMocks: append(fillCrudDemoItemDetailsQuery(data, variables)),
   }),
 ];

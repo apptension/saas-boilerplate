@@ -1,7 +1,7 @@
 import { gql } from '../../shared/services/graphqlApi/__generated/gql';
 
 export const demoItemListItemFragment = gql(/* GraphQL */ `
-  fragment demoItemListItem_item on DemoItem {
+  fragment demoItemListItemFragment on DemoItem {
     title
     image {
       title
@@ -17,7 +17,7 @@ export const demoItemsAllQuery = gql(/* GraphQL */ `
         sys {
           id
         }
-        ...demoItemListItem_item
+        ...demoItemListItemFragment
       }
     }
   }

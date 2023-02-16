@@ -17,6 +17,6 @@ export default {
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    apolloMocks: [fillCommonQueryWithUser(undefined, currentUserFactory())],
+    apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
   }),
 ];

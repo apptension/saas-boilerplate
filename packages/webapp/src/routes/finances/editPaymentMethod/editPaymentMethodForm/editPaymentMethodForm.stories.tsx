@@ -26,7 +26,6 @@ export default {
         const paymentMethods = times(() => paymentMethodFactory(), 3);
         return defaultMocks.concat(
           fillSubscriptionScheduleQueryWithPhases(
-            undefined,
             [
               subscriptionPhaseFactory({
                 item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },

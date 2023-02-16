@@ -1,8 +1,3 @@
-import { OperationDescriptor } from 'react-relay/hooks';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
-
-import SubscriptionActivePlanDetailsQuery from '../../modules/subscription/__generated__/subscriptionActivePlanDetailsQuery.graphql';
-import subscriptionPlansAllQueryGraphql from '../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { subscriptionPlansAllQuery } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
 import { stripeSubscriptionQuery } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { subscriptionActivePlanDetailsQuery } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
@@ -16,7 +11,6 @@ import {
 import {
   composeMockedListQueryResult,
   composeMockedQueryResult,
-  connectionFromArray,
   makeId,
   mapRelayEdges,
 } from '../../tests/utils/fixtures';
@@ -60,21 +54,9 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
 }));
 
 export const fillSubscriptionScheduleQuery = (
-  relayEnvironment?: RelayMockEnvironment,
   subscription: Partial<Subscription>,
   paymentMethods?: StripePaymentMethod[]
 ) => {
-  if (relayEnvironment) {
-    relayEnvironment.mock.queueOperationResolver((operation) => {
-      return MockPayloadGenerator.generate(operation, {
-        SubscriptionScheduleType: (context, generateId) => ({
-          ...subscription,
-        }),
-      });
-    });
-    relayEnvironment.mock.queuePendingOperation(SubscriptionActivePlanDetailsQuery, {});
-  }
-
   const defaultPaymentMethod = subscription.defaultPaymentMethod || ({} as StripePaymentMethod);
   if (!paymentMethods) {
     paymentMethods = [defaultPaymentMethod];
@@ -89,12 +71,10 @@ export const fillSubscriptionScheduleQuery = (
 };
 
 export const fillSubscriptionScheduleQueryWithPhases = (
-  relayEnvironment?: RelayMockEnvironment,
   phases: SubscriptionPhase[],
   paymentMethods?: StripePaymentMethod[]
 ) => {
   return fillSubscriptionScheduleQuery(
-    relayEnvironment,
     subscriptionFactory({
       defaultPaymentMethod: paymentMethodFactory({
         billingDetails: { name: 'Owner' },
@@ -106,16 +86,7 @@ export const fillSubscriptionScheduleQueryWithPhases = (
   );
 };
 
-export const fillSubscriptionPlansAllQuery = (env?: RelayMockEnvironment, data: SubscriptionPlan[] = []) => {
-  if (env) {
-    env.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        SubscriptionPlanConnection: () => connectionFromArray(data),
-      })
-    );
-    env.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
-  }
-
+export const fillSubscriptionPlansAllQuery = (data: SubscriptionPlan[] = []) => {
   return composeMockedListQueryResult(subscriptionPlansAllQuery, 'allSubscriptionPlans', 'SubscriptionPlanType', {
     data,
   });

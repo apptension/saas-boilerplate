@@ -1,11 +1,7 @@
-import { ExtractNodeType } from '../../utils/graphql';
+import { NotificationType as NotificationTypeBase } from '../../services/graphqlApi';
 import { UnknownObject } from '../../utils/types';
-import { notificationsListContent$data } from './notificationsList/__generated__/notificationsListContent.graphql';
 
-export type NotificationType<T extends UnknownObject> = Omit<
-  ExtractNodeType<notificationsListContent$data['allNotifications']>,
-  'type' | 'data'
-> & {
+export type NotificationType<T extends UnknownObject> = Omit<NotificationTypeBase, 'type' | 'data'> & {
   type: NotificationTypes;
   data: T;
 };

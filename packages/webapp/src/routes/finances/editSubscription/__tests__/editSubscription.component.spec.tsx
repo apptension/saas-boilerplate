@@ -1,9 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
-import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
-import { MockPayloadGenerator, RelayMockEnvironment } from 'relay-test-utils';
 
 import {
   fillSubscriptionPlansAllQuery,
@@ -11,10 +9,8 @@ import {
   subscriptionPlanFactory,
 } from '../../../../mocks/factories';
 import { snackbarActions } from '../../../../modules/snackbar';
-import subscriptionPlansAllQueryGraphql from '../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { composeMockedQueryResult, connectionFromArray } from '../../../../tests/utils/fixtures';
-import { getRelayEnv as getBaseRelayEnv } from '../../../../tests/utils/relay';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditSubscription } from '../editSubscription.component';
@@ -50,22 +46,8 @@ const mockMutationData = {
   },
 };
 
-const getRelayEnv = () => {
-  const relayEnvironment = getBaseRelayEnv();
-  relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-    MockPayloadGenerator.generate(operation, {
-      SubscriptionPlanConnection: () => connectionFromArray([mockMonthlyPlan, mockYearlyPlan]),
-    })
-  );
-  relayEnvironment.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
-  return relayEnvironment;
-};
-
-const fillCurrentSubscriptionQuery = (relayEnvironment: RelayMockEnvironment) =>
-  fillSubscriptionScheduleQuery(
-    relayEnvironment,
-    subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })
-  );
+const fillCurrentSubscriptionQuery = () =>
+  fillSubscriptionScheduleQuery(subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }));
 
 const fillChangeSubscriptionMutation = (errors?: GraphQLError[]) =>
   composeMockedQueryResult(subscriptionChangeActiveMutation, {
@@ -94,14 +76,12 @@ describe('EditSubscription: Component', () => {
 
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
-      const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [mockMonthlyPlan]);
+      const requestMock = fillCurrentSubscriptionQuery();
+      const requestPlansMock = fillSubscriptionPlansAllQuery([mockMonthlyPlan, mockYearlyPlan]);
       const requestMockMutation = fillChangeSubscriptionMutation();
 
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, {
-        relayEnvironment,
         routerProps,
         apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
       });
@@ -124,16 +104,13 @@ describe('EditSubscription: Component', () => {
 
   describe('plan fails to update', () => {
     it('should show error message', async () => {
-      const relayEnvironment = getRelayEnv();
-
-      const requestMock = fillCurrentSubscriptionQuery(relayEnvironment);
+      const requestMock = fillCurrentSubscriptionQuery();
       const errorMessage = 'Missing payment method';
-      const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [mockMonthlyPlan]);
+      const requestPlansMock = fillSubscriptionPlansAllQuery([mockMonthlyPlan]);
       const requestMockMutation = fillChangeSubscriptionMutation([new GraphQLError(errorMessage)]);
 
       const routerProps = createMockRouterProps(['home']);
       render(<Component />, {
-        relayEnvironment,
         routerProps,
         apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
       });

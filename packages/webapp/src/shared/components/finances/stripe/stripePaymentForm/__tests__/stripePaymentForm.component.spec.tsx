@@ -1,18 +1,15 @@
 import { Elements } from '@stripe/react-stripe-js';
-import { GraphQLError } from 'graphql';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { GraphQLError } from 'graphql';
 import { append, times } from 'ramda';
 
-import { screen } from '@testing-library/react';
-import { render } from '../../../../../../tests/utils/rendering';
 import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
-import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
-
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
-
-import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../../../tests/utils/fixtures';
-
+import { render } from '../../../../../../tests/utils/rendering';
+import { Subscription } from '../../../../../services/api/subscription/types';
+import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
 import { stripeCreatePaymentIntentMutation } from '../stripePaymentForm.graphql';
 
 const mockConfirmPayment = jest.fn();

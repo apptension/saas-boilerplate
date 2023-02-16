@@ -2,9 +2,7 @@ import { useQuery } from '@apollo/client';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
-import { OperationDescriptor } from 'react-relay/hooks';
 import { Route, Routes } from 'react-router-dom';
-import { MockPayloadGenerator } from 'relay-test-utils';
 
 import {
   fillSubscriptionPlansAllQuery,
@@ -13,11 +11,8 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
-import subscriptionPlansAllQueryGraphql from '../../../../../modules/subscription/__generated__/subscriptionPlansAllQuery.graphql';
 import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { mapConnection } from '../../../../../shared/utils/graphql';
-import { connectionFromArray } from '../../../../../tests/utils/fixtures';
-import { getRelayEnv as getBaseRelayEnv } from '../../../../../tests/utils/relay';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
@@ -54,25 +49,6 @@ describe('SubscriptionPlanItem: Component', () => {
     );
   };
 
-  const getRelayEnv = () => {
-    const relayEnvironment = getBaseRelayEnv();
-    relayEnvironment.mock.queueOperationResolver((operation: OperationDescriptor) =>
-      MockPayloadGenerator.generate(operation, {
-        SubscriptionPlanConnection: () =>
-          connectionFromArray([
-            {
-              unitAmount: 250,
-              product: {
-                name: SubscriptionPlanName.MONTHLY,
-              },
-            },
-          ]),
-      })
-    );
-    relayEnvironment.mock.queuePendingOperation(subscriptionPlansAllQueryGraphql, {});
-    return relayEnvironment;
-  };
-
   const monthlyPlan = subscriptionPlanFactory({
     id: 'plan_monthly',
     pk: 'price_monthly',
@@ -84,10 +60,8 @@ describe('SubscriptionPlanItem: Component', () => {
   });
 
   it('should render name', async () => {
-    const relayEnvironment = getRelayEnv();
-    const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+    const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
     render(<Wrapper />, {
-      relayEnvironment,
       apolloMocks: append(requestPlansMock),
     });
 
@@ -95,9 +69,8 @@ describe('SubscriptionPlanItem: Component', () => {
   });
 
   it('should render plan price', async () => {
-    const relayEnvironment = getRelayEnv();
-    const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
-    render(<Wrapper />, { relayEnvironment, apolloMocks: append(requestPlansMock) });
+    const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+    render(<Wrapper />, { apolloMocks: append(requestPlansMock) });
     expect(await screen.findByText(/10 USD/i)).toBeInTheDocument();
   });
 
@@ -105,10 +78,8 @@ describe('SubscriptionPlanItem: Component', () => {
     describe('next billing plan is different from the clicked one', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
-        const relayEnvironment = getRelayEnv();
-        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+        const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          relayEnvironment,
           apolloMocks: append(requestPlansMock),
         });
         await waitForApolloMocks();
@@ -122,12 +93,10 @@ describe('SubscriptionPlanItem: Component', () => {
     describe('next billing plan is same as the clicked one', () => {
       it('should not call onSelect', async () => {
         const onSelect = jest.fn();
-        const relayEnvironment = getRelayEnv();
-        const requestMock = fillSubscriptionScheduleQuery(relayEnvironment, subscriptionWithMonthlyPlan);
-        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+        const requestMock = fillSubscriptionScheduleQuery(subscriptionWithMonthlyPlan);
+        const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
 
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          relayEnvironment,
           apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
         });
         await waitForApolloMocks();
@@ -140,10 +109,8 @@ describe('SubscriptionPlanItem: Component', () => {
     describe('active plan is clicked, but is has already been cancelled', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
-        const relayEnvironment = getRelayEnv();
-        const requestPlansMock = fillSubscriptionPlansAllQuery(relayEnvironment, [monthlyPlan]);
+        const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          relayEnvironment,
           apolloMocks: append(requestPlansMock),
         });
         await waitForApolloMocks();
@@ -155,21 +122,16 @@ describe('SubscriptionPlanItem: Component', () => {
 
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
-      const relayEnvironment = getRelayEnv();
-      const requestMock = fillSubscriptionScheduleQuery(
-        relayEnvironment,
-        subscriptionFactory({ canActivateTrial: true })
-      );
-      render(<Wrapper />, { relayEnvironment, apolloMocks: append(requestMock) });
+      const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory({ canActivateTrial: true }));
+      render(<Wrapper />, { apolloMocks: append(requestMock) });
       expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();
     });
   });
 
   describe('trial is illegible', () => {
     it('should not show trial info', async () => {
-      const relayEnvironment = getRelayEnv();
-      fillSubscriptionScheduleQuery(relayEnvironment, subscriptionFactory({ canActivateTrial: false }));
-      const { waitForApolloMocks } = render(<Wrapper />, { relayEnvironment });
+      const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory({ canActivateTrial: false }));
+      const { waitForApolloMocks } = render(<Wrapper />, { apolloMocks: append(requestMock) });
       await waitForApolloMocks();
       expect(screen.queryByText(/will start with a trial/gi)).not.toBeInTheDocument();
     });

@@ -13,7 +13,7 @@ describe('Documents: Component', () => {
     const documentsLength = 3;
     const generatedDocs = times(() => documentFactory(), documentsLength);
 
-    const mockRequest = fillDocumentsListQuery(undefined, generatedDocs);
+    const mockRequest = fillDocumentsListQuery(generatedDocs);
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
     expect(await screen.findAllByRole('link')).toHaveLength(documentsLength);
@@ -21,7 +21,7 @@ describe('Documents: Component', () => {
   });
 
   it('should render empty state', async () => {
-    const mockRequest = fillDocumentsListQuery(undefined, []);
+    const mockRequest = fillDocumentsListQuery([]);
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
@@ -31,7 +31,7 @@ describe('Documents: Component', () => {
   it('should add new item to the list', async () => {
     const generatedDoc = documentFactory();
 
-    const mockRequest = fillDocumentsListQuery(undefined, [generatedDoc]);
+    const mockRequest = fillDocumentsListQuery([generatedDoc]);
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
@@ -59,7 +59,7 @@ describe('Documents: Component', () => {
       data: mutationData,
     }));
 
-    const mockRequest = fillDocumentsListQuery(undefined, [generatedDoc]);
+    const mockRequest = fillDocumentsListQuery([generatedDoc]);
 
     render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock),

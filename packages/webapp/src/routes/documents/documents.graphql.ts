@@ -17,7 +17,6 @@ export const documentsListQuery = gql(/* GraphQL */ `
       edges {
         node {
           id
-          createdAt
           ...documentListItem
         }
       }
@@ -30,7 +29,7 @@ export const documentsListCreateMutation = gql(/* GraphQL */ `
     createDocumentDemoItem(input: $input) {
       documentDemoItemEdge {
         node {
-          createdAt
+          id
           ...documentListItem
         }
       }

@@ -20,7 +20,7 @@ export default {
     withActiveSubscriptionContext,
     withProviders({
       apolloMocks: append(
-        fillSubscriptionScheduleQueryWithPhases(undefined, [
+        fillSubscriptionScheduleQueryWithPhases([
           subscriptionPhaseFactory({
             item: { price: subscriptionPlanFactory() },
           }),

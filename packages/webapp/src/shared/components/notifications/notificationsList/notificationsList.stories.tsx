@@ -20,7 +20,7 @@ Default.args = { isOpen: true };
 Default.decorators = [
   withProviders({
     apolloMocks: append(
-      fillNotificationsListQuery(undefined, [
+      fillNotificationsListQuery([
         notificationFactory({
           type: NotificationTypes.CRUD_ITEM_CREATED,
           data: {
@@ -47,6 +47,6 @@ export const Empty = Template.bind({});
 Empty.args = { isOpen: true };
 Empty.decorators = [
   withProviders({
-    apolloMocks: append(fillNotificationsListQuery(undefined, [])),
+    apolloMocks: append(fillNotificationsListQuery([])),
   }),
 ];

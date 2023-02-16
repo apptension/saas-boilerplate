@@ -21,12 +21,12 @@ export default {
     withProviders({
       apolloMocks: (defaultMocks) =>
         defaultMocks.concat([
-          fillSubscriptionScheduleQueryWithPhases(undefined, [
+          fillSubscriptionScheduleQueryWithPhases([
             subscriptionPhaseFactory({
               item: { price: subscriptionPlanFactory() },
             }),
           ]),
-          fillAllStripeChargesQuery(undefined, []),
+          fillAllStripeChargesQuery([]),
         ]),
     }),
   ],

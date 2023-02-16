@@ -109,7 +109,6 @@ describe('ConfirmEmail: Component', () => {
       beforeEach(() => {
         apolloMocks = [
           fillCommonQueryWithUser(
-            undefined,
             currentUserFactory({
               roles: [Role.ADMIN],
             })

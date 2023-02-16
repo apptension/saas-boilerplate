@@ -1,13 +1,12 @@
-import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
+import { currentUserFactory } from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { renderHook } from '../../../../tests/utils/rendering';
-import { currentUserFactory } from '../../../../mocks/factories';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 
 const render = ({ userRoles, allowedRoles }: { userRoles: Role[]; allowedRoles: Role | Role[] }) => {
   const apolloMocks = [
     fillCommonQueryWithUser(
-      undefined,
       currentUserFactory({
         roles: userRoles,
       })

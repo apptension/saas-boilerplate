@@ -32,7 +32,6 @@ export default {
     withProviders({
       apolloMocks: append(
         fillSubscriptionScheduleQueryWithPhases(
-          undefined,
           [
             subscriptionPhaseFactory({
               item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },

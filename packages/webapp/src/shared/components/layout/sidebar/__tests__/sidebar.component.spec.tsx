@@ -1,15 +1,14 @@
 import { screen } from '@testing-library/react';
 
-import { render } from '../../../../../tests/utils/rendering';
-import { Sidebar } from '../sidebar.component';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { LayoutContext } from '../../layout.context';
+import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { LayoutContext } from '../../layout.context';
+import { Sidebar } from '../sidebar.component';
 
 const getApolloMocks = (role: Role = Role.USER) => [
   fillCommonQueryWithUser(
-    undefined,
     currentUserFactory({
       roles: [role],
     })

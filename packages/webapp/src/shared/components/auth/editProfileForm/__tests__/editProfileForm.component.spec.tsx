@@ -2,16 +2,13 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { render } from '../../../../../tests/utils/rendering';
-import { EditProfileForm } from '../editProfileForm.component';
-
-import { snackbarActions } from '../../../../../modules/snackbar';
-
-import { authUpdateUserProfileMutation } from '../editProfileForm.graphql';
-import { Role } from '../../../../../modules/auth/auth.types';
-
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { currentUserFactory } from '../../../../../mocks/factories';
+import { Role } from '../../../../../modules/auth/auth.types';
+import { snackbarActions } from '../../../../../modules/snackbar';
+import { render } from '../../../../../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { EditProfileForm } from '../editProfileForm.component';
+import { authUpdateUserProfileMutation } from '../editProfileForm.graphql';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -59,7 +56,7 @@ const renderComponent = (error?: GraphQLError[]) => {
     email: 'jack.white@mail.com',
     roles: [Role.ADMIN, Role.USER],
   });
-  const apolloMocks = [fillCommonQueryWithUser(undefined, currentUser), requestMock(error)];
+  const apolloMocks = [fillCommonQueryWithUser(currentUser), requestMock(error)];
   return {
     ...render(<EditProfileForm />, { apolloMocks }),
     updatedUser: {

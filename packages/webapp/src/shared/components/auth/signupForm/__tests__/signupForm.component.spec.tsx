@@ -1,17 +1,15 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { screen } from '@testing-library/react';
-
-import { render } from '../../../../../tests/utils/rendering';
-import { SignupForm } from '../signupForm.component';
 import { RoutesConfig } from '../../../../../app/config/routes';
-
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
-import { authSingupMutation } from '../signUpForm.graphql';
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
+import { authSingupMutation } from '../signUpForm.graphql';
+import { SignupForm } from '../signupForm.component';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -55,7 +53,7 @@ describe('SignupForm: Component', () => {
         },
       },
     });
-    const refreshQueryMock = fillCommonQueryWithUser(undefined, user);
+    const refreshQueryMock = fillCommonQueryWithUser(user);
 
     const { waitForApolloMocks } = render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, refreshQueryMock),
