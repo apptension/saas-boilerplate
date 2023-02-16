@@ -1,7 +1,7 @@
 [tool.black]
 line-length = 120
 skip-string-normalization = true
-exclude = "/(.git|.serverless|node_modules|data)/"
+exclude = "/(.git|.serverless|node_modules|data|__pypackages__)/"
 target-versions = "py39"
 
 

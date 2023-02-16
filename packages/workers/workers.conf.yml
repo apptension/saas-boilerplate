@@ -90,6 +90,7 @@ ExportUsers:
     HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
     AWS_EXPORTS_STORAGE_BUCKET_NAME: "${self:custom.projectEnvName}-exports-bucket"
     AWS_STORAGE_BUCKET_NAME: "${self:custom.projectEnvName}-file-uploads-bucket"
+    WORKERS_EVENT_BUS_NAME: "${self:custom.projectEnvName}-workers"
 
 vpc:
   securityGroupIds:

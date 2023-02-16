@@ -1,6 +1,8 @@
+from uuid import UUID
+
 import boto3
 import pytest
-from moto import mock_ses
+from moto import mock_ses, mock_s3
 from pytest_factoryboy import register
 
 import settings
@@ -34,3 +36,18 @@ def ses_client():
         client = boto3.client("ses")
         client.verify_email_identity(EmailAddress=settings.FROM_EMAIL)
         yield client
+
+
+@pytest.fixture
+def s3_exports_bucket():
+    with mock_s3():
+        s3 = boto3.client("s3", region_name='us-east-1', endpoint_url=settings.AWS_S3_ENDPOINT_URL)
+        s3.create_bucket(Bucket=settings.AWS_EXPORTS_STORAGE_BUCKET_NAME)
+        yield
+
+
+@pytest.fixture
+def uuid_mock(mocker):
+    mocked_uuid = UUID('76697d3f-ee2f-4c23-b2a4-b54ae2fc6015')
+    mocker.patch("uuid.uuid4", return_value=mocked_uuid)
+    return mocked_uuid

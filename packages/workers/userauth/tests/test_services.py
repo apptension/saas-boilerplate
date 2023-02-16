@@ -90,12 +90,9 @@ class TestExportUserArchive:
             call.writestr(f'{hashed_user_id}/{document_item.file}', document_content),
         ] in mocked_zip_file.mock_calls
 
-    @mock_s3
-    @pytest.mark.usefixtures('file_cleanup')
+    @pytest.mark.usefixtures('file_cleanup', 's3_exports_bucket')
     @pytest.mark.freeze_time
     def test_user_archive_export_url_is_generated(self, user, export_user_archive):
-        s3 = boto3.client("s3", region_name='us-east-1', endpoint_url=settings.AWS_S3_ENDPOINT_URL)
-        s3.create_bucket(Bucket=settings.AWS_EXPORTS_STORAGE_BUCKET_NAME)
         timestamp = datetime.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
         expected_obj_key = f"exports/{hashid.encode(user.id)}_{timestamp}.zip"
 
