@@ -40,6 +40,12 @@ iam:
     Resource:
       - "arn:aws:s3:::${self:custom.projectEnvName}-exports-bucket"
       - "arn:aws:s3:::${self:custom.projectEnvName}-exports-bucket/*"
+  - Effect: "Allow"
+    Action:
+      - "s3:GetObject"
+    Resource:
+      - "arn:aws:s3:::${self:custom.projectEnvName}-file-uploads-bucket"
+      - "arn:aws:s3:::${self:custom.projectEnvName}-file-uploads-bucket/*"
 
 environment:
   SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN}
@@ -83,6 +89,7 @@ ExportUsers:
     <<: *envsDb
     HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
     AWS_EXPORTS_STORAGE_BUCKET_NAME: "${self:custom.projectEnvName}-exports-bucket"
+    AWS_STORAGE_BUCKET_NAME: "${self:custom.projectEnvName}-file-uploads-bucket"
 
 vpc:
   securityGroupIds:

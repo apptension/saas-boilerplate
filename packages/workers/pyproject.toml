@@ -40,6 +40,7 @@ dependencies = [
     "sentry-sdk~=1.14",
     "sqlalchemy~=2.0",
     "pydantic>=1.10.4",
+    "pytest-freezegun>=0.4.2",
 ]
 requires-python = "~=3.9.0"
 license = {text = "MIT"}

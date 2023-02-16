@@ -5,6 +5,8 @@ export enum EmailTemplateType {
   PASSWORD_RESET = 'PASSWORD_RESET',
   SUBSCRIPTION_ERROR = 'SUBSCRIPTION_ERROR',
   TRIAL_EXPIRES_SOON = 'TRIAL_EXPIRES_SOON',
+  USER_EXPORT = 'USER_EXPORT',
+  USER_EXPORT_ADMIN = 'USER_EXPORT_ADMIN',
   //<-- INJECT EMAIL TYPE -->
 }
 
@@ -15,4 +17,4 @@ export type EmailComponentProps = {
 export type EmailTemplateDefinition = {
   Template: ComponentType<any>;
   Subject: ComponentType<any>;
-}
+};

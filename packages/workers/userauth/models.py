@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey
 
 from dao.db import models
-from demo.models import CrudDemoItem
+from demo.models import CrudDemoItem, DocumentDemoItem
 
 
 class User(models.Base):
@@ -21,6 +21,7 @@ class User(models.Base):
 
     profile: Mapped["UserProfile"] = relationship(back_populates="user")
     cruddemoitem_set: Mapped[List["CrudDemoItem"]] = relationship(back_populates="created_by")
+    documents: Mapped[List["DocumentDemoItem"]] = relationship(back_populates="created_by")
 
 
 class UserProfile(models.Base):

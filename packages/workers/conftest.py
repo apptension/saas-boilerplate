@@ -15,6 +15,7 @@ register(ua_factories.UserFactory)
 register(ws_factories.WebSocketConnectionFactory)
 register(ws_factories.GraphQLSubscriptionFactory)
 register(demo_factories.CrudDemoItemFactory)
+register(demo_factories.DocumentDemoItemFactory)
 
 
 @pytest.fixture(scope="function")

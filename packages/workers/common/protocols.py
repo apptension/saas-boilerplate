@@ -10,3 +10,9 @@ class UserDataExportable(Protocol):
     @classmethod
     def export(cls, user: User) -> Union[str, list[str]]:
         ...
+
+
+class UserFilesExportable(Protocol):
+    @classmethod
+    def export(cls, user: User) -> list[str]:
+        ...
