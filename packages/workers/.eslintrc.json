@@ -1,9 +1,11 @@
 {
-  "extends": ["../../../.eslintrc.json"],
+  "extends": ["../../.eslintrc.json"],
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
-    "cdk.out/**/*"
+    "emails/renderer/index.umd.js",
+    "__pypackages__/**/*",
+    ".serverless/**/*"
   ],
   "overrides": [
     {

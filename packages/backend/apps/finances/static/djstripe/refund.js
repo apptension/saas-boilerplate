@@ -49,4 +49,5 @@
         const html = await $.get($el.attr('href'));
         openModal(html)
     });
+// eslint-disable-next-line no-undef
 })(django.jQuery);

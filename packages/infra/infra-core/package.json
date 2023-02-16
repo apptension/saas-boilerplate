@@ -2,6 +2,9 @@
   "name": "@saas-boilerplate-app/infra-core",
   "version": "0.0.1",
   "type": "commonjs",
+  "scripts": {
+    "build": "tsc --project tsconfig.lib.json"
+  },
   "devDependencies": {
     "aws-cdk": "2.33.0",
     "aws-cdk-lib": "2.33.0",

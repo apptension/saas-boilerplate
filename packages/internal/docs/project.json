@@ -3,6 +3,14 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/internal/docs/src",
   "projectType": "library",
-  "targets": {},
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/internal/docs/**/*.{js,jsx,ts,tsx}"]
+      }
+    }
+  },
   "tags": []
 }

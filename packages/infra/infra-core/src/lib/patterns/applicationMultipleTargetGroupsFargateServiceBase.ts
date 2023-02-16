@@ -1,5 +1,5 @@
-import {ICertificate} from 'aws-cdk-lib/aws-certificatemanager';
-import {IVpc} from 'aws-cdk-lib/aws-ec2';
+import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { IVpc } from 'aws-cdk-lib/aws-ec2';
 import {
   BaseService,
   CloudMapOptions,
@@ -21,10 +21,10 @@ import {
   SslPolicy,
   TargetType,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import {ARecord, IHostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
-import {LoadBalancerTarget} from 'aws-cdk-lib/aws-route53-targets';
-import {Duration} from 'aws-cdk-lib';
-import {Construct} from 'constructs';
+import { ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { Duration } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 /**
  * The properties for the base ApplicationMultipleTargetGroupsEc2Service or ApplicationMultipleTargetGroupsFargateService service.
@@ -347,7 +347,6 @@ export interface ApplicationListenerProps {
  * The base class for ApplicationMultipleTargetGroupsEc2Service and ApplicationMultipleTargetGroupsFargateService classes.
  */
 export abstract class ApplicationMultipleTargetGroupsServiceBase extends Construct {
-
   /**
    * The desired number of instantiations of the task definition to keep running on the service.
    * @deprecated - Use `internalDesiredCount` instead.
@@ -384,7 +383,11 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
   /**
    * Constructs a new instance of the ApplicationMultipleTargetGroupsServiceBase class.
    */
-  constructor(scope: Construct, id: string, props: ApplicationMultipleTargetGroupsServiceBaseProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: ApplicationMultipleTargetGroupsServiceBaseProps
+  ) {
     super(scope, id);
 
     this.validateInput(props);
@@ -396,11 +399,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
 
     let lbId = 0;
     for (const lbProps of props.loadBalancers) {
-      const internetFacing =
-        lbProps.publicLoadBalancer !== undefined
-          ? lbProps.publicLoadBalancer
-          : true;
-      const {loadBalancer: lb} = lbProps;
+      const { loadBalancer: lb } = lbProps;
 
       this.loadBalancers.push(lb);
 
@@ -429,30 +428,36 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         return listener;
       }
     }
-    throw new Error(`Listener ${name} is not defined. Did you define listener with name ${name}?`);
+    throw new Error(
+      `Listener ${name} is not defined. Did you define listener with name ${name}?`
+    );
   }
 
-  protected registerECSTargets(service: BaseService, container: ContainerDefinition, targets: ApplicationTargetProps[]): ApplicationTargetGroup {
+  protected registerECSTargets(
+    service: BaseService,
+    container: ContainerDefinition,
+    targets: ApplicationTargetProps[]
+  ): ApplicationTargetGroup {
     interface GroupedTarget {
-      target: { protocol?: Protocol, containerPort: number },
-      hosts: ApplicationTargetProps[],
+      target: { protocol?: Protocol; containerPort: number };
+      hosts: ApplicationTargetProps[];
     }
 
-    let groupedTargets: { [id: string]: GroupedTarget } = {};
-    targets?.forEach((targetProps, index) => {
+    const groupedTargets: { [id: string]: GroupedTarget } = {};
+    targets?.forEach((targetProps) => {
       const key = `${targetProps.protocol}, ${targetProps.containerPort}`;
       if (!(key in groupedTargets)) {
         groupedTargets[key] = {
           target: {
             protocol: targetProps.protocol,
-            containerPort: targetProps.containerPort
+            containerPort: targetProps.containerPort,
           },
-          hosts: []
+          hosts: [],
         };
       }
       groupedTargets[key].hosts.push(targetProps);
     });
-    Object.entries(groupedTargets).forEach(([key, groupedTarget], index) => {
+    Object.entries(groupedTargets).forEach(([, groupedTarget], index) => {
       const targetGroup = new ApplicationTargetGroup(
         this,
         `TargetGroup${index}`,
@@ -460,7 +465,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
           vpc: service.cluster.vpc,
           port: groupedTarget.target.containerPort,
           healthCheck: {
-            path: "/lbcheck",
+            path: '/lbcheck',
             protocol: ELBProtocol.HTTP,
             interval: Duration.seconds(6),
             timeout: Duration.seconds(5),
@@ -482,10 +487,14 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
       groupedTarget.hosts.forEach((targetProps, nestedIndex) => {
         const conditions: Array<ListenerCondition> = [];
         if (targetProps.hostHeader) {
-          conditions.push(ListenerCondition.hostHeaders([targetProps.hostHeader]))
+          conditions.push(
+            ListenerCondition.hostHeaders([targetProps.hostHeader])
+          );
         }
         if (targetProps.pathPattern) {
-          conditions.push(ListenerCondition.pathPatterns([targetProps.pathPattern]))
+          conditions.push(
+            ListenerCondition.pathPatterns([targetProps.pathPattern])
+          );
         }
         this.findListener(targetProps.listener).addTargetGroups(
           `ECSTargetGroup${index}${nestedIndex}${container.containerName}${targetProps.containerPort}`,
@@ -501,14 +510,22 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     });
 
     if (this.targetGroups.length === 0) {
-      throw new Error("At least one target group should be specified.");
+      throw new Error('At least one target group should be specified.');
     }
     return this.targetGroups[0];
   }
 
-  protected addPortMappingForTargets(container: ContainerDefinition, targets: ApplicationTargetProps[]) {
+  protected addPortMappingForTargets(
+    container: ContainerDefinition,
+    targets: ApplicationTargetProps[]
+  ) {
     for (const target of targets) {
-      if (!container.findPortMapping(target.containerPort, target.protocol || Protocol.TCP)) {
+      if (
+        !container.findPortMapping(
+          target.containerPort,
+          target.protocol || Protocol.TCP
+        )
+      ) {
         container.addPortMappings({
           containerPort: target.containerPort,
           protocol: target.protocol,
@@ -517,9 +534,13 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     }
   }
 
-  private validateInput(props: ApplicationMultipleTargetGroupsServiceBaseProps) {
+  private validateInput(
+    props: ApplicationMultipleTargetGroupsServiceBaseProps
+  ) {
     if (props.cluster && props.vpc) {
-      throw new Error('You can only specify either vpc or cluster. Alternatively, you can leave both blank');
+      throw new Error(
+        'You can only specify either vpc or cluster. Alternatively, you can leave both blank'
+      );
     }
 
     if (props.desiredCount !== undefined && props.desiredCount < 1) {
@@ -538,11 +559,18 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     }
   }
 
-  private createDomainName(loadBalancer: IApplicationLoadBalancer, name?: string, zone?: IHostedZone | null, id?: string): string {
+  private createDomainName(
+    loadBalancer: IApplicationLoadBalancer,
+    name?: string,
+    zone?: IHostedZone | null,
+    id?: string
+  ): string {
     let domainName = loadBalancer.loadBalancerDnsName;
     if (typeof name !== 'undefined') {
       if (typeof zone === 'undefined') {
-        throw new Error('A Route53 hosted domain zone name is required to configure the specified domain name');
+        throw new Error(
+          'A Route53 hosted domain zone name is required to configure the specified domain name'
+        );
       }
 
       if (zone) {

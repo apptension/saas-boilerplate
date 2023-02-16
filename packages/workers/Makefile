@@ -1,15 +1,14 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../Makefile.base.mk
 
-build-image:
-	docker-compose build workers
+lint:
+	nx lint
 
 test:
-	$(MAKE) docker-login
-	docker-compose up -d db
-	docker-compose run --rm -T workers bash ./scripts/run_tests.sh
+	nx test
 
-build: test
+build:
+	nx build
 
 deploy:
 	nx deploy
@@ -19,7 +18,7 @@ flake8:
 
 black:
 	docker-compose run -T workers run black --config=pyproject.toml .
-	
+
 invoke-local: d ?= {}
 invoke-local:
 	docker-compose run -T workers node_modules/.bin/sls invoke local -f=$(f) -d=$(d)

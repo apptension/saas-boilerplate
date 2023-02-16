@@ -6,11 +6,11 @@ provider:
   versionFunctions: false
   stage: "${env:ENV_STAGE}"
   region: "${env:AWS_DEFAULT_REGION}"
-  stackName: ${file(./${self:custom.confFile.${self:provider.stage}}):stackName}
-  iamRoleStatements: ${file(./${self:custom.confFile.${self:provider.stage}}):iam}
-  environment: ${file(./${self:custom.confFile.${self:provider.stage}}):environment}
+  stackName: ${self:custom.conf.stackName}
+  iamRoleStatements: ${self:custom.conf.iam}
+  environment: ${self:custom.conf.environment}
   apiGateway:
-    websocketApiId: ${file(./${self:custom.confFile.${self:provider.stage}}):websocketApiId}
+    websocketApiId: ${self:custom.conf.websocketApiId}
   tracing:
     lambda: true
 
@@ -20,10 +20,10 @@ functions:
     runtime: python3.9
     timeout: 20
     memorySize: 128
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ScheduleTask.environment}
+    environment: ${self:custom.conf.ScheduleTask.environment}
     events:
       - eventBridge:
-          eventBus: '${self:custom.eventBusArn}'
+          eventBus: '${self:custom.conf.eventBusArn}'
           pattern:
             source:
               - backend.scheduler
@@ -33,16 +33,16 @@ functions:
     runtime: python3.9
     timeout: 6
     memorySize: 128
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ExecuteScheduledTask.environment}
+    environment: ${self:custom.conf.ExecuteScheduledTask.environment}
 
   SendEmail:
-    handler: ${file(./${self:custom.confFile.${self:provider.stage}}):SendEmail.handler}
+    handler: ${self:custom.conf.SendEmail.handler}
     timeout: 6
     memorySize: 128
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):SendEmail.environment}
+    environment: ${self:custom.conf.SendEmail.environment}
     events:
       - eventBridge:
-          eventBus: "${self:custom.eventBusArn}"
+          eventBus: "${self:custom.conf.eventBusArn}"
           pattern:
             source:
               - backend.email
@@ -52,11 +52,11 @@ functions:
     runtime: python3.9
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):ExportUsers.environment}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    environment: ${self:custom.conf.ExportUsers.environment}
+    vpc: ${self:custom.conf.vpc}
     events:
       - eventBridge:
-          eventBus: "${self:custom.eventBusArn}"
+          eventBus: "${self:custom.conf.eventBusArn}"
           pattern:
             source:
               - backend.export_user
@@ -66,12 +66,12 @@ functions:
     runtime: python3.9
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):SynchronizeContentfulContent.environment}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    environment: ${self:custom.conf.SynchronizeContentfulContent.environment}
+    vpc: ${self:custom.conf.vpc}
     events:
       - schedule: rate(5 minutes)
       - eventBridge:
-          eventBus: "${self:custom.eventBusArn}"
+          eventBus: "${self:custom.conf.eventBusArn}"
           pattern:
             source:
               - backend.contentfulSync
@@ -81,8 +81,8 @@ functions:
     runtime: python3.9
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    environment: ${self:custom.conf.WebSocketsHandler.environment}
+    vpc: ${self:custom.conf.vpc}
     events:
       - websocket: $connect
 
@@ -91,8 +91,8 @@ functions:
     runtime: python3.9
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    environment: ${self:custom.conf.WebSocketsHandler.environment}
+    vpc: ${self:custom.conf.vpc}
     events:
       - websocket: $default
 
@@ -101,8 +101,8 @@ functions:
     runtime: python3.9
     timeout: 30
     memorySize: 256
-    environment: ${file(./${self:custom.confFile.${self:provider.stage}}):WebSocketsHandler.environment}
-    vpc: ${file(./${self:custom.confFile.${self:provider.stage}}):vpc}
+    environment: ${self:custom.conf.WebSocketsHandler.environment}
+    vpc: ${self:custom.conf.vpc}
     events:
       - websocket: $disconnect
 
@@ -113,7 +113,6 @@ plugins:
 
 custom:
   projectEnvName: "${env:PROJECT_NAME}-${env:ENV_STAGE}"
-  eventBusArn: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.projectEnvName}-workers"
   pythonRequirements:
     dockerizePip: non-linux
     useDownloadCache: true
@@ -121,8 +120,9 @@ custom:
 
   ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
 
-  esbuild: ${file(./${self:custom.confFile.${self:provider.stage}}):esbuild}
+  esbuild: ${self:custom.conf.esbuild}
 
+  conf: ${file(./${self:custom.confFile.${self:provider.stage}})}
   confFile:
     local: workers.conf.local.yml
     dev: workers.conf.yml

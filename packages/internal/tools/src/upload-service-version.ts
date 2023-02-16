@@ -37,7 +37,7 @@ function putJsonObject(bucket, key, payload) {
       ContentType: 'application/json',
       Body: JSON.stringify(payload),
     },
-    (error, output) => {
+    (error) => {
       if (error) {
         console.log(error);
       }

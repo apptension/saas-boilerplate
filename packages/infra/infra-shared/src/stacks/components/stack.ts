@@ -115,8 +115,11 @@ export class EnvComponentsStack extends Stack {
     distribution: cloudfront.Distribution
   ) {
     const domainZone = getHostedZone(this, props.envSettings);
+    if (!domainZone) {
+      return null;
+    }
     return new route53.ARecord(this, `DNSRecord`, {
-      zone: domainZone!,
+      zone: domainZone,
       recordName: props.envSettings.domains.cdn,
       target: route53.RecordTarget.fromAlias(
         new route53Targets.CloudFrontTarget(distribution)
@@ -170,9 +173,7 @@ export class EnvComponentsStack extends Stack {
       }
     );
 
-    if (props.envSettings.hostedZone.id) {
-      this.createDnsRecord(props, distribution);
-    }
+    this.createDnsRecord(props, distribution);
 
     new CfnOutput(this, 'FileUploadsCFDistributionId', {
       exportName:

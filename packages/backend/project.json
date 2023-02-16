@@ -74,14 +74,6 @@
           "parallel": false
         }
       }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/backend/**/*.ts"
-        ]
-      }
     }
   },
   "tags": [

@@ -17,11 +17,7 @@ export class GlobalResources extends Construct {
 
     this.ecr = new GlobalECR(this, 'ECRGlobal', props);
     this.codeCommit = new GlobalCodeCommit(this, 'CodeCommit', props);
-    this.buildSecrets = new GlobalBuildSecrets(
-      this,
-      'GlobalBuildSecrets',
-      props
-    );
+    this.buildSecrets = new GlobalBuildSecrets(this, 'GlobalBuildSecrets');
     this.externalCiUser = new iam.User(this, 'ExternalCiUser', {
       userName: 'external-ci',
     });

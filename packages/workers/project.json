@@ -57,18 +57,30 @@
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": [
-          "packages/workers/**/*.ts"
-        ]
-      }
+        "color": true,
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_lint.sh"
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
         "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_tests.sh"
+      },
+      "dependsOn": [
+        "compose-build-image"
+      ]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_build.sh"
       },
       "dependsOn": [
         "compose-build-image"

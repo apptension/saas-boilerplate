@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import globToRegExp from 'glob-to-regexp';
 
-export const handler = async (event, context) => {
+export const handler = async (event) => {
     console.log('Start trigger entrypoint', {event});
 
     const codebuild = new AWS.CodeBuild();

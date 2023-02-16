@@ -5,7 +5,8 @@
     "cdk:deploy:api": "cdk deploy *ApiStack",
     "diff:api": "cdk diff *ApiStack",
     "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
-    "diff:migrations": "cdk diff *MigrationsStack"
+    "diff:migrations": "cdk diff *MigrationsStack",
+    "lint:js": "eslint ."
   },
   "devDependencies": {
     "@saas-boilerplate-app/core": "*",

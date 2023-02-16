@@ -24,6 +24,7 @@
     "@saas-boilerplate-app/core": "*",
     "@saas-boilerplate-app/tools": "*",
     "@saas-boilerplate-app/infra-core": "*",
+    "@saas-boilerplate-app/infra-shared": "*",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

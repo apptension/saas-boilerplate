@@ -23,7 +23,7 @@ iam:
   - Effect: "Allow"
     Action:
       - "events:PutEvents"
-    Resource: ["${self:custom.eventBusArn}"]
+    Resource: ["${self:custom.conf.eventBusArn}"]
   - Effect: "Allow"
     Action:
       - "execute-api:ManageConnections"
@@ -98,8 +98,6 @@ vpc:
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetOneId"
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetTwoId"
 
-websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }
-
 esbuild:
   bundle: true
   minify: true
@@ -107,3 +105,6 @@ esbuild:
   sourcemap: true
   sourcesContent: false
   define: { 'require.resolve': undefined }
+
+websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }
+eventBusArn: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.projectEnvName}-workers"

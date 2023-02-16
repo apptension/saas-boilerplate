@@ -10,7 +10,7 @@ import {
 
 export interface MainECSClusterProps extends EnvConstructProps {
   vpc: ec2.Vpc;
-  certificateArn: string;
+  certificateArn?: string;
 }
 
 export class MainECSCluster extends Construct {
@@ -121,9 +121,11 @@ export class MainECSCluster extends Construct {
       ],
     });
 
-    httpsListener.addCertificates('Certificate', [
-      elb.ListenerCertificate.fromArn(props.certificateArn),
-    ]);
+    if (props.certificateArn) {
+      httpsListener.addCertificates('Certificate', [
+        elb.ListenerCertificate.fromArn(props.certificateArn),
+      ]);
+    }
 
     new CfnOutput(this, 'PublicLoadBalancerSecurityGroupIdOutput', {
       exportName:

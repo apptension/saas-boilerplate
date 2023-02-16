@@ -19,10 +19,10 @@ SendEmail:
 
 SynchronizeContentfulContent:
   environment:
-    DB_CONNECTION: "${env:DB_CONNECTION}"
-    CONTENTFUL_SPACE_ID: "${env:CONTENTFUL_SPACE_ID}"
-    CONTENTFUL_ACCESS_TOKEN: "${env:CONTENTFUL_ACCESS_TOKEN}"
-    CONTENTFUL_ENVIRONMENT: "${env:CONTENTFUL_ENVIRONMENT}"
+    DB_CONNECTION: "${env:DB_CONNECTION,''}"
+    CONTENTFUL_SPACE_ID: "${env:CONTENTFUL_SPACE_ID,''}"
+    CONTENTFUL_ACCESS_TOKEN: "${env:CONTENTFUL_ACCESS_TOKEN,''}"
+    CONTENTFUL_ENVIRONMENT: "${env:CONTENTFUL_ENVIRONMENT,''}"
 
 WebSocketsHandler:
   environment: []
@@ -43,3 +43,4 @@ esbuild:
   define: { 'require.resolve': undefined }
 
 websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }
+eventBusArn: "arn:aws:events:::event-bus/${self:custom.projectEnvName}-workers"

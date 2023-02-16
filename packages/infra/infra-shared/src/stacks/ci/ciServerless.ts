@@ -4,7 +4,6 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import {
   EnvConstructProps,
   ServiceCiConfig,
@@ -94,6 +93,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
+              `nx run ${props.name}:lint`,
               'nx run webapp:build:emails',
               `nx run ${props.name}:test`,
             ],

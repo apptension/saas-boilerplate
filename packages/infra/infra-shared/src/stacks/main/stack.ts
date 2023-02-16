@@ -24,12 +24,11 @@ export class EnvMainStack extends Stack {
     this.mainVpc = new MainVpc(this, 'MainVPC', { envSettings });
 
     let certificateArn;
-
     if (envSettings.hostedZone.id) {
       this.mainCertificates = new MainCertificates(this, 'MainCertificates', {
         envSettings,
       });
-      certificateArn = this.mainCertificates.certificate.certificateArn;
+      certificateArn = this.mainCertificates.certificate?.certificateArn;
     } else {
       certificateArn = envSettings.certificates.loadBalancerCertificateArn;
     }

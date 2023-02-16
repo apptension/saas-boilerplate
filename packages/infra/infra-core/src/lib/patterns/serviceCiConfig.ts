@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
-import { EnvConstructProps } from '@saas-boilerplate-app/infra-core';
+import { EnvConstructProps } from '../constructs';
 
 export interface IServiceCiConfig {
   defaultEnvVariables: {

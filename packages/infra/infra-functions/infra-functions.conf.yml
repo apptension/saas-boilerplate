@@ -5,17 +5,21 @@ iam:
     Action:
       - "states:StartExecution"
     Resource:
-      - "${self:custom.migrationsStateMachineArn}"
+      - "${self:custom.conf.migrationsStateMachineArn}"
   - Effect: "Allow"
     Action:
       - "codebuild:StartBuild"
     Resource:
-      - "${self:custom.entrypointCodeBuildProjectArn}"
+      - "${self:custom.conf.entrypointCodeBuildProjectArn}"
 
 environment:
   PROJECT_NAME: ${env:PROJECT_NAME}
   ENVIRONMENT_NAME: ${self:provider.stage}
   DEPLOY_BRANCHES: ${env:SB_DEPLOY_BRANCHES}
+
+TriggerMigrationsJob:
+  environment:
+    STATE_MACHINE_ARN: ${self:custom.conf.migrationsStateMachineArn}
 
 vpc:
   securityGroupIds:
@@ -23,6 +27,9 @@ vpc:
   subnetIds:
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetOneId"
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetTwoId"
+
+migrationsStateMachineArn: arn:aws:states:${aws:region}:${aws:accountId}:stateMachine:${env:PROJECT_NAME}-${env:ENV_STAGE}-migrations
+entrypointCodeBuildProjectArn: arn:aws:codebuild:${aws:region}:${aws:accountId}:project/${self:custom.projectEnvName}
 
 esbuild:
   bundle: true

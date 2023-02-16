@@ -12,7 +12,8 @@
     "deploy:ci": "cdk deploy *CiStack",
     "diff:ci": "cdk diff *CiStack",
     "deploy:components": "cdk deploy *ComponentsStack",
-    "diff:components": "cdk diff *ComponentsStack"
+    "diff:components": "cdk diff *ComponentsStack",
+    "build": "tsc --project tsconfig.lib.json"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.33.0-alpha.0",

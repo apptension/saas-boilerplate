@@ -3,6 +3,7 @@
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
+    "build/**/*",
     "cdk.out/**/*"
   ],
   "overrides": [

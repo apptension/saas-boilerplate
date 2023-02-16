@@ -5,7 +5,8 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "scripts": {
-    "create-env": "nx exec -skip-nx-cache=true -- plop --plopfile src/plopfile.js createEnv"
+    "create-env": "nx exec -skip-nx-cache=true -- plop --plopfile src/plopfile.js createEnv",
+    "lint": "eslint ."
   },
   "dependencies": {
     "aws-sdk": "^2.708.0",

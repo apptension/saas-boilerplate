@@ -34,7 +34,7 @@ function putJsonObject(payload) {
         ACL: 'public-read',
         ContentType: 'application/json',
         Body: JSON.stringify(payload),
-    }, (error, output) => {
+    }, (error) => {
         if (error) {
             console.log(error);
         }

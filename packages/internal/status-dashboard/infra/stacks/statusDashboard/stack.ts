@@ -25,7 +25,7 @@ export class StatusDashboardStack extends Stack {
     const domainZone = getHostedZone(this, props.envSettings.tools);
 
     let certificateArn;
-    if (props.envSettings.tools.hostedZone.id) {
+    if (domainZone) {
       const domainName = props.envSettings.tools.hostedZone.name;
       const certificate = new certManager.DnsValidatedCertificate(
         this,
@@ -34,7 +34,7 @@ export class StatusDashboardStack extends Stack {
           region: 'us-east-1',
           domainName: domainName,
           subjectAlternativeNames: [`*.${domainName}`],
-          hostedZone: domainZone!,
+          hostedZone: domainZone,
         }
       );
       certificateArn = certificate.certificateArn;

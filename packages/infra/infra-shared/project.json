@@ -4,16 +4,6 @@
   "sourceRoot": "packages/infra/infra-shared/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/infra/infra-shared",
-        "main": "packages/infra/infra-shared/src/index.ts",
-        "tsConfig": "packages/infra/infra-shared/tsconfig.lib.json",
-        "assets": ["packages/infra/infra-shared/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

@@ -31,6 +31,9 @@ upload-version:
 build:
 	nx run-many --output-style=stream --target=build
 
+lint:
+	nx run-many --output-style=stream --target=lint
+
 deploy-components:
 	nx run --output-style=stream infra-shared:deploy:components
 

@@ -5,13 +5,14 @@ import { fetchVersions } from '../actions';
 import { Card, CardBadge, CardContainer, CardHeader, CardService, Divider } from '../styles';
 import ValueList from './valueList';
 
-const VersionMatrix = (props) => {
+const VersionMatrix = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchVersions());
     }, [dispatch]); 
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const versions = useSelector(state => state.versions);
 

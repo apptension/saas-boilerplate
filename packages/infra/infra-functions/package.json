@@ -11,7 +11,8 @@
     "remove": "sls remove"
   },
   "dependencies": {
-     "glob-to-regexp": "^0.4.1"
+    "glob-to-regexp": "^0.4.1",
+    "aws-sdk": "^2.1313.0"
   },
   "devDependencies": {
     "serverless": "^3.25.1",

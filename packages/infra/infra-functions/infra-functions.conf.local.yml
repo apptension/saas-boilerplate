@@ -6,6 +6,9 @@ environment: {}
 
 vpc: {}
 
+TriggerMigrationsJob:
+  environment: {}
+
 esbuild:
   bundle: true
   minify: false

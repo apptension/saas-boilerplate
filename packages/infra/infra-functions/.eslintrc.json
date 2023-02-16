@@ -3,6 +3,7 @@
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
+    ".serverless/**/*",
     "cdk.out/**/*"
   ],
   "overrides": [

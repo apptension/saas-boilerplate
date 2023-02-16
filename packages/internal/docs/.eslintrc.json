@@ -3,7 +3,8 @@
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
-    "cdk.out/**/*"
+    "build/**/*",
+    ".docusaurus/**/*"
   ],
   "overrides": [
     {

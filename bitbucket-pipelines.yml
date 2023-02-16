@@ -10,32 +10,32 @@ definitions:
     pnpmdocs: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpminfrafunctions: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmstatusdashboard: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmtools: $BITBUCKET_CLONE_DIR/.pnpm-store
     clis: ~/.clicache
     sonar: ~/.sonar/cache
 
   scripts:
-    initializeStep: &initializeStep
-                      cp .env.test .env
-                      && npm -g config set user root
-                      && curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=7.25.0 bash -
-                      && export PNPM_HOME="/root/.local/share/pnpm"
-                      && export PATH="$PNPM_HOME:$PATH"
+    initializeStep: &initializeStep cp .env.test .env
+      && npm -g config set user root
+      && curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=7.25.0 bash -
+      && export PNPM_HOME="/root/.local/share/pnpm"
+      && export PATH="$PNPM_HOME:$PATH"
 
     setupAwsCli: &setupAwsCli
-                   export AWS_CLI_VERSION=2.8.8
-                   export AWS_CLI_DEST_PATH=~/.clicache/awscli-${AWS_CLI_VERSION}.zip
-                   mkdir -p AWS_CLI_DEST_PATH
-                   && wget --no-verbose --no-clobber "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" \
-                   && --output-document "${AWS_CLI_DEST_PATH}" || true
-                   && unzip "${AWS_CLI_DEST_PATH}"
-                   && rm "${AWS_CLI_DEST_PATH}"
-                   && /bin/sh ./aws/install
-                   && aws --version
-    installWebappDeps: &installWebappDeps
-                         pnpm install
-                         --include-workspace-root
-                         --frozen-lockfile
-                         --filter=webapp...
+      export AWS_CLI_DEST_PATH=~/.clicache/awscli-2.8.8.zip
+      && mkdir -p ~/.clicache/
+      && wget --no-verbose --no-clobber "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.8.8.zip" --output-document "${AWS_CLI_DEST_PATH}" || true
+      && unzip -qq "${AWS_CLI_DEST_PATH}"
+      && /bin/bash ./aws/install
+      && aws --version
+    installWebappDeps: &installWebappDeps pnpm install
+      --include-workspace-root
+      --frozen-lockfile
+      --filter=webapp...
 
 pipelines:
   default:
@@ -50,7 +50,7 @@ pipelines:
               - git push codecommit --tags --force
 
         - step:
-            name: Lint & test web app
+            name: 'web-app: Lint & test'
             image: atlassian/default-image:4
             size: 2x
             script:
@@ -67,7 +67,7 @@ pipelines:
               - clis
               - sonar
         - step:
-            name: Build web app
+            name: 'web-app: Build'
             image: atlassian/default-image:4
             script:
               - *initializeStep
@@ -78,21 +78,7 @@ pipelines:
               - clis
 
         - step:
-            name: Build docs
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=docs...
-              - node_modules/.bin/nx run docs:build
-            caches:
-              - pnpmdocs
-              - clis
-
-        - step:
-            name: Test backend
+            name: 'backend: Build image & run tests'
             image: atlassian/default-image:3
             size: 2x
             script:
@@ -102,6 +88,7 @@ pipelines:
                 --include-workspace-root
                 --frozen-lockfile
                 --filter=backend...
+              - node_modules/.bin/nx run backend:lint:js
               - node_modules/.bin/nx run backend:test
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -116,7 +103,7 @@ pipelines:
               - sonar
 
         - step:
-            name: Test async-workers
+            name: 'async-workers: Lint & test'
             image: atlassian/default-image:3
             size: 2x
             script:
@@ -126,6 +113,7 @@ pipelines:
                 --include-workspace-root
                 --frozen-lockfile
                 --filter=workers...
+              - node_modules/.bin/nx run workers:lint
               - node_modules/.bin/nx run workers:test
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -138,3 +126,116 @@ pipelines:
               - pnpmworkers
               - clis
               - sonar
+        - step:
+            name: 'async-workers: Build'
+            image: atlassian/default-image:3
+            size: 2x
+            script:
+              - *initializeStep
+              - *setupAwsCli
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=workers...
+                --filter=webapp...
+              - node_modules/.bin/nx run webapp:build:emails
+              - node_modules/.bin/nx run workers:build
+            services:
+              - docker
+            caches:
+              - docker
+              - pnpmworkers
+              - clis
+              - sonar
+
+        # Infra steps
+
+        - step:
+            name: 'infra/infra-core: Lint & build'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=infra-core...
+              - node_modules/.bin/nx run infra-core:lint
+              - node_modules/.bin/nx run infra-core:build
+            caches:
+              - pnpminfracore
+              - clis
+
+        - step:
+            name: 'infra/infra-shared: Lint & build'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=infra-shared...
+              - node_modules/.bin/nx run infra-shared:lint
+              - node_modules/.bin/nx run infra-shared:build
+            caches:
+              - pnpminfrashared
+              - clis
+
+        - step:
+            name: 'infra/infra-functions: Lint & build'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=infra-functions...
+              - node_modules/.bin/nx run infra-functions:lint
+              - node_modules/.bin/nx run infra-functions:build
+            caches:
+              - pnpminfrafunctions
+              - clis
+
+        # Internal steps
+
+        - step:
+            name: 'internal/docs: Lint & build'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=docs...
+              - node_modules/.bin/nx run docs:lint
+              - node_modules/.bin/nx run docs:build
+            caches:
+              - pnpmdocs
+              - clis
+        - step:
+            name: 'internal/status-dashboard: Lint & build'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=status-dashboard...
+              - node_modules/.bin/nx run status-dashboard:lint
+              - node_modules/.bin/nx run status-dashboard:build
+            caches:
+              - pnpmstatusdashboard
+              - clis
+
+        - step:
+            name: 'internal/tools: Lint'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=tools...
+              - node_modules/.bin/nx run tools:lint
+            caches:
+              - pnpmtools
+              - clis

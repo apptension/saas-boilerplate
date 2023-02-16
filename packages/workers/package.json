@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "stop-task-scheduling-executions": "/bin/bash ./scripts/stop-task-scheduling-executions.sh",
+    "lint:js": "eslint .",
     "sls": "sls",
     "serverless": "serverless"
   },

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchServices = createAsyncThunk<
-  Promise<any[]>,
+  Promise<Response[]>,
   { envName: string; services: string[] }
 >('services/fetch', async ({ envName, services }) => {
   return Promise.all(

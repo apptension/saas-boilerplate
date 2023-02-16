@@ -4,7 +4,6 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cc from 'aws-cdk-lib/aws-codecommit';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import {
   EnvConstructProps,
   ServiceCiConfig,

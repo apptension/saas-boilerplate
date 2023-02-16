@@ -9,7 +9,8 @@
     "scripts/*",
     "config/*",
     "plop/*",
-    "build/*",
+    "build/**/*",
+    "cdk.out/**/*",
     "plopfile.js",
     "setupTests.js"
   ],

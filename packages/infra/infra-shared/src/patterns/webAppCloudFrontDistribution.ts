@@ -43,9 +43,7 @@ export class WebAppCloudFrontDistribution extends Construct {
       staticFilesBucket,
       props
     );
-    if (props.domainZone) {
-      this.createDnsRecord(this.distribution, props);
-    }
+    this.createDnsRecord(this.distribution, props);
     this.createDeployment(staticFilesBucket, this.distribution, props);
   }
 
@@ -248,8 +246,12 @@ export class WebAppCloudFrontDistribution extends Construct {
     distribution: coudfront.CloudFrontWebDistribution,
     props: WebAppCloudFrontDistributionProps
   ) {
+    if (!props.domainZone) {
+      return null;
+    }
+
     return new route53.ARecord(this, `DNSRecord`, {
-      zone: props.domainZone!,
+      zone: props.domainZone,
       recordName: props.domainName,
       target: route53.RecordTarget.fromAlias(
         new route53Targets.CloudFrontTarget(distribution)

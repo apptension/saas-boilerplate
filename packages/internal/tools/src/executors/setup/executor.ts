@@ -79,7 +79,7 @@ export default async function runExecutor(
   }, envSharedFileContents.toString());
 
   const output = additionalEnvKeys.reduce((result, envKey) => {
-    return `${result}\n${envKey}="${envs[envKey]}"`;
+    return `${result}\n${envKey}=${envs[envKey]}`;
   }, modifiedSharedFile);
 
   await fs.writeFile(envFileOutputPath, output);

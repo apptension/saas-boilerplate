@@ -12,7 +12,7 @@ const sesClient = new AWS.SES({
   endpoint: config.awsEndpoint,
 });
 
-exports.sendEmail = async function (event, context) {
+exports.sendEmail = async function (event) {
   const { to, type } = event.detail || {};
   const { subject, html } = renderEmail(type, {
     ...event.detail,
@@ -31,7 +31,7 @@ exports.sendEmail = async function (event, context) {
     .promise();
 };
 
-exports.sendEmailLocal = async function (event, context) {
+exports.sendEmailLocal = async function (event) {
   const { to, type } = event.detail || {};
   const { subject, html } = renderEmail(type, {
     ...event.detail,
