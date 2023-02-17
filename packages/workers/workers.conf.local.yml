@@ -13,7 +13,7 @@ ExecuteScheduledTask:
 SendEmail:
   handler: emails/handlers.sendEmailLocal
   environment:
-    AWS_ENDPOINT_URL: "https://localstack:4566"
+    AWS_ENDPOINT_URL: "http://localstack:4566"
     FROM_EMAIL: "from@example.com"
     WEB_APP_URL: "http://localhost:3000"
 
@@ -29,7 +29,7 @@ WebSocketsHandler:
 
 ExportUsers:
   environment:
-    AWS_ENDPOINT_URL: "https://localstack:4566"
+    AWS_ENDPOINT_URL: "http://localstack:4566"
     AWS_EXPORTS_STORAGE_BUCKET_NAME: "exports-bucket"
 
 vpc: {}

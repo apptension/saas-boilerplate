@@ -14,9 +14,10 @@ wait_for_s3
 
 {
     create_s3_bucket "$AWS_STORAGE_BUCKET_NAME" &&
-    echo "Scripts S3 BASE bucket created"
+    create_s3_bucket "$AWS_EXPORTS_STORAGE_BUCKET_NAME" &&
+    echo "Scripts S3 BASE buckets created"
 } || {
-    echo "Scripts S3 bucket NOT created"
+    echo "Scripts S3 buckets NOT created"
 }
 
 echo "LocalStack fixtures installed"
