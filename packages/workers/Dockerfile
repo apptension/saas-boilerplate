@@ -9,7 +9,7 @@ ENV DEST_WORKERS_PATH=$APP_PATH/$SRC_WORKERS_PATH
 RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential
 
 RUN \
-  echo "deb https://deb.nodesource.com/node_16.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
+  echo "deb https://deb.nodesource.com/node_18.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
   wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   apt-get update && \
   apt-get install -yqq nodejs && \

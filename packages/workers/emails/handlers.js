@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const AWS = require('@aws-sdk/client-ses');
 const nodemailer = require('nodemailer');
 
 const { renderEmail } = require('./renderer/index.umd.js');
@@ -28,7 +28,6 @@ exports.sendEmail = async function (event) {
         Body: { Html: { Charset: 'UTF-8', Data: html } },
       },
     })
-    .promise();
 };
 
 exports.sendEmailLocal = async function (event) {
