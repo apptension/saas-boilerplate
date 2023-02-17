@@ -50,3 +50,18 @@ services:
     ports:
       - "12111:12111"
       - "12112:12112"
+
+  ssm-editor:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./packages/internal/ssm-editor
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME:-}
+      - ENV_STAGE=${ENV_STAGE:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN:-}
+      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION:-}

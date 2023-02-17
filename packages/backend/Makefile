@@ -46,5 +46,5 @@ sync-stripe:
 	docker-compose run --rm -T backend sh -c "python ./manage.py djstripe_sync_models"
 
 secrets:
-	nx run ssm-editor:serve backend
+	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=backend
 

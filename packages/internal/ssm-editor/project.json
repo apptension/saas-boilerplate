@@ -18,14 +18,6 @@
         "color": true,
         "command": "docker-compose build ssm-editor"
       }
-    },
-    "serve": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "command": "docker-compose run --rm --entrypoint /bin/bash ssm-editor /scripts/run.sh"
-      },
-      "dependsOn": ["compose-image-build"]
     }
   },
   "tags": []

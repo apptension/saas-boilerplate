@@ -83,21 +83,6 @@ services:
       - "1025:1025"
     restart: always
 
-  ssm-editor:
-    stdin_open: true
-    tty: true
-    build:
-      context: ./packages/internal/ssm-editor
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME:-}
-      - ENV_STAGE=${ENV_STAGE:-}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
-      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN:-}
-      - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION:-}
-
   localwsserver:
     build: ./packages/internal/local-ws-server
     ports:

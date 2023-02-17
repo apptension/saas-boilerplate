@@ -58,3 +58,8 @@ prune:
 
 login:
 	aws-vault exec $(AWS_VAULT_PROFILE) -- $(USER_SHELL)
+
+secrets-editor: SERVICE_NAME?=
+secrets-editor:
+	nx run ssm-editor:compose-build-image
+	docker-compose run --rm --entrypoint /bin/bash ssm-editor /scripts/run.sh $(SERVICE_NAME)

@@ -8,4 +8,4 @@ test:
 	nx test
 
 secrets:
-	nx run ssm-editor:serve e2e
+	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=e2e
