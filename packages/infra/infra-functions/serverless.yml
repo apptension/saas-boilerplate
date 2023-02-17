@@ -13,10 +13,6 @@ provider:
   environment: ${self:custom.conf.environment}
 
 functions:
-  TriggerMigrationsJob:
-    handler: deployment/triggerMigrationsJob.handler
-    environment: ${self:custom.conf.TriggerMigrationsJob.environment}
-
   TriggerEntrypoint:
     handler: deployment/triggerEntrypoint.handler
 
@@ -31,7 +27,7 @@ custom:
     dev: infra-functions.conf.yml
     qa: infra-functions.conf.yml
     prod: infra-functions.conf.yml
-  
+
 
 plugins:
   - serverless-esbuild

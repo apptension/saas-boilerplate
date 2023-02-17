@@ -3,11 +3,6 @@ stackName: "${self:custom.projectEnvName}-infra-functions"
 iam:
   - Effect: "Allow"
     Action:
-      - "states:StartExecution"
-    Resource:
-      - "${self:custom.conf.migrationsStateMachineArn}"
-  - Effect: "Allow"
-    Action:
       - "codebuild:StartBuild"
     Resource:
       - "${self:custom.conf.entrypointCodeBuildProjectArn}"
@@ -16,10 +11,6 @@ environment:
   PROJECT_NAME: ${env:PROJECT_NAME}
   ENVIRONMENT_NAME: ${self:provider.stage}
   DEPLOY_BRANCHES: ${env:SB_DEPLOY_BRANCHES}
-
-TriggerMigrationsJob:
-  environment:
-    STATE_MACHINE_ARN: ${self:custom.conf.migrationsStateMachineArn}
 
 vpc:
   securityGroupIds:

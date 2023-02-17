@@ -6,13 +6,13 @@
     "diff:api": "cdk diff *ApiStack",
     "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
     "diff:migrations": "cdk diff *MigrationsStack",
-    "lint:js": "eslint ."
+    "lint:js": "eslint .",
+    "trigger-migrations-job": "/bin/bash ./scripts/trigger_migrations_job.sh"
   },
   "devDependencies": {
     "@saas-boilerplate-app/core": "*",
     "@saas-boilerplate-app/infra-core": "*",
     "@saas-boilerplate-app/infra-shared": "*",
-    "@saas-boilerplate-app/infra-functions": "*",
     "@saas-boilerplate-app/tools": "*",
     "aws-cdk": "2.33.0",
     "aws-cdk-lib": "2.33.0",

@@ -4,6 +4,7 @@ import * as sfTasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as sf from 'aws-cdk-lib/aws-stepfunctions';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as logs from 'aws-cdk-lib/aws-logs';
 
 import {
   EnvConstructProps,
@@ -49,7 +50,7 @@ export class MigrationsStack extends Stack {
         resources.backendRepository,
         envSettings.version
       ),
-      logging: this.createAWSLogDriver(this.node.id),
+      logging: this.createAWSLogDriver(this.node.id, props.envSettings),
       environment: {
         CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
         CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
@@ -86,8 +87,12 @@ export class MigrationsStack extends Stack {
     });
   }
 
-  protected createAWSLogDriver(prefix: string): ecs.AwsLogDriver {
-    return new ecs.AwsLogDriver({ streamPrefix: prefix });
+  protected createAWSLogDriver(prefix: string, envSettings: EnvironmentSettings): ecs.AwsLogDriver {
+    const logGroup = new logs.LogGroup(this, "TaskLogGroup", {
+      logGroupName: `${envSettings.projectEnvName}-migrations-log-group`,
+      retention: logs.RetentionDays.INFINITE
+    })
+    return new ecs.AwsLogDriver({ streamPrefix: prefix, logGroup });
   }
 
   protected createTaskRole(props: MigrationsStackProps): iam.Role {

@@ -66,7 +66,6 @@ importers:
     specifiers:
       '@saas-boilerplate-app/core': '*'
       '@saas-boilerplate-app/infra-core': '*'
-      '@saas-boilerplate-app/infra-functions': '*'
       '@saas-boilerplate-app/infra-shared': '*'
       '@saas-boilerplate-app/tools': '*'
       aws-cdk: 2.33.0
@@ -75,7 +74,6 @@ importers:
     devDependencies:
       '@saas-boilerplate-app/core': link:../internal/core
       '@saas-boilerplate-app/infra-core': link:../infra/infra-core
-      '@saas-boilerplate-app/infra-functions': link:../infra/infra-functions
       '@saas-boilerplate-app/infra-shared': link:../infra/infra-shared
       '@saas-boilerplate-app/tools': link:../internal/tools
       aws-cdk: 2.33.0

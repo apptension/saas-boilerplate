@@ -246,6 +246,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           'lambda:*',
           'logs:*',
           'route53:*',
+          'stepfunctions:*',
         ],
         resources: ['*'],
       })
