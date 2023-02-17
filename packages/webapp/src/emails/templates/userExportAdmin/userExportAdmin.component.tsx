@@ -22,7 +22,7 @@ export const Template = ({ data }: UserExportAdminProps) => {
       <table style={{ width: '100%' }}>
         <tbody>
           {data.map((row) => (
-            <tr>
+            <tr key={row.email}>
               <td>{row.email}</td>
               <td>
                 <Button linkTo={row.export_url}>

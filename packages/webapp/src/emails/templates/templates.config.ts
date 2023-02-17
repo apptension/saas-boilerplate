@@ -4,6 +4,7 @@ import * as PasswordReset from './passwordReset';
 import * as SubscriptionError from './subscriptionError';
 import * as TrialExpiresSoon from './trialExpiresSoon';
 import * as UserExport from './userExport';
+import * as UserExportAdmin from './userExportAdmin';
 
 //<-- INJECT EMAIL TEMPLATE IMPORT -->
 
@@ -13,6 +14,6 @@ export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {
   [EmailTemplateType.SUBSCRIPTION_ERROR]: SubscriptionError,
   [EmailTemplateType.TRIAL_EXPIRES_SOON]: TrialExpiresSoon,
   [EmailTemplateType.USER_EXPORT]: UserExport,
-  [EmailTemplateType.USER_EXPORT_ADMIN]: UserExport,
+  [EmailTemplateType.USER_EXPORT_ADMIN]: UserExportAdmin,
   //<-- INJECT EMAIL TEMPLATE -->
 };

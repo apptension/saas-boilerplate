@@ -1,10 +1,11 @@
+import juice from 'juice';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
-import juice from 'juice';
-import { UnknownObject } from '../shared/utils/types';
+
 import { camelCaseKeys } from '../shared/utils/object';
+import { UnknownObject } from '../shared/utils/types';
 import { buildEmail } from './email';
-import { EmailTemplateType, EmailComponentProps } from './types';
+import { EmailComponentProps, EmailTemplateType } from './types';
 
 export const renderEmail = (name: EmailTemplateType, rawData: UnknownObject, lang: string) => {
   const data = camelCaseKeys(rawData) as EmailComponentProps;

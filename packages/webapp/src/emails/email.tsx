@@ -1,7 +1,8 @@
 import { IntlProvider } from 'react-intl';
+
 import { DEFAULT_LOCALE } from '../app/config/i18n';
-import { EmailComponentProps, EmailTemplateType } from './types';
 import templates from './templates';
+import { EmailComponentProps, EmailTemplateType } from './types';
 
 type AppProps = {
   name: EmailTemplateType;
