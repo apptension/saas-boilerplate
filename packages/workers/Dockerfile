@@ -13,7 +13,7 @@ RUN \
   wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   apt-get update && \
   apt-get install -yqq nodejs && \
-  pip install -U pip==22.3.1 && pip install pdm==2.4.1 && \
+  pip install -U pip~=23.0.1 && pip install pdm~=2.4.5 && \
   npm i -g npm@^8 nx@^15.4.5 pnpm@^7.25.0 && \
   rm -rf /var/lib/apt/lists/*
 
