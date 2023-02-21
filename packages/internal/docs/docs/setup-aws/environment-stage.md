@@ -64,10 +64,10 @@ Example: `arn:aws:acm:region:account:certificate/certificate_id`
 
 ##### `certificates.domain`
 
-The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name e.g. `qa.saas.apptoku.com` 
+The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name e.g. `demo.saas.apptoku.com` 
 
 Type: `string`
-Example: `qa.saas.apptoku.com`
+Example: `demo.saas.apptoku.com`
 
 ##### `basicAuth`
 
@@ -181,12 +181,12 @@ Secrets file for Async workers can be set in exactly same way as for Backend.
 
 Set of **required** fields is presented below:
 
-| Name         | Example                           | Description                                                                                                                         |
-|--------------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| FROM_EMAIL   | admin@exmaple.com                 | Email used in `From` email field                                                                                                    |
-| HASHID_SALT  | t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                            |
-| JWT_SECRET   |                                   | Secret used to decode JWT used in subscriptions. The value needs to be the same as `DJANGO_SECRET_KEY` backend environment variable |
-| WEB_APP_URL  | https://app.qa.saas.apptoku.com   |                                                                                                                                     |
+| Name        | Example                           | Description                                                                                                                         |
+|-------------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| FROM_EMAIL  | admin@exmaple.com                 | Email used in `From` email field                                                                                                    |
+| HASHID_SALT | t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                            |
+| JWT_SECRET  |                                   | Secret used to decode JWT used in subscriptions. The value needs to be the same as `DJANGO_SECRET_KEY` backend environment variable |
+| WEB_APP_URL | https://app.demo.saas.apptoku.com |                                                                                                                                     |
 
 
 In order to use contentful or sentry services one needs to set following additional variables:
