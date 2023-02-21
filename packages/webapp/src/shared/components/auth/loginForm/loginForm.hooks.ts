@@ -1,15 +1,13 @@
-import { useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
+import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import { RoutesConfig } from '../../../../app/config/routes';
+import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { useGenerateLocalePath } from '../../../hooks/localePaths';
 import { useApiForm } from '../../../hooks/useApiForm';
-
-import { useCommonQuery } from '../../../../app/providers/commonQuery';
-import { RoutesConfig } from '../../../../app/config/routes';
-import { LoginFormFields } from './loginForm.types';
-
 import { authSinginMutation } from './loginForm.graphql';
+import { LoginFormFields } from './loginForm.types';
 
 export const useLoginForm = () => {
   const intl = useIntl();
