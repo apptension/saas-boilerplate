@@ -1,18 +1,19 @@
-import { ElementType } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { isEmpty } from 'ramda';
+import { ElementType } from 'react';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { FormattedMessage, useIntl } from 'react-intl';
+
+import { FragmentType } from '../../../services/graphqlApi/__generated/gql';
+import { EmptyState } from '../../emptyState';
 import { ButtonVariant } from '../../forms/button';
 import { NotificationSkeleton } from '../notification';
-import { EmptyState } from '../../emptyState';
-import { NotificationTypes } from '../notifications.types';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
-import { FragmentType } from '../../../services/graphqlApi/__generated/gql';
-import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
-import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
-import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
+import { NotificationTypes } from '../notifications.types';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
+import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { notificationsListContentFragment } from './notificationsList.graphql';
+import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
+import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 
 export type NotificationsListProps = {
   isOpen: boolean;
