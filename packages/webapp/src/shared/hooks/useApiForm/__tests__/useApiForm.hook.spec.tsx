@@ -1,6 +1,8 @@
 import { act } from '@testing-library/react-hooks';
-import { useApiForm } from '../useApiForm.hook';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+
 import { renderHook } from '../../../../tests/utils/rendering';
+import { useApiForm } from '../useApiForm.hook';
 import { UseApiFormArgs } from '../useApiForm.types';
 
 interface TestFormFields {
@@ -14,10 +16,13 @@ describe('useApiForm: Hook', () => {
     const { result, waitForApolloMocks } = render();
     await waitForApolloMocks();
     act(() => {
-      result.current.setApiResponse({
-        isError: true,
-        nonFieldErrors: [{ message: 'custom error', code: 'custom-error' }],
-      });
+      result.current.setApolloGraphQLResponseErrors([
+        new GraphQLError('GraphQlValidationError', {
+          extensions: {
+            nonFieldErrors: [{ message: 'custom error', code: 'custom-error' }],
+          },
+        }),
+      ]);
     });
 
     expect(result.current.genericError).toEqual('custom error');
@@ -28,10 +33,13 @@ describe('useApiForm: Hook', () => {
     const { result, waitForApolloMocks } = render();
     await waitForApolloMocks();
     act(() => {
-      result.current.setApiResponse({
-        isError: true,
-        email: [{ message: 'custom email error', code: 'custom-email-error' }],
-      });
+      result.current.setApolloGraphQLResponseErrors([
+        new GraphQLError('GraphQlValidationError', {
+          extensions: {
+            email: [{ message: 'custom email error', code: 'custom-email-error' }],
+          },
+        }),
+      ]);
     });
 
     expect(result.current.genericError).toBeUndefined();
@@ -45,7 +53,13 @@ describe('useApiForm: Hook', () => {
       });
       await waitForApolloMocks();
       act(() => {
-        result.current.setApiResponse({ isError: true, email: [{ message: '', code: 'custom_error' }] });
+        result.current.setApolloGraphQLResponseErrors([
+          new GraphQLError('GraphQlValidationError', {
+            extensions: {
+              email: [{ message: '', code: 'custom_error' }],
+            },
+          }),
+        ]);
       });
 
       expect(result.current.genericError).toBeUndefined();
@@ -58,7 +72,13 @@ describe('useApiForm: Hook', () => {
       });
       await waitForApolloMocks();
       act(() => {
-        result.current.setApiResponse({ isError: true, nonFieldErrors: [{ message: '', code: 'custom_error' }] });
+        result.current.setApolloGraphQLResponseErrors([
+          new GraphQLError('GraphQlValidationError', {
+            extensions: {
+              nonFieldErrors: [{ message: '', code: 'custom_error' }],
+            },
+          }),
+        ]);
       });
 
       expect(result.current.genericError).toEqual('my custom error text');
@@ -79,11 +99,14 @@ describe('useApiForm: Hook', () => {
       await waitForApolloMocks();
 
       act(() => {
-        result.current.setApiResponse({
-          isError: true,
-          nonFieldErrors: [{ message: '', code: 'custom_error' }],
-          email: [{ message: '', code: 'custom_error' }],
-        });
+        result.current.setApolloGraphQLResponseErrors([
+          new GraphQLError('GraphQlValidationError', {
+            extensions: {
+              nonFieldErrors: [{ message: '', code: 'custom_error' }],
+              email: [{ message: '', code: 'custom_error' }],
+            },
+          }),
+        ]);
       });
 
       expect(result.current.hasGenericErrorOnly).toBe(false);
@@ -94,7 +117,13 @@ describe('useApiForm: Hook', () => {
       await waitForApolloMocks();
 
       act(() => {
-        result.current.setApiResponse({ isError: true, nonFieldErrors: [{ message: '', code: 'custom_error' }] });
+        result.current.setApolloGraphQLResponseErrors([
+          new GraphQLError('GraphQlValidationError', {
+            extensions: {
+              nonFieldErrors: [{ message: '', code: 'custom_error' }],
+            },
+          }),
+        ]);
       });
 
       expect(result.current.hasGenericErrorOnly).toBe(true);

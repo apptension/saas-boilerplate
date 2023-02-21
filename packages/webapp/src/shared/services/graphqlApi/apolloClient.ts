@@ -9,6 +9,8 @@ import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
 import { ENV } from '../../../app/config/env';
+import { store } from '../../../app/providers/redux';
+import { showMessage } from '../../../modules/snackbar/snackbar.actions';
 import { refreshToken } from '../api/auth';
 import { apiURL } from '../api/helpers';
 import { url as contentfulUrl } from '../contentful';
@@ -17,6 +19,8 @@ export enum SchemaType {
   API,
   Contentful,
 }
+
+const IS_LOCAL_ENV = ENV.ENVIRONMENT_NAME === 'local';
 
 export const subscriptionClient = createClient({
   url: ENV.SUBSCRIPTIONS_URL,
@@ -35,6 +39,15 @@ export const subscriptionClient = createClient({
 const httpApiLink = createUploadLink({
   uri: apiURL('/graphql/'),
 });
+
+function showNetworkErrorMessage() {
+  store.dispatch(
+    showMessage({
+      text: 'Network error occurred',
+      id: store.getState().snackbar.lastMessageId + 1,
+    })
+  );
+}
 
 const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   const callRefresh = (): Observable<FetchResult> | void =>
@@ -62,16 +75,16 @@ const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forw
         case 'UNAUTHENTICATED':
           return callRefresh();
         default:
-          console.log(`[GraphQL error]`, err);
+          IS_LOCAL_ENV && console.log(`[GraphQL error]`, err);
       }
     }
   }
 
   if (networkError) {
-    if ((networkError as ServerError).result.code.code === 'token_not_valid') {
+    if ((networkError as ServerError).result?.code?.code === 'token_not_valid') {
       return callRefresh();
     }
-    console.log(`[Network error]: ${networkError}`);
+    IS_LOCAL_ENV && console.log(`[Network error]: ${networkError}`);
   }
 });
 
@@ -99,12 +112,20 @@ const splitLink = split(
   splitHttpLink
 );
 
+const maxRetryAttempts = 5;
+
 const retryLink = new RetryLink({
   delay: () => 1000,
+  attempts: (count, operation, error) => {
+    if (count === maxRetryAttempts) {
+      showNetworkErrorMessage();
+    }
+    return !!error && count < maxRetryAttempts;
+  },
 });
 
 export const client = new ApolloClient({
-  connectToDevTools: ENV.ENVIRONMENT_NAME === 'local',
+  connectToDevTools: IS_LOCAL_ENV,
   link: from([retryLink, splitLink]),
   cache: new InMemoryCache({
     typePolicies: {

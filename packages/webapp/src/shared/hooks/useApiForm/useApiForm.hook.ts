@@ -1,8 +1,9 @@
-import { FieldValues, Path, useForm } from 'react-hook-form';
-import { useCallback, useState } from 'react';
-import { isEmpty, isNil, keys } from 'ramda';
 import { GraphQLError } from 'graphql/error/GraphQLError';
-import { ApiFormSubmitResponse, FormSubmitError } from '../../services/api/types';
+import { isEmpty, isNil, keys } from 'ramda';
+import { useCallback, useState } from 'react';
+import { FieldValues, Path, useForm } from 'react-hook-form';
+
+import { FormSubmitError } from '../../services/api/types';
 import { camelCaseKeys } from '../../utils/object';
 import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
@@ -58,16 +59,6 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     [setResponseErrors]
   );
 
-  const setApiResponse = useCallback(
-    (response: ApiFormSubmitResponse<FormData, unknown>) => {
-      if (response.isError) {
-        const { isError, ...responseErrors } = response;
-        setResponseErrors(responseErrors as unknown as FormSubmitError<FormData>);
-      }
-    },
-    [setResponseErrors]
-  );
-
   const handleSubmit: typeof form.handleSubmit = (onValid, onInvalid) => {
     return (event) => {
       form.clearErrors();
@@ -81,7 +72,6 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
   return {
     form,
     genericError,
-    setApiResponse,
     setApolloGraphQLResponseErrors,
     setGenericError,
     hasGenericErrorOnly,

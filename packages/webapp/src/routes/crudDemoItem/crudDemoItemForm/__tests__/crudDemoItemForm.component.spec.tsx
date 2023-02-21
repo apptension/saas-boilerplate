@@ -1,12 +1,12 @@
-import userEvent from '@testing-library/user-event';
-import { screen } from '@testing-library/react';
 import { ApolloError } from '@apollo/client';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';
-import { render } from '../../../../tests/utils/rendering';
 import configureStore from '../../../../app/config/store';
 import { prepareState } from '../../../../mocks/store';
+import { render } from '../../../../tests/utils/rendering';
+import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';
 
 describe('CrudDemoItemForm: Component', () => {
   const defaultProps: CrudDemoItemFormProps = {
@@ -14,6 +14,7 @@ describe('CrudDemoItemForm: Component', () => {
       name: 'initial name',
     },
     onSubmit: jest.fn(),
+    loading: false,
   };
 
   const Component = (props: Partial<CrudDemoItemFormProps>) => <CrudDemoItemForm {...defaultProps} {...props} />;
