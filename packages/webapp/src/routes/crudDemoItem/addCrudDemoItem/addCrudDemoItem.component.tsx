@@ -1,5 +1,6 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router';
 import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
@@ -28,6 +29,7 @@ export const AddCrudDemoItem = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { showMessage } = useSnackbar();
   const intl = useIntl();
+  const navigate = useNavigate();
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / Success message',
@@ -57,7 +59,12 @@ export const AddCrudDemoItem = () => {
           },
         });
       },
-      onCompleted: () => showMessage(successMessage),
+      onCompleted: (data) => {
+        const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
+
+        showMessage(successMessage)
+        if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, {id}));
+      },
     }
   );
 
