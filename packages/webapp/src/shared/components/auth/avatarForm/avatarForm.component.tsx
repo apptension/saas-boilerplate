@@ -2,9 +2,9 @@ import cameraIcon from '@iconify-icons/ion/camera-outline';
 import { FieldError } from 'react-hook-form';
 
 import { Icon } from '../../icon';
-import { Container, Avatar, IconContainer, FileInput, Message } from './avatarForm.styles';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { useAvatarForm } from './avatarForm.hooks';
+import { Avatar, Container, FileInput, IconContainer, Message } from './avatarForm.styles';
 
 export const AvatarForm = () => {
   const {

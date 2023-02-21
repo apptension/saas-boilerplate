@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { Avatar as AvatarBase } from '../../avatar';
-import { sizeUnits } from '../../../../theme/size';
-import { Breakpoint, media } from '../../../../theme/media';
+
 import { circle, color, elevation } from '../../../../theme';
+import { Breakpoint, media } from '../../../../theme/media';
+import { sizeUnits } from '../../../../theme/size';
+import { Avatar as AvatarBase } from '../../avatar';
 import { Message as MessageBase } from '../../forms/input/input.styles';
 
 export const Container = styled.div`
@@ -28,7 +29,7 @@ export const IconContainer = styled.label.attrs(() => ({ tabIndex: 0 }))`
   position: absolute;
   left: -${sizeUnits(1)};
   top: -${sizeUnits(1)};
-  z-index: 5;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
