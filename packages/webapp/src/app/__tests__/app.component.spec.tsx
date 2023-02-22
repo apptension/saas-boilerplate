@@ -1,10 +1,10 @@
-import { FC } from 'react';
 import { screen } from '@testing-library/react';
+import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { ValidRoutesProviders } from '../providers/validRoutesProvider';
 import { render } from '../../tests/utils/rendering';
 import { RoutesConfig } from '../config/routes';
+import { ValidRoutesProviders } from '../providers';
 
 describe('App: Component', () => {
   const Component: FC = () => (

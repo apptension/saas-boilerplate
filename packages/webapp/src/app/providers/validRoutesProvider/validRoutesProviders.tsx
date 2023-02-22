@@ -1,12 +1,13 @@
-import { Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Helmet } from 'react-helmet-async';
+import { FormattedMessage, IntlProvider } from 'react-intl';
+import { useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+
+import { ResponsiveThemeProvider } from '../';
 import { localesSelectors } from '../../../modules/locales';
-import { translationMessages } from '../../config/i18n';
-import { GlobalStyle } from '../../../theme/global';
-import { ResponsiveThemeProvider } from '../responsiveThemeProvider';
 import { Layout } from '../../../shared/components/layout';
+import { GlobalStyle } from '../../../theme/global';
+import { translationMessages } from '../../config/i18n';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
 export const ValidRoutesProviders = () => {

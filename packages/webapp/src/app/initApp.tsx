@@ -3,11 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import 'regenerator-runtime/runtime';
 
-import { ApolloProvider } from './providers/apollo';
-import { CommonQuery } from './providers/commonQuery';
-import { ReduxProvider } from './providers/redux';
-import { RouterProvider } from './providers/router';
-import { SentryProvider } from './providers/sentry';
+import { ApolloProvider, CommonQuery, ReduxProvider, RouterProvider, SentryProvider } from './providers';
 import { setUnsupportedClasses } from './unsupported/support';
 import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 

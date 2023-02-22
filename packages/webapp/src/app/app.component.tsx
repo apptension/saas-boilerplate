@@ -1,13 +1,12 @@
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { PasswordReset } from '../routes/auth/passwordReset';
+
 import { Role } from '../modules/auth/auth.types';
-import { H1 } from '../theme/typography';
-import { AuthRoute } from '../shared/components/routes/authRoute';
-import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
+import { PasswordReset } from '../routes/auth/passwordReset';
 import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
-import { LANG_PREFIX, RoutesConfig } from './config/routes';
-import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
+import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
+import { AuthRoute } from '../shared/components/routes/authRoute';
+import { H1 } from '../theme/typography';
 import {
   CancelSubscription,
   ConfirmEmail,
@@ -29,7 +28,9 @@ import {
   TermsAndConditions,
   TransactionHistory,
 } from './asyncComponents';
-import { ValidRoutesProviders } from './providers/validRoutesProvider';
+import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
+import { LANG_PREFIX, RoutesConfig } from './config/routes';
+import { ValidRoutesProviders } from './providers';
 
 export const App = () => {
   const { pathname, search } = useLocation();
