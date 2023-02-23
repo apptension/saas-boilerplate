@@ -4,6 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as events from 'aws-cdk-lib/aws-events';
 import {
   EnvConstructProps,
   EnvironmentSettings,
@@ -18,6 +19,7 @@ export class CiEntrypoint extends Construct {
   public artifactsBucket: s3.Bucket;
   private readonly codeBuildProject: codebuild.Project;
   private readonly triggerFunction: lambda.IFunction;
+  private readonly onDeployCommitRule: events.Rule;
 
   static getArtifactsIdentifier(envSettings: EnvironmentSettings) {
     return `${envSettings.projectEnvName}-entrypoint`;
@@ -45,8 +47,15 @@ export class CiEntrypoint extends Construct {
         envSettings: props.envSettings,
       })
     );
-    props.codeRepository.onCommit('OnDeployCommit', {
+    this.onDeployCommitRule = props.codeRepository.onCommit('OnDeployCommit', {
       target: new targets.LambdaFunction(this.triggerFunction),
+    });
+    // add permissions resource-based permissions to imported lambda
+    new lambda.CfnPermission(this, 'AllowOnDeployCommit', {
+      action: 'lambda:InvokeFunction',
+      functionName: this.triggerFunction.functionName,
+      principal: 'events.amazonaws.com',
+      sourceArn: this.onDeployCommitRule.ruleArn,
     });
   }
 

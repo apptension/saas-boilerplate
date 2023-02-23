@@ -10,7 +10,7 @@ import {
 } from '@saas-boilerplate-app/infra-core';
 
 export class MainCertificates extends Construct {
-  certificate?: certManager.DnsValidatedCertificate;
+  certificate?: certManager.Certificate;
   cloudFrontCertificate?: certManager.DnsValidatedCertificate;
 
   static geCertificateArnOutputExportName(envSettings: EnvironmentSettings) {
@@ -24,16 +24,13 @@ export class MainCertificates extends Construct {
     const domainName = this.getDomainName(props);
 
     if (hostedZone) {
-      this.certificate = new certManager.DnsValidatedCertificate(
-        this,
-        'AppsCertificate',
-        {
-          domainName,
-          subjectAlternativeNames: [`*.${domainName}`],
-          hostedZone,
-        }
-      );
+      this.certificate = new certManager.Certificate(this, 'AppsCertificate', {
+        domainName,
+        subjectAlternativeNames: [`*.${domainName}`],
+        validation: certManager.CertificateValidation.fromDns(hostedZone),
+      });
 
+      // todo: Use Certificate here when figure it our how to pass region prop to it (currently it's not available)
       this.cloudFrontCertificate = new certManager.DnsValidatedCertificate(
         this,
         'CloudFrontCertificate',

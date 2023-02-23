@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@types/prompts": "^2.4.2",
-    "aws-cdk": "2.33.0",
-    "ts-node": "^9.1.1",
+    "@types/ramda": "^0.28.22",
+    "aws-cdk": "2.66.0",
     "plop": "^2.7.4",
-    "@types/ramda": "^0.28.22"
+    "ts-node": "^9.1.1"
   },
   "nx": {}
 }

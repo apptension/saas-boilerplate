@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "@saas-boilerplate-app/core": "*",
-    "@saas-boilerplate-app/tools": "*",
     "@saas-boilerplate-app/infra-core": "*",
     "@saas-boilerplate-app/infra-shared": "*",
-    "aws-cdk": "2.33.0",
-    "aws-cdk-lib": "2.33.0",
+    "@saas-boilerplate-app/tools": "*",
+    "aws-cdk": "2.66.0",
+    "aws-cdk-lib": "2.66.0",
     "url-loader": "^4.1.1"
   },
   "browserslist": {

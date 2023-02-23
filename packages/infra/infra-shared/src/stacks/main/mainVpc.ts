@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { IpAddresses, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { CfnOutput } from 'aws-cdk-lib';
 import {
   EnvConstructProps,
@@ -50,7 +50,7 @@ export class MainVpc extends Construct {
 
   private createVPC() {
     return new Vpc(this, 'EC2MainVpc', {
-      cidr: '10.0.0.0/16',
+      ipAddresses: IpAddresses.cidr('10.0.0.0/16'),
       enableDnsSupport: true,
       enableDnsHostnames: true,
       natGateways: 1,
@@ -59,7 +59,7 @@ export class MainVpc extends Construct {
         {
           cidrMask: 24,
           name: 'PrivateSubnet',
-          subnetType: SubnetType.PRIVATE_WITH_NAT,
+          subnetType: SubnetType.PRIVATE_WITH_EGRESS,
         },
       ],
     });
