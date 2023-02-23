@@ -47,6 +47,8 @@ class CustomGrapheneClient(GrapheneClient):
     def create_context():
         request = APIRequestFactory()
         request.user = AnonymousUser()
+        request.META = dict()
+        request.META["REMOTE_ADDR"] = '0.0.0.0'
         request._request = request
 
         return request

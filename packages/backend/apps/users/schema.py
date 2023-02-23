@@ -4,6 +4,7 @@ from graphene_django import DjangoObjectType
 
 from common.acl import policies
 from common.graphql import mutations
+from common.graphql import ratelimit
 from common.graphql.acl.decorators import permission_classes
 from . import models
 from . import serializers
@@ -50,6 +51,11 @@ class ConfirmEmailMutation(mutations.SerializerMutation):
 class PasswordResetMutation(mutations.SerializerMutation):
     class Meta:
         serializer_class = serializers.PasswordResetSerializer
+
+    @classmethod
+    @ratelimit.ratelimit(key="ip", rate=ratelimit.ip_throttle_rate)
+    def mutate_and_get_payload(cls, root, info, **input):
+        return super().mutate_and_get_payload(root, info, **input)
 
 
 class PasswordResetConfirmationMutation(mutations.SerializerMutation):

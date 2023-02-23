@@ -109,6 +109,7 @@ export class ApiStack extends Stack {
               CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
               DJANGO_ALLOWED_HOSTS: allowedHosts,
               CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
+              RATELIMIT_IP_META_KEY: "HTTP_X_FORWARDED_FOR",
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),

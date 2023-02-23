@@ -59,6 +59,7 @@ dependencies = [
     "django-storages~=1.13",
     "pillow~=9.4",
     "aws-xray-sdk~=2.11",
+    "django-ratelimit>=4.0.0",
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}
