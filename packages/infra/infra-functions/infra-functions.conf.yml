@@ -8,7 +8,7 @@ iam:
       - "${self:custom.conf.entrypointCodeBuildProjectArn}"
 
 environment:
-  PROJECT_NAME: ${env:PROJECT_NAME}
+  PROJECT_NAME: ${self:custom.projectEnvName}
   ENVIRONMENT_NAME: ${self:provider.stage}
   DEPLOY_BRANCHES: ${env:SB_DEPLOY_BRANCHES}
 
