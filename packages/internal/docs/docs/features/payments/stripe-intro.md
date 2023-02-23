@@ -60,5 +60,5 @@ to their account and let them copy the necessary secret keys on their own.
 
 #### Configure environmental variables
 
-- `REACT_APP_STRIPE_PUBLISHABLE_KEY` – a publishable key that you can find in Stripe's
+- `VITE_STRIPE_PUBLISHABLE_KEY` – a publishable key that you can find in Stripe's
   web panel

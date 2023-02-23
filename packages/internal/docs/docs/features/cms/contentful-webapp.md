@@ -15,9 +15,9 @@ Use the Contentful Delivery API token here.
 :::
 
 ```
-REACT_APP_CONTENTFUL_SPACE=<CHANGE_ME>
-REACT_APP_CONTENTFUL_TOKEN=<CHANGE_ME>
-REACT_APP_CONTENTFUL_ENV=develop
+VITE_CONTENTFUL_SPACE=<CHANGE_ME>
+VITE_CONTENTFUL_TOKEN=<CHANGE_ME>
+VITE_CONTENTFUL_ENV=develop
 ```
 
 ## Updating local schema to match Contentful remote one
@@ -50,9 +50,9 @@ Variables are set in a JSON format so add following keys:
 
 ```json
 {
-  "REACT_APP_CONTENTFUL_SPACE": "<CHANGE_ME>",
-  "REACT_APP_CONTENTFUL_TOKEN": "<CHANGE_ME>"
-  "REACT_APP_CONTENTFUL_ENV": "<CHANGE_ME>"
+  "VITE_CONTENTFUL_SPACE": "<CHANGE_ME>",
+  "VITE_CONTENTFUL_TOKEN": "<CHANGE_ME>"
+  "VITE_CONTENTFUL_ENV": "<CHANGE_ME>"
 }
 ```
 

@@ -91,7 +91,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
-        REACT_APP_ENVIRONMENT_NAME: {
+        VITE_ENVIRONMENT_NAME: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: props.envSettings.envStage,
         },

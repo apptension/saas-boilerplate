@@ -108,7 +108,7 @@ export class WebappCiConfig extends ServiceCiConfig {
       environmentVariables: {
         ...this.defaultEnvVariables,
         ...configEnvVariables,
-        REACT_APP_ENVIRONMENT_NAME: {
+        VITE_ENVIRONMENT_NAME: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: props.envSettings.envStage,
         },

@@ -204,20 +204,20 @@ In order to use contentful or sentry services one needs to set following additio
 Secrets file for Web application can be set in exactly same way as for Backend.
 Set of **required** fields is presented below:
 
-| Name                             | Example | Description                |
-|----------------------------------|---------|----------------------------|
-| REACT_APP_BASE_API_URL           | /api    | Path to access backend API |
-| REACT_APP_EMAIL_ASSETS_URL       |         |                            |
+| Name                  | Example | Description                |
+|-----------------------|---------|----------------------------|
+| VITE_BASE_API_URL     | /api    | Path to access backend API |
+| VITE_EMAIL_ASSETS_URL |         |                            |
 
 In order to use contentful or stripe services one needs to set following additional variables:
 
-| Name                             | Description                             |
-|----------------------------------|-----------------------------------------|
-| REACT_APP_CONTENTFUL_SPACE       | Contentful Space ID                     |
-| REACT_APP_CONTENTFUL_TOKEN       | Contentful API access token             |
-| REACT_APP_CONTENTFUL_ENV         | Contentful environment name             |
-| REACT_APP_STRIPE_PUBLISHABLE_KEY | Stripe Publishable key                  |
-| REACT_APP_SENTRY_DSN             | [Sentry](https://sentry.io/) client key |
+| Name                        | Description                             |
+|-----------------------------|-----------------------------------------|
+| VITE_CONTENTFUL_SPACE       | Contentful Space ID                     |
+| VITE_CONTENTFUL_TOKEN       | Contentful API access token             |
+| VITE_CONTENTFUL_ENV         | Contentful environment name             |
+| VITE_STRIPE_PUBLISHABLE_KEY | Stripe Publishable key                  |
+| VITE_SENTRY_DSN             | [Sentry](https://sentry.io/) client key |
 
 :::info
 

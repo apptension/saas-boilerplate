@@ -40,7 +40,7 @@ It requires two parameters: `user` and `operation_name`. It also accepts `**kwar
 
 ## Webapp reference
 
-All you have to configure is `REACT_APP_SUBSCRIPTIONS_URL` environment variable. After that simply use [relay's useSubscription](https://relay.dev/docs/api-reference/use-subscription/).
+All you have to configure is `VITE_SUBSCRIPTIONS_URL` environment variable. After that simply use [relay's useSubscription](https://relay.dev/docs/api-reference/use-subscription/).
 
 ### Removing the feature
 
@@ -53,4 +53,4 @@ Steps to remove:
 
 - Delete `SUBSCRIPTIONS_URL, subscriptionClient, subscribe` and it's usages from  the `src/shared/packages/graphqlApi/relayEnvironment.ts`
 - Remove `subscriptions-transport-ws` package
-- Remove `REACT_APP_SUBSCRIPTIONS_URL` env variable from `.env`, `.env.example` and `.env.tests` files
+- Remove `VITE_SUBSCRIPTIONS_URL` env variable from `.env`, `.env.example` and `.env.tests` files
