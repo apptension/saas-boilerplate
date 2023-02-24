@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { useIntl } from 'react-intl';
-
 import { useNavigate } from 'react-router';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
+
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useApiForm } from '../../../hooks/useApiForm';
 import { useSnackbar } from '../../../../modules/snackbar';
+import { useGenerateLocalePath } from '../../../hooks/localePaths';
+import { useApiForm } from '../../../hooks/useApiForm';
 import { authRequestPasswordResetConfirmMutation } from './passwordResetConfirmForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 
@@ -34,7 +34,8 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
     errorMessages: {
       nonFieldErrors: {
         invalid_token: intl.formatMessage({
-          defaultMessage: 'Malformed password reset token',
+          defaultMessage:
+            'The password reset link you have used is either expired, has already been used, or is incorrect',
           id: 'Auth / Reset password confirm / invalid token',
         }),
       },
