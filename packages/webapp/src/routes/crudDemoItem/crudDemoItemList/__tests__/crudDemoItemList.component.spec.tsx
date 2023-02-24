@@ -32,9 +32,10 @@ describe('CrudDemoItemList: Component', () => {
 
   it('should render link to add new item form', async () => {
     const routerProps = createMockRouterProps(routePath);
-    fillCrudDemoItemListQuery();
+    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemListQuery()];
 
-    render(<Component />, { routerProps });
+    render(<Component />, { routerProps, apolloMocks });
+
     await userEvent.click(await screen.findByText(/add/i));
 
     expect(screen.getByText('CrudDemoItem add page mock')).toBeInTheDocument();

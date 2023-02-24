@@ -32,7 +32,7 @@ describe('CrudDemoItemForm: Component', () => {
       const onSubmit = jest.fn();
       render(<Component onSubmit={onSubmit} />);
 
-      const nameField = await screen.findByPlaceholderText(/name/gi);
+      const nameField = await screen.findByPlaceholderText(/name/i);
       await userEvent.clear(nameField);
       await userEvent.type(nameField, 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));

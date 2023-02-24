@@ -46,6 +46,7 @@ export const subscriptionFactory = createDeepFactory<Subscription>(() => ({
   __typename: 'typename',
   subscription: {
     id: makeId(32),
+    startDate: new Date(2020, 5, 5).toString(),
     currentPeriodStart: new Date(2020, 5, 5).toString(),
     currentPeriodEnd: new Date(2025, 10, 10).toString(),
     trialStart: null,

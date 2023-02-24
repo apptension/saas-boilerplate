@@ -37,6 +37,7 @@ export interface Subscription {
   phases: SubscriptionPhase[];
   canActivateTrial: boolean;
   defaultPaymentMethod: StripePaymentMethod | null;
+  id?: string | null;
 }
 
 export type SubscriptionGetApiResponseData = Subscription;

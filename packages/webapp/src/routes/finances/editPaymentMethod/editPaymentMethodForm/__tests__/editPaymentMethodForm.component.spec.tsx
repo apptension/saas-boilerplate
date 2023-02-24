@@ -7,7 +7,6 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import {
-  fillAllPaymentsMethodsQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
@@ -16,7 +15,7 @@ import {
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
 import { stripeUpdateDefaultPaymentMethodMutation } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { Subscription, SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
+import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
@@ -148,11 +147,21 @@ describe('EditPaymentMethodForm: Component', () => {
 
   it('should set default card if selected other already added card', async () => {
     const onSuccess = jest.fn();
+    const id = 'pk-test-id';
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-    const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const requestMethodsMock = fillSubscriptionScheduleQuery(subscriptionFactory({ id }), paymentMethods);
     const requestUpdateMutationMock = composeMockedQueryResult(stripeUpdateDefaultPaymentMethodMutation, {
-      data: { updateDefaultPaymentMethod: {} },
-      variables: { input: { id: 'pk-test-id' } },
+      data: {
+        updateDefaultPaymentMethod: {
+          activeSubscription: subscriptionFactory(),
+          paymentMethodEdge: {
+            node: {
+              id,
+            },
+          },
+        },
+      },
+      variables: { input: { id } },
     });
 
     const phases = [
@@ -160,22 +169,17 @@ describe('EditPaymentMethodForm: Component', () => {
         item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
       }),
     ];
+    const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
 
-    const requestScheduleMock = fillSubscriptionScheduleQuery(
-      subscriptionFactory({
-        defaultPaymentMethod: paymentMethods[0],
-        phases,
-      })
-    );
     const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat(requestMethodsMock, requestScheduleMock, requestUpdateMutationMock),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestMethodsMock, requestUpdateMutationMock),
     });
 
     await waitForApolloMocks(1);
 
-    const secondMethod = screen.getAllByRole('radio')[1];
-    await fireEvent.click(secondMethod);
+    const radioButtons = await screen.findAllByRole('radio');
+
+    fireEvent.change(radioButtons[1], { target: { value: 'checked' } });
     expect(await screen.findByRole('button', { name: /save/i })).not.toBeDisabled();
 
     await submitForm();
@@ -191,13 +195,6 @@ describe('EditPaymentMethodForm: Component', () => {
       }),
     ];
     const paymentMethods = times(() => paymentMethodFactory(), 2);
-    const requestMethodsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
-    fillSubscriptionScheduleQuery(
-      subscriptionFactory({
-        defaultPaymentMethod: paymentMethods[0],
-        phases,
-      })
-    );
 
     const requestCreateIntentMock = composeMockedQueryResult(stripeCreateSetupIntentMutation, {
       data: { createSetupIntent: {} },
@@ -205,14 +202,20 @@ describe('EditPaymentMethodForm: Component', () => {
     });
 
     requestCreateIntentMock.newData = jest.fn(() => ({
-      data: { createSetupIntent: {} },
+      data: {
+        createSetupIntent: {
+          setupIntent: {
+            id: 'test-id-3',
+          },
+        },
+      },
     }));
 
-    const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMethodsMock, requestCreateIntentMock),
-    });
+    const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
 
-    await waitForApolloMocks(1);
+    render(<Component onSuccess={onSuccess} />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCreateIntentMock),
+    });
 
     await pressNewCardButton();
     await fillForm();

@@ -1,12 +1,12 @@
-import { useIntl } from 'react-intl';
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
+import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
-import { imageProps } from '../../../shared/services/contentful';
 import { Icon } from '../../../shared/components/icon';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useFavoriteDemoItem } from '../../../shared/hooks/useFavoriteDemoItem';
+import { imageProps } from '../../../shared/services/contentful';
 import { DemoItemListItem_ItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 

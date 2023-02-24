@@ -1,9 +1,15 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { currentUserFactory } from '../../../../mocks/factories';
+import {
+  currentUserFactory,
+  fillNotificationsListQuery,
+  fillNotificationsSubscriptionQuery,
+  notificationFactory,
+} from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { Breakpoint } from '../../../../theme/media';
@@ -52,35 +58,50 @@ describe('Layout: Component', () => {
       it('should not show open menu button', async () => {
         const authPath = ['login'];
         const routerProps = createMockRouterProps(authPath);
-        const { waitForApolloMocks } = render(<Component routeKey={authPath} />, { routerProps });
-        await waitForApolloMocks();
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+
+        render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
     });
 
     it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
-      render(<Component />, { routerProps });
+      const apolloMocks = append(
+        fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+      );
+      render(<Component />, { routerProps, apolloMocks });
       expect(await screen.findByTestId('content')).toBeVisible();
     });
 
     describe('user is logged out', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
       it('should show privacy menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show dashboard menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const { waitForApolloMocks } = render(<Component />, { routerProps });
-        await waitForApolloMocks();
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+
+        render(<Component />, { routerProps, apolloMocks });
         expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
       });
     });
@@ -88,14 +109,20 @@ describe('Layout: Component', () => {
     describe('user is logged in', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeVisible();
       });
 
       it('should not show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const { waitForApolloMocks } = render(<Component />, { routerProps });
-        await waitForApolloMocks();
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks });
+        await waitForApolloMocks(0);
         expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
       });
 
@@ -108,6 +135,10 @@ describe('Layout: Component', () => {
                 roles: [Role.USER],
               })
             ),
+            fillNotificationsListQuery([], { hasUnreadNotifications: true }),
+            fillNotificationsSubscriptionQuery([notificationFactory()], {
+              hasUnreadNotifications: true,
+            }),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -123,6 +154,10 @@ describe('Layout: Component', () => {
                 roles: [Role.USER],
               })
             ),
+            fillNotificationsListQuery([], { hasUnreadNotifications: true }),
+            fillNotificationsSubscriptionQuery([notificationFactory()], {
+              hasUnreadNotifications: true,
+            }),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -138,6 +173,10 @@ describe('Layout: Component', () => {
                 roles: [Role.USER],
               })
             ),
+            fillNotificationsListQuery([], { hasUnreadNotifications: true }),
+            fillNotificationsSubscriptionQuery([notificationFactory()], {
+              hasUnreadNotifications: true,
+            }),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -155,16 +194,22 @@ describe('Layout: Component', () => {
 
     it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
-      render(<Component />, { routerProps });
+      const apolloMocks = append(
+        fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+      );
+      render(<Component />, { routerProps, apolloMocks });
       expect(await screen.findByTestId('content')).toBeVisible();
     });
 
     describe('on /auth routes', () => {
       it('should not show menu links', async () => {
         const authPath = ['login'];
-        const routerProps = createMockRouterProps(homeRoutePath);
-        const { waitForApolloMocks } = render(<Component routeKey={authPath} />, { routerProps });
-        await waitForApolloMocks();
+        const routerProps = createMockRouterProps(authPath);
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+
+        render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
         expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
       });
     });
@@ -172,14 +217,20 @@ describe('Layout: Component', () => {
     describe('user is logged out', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const { waitForApolloMocks } = render(<Component />, { routerProps });
-        await waitForApolloMocks();
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
+
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
       it('should show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        render(<Component />, { routerProps });
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
     });
@@ -187,8 +238,11 @@ describe('Layout: Component', () => {
     describe('user is logged in', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const { waitForApolloMocks } = render(<Component />, { routerProps });
-        await waitForApolloMocks();
+        const apolloMocks = append(
+          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        );
+        render(<Component />, { routerProps, apolloMocks });
+
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
       });
 
@@ -199,6 +253,10 @@ describe('Layout: Component', () => {
               roles: [Role.USER],
             })
           ),
+          fillNotificationsListQuery([], { hasUnreadNotifications: true }),
+          fillNotificationsSubscriptionQuery([notificationFactory()], {
+            hasUnreadNotifications: true,
+          }),
         ];
         const routerProps = createMockRouterProps(homeRoutePath);
         render(<Component />, { apolloMocks, routerProps });

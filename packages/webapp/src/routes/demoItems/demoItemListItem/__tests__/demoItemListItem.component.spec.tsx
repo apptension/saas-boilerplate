@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { append } from 'ramda';
 import { Route, Routes, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -64,7 +65,7 @@ describe('DemoItemListItem: Component', () => {
     it('should render link to single item page', async () => {
       const itemsMock = mockItemsResponse();
       const { waitForApolloMocks } = render(<Component id="item-1" />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock),
+        apolloMocks: append(itemsMock),
       });
       await waitForApolloMocks(1);
       expect(await screen.findByText('Example title')).toBeInTheDocument();
@@ -77,7 +78,7 @@ describe('DemoItemListItem: Component', () => {
     it('should display checked checkbox', async () => {
       const itemsMock = mockItemsResponse();
       const { waitForApolloMocks } = render(<Component id="item-1" />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock),
+        apolloMocks: append(itemsMock),
       });
       await waitForApolloMocks();
 
@@ -90,7 +91,7 @@ describe('DemoItemListItem: Component', () => {
         const id = 'item-1';
         const mutationData = {
           deleteFavoriteContentfulDemoItem: {
-            deletedIds: [id],
+            deletedIds: [],
           },
         };
         const removeFavoriteItemMockResponse = fillRemoveFavouriteDemoItemQuery(id, mutationData);
@@ -114,7 +115,9 @@ describe('DemoItemListItem: Component', () => {
 
   describe('item is not marked as favorite', () => {
     it('should display unchecked checkbox', async () => {
-      render(<Component />);
+      const itemsMock = mockItemsResponse();
+      const { waitForApolloMocks } = render(<Component id="item-999" />, { apolloMocks: append(itemsMock) });
+      await waitForApolloMocks(1);
       expect(await screen.findByLabelText(/is favorite/i)).not.toBeChecked();
     });
 

@@ -8,7 +8,12 @@ export const subscriptionActiveSubscriptionFragment = gql(/* GraphQL */ `
       trialEnd
       item {
         price {
-          ...subscriptionPlanItemFragment
+          pk
+          product {
+            id
+            name
+          }
+          unitAmount
           id
         }
         quantity

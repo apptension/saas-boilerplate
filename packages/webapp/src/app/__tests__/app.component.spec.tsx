@@ -21,10 +21,15 @@ describe('App: Component', () => {
   });
 
   it('should render nothing when language is not set', async () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation((fn) => fn);
     const { waitForApolloMocks } = render(<Component />, {
       routerProps: { initialEntries: ['/'] },
     });
     await waitForApolloMocks();
+
+    expect(warn).toBeCalledWith('No routes matched location "/" ');
     expect(screen.queryByTestId('content')).not.toBeInTheDocument();
+
+    warn.mockRestore();
   });
 });

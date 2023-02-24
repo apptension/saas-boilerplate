@@ -1,8 +1,9 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+
+import { snackbarActions } from '../../../../../modules/snackbar';
 import { render } from '../../../../../tests/utils/rendering';
 import { Dropzone, DropzoneProps } from '../dropzone.component';
 import { ErrorCodes } from '../dropzone.types';
-import { snackbarActions } from '../../../../../modules/snackbar';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
@@ -30,7 +31,10 @@ describe('Dropzone: Component', () => {
     const onDrop = jest.fn();
     render(<Component onDrop={onDrop} />);
 
-    await fireInputChange([file]);
+    fireInputChange([file]);
+
+    const input = await screen.findByTestId('file-input');
+    await waitFor(() => expect(input.val));
 
     expect(onDrop).toBeCalledTimes(1);
     expect(onDrop).toHaveBeenCalledWith([file], [], expect.anything());
@@ -40,7 +44,10 @@ describe('Dropzone: Component', () => {
     const onDrop = jest.fn();
     render(<Component onDrop={onDrop} maxFiles={1} />);
 
-    await fireInputChange([file, secondFile]);
+    fireInputChange([file, secondFile]);
+
+    const input = await screen.findByTestId('file-input');
+    await waitFor(() => expect(input.val));
 
     expect(onDrop).toBeCalledTimes(1);
     expect(onDrop).toHaveBeenCalledWith(

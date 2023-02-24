@@ -2,13 +2,16 @@ import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
+import {
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+} from '../../../../../../mocks/factories';
+import { matchTextContent } from '../../../../../../tests/utils/match';
 import { render } from '../../../../../../tests/utils/rendering';
 import { useApiForm } from '../../../../../hooks/useApiForm';
-import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
-import { matchTextContent } from '../../../../../../tests/utils/match';
-import { Subscription } from '../../../../../../shared/services/api/subscription/types';
 
 const StripePaymentMethodSelectorWithControls = () => {
   const formControls = useApiForm<PaymentFormFields>();
@@ -27,11 +30,12 @@ const paymentMethods = [
   paymentMethodFactory({ billingDetails: { name: 'First Owner' }, card: { last4: '1234' } }),
   paymentMethodFactory({ billingDetails: { name: 'Second Owner' }, card: { last4: '9999' } }),
 ];
+const phases = [subscriptionPhaseFactory()];
 
 describe('StripePaymentMethodSelector: Component', () => {
   describe('there are payment methods available already', () => {
     it('should list possible payment methods', async () => {
-      const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
       const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
 
       await waitForApolloMocks();
@@ -41,7 +45,7 @@ describe('StripePaymentMethodSelector: Component', () => {
     });
 
     it('should show add new method button', async () => {
-      const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
       const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
 
       await waitForApolloMocks();

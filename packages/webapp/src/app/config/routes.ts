@@ -33,6 +33,7 @@ const routes = {
     changePlan: 'edit',
     paymentMethod: 'payment-method',
     cancel: 'cancel',
+    list: ''
   }),
   documents: 'documents',
   //<-- INJECT ROUTE DEFINITION -->

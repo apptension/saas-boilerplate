@@ -57,7 +57,7 @@ const mutationData = {
       phases: [],
       subscription: null,
       canActivateTrial: true,
-      defaultPaymentMethod: {},
+      defaultPaymentMethod: { id: 'payment-id' },
     },
     __typename: 'SubscriptionScheduleType',
   },

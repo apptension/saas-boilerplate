@@ -16,7 +16,9 @@ describe('NotificationsButton: Component', () => {
   };
 
   it('should render without errors', async () => {
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(fillNotificationsListQuery([])) });
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: append(fillNotificationsListQuery([], { hasUnreadNotifications: false })),
+    });
 
     await waitForApolloMocks();
 

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { currentUserFactory, fillNotificationsListQuery } from '../../../../../mocks/factories';
+import { currentUserFactory, fillNotificationsListQuery, fillNotificationsSubscriptionQuery, notificationFactory } from '../../../../../mocks/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { Header } from '../header.component';
@@ -11,6 +11,7 @@ import { Header } from '../header.component';
 const getApolloMocks = () => [
   fillCommonQueryWithUser(currentUserFactory()),
   fillNotificationsListQuery([], { hasUnreadNotifications: false }),
+  fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: false }),
 ];
 
 describe('Header: Component', () => {

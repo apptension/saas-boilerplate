@@ -25,6 +25,7 @@ describe('AnonymousRoute: Component', () => {
       <Route path="/" element={<AnonymousRoute />}>
         <Route index element={<span data-testid="content" />} />
       </Route>
+      <Route path="/en/" element={<span />} />
       <Route path="/en/home" element={<span data-testid="home-content" />} />
     </Routes>
   );
@@ -47,7 +48,7 @@ describe('AnonymousRoute: Component', () => {
       ];
 
       const { waitForApolloMocks } = render(<Component />, { apolloMocks });
-      await waitForApolloMocks();
+      await waitForApolloMocks(0);
       expect(screen.queryByTestId('content')).not.toBeInTheDocument();
       expect(screen.queryByTestId('home-content')).not.toBeInTheDocument();
     });

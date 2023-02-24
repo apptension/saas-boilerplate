@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react-hooks';
+import { append } from 'ramda';
 
 import {
   contentfulDemoItemFavoriteFactory,
@@ -18,10 +19,6 @@ const allItems = [...Array(3)].map((_, i) =>
     __typename: 'ContentfulDemoItemFavoriteType',
   })
 );
-
-const renderHookWithContext = (callback: () => ReturnType<typeof useFavoriteDemoItem>) => {
-  return renderHook(callback);
-};
 
 describe('useFavoriteDemoItem: Hook', () => {
   it('should trigger correct mutation', async () => {
@@ -54,7 +51,7 @@ describe('useFavoriteDemoItem: Hook', () => {
       const mockedItems = fillUseFavouriteDemoItemListQuery(allItems);
 
       const { result, waitForApolloMocks } = renderHook(() => useFavoriteDemoItem('item-2'), {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(mockedItems),
+        apolloMocks: append(mockedItems),
       });
 
       await waitForApolloMocks();
@@ -64,7 +61,10 @@ describe('useFavoriteDemoItem: Hook', () => {
 
   describe('item is not favorited', () => {
     it('should return { isFavorite: false }', async () => {
-      const { result, waitForApolloMocks } = renderHookWithContext(() => useFavoriteDemoItem('item-3'));
+      const mockedItems = fillUseFavouriteDemoItemListQuery(allItems);
+      const { result, waitForApolloMocks } = renderHook(() => useFavoriteDemoItem('item-999'), {
+        apolloMocks: append(mockedItems),
+      });
       await waitForApolloMocks();
       expect(result.current.isFavorite).toBe(false);
     });

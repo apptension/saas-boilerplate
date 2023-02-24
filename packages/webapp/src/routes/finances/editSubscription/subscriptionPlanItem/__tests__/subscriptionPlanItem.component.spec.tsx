@@ -1,12 +1,13 @@
 import { useQuery } from '@apollo/client';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import {
   fillSubscriptionPlansAllQuery,
   fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
@@ -18,6 +19,8 @@ import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/ac
 import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { subscriptionPlansAllQuery } from '../../subscriptionPlans/subscriptionPlans.graphql';
 import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscriptionPlanItem.component';
+
+const defaultPaymentPlan = [paymentMethodFactory()];
 
 describe('SubscriptionPlanItem: Component', () => {
   const defaultProps: Pick<SubscriptionPlanItemProps, 'onSelect'> = { onSelect: () => jest.fn() };
@@ -55,23 +58,42 @@ describe('SubscriptionPlanItem: Component', () => {
     product: { name: SubscriptionPlanName.MONTHLY },
   });
 
+  const yearlyPlan = subscriptionPlanFactory({
+    id: 'plan_yearly',
+    pk: 'price_yearly',
+    product: { name: SubscriptionPlanName.YEARLY },
+  });
+
   const subscriptionWithMonthlyPlan = subscriptionFactory({
     phases: [subscriptionPhaseFactory({ item: { price: monthlyPlan } })],
   });
 
-  it('should render name', async () => {
-    const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
-    render(<Wrapper />, {
-      apolloMocks: append(requestPlansMock),
+  describe('should render without errors', () => {
+    it('should render name', async () => {
+      const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(
+        [subscriptionPhaseFactory({ item: { price: monthlyPlan } })],
+        defaultPaymentPlan
+      );
+      render(<Wrapper />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
+      });
+
+      expect(await screen.findByText(/monthly/i)).toBeInTheDocument();
     });
 
-    expect(await screen.findByText(/monthly/i)).toBeInTheDocument();
-  });
+    it('should render plan price', async () => {
+      const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(
+        [subscriptionPhaseFactory({ item: { price: monthlyPlan } })],
+        defaultPaymentPlan
+      );
 
-  it('should render plan price', async () => {
-    const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
-    render(<Wrapper />, { apolloMocks: append(requestPlansMock) });
-    expect(await screen.findByText(/10 USD/i)).toBeInTheDocument();
+      render(<Wrapper />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
+      });
+      expect(await screen.findByText(/10 USD/i)).toBeInTheDocument();
+    });
   });
 
   describe('button is clicked', () => {
@@ -79,14 +101,17 @@ describe('SubscriptionPlanItem: Component', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
         const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+        const requestMock = fillSubscriptionScheduleQueryWithPhases(
+          [subscriptionPhaseFactory({ item: { price: yearlyPlan } })],
+          defaultPaymentPlan
+        );
+
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          apolloMocks: append(requestPlansMock),
+          apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
         });
         await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
-        await waitFor(() => {
-          expect(onSelect).toHaveBeenCalled();
-        });
+        expect(onSelect).toHaveBeenCalled();
       });
     });
 
@@ -109,9 +134,13 @@ describe('SubscriptionPlanItem: Component', () => {
     describe('active plan is clicked, but is has already been cancelled', () => {
       it('should call onSelect', async () => {
         const onSelect = jest.fn();
+        const requestMock = fillSubscriptionScheduleQueryWithPhases(
+          [subscriptionPhaseFactory({ item: { price: yearlyPlan } })],
+          defaultPaymentPlan
+        );
         const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          apolloMocks: append(requestPlansMock),
+          apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
         });
         await waitForApolloMocks();
         await userEvent.click(screen.getByText(/select/i));
@@ -122,17 +151,28 @@ describe('SubscriptionPlanItem: Component', () => {
 
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
-      const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory({ canActivateTrial: true }));
-      render(<Wrapper />, { apolloMocks: append(requestMock) });
+      const activableTrialSubscription = subscriptionFactory({ canActivateTrial: true });
+      const requestSubscriptionMock = fillSubscriptionScheduleQuery(activableTrialSubscription);
+      const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+
+      const { waitForApolloMocks } = render(<Wrapper />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionMock, requestPlansMock),
+      });
+      await waitForApolloMocks();
       expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();
     });
   });
 
   describe('trial is illegible', () => {
     it('should not show trial info', async () => {
-      const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory({ canActivateTrial: false }));
-      const { waitForApolloMocks } = render(<Wrapper />, { apolloMocks: append(requestMock) });
+      const requestSubscriptionMock = fillSubscriptionScheduleQuery(subscriptionFactory({ canActivateTrial: false }));
+      const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
+
+      const { waitForApolloMocks } = render(<Wrapper />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionMock, requestPlansMock),
+      });
       await waitForApolloMocks();
+
       expect(screen.queryByText(/will start with a trial/gi)).not.toBeInTheDocument();
     });
   });

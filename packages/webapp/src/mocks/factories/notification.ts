@@ -1,4 +1,7 @@
-import { notificationsListQuery } from '../../shared/components/notifications/notifications.graphql';
+import {
+  notificationsListQuery,
+  notificationsListSubscription,
+} from '../../shared/components/notifications/notifications.graphql';
 import { NotificationTypes } from '../../shared/components/notifications/notifications.types';
 import { NotificationType } from '../../shared/services/graphqlApi';
 import { composeMockedPaginatedListQueryResult, makeId } from '../../tests/utils/fixtures';
@@ -27,6 +30,22 @@ export const fillNotificationsListQuery = (
       variables: {
         count: 20,
       },
+      additionalData,
+    },
+    { endCursor: 'test', hasNextPage: false }
+  );
+};
+
+export const fillNotificationsSubscriptionQuery = (
+  notifications: Array<Partial<NotificationType>> = [],
+  additionalData?: Record<string, any>
+) => {
+  return composeMockedPaginatedListQueryResult(
+    notificationsListSubscription,
+    'notificationCreated',
+    'NotificationType',
+    {
+      data: notifications,
       additionalData,
     },
     { endCursor: 'test', hasNextPage: false }

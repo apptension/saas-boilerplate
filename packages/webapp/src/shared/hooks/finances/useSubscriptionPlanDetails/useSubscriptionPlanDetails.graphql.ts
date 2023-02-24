@@ -1,7 +1,7 @@
 import { gql } from '../../../services/graphqlApi/__generated/gql';
 
 export const subscriptionActiveFragment = gql(/* GraphQL */ `
-  fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
+  fragment subscriptionActiveSubscriptionDetailsFragment on SubscriptionScheduleType {
     phases {
       startDate
       endDate
@@ -27,15 +27,6 @@ export const subscriptionActiveFragment = gql(/* GraphQL */ `
     }
   }
 
-  fragment subscriptionPlanItemFragment on SubscriptionPlanType {
-    id
-    pk
-    product {
-      id
-      name
-    }
-    unitAmount
-  }
 
   fragment stripePaymentMethodFragment_ on StripePaymentMethodType {
     id

@@ -6,7 +6,12 @@ export const subscriptionPlansAllQuery = gql(/* GraphQL */ `
       edges {
         node {
           id
-          ...subscriptionPlanItemFragment
+          pk
+          product {
+            id
+            name
+          }
+          unitAmount
         }
       }
     }

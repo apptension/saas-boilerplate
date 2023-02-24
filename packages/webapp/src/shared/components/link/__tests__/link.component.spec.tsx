@@ -21,7 +21,12 @@ describe('Link: Component', () => {
   it('should call onClick prop when clicked', async () => {
     const label = <span>PRESS HERE</span>;
     const onClick = jest.fn();
-    render(<Component onClick={onClick}>{label}</Component>);
+
+    render(
+      <Component href="#" onClick={onClick}>
+        {label}
+      </Component>
+    );
 
     fireEvent.click(await screen.findByText('PRESS HERE'));
     expect(onClick).toHaveBeenCalled();

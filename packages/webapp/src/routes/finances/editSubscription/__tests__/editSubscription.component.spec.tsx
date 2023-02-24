@@ -5,7 +5,8 @@ import { Route, Routes } from 'react-router-dom';
 
 import {
   fillSubscriptionPlansAllQuery,
-  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
+  subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../mocks/factories';
 import { snackbarActions } from '../../../../modules/snackbar';
@@ -36,19 +37,26 @@ const mockMutationVariables = { input: { price: 'plan_monthly' } };
 const mockMutationData = {
   changeActiveSubscription: {
     subscriptionSchedule: {
+      id: 'mutation-test-id',
       phases: [],
       subscription: null,
       canActivateTrial: true,
-      defaultPaymentMethod: {},
+      defaultPaymentMethod: {
+        id: 'payment-method-id',
+      },
       __typename: 'SubscriptionScheduleType',
     },
     __typename: 'ChangeActiveSubscriptionMutationPayload',
   },
 };
 
-const fillCurrentSubscriptionQuery = () =>
-  fillSubscriptionScheduleQuery(subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }));
+const phases = [
+  subscriptionPhaseFactory({
+    item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+  }),
+];
 
+const fillCurrentSubscriptionQuery = () => fillSubscriptionScheduleQueryWithPhases(phases);
 const fillChangeSubscriptionMutation = (errors?: GraphQLError[]) =>
   composeMockedQueryResult(subscriptionChangeActiveMutation, {
     data: mockMutationData,

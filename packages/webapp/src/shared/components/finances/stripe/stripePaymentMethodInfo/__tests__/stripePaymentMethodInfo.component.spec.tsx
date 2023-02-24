@@ -1,14 +1,19 @@
-import { screen } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
+import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
-import { fillAllPaymentsMethodsQuery, paymentMethodFactory } from '../../../../../../mocks/factories';
-import { render } from '../../../../../../tests/utils/rendering';
-import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
+import {
+  fillSubscriptionScheduleQuery,
+  fillSubscriptionScheduleQueryWithPhases,
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+} from '../../../../../../mocks/factories';
 import { matchTextContent } from '../../../../../../tests/utils/match';
-import { stripeSubscriptionQuery } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { render } from '../../../../../../tests/utils/rendering';
 import { mapConnection } from '../../../../../utils/graphql';
-import { Subscription } from '../../../../../services/api/subscription/types';
+import { stripeSubscriptionQuery } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
 
 const Component = (props: Partial<StripePaymentMethodInfoProps>) => {
   const { data } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
@@ -23,14 +28,17 @@ describe('StripePaymentMethodInfo: Component', () => {
   const paymentMethods = [paymentMethodFactory()];
 
   it('should render all info', async () => {
-    const requestMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const requestMock = fillSubscriptionScheduleQueryWithPhases([subscriptionPhaseFactory()], paymentMethods);
+
     render(<Component />, { apolloMocks: append(requestMock) });
     expect(await screen.findByText(matchTextContent('MockLastName Visa **** 9999'))).toBeInTheDocument();
   });
 
   describe('method is not specified', () => {
     it('should render "None" string', async () => {
-      render(<Component />);
+      const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory());
+
+      render(<Component />, { apolloMocks: append(requestMock) });
       expect(await screen.findByText('None'));
     });
   });

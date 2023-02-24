@@ -1,11 +1,11 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import {
   fillActivePlanDetailsQuery,
-  fillAllPaymentsMethodsQuery,
+  fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
@@ -25,6 +25,7 @@ import { Subscriptions } from '../subscriptions.component';
 const defaultPaymentPlan = [paymentMethodFactory()];
 
 const defaultActivePlan = {
+  id: defaultPaymentPlan[0].id,
   defaultPaymentMethod: {
     id: defaultPaymentPlan[0].id,
   },
@@ -52,6 +53,12 @@ const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = () => {
   ]);
 };
 
+const resolveActiveSubscriptionMocks = (subscription = defaultActivePlan as SubscriptionType) => {
+  const activePlanMock = fillActivePlanDetailsQuery(subscription);
+  const stripeChargesMock = fillAllStripeChargesQuery();
+  return [activePlanMock, stripeChargesMock];
+};
+
 const CANCEL_PLACEHOLDER_ID = 'cancel';
 const EDIT_PLACEHOLDER_ID = 'edit';
 
@@ -68,16 +75,20 @@ const Component = () => (
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
     const requestMock = resolveSubscriptionDetailsQuery();
-    render(<Component />, { apolloMocks: append(requestMock) });
+
+    render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+    });
 
     expect(await screen.findByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
   });
 
   it('should render default payment method', async () => {
-    const requestPaymentsMock = fillAllPaymentsMethodsQuery(defaultPaymentPlan as Partial<SubscriptionType>[]);
-    const requestPlanDetailsMock = fillActivePlanDetailsQuery(defaultActivePlan as SubscriptionType);
+    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory(), defaultPaymentPlan);
+
     render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat([requestPaymentsMock, requestPlanDetailsMock]),
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat(requestSubscriptionScheduleMock, resolveActiveSubscriptionMocks()),
     });
 
     expect(await screen.findByText('MockLastName Visa **** 9999')).toBeInTheDocument();
@@ -86,7 +97,10 @@ describe('Subscriptions: Component', () => {
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
       const requestMock = resolveSubscriptionDetailsQuery();
-      render(<Component />, { apolloMocks: append(requestMock) });
+
+      render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      });
 
       expect(await screen.findByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
     });
@@ -102,7 +116,10 @@ describe('Subscriptions: Component', () => {
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
-      render(<Component />, { apolloMocks: append(requestMock) });
+
+      render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      });
 
       expect(await screen.findByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
     });
@@ -118,7 +135,10 @@ describe('Subscriptions: Component', () => {
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
       const requestMock = resolveSubscriptionDetailsQuery();
-      render(<Component />, { apolloMocks: append(requestMock) });
+
+      render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      });
 
       await userEvent.click(await screen.findByText(/edit subscription/i));
       expect(screen.getByTestId(EDIT_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -152,7 +172,10 @@ describe('Subscriptions: Component', () => {
       const activeSubscription = subscriptionFactory();
 
       const requestMock = fillSubscriptionScheduleQuery(activeSubscription);
-      render(<Component />, { apolloMocks: append(requestMock) });
+
+      render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
       expect(screen.getByTestId(CANCEL_PLACEHOLDER_ID)).toBeInTheDocument();
@@ -161,11 +184,13 @@ describe('Subscriptions: Component', () => {
 
   describe('trial section', () => {
     it('shouldnt be displayed if user has no trial active', async () => {
-      const { waitForApolloMocks } = render(<Component />);
-      await waitForApolloMocks();
-      await act(() => {
-        resolveSubscriptionDetailsQuery();
+      const requestMock = resolveSubscriptionDetailsQuery();
+
+      const { waitForApolloMocks } = render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
       });
+      await waitForApolloMocks();
+
       expect(screen.queryByText(/free trial info/gi)).not.toBeInTheDocument();
     });
 
@@ -183,7 +208,10 @@ describe('Subscriptions: Component', () => {
       });
 
       const requestMock = fillSubscriptionScheduleQuery(activeSubscription);
-      render(<Component />, { apolloMocks: append(requestMock) });
+
+      render(<Component />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      });
 
       expect(
         await screen.findByText(matchTextContent(/free trial info.*expiry date.*january 01, 2099/gi))
