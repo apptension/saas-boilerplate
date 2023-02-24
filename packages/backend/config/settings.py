@@ -74,6 +74,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 ROOT_URLCONF = "config.urls_api"
 ROOT_HOSTCONF = "config.hosts"
@@ -229,6 +230,7 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'public_profile']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email',
 }
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
 
 SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'config.urls_api.api_info',
