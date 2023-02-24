@@ -1,8 +1,10 @@
 import { resolve } from 'path';
-import { defineConfig, mergeConfig } from 'vite';
+
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import polyfillNode from 'rollup-plugin-polyfill-node';
+import { defineConfig, mergeConfig } from 'vite';
+
 import webappConfigFactory from './vite.config';
 
 export default defineConfig(async (props) => {

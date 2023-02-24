@@ -1,5 +1,5 @@
-import React, { FunctionComponent, PropsWithChildren, useCallback } from 'react';
 import { useQuery } from '@apollo/client';
+import React, { FunctionComponent, PropsWithChildren, useCallback } from 'react';
 
 import commonDataContext from './commonQuery.context';
 import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
