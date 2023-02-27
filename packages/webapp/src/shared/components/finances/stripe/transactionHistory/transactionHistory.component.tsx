@@ -6,7 +6,7 @@ import { mapConnection } from '../../../../utils/graphql';
 import { Container, Entry, HeaderCell, HeaderRow } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {
-  const { data } = useQuery(stripeAllChargesQuery);
+  const { data } = useQuery(stripeAllChargesQuery, { fetchPolicy: 'cache-and-network' });
 
   return (
     <Container>
