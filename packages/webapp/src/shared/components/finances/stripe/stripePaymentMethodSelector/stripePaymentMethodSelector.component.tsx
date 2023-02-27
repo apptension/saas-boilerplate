@@ -235,6 +235,7 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
               {paymentMethods?.length > 0 && (
                 <PaymentMethodListItem>
                   <NewPaymentMethodItem
+                    type="button"
                     isSelected={value.type === StripePaymentMethodSelectionType.NEW_CARD}
                     onClick={() => {
                       handleChange({
