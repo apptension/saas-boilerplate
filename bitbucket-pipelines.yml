@@ -20,8 +20,8 @@ definitions:
 
   scripts:
     initializeStep: &initializeStep cp .env.test .env
-      && npm -g config set user root
-      && curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=7.25.0 bash -
+      && corepack enable
+      && corepack prepare pnpm@7.25.0 --activate
       && export PNPM_HOME="/root/.local/share/pnpm"
       && export PATH="$PNPM_HOME:$PATH"
 
