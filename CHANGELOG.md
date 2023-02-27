@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://bitbucket.org/apptension/saas-boilerplate-app/compare/1.1.1...1.1.2) (2023-02-27)
+
+
+### Bug Fixes
+
+* SB-730 Remove invalid hasher and export
+* SB-714 Upgrade serverless to v3, fix websockets
+* Fixed referencing AWS variables in functions' serverless.yml file. ([cdda7fd](https://bitbucket.org/apptension/saas-boilerplate-app/commit/cdda7fd09ecde3e1054ffd1d7f0cdbc086e940fe))
+* SB-693 Fixed error returned by updateCurrentUser mutation if user has no avatar set. ([f1a6ecf](https://bitbucket.org/apptension/saas-boilerplate-app/commit/f1a6ecf5ca40798865fd2f81c8befef9b4653e1d))
+* SB-770 Updated graphene-django to version 3.0.0
+* SB-780 Upgraded django to version 4.1.5 (and DRF to version 3.14.0)
+
 ### [1.1.1](https://bitbucket.org/apptension/saas-boilerplate-app/compare/1.1.0...1.1.1) (2022-12-09)
 
 
