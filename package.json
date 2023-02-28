@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "aws-vault:shell": "aws-vault exec $AWS_VAULT_PROFILE -- $SHELL",
-    "login:qa": "env-cmd -f .env.qa npm run aws-vault:shell"
+    "login:qa": "env-cmd -f .env.qa npm run aws-vault:shell",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@nrwl/devkit": "15.6.3",
@@ -21,20 +22,22 @@
     "@swc/core": "^1.2.173",
     "@swc/helpers": "~0.4.11",
     "@types/node": "16.11.7",
-    "babel-plugin-relay": "^14.1.0",
-    "env-cmd": "^10.1.0",
-    "jsonc-eslint-parser": "^2.1.0",
-    "nx": "^15.4.5",
-    "prettier": "^2.6.2",
-    "tsconfig-paths": "^4.1.2",
-    "ts-node": "10.9.1",
-    "tslib": "^2.3.0",
-    "typescript": "~4.8.2",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "babel-plugin-relay": "^14.1.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "npm:eslint-plugin-i@^2.26.0",
-    "eslint-import-resolver-typescript": "^3.5.3"
+    "husky": "^8.0.0",
+    "jsonc-eslint-parser": "^2.1.0",
+    "lint-staged": "^10.5.4",
+    "nx": "^15.4.5",
+    "prettier": "^2.6.2",
+    "ts-node": "10.9.1",
+    "tsconfig-paths": "^4.1.2",
+    "tslib": "^2.3.0",
+    "typescript": "~4.8.2"
   }
 }
