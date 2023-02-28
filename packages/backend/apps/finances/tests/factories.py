@@ -287,3 +287,23 @@ class WebhookEventFactory(factory.django.DjangoModelFactory):
         model = djstripe_models.Event
 
     id = factory.Faker('uuid4')
+
+
+class RefundFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = djstripe_models.Refund
+        django_get_or_create = ('id',)
+
+    id = factory.Faker('uuid4')
+    livemode = False
+    amount = factory.Faker('pyint', min_value=1000, max_value=9999)
+    balance_transaction = factory.SubFactory(
+        BalanceTransactionFactory,
+        source=factory.LazyAttribute(lambda obj: obj.id),
+        reporting_category=enums.BalanceTransactionReportingCategory.charge,
+        type=enums.BalanceTransactionType.charge,
+    )
+    charge = factory.SubFactory(ChargeFactory, amount_refunded=factory.LazyAttribute(lambda obj: obj.amount))
+    currency = 'usd'
+    reason = enums.RefundReason.duplicate
+    status = enums.RefundStatus.succeeded

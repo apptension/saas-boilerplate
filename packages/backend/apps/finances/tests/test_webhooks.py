@@ -1,5 +1,7 @@
 import datetime
 
+from djstripe.enums import RefundStatus, RefundFailureReason
+
 import calleee
 import pytest
 
@@ -135,3 +137,17 @@ class TestPaymentMethodDetached:
         webhook_event.invoke_webhook_handlers()
 
         assert not djstripe_models.PaymentMethod.objects.filter(id=payment_method.id).exists()
+
+
+class TestChargeRefunded:
+    def test_failed_refund_is_marked_unsuccessful(self, webhook_event_factory, refund, balance_transaction_factory):
+        webhook_event = webhook_event_factory(
+            type='charge.refund.updated',
+            data={'object': {'object': 'refund', 'id': refund.id, 'failure_reason': "expired_or_canceled_card"}},
+        )
+
+        webhook_event.invoke_webhook_handlers()
+
+        assert djstripe_models.Refund.objects.filter(
+            id=refund.id, status=RefundStatus.failed, failure_reason=RefundFailureReason.expired_or_canceled_card
+        ).exists()

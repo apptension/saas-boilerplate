@@ -20,6 +20,7 @@ pytest_factoryboy.register(factories.SubscriptionFactory)
 pytest_factoryboy.register(factories.SubscriptionItemFactory)
 pytest_factoryboy.register(factories.SubscriptionScheduleFactory)
 pytest_factoryboy.register(factories.WebhookEventFactory)
+pytest_factoryboy.register(factories.RefundFactory)
 
 
 @pytest.fixture(autouse=True)

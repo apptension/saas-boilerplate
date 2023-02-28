@@ -5,7 +5,7 @@ from django.utils import timezone
 from djstripe import webhooks, models as djstripe_models
 
 from . import constants, notifications, models
-from .services import subscriptions, customers
+from .services import subscriptions, customers, charges
 
 logger = logging.getLogger(__name__)
 
@@ -90,3 +90,19 @@ def send_email_trial_expires_soon(event: djstripe_models.Event):
     obj = event.data['object']
     expiry_date = timezone.datetime.fromtimestamp(obj['trial_end'], tz=datetime.timezone.utc)
     notifications.TrialExpiresSoonEmail(customer=event.customer, data={'expiry_date': expiry_date}).send()
+
+
+@webhooks.handler('charge.refund.updated')
+def charge_refund_updated(event: djstripe_models.Event):
+    """
+    There is a case when a charge succeeds but refunding a captured charge fails asynchronously with a failure_reason
+    of expired_or_canceled_card. Because refund failures are asynchronous, the refund will appear to be successful
+    at first and will only have the failed status on subsequent fetches.
+
+    :param event:
+    :return:
+    """
+    refund_data = event.data['object']
+    if failure_reason := refund_data.get("failure_reason", ""):
+        refund = djstripe_models.Refund.objects.get(id=refund_data.get("id"))
+        charges.fail_charge_refund(refund=refund, reason=failure_reason)
