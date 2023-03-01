@@ -5,11 +5,11 @@ import {
   PaymentFormFields,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { subscriptionActiveFragment } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
-import { useApiForm } from '../../../../shared/hooks/useApiForm';
+import { useApiForm } from '../../../../shared/hooks/';
 import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { subscriptionActiveFragment } from '../../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 

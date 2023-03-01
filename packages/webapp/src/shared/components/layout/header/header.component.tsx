@@ -8,12 +8,9 @@ import { ButtonVariant } from '../../forms/button';
 import { Link as ButtonLink } from '../../link';
 import { Snackbar } from '../../snackbar';
 import { LayoutContext } from '../layout.context';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import { useMediaQuery , useGenerateLocalePath , useAuth , useOpenState } from '../../../hooks/';
 import { Breakpoint } from '../../../../theme/media';
-import { useOpenState } from '../../../hooks/useOpenState';
 import { Notifications } from '../../notifications';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { useAuth } from '../../../hooks/useAuth/useAuth';
 import {
   Avatar,
   Container,

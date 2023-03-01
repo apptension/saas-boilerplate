@@ -1,6 +1,7 @@
 import { FormattedMessage } from 'react-intl';
-import { Button, Layout } from '../../base';
+
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
+import { Button, Layout } from '../../base';
 
 export const Template = () => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();

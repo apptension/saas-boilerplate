@@ -2,7 +2,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Input } from '../../forms/input';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { FormFieldsRow } from '../../../../theme/size';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
+import { useGenerateLocalePath } from '../../../hooks/';
 import { Checkbox, Container, ErrorMessage, InlineLink, SubmitButton } from './signupForm.styles';
 import { useSignupForm } from './signupForm.hooks';
 

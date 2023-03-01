@@ -4,15 +4,13 @@ import closeIcon from '@iconify-icons/ion/close-outline';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { RoleAccess } from '../../roleAccess';
 import { Role } from '../../../../modules/auth/auth.types';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import { useMediaQuery , useGenerateLocalePath , useAuth } from '../../../hooks/';
 import { Breakpoint } from '../../../../theme/media';
 import { Icon } from '../../icon';
 import { Link } from '../../link';
 import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
 import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { useAuth } from '../../../hooks/useAuth/useAuth';
 import { CloseButton, Container, Header, MenuLink, MenuLinks } from './sidebar.styles';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {

@@ -3,14 +3,14 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
-import {
-  subscriptionActiveFragment,
-  subscriptionActivePlanDetailsQuery,
-} from '../../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { mapConnection } from '../../../shared/utils/graphql';
+import {
+  subscriptionActiveFragment,
+  subscriptionActivePlanDetailsQuery,
+} from '../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { Link, Row, RowValue } from './subscriptions.styles';
 
 export type PaymentMethodContentProps = {

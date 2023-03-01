@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { subscriptionChangeActiveMutation } from './editSubscription.graphql';
 
 export const useEditSubscription = () => {

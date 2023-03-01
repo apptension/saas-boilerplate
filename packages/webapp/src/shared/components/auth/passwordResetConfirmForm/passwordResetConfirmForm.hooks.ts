@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useSnackbar } from '../../../../modules/snackbar';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { useApiForm } from '../../../hooks/useApiForm';
+import { useApiForm, useGenerateLocalePath } from '../../../hooks/';
 import { authRequestPasswordResetConfirmMutation } from './passwordResetConfirmForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 

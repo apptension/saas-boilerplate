@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Breakpoint } from '../../../theme/media';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useMediaQuery } from '../../hooks/';
 
 export type HiddenOnPlatformComponentProps = {
   children?: ReactNode;

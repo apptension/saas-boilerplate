@@ -1,9 +1,7 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { Role } from '../../../../modules/auth/auth.types';
-import { useRoleAccessCheck } from '../../../hooks/useRoleAccessCheck';
+import { useRoleAccessCheck , useGenerateLocalePath , useAuth } from '../../../hooks/';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../hooks/localePaths';
-import { useAuth } from '../../../hooks/useAuth/useAuth';
 
 export type AuthRouteProps = {
   allowedRoles?: Role | Role[];

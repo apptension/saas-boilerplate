@@ -1,7 +1,8 @@
 import { FormattedMessage } from 'react-intl';
-import { EmailComponentProps } from '../../types';
-import { Button, Layout } from '../../base';
+
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
+import { Button, Layout } from '../../base';
+import { EmailComponentProps } from '../../types';
 
 export type PasswordResetProps = EmailComponentProps & {
   userId: string;

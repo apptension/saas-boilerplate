@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { EmptyState } from '../../shared/components/emptyState';
 import { Dropzone } from '../../shared/components/forms/dropzone';
-import { useMappedConnection } from '../../shared/hooks/useMappedConnection';
+import { useMappedConnection } from '../../shared/hooks/';
 import { DocumentsListQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Document, DocumentSkeleton } from './document';
 import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';

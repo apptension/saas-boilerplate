@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Notification } from '../../notification';
 import { NotificationType } from '../../notifications.types';
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../hooks/localePaths';
+import { useGenerateLocalePath } from '../../../../hooks/';
 
 export type CrudItemUpdatedProps = NotificationType<{
   id: string;

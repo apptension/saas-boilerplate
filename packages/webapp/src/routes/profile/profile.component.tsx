@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
-import { useAuth } from '../../shared/hooks/useAuth/useAuth';
+import { useAuth } from '../../shared/hooks/';
 import { AvatarForm } from '../../shared/components/auth/avatarForm';
 import { Container, EmailLabel, RolesLabel, FormHeader, HeaderInfo, Header } from './profile.styles';
 

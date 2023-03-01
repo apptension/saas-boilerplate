@@ -3,9 +3,9 @@ import { FormattedMessage } from 'react-intl';
 import { BackButton } from '../../../shared/components/backButton';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { Button } from '../../../shared/components/forms/button';
-import { useActiveSubscriptionDetailsData } from '../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { H3 } from '../../../theme/typography';
 import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
+import { useActiveSubscriptionDetailsData } from '../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { useCancelSubscription } from './cancelSubscription.hook';
 import { Container, Row, RowValue } from './cancelSubscription.styles';
 

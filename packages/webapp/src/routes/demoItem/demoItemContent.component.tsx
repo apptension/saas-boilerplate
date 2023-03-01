@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../app/config/routes';
 import { imageProps } from '../../shared/services/contentful';
 import { BackButton } from '../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../shared/hooks/';
 import { DemoItemQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, Description, Image, Title } from './demoItem.styles';
 

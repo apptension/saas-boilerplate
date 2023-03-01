@@ -5,7 +5,7 @@ import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { useSnackbar } from '../../../modules/snackbar';
 import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';

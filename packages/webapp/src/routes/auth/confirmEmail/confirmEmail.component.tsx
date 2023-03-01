@@ -5,8 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useSnackbar } from '../../../modules/snackbar';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { useAuth } from '../../../shared/hooks/useAuth/useAuth';
+import { useAuth, useGenerateLocalePath } from '../../../shared/hooks/';
 import { reportError } from '../../../shared/utils/reportError';
 import { authConfirmUserEmailMutation } from './confirmEmail.graphql';
 

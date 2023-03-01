@@ -1,8 +1,9 @@
 import { FormattedMessage } from 'react-intl';
-import { Button, Layout } from '../../base';
-import { EmailComponentProps } from '../../types';
+
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
+import { Button, Layout } from '../../base';
+import { EmailComponentProps } from '../../types';
 
 export type TrialExpiresSoonProps = EmailComponentProps & {
   expiryDate: string;

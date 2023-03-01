@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useIntl } from 'react-intl';
 
 import { useSnackbar } from '../../../../modules/snackbar';
-import { useApiForm } from '../../../hooks/useApiForm';
+import { useApiForm } from '../../../hooks/';
 import { useFormatFileSize } from '../../fileSize';
 import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';

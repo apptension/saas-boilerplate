@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useSnackbar } from '../../../modules/snackbar/snackbar.hooks';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { reportError } from '../../../shared/utils/reportError';
 import { subscriptionCancelMutation } from './cancelSubscription.graphql';
 

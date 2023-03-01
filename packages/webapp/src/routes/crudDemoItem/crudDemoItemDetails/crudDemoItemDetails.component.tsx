@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { BackButton } from '../../../shared/components/backButton';
 import { RoutesConfig } from '../../../app/config/routes';
 import { Container, Header } from './crudDemoItemDetails.styles';

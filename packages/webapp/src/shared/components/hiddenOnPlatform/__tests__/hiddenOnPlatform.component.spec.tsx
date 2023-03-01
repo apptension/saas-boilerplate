@@ -2,10 +2,10 @@ import { screen } from '@testing-library/react';
 import { HiddenOnPlatformComponentProps } from '../hiddenOnPlatform.component';
 import { HiddenOnPlatform } from '../index';
 import { render } from '../../../../tests/utils/rendering';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import { useMediaQuery } from '../../../hooks/';
 import { Breakpoint } from '../../../../theme/media';
 
-jest.mock('../../../hooks/useMediaQuery');
+jest.mock('../../../hooks/');
 const mockedUseMediaQuery = useMediaQuery as jest.Mock;
 
 const PLACEHOLDER_TEST_ID = 'content';

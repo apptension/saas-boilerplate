@@ -1,20 +1,18 @@
-import { MouseEvent } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { MouseEvent } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useMediaQuery } from '../../../../shared/hooks/useMediaQuery';
-import { Breakpoint } from '../../../../theme/media';
-import { Link } from '../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
-import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
+import { Link } from '../../../../shared/components/link';
+import { useMediaQuery , useGenerateLocalePath } from '../../../../shared/hooks/';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
-
-import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { Breakpoint } from '../../../../theme/media';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
+import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
 export type CrudDemoItemListItemProps = {
   item: FragmentType<typeof crudDemoItemListItemFragment>;

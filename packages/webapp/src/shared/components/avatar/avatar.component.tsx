@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react';
 import { useIntl } from 'react-intl';
 
 import { sizeUnitBase } from '../../../theme/size';
-import { useAuth } from '../../hooks/useAuth/useAuth';
+import { useAuth } from '../../hooks/';
 import { ProfileInitial } from '../profileInitial';
 import { Container, Image } from './avatar.styles';
 

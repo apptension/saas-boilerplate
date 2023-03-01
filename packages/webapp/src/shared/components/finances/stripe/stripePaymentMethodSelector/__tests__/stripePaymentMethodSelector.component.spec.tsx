@@ -9,7 +9,7 @@ import {
 } from '../../../../../../mocks/factories';
 import { matchTextContent } from '../../../../../../tests/utils/match';
 import { render } from '../../../../../../tests/utils/rendering';
-import { useApiForm } from '../../../../../hooks/useApiForm';
+import { useApiForm } from '../../../../../hooks/';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector.component';
 import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
 

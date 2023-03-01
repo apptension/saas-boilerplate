@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { ButtonVariant } from '../../../shared/components/forms/button';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { mapConnection } from '../../../shared/utils/graphql';
 import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';

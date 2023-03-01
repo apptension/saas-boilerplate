@@ -1,7 +1,7 @@
-import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails.hook';
 import { subscriptionPlanFactory } from '../../../../../mocks/factories';
+import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
 import { renderHook } from '../../../../../tests/utils/rendering';
-import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
+import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails.hook';
 
 const plan = subscriptionPlanFactory({
   unitAmount: 250,

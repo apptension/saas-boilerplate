@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
 import { Link } from '../../../../shared/components/link';
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../../shared/hooks/';
 import { Container, Header, Text, Links } from './passwordResetRequest.styles';
 
 export const PasswordResetRequest = () => {

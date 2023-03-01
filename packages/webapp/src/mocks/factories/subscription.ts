@@ -1,6 +1,6 @@
 import { subscriptionPlansAllQuery } from '../../routes/finances/editSubscription/subscriptionPlans/subscriptionPlans.graphql';
+import { subscriptionActivePlanDetailsQuery } from '../../routes/finances/hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { stripeSubscriptionQuery } from '../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { subscriptionActivePlanDetailsQuery } from '../../shared/hooks/finances/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { StripePaymentMethod } from '../../shared/services/api/stripe/paymentMethod';
 import {
   Subscription,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 
-import { useApiForm } from '../../../hooks/useApiForm';
+import { useApiForm } from '../../../hooks/';
 
 import { authRequestPasswordResetMutation } from './passwordResetRequestForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetRequestForm.types';

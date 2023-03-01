@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { stripePromise } from '../../../shared/services/stripe';
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { useSnackbar } from '../../../modules/snackbar';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-import { useActiveSubscriptionQueryLoader } from '../../../shared/hooks/finances/useSubscriptionPlanDetails';
+import { useActiveSubscriptionQueryLoader } from '../hooks/useSubscriptionPlanDetails';
 import { ActiveSubscriptionDetailsContextType } from './activeSubscriptionContext.hooks';
 
 export const ActiveSubscriptionContext = () => {

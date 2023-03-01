@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { useWindowListener } from '../../../shared/hooks/useWindowListener';
+import { useWindowListener } from '../../../shared/hooks/';
 import { getActiveBreakpoint } from '../../../theme/media';
 
 export type ResponsiveThemeProviderProps = {

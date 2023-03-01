@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl';
 
+import { useSubscriptionPlanDetails } from '../../../../../../routes/finances/hooks/useSubscriptionPlanDetails';
 import {
   STRIPE_CHARGE_FRAGMENT,
   SUBSCRIPTION_PLAN_ITEM_FRAGMENT,
 } from '../../../../../../routes/finances/subscriptions/subscriptions.graphql';
 import { FragmentType, useFragment } from '../../../../../../shared/services/graphqlApi/__generated/gql';
-import { useSubscriptionPlanDetails } from '../../../../../hooks/finances/useSubscriptionPlanDetails';
 import { FormattedDate } from '../../../../dateTime/formattedDate';
 import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { Amount, Card, Container, Details, TransactionDate } from './transactionHistoryEntry.styles';

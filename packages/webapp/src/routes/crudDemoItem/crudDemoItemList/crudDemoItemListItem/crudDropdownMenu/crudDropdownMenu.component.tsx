@@ -8,7 +8,7 @@ import { Link as ButtonLink } from '../../../../../shared/components/link';
 import { Button, ButtonVariant } from '../../../../../shared/components/forms/button';
 import { Icon } from '../../../../../shared/components/icon';
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../../../shared/hooks/';
 
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 

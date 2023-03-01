@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { RoutesConfig } from '../../../app/config/routes';
 import { asyncComponent } from '../../../shared/utils/asyncComponent';
 

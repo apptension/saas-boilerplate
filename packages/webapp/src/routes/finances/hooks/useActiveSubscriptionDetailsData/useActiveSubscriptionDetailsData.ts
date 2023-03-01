@@ -1,6 +1,6 @@
-import { SubscriptionPlan, SubscriptionPlanName } from '../../../services/api/subscription/types';
-import { SubscriptionActivePlanDetailsQuery_Query } from '../../../services/graphqlApi/__generated/gql/graphql';
-import { useFragment } from '../../../services/graphqlApi/__generated/gql';
+import { SubscriptionPlan, SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { SubscriptionActivePlanDetailsQuery_Query } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails';
 import { subscriptionActiveSubscriptionFragment } from './useActiveSubscriptionDetailsData.graphql';
 

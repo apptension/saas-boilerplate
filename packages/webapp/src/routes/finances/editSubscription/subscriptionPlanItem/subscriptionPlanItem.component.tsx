@@ -1,9 +1,9 @@
 import { FormattedMessage } from 'react-intl';
 
-import { useActiveSubscriptionDetailsData } from '../../../../shared/hooks/finances/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
-import { useSubscriptionPlanDetails } from '../../../../shared/hooks/finances/useSubscriptionPlanDetails';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSubscriptionQueryQuery } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { useActiveSubscriptionDetailsData } from '../../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
+import { useSubscriptionPlanDetails } from '../../hooks/useSubscriptionPlanDetails';
 import { SUBSRIPTION_PLAN_ITEM_FRAGMENT } from '../subscriptionPlans/subscriptionPlans.graphql';
 import { Container, Content, Feature, FeaturesList, Name, SelectButton } from './subscriptionPlanItem.styles';
 
