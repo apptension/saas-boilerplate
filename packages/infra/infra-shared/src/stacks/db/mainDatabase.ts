@@ -33,7 +33,7 @@ export class MainDatabase extends Construct {
   }
 
   static getInstanceIdentifier(envSettings: EnvironmentSettings) {
-    return `${envSettings.projectEnvName}-main`;
+    return `${envSettings.projectEnvName}-main-db`;
   }
 
   constructor(scope: Construct, id: string, props: MainDatabaseProps) {
@@ -80,6 +80,7 @@ export class MainDatabase extends Construct {
       databaseName: 'main',
       securityGroups: [securityGroup],
       deletionProtection: true,
+      storageEncrypted: true,
     });
 
     if (instance.secret) {
