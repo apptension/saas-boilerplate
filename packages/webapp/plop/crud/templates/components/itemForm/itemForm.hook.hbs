@@ -1,0 +1,24 @@
+import { useEffect } from 'react';
+
+import { useApiForm } from '../../../shared/hooks/useApiForm';
+import { {{ pascalCase name }}FormFields, {{ pascalCase name }}FormProps } from './{{ camelCase name }}Form.component';
+
+type Use{{ pascalCase name }}FormProps = Omit<{{ pascalCase name }}FormProps, 'loading'>;
+
+export const use{{ pascalCase name }}Form = ({ error, onSubmit, initialData }: Use{{ pascalCase name }}FormProps) => {
+  const form = useApiForm<{{ pascalCase name }}FormFields>({
+    defaultValues: {
+      name: initialData?.name,
+    },
+  });
+
+  const { handleSubmit, setApolloGraphQLResponseErrors } = form;
+
+  useEffect(() => {
+    if (error) setApolloGraphQLResponseErrors(error.graphQLErrors);
+  }, [error, setApolloGraphQLResponseErrors]);
+
+  const handleFormSubmit = handleSubmit((formData: {{ pascalCase name }}FormFields) => onSubmit(formData));
+
+  return { ...form, handleFormSubmit };
+};

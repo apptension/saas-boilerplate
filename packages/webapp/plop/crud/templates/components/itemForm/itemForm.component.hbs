@@ -1,81 +1,85 @@
+import { ApolloError } from '@apollo/client';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useAsyncDispatch } from '../../../shared/utils/reduxSagaPromise';
-import { useApiForm } from '../../../shared/hooks/';
+
+import { RoutesConfig } from '../../../app/config/routes';
+import { Button, ButtonVariant } from '../../../shared/components/forms/button';
 import { Input } from '../../../shared/components/forms/input';
-import { Button } from '../../../shared/components/forms/button';
-import { {{ pascalCase name }} } from '../../../shared/services/api/{{ camelCase name }}/types';
-import { {{ camelCase name }}Actions } from '../../../modules/{{ camelCase name }}';
-import { Container, ErrorMessage, Label, Form, Row, Value } from './{{ camelCase name }}Form.styles';
+import { Link } from '../../../shared/components/link';
+import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
+import { use{{ pascalCase name }}Form } from './{{ camelCase name }}Form.hook';
+import { Buttons, Container, ErrorMessage, Fields, Form, Label } from './{{ camelCase name }}Form.styles';
 
-export type {{ pascalCase name }}FormProps = {
-  data?: {{ pascalCase name }};
-}
+const MAX_NAME_LENGTH = 255;
 
-interface {{ pascalCase name }}FormFields {
+export interface {{ pascalCase name }}FormFields {
   name: string;
 }
 
-export const {{ pascalCase name }}Form = ({ data }: {{ pascalCase name }}FormProps) => {
+export type {{ pascalCase name }}FormProps = {
+  onSubmit: (formData: {{ pascalCase name }}FormFields) => void;
+  loading: boolean;
+  initialData?: {{ pascalCase name }}FormFields | null;
+  error?: ApolloError;
+}
+
+export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loading }: {{ pascalCase name }}FormProps) => {
   const intl = useIntl();
-  const dispatch = useAsyncDispatch();
+  const generateLocalePath = useGenerateLocalePath();
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    genericError,
-    setApiResponse,
-    formState,
-  } = useApiForm<{{ pascalCase name }}FormFields>({
-    defaultValues: {
-      name: data?.name,
+    form: {
+      register,
+      formState: { errors },
     },
-  });
-
-  const onFormSubmit = async (formData: {{ pascalCase name }}FormFields) => {
-    try {
-      const action = data
-        ? {{ camelCase name }}Actions.update{{ pascalCase name }}({ id: data.id, ...formData })
-        : {{ camelCase name }}Actions.add{{ pascalCase name }}(formData);
-
-      const res = await dispatch(action);
-      setApiResponse(res);
-    } catch {}
-  };
+    genericError,
+    hasGenericErrorOnly,
+    handleFormSubmit,
+  } = use{{ pascalCase name }}Form({ initialData, onSubmit, error });
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onFormSubmit)}>
-        <Row>
+      <Form onSubmit={handleFormSubmit}>
+        <Fields>
           <Label>
             <FormattedMessage defaultMessage="Name:" id="{{ pascalCase name }} Form / Name label" />
           </Label>
           <Input
             {...register('name', {
+              maxLength: {
+                value: MAX_NAME_LENGTH,
+                message: intl.formatMessage({
+                  defaultMessage: 'Name is too long',
+                  id: '{{ pascalCase name }} form / Name max length error',
+                }),
+              },
               required: {
-              value: true,
-              message: intl.formatMessage({
-                defaultMessage: 'Name is required',
-                description: '{{ pascalCase name }} form / Name required',
-              }),
-            }})}
-            name={'name'}
+                value: true,
+                message: intl.formatMessage({
+                  defaultMessage: 'Name is required',
+                  description: '{{ pascalCase name }} form / Name required',
+                }),
+              },
+            })}
+            name="name"
             placeholder={intl.formatMessage({
               defaultMessage: 'Name',
               description: '{{ pascalCase name }} form / Name placeholder',
             })}
             error={errors.name?.message}
           />
-        </Row>
 
-        {genericError && <ErrorMessage>{genericError}</ErrorMessage>}
-        <Button type="submit">
-          <FormattedMessage defaultMessage="Save" id="{{ pascalCase name }} form / Submit button" />
-        </Button>
+          {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+        </Fields>
 
-        {formState.isSubmitSuccessful && (
-          <FormattedMessage defaultMessage="Saved successfully" id="{{ pascalCase name }} form / Success message" />
-        )}
+        <Buttons>
+          <Link to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} variant={ButtonVariant.SECONDARY}>
+            <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }} form / Cancel button" />
+          </Link>
+
+          <Button type="submit" disabled={loading}>
+            <FormattedMessage defaultMessage="Save changes" id="{{ pascalCase name }} form / Submit button" />
+          </Button>
+        </Buttons>
       </Form>
     </Container>
   );

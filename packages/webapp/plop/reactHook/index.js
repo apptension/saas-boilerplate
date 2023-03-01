@@ -35,6 +35,12 @@ module.exports = (plop) => {
         path: `${containerDirectory}/__tests__/{{ camelCase name }}.hook.spec.ts`,
         templateFile: path.join(templatesPath, '__tests__/hook.spec.hbs'),
       },
+      {
+        type: 'modify',
+        path: 'src/shared/hooks/index.ts',
+        pattern: /(\/\/<-- EXPORT HOOK -->)/g,
+        template: "export { {{ camelCase name }} } from './{{ camelCase name }}';\n$1",
+      },
     ],
   });
 };

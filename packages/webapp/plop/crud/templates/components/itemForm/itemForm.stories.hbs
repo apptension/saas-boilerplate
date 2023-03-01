@@ -1,17 +1,9 @@
 import { Story } from '@storybook/react';
-import { {{ camelCase name }}Factory } from '../../../mocks/factories';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
+
+import { withProviders } from '../../../shared/utils/storybook';
 import { {{ pascalCase name }}Form, {{ pascalCase name }}FormProps } from './{{ camelCase name }}Form.component';
 
-const item = {{ camelCase name }}Factory();
-
-const Template: Story<{{ pascalCase name }}FormProps> = (args) => {
-  return (
-    <ProvidersWrapper>
-      <{{ pascalCase name }}Form {...args} />
-    </ProvidersWrapper>
-  );
-};
+const Template: Story<{{ pascalCase name }}FormProps> = (args) => <{{ pascalCase name }}Form {...args} />;
 
 export default {
   title: '{{ pascalCase name }} / {{ pascalCase name }}Form',
@@ -19,7 +11,13 @@ export default {
 };
 
 export const WithInitialData = Template.bind({});
-WithInitialData.args = { data: item };
+WithInitialData.args = {
+  initialData: {
+    name: 'initial name',
+  },
+};
+WithInitialData.decorators = [withProviders({})];
 
 export const WithoutData = Template.bind({});
 WithoutData.args = {};
+WithoutData.decorators = [withProviders({})];

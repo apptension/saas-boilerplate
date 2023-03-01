@@ -16,7 +16,8 @@
     "cdk": "cdk",
     "diff": "cdk deploy *WebAppStack",
     "vite": "vite",
-    "graphql-codegen": "graphql-codegen"
+    "graphql-codegen": "graphql-codegen",
+    "plop": "plop"
   },
   "dependencies": {
     "@apollo/client": "^3.7.9",

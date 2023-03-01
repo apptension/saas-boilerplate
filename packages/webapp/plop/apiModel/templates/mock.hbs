@@ -3,6 +3,6 @@ import { {{ pascalCase name }}ApiGetResponseData } from '{{ relativeModulePath }
 import { {{ constantCase name }}_URL } from '{{ relativeModulePath }}/{{ camelCase name }}';
 
 export const mockGet{{ pascalCase name }} = (response: {{ pascalCase name }}ApiGetResponseData[] = []) =>
-  rest.get<void, {{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL.LIST, (req, res, ctx) => {
+  rest.get<{{ pascalCase name }}ApiGetResponseData[]>({{ constantCase name }}_URL.LIST, (req, res, ctx) => {
   return res(ctx.json(response));
 });

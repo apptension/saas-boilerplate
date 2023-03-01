@@ -1,29 +1,19 @@
 import { Story } from '@storybook/react';
-import { generatePath } from 'react-router';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
-import { prepareState } from '../../../mocks/store';
-import { {{ camelCase name }}Factory } from '../../../mocks/factories';
-import { ROUTES } from '../../../app/config/routes';
+import { Route, Routes } from 'react-router';
+
+import { RoutesConfig } from '../../../app/config/routes';
+import { withProviders } from '../../../shared/utils/storybook';
+import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { Edit{{ pascalCase name }} } from './edit{{ pascalCase name }}.component';
 
-const item = {{ camelCase name }}Factory();
-const store = prepareState((state) => {
-  state.{{ camelCase name }}.items = [item];
-});
+const routePath = ['{{ camelCase name }}', 'edit'];
+const defaultItemId = 'test-id';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
-    <ProvidersWrapper
-      context=\{{
-        store,
-        router: {
-          url: `/en${generatePath(ROUTES.{{ camelCase name }}.edit, { id: item.id })}`,
-          routePath: `/:lang${ROUTES.{{ camelCase name }}.edit}`,
-        },
-      }}
-    >
-      <Edit{{ pascalCase name }} {...args} />
-    </ProvidersWrapper>
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<Edit{{ pascalCase name }} />} />
+    </Routes>
   );
 };
 
@@ -33,3 +23,5 @@ export default {
 };
 
 export const Default = Template.bind({});
+
+Default.decorators = [withProviders({ routerProps: createMockRouterProps(routePath, { id: defaultItemId }) })];

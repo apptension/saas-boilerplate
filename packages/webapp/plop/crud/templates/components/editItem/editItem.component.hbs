@@ -1,15 +1,26 @@
+import { useState } from 'react';
 import { useParams } from 'react-router';
-import { {{ pascalCase name }}Form } from '../{{ camelCase name }}Form';
+
+import {{ pascalCase name }}Form from '../{{ camelCase name }}Form';
+import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
 import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
 import { Container } from './edit{{ pascalCase name }}.styles';
 
 export const Edit{{ pascalCase name }} = () => {
   const { id } = useParams<{ id: string }>();
+  const [isLoading, setIsLoading] = useState(false);
   const itemData = use{{ pascalCase name }}(id);
+
+  const onFormSubmit = (formData: {{ pascalCase name }}FormFields) => {
+    if (formData) {
+      // send form
+      setIsLoading(true);
+    }
+  };
 
   return (
     <Container>
-      <{{ pascalCase name }}Form data={itemData} />
+      <{{ pascalCase name }}Form initialData={itemData} loading={isLoading} onSubmit={onFormSubmit} />
     </Container>
   );
 };

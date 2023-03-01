@@ -1,10 +1,21 @@
-import { {{ pascalCase name }}Form } from '../{{ camelCase name }}Form';
+import { useState } from 'react';
+
+import {{ pascalCase name }}Form from '../{{ camelCase name }}Form';
+import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
 import { Container } from './add{{ pascalCase name }}.styles';
 
 export const Add{{ pascalCase name }} = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const onFormSubmit = (formData: {{ pascalCase name }}FormFields) => {
+    if (formData) {
+      // send form
+      setIsLoading(true);
+    }
+  };
+
   return (
     <Container>
-      <{{ pascalCase name }}Form />
+      <{{ pascalCase name }}Form onSubmit={onFormSubmit} error={undefined} loading={isLoading} />
     </Container>
   );
 };

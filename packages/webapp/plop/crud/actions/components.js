@@ -75,4 +75,9 @@ module.exports = [
     path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/index.tsx`,
     templateFile: path.join(templatesPath, `itemList/itemListItem/index.hbs`),
   },
+  {
+    type: 'add',
+    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}Form/{{ camelCase name }}Form.hook.ts`,
+    templateFile: path.join(templatesPath, `itemForm/itemForm.hook.hbs`),
+  },
 ];

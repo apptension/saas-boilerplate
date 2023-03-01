@@ -1,17 +1,16 @@
-import { makeContextRenderer } from '{{ testUtilsPath }}';
+import { render } from '{{ testUtilsPath }}';
 import { {{ pascalCase name }}{{#if hasProps}}, {{ pascalCase name }}Props{{/if}} } from '../{{ camelCase name }}.component';
 
 describe('{{ pascalCase name }}: Component', () => {
   {{#if hasProps}}
   const defaultProps: {{ pascalCase name }}Props = {};
 
-  const component = (props: Partial<{{ pascalCase name }}Props>) => <{{ pascalCase name }} {...defaultProps} {...props} />;
+  const Component = (props: Partial<{{ pascalCase name }}Props>) => <{{ pascalCase name }} {...defaultProps} {...props} />;
   {{else}}
-  const component = () => <{{ pascalCase name }} />;
+  const Component = () => <{{ pascalCase name }} />;
   {{/if}}
-  const render = makeContextRenderer(component);
 
   it('should render without errors', () => {
-    render();
+    render(<Component />);
   })
 });

@@ -81,7 +81,7 @@ module.exports = (plop) => {
         data: {
           testUtilsPath: path.relative(
             path.join(componentDirectoryAbsolute, '__tests__/{{ camelCase name }}.component.spec.tsx'),
-            path.join(projectPathAbsolute, 'src/shared/utils/testUtils')
+            path.join(projectPathAbsolute, 'src/tests/utils/rendering')
           ),
         },
       },

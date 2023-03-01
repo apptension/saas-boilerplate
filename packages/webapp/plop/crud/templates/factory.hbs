@@ -1,8 +1,8 @@
-import * as faker from 'faker';
 import { {{ pascalCase name }} } from '../../shared/services/api/{{ camelCase name }}/types';
+import { makeId } from '../../tests/utils/fixtures';
 import { createFactory } from './factoryCreators';
 
 export const {{ camelCase name }}Factory = createFactory<{{ pascalCase name }}>(() => ({
-  id: faker.datatype.uuid(),
-  name: faker.lorem.word(),
+  id: makeId(32),
+  name: "{{ pascalCase name }}-name",
 }))

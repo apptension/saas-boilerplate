@@ -26,7 +26,7 @@ import {
   Signup,
   Subscriptions,
   TermsAndConditions,
-  TransactionHistory,
+  TransactionHistory, //<-- IMPORT ROUTE COMPONENT -->
 } from './asyncComponents';
 import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
 import { LANG_PREFIX, RoutesConfig } from './config/routes';

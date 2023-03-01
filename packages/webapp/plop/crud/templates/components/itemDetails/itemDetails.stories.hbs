@@ -1,31 +1,22 @@
 import { Story } from '@storybook/react';
-import { generatePath } from 'react-router';
-import { ProvidersWrapper } from '../../../shared/utils/testUtils';
-import { {{ camelCase name }}Factory } from '../../../mocks/factories';
-import { prepareState } from '../../../mocks/store';
-import { ROUTES } from '../../../app/config/routes';
+import { Route, Routes } from 'react-router';
+
+import { RoutesConfig } from '../../../app/config/routes';
+import { withProviders } from '../../../shared/utils/storybook';
+import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { {{ pascalCase name }}Details } from './{{ camelCase name }}Details.component';
 
-const item = {{ camelCase name }}Factory();
-const store = prepareState((state) => {
-  state.{{ camelCase name }}.items = [item];
-});
+const routePath = ['{{ camelCase name }}', 'details'];
+const defaultItemId = 'test-id';
 
-const Template: Story = (args) => {
+const Template: Story = () => {
   return (
-    <ProvidersWrapper
-      context=\{{
-        store,
-        router: {
-          url: `/en${generatePath(ROUTES.{{ camelCase name }}.details, { id: item.id })}`,
-          routePath: `/:lang${ROUTES.{{ camelCase name }}.details}`,
-        },
-      }}
-    >
-      <{{ pascalCase name }}Details {...args} />
-    </ProvidersWrapper>
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<{{ pascalCase name }}Details />} />
+    </Routes>
   );
 };
+const variables = { id: defaultItemId };
 
 export default {
   title: '{{ pascalCase name }} / {{ pascalCase name }}Details',
@@ -33,3 +24,9 @@ export default {
 };
 
 export const Default = Template.bind({});
+
+Default.decorators = [
+  withProviders({
+    routerProps: createMockRouterProps(routePath, variables),
+  }),
+];

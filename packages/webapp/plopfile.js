@@ -5,7 +5,6 @@ module.exports = function (plop) {
   plop.setHelper('append', (text) => text);
 
   [
-    require('./plop/reduxModule'),
     require('./plop/reactComponent'),
     require('./plop/reactHook'),
     require('./plop/apiModel'),
