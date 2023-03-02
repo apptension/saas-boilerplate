@@ -1,81 +1,75 @@
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
-import { Store } from '@reduxjs/toolkit';
 import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
-import invariant from 'invariant';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
-import { Provider } from 'react-redux';
 import { generatePath } from 'react-router';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import { Store as ReduxStore } from 'redux';
 
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../app/config/i18n';
 import { RoutesConfig } from '../../app/config/routes';
-import configureStore from '../../app/config/store';
+import { LocalesProvider, SnackbarProvider } from '../../app/providers';
 import { CommonQuery } from '../../app/providers/commonQuery';
 import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
+import { SnackbarMessages } from '../../shared/components/layout/header/header.styles';
+import { Snackbar } from '../../shared/components/snackbar';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
-const defaultReduxStore = configureStore({});
-
-export type DefaultReduxState = typeof defaultReduxStore;
-
-export type DefaultTestProvidersProps<ReduxState> = PropsWithChildren<{
+export type DefaultTestProvidersProps = PropsWithChildren<{
   apolloMocks?: ReadonlyArray<MockedResponse>;
   apolloProviderProps: MockedProviderProps;
   routerProps: MemoryRouterProps;
   intlLocale: Locale;
   intlMessages: TranslationMessages;
-  reduxStore: ReduxStore<ReduxState>;
 }>;
 
-export function DefaultTestProviders<ReduxState>({
+export function DefaultTestProviders({
   children,
   apolloMocks = [],
   apolloProviderProps = {},
   routerProps,
   intlMessages,
   intlLocale,
-  reduxStore,
-}: DefaultTestProvidersProps<ReduxState>) {
+}: DefaultTestProvidersProps) {
   return (
     <MemoryRouter {...routerProps}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
-          <IntlProvider locale={intlLocale} messages={intlMessages}>
-            <Provider store={reduxStore}>
-              <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
-                <CommonQuery>{children}</CommonQuery>
-              </MockedApolloProvider>
-            </Provider>
-          </IntlProvider>
+          <LocalesProvider>
+            <SnackbarProvider>
+              <IntlProvider locale={intlLocale} messages={intlMessages}>
+                <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
+                  <CommonQuery>
+                    {children}
+                    <SnackbarMessages>
+                      <Snackbar />
+                    </SnackbarMessages>
+                  </CommonQuery>
+                </MockedApolloProvider>
+              </IntlProvider>
+            </SnackbarProvider>
+          </LocalesProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>
     </MemoryRouter>
   );
 }
 
-export type WrapperProps<
-  ReduxState = DefaultReduxState,
-  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
-> = Partial<Omit<P, 'apolloMocks'>> & {
-  reduxInitialState?: ReduxState;
+export type WrapperProps<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = Partial<
+  Omit<P, 'apolloMocks'>
+> & {
   apolloMocks?:
     | ReadonlyArray<MockedResponse>
     | ((mocks: ReadonlyArray<MockedResponse>, storyContext?: StoryContext) => ReadonlyArray<MockedResponse>);
 };
 
-export function getWrapper<
-  ReduxState extends Store = DefaultReduxState,
-  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
->(
+export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
   WrapperComponent: ComponentClass<P> | FC<P>,
-  wrapperProps: WrapperProps<ReduxState, P>,
+  wrapperProps: WrapperProps<P>,
   storyContext?: StoryContext
 ): {
   wrapper: ComponentType<P>;
@@ -83,27 +77,25 @@ export function getWrapper<
 } {
   const apolloMocks = (() => {
     const defaultApolloMocks = [fillCommonQueryWithUser()];
+
     if (typeof wrapperProps.apolloMocks === 'function') {
       return wrapperProps.apolloMocks(defaultApolloMocks, storyContext);
     }
+
     if (wrapperProps.apolloMocks !== undefined) {
       return wrapperProps.apolloMocks;
     }
+
     return defaultApolloMocks;
   })();
 
   const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
-  const defaultReduxStore = configureStore(wrapperProps.reduxInitialState);
-
-  invariant(
-    !(wrapperProps.reduxStore && wrapperProps.reduxInitialState),
-    'Both redux store and initial redux state have been provided while they are exclusive. Define the initial state directly while configuring your store'
-  );
 
   const waitForApolloMocks = async (mockIndex: number = apolloMocks.length - 1) => {
     if (!apolloMocks.length) {
       return Promise.resolve();
     }
+
     await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
   };
 
@@ -114,28 +106,27 @@ export function getWrapper<
         routerProps={defaultRouterProps}
         intlLocale={DEFAULT_LOCALE}
         intlMessages={translationMessages[DEFAULT_LOCALE]}
-        reduxStore={defaultReduxStore}
         {...(wrapperProps ?? {})}
         apolloMocks={apolloMocks}
       />
     );
   };
+
   return {
     wrapper,
     waitForApolloMocks,
   };
 }
 
-export type CustomRenderOptions<
-  ReduxState = DefaultReduxState,
-  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
-> = RenderOptions & WrapperProps<ReduxState, P>;
+export type CustomRenderOptions<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = RenderOptions &
+  WrapperProps<P>;
 
-function customRender<
-  ReduxState extends Store = DefaultReduxState,
-  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
->(ui: ReactElement, options: CustomRenderOptions<ReduxState, P> = {}) {
+function customRender<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
+  ui: ReactElement,
+  options: CustomRenderOptions<P> = {}
+) {
   const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+
   return {
     ...render(ui, {
       ...options,
@@ -145,13 +136,12 @@ function customRender<
   };
 }
 
-function customRenderHook<
-  Result,
-  Props,
-  ReduxState extends Store = DefaultReduxState,
-  P extends DefaultTestProvidersProps<ReduxState> = DefaultTestProvidersProps<ReduxState>
->(hook: (initialProps: Props) => Result, options: CustomRenderOptions<ReduxState, P> = {}) {
+function customRenderHook<Result, Props, P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
+  hook: (initialProps: Props) => Result,
+  options: CustomRenderOptions<P> = {}
+) {
   const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+
   return {
     ...renderHook(hook, {
       ...options,

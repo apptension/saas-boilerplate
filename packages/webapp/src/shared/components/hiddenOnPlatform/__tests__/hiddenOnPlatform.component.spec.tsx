@@ -1,15 +1,16 @@
 import { screen } from '@testing-library/react';
+
+import { render } from '../../../../tests/utils/rendering';
+import { Breakpoint } from '../../../../theme/media';
+import { useMediaQuery } from '../../../hooks';
 import { HiddenOnPlatformComponentProps } from '../hiddenOnPlatform.component';
 import { HiddenOnPlatform } from '../index';
-import { render } from '../../../../tests/utils/rendering';
-import { useMediaQuery } from '../../../hooks/';
-import { Breakpoint } from '../../../../theme/media';
 
-jest.mock('../../../hooks/');
+jest.mock('../../../hooks/useMediaQuery');
 const mockedUseMediaQuery = useMediaQuery as jest.Mock;
 
 const PLACEHOLDER_TEST_ID = 'content';
-const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
+const PLACEHOLDER_CONTENT = <span data-testid={PLACEHOLDER_TEST_ID}>content</span>;
 
 describe('HiddenOnPlatform: Component', () => {
   const defaultQuery = {
@@ -20,7 +21,7 @@ describe('HiddenOnPlatform: Component', () => {
 
   const Component = (props: Partial<HiddenOnPlatformComponentProps> = {}) => (
     <HiddenOnPlatform {...defaultQuery} {...props}>
-      {PLACEHOLDER_CONTENT}
+      <>{PLACEHOLDER_CONTENT}</>
     </HiddenOnPlatform>
   );
 

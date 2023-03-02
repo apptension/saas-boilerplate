@@ -1,18 +1,20 @@
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { useIntl } from 'react-intl';
+
 import { Icon } from '../../icon';
-import { CloseButton, Text, Container } from './message.styles';
+import { CloseButton, Container, Text } from './message.styles';
 
 type MessageProps = {
   text: string;
+  id: number;
   onDismiss: () => void;
 };
 
-export const Message = ({ text, onDismiss }: MessageProps) => {
+export const Message = ({ id, text, onDismiss }: MessageProps) => {
   const intl = useIntl();
 
   return (
-    <Container>
+    <Container data-testid={`snackbar-message-${id}`}>
       <Text>{text}</Text>
       <CloseButton
         onClick={onDismiss}

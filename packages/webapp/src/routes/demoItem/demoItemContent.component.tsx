@@ -2,9 +2,9 @@ import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../app/config/routes';
-import { imageProps } from '../../shared/services/contentful';
 import { BackButton } from '../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../shared/hooks/';
+import { useGenerateLocalePath } from '../../shared/hooks';
+import { imageProps } from '../../shared/services/contentful';
 import { DemoItemQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, Description, Image, Title } from './demoItem.styles';
 

@@ -1,10 +1,8 @@
-import { Store } from 'redux';
-import { StatusCodes } from 'http-status-codes';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 import { generatePath, redirect } from 'react-router-dom';
 
-import { GlobalState } from '../../../app/config/reducers';
-import { DEFAULT_LOCALE, Locale } from '../../../app/config/i18n';
+import { DEFAULT_LOCALE } from '../../../app/config/i18n';
 import { RoutesConfig } from '../../../app/config/routes';
 import { AUTH_URL, refreshToken } from './auth';
 import { PendingRequest } from './types';
@@ -21,11 +19,12 @@ function delayRequest(request: AxiosRequestConfig) {
   });
 }
 
-export const createRefreshTokenInterceptor = (store: Store<GlobalState>) => ({
+export const createRefreshTokenInterceptor = () => ({
   onFulfilled: (response: AxiosResponse) => response,
   onRejected: async (error: AxiosError) => {
     const forceLogout = () => {
-      const lang: Locale = store.getState().locales.language ?? DEFAULT_LOCALE;
+      const lang = localStorage.getItem('LOCALES_LANGUAGE') ?? DEFAULT_LOCALE;
+
       redirect(generatePath(RoutesConfig.getLocalePath([RoutesConfig.logout]), { lang }));
       return Promise.reject(error);
     };

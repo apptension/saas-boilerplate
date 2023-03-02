@@ -2,7 +2,7 @@ import { NetworkStatus, useQuery } from '@apollo/client';
 import { useEffect } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 
-import { useOpenState } from '../../hooks/';
+import { useOpenState } from '../../hooks';
 import { notificationsListQuery, notificationsListSubscription } from './notifications.graphql';
 import { NotificationsButton } from './notificationsButton';
 import { NotificationsList } from './notificationsList';

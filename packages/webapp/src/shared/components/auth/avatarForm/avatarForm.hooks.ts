@@ -1,8 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useIntl } from 'react-intl';
 
-import { useSnackbar } from '../../../../modules/snackbar';
-import { useApiForm } from '../../../hooks/';
+import { useApiForm, useSnackbar } from '../../../hooks';
 import { useFormatFileSize } from '../../fileSize';
 import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
@@ -41,7 +40,7 @@ export const useAvatarForm = () => {
   } = form;
 
   const [commitAvatarMutation] = useMutation(authUpdateUserProfileMutation, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       reset();
       snackbar.showMessage(
         intl.formatMessage({

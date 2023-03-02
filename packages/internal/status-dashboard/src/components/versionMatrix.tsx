@@ -1,53 +1,50 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useFetchVersions } from '../hooks/useFetchVersions';
 
-import { fetchVersions } from '../actions';
-import { Card, CardBadge, CardContainer, CardHeader, CardService, Divider } from '../styles';
+import {
+  Card,
+  CardBadge,
+  CardContainer,
+  CardHeader,
+  CardService,
+  Divider,
+} from '../styles';
 import ValueList from './valueList';
 
 const VersionMatrix = () => {
-    const dispatch = useDispatch();
+  const { versions } = useFetchVersions();
 
-    useEffect(() => {
-        dispatch(fetchVersions());
-    }, [dispatch]); 
+  return (
+    <CardContainer>
+      {versions.envs.map(({ name, version, builtAt, values }, i) => (
+        <Card key={i}>
+          <CardHeader>{name}</CardHeader>
+          <CardBadge>{version}</CardBadge>
+          <Divider>Built at {builtAt}</Divider>
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const versions = useSelector(state => state.versions);
+          {versions.services[name] &&
+            versions.services[name].map((service, i) => (
+              <CardService key={i}>
+                <div>
+                  <strong>{service.name}</strong>
+                </div>
 
-    return (
-        <CardContainer>
-            {versions.envs.map(({ name, version, builtAt, values }, i) => (
-                <Card key={i}>
-                    <CardHeader>{name}</CardHeader>
-                    <CardBadge>
-                        {version}
-                    </CardBadge>
-                    <Divider>Built at {builtAt}</Divider>
+                <CardBadge smaller dark={service.version === version}>
+                  {service.version}
+                </CardBadge>
 
-                    {versions.services[name] && versions.services[name].map((service, i) => (
-                        <CardService key={i}>
-                            <div>
-                                <strong>{service.name}</strong>
-                            </div>
+                <div>{service.builtAt}</div>
 
-                            <CardBadge smaller dark={service.version === version}>
-                                {service.version}
-                            </CardBadge>
-
-                            <div>{service.builtAt}</div>
-                            
-                            <ValueList items={service.values} />
-                        </CardService>
-                    ))}
-
-                    <Divider />
-                    <ValueList items={values} />
-                </Card>
+                <ValueList items={service.values} />
+              </CardService>
             ))}
-        </CardContainer>
-    );
+
+          <Divider />
+          <ValueList items={values} />
+        </Card>
+      ))}
+    </CardContainer>
+  );
 };
 
 export default VersionMatrix;

@@ -1,9 +1,21 @@
 import { Story } from '@storybook/react';
+import { Fragment, useEffect } from 'react';
+
+import { useSnackbar } from '../../hooks';
 import { withProviders } from '../../utils/storybook';
-import configureStore from '../../../app/config/store';
 import { Snackbar } from './snackbar.component';
 
-const Template: Story = () => <Snackbar />;
+type Props = { messages: Array<string | null> };
+
+const Template: Story<Props> = ({ messages }: Props) => {
+  const { showMessage } = useSnackbar();
+
+  useEffect(() => {
+    messages?.forEach((message) => showMessage(message, { hideDelay: 60 * 1000 }));
+  }, [showMessage, messages]);
+
+  return <Fragment />;
+};
 
 export default {
   title: 'Shared/Snackbar',
@@ -11,43 +23,18 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    reduxStore: configureStore({
-      snackbar: {
-        messages: [
-          { id: 1, text: 'first message' },
-          { id: 2, text: 'second message' },
-        ],
-      },
-    }),
-  }),
-];
+Default.args = { messages: ['first message', 'second message'] };
+Default.decorators = [withProviders()];
 
 export const GenericError = Template.bind({});
-GenericError.decorators = [
-  withProviders({
-    reduxStore: configureStore({
-      snackbar: {
-        messages: [{ id: 1, text: null }],
-      },
-    }),
-  }),
-];
+GenericError.args = { messages: [null] };
+GenericError.decorators = [withProviders()];
 
 export const LongMessages = Template.bind({});
-LongMessages.decorators = [
-  withProviders({
-    reduxStore: configureStore({
-      snackbar: {
-        messages: [
-          { id: 1, text: 'very long message example very long message' },
-          {
-            id: 2,
-            text: 'even longer message example even longer message example even longer message example even longer message example',
-          },
-        ],
-      },
-    }),
-  }),
-];
+LongMessages.args = {
+  messages: [
+    'very long message example very long message',
+    'even longer message example even longer message example even longer message example even longer message example',
+  ],
+};
+LongMessages.decorators = [withProviders()];

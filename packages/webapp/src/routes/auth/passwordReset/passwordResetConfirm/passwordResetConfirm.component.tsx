@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+import { useNavigate, useParams } from 'react-router';
 
-import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 import { RoutesConfig } from '../../../../app/config/routes';
+import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 import { Link } from '../../../../shared/components/link';
-import { useGenerateLocalePath } from '../../../../shared/hooks/';
+import { useGenerateLocalePath } from '../../../../shared/hooks';
 import { Container, Header, Links, Text } from './passwordResetConfirm.styles';
 
 export const PasswordResetConfirm = () => {

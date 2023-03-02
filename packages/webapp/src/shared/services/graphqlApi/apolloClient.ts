@@ -9,8 +9,7 @@ import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
 import { ENV } from '../../../app/config/env';
-import { store } from '../../../app/providers/redux';
-import { showMessage } from '../../../modules/snackbar/snackbar.actions';
+import { SnackbarEmitterActions } from '../../../app/providers/snackbarProvider';
 import { refreshToken } from '../api/auth';
 import { apiURL } from '../api/helpers';
 import { url as contentfulUrl } from '../contentful';
@@ -20,7 +19,36 @@ export enum SchemaType {
   Contentful,
 }
 
+type EmitterFunction = (payload: any) => void;
+
 const IS_LOCAL_ENV = ENV.ENVIRONMENT_NAME === 'local';
+
+export class Emitter {
+  private listeners: { [key: string]: EmitterFunction[] } = {};
+
+  public addEventListener = (type: string, callback: EmitterFunction) => {
+    if (!(type in this.listeners)) {
+      this.listeners[type] = [];
+    }
+    this.listeners[type].push(callback);
+  };
+
+  public removeEventListener = (type: string, callback: EmitterFunction) => {
+    if (!(type in this.listeners)) {
+      return;
+    }
+    this.listeners[type] = this.listeners[type].filter((listener) => listener !== callback);
+  };
+
+  public dispatchEvent = (type: string, payload: any) => {
+    if (!(type in this.listeners)) {
+      return;
+    }
+    this.listeners[type].forEach((listener) => listener(payload));
+  };
+}
+
+export const emitter = new Emitter();
 
 export const subscriptionClient = createClient({
   url: ENV.SUBSCRIPTIONS_URL,
@@ -41,12 +69,7 @@ const httpApiLink = createUploadLink({
 });
 
 function showNetworkErrorMessage() {
-  store.dispatch(
-    showMessage({
-      text: 'Network error occurred',
-      id: store.getState().snackbar.lastMessageId + 1,
-    })
-  );
+  emitter.dispatchEvent(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, 'Network error occurred');
 }
 
 const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
@@ -105,7 +128,7 @@ const splitHttpLink = split(
 const wsLink = new GraphQLWsLink(subscriptionClient);
 
 const splitLink = split(
-  ({ query, getContext }) => {
+  ({ query }) => {
     const definition = getMainDefinition(query);
     return definition.kind === Kind.OPERATION_DEFINITION && definition.operation === OperationTypeNode.SUBSCRIPTION;
   },

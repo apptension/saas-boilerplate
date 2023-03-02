@@ -273,7 +273,6 @@ importers:
       '@nrwl/react': ^15.4.5
       '@nrwl/web': ^15.4.5
       '@nrwl/webpack': ^15.4.5
-      '@reduxjs/toolkit': ^1.4.0
       '@saas-boilerplate-app/core': '*'
       '@saas-boilerplate-app/infra-core': '*'
       '@saas-boilerplate-app/infra-shared': '*'
@@ -290,18 +289,13 @@ importers:
       core-js: ^3.6.5
       react: ^16.13.1
       react-dom: ^16.13.1
-      react-redux: ^7.2.0
-      redux: ^4.0.5
       regenerator-runtime: ^0.13.11
       styled-components: ^5.1.1
     dependencies:
-      '@reduxjs/toolkit': 1.9.1_547uzqcqto5vvpow5vt7touk5u
       aws-sdk: 2.1299.0
       core-js: 3.27.2
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
-      react-redux: 7.2.9_wcqkhtmu7mswc6yz4uyexck3ty
-      redux: 4.2.0
       regenerator-runtime: 0.13.11
       styled-components: 5.3.6_wcqkhtmu7mswc6yz4uyexck3ty
     devDependencies:
@@ -364,7 +358,6 @@ importers:
       '@nrwl/js': ^15.6.3
       '@nrwl/react': ^15.6.3
       '@originjs/vite-plugin-commonjs': ^1.0.3
-      '@reduxjs/toolkit': ^1.8.6
       '@saas-boilerplate-app/core': '*'
       '@saas-boilerplate-app/infra-core': '*'
       '@saas-boilerplate-app/infra-shared': '*'
@@ -399,7 +392,6 @@ importers:
       '@types/ramda': ^0.28.18
       '@types/react': ^18.0.24
       '@types/react-dom': ^18.0.8
-      '@types/react-redux': ^7.1.24
       '@types/react-router': ^5.1.20
       '@types/react-router-dom': ^5.3.3
       '@types/react-test-renderer': ^18.0.0
@@ -468,11 +460,9 @@ importers:
       react-is: 18.2.0
       react-loading-skeleton: ^3.1.0
       react-markdown: ^8.0.3
-      react-redux: 7.2.4
       react-router: ^6.7.0
       react-router-dom: ^6.7.0
       react-test-renderer: ^18.2.0
-      redux: ^4.2.0
       regenerator-runtime: ^0.13.11
       rollup-plugin-node-builtins: ^2.1.2
       rollup-plugin-polyfill-node: ^0.12.0
@@ -500,7 +490,6 @@ importers:
       '@iconify/react': 4.0.1_react@18.2.0
       '@nrwl/js': 15.6.3
       '@nrwl/react': 15.6.3
-      '@reduxjs/toolkit': 1.9.1_5a37k65gqjt2goqxmx5aklz43q
       '@sentry/react': 7.31.1_react@18.2.0
       '@stripe/react-stripe-js': 1.16.4_keartrz7uyerl3wkpjpue4xbhy
       '@stripe/stripe-js': 1.46.0
@@ -535,10 +524,8 @@ importers:
       react-is: 18.2.0
       react-loading-skeleton: 3.1.0_react@18.2.0
       react-markdown: 8.0.5_3stiutgnnbnfnf3uowm5cip22i
-      react-redux: 7.2.4_biqbaboplfbrettd7655fr4n2y
       react-router: 6.7.0_react@18.2.0
       react-router-dom: 6.7.0_biqbaboplfbrettd7655fr4n2y
-      redux: 4.2.0
       regenerator-runtime: 0.13.11
       semver-compare: 1.0.0
       storybook-react-router: 1.0.8_j6iglmv6acaowqorgnwad3of7m
@@ -593,7 +580,6 @@ importers:
       '@types/ramda': 0.28.21
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
-      '@types/react-redux': 7.1.25
       '@types/react-router': 5.1.20
       '@types/react-router-dom': 5.3.3
       '@types/react-test-renderer': 18.0.0
@@ -8862,44 +8848,6 @@ packages:
   /@polka/url/1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
 
-  /@reduxjs/toolkit/1.9.1_547uzqcqto5vvpow5vt7touk5u:
-    resolution: {integrity: sha512-HikrdY+IDgRfRYlCTGUQaiCxxDDgM1mQrRbZ6S1HFZX5ZYuJ4o8EstNmhTwHdPl2rTmLxzwSu0b3AyeyTlR+RA==}
-    peerDependencies:
-      react: ^16.9.0 || ^17.0.0 || ^18
-      react-redux: ^7.2.1 || ^8.0.2
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-redux:
-        optional: true
-    dependencies:
-      immer: 9.0.18
-      react: 16.14.0
-      react-redux: 7.2.9_wcqkhtmu7mswc6yz4uyexck3ty
-      redux: 4.2.0
-      redux-thunk: 2.4.2_redux@4.2.0
-      reselect: 4.1.7
-    dev: false
-
-  /@reduxjs/toolkit/1.9.1_5a37k65gqjt2goqxmx5aklz43q:
-    resolution: {integrity: sha512-HikrdY+IDgRfRYlCTGUQaiCxxDDgM1mQrRbZ6S1HFZX5ZYuJ4o8EstNmhTwHdPl2rTmLxzwSu0b3AyeyTlR+RA==}
-    peerDependencies:
-      react: ^16.9.0 || ^17.0.0 || ^18
-      react-redux: ^7.2.1 || ^8.0.2
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-redux:
-        optional: true
-    dependencies:
-      immer: 9.0.18
-      react: 18.2.0
-      react-redux: 7.2.4_biqbaboplfbrettd7655fr4n2y
-      redux: 4.2.0
-      redux-thunk: 2.4.2_redux@4.2.0
-      reselect: 4.1.7
-    dev: false
-
   /@remix-run/router/1.3.0:
     resolution: {integrity: sha512-nwQoYb3m4DDpHTeOwpJEuDt8lWVcujhYYSFGLluC+9es2PyLjm+jjq3IeRBQbwBtPLJE/lkuHuGHr8uQLgmJRA==}
     engines: {node: '>=14'}
@@ -11530,14 +11478,6 @@ packages:
     dependencies:
       '@types/react': 18.0.27
     dev: true
-
-  /@types/react-redux/7.1.25:
-    resolution: {integrity: sha512-bAGh4e+w5D8dajd6InASVIyCo4pZLJ66oLb80F9OBLO1gKESbZcRCJpTT6uLXX+HAB57zw1WTdwJdAsewuTweg==}
-    dependencies:
-      '@types/hoist-non-react-statics': 3.3.1
-      '@types/react': 18.0.27
-      hoist-non-react-statics: 3.3.2
-      redux: 4.2.0
 
   /@types/react-router-config/5.0.6:
     resolution: {integrity: sha512-db1mx37a1EJDf1XeX8jJN7R3PZABmJQXR8r28yUjVMFSjkmnQo6X6pOEEmNl+Tp2gYQOGPdYbFIipBtdElZ3Yg==}
@@ -28124,6 +28064,7 @@ packages:
 
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
+    dev: true
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
@@ -28194,50 +28135,6 @@ packages:
       vfile: 5.3.6
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /react-redux/7.2.4_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-hOQ5eOSkEJEXdpIKbnRyl04LhaWabkDPV+Ix97wqQX3T3d2NQ8DUblNXXtNMavc7DpswyQM6xfaN4HQDKNY2JA==}
-    peerDependencies:
-      react: ^16.8.3 || ^17
-      react-dom: '*'
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.13
-      '@types/react-redux': 7.1.25
-      hoist-non-react-statics: 3.3.2
-      loose-envify: 1.4.0
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-is: 16.13.1
-    dev: false
-
-  /react-redux/7.2.9_wcqkhtmu7mswc6yz4uyexck3ty:
-    resolution: {integrity: sha512-Gx4L3uM182jEEayZfRbI/G11ZpYdNAnBs70lFVMNdHJI76XYtR+7m0MN+eAs7UHBPhWXcnFPaS+9owSCJQHNpQ==}
-    peerDependencies:
-      react: ^16.8.3 || ^17 || ^18
-      react-dom: '*'
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.13
-      '@types/react-redux': 7.1.25
-      hoist-non-react-statics: 3.3.2
-      loose-envify: 1.4.0
-      prop-types: 15.8.1
-      react: 16.14.0
-      react-dom: 16.14.0_react@16.14.0
-      react-is: 17.0.2
     dev: false
 
   /react-refresh/0.11.0:
@@ -28540,19 +28437,6 @@ packages:
       esprima: 4.0.1
     dev: false
 
-  /redux-thunk/2.4.2_redux@4.2.0:
-    resolution: {integrity: sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==}
-    peerDependencies:
-      redux: ^4
-    dependencies:
-      redux: 4.2.0
-    dev: false
-
-  /redux/4.2.0:
-    resolution: {integrity: sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==}
-    dependencies:
-      '@babel/runtime': 7.20.13
-
   /reftools/1.1.9:
     resolution: {integrity: sha512-OVede/NQE13xBQ+ob5CKd5KyeJYU2YInb1bmV4nRoOfquZPkAkxuOXicSe1PvqIuZZ4kD13sPKBbR7UFDmli6w==}
     dev: true
@@ -28832,10 +28716,6 @@ packages:
 
   /requires-port/1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
-
-  /reselect/4.1.7:
-    resolution: {integrity: sha512-Zu1xbUt3/OPwsXL46hvOOoQrap2azE7ZQbokq61BQfiXvhewsKDwhMeZjTX9sX0nvw1t/U5Audyn1I9P/m9z0A==}
-    dev: false
 
   /resolve-alpn/1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}

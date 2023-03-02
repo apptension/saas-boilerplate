@@ -1,14 +1,13 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Route, Routes } from 'react-router-dom';
 import { append } from 'ramda';
+import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { PasswordResetConfirm } from '../passwordResetConfirm.component';
-import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
-
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { authRequestPasswordResetConfirmMutation } from '../../../../../shared/components/auth/passwordResetConfirmForm/passwordResetConfirmForm.graphql';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
+import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 
 const newPassword = 'new-password';
 const user = 'user-id';
@@ -18,18 +17,9 @@ const defaultVariables = {
   input: { newPassword, user, token },
 };
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 const LoginPageMock = <span>Login page mock</span>;
+
 describe('PasswordResetConfirm: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
   const Component = () => (
     <Routes>
       <Route path={RoutesConfig.getLocalePath(['passwordReset', 'confirm'])} element={<PasswordResetConfirm />} />

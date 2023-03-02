@@ -1,16 +1,16 @@
 import { HTMLAttributes, useContext } from 'react';
+import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import ClickAwayListener from 'react-click-away-listener';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { Breakpoint } from '../../../../theme/media';
+import { useAuth, useGenerateLocalePath, useMediaQuery, useOpenState } from '../../../hooks';
 import { ButtonVariant } from '../../forms/button';
 import { Link as ButtonLink } from '../../link';
+import { Notifications } from '../../notifications';
 import { Snackbar } from '../../snackbar';
 import { LayoutContext } from '../layout.context';
-import { useMediaQuery , useGenerateLocalePath , useAuth , useOpenState } from '../../../hooks/';
-import { Breakpoint } from '../../../../theme/media';
-import { Notifications } from '../../notifications';
 import {
   Avatar,
   Container,

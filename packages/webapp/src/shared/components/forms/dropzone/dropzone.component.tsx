@@ -1,11 +1,11 @@
-import ReactDropzone, { DropzoneProps as ReactDropzoneProps } from 'react-dropzone';
 import { ReactNode } from 'react';
+import ReactDropzone, { DropzoneProps as ReactDropzoneProps } from 'react-dropzone';
 import { FormattedMessage } from 'react-intl';
 
-import { useSnackbar } from '../../../../modules/snackbar';
+import { useSnackbar } from '../../../hooks';
+import { useGenerateErrorMessages } from './dropzone.hooks';
 import { Container, Text } from './dropzone.styles';
 import { ErrorMessagesRecord } from './dropzone.types';
-import { useGenerateErrorMessages } from './dropzone.hooks';
 
 export type DropzoneProps = ReactDropzoneProps & {
   label?: ReactNode;
@@ -17,9 +17,11 @@ export const Dropzone = ({ label, disabled, onDrop, ...props }: DropzoneProps) =
   const generateErrorMessages = useGenerateErrorMessages(props);
 
   const handleDrop: ReactDropzoneProps['onDrop'] = (files, fileRejection, event) => {
-    generateErrorMessages(fileRejection).forEach((error) => {
-      snackbar.showMessage(error);
-    });
+    generateErrorMessages(fileRejection)
+      .filter((value, index, array) => array.indexOf(value) === index)
+      .forEach((error) => {
+        snackbar.showMessage(error);
+      });
     onDrop?.(files, fileRejection, event);
   };
 

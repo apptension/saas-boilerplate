@@ -1,9 +1,7 @@
-import { useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
+import { useIntl } from 'react-intl';
 
-import { useApiForm , useAuth } from '../../../hooks/';
-
-import { useSnackbar } from '../../../../modules/snackbar';
+import { useApiForm, useAuth, useSnackbar } from '../../../hooks';
 import { authUpdateUserProfileMutation } from './editProfileForm.graphql';
 import { UpdateProfileFormFields } from './editProfileForm.types';
 

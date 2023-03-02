@@ -1,6 +1,7 @@
-import { Outlet, Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath , useAuth } from '../../../hooks/';
+import { useAuth, useGenerateLocalePath } from '../../../hooks';
 
 export const AnonymousRoute = () => {
   const generateLocalePath = useGenerateLocalePath();

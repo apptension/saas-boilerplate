@@ -1,22 +1,12 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
 
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from '../passwordResetConfirmForm.component';
-import { snackbarActions } from '../../../../../modules/snackbar';
-
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { authRequestPasswordResetConfirmMutation } from '../passwordResetConfirmForm.graphql';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 
 describe('PasswordResetConfirmForm: Component', () => {
   const defaultProps: PasswordResetConfirmFormProps = {
@@ -27,9 +17,6 @@ describe('PasswordResetConfirmForm: Component', () => {
   const defaultVariables = {
     input: { newPassword: 'new-password', user: 'user-id', token: 'token-value' },
   };
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
 
   const formData = {
     newPassword: 'new-password',
@@ -61,19 +48,15 @@ describe('PasswordResetConfirmForm: Component', () => {
         },
       },
     });
-    render(<Component />, { apolloMocks: append(requestMock) });
+    render(<Component />, {
+      apolloMocks: append(requestMock),
+    });
 
     await fillForm();
     await sendForm();
 
-    await waitFor(() =>
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: '🎉 Password reset successfully!',
-          id: 1,
-        })
-      )
-    );
+    const message = await screen.findByTestId('snackbar-message-0');
+    expect(message).toHaveTextContent('🎉 Password reset successfully!');
   });
 
   it('should show error if required value is missing', async () => {

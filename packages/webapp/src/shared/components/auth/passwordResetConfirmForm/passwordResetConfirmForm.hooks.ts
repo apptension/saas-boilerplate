@@ -3,8 +3,7 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useSnackbar } from '../../../../modules/snackbar';
-import { useApiForm, useGenerateLocalePath } from '../../../hooks/';
+import { useApiForm, useGenerateLocalePath, useSnackbar } from '../../../hooks';
 import { authRequestPasswordResetConfirmMutation } from './passwordResetConfirmForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 

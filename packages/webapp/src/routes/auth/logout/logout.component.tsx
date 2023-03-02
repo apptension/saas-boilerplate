@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useCommonQuery } from '../../../app/providers/commonQuery';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
+import { useGenerateLocalePath } from '../../../shared/hooks';
 import { auth } from '../../../shared/services/api';
 import { invalidateApolloStore } from '../../../shared/services/graphqlApi/apolloClient';
 

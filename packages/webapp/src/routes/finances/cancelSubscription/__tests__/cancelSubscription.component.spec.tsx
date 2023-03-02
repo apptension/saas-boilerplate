@@ -11,21 +11,12 @@ import {
   subscriptionFactory,
   subscriptionPhaseFactory,
 } from '../../../../mocks/factories';
-import { snackbarActions } from '../../../../modules/snackbar';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { subscriptionCancelMutation } from '../cancelSubscription.graphql';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 
 const fillSubscriptionScheduleQueryWithPhases = (phases: any) => {
   return fillSubscriptionScheduleQuery(
@@ -87,10 +78,6 @@ const Component = () => {
 };
 
 describe('CancelSubscription: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
   it('should render current plan details', async () => {
     const routerProps = createMockRouterProps(routePath);
     const requestMock = resolveSubscriptionDetailsQuery();
@@ -140,12 +127,8 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'You will be moved to free plan with the next billing period',
-          id: 1,
-        })
-      );
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('You will be moved to free plan with the next billing period');
     });
   });
 
@@ -163,7 +146,8 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      expect(mockDispatch).not.toHaveBeenCalled();
+      const snackbar = await screen.findByTestId('snackbar');
+      expect(snackbar).toBeEmptyDOMElement();
     });
   });
 });

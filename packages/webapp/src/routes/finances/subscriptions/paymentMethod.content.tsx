@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
+import { useGenerateLocalePath } from '../../../shared/hooks';
 import { useFragment } from '../../../shared/services/graphqlApi/__generated/gql';
 import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { mapConnection } from '../../../shared/utils/graphql';

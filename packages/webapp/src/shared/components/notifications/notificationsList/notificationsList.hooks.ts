@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { useMappedConnection } from '../../../hooks/';
-import { useSnackbar } from '../../../../modules/snackbar';
+
+import { useMappedConnection, useSnackbar } from '../../../hooks';
 import { FragmentType, useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { notificationsListContentFragment, notificationsListMarkAsReadMutation } from './notificationsList.graphql';
 

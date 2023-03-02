@@ -8,7 +8,7 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../../mocks/factories';
-import { useApiForm } from '../../../../hooks/';
+import { useApiForm } from '../../../../hooks';
 import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
 import { stripePromise } from '../../../../services/stripe';
 import { withActiveSubscriptionContext, withProviders } from '../../../../utils/storybook';

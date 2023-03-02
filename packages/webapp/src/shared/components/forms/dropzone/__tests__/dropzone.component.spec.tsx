@@ -1,17 +1,8 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
-import { snackbarActions } from '../../../../../modules/snackbar';
 import { render } from '../../../../../tests/utils/rendering';
 import { Dropzone, DropzoneProps } from '../dropzone.component';
 import { ErrorCodes } from '../dropzone.types';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 
 describe('Dropzone: Component', () => {
   const defaultProps: DropzoneProps = {};
@@ -29,6 +20,7 @@ describe('Dropzone: Component', () => {
 
   it('should call onDrop', async () => {
     const onDrop = jest.fn();
+
     render(<Component onDrop={onDrop} />);
 
     fireInputChange([file]);
@@ -42,6 +34,7 @@ describe('Dropzone: Component', () => {
 
   it('should call onDrop with invalidated files and print snackbar message', async () => {
     const onDrop = jest.fn();
+
     render(<Component onDrop={onDrop} maxFiles={1} />);
 
     fireInputChange([file, secondFile]);
@@ -64,8 +57,7 @@ describe('Dropzone: Component', () => {
       expect.anything()
     );
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.showMessage(expect.anything()));
-    });
+    const message = await screen.findByTestId('snackbar-message-0');
+    expect(message).toHaveTextContent('Cannot accept more than 1 file');
   });
 });

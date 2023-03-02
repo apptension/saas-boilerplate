@@ -1,8 +1,6 @@
 import axios from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
-import { Store } from 'redux';
 
-import { GlobalState } from '../../../app/config/reducers';
 import { validateStatus } from './helpers';
 import { createRefreshTokenInterceptor } from './interceptors';
 
@@ -13,7 +11,7 @@ export const client = applyCaseMiddleware(
   })
 );
 
-export const setupStoreInterceptors = (store: Store<GlobalState>) => {
-  const refreshTokenInterceptor = createRefreshTokenInterceptor(store);
+export const setupStoreInterceptors = () => {
+  const refreshTokenInterceptor = createRefreshTokenInterceptor();
   client.interceptors.response.use(refreshTokenInterceptor.onFulfilled, refreshTokenInterceptor.onRejected);
 };

@@ -1,22 +1,13 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { snackbarActions } from '../../../../../modules/snackbar';
 import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { EditProfileForm } from '../editProfileForm.component';
 import { authUpdateUserProfileMutation } from '../editProfileForm.graphql';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 
 const formData = {
   firstName: 'updated-first-name',
@@ -67,10 +58,6 @@ const renderComponent = (error?: GraphQLError[]) => {
 };
 
 describe('EditProfileForm: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
   const getFirstNameField = () => screen.findByLabelText(/first name/i);
   const getLastNameField = () => screen.getByLabelText(/last name/i);
 
@@ -91,14 +78,8 @@ describe('EditProfileForm: Component', () => {
     await fillForm();
     await submitForm();
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'Personal data successfully changed.',
-          id: 1,
-        })
-      );
-    });
+    const message = await screen.findByTestId('snackbar-message-0');
+    expect(message).toHaveTextContent('Personal data successfully changed.');
   });
 
   it('should display updated values', async () => {
@@ -118,7 +99,9 @@ describe('EditProfileForm: Component', () => {
 
     await submitForm();
 
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const snackbar = await screen.findByTestId('snackbar');
+    expect(snackbar).toBeEmptyDOMElement();
+
     expect(screen.getByText('First name is too long')).toBeInTheDocument();
   });
 

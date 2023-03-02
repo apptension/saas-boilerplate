@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { RoutesConfig } from '../../../app/config/routes';
 import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { ButtonVariant } from '../../../shared/components/forms/button';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
+import { useGenerateLocalePath } from '../../../shared/hooks';
 import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetailsData } from '../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { Link, Row, RowValue, Subheader } from './subscriptions.styles';

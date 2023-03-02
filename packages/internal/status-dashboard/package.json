@@ -7,13 +7,10 @@
     "diff": "env-cmd -f ../../../.env.tools cdk diff *StatusDashboardStack"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.4.0",
     "aws-sdk": "^2.703.0",
     "core-js": "^3.6.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
-    "redux": "^4.0.5",
     "regenerator-runtime": "^0.13.11",
     "styled-components": "^5.1.1"
   },

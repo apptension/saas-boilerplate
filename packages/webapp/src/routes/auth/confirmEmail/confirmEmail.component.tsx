@@ -4,8 +4,7 @@ import { useIntl } from 'react-intl';
 import { useNavigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useSnackbar } from '../../../modules/snackbar';
-import { useAuth, useGenerateLocalePath } from '../../../shared/hooks/';
+import { useAuth, useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
 import { reportError } from '../../../shared/utils/reportError';
 import { authConfirmUserEmailMutation } from './confirmEmail.graphql';
 

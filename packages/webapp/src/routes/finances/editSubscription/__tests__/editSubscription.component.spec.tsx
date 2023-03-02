@@ -9,21 +9,12 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '../../../../mocks/factories';
-import { snackbarActions } from '../../../../modules/snackbar';
 import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionChangeActiveMutation } from '../editSubscription.graphql';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 
 const mockMonthlyPlan = subscriptionPlanFactory({
   id: 'plan_monthly',
@@ -78,10 +69,6 @@ const Component = () => {
 };
 
 describe('EditSubscription: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
       const requestMock = fillCurrentSubscriptionQuery();
@@ -95,17 +82,16 @@ describe('EditSubscription: Component', () => {
       });
 
       await userEvent.click(await screen.findByText(/monthly/i));
+
       const monthlyButton = screen.getAllByRole('button', { name: /select/i })[0];
       expect(monthlyButton).not.toBeDisabled();
+
       await userEvent.click(monthlyButton);
       expect(monthlyButton).toBeDisabled();
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'Plan changed successfully',
-          id: 1,
-        })
-      );
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('Plan changed successfully');
+
       expect(screen.getByText(placeholder)).toBeInTheDocument();
     });
   });
@@ -126,12 +112,8 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(await screen.findByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        snackbarActions.showMessage({
-          text: 'You need first to add a payment method. Go back and set it there',
-          id: 1,
-        })
-      );
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('You need first to add a payment method. Go back and set it there');
     });
   });
 });

@@ -3,7 +3,14 @@ import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import 'regenerator-runtime/runtime';
 
-import { ApolloProvider, CommonQuery, ReduxProvider, RouterProvider, SentryProvider } from './providers';
+import {
+  ApolloProvider,
+  CommonQuery,
+  LocalesProvider,
+  RouterProvider,
+  SentryProvider,
+  SnackbarProvider,
+} from './providers';
 import { setUnsupportedClasses } from './unsupported/support';
 import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 
@@ -13,21 +20,24 @@ const render = () => {
   const container = document.getElementById('root');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const root = createRoot(container!);
+
   root.render(
     <SentryProvider>
-      <ReduxProvider>
-        <RouterProvider>
-          <HelmetProvider>
-            <ApolloProvider>
-              <CommonQuery>
-                <Suspense>
-                  <App />
-                </Suspense>
-              </CommonQuery>
-            </ApolloProvider>
-          </HelmetProvider>
-        </RouterProvider>
-      </ReduxProvider>
+      <LocalesProvider>
+        <SnackbarProvider>
+          <RouterProvider>
+            <HelmetProvider>
+              <ApolloProvider>
+                <CommonQuery>
+                  <Suspense>
+                    <App />
+                  </Suspense>
+                </CommonQuery>
+              </ApolloProvider>
+            </HelmetProvider>
+          </RouterProvider>
+        </SnackbarProvider>
+      </LocalesProvider>
     </SentryProvider>
   );
 };
@@ -45,6 +55,7 @@ export const initApp = async () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       resolve(require('intl'));
     })
+      // @ts-ignore
       .then(() => Promise.all([import('intl/locale-data/jsonp/en.js'), import('intl/locale-data/jsonp/pl.js')]))
       .then(() => render())
       .catch((err) => {

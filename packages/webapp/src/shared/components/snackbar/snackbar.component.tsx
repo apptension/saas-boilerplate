@@ -1,18 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
-import { selectSnackbarMessages } from '../../../modules/snackbar/snackbar.selectors';
-import { snackbarActions } from '../../../modules/snackbar';
-import { Container } from './snackbar.styles';
+
+import { useSnackbar } from '../../hooks';
 import { Message } from './message';
+import { Container } from './snackbar.styles';
 
 export const Snackbar = () => {
-  const dispatch = useDispatch();
   const intl = useIntl();
-  const messages = useSelector(selectSnackbarMessages);
-  const hideMessage = (id: number) => dispatch(snackbarActions.hideMessage(id));
+  const {
+    snackbar: { messages },
+    hideMessage,
+  } = useSnackbar();
 
   return (
-    <Container>
+    <Container data-testid="snackbar">
       {messages.map((message) => {
         const messageText =
           message.text ??
@@ -21,7 +21,9 @@ export const Snackbar = () => {
             defaultMessage: 'Something went wrong.',
           });
 
-        return <Message key={message.id} text={messageText} onDismiss={() => hideMessage(message.id)} />;
+        return (
+          <Message key={message.id} id={message.id} text={messageText} onDismiss={() => hideMessage(message.id)} />
+        );
       })}
     </Container>
   );

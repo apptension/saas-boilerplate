@@ -8,7 +8,7 @@ import { RoutesConfig } from '../../../../app/config/routes';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
 import { Link } from '../../../../shared/components/link';
-import { useMediaQuery , useGenerateLocalePath } from '../../../../shared/hooks/';
+import { useGenerateLocalePath, useMediaQuery } from '../../../../shared/hooks';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { Breakpoint } from '../../../../theme/media';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';

@@ -1,11 +1,11 @@
-import { useIntl } from 'react-intl';
 import { Elements } from '@stripe/react-stripe-js';
+import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { stripePromise } from '../../../shared/services/stripe';
+
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
-import { useSnackbar } from '../../../modules/snackbar';
+import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
+import { stripePromise } from '../../../shared/services/stripe';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';
 

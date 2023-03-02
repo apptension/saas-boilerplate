@@ -1,15 +1,14 @@
-import { MouseEvent, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import ClickAwayListener from 'react-click-away-listener';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { MouseEvent, useState } from 'react';
+import ClickAwayListener from 'react-click-away-listener';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Link as ButtonLink } from '../../../../../shared/components/link';
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { Button, ButtonVariant } from '../../../../../shared/components/forms/button';
 import { Icon } from '../../../../../shared/components/icon';
-import { RoutesConfig } from '../../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../../shared/hooks/';
-
+import { Link as ButtonLink } from '../../../../../shared/components/link';
+import { useGenerateLocalePath } from '../../../../../shared/hooks';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export type CrudDropdownMenuProps = {

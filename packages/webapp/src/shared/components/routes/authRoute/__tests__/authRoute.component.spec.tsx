@@ -7,19 +7,9 @@ import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 
-const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual<NodeModule>('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
 describe('AuthRoute: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockClear();
-  });
-
   const defaultProps: AuthRouteProps = {};
 
   const Component = (props: Partial<AuthRouteProps>) => (

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useCommonQuery } from '../../../../app/providers/commonQuery';
-import { useGenerateLocalePath , useApiForm } from '../../../hooks/';
+import { useApiForm, useGenerateLocalePath } from '../../../hooks';
 import { authSinginMutation } from './loginForm.graphql';
 import { LoginFormFields } from './loginForm.types';
 

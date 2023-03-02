@@ -4,7 +4,6 @@ import { times } from 'ramda';
 
 import { currentUserFactory } from '../../../../../mocks/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { snackbarActions } from '../../../../../modules/snackbar';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
@@ -12,19 +11,7 @@ import { authUpdateUserProfileMutation } from '../../editProfileForm/editProfile
 import { AvatarForm } from '../avatarForm.component';
 import { MAX_AVATAR_SIZE } from '../avatarForm.constants';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
-
 describe('AvatarForm: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
   const createImageFile = (content: string) => new File([content], 'file.png', { type: 'image/png' });
   const fireAvatarChange = async (file = createImageFile('content')) => {
     await userEvent.upload(await screen.findByTestId('file-input'), file);
@@ -79,12 +66,8 @@ describe('AvatarForm: Component', () => {
       expect(image.src).toContain(avatarUrl);
     });
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      snackbarActions.showMessage({
-        text: 'Avatar successfully changed.',
-        id: 1,
-      })
-    );
+    const message = await screen.findByTestId('snackbar-message-0');
+    expect(message).toHaveTextContent('Avatar successfully changed.');
   });
 
   it('should show error message if file size exceeds maximum size', async () => {

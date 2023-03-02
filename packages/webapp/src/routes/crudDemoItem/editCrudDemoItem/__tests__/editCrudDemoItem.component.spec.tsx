@@ -1,12 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { produce } from 'immer';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import configureStore from '../../../../app/config/store';
 import { fillEditCrudDemoItemQuery } from '../../../../mocks/factories/crudDemoItem';
-import { prepareState } from '../../../../mocks/store';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
@@ -35,8 +32,6 @@ describe('EditCrudDemoItem: Component', () => {
       <Route path={routePath} element={<EditCrudDemoItem />} />
     </Routes>
   );
-  const reduxInitialState = prepareState((state) => state);
-
   it('should display prefilled form', async () => {
     const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
     const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
@@ -78,7 +73,6 @@ describe('EditCrudDemoItem: Component', () => {
 
     it('should show success message', async () => {
       const routerProps = createMockRouterProps(['crudDemoItem', 'edit'], { id: defaultItemId });
-      const reduxStore = configureStore(reduxInitialState);
       const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
         variables: mutationVariables,
@@ -87,21 +81,17 @@ describe('EditCrudDemoItem: Component', () => {
 
       render(<Component />, {
         routerProps,
-        reduxStore,
         apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock, requestMock),
       });
 
       const nameField = await screen.findByPlaceholderText(/name/i);
+
       await userEvent.clear(nameField);
       await userEvent.type(nameField, newName);
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      expect(reduxStore.getState()).toEqual(
-        produce(reduxInitialState, (state) => {
-          state.snackbar.lastMessageId = 1;
-          state.snackbar.messages = [{ id: 1, text: '🎉 Changes saved successfully!' }];
-        })
-      );
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });
 });

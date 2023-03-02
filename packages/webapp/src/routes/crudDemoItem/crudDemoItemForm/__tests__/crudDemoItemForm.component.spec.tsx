@@ -3,8 +3,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import configureStore from '../../../../app/config/store';
-import { prepareState } from '../../../../mocks/store';
 import { render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemForm, CrudDemoItemFormProps } from '../crudDemoItemForm.component';
 
@@ -18,8 +16,6 @@ describe('CrudDemoItemForm: Component', () => {
   };
 
   const Component = (props: Partial<CrudDemoItemFormProps>) => <CrudDemoItemForm {...defaultProps} {...props} />;
-
-  const reduxInitialState = prepareState((state) => state);
 
   it('should display empty form', async () => {
     render(<Component />);
@@ -42,11 +38,7 @@ describe('CrudDemoItemForm: Component', () => {
   });
 
   it('should show non field error if error', async () => {
-    const reduxStore = configureStore(reduxInitialState);
-
-    render(<Component error={new ApolloError({ graphQLErrors: [new GraphQLError('Provided value is invalid')] })} />, {
-      reduxStore,
-    });
+    render(<Component error={new ApolloError({ graphQLErrors: [new GraphQLError('Provided value is invalid')] })} />);
 
     expect(await screen.findByText('Provided value is invalid')).toBeInTheDocument();
   });

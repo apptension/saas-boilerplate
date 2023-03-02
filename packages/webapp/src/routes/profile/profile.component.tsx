@@ -1,9 +1,10 @@
 import { FormattedMessage } from 'react-intl';
+
+import { AvatarForm } from '../../shared/components/auth/avatarForm';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
-import { useAuth } from '../../shared/hooks/';
-import { AvatarForm } from '../../shared/components/auth/avatarForm';
-import { Container, EmailLabel, RolesLabel, FormHeader, HeaderInfo, Header } from './profile.styles';
+import { useAuth } from '../../shared/hooks';
+import { Container, EmailLabel, FormHeader, Header, HeaderInfo, RolesLabel } from './profile.styles';
 
 export const Profile = () => {
   const { currentUser } = useAuth();
@@ -40,10 +41,7 @@ export const Profile = () => {
       <EditProfileForm />
 
       <FormHeader>
-        <FormattedMessage
-          defaultMessage="Change password"
-          id="Auth / Profile details / Change password header"
-        />
+        <FormattedMessage defaultMessage="Change password" id="Auth / Profile details / Change password header" />
       </FormHeader>
       <ChangePasswordForm />
     </Container>

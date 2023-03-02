@@ -1,10 +1,14 @@
+import { getNodeText, screen } from '@testing-library/react';
 import { useTheme } from 'styled-components';
-import { screen, getNodeText } from '@testing-library/react';
-import { ResponsiveThemeProvider, ResponsiveThemeProviderProps } from '../responsiveThemeProvider.component';
+
 import { render } from '../../../../tests/utils/rendering';
 import { Breakpoint, getActiveBreakpoint } from '../../../../theme/media';
+import { ResponsiveThemeProvider, ResponsiveThemeProviderProps } from '../responsiveThemeProvider.component';
 
-jest.mock('../../../../theme/media');
+jest.mock('../../../../theme/media', () => ({
+  ...jest.requireActual('../../../../theme/media'),
+  getActiveBreakpoint: jest.fn(),
+}));
 
 const ThemeConsumer = () => {
   const theme = useTheme();

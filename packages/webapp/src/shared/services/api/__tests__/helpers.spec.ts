@@ -1,10 +1,8 @@
-import { createStore } from 'redux';
 import axios, { AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import createReducer from '../../../../app/config/reducers';
-import { store as fixturesStore } from '../../../../mocks/store';
-import { client } from '../client';
+
 import { AUTH_URL } from '../auth';
+import { client } from '../client';
 import { validateStatus } from '../helpers';
 import { createRefreshTokenInterceptor } from '../interceptors';
 
@@ -32,13 +30,7 @@ describe('shared / services / api', () => {
   });
 
   describe('createRefreshTokenInterceptor', () => {
-    const store = createStore(createReducer(), fixturesStore);
-    const interceptor = createRefreshTokenInterceptor(store);
-    const mockDispatch = jest.spyOn(store, 'dispatch');
-
-    afterEach(() => {
-      mockDispatch.mockReset();
-    });
+    const interceptor = createRefreshTokenInterceptor();
 
     describe('onFulfilled', () => {
       it('should return response', () => {

@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { Icon } from '../../../shared/components/icon';
-import { useGenerateLocalePath , useFavoriteDemoItem } from '../../../shared/hooks/';
+import { useFavoriteDemoItem, useGenerateLocalePath } from '../../../shared/hooks';
 import { imageProps } from '../../../shared/services/contentful';
 import { DemoItemListItem_ItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';

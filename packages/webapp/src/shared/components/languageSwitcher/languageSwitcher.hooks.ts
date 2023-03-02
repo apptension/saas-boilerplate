@@ -1,13 +1,17 @@
-import { useNavigate, useMatch, useLocation } from 'react-router';
-import { useSelector } from 'react-redux';
-import { localesSelectors } from '../../../modules/locales';
-import { appLocales, Locale } from '../../../app/config/i18n';
-import {LANG_PREFIX} from '../../../app/config/routes';
+import { useLocation, useMatch, useNavigate } from 'react-router';
+
+import { Locale, appLocales } from '../../../app/config/i18n';
+import { LANG_PREFIX } from '../../../app/config/routes';
+import { useLocales } from '../../hooks';
 
 export const useLanguageRouter = () => {
-  const { params: { lang = '' } } = useMatch<'lang', string>(LANG_PREFIX) || { params: {} };
+  const {
+    params: { lang = '' },
+  } = useMatch<'lang', string>(LANG_PREFIX) || { params: {} };
   const navigate = useNavigate();
-  const language = useSelector(localesSelectors.selectLocalesLanguage);
+  const {
+    locales: { language },
+  } = useLocales();
   const { pathname } = useLocation();
 
   const changeLanguage = (language: Locale) => {

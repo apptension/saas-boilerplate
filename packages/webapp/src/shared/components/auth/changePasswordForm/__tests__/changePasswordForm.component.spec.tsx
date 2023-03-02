@@ -1,26 +1,18 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
-import { screen } from '@testing-library/react';
-
-import { authChangePasswordMutation } from '../changePasswordForm.graphql';
-import { render } from '../../../../../tests/utils/rendering';
-import { snackbarActions } from '../../../../../modules/snackbar';
-import { ChangePasswordForm } from '../changePasswordForm.component';
 
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { render } from '../../../../../tests/utils/rendering';
+import { ChangePasswordForm } from '../changePasswordForm.component';
+import { authChangePasswordMutation } from '../changePasswordForm.graphql';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
 const formData = {
   oldPassword: 'old-pass',
   newPassword: 'new-pass',
   confirmNewPassword: 'new-pass',
 };
+
 const defaultValues = {
   input: {
     oldPassword: formData.oldPassword,
@@ -38,10 +30,6 @@ const defaultResult = {
 describe('ChangePasswordForm: Component', () => {
   const Component = () => <ChangePasswordForm />;
 
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
   const fillForm = async (override = {}) => {
     const data = { ...formData, ...override };
     await userEvent.type(screen.getByLabelText(/old password/i), data.oldPassword);
@@ -52,23 +40,23 @@ describe('ChangePasswordForm: Component', () => {
   const submitForm = () => userEvent.click(screen.getByRole('button', { name: /change password/i }));
 
   it('should show message on success action call', async () => {
-    mockDispatch.mockResolvedValue({ isError: false });
     const requestMock = composeMockedQueryResult(authChangePasswordMutation, {
       variables: defaultValues,
       data: defaultResult,
     });
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+    });
+
     await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
     await waitForApolloMocks();
-    expect(mockDispatch).toHaveBeenCalledWith(
-      snackbarActions.showMessage({
-        text: 'Password successfully changed.',
-        id: 1,
-      })
-    );
+
+    const message = await screen.findByTestId('snackbar-message-0');
+    expect(message).toHaveTextContent('Password successfully changed.');
   });
 
   it('should clear form', async () => {
@@ -76,7 +64,10 @@ describe('ChangePasswordForm: Component', () => {
       variables: defaultValues,
       data: defaultResult,
     });
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+    });
+
     await waitForApolloMocks(0);
 
     await fillForm();
@@ -91,12 +82,15 @@ describe('ChangePasswordForm: Component', () => {
 
   it('should show error if required value is missing', async () => {
     const { waitForApolloMocks } = render(<Component />);
+
     await waitForApolloMocks();
 
     await fillForm({ newPassword: null });
     await submitForm();
 
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const snackbar = await screen.findByTestId('snackbar');
+    expect(snackbar).toBeEmptyDOMElement();
+
     expect(screen.getByText('New password is required')).toBeInTheDocument();
   });
 
@@ -107,7 +101,9 @@ describe('ChangePasswordForm: Component', () => {
     await fillForm({ confirmNewPassword: 'misspelled-pass' });
     await submitForm();
 
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const snackbar = await screen.findByTestId('snackbar');
+    expect(snackbar).toBeEmptyDOMElement();
+
     expect(screen.getByText('Passwords must match')).toBeInTheDocument();
   });
 
@@ -124,13 +120,18 @@ describe('ChangePasswordForm: Component', () => {
       errors,
     });
 
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+    });
+
     await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
 
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const snackbar = await screen.findByTestId('snackbar');
+    expect(snackbar).toBeEmptyDOMElement();
+
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 
@@ -143,13 +144,18 @@ describe('ChangePasswordForm: Component', () => {
       errors,
     });
 
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+    });
+
     await waitForApolloMocks(0);
 
     await fillForm();
     await submitForm();
 
-    expect(mockDispatch).not.toHaveBeenCalledWith();
+    const snackbar = await screen.findByTestId('snackbar');
+    expect(snackbar).toBeEmptyDOMElement();
+
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 });

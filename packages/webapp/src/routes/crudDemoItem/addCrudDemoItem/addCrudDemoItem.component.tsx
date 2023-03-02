@@ -1,15 +1,14 @@
-import { FormattedMessage, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
-import { BackButton } from '../../../shared/components/backButton';
-import { RoutesConfig } from '../../../app/config/routes';
-import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
-import { CrudDemoItemForm } from '../crudDemoItemForm';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
-import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
-import { useSnackbar } from '../../../modules/snackbar';
-import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
 
+import { RoutesConfig } from '../../../app/config/routes';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
+import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
+import { CrudDemoItemForm } from '../crudDemoItemForm';
+import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
+import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
 import { Container, Header } from './addCrudDemoItem.styles';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
@@ -36,37 +35,34 @@ export const AddCrudDemoItem = () => {
     defaultMessage: '🎉 Changes saved successfully!',
   });
 
-  const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(
-    addCrudDemoItemMutation,
-    {
-      update(cache, { data }) {
-        cache.modify({
-          fields: {
-            allCrudDemoItems(existingConnection = { edges: [] }) {
-              const node = data?.createCrudDemoItem?.crudDemoItemEdge?.node;
-              if (!node) {
-                return existingConnection;
-              }
-              const newItem = {
-                node: cache.writeFragment({
-                  data: node,
-                  fragment: crudDemoItemListItemFragment,
-                }),
-                __typename: 'CrudDemoItemEdge',
-              };
-              return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
-            },
+  const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allCrudDemoItems(existingConnection = { edges: [] }) {
+            const node = data?.createCrudDemoItem?.crudDemoItemEdge?.node;
+            if (!node) {
+              return existingConnection;
+            }
+            const newItem = {
+              node: cache.writeFragment({
+                data: node,
+                fragment: crudDemoItemListItemFragment,
+              }),
+              __typename: 'CrudDemoItemEdge',
+            };
+            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
           },
-        });
-      },
-      onCompleted: (data) => {
-        const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
+        },
+      });
+    },
+    onCompleted: (data) => {
+      const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
 
-        showMessage(successMessage)
-        if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, {id}));
-      },
-    }
-  );
+      showMessage(successMessage);
+      if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, { id }));
+    },
+  });
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
     commitCrudDemoItemFormMutation({

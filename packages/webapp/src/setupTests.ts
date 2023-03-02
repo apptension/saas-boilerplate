@@ -1,20 +1,21 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import '@testing-library/jest-dom';
-import 'isomorphic-fetch';
 import axios from 'axios';
+import 'core-js/stable';
+import 'isomorphic-fetch';
 import MockDate from 'mockdate';
-import './mocks/reactIntl';
-import './mocks/icons';
+import 'regenerator-runtime/runtime';
 
-import { server } from './mocks/server'
+import './mocks/icons';
+import './mocks/reactIntl';
+import { server } from './mocks/server';
+
 // Establish API mocking before all tests.
-beforeAll(() => server.listen())
+beforeAll(() => server.listen());
 // Reset any request handlers that we may add during the tests,
 // so they don't affect other tests.
-afterEach(() => server.resetHandlers())
+afterEach(() => server.resetHandlers());
 // Clean up after the tests are finished.
-afterAll(() => server.close())
+afterAll(() => server.close());
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -22,7 +23,6 @@ MockDate.set('2020-11-22');
 
 jest.disableAutomock();
 
-jest.mock('./app/config/store');
 jest.mock('./shared/services/contentful/schema');
 jest.mock('./shared/services/graphqlApi/schema');
 

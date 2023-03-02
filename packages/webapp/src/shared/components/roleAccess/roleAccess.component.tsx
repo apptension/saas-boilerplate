@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
+
 import { Role } from '../../../modules/auth/auth.types';
-import { useRoleAccessCheck } from '../../hooks/';
+import { useRoleAccessCheck } from '../../hooks';
 
 export type RoleAccessProps = {
   children: ReactNode;

@@ -1,44 +1,40 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from '../../../../tests/utils/rendering';
-import { Snackbar } from '../snackbar.component';
-import { snackbarActions } from '../../../../modules/snackbar';
-import { prepareState } from '../../../../mocks/store';
+import { Fragment, useEffect } from 'react';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { render } from '../../../../tests/utils/rendering';
+import { useSnackbar } from '../../../hooks';
+
+const Component = () => {
+  const { showMessage } = useSnackbar();
+
+  useEffect(() => {
+    showMessage('first message');
+    showMessage('second message');
+  }, [showMessage]);
+
+  return <Fragment />;
+};
 
 describe('Snackbar: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockClear();
-  });
-
-  const reduxInitialState = prepareState((state) => {
-    state.snackbar.messages = [
-      { id: 1, text: 'first message' },
-      { id: 2, text: 'second message' },
-    ];
-    return state;
-  });
-
   it('should render all messages', async () => {
-    render(<Snackbar />, { reduxInitialState });
+    render(<Component />);
+
     expect(await screen.findByText('first message')).toBeInTheDocument();
     expect(screen.getByText('second message')).toBeInTheDocument();
   });
 
   describe('message close icon is clicked', () => {
     it('should dispatch hideMessage with proper id', async () => {
-      const { waitForApolloMocks } = render(<Snackbar />, { reduxInitialState });
+      const { waitForApolloMocks } = render(<Component />);
+
       await waitForApolloMocks();
+
       const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/i)[0];
       await userEvent.click(firstMessageCloseButton);
-      expect(mockDispatch).toHaveBeenCalledWith(snackbarActions.hideMessage(1));
+
+      const message = screen.queryByText('first message');
+      expect(message).not.toBeInTheDocument();
     });
   });
 });

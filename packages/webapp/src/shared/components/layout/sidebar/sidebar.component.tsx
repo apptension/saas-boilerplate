@@ -1,16 +1,17 @@
+import closeIcon from '@iconify-icons/ion/close-outline';
 import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import closeIcon from '@iconify-icons/ion/close-outline';
+
 import { RoutesConfig } from '../../../../app/config/routes';
-import { RoleAccess } from '../../roleAccess';
 import { Role } from '../../../../modules/auth/auth.types';
-import { useMediaQuery , useGenerateLocalePath , useAuth } from '../../../hooks/';
+import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
 import { Breakpoint } from '../../../../theme/media';
+import { useAuth, useGenerateLocalePath, useMediaQuery } from '../../../hooks';
+import { Avatar } from '../../avatar';
 import { Icon } from '../../icon';
 import { Link } from '../../link';
-import { Avatar } from '../../avatar';
+import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
-import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
 import { CloseButton, Container, Header, MenuLink, MenuLinks } from './sidebar.styles';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {

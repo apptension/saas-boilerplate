@@ -1,17 +1,12 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
-import { produce } from 'immer';
+import userEvent from '@testing-library/user-event';
 
-import { render } from '../../../../tests/utils/rendering';
-import { prepareState } from '../../../../mocks/store';
-import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
-import configureStore from '../../../../app/config/store';
 import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
 import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { render } from '../../../../tests/utils/rendering';
+import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
 
 describe('AddCrudDemoItem: Component', () => {
-  const reduxInitialState = prepareState((state) => state);
-
   const Component = () => <AddCrudDemoItem />;
 
   it('should display empty form', async () => {
@@ -55,8 +50,6 @@ describe('AddCrudDemoItem: Component', () => {
 
     it('should show success message', async () => {
       const commonQueryMock = fillCommonQueryWithUser();
-      const reduxStore = configureStore(reduxInitialState);
-
       const variables = {
         input: { name: 'new item' },
       };
@@ -75,17 +68,15 @@ describe('AddCrudDemoItem: Component', () => {
         data,
       });
 
-      render(<Component />, { reduxStore, apolloMocks: [commonQueryMock, requestMock] });
+      render(<Component />, {
+        apolloMocks: [commonQueryMock, requestMock],
+      });
 
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      expect(reduxStore.getState()).toEqual(
-        produce(reduxInitialState, (state) => {
-          state.snackbar.lastMessageId = 1;
-          state.snackbar.messages = [{ id: 1, text: '🎉 Changes saved successfully!' }];
-        })
-      );
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });
 });

@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { localesActions } from '../../../../modules/locales';
-import { useLocale } from '../../../../shared/hooks/useLocale';
+
+import { useLocale, useLocales } from '../../../../shared/hooks';
 
 export const useLanguageFromParams = () => {
-  const dispatch = useDispatch();
+  const { setLanguage } = useLocales();
   const lang = useLocale();
 
   useEffect(() => {
-    dispatch(localesActions.setLanguage(lang));
-  }, [lang, dispatch]);
+    setLanguage(lang);
+  }, [lang, setLanguage]);
 };

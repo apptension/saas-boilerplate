@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useApiForm } from '../../../shared/hooks/';
+import { useApiForm } from '../../../shared/hooks';
 import { CrudDemoItemFormFields, CrudDemoItemFormProps } from './crudDemoItemForm.component';
 
 type UseCrudDemoItemFormProps = Omit<CrudDemoItemFormProps, 'loading'>;

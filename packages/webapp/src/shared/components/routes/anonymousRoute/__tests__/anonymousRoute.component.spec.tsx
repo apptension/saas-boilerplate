@@ -7,19 +7,9 @@ import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { AnonymousRoute } from '../anonymousRoute.component';
 
-const mockDispatch = jest.fn();
 jest.mock('../../../../../theme/initializeFontFace');
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual<NodeModule>('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
 describe('AnonymousRoute: Component', () => {
-  beforeEach(() => {
-    mockDispatch.mockClear();
-  });
-
   const Component = () => (
     <Routes>
       <Route path="/" element={<AnonymousRoute />}>

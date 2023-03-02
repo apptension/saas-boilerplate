@@ -3,9 +3,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useSnackbar } from '../../../modules/snackbar';
 import { BackButton } from '../../../shared/components/backButton';
-import { useGenerateLocalePath } from '../../../shared/hooks/';
+import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoItem.graphql';

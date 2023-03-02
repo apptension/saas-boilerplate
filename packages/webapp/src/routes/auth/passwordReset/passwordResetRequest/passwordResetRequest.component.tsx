@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { RoutesConfig } from '../../../../app/config/routes';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
 import { Link } from '../../../../shared/components/link';
-import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../shared/hooks/';
-import { Container, Header, Text, Links } from './passwordResetRequest.styles';
+import { useGenerateLocalePath } from '../../../../shared/hooks';
+import { Container, Header, Links, Text } from './passwordResetRequest.styles';
 
 export const PasswordResetRequest = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
