@@ -11,7 +11,8 @@ export default {
     '^!!raw-loader!.*': 'jest-raw-loader',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/packages/webapp',
+  coverageReporters: ['lcov'],
+  coveragePathIgnorePatterns: ['/node_modules/', '.*.svg'],
   setupFilesAfterEnv: ['./src/setupTests.ts'],
   globals: {
     'ts-jest': {

@@ -57,7 +57,7 @@ pipelines:
               - *initializeStep
               - *installWebappDeps
               - node_modules/.bin/nx run webapp:lint
-              - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20%
+              - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
                   SONAR_TOKEN: ${SONAR_TOKEN}
