@@ -1,0 +1,12 @@
+import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
+
+export const edit{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
+  mutation edit{{ pascalCase name }}ContentMutation($input: Update{{ pascalCase name }}MutationInput!) {
+    update{{ pascalCase name }}(input: $input) {
+      {{ camelCase name }} {
+        id
+        name
+      }
+    }
+  }
+`);

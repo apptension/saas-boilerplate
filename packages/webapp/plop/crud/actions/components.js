@@ -29,6 +29,14 @@ const componentActions = (name, templatePath, routeName = `{{ camelCase name }}`
   },
 ];
 
+const graphqlActions = (name, templatePath, routeName = `{{ camelCase name }}`) => [
+  {
+    type: 'add',
+    path: `src/routes/${routeName}/${name}/${name}.graphql.ts`,
+    templateFile: path.join(templatesPath, `${templatePath}/${templatePath}.graphql.hbs`),
+  },
+];
+
 module.exports = [
   {
     type: 'add',
@@ -50,6 +58,10 @@ module.exports = [
   ...componentActions('{{ camelCase name }}Details', 'itemDetails'),
   ...componentActions('add{{ pascalCase name }}', 'addItem'),
   ...componentActions('{{ camelCase name }}List', 'itemList'),
+  ...graphqlActions('add{{ pascalCase name }}', 'addItem'),
+  ...graphqlActions('edit{{ pascalCase name }}', 'editItem'),
+  ...graphqlActions('{{ camelCase name }}Details', 'itemDetails'),
+  ...graphqlActions('{{ camelCase name }}List', 'itemList'),
   {
     type: 'add',
     path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/__tests__/{{ camelCase name }}ListItem.component.spec.tsx`,

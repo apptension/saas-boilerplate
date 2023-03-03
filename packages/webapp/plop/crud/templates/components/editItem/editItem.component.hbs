@@ -1,26 +1,56 @@
-import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useMutation } from '@apollo/client';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Navigate, useParams } from 'react-router';
 
+import { RoutesConfig } from '../../../app/config/routes';
+import { useSnackbar } from '../../../modules/snackbar';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import {{ pascalCase name }}Form from '../{{ camelCase name }}Form';
 import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
 import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
-import { Container } from './edit{{ pascalCase name }}.styles';
+import { edit{{ pascalCase name }}Mutation } from './edit{{ pascalCase name }}.graphql';
+import { Container, Header } from './edit{{ pascalCase name }}.styles';
 
 export const Edit{{ pascalCase name }} = () => {
   const { id } = useParams<{ id: string }>();
-  const [isLoading, setIsLoading] = useState(false);
-  const itemData = use{{ pascalCase name }}(id);
+  const { itemData, loading } = use{{ pascalCase name }}(id);
+
+  const { showMessage } = useSnackbar();
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    id: '{{ pascalCase name }} form / Success message',
+    defaultMessage: '🎉 Changes saved successfully!',
+  });
+
+  const generateLocalePath = useGenerateLocalePath();
+  const [commitEdit{{ pascalCase name }}Mutation, { error, loading: loadingMutation }] = useMutation(
+    edit{{ pascalCase name }}Mutation,
+    {
+      onCompleted: () => showMessage(successMessage),
+    }
+  );
+  if (loading)
+    return (
+      <Container>
+        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
+      </Container>
+    );
+  if (!itemData) return <Navigate to={generateLocalePath(RoutesConfig.{{ camelCase name }}.index)} />;
+
 
   const onFormSubmit = (formData: {{ pascalCase name }}FormFields) => {
-    if (formData) {
-      // send form
-      setIsLoading(true);
-    }
+    commitEdit{{ pascalCase name }}Mutation({ variables: { input: { id: itemData.id, name: formData.name } } });
   };
 
   return (
     <Container>
-      <{{ pascalCase name }}Form initialData={itemData} loading={isLoading} onSubmit={onFormSubmit} />
+      <BackButton to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} />
+      <Header>
+        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="Edit{{ pascalCase name }} / Header" />
+      </Header>
+      <{{ pascalCase name }}Form initialData={itemData} loading={loadingMutation} error={error} onSubmit={onFormSubmit} />
     </Container>
   );
 };

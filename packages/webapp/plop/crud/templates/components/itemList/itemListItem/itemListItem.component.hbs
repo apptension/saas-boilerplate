@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { MouseEvent } from 'react';
@@ -7,28 +8,40 @@ import { RoutesConfig } from '../../../../app/config/routes';
 import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
 import { Icon } from '../../../../shared/components/icon';
 import { Link } from '../../../../shared/components/link';
-import { useGenerateLocalePath } from '../../../../shared/hooks/localePaths';
-import { {{ pascalCase name }} } from '../../../../shared/services/api/{{ camelCase name }}/types';
-import { Container, InlineButtons, Text } from './{{ camelCase name }}ListItem.styles';
+import { useGenerateLocalePath } from '../../../../shared/hooks/';
+import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
+import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List.graphql';
+import { Container, InlineButtons, LinkContainer, Text } from './{{ camelCase name }}ListItem.styles';
 
 export type {{ pascalCase name }}ListItemProps = {
-  item: {{ pascalCase name }};
-}
+  item: FragmentType<typeof {{ camelCase name }}ListItemFragment>;
+};
 
 export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}ListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const isLoading = false;
+  const data = useFragment({{ camelCase name }}ListItemFragment, item);
+  const [commitDeleteMutation, { loading }] = useMutation({{ camelCase name }}ListItemDeleteMutation, {
+    update(cache, { data }) {
+      const deletedId = data?.delete{{ pascalCase name }}?.deletedIds?.[0];
+      const normalizedId = cache.identify({ id: deletedId, __typename: '{{ pascalCase name }}Type' });
+      cache.evict({ id: normalizedId });
+    },
+  });
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // delete
+    commitDeleteMutation({
+      variables: {
+        input: { id: data.id },
+      },
+    });
   };
 
   const renderInlineButtons = () => (
     <InlineButtons>
       <Link
         variant={ButtonVariant.RAW}
-        to={generateLocalePath(RoutesConfig.{{ camelCase name }}.edit, { id: item.id })}
+        to={generateLocalePath(RoutesConfig.{{ camelCase name }}.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="{{ pascalCase name }} list / Edit link" defaultMessage="Edit" />
@@ -36,7 +49,7 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
       <Button
         variant={ButtonVariant.RAW}
         onClick={handleDelete}
-        disabled={isLoading}
+        disabled={loading}
         icon={<Icon size={14} icon={deleteIcon} />}
       >
         <FormattedMessage id="{{ pascalCase name }} list / Delete button" defaultMessage="Delete" />
@@ -46,10 +59,12 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
 
   return (
     <Container>
-      <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.{{ camelCase name }}.details, { id: item.id })}>
-        <Text>{item.name}</Text>
-      </Link>
-      {renderInlineButtons()}
+      <LinkContainer>
+        <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.{{ camelCase name }}.details, { id: data.id })}>
+          <Text>{data.name}</Text>
+        </Link>
+        {renderInlineButtons()}
+      </LinkContainer>
     </Container>
   );
 };

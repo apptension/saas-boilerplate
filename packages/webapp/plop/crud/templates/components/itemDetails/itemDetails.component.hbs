@@ -1,17 +1,29 @@
+import { FormattedMessage } from 'react-intl';
 import { useParams } from 'react-router';
+
+import { RoutesConfig } from '../../../app/config/routes';
+import { BackButton } from '../../../shared/components/backButton';
+import { useGenerateLocalePath } from '../../../shared/hooks/';
 import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
-import { H1 } from '../../../theme/typography';
-import { Container } from './{{ camelCase name }}Details.styles';
+import { Container, Header } from './{{ camelCase name }}Details.styles';
 
 export const {{ pascalCase name }}Details = () => {
+  const generateLocalePath = useGenerateLocalePath();
   const { id } = useParams<{ id: string }>();
-  const itemData = use{{ pascalCase name }}(id);
+  const { itemData, loading } = use{{ pascalCase name }}(id);
+
+  if (loading) {
+    return (
+      <span>
+        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
+      </span>
+    );
+  }
 
   return (
     <Container>
-      <H1>
-        [{itemData?.id}] {itemData?.name}
-      </H1>
+      <BackButton to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} />
+      <Header>{itemData?.name}</Header>
     </Container>
   );
 };

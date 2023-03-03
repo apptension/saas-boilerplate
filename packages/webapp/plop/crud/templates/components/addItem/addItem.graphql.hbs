@@ -1,0 +1,14 @@
+import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
+
+export const add{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
+  mutation add{{ pascalCase name }}Mutation($input: Create{{ pascalCase name }}MutationInput!) {
+    create{{ pascalCase name }}(input: $input) {
+      {{ camelCase name }}Edge {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`);

@@ -1,24 +1,28 @@
+import { useQuery } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { ButtonVariant } from '../../../shared/components/forms/button';
 import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { {{ pascalCase name }} } from '../../../shared/services/api/{{ camelCase name }}/types';
+import { mapConnection } from '../../../shared/utils/graphql';
+import { {{ camelCase name }}ListQuery } from './{{ camelCase name }}List.graphql';
 import { AddNewLink, Container, Header, List } from './{{ camelCase name }}List.styles';
 import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem';
 
 export const {{ pascalCase name }}List = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const data: {{ pascalCase name }}[] = [];
-  const isLoading = false;
+  const { loading, data } = useQuery({{ camelCase name }}ListQuery);
 
   const renderList = () => {
     if (!data) return null;
     return (
       <List>
-        {data.map((item) => (
-          <{{ pascalCase name }}ListItem item={item} key={item.id} />
-        ))}
+        {mapConnection(
+          (item) => (
+            <{{ pascalCase name }}ListItem item={item} key={item.id} />
+          ),
+          data.{{ camelCase name }}List
+        )}
       </List>
     );
   };
@@ -30,7 +34,7 @@ export const {{ pascalCase name }}List = () => {
         <FormattedMessage id="{{ pascalCase name }}List / Add new" defaultMessage="Add new item" />
       </AddNewLink>
 
-      {isLoading ? (
+      {loading ? (
         <span>
           <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
         </span>

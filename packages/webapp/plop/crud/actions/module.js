@@ -22,7 +22,7 @@ module.exports = [
     type: 'modify',
     path: 'src/app/config/routes.ts',
     pattern: /(\/\/<-- INJECT ROUTE DEFINITION -->)/g,
-    template: `{{ camelCase name }}: nestedPath('/{{ dashCase name }}', {
+    template: `{{ camelCase name }}: nestedPath('{{ dashCase name }}', {
     list: '',
     details: ':id',
     edit: ':id/edit',

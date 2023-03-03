@@ -10,11 +10,6 @@ module.exports = (plop) => {
         name: 'name',
         message: 'Name:',
       },
-      {
-        type: 'input',
-        name: 'apiUrl',
-        message: 'API URL:',
-      },
     ],
     actions: [...moduleActions, ...componentsActions],
   });

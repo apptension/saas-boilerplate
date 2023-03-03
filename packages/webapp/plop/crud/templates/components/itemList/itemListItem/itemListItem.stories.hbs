@@ -1,12 +1,25 @@
+import { useQuery } from '@apollo/client';
 import { Story } from '@storybook/react';
+import { append } from 'ramda';
 
-import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
+import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { withProviders } from '../../../../shared/utils/storybook';
-import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem.component';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { {{ pascalCase name }}ListItem, {{ pascalCase name }}ListItemProps } from './{{ camelCase name }}ListItem.component';
 
-const item = {{ camelCase name }}Factory();
+const {{ camelCase name }}ListItemTestQuery = gql(/* GraphQL */ `
+  query {{ camelCase name }}ListItemDefaultStoryQuery {
+    item: {{ camelCase name }}(id: "test-id") {
+      ...{{ camelCase name }}ListItemFragment
+    }
+  }
+`);
 
-const Template: Story = (args) => <{{ pascalCase name }}ListItem item={item} {...args} />;
+const Template: Story<{{ pascalCase name }}ListItemProps> = (args: {{ pascalCase name }}ListItemProps) => {
+  const { loading, data } = useQuery({{ camelCase name }}ListItemTestQuery);
+
+  return !loading && data?.item ? <{{ pascalCase name }}ListItem {...args} item={data.item} /> : <span />;
+};
 
 export default {
   title: '{{ pascalCase name }} / {{ pascalCase name }}ListItem',
@@ -15,4 +28,19 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { item };
+Default.decorators = [
+  withProviders({
+    apolloMocks: append(
+      composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
+        data: {
+          item: {
+            __typename: '{{ pascalCase name }}Type',
+            id: 1,
+            name: 'Demo item name',
+          },
+        },
+      })
+    ),
+  }),
+];
+Default.args = {};
