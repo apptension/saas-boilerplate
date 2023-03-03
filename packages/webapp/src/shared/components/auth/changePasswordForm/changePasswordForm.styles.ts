@@ -21,8 +21,10 @@ export const Container = styled.form.attrs(() => ({ noValidate: true }))`
 `;
 
 export const ErrorMessage = styled.p`
-  position: absolute;
+  padding-top: ${sizeUnits(2)};
   color: ${color.error};
+  max-width: 100%;
+  text-align: left;
 `;
 
 export const SubmitButton = styled(Button).attrs(() => ({ type: 'submit' }))`
