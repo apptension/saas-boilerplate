@@ -1,102 +1,94 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
-import { generatePath } from 'react-router';
+import { append } from 'ramda';
+import { Route, Routes } from 'react-router';
+
+import { RoutesConfig } from '../../../../app/config/routes';
+import { fill{{ pascalCase name }}ListQuery } from '../../../../mocks/factories/{{ camelCase name }}';
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { Edit{{ pascalCase name }} } from '../edit{{ pascalCase name }}.component';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase name }}';
-import { prepareState } from '../../../../mocks/store';
-import { ROUTES } from '../../../../app/config/routes';
-
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
-
-const originalItem = {
-  name: 'old item',
-  id: 'test-id',
-};
-
-const store = prepareState((state) => {
-  state.{{ camelCase name }}.items = [originalItem];
-});
+import { edit{{ pascalCase name }}Mutation } from '../edit{{ pascalCase name }}.graphql';
 
 describe('Edit{{ pascalCase name }}: Component', () => {
-  const component = () => <Edit{{ pascalCase name }} />;
-  const renderWithContext = makeContextRenderer(component);
-  const render = () =>
-    renderWithContext(
-      {},
-      {
-        store,
-        router: {
-          url: `/en${generatePath(ROUTES.{{ camelCase name }}.edit, { id: 'test-id' })}`,
-          routePath: `/:lang${ROUTES.{{ camelCase name }}.edit}`,
-        },
-      }
-    );
+  const defaultItemId = 'test-id';
+  const oldName = 'old item';
+  const newName = 'new item';
+  const routePath = RoutesConfig.getLocalePath(['{{ camelCase name }}', 'edit']);
 
-  const formData = {
-    name: 'new item',
+  const queryData = {
+    id: defaultItemId,
+    name: oldName,
+    __typename: '{{ pascalCase name }}Type',
   };
 
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
+  const mutationVariables = { input: { id: defaultItemId, name: newName } };
+  const mutationData = {
+    update{{ pascalCase name }}: { {{ camelCase name }}: { id: defaultItemId, name: newName, __typename: '{{ pascalCase name }}Type' } },
+  };
 
-  it('should display empty form', () => {
-    render();
-    expect(screen.getByDisplayValue(/old item/gi)).toBeInTheDocument();
-  });
+  const Component = () => (
+    <Routes>
+      <Route path={routePath} element={<Edit{{ pascalCase name }} />} />
+    </Routes>
+  );
+  it('should display prefilled form', async () => {
+    const routerProps = createMockRouterProps(['{{ camelCase name }}', 'edit'], { id: defaultItemId });
+    const listMock = fill{{ pascalCase name }}ListQuery([queryData]);
 
-  it('should call add{{ pascalCase name }} action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
-    render();
-    userEvent.clear(screen.getByPlaceholderText(/name/gi));
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith(
-        {{ camelCase name }}Actions.update{{ pascalCase name }}({ ...originalItem, ...formData })
-      );
-    });
+    render(<Component />, { routerProps, apolloMocks: append(listMock) });
+
+    expect(await screen.findByDisplayValue(oldName)).toBeInTheDocument();
   });
 
   describe('action completes successfully', () => {
-    it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
+    it('should commit mutation', async () => {
+      const routerProps = createMockRouterProps(['{{ camelCase name }}', 'edit'], { id: defaultItemId });
 
-      render();
-      userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-      await waitFor(() => {
-        expect(screen.getByText('Saved successfully')).toBeInTheDocument();
+      const listMock = fill{{ pascalCase name }}ListQuery([queryData]);
+      const requestMock = composeMockedQueryResult(edit{{ pascalCase name }}Mutation, {
+        variables: mutationVariables,
+        data: mutationData,
       });
+
+      requestMock.newData = jest.fn(() => ({
+        data: mutationData,
+      }));
+
+      render(<Component />, {
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(listMock, requestMock),
+      });
+
+      const nameField = await screen.findByPlaceholderText(/name/i);
+      await userEvent.clear(nameField);
+      await userEvent.type(nameField, newName);
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+
+      expect(requestMock.newData).toHaveBeenCalled();
     });
-  });
 
-  it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, name: ['Provided value is invalid'] });
+    it('should show success message', async () => {
+      const routerProps = createMockRouterProps(['{{ camelCase name }}', 'edit'], { id: defaultItemId });
+      const listMock = fill{{ pascalCase name }}ListQuery([queryData]);
+      const requestMock = composeMockedQueryResult(edit{{ pascalCase name }}Mutation, {
+        variables: mutationVariables,
+        data: mutationData,
+      });
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
-    });
-  });
+      render(<Component />, {
+        routerProps,
+        apolloMocks: (defaultMocks) => defaultMocks.concat(listMock, requestMock),
+      });
 
-  it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
+      const nameField = await screen.findByPlaceholderText(/name/i);
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
+      await userEvent.clear(nameField);
+      await userEvent.type(nameField, newName);
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });
 });

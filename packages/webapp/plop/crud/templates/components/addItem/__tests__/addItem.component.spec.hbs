@@ -1,76 +1,78 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act, waitFor, screen } from '@testing-library/react';
-import { Add{{ pascalCase name }} } from '../add{{ pascalCase name }}.component';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
-import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase name }}';
+import { append } from 'ramda';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { render } from '../../../../tests/utils/rendering';
+import { Add{{ pascalCase name }} } from '../add{{ pascalCase name }}.component';
+import { add{{ pascalCase name }}Mutation } from '../add{{ pascalCase name }}.graphql';
 
 describe('Add{{ pascalCase name }}: Component', () => {
-  const component = () => <Add{{ pascalCase name }} />;
-  const render = makeContextRenderer(component);
+  const Component = () => <Add{{ pascalCase name }} />;
 
-  const formData = {
-    name: 'new item',
-  };
-
-  beforeEach(() => {
-    mockDispatch.mockReset();
-  });
-
-  it('should display empty form', () => {
-    render();
-    expect(screen.getByPlaceholderText(/name/gi).getAttribute('value')).toBeNull();
-  });
-
-  it('should call add{{ pascalCase name }} action when submitted', async () => {
-    mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith({{ camelCase name }}Actions.add{{ pascalCase name }}(formData));
-    });
+  it('should display empty form', async () => {
+    const { waitForApolloMocks } = render(<Component />);
+    await waitForApolloMocks();
+    const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
+    expect(value).toBeNull();
   });
 
   describe('action completes successfully', () => {
-    it('should show success message', async () => {
-      mockDispatch.mockResolvedValue({ id: 'test-id', ...formData, isError: false });
-
-      render();
-      userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-      act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-      await waitFor(() => {
-        expect(screen.getByText('Saved successfully')).toBeInTheDocument();
+    it('should commit mutation', async () => {
+      const variables = {
+        input: { name: 'new item name' },
+      };
+      const data = {
+        create{{ pascalCase name }}: {
+          {{ camelCase name }}Edge: {
+            node: {
+              id: 1,
+              ...variables.input,
+            },
+          },
+        },
+      };
+      const requestMock = composeMockedQueryResult(add{{ pascalCase name }}Mutation, {
+        variables,
+        data,
       });
+      requestMock.newData = jest.fn(() => ({
+        data,
+      }));
+
+      render(<Component />, { apolloMocks: append(requestMock) });
+
+      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+      expect(requestMock.newData).toHaveBeenCalled();
     });
-  });
 
-  it('should show field error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, name: ['Provided value is invalid'] });
+    it('should show success message', async () => {
+      const variables = {
+        input: { name: 'new item' },
+      };
+      const data = {
+        create{{ pascalCase name }}: {
+          {{ camelCase name }}Edge: {
+            node: {
+              id: 1,
+              ...variables.input,
+            },
+          },
+        },
+      };
+      const requestMock = composeMockedQueryResult(add{{ pascalCase name }}Mutation, {
+        variables,
+        data,
+      });
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Provided value is invalid')).toBeInTheDocument();
-    });
-  });
+      render(<Component />, { apolloMocks: append(requestMock) });
 
-  it('should show generic form error if action throws error', async () => {
-    mockDispatch.mockResolvedValue({ isError: true, nonFieldErrors: ['Invalid data'] });
+      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-    render();
-    userEvent.type(screen.getByPlaceholderText(/name/gi), formData.name);
-    act(() => userEvent.click(screen.getByRole('button', { name: /save/gi })));
-    await waitFor(() => {
-      expect(screen.getByText('Invalid data')).toBeInTheDocument();
+      const message = await screen.findByTestId('snackbar-message-0');
+      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });
 });

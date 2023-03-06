@@ -1,51 +1,83 @@
-import userEvent from '@testing-library/user-event';
+import { useQuery } from '@apollo/client';
 import { screen } from '@testing-library/react';
-import { {{ pascalCase name }}ListItem, {{ pascalCase name }}ListItemProps } from '../{{ camelCase name }}ListItem.component';
-import { makeContextRenderer, spiedHistory } from '../../../../../shared/utils/testUtils';
-import { {{ camelCase name }}Factory } from '../../../../../mocks/factories';
-import { {{ camelCase name }}Actions } from '../../../../../modules/{{ camelCase name }}';
+import userEvent from '@testing-library/user-event';
+import { append } from 'ramda';
+import { Route, Routes, useParams } from 'react-router';
 
-const item = {{ camelCase name }}Factory({ id: 'test-id', name: 'test-name' });
+import { RoutesConfig } from '../../../../../app/config/routes';
+import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
+import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { render } from '../../../../../tests/utils/rendering';
+import { {{ pascalCase name }}ListItem } from '../{{ camelCase name }}ListItem.component';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
+const {{ camelCase name }}ListItemTestQuery = gql(/* GraphQL */ `
+  query {{ camelCase name }}ListItemTestQuery {
+    item: {{ camelCase name }}(id: "test-id") {
+      ...{{ camelCase name }}ListItemFragment
+    }
+  }
+`);
 
 describe('{{ pascalCase name }}ListItem: Component', () => {
-  const defaultProps: {{ pascalCase name }}ListItemProps = {
-    item,
+  const EditRouteMock = () => {
+    const params = useParams<{ id: string }>();
+    return <span>Crud demo item edit mock {params?.id}</span>;
   };
 
-  const component = (props: Partial<{{ pascalCase name }}ListItemProps>) => (
-    <{{ pascalCase name }}ListItem {...defaultProps} {...props} />
-  );
-  const render = makeContextRenderer(component);
+  const DetailsRouteMock = () => {
+    const params = useParams<{ id: string }>();
+    return <span>Crud demo item details mock {params?.id}</span>;
+  };
 
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  const Component = () => {
+    const { loading, data } = useQuery({{ camelCase name }}ListItemTestQuery);
+
+    if (loading || !data?.item) {
+      return <span />;
+    }
+
+    return (
+      <Routes>
+        <Route path="/" element={<{{ pascalCase name }}ListItem item={data.item} />} />
+        <Route path={RoutesConfig.getLocalePath(['{{ camelCase name }}', 'details'])} element={<DetailsRouteMock />} />
+        <Route path={RoutesConfig.getLocalePath(['{{ camelCase name }}', 'edit'])} element={<EditRouteMock />} />
+      </Routes>
+    );
+  };
+
+  it('should render link to details page', async () => {
+    const item = { id: 'test-id', name: 'demo item name' };
+
+    const requestMock = composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
+      data: {
+        item: {
+          __typename: '{{ pascalCase name }}Type',
+          ...item,
+        },
+      },
+    });
+
+    render(<Component />, { apolloMocks: append(requestMock) });
+    expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByText(/demo item name/i));
+    expect(screen.getByText('Crud demo item details mock test-id')).toBeInTheDocument();
   });
 
-  it('should render link to details page', () => {
-    const { pushSpy, history } = spiedHistory();
-    render({}, { router: { history } });
-    userEvent.click(screen.getByText('test-name'));
-    expect(pushSpy).toHaveBeenCalledWith('/en/{{ dashCase name }}/test-id');
-  });
+  it('should render link to edit form', async () => {
+    const item = { id: 'test-id', name: 'demo item name' };
 
-  it('should render link to edit form', () => {
-    const { pushSpy, history } = spiedHistory();
-    render({}, { router: { history } });
-    userEvent.click(screen.getByText(/edit/gi));
-    expect(pushSpy).toHaveBeenCalledWith('/en/{{ dashCase name }}/edit/test-id');
-  });
+    const requestMock = composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
+      data: {
+        item: {
+          ...item,
+          __typename: '{{ pascalCase name }}Type',
+        },
+      },
+    });
 
-  it('should delete item when delete button is clicked', () => {
-    render();
-    userEvent.click(screen.getByText(/delete/gi));
-    expect(mockDispatch).toHaveBeenCalledWith({{ camelCase name }}Actions.delete{{ pascalCase name }}('test-id'));
+    render(<Component />, { apolloMocks: append(requestMock) });
+    expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByText(/edit/i));
+    expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();
   });
 });

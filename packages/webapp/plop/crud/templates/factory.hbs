@@ -1,8 +1,35 @@
+import { {{ camelCase name }}DetailsQuery } from '../../routes/{{ camelCase name }}/{{ camelCase name }}Details/{{ camelCase name }}Details.graphql';
+import { {{ camelCase name }}ListQuery } from '../../routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}List.graphql';
 import { {{ pascalCase name }} } from '../../shared/services/api/{{ camelCase name }}/types';
-import { makeId } from '../../tests/utils/fixtures';
+import { composeMockedListQueryResult, composeMockedQueryResult, makeId } from '../../tests/utils/fixtures';
 import { createFactory } from './factoryCreators';
 
 export const {{ camelCase name }}Factory = createFactory<{{ pascalCase name }}>(() => ({
   id: makeId(32),
-  name: "{{ pascalCase name }}-name",
-}))
+  name: '{{ camelCase name }}-name',
+}));
+
+export const fill{{ pascalCase name }}DetailsQuery = (
+  data = {
+    name: '{{ camelCase name }} name',
+  },
+  variables = {}
+) => {
+  return composeMockedQueryResult({{ camelCase name }}DetailsQuery, {
+    variables,
+    data: {
+      {{ camelCase name }}: data,
+    },
+  });
+};
+
+export const fill{{ pascalCase name }}ListQuery = (
+  data = [
+    { id: 'first-item-id', name: 'First item' },
+    { id: 'second-item-id', name: 'Second item' },
+  ]
+) => {
+  return composeMockedListQueryResult({{ camelCase name }}ListQuery, '{{ camelCase name }}List', '{{ pascalCase name }}Type', {
+    data,
+  });
+};

@@ -1,41 +1,30 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { append } from 'ramda';
+
+import { fill{{ pascalCase name }}ListQuery, {{ camelCase name }}Factory } from '../../../../mocks/factories';
+import { renderHook } from '../../../../tests/utils/rendering';
 import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}.hook';
-import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
-import { ProvidersWrapper } from '../../../../shared/utils/testUtils';
-import { prepareState } from '../../../../mocks/store';
-import { {{ camelCase name }}Actions } from '../../../../modules/{{ camelCase name }}';
 
 const item = {{ camelCase name }}Factory();
 const items = [{{ camelCase name }}Factory(), item, {{ camelCase name }}Factory()];
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => {
-  return {
-    ...jest.requireActual<NodeModule>('react-redux'),
-    useDispatch: () => mockDispatch,
-  };
-});
-
 describe('use{{ pascalCase name }}: Hook', () => {
-  beforeEach(() => {
-    mockDispatch.mockReset();
+  it('should return item value from query', async () => {
+    const listMock = fill{{ pascalCase name }}ListQuery(items);
+    const render = () => renderHook(() => use{{ pascalCase name }}(item.id), { apolloMocks: append(listMock) });
+
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
+
+    expect(result.current.itemData).toEqual(item);
   });
 
-  it('should return item value from store if present', () => {
-    const store = prepareState((state) => {
-      state.{{ camelCase name }}.items = items;
-    });
-    const { result } = renderHook(() => use{{ pascalCase name }}(item.id), {
-      wrapper: ({ children }) => <ProvidersWrapper context=\{{ store }}>{children}</ProvidersWrapper>,
-    });
-    expect(result.current).toEqual(item);
-  });
+  it('should not return non existing item from query', async () => {
+    const listMock = fill{{ pascalCase name }}ListQuery([]);
+    const render = () => renderHook(() => use{{ pascalCase name }}(item.id), { apolloMocks: append(listMock) });
 
-  it('should dispatch fetch action if item not present in the store', () => {
-    const { result } = renderHook(() => use{{ pascalCase name }}(item.id), {
-      wrapper: ({ children }) => <ProvidersWrapper>{children}</ProvidersWrapper>,
-    });
-    expect(result.current).toEqual(undefined);
-    expect(mockDispatch).toHaveBeenCalledWith({{ camelCase name }}Actions.fetch{{ pascalCase name }}(item.id));
+    const { result, waitForApolloMocks } = render();
+    await waitForApolloMocks();
+
+    expect(result.current.itemData).toBeUndefined();
   });
 });

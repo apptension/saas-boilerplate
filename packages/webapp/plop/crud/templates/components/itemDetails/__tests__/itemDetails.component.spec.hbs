@@ -1,33 +1,30 @@
-import { generatePath } from 'react-router';
 import { screen } from '@testing-library/react';
-import { makeContextRenderer } from '../../../../shared/utils/testUtils';
+import { append } from 'ramda';
+import { Route, Routes } from 'react-router';
+
+import { RoutesConfig } from '../../../../app/config/routes';
+import { fill{{ pascalCase name }}ListQuery } from '../../../../mocks/factories/{{ camelCase name }}';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { {{ pascalCase name }}Details } from '../{{ camelCase name }}Details.component';
-import { {{ camelCase name }}Factory } from '../../../../mocks/factories';
-import { prepareState } from '../../../../mocks/store';
-import { ROUTES } from '../../../../app/config/routes';
-
-const item = {{ camelCase name }}Factory();
-const items = [{{ camelCase name }}Factory(), item, {{ camelCase name }}Factory()];
-
-const store = prepareState((state) => {
-  state.{{ camelCase name }}.items = items;
-});
 
 describe('{{ pascalCase name }}Details: Component', () => {
-  const component = () => <{{ pascalCase name }}Details />;
-  const render = makeContextRenderer(component);
+  const routePath = ['{{ camelCase name }}', 'details'];
+  const defaultItemId = 'test-id';
 
-  it('should render item details', () => {
-    render(
-      {},
-      {
-        store,
-        router: {
-          url: `/en${generatePath(ROUTES.{{ camelCase name }}.details, { id: item.id })}`,
-          routePath: `/:lang${ROUTES.{{ camelCase name }}.details}`,
-        },
-      }
-    );
-    expect(screen.getByText(`[${item.id}] ${item.name}`)).toBeInTheDocument();
+  const Component = () => (
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<{{ pascalCase name }}Details />} />
+    </Routes>
+  );
+
+  it('should render item details', async () => {
+    const routerProps = createMockRouterProps(routePath, { id: defaultItemId });
+    const data = { id: defaultItemId, name: 'demo item name' };
+    const mockRequest = fill{{ pascalCase name }}ListQuery([data]);
+
+    render(<Component />, { routerProps, apolloMocks: append(mockRequest) });
+
+    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
+    expect(await screen.findByText(/demo item name/i)).toBeInTheDocument();
   });
 });
