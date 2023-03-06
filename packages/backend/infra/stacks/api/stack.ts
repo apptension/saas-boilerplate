@@ -3,6 +3,8 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import * as elb2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as events from 'aws-cdk-lib/aws-events';
 import {
   EnvConstructProps,
   getHostedZone,
@@ -65,7 +67,9 @@ export class ApiStack extends Stack {
       envSettings.domains.www,
     ].join(',');
 
-    const csrfTrustedOrigins = [`https://${envSettings.domains.adminPanel}`].join(',');
+    const csrfTrustedOrigins = [
+      `https://${envSettings.domains.adminPanel}`,
+    ].join(',');
 
     const httpsListener =
       elb2.ApplicationListener.fromApplicationListenerAttributes(
@@ -109,7 +113,7 @@ export class ApiStack extends Stack {
               CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
               DJANGO_ALLOWED_HOSTS: allowedHosts,
               CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
-              RATELIMIT_IP_META_KEY: "HTTP_X_FORWARDED_FOR",
+              RATELIMIT_IP_META_KEY: 'HTTP_X_FORWARDED_FOR',
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),
@@ -206,13 +210,24 @@ export class ApiStack extends Stack {
       assumedBy: new iam.ServicePrincipal('ecs-tasks'),
     });
 
+    const fileUploadsBucket = s3.Bucket.fromBucketName(
+      this,
+      'FileUploadsBucket',
+      EnvComponentsStack.getFileUploadsBucketName(envSettings)
+    );
+    fileUploadsBucket.grantReadWrite(taskRole);
+
+    const eventBus = events.EventBus.fromEventBusName(
+      this,
+      'WorkersEventBus',
+      EnvComponentsStack.getWorkersEventBusName(envSettings)
+    );
+    eventBus.grantPutEventsTo(taskRole);
+
     taskRole.addToPolicy(
       new iam.PolicyStatement({
         actions: [
-          'sqs:*',
-          's3:*',
           'cloudformation:DescribeStacks',
-          'events:*',
           'apigateway:*',
           'execute-api:*',
           'xray:*',
