@@ -25,13 +25,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = models.UserProfile
         fields = ("id", "first_name", "last_name", "email", "roles", "avatar")
 
-    def validate(self, attrs):
-        avatar = attrs.get('avatar')
-
+    @staticmethod
+    def validate_avatar(avatar):
         if avatar and avatar.size > UPLOADED_AVATAR_SIZE_LIMIT:
             raise exceptions.ValidationError({"avatar": _("Too large file")}, 'too_large')
 
-        return attrs
+        return avatar
 
     def get_roles(self, obj):
         return get_role_names(obj.user)
@@ -103,9 +102,6 @@ class UserAccountConfirmationSerializer(serializers.Serializer):
 
         return attrs
 
-    def update(self, instance, validated_data):
-        pass
-
     def create(self, validated_data):
         user = validated_data.pop("user")
         user.is_confirmed = True
@@ -133,9 +129,6 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
             raise exceptions.ValidationError({"old_password": _("Wrong old password")}, 'wrong_password')
 
         return attrs
-
-    def update(self, instance, validated_data):
-        pass
 
     def create(self, validated_data):
         user = validated_data.pop("user")
@@ -202,9 +195,6 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
 
         return {**attrs, 'user': user}
 
-    def update(self, instance, validated_data):
-        pass
-
     def create(self, validated_data):
         user = validated_data.pop("user")
         new_password = validated_data.pop("new_password")
@@ -244,17 +234,21 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
 
+    default_error_messages = {
+        'invalid_token': _('No valid token found in cookie \'refresh_token\''),
+    }
+
     def validate(self, attrs):
         request = self.context['request']
         raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
 
         if not raw_token:
-            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+            self.fail('invalid_token')
 
         try:
             refresh = jwt_tokens.RefreshToken(raw_token)
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+            self.fail('invalid_token')
 
         if jwt_api_settings.ROTATE_REFRESH_TOKENS:
             if jwt_api_settings.BLACKLIST_AFTER_ROTATION:
@@ -274,17 +268,21 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
 class LogoutSerializer(serializers.Serializer):
     ok = serializers.BooleanField(read_only=True)
 
+    default_error_messages = {
+        'invalid_token': _('No valid token found in cookie \'refresh_token\''),
+    }
+
     def validate(self, attrs):
         request = self.context['request']
         raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE)
 
         if not raw_token:
-            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+            self.fail('invalid_token')
 
         try:
             refresh = jwt_tokens.RefreshToken(raw_token)
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            raise serializers.ValidationError(_('No valid token found in cookie \'refresh_token\''))
+            self.fail('invalid_token')
 
         return {'refresh': refresh}
 

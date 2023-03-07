@@ -180,13 +180,13 @@ class TestChangeActiveSubscriptionMutation:
     '''
 
     def test_change_active_subscription(self, graphene_client, subscription_schedule, monthly_plan_price):
-        input = {'price': monthly_plan_price.id}
+        input_data = {'price': monthly_plan_price.id}
         user = subscription_schedule.customer.subscriber
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed['data']
@@ -195,7 +195,7 @@ class TestChangeActiveSubscriptionMutation:
     def test_change_when_user_has_no_payment_method_but_can_activate_trial(
         self, graphene_client, customer_factory, subscription_schedule_factory, free_plan_price, monthly_plan_price
     ):
-        input = {'price': monthly_plan_price.id}
+        input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
         user = customer.subscriber
         subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
@@ -204,7 +204,7 @@ class TestChangeActiveSubscriptionMutation:
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed['data']
@@ -213,7 +213,7 @@ class TestChangeActiveSubscriptionMutation:
     def test_return_error_on_change_if_customer_has_no_payment_method(
         self, graphene_client, customer_factory, monthly_plan_price, subscription_schedule_factory
     ):
-        input = {'price': monthly_plan_price.id}
+        input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
         user = customer.subscriber
         subscription_schedule_factory(
@@ -224,7 +224,7 @@ class TestChangeActiveSubscriptionMutation:
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert len(executed["errors"]) == 1
@@ -347,12 +347,12 @@ class TestUpdateDefaultPaymentMethodMutation:
     def test_fetch_unknown_payment_method_from_stripe(self, graphene_client, stripe_request, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        input = {"id": other_users_pm.id}
+        input_data = {"id": other_users_pm.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
@@ -363,12 +363,12 @@ class TestUpdateDefaultPaymentMethodMutation:
 
     def test_set_default_payment_method(self, graphene_client, payment_method_factory, customer, stripe_request):
         payment_method = payment_method_factory(customer=customer)
-        input = {"id": payment_method.id}
+        input_data = {"id": payment_method.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["data"]
@@ -396,12 +396,12 @@ class TestDeletePaymentMethodMutation:
     def test_return_error_for_other_users_payment_method(self, graphene_client, stripe_request, payment_method_factory):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        input = {"id": other_users_pm.id}
+        input_data = {"id": other_users_pm.id}
 
         graphene_client.force_authenticate(payment_method.customer.subscriber)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
@@ -413,12 +413,12 @@ class TestDeletePaymentMethodMutation:
     def test_detach_payment_method(self, graphene_client, stripe_request, payment_method):
         customer = payment_method.customer
         payment_method_global_id = to_global_id('StripePaymentMethodType', str(payment_method.djstripe_id))
-        input = {"id": payment_method.id}
+        input_data = {"id": payment_method.id}
 
         graphene_client.force_authenticate(customer.subscriber)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         customer.refresh_from_db()
@@ -435,7 +435,7 @@ class TestDeletePaymentMethodMutation:
         self, graphene_client, stripe_request, customer, payment_method_factory
     ):
         payment_method = payment_method_factory(customer=customer)
-        input = {"id": payment_method.id}
+        input_data = {"id": payment_method.id}
         customer.default_payment_method = payment_method
         customer.save()
         other_payment_method = payment_method_factory(customer=customer)
@@ -443,7 +443,7 @@ class TestDeletePaymentMethodMutation:
         graphene_client.force_authenticate(customer.subscriber)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         customer.refresh_from_db()
@@ -645,23 +645,23 @@ class TestCreatePaymentIntentMutation:
     '''
 
     def test_return_error_for_unauthorized_user(self, graphene_client):
-        input = {"product": "A"}
+        input_data = {"product": "A"}
 
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_return_error_if_product_is_not_passed(self, graphene_client, user):
-        input = {}
+        input_data = {}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
@@ -670,12 +670,12 @@ class TestCreatePaymentIntentMutation:
         )
 
     def test_return_error_if_product_does_not_exist(self, graphene_client, user):
-        input = {"product": "A"}
+        input_data = {"product": "A"}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert len(executed["errors"]) == 1
@@ -684,12 +684,12 @@ class TestCreatePaymentIntentMutation:
         assert error["extensions"]["product"] == [{'message': '"A" is not a valid choice.', 'code': 'invalid_choice'}]
 
     def test_creates_payment_intent(self, graphene_client, user):
-        input = {"product": "5"}
+        input_data = {"product": "5"}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed['data']['createPaymentIntent']
@@ -720,11 +720,11 @@ class TestUpdatePaymentIntentMutation:
 
     def test_return_error_for_unauthorized_user(self, graphene_client, payment_intent_factory):
         payment_intent = payment_intent_factory(amount=50)
-        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
 
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
@@ -732,12 +732,12 @@ class TestUpdatePaymentIntentMutation:
 
     def test_return_error_if_product_belongs_to_other_user(self, graphene_client, payment_intent_factory, customer):
         payment_intent = payment_intent_factory(amount=50)
-        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
 
         graphene_client.force_authenticate(customer.subscriber)
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["errors"]
@@ -745,12 +745,12 @@ class TestUpdatePaymentIntentMutation:
 
     def test_update_payment_intent_amount(self, graphene_client, payment_intent_factory, customer):
         payment_intent = payment_intent_factory(amount=50, customer=customer)
-        input = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
 
         graphene_client.force_authenticate(customer.subscriber)
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         assert executed["data"]

@@ -122,34 +122,35 @@ class TestCreateCrudDemoItemMutation:
         }
     """
 
-    def test_create_new_item(self, graphene_client, user):
-        input = {"name": "Item name"}
+    @pytest.fixture
+    def input_data(self) -> dict:
+        return {"name": "Item name"}
 
+    def test_create_new_item(self, graphene_client, user, input_data):
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert executed["data"]["createCrudDemoItem"]
         assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]
-        assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]["name"] == input["name"]
+        assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]["name"] == input_data["name"]
 
         item_global_id = executed["data"]["createCrudDemoItem"]["crudDemoItem"]["id"]
         _, pk = from_global_id(item_global_id)
         item = models.CrudDemoItem.objects.get(pk=pk)
 
-        assert item.name == input["name"]
+        assert item.name == input_data["name"]
 
-    def test_create_new_item_sends_notification(self, graphene_client, user_factory):
+    def test_create_new_item_sends_notification(self, graphene_client, user_factory, input_data):
         user = user_factory(has_avatar=True)
         admin = user_factory(admin=True)
-        input = {"name": "Item name"}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         item_global_id = executed["data"]["createCrudDemoItem"]["crudDemoItem"]["id"]
@@ -168,12 +169,11 @@ class TestCreateCrudDemoItemMutation:
         }
 
     def test_create_new_item_sends_notification_through_websockets(
-        self, mocker, graphene_client, user_factory, graph_ql_subscription_factory
+        self, mocker, graphene_client, user_factory, graph_ql_subscription_factory, input_data
     ):
         post_to_connection = mocker.patch("apps.websockets.apigateway.post_to_connection")
         user = user_factory()
         admin = user_factory(admin=True)
-        input = {"name": "Item name"}
         graph_ql_subscription_factory(
             connection__connection_id="conn-id",
             connection__user=admin,
@@ -183,7 +183,7 @@ class TestCreateCrudDemoItemMutation:
         )
 
         graphene_client.force_authenticate(user)
-        graphene_client.mutate(self.CREATE_MUTATION, variable_values={"input": input})
+        graphene_client.mutate(self.CREATE_MUTATION, variable_values={"input": input_data})
 
         assert Notification.objects.count() == 1
         notification = Notification.objects.first()
@@ -225,42 +225,46 @@ class TestUpdateCrudDemoItemMutation:
         }
     """
 
-    def test_update_existing_item(self, graphene_client, crud_demo_item, user):
-        input = {
-            "name": "New item name",
-            "id": to_global_id("CrudDemoItemType", str(crud_demo_item.id)),
-        }
+    @pytest.fixture
+    def input_data_factory(self):
+        def _factory(crud_demo_item, name="New item name") -> dict:
+            return {
+                "id": to_global_id("CrudDemoItemType", str(crud_demo_item.id)),
+                "name": name,
+            }
+
+        return _factory
+
+    def test_update_existing_item(self, graphene_client, crud_demo_item, user, input_data_factory):
+        input_data = input_data_factory(crud_demo_item)
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.UPDATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         crud_demo_item.refresh_from_db()
 
         assert executed["data"]["updateCrudDemoItem"]
         assert executed["data"]["updateCrudDemoItem"]["crudDemoItem"]
-        assert executed["data"]["updateCrudDemoItem"]["crudDemoItem"]["name"] == input["name"]
-        assert crud_demo_item.name == input["name"]
+        assert executed["data"]["updateCrudDemoItem"]["crudDemoItem"]["name"] == input_data["name"]
+        assert crud_demo_item.name == input_data["name"]
 
     def test_update_existing_item_sends_notification_to_admins_and_creator(
-        self, graphene_client, crud_demo_item_factory, user_factory
+        self, graphene_client, crud_demo_item_factory, user_factory, input_data_factory
     ):
         user = user_factory(has_avatar=True)
         other_user = user_factory(has_avatar=True)
         admins = user_factory.create_batch(2, admin=True)
         crud_demo_item = crud_demo_item_factory(created_by=user)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
-        input = {
-            "name": "New item name",
-            "id": item_global_id,
-        }
+        input_data = input_data_factory(crud_demo_item)
 
         graphene_client.force_authenticate(other_user)
         graphene_client.mutate(
             self.UPDATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert Notification.objects.filter(type=constants.Notification.CRUD_ITEM_UPDATED.value).count() == 3
@@ -277,21 +281,17 @@ class TestUpdateCrudDemoItemMutation:
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
-        self, graphene_client, crud_demo_item_factory, user_factory
+        self, graphene_client, crud_demo_item_factory, user_factory, input_data_factory
     ):
         user = user_factory()
         crud_demo_item = crud_demo_item_factory(created_by=user)
         admins = user_factory.create_batch(2, admin=True)
-        item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
-        input = {
-            "name": "New item name",
-            "id": item_global_id,
-        }
+        input_data = input_data_factory(crud_demo_item)
 
         graphene_client.force_authenticate(user)
         graphene_client.mutate(
             self.UPDATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert Notification.objects.count() == 2
@@ -299,23 +299,14 @@ class TestUpdateCrudDemoItemMutation:
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_through_websocket_to_admin_with_open_subscription(
-        self,
-        mocker,
-        graphene_client,
-        crud_demo_item,
-        user_factory,
-        graph_ql_subscription_factory,
+        self, mocker, graphene_client, crud_demo_item, user_factory, graph_ql_subscription_factory, input_data_factory
     ):
         post_to_connection = mocker.patch("apps.websockets.apigateway.post_to_connection")
         user = user_factory()
         crud_demo_item.user = user
         crud_demo_item.save()
         admins = user_factory.create_batch(2, admin=True)
-        item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
-        input = {
-            "name": "New item name",
-            "id": item_global_id,
-        }
+        input_data = input_data_factory(crud_demo_item)
         graph_ql_subscription_factory(
             connection__connection_id="conn-id",
             connection__user=admins[0],
@@ -327,7 +318,7 @@ class TestUpdateCrudDemoItemMutation:
         graphene_client.force_authenticate(user)
         graphene_client.mutate(
             self.UPDATE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         notification = Notification.objects.get(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value)
@@ -420,13 +411,15 @@ class TestCreateDocumentDemoItemMutation:
         }
     """
 
-    def execute_create_document_mutation(self, api_client, test_file=None, input={}):
+    TEST_FILENAME = "test.txt"
+
+    def execute_create_document_mutation(self, api_client, test_file=None, input_data=None):
         if not test_file:
-            test_file = SimpleUploadedFile(name="test.txt", content="file content".encode("utf-8"))
+            test_file = SimpleUploadedFile(name=self.TEST_FILENAME, content="file content".encode("utf-8"))
         response = file_graphql_query(
             self.CREATE_MUTATION,
             client=api_client,
-            variables={"input": input},
+            variables={"input": input_data if input_data else {}},
             files={"file": test_file},
             graphql_url="/api/graphql/",
         )
@@ -441,9 +434,9 @@ class TestCreateDocumentDemoItemMutation:
         assert executed["data"]["createDocumentDemoItem"]
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]
-        assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]["name"] == "test.txt"
+        assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]["name"] == self.TEST_FILENAME
         assert executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["file"]["url"].startswith(
-            "https://cdn.example.com/documents/a1b2/test.txt"
+            f"https://cdn.example.com/documents/a1b2/{self.TEST_FILENAME}"
         )
 
         item_global_id = executed["data"]["createDocumentDemoItem"]["documentDemoItem"]["id"]
@@ -451,8 +444,8 @@ class TestCreateDocumentDemoItemMutation:
         item = models.DocumentDemoItem.objects.get(pk=pk)
 
         assert item.created_by == user
-        assert item.file.name == "documents/a1b2/test.txt"
-        assert item.file.url.startswith("https://cdn.example.com/documents/a1b2/test.txt")
+        assert item.file.name == f"documents/a1b2/{self.TEST_FILENAME}"
+        assert item.file.url.startswith(f"https://cdn.example.com/documents/a1b2/{self.TEST_FILENAME}")
 
     def test_create_new_item_when_limit_already_reached(self, user, api_client, document_demo_item_factory):
         api_client.force_authenticate(user)
@@ -470,7 +463,7 @@ class TestCreateDocumentDemoItemMutation:
 
     def test_create_new_item_with_too_large_file(self, user, api_client):
         api_client.force_authenticate(user)
-        large_file = SimpleUploadedFile(name="test.txt", content=("a" * 1024 * 1024 * 11).encode("utf-8"))
+        large_file = SimpleUploadedFile(name=self.TEST_FILENAME, content=("a" * 1024 * 1024 * 11).encode("utf-8"))
 
         executed = self.execute_create_document_mutation(api_client, large_file)
 
@@ -597,12 +590,12 @@ class TestCreateFavoriteContentfulDemoItemMutation:
 
     def test_create_new_favorite_item(self, graphene_client, user, contentful_demo_item_factory):
         item = contentful_demo_item_factory()
-        input = {"item": item.id}
+        input_data = {"item": item.id}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_FAVORITE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert executed["data"]["createFavoriteContentfulDemoItem"]
@@ -619,12 +612,12 @@ class TestCreateFavoriteContentfulDemoItemMutation:
         self, graphene_client, user, contentful_demo_item_favorite_factory
     ):
         favorite_item = contentful_demo_item_favorite_factory(user=user)
-        input = {"item": favorite_item.item.id}
+        input_data = {"item": favorite_item.item.id}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.CREATE_FAVORITE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert executed["errors"]
@@ -652,12 +645,12 @@ class TestDeleteFavoriteContentfulDemoItemMutation:
     ):
         item = contentful_demo_item_factory()
         fav_item = contentful_demo_item_favorite_factory(item=item, user=user)
-        input = {"item": item.id}
+        input_data = {"item": item.id}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.DELETE_FAVORITE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert executed["data"]["deleteFavoriteContentfulDemoItem"]
@@ -668,12 +661,12 @@ class TestDeleteFavoriteContentfulDemoItemMutation:
         assert models.ContentfulDemoItemFavorite.objects.count() == 0
 
     def test_delete_favorite_item_wrong_id(self, graphene_client, user):
-        input = {"item": "unexisting"}
+        input_data = {"item": "unexisting"}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.DELETE_FAVORITE_MUTATION,
-            variable_values={"input": input},
+            variable_values={"input": input_data},
         )
 
         assert executed["errors"]

@@ -22,8 +22,9 @@ from .services import subscriptions, customers
 class SubscriptionItemProductType(DjangoObjectType):
     pk = graphene.String()
 
-    def resolve_pk(self, info):
-        return self.id
+    @staticmethod
+    def resolve_pk(parent, info):
+        return parent.id
 
     class Meta:
         model = djstripe_models.Product
@@ -34,8 +35,9 @@ class SubscriptionItemProductType(DjangoObjectType):
 class SubscriptionPlanType(DjangoObjectType):
     pk = graphene.String()
 
-    def resolve_pk(self, info):
-        return self.id
+    @staticmethod
+    def resolve_pk(parent, info):
+        return parent.id
 
     class Meta:
         model = djstripe_models.Price
@@ -51,8 +53,9 @@ class SubscriptionPlanConnection(graphene.Connection):
 class StripeDjangoObjectType(DjangoObjectType):
     pk = graphene.String()
 
-    def resolve_pk(self, info):
-        return self.id
+    @staticmethod
+    def resolve_pk(parent, info):
+        return parent.id
 
     class Meta:
         abstract = True
@@ -96,8 +99,9 @@ class SubscriptionSchedulePhaseItemType(ObjectType):
     price = graphene.Field(SubscriptionPlanType)
     quantity = graphene.Int()
 
-    def resolve_price(self, info):
-        return djstripe_models.Price.objects.filter(id=self["price"]).first()
+    @staticmethod
+    def resolve_price(parent, info):
+        return djstripe_models.Price.objects.filter(id=parent["price"]).first()
 
 
 class SubscriptionSchedulePhaseType(ObjectType):
@@ -106,14 +110,17 @@ class SubscriptionSchedulePhaseType(ObjectType):
     trial_end = graphene.String()
     item = graphene.Field(SubscriptionSchedulePhaseItemType)
 
-    def resolve_start_date(self, info):
-        return datetime.utcfromtimestamp(self["start_date"])
+    @staticmethod
+    def resolve_start_date(parent, info):
+        return datetime.utcfromtimestamp(parent["start_date"])
 
-    def resolve_end_date(self, info):
-        return datetime.utcfromtimestamp(self["end_date"])
+    @staticmethod
+    def resolve_end_date(parent, info):
+        return datetime.utcfromtimestamp(parent["end_date"])
 
-    def resolve_item(self, info):
-        return self["items"][0]
+    @staticmethod
+    def resolve_item(parent, info):
+        return parent["items"][0]
 
 
 class SubscriptionScheduleType(DjangoObjectType):
@@ -122,17 +129,21 @@ class SubscriptionScheduleType(DjangoObjectType):
     phases = graphene.List(of_type=SubscriptionSchedulePhaseType)
     can_activate_trial = graphene.Boolean()
 
-    def resolve_subscription(self, info):
-        return self.customer.subscription
+    @staticmethod
+    def resolve_subscription(parent, info):
+        return parent.customer.subscription
 
-    def resolve_default_payment_method(self, info):
-        return self.customer.default_payment_method
+    @staticmethod
+    def resolve_default_payment_method(parent, info):
+        return parent.customer.default_payment_method
 
-    def resolve_phases(self, info):
-        return subscriptions.get_valid_schedule_phases(self)
+    @staticmethod
+    def resolve_phases(parent, info):
+        return subscriptions.get_valid_schedule_phases(parent)
 
-    def resolve_can_activate_trial(self, info):
-        return utils.customer_can_activate_trial(self.customer)
+    @staticmethod
+    def resolve_can_activate_trial(parent, info):
+        return utils.customer_can_activate_trial(parent.customer)
 
     class Meta:
         model = djstripe_models.SubscriptionSchedule
@@ -304,6 +315,7 @@ class Query(graphene.ObjectType):
     charge = graphene.Field(StripeChargeType, id=graphene.ID())
     payment_intent = graphene.Field(StripePaymentIntentType, id=graphene.ID())
 
+    @staticmethod
     @permission_classes(AnyoneFullAccess)
     def resolve_all_subscription_plans(root, info, **kwargs):
         return djstripe_models.Price.objects.filter(
@@ -315,21 +327,26 @@ class Query(graphene.ObjectType):
             product__active=True,
         )
 
+    @staticmethod
     def resolve_active_subscription(root, info):
         return subscriptions.get_schedule(user=info.context.user)
 
+    @staticmethod
     def resolve_all_payment_methods(root, info, **kwargs):
         return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.user)
 
+    @staticmethod
     def resolve_all_charges(root, info, **kwargs):
         customer, _ = djstripe_models.Customer.get_or_create(info.context.user)
         return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")
 
+    @staticmethod
     def resolve_charge(root, info, id):
         _, pk = from_global_id(id)
         customer, _ = djstripe_models.Customer.get_or_create(info.context.user)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
+    @staticmethod
     def resolve_payment_intent(root, info, id):
         _, pk = from_global_id(id)
         return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.user, pk=pk)

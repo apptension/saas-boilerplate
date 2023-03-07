@@ -12,7 +12,8 @@ from . import services
 class HasUnreadNotificationsMixin:
     has_unread_notifications = graphene.Boolean()
 
-    def resolve_has_unread_notifications(self, info):
+    @staticmethod
+    def resolve_has_unread_notifications(parent, info):
         return services.NotificationService.user_has_unread_notifications(user=info.context.user)
 
 
@@ -52,7 +53,8 @@ class MarkReadAllNotificationsMutation(graphene.ClientIDMutation):
 class Query(HasUnreadNotificationsMixin, graphene.ObjectType):
     all_notifications = graphene.relay.ConnectionField(NotificationConnection)
 
-    def resolve_all_notifications(self, info, **kwargs):
+    @staticmethod
+    def resolve_all_notifications(root, info, **kwargs):
         return models.Notification.objects.filter_by_user(info.context.user).order_by('-created_at')
 
 
@@ -60,12 +62,14 @@ class Mutation(graphene.ObjectType):
     update_notification = UpdateNotificationMutation.Field()
     mark_read_all_notifications = MarkReadAllNotificationsMutation.Field()
 
-    def resolve_has_unread_notifications(self, info):
+    @staticmethod
+    def resolve_has_unread_notifications(root, info):
         return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()
 
 
 class Subscription(graphene.ObjectType):
     notification_created = graphene.relay.ConnectionField(NotificationConnection)
 
+    @staticmethod
     def resolve_notification_created(root, info):
         return root

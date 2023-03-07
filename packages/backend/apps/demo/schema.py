@@ -120,12 +120,15 @@ class Query(graphene.ObjectType):
     all_contentful_demo_item_favorites = graphene.relay.ConnectionField(ContentfulDemoItemFavoriteConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 
+    @staticmethod
     def resolve_all_crud_demo_items(root, info, **kwargs):
         return models.CrudDemoItem.objects.all()
 
+    @staticmethod
     def resolve_all_contentful_demo_item_favorites(root, info, **kwargs):
         return models.ContentfulDemoItemFavorite.objects.filter(user=info.context.user)
 
+    @staticmethod
     def resolve_all_document_demo_items(root, info, **kwargs):
         return info.context.user.documents.all()
 

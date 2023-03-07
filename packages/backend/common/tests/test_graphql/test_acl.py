@@ -32,25 +32,25 @@ def create_mutation_schema(mutation_class):
 
 
 class TestPermissionClassesForQueryConnectionField:
+    QUERY = """
+        query TestQuery {
+          allCrudDemoItems {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+        }
+    """
+
     def test_global_policy_for_connection_field(self, graphene_client):
         Query = self.create_query()
         schema = create_query_schema(Query)
         graphene_client.schema = schema
 
-        executed = graphene_client.query(
-            """
-            query TestQuery {
-              allCrudDemoItems {
-                edges {
-                  node {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-        """
-        )
+        executed = graphene_client.query(self.QUERY)
 
         assert executed["errors"][0]["message"] == "permission_denied"
 
@@ -59,20 +59,7 @@ class TestPermissionClassesForQueryConnectionField:
         schema = create_query_schema(Query)
         graphene_client.schema = schema
 
-        executed = graphene_client.query(
-            """
-            query TestQuery {
-              allCrudDemoItems {
-                edges {
-                  node {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-        """
-        )
+        executed = graphene_client.query(self.QUERY)
 
         assert executed == {'data': {'allCrudDemoItems': {'edges': []}}}
 
@@ -82,20 +69,7 @@ class TestPermissionClassesForQueryConnectionField:
         graphene_client.schema = schema
         graphene_client.force_authenticate(user)
 
-        executed = graphene_client.query(
-            """
-            query TestQuery {
-              allCrudDemoItems {
-                edges {
-                  node {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-        """
-        )
+        executed = graphene_client.query(self.QUERY)
 
         assert executed == {'data': {'allCrudDemoItems': {'edges': []}}}
 
@@ -123,23 +97,22 @@ class TestPermissionClassesForQueryConnectionField:
 
 
 class TestPermissionClassesForQueryField:
+    QUERY = """
+        query TestQuery($id: String!) {
+          crudDemoItemById(id: $id) {
+            id
+            name
+          }
+        }
+    """
+
     def test_global_policy_for_field(self, graphene_client, crud_demo_item):
         Query = self.create_query()
         schema = create_query_schema(Query)
         item_global_id = to_global_id('TestCrudDemoItemType', str(crud_demo_item.id))
         graphene_client.schema = schema
 
-        executed = graphene_client.query(
-            """
-            query TestQuery($id: String!) {
-              crudDemoItemById(id: $id) {
-                id
-                name
-              }
-            }
-        """,
-            variable_values={'id': item_global_id},
-        )
+        executed = graphene_client.query(self.QUERY, variable_values={'id': item_global_id})
 
         assert executed["errors"][0]["message"] == "permission_denied"
 
@@ -149,17 +122,7 @@ class TestPermissionClassesForQueryField:
         item_global_id = to_global_id('TestCrudDemoItemType', str(crud_demo_item.id))
         graphene_client.schema = schema
 
-        executed = graphene_client.query(
-            """
-            query TestQuery($id: String!) {
-              crudDemoItemById(id: $id) {
-                id
-                name
-              }
-            }
-        """,
-            variable_values={'id': item_global_id},
-        )
+        executed = graphene_client.query(self.QUERY, variable_values={'id': item_global_id})
 
         assert executed == {'data': {'crudDemoItemById': {'id': item_global_id, 'name': crud_demo_item.name}}}
 
@@ -170,17 +133,7 @@ class TestPermissionClassesForQueryField:
         graphene_client.schema = schema
         graphene_client.force_authenticate(user)
 
-        executed = graphene_client.query(
-            """
-            query TestQuery($id: String!) {
-              crudDemoItemById(id: $id) {
-                id
-                name
-              }
-            }
-        """,
-            variable_values={'id': item_global_id},
-        )
+        executed = graphene_client.query(self.QUERY, variable_values={'id': item_global_id})
 
         assert executed == {'data': {'crudDemoItemById': {'id': item_global_id, 'name': crud_demo_item.name}}}
 

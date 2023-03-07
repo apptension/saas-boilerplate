@@ -3,6 +3,7 @@ from django.utils import timezone
 from djstripe import models as djstripe_models, enums as djstripe_enums
 
 from .. import models, constants
+from ..exceptions import UserOrCustomerNotDefined, SubscriptionAndPriceDefinedTogether, SubscriptionOrPriceNotDefined
 
 
 def initialize_user(user):
@@ -21,7 +22,7 @@ def get_schedule(user=None, customer=None):
     if user:
         customer, _ = djstripe_models.Customer.get_or_create(user)
     if customer is None:
-        raise Exception("Either user or customer must be defined")
+        raise UserOrCustomerNotDefined("Either user or customer must be defined")
 
     return customer.schedules.filter(status=djstripe_enums.SubscriptionScheduleStatus.active).first()
 
@@ -30,14 +31,14 @@ def create_schedule(
     subscription: djstripe_models.Subscription = None, price: djstripe_models.Price = None, user=None, customer=None
 ):
     if subscription and price:
-        raise Exception("Subscription and price can't be defined together")
+        raise SubscriptionAndPriceDefinedTogether("Subscription and price can't be defined together")
 
     subscription_schedule_stripe_instance = None
     if price:
         if user:
             customer, _ = djstripe_models.Customer.get_or_create(user)
         if customer is None:
-            raise Exception("Either user or customer must be defined")
+            raise UserOrCustomerNotDefined("Either user or customer must be defined")
 
         subscription_schedule_stripe_instance = djstripe_models.SubscriptionSchedule._api_create(
             customer=customer.id, start_date='now', end_behavior="release", phases=[{'items': [{'price': price.id}]}]
@@ -52,7 +53,7 @@ def create_schedule(
         )
 
     if subscription_schedule_stripe_instance is None:
-        raise Exception("Either subscription or price must be defined")
+        raise SubscriptionOrPriceNotDefined("Either subscription or price must be defined")
 
     return djstripe_models.SubscriptionSchedule.sync_from_stripe_data(subscription_schedule_stripe_instance)
 

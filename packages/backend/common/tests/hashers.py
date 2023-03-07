@@ -17,11 +17,11 @@ class DangerousMockHasher(hashers.BasePasswordHasher):
         return "%s$%s$%s" % (self.algorithm, salt, password)
 
     def decode(self, encoded):
-        algorithm, salt, hash = encoded.split("$", 2)
+        algorithm, salt, hash_val = encoded.split("$", 2)
         assert algorithm == self.algorithm
         return {
             "algorithm": algorithm,
-            "hash": hash,
+            "hash": hash_val,
             "salt": salt,
         }
 
@@ -41,4 +41,5 @@ class DangerousMockHasher(hashers.BasePasswordHasher):
         return False
 
     def harden_runtime(self, password, encoded):
+        """Defined as a no-op to silence the super() class warning"""
         pass

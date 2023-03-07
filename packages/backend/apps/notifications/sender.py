@@ -3,6 +3,7 @@ from functools import lru_cache
 from django.conf import settings
 
 from . import strategies
+from .exceptions import NotificationStrategyException
 
 
 @lru_cache
@@ -12,9 +13,11 @@ def get_enabled_strategies():
         try:
             strategy = getattr(strategies, enabled_strategy)
         except AttributeError:
-            raise Exception(f"Notifications strategy '{enabled_strategy}' not found.")
+            raise NotificationStrategyException(f"Notifications strategy '{enabled_strategy}' not found.")
         if not issubclass(strategy, strategies.BaseNotificationStrategy):
-            raise Exception(f"Notification strategy '{enabled_strategy}' is not subclass of BaseNotificationStrategy.")
+            raise NotificationStrategyException(
+                f"Notification strategy '{enabled_strategy}' is not subclass of BaseNotificationStrategy."
+            )
         enabled_strategies.append(strategy)
     return enabled_strategies
 

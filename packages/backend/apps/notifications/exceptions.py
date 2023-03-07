@@ -1,0 +1,2 @@
+class NotificationStrategyException(Exception):
+    pass

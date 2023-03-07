@@ -21,12 +21,12 @@ class TestUpdateNotificationMutation:
     @pytest.mark.freeze_time('2021-05-09')
     def test_mark_read_notification(self, graphene_client, user, notification_factory):
         notification = notification_factory(read_at=None, user=user)
-        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": True}
+        input_data = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": True}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         notification.refresh_from_db()
@@ -35,7 +35,7 @@ class TestUpdateNotificationMutation:
             "data": {
                 "updateNotification": {
                     "hasUnreadNotifications": False,
-                    "notification": {"id": input["id"], "readAt": "2021-05-09T00:00:00+00:00"},
+                    "notification": {"id": input_data["id"], "readAt": "2021-05-09T00:00:00+00:00"},
                 }
             }
         }
@@ -43,12 +43,12 @@ class TestUpdateNotificationMutation:
     @pytest.mark.freeze_time('2021-05-09')
     def test_mark_unread_notification(self, graphene_client, user, notification_factory):
         notification = notification_factory(read_at=timezone.now(), user=user)
-        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
+        input_data = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         notification.refresh_from_db()
@@ -57,7 +57,7 @@ class TestUpdateNotificationMutation:
             "data": {
                 "updateNotification": {
                     "hasUnreadNotifications": True,
-                    "notification": {"id": input["id"], "readAt": None},
+                    "notification": {"id": input_data["id"], "readAt": None},
                 },
             }
         }
@@ -66,12 +66,12 @@ class TestUpdateNotificationMutation:
     def test_has_more_unread_notifications(self, graphene_client, user, notification_factory):
         notification_factory(read_at=None, user=user)
         notification = notification_factory(read_at=None, user=user)
-        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": True}
+        input_data = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": True}
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         notification.refresh_from_db()
@@ -80,7 +80,7 @@ class TestUpdateNotificationMutation:
             "data": {
                 "updateNotification": {
                     "hasUnreadNotifications": True,
-                    "notification": {"id": input["id"], "readAt": "2021-05-09T00:00:00+00:00"},
+                    "notification": {"id": input_data["id"], "readAt": "2021-05-09T00:00:00+00:00"},
                 },
             }
         }
@@ -90,12 +90,12 @@ class TestUpdateNotificationMutation:
         second_user = user_factory()
         read_at = timezone.now()
         notification = notification_factory(read_at=read_at, user=first_user)
-        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
+        input_data = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
 
         graphene_client.force_authenticate(second_user)
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         notification.refresh_from_db()
@@ -105,11 +105,11 @@ class TestUpdateNotificationMutation:
     def test_mark_read_by_unauthenticated_user(self, graphene_client, notification_factory):
         read_at = timezone.now()
         notification = notification_factory(read_at=read_at)
-        input = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
+        input_data = {"id": to_global_id('NotificationType', str(notification.id)), "isRead": False}
 
         executed = graphene_client.mutate(
             self.MUTATION,
-            variable_values={'input': input},
+            variable_values={'input': input_data},
         )
 
         notification.refresh_from_db()

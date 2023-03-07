@@ -10,7 +10,8 @@ from graphene_django.rest_framework.mutation import SerializerMutationOptions, f
 from graphql_relay import from_global_id, offset_to_cursor
 from rest_framework import serializers
 
-from . import exceptions
+from . import exceptions, constants
+from .exceptions import GraphQlMutationError
 
 
 class RelayModelSerializerMutationOptions(MutationOptions):
@@ -72,7 +73,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
     ):
 
         if not serializer_class:
-            raise Exception("serializer_class is required for the SerializerMutation")
+            raise GraphQlMutationError(constants.SERIALIZER_CLASS_REQUIRED_ERROR)
 
         serializer = serializer_class()
         model_class = None
@@ -81,7 +82,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
             model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise Exception('model_class is required in serializer_class')
+            raise GraphQlMutationError('model_class is required in serializer_class')
 
         model_name = model_class.__name__
 
@@ -103,7 +104,7 @@ class CreateModelMutation(RelayModelSerializerMutation):
         model_type = registry.get_type_for_model(model_class)
 
         if not model_type:
-            raise Exception("No type registered for model: {}".format(model_class.__name__))
+            raise GraphQlMutationError("No type registered for model: {}".format(model_class.__name__))
 
         output_fields = OrderedDict()
         output_fields[return_field_name] = graphene.Field(model_type)
@@ -160,7 +161,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         **options,
     ):
         if not serializer_class:
-            raise Exception("serializer_class is required for the SerializerMutation")
+            raise GraphQlMutationError(constants.SERIALIZER_CLASS_REQUIRED_ERROR)
 
         serializer = serializer_class()
         if model_class is None:
@@ -169,7 +170,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
                 model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise Exception('model_class is required')
+            raise GraphQlMutationError('model_class is required')
 
         model_name = model_class.__name__
 
@@ -191,7 +192,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         model_type = registry.get_type_for_model(model_class)
 
         if not model_type:
-            raise Exception("No type registered for model: {}".format(model_class.__name__))
+            raise GraphQlMutationError("No type registered for model: {}".format(model_class.__name__))
 
         available_fields = cls.get_available_fields(input_fields, only_fields, exclude)
         if require_id_field and 'id' in available_fields:
@@ -274,10 +275,10 @@ class SerializerMutation(ClientIDMutation):
     ):
 
         if not serializer_class:
-            raise Exception("serializer_class is required for the SerializerMutation")
+            raise GraphQlMutationError(constants.SERIALIZER_CLASS_REQUIRED_ERROR)
 
         if "update" not in model_operations and "create" not in model_operations:
-            raise Exception('model_operations must contain "create" and/or "update"')
+            raise GraphQlMutationError('model_operations must contain "create" and/or "update"')
 
         serializer = serializer_class()
         if model_class is None:
@@ -332,7 +333,9 @@ class SerializerMutation(ClientIDMutation):
                 instance = None
                 partial = False
             else:
-                raise Exception('Invalid update operation. Input parameter "{}" required.'.format(lookup_field))
+                raise GraphQlMutationError(
+                    'Invalid update operation. Input parameter "{}" required.'.format(lookup_field)
+                )
 
             return {
                 "instance": instance,
@@ -391,7 +394,7 @@ class DeleteModelMutation(ClientIDMutation):
         ).format(cls.__name__, registry)
 
         if not model:
-            raise Exception("model is required for the DeleteMutation")
+            raise GraphQlMutationError("model is required for the DeleteMutation")
 
         if not _meta:
             _meta = DeleteModelMutationOptions(cls)
