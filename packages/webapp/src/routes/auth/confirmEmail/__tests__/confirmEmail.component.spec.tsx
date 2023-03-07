@@ -53,7 +53,7 @@ describe('ConfirmEmail: Component', () => {
 
       await waitForApolloMocks();
 
-      const message = await screen.findByTestId('snackbar-message-0');
+      const message = await screen.findByTestId('snackbar-message-1');
       expect(message).toHaveTextContent('Invalid token.');
 
       expect(await screen.findByText('Login page mock')).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('ConfirmEmail: Component', () => {
           apolloMocks: append(requestMock),
         });
 
-        const message = await screen.findByTestId('snackbar-message-0');
+        const message = await screen.findByTestId('snackbar-message-1');
         expect(message).toHaveTextContent('Congratulations! Now you can log in.');
 
         expect(await screen.findByText('Login page mock')).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe('ConfirmEmail: Component', () => {
 
         await waitForApolloMocks();
 
-        const message = await screen.findByTestId('snackbar-message-0');
+        const message = await screen.findByTestId('snackbar-message-1');
         expect(message).toHaveTextContent('Congratulations! Your email has been confirmed.');
 
         expect(screen.getByText('Login page mock')).toBeInTheDocument();

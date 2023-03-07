@@ -21,7 +21,7 @@ export const useSnackbar = () => {
 
   const showMessage = useCallback(
     (text: Message['text'], { hideDelay = DEFAULT_MESSAGE_ONSCREEN_TIME }: { hideDelay?: number } = {}) => {
-      const newMessageId = ref.current.lastMessageId++;
+      const newMessageId = ++ref.current.lastMessageId;
       dispatch({ type: 'SHOW_MESSAGE', payload: { id: newMessageId, text } });
 
       setTimeout(() => {

@@ -78,7 +78,7 @@ describe('EditProfileForm: Component', () => {
     await fillForm();
     await submitForm();
 
-    const message = await screen.findByTestId('snackbar-message-0');
+    const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('Personal data successfully changed.');
   });
 

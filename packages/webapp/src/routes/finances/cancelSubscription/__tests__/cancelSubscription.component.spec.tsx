@@ -127,7 +127,7 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      const message = await screen.findByTestId('snackbar-message-0');
+      const message = await screen.findByTestId('snackbar-message-1');
       expect(message).toHaveTextContent('You will be moved to free plan with the next billing period');
     });
   });

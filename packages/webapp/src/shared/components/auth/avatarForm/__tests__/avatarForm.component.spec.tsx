@@ -66,7 +66,7 @@ describe('AvatarForm: Component', () => {
       expect(image.src).toContain(avatarUrl);
     });
 
-    const message = await screen.findByTestId('snackbar-message-0');
+    const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('Avatar successfully changed.');
   });
 

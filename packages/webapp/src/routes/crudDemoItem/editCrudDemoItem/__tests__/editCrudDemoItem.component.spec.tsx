@@ -90,7 +90,7 @@ describe('EditCrudDemoItem: Component', () => {
       await userEvent.type(nameField, newName);
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      const message = await screen.findByTestId('snackbar-message-0');
+      const message = await screen.findByTestId('snackbar-message-1');
       expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });

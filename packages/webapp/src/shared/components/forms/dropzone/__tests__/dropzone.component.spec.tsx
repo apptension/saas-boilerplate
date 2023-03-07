@@ -57,7 +57,7 @@ describe('Dropzone: Component', () => {
       expect.anything()
     );
 
-    const message = await screen.findByTestId('snackbar-message-0');
+    const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('Cannot accept more than 1 file');
   });
 });
