@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import ContextManager
+from typing import Generator
 
 from sqlalchemy import orm
 
@@ -13,7 +13,7 @@ if db is not None:
 
 
 @contextmanager
-def db_session() -> ContextManager[Session]:
+def db_session() -> Generator[Session, None, None]:
     session = Session()
 
     try:

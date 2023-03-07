@@ -7,6 +7,9 @@ from ..handlers import connect, message, disconnect
 pytestmark = pytest.mark.usefixtures('db_session')
 
 
+DOMAIN_NAME = "example.com"
+
+
 def test_handler_connect(user_factory):
     user_factory(id=1)
 
@@ -64,14 +67,14 @@ def test_handler_message_connection_init(mocker, user_factory):
 
     message.handle(
         {
-            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": "example.com"},
+            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": DOMAIN_NAME},
             "body": '{"type": "connection_init"}',
         },
         {},
     )
 
     post_to_connection.assert_called_once_with(
-        "example.com",
+        DOMAIN_NAME,
         "conn-id",
         {"id": "some-uuid", "type": "connection_ack", "payload": {"con_id": "conn-id"}},
     )
@@ -82,7 +85,7 @@ def test_handler_message_subscribe(web_socket_connection_factory):
 
     message.handle(
         {
-            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": "example.com"},
+            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": DOMAIN_NAME},
             "body": (
                 '{\"id\":\"1\",\"type\":\"subscribe\",\"payload\":{\"query\":\"subscription '
                 'notificationsListSubscription {\\n  notificationCreated {\\n    id\\n  }\\n}\\n\",\"'
@@ -102,7 +105,7 @@ def test_handler_message_stop(web_socket_connection_factory, graph_ql_subscripti
 
     message.handle(
         {
-            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": "example.com"},
+            "requestContext": {"eventType": "MESSAGE", "connectionId": "conn-id", "domainName": DOMAIN_NAME},
             "body": '{\"id\":\"1\",\"type\":\"stop\"}',
         },
         {},

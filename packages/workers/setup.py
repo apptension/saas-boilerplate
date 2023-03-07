@@ -48,9 +48,11 @@ class CreateTestDB(Command):
     user_options = []
 
     def initialize_options(self):
+        """Defined as noop since this method must be implemented by all command classes."""
         pass
 
     def finalize_options(self):
+        """Defined as noop since this method must be implemented by all command classes."""
         pass
 
     def run(self):

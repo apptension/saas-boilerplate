@@ -33,10 +33,9 @@ if DB_CONNECTION:
 else:
     DB_CONNECTION = fetch_db_secret(env('DB_SECRET_ARN', None))
 
-    if DB_CONNECTION:
-        if DB_PROXY_ENDPOINT:
-            DB_CONNECTION["host"] = DB_PROXY_ENDPOINT
-            DB_CONNECTION["engine"] = "postgresql"
+    if DB_CONNECTION and DB_PROXY_ENDPOINT:
+        DB_CONNECTION["host"] = DB_PROXY_ENDPOINT
+        DB_CONNECTION["engine"] = "postgresql"
 
 FROM_EMAIL = env('FROM_EMAIL', None)
 
