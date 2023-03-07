@@ -51,6 +51,9 @@ class TestActiveSubscriptionQuery:
               status
               trialStart
               trialEnd
+              plan {
+                pk
+              }
             }
             phases {
               startDate
@@ -84,6 +87,11 @@ class TestActiveSubscriptionQuery:
 
         assert response['subscription']['pk'] == subscription.id
         assert response['subscription']['status'].lower() == subscription.status
+        subscription_plan = subscription.plan
+        if subscription_plan:
+            assert response['subscription']['plan']['pk'] == subscription_plan.id
+        else:
+            assert response['subscription']['plan'] is None
 
         default_payment_method = schedule.customer.default_payment_method
         if default_payment_method:

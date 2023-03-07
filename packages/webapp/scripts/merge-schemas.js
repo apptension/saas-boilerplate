@@ -5,7 +5,8 @@ const { print } = require('graphql');
 const schemaApi = fs.readFileSync('./graphql/schema/api.graphql.chunk', 'utf8');
 const schemaCf = fs.readFileSync('./graphql/schema/contentful.graphql.chunk', 'utf8');
 
-const typeDefs = mergeTypeDefs([schemaCf, schemaApi]);
+// replacing is needed because of the issue: https://github.com/ardatan/graphql-tools/issues/4366
+const typeDefs = mergeTypeDefs([schemaCf, schemaApi.replaceAll('behaviour', 'behavior')]);
 const printedTypeDefs = print(typeDefs);
 
 fs.writeFileSync('./graphql/schema/schema.graphql', printedTypeDefs);

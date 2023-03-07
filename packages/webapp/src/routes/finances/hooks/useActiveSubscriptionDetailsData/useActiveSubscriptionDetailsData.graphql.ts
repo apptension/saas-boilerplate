@@ -39,6 +39,6 @@ export const subscriptionActiveSubscriptionFragment = gql(/* GraphQL */ `
       id
       name
     }
-    unitAmount
+    amount
   }
 `);

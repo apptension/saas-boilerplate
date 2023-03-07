@@ -11,6 +11,12 @@ export interface Scalars {
   Int: number;
   Float: number;
   /**
+   * The `BigInt` scalar type represents non-fractional whole numeric values.
+   * `BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
+   * compatible type.
+   */
+  BigInt: any;
+  /**
    * The `DateTime` scalar type represents a DateTime
    * value as specified by
    * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
@@ -248,8 +254,231 @@ export interface ChargeEdge {
   node?: Maybe<StripeChargeType>;
 }
 
-/** An enumeration. */
-export enum ChargeFailureCode {
+export interface ConfirmEmailMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  token: Scalars['String'];
+  user: Scalars['String'];
+}
+
+export interface ConfirmEmailMutationPayload {
+  __typename?: 'ConfirmEmailMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
+}
+
+export interface ContentfulDemoItemFavoriteConnection {
+  __typename?: 'ContentfulDemoItemFavoriteConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor. */
+export interface ContentfulDemoItemFavoriteEdge {
+  __typename?: 'ContentfulDemoItemFavoriteEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
+}
+
+export interface ContentfulDemoItemFavoriteType extends Node {
+  __typename?: 'ContentfulDemoItemFavoriteType';
+  createdAt: Scalars['DateTime'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  item: ContentfulDemoItemType;
+  updatedAt: Scalars['DateTime'];
+  user: CurrentUserType;
+}
+
+export interface ContentfulDemoItemFavoriteTypeConnection {
+  __typename?: 'ContentfulDemoItemFavoriteTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor. */
+export interface ContentfulDemoItemFavoriteTypeEdge {
+  __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<ContentfulDemoItemFavoriteType>;
+}
+
+export interface ContentfulDemoItemType extends Node {
+  __typename?: 'ContentfulDemoItemType';
+  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
+  fields: Scalars['JSONString'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  isPublished: Scalars['Boolean'];
+  pk?: Maybe<Scalars['String']>;
+}
+
+
+export interface ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface CreateCrudDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  createdBy?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+}
+
+export interface CreateCrudDemoItemMutationPayload {
+  __typename?: 'CreateCrudDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  crudDemoItem?: Maybe<CrudDemoItemType>;
+  crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
+}
+
+export interface CreateDocumentDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  createdBy?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['Upload']>;
+}
+
+export interface CreateDocumentDemoItemMutationPayload {
+  __typename?: 'CreateDocumentDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  documentDemoItem?: Maybe<DocumentDemoItemType>;
+  documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
+}
+
+export interface CreateFavoriteContentfulDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  item: Scalars['String'];
+  user?: InputMaybe<Scalars['String']>;
+}
+
+export interface CreateFavoriteContentfulDemoItemMutationPayload {
+  __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
+  contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
+}
+
+export interface CreatePaymentIntentMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  product: Scalars['String'];
+}
+
+export interface CreatePaymentIntentMutationPayload {
+  __typename?: 'CreatePaymentIntentMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  paymentIntent?: Maybe<StripePaymentIntentType>;
+}
+
+export interface CreateSetupIntentMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface CreateSetupIntentMutationPayload {
+  __typename?: 'CreateSetupIntentMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  setupIntent?: Maybe<StripeSetupIntentType>;
+}
+
+export interface CrudDemoItemConnection {
+  __typename?: 'CrudDemoItemConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<CrudDemoItemEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `CrudDemoItem` and its cursor. */
+export interface CrudDemoItemEdge {
+  __typename?: 'CrudDemoItemEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<CrudDemoItemType>;
+}
+
+export interface CrudDemoItemType extends Node {
+  __typename?: 'CrudDemoItemType';
+  createdBy?: Maybe<CurrentUserType>;
+  /** The ID of the object */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+}
+
+/** A Relay edge containing a `CurrentUser` and its cursor. */
+export interface CurrentUserEdge {
+  __typename?: 'CurrentUserEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<UserProfileType>;
+}
+
+export interface CurrentUserType {
+  __typename?: 'CurrentUserType';
+  avatar?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  lastName?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+}
+
+export interface DeleteCrudDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeleteCrudDemoItemMutationPayload {
+  __typename?: 'DeleteCrudDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
+export interface DeleteDocumentDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeleteDocumentDemoItemMutationPayload {
+  __typename?: 'DeleteDocumentDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
+export interface DeleteFavoriteContentfulDemoItemMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  item?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeleteFavoriteContentfulDemoItemMutationPayload {
+  __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
+export interface DeletePaymentMethodMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeletePaymentMethodMutationPayload {
+  __typename?: 'DeletePaymentMethodMutationPayload';
+  activeSubscription?: Maybe<SubscriptionScheduleType>;
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
+export enum DjstripeChargeFailureCodeChoices {
   /** Account already exists */
   AccountAlreadyExists = 'ACCOUNT_ALREADY_EXISTS',
   /** Account country invalid address */
@@ -426,8 +655,7 @@ export enum ChargeFailureCode {
   UrlInvalid = 'URL_INVALID'
 }
 
-/** An enumeration. */
-export enum ChargeStatus {
+export enum DjstripeChargeStatusChoices {
   /** Failed */
   Failed = 'FAILED',
   /** Pending */
@@ -436,228 +664,234 @@ export enum ChargeStatus {
   Succeeded = 'SUCCEEDED'
 }
 
-export interface ConfirmEmailMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  token: Scalars['String'];
-  user: Scalars['String'];
+export enum DjstripeInvoiceBillingReasonChoices {
+  /** Manual */
+  Manual = 'MANUAL',
+  /** Subscription */
+  Subscription = 'SUBSCRIPTION',
+  /** Subscription create */
+  SubscriptionCreate = 'SUBSCRIPTION_CREATE',
+  /** Subscription cycle */
+  SubscriptionCycle = 'SUBSCRIPTION_CYCLE',
+  /** Subscription threshold */
+  SubscriptionThreshold = 'SUBSCRIPTION_THRESHOLD',
+  /** Subscription update */
+  SubscriptionUpdate = 'SUBSCRIPTION_UPDATE',
+  /** Upcoming */
+  Upcoming = 'UPCOMING'
 }
 
-export interface ConfirmEmailMutationPayload {
-  __typename?: 'ConfirmEmailMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+export enum DjstripeInvoiceCollectionMethodChoices {
+  /** Charge automatically */
+  ChargeAutomatically = 'CHARGE_AUTOMATICALLY',
+  /** Send invoice */
+  SendInvoice = 'SEND_INVOICE'
 }
 
-export interface ContentfulDemoItemFavoriteConnection {
-  __typename?: 'ContentfulDemoItemFavoriteConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<ContentfulDemoItemFavoriteEdge>>;
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
+export enum DjstripeInvoiceCustomerTaxExemptChoices {
+  /** Exempt */
+  Exempt = 'EXEMPT',
+  /** None */
+  None = 'NONE',
+  /** Reverse */
+  Reverse = 'REVERSE'
 }
 
-/** A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor. */
-export interface ContentfulDemoItemFavoriteEdge {
-  __typename?: 'ContentfulDemoItemFavoriteEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node?: Maybe<ContentfulDemoItemFavoriteType>;
+export enum DjstripeInvoiceStatusChoices {
+  /** Draft */
+  Draft = 'DRAFT',
+  /** Open */
+  Open = 'OPEN',
+  /** Paid */
+  Paid = 'PAID',
+  /** Uncollectible */
+  Uncollectible = 'UNCOLLECTIBLE',
+  /** Void */
+  Void = 'VOID'
 }
 
-export interface ContentfulDemoItemFavoriteType extends Node {
-  __typename?: 'ContentfulDemoItemFavoriteType';
-  createdAt: Scalars['DateTime'];
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  item: ContentfulDemoItemType;
-  updatedAt: Scalars['DateTime'];
-  user: CurrentUserType;
+export enum DjstripePaymentMethodTypeChoices {
+  /** Acss Dbit */
+  AcssDebit = 'ACSS_DEBIT',
+  /** Afterpay Clearpay */
+  AfterpayClearpay = 'AFTERPAY_CLEARPAY',
+  /** Alipay */
+  Alipay = 'ALIPAY',
+  /** BECS Debit (Australia) */
+  AuBecsDebit = 'AU_BECS_DEBIT',
+  /** Bacs Direct Debit */
+  BacsDebit = 'BACS_DEBIT',
+  /** Bancontact */
+  Bancontact = 'BANCONTACT',
+  /** Boleto */
+  Boleto = 'BOLETO',
+  /** Card */
+  Card = 'CARD',
+  /** Card present */
+  CardPresent = 'CARD_PRESENT',
+  /** EPS */
+  Eps = 'EPS',
+  /** FPX */
+  Fpx = 'FPX',
+  /** Giropay */
+  Giropay = 'GIROPAY',
+  /** Grabpay */
+  Grabpay = 'GRABPAY',
+  /** iDEAL */
+  Ideal = 'IDEAL',
+  /** Interac (card present) */
+  InteracPresent = 'INTERAC_PRESENT',
+  /** Klarna */
+  Klarna = 'KLARNA',
+  /** OXXO */
+  Oxxo = 'OXXO',
+  /** Przelewy24 */
+  P24 = 'P24',
+  /** SEPA Direct Debit */
+  SepaDebit = 'SEPA_DEBIT',
+  /** SOFORT */
+  Sofort = 'SOFORT',
+  /** Wechat Pay */
+  WechatPay = 'WECHAT_PAY'
 }
 
-export interface ContentfulDemoItemFavoriteTypeConnection {
-  __typename?: 'ContentfulDemoItemFavoriteTypeConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<ContentfulDemoItemFavoriteTypeEdge>>;
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
+export enum DjstripePlanAggregateUsageChoices {
+  /** Last during period */
+  LastDuringPeriod = 'LAST_DURING_PERIOD',
+  /** Last ever */
+  LastEver = 'LAST_EVER',
+  /** Max */
+  Max = 'MAX',
+  /** Sum */
+  Sum = 'SUM'
 }
 
-/** A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor. */
-export interface ContentfulDemoItemFavoriteTypeEdge {
-  __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node?: Maybe<ContentfulDemoItemFavoriteType>;
+export enum DjstripePlanBillingSchemeChoices {
+  /** Per-unit */
+  PerUnit = 'PER_UNIT',
+  /** Tiered */
+  Tiered = 'TIERED'
 }
 
-export interface ContentfulDemoItemType extends Node {
-  __typename?: 'ContentfulDemoItemType';
-  contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
-  fields: Scalars['JSONString'];
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  isPublished: Scalars['Boolean'];
-  pk?: Maybe<Scalars['String']>;
+export enum DjstripePlanIntervalChoices {
+  /** Day */
+  Day = 'DAY',
+  /** Month */
+  Month = 'MONTH',
+  /** Week */
+  Week = 'WEEK',
+  /** Year */
+  Year = 'YEAR'
 }
 
-
-export interface ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+export enum DjstripePlanTiersModeChoices {
+  /** Graduated */
+  Graduated = 'GRADUATED',
+  /** Volume-based */
+  Volume = 'VOLUME'
 }
 
-export interface CreateCrudDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
+export enum DjstripePlanUsageTypeChoices {
+  /** Licensed */
+  Licensed = 'LICENSED',
+  /** Metered */
+  Metered = 'METERED'
 }
 
-export interface CreateCrudDemoItemMutationPayload {
-  __typename?: 'CreateCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  crudDemoItem?: Maybe<CrudDemoItemType>;
-  crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
+export enum DjstripePriceBillingSchemeChoices {
+  /** Per-unit */
+  PerUnit = 'PER_UNIT',
+  /** Tiered */
+  Tiered = 'TIERED'
 }
 
-export interface CreateDocumentDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  file?: InputMaybe<Scalars['Upload']>;
+export enum DjstripePriceTiersModeChoices {
+  /** Graduated */
+  Graduated = 'GRADUATED',
+  /** Volume-based */
+  Volume = 'VOLUME'
 }
 
-export interface CreateDocumentDemoItemMutationPayload {
-  __typename?: 'CreateDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  documentDemoItem?: Maybe<DocumentDemoItemType>;
-  documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
+export enum DjstripePriceTypeChoices {
+  /** One-time */
+  OneTime = 'ONE_TIME',
+  /** Recurring */
+  Recurring = 'RECURRING'
 }
 
-export interface CreateFavoriteContentfulDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  item: Scalars['String'];
-  user?: InputMaybe<Scalars['String']>;
+export enum DjstripeProductTypeChoices {
+  /** Good */
+  Good = 'GOOD',
+  /** Service */
+  Service = 'SERVICE'
 }
 
-export interface CreateFavoriteContentfulDemoItemMutationPayload {
-  __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
-  contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
+export enum DjstripeSetupIntentCancellationReasonChoices {
+  /** Abandoned */
+  Abandoned = 'ABANDONED',
+  /** Duplicate */
+  Duplicate = 'DUPLICATE',
+  /** Requested by Customer */
+  RequestedByCustomer = 'REQUESTED_BY_CUSTOMER'
 }
 
-export interface CreatePaymentIntentMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  product: Scalars['String'];
+export enum DjstripeSetupIntentStatusChoices {
+  /** Cancellation invalidates the intent for future confirmation and cannot be undone. */
+  Canceled = 'CANCELED',
+  /** Required actions have been handled. */
+  Processing = 'PROCESSING',
+  /** Payment Method require additional action, such as 3D secure. */
+  RequiresAction = 'REQUIRES_ACTION',
+  /** Intent is ready to be confirmed. */
+  RequiresConfirmation = 'REQUIRES_CONFIRMATION',
+  /** Intent created and requires a Payment Method to be attached. */
+  RequiresPaymentMethod = 'REQUIRES_PAYMENT_METHOD',
+  /** Setup was successful and the payment method is optimized for future payments. */
+  Succeeded = 'SUCCEEDED'
 }
 
-export interface CreatePaymentIntentMutationPayload {
-  __typename?: 'CreatePaymentIntentMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  paymentIntent?: Maybe<StripePaymentIntentType>;
+export enum DjstripeSetupIntentUsageChoices {
+  /** Off session */
+  OffSession = 'OFF_SESSION',
+  /** On session */
+  OnSession = 'ON_SESSION'
 }
 
-export interface CreateSetupIntentMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
+  /** Cancel */
+  Cancel = 'CANCEL',
+  /** Release */
+  Release = 'RELEASE'
 }
 
-export interface CreateSetupIntentMutationPayload {
-  __typename?: 'CreateSetupIntentMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  setupIntent?: Maybe<StripeSetupIntentType>;
+export enum DjstripeSubscriptionScheduleStatusChoices {
+  /** Active */
+  Active = 'ACTIVE',
+  /** Canceled */
+  Canceled = 'CANCELED',
+  /** Completed */
+  Completed = 'COMPLETED',
+  /** Not started */
+  NotStarted = 'NOT_STARTED',
+  /** Released */
+  Released = 'RELEASED'
 }
 
-export interface CrudDemoItemConnection {
-  __typename?: 'CrudDemoItemConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<CrudDemoItemEdge>>;
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
-}
-
-/** A Relay edge containing a `CrudDemoItem` and its cursor. */
-export interface CrudDemoItemEdge {
-  __typename?: 'CrudDemoItemEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node?: Maybe<CrudDemoItemType>;
-}
-
-export interface CrudDemoItemType extends Node {
-  __typename?: 'CrudDemoItemType';
-  createdBy?: Maybe<CurrentUserType>;
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  name: Scalars['String'];
-}
-
-/** A Relay edge containing a `CurrentUser` and its cursor. */
-export interface CurrentUserEdge {
-  __typename?: 'CurrentUserEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node?: Maybe<UserProfileType>;
-}
-
-export interface CurrentUserType {
-  __typename?: 'CurrentUserType';
-  avatar?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  firstName?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  lastName?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
-}
-
-export interface DeleteCrudDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-}
-
-export interface DeleteCrudDemoItemMutationPayload {
-  __typename?: 'DeleteCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
-}
-
-export interface DeleteDocumentDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-}
-
-export interface DeleteDocumentDemoItemMutationPayload {
-  __typename?: 'DeleteDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
-}
-
-export interface DeleteFavoriteContentfulDemoItemMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  item?: InputMaybe<Scalars['String']>;
-}
-
-export interface DeleteFavoriteContentfulDemoItemMutationPayload {
-  __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
-}
-
-export interface DeletePaymentMethodMutationInput {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-}
-
-export interface DeletePaymentMethodMutationPayload {
-  __typename?: 'DeletePaymentMethodMutationPayload';
-  activeSubscription?: Maybe<SubscriptionScheduleType>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+export enum DjstripeSubscriptionStatusChoices {
+  /** Active */
+  Active = 'ACTIVE',
+  /** Canceled */
+  Canceled = 'CANCELED',
+  /** Incomplete */
+  Incomplete = 'INCOMPLETE',
+  /** Incomplete Expired */
+  IncompleteExpired = 'INCOMPLETE_EXPIRED',
+  /** Past due */
+  PastDue = 'PAST_DUE',
+  /** Trialing */
+  Trialing = 'TRIALING',
+  /** Unpaid */
+  Unpaid = 'UNPAID'
 }
 
 export interface DocumentDemoItemConnection {
@@ -682,7 +916,7 @@ export interface DocumentDemoItemType extends Node {
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<CurrentUserType>;
   file?: Maybe<FileFieldType>;
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
 }
 
@@ -690,56 +924,6 @@ export interface FileFieldType {
   __typename?: 'FileFieldType';
   name?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
-}
-
-/** An enumeration. */
-export enum InvoiceBillingReason {
-  /** Manual */
-  Manual = 'MANUAL',
-  /** Subscription */
-  Subscription = 'SUBSCRIPTION',
-  /** Subscription create */
-  SubscriptionCreate = 'SUBSCRIPTION_CREATE',
-  /** Subscription cycle */
-  SubscriptionCycle = 'SUBSCRIPTION_CYCLE',
-  /** Subscription threshold */
-  SubscriptionThreshold = 'SUBSCRIPTION_THRESHOLD',
-  /** Subscription update */
-  SubscriptionUpdate = 'SUBSCRIPTION_UPDATE',
-  /** Upcoming */
-  Upcoming = 'UPCOMING'
-}
-
-/** An enumeration. */
-export enum InvoiceCollectionMethod {
-  /** Charge automatically */
-  ChargeAutomatically = 'CHARGE_AUTOMATICALLY',
-  /** Send invoice */
-  SendInvoice = 'SEND_INVOICE'
-}
-
-/** An enumeration. */
-export enum InvoiceCustomerTaxExempt {
-  /** Exempt */
-  Exempt = 'EXEMPT',
-  /** None */
-  None = 'NONE',
-  /** Reverse */
-  Reverse = 'REVERSE'
-}
-
-/** An enumeration. */
-export enum InvoiceStatus {
-  /** Draft */
-  Draft = 'DRAFT',
-  /** Open */
-  Open = 'OPEN',
-  /** Paid */
-  Paid = 'PAID',
-  /** Uncollectible */
-  Uncollectible = 'UNCOLLECTIBLE',
-  /** Void */
-  Void = 'VOID'
 }
 
 export interface MarkReadAllNotificationsMutationInput {
@@ -754,7 +938,7 @@ export interface MarkReadAllNotificationsMutationPayload {
 
 /** An object with an ID */
 export interface Node {
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
 }
 
@@ -779,7 +963,7 @@ export interface NotificationType extends Node {
   __typename?: 'NotificationType';
   createdAt: Scalars['DateTime'];
   data?: Maybe<Scalars['GenericScalar']>;
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   readAt?: Maybe<Scalars['DateTime']>;
   type: Scalars['String'];
@@ -856,84 +1040,6 @@ export interface PaymentMethodEdge {
   node?: Maybe<StripePaymentMethodType>;
 }
 
-/** An enumeration. */
-export enum PaymentMethodType {
-  /** Acss Dbit */
-  AcssDebit = 'ACSS_DEBIT',
-  /** Afterpay Clearpay */
-  AfterpayClearpay = 'AFTERPAY_CLEARPAY',
-  /** Alipay */
-  Alipay = 'ALIPAY',
-  /** BECS Debit (Australia) */
-  AuBecsDebit = 'AU_BECS_DEBIT',
-  /** Bacs Direct Debit */
-  BacsDebit = 'BACS_DEBIT',
-  /** Bancontact */
-  Bancontact = 'BANCONTACT',
-  /** Boleto */
-  Boleto = 'BOLETO',
-  /** Card */
-  Card = 'CARD',
-  /** Card present */
-  CardPresent = 'CARD_PRESENT',
-  /** EPS */
-  Eps = 'EPS',
-  /** FPX */
-  Fpx = 'FPX',
-  /** Giropay */
-  Giropay = 'GIROPAY',
-  /** Grabpay */
-  Grabpay = 'GRABPAY',
-  /** iDEAL */
-  Ideal = 'IDEAL',
-  /** Interac (card present) */
-  InteracPresent = 'INTERAC_PRESENT',
-  /** Klarna */
-  Klarna = 'KLARNA',
-  /** OXXO */
-  Oxxo = 'OXXO',
-  /** Przelewy24 */
-  P24 = 'P24',
-  /** SEPA Direct Debit */
-  SepaDebit = 'SEPA_DEBIT',
-  /** SOFORT */
-  Sofort = 'SOFORT',
-  /** Wechat Pay */
-  WechatPay = 'WECHAT_PAY'
-}
-
-/** An enumeration. */
-export enum PriceBillingScheme {
-  /** Per-unit */
-  PerUnit = 'PER_UNIT',
-  /** Tiered */
-  Tiered = 'TIERED'
-}
-
-/** An enumeration. */
-export enum PriceTiersMode {
-  /** Graduated */
-  Graduated = 'GRADUATED',
-  /** Volume-based */
-  Volume = 'VOLUME'
-}
-
-/** An enumeration. */
-export enum PriceType {
-  /** One-time */
-  OneTime = 'ONE_TIME',
-  /** Recurring */
-  Recurring = 'RECURRING'
-}
-
-/** An enumeration. */
-export enum ProductType {
-  /** Good */
-  Good = 'GOOD',
-  /** Service */
-  Service = 'SERVICE'
-}
-
 export interface Query {
   __typename?: 'Query';
   activeSubscription?: Maybe<SubscriptionScheduleType>;
@@ -943,7 +1049,7 @@ export interface Query {
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
   allPaymentMethods?: Maybe<PaymentMethodConnection>;
-  allSubscriptionPlans?: Maybe<SubscriptionPlanConnection>;
+  allSubscriptionPlans?: Maybe<StripePriceConnection>;
   charge?: Maybe<StripeChargeType>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   currentUser?: Maybe<CurrentUserType>;
@@ -1028,40 +1134,6 @@ export interface QueryPaymentIntentArgs {
   id?: InputMaybe<Scalars['ID']>;
 }
 
-/** An enumeration. */
-export enum SetupIntentCancellationReason {
-  /** Abandoned */
-  Abandoned = 'ABANDONED',
-  /** Duplicate */
-  Duplicate = 'DUPLICATE',
-  /** Requested by Customer */
-  RequestedByCustomer = 'REQUESTED_BY_CUSTOMER'
-}
-
-/** An enumeration. */
-export enum SetupIntentStatus {
-  /** Cancellation invalidates the intent for future confirmation and cannot be undone. */
-  Canceled = 'CANCELED',
-  /** Required actions have been handled. */
-  Processing = 'PROCESSING',
-  /** Payment Method require additional action, such as 3D secure. */
-  RequiresAction = 'REQUIRES_ACTION',
-  /** Intent is ready to be confirmed. */
-  RequiresConfirmation = 'REQUIRES_CONFIRMATION',
-  /** Intent created and requires a Payment Method to be attached. */
-  RequiresPaymentMethod = 'REQUIRES_PAYMENT_METHOD',
-  /** Setup was successful and the payment method is optimized for future payments. */
-  Succeeded = 'SUCCEEDED'
-}
-
-/** An enumeration. */
-export enum SetupIntentUsage {
-  /** Off session */
-  OffSession = 'OFF_SESSION',
-  /** On session */
-  OnSession = 'ON_SESSION'
-}
-
 export interface SingUpMutationInput {
   clientMutationId?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
@@ -1115,12 +1187,12 @@ export interface StripeChargeType extends Node {
   djstripeId: Scalars['ID'];
   djstripeUpdated: Scalars['DateTime'];
   /** Error code explaining reason for charge failure if available. */
-  failureCode?: Maybe<ChargeFailureCode>;
+  failureCode?: Maybe<DjstripeChargeFailureCodeChoices>;
   /** Message to user further explaining reason for charge failure if available. */
   failureMessage: Scalars['String'];
   /** Hash with information on fraud assessments for the charge. */
   fraudDetails?: Maybe<Scalars['String']>;
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   /** The invoice this charge is for if one exists. */
   invoice?: Maybe<StripeInvoiceType>;
@@ -1178,7 +1250,7 @@ export interface StripeChargeType extends Node {
    */
   statementDescriptorSuffix?: Maybe<Scalars['String']>;
   /** The status of the payment. */
-  status: ChargeStatus;
+  status: DjstripeChargeStatusChoices;
   /** An optional dictionary including the account to automatically transfer to as part of a destination charge. */
   transferData?: Maybe<Scalars['String']>;
   /** A string that identifies this transaction as part of a group. */
@@ -1256,7 +1328,7 @@ export interface StripeInvoiceType extends Node {
    * upcoming invoice endpoint. subscription_threshold indicates an invoice created
    * due to a billing threshold being reached.
    */
-  billingReason?: Maybe<InvoiceBillingReason>;
+  billingReason?: Maybe<DjstripeInvoiceBillingReasonChoices>;
   /** The latest charge generated for this invoice, if any. */
   charge?: Maybe<StripeChargeType>;
   /** The invoice this charge is for if one exists. */
@@ -1266,7 +1338,7 @@ export interface StripeInvoiceType extends Node {
    * default source attached to the customer. When sending an invoice, Stripe will
    * email this invoice to the customer with payment instructions.
    */
-  collectionMethod?: Maybe<InvoiceCollectionMethod>;
+  collectionMethod?: Maybe<DjstripeInvoiceCollectionMethodChoices>;
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
   /** Three-letter ISO currency code */
@@ -1302,7 +1374,7 @@ export interface StripeInvoiceType extends Node {
    * will equal customer.tax_exempt. Once the invoice is finalized, this field will
    * no longer be updated.
    */
-  customerTaxExempt: InvoiceCustomerTaxExempt;
+  customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices;
   /**
    * Default payment method for the invoice. It must belong to the customer
    * associated with the invoice. If not set, defaults to the subscription's
@@ -1330,7 +1402,7 @@ export interface StripeInvoiceType extends Node {
    * Ending customer balance (in cents) after attempting to pay invoice. If the
    * invoice has not been attempted yet, this will be null.
    */
-  endingBalance?: Maybe<Scalars['Int']>;
+  endingBalance?: Maybe<Scalars['BigInt']>;
   /** Footer displayed on the invoice. */
   footer: Scalars['String'];
   /**
@@ -1338,7 +1410,7 @@ export interface StripeInvoiceType extends Node {
    * invoice. If the invoice has not been frozen yet, this will be null.
    */
   hostedInvoiceUrl: Scalars['String'];
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   /** The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null. */
   invoicePdf: Scalars['String'];
@@ -1377,16 +1449,16 @@ export interface StripeInvoiceType extends Node {
   periodStart: Scalars['DateTime'];
   pk?: Maybe<Scalars['String']>;
   /** Total amount (in cents) of all post-payment credit notes issued for this invoice. */
-  postPaymentCreditNotesAmount?: Maybe<Scalars['Int']>;
+  postPaymentCreditNotesAmount?: Maybe<Scalars['BigInt']>;
   /** Total amount (in cents) of all pre-payment credit notes issued for this invoice. */
-  prePaymentCreditNotesAmount?: Maybe<Scalars['Int']>;
+  prePaymentCreditNotesAmount?: Maybe<Scalars['BigInt']>;
   /** This is the transaction number that appears on email receipts sent for this invoice. */
   receiptNumber?: Maybe<Scalars['String']>;
   /**
    * Starting customer balance (in cents) before attempting to pay invoice. If the
    * invoice has not been attempted yet, this will be the current customer balance.
    */
-  startingBalance: Scalars['Int'];
+  startingBalance: Scalars['BigInt'];
   /**
    * An arbitrary string to be displayed on your customer's credit card statement.
    * The statement description may not include <>"' characters, and will appear on
@@ -1396,7 +1468,7 @@ export interface StripeInvoiceType extends Node {
    */
   statementDescriptor: Scalars['String'];
   /** The status of the invoice, one of draft, open, paid, uncollectible, or void. */
-  status?: Maybe<InvoiceStatus>;
+  status?: Maybe<DjstripeInvoiceStatusChoices>;
   statusTransitions?: Maybe<Scalars['String']>;
   /** The subscription that this invoice was prepared for, if any. */
   subscription?: Maybe<StripeSubscriptionType>;
@@ -1446,12 +1518,12 @@ export interface StripeInvoiceTypeChargesArgs {
 export interface StripePaymentIntentType extends Node {
   __typename?: 'StripePaymentIntentType';
   /** Amount (in cents) intended to be collected by this PaymentIntent. */
-  amount: Scalars['Int'];
+  amount: Scalars['BigInt'];
   /** The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key. */
   clientSecret: Scalars['String'];
   /** Three-letter ISO currency code */
   currency: Scalars['String'];
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   pk?: Maybe<Scalars['String']>;
 }
@@ -1460,199 +1532,32 @@ export interface StripePaymentMethodType extends Node {
   __typename?: 'StripePaymentMethodType';
   billingDetails?: Maybe<Scalars['GenericScalar']>;
   card?: Maybe<Scalars['GenericScalar']>;
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   pk?: Maybe<Scalars['String']>;
   /** The type of the PaymentMethod. */
-  type: PaymentMethodType;
+  type: DjstripePaymentMethodTypeChoices;
 }
 
-export interface StripeProductType extends Node {
-  __typename?: 'StripeProductType';
-  /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
-  active?: Maybe<Scalars['Boolean']>;
-  /**
-   * A list of up to 5 attributes that each SKU can provide values for (e.g.,
-   * `["color", "size"]`). Only applicable to products of `type=good`.
-   */
-  attributes?: Maybe<Scalars['String']>;
-  /**
-   * A short one-line description of the product, meant to be displayableto the
-   * customer. Only applicable to products of `type=good`.
-   */
-  caption: Scalars['String'];
-  /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
-  /** An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`. */
-  deactivateOn?: Maybe<Scalars['String']>;
-  /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  /**
-   * A list of up to 8 URLs of images for this product, meant to be displayable to
-   * the customer. Only applicable to products of `type=good`.
-   */
-  images?: Maybe<Scalars['String']>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
-  livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
-  metadata?: Maybe<Scalars['String']>;
-  /** The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types. */
-  name: Scalars['String'];
-  /**
-   * The dimensions of this product for shipping purposes. A SKU associated with
-   * this product can override this value by having its own `package_dimensions`.
-   * Only applicable to products of `type=good`.
-   */
-  packageDimensions?: Maybe<Scalars['String']>;
-  pk?: Maybe<Scalars['String']>;
-  /** The product this price is associated with. */
-  prices: SubscriptionPlanTypeConnection;
-  /** Whether this product is a shipped good. Only applicable to products of `type=good`. */
-  shippable?: Maybe<Scalars['Boolean']>;
-  /**
-   * Extra information about a product which will appear on your customer's credit
-   * card statement. In the case that multiple products are billed at once, the
-   * first statement descriptor will be used. Only available on products of
-   * type=`service`.
-   */
-  statementDescriptor: Scalars['String'];
-  /**
-   * The type of the product. The product is either of type `good`, which is
-   * eligible for use with Orders and SKUs, or `service`, which is eligible for use
-   * with Subscriptions and Plans.
-   */
-  type: ProductType;
-  unitLabel: Scalars['String'];
-  /** A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`. */
-  url?: Maybe<Scalars['String']>;
-}
-
-
-export interface StripeProductTypePricesArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-}
-
-export interface StripeSetupIntentType extends Node {
-  __typename?: 'StripeSetupIntentType';
-  /** ID of the Connect application that created the SetupIntent. */
-  application: Scalars['String'];
-  /** Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate */
-  cancellationReason?: Maybe<SetupIntentCancellationReason>;
-  /** The client secret of this SetupIntent. Used for client-side retrieval using a publishable key. */
-  clientSecret: Scalars['String'];
-  /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
-  /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  /** The error encountered in the previous SetupIntent confirmation. */
-  lastSetupError?: Maybe<Scalars['String']>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
-  livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
-  metadata?: Maybe<Scalars['String']>;
-  /** If present, this property tells you what actions you need to take inorder for your customer to continue payment setup. */
-  nextAction?: Maybe<Scalars['String']>;
-  /** Payment method used in this PaymentIntent. */
-  paymentMethod?: Maybe<StripePaymentMethodType>;
-  /** The list of payment method types (e.g. card) that this PaymentIntent is allowed to use. */
-  paymentMethodTypes: Scalars['String'];
-  pk?: Maybe<Scalars['String']>;
-  /**
-   * Status of this SetupIntent, one of requires_payment_method,
-   * requires_confirmation, requires_action, processing, canceled, or succeeded.
-   */
-  status: SetupIntentStatus;
-  /** Indicates how the payment method is intended to be used in the future. */
-  usage: SetupIntentUsage;
-}
-
-export interface StripeSubscriptionType extends Node {
-  __typename?: 'StripeSubscriptionType';
-  /**
-   * End of the current period for which the subscription has been invoiced. At the
-   * end of this period, a new invoice will be created.
-   */
-  currentPeriodEnd: Scalars['DateTime'];
-  /** Start of the current period for which the subscription has been invoiced. */
-  currentPeriodStart: Scalars['DateTime'];
-  /** The ID of the object. */
-  id: Scalars['ID'];
-  pk?: Maybe<Scalars['String']>;
-  plan?: Maybe<SubscriptionPlanType>;
-  /** Date when the subscription was first created. The date might differ from the created date due to backdating. */
-  startDate?: Maybe<Scalars['DateTime']>;
-  /** The status of this subscription. */
-  status: SubscriptionStatus;
-  /** If the subscription has a trial, the end of that trial. */
-  trialEnd?: Maybe<Scalars['DateTime']>;
-  /** If the subscription has a trial, the beginning of that trial. */
-  trialStart?: Maybe<Scalars['DateTime']>;
-}
-
-export interface StripeSubscriptionTypeConnection {
-  __typename?: 'StripeSubscriptionTypeConnection';
+export interface StripePriceConnection {
+  __typename?: 'StripePriceConnection';
   /** Contains the nodes in this connection. */
-  edges: Array<Maybe<StripeSubscriptionTypeEdge>>;
+  edges: Array<Maybe<StripePriceEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
 }
 
-/** A Relay edge containing a `StripeSubscriptionType` and its cursor. */
-export interface StripeSubscriptionTypeEdge {
-  __typename?: 'StripeSubscriptionTypeEdge';
+/** A Relay edge containing a `StripePrice` and its cursor. */
+export interface StripePriceEdge {
+  __typename?: 'StripePriceEdge';
   /** A cursor for use in pagination */
   cursor: Scalars['String'];
   /** The item at the end of the edge */
-  node?: Maybe<StripeSubscriptionType>;
+  node?: Maybe<StripePriceType>;
 }
 
-export interface SubscriptionPlanConnection {
-  __typename?: 'SubscriptionPlanConnection';
-  /** Contains the nodes in this connection. */
-  edges: Array<Maybe<SubscriptionPlanEdge>>;
-  /** Pagination data for this connection. */
-  pageInfo: PageInfo;
-}
-
-/** A Relay edge containing a `SubscriptionPlan` and its cursor. */
-export interface SubscriptionPlanEdge {
-  __typename?: 'SubscriptionPlanEdge';
-  /** A cursor for use in pagination */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  node?: Maybe<SubscriptionPlanType>;
-}
-
-export interface SubscriptionPlanType extends Node {
-  __typename?: 'SubscriptionPlanType';
+export interface StripePriceType extends Node {
+  __typename?: 'StripePriceType';
   /** Whether the price can be used for new purchases. */
   active: Scalars['Boolean'];
   /**
@@ -1664,7 +1569,7 @@ export interface SubscriptionPlanType extends Node {
    * computed using a tiering strategy as defined using the `tiers` and
    * `tiers_mode` attributes.
    */
-  billingScheme?: Maybe<PriceBillingScheme>;
+  billingScheme?: Maybe<DjstripePriceBillingSchemeChoices>;
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
   /** Three-letter ISO currency code */
@@ -1674,7 +1579,7 @@ export interface SubscriptionPlanType extends Node {
   djstripeCreated: Scalars['DateTime'];
   djstripeId: Scalars['ID'];
   djstripeUpdated: Scalars['DateTime'];
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   /**
    * Null here indicates that the livemode status is unknown or was previously
@@ -1704,21 +1609,309 @@ export interface SubscriptionPlanType extends Node {
    * per unit price, in `graduated` tiering pricing can successively change as the
    * quantity grows.
    */
-  tiersMode?: Maybe<PriceTiersMode>;
+  tiersMode?: Maybe<DjstripePriceTiersModeChoices>;
   /**
    * Apply a transformation to the reported usage or set quantity before computing
    * the amount billed. Cannot be combined with `tiers`.
    */
   transformQuantity?: Maybe<Scalars['String']>;
   /** Whether the price is for a one-time purchase or a recurring (subscription) purchase. */
-  type: PriceType;
+  type: DjstripePriceTypeChoices;
   /**
    * The unit amount in cents to be charged, represented as a whole integer if
    * possible. Null if a sub-cent precision is required.
    */
-  unitAmount?: Maybe<Scalars['Int']>;
+  unitAmount?: Maybe<Scalars['BigInt']>;
   /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
   unitAmountDecimal?: Maybe<Scalars['Decimal']>;
+}
+
+export interface StripePriceTypeConnection {
+  __typename?: 'StripePriceTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<StripePriceTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `StripePriceType` and its cursor. */
+export interface StripePriceTypeEdge {
+  __typename?: 'StripePriceTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripePriceType>;
+}
+
+export interface StripeProductType extends Node {
+  __typename?: 'StripeProductType';
+  /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
+  active?: Maybe<Scalars['Boolean']>;
+  /**
+   * A list of up to 5 attributes that each SKU can provide values for (e.g.,
+   * `["color", "size"]`). Only applicable to products of `type=good`.
+   */
+  attributes?: Maybe<Scalars['String']>;
+  /**
+   * A short one-line description of the product, meant to be displayableto the
+   * customer. Only applicable to products of `type=good`.
+   */
+  caption: Scalars['String'];
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`. */
+  deactivateOn?: Maybe<Scalars['String']>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  /**
+   * A list of up to 8 URLs of images for this product, meant to be displayable to
+   * the customer. Only applicable to products of `type=good`.
+   */
+  images?: Maybe<Scalars['String']>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types. */
+  name: Scalars['String'];
+  /**
+   * The dimensions of this product for shipping purposes. A SKU associated with
+   * this product can override this value by having its own `package_dimensions`.
+   * Only applicable to products of `type=good`.
+   */
+  packageDimensions?: Maybe<Scalars['String']>;
+  pk?: Maybe<Scalars['String']>;
+  /** The product whose pricing this plan determines. */
+  planSet: SubscriptionPlanTypeConnection;
+  /** The product this price is associated with. */
+  prices: StripePriceTypeConnection;
+  /** Whether this product is a shipped good. Only applicable to products of `type=good`. */
+  shippable?: Maybe<Scalars['Boolean']>;
+  /**
+   * Extra information about a product which will appear on your customer's credit
+   * card statement. In the case that multiple products are billed at once, the
+   * first statement descriptor will be used. Only available on products of
+   * type=`service`.
+   */
+  statementDescriptor: Scalars['String'];
+  /**
+   * The type of the product. The product is either of type `good`, which is
+   * eligible for use with Orders and SKUs, or `service`, which is eligible for use
+   * with Subscriptions and Plans.
+   */
+  type: DjstripeProductTypeChoices;
+  unitLabel: Scalars['String'];
+  /** A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`. */
+  url?: Maybe<Scalars['String']>;
+}
+
+
+export interface StripeProductTypePlanSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+
+export interface StripeProductTypePricesArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface StripeSetupIntentType extends Node {
+  __typename?: 'StripeSetupIntentType';
+  /** ID of the Connect application that created the SetupIntent. */
+  application: Scalars['String'];
+  /** Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate */
+  cancellationReason?: Maybe<DjstripeSetupIntentCancellationReasonChoices>;
+  /** The client secret of this SetupIntent. Used for client-side retrieval using a publishable key. */
+  clientSecret: Scalars['String'];
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  /** The error encountered in the previous SetupIntent confirmation. */
+  lastSetupError?: Maybe<Scalars['String']>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** If present, this property tells you what actions you need to take inorder for your customer to continue payment setup. */
+  nextAction?: Maybe<Scalars['String']>;
+  /** Payment method used in this PaymentIntent. */
+  paymentMethod?: Maybe<StripePaymentMethodType>;
+  /** The list of payment method types (e.g. card) that this PaymentIntent is allowed to use. */
+  paymentMethodTypes: Scalars['String'];
+  pk?: Maybe<Scalars['String']>;
+  /**
+   * Status of this SetupIntent, one of requires_payment_method,
+   * requires_confirmation, requires_action, processing, canceled, or succeeded.
+   */
+  status: DjstripeSetupIntentStatusChoices;
+  /** Indicates how the payment method is intended to be used in the future. */
+  usage: DjstripeSetupIntentUsageChoices;
+}
+
+export interface StripeSubscriptionType extends Node {
+  __typename?: 'StripeSubscriptionType';
+  /**
+   * End of the current period for which the subscription has been invoiced. At the
+   * end of this period, a new invoice will be created.
+   */
+  currentPeriodEnd: Scalars['DateTime'];
+  /** Start of the current period for which the subscription has been invoiced. */
+  currentPeriodStart: Scalars['DateTime'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  pk?: Maybe<Scalars['String']>;
+  plan?: Maybe<SubscriptionPlanType>;
+  /** Date when the subscription was first created. The date might differ from the created date due to backdating. */
+  startDate?: Maybe<Scalars['DateTime']>;
+  /** The status of this subscription. */
+  status: DjstripeSubscriptionStatusChoices;
+  /** If the subscription has a trial, the end of that trial. */
+  trialEnd?: Maybe<Scalars['DateTime']>;
+  /** If the subscription has a trial, the beginning of that trial. */
+  trialStart?: Maybe<Scalars['DateTime']>;
+}
+
+export interface StripeSubscriptionTypeConnection {
+  __typename?: 'StripeSubscriptionTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<StripeSubscriptionTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `StripeSubscriptionType` and its cursor. */
+export interface StripeSubscriptionTypeEdge {
+  __typename?: 'StripeSubscriptionTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<StripeSubscriptionType>;
+}
+
+export interface SubscriptionPlanType extends Node {
+  __typename?: 'SubscriptionPlanType';
+  /** Whether the plan can be used for new purchases. */
+  active: Scalars['Boolean'];
+  /**
+   * Specifies a usage aggregation strategy for plans of usage_type=metered.
+   * Allowed values are `sum` for summing up all usage during a period,
+   * `last_during_period` for picking the last usage record reported within a
+   * period, `last_ever` for picking the last usage record ever (across period
+   * bounds) or max which picks the usage record with the maximum reported usage
+   * during a period. Defaults to `sum`.
+   */
+  aggregateUsage?: Maybe<DjstripePlanAggregateUsageChoices>;
+  /** Amount (as decimal) to be charged on the interval specified. */
+  amount?: Maybe<Scalars['Decimal']>;
+  /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
+  amountDecimal?: Maybe<Scalars['Decimal']>;
+  /**
+   * Describes how to compute the price per period. Either `per_unit` or `tiered`.
+   * `per_unit` indicates that the fixed amount (specified in amount) will be
+   * charged per unit in quantity (for plans with `usage_type=licensed`), or per
+   * unit of total usage (for plans with `usage_type=metered`). `tiered` indicates
+   * that the unit pricing will be computed using a tiering strategy as defined
+   * using the tiers and tiers_mode attributes.
+   */
+  billingScheme?: Maybe<DjstripePlanBillingSchemeChoices>;
+  /** The datetime this object was created in stripe. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Three-letter ISO currency code */
+  currency: Scalars['String'];
+  /** A description of this object. */
+  description?: Maybe<Scalars['String']>;
+  djstripeCreated: Scalars['DateTime'];
+  djstripeId: Scalars['ID'];
+  djstripeUpdated: Scalars['DateTime'];
+  /** The ID of the object */
+  id: Scalars['ID'];
+  /** The frequency with which a subscription should be billed. */
+  interval: DjstripePlanIntervalChoices;
+  /** The number of intervals (specified in the interval property) between each subscription billing. */
+  intervalCount?: Maybe<Scalars['Int']>;
+  /**
+   * Null here indicates that the livemode status is unknown or was previously
+   * unrecorded. Otherwise, this field indicates whether this record comes from
+   * Stripe test mode or live mode operation.
+   */
+  livemode?: Maybe<Scalars['Boolean']>;
+  /**
+   * A set of key/value pairs that you can attach to an object. It can be useful
+   * for storing additional information about an object in a structured format.
+   */
+  metadata?: Maybe<Scalars['String']>;
+  /** A brief description of the plan, hidden from customers. */
+  nickname: Scalars['String'];
+  pk?: Maybe<Scalars['String']>;
+  /** The product whose pricing this plan determines. */
+  product?: Maybe<StripeProductType>;
+  /** The plan associated with this subscription. This value will be `null` for multi-plan subscriptions */
+  subscriptions: StripeSubscriptionTypeConnection;
+  /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
+  tiers?: Maybe<Scalars['String']>;
+  /**
+   * Defines if the tiering price should be `graduated` or `volume` based. In
+   * `volume`-based tiering, the maximum quantity within a period determines the
+   * per unit price, in `graduated` tiering pricing can successively change as the
+   * quantity grows.
+   */
+  tiersMode?: Maybe<DjstripePlanTiersModeChoices>;
+  /**
+   * Apply a transformation to the reported usage or set quantity before computing
+   * the billed price. Cannot be combined with `tiers`.
+   */
+  transformUsage?: Maybe<Scalars['String']>;
+  /** Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period. */
+  trialPeriodDays?: Maybe<Scalars['Int']>;
+  /**
+   * Configures how the quantity per period should be determined, can be either
+   * `metered` or `licensed`. `licensed` will automatically bill the `quantity` set
+   * for a plan when adding it to a subscription, `metered` will aggregate the
+   * total usage based on usage records. Defaults to `licensed`.
+   */
+  usageType: DjstripePlanUsageTypeChoices;
+}
+
+
+export interface SubscriptionPlanTypeSubscriptionsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 }
 
 export interface SubscriptionPlanTypeConnection {
@@ -1747,17 +1940,9 @@ export interface SubscriptionScheduleEdge {
   node?: Maybe<SubscriptionScheduleType>;
 }
 
-/** An enumeration. */
-export enum SubscriptionScheduleEndBehavior {
-  /** Cancel */
-  Cancel = 'CANCEL',
-  /** Release */
-  Release = 'RELEASE'
-}
-
 export interface SubscriptionSchedulePhaseItemType {
   __typename?: 'SubscriptionSchedulePhaseItemType';
-  price?: Maybe<SubscriptionPlanType>;
+  price?: Maybe<StripePriceType>;
   quantity?: Maybe<Scalars['Int']>;
 }
 
@@ -1767,20 +1952,6 @@ export interface SubscriptionSchedulePhaseType {
   item?: Maybe<SubscriptionSchedulePhaseItemType>;
   startDate?: Maybe<Scalars['DateTime']>;
   trialEnd?: Maybe<Scalars['String']>;
-}
-
-/** An enumeration. */
-export enum SubscriptionScheduleStatus {
-  /** Active */
-  Active = 'ACTIVE',
-  /** Canceled */
-  Canceled = 'CANCELED',
-  /** Completed */
-  Completed = 'COMPLETED',
-  /** Not started */
-  NotStarted = 'NOT_STARTED',
-  /** Released */
-  Released = 'RELEASED'
 }
 
 export interface SubscriptionScheduleType extends Node {
@@ -1805,8 +1976,8 @@ export interface SubscriptionScheduleType extends Node {
   djstripeId: Scalars['ID'];
   djstripeUpdated: Scalars['DateTime'];
   /** Behavior of the subscription schedule and underlying subscription when it ends. */
-  endBehavior: SubscriptionScheduleEndBehavior;
-  /** The ID of the object. */
+  endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices;
+  /** The ID of the object */
   id: Scalars['ID'];
   /**
    * Null here indicates that the livemode status is unknown or was previously
@@ -1828,7 +1999,7 @@ export interface SubscriptionScheduleType extends Node {
    * The present status of the subscription schedule. Possible values are
    * `not_started`, `active`, `completed`, `released`, and `canceled`.
    */
-  status: SubscriptionScheduleStatus;
+  status: DjstripeSubscriptionScheduleStatusChoices;
   subscription?: Maybe<StripeSubscriptionType>;
   /** The schedule associated with this subscription. */
   subscriptions: StripeSubscriptionTypeConnection;
@@ -1841,24 +2012,6 @@ export interface SubscriptionScheduleTypeSubscriptionsArgs {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-}
-
-/** An enumeration. */
-export enum SubscriptionStatus {
-  /** Active */
-  Active = 'ACTIVE',
-  /** Canceled */
-  Canceled = 'CANCELED',
-  /** Incomplete */
-  Incomplete = 'INCOMPLETE',
-  /** Incomplete Expired */
-  IncompleteExpired = 'INCOMPLETE_EXPIRED',
-  /** Past due */
-  PastDue = 'PAST_DUE',
-  /** Trialing */
-  Trialing = 'TRIALING',
-  /** Unpaid */
-  Unpaid = 'UNPAID'
 }
 
 export interface UpdateCrudDemoItemMutationInput {
@@ -1930,7 +2083,7 @@ export interface UpdatePaymentIntentMutationPayload {
 export interface UserProfileType extends Node {
   __typename?: 'UserProfileType';
   firstName: Scalars['String'];
-  /** The ID of the object. */
+  /** The ID of the object */
   id: Scalars['ID'];
   lastName: Scalars['String'];
   user: CurrentUserType;

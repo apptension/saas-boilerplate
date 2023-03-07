@@ -18,8 +18,8 @@ export const subscriptionPlansAllQuery = gql(/* GraphQL */ `
   }
 `);
 
-export const SUBSRIPTION_PLAN_ITEM_FRAGMENT = gql(/* GraphQL */ `
-  fragment subscriptionPlanItemFragment on SubscriptionPlanType {
+export const SUBSRIPTION_PRICE_ITEM_FRAGMENT = gql(/* GraphQL */ `
+  fragment subscriptionPriceItemFragment on StripePriceType {
     id
     pk
     product {

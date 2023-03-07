@@ -42,6 +42,6 @@ export const SUBSCRIPTION_PLAN_ITEM_FRAGMENT = gql(/* GraphQL */ `
       id
       name
     }
-    unitAmount
+    amount
   }
 `);

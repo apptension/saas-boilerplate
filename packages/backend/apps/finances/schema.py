@@ -40,14 +40,9 @@ class SubscriptionPlanType(DjangoObjectType):
         return parent.id
 
     class Meta:
-        model = djstripe_models.Price
+        model = djstripe_models.Plan
         interfaces = (relay.Node,)
         fields = "__all__"
-
-
-class SubscriptionPlanConnection(graphene.Connection):
-    class Meta:
-        node = SubscriptionPlanType
 
 
 class StripeDjangoObjectType(DjangoObjectType):
@@ -78,6 +73,18 @@ class StripeSubscriptionType(StripeDjangoObjectType):
         )
 
 
+class StripePriceType(StripeDjangoObjectType):
+    class Meta:
+        model = djstripe_models.Price
+        interfaces = (relay.Node,)
+        fields = "__all__"
+
+
+class StripePriceConnection(graphene.Connection):
+    class Meta:
+        node = StripePriceType
+
+
 class StripePaymentMethodType(StripeDjangoObjectType):
     card = GenericScalar()
     billing_details = GenericScalar()
@@ -96,7 +103,7 @@ class StripeProductType(StripeDjangoObjectType):
 
 
 class SubscriptionSchedulePhaseItemType(ObjectType):
-    price = graphene.Field(SubscriptionPlanType)
+    price = graphene.Field(StripePriceType)
     quantity = graphene.Int()
 
     @staticmethod
@@ -308,7 +315,7 @@ class CreateSetupIntentMutation(mutations.CreateModelMutation):
 
 
 class Query(graphene.ObjectType):
-    all_subscription_plans = graphene.relay.ConnectionField(SubscriptionPlanConnection)
+    all_subscription_plans = graphene.relay.ConnectionField(StripePriceConnection)
     active_subscription = graphene.Field(SubscriptionScheduleType)
     all_payment_methods = graphene.relay.ConnectionField(PaymentMethodConnection)
     all_charges = graphene.relay.ConnectionField(ChargeConnection)

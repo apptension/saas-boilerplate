@@ -4,11 +4,11 @@ import { FragmentType, useFragment } from '../../../../shared/services/graphqlAp
 import { StripeSubscriptionQueryQuery } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetailsData } from '../../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { useSubscriptionPlanDetails } from '../../hooks/useSubscriptionPlanDetails';
-import { SUBSRIPTION_PLAN_ITEM_FRAGMENT } from '../subscriptionPlans/subscriptionPlans.graphql';
+import { SUBSRIPTION_PRICE_ITEM_FRAGMENT } from '../subscriptionPlans/subscriptionPlans.graphql';
 import { Container, Content, Feature, FeaturesList, Name, SelectButton } from './subscriptionPlanItem.styles';
 
 export type SubscriptionPlanItemProps = {
-  plan: FragmentType<typeof SUBSRIPTION_PLAN_ITEM_FRAGMENT>;
+  plan: FragmentType<typeof SUBSRIPTION_PRICE_ITEM_FRAGMENT>;
   onSelect: (id: string | null | undefined) => void;
   className?: string;
   activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
@@ -22,7 +22,7 @@ export const SubscriptionPlanItem = ({
   activeSubscription,
   loading,
 }: SubscriptionPlanItemProps) => {
-  const data = useFragment(SUBSRIPTION_PLAN_ITEM_FRAGMENT, plan);
+  const data = useFragment(SUBSRIPTION_PRICE_ITEM_FRAGMENT, plan);
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
     useActiveSubscriptionDetailsData(activeSubscription);
