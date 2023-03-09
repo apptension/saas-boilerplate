@@ -2,6 +2,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { FormFieldsRow } from '../../../../theme/size';
+import { emailPattern } from '../../../constants';
 import { useGenerateLocalePath } from '../../../hooks';
 import { Input } from '../../forms/input';
 import { useSignupForm } from './signupForm.hooks';
@@ -34,7 +35,7 @@ export const SignupForm = () => {
               }),
             },
             pattern: {
-              value: /^\S+@\S+\.\S+$/,
+              value: emailPattern,
               message: intl.formatMessage({
                 defaultMessage: 'Email format is invalid',
                 id: 'Auth / Signup / Email format error',

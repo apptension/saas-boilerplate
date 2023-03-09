@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import React, { FunctionComponent, PropsWithChildren, useCallback } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useCallback, useMemo } from 'react';
 
 import commonDataContext from './commonQuery.context';
 import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
@@ -11,18 +11,11 @@ export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) 
     await refetch();
   }, [refetch]);
 
+  const value = useMemo(() => ({ data: data || null, reload }), [data, reload]);
+
   if (loading || !data) {
     return null;
   }
 
-  return (
-    <commonDataContext.Provider
-      value={{
-        data,
-        reload,
-      }}
-    >
-      {children}
-    </commonDataContext.Provider>
-  );
+  return <commonDataContext.Provider value={value}>{children}</commonDataContext.Provider>;
 };

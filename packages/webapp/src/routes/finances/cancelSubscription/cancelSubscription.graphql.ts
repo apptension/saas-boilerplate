@@ -10,28 +10,3 @@ export const subscriptionCancelMutation = gql(/* GraphQL */ `
     }
   }
 `);
-
-// gql(/* GraphQL */ `
-//   fragment subscriptionActiveSubscriptionFragment on SubscriptionScheduleType {
-//     phases {
-//       startDate
-//       endDate
-//       trialEnd
-//       item {
-//         price {
-//           ...subscriptionPlanItemFragment
-//         }
-//         quantity
-//       }
-//     }
-//     subscription {
-//       startDate
-//       trialEnd
-//       trialStart
-//     }
-//     canActivateTrial
-//     defaultPaymentMethod {
-//       ...stripePaymentMethodFragment
-//     }
-//   }
-// `);

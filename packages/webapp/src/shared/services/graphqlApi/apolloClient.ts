@@ -1,4 +1,5 @@
 import { ApolloClient, HttpLink, InMemoryCache, Observable, ServerError, from, split } from '@apollo/client';
+import { GraphQLErrors, NetworkError } from '@apollo/client/errors';
 import { FetchResult } from '@apollo/client/link/core';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
@@ -72,6 +73,31 @@ function showNetworkErrorMessage() {
   emitter.dispatchEvent(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, 'Network error occurred');
 }
 
+const handleApiErrors = (
+  callRefresh: () => Observable<FetchResult> | void,
+  graphQLErrors?: GraphQLErrors,
+  networkError?: NetworkError
+) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      switch (err.extensions?.code) {
+        case 'UNAUTHENTICATED':
+          return callRefresh();
+        default:
+          IS_LOCAL_ENV && console.log(`[GraphQL error]`, err);
+      }
+    }
+  }
+
+  if (networkError) {
+    const result = (networkError as ServerError).result;
+    if (result && result?.code?.code === 'token_not_valid') {
+      return callRefresh();
+    }
+    IS_LOCAL_ENV && console.log(`[Network error]: ${networkError}`);
+  }
+};
+
 const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   const callRefresh = (): Observable<FetchResult> | void =>
     new Observable((observer) => {
@@ -92,24 +118,8 @@ const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forw
         }
       })();
     });
-  if (graphQLErrors) {
-    for (const err of graphQLErrors) {
-      switch (err.extensions?.code) {
-        case 'UNAUTHENTICATED':
-          return callRefresh();
-        default:
-          IS_LOCAL_ENV && console.log(`[GraphQL error]`, err);
-      }
-    }
-  }
 
-  if (networkError) {
-    const result = (networkError as ServerError).result;
-    if (result && result?.code?.code === 'token_not_valid') {
-      return callRefresh();
-    }
-    IS_LOCAL_ENV && console.log(`[Network error]: ${networkError}`);
-  }
+  return handleApiErrors(callRefresh, graphQLErrors, networkError);
 });
 
 const httpContentfulLink = new HttpLink({

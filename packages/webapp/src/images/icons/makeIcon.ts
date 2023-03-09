@@ -6,7 +6,7 @@ export type IconComponentProps = {
   size?: number;
 };
 
-export const makeIcon = (ImgComponent: FunctionComponent<SVGProps<SVGSVGElement> & { title?: string | undefined }>) => {
+export const makeIcon = (ImgComponent: FunctionComponent<SVGProps<SVGSVGElement> & { title?: string }>) => {
   return styled(ImgComponent)<IconComponentProps>`
     ${({ size }) =>
       size &&

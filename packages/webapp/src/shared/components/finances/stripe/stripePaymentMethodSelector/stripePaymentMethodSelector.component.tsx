@@ -1,13 +1,11 @@
 import { useQuery } from '@apollo/client';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { isEmpty } from 'ramda';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { ApiFormReturnType } from '../../../../hooks';
-import { StripePaymentMethodFragmentFragment } from '../../../../services/graphqlApi/__generated/gql/graphql';
 import { mapConnection } from '../../../../utils/graphql';
 import { Icon } from '../../../icon';
 import { StripeCardForm } from '../stripeCardForm';
@@ -27,10 +25,10 @@ import {
 } from './stripePaymentMethodSelector.styles';
 import {
   PaymentFormFields,
-  StripePaymentMethodChangeEvent,
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from './stripePaymentMethodSelector.types';
+import { changeHandler, methodRemovedHandler } from './stripePaymentMethodSelector.utils';
 
 export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = {
   formControls: ApiFormReturnType<T>;
@@ -123,64 +121,8 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
         },
       }}
       render={({ field: { onChange, value } }) => {
-        const handleChange = (event: StripePaymentMethodChangeEvent) => {
-          if (event.type !== StripePaymentMethodSelectionType.NEW_CARD) {
-            return onChange(event);
-          }
-
-          const data =
-            value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
-              ? {
-                  cardMissingFields: {
-                    cardNumber: true,
-                    cardExpiry: true,
-                    cardCvc: true,
-                  },
-                }
-              : value.data;
-
-          if (event.data?.elementType === 'name') {
-            return onChange({ type: event.type, data: { ...data, name: event.data.value } });
-          }
-
-          if (typeof event.data?.elementType === 'string') {
-            const stripeFieldData = event.data as StripeElementChangeEvent;
-            const fieldName = stripeFieldData.elementType;
-            const cardErrors = (value?.data as any)?.cardErrors ?? {};
-
-            return onChange({
-              type: event.type,
-              data: {
-                ...data,
-                cardErrors: { ...cardErrors, [fieldName]: stripeFieldData?.error },
-                cardMissingFields: {
-                  ...data.cardMissingFields,
-                  [fieldName]: !!stripeFieldData?.empty,
-                },
-              },
-            });
-          }
-
-          onChange({ type: event.type, data });
-        };
-
-        const handleMethodRemoved = (id: string) => {
-          if (paymentMethods.length === 1) {
-            handleChange({
-              type: StripePaymentMethodSelectionType.NEW_CARD,
-              data: null,
-            });
-          }
-
-          if ((value.data as StripePaymentMethodFragmentFragment).id === id) {
-            handleChange({
-              type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-              data: paymentMethods.filter((method) => method.id !== id)[0],
-            });
-          }
-
-          deletePaymentMethod(id);
-        };
+        const handleChange = changeHandler(onChange, value);
+        const handleMethodRemoved = methodRemovedHandler(onChange, value, paymentMethods, deletePaymentMethod);
 
         return (
           <Container>

@@ -1,7 +1,7 @@
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
-import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 
 import { StripePaymentMethodFragmentFragment } from '../../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 
 export enum StripePaymentMethodSelectionType {
   SAVED_PAYMENT_METHOD,
@@ -38,3 +38,17 @@ export type StripePaymentMethodSelection =
     };
 
 export type PaymentFormFields = { paymentMethod: StripePaymentMethodSelection };
+
+type OnChangeType = (...event: any[]) => void;
+
+export type ChangeHandlerType = (
+  onChange: OnChangeType,
+  value: StripePaymentMethodSelection
+) => (event: StripePaymentMethodChangeEvent) => void;
+
+export type MethodRemovedHandlerType = (
+  handleChange: OnChangeType,
+  value: StripePaymentMethodSelection,
+  paymentMethods: StripePaymentMethodFragmentFragment[],
+  deletePaymentMethod: (id: string) => void
+) => (id: string) => void;

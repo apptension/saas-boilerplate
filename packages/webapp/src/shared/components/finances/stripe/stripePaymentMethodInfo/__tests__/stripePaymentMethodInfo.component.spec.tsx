@@ -39,7 +39,7 @@ describe('StripePaymentMethodInfo: Component', () => {
       const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory());
 
       render(<Component />, { apolloMocks: append(requestMock) });
-      expect(await screen.findByText('None'));
+      expect(await screen.findByText('None')).toBeInTheDocument();
     });
   });
 });

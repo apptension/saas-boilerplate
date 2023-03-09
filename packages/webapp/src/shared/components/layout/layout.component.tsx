@@ -1,9 +1,10 @@
-import { ReactNode, useMemo, useState } from 'react';
-import { useLocation, matchPath } from 'react-router-dom';
 import { isNil } from 'ramda';
+import { ReactNode, useMemo, useState } from 'react';
+import { matchPath, useLocation } from 'react-router-dom';
+
 import { NO_NAVIGATION_ROUTES } from '../../../app/config/routes';
-import { Header, Sidebar, Content } from './layout.styles';
 import { LayoutContext } from './layout.context';
+import { Content, Header, Sidebar } from './layout.styles';
 
 export type LayoutProps = {
   children?: ReactNode;
@@ -18,8 +19,13 @@ export const Layout = ({ children }: LayoutProps) => {
     [pathname]
   );
 
+  const value = useMemo(
+    () => ({ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }),
+    [shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen]
+  );
+
   return (
-    <LayoutContext.Provider value={{ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }}>
+    <LayoutContext.Provider value={value}>
       <Header />
       {shouldDisplaySidebar && <Sidebar />}
       <Content withSidebar={shouldDisplaySidebar}>{children}</Content>

@@ -1,8 +1,10 @@
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Input } from '../../forms/input';
+
 import { FormFieldsRow } from '../../../../theme/size';
-import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
+import { emailPattern } from '../../../constants';
+import { Input } from '../../forms/input';
 import { useLoginForm } from './loginForm.hooks';
+import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 
 export const LoginForm = () => {
   const intl = useIntl();
@@ -31,7 +33,7 @@ export const LoginForm = () => {
               }),
             },
             pattern: {
-              value: /^\S+@\S+\.\S+$/,
+              value: emailPattern,
               message: intl.formatMessage({
                 defaultMessage: 'Email format is invalid',
                 id: 'Auth / Login / Email format error',

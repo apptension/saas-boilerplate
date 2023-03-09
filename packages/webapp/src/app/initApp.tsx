@@ -51,10 +51,7 @@ export const initApp = async () => {
 
   // Chunked polyfill for browsers without Intl support
   if (!window.Intl) {
-    new Promise((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      resolve(require('intl'));
-    })
+    Promise.resolve(require('intl'))
       // @ts-ignore
       .then(() => Promise.all([import('intl/locale-data/jsonp/en.js'), import('intl/locale-data/jsonp/pl.js')]))
       .then(() => render())

@@ -57,7 +57,7 @@ export const Notification = ({
           }
         }}
       >
-        {hasAvatar && <Avatar src={avatar as string} />}
+        {hasAvatar && <Avatar src={avatar} />}
         <MarkAsReadButton variant={ButtonVariant.RAW} onClick={onToggleIsRead}>
           <Icon icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
         </MarkAsReadButton>

@@ -1,10 +1,9 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { emailPattern } from '../../../constants';
 import { Input } from '../../forms/input';
-
-import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
-
 import { usePasswordResetRequestForm } from './passwordResetRequestForm.hooks';
+import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
 
 type PasswordResetRequestFormProps = {
   onSubmitted?: () => void;
@@ -37,7 +36,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
             }),
           },
           pattern: {
-            value: /^\S+@\S+\.\S+$/,
+            value: emailPattern,
             message: intl.formatMessage({
               defaultMessage: 'Email format is invalid',
               id: 'Auth / Request password reset / Email format error',
