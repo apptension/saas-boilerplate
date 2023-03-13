@@ -71,16 +71,20 @@ export class MainDatabase extends Construct {
       vpc: props.vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.of('13.7', '13', {
+        version: rds.PostgresEngineVersion.of('14.7', '14', {
           s3Import: true,
           s3Export: true,
         }),
       }),
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
+      instanceType: ec2.InstanceType.of(
+        ec2.InstanceClass.T3,
+        ec2.InstanceSize.MICRO
+      ),
       databaseName: 'main',
       securityGroups: [securityGroup],
       deletionProtection: true,
       storageEncrypted: true,
+      allowMajorVersionUpgrade: true,
     });
 
     if (instance.secret) {
