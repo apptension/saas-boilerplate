@@ -11,8 +11,8 @@ rm  -f ./src/shared/services/contentful/__generated/hooks.ts
 rm  -f ./src/shared/services/graphqlApi/__generated/types.ts
 rm  -f ./src/shared/services/graphqlApi/__generated/hooks.ts
 
-node ./node_modules/.bin/get-graphql-schema "$CONTENTFUL_URL" > graphql/schema/contentful.graphql
-node ./node_modules/.bin/get-graphql-schema "$API_URL" > graphql/schema/api.graphql
+./node_modules/.bin/rover graph introspect "$CONTENTFUL_URL" --output graphql/schema/contentful.graphql
+./node_modules/.bin/rover graph introspect "$API_URL" --output graphql/schema/api.graphql
 
 function wrap_chunk_module() {
   service_name=$1

@@ -1773,17 +1773,9 @@ export type StripeChargeType = Node & {
   /** The amount (as decimal) of the application fee (if any) requested for the charge. */
   applicationFeeAmount?: Maybe<Scalars['Decimal']>;
   billingDetails?: Maybe<Scalars['GenericScalar']>;
-  /**
-   * The full statement descriptor that is passed to card networks, and that is
-   * displayed on your customers' credit card and bank statements. Allows you to
-   * see what the statement descriptor looks like after the static and dynamic
-   * portions are combined.
-   */
+  /** The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined. */
   calculatedStatementDescriptor: Scalars['String'];
-  /**
-   * If the charge was created without capturing, this boolean represents whether
-   * or not it is still uncaptured or has since been captured.
-   */
+  /** If the charge was created without capturing, this boolean represents whether or not it is still uncaptured or has since been captured. */
   captured: Scalars['Boolean'];
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
@@ -1807,16 +1799,9 @@ export type StripeChargeType = Node & {
   /** The invoice this charge is for if one exists. */
   invoice?: Maybe<StripeInvoiceType>;
   latestInvoice?: Maybe<StripeInvoiceType>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** Details about whether or not the payment was accepted, and why. */
   outcome?: Maybe<Scalars['String']>;
@@ -1833,31 +1818,15 @@ export type StripeChargeType = Node & {
   receiptEmail: Scalars['String'];
   /** The transaction number that appears on email receipts sent for this charge. */
   receiptNumber: Scalars['String'];
-  /**
-   * This is the URL to view the receipt for this charge. The receipt is kept
-   * up-to-date to the latest state of the charge, including any refunds. If the
-   * charge is for an Invoice, the receipt will be stylized as an Invoice receipt.
-   */
+  /** This is the URL to view the receipt for this charge. The receipt is kept up-to-date to the latest state of the charge, including any refunds. If the charge is for an Invoice, the receipt will be stylized as an Invoice receipt. */
   receiptUrl: Scalars['String'];
-  /**
-   * Whether or not the charge has been fully refunded. If the charge is only
-   * partially refunded, this attribute will still be false.
-   */
+  /** Whether or not the charge has been fully refunded. If the charge is only partially refunded, this attribute will still be false. */
   refunded: Scalars['Boolean'];
   /** Shipping information for the charge */
   shipping?: Maybe<Scalars['String']>;
-  /**
-   * For card charges, use statement_descriptor_suffix instead. Otherwise, you can
-   * use this value as the complete description of a charge on your customers'
-   * statements. Must contain at least one letter, maximum 22 characters.
-   */
+  /** For card charges, use statement_descriptor_suffix instead. Otherwise, you can use this value as the complete description of a charge on your customers' statements. Must contain at least one letter, maximum 22 characters. */
   statementDescriptor?: Maybe<Scalars['String']>;
-  /**
-   * Provides information about the charge that customers see on their statements.
-   * Concatenated with the prefix (shortened descriptor) or statement descriptor
-   * that's set on the account to form the complete statement descriptor. Maximum
-   * 22 characters for the concatenated descriptor.
-   */
+  /** Provides information about the charge that customers see on their statements. Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor. Maximum 22 characters for the concatenated descriptor. */
   statementDescriptorSuffix?: Maybe<Scalars['String']>;
   /** The status of the payment. */
   status: DjstripeChargeStatusChoices;
@@ -1890,168 +1859,76 @@ export type StripeInvoiceType = Node & {
   accountCountry: Scalars['String'];
   /** The public name of the business associated with this invoice, most often the business creating the invoice. */
   accountName: Scalars['String'];
-  /**
-   * Final amount due (as decimal) at this time for this invoice. If the invoice's
-   * total is smaller than the minimum charge amount, for example, or if there is
-   * account credit that can be applied to the invoice, the amount_due may be 0. If
-   * there is a positive starting_balance for the invoice (the customer owes
-   * money), the amount_due will also take that into account. The charge that gets
-   * generated for the invoice will be for the amount specified in amount_due.
-   */
+  /** Final amount due (as decimal) at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due. */
   amountDue: Scalars['Decimal'];
   /** The amount, (as decimal), that was paid. */
   amountPaid?: Maybe<Scalars['Decimal']>;
   /** The amount remaining, (as decimal), that is due. */
   amountRemaining?: Maybe<Scalars['Decimal']>;
-  /**
-   * The fee (as decimal) that will be applied to the invoice and transferred to
-   * the application owner's Stripe account when the invoice is paid.
-   */
+  /** The fee (as decimal) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid. */
   applicationFeeAmount?: Maybe<Scalars['Decimal']>;
-  /**
-   * Number of payment attempts made for this invoice, from the perspective of the
-   * payment retry schedule. Any payment attempt counts as the first attempt, and
-   * subsequently only automatic retries increment the attempt count. In other
-   * words, manual payment attempts after the first attempt do not affect the retry schedule.
-   */
+  /** Number of payment attempts made for this invoice, from the perspective of the payment retry schedule. Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule. */
   attemptCount: Scalars['Int'];
-  /**
-   * Whether or not an attempt has been made to pay the invoice. An invoice is not
-   * attempted until 1 hour after the ``invoice.created`` webhook, for example, so
-   * you might not want to display that invoice as unpaid to your users.
-   */
+  /** Whether or not an attempt has been made to pay the invoice. An invoice is not attempted until 1 hour after the ``invoice.created`` webhook, for example, so you might not want to display that invoice as unpaid to your users. */
   attempted: Scalars['Boolean'];
-  /**
-   * Controls whether Stripe will perform automatic collection of the invoice. When
-   * false, the invoice's state will not automatically advance without an explicit action.
-   */
+  /** Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice's state will not automatically advance without an explicit action. */
   autoAdvance?: Maybe<Scalars['Boolean']>;
-  /**
-   * Indicates the reason why the invoice was created. subscription_cycle indicates
-   * an invoice created by a subscription advancing into a new period.
-   * subscription_create indicates an invoice created due to creating a
-   * subscription. subscription_update indicates an invoice created due to updating
-   * a subscription. subscription is set for all old invoices to indicate either a
-   * change to a subscription or a period advancement. manual is set for all
-   * invoices unrelated to a subscription (for example: created via the invoice
-   * editor). The upcoming value is reserved for simulated invoices per the
-   * upcoming invoice endpoint. subscription_threshold indicates an invoice created
-   * due to a billing threshold being reached.
-   */
+  /** Indicates the reason why the invoice was created. subscription_cycle indicates an invoice created by a subscription advancing into a new period. subscription_create indicates an invoice created due to creating a subscription. subscription_update indicates an invoice created due to updating a subscription. subscription is set for all old invoices to indicate either a change to a subscription or a period advancement. manual is set for all invoices unrelated to a subscription (for example: created via the invoice editor). The upcoming value is reserved for simulated invoices per the upcoming invoice endpoint. subscription_threshold indicates an invoice created due to a billing threshold being reached. */
   billingReason?: Maybe<DjstripeInvoiceBillingReasonChoices>;
   /** The latest charge generated for this invoice, if any. */
   charge?: Maybe<StripeChargeType>;
   /** The invoice this charge is for if one exists. */
   charges: StripeChargeTypeConnection;
-  /**
-   * When charging automatically, Stripe will attempt to pay this invoice using the
-   * default source attached to the customer. When sending an invoice, Stripe will
-   * email this invoice to the customer with payment instructions.
-   */
+  /** When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer. When sending an invoice, Stripe will email this invoice to the customer with payment instructions. */
   collectionMethod?: Maybe<DjstripeInvoiceCollectionMethodChoices>;
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
   /** Three-letter ISO currency code */
   currency: Scalars['String'];
-  /**
-   * The customer's address. Until the invoice is finalized, this field will equal
-   * customer.address. Once the invoice is finalized, this field will no longer be updated.
-   */
+  /** The customer's address. Until the invoice is finalized, this field will equal customer.address. Once the invoice is finalized, this field will no longer be updated. */
   customerAddress?: Maybe<Scalars['String']>;
-  /**
-   * The customer's email. Until the invoice is finalized, this field will equal
-   * customer.email. Once the invoice is finalized, this field will no longer be updated.
-   */
+  /** The customer's email. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated. */
   customerEmail: Scalars['String'];
-  /**
-   * The customer's name. Until the invoice is finalized, this field will equal
-   * customer.name. Once the invoice is finalized, this field will no longer be updated.
-   */
+  /** The customer's name. Until the invoice is finalized, this field will equal customer.name. Once the invoice is finalized, this field will no longer be updated. */
   customerName: Scalars['String'];
-  /**
-   * The customer's phone number. Until the invoice is finalized, this field will
-   * equal customer.phone. Once the invoice is finalized, this field will no longer be updated.
-   */
+  /** The customer's phone number. Until the invoice is finalized, this field will equal customer.phone. Once the invoice is finalized, this field will no longer be updated. */
   customerPhone: Scalars['String'];
-  /**
-   * The customer's shipping information. Until the invoice is finalized, this
-   * field will equal customer.shipping. Once the invoice is finalized, this field
-   * will no longer be updated.
-   */
+  /** The customer's shipping information. Until the invoice is finalized, this field will equal customer.shipping. Once the invoice is finalized, this field will no longer be updated. */
   customerShipping?: Maybe<Scalars['String']>;
-  /**
-   * The customer's tax exempt status. Until the invoice is finalized, this field
-   * will equal customer.tax_exempt. Once the invoice is finalized, this field will
-   * no longer be updated.
-   */
+  /** The customer's tax exempt status. Until the invoice is finalized, this field will equal customer.tax_exempt. Once the invoice is finalized, this field will no longer be updated. */
   customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices;
-  /**
-   * Default payment method for the invoice. It must belong to the customer
-   * associated with the invoice. If not set, defaults to the subscription's
-   * default payment method, if any, or to the default payment method in the
-   * customer's invoice settings.
-   */
+  /** Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings. */
   defaultPaymentMethod?: Maybe<StripePaymentMethodType>;
   /** A description of this object. */
   description?: Maybe<Scalars['String']>;
-  /**
-   * Describes the current discount applied to this subscription, if there is one.
-   * When billing, a discount applied to a subscription overrides a discount
-   * applied on a customer-wide basis.
-   */
+  /** Describes the current discount applied to this subscription, if there is one. When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis. */
   discount?: Maybe<Scalars['String']>;
   djstripeCreated: Scalars['DateTime'];
   djstripeId: Scalars['ID'];
   djstripeUpdated: Scalars['DateTime'];
-  /**
-   * The date on which payment for this invoice is due. This value will be null for
-   * invoices where billing=charge_automatically.
-   */
+  /** The date on which payment for this invoice is due. This value will be null for invoices where billing=charge_automatically. */
   dueDate?: Maybe<Scalars['DateTime']>;
-  /**
-   * Ending customer balance (in cents) after attempting to pay invoice. If the
-   * invoice has not been attempted yet, this will be null.
-   */
+  /** Ending customer balance (in cents) after attempting to pay invoice. If the invoice has not been attempted yet, this will be null. */
   endingBalance?: Maybe<Scalars['BigInt']>;
   /** Footer displayed on the invoice. */
   footer: Scalars['String'];
-  /**
-   * The URL for the hosted invoice page, which allows customers to view and pay an
-   * invoice. If the invoice has not been frozen yet, this will be null.
-   */
+  /** The URL for the hosted invoice page, which allows customers to view and pay an invoice. If the invoice has not been frozen yet, this will be null. */
   hostedInvoiceUrl: Scalars['String'];
   /** The ID of the object */
   id: Scalars['ID'];
   /** The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null. */
   invoicePdf: Scalars['String'];
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** The time at which payment will next be attempted. */
   nextPaymentAttempt?: Maybe<Scalars['DateTime']>;
-  /**
-   * A unique, identifying string that appears on emails sent to the customer for
-   * this invoice. This starts with the customer's unique invoice_prefix if it is specified.
-   */
+  /** A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer's unique invoice_prefix if it is specified. */
   number: Scalars['String'];
-  /**
-   * Whether payment was successfully collected for this invoice. An invoice can be
-   * paid (most commonly) with a charge or with credit from the customer's account balance.
-   */
+  /** Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance. */
   paid: Scalars['Boolean'];
-  /**
-   * The PaymentIntent associated with this invoice. The PaymentIntent is generated
-   * when the invoice is finalized, and can then be used to pay the invoice.Note
-   * that voiding an invoice will cancel the PaymentIntent
-   */
+  /** The PaymentIntent associated with this invoice. The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.Note that voiding an invoice will cancel the PaymentIntent */
   paymentIntent?: Maybe<StripePaymentIntentType>;
   /** End of the usage period during which invoice items were added to this invoice. */
   periodEnd: Scalars['DateTime'];
@@ -2064,18 +1941,9 @@ export type StripeInvoiceType = Node & {
   prePaymentCreditNotesAmount?: Maybe<Scalars['BigInt']>;
   /** This is the transaction number that appears on email receipts sent for this invoice. */
   receiptNumber?: Maybe<Scalars['String']>;
-  /**
-   * Starting customer balance (in cents) before attempting to pay invoice. If the
-   * invoice has not been attempted yet, this will be the current customer balance.
-   */
+  /** Starting customer balance (in cents) before attempting to pay invoice. If the invoice has not been attempted yet, this will be the current customer balance. */
   startingBalance: Scalars['BigInt'];
-  /**
-   * An arbitrary string to be displayed on your customer's credit card statement.
-   * The statement description may not include <>"' characters, and will appear on
-   * your customer's statement in capital letters. Non-ASCII characters are
-   * automatically stripped. While most banks display this information
-   * consistently, some may display it incorrectly or not at all.
-   */
+  /** An arbitrary string to be displayed on your customer's credit card statement. The statement description may not include <>"' characters, and will appear on your customer's statement in capital letters. Non-ASCII characters are automatically stripped. While most banks display this information consistently, some may display it incorrectly or not at all. */
   statementDescriptor: Scalars['String'];
   /** The status of the invoice, one of draft, open, paid, uncollectible, or void. */
   status?: Maybe<DjstripeInvoiceStatusChoices>;
@@ -2084,35 +1952,16 @@ export type StripeInvoiceType = Node & {
   subscription?: Maybe<StripeSubscriptionType>;
   /** Only set for upcoming invoices that preview prorations. The time used to calculate prorations. */
   subscriptionProrationDate?: Maybe<Scalars['DateTime']>;
-  /**
-   * Total (as decimal) of all subscriptions, invoice items, and prorations on the
-   * invoice before any discount or tax is applied.
-   */
+  /** Total (as decimal) of all subscriptions, invoice items, and prorations on the invoice before any discount or tax is applied. */
   subtotal: Scalars['Decimal'];
-  /**
-   * The amount (as decimal) of tax included in the total, calculated from
-   * ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null.
-   */
+  /** The amount (as decimal) of tax included in the total, calculated from ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null. */
   tax?: Maybe<Scalars['Decimal']>;
-  /**
-   * This percentage of the subtotal has been added to the total amount of the
-   * invoice, including invoice line items and discounts. This field is inherited
-   * from the subscription's ``tax_percent`` field, but can be changed before the
-   * invoice is paid. This field defaults to null.
-   */
+  /** This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts. This field is inherited from the subscription's ``tax_percent`` field, but can be changed before the invoice is paid. This field defaults to null. */
   taxPercent?: Maybe<Scalars['Decimal']>;
-  /**
-   * If billing_reason is set to subscription_threshold this returns more
-   * information on which threshold rules triggered the invoice.
-   */
+  /** If billing_reason is set to subscription_threshold this returns more information on which threshold rules triggered the invoice. */
   thresholdReason?: Maybe<Scalars['String']>;
   total: Scalars['Decimal'];
-  /**
-   * The time at which webhooks for this invoice were successfully delivered (if
-   * the invoice had no webhooks to deliver, this will match `date`). Invoice
-   * payment is delayed until webhooks are delivered, or until all webhook delivery
-   * attempts have been exhausted.
-   */
+  /** The time at which webhooks for this invoice were successfully delivered (if the invoice had no webhooks to deliver, this will match `date`). Invoice payment is delayed until webhooks are delivered, or until all webhook delivery attempts have been exhausted. */
   webhooksDeliveredAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -2170,15 +2019,7 @@ export type StripePriceType = Node & {
   __typename?: 'StripePriceType';
   /** Whether the price can be used for new purchases. */
   active: Scalars['Boolean'];
-  /**
-   * Describes how to compute the price per period. Either `per_unit` or `tiered`.
-   * `per_unit` indicates that the fixed amount (specified in `unit_amount` or
-   * `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with
-   * `usage_type=licensed`), or per unit of total usage (for prices with
-   * `usage_type=metered`). `tiered` indicates that the unit pricing will be
-   * computed using a tiering strategy as defined using the `tiers` and
-   * `tiers_mode` attributes.
-   */
+  /** Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes. */
   billingScheme?: Maybe<DjstripePriceBillingSchemeChoices>;
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
@@ -2191,18 +2032,11 @@ export type StripePriceType = Node & {
   djstripeUpdated: Scalars['DateTime'];
   /** The ID of the object */
   id: Scalars['ID'];
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
   /** A lookup key used to retrieve prices dynamically from a static string. */
   lookupKey?: Maybe<Scalars['String']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** A brief description of the plan, hidden from customers. */
   nickname: Scalars['String'];
@@ -2213,24 +2047,13 @@ export type StripePriceType = Node & {
   recurring?: Maybe<Scalars['String']>;
   /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
   tiers?: Maybe<Scalars['String']>;
-  /**
-   * Defines if the tiering price should be `graduated` or `volume` based. In
-   * `volume`-based tiering, the maximum quantity within a period determines the
-   * per unit price, in `graduated` tiering pricing can successively change as the
-   * quantity grows.
-   */
+  /** Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows. */
   tiersMode?: Maybe<DjstripePriceTiersModeChoices>;
-  /**
-   * Apply a transformation to the reported usage or set quantity before computing
-   * the amount billed. Cannot be combined with `tiers`.
-   */
+  /** Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`. */
   transformQuantity?: Maybe<Scalars['String']>;
   /** Whether the price is for a one-time purchase or a recurring (subscription) purchase. */
   type: DjstripePriceTypeChoices;
-  /**
-   * The unit amount in cents to be charged, represented as a whole integer if
-   * possible. Null if a sub-cent precision is required.
-   */
+  /** The unit amount in cents to be charged, represented as a whole integer if possible. Null if a sub-cent precision is required. */
   unitAmount?: Maybe<Scalars['BigInt']>;
   /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
   unitAmountDecimal?: Maybe<Scalars['Decimal']>;
@@ -2257,15 +2080,9 @@ export type StripeProductType = Node & {
   __typename?: 'StripeProductType';
   /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
   active?: Maybe<Scalars['Boolean']>;
-  /**
-   * A list of up to 5 attributes that each SKU can provide values for (e.g.,
-   * `["color", "size"]`). Only applicable to products of `type=good`.
-   */
+  /** A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`). Only applicable to products of `type=good`. */
   attributes?: Maybe<Scalars['String']>;
-  /**
-   * A short one-line description of the product, meant to be displayableto the
-   * customer. Only applicable to products of `type=good`.
-   */
+  /** A short one-line description of the product, meant to be displayableto the customer. Only applicable to products of `type=good`. */
   caption: Scalars['String'];
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
@@ -2278,29 +2095,15 @@ export type StripeProductType = Node & {
   djstripeUpdated: Scalars['DateTime'];
   /** The ID of the object */
   id: Scalars['ID'];
-  /**
-   * A list of up to 8 URLs of images for this product, meant to be displayable to
-   * the customer. Only applicable to products of `type=good`.
-   */
+  /** A list of up to 8 URLs of images for this product, meant to be displayable to the customer. Only applicable to products of `type=good`. */
   images?: Maybe<Scalars['String']>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types. */
   name: Scalars['String'];
-  /**
-   * The dimensions of this product for shipping purposes. A SKU associated with
-   * this product can override this value by having its own `package_dimensions`.
-   * Only applicable to products of `type=good`.
-   */
+  /** The dimensions of this product for shipping purposes. A SKU associated with this product can override this value by having its own `package_dimensions`. Only applicable to products of `type=good`. */
   packageDimensions?: Maybe<Scalars['String']>;
   pk?: Maybe<Scalars['String']>;
   /** The product whose pricing this plan determines. */
@@ -2309,18 +2112,9 @@ export type StripeProductType = Node & {
   prices: StripePriceTypeConnection;
   /** Whether this product is a shipped good. Only applicable to products of `type=good`. */
   shippable?: Maybe<Scalars['Boolean']>;
-  /**
-   * Extra information about a product which will appear on your customer's credit
-   * card statement. In the case that multiple products are billed at once, the
-   * first statement descriptor will be used. Only available on products of
-   * type=`service`.
-   */
+  /** Extra information about a product which will appear on your customer's credit card statement. In the case that multiple products are billed at once, the first statement descriptor will be used. Only available on products of type=`service`. */
   statementDescriptor: Scalars['String'];
-  /**
-   * The type of the product. The product is either of type `good`, which is
-   * eligible for use with Orders and SKUs, or `service`, which is eligible for use
-   * with Subscriptions and Plans.
-   */
+  /** The type of the product. The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans. */
   type: DjstripeProductTypeChoices;
   unitLabel: Scalars['String'];
   /** A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`. */
@@ -2364,16 +2158,9 @@ export type StripeSetupIntentType = Node & {
   id: Scalars['ID'];
   /** The error encountered in the previous SetupIntent confirmation. */
   lastSetupError?: Maybe<Scalars['String']>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** If present, this property tells you what actions you need to take inorder for your customer to continue payment setup. */
   nextAction?: Maybe<Scalars['String']>;
@@ -2382,10 +2169,7 @@ export type StripeSetupIntentType = Node & {
   /** The list of payment method types (e.g. card) that this PaymentIntent is allowed to use. */
   paymentMethodTypes: Scalars['String'];
   pk?: Maybe<Scalars['String']>;
-  /**
-   * Status of this SetupIntent, one of requires_payment_method,
-   * requires_confirmation, requires_action, processing, canceled, or succeeded.
-   */
+  /** Status of this SetupIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, canceled, or succeeded. */
   status: DjstripeSetupIntentStatusChoices;
   /** Indicates how the payment method is intended to be used in the future. */
   usage: DjstripeSetupIntentUsageChoices;
@@ -2393,10 +2177,7 @@ export type StripeSetupIntentType = Node & {
 
 export type StripeSubscriptionType = Node & {
   __typename?: 'StripeSubscriptionType';
-  /**
-   * End of the current period for which the subscription has been invoiced. At the
-   * end of this period, a new invoice will be created.
-   */
+  /** End of the current period for which the subscription has been invoiced. At the end of this period, a new invoice will be created. */
   currentPeriodEnd: Scalars['DateTime'];
   /** Start of the current period for which the subscription has been invoiced. */
   currentPeriodStart: Scalars['DateTime'];
@@ -2435,27 +2216,13 @@ export type SubscriptionPlanType = Node & {
   __typename?: 'SubscriptionPlanType';
   /** Whether the plan can be used for new purchases. */
   active: Scalars['Boolean'];
-  /**
-   * Specifies a usage aggregation strategy for plans of usage_type=metered.
-   * Allowed values are `sum` for summing up all usage during a period,
-   * `last_during_period` for picking the last usage record reported within a
-   * period, `last_ever` for picking the last usage record ever (across period
-   * bounds) or max which picks the usage record with the maximum reported usage
-   * during a period. Defaults to `sum`.
-   */
+  /** Specifies a usage aggregation strategy for plans of usage_type=metered. Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or max which picks the usage record with the maximum reported usage during a period. Defaults to `sum`. */
   aggregateUsage?: Maybe<DjstripePlanAggregateUsageChoices>;
   /** Amount (as decimal) to be charged on the interval specified. */
   amount?: Maybe<Scalars['Decimal']>;
   /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
   amountDecimal?: Maybe<Scalars['Decimal']>;
-  /**
-   * Describes how to compute the price per period. Either `per_unit` or `tiered`.
-   * `per_unit` indicates that the fixed amount (specified in amount) will be
-   * charged per unit in quantity (for plans with `usage_type=licensed`), or per
-   * unit of total usage (for plans with `usage_type=metered`). `tiered` indicates
-   * that the unit pricing will be computed using a tiering strategy as defined
-   * using the tiers and tiers_mode attributes.
-   */
+  /** Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in amount) will be charged per unit in quantity (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the tiers and tiers_mode attributes. */
   billingScheme?: Maybe<DjstripePlanBillingSchemeChoices>;
   /** The datetime this object was created in stripe. */
   created?: Maybe<Scalars['DateTime']>;
@@ -2472,16 +2239,9 @@ export type SubscriptionPlanType = Node & {
   interval: DjstripePlanIntervalChoices;
   /** The number of intervals (specified in the interval property) between each subscription billing. */
   intervalCount?: Maybe<Scalars['Int']>;
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   /** A brief description of the plan, hidden from customers. */
   nickname: Scalars['String'];
@@ -2492,26 +2252,13 @@ export type SubscriptionPlanType = Node & {
   subscriptions: StripeSubscriptionTypeConnection;
   /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
   tiers?: Maybe<Scalars['String']>;
-  /**
-   * Defines if the tiering price should be `graduated` or `volume` based. In
-   * `volume`-based tiering, the maximum quantity within a period determines the
-   * per unit price, in `graduated` tiering pricing can successively change as the
-   * quantity grows.
-   */
+  /** Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows. */
   tiersMode?: Maybe<DjstripePlanTiersModeChoices>;
-  /**
-   * Apply a transformation to the reported usage or set quantity before computing
-   * the billed price. Cannot be combined with `tiers`.
-   */
+  /** Apply a transformation to the reported usage or set quantity before computing the billed price. Cannot be combined with `tiers`. */
   transformUsage?: Maybe<Scalars['String']>;
   /** Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period. */
   trialPeriodDays?: Maybe<Scalars['Int']>;
-  /**
-   * Configures how the quantity per period should be determined, can be either
-   * `metered` or `licensed`. `licensed` will automatically bill the `quantity` set
-   * for a plan when adding it to a subscription, `metered` will aggregate the
-   * total usage based on usage records. Defaults to `licensed`.
-   */
+  /** Configures how the quantity per period should be determined, can be either `metered` or `licensed`. `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records. Defaults to `licensed`. */
   usageType: DjstripePlanUsageTypeChoices;
 };
 
@@ -2589,26 +2336,16 @@ export type SubscriptionScheduleType = Node & {
   endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices;
   /** The ID of the object */
   id: Scalars['ID'];
-  /**
-   * Null here indicates that the livemode status is unknown or was previously
-   * unrecorded. Otherwise, this field indicates whether this record comes from
-   * Stripe test mode or live mode operation.
-   */
+  /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
   livemode?: Maybe<Scalars['Boolean']>;
-  /**
-   * A set of key/value pairs that you can attach to an object. It can be useful
-   * for storing additional information about an object in a structured format.
-   */
+  /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
   metadata?: Maybe<Scalars['String']>;
   phases?: Maybe<Array<Maybe<SubscriptionSchedulePhaseType>>>;
   /** Time at which the subscription schedule was released. */
   releasedAt?: Maybe<Scalars['DateTime']>;
   /** The subscription once managed by this subscription schedule (if it is released). */
   releasedSubscription?: Maybe<StripeSubscriptionType>;
-  /**
-   * The present status of the subscription schedule. Possible values are
-   * `not_started`, `active`, `completed`, `released`, and `canceled`.
-   */
+  /** The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`. */
   status: DjstripeSubscriptionScheduleStatusChoices;
   subscription?: Maybe<StripeSubscriptionType>;
   /** The schedule associated with this subscription. */

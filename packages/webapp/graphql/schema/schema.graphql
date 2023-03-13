@@ -1,12 +1,127 @@
-"""Exposes a URL that specifies the behavior of this scalar."""
-directive @specifiedBy(
-  """The URL that specifies the behavior of this scalar."""
-  url: String!
-) on SCALAR
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+"The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`."
+scalar Dimension
+
+"The 'Quality' type represents quality as whole numeric values between `1` and `100`."
+scalar Quality
+
+"The 'HexColor' type represents color in `rgb:ffffff` string format."
+scalar HexColor
+
+type Query {
+  asset(id: String!, preview: Boolean, locale: String): Asset
+  assetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AssetFilter, order: [AssetOrder]): AssetCollection
+  demoItem(id: String!, preview: Boolean, locale: String): DemoItem
+  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: DemoItemFilter, order: [DemoItemOrder]): DemoItemCollection
+  appConfig(id: String!, preview: Boolean, locale: String): AppConfig
+  appConfigCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AppConfigFilter, order: [AppConfigOrder]): AppConfigCollection
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
+  allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
+  activeSubscription: SubscriptionScheduleType
+  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
+  allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
+  charge(id: ID): StripeChargeType
+  paymentIntent(id: ID): StripePaymentIntentType
+  currentUser: CurrentUserType
+  hasUnreadNotifications: Boolean
+  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
+  crudDemoItem(
+    "The ID of the object"
+    id: ID!
+  ): CrudDemoItemType
+  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
+  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
+  node(
+    "The ID of the object"
+    id: ID!
+  ): Node
+}
+
+"Represents a binary file in a space. An asset can be any file type."
+type Asset {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  title(locale: String): String
+  description(locale: String): String
+  contentType(locale: String): String
+  fileName(locale: String): String
+  size(locale: String): Int
+  url(transform: ImageTransformOptions, locale: String): String
+  width(locale: String): Int
+  height(locale: String): Int
+  linkedFrom(allowedLocales: [String]): AssetLinkingCollections
+}
+
+type Sys {
+  id: String!
+  spaceId: String!
+  environmentId: String!
+  publishedAt: DateTime
+  firstPublishedAt: DateTime
+  publishedVersion: Int
+}
+
+type ContentfulMetadata {
+  tags: [ContentfulTag]!
+}
 
 """
-[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig)
+Represents a tag entity for finding and organizing content easily.
+    Find out more here: https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-tags
 """
+type ContentfulTag {
+  id: String
+  name: String
+}
+
+type AssetLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): DemoItemCollection
+}
+
+type EntryCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Entry]!
+}
+
+type DemoItemCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [DemoItem]!
+}
+
+"[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem)"
+type DemoItem implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): DemoItemLinkingCollections
+  title(locale: String): String
+  description(locale: String): String
+  image(preview: Boolean, locale: String): Asset
+}
+
+type DemoItemLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+}
+
+type AssetCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Asset]!
+}
+
+"[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig)"
 type AppConfig implements Entry {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
@@ -16,6 +131,10 @@ type AppConfig implements Entry {
   termsAndConditions(locale: String): String
 }
 
+type AppConfigLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+}
+
 type AppConfigCollection {
   total: Int!
   skip: Int!
@@ -23,36 +142,110 @@ type AppConfigCollection {
   items: [AppConfig]!
 }
 
-input AppConfigFilter {
-  sys: SysFilter
-  contentfulMetadata: ContentfulMetadataFilter
-  name_exists: Boolean
-  name: String
-  name_not: String
-  name_in: [String]
-  name_not_in: [String]
-  name_contains: String
-  name_not_contains: String
-  privacyPolicy_exists: Boolean
-  privacyPolicy: String
-  privacyPolicy_not: String
-  privacyPolicy_in: [String]
-  privacyPolicy_not_in: [String]
-  privacyPolicy_contains: String
-  privacyPolicy_not_contains: String
-  termsAndConditions_exists: Boolean
-  termsAndConditions: String
-  termsAndConditions_not: String
-  termsAndConditions_in: [String]
-  termsAndConditions_not_in: [String]
-  termsAndConditions_contains: String
-  termsAndConditions_not_contains: String
-  OR: [AppConfigFilter]
-  AND: [AppConfigFilter]
+interface Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
 }
 
-type AppConfigLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+enum ImageResizeStrategy {
+  "Resizes the image to fit into the specified dimensions."
+  FIT
+  """
+  Resizes the image to the specified dimensions, padding the image if needed.
+          Uses desired background color as padding color.
+  """
+  PAD
+  "Resizes the image to the specified dimensions, cropping the image if needed."
+  FILL
+  "Resizes the image to the specified dimensions, changing the original aspect ratio if needed."
+  SCALE
+  "Crops a part of the original image to fit into the specified dimensions."
+  CROP
+  "Creates a thumbnail from the image."
+  THUMB
+}
+
+enum ImageResizeFocus {
+  "Focus the resizing on the center."
+  CENTER
+  "Focus the resizing on the top."
+  TOP
+  "Focus the resizing on the top right."
+  TOP_RIGHT
+  "Focus the resizing on the right."
+  RIGHT
+  "Focus the resizing on the bottom right."
+  BOTTOM_RIGHT
+  "Focus the resizing on the bottom."
+  BOTTOM
+  "Focus the resizing on the bottom left."
+  BOTTOM_LEFT
+  "Focus the resizing on the left."
+  LEFT
+  "Focus the resizing on the top left."
+  TOP_LEFT
+  "Focus the resizing on the largest face."
+  FACE
+  "Focus the resizing on the area containing all the faces."
+  FACES
+}
+
+enum ImageFormat {
+  "JPG image format."
+  JPG
+  """
+  Progressive JPG format stores multiple passes of an image in progressively higher detail.
+          When a progressive image is loading, the viewer will first see a lower quality pixelated version which
+          will gradually improve in detail, until the image is fully downloaded. This is to display an image as
+          early as possible to make the layout look as designed.
+  """
+  JPG_PROGRESSIVE
+  "PNG image format"
+  PNG
+  """
+  8-bit PNG images support up to 256 colors and weigh less than the standard 24-bit PNG equivalent.
+          The 8-bit PNG format is mostly used for simple images, such as icons or logos.
+  """
+  PNG8
+  "WebP image format."
+  WEBP
+  AVIF
+}
+
+enum AssetOrder {
+  url_ASC
+  url_DESC
+  size_ASC
+  size_DESC
+  contentType_ASC
+  contentType_DESC
+  fileName_ASC
+  fileName_DESC
+  width_ASC
+  width_DESC
+  height_ASC
+  height_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+enum DemoItemOrder {
+  title_ASC
+  title_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 enum AppConfigOrder {
@@ -68,26 +261,45 @@ enum AppConfigOrder {
   sys_publishedVersion_DESC
 }
 
-"""Represents a binary file in a space. An asset can be any file type."""
-type Asset {
-  sys: Sys!
-  contentfulMetadata: ContentfulMetadata!
-  title(locale: String): String
-  description(locale: String): String
-  contentType(locale: String): String
-  fileName(locale: String): String
-  size(locale: String): Int
-  url(transform: ImageTransformOptions, locale: String): String
-  width(locale: String): Int
-  height(locale: String): Int
-  linkedFrom(allowedLocales: [String]): AssetLinkingCollections
+enum EntryOrder {
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
-type AssetCollection {
-  total: Int!
-  skip: Int!
-  limit: Int!
-  items: [Asset]!
+input ImageTransformOptions {
+  "Desired width in pixels. Defaults to the original image width."
+  width: Dimension
+  "Desired height in pixels. Defaults to the original image height."
+  height: Dimension
+  """
+  Desired quality of the image in percents.
+          Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
+  """
+  quality: Quality
+  """
+  Desired corner radius in pixels.
+          Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
+          Defaults to `0`. Uses desired background color as padding color,
+          unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
+  """
+  cornerRadius: Int
+  "Desired resize strategy. Defaults to `FIT`."
+  resizeStrategy: ImageResizeStrategy
+  "Desired resize focus area. Defaults to `CENTER`."
+  resizeFocus: ImageResizeFocus
+  """
+  Desired background color, used with corner radius or `PAD` resize strategy.
+          Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
+  """
+  backgroundColor: HexColor
+  "Desired image format. Defaults to the original image format."
+  format: ImageFormat
 }
 
 input AssetFilter {
@@ -159,306 +371,6 @@ input AssetFilter {
   AND: [AssetFilter]
 }
 
-type AssetLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): DemoItemCollection
-}
-
-enum AssetOrder {
-  url_ASC
-  url_DESC
-  size_ASC
-  size_DESC
-  contentType_ASC
-  contentType_DESC
-  fileName_ASC
-  fileName_DESC
-  width_ASC
-  width_DESC
-  height_ASC
-  height_DESC
-  sys_id_ASC
-  sys_id_DESC
-  sys_publishedAt_ASC
-  sys_publishedAt_DESC
-  sys_firstPublishedAt_ASC
-  sys_firstPublishedAt_DESC
-  sys_publishedVersion_ASC
-  sys_publishedVersion_DESC
-}
-
-type ContentfulMetadata {
-  tags: [ContentfulTag]!
-}
-
-input ContentfulMetadataFilter {
-  tags_exists: Boolean
-  tags: ContentfulMetadataTagsFilter
-}
-
-input ContentfulMetadataTagsFilter {
-  id_contains_all: [String]
-  id_contains_some: [String]
-  id_contains_none: [String]
-}
-
-"""
-Represents a tag entity for finding and organizing content easily.
-    Find out more here: https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-tags
-"""
-type ContentfulTag {
-  id: String
-  name: String
-}
-
-"""
-The `DateTime` scalar type represents a DateTime
-value as specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar DateTime
-
-"""
-[See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem)
-"""
-type DemoItem implements Entry {
-  sys: Sys!
-  contentfulMetadata: ContentfulMetadata!
-  linkedFrom(allowedLocales: [String]): DemoItemLinkingCollections
-  title(locale: String): String
-  description(locale: String): String
-  image(preview: Boolean, locale: String): Asset
-}
-
-type DemoItemCollection {
-  total: Int!
-  skip: Int!
-  limit: Int!
-  items: [DemoItem]!
-}
-
-input DemoItemFilter {
-  sys: SysFilter
-  contentfulMetadata: ContentfulMetadataFilter
-  title_exists: Boolean
-  title: String
-  title_not: String
-  title_in: [String]
-  title_not_in: [String]
-  title_contains: String
-  title_not_contains: String
-  description_exists: Boolean
-  description: String
-  description_not: String
-  description_in: [String]
-  description_not_in: [String]
-  description_contains: String
-  description_not_contains: String
-  image_exists: Boolean
-  OR: [DemoItemFilter]
-  AND: [DemoItemFilter]
-}
-
-type DemoItemLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-}
-
-enum DemoItemOrder {
-  title_ASC
-  title_DESC
-  sys_id_ASC
-  sys_id_DESC
-  sys_publishedAt_ASC
-  sys_publishedAt_DESC
-  sys_firstPublishedAt_ASC
-  sys_firstPublishedAt_DESC
-  sys_publishedVersion_ASC
-  sys_publishedVersion_DESC
-}
-
-"""
-The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`.
-"""
-scalar Dimension
-
-interface Entry {
-  sys: Sys!
-  contentfulMetadata: ContentfulMetadata!
-}
-
-type EntryCollection {
-  total: Int!
-  skip: Int!
-  limit: Int!
-  items: [Entry]!
-}
-
-input EntryFilter {
-  sys: SysFilter
-  contentfulMetadata: ContentfulMetadataFilter
-  OR: [EntryFilter]
-  AND: [EntryFilter]
-}
-
-enum EntryOrder {
-  sys_id_ASC
-  sys_id_DESC
-  sys_publishedAt_ASC
-  sys_publishedAt_DESC
-  sys_firstPublishedAt_ASC
-  sys_firstPublishedAt_DESC
-  sys_publishedVersion_ASC
-  sys_publishedVersion_DESC
-}
-
-"""The 'HexColor' type represents color in `rgb:ffffff` string format."""
-scalar HexColor
-
-enum ImageFormat {
-  """JPG image format."""
-  JPG
-  """
-  Progressive JPG format stores multiple passes of an image in progressively higher detail.
-          When a progressive image is loading, the viewer will first see a lower quality pixelated version which
-          will gradually improve in detail, until the image is fully downloaded. This is to display an image as
-          early as possible to make the layout look as designed.
-  """
-  JPG_PROGRESSIVE
-  """PNG image format"""
-  PNG
-  """
-  8-bit PNG images support up to 256 colors and weigh less than the standard 24-bit PNG equivalent.
-          The 8-bit PNG format is mostly used for simple images, such as icons or logos.
-  """
-  PNG8
-  """WebP image format."""
-  WEBP
-  AVIF
-}
-
-enum ImageResizeFocus {
-  """Focus the resizing on the center."""
-  CENTER
-  """Focus the resizing on the top."""
-  TOP
-  """Focus the resizing on the top right."""
-  TOP_RIGHT
-  """Focus the resizing on the right."""
-  RIGHT
-  """Focus the resizing on the bottom right."""
-  BOTTOM_RIGHT
-  """Focus the resizing on the bottom."""
-  BOTTOM
-  """Focus the resizing on the bottom left."""
-  BOTTOM_LEFT
-  """Focus the resizing on the left."""
-  LEFT
-  """Focus the resizing on the top left."""
-  TOP_LEFT
-  """Focus the resizing on the largest face."""
-  FACE
-  """Focus the resizing on the area containing all the faces."""
-  FACES
-}
-
-enum ImageResizeStrategy {
-  """Resizes the image to fit into the specified dimensions."""
-  FIT
-  """
-  Resizes the image to the specified dimensions, padding the image if needed.
-          Uses desired background color as padding color.
-  """
-  PAD
-  """
-  Resizes the image to the specified dimensions, cropping the image if needed.
-  """
-  FILL
-  """
-  Resizes the image to the specified dimensions, changing the original aspect ratio if needed.
-  """
-  SCALE
-  """
-  Crops a part of the original image to fit into the specified dimensions.
-  """
-  CROP
-  """Creates a thumbnail from the image."""
-  THUMB
-}
-
-input ImageTransformOptions {
-  """Desired width in pixels. Defaults to the original image width."""
-  width: Dimension
-  """Desired height in pixels. Defaults to the original image height."""
-  height: Dimension
-  """
-  Desired quality of the image in percents.
-          Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
-  """
-  quality: Quality
-  """
-  Desired corner radius in pixels.
-          Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
-          Defaults to `0`. Uses desired background color as padding color,
-          unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
-  """
-  cornerRadius: Int
-  """Desired resize strategy. Defaults to `FIT`."""
-  resizeStrategy: ImageResizeStrategy
-  """Desired resize focus area. Defaults to `CENTER`."""
-  resizeFocus: ImageResizeFocus
-  """
-  Desired background color, used with corner radius or `PAD` resize strategy.
-          Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
-  """
-  backgroundColor: HexColor
-  """Desired image format. Defaults to the original image format."""
-  format: ImageFormat
-}
-
-"""
-The 'Quality' type represents quality as whole numeric values between `1` and `100`.
-"""
-scalar Quality
-
-type Query {
-  asset(id: String!, preview: Boolean, locale: String): Asset
-  assetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AssetFilter, order: [AssetOrder]): AssetCollection
-  demoItem(id: String!, preview: Boolean, locale: String): DemoItem
-  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: DemoItemFilter, order: [DemoItemOrder]): DemoItemCollection
-  appConfig(id: String!, preview: Boolean, locale: String): AppConfig
-  appConfigCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AppConfigFilter, order: [AppConfigOrder]): AppConfigCollection
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
-  allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
-  activeSubscription: SubscriptionScheduleType
-  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
-  allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
-  charge(id: ID): StripeChargeType
-  paymentIntent(id: ID): StripePaymentIntentType
-  currentUser: CurrentUserType
-  hasUnreadNotifications: Boolean
-  allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
-  crudDemoItem(
-    """The ID of the object"""
-    id: ID!
-  ): CrudDemoItemType
-  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
-  allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
-  allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
-  node(
-    """The ID of the object"""
-    id: ID!
-  ): Node
-}
-
-type Sys {
-  id: String!
-  spaceId: String!
-  environmentId: String!
-  publishedAt: DateTime
-  firstPublishedAt: DateTime
-  publishedVersion: Int
-}
-
 input SysFilter {
   id_exists: Boolean
   id: String
@@ -496,10 +408,783 @@ input SysFilter {
   publishedVersion_lte: Float
 }
 
+input ContentfulMetadataFilter {
+  tags_exists: Boolean
+  tags: ContentfulMetadataTagsFilter
+}
+
+input ContentfulMetadataTagsFilter {
+  id_contains_all: [String]
+  id_contains_some: [String]
+  id_contains_none: [String]
+}
+
+input DemoItemFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  title_exists: Boolean
+  title: String
+  title_not: String
+  title_in: [String]
+  title_not_in: [String]
+  title_contains: String
+  title_not_contains: String
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  image_exists: Boolean
+  OR: [DemoItemFilter]
+  AND: [DemoItemFilter]
+}
+
+input AppConfigFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  privacyPolicy_exists: Boolean
+  privacyPolicy: String
+  privacyPolicy_not: String
+  privacyPolicy_in: [String]
+  privacyPolicy_not_in: [String]
+  privacyPolicy_contains: String
+  privacyPolicy_not_contains: String
+  termsAndConditions_exists: Boolean
+  termsAndConditions: String
+  termsAndConditions_not: String
+  termsAndConditions_in: [String]
+  termsAndConditions_not_in: [String]
+  termsAndConditions_contains: String
+  termsAndConditions_not_contains: String
+  OR: [AppConfigFilter]
+  AND: [AppConfigFilter]
+}
+
+input EntryFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  OR: [EntryFilter]
+  AND: [EntryFilter]
+}
+
+"Exposes a URL that specifies the behavior of this scalar."
+directive @specifiedBy(
+  "The URL that specifies the behavior of this scalar."
+  url: String!
+) on SCALAR
+
 schema {
   query: Query
   mutation: ApiMutation
   subscription: ApiSubscription
+}
+
+"The `Decimal` scalar type represents a python Decimal."
+scalar Decimal
+
+"""
+The `BigInt` scalar type represents non-fractional whole numeric values.
+`BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
+compatible type.
+"""
+scalar BigInt
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+
+"""
+Create scalar that ignores normal serialization/deserialization, since
+that will be handled by the multipart request spec
+"""
+scalar Upload
+
+type StripePriceConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripePriceEdge]!
+}
+
+"The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."
+type PageInfo {
+  "When paginating forwards, are there more items?"
+  hasNextPage: Boolean!
+  "When paginating backwards, are there more items?"
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+"A Relay edge containing a `StripePrice` and its cursor."
+type StripePriceEdge {
+  "The item at the end of the edge"
+  node: StripePriceType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type StripePriceType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "Whether the price can be used for new purchases."
+  active: Boolean!
+  "Three-letter ISO currency code"
+  currency: String!
+  "A brief description of the plan, hidden from customers."
+  nickname: String!
+  "The product this price is associated with."
+  product: StripeProductType!
+  "The recurring components of a price such as `interval` and `usage_type`."
+  recurring: String
+  "Whether the price is for a one-time purchase or a recurring (subscription) purchase."
+  type: DjstripePriceTypeChoices!
+  "The unit amount in cents to be charged, represented as a whole integer if possible. Null if a sub-cent precision is required."
+  unitAmount: BigInt
+  "The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places."
+  unitAmountDecimal: Decimal
+  "Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes."
+  billingScheme: DjstripePriceBillingSchemeChoices
+  "A lookup key used to retrieve prices dynamically from a static string."
+  lookupKey: String
+  "Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`."
+  tiers: String
+  "Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows."
+  tiersMode: DjstripePriceTiersModeChoices
+  "Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`."
+  transformQuantity: String
+  pk: String
+}
+
+type StripeProductType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types."
+  name: String!
+  "The type of the product. The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans."
+  type: DjstripeProductTypeChoices!
+  "Whether the product is currently available for purchase. Only applicable to products of `type=good`."
+  active: Boolean
+  """
+  A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`). Only applicable to products of `type=good`.
+  """
+  attributes: String
+  "A short one-line description of the product, meant to be displayableto the customer. Only applicable to products of `type=good`."
+  caption: String!
+  "An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`."
+  deactivateOn: String
+  "A list of up to 8 URLs of images for this product, meant to be displayable to the customer. Only applicable to products of `type=good`."
+  images: String
+  "The dimensions of this product for shipping purposes. A SKU associated with this product can override this value by having its own `package_dimensions`. Only applicable to products of `type=good`."
+  packageDimensions: String
+  "Whether this product is a shipped good. Only applicable to products of `type=good`."
+  shippable: Boolean
+  "A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`."
+  url: String
+  "Extra information about a product which will appear on your customer's credit card statement. In the case that multiple products are billed at once, the first statement descriptor will be used. Only available on products of type=`service`."
+  statementDescriptor: String!
+  unitLabel: String!
+  "The product this price is associated with."
+  prices(offset: Int, before: String, after: String, first: Int, last: Int): StripePriceTypeConnection!
+  "The product whose pricing this plan determines."
+  planSet(offset: Int, before: String, after: String, first: Int, last: Int): SubscriptionPlanTypeConnection!
+  pk: String
+}
+
+type StripePriceTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripePriceTypeEdge]!
+}
+
+"A Relay edge containing a `StripePriceType` and its cursor."
+type StripePriceTypeEdge {
+  "The item at the end of the edge"
+  node: StripePriceType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type SubscriptionPlanTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SubscriptionPlanTypeEdge]!
+}
+
+"A Relay edge containing a `SubscriptionPlanType` and its cursor."
+type SubscriptionPlanTypeEdge {
+  "The item at the end of the edge"
+  node: SubscriptionPlanType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type SubscriptionPlanType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "Whether the plan can be used for new purchases."
+  active: Boolean!
+  "Specifies a usage aggregation strategy for plans of usage_type=metered. Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or max which picks the usage record with the maximum reported usage during a period. Defaults to `sum`."
+  aggregateUsage: DjstripePlanAggregateUsageChoices
+  "Amount (as decimal) to be charged on the interval specified."
+  amount: Decimal
+  "The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places."
+  amountDecimal: Decimal
+  "Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in amount) will be charged per unit in quantity (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the tiers and tiers_mode attributes."
+  billingScheme: DjstripePlanBillingSchemeChoices
+  "Three-letter ISO currency code"
+  currency: String!
+  "The frequency with which a subscription should be billed."
+  interval: DjstripePlanIntervalChoices!
+  "The number of intervals (specified in the interval property) between each subscription billing."
+  intervalCount: Int
+  "A brief description of the plan, hidden from customers."
+  nickname: String!
+  "The product whose pricing this plan determines."
+  product: StripeProductType
+  "Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`."
+  tiers: String
+  "Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows."
+  tiersMode: DjstripePlanTiersModeChoices
+  "Apply a transformation to the reported usage or set quantity before computing the billed price. Cannot be combined with `tiers`."
+  transformUsage: String
+  "Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period."
+  trialPeriodDays: Int
+  "Configures how the quantity per period should be determined, can be either `metered` or `licensed`. `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records. Defaults to `licensed`."
+  usageType: DjstripePlanUsageTypeChoices!
+  "The plan associated with this subscription. This value will be `null` for multi-plan subscriptions"
+  subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
+  pk: String
+}
+
+type StripeSubscriptionTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripeSubscriptionTypeEdge]!
+}
+
+"A Relay edge containing a `StripeSubscriptionType` and its cursor."
+type StripeSubscriptionTypeEdge {
+  "The item at the end of the edge"
+  node: StripeSubscriptionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type StripeSubscriptionType implements Node {
+  "The ID of the object"
+  id: ID!
+  "End of the current period for which the subscription has been invoiced. At the end of this period, a new invoice will be created."
+  currentPeriodEnd: DateTime!
+  "Start of the current period for which the subscription has been invoiced."
+  currentPeriodStart: DateTime!
+  "Date when the subscription was first created. The date might differ from the created date due to backdating."
+  startDate: DateTime
+  "The status of this subscription."
+  status: DjstripeSubscriptionStatusChoices!
+  "If the subscription has a trial, the end of that trial."
+  trialEnd: DateTime
+  "If the subscription has a trial, the beginning of that trial."
+  trialStart: DateTime
+  pk: String
+  plan: SubscriptionPlanType
+}
+
+type SubscriptionScheduleType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period."
+  billingThresholds: String
+  "Time at which the subscription schedule was canceled."
+  canceledAt: DateTime
+  "Time at which the subscription schedule was completed."
+  completedAt: DateTime
+  "Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`."
+  currentPhase: String
+  "Object representing the subscription schedule's default settings."
+  defaultSettings: String
+  "Behavior of the subscription schedule and underlying subscription when it ends."
+  endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices!
+  phases: [SubscriptionSchedulePhaseType]
+  "Time at which the subscription schedule was released."
+  releasedAt: DateTime
+  "The subscription once managed by this subscription schedule (if it is released)."
+  releasedSubscription: StripeSubscriptionType
+  "The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`."
+  status: DjstripeSubscriptionScheduleStatusChoices!
+  "The schedule associated with this subscription."
+  subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
+  subscription: StripeSubscriptionType
+  defaultPaymentMethod: StripePaymentMethodType
+  canActivateTrial: Boolean
+}
+
+type SubscriptionSchedulePhaseType {
+  startDate: DateTime
+  endDate: String
+  trialEnd: String
+  item: SubscriptionSchedulePhaseItemType
+}
+
+type SubscriptionSchedulePhaseItemType {
+  price: StripePriceType
+  quantity: Int
+}
+
+type StripePaymentMethodType implements Node {
+  "The ID of the object"
+  id: ID!
+  billingDetails: GenericScalar
+  "The type of the PaymentMethod."
+  type: DjstripePaymentMethodTypeChoices!
+  card: GenericScalar
+  pk: String
+}
+
+type PaymentMethodConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [PaymentMethodEdge]!
+}
+
+"A Relay edge containing a `PaymentMethod` and its cursor."
+type PaymentMethodEdge {
+  "The item at the end of the edge"
+  node: StripePaymentMethodType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type ChargeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [ChargeEdge]!
+}
+
+"A Relay edge containing a `Charge` and its cursor."
+type ChargeEdge {
+  "The item at the end of the edge"
+  node: StripeChargeType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type StripeChargeType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "Amount charged (as decimal)."
+  amount: Decimal!
+  "Amount (as decimal) captured (can be less than the amount attribute on the charge if a partial capture was issued)."
+  amountCaptured: Decimal
+  "Amount (as decimal) refunded (can be less than the amount attribute on the charge if a partial refund was issued)."
+  amountRefunded: Decimal!
+  "ID of the Connect application that created the charge."
+  application: String!
+  "The amount (as decimal) of the application fee (if any) requested for the charge."
+  applicationFeeAmount: Decimal
+  billingDetails: GenericScalar
+  "The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined."
+  calculatedStatementDescriptor: String!
+  "If the charge was created without capturing, this boolean represents whether or not it is still uncaptured or has since been captured."
+  captured: Boolean!
+  "The currency in which the charge was made."
+  currency: String!
+  "Whether the charge has been disputed."
+  disputed: Boolean!
+  "Error code explaining reason for charge failure if available."
+  failureCode: DjstripeChargeFailureCodeChoices
+  "Message to user further explaining reason for charge failure if available."
+  failureMessage: String!
+  "Hash with information on fraud assessments for the charge."
+  fraudDetails: String
+  "The invoice this charge is for if one exists."
+  invoice: StripeInvoiceType
+  "Details about whether or not the payment was accepted, and why."
+  outcome: String
+  "True if the charge succeeded, or was successfully authorized for later capture, False otherwise."
+  paid: Boolean!
+  "PaymentIntent associated with this charge, if one exists."
+  paymentIntent: StripePaymentIntentType
+  "PaymentMethod used in this charge."
+  paymentMethod: StripePaymentMethodType
+  "Details about the payment method at the time of the transaction."
+  paymentMethodDetails: String
+  "The email address that the receipt for this charge was sent to."
+  receiptEmail: String!
+  "The transaction number that appears on email receipts sent for this charge."
+  receiptNumber: String!
+  "This is the URL to view the receipt for this charge. The receipt is kept up-to-date to the latest state of the charge, including any refunds. If the charge is for an Invoice, the receipt will be stylized as an Invoice receipt."
+  receiptUrl: String!
+  "Whether or not the charge has been fully refunded. If the charge is only partially refunded, this attribute will still be false."
+  refunded: Boolean!
+  "Shipping information for the charge"
+  shipping: String
+  "For card charges, use statement_descriptor_suffix instead. Otherwise, you can use this value as the complete description of a charge on your customers' statements. Must contain at least one letter, maximum 22 characters."
+  statementDescriptor: String
+  "Provides information about the charge that customers see on their statements. Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor. Maximum 22 characters for the concatenated descriptor."
+  statementDescriptorSuffix: String
+  "The status of the payment."
+  status: DjstripeChargeStatusChoices!
+  "An optional dictionary including the account to automatically transfer to as part of a destination charge."
+  transferData: String
+  "A string that identifies this transaction as part of a group."
+  transferGroup: String
+  latestInvoice: StripeInvoiceType
+  pk: String
+}
+
+type StripeInvoiceType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
+  id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "The country of the business associated with this invoice, most often the business creating the invoice."
+  accountCountry: String!
+  "The public name of the business associated with this invoice, most often the business creating the invoice."
+  accountName: String!
+  "Final amount due (as decimal) at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due."
+  amountDue: Decimal!
+  "The amount, (as decimal), that was paid."
+  amountPaid: Decimal
+  "The amount remaining, (as decimal), that is due."
+  amountRemaining: Decimal
+  "The fee (as decimal) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid."
+  applicationFeeAmount: Decimal
+  "Number of payment attempts made for this invoice, from the perspective of the payment retry schedule. Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule."
+  attemptCount: Int!
+  "Whether or not an attempt has been made to pay the invoice. An invoice is not attempted until 1 hour after the ``invoice.created`` webhook, for example, so you might not want to display that invoice as unpaid to your users."
+  attempted: Boolean!
+  "Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice's state will not automatically advance without an explicit action."
+  autoAdvance: Boolean
+  "Indicates the reason why the invoice was created. subscription_cycle indicates an invoice created by a subscription advancing into a new period. subscription_create indicates an invoice created due to creating a subscription. subscription_update indicates an invoice created due to updating a subscription. subscription is set for all old invoices to indicate either a change to a subscription or a period advancement. manual is set for all invoices unrelated to a subscription (for example: created via the invoice editor). The upcoming value is reserved for simulated invoices per the upcoming invoice endpoint. subscription_threshold indicates an invoice created due to a billing threshold being reached."
+  billingReason: DjstripeInvoiceBillingReasonChoices
+  "The latest charge generated for this invoice, if any."
+  charge: StripeChargeType
+  "When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer. When sending an invoice, Stripe will email this invoice to the customer with payment instructions."
+  collectionMethod: DjstripeInvoiceCollectionMethodChoices
+  "Three-letter ISO currency code"
+  currency: String!
+  "The customer's address. Until the invoice is finalized, this field will equal customer.address. Once the invoice is finalized, this field will no longer be updated."
+  customerAddress: String
+  "The customer's email. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated."
+  customerEmail: String!
+  "The customer's name. Until the invoice is finalized, this field will equal customer.name. Once the invoice is finalized, this field will no longer be updated."
+  customerName: String!
+  "The customer's phone number. Until the invoice is finalized, this field will equal customer.phone. Once the invoice is finalized, this field will no longer be updated."
+  customerPhone: String!
+  "The customer's shipping information. Until the invoice is finalized, this field will equal customer.shipping. Once the invoice is finalized, this field will no longer be updated."
+  customerShipping: String
+  "The customer's tax exempt status. Until the invoice is finalized, this field will equal customer.tax_exempt. Once the invoice is finalized, this field will no longer be updated."
+  customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices!
+  "Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings."
+  defaultPaymentMethod: StripePaymentMethodType
+  "Describes the current discount applied to this subscription, if there is one. When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis."
+  discount: String
+  "The date on which payment for this invoice is due. This value will be null for invoices where billing=charge_automatically."
+  dueDate: DateTime
+  "Ending customer balance (in cents) after attempting to pay invoice. If the invoice has not been attempted yet, this will be null."
+  endingBalance: BigInt
+  "Footer displayed on the invoice."
+  footer: String!
+  "The URL for the hosted invoice page, which allows customers to view and pay an invoice. If the invoice has not been frozen yet, this will be null."
+  hostedInvoiceUrl: String!
+  "The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null."
+  invoicePdf: String!
+  "The time at which payment will next be attempted."
+  nextPaymentAttempt: DateTime
+  "A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer's unique invoice_prefix if it is specified."
+  number: String!
+  "Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance."
+  paid: Boolean!
+  "The PaymentIntent associated with this invoice. The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.Note that voiding an invoice will cancel the PaymentIntent"
+  paymentIntent: StripePaymentIntentType
+  "End of the usage period during which invoice items were added to this invoice."
+  periodEnd: DateTime!
+  "Start of the usage period during which invoice items were added to this invoice."
+  periodStart: DateTime!
+  "Total amount (in cents) of all post-payment credit notes issued for this invoice."
+  postPaymentCreditNotesAmount: BigInt
+  "Total amount (in cents) of all pre-payment credit notes issued for this invoice."
+  prePaymentCreditNotesAmount: BigInt
+  "This is the transaction number that appears on email receipts sent for this invoice."
+  receiptNumber: String
+  "Starting customer balance (in cents) before attempting to pay invoice. If the invoice has not been attempted yet, this will be the current customer balance."
+  startingBalance: BigInt!
+  """
+  An arbitrary string to be displayed on your customer's credit card statement. The statement description may not include <>"' characters, and will appear on your customer's statement in capital letters. Non-ASCII characters are automatically stripped. While most banks display this information consistently, some may display it incorrectly or not at all.
+  """
+  statementDescriptor: String!
+  "The status of the invoice, one of draft, open, paid, uncollectible, or void."
+  status: DjstripeInvoiceStatusChoices
+  statusTransitions: String
+  "The subscription that this invoice was prepared for, if any."
+  subscription: StripeSubscriptionType
+  "Only set for upcoming invoices that preview prorations. The time used to calculate prorations."
+  subscriptionProrationDate: DateTime
+  "Total (as decimal) of all subscriptions, invoice items, and prorations on the invoice before any discount or tax is applied."
+  subtotal: Decimal!
+  "The amount (as decimal) of tax included in the total, calculated from ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null."
+  tax: Decimal
+  "This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts. This field is inherited from the subscription's ``tax_percent`` field, but can be changed before the invoice is paid. This field defaults to null."
+  taxPercent: Decimal
+  "If billing_reason is set to subscription_threshold this returns more information on which threshold rules triggered the invoice."
+  thresholdReason: String
+  total: Decimal!
+  "The time at which webhooks for this invoice were successfully delivered (if the invoice had no webhooks to deliver, this will match `date`). Invoice payment is delayed until webhooks are delivered, or until all webhook delivery attempts have been exhausted."
+  webhooksDeliveredAt: DateTime
+  "The invoice this charge is for if one exists."
+  charges(offset: Int, before: String, after: String, first: Int, last: Int): StripeChargeTypeConnection!
+  pk: String
+}
+
+type StripePaymentIntentType implements Node {
+  "The ID of the object"
+  id: ID!
+  "Amount (in cents) intended to be collected by this PaymentIntent."
+  amount: BigInt!
+  "The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key."
+  clientSecret: String!
+  "Three-letter ISO currency code"
+  currency: String!
+  pk: String
+}
+
+type StripeChargeTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripeChargeTypeEdge]!
+}
+
+"A Relay edge containing a `StripeChargeType` and its cursor."
+type StripeChargeTypeEdge {
+  "The item at the end of the edge"
+  node: StripeChargeType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type CurrentUserType {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  roles: [String]
+  avatar: String
+}
+
+type NotificationConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [NotificationEdge]!
+}
+
+"A Relay edge containing a `Notification` and its cursor."
+type NotificationEdge {
+  "The item at the end of the edge"
+  node: NotificationType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type NotificationType implements Node {
+  "The ID of the object"
+  id: ID!
+  user: CurrentUserType!
+  type: String!
+  createdAt: DateTime!
+  readAt: DateTime
+  data: GenericScalar
+}
+
+type CrudDemoItemType implements Node {
+  "The ID of the object"
+  id: ID!
+  name: String!
+  createdBy: CurrentUserType
+}
+
+type CrudDemoItemConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [CrudDemoItemEdge]!
+}
+
+"A Relay edge containing a `CrudDemoItem` and its cursor."
+type CrudDemoItemEdge {
+  "The item at the end of the edge"
+  node: CrudDemoItemType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type ContentfulDemoItemFavoriteConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [ContentfulDemoItemFavoriteEdge]!
+}
+
+"A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor."
+type ContentfulDemoItemFavoriteEdge {
+  "The item at the end of the edge"
+  node: ContentfulDemoItemFavoriteType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type ContentfulDemoItemFavoriteType implements Node {
+  "The ID of the object"
+  id: ID!
+  item: ContentfulDemoItemType!
+  user: CurrentUserType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ContentfulDemoItemType implements Node {
+  "The ID of the object"
+  id: ID!
+  fields: JSONString!
+  isPublished: Boolean!
+  contentfuldemoitemfavoriteSet(offset: Int, before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteTypeConnection!
+  pk: String
+}
+
+type ContentfulDemoItemFavoriteTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [ContentfulDemoItemFavoriteTypeEdge]!
+}
+
+"A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor."
+type ContentfulDemoItemFavoriteTypeEdge {
+  "The item at the end of the edge"
+  node: ContentfulDemoItemFavoriteType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type DocumentDemoItemConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [DocumentDemoItemEdge]!
+}
+
+"A Relay edge containing a `DocumentDemoItem` and its cursor."
+type DocumentDemoItemEdge {
+  "The item at the end of the edge"
+  node: DocumentDemoItemType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+
+type DocumentDemoItemType implements Node {
+  "The ID of the object"
+  id: ID!
+  file: FileFieldType
+  createdBy: CurrentUserType
+  createdAt: DateTime!
+}
+
+type FileFieldType {
+  url: String
+  name: String
 }
 
 type ApiMutation {
@@ -528,19 +1213,18 @@ type ApiMutation {
   deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
 }
 
-type ApiSubscription {
-  notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+type ChangeActiveSubscriptionMutationPayload {
+  subscriptionSchedule: SubscriptionScheduleType
+  subscriptionScheduleEdge: SubscriptionScheduleEdge
+  clientMutationId: String
 }
 
-"""
-The `BigInt` scalar type represents non-fractional whole numeric values.
-`BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
-compatible type.
-"""
-scalar BigInt
-
-input CancelActiveSubscriptionMutationInput {
-  clientMutationId: String
+"A Relay edge containing a `SubscriptionSchedule` and its cursor."
+type SubscriptionScheduleEdge {
+  "The item at the end of the edge"
+  node: SubscriptionScheduleType
+  "A cursor for use in pagination"
+  cursor: String!
 }
 
 type CancelActiveSubscriptionMutationPayload {
@@ -549,236 +1233,9 @@ type CancelActiveSubscriptionMutationPayload {
   clientMutationId: String
 }
 
-input ChangeActiveSubscriptionMutationInput {
-  price: String!
-  clientMutationId: String
-}
-
-type ChangeActiveSubscriptionMutationPayload {
-  subscriptionSchedule: SubscriptionScheduleType
-  subscriptionScheduleEdge: SubscriptionScheduleEdge
-  clientMutationId: String
-}
-
-input ChangePasswordMutationInput {
-  """Old password"""
-  oldPassword: String!
-  """New password"""
-  newPassword: String!
-  clientMutationId: String
-}
-
-type ChangePasswordMutationPayload {
-  refresh: String
-  access: String
-  clientMutationId: String
-}
-
-type ChargeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [ChargeEdge]!
-}
-
-"""A Relay edge containing a `Charge` and its cursor."""
-type ChargeEdge {
-  """The item at the end of the edge"""
-  node: StripeChargeType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-input ConfirmEmailMutationInput {
-  user: String!
-  token: String!
-  clientMutationId: String
-}
-
-type ConfirmEmailMutationPayload {
-  ok: Boolean
-  clientMutationId: String
-}
-
-type ContentfulDemoItemFavoriteConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [ContentfulDemoItemFavoriteEdge]!
-}
-
-"""A Relay edge containing a `ContentfulDemoItemFavorite` and its cursor."""
-type ContentfulDemoItemFavoriteEdge {
-  """The item at the end of the edge"""
-  node: ContentfulDemoItemFavoriteType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type ContentfulDemoItemFavoriteType implements Node {
-  """The ID of the object"""
-  id: ID!
-  item: ContentfulDemoItemType!
-  user: CurrentUserType!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type ContentfulDemoItemFavoriteTypeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [ContentfulDemoItemFavoriteTypeEdge]!
-}
-
-"""
-A Relay edge containing a `ContentfulDemoItemFavoriteType` and its cursor.
-"""
-type ContentfulDemoItemFavoriteTypeEdge {
-  """The item at the end of the edge"""
-  node: ContentfulDemoItemFavoriteType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type ContentfulDemoItemType implements Node {
-  """The ID of the object"""
-  id: ID!
-  fields: JSONString!
-  isPublished: Boolean!
-  contentfuldemoitemfavoriteSet(offset: Int, before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteTypeConnection!
-  pk: String
-}
-
-input CreateCrudDemoItemMutationInput {
-  name: String!
-  createdBy: String
-  clientMutationId: String
-}
-
-type CreateCrudDemoItemMutationPayload {
-  crudDemoItem: CrudDemoItemType
-  crudDemoItemEdge: CrudDemoItemEdge
-  clientMutationId: String
-}
-
-input CreateDocumentDemoItemMutationInput {
-  file: Upload
-  createdBy: String
-  clientMutationId: String
-}
-
-type CreateDocumentDemoItemMutationPayload {
-  documentDemoItem: DocumentDemoItemType
-  documentDemoItemEdge: DocumentDemoItemEdge
-  clientMutationId: String
-}
-
-input CreateFavoriteContentfulDemoItemMutationInput {
-  item: String!
-  user: String
-  clientMutationId: String
-}
-
-type CreateFavoriteContentfulDemoItemMutationPayload {
-  contentfulDemoItemFavorite: ContentfulDemoItemFavoriteType
-  contentfulDemoItemFavoriteEdge: ContentfulDemoItemFavoriteEdge
-  clientMutationId: String
-}
-
-input CreatePaymentIntentMutationInput {
-  product: String!
-  clientMutationId: String
-}
-
-type CreatePaymentIntentMutationPayload {
-  paymentIntent: StripePaymentIntentType
-  clientMutationId: String
-}
-
-input CreateSetupIntentMutationInput {
-  clientMutationId: String
-}
-
-type CreateSetupIntentMutationPayload {
-  setupIntent: StripeSetupIntentType
-  clientMutationId: String
-}
-
-type CrudDemoItemConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [CrudDemoItemEdge]!
-}
-
-"""A Relay edge containing a `CrudDemoItem` and its cursor."""
-type CrudDemoItemEdge {
-  """The item at the end of the edge"""
-  node: CrudDemoItemType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type CrudDemoItemType implements Node {
-  """The ID of the object"""
-  id: ID!
-  name: String!
-  createdBy: CurrentUserType
-}
-
-"""A Relay edge containing a `CurrentUser` and its cursor."""
-type CurrentUserEdge {
-  """The item at the end of the edge"""
-  node: UserProfileType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type CurrentUserType {
-  id: ID!
-  email: String!
-  firstName: String
-  lastName: String
-  roles: [String]
-  avatar: String
-}
-
-"""The `Decimal` scalar type represents a python Decimal."""
-scalar Decimal
-
-input DeleteCrudDemoItemMutationInput {
-  id: String
-  clientMutationId: String
-}
-
-type DeleteCrudDemoItemMutationPayload {
-  deletedIds: [ID]
-  clientMutationId: String
-}
-
-input DeleteDocumentDemoItemMutationInput {
-  id: String
-  clientMutationId: String
-}
-
-type DeleteDocumentDemoItemMutationPayload {
-  deletedIds: [ID]
-  clientMutationId: String
-}
-
-input DeleteFavoriteContentfulDemoItemMutationInput {
-  item: String
-  clientMutationId: String
-}
-
-type DeleteFavoriteContentfulDemoItemMutationPayload {
-  deletedIds: [ID]
-  clientMutationId: String
-}
-
-input DeletePaymentMethodMutationInput {
-  id: String
+type UpdateDefaultPaymentMethodMutationPayload {
+  activeSubscription: SubscriptionScheduleType
+  paymentMethodEdge: PaymentMethodEdge
   clientMutationId: String
 }
 
@@ -788,579 +1245,87 @@ type DeletePaymentMethodMutationPayload {
   clientMutationId: String
 }
 
-enum DjstripeChargeFailureCodeChoices {
-  """Account already exists"""
-  ACCOUNT_ALREADY_EXISTS
-  """Account country invalid address"""
-  ACCOUNT_COUNTRY_INVALID_ADDRESS
-  """Account invalid"""
-  ACCOUNT_INVALID
-  """Account number invalid"""
-  ACCOUNT_NUMBER_INVALID
-  """Alipay upgrade required"""
-  ALIPAY_UPGRADE_REQUIRED
-  """Amount too large"""
-  AMOUNT_TOO_LARGE
-  """Amount too small"""
-  AMOUNT_TOO_SMALL
-  """Api key expired"""
-  API_KEY_EXPIRED
-  """Balance insufficient"""
-  BALANCE_INSUFFICIENT
-  """Bank account exists"""
-  BANK_ACCOUNT_EXISTS
-  """Bank account unusable"""
-  BANK_ACCOUNT_UNUSABLE
-  """Bank account unverified"""
-  BANK_ACCOUNT_UNVERIFIED
-  """Bitcoin upgrade required"""
-  BITCOIN_UPGRADE_REQUIRED
-  """Card was declined"""
-  CARD_DECLINED
-  """Charge already captured"""
-  CHARGE_ALREADY_CAPTURED
-  """Charge already refunded"""
-  CHARGE_ALREADY_REFUNDED
-  """Charge disputed"""
-  CHARGE_DISPUTED
-  """Charge exceeds source limit"""
-  CHARGE_EXCEEDS_SOURCE_LIMIT
-  """Charge expired for capture"""
-  CHARGE_EXPIRED_FOR_CAPTURE
-  """Country unsupported"""
-  COUNTRY_UNSUPPORTED
-  """Coupon expired"""
-  COUPON_EXPIRED
-  """Customer max subscriptions"""
-  CUSTOMER_MAX_SUBSCRIPTIONS
-  """Email invalid"""
-  EMAIL_INVALID
-  """Expired card"""
-  EXPIRED_CARD
-  """Idempotency key in use"""
-  IDEMPOTENCY_KEY_IN_USE
-  """Incorrect address"""
-  INCORRECT_ADDRESS
-  """Incorrect security code"""
-  INCORRECT_CVC
-  """Incorrect number"""
-  INCORRECT_NUMBER
-  """ZIP code failed validation"""
-  INCORRECT_ZIP
-  """Instant payouts unsupported"""
-  INSTANT_PAYOUTS_UNSUPPORTED
-  """Invalid card type"""
-  INVALID_CARD_TYPE
-  """Invalid charge amount"""
-  INVALID_CHARGE_AMOUNT
-  """Invalid security code"""
-  INVALID_CVC
-  """Invalid expiration month"""
-  INVALID_EXPIRY_MONTH
-  """Invalid expiration year"""
-  INVALID_EXPIRY_YEAR
-  """Invalid number"""
-  INVALID_NUMBER
-  """Invalid source usage"""
-  INVALID_SOURCE_USAGE
-  """Invalid swipe data"""
-  INVALID_SWIPE_DATA
-  """Invoice no customer line items"""
-  INVOICE_NO_CUSTOMER_LINE_ITEMS
-  """Invoice no subscription line items"""
-  INVOICE_NO_SUBSCRIPTION_LINE_ITEMS
-  """Invoice not editable"""
-  INVOICE_NOT_EDITABLE
-  """Invoice upcoming none"""
-  INVOICE_UPCOMING_NONE
-  """Livemode mismatch"""
-  LIVEMODE_MISMATCH
-  """No card being charged"""
-  MISSING
-  """Not allowed on standard account"""
-  NOT_ALLOWED_ON_STANDARD_ACCOUNT
-  """Order creation failed"""
-  ORDER_CREATION_FAILED
-  """Order required settings"""
-  ORDER_REQUIRED_SETTINGS
-  """Order status invalid"""
-  ORDER_STATUS_INVALID
-  """Order upstream timeout"""
-  ORDER_UPSTREAM_TIMEOUT
-  """Out of inventory"""
-  OUT_OF_INVENTORY
-  """Parameter invalid empty"""
-  PARAMETER_INVALID_EMPTY
-  """Parameter invalid integer"""
-  PARAMETER_INVALID_INTEGER
-  """Parameter invalid string blank"""
-  PARAMETER_INVALID_STRING_BLANK
-  """Parameter invalid string empty"""
-  PARAMETER_INVALID_STRING_EMPTY
-  """Parameter missing"""
-  PARAMETER_MISSING
-  """Parameter unknown"""
-  PARAMETER_UNKNOWN
-  """Parameters exclusive"""
-  PARAMETERS_EXCLUSIVE
-  """Payment intent authentication failure"""
-  PAYMENT_INTENT_AUTHENTICATION_FAILURE
-  """Payment intent incompatible payment method"""
-  PAYMENT_INTENT_INCOMPATIBLE_PAYMENT_METHOD
-  """Payment intent invalid parameter"""
-  PAYMENT_INTENT_INVALID_PARAMETER
-  """Payment intent payment attempt failed"""
-  PAYMENT_INTENT_PAYMENT_ATTEMPT_FAILED
-  """Payment intent unexpected state"""
-  PAYMENT_INTENT_UNEXPECTED_STATE
-  """Payment method unactivated"""
-  PAYMENT_METHOD_UNACTIVATED
-  """Payment method unexpected state"""
-  PAYMENT_METHOD_UNEXPECTED_STATE
-  """Payouts not allowed"""
-  PAYOUTS_NOT_ALLOWED
-  """Platform api key expired"""
-  PLATFORM_API_KEY_EXPIRED
-  """Postal code invalid"""
-  POSTAL_CODE_INVALID
-  """Processing error"""
-  PROCESSING_ERROR
-  """Product inactive"""
-  PRODUCT_INACTIVE
-  """Rate limit"""
-  RATE_LIMIT
-  """Resource already exists"""
-  RESOURCE_ALREADY_EXISTS
-  """Resource missing"""
-  RESOURCE_MISSING
-  """Routing number invalid"""
-  ROUTING_NUMBER_INVALID
-  """Secret key required"""
-  SECRET_KEY_REQUIRED
-  """SEPA unsupported account"""
-  SEPA_UNSUPPORTED_ACCOUNT
-  """Shipping calculation failed"""
-  SHIPPING_CALCULATION_FAILED
-  """SKU inactive"""
-  SKU_INACTIVE
-  """State unsupported"""
-  STATE_UNSUPPORTED
-  """Tax id invalid"""
-  TAX_ID_INVALID
-  """Taxes calculation failed"""
-  TAXES_CALCULATION_FAILED
-  """Testmode charges only"""
-  TESTMODE_CHARGES_ONLY
-  """TLS version unsupported"""
-  TLS_VERSION_UNSUPPORTED
-  """Token already used"""
-  TOKEN_ALREADY_USED
-  """Token in use"""
-  TOKEN_IN_USE
-  """Transfers not allowed"""
-  TRANSFERS_NOT_ALLOWED
-  """Upstream order creation failed"""
-  UPSTREAM_ORDER_CREATION_FAILED
-  """URL invalid"""
-  URL_INVALID
-}
-
-enum DjstripeChargeStatusChoices {
-  """Failed"""
-  FAILED
-  """Pending"""
-  PENDING
-  """Succeeded"""
-  SUCCEEDED
-}
-
-enum DjstripeInvoiceBillingReasonChoices {
-  """Manual"""
-  MANUAL
-  """Subscription"""
-  SUBSCRIPTION
-  """Subscription create"""
-  SUBSCRIPTION_CREATE
-  """Subscription cycle"""
-  SUBSCRIPTION_CYCLE
-  """Subscription threshold"""
-  SUBSCRIPTION_THRESHOLD
-  """Subscription update"""
-  SUBSCRIPTION_UPDATE
-  """Upcoming"""
-  UPCOMING
-}
-
-enum DjstripeInvoiceCollectionMethodChoices {
-  """Charge automatically"""
-  CHARGE_AUTOMATICALLY
-  """Send invoice"""
-  SEND_INVOICE
-}
-
-enum DjstripeInvoiceCustomerTaxExemptChoices {
-  """Exempt"""
-  EXEMPT
-  """None"""
-  NONE
-  """Reverse"""
-  REVERSE
-}
-
-enum DjstripeInvoiceStatusChoices {
-  """Draft"""
-  DRAFT
-  """Open"""
-  OPEN
-  """Paid"""
-  PAID
-  """Uncollectible"""
-  UNCOLLECTIBLE
-  """Void"""
-  VOID
-}
-
-enum DjstripePaymentMethodTypeChoices {
-  """Acss Dbit"""
-  ACSS_DEBIT
-  """Afterpay Clearpay"""
-  AFTERPAY_CLEARPAY
-  """Alipay"""
-  ALIPAY
-  """BECS Debit (Australia)"""
-  AU_BECS_DEBIT
-  """Bacs Direct Debit"""
-  BACS_DEBIT
-  """Bancontact"""
-  BANCONTACT
-  """Boleto"""
-  BOLETO
-  """Card"""
-  CARD
-  """Card present"""
-  CARD_PRESENT
-  """EPS"""
-  EPS
-  """FPX"""
-  FPX
-  """Giropay"""
-  GIROPAY
-  """Grabpay"""
-  GRABPAY
-  """iDEAL"""
-  IDEAL
-  """Interac (card present)"""
-  INTERAC_PRESENT
-  """Klarna"""
-  KLARNA
-  """OXXO"""
-  OXXO
-  """Przelewy24"""
-  P24
-  """SEPA Direct Debit"""
-  SEPA_DEBIT
-  """SOFORT"""
-  SOFORT
-  """Wechat Pay"""
-  WECHAT_PAY
-}
-
-enum DjstripePlanAggregateUsageChoices {
-  """Last during period"""
-  LAST_DURING_PERIOD
-  """Last ever"""
-  LAST_EVER
-  """Max"""
-  MAX
-  """Sum"""
-  SUM
-}
-
-enum DjstripePlanBillingSchemeChoices {
-  """Per-unit"""
-  PER_UNIT
-  """Tiered"""
-  TIERED
-}
-
-enum DjstripePlanIntervalChoices {
-  """Day"""
-  DAY
-  """Month"""
-  MONTH
-  """Week"""
-  WEEK
-  """Year"""
-  YEAR
-}
-
-enum DjstripePlanTiersModeChoices {
-  """Graduated"""
-  GRADUATED
-  """Volume-based"""
-  VOLUME
-}
-
-enum DjstripePlanUsageTypeChoices {
-  """Licensed"""
-  LICENSED
-  """Metered"""
-  METERED
-}
-
-enum DjstripePriceBillingSchemeChoices {
-  """Per-unit"""
-  PER_UNIT
-  """Tiered"""
-  TIERED
-}
-
-enum DjstripePriceTiersModeChoices {
-  """Graduated"""
-  GRADUATED
-  """Volume-based"""
-  VOLUME
-}
-
-enum DjstripePriceTypeChoices {
-  """One-time"""
-  ONE_TIME
-  """Recurring"""
-  RECURRING
-}
-
-enum DjstripeProductTypeChoices {
-  """Good"""
-  GOOD
-  """Service"""
-  SERVICE
-}
-
-enum DjstripeSetupIntentCancellationReasonChoices {
-  """Abandoned"""
-  ABANDONED
-  """Duplicate"""
-  DUPLICATE
-  """Requested by Customer"""
-  REQUESTED_BY_CUSTOMER
-}
-
-enum DjstripeSetupIntentStatusChoices {
-  """
-  Cancellation invalidates the intent for future confirmation and cannot be undone.
-  """
-  CANCELED
-  """Required actions have been handled."""
-  PROCESSING
-  """Payment Method require additional action, such as 3D secure."""
-  REQUIRES_ACTION
-  """Intent is ready to be confirmed."""
-  REQUIRES_CONFIRMATION
-  """Intent created and requires a Payment Method to be attached."""
-  REQUIRES_PAYMENT_METHOD
-  """
-  Setup was successful and the payment method is optimized for future payments.
-  """
-  SUCCEEDED
-}
-
-enum DjstripeSetupIntentUsageChoices {
-  """Off session"""
-  OFF_SESSION
-  """On session"""
-  ON_SESSION
-}
-
-enum DjstripeSubscriptionScheduleEndBehaviorChoices {
-  """Cancel"""
-  CANCEL
-  """Release"""
-  RELEASE
-}
-
-enum DjstripeSubscriptionScheduleStatusChoices {
-  """Active"""
-  ACTIVE
-  """Canceled"""
-  CANCELED
-  """Completed"""
-  COMPLETED
-  """Not started"""
-  NOT_STARTED
-  """Released"""
-  RELEASED
-}
-
-enum DjstripeSubscriptionStatusChoices {
-  """Active"""
-  ACTIVE
-  """Canceled"""
-  CANCELED
-  """Incomplete"""
-  INCOMPLETE
-  """Incomplete Expired"""
-  INCOMPLETE_EXPIRED
-  """Past due"""
-  PAST_DUE
-  """Trialing"""
-  TRIALING
-  """Unpaid"""
-  UNPAID
-}
-
-type DocumentDemoItemConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [DocumentDemoItemEdge]!
-}
-
-"""A Relay edge containing a `DocumentDemoItem` and its cursor."""
-type DocumentDemoItemEdge {
-  """The item at the end of the edge"""
-  node: DocumentDemoItemType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type DocumentDemoItemType implements Node {
-  """The ID of the object"""
-  id: ID!
-  file: FileFieldType
-  createdBy: CurrentUserType
-  createdAt: DateTime!
-}
-
-type FileFieldType {
-  url: String
-  name: String
-}
-
-"""
-The `GenericScalar` scalar type represents a generic
-GraphQL scalar value that could be:
-String, Boolean, Int, Float, List or Object.
-"""
-scalar GenericScalar
-
-"""
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
-
-input MarkReadAllNotificationsMutationInput {
+type CreatePaymentIntentMutationPayload {
+  paymentIntent: StripePaymentIntentType
   clientMutationId: String
 }
 
-type MarkReadAllNotificationsMutationPayload {
-  ok: Boolean
+type UpdatePaymentIntentMutationPayload {
+  paymentIntent: StripePaymentIntentType
   clientMutationId: String
 }
 
-"""An object with an ID"""
-interface Node {
-  """The ID of the object"""
+type CreateSetupIntentMutationPayload {
+  setupIntent: StripeSetupIntentType
+  clientMutationId: String
+}
+
+type StripeSetupIntentType implements Node {
+  djstripeCreated: DateTime!
+  djstripeUpdated: DateTime!
+  djstripeId: ID!
+  "The ID of the object"
   id: ID!
+  "Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation."
+  livemode: Boolean
+  "The datetime this object was created in stripe."
+  created: DateTime
+  "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
+  metadata: String
+  "A description of this object."
+  description: String
+  "ID of the Connect application that created the SetupIntent."
+  application: String!
+  "Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate"
+  cancellationReason: DjstripeSetupIntentCancellationReasonChoices
+  "The client secret of this SetupIntent. Used for client-side retrieval using a publishable key."
+  clientSecret: String!
+  "The error encountered in the previous SetupIntent confirmation."
+  lastSetupError: String
+  "If present, this property tells you what actions you need to take inorder for your customer to continue payment setup."
+  nextAction: String
+  "Payment method used in this PaymentIntent."
+  paymentMethod: StripePaymentMethodType
+  "The list of payment method types (e.g. card) that this PaymentIntent is allowed to use."
+  paymentMethodTypes: String!
+  "Status of this SetupIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, canceled, or succeeded."
+  status: DjstripeSetupIntentStatusChoices!
+  "Indicates how the payment method is intended to be used in the future."
+  usage: DjstripeSetupIntentUsageChoices!
+  pk: String
 }
 
-type NotificationConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [NotificationEdge]!
+type ChangePasswordMutationPayload {
+  refresh: String
+  access: String
+  clientMutationId: String
 }
 
-"""A Relay edge containing a `Notification` and its cursor."""
-type NotificationEdge {
-  """The item at the end of the edge"""
-  node: NotificationType
-  """A cursor for use in pagination"""
-  cursor: String!
+type UpdateCurrentUserMutationPayload {
+  userProfile: UserProfileType
+  userProfileEdge: CurrentUserEdge
+  clientMutationId: String
 }
 
-type NotificationType implements Node {
-  """The ID of the object"""
+type UserProfileType implements Node {
+  "The ID of the object"
   id: ID!
   user: CurrentUserType!
-  type: String!
-  createdAt: DateTime!
-  readAt: DateTime
-  data: GenericScalar
+  firstName: String!
+  lastName: String!
 }
 
-input ObtainTokenMutationInput {
-  email: String!
-  password: String!
-  clientMutationId: String
+"A Relay edge containing a `CurrentUser` and its cursor."
+type CurrentUserEdge {
+  "The item at the end of the edge"
+  node: UserProfileType
+  "A cursor for use in pagination"
+  cursor: String!
 }
 
 type ObtainTokenMutationPayload {
   access: String
   refresh: String
-  clientMutationId: String
-}
-
-"""
-The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
-"""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
-}
-
-input PasswordResetConfirmationMutationInput {
-  user: String!
-  """New password"""
-  newPassword: String!
-  """Token"""
-  token: String!
-  clientMutationId: String
-}
-
-type PasswordResetConfirmationMutationPayload {
-  ok: Boolean
-  clientMutationId: String
-}
-
-input PasswordResetMutationInput {
-  """User e-mail"""
-  email: String!
-  clientMutationId: String
-}
-
-type PasswordResetMutationPayload {
-  ok: Boolean
-  clientMutationId: String
-}
-
-type PaymentMethodConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [PaymentMethodEdge]!
-}
-
-"""A Relay edge containing a `PaymentMethod` and its cursor."""
-type PaymentMethodEdge {
-  """The item at the end of the edge"""
-  node: StripePaymentMethodType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-input SingUpMutationInput {
-  id: String
-  email: String!
-  password: String!
   clientMutationId: String
 }
 
@@ -1372,926 +1337,18 @@ type SingUpMutationPayload {
   clientMutationId: String
 }
 
-type StripeChargeType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """Amount charged (as decimal)."""
-  amount: Decimal!
-  """
-  Amount (as decimal) captured (can be less than the amount attribute on the charge if a partial capture was issued).
-  """
-  amountCaptured: Decimal
-  """
-  Amount (as decimal) refunded (can be less than the amount attribute on the charge if a partial refund was issued).
-  """
-  amountRefunded: Decimal!
-  """ID of the Connect application that created the charge."""
-  application: String!
-  """
-  The amount (as decimal) of the application fee (if any) requested for the charge.
-  """
-  applicationFeeAmount: Decimal
-  billingDetails: GenericScalar
-  """
-  The full statement descriptor that is passed to card networks, and that is
-  displayed on your customers' credit card and bank statements. Allows you to
-  see what the statement descriptor looks like after the static and dynamic
-  portions are combined.
-  """
-  calculatedStatementDescriptor: String!
-  """
-  If the charge was created without capturing, this boolean represents whether
-  or not it is still uncaptured or has since been captured.
-  """
-  captured: Boolean!
-  """The currency in which the charge was made."""
-  currency: String!
-  """Whether the charge has been disputed."""
-  disputed: Boolean!
-  """Error code explaining reason for charge failure if available."""
-  failureCode: DjstripeChargeFailureCodeChoices
-  """
-  Message to user further explaining reason for charge failure if available.
-  """
-  failureMessage: String!
-  """Hash with information on fraud assessments for the charge."""
-  fraudDetails: String
-  """The invoice this charge is for if one exists."""
-  invoice: StripeInvoiceType
-  """Details about whether or not the payment was accepted, and why."""
-  outcome: String
-  """
-  True if the charge succeeded, or was successfully authorized for later capture, False otherwise.
-  """
-  paid: Boolean!
-  """PaymentIntent associated with this charge, if one exists."""
-  paymentIntent: StripePaymentIntentType
-  """PaymentMethod used in this charge."""
-  paymentMethod: StripePaymentMethodType
-  """Details about the payment method at the time of the transaction."""
-  paymentMethodDetails: String
-  """The email address that the receipt for this charge was sent to."""
-  receiptEmail: String!
-  """
-  The transaction number that appears on email receipts sent for this charge.
-  """
-  receiptNumber: String!
-  """
-  This is the URL to view the receipt for this charge. The receipt is kept
-  up-to-date to the latest state of the charge, including any refunds. If the
-  charge is for an Invoice, the receipt will be stylized as an Invoice receipt.
-  """
-  receiptUrl: String!
-  """
-  Whether or not the charge has been fully refunded. If the charge is only
-  partially refunded, this attribute will still be false.
-  """
-  refunded: Boolean!
-  """Shipping information for the charge"""
-  shipping: String
-  """
-  For card charges, use statement_descriptor_suffix instead. Otherwise, you can
-  use this value as the complete description of a charge on your customers'
-  statements. Must contain at least one letter, maximum 22 characters.
-  """
-  statementDescriptor: String
-  """
-  Provides information about the charge that customers see on their statements.
-  Concatenated with the prefix (shortened descriptor) or statement descriptor
-  that's set on the account to form the complete statement descriptor. Maximum
-  22 characters for the concatenated descriptor.
-  """
-  statementDescriptorSuffix: String
-  """The status of the payment."""
-  status: DjstripeChargeStatusChoices!
-  """
-  An optional dictionary including the account to automatically transfer to as part of a destination charge.
-  """
-  transferData: String
-  """A string that identifies this transaction as part of a group."""
-  transferGroup: String
-  latestInvoice: StripeInvoiceType
-  pk: String
-}
-
-type StripeChargeTypeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [StripeChargeTypeEdge]!
-}
-
-"""A Relay edge containing a `StripeChargeType` and its cursor."""
-type StripeChargeTypeEdge {
-  """The item at the end of the edge"""
-  node: StripeChargeType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type StripeInvoiceType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """
-  The country of the business associated with this invoice, most often the business creating the invoice.
-  """
-  accountCountry: String!
-  """
-  The public name of the business associated with this invoice, most often the business creating the invoice.
-  """
-  accountName: String!
-  """
-  Final amount due (as decimal) at this time for this invoice. If the invoice's
-  total is smaller than the minimum charge amount, for example, or if there is
-  account credit that can be applied to the invoice, the amount_due may be 0. If
-  there is a positive starting_balance for the invoice (the customer owes
-  money), the amount_due will also take that into account. The charge that gets
-  generated for the invoice will be for the amount specified in amount_due.
-  """
-  amountDue: Decimal!
-  """The amount, (as decimal), that was paid."""
-  amountPaid: Decimal
-  """The amount remaining, (as decimal), that is due."""
-  amountRemaining: Decimal
-  """
-  The fee (as decimal) that will be applied to the invoice and transferred to
-  the application owner's Stripe account when the invoice is paid.
-  """
-  applicationFeeAmount: Decimal
-  """
-  Number of payment attempts made for this invoice, from the perspective of the
-  payment retry schedule. Any payment attempt counts as the first attempt, and
-  subsequently only automatic retries increment the attempt count. In other
-  words, manual payment attempts after the first attempt do not affect the retry schedule.
-  """
-  attemptCount: Int!
-  """
-  Whether or not an attempt has been made to pay the invoice. An invoice is not
-  attempted until 1 hour after the ``invoice.created`` webhook, for example, so
-  you might not want to display that invoice as unpaid to your users.
-  """
-  attempted: Boolean!
-  """
-  Controls whether Stripe will perform automatic collection of the invoice. When
-  false, the invoice's state will not automatically advance without an explicit action.
-  """
-  autoAdvance: Boolean
-  """
-  Indicates the reason why the invoice was created. subscription_cycle indicates
-  an invoice created by a subscription advancing into a new period.
-  subscription_create indicates an invoice created due to creating a
-  subscription. subscription_update indicates an invoice created due to updating
-  a subscription. subscription is set for all old invoices to indicate either a
-  change to a subscription or a period advancement. manual is set for all
-  invoices unrelated to a subscription (for example: created via the invoice
-  editor). The upcoming value is reserved for simulated invoices per the
-  upcoming invoice endpoint. subscription_threshold indicates an invoice created
-  due to a billing threshold being reached.
-  """
-  billingReason: DjstripeInvoiceBillingReasonChoices
-  """The latest charge generated for this invoice, if any."""
-  charge: StripeChargeType
-  """
-  When charging automatically, Stripe will attempt to pay this invoice using the
-  default source attached to the customer. When sending an invoice, Stripe will
-  email this invoice to the customer with payment instructions.
-  """
-  collectionMethod: DjstripeInvoiceCollectionMethodChoices
-  """Three-letter ISO currency code"""
-  currency: String!
-  """
-  The customer's address. Until the invoice is finalized, this field will equal
-  customer.address. Once the invoice is finalized, this field will no longer be updated.
-  """
-  customerAddress: String
-  """
-  The customer's email. Until the invoice is finalized, this field will equal
-  customer.email. Once the invoice is finalized, this field will no longer be updated.
-  """
-  customerEmail: String!
-  """
-  The customer's name. Until the invoice is finalized, this field will equal
-  customer.name. Once the invoice is finalized, this field will no longer be updated.
-  """
-  customerName: String!
-  """
-  The customer's phone number. Until the invoice is finalized, this field will
-  equal customer.phone. Once the invoice is finalized, this field will no longer be updated.
-  """
-  customerPhone: String!
-  """
-  The customer's shipping information. Until the invoice is finalized, this
-  field will equal customer.shipping. Once the invoice is finalized, this field
-  will no longer be updated.
-  """
-  customerShipping: String
-  """
-  The customer's tax exempt status. Until the invoice is finalized, this field
-  will equal customer.tax_exempt. Once the invoice is finalized, this field will
-  no longer be updated.
-  """
-  customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices!
-  """
-  Default payment method for the invoice. It must belong to the customer
-  associated with the invoice. If not set, defaults to the subscription's
-  default payment method, if any, or to the default payment method in the
-  customer's invoice settings.
-  """
-  defaultPaymentMethod: StripePaymentMethodType
-  """
-  Describes the current discount applied to this subscription, if there is one.
-  When billing, a discount applied to a subscription overrides a discount
-  applied on a customer-wide basis.
-  """
-  discount: String
-  """
-  The date on which payment for this invoice is due. This value will be null for
-  invoices where billing=charge_automatically.
-  """
-  dueDate: DateTime
-  """
-  Ending customer balance (in cents) after attempting to pay invoice. If the
-  invoice has not been attempted yet, this will be null.
-  """
-  endingBalance: BigInt
-  """Footer displayed on the invoice."""
-  footer: String!
-  """
-  The URL for the hosted invoice page, which allows customers to view and pay an
-  invoice. If the invoice has not been frozen yet, this will be null.
-  """
-  hostedInvoiceUrl: String!
-  """
-  The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null.
-  """
-  invoicePdf: String!
-  """The time at which payment will next be attempted."""
-  nextPaymentAttempt: DateTime
-  """
-  A unique, identifying string that appears on emails sent to the customer for
-  this invoice. This starts with the customer's unique invoice_prefix if it is specified.
-  """
-  number: String!
-  """
-  Whether payment was successfully collected for this invoice. An invoice can be
-  paid (most commonly) with a charge or with credit from the customer's account balance.
-  """
-  paid: Boolean!
-  """
-  The PaymentIntent associated with this invoice. The PaymentIntent is generated
-  when the invoice is finalized, and can then be used to pay the invoice.Note
-  that voiding an invoice will cancel the PaymentIntent
-  """
-  paymentIntent: StripePaymentIntentType
-  """
-  End of the usage period during which invoice items were added to this invoice.
-  """
-  periodEnd: DateTime!
-  """
-  Start of the usage period during which invoice items were added to this invoice.
-  """
-  periodStart: DateTime!
-  """
-  Total amount (in cents) of all post-payment credit notes issued for this invoice.
-  """
-  postPaymentCreditNotesAmount: BigInt
-  """
-  Total amount (in cents) of all pre-payment credit notes issued for this invoice.
-  """
-  prePaymentCreditNotesAmount: BigInt
-  """
-  This is the transaction number that appears on email receipts sent for this invoice.
-  """
-  receiptNumber: String
-  """
-  Starting customer balance (in cents) before attempting to pay invoice. If the
-  invoice has not been attempted yet, this will be the current customer balance.
-  """
-  startingBalance: BigInt!
-  """
-  An arbitrary string to be displayed on your customer's credit card statement.
-  The statement description may not include <>"' characters, and will appear on
-  your customer's statement in capital letters. Non-ASCII characters are
-  automatically stripped. While most banks display this information
-  consistently, some may display it incorrectly or not at all.
-  """
-  statementDescriptor: String!
-  """
-  The status of the invoice, one of draft, open, paid, uncollectible, or void.
-  """
-  status: DjstripeInvoiceStatusChoices
-  statusTransitions: String
-  """The subscription that this invoice was prepared for, if any."""
-  subscription: StripeSubscriptionType
-  """
-  Only set for upcoming invoices that preview prorations. The time used to calculate prorations.
-  """
-  subscriptionProrationDate: DateTime
-  """
-  Total (as decimal) of all subscriptions, invoice items, and prorations on the
-  invoice before any discount or tax is applied.
-  """
-  subtotal: Decimal!
-  """
-  The amount (as decimal) of tax included in the total, calculated from
-  ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null.
-  """
-  tax: Decimal
-  """
-  This percentage of the subtotal has been added to the total amount of the
-  invoice, including invoice line items and discounts. This field is inherited
-  from the subscription's ``tax_percent`` field, but can be changed before the
-  invoice is paid. This field defaults to null.
-  """
-  taxPercent: Decimal
-  """
-  If billing_reason is set to subscription_threshold this returns more
-  information on which threshold rules triggered the invoice.
-  """
-  thresholdReason: String
-  total: Decimal!
-  """
-  The time at which webhooks for this invoice were successfully delivered (if
-  the invoice had no webhooks to deliver, this will match `date`). Invoice
-  payment is delayed until webhooks are delivered, or until all webhook delivery
-  attempts have been exhausted.
-  """
-  webhooksDeliveredAt: DateTime
-  """The invoice this charge is for if one exists."""
-  charges(offset: Int, before: String, after: String, first: Int, last: Int): StripeChargeTypeConnection!
-  pk: String
-}
-
-type StripePaymentIntentType implements Node {
-  """The ID of the object"""
-  id: ID!
-  """Amount (in cents) intended to be collected by this PaymentIntent."""
-  amount: BigInt!
-  """
-  The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key.
-  """
-  clientSecret: String!
-  """Three-letter ISO currency code"""
-  currency: String!
-  pk: String
-}
-
-type StripePaymentMethodType implements Node {
-  """The ID of the object"""
-  id: ID!
-  billingDetails: GenericScalar
-  """The type of the PaymentMethod."""
-  type: DjstripePaymentMethodTypeChoices!
-  card: GenericScalar
-  pk: String
-}
-
-type StripePriceConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [StripePriceEdge]!
-}
-
-"""A Relay edge containing a `StripePrice` and its cursor."""
-type StripePriceEdge {
-  """The item at the end of the edge"""
-  node: StripePriceType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type StripePriceType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """Whether the price can be used for new purchases."""
-  active: Boolean!
-  """Three-letter ISO currency code"""
-  currency: String!
-  """A brief description of the plan, hidden from customers."""
-  nickname: String!
-  """The product this price is associated with."""
-  product: StripeProductType!
-  """
-  The recurring components of a price such as `interval` and `usage_type`.
-  """
-  recurring: String
-  """
-  Whether the price is for a one-time purchase or a recurring (subscription) purchase.
-  """
-  type: DjstripePriceTypeChoices!
-  """
-  The unit amount in cents to be charged, represented as a whole integer if
-  possible. Null if a sub-cent precision is required.
-  """
-  unitAmount: BigInt
-  """
-  The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places.
-  """
-  unitAmountDecimal: Decimal
-  """
-  Describes how to compute the price per period. Either `per_unit` or `tiered`.
-  `per_unit` indicates that the fixed amount (specified in `unit_amount` or
-  `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with
-  `usage_type=licensed`), or per unit of total usage (for prices with
-  `usage_type=metered`). `tiered` indicates that the unit pricing will be
-  computed using a tiering strategy as defined using the `tiers` and
-  `tiers_mode` attributes.
-  """
-  billingScheme: DjstripePriceBillingSchemeChoices
-  """A lookup key used to retrieve prices dynamically from a static string."""
-  lookupKey: String
-  """
-  Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`.
-  """
-  tiers: String
-  """
-  Defines if the tiering price should be `graduated` or `volume` based. In
-  `volume`-based tiering, the maximum quantity within a period determines the
-  per unit price, in `graduated` tiering pricing can successively change as the
-  quantity grows.
-  """
-  tiersMode: DjstripePriceTiersModeChoices
-  """
-  Apply a transformation to the reported usage or set quantity before computing
-  the amount billed. Cannot be combined with `tiers`.
-  """
-  transformQuantity: String
-  pk: String
-}
-
-type StripePriceTypeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [StripePriceTypeEdge]!
-}
-
-"""A Relay edge containing a `StripePriceType` and its cursor."""
-type StripePriceTypeEdge {
-  """The item at the end of the edge"""
-  node: StripePriceType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type StripeProductType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """
-  The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types.
-  """
-  name: String!
-  """
-  The type of the product. The product is either of type `good`, which is
-  eligible for use with Orders and SKUs, or `service`, which is eligible for use
-  with Subscriptions and Plans.
-  """
-  type: DjstripeProductTypeChoices!
-  """
-  Whether the product is currently available for purchase. Only applicable to products of `type=good`.
-  """
-  active: Boolean
-  """
-  A list of up to 5 attributes that each SKU can provide values for (e.g.,
-  `["color", "size"]`). Only applicable to products of `type=good`.
-  """
-  attributes: String
-  """
-  A short one-line description of the product, meant to be displayableto the
-  customer. Only applicable to products of `type=good`.
-  """
-  caption: String!
-  """
-  An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`.
-  """
-  deactivateOn: String
-  """
-  A list of up to 8 URLs of images for this product, meant to be displayable to
-  the customer. Only applicable to products of `type=good`.
-  """
-  images: String
-  """
-  The dimensions of this product for shipping purposes. A SKU associated with
-  this product can override this value by having its own `package_dimensions`.
-  Only applicable to products of `type=good`.
-  """
-  packageDimensions: String
-  """
-  Whether this product is a shipped good. Only applicable to products of `type=good`.
-  """
-  shippable: Boolean
-  """
-  A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`.
-  """
-  url: String
-  """
-  Extra information about a product which will appear on your customer's credit
-  card statement. In the case that multiple products are billed at once, the
-  first statement descriptor will be used. Only available on products of
-  type=`service`.
-  """
-  statementDescriptor: String!
-  unitLabel: String!
-  """The product this price is associated with."""
-  prices(offset: Int, before: String, after: String, first: Int, last: Int): StripePriceTypeConnection!
-  """The product whose pricing this plan determines."""
-  planSet(offset: Int, before: String, after: String, first: Int, last: Int): SubscriptionPlanTypeConnection!
-  pk: String
-}
-
-type StripeSetupIntentType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """ID of the Connect application that created the SetupIntent."""
-  application: String!
-  """
-  Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate
-  """
-  cancellationReason: DjstripeSetupIntentCancellationReasonChoices
-  """
-  The client secret of this SetupIntent. Used for client-side retrieval using a publishable key.
-  """
-  clientSecret: String!
-  """The error encountered in the previous SetupIntent confirmation."""
-  lastSetupError: String
-  """
-  If present, this property tells you what actions you need to take inorder for your customer to continue payment setup.
-  """
-  nextAction: String
-  """Payment method used in this PaymentIntent."""
-  paymentMethod: StripePaymentMethodType
-  """
-  The list of payment method types (e.g. card) that this PaymentIntent is allowed to use.
-  """
-  paymentMethodTypes: String!
-  """
-  Status of this SetupIntent, one of requires_payment_method,
-  requires_confirmation, requires_action, processing, canceled, or succeeded.
-  """
-  status: DjstripeSetupIntentStatusChoices!
-  """Indicates how the payment method is intended to be used in the future."""
-  usage: DjstripeSetupIntentUsageChoices!
-  pk: String
-}
-
-type StripeSubscriptionType implements Node {
-  """The ID of the object"""
-  id: ID!
-  """
-  End of the current period for which the subscription has been invoiced. At the
-  end of this period, a new invoice will be created.
-  """
-  currentPeriodEnd: DateTime!
-  """
-  Start of the current period for which the subscription has been invoiced.
-  """
-  currentPeriodStart: DateTime!
-  """
-  Date when the subscription was first created. The date might differ from the created date due to backdating.
-  """
-  startDate: DateTime
-  """The status of this subscription."""
-  status: DjstripeSubscriptionStatusChoices!
-  """If the subscription has a trial, the end of that trial."""
-  trialEnd: DateTime
-  """If the subscription has a trial, the beginning of that trial."""
-  trialStart: DateTime
-  pk: String
-  plan: SubscriptionPlanType
-}
-
-type StripeSubscriptionTypeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [StripeSubscriptionTypeEdge]!
-}
-
-"""A Relay edge containing a `StripeSubscriptionType` and its cursor."""
-type StripeSubscriptionTypeEdge {
-  """The item at the end of the edge"""
-  node: StripeSubscriptionType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type SubscriptionPlanType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """Whether the plan can be used for new purchases."""
-  active: Boolean!
-  """
-  Specifies a usage aggregation strategy for plans of usage_type=metered.
-  Allowed values are `sum` for summing up all usage during a period,
-  `last_during_period` for picking the last usage record reported within a
-  period, `last_ever` for picking the last usage record ever (across period
-  bounds) or max which picks the usage record with the maximum reported usage
-  during a period. Defaults to `sum`.
-  """
-  aggregateUsage: DjstripePlanAggregateUsageChoices
-  """Amount (as decimal) to be charged on the interval specified."""
-  amount: Decimal
-  """
-  The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places.
-  """
-  amountDecimal: Decimal
-  """
-  Describes how to compute the price per period. Either `per_unit` or `tiered`.
-  `per_unit` indicates that the fixed amount (specified in amount) will be
-  charged per unit in quantity (for plans with `usage_type=licensed`), or per
-  unit of total usage (for plans with `usage_type=metered`). `tiered` indicates
-  that the unit pricing will be computed using a tiering strategy as defined
-  using the tiers and tiers_mode attributes.
-  """
-  billingScheme: DjstripePlanBillingSchemeChoices
-  """Three-letter ISO currency code"""
-  currency: String!
-  """The frequency with which a subscription should be billed."""
-  interval: DjstripePlanIntervalChoices!
-  """
-  The number of intervals (specified in the interval property) between each subscription billing.
-  """
-  intervalCount: Int
-  """A brief description of the plan, hidden from customers."""
-  nickname: String!
-  """The product whose pricing this plan determines."""
-  product: StripeProductType
-  """
-  Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`.
-  """
-  tiers: String
-  """
-  Defines if the tiering price should be `graduated` or `volume` based. In
-  `volume`-based tiering, the maximum quantity within a period determines the
-  per unit price, in `graduated` tiering pricing can successively change as the
-  quantity grows.
-  """
-  tiersMode: DjstripePlanTiersModeChoices
-  """
-  Apply a transformation to the reported usage or set quantity before computing
-  the billed price. Cannot be combined with `tiers`.
-  """
-  transformUsage: String
-  """
-  Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period.
-  """
-  trialPeriodDays: Int
-  """
-  Configures how the quantity per period should be determined, can be either
-  `metered` or `licensed`. `licensed` will automatically bill the `quantity` set
-  for a plan when adding it to a subscription, `metered` will aggregate the
-  total usage based on usage records. Defaults to `licensed`.
-  """
-  usageType: DjstripePlanUsageTypeChoices!
-  """
-  The plan associated with this subscription. This value will be `null` for multi-plan subscriptions
-  """
-  subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
-  pk: String
-}
-
-type SubscriptionPlanTypeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-  """Contains the nodes in this connection."""
-  edges: [SubscriptionPlanTypeEdge]!
-}
-
-"""A Relay edge containing a `SubscriptionPlanType` and its cursor."""
-type SubscriptionPlanTypeEdge {
-  """The item at the end of the edge"""
-  node: SubscriptionPlanType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-"""A Relay edge containing a `SubscriptionSchedule` and its cursor."""
-type SubscriptionScheduleEdge {
-  """The item at the end of the edge"""
-  node: SubscriptionScheduleType
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type SubscriptionSchedulePhaseItemType {
-  price: StripePriceType
-  quantity: Int
-}
-
-type SubscriptionSchedulePhaseType {
-  startDate: DateTime
-  endDate: String
-  trialEnd: String
-  item: SubscriptionSchedulePhaseItemType
-}
-
-type SubscriptionScheduleType implements Node {
-  djstripeCreated: DateTime!
-  djstripeUpdated: DateTime!
-  djstripeId: ID!
-  """The ID of the object"""
-  id: ID!
-  """
-  Null here indicates that the livemode status is unknown or was previously
-  unrecorded. Otherwise, this field indicates whether this record comes from
-  Stripe test mode or live mode operation.
-  """
-  livemode: Boolean
-  """The datetime this object was created in stripe."""
-  created: DateTime
-  """
-  A set of key/value pairs that you can attach to an object. It can be useful
-  for storing additional information about an object in a structured format.
-  """
-  metadata: String
-  """A description of this object."""
-  description: String
-  """
-  Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-  """
-  billingThresholds: String
-  """Time at which the subscription schedule was canceled."""
-  canceledAt: DateTime
-  """Time at which the subscription schedule was completed."""
-  completedAt: DateTime
-  """
-  Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
-  """
-  currentPhase: String
-  """Object representing the subscription schedule's default settings."""
-  defaultSettings: String
-  """
-  Behavior of the subscription schedule and underlying subscription when it ends.
-  """
-  endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices!
-  phases: [SubscriptionSchedulePhaseType]
-  """Time at which the subscription schedule was released."""
-  releasedAt: DateTime
-  """
-  The subscription once managed by this subscription schedule (if it is released).
-  """
-  releasedSubscription: StripeSubscriptionType
-  """
-  The present status of the subscription schedule. Possible values are
-  `not_started`, `active`, `completed`, `released`, and `canceled`.
-  """
-  status: DjstripeSubscriptionScheduleStatusChoices!
-  """The schedule associated with this subscription."""
-  subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
-  subscription: StripeSubscriptionType
-  defaultPaymentMethod: StripePaymentMethodType
-  canActivateTrial: Boolean
-}
-
-input UpdateCrudDemoItemMutationInput {
-  name: String!
-  createdBy: String
-  id: ID!
+type ConfirmEmailMutationPayload {
+  ok: Boolean
   clientMutationId: String
 }
 
-type UpdateCrudDemoItemMutationPayload {
-  crudDemoItem: CrudDemoItemType
-  crudDemoItemEdge: CrudDemoItemEdge
+type PasswordResetMutationPayload {
+  ok: Boolean
   clientMutationId: String
 }
 
-input UpdateCurrentUserMutationInput {
-  firstName: String
-  lastName: String
-  avatar: Upload
-  clientMutationId: String
-}
-
-type UpdateCurrentUserMutationPayload {
-  userProfile: UserProfileType
-  userProfileEdge: CurrentUserEdge
-  clientMutationId: String
-}
-
-input UpdateDefaultPaymentMethodMutationInput {
-  id: String
-  clientMutationId: String
-}
-
-type UpdateDefaultPaymentMethodMutationPayload {
-  activeSubscription: SubscriptionScheduleType
-  paymentMethodEdge: PaymentMethodEdge
-  clientMutationId: String
-}
-
-input UpdateNotificationMutationInput {
-  isRead: Boolean
-  id: ID!
+type PasswordResetConfirmationMutationPayload {
+  ok: Boolean
   clientMutationId: String
 }
 
@@ -2302,27 +1359,605 @@ type UpdateNotificationMutationPayload {
   clientMutationId: String
 }
 
+type MarkReadAllNotificationsMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
+
+type CreateCrudDemoItemMutationPayload {
+  crudDemoItem: CrudDemoItemType
+  crudDemoItemEdge: CrudDemoItemEdge
+  clientMutationId: String
+}
+
+type UpdateCrudDemoItemMutationPayload {
+  crudDemoItem: CrudDemoItemType
+  crudDemoItemEdge: CrudDemoItemEdge
+  clientMutationId: String
+}
+
+type DeleteCrudDemoItemMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
+type CreateDocumentDemoItemMutationPayload {
+  documentDemoItem: DocumentDemoItemType
+  documentDemoItemEdge: DocumentDemoItemEdge
+  clientMutationId: String
+}
+
+type DeleteDocumentDemoItemMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
+type CreateFavoriteContentfulDemoItemMutationPayload {
+  contentfulDemoItemFavorite: ContentfulDemoItemFavoriteType
+  contentfulDemoItemFavoriteEdge: ContentfulDemoItemFavoriteEdge
+  clientMutationId: String
+}
+
+type DeleteFavoriteContentfulDemoItemMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+
+type ApiSubscription {
+  notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+}
+
+"An object with an ID"
+interface Node {
+  "The ID of the object"
+  id: ID!
+}
+
+enum DjstripeProductTypeChoices {
+  "Good"
+  GOOD
+  "Service"
+  SERVICE
+}
+
+enum DjstripePlanAggregateUsageChoices {
+  "Last during period"
+  LAST_DURING_PERIOD
+  "Last ever"
+  LAST_EVER
+  "Max"
+  MAX
+  "Sum"
+  SUM
+}
+
+enum DjstripePlanBillingSchemeChoices {
+  "Per-unit"
+  PER_UNIT
+  "Tiered"
+  TIERED
+}
+
+enum DjstripePlanIntervalChoices {
+  "Day"
+  DAY
+  "Month"
+  MONTH
+  "Week"
+  WEEK
+  "Year"
+  YEAR
+}
+
+enum DjstripePlanTiersModeChoices {
+  "Graduated"
+  GRADUATED
+  "Volume-based"
+  VOLUME
+}
+
+enum DjstripePlanUsageTypeChoices {
+  "Licensed"
+  LICENSED
+  "Metered"
+  METERED
+}
+
+enum DjstripeSubscriptionStatusChoices {
+  "Active"
+  ACTIVE
+  "Canceled"
+  CANCELED
+  "Incomplete"
+  INCOMPLETE
+  "Incomplete Expired"
+  INCOMPLETE_EXPIRED
+  "Past due"
+  PAST_DUE
+  "Trialing"
+  TRIALING
+  "Unpaid"
+  UNPAID
+}
+
+enum DjstripePriceTypeChoices {
+  "One-time"
+  ONE_TIME
+  "Recurring"
+  RECURRING
+}
+
+enum DjstripePriceBillingSchemeChoices {
+  "Per-unit"
+  PER_UNIT
+  "Tiered"
+  TIERED
+}
+
+enum DjstripePriceTiersModeChoices {
+  "Graduated"
+  GRADUATED
+  "Volume-based"
+  VOLUME
+}
+
+enum DjstripeSubscriptionScheduleEndBehaviorChoices {
+  "Cancel"
+  CANCEL
+  "Release"
+  RELEASE
+}
+
+enum DjstripeSubscriptionScheduleStatusChoices {
+  "Active"
+  ACTIVE
+  "Canceled"
+  CANCELED
+  "Completed"
+  COMPLETED
+  "Not started"
+  NOT_STARTED
+  "Released"
+  RELEASED
+}
+
+enum DjstripePaymentMethodTypeChoices {
+  "Acss Dbit"
+  ACSS_DEBIT
+  "Afterpay Clearpay"
+  AFTERPAY_CLEARPAY
+  "Alipay"
+  ALIPAY
+  "BECS Debit (Australia)"
+  AU_BECS_DEBIT
+  "Bacs Direct Debit"
+  BACS_DEBIT
+  "Bancontact"
+  BANCONTACT
+  "Boleto"
+  BOLETO
+  "Card"
+  CARD
+  "Card present"
+  CARD_PRESENT
+  "EPS"
+  EPS
+  "FPX"
+  FPX
+  "Giropay"
+  GIROPAY
+  "Grabpay"
+  GRABPAY
+  "iDEAL"
+  IDEAL
+  "Interac (card present)"
+  INTERAC_PRESENT
+  "Klarna"
+  KLARNA
+  "OXXO"
+  OXXO
+  "Przelewy24"
+  P24
+  "SEPA Direct Debit"
+  SEPA_DEBIT
+  "SOFORT"
+  SOFORT
+  "Wechat Pay"
+  WECHAT_PAY
+}
+
+enum DjstripeChargeFailureCodeChoices {
+  "Account already exists"
+  ACCOUNT_ALREADY_EXISTS
+  "Account country invalid address"
+  ACCOUNT_COUNTRY_INVALID_ADDRESS
+  "Account invalid"
+  ACCOUNT_INVALID
+  "Account number invalid"
+  ACCOUNT_NUMBER_INVALID
+  "Alipay upgrade required"
+  ALIPAY_UPGRADE_REQUIRED
+  "Amount too large"
+  AMOUNT_TOO_LARGE
+  "Amount too small"
+  AMOUNT_TOO_SMALL
+  "Api key expired"
+  API_KEY_EXPIRED
+  "Balance insufficient"
+  BALANCE_INSUFFICIENT
+  "Bank account exists"
+  BANK_ACCOUNT_EXISTS
+  "Bank account unusable"
+  BANK_ACCOUNT_UNUSABLE
+  "Bank account unverified"
+  BANK_ACCOUNT_UNVERIFIED
+  "Bitcoin upgrade required"
+  BITCOIN_UPGRADE_REQUIRED
+  "Card was declined"
+  CARD_DECLINED
+  "Charge already captured"
+  CHARGE_ALREADY_CAPTURED
+  "Charge already refunded"
+  CHARGE_ALREADY_REFUNDED
+  "Charge disputed"
+  CHARGE_DISPUTED
+  "Charge exceeds source limit"
+  CHARGE_EXCEEDS_SOURCE_LIMIT
+  "Charge expired for capture"
+  CHARGE_EXPIRED_FOR_CAPTURE
+  "Country unsupported"
+  COUNTRY_UNSUPPORTED
+  "Coupon expired"
+  COUPON_EXPIRED
+  "Customer max subscriptions"
+  CUSTOMER_MAX_SUBSCRIPTIONS
+  "Email invalid"
+  EMAIL_INVALID
+  "Expired card"
+  EXPIRED_CARD
+  "Idempotency key in use"
+  IDEMPOTENCY_KEY_IN_USE
+  "Incorrect address"
+  INCORRECT_ADDRESS
+  "Incorrect security code"
+  INCORRECT_CVC
+  "Incorrect number"
+  INCORRECT_NUMBER
+  "ZIP code failed validation"
+  INCORRECT_ZIP
+  "Instant payouts unsupported"
+  INSTANT_PAYOUTS_UNSUPPORTED
+  "Invalid card type"
+  INVALID_CARD_TYPE
+  "Invalid charge amount"
+  INVALID_CHARGE_AMOUNT
+  "Invalid security code"
+  INVALID_CVC
+  "Invalid expiration month"
+  INVALID_EXPIRY_MONTH
+  "Invalid expiration year"
+  INVALID_EXPIRY_YEAR
+  "Invalid number"
+  INVALID_NUMBER
+  "Invalid source usage"
+  INVALID_SOURCE_USAGE
+  "Invalid swipe data"
+  INVALID_SWIPE_DATA
+  "Invoice no customer line items"
+  INVOICE_NO_CUSTOMER_LINE_ITEMS
+  "Invoice no subscription line items"
+  INVOICE_NO_SUBSCRIPTION_LINE_ITEMS
+  "Invoice not editable"
+  INVOICE_NOT_EDITABLE
+  "Invoice upcoming none"
+  INVOICE_UPCOMING_NONE
+  "Livemode mismatch"
+  LIVEMODE_MISMATCH
+  "No card being charged"
+  MISSING
+  "Not allowed on standard account"
+  NOT_ALLOWED_ON_STANDARD_ACCOUNT
+  "Order creation failed"
+  ORDER_CREATION_FAILED
+  "Order required settings"
+  ORDER_REQUIRED_SETTINGS
+  "Order status invalid"
+  ORDER_STATUS_INVALID
+  "Order upstream timeout"
+  ORDER_UPSTREAM_TIMEOUT
+  "Out of inventory"
+  OUT_OF_INVENTORY
+  "Parameter invalid empty"
+  PARAMETER_INVALID_EMPTY
+  "Parameter invalid integer"
+  PARAMETER_INVALID_INTEGER
+  "Parameter invalid string blank"
+  PARAMETER_INVALID_STRING_BLANK
+  "Parameter invalid string empty"
+  PARAMETER_INVALID_STRING_EMPTY
+  "Parameter missing"
+  PARAMETER_MISSING
+  "Parameter unknown"
+  PARAMETER_UNKNOWN
+  "Parameters exclusive"
+  PARAMETERS_EXCLUSIVE
+  "Payment intent authentication failure"
+  PAYMENT_INTENT_AUTHENTICATION_FAILURE
+  "Payment intent incompatible payment method"
+  PAYMENT_INTENT_INCOMPATIBLE_PAYMENT_METHOD
+  "Payment intent invalid parameter"
+  PAYMENT_INTENT_INVALID_PARAMETER
+  "Payment intent payment attempt failed"
+  PAYMENT_INTENT_PAYMENT_ATTEMPT_FAILED
+  "Payment intent unexpected state"
+  PAYMENT_INTENT_UNEXPECTED_STATE
+  "Payment method unactivated"
+  PAYMENT_METHOD_UNACTIVATED
+  "Payment method unexpected state"
+  PAYMENT_METHOD_UNEXPECTED_STATE
+  "Payouts not allowed"
+  PAYOUTS_NOT_ALLOWED
+  "Platform api key expired"
+  PLATFORM_API_KEY_EXPIRED
+  "Postal code invalid"
+  POSTAL_CODE_INVALID
+  "Processing error"
+  PROCESSING_ERROR
+  "Product inactive"
+  PRODUCT_INACTIVE
+  "Rate limit"
+  RATE_LIMIT
+  "Resource already exists"
+  RESOURCE_ALREADY_EXISTS
+  "Resource missing"
+  RESOURCE_MISSING
+  "Routing number invalid"
+  ROUTING_NUMBER_INVALID
+  "Secret key required"
+  SECRET_KEY_REQUIRED
+  "SEPA unsupported account"
+  SEPA_UNSUPPORTED_ACCOUNT
+  "Shipping calculation failed"
+  SHIPPING_CALCULATION_FAILED
+  "SKU inactive"
+  SKU_INACTIVE
+  "State unsupported"
+  STATE_UNSUPPORTED
+  "Tax id invalid"
+  TAX_ID_INVALID
+  "Taxes calculation failed"
+  TAXES_CALCULATION_FAILED
+  "Testmode charges only"
+  TESTMODE_CHARGES_ONLY
+  "TLS version unsupported"
+  TLS_VERSION_UNSUPPORTED
+  "Token already used"
+  TOKEN_ALREADY_USED
+  "Token in use"
+  TOKEN_IN_USE
+  "Transfers not allowed"
+  TRANSFERS_NOT_ALLOWED
+  "Upstream order creation failed"
+  UPSTREAM_ORDER_CREATION_FAILED
+  "URL invalid"
+  URL_INVALID
+}
+
+enum DjstripeInvoiceBillingReasonChoices {
+  "Manual"
+  MANUAL
+  "Subscription"
+  SUBSCRIPTION
+  "Subscription create"
+  SUBSCRIPTION_CREATE
+  "Subscription cycle"
+  SUBSCRIPTION_CYCLE
+  "Subscription threshold"
+  SUBSCRIPTION_THRESHOLD
+  "Subscription update"
+  SUBSCRIPTION_UPDATE
+  "Upcoming"
+  UPCOMING
+}
+
+enum DjstripeInvoiceCollectionMethodChoices {
+  "Charge automatically"
+  CHARGE_AUTOMATICALLY
+  "Send invoice"
+  SEND_INVOICE
+}
+
+enum DjstripeInvoiceCustomerTaxExemptChoices {
+  "Exempt"
+  EXEMPT
+  "None"
+  NONE
+  "Reverse"
+  REVERSE
+}
+
+enum DjstripeInvoiceStatusChoices {
+  "Draft"
+  DRAFT
+  "Open"
+  OPEN
+  "Paid"
+  PAID
+  "Uncollectible"
+  UNCOLLECTIBLE
+  "Void"
+  VOID
+}
+
+enum DjstripeChargeStatusChoices {
+  "Failed"
+  FAILED
+  "Pending"
+  PENDING
+  "Succeeded"
+  SUCCEEDED
+}
+
+enum DjstripeSetupIntentCancellationReasonChoices {
+  "Abandoned"
+  ABANDONED
+  "Duplicate"
+  DUPLICATE
+  "Requested by Customer"
+  REQUESTED_BY_CUSTOMER
+}
+
+enum DjstripeSetupIntentStatusChoices {
+  "Cancellation invalidates the intent for future confirmation and cannot be undone."
+  CANCELED
+  "Required actions have been handled."
+  PROCESSING
+  "Payment Method require additional action, such as 3D secure."
+  REQUIRES_ACTION
+  "Intent is ready to be confirmed."
+  REQUIRES_CONFIRMATION
+  "Intent created and requires a Payment Method to be attached."
+  REQUIRES_PAYMENT_METHOD
+  "Setup was successful and the payment method is optimized for future payments."
+  SUCCEEDED
+}
+
+enum DjstripeSetupIntentUsageChoices {
+  "Off session"
+  OFF_SESSION
+  "On session"
+  ON_SESSION
+}
+
+input ChangeActiveSubscriptionMutationInput {
+  price: String!
+  clientMutationId: String
+}
+
+input CancelActiveSubscriptionMutationInput {
+  clientMutationId: String
+}
+
+input UpdateDefaultPaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+input DeletePaymentMethodMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+input CreatePaymentIntentMutationInput {
+  product: String!
+  clientMutationId: String
+}
+
 input UpdatePaymentIntentMutationInput {
   product: String!
   id: ID!
   clientMutationId: String
 }
 
-type UpdatePaymentIntentMutationPayload {
-  paymentIntent: StripePaymentIntentType
+input CreateSetupIntentMutationInput {
   clientMutationId: String
 }
 
-"""
-Create scalar that ignores normal serialization/deserialization, since
-that will be handled by the multipart request spec
-"""
-scalar Upload
+input ChangePasswordMutationInput {
+  "Old password"
+  oldPassword: String!
+  "New password"
+  newPassword: String!
+  clientMutationId: String
+}
 
-type UserProfileType implements Node {
-  """The ID of the object"""
+input UpdateCurrentUserMutationInput {
+  firstName: String
+  lastName: String
+  avatar: Upload
+  clientMutationId: String
+}
+
+input ObtainTokenMutationInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+input SingUpMutationInput {
+  id: String
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+input ConfirmEmailMutationInput {
+  user: String!
+  token: String!
+  clientMutationId: String
+}
+
+input PasswordResetMutationInput {
+  "User e-mail"
+  email: String!
+  clientMutationId: String
+}
+
+input PasswordResetConfirmationMutationInput {
+  user: String!
+  "New password"
+  newPassword: String!
+  "Token"
+  token: String!
+  clientMutationId: String
+}
+
+input UpdateNotificationMutationInput {
+  isRead: Boolean
   id: ID!
-  user: CurrentUserType!
-  firstName: String!
-  lastName: String!
+  clientMutationId: String
+}
+
+input MarkReadAllNotificationsMutationInput {
+  clientMutationId: String
+}
+
+input CreateCrudDemoItemMutationInput {
+  name: String!
+  createdBy: String
+  clientMutationId: String
+}
+
+input UpdateCrudDemoItemMutationInput {
+  name: String!
+  createdBy: String
+  id: ID!
+  clientMutationId: String
+}
+
+input DeleteCrudDemoItemMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+input CreateDocumentDemoItemMutationInput {
+  file: Upload
+  createdBy: String
+  clientMutationId: String
+}
+
+input DeleteDocumentDemoItemMutationInput {
+  id: String
+  clientMutationId: String
+}
+
+input CreateFavoriteContentfulDemoItemMutationInput {
+  item: String!
+  user: String
+  clientMutationId: String
+}
+
+input DeleteFavoriteContentfulDemoItemMutationInput {
+  item: String
+  clientMutationId: String
 }
