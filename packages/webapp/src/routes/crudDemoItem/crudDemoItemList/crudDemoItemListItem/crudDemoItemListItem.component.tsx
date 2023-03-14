@@ -1,16 +1,16 @@
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { Button, ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
+import { media } from '@saas-boilerplate-app/webapp-core/theme';
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
-import { Icon } from '../../../../shared/components/icon';
-import { Link } from '../../../../shared/components/link';
-import { useGenerateLocalePath, useMediaQuery } from '../../../../shared/hooks';
+import { useGenerateLocalePath } from '../../../../shared/hooks';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
-import { Breakpoint } from '../../../../theme/media';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 
@@ -20,7 +20,7 @@ export type CrudDemoItemListItemProps = {
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const [commitDeleteMutation, { loading }] = useMutation(crudDemoItemListItemDeleteMutation, {
     update(cache, { data }) {
       cache.modify({

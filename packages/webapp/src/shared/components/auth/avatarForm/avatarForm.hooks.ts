@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client';
+import { useFormatFileSize } from '@saas-boilerplate-app/webapp-core/components/fileSize';
+import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
-import { useApiForm, useSnackbar } from '../../../hooks';
-import { useFormatFileSize } from '../../fileSize';
+import { useApiForm } from '../../../hooks';
 import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { UpdateAvatarFormFields } from './avatarForm.types';

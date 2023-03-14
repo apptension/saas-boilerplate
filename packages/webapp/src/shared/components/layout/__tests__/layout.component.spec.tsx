@@ -1,3 +1,4 @@
+import { media } from '@saas-boilerplate-app/webapp-core/theme';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -12,15 +13,18 @@ import {
 } from '../../../../mocks/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
-import { Breakpoint } from '../../../../theme/media';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { Layout } from '../layout.component';
 
-const mockGetActiveBreakpoint = jest.fn().mockReturnValue(Breakpoint.DESKTOP);
-jest.mock('../../../../theme/media', () => {
+const mockGetActiveBreakpoint = jest.fn().mockReturnValue(media.Breakpoint.DESKTOP);
+jest.mock('@saas-boilerplate-app/webapp-core/theme', () => {
+  const requireActual = jest.requireActual('@saas-boilerplate-app/webapp-core/theme');
   return {
-    ...jest.requireActual<NodeModule>('../../../../theme/media'),
-    getActiveBreakpoint: () => mockGetActiveBreakpoint(),
+    ...requireActual,
+    media: {
+      ...requireActual.media,
+      getActiveBreakpoint: () => mockGetActiveBreakpoint(),
+    },
   };
 });
 
@@ -51,7 +55,7 @@ describe('Layout: Component', () => {
 
   describe('on mobile', () => {
     beforeEach(() => {
-      mockGetActiveBreakpoint.mockReturnValue(Breakpoint.MOBILE);
+      mockGetActiveBreakpoint.mockReturnValue(media.Breakpoint.MOBILE);
     });
 
     describe('on /auth routes', () => {
@@ -189,7 +193,7 @@ describe('Layout: Component', () => {
 
   describe('on desktop', () => {
     beforeEach(() => {
-      mockGetActiveBreakpoint.mockReturnValue(Breakpoint.DESKTOP);
+      mockGetActiveBreakpoint.mockReturnValue(media.Breakpoint.DESKTOP);
     });
 
     it('should show content', async () => {

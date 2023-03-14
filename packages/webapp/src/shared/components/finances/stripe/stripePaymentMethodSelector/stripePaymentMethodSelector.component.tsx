@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
 import { isEmpty } from 'ramda';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
@@ -7,7 +8,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { ApiFormReturnType } from '../../../../hooks';
 import { mapConnection } from '../../../../utils/graphql';
-import { Icon } from '../../../icon';
 import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';

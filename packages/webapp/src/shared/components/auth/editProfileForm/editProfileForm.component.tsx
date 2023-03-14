@@ -1,6 +1,6 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Input } from '../../forms/input';
 import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';
 import { useEditProfileForm } from './editProfileForm.hooks';
 import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';

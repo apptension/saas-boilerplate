@@ -1,10 +1,8 @@
+import { DEFAULT_LOCALE, translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
+import { ResponsiveThemeProvider } from '@saas-boilerplate-app/webapp-core/providers';
+import { global as globalTheme, initializeFontFace } from '@saas-boilerplate-app/webapp-core/theme';
 import { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
-
-import { DEFAULT_LOCALE, translationMessages } from '../src/app/config/i18n';
-import { ResponsiveThemeProvider } from '../src/app/providers';
-import { GlobalStyle } from '../src/theme/global';
-import { initializeFontFace } from '../src/theme/initializeFontFace';
 
 export { default as withRouter } from 'storybook-react-router';
 
@@ -12,7 +10,7 @@ export const withTheme = (theme) => (story) =>
   (
     <ResponsiveThemeProvider>
       <>
-        <GlobalStyle />
+        <globalTheme.GlobalStyle />
         {story()}
       </>
     </ResponsiveThemeProvider>

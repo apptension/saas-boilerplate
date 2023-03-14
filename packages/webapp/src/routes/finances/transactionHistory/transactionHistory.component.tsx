@@ -1,6 +1,6 @@
+import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
-import { BackButton } from '../../../shared/components/backButton';
 import { TransactionHistory as TransactionHistoryList } from '../../../shared/components/finances/stripe/transactionHistory';
 import { Container, Header } from './transactionHistory.styles';
 

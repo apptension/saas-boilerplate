@@ -1,8 +1,8 @@
+import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../app/config/routes';
-import { BackButton } from '../../shared/components/backButton';
 import { useGenerateLocalePath } from '../../shared/hooks';
 import { imageProps } from '../../shared/services/contentful';
 import { DemoItemQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';

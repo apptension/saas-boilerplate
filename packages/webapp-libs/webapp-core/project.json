@@ -1,0 +1,19 @@
+{
+  "name": "webapp-core",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-core/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/webapp-libs/webapp-core",
+        "main": "packages/webapp-libs/webapp-core/src/index.ts",
+        "tsConfig": "packages/webapp-libs/webapp-core/tsconfig.lib.json",
+        "assets": ["packages/webapp-libs/webapp-core/*.md"]
+      }
+    }
+  },
+  "tags": []
+}

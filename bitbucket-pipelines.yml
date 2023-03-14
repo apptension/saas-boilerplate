@@ -9,6 +9,7 @@ definitions:
     pnpmbackend: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmdocs: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappcore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -25,8 +26,8 @@ definitions:
       && export PNPM_HOME="/root/.local/share/pnpm"
       && export PATH="$PNPM_HOME:$PATH"
 
-    setupAwsCli: &setupAwsCli
-      export AWS_CLI_DEST_PATH=~/.clicache/awscli-2.8.8.zip
+    setupAwsCli:
+      &setupAwsCli export AWS_CLI_DEST_PATH=~/.clicache/awscli-2.8.8.zip
       && mkdir -p ~/.clicache/
       && wget --no-verbose --no-clobber "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.8.8.zip" --output-document "${AWS_CLI_DEST_PATH}" || true
       && unzip -qq "${AWS_CLI_DEST_PATH}"
@@ -50,7 +51,7 @@ pipelines:
               - git push codecommit --tags --force
 
         - step:
-            name: 'web-app: Lint & test'
+            name: 'webapp: Lint & test'
             image: atlassian/default-image:4
             size: 2x
             script:
@@ -67,7 +68,7 @@ pipelines:
               - clis
               - sonar
         - step:
-            name: 'web-app: Build'
+            name: 'webapp: Build'
             image: atlassian/default-image:4
             script:
               - *initializeStep
@@ -76,7 +77,20 @@ pipelines:
             caches:
               - pnpmwebapp
               - clis
-
+        - step:
+            name: 'webapp-core: Lint & test'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-core...
+              - node_modules/.bin/nx run webapp-core:lint
+              - node_modules/.bin/nx run webapp-core:test
+            caches:
+              - pnpmwebappcore
+              - clis
         - step:
             name: 'backend: Build image & run tests'
             image: atlassian/default-image:3

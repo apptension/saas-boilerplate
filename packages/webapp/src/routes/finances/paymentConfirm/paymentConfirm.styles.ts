@@ -1,18 +1,17 @@
+import { size, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { contentWrapper, sizeUnits, verticalPadding } from '../../../theme/size';
-import { heading3, heading4 } from '../../../theme/typography';
 
 export const Container = styled.div`
-  ${contentWrapper};
-  ${verticalPadding(sizeUnits(2))};
+  ${size.contentWrapper};
+  ${size.verticalPadding(size.sizeUnits(2))};
 `;
 
 export const Header = styled.h1`
-  ${heading3};
+  ${typography.heading3};
 `;
 
 export const Subheader = styled.h2`
-  ${heading4};
-  margin-top: ${sizeUnits(4)};
-  margin-bottom: ${sizeUnits(3)};
+  ${typography.heading4};
+  margin-top: ${size.sizeUnits(4)};
+  margin-bottom: ${size.sizeUnits(3)};
 `;

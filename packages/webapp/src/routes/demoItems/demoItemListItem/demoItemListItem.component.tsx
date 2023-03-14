@@ -1,9 +1,9 @@
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
 import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { Icon } from '../../../shared/components/icon';
 import { useFavoriteDemoItem, useGenerateLocalePath } from '../../../shared/hooks';
 import { imageProps } from '../../../shared/services/contentful';
 import { DemoItemListItem_ItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';

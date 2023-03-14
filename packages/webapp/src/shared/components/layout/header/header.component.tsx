@@ -1,15 +1,15 @@
+import { Link as ButtonLink, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
+import { Snackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { media } from '@saas-boilerplate-app/webapp-core/theme';
 import { HTMLAttributes, useContext } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { Breakpoint } from '../../../../theme/media';
-import { useAuth, useGenerateLocalePath, useMediaQuery, useOpenState } from '../../../hooks';
-import { ButtonVariant } from '../../forms/button';
-import { Link as ButtonLink } from '../../link';
+import { useAuth, useGenerateLocalePath, useOpenState } from '../../../hooks';
 import { Notifications } from '../../notifications';
-import { Snackbar } from '../../snackbar';
 import { LayoutContext } from '../layout.context';
 import {
   Avatar,
@@ -30,7 +30,7 @@ export const Header = (props: HeaderProps) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
-  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const userDropdown = useOpenState(false);
   const { isLoggedIn } = useAuth();
 

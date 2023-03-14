@@ -1,6 +1,7 @@
+import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
 import { useEffect } from 'react';
 
-import { useLocale, useLocales } from '../../../../shared/hooks';
+import { useLocale } from '../../../../shared/hooks';
 
 export const useLanguageFromParams = () => {
   const { setLanguage } = useLocales();

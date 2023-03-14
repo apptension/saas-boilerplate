@@ -1,6 +1,6 @@
+import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime';
 import { FormattedMessage } from 'react-intl';
 
-import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';

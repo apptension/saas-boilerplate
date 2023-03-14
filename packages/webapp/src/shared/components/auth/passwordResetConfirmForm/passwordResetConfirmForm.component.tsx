@@ -1,11 +1,9 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Input } from '../../forms/input';
-import { FormFieldsRow } from '../../../../theme/size';
-
-import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
-
 import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';
+import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
 
 export type PasswordResetConfirmFormProps = {
   user: string;
@@ -29,7 +27,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
   return (
     <Container onSubmit={handlePasswordResetConfirm}>
-      <FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('newPassword', {
             required: {
@@ -59,8 +57,8 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
           })}
           error={errors.newPassword?.message}
         />
-      </FormFieldsRow>
-      <FormFieldsRow>
+      </size.FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('confirmPassword', {
             validate: {
@@ -90,7 +88,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
           })}
           error={errors.confirmPassword?.message}
         />
-      </FormFieldsRow>
+      </size.FormFieldsRow>
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 

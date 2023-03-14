@@ -1,20 +1,18 @@
+import { Message as MessageBase } from '@saas-boilerplate-app/webapp-core/components/forms/input/input.styles';
+import { circle, color, elevation, media, size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
 
-import { circle, color, elevation } from '../../../../theme';
-import { Breakpoint, media } from '../../../../theme/media';
-import { sizeUnits } from '../../../../theme/size';
 import { Avatar as AvatarBase } from '../../avatar';
-import { Message as MessageBase } from '../../forms/input/input.styles';
 
 export const Container = styled.div`
-  margin-bottom: ${sizeUnits(2)};
+  margin-bottom: ${size.sizeUnits(2)};
   grid-area: avatar;
   justify-self: center;
   position: relative;
   width: 80px;
   height: 80px;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     margin-bottom: 0;
   `};
 `;
@@ -27,8 +25,8 @@ export const Avatar = styled(AvatarBase).attrs(() => ({ size: 80 }))`
 
 export const IconContainer = styled.label.attrs(() => ({ tabIndex: 0 }))`
   position: absolute;
-  left: -${sizeUnits(1)};
-  top: -${sizeUnits(1)};
+  left: -${size.sizeUnits(1)};
+  top: -${size.sizeUnits(1)};
   z-index: 1;
   display: flex;
   justify-content: center;
@@ -36,7 +34,7 @@ export const IconContainer = styled.label.attrs(() => ({ tabIndex: 0 }))`
   background: ${color.primary};
   color: ${color.white};
   cursor: pointer;
-  ${circle(sizeUnits(4))}
+  ${circle(size.sizeUnits(4))}
   ${elevation.strong}
 `;
 

@@ -1,37 +1,35 @@
+import { media, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { heading3, label } from '../../theme/typography';
-import { Breakpoint, media } from '../../theme/media';
-import { contentWithLimitedWidth, contentWrapper, sizeUnits } from '../../theme/size';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  ${contentWrapper};
-  ${contentWithLimitedWidth};
-  padding-top: ${sizeUnits(4)};
-  padding-bottom: ${sizeUnits(4)};
+  ${size.contentWrapper};
+  ${size.contentWithLimitedWidth};
+  padding-top: ${size.sizeUnits(4)};
+  padding-bottom: ${size.sizeUnits(4)};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     margin-left: 0;
   `};
 `;
 
 export const Title = styled.h1`
-  ${heading3};
-  margin-bottom: ${sizeUnits(3)};
+  ${typography.heading3};
+  margin-bottom: ${size.sizeUnits(3)};
 `;
 
 export const Description = styled.p`
-  ${label};
+  ${typography.label};
 `;
 
 export const Image = styled.img`
   width: 100%;
-  margin-top: ${sizeUnits(3)};
+  margin-top: ${size.sizeUnits(3)};
 
-  ${media(Breakpoint.TABLET)`
-    margin-top: ${sizeUnits(4)};
+  ${media.media(media.Breakpoint.TABLET)`
+    margin-top: ${size.sizeUnits(4)};
   `};
 `;

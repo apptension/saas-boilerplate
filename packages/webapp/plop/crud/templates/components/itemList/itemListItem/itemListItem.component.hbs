@@ -1,14 +1,13 @@
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { Button, ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icon';
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { Button, ButtonVariant } from '../../../../shared/components/forms/button';
-import { Icon } from '../../../../shared/components/icon';
-import { Link } from '../../../../shared/components/link';
-import { useGenerateLocalePath } from '../../../../shared/hooks/';
+import { useGenerateLocalePath } from '../../../../shared/hooks';
 import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List.graphql';
 import { Container, InlineButtons, LinkContainer, Text } from './{{ camelCase name }}ListItem.styles';

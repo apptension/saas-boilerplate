@@ -1,9 +1,8 @@
+import { BackButton, Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime';
+import { typography } from '@saas-boilerplate-app/webapp-core/theme';
 import { FormattedMessage } from 'react-intl';
 
-import { BackButton } from '../../../shared/components/backButton';
-import { FormattedDate } from '../../../shared/components/dateTime/formattedDate';
-import { Button } from '../../../shared/components/forms/button';
-import { H3 } from '../../../theme/typography';
 import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { useActiveSubscriptionDetailsData } from '../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { useCancelSubscription } from './cancelSubscription.hook';
@@ -22,9 +21,9 @@ export const CancelSubscription = () => {
   return (
     <Container>
       <BackButton />
-      <H3>
+      <typography.H3>
         <FormattedMessage defaultMessage="Current plan info" id="Cancel subscription / Current plan header" />
-      </H3>
+      </typography.H3>
       <Row>
         <FormattedMessage defaultMessage="Active plan:" id="Cancel subscription / Active plan" />
         <RowValue>{activeSubscriptionPlan?.name}</RowValue>

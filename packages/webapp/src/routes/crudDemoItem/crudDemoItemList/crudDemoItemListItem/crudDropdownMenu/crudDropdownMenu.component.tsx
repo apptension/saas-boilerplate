@@ -1,13 +1,12 @@
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { Button, ButtonVariant, Link as ButtonLink } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
 import { MouseEvent, useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { Button, ButtonVariant } from '../../../../../shared/components/forms/button';
-import { Icon } from '../../../../../shared/components/icon';
-import { Link as ButtonLink } from '../../../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../../../shared/hooks';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 

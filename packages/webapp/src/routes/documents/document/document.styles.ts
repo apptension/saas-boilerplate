@@ -1,25 +1,23 @@
+import { border, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import * as coreDateTime from '@saas-boilerplate-app/webapp-core/components/dateTime';
 import styled from 'styled-components';
-import { Button, ButtonVariant } from '../../../shared/components/forms/button';
-import { labelBold, microlabel } from '../../../theme/typography';
-import { RelativeDate as RelativeDateBase } from '../../../shared/components/dateTime/relativeDate';
-import { border } from '../../../theme';
-import { sizeUnits, verticalPadding } from '../../../theme/size';
 
 export const Container = styled.li`
-  padding: ${sizeUnits(2)};
+  padding: ${size.sizeUnits(2)};
   border: ${border.light};
-  border-radius: ${sizeUnits(1)};
+  border-radius: ${size.sizeUnits(1)};
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-export const RelativeDate = styled(RelativeDateBase)`
-  ${microlabel};
+export const RelativeDate = styled(coreDateTime.RelativeDate)`
+  ${typography.microlabel};
 `;
 
 export const Name = styled.a`
-  ${labelBold};
+  ${typography.labelBold};
   text-decoration: underline;
   white-space: nowrap;
   overflow: hidden;
@@ -28,9 +26,9 @@ export const Name = styled.a`
 `;
 
 export const IconContainer = styled.div`
-  ${verticalPadding(sizeUnits(1))}
+  ${size.verticalPadding(size.sizeUnits(1))}
 `;
 
 export const DeleteButton = styled(Button).attrs({ variant: ButtonVariant.RAW })`
-  margin-top: ${sizeUnits(1)};
+  margin-top: ${size.sizeUnits(1)};
 `;

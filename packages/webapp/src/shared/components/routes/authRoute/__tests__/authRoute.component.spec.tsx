@@ -7,8 +7,6 @@ import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';
 
-jest.mock('../../../../../theme/initializeFontFace');
-
 describe('AuthRoute: Component', () => {
   const defaultProps: AuthRouteProps = {};
 

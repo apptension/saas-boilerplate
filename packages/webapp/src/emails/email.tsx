@@ -1,6 +1,6 @@
+import { DEFAULT_LOCALE } from '@saas-boilerplate-app/webapp-core/config/i18n';
 import { IntlProvider } from 'react-intl';
 
-import { DEFAULT_LOCALE } from '../app/config/i18n';
 import templates from './templates';
 import { EmailComponentProps, EmailTemplateType } from './types';
 

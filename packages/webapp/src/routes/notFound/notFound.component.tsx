@@ -1,6 +1,7 @@
+import { typography } from '@saas-boilerplate-app/webapp-core/theme';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { H1 } from '../../theme/typography';
+
 import { Container } from './notFound.styles';
 
 export const NotFound = () => {
@@ -15,9 +16,9 @@ export const NotFound = () => {
         })}
       />
 
-      <H1>
+      <typography.H1>
         <FormattedMessage defaultMessage="Error: 404" id="Not found / error message" />
-      </H1>
+      </typography.H1>
     </Container>
   );
 };

@@ -1,16 +1,11 @@
+import { LocalesProvider } from '@saas-boilerplate-app/webapp-core/providers';
+import { SnackbarProvider } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import 'regenerator-runtime/runtime';
 
-import {
-  ApolloProvider,
-  CommonQuery,
-  LocalesProvider,
-  RouterProvider,
-  SentryProvider,
-  SnackbarProvider,
-} from './providers';
+import { ApolloProvider, CommonQuery, RouterProvider, SentryProvider } from './providers';
 import { setUnsupportedClasses } from './unsupported/support';
 import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 

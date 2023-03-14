@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/client';
+import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
+import { useGenerateLocalePath } from '../../../shared/hooks';
 import { subscriptionChangeActiveMutation } from './editSubscription.graphql';
 
 export const useEditSubscription = () => {

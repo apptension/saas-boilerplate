@@ -1,7 +1,5 @@
+import { color, elevation, size, transition } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { sizeUnits, verticalMargin } from '../../../../../theme/size';
-import { color, elevation, transition } from '../../../../../theme';
-import { skyBlueScale } from '../../../../../theme/color';
 
 export const Container = styled.div`
   position: relative;
@@ -10,31 +8,31 @@ export const Container = styled.div`
 export const ToggleButton = styled.div.attrs(() => ({ role: 'button', tabIndex: 0 }))`
   position: relative;
   display: flex;
-  width: ${sizeUnits(3)};
-  height: ${sizeUnits(3)};
+  width: ${size.sizeUnits(3)};
+  height: ${size.sizeUnits(3)};
   align-items: center;
   justify-content: center;
   flex-direction: column;
 `;
 
 export const ToggleButtonCircle = styled.div`
-  background-color: ${skyBlueScale.get(50)};
+  background-color: ${color.skyBlueScale.get(50)};
   width: 4px;
   height: 4px;
   border-radius: 50%;
   display: block;
-  ${verticalMargin('2px')};
+  ${size.verticalMargin('2px')};
   flex-shrink: 0;
 `;
 
 export const Menu = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 0;
-  right: ${sizeUnits(3)};
+  right: ${size.sizeUnits(3)};
   z-index: 1;
   border-radius: 4px;
   overflow: hidden;
-  min-width: ${sizeUnits(21)};
+  min-width: ${size.sizeUnits(21)};
   text-align: left;
   ${elevation.lightest};
   display: flex;

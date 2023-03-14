@@ -7,8 +7,6 @@ import { render } from '../../../../../tests/utils/rendering';
 import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { AnonymousRoute } from '../anonymousRoute.component';
 
-jest.mock('../../../../../theme/initializeFontFace');
-
 describe('AnonymousRoute: Component', () => {
   const Component = () => (
     <Routes>

@@ -1,0 +1,27 @@
+{
+  "generatedAt": 1678715506143,
+  "builder": { "name": "@storybook/builder-vite" },
+  "hasCustomBabel": false,
+  "hasCustomWebpack": false,
+  "hasStaticDirs": true,
+  "hasStorybookEslint": false,
+  "refCount": 0,
+  "monorepo": "Nx",
+  "packageManager": { "type": "pnpm", "version": "7.29.1" },
+  "storybookVersion": "6.5.16",
+  "language": "javascript",
+  "storybookPackages": {
+    "storybook-react-router": { "version": "1.0.8" },
+    "@storybook/addon-actions": { "version": "6.5.16" },
+    "@storybook/addon-backgrounds": { "version": "6.5.16" },
+    "@storybook/addon-docs": { "version": "6.5.16" },
+    "@storybook/addon-measure": { "version": "6.5.16" },
+    "@storybook/addon-outline": { "version": "6.5.16" },
+    "@storybook/builder-vite": { "version": "0.4.0" },
+    "@storybook/client-api": { "version": "6.5.16" },
+    "@storybook/client-logger": { "version": "6.5.16" },
+    "@storybook/react": { "version": "6.5.16" }
+  },
+  "framework": { "name": "react" },
+  "addons": { "@storybook/addon-essentials": { "version": "6.5.16" }, "storybook-dark-mode": { "version": "2.0.5" } }
+}

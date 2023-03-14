@@ -21,10 +21,6 @@ export default defineConfig(async (props) => {
   return mergeConfig(sourceConfig, {
     cacheDir: '../../node_modules/.vite/emails',
 
-    define: {
-      global: '({})',
-    },
-
     resolve: {
       alias: {
         util: 'rollup-plugin-node-polyfills/polyfills/util',

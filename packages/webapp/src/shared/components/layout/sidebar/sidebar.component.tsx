@@ -1,15 +1,15 @@
 import closeIcon from '@iconify-icons/ion/close-outline';
+import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
+import { global as globalTheme, media } from '@saas-boilerplate-app/webapp-core/theme';
 import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
-import { NO_SCROLL_CLASSNAME } from '../../../../theme/global';
-import { Breakpoint } from '../../../../theme/media';
-import { useAuth, useGenerateLocalePath, useMediaQuery } from '../../../hooks';
+import { useAuth, useGenerateLocalePath } from '../../../hooks';
 import { Avatar } from '../../avatar';
-import { Icon } from '../../icon';
-import { Link } from '../../link';
 import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
 import { CloseButton, Container, Header, MenuLink, MenuLinks } from './sidebar.styles';
@@ -18,7 +18,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
-  const { matches: isDesktop } = useMediaQuery({ above: Breakpoint.TABLET });
+  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
 
@@ -26,13 +26,13 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
   useEffect(() => {
     if (!isDesktop && isSideMenuOpen) {
-      document.body.classList.add(NO_SCROLL_CLASSNAME);
+      document.body.classList.add(globalTheme.NO_SCROLL_CLASSNAME);
     } else {
-      document.body.classList.remove(NO_SCROLL_CLASSNAME);
+      document.body.classList.remove(globalTheme.NO_SCROLL_CLASSNAME);
     }
 
     return () => {
-      document.body.classList.remove(NO_SCROLL_CLASSNAME);
+      document.body.classList.remove(globalTheme.NO_SCROLL_CLASSNAME);
     };
   }, [isDesktop, isSideMenuOpen]);
 

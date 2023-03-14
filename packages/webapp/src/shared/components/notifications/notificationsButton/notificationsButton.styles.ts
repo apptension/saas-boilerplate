@@ -1,6 +1,6 @@
+import { Button as ButtonBase } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { color } from '@saas-boilerplate-app/webapp-core/theme';
 import styled, { css } from 'styled-components';
-import { Button as ButtonBase } from '../../forms/button';
-import { color } from '../../../../theme';
 
 type ButtonProps = { hasUnreadNotifications: boolean };
 export const Button = styled(ButtonBase)<ButtonProps>`

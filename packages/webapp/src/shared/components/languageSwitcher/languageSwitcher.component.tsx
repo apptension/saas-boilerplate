@@ -1,7 +1,8 @@
+import { Locale } from '@saas-boilerplate-app/webapp-core/config/i18n';
 import { ChangeEvent } from 'react';
-import { Locale } from '../../../app/config/i18n';
-import { Select } from './languageSwitcher.styles';
+
 import { useLanguageRouter } from './languageSwitcher.hooks';
+import { Select } from './languageSwitcher.styles';
 
 export const LanguageSwitcher = () => {
   const [{ language, locales }, changeLanguage] = useLanguageRouter();

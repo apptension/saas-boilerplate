@@ -1,5 +1,6 @@
+import { fontFamily, fontWeight } from '@saas-boilerplate-app/webapp-core/theme';
 import styled, { css } from 'styled-components';
-import { fontFamily, fontWeight } from '../../theme';
+
 import { ENV } from '../../app/config/env';
 import { Image } from './image';
 

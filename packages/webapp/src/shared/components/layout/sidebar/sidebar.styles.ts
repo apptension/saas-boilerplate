@@ -1,12 +1,7 @@
-import styled from 'styled-components';
+import { ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { color, media, size, transition, typography, zIndex } from '@saas-boilerplate-app/webapp-core/theme';
 import { ComponentProps } from 'react';
-import { Link } from '../../link';
-import { ButtonVariant } from '../../forms/button';
-import { sizeUnits } from '../../../../theme/size';
-import { labelBold } from '../../../../theme/typography';
-import { greyScale, skyBlueScale } from '../../../../theme/color';
-import { color, size, transition, zIndex } from '../../../../theme';
-import { Breakpoint, media } from '../../../../theme/media';
+import styled from 'styled-components';
 
 export const Container = styled.div<{ isOpen: boolean }>`
   position: fixed;
@@ -16,7 +11,7 @@ export const Container = styled.div<{ isOpen: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: ${greyScale.get(99)};
+  background-color: ${color.greyScale.get(99)};
   z-index: ${zIndex.header};
 
   ${(props) =>
@@ -32,7 +27,7 @@ export const Container = styled.div<{ isOpen: boolean }>`
       ],
     })};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     width: ${size.sideMenu};
     top: ${size.header};
     height: calc(100vh - ${size.header});
@@ -42,15 +37,15 @@ export const Container = styled.div<{ isOpen: boolean }>`
 `;
 
 export const Header = styled.div`
-  height: ${sizeUnits(6)};
+  height: ${size.sizeUnits(6)};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: ${sizeUnits(2)};
-  padding-right: ${sizeUnits(2)};
+  padding-left: ${size.sizeUnits(2)};
+  padding-right: ${size.sizeUnits(2)};
   flex-direction: row-reverse;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     display: none;
   `};
 `;
@@ -63,14 +58,14 @@ export const MenuLinks = styled.nav`
 export const MenuLink = styled(Link).attrs(() => ({ variant: ButtonVariant.FLAT, navLink: true }))<
   ComponentProps<typeof Link>
 >`
-  height: ${sizeUnits(6)};
-  padding-left: ${sizeUnits(5)};
-  ${labelBold};
-  background-color: ${greyScale.get(99)};
+  height: ${size.sizeUnits(6)};
+  padding-left: ${size.sizeUnits(5)};
+  ${typography.labelBold};
+  background-color: ${color.greyScale.get(99)};
   max-width: none;
 
   &.active {
-    background-color: ${skyBlueScale.get(50)} !important;
+    background-color: ${color.skyBlueScale.get(50)} !important;
     color: ${color.white} !important;
   }
 `;

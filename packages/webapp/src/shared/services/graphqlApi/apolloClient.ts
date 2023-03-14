@@ -5,12 +5,12 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
+import { SnackbarEmitterActions } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { createUploadLink } from 'apollo-upload-client';
 import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
 import { ENV } from '../../../app/config/env';
-import { SnackbarEmitterActions } from '../../../app/providers/snackbarProvider';
 import { refreshToken } from '../api/auth';
 import { apiURL } from '../api/helpers';
 import { url as contentfulUrl } from '../contentful';

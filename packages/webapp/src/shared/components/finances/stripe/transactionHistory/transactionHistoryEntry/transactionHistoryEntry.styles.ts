@@ -1,64 +1,61 @@
+import { border, color, media, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { label, labelBold } from '../../../../../../theme/typography';
-import { Breakpoint, media } from '../../../../../../theme/media';
-import { sizeUnits } from '../../../../../../theme/size';
-import { border, color } from '../../../../../../theme';
 
 export const Container = styled.div`
-  padding: ${sizeUnits(2)};
+  padding: ${size.sizeUnits(2)};
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     'date amount'
     'details details'
     'card card';
-  grid-row-gap: ${sizeUnits(1)};
-  grid-column-gap: ${sizeUnits(1)};
+  grid-row-gap: ${size.sizeUnits(1)};
+  grid-column-gap: ${size.sizeUnits(1)};
   border: ${border.light};
   border-radius: 4px;
 
-  ${media(Breakpoint.TABLET)`
-    height: ${sizeUnits(8)};
+  ${media.media(media.Breakpoint.TABLET)`
+    height: ${size.sizeUnits(8)};
     grid-template-columns: 1fr 1fr 2fr 1fr;
     grid-template-areas: 'date details card amount';
     border-radius: 0;
     align-items: center;
-    grid-column-gap: ${sizeUnits(10)};
+    grid-column-gap: ${size.sizeUnits(10)};
     border: none;
     border-top: 1px solid ${color.greyScale.get(95)};
   `};
 `;
 
 export const TransactionDate = styled.div`
-  ${labelBold};
+  ${typography.labelBold};
   grid-area: date;
 
-  ${media(Breakpoint.TABLET)`
-    ${label};
+  ${media.media(media.Breakpoint.TABLET)`
+    ${typography.label};
   `};
 `;
 
 export const Details = styled.div`
-  ${label};
+  ${typography.label};
   grid-area: details;
 `;
 
 export const Card = styled.div`
-  ${labelBold};
+  ${typography.labelBold};
   grid-area: card;
 
-  ${media(Breakpoint.TABLET)`
-    ${label};
+  ${media.media(media.Breakpoint.TABLET)`
+    ${typography.label};
   `};
 `;
 
 export const Amount = styled.div`
-  ${labelBold};
+  ${typography.labelBold};
   grid-area: amount;
   text-align: right;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     text-align: left;
-    ${label};
+    ${typography.label};
   `};
 `;

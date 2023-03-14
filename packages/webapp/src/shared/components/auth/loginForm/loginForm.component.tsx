@@ -1,8 +1,8 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { FormFieldsRow } from '../../../../theme/size';
 import { emailPattern } from '../../../constants';
-import { Input } from '../../forms/input';
 import { useLoginForm } from './loginForm.hooks';
 import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
 
@@ -22,7 +22,7 @@ export const LoginForm = () => {
 
   return (
     <Container onSubmit={handleLogin}>
-      <FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('email', {
             required: {
@@ -52,9 +52,9 @@ export const LoginForm = () => {
           })}
           error={errors.email?.message}
         />
-      </FormFieldsRow>
+      </size.FormFieldsRow>
 
-      <FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('password', {
             required: {
@@ -77,7 +77,7 @@ export const LoginForm = () => {
           })}
           error={errors.password?.message}
         />
-      </FormFieldsRow>
+      </size.FormFieldsRow>
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 

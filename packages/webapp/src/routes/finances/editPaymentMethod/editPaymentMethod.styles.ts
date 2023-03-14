@@ -1,8 +1,8 @@
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { contentWrapper, horizontalPadding, sizeUnits, verticalPadding } from '../../../theme/size';
 
 export const Container = styled.div`
-  ${contentWrapper};
-  ${verticalPadding(sizeUnits(2))};
-  ${horizontalPadding(sizeUnits(2))};
+  ${size.contentWrapper};
+  ${size.verticalPadding(size.sizeUnits(2))};
+  ${size.horizontalPadding(size.sizeUnits(2))};
 `;

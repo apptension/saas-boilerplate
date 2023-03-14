@@ -1,5 +1,5 @@
+import { fontFamily } from '@saas-boilerplate-app/webapp-core/theme';
 import FontFaceObserver from 'fontfaceobserver';
-import { fontFamily } from '../theme';
 
 export const observeFont = () => {
   // When font is loaded, add a font-family to the body

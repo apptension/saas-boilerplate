@@ -1,12 +1,13 @@
-import styled from 'styled-components';
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import { Story } from '@storybook/react';
-import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
+import styled from 'styled-components';
+
 import { withProviders } from '../../../utils/storybook';
 import { ChangePasswordForm } from './changePasswordForm.component';
 
 const Container = styled.div`
-  ${contentWrapper};
-  ${contentWithLimitedWidth};
+  ${size.contentWrapper};
+  ${size.contentWithLimitedWidth};
 `;
 
 const Template: Story = () => {

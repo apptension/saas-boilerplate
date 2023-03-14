@@ -26,7 +26,13 @@
       "@saas-boilerplate-app/infra-shared": [
         "packages/infra/infra-shared/src/index.ts"
       ],
-      "@saas-boilerplate-app/tools": ["packages/internal/tools/src/index.ts"]
+      "@saas-boilerplate-app/tools": ["packages/internal/tools/src/index.ts"],
+      "@saas-boilerplate-app/webapp-core": [
+        "packages/webapp-libs/webapp-core/src/index.ts"
+      ],
+      "@saas-boilerplate-app/webapp-core/*": [
+        "packages/webapp-libs/webapp-core/src/*"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,61 +1,34 @@
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
+import * as coreUtils from '@saas-boilerplate-app/webapp-core/tests/utils/rendering';
 import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
-import { HelmetProvider } from 'react-helmet-async';
-import { IntlProvider } from 'react-intl';
 import { generatePath } from 'react-router';
-import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { MemoryRouterProps } from 'react-router-dom';
 
-import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../app/config/i18n';
 import { RoutesConfig } from '../../app/config/routes';
-import { LocalesProvider, SnackbarProvider } from '../../app/providers';
-import { CommonQuery } from '../../app/providers/commonQuery';
-import { ResponsiveThemeProvider } from '../../app/providers/responsiveThemeProvider';
-import { SnackbarMessages } from '../../shared/components/layout/header/header.styles';
-import { Snackbar } from '../../shared/components/snackbar';
+import { CommonQuery } from '../../app/providers';
 import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
-export type DefaultTestProvidersProps = PropsWithChildren<{
-  apolloMocks?: ReadonlyArray<MockedResponse>;
-  apolloProviderProps: MockedProviderProps;
-  routerProps: MemoryRouterProps;
-  intlLocale: Locale;
-  intlMessages: TranslationMessages;
-}>;
+export type DefaultTestProvidersProps = PropsWithChildren<
+  {
+    apolloMocks?: ReadonlyArray<MockedResponse>;
+    apolloProviderProps: MockedProviderProps;
+  } & coreUtils.DefaultTestProvidersProps
+>;
 
 export function DefaultTestProviders({
   children,
   apolloMocks = [],
   apolloProviderProps = {},
-  routerProps,
-  intlMessages,
-  intlLocale,
 }: DefaultTestProvidersProps) {
   return (
-    <MemoryRouter {...routerProps}>
-      <HelmetProvider>
-        <ResponsiveThemeProvider>
-          <LocalesProvider>
-            <SnackbarProvider>
-              <IntlProvider locale={intlLocale} messages={intlMessages}>
-                <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
-                  <CommonQuery>
-                    {children}
-                    <SnackbarMessages>
-                      <Snackbar />
-                    </SnackbarMessages>
-                  </CommonQuery>
-                </MockedApolloProvider>
-              </IntlProvider>
-            </SnackbarProvider>
-          </LocalesProvider>
-        </ResponsiveThemeProvider>
-      </HelmetProvider>
-    </MemoryRouter>
+    <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
+      <CommonQuery>{children}</CommonQuery>
+    </MockedApolloProvider>
   );
 }
 
@@ -75,6 +48,7 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
   wrapper: ComponentType<P>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
+  const { wrapper: CoreWrapper } = coreUtils.getWrapper(coreUtils.DefaultTestProviders, wrapperProps);
   const apolloMocks = (() => {
     const defaultApolloMocks = [fillCommonQueryWithUser()];
 
@@ -89,8 +63,6 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
     return defaultApolloMocks;
   })();
 
-  const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
-
   const waitForApolloMocks = async (mockIndex: number = apolloMocks.length - 1) => {
     if (!apolloMocks.length) {
       return Promise.resolve();
@@ -99,16 +71,11 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
     await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
   };
 
-  const wrapper = (props) => {
+  const wrapper = (props: P) => {
     return (
-      <WrapperComponent
-        {...props}
-        routerProps={defaultRouterProps}
-        intlLocale={DEFAULT_LOCALE}
-        intlMessages={translationMessages[DEFAULT_LOCALE]}
-        {...(wrapperProps ?? {})}
-        apolloMocks={apolloMocks}
-      />
+      <CoreWrapper {...props} {...(wrapperProps ?? {})}>
+        <WrapperComponent {...props} {...(wrapperProps ?? {})} apolloMocks={apolloMocks} />
+      </CoreWrapper>
     );
   };
 

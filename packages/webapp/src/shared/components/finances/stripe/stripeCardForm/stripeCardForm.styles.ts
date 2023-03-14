@@ -1,10 +1,14 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import {
+  color,
+  fontFamily,
+  fontWeight,
+  media,
+  size,
+  transition,
+  typography,
+} from '@saas-boilerplate-app/webapp-core/theme';
 import styled, { css } from 'styled-components';
-import { color, fontFamily, fontWeight, transition } from '../../../../../theme';
-import { label } from '../../../../../theme/typography';
-import { input } from '../../../../../theme/color';
-import { sizeUnits } from '../../../../../theme/size';
-import { Breakpoint, media } from '../../../../../theme/media';
-import { Input } from '../../../forms/input';
 
 const FIELD_HEIGHT = 40;
 
@@ -33,7 +37,7 @@ export const StripeIframeStyles = {
 const smallFieldStyle = css`
   width: calc(50% - 8px);
   &:last-child {
-    margin-left: ${sizeUnits(2)};
+    margin-left: ${size.sizeUnits(2)};
   }
 `;
 
@@ -43,15 +47,15 @@ const wideFieldStyle = css`
 
 export const StripeFieldContainer = styled.label<{ small?: boolean }>`
   width: 100%;
-  min-width: ${sizeUnits(10)};
+  min-width: ${size.sizeUnits(10)};
   ${(props) => (props.small ? smallFieldStyle : wideFieldStyle)};
-  margin-top: ${sizeUnits(3)};
+  margin-top: ${size.sizeUnits(3)};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     width: auto;
     margin-top: 0;
     & + & {
-      margin-left: ${sizeUnits(2)};
+      margin-left: ${size.sizeUnits(2)};
     }
   `};
 `;
@@ -59,19 +63,19 @@ export const StripeFieldContainer = styled.label<{ small?: boolean }>`
 export const StripeNameField = styled(Input)`
   width: 100%;
   max-width: none;
-  margin-bottom: ${sizeUnits(3)};
+  margin-bottom: ${size.sizeUnits(3)};
 `;
 
 export const StripeFieldElement = styled.div`
   height: ${FIELD_HEIGHT}px;
-  color: ${input.text};
-  border: 1px solid ${input.border};
+  color: ${color.input.text};
+  border: 1px solid ${color.input.border};
   box-sizing: border-box;
   border-radius: 4px;
-  ${label};
+  ${typography.label};
   line-height: ${FIELD_HEIGHT}px;
-  padding-left: ${sizeUnits(1)};
-  padding-right: ${sizeUnits(1)};
+  padding-left: ${size.sizeUnits(1)};
+  padding-right: ${size.sizeUnits(1)};
   transition: background-color ${transition.primary}, border-color ${transition.primary}, color ${transition.primary};
 
   &:focus,
@@ -81,8 +85,8 @@ export const StripeFieldElement = styled.div`
 `;
 
 export const StripeFieldLabel = styled.p`
-  ${label};
-  color: ${input.label};
+  ${typography.label};
+  color: ${color.input.label};
   margin-bottom: 4px;
 
   &:after {

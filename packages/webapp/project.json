@@ -3,9 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/webapp/src",
   "projectType": "application",
-  "implicitDependencies": [
-    "tools"
-  ],
+  "implicitDependencies": ["tools"],
   "targets": {
     "setup": {
       "executor": "@saas-boilerplate-app/tools:setup",
@@ -41,14 +39,9 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "commands": [
-          "pnpm run vite",
-          "nx run webapp:graphql:generate-types:watch"
-        ]
+        "commands": ["pnpm run vite", "nx run webapp:graphql:generate-types:watch"]
       },
-      "dependsOn": [
-        "graphql:generate-types"
-      ]
+      "dependsOn": ["setup", "graphql:generate-types"]
     },
     "vite-build-old": {
       "executor": "nx:run-commands",
@@ -65,9 +58,7 @@
           "command": "pnpm run vite build -c ./vite.emails.config.ts"
         }
       },
-      "dependsOn": [
-        "graphql:generate-types"
-      ]
+      "dependsOn": ["graphql:generate-types"]
     },
     "vite-build": {
       "executor": "nx:run-commands",
@@ -84,9 +75,7 @@
           "command": "pnpm run vite -c vite.emails.config.ts build"
         }
       },
-      "dependsOn": [
-        "graphql:generate-types"
-      ]
+      "dependsOn": ["graphql:generate-types"]
     },
     "build": {
       "executor": "nx:run-commands",
@@ -102,19 +91,13 @@
           "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:emails"
         }
       },
-      "dependsOn": [
-        "graphql:generate-types"
-      ]
+      "dependsOn": ["graphql:generate-types"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/webapp/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/webapp/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "deploy": {

@@ -1,16 +1,15 @@
+import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { color, size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { Button } from '../../forms/button';
-import { sizeUnits } from '../../../../theme/size';
-import { color } from '../../../../theme';
 
 export const Container = styled.form.attrs(() => ({ noValidate: true }))``;
 
 export const ErrorMessage = styled.p`
   color: ${color.error};
   font-size: 10px;
-  margin-top: ${sizeUnits(1)};
+  margin-top: ${size.sizeUnits(1)};
 `;
 
 export const SubmitButton = styled(Button).attrs(() => ({ type: 'submit', fixedWidth: true }))`
-  margin-top: ${sizeUnits(4)};
+  margin-top: ${size.sizeUnits(4)};
 `;

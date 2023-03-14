@@ -1,7 +1,5 @@
+import { color, media, size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { color } from '../../../theme';
-import { formFieldWidth, sizeUnits } from '../../../theme/size';
-import { Breakpoint, media } from '../../../theme/media';
 
 export const Container = styled.div``;
 
@@ -12,7 +10,7 @@ export const Form = styled.form.attrs(() => ({ noValidate: true }))`
   align-items: center;
   justify-content: flex-start;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     flex-direction: row;
     align-items: flex-end;
   `};
@@ -25,9 +23,9 @@ export const ErrorMessage = styled.p`
 
 export const Fields = styled.div`
   width: 100%;
-  ${formFieldWidth};
-  ${media(Breakpoint.TABLET)`
-    margin-right: ${sizeUnits(3)};
+  ${size.formFieldWidth};
+  ${media.media(media.Breakpoint.TABLET)`
+    margin-right: ${size.sizeUnits(3)};
   `};
 `;
 
@@ -36,14 +34,14 @@ export const Buttons = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  margin-top: ${sizeUnits(2)};
-  ${formFieldWidth};
+  margin-top: ${size.sizeUnits(2)};
+  ${size.formFieldWidth};
 
   & > *:first-child {
-    margin-right: ${sizeUnits(1)};
+    margin-right: ${size.sizeUnits(1)};
   }
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     margin-top: 0;
     max-width: none;
     width: auto;

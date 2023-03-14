@@ -1,12 +1,6 @@
-import '@testing-library/jest-dom';
+import '@saas-boilerplate-app/webapp-core/tests/setupTests';
 import axios from 'axios';
-import 'core-js/stable';
-import 'isomorphic-fetch';
-import MockDate from 'mockdate';
-import 'regenerator-runtime/runtime';
 
-import './mocks/icons';
-import './mocks/reactIntl';
 import { server } from './mocks/server';
 
 // Establish API mocking before all tests.
@@ -19,19 +13,5 @@ afterAll(() => server.close());
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
-MockDate.set('2020-11-22');
-
-jest.disableAutomock();
-
 jest.mock('./shared/services/contentful/schema');
 jest.mock('./shared/services/graphqlApi/schema');
-
-window.matchMedia =
-  window.matchMedia ||
-  function () {
-    return {
-      matches: false,
-      addListener: Function.prototype,
-      removeListener: Function.prototype,
-    };
-  };

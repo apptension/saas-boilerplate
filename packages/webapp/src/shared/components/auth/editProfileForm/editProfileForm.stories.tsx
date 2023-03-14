@@ -1,15 +1,15 @@
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
 import { currentUserFactory } from '../../../../mocks/factories';
-import { contentWithLimitedWidth, contentWrapper } from '../../../../theme/size';
 import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { withProviders } from '../../../utils/storybook';
 import { EditProfileForm } from './editProfileForm.component';
 
 const Container = styled.div`
-  ${contentWrapper};
-  ${contentWithLimitedWidth};
+  ${size.contentWrapper};
+  ${size.contentWithLimitedWidth};
 `;
 
 const Template: Story = () => {

@@ -1,3 +1,4 @@
+import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { isEmpty } from 'ramda';
 import { ElementType } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
@@ -5,7 +6,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { FragmentType } from '../../../services/graphqlApi/__generated/gql';
 import { EmptyState } from '../../emptyState';
-import { ButtonVariant } from '../../forms/button';
 import { NotificationSkeleton } from '../notification';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';
 import { NotificationTypes } from '../notifications.types';

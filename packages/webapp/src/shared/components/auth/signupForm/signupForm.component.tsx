@@ -1,10 +1,10 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { FormFieldsRow } from '../../../../theme/size';
 import { emailPattern } from '../../../constants';
 import { useGenerateLocalePath } from '../../../hooks';
-import { Input } from '../../forms/input';
 import { useSignupForm } from './signupForm.hooks';
 import { Checkbox, Container, ErrorMessage, InlineLink, SubmitButton } from './signupForm.styles';
 
@@ -24,7 +24,7 @@ export const SignupForm = () => {
 
   return (
     <Container onSubmit={handleSignup}>
-      <FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('email', {
             required: {
@@ -54,9 +54,9 @@ export const SignupForm = () => {
           })}
           error={errors.email?.message}
         />
-      </FormFieldsRow>
+      </size.FormFieldsRow>
 
-      <FormFieldsRow>
+      <size.FormFieldsRow>
         <Input
           {...register('password', {
             required: {
@@ -86,7 +86,7 @@ export const SignupForm = () => {
           })}
           error={errors.password?.message}
         />
-      </FormFieldsRow>
+      </size.FormFieldsRow>
 
       <Checkbox
         {...register('acceptTerms', {

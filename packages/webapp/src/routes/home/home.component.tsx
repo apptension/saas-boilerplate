@@ -1,6 +1,7 @@
+import { typography } from '@saas-boilerplate-app/webapp-core/theme';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { H1 } from '../../theme/typography';
+
 import { Container } from './home.styles';
 
 export const Home = () => {
@@ -15,9 +16,9 @@ export const Home = () => {
         })}
       />
 
-      <H1>
+      <typography.H1>
         <FormattedMessage defaultMessage="Welcome!" id="Home / title" />
-      </H1>
+      </typography.H1>
     </Container>
   );
 };

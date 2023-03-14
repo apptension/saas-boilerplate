@@ -1,8 +1,8 @@
+import { Locale, appLocales } from '@saas-boilerplate-app/webapp-core/config/i18n';
+import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 
-import { Locale, appLocales } from '../../../app/config/i18n';
 import { LANG_PREFIX } from '../../../app/config/routes';
-import { useLocales } from '../../hooks';
 
 export const useLanguageRouter = () => {
   const {

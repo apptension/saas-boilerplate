@@ -1,9 +1,6 @@
+import { Button, ButtonVariant, RadioButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { color, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { heading5, MicroLabel } from '../../../../../theme/typography';
-import { sizeUnits } from '../../../../../theme/size';
-import { RadioButton } from '../../../forms/radioButton';
-import { Button, ButtonVariant } from '../../../forms/button';
-import { color } from '../../../../../theme';
 
 export const Container = styled.div``;
 
@@ -13,7 +10,7 @@ export const PaymentMethodList = styled.ul`
 
 export const PaymentMethodListItem = styled.li`
   & + & {
-    margin-top: ${sizeUnits(1)};
+    margin-top: ${size.sizeUnits(1)};
   }
 `;
 
@@ -30,15 +27,15 @@ export const NewPaymentMethodItem = styled(Button).attrs((props: { isSelected: b
 `;
 
 export const CardElementContainer = styled.div`
-  margin-top: ${sizeUnits(3)};
+  margin-top: ${size.sizeUnits(3)};
 `;
 
 export const Heading = styled.h3`
-  ${heading5};
-  margin-bottom: ${sizeUnits(1)};
+  ${typography.heading5};
+  margin-bottom: ${size.sizeUnits(1)};
 `;
 
-export const ErrorMessage = styled(MicroLabel)`
+export const ErrorMessage = styled(typography.MicroLabel)`
   margin-top: 2px;
   color: ${color.error};
 `;

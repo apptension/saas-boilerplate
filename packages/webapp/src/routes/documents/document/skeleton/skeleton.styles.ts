@@ -1,9 +1,10 @@
+import { size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
+
 import { Container as ContainerBase } from '../document.styles';
-import { sizeUnits } from '../../../../theme/size';
 
 export const Container = styled(ContainerBase)`
   > * {
-    margin-bottom: ${sizeUnits(1)};
+    margin-bottom: ${size.sizeUnits(1)};
   }
 `;

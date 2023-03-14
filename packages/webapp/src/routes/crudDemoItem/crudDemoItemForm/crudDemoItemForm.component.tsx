@@ -1,10 +1,9 @@
 import { ApolloError } from '@apollo/client';
+import { Button, ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { Button, ButtonVariant } from '../../../shared/components/forms/button';
-import { Input } from '../../../shared/components/forms/input';
-import { Link } from '../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../shared/hooks';
 import { useCrudDemoItemForm } from './crudDemoItemForm.hook';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';

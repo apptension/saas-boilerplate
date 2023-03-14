@@ -24,5 +24,13 @@
     "src/setupTests.ts",
     "infra/**/*"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "infra/**/*.tsx"]
+  "include": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "infra/**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ]
 }

@@ -1,9 +1,8 @@
+import { color, elevation, media, size, transition } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { color, elevation, size, transition } from '../../../../theme';
+
 import { HeaderLogoIcon } from '../../../../images/icons';
-import { contentWrapper, sizeUnits } from '../../../../theme/size';
 import { Avatar as AvatarBase } from '../../avatar';
-import { Breakpoint, media } from '../../../../theme/media';
 
 export const Container = styled.header`
   height: ${size.header};
@@ -12,7 +11,7 @@ export const Container = styled.header`
 `;
 
 export const Content = styled.div`
-  ${contentWrapper};
+  ${size.contentWrapper};
   max-width: none;
   height: ${size.header};
   display: flex;
@@ -20,7 +19,7 @@ export const Content = styled.div`
   justify-content: space-between;
   line-height: 0;
   position: relative;
-  border-bottom: 1px solid ${color.greyScale.get(95)} ${media(Breakpoint.TABLET)`
+  border-bottom: 1px solid ${color.greyScale.get(95)} ${media.media(media.Breakpoint.TABLET)`
     justify-content: flex-start;
   `};
 `;
@@ -29,9 +28,9 @@ export const HeaderLogo = styled(HeaderLogoIcon)``;
 
 export const MenuToggleButton = styled.div.attrs(() => ({ role: 'button', tabIndex: 0 }))`
   display: block;
-  width: ${sizeUnits(3)};
+  width: ${size.sizeUnits(3)};
   padding: 6px 2px;
-  left: ${sizeUnits(2)};
+  left: ${size.sizeUnits(2)};
   cursor: pointer;
 `;
 
@@ -45,17 +44,17 @@ export const MenuLine = styled.span`
 `;
 
 export const MenuContainer = styled.div`
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     margin-right: auto;
   `}
 `;
 
 export const ProfileActions = styled.div`
   position: relative;
-  margin-left: ${sizeUnits(1)};
+  margin-left: ${size.sizeUnits(1)};
   display: none;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     display: block;
   `}
 `;
@@ -66,8 +65,8 @@ export const Menu = styled.div<{ isOpen: boolean }>`
   z-index: 1;
   border-radius: 4px;
   overflow: hidden;
-  top: ${sizeUnits(5)};
-  min-width: ${sizeUnits(21)};
+  top: ${size.sizeUnits(5)};
+  min-width: ${size.sizeUnits(21)};
   text-align: left;
   ${elevation.lightest};
   display: flex;
@@ -98,12 +97,12 @@ export const Avatar = styled(AvatarBase)`
 
 export const SnackbarMessages = styled.div`
   position: fixed;
-  top: ${sizeUnits(1)};
+  top: ${size.sizeUnits(1)};
   z-index: 1;
   width: 100%;
 
-  ${media(Breakpoint.TABLET)`
-    top: ${sizeUnits(3)};
+  ${media.media(media.Breakpoint.TABLET)`
+    top: ${size.sizeUnits(3)};
     width: auto;
     left: 50%;
     transform: translateX(-50%);

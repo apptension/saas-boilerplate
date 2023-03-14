@@ -1,10 +1,11 @@
+import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { Elements } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { BackButton } from '../../../shared/components/backButton';
-import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks';
+import { useGenerateLocalePath } from '../../../shared/hooks';
 import { stripePromise } from '../../../shared/services/stripe';
 import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';

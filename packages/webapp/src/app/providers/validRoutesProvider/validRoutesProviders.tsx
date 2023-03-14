@@ -1,12 +1,12 @@
+import { translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
+import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
+import { ResponsiveThemeProvider } from '@saas-boilerplate-app/webapp-core/providers';
+import { global } from '@saas-boilerplate-app/webapp-core/theme';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Outlet } from 'react-router-dom';
 
-import { ResponsiveThemeProvider } from '../';
 import { Layout } from '../../../shared/components/layout';
-import { useLocales } from '../../../shared/hooks';
-import { GlobalStyle } from '../../../theme/global';
-import { translationMessages } from '../../config/i18n';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
 export const ValidRoutesProviders = () => {
@@ -27,7 +27,7 @@ export const ValidRoutesProviders = () => {
           {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
         </FormattedMessage>
 
-        <GlobalStyle />
+        <global.GlobalStyle />
 
         <ResponsiveThemeProvider>
           <Layout>

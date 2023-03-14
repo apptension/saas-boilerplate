@@ -1,32 +1,29 @@
+import { color, media, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
-import { contentWithLimitedWidth, contentWrapper, formFieldWidth, sizeUnits } from '../../theme/size';
-import { H4, heading3, Paragraph, ParagraphBold } from '../../theme/typography';
-import { greyScale } from '../../theme/color';
-import { Breakpoint, media } from '../../theme/media';
 
 export const Container = styled.div`
   text-align: center;
-  padding-top: ${sizeUnits(3)};
-  padding-bottom: ${sizeUnits(3)};
+  padding-top: ${size.sizeUnits(3)};
+  padding-bottom: ${size.sizeUnits(3)};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  ${contentWrapper};
-  ${contentWithLimitedWidth};
+  ${size.contentWrapper};
+  ${size.contentWithLimitedWidth};
   margin-left: 0;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     align-items: flex-start;
   `};
 `;
 
 export const Header = styled.h1`
-  ${heading3};
-  margin-bottom: ${sizeUnits(3)};
+  ${typography.heading3};
+  margin-bottom: ${size.sizeUnits(3)};
   display: none;
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     display: block;
   `};
 `;
@@ -38,12 +35,12 @@ export const HeaderInfo = styled.div`
     'avatarError'
     'email'
     'roles';
-  grid-column-gap: ${sizeUnits(3)};
+  grid-column-gap: ${size.sizeUnits(3)};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     width: 100%;
     grid-template-columns: auto 1fr;
-    grid-row-gap: ${sizeUnits(1)};
+    grid-row-gap: ${size.sizeUnits(1)};
     grid-template-areas:
       'avatar email'
       'avatar roles'
@@ -51,33 +48,33 @@ export const HeaderInfo = styled.div`
   `};
 `;
 
-export const EmailLabel = styled(ParagraphBold)`
+export const EmailLabel = styled(typography.ParagraphBold)`
   grid-area: email;
-  color: ${greyScale.get(15)};
+  color: ${color.greyScale.get(15)};
   white-space: pre-wrap;
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     text-align: left;
     display: flex;
     align-items: flex-end;
   `};
 `;
 
-export const RolesLabel = styled(Paragraph)`
+export const RolesLabel = styled(typography.Paragraph)`
   grid-area: roles;
-  color: ${greyScale.get(45)};
+  color: ${color.greyScale.get(45)};
   white-space: pre-wrap;
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     text-align: left;
   `};
 `;
 
-export const FormHeader = styled(H4).attrs(() => ({ as: 'h1' }))`
-  margin-top: ${sizeUnits(6)};
-  margin-bottom: ${sizeUnits(3)};
+export const FormHeader = styled(typography.H4).attrs(() => ({ as: 'h1' }))`
+  margin-top: ${size.sizeUnits(6)};
+  margin-bottom: ${size.sizeUnits(3)};
   text-align: left;
-  ${formFieldWidth};
+  ${size.formFieldWidth};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     max-width: none;
   `};
 `;

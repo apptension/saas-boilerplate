@@ -1,9 +1,9 @@
 import { ApolloProvider as Provider } from '@apollo/client';
+import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
+import { SnackbarEmitterActions, useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { ReactNode, useEffect } from 'react';
 
-import { useLocales, useSnackbar } from '../../shared/hooks';
 import { client, emitter } from '../../shared/services/graphqlApi/apolloClient';
-import { SnackbarEmitterActions } from './snackbarProvider';
 
 export const ApolloProvider = ({ children }: { children: ReactNode }) => {
   const { showMessage } = useSnackbar();

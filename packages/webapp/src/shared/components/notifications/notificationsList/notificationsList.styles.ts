@@ -1,9 +1,6 @@
+import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { color, elevation, media, size, transition, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled, { css } from 'styled-components';
-import { heading3, microlabel, paragraphBold } from '../../../../theme/typography';
-import { Button } from '../../forms/button';
-import { horizontalMargin, sizeUnits } from '../../../../theme/size';
-import { color, size, transition, elevation } from '../../../../theme';
-import { Breakpoint, media } from '../../../../theme/media';
 
 type ContainerProps = {
   isOpen: boolean;
@@ -37,38 +34,38 @@ export const Container = styled.div<ContainerProps>`
       ],
     })}
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
       ${elevation.lightest};
-      width: ${sizeUnits(40)};
+      width: ${size.sizeUnits(40)};
       height: auto;
-      max-height: calc(100% - ${size.header} - ${sizeUnits(2)});
-      top: calc(${size.header} - ${sizeUnits(1)});
-      right: ${sizeUnits(5)};
+      max-height: calc(100% - ${size.header} - ${size.sizeUnits(2)});
+      top: calc(${size.header} - ${size.sizeUnits(1)});
+      right: ${size.sizeUnits(5)};
   `}
 `;
 
 const topRow = css`
   align-self: center;
-  ${horizontalMargin(sizeUnits(2))}
+  ${size.horizontalMargin(size.sizeUnits(2))}
 `;
 
 export const Title = styled.h6`
-  ${heading3};
+  ${typography.heading3};
   ${topRow};
   grid-area: title;
 
-  ${media(Breakpoint.TABLET)`
-    ${paragraphBold}
+  ${media.media(media.Breakpoint.TABLET)`
+    ${typography.paragraphBold}
   `}
 `;
 
 export const MarkAllAsReadButton = styled(Button)`
   ${topRow};
-  ${microlabel};
+  ${typography.microlabel};
   grid-area: button;
 `;
 
 export const List = styled.ul`
   grid-area: list;
-  padding-bottom: ${sizeUnits(3)};
+  padding-bottom: ${size.sizeUnits(3)};
 `;

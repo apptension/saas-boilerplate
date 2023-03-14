@@ -1,12 +1,13 @@
+import { typography } from '@saas-boilerplate-app/webapp-core/theme';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
+import { DEFAULT_LOCALE, translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
 import { Role } from '../modules/auth/auth.types';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
 import { AuthRoute } from '../shared/components/routes/authRoute';
-import { H1 } from '../theme/typography';
 import {
   CancelSubscription,
   ConfirmEmail,
@@ -28,7 +29,6 @@ import {
   TermsAndConditions,
   TransactionHistory, //<-- IMPORT ROUTE COMPONENT -->
 } from './asyncComponents';
-import { DEFAULT_LOCALE, translationMessages } from './config/i18n';
 import { LANG_PREFIX, RoutesConfig } from './config/routes';
 import { ValidRoutesProviders } from './providers';
 
@@ -67,9 +67,9 @@ export const App = () => {
           <Route
             path={RoutesConfig.admin}
             element={
-              <H1>
+              <typography.H1>
                 <FormattedMessage defaultMessage="This page is only visible for admins" id="Admin / Heading" />
-              </H1>
+              </typography.H1>
             }
           />
         </Route>

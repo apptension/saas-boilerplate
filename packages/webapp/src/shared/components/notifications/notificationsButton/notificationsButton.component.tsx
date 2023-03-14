@@ -1,9 +1,10 @@
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
+import { ButtonProps, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
 import { useIntl } from 'react-intl';
-import { ButtonProps, ButtonVariant } from '../../forms/button';
-import { Icon } from '../../icon';
-import { gql, useFragment, FragmentType } from '../../../services/graphqlApi/__generated/gql';
+
+import { FragmentType, gql, useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { Button } from './notificationsButton.styles';
 
 export const NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT = gql(/* GraphQL */ `

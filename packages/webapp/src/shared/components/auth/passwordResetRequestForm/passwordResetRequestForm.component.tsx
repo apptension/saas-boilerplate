@@ -1,7 +1,7 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { emailPattern } from '../../../constants';
-import { Input } from '../../forms/input';
 import { usePasswordResetRequestForm } from './passwordResetRequestForm.hooks';
 import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
 

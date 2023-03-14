@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
+import { Dropzone } from '@saas-boilerplate-app/webapp-core/components/forms';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 
 import { EmptyState } from '../../shared/components/emptyState';
-import { Dropzone } from '../../shared/components/forms/dropzone';
 import { useMappedConnection } from '../../shared/hooks';
 import { DocumentsListQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Document, DocumentSkeleton } from './document';

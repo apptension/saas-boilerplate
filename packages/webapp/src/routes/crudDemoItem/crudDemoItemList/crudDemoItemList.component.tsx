@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
+import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { ButtonVariant } from '../../../shared/components/forms/button';
 import { useGenerateLocalePath } from '../../../shared/hooks';
 import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { mapConnection } from '../../../shared/utils/graphql';

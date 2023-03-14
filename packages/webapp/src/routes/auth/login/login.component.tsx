@@ -1,10 +1,10 @@
+import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
-import { Link } from '../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../shared/hooks';
 import { Container, Header, Links, OrDivider } from './login.styles';
 

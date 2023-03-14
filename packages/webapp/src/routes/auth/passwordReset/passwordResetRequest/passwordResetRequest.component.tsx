@@ -1,9 +1,9 @@
+import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
-import { Link } from '../../../../shared/components/link';
 import { useGenerateLocalePath } from '../../../../shared/hooks';
 import { Container, Header, Links, Text } from './passwordResetRequest.styles';
 

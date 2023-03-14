@@ -1,20 +1,19 @@
+import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { RelativeDate as RelativeDateBase } from '@saas-boilerplate-app/webapp-core/components/dateTime/relativeDate';
+import { color, size, transition, typography } from '@saas-boilerplate-app/webapp-core/theme';
 import styled, { css } from 'styled-components';
-import { horizontalPadding, sizeUnits, verticalPadding } from '../../../../theme/size';
-import { label, labelBold, microlabel } from '../../../../theme/typography';
-import { color, transition } from '../../../../theme';
-import { Button } from '../../forms/button';
-import { RelativeDate as RelativeDateBase } from '../../dateTime/relativeDate';
+
 import { NotificationThemeProps } from './notification.types';
 
 const readColor = color.greyScale.get(55);
 
 export const Container = styled.li<NotificationThemeProps>`
   display: grid;
-  grid-column-gap: ${sizeUnits(1)};
+  grid-column-gap: ${size.sizeUnits(1)};
   transition: background-color ${transition.primary};
   color: ${(props) => (props.theme.isRead ? readColor : 'inherit')};
-  ${verticalPadding(sizeUnits(2))}
-  ${horizontalPadding(sizeUnits(2))}
+  ${size.verticalPadding(size.sizeUnits(2))}
+  ${size.horizontalPadding(size.sizeUnits(2))}
   ${(props) =>
     props.theme.hasAvatar
       ? css`
@@ -23,7 +22,7 @@ export const Container = styled.li<NotificationThemeProps>`
             'avatar title markAsRead'
             'avatar content content'
             '. actions actions';
-          grid-template-columns: ${sizeUnits(3)} 1fr ${sizeUnits(3)};
+          grid-template-columns: ${size.sizeUnits(3)} 1fr ${size.sizeUnits(3)};
         `
       : css`
           grid-template-areas:
@@ -31,7 +30,7 @@ export const Container = styled.li<NotificationThemeProps>`
             'title markAsRead'
             'content content'
             'actions actions';
-          grid-template-columns: 1fr ${sizeUnits(3)};
+          grid-template-columns: 1fr ${size.sizeUnits(3)};
         `}
 
 
@@ -46,37 +45,37 @@ export const Container = styled.li<NotificationThemeProps>`
 `;
 
 export const Avatar = styled.img`
-  margin-top: ${sizeUnits(0.5)};
+  margin-top: ${size.sizeUnits(0.5)};
   grid-area: avatar;
   border-radius: 100%;
-  width: ${sizeUnits(3)};
-  height: ${sizeUnits(3)};
+  width: ${size.sizeUnits(3)};
+  height: ${size.sizeUnits(3)};
   object-fit: cover;
 `;
 
 export const RelativeDate = styled(RelativeDateBase)`
   grid-area: time;
-  ${microlabel};
+  ${typography.microlabel};
 `;
 
 export const Title = styled.h6`
   grid-area: title;
-  ${labelBold};
+  ${typography.labelBold};
 `;
 
 export const Content = styled.p`
   grid-area: content;
-  margin-top: ${sizeUnits(0.25)};
-  ${label};
+  margin-top: ${size.sizeUnits(0.25)};
+  ${typography.label};
 `;
 
 export const MarkAsReadButton = styled(Button)<NotificationThemeProps>`
   grid-area: markAsRead;
-  width: ${sizeUnits(3)};
-  height: ${sizeUnits(3)};
-  padding: ${sizeUnits(0.5)};
+  width: ${size.sizeUnits(3)};
+  height: ${size.sizeUnits(3)};
+  padding: ${size.sizeUnits(0.5)};
   position: relative;
-  top: -${sizeUnits(0.5)};
+  top: -${size.sizeUnits(0.5)};
 
   ${(props) =>
     props.theme.isRead &&
@@ -98,10 +97,10 @@ export const Actions = styled.footer`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding-top: ${sizeUnits(1)};
-  margin: -${sizeUnits(0.5)};
+  padding-top: ${size.sizeUnits(1)};
+  margin: -${size.sizeUnits(0.5)};
 
   > * {
-    margin: ${sizeUnits(0.25)};
+    margin: ${size.sizeUnits(0.25)};
   }
 `;

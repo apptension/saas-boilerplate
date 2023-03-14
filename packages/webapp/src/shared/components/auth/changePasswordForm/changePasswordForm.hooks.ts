@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
+import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
-import { useApiForm, useSnackbar } from '../../../hooks';
+import { useApiForm } from '../../../hooks';
 import { authChangePasswordMutation } from './changePasswordForm.graphql';
 import { ChangePasswordFormFields } from './changePasswordForm.types';
 

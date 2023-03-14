@@ -1,8 +1,8 @@
+import { DEFAULT_LOCALE } from '@saas-boilerplate-app/webapp-core/config/i18n';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { generatePath, redirect } from 'react-router-dom';
 
-import { DEFAULT_LOCALE } from '../../../app/config/i18n';
 import { RoutesConfig } from '../../../app/config/routes';
 import { AUTH_URL, refreshToken } from './auth';
 import { PendingRequest } from './types';

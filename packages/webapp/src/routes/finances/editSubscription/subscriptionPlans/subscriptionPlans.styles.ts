@@ -1,26 +1,25 @@
+import { media, size } from '@saas-boilerplate-app/webapp-core/theme';
 import styled from 'styled-components';
 
-import { sizeUnits } from '../../../../theme/size';
-import { Breakpoint, media } from '../../../../theme/media';
 import { SubscriptionPlanItem } from '../subscriptionPlanItem';
 
 export const Plans = styled.div`
-  margin-top: ${sizeUnits(5)};
+  margin-top: ${size.sizeUnits(5)};
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
       display: flex;
   `};
 `;
 
 export const PlanItem = styled(SubscriptionPlanItem)`
   & + & {
-    margin-top: ${sizeUnits(3)};
+    margin-top: ${size.sizeUnits(3)};
   }
 
-  ${media(Breakpoint.TABLET)`
+  ${media.media(media.Breakpoint.TABLET)`
     & + & {
       margin-top: 0;
-      margin-left: ${sizeUnits(4)};
+      margin-left: ${size.sizeUnits(4)};
     }
   `};
 `;

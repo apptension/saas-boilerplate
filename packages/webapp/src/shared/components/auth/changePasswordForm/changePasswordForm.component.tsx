@@ -1,8 +1,8 @@
+import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Input } from '../../forms/input';
 
-import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
 import { useChangePasswordForm } from './changePasswordForm.hooks';
+import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
 
 export const ChangePasswordForm = () => {
   const intl = useIntl();
