@@ -686,6 +686,7 @@ importers:
       mockdate: ^3.0.5
       ramda: ^0.28.0
       react: 18.2.0
+      react-click-away-listener: ^2.2.2
       react-dom: 18.2.0
       react-dropzone: ^14.2.3
       react-helmet-async: ^1.3.0
@@ -706,6 +707,7 @@ importers:
       lodash.throttle: 4.1.1
       ramda: 0.28.0
       react: 18.2.0
+      react-click-away-listener: 2.2.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
       react-dropzone: 14.2.3_react@18.2.0
       react-helmet-async: 1.3.0_biqbaboplfbrettd7655fr4n2y
@@ -10938,7 +10940,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-darwin-x64/1.3.27:
@@ -10947,7 +10948,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-linux-arm-gnueabihf/1.3.27:
@@ -10956,7 +10956,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-linux-arm64-gnu/1.3.27:
@@ -10965,7 +10964,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-linux-arm64-musl/1.3.27:
@@ -10974,7 +10972,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-linux-x64-gnu/1.3.27:
@@ -10983,7 +10980,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-linux-x64-musl/1.3.27:
@@ -10992,7 +10988,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-win32-arm64-msvc/1.3.27:
@@ -11001,7 +10996,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-win32-ia32-msvc/1.3.27:
@@ -11010,7 +11004,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core-win32-x64-msvc/1.3.27:
@@ -11019,7 +11012,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@swc/core/1.3.27:
@@ -11037,7 +11029,6 @@ packages:
       '@swc/core-win32-arm64-msvc': 1.3.27
       '@swc/core-win32-ia32-msvc': 1.3.27
       '@swc/core-win32-x64-msvc': 1.3.27
-    dev: true
 
   /@swc/helpers/0.4.14:
     resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
@@ -13615,7 +13606,7 @@ packages:
     dependencies:
       find-cache-dir: 3.3.2
       schema-utils: 4.0.0
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /babel-plugin-add-react-displayname/0.0.5:
@@ -13797,7 +13788,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.6_wcqkhtmu7mswc6yz4uyexck3ty
+      styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
 
   /babel-plugin-syntax-jsx/6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
@@ -15834,7 +15825,7 @@ packages:
       normalize-path: 3.0.0
       schema-utils: 4.0.0
       serialize-javascript: 6.0.1
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /copy-webpack-plugin/11.0.0_webpack@5.75.0:
@@ -16158,7 +16149,7 @@ packages:
       postcss-modules-values: 4.0.0_postcss@8.4.21
       postcss-value-parser: 4.2.0
       semver: 7.3.8
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
 
   /css-minimizer-webpack-plugin/3.4.1_webpack@5.75.0:
     resolution: {integrity: sha512-1u6D71zeIfgngN2XNRJefc/hY7Ybsxd74Jm4qngIXyUEk7fss3VUzuHxLAq/R8NAba4QU9OUSaMZlbpRc7bM4Q==}
@@ -16185,7 +16176,7 @@ packages:
       schema-utils: 4.0.0
       serialize-javascript: 6.0.1
       source-map: 0.6.1
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /css-minimizer-webpack-plugin/4.2.2_dpcjkp5o5ztxuvt4quwwvenemi:
@@ -19086,7 +19077,7 @@ packages:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.1.1
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
 
   /file-selector/0.6.0:
     resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
@@ -23584,7 +23575,7 @@ packages:
     dependencies:
       klona: 2.0.6
       less: 3.12.2
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /less/3.12.2:
@@ -23713,7 +23704,7 @@ packages:
       webpack-sources:
         optional: true
     dependencies:
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
       webpack-sources: 3.2.3
     dev: true
 
@@ -24907,7 +24898,7 @@ packages:
       webpack: ^5.0.0
     dependencies:
       schema-utils: 4.0.0
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /mini-css-extract-plugin/2.7.2_webpack@5.75.0:
@@ -27116,7 +27107,7 @@ packages:
       klona: 2.0.6
       postcss: 8.4.21
       semver: 7.3.8
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /postcss-loader/7.0.2_6jdsrmfenkuhhw3gx4zvjlznce:
@@ -29326,7 +29317,7 @@ packages:
       klona: 2.0.6
       neo-async: 2.6.2
       sass: 1.57.1
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /sass/1.57.1:
@@ -30065,7 +30056,7 @@ packages:
       abab: 2.0.6
       iconv-lite: 0.6.3
       source-map-js: 1.0.2
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /source-map-resolve/0.5.3:
@@ -30703,7 +30694,7 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /style-search/0.1.0:
@@ -30766,7 +30757,6 @@ packages:
       react-dom: 18.2.0_react@18.2.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
-    dev: false
 
   /styled-components/5.3.6_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-hGTZquGAaTqhGWldX7hhfzjnIYBZ0IXQXkCYdvF1Sq3DsUaLx6+NTHC5Jj1ooM2F68sBiVz3lvhfwQs/S3l6qg==}
@@ -30789,6 +30779,7 @@ packages:
       react-dom: 16.14.0_react@16.14.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
+    dev: false
 
   /styled-theming/2.2.0:
     resolution: {integrity: sha512-5nqUoCR/BJ6ziJ39xN/K5nmrzMn37BgPc693vgeQlO0hMaat/hJvJ0/u0vtm1ZQxU82sdltEbynqjkoYYMVwaA==}
@@ -30911,7 +30902,7 @@ packages:
       klona: 2.0.6
       normalize-path: 3.0.0
       stylus: 0.55.0
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /stylus/0.55.0:
@@ -31289,7 +31280,6 @@ packages:
       serialize-javascript: 6.0.1
       terser: 5.16.1
       webpack: 5.75.0_@swc+core@1.3.27
-    dev: true
 
   /terser-webpack-plugin/5.3.6_webpack@5.75.0:
     resolution: {integrity: sha512-kfLFk+PoLUQIbLmB1+PZDMRSZS99Mp+/MHqDNmMA6tOItzRt+Npe3E+fsMs5mfcM0wCtrrdU387UnV+vnSffXQ==}
@@ -32987,7 +32977,7 @@ packages:
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
 
   /webpack-dev-server/4.11.1_webpack@5.75.0:
     resolution: {integrity: sha512-lILVz9tAUy1zGFwieuaQtYiadImb5M3d+H+L1zDYalYoDl0cksAB1UNyuE5MMWJrG6zR1tXkCP2fitl7yoUJiw==}
@@ -33027,7 +33017,7 @@ packages:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
       webpack-dev-middleware: 5.3.3_webpack@5.75.0
       ws: 8.12.0
     transitivePeerDependencies:
@@ -33095,7 +33085,7 @@ packages:
         optional: true
     dependencies:
       typed-assert: 1.0.9
-      webpack: 5.75.0
+      webpack: 5.75.0_@swc+core@1.3.27
     dev: true
 
   /webpack-virtual-modules/0.2.2:
@@ -33223,7 +33213,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: true
 
   /webpackbar/5.0.2_webpack@5.75.0:
     resolution: {integrity: sha512-BmFJo7veBDgQzfWXl/wwYXr/VFus0614qZ8i9znqcl9fnEdiVkdbi0TedLQ6xAK92HZHDJ0QmyQ0fmuZPAgCYQ==}
