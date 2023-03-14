@@ -80,6 +80,7 @@ pipelines:
         - step:
             name: 'webapp-core: Lint & test'
             image: atlassian/default-image:4
+            size: 2x
             script:
               - *initializeStep
               - pnpm install
@@ -87,10 +88,15 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-core...
               - node_modules/.bin/nx run webapp-core:lint
-              - node_modules/.bin/nx run webapp-core:test
+              - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-core'
             caches:
               - pnpmwebappcore
               - clis
+              - sonar
         - step:
             name: 'backend: Build image & run tests'
             image: atlassian/default-image:3

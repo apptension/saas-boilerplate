@@ -8,9 +8,9 @@ import {
   ResponsiveThemeProviderProps,
 } from '../responsiveThemeProvider.component';
 
-jest.mock('@saas-boilerplate-app/webapp-core/theme', () => {
+jest.mock('../../../theme', () => {
   const requireActual = jest.requireActual(
-    '@saas-boilerplate-app/webapp-core/theme'
+    '../../../theme'
   );
   return {
     ...requireActual,

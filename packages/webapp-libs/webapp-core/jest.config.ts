@@ -19,6 +19,5 @@ export default {
   coverageReporters: ['lcov'],
   coveragePathIgnorePatterns: ['/node_modules/', '.*.svg'],
   setupFilesAfterEnv: ['./src/tests/setupTests.ts'],
-  coverageDirectory: '../../../coverage/packages/webapp-libs/webapp-core',
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
