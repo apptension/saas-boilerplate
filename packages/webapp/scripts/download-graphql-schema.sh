@@ -3,7 +3,7 @@
 export $(egrep -v '^#' .env | xargs)
 
 CONTENTFUL_URL="https://graphql.contentful.com/content/v1/spaces/$VITE_CONTENTFUL_SPACE/environments/$VITE_CONTENTFUL_ENV?access_token=$VITE_CONTENTFUL_TOKEN"
-API_URL="http://localhost:5000/api/graphql/"
+API_URL="http://localhost:5001/api/graphql/"
 
 rm  -f ./src/shared/services/contentful/__generated/types.ts
 rm  -f ./src/shared/services/contentful/__generated/hooks.ts

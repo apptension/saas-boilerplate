@@ -89,7 +89,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - BE_ENDPOINT_URL=http://backend:5000/
+      - BE_ENDPOINT_URL=http://backend:5001/
     volumes:
       - ./packages/internal/local-ws-server/:/app/
       - /app/node_modules

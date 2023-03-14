@@ -25,4 +25,4 @@ echo "LocalStack fixtures installed"
 python manage.py contentful_sync
 python manage.py migrate
 python manage.py init_subscriptions
-python manage.py runserver 0.0.0.0:5000
+python manage.py runserver 0.0.0.0:5001

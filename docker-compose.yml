@@ -17,7 +17,7 @@ services:
       target: backend
     command: ["./scripts/run_local.sh"]
     ports:
-      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - db
       - stripemock
