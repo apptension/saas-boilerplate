@@ -7,7 +7,7 @@ import * as cc from 'aws-cdk-lib/aws-codecommit';
 import {
   EnvConstructProps,
   ServiceCiConfig,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 interface E2ETestsCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;

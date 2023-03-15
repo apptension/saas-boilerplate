@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks';
-import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { mapConnection } from '../../../shared/utils/graphql';
 import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
@@ -25,7 +25,6 @@ export const crudDemoItemListQuery = gql(/* GraphQL */ `
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { loading, data } = useQuery(crudDemoItemListQuery);
-
   const renderList = () => {
     if (data) {
       return (

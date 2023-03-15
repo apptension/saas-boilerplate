@@ -1,4 +1,4 @@
-import { color } from '@saas-boilerplate-app/webapp-core/theme';
+import { color } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { AvatarProps } from './avatar.component';

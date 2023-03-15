@@ -16,7 +16,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import {
   EnvConstructProps,
   ServiceCiConfig,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;

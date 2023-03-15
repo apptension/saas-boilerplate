@@ -5,7 +5,7 @@
   "sourceRoot": "packages/backend",
   "targets": {
     "setup": {
-      "executor": "@saas-boilerplate-app/tools:setup",
+      "executor": "@sb/tools:setup",
       "options": {
         "cwd": "packages/backend"
       }
@@ -28,33 +28,24 @@
         "color": true,
         "command": "docker-compose run --rm -T backend ./scripts/run_tests.sh"
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": [
-          "/bin/bash scripts/build.sh"
-        ],
+        "commands": ["/bin/bash scripts/build.sh"],
         "parallel": false
       },
-      "dependsOn": [
-        "test"
-      ]
+      "dependsOn": ["test"]
     },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": [
-          "nx cdk:deploy:api",
-          "nx cdk:deploy:migrations"
-        ],
+        "commands": ["nx cdk:deploy:api", "nx cdk:deploy:migrations"],
         "parallel": false
       },
       "configurations": {
@@ -76,7 +67,5 @@
       }
     }
   },
-  "tags": [
-    "service"
-  ]
+  "tags": ["service"]
 }

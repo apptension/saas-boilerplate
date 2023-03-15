@@ -1,4 +1,4 @@
-import { Suspense, lazy, ComponentType } from 'react';
+import { ComponentType, Suspense, lazy } from 'react';
 
 export const asyncComponent = (asyncLoader: () => Promise<{ default: ComponentType<unknown> }>) => {
   const Component = lazy(asyncLoader);

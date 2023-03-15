@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
+
 import { Image } from '../image';
-import { Container, Table, Tr, Td, Text, Title } from './layout.styles';
+import { Container, Table, Td, Text, Title, Tr } from './layout.styles';
 
 export type LayoutProps = {
   title: ReactNode;

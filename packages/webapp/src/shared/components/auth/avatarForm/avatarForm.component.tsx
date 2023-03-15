@@ -1,5 +1,5 @@
 import cameraIcon from '@iconify-icons/ion/camera-outline';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { FieldError } from 'react-hook-form';
 
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';

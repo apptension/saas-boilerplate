@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 
 import { useMappedConnection } from '../../../hooks';
-import { FragmentType, useFragment } from '../../../services/graphqlApi/__generated/gql';
 import { notificationsListContentFragment, notificationsListMarkAsReadMutation } from './notificationsList.graphql';
 
 export const useMarkAllAsRead = (message: string) => {

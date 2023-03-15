@@ -1,4 +1,5 @@
-import { path, Path } from 'ramda';
+import { Path, path } from 'ramda';
+
 import { getLocalePath, nestedPath } from '../../shared/utils/path';
 
 export const LANG_PREFIX = `/:lang/*`;
@@ -33,7 +34,7 @@ const routes = {
     changePlan: 'edit',
     paymentMethod: 'payment-method',
     cancel: 'cancel',
-    list: ''
+    list: '',
   }),
   documents: 'documents',
   //<-- INJECT ROUTE DEFINITION -->

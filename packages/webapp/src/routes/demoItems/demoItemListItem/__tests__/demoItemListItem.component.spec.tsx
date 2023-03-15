@@ -1,16 +1,13 @@
+import { demoItemFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
 import { Route, Routes, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import {
-  demoItemFactory,
-  fillCreateFavouriteDemoItemQuery,
-  fillRemoveFavouriteDemoItemQuery,
-} from '../../../../mocks/factories';
+import { fillCreateFavouriteDemoItemQuery, fillRemoveFavouriteDemoItemQuery } from '../../../../tests/factories';
 import { useFavoriteDemoItemListQuery } from '../../../../shared/hooks/useFavoriteDemoItem/useFavoriteDemoItem.graphql';
-import { composeMockedListQueryResult } from '../../../../tests/utils/fixtures';
 import { render } from '../../../../tests/utils/rendering';
 import { DemoItemListItem, DemoItemListItemProps } from '../demoItemListItem.component';
 

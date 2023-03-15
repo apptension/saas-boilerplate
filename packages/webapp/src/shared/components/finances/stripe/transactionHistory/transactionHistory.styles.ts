@@ -1,4 +1,4 @@
-import { border, color, media, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { border, color, media, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { TransactionHistoryEntry } from './transactionHistoryEntry';

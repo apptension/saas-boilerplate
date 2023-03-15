@@ -1,10 +1,10 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { fillEditCrudDemoItemQuery } from '../../../../mocks/factories/crudDemoItem';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { fillEditCrudDemoItemQuery } from '../../../../tests/factories/crudDemoItem';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { editCrudDemoItemMutation } from '../editCrudDemoItem.graphql';

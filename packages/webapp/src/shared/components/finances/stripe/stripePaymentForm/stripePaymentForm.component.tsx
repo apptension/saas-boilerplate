@@ -1,7 +1,7 @@
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TestProduct } from '../../../../../modules/stripe/stripe.types';
-import { useStripePaymentIntent, UseStripePaymentIntentProps } from '../stripePayment.hooks';
+import { UseStripePaymentIntentProps, useStripePaymentIntent } from '../stripePayment.hooks';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector';
 import {
   ErrorMessage,

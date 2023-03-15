@@ -1,7 +1,7 @@
+import { ENV } from '@sb/webapp-core/config/env';
 import { useIntl } from 'react-intl';
 import { generatePath } from 'react-router-dom';
 
-import { ENV } from '../../../app/config/env';
 import { RoutesConfig } from '../../../app/config/routes';
 
 /**

@@ -1,7 +1,6 @@
+import { FragmentType, StripeSubscriptionQueryQuery, useFragment } from '@sb/webapp-api-client/graphql';
 import { FormattedMessage } from 'react-intl';
 
-import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
-import { StripeSubscriptionQueryQuery } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetailsData } from '../../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { useSubscriptionPlanDetails } from '../../hooks/useSubscriptionPlanDetails';
 import { SUBSRIPTION_PRICE_ITEM_FRAGMENT } from '../subscriptionPlans/subscriptionPlans.graphql';

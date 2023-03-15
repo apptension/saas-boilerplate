@@ -1,8 +1,8 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
 import { render } from '../../../../tests/utils/rendering';
 import { ProfileInitial, formatProfileInitial } from '../profileInitial.component';
-import { currentUserFactory } from '../../../../mocks/factories';
 
 describe('ProfileInitial: Component', () => {
   it('should render user initial', async () => {

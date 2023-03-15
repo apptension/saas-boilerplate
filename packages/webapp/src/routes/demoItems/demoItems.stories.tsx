@@ -1,11 +1,7 @@
+import { contentfulDemoItemFavoriteFactory, demoItemFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import {
-  contentfulDemoItemFavoriteFactory,
-  demoItemFactory,
-  fillDemoItemsAllQuery,
-  fillUseFavouriteDemoItemListQuery,
-} from '../../mocks/factories';
+import { fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../tests/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { DemoItems } from './demoItems.component';
 

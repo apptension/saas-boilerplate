@@ -1,7 +1,8 @@
+import { appConfigFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
-import { appConfigFactory, fillContentfulAppConfigQuery } from '../../../mocks/factories';
+import { fillContentfulAppConfigQuery } from '../../../tests/factories';
 import { render } from '../../../tests/utils/rendering';
 import { PrivacyPolicy } from '../privacyPolicy.component';
 

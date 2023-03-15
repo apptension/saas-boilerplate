@@ -1,17 +1,17 @@
 import favoriteIconFilled from '@iconify-icons/ion/star';
 import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { imageProps } from '@sb/webapp-api-client/contentful';
+import { DemoItemListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useFavoriteDemoItem, useGenerateLocalePath } from '../../../shared/hooks';
-import { imageProps } from '../../../shared/services/contentful';
-import { DemoItemListItem_ItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, FavoriteIcon, Link, Thumbnail, Title } from './demoItemListItem.styles';
 
 export type DemoItemListItemProps = {
   id: string;
-  item: DemoItemListItem_ItemFragment;
+  item: DemoItemListItemFragmentFragment;
 };
 
 export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {

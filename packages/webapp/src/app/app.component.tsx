@@ -1,8 +1,8 @@
-import { typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
+import { typography } from '@sb/webapp-core/theme';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
-import { DEFAULT_LOCALE, translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
 import { Role } from '../modules/auth/auth.types';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';

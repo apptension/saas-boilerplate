@@ -1,6 +1,7 @@
-import { MouseEvent } from 'react';
 import { useMutation } from '@apollo/client';
-import { UpdateNotificationMutationInput } from '../../../services/graphqlApi/__generated/gql/graphql';
+import { UpdateNotificationMutationInput } from '@sb/webapp-api-client/graphql';
+import { MouseEvent } from 'react';
+
 import { notificationMutation } from './notification.graphql';
 
 export const useToggleIsRead = (input: UpdateNotificationMutationInput) => {

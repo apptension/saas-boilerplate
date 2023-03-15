@@ -1,0 +1,11 @@
+overwrite: true
+schema:
+  - ./graphql/schema/api.graphql.chunk:
+      loader: ./graphql/schema/loader.js
+generates:
+  src/graphql/__generated/types.ts:
+    config:
+      declarationKind: 'interface'
+      maybeValue: T | undefined | null
+    plugins:
+      - typescript

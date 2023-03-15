@@ -1,9 +1,9 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
-import { currentUserFactory } from '../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID, render } from '../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { RoleAccess, RoleAccessProps } from '../roleAccess.component';
 
 describe('RoleAccess: Component', () => {

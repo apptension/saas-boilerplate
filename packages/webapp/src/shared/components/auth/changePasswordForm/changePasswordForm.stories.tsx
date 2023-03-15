@@ -1,4 +1,4 @@
-import { size } from '@saas-boilerplate-app/webapp-core/theme';
+import { size } from '@sb/webapp-core/theme';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 

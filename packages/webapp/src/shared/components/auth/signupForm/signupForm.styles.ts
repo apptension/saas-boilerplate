@@ -1,6 +1,6 @@
-import { Button, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Checkbox as CheckboxBase } from '@saas-boilerplate-app/webapp-core/components/forms';
-import { color, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button, Link } from '@sb/webapp-core/components/buttons';
+import { Checkbox as CheckboxBase } from '@sb/webapp-core/components/forms';
+import { color, size, typography } from '@sb/webapp-core/theme';
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
 

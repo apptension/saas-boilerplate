@@ -1,4 +1,4 @@
-import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime';
+import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { FormattedMessage } from 'react-intl';
 
 import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';

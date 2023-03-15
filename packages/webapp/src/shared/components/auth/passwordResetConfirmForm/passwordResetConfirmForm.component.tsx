@@ -1,5 +1,5 @@
-import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
-import { size } from '@saas-boilerplate-app/webapp-core/theme';
+import { Input } from '@sb/webapp-core/components/forms';
+import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';

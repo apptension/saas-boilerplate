@@ -1,10 +1,7 @@
+import { paymentMethodFactory, transactionHistoryEntryFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import {
-  fillAllStripeChargesQuery,
-  paymentMethodFactory,
-  transactionHistoryEntryFactory,
-} from '../../../../../mocks/factories';
+import { fillAllStripeChargesQuery } from '../../../../../tests/factories';
 import { withProviders } from '../../../../utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 

@@ -4,7 +4,7 @@ const templatesPath = path.join(__dirname, '..', 'templates');
 module.exports = [
   {
     type: 'add',
-    path: 'src/shared/services/api/{{ camelCase name }}/types.ts',
+    path: 'src/shared/services/api/{{ camelCase name }}/auth.types.ts',
     templateFile: path.join(templatesPath, 'api/types.hbs'),
   },
   {

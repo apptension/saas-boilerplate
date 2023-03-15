@@ -1,13 +1,5 @@
-import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
-import {
-  color,
-  fontFamily,
-  fontWeight,
-  media,
-  size,
-  transition,
-  typography,
-} from '@saas-boilerplate-app/webapp-core/theme';
+import { Input } from '@sb/webapp-core/components/forms';
+import { color, fontFamily, fontWeight, media, size, transition, typography } from '@sb/webapp-core/theme';
 import styled, { css } from 'styled-components';
 
 const FIELD_HEIGHT = 40;

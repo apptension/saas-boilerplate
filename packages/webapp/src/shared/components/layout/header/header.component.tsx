@@ -1,7 +1,7 @@
-import { Link as ButtonLink, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
-import { Snackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
-import { media } from '@saas-boilerplate-app/webapp-core/theme';
+import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { Snackbar } from '@sb/webapp-core/snackbar';
+import { media } from '@sb/webapp-core/theme';
 import { HTMLAttributes, useContext } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';

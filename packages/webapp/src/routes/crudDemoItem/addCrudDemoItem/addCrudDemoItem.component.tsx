@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client';
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { BackButton } from '@sb/webapp-core/components/buttons';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks';
-import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';

@@ -7,7 +7,7 @@ import * as elb2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import {
   EnvConstructProps,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 import { MainVpc } from '../stacks/main/mainVpc';
 import { MainECSCluster } from '../stacks/main/mainEcsCluster';

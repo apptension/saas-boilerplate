@@ -1,8 +1,8 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { currentUserFactory, fillNotificationsListQuery } from '../../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../utils/commonQuery';
+import { fillCommonQueryWithUser, fillNotificationsListQuery } from '../../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { Layout, LayoutProps } from './layout.component';
 

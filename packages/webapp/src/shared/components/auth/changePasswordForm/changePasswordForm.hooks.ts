@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
 import { useApiForm } from '../../../hooks';

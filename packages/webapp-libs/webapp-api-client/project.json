@@ -1,0 +1,42 @@
+{
+  "name": "webapp-api-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-api-client/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/webapp-libs/webapp-api-client",
+        "main": "packages/webapp-libs/webapp-api-client/src/index.ts",
+        "tsConfig": "packages/webapp-libs/webapp-api-client/tsconfig.lib.json",
+        "assets": ["packages/webapp-libs/webapp-api-client/*.md"]
+      }
+    },
+    "graphql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp-libs/webapp-api-client",
+        "color": true
+      },
+      "configurations": {
+        "generate-types": {
+          "commands": [
+            "pnpm run graphql-codegen -c ./graphql/codegen/contentful.yml",
+            "pnpm run graphql-codegen -c ./graphql/codegen/schemaTypes.yml",
+            "pnpm run graphql-codegen -c ./graphql/codegen/client.yml"
+          ],
+          "parallel": false
+        },
+        "generate-types:watch": {
+          "command": "pnpm run graphql-codegen -w -c ./graphql/codegen/client.yml"
+        },
+        "download-schema": {
+          "command": "/bin/sh ./scripts/download-graphql-schema.sh"
+        }
+      }
+    }
+  },
+  "tags": []
+}

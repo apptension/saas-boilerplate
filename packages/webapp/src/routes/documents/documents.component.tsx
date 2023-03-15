@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
-import { Dropzone } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
+import { Dropzone } from '@sb/webapp-core/components/forms';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 
 import { EmptyState } from '../../shared/components/emptyState';
 import { useMappedConnection } from '../../shared/hooks';
-import { DocumentsListQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Document, DocumentSkeleton } from './document';
 import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';
 import { documentsListQuery } from './documents.graphql';

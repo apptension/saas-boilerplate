@@ -1,16 +1,12 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { Route, Routes } from 'react-router-dom';
 
-import {
-  fillSubscriptionPlansAllQuery,
-  fillSubscriptionScheduleQueryWithPhases,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { fillSubscriptionPlansAllQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditSubscription } from '../editSubscription.component';

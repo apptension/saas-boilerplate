@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
-import { fillNotificationsListQuery } from '../../../../../mocks/factories';
+import { fillNotificationsListQuery } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { notificationsListQuery } from '../../notifications.graphql';
 import { NotificationsButton, NotificationsButtonProps } from '../notificationsButton.component';

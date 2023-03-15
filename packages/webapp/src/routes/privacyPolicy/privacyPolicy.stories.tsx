@@ -1,7 +1,8 @@
+import { appConfigFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { appConfigFactory, fillContentfulAppConfigQuery } from '../../mocks/factories';
+import { fillContentfulAppConfigQuery } from '../../tests/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 

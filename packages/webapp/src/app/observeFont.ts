@@ -1,4 +1,4 @@
-import { fontFamily } from '@saas-boilerplate-app/webapp-core/theme';
+import { fontFamily } from '@sb/webapp-core/theme';
 import FontFaceObserver from 'fontfaceobserver';
 
 export const observeFont = () => {

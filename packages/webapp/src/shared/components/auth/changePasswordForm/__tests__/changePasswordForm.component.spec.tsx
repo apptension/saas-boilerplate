@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
 
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ChangePasswordForm } from '../changePasswordForm.component';
 import { authChangePasswordMutation } from '../changePasswordForm.graphql';

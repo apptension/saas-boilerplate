@@ -1,5 +1,6 @@
+import { notificationFactory } from '@sb/webapp-api-client/tests/factories';
 import { pick } from 'ramda';
-import { notificationFactory } from '../../../../mocks/factories';
+
 import { NotificationProps } from './notification.component';
 
 export const mockedNotificationProps: NotificationProps = {

@@ -7,7 +7,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import {
   EnvConstructProps,
   ServiceCiConfig,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 interface WebAppCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;

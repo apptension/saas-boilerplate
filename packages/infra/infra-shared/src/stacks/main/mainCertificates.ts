@@ -7,7 +7,7 @@ import {
   EnvironmentSettings,
   getCloudFrontCertificateArnOutputExportName,
   getHostedZone,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 export class MainCertificates extends Construct {
   certificate?: certManager.Certificate;

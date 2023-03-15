@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate-app/infra-shared",
+  "name": "@sb/infra-shared",
   "version": "0.0.1",
   "type": "commonjs",
   "scripts": {
@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.66.0-alpha.0",
-    "@saas-boilerplate-app/core": "*",
-    "@saas-boilerplate-app/infra-core": "*",
+    "@sb/core": "*",
+    "@sb/infra-core": "*",
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "cdk-ec2-key-pair": "^3.3.1",

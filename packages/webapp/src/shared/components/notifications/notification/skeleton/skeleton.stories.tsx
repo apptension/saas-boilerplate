@@ -1,4 +1,5 @@
 import { Story } from '@storybook/react';
+
 import { Skeleton } from './skeleton.component';
 
 const Template: Story = () => {

@@ -1,9 +1,9 @@
 import { ElementType } from 'react';
+
 import { NotificationTypes } from './notifications.types';
 import {
   CrudItemCreated,
-  CrudItemUpdated,
-  //<-- INJECT NOTIFICATION COMPONENT IMPORT -->
+  CrudItemUpdated, //<-- INJECT NOTIFICATION COMPONENT IMPORT -->
 } from './templates';
 
 export const NOTIFICATIONS_STRATEGY: Record<NotificationTypes, ElementType> = {

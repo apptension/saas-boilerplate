@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { isEmpty } from 'ramda';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';

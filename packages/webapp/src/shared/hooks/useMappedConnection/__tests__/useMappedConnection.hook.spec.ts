@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+
 import { useMappedConnection } from '../useMappedConnection.hook';
 
 describe('useMappedConnection: Hook', () => {

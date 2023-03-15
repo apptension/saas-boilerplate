@@ -1,4 +1,4 @@
-import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Link } from '@sb/webapp-core/components/buttons';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 

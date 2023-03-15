@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, Locale } from '@saas-boilerplate-app/webapp-core/config/i18n';
+import { DEFAULT_LOCALE, Locale } from '@sb/webapp-core/config/i18n';
 import { useParams } from 'react-router-dom';
 
 export type LanguagePathParams = {

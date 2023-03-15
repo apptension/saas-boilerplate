@@ -5,7 +5,7 @@
   "sourceRoot": "packages/workers",
   "targets": {
     "setup": {
-      "executor": "@saas-boilerplate-app/tools:setup",
+      "executor": "@sb/tools:setup",
       "options": {
         "cwd": "packages/workers"
       }
@@ -20,9 +20,7 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "setup"
-      ]
+      "dependsOn": ["setup"]
     },
     "shell": {
       "executor": "nx:run-commands",
@@ -31,9 +29,7 @@
         "color": true,
         "command": "docker-compose run --rm workers /bin/bash"
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "serve": {
       "executor": "nx:run-commands",
@@ -52,9 +48,7 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -62,9 +56,7 @@
         "color": true,
         "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_lint.sh"
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "test": {
       "executor": "nx:run-commands",
@@ -72,9 +64,7 @@
         "color": true,
         "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_tests.sh"
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "build": {
       "executor": "nx:run-commands",
@@ -82,12 +72,8 @@
         "color": true,
         "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_build.sh"
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     }
   },
-  "tags": [
-    "service"
-  ]
+  "tags": ["service"]
 }

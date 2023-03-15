@@ -1,13 +1,13 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { currentUserFactory } from '../../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { authSingupMutation } from '../signUpForm.graphql';
 import { SignupForm } from '../signupForm.component';
 

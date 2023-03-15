@@ -1,5 +1,6 @@
+import { ENV } from '@sb/webapp-core/config/env';
 import { HTMLAttributes } from 'react';
-import { ENV } from '../../../app/config/env';
+
 import { Container } from './button.styles';
 
 export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {

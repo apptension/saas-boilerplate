@@ -1,4 +1,4 @@
-import { EnvironmentSettings } from '@saas-boilerplate-app/infra-core';
+import { EnvironmentSettings } from '@sb/infra-core';
 import { Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 

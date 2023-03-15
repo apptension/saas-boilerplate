@@ -1,8 +1,8 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { currentUserFactory } from '../../../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { AvatarForm } from './avatarForm.component';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate-app/backend",
+  "name": "@sb/backend",
   "version": "1.0.0",
   "scripts": {
     "cdk:deploy:api": "cdk deploy *ApiStack",
@@ -10,10 +10,10 @@
     "trigger-migrations-job": "/bin/bash ./scripts/trigger_migrations_job.sh"
   },
   "devDependencies": {
-    "@saas-boilerplate-app/core": "*",
-    "@saas-boilerplate-app/infra-core": "*",
-    "@saas-boilerplate-app/infra-shared": "*",
-    "@saas-boilerplate-app/tools": "*",
+    "@sb/core": "*",
+    "@sb/infra-core": "*",
+    "@sb/infra-shared": "*",
+    "@sb/tools": "*",
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "constructs": "^10.1.225"

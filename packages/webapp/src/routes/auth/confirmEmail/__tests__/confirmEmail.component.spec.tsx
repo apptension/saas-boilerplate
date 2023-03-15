@@ -1,14 +1,14 @@
 import { MockedResponse } from '@apollo/client/testing';
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { currentUserFactory } from '../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ConfirmEmail } from '../confirmEmail.component';
 import { authConfirmUserEmailMutation } from '../confirmEmail.graphql';

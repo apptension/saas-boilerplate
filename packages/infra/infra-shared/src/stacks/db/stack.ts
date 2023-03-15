@@ -1,6 +1,6 @@
 import { App, Fn, Stack, StackProps } from 'aws-cdk-lib';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
-import { EnvConstructProps } from '@saas-boilerplate-app/infra-core';
+import { EnvConstructProps } from '@sb/infra-core';
 
 import { MainDatabase } from './mainDatabase';
 import { MainVpc } from '../main/mainVpc';

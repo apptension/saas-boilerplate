@@ -6,7 +6,7 @@ export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<
   const absoluteNestedUrls = map<Record<T, string>, Record<T, string>>((value) => root + '/' + value, nestedRoutes);
   const paths = {
     index: `${root}/*`,
-    ...absoluteNestedUrls
+    ...absoluteNestedUrls,
   };
   return {
     ...paths,

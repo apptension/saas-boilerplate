@@ -1,5 +1,6 @@
-import { subscriptionPlanFactory } from '../../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
+
 import { renderHook } from '../../../../../tests/utils/rendering';
 import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails.hook';
 

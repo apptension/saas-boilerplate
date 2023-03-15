@@ -1,14 +1,14 @@
-import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { OAuthProvider } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { SignupButtonsVariant, SocialLoginButtons, SocialLoginButtonsProps } from '../socialLoginButtons.component';
 
 const mockOAuthLogin = jest.fn();
-jest.mock('../../../../../modules/auth/auth.hooks', () => {
+jest.mock('@sb/webapp-api-client/api/auth', () => {
   return {
-    ...jest.requireActual<NodeModule>('../../../../../modules/auth/auth.hooks'),
+    ...jest.requireActual<NodeModule>('@sb/webapp-api-client/api/auth'),
     useOAuthLogin: () => mockOAuthLogin,
   };
 });

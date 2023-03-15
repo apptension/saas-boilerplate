@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { BackButton } from '@sb/webapp-core/components/buttons';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useParams } from 'react-router';
 

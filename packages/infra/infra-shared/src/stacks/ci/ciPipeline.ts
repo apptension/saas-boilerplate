@@ -9,7 +9,7 @@ import { aws_codecommit as cc, aws_ecr as ecr } from 'aws-cdk-lib';
 import {
   EnvConstructProps,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 import { CiEntrypoint } from './ciEntrypoint';
 import { BackendCiConfig } from './ciBackend';

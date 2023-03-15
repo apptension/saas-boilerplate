@@ -1,15 +1,15 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
+import {
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { append, times } from 'ramda';
 
-import {
-  fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../../mocks/factories';
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
 import { useApiForm } from '../../../../hooks';
-import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
 import { stripePromise } from '../../../../services/stripe';
 import { withActiveSubscriptionContext, withProviders } from '../../../../utils/storybook';
 import { StripePaymentMethodSelector, StripePaymentMethodSelectorProps } from './stripePaymentMethodSelector.component';

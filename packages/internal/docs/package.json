@@ -23,10 +23,10 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@saas-boilerplate-app/core": "*",
-    "@saas-boilerplate-app/infra-core": "*",
-    "@saas-boilerplate-app/infra-shared": "*",
-    "@saas-boilerplate-app/tools": "*",
+    "@sb/core": "*",
+    "@sb/infra-core": "*",
+    "@sb/infra-shared": "*",
+    "@sb/tools": "*",
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "url-loader": "^4.1.1"

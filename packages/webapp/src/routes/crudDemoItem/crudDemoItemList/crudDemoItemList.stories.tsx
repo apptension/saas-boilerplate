@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { fillCrudDemoItemListQuery } from '../../../mocks/factories/crudDemoItem';
+import { fillCrudDemoItemListQuery } from '../../../tests/factories/crudDemoItem';
 import { withProviders } from '../../../shared/utils/storybook';
 import { CrudDemoItemList } from './crudDemoItemList.component';
 

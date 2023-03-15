@@ -1,4 +1,5 @@
-import { media } from '@saas-boilerplate-app/webapp-core/theme';
+import { currentUserFactory, notificationFactory } from '@sb/webapp-api-client/tests/factories';
+import { media } from '@sb/webapp-core/theme';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -6,19 +7,17 @@ import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import {
-  currentUserFactory,
+  fillCommonQueryWithUser,
   fillNotificationsListQuery,
   fillNotificationsSubscriptionQuery,
-  notificationFactory,
-} from '../../../../mocks/factories';
+} from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { Layout } from '../layout.component';
 
 const mockGetActiveBreakpoint = jest.fn().mockReturnValue(media.Breakpoint.DESKTOP);
-jest.mock('@saas-boilerplate-app/webapp-core/theme', () => {
-  const requireActual = jest.requireActual('@saas-boilerplate-app/webapp-core/theme');
+jest.mock('@sb/webapp-core/theme', () => {
+  const requireActual = jest.requireActual('@sb/webapp-core/theme');
   return {
     ...requireActual,
     media: {

@@ -1,11 +1,8 @@
+import { contentfulDemoItemFavoriteFactory } from '@sb/webapp-api-client/tests/factories';
 import { act } from '@testing-library/react-hooks';
 import { append } from 'ramda';
 
-import {
-  contentfulDemoItemFavoriteFactory,
-  fillRemoveFavouriteDemoItemQuery,
-  fillUseFavouriteDemoItemListQuery,
-} from '../../../../mocks/factories';
+import { fillRemoveFavouriteDemoItemQuery, fillUseFavouriteDemoItemListQuery } from '../../../../tests/factories';
 import { renderHook } from '../../../../tests/utils/rendering';
 import { useFavoriteDemoItem } from '../useFavoriteDemoItem.hook';
 

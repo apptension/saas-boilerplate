@@ -1,8 +1,8 @@
 import closeIcon from '@iconify-icons/ion/close-outline';
-import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
-import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
-import { global as globalTheme, media } from '@saas-boilerplate-app/webapp-core/theme';
+import { Link } from '@sb/webapp-core/components/buttons';
+import { Icon } from '@sb/webapp-core/components/icons';
+import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { global as globalTheme, media } from '@sb/webapp-core/theme';
 import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 

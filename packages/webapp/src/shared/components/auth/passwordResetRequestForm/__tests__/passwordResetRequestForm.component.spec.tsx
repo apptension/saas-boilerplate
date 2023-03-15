@@ -1,12 +1,11 @@
-import { append } from 'ramda';
-import userEvent from '@testing-library/user-event';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
+import { append } from 'ramda';
 
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetRequestForm } from '../passwordResetRequestForm.component';
-
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { authRequestPasswordResetMutation } from '../passwordResetRequestForm.graphql';
 
 describe('PasswordResetRequestForm: Component', () => {

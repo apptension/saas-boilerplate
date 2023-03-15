@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
-import { EmailTemplateType } from '../../types';
+
 import { EmailStory } from '../../emailStory/emailStory.component';
+import { EmailTemplateType } from '../../types';
 import {
   Template as AccountActivationEmail,
-  Subject as AccountActivationSubject,
   AccountActivationProps,
+  Subject as AccountActivationSubject,
 } from './accountActivation.component';
 
 const Template: Story<AccountActivationProps> = (args: AccountActivationProps) => (

@@ -1,11 +1,11 @@
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { imageProps } from '@sb/webapp-api-client/contentful';
+import { DemoItemQueryQuery } from '@sb/webapp-api-client/graphql';
+import { BackButton } from '@sb/webapp-core/components/buttons';
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../app/config/routes';
 import { useGenerateLocalePath } from '../../shared/hooks';
-import { imageProps } from '../../shared/services/contentful';
-import { DemoItemQueryQuery } from '../../shared/services/graphqlApi/__generated/gql/graphql';
 import { Container, Description, Image, Title } from './demoItem.styles';
 
 type DemoItemContentProps = {

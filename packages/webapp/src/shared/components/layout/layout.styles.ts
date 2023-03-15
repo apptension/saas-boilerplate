@@ -1,4 +1,4 @@
-import { media, size, zIndex } from '@saas-boilerplate-app/webapp-core/theme';
+import { media, size, zIndex } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { Header as HeaderLayout } from './header';

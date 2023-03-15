@@ -1,11 +1,8 @@
+import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import {
-  fillSubscriptionScheduleQueryWithPhases,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../mocks/factories';
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { CancelSubscription } from './cancelSubscription.component';
 

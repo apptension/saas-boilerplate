@@ -1,6 +1,6 @@
-import { UAParser } from 'ua-parser-js';
-import semverCompare from 'semver-compare';
 import { pickBy } from 'ramda';
+import semverCompare from 'semver-compare';
+import { UAParser } from 'ua-parser-js';
 
 type Platform = 'desktop' | 'tablet' | 'mobile';
 

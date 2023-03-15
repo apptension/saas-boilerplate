@@ -1,3 +1,4 @@
+import { StripeSetupIntentFragmentFragment, useFragment } from '@sb/webapp-api-client/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { StripePaymentMethodSelector, useStripePaymentMethods } from '../../../../shared/components/finances/stripe';
@@ -6,8 +7,6 @@ import {
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 import { useApiForm } from '../../../../shared/hooks';
-import { useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
-import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { subscriptionActiveFragment } from '../../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.graphql';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';

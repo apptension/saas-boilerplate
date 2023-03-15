@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react';
 import axios from 'axios';
+import { ReactNode, useState } from 'react';
+
 import { EmailTemplateType } from '../types';
-import { Container, Subject, Email, Header, RecipientInput, SendEmail, SendEmailButton } from './emailStory.styles';
+import { Container, Email, Header, RecipientInput, SendEmail, SendEmailButton, Subject } from './emailStory.styles';
 
 type EmailStorybookProps = {
   children: ReactNode;

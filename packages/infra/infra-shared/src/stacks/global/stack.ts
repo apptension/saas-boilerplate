@@ -1,5 +1,5 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { EnvConstructProps } from '@saas-boilerplate-app/infra-core';
+import { EnvConstructProps } from '@sb/infra-core';
 
 import { GlobalResources } from './resources';
 

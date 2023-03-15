@@ -1,5 +1,5 @@
-import { Role } from '../../../modules/auth/auth.types';
 import { useAuth } from '../';
+import { Role } from '../../../modules/auth/auth.types';
 
 export const useRoleAccessCheck = (allowedRole: Role | Role[] = [Role.ADMIN, Role.USER]) => {
   const { currentUser } = useAuth();

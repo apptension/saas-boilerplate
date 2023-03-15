@@ -1,4 +1,4 @@
-import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { Input } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useChangePasswordForm } from './changePasswordForm.hooks';

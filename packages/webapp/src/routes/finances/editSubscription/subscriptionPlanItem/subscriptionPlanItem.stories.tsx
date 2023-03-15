@@ -1,20 +1,22 @@
 import { useQuery } from '@apollo/client';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
+import {
+  currentUserFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import {
-  currentUserFactory,
+  fillCommonQueryWithUser,
   fillSubscriptionPlansAllQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+} from '../../../../tests/factories';
 import { mapConnection } from '../../../../shared/utils/graphql';
 import { withProviders } from '../../../../shared/utils/storybook';
 import { createMockRouterProps } from '../../../../tests/utils/rendering';

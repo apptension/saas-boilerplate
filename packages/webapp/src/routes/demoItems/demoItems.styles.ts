@@ -1,4 +1,4 @@
-import { border, media, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { border, media, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 export const Container = styled.div`

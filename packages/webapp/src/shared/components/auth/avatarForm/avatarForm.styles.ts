@@ -1,5 +1,5 @@
-import { Message as MessageBase } from '@saas-boilerplate-app/webapp-core/components/forms/input/input.styles';
-import { circle, color, elevation, media, size } from '@saas-boilerplate-app/webapp-core/theme';
+import { Message as MessageBase } from '@sb/webapp-core/components/forms/input/input.styles';
+import { circle, color, elevation, media, size } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { Avatar as AvatarBase } from '../../avatar';

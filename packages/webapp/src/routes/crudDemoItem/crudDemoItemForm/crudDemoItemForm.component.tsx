@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
-import { Button, ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Input } from '@saas-boilerplate-app/webapp-core/components/forms';
+import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Input } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';

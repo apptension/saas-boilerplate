@@ -12,7 +12,7 @@ importers:
       '@nrwl/node': ^15.6.3
       '@nrwl/nx-cloud': ^15.0.2
       '@nrwl/nx-plugin': ^15.6.3
-      '@saas-boilerplate-app/core': '*'
+      '@sb/core': '*'
       '@swc-node/register': ^1.4.2
       '@swc/cli': ~0.1.55
       '@swc/core': ^1.2.173
@@ -44,7 +44,7 @@ importers:
       '@nrwl/node': 15.6.3_llxn6cb7nqbhgmm2wxatjnw3rq
       '@nrwl/nx-cloud': 15.0.2
       '@nrwl/nx-plugin': 15.6.3_llxn6cb7nqbhgmm2wxatjnw3rq
-      '@saas-boilerplate-app/core': link:packages/internal/core
+      '@sb/core': link:packages/internal/core
       '@swc-node/register': 1.5.5_sj45ejzagl3ytkpurcqhbu2wya
       '@swc/cli': 0.1.59_@swc+core@1.3.27
       '@swc/core': 1.3.27
@@ -70,18 +70,18 @@ importers:
 
   packages/backend:
     specifiers:
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/infra-core': '*'
-      '@saas-boilerplate-app/infra-shared': '*'
-      '@saas-boilerplate-app/tools': '*'
+      '@sb/core': '*'
+      '@sb/infra-core': '*'
+      '@sb/infra-shared': '*'
+      '@sb/tools': '*'
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0
       constructs: ^10.1.225
     devDependencies:
-      '@saas-boilerplate-app/core': link:../internal/core
-      '@saas-boilerplate-app/infra-core': link:../infra/infra-core
-      '@saas-boilerplate-app/infra-shared': link:../infra/infra-shared
-      '@saas-boilerplate-app/tools': link:../internal/tools
+      '@sb/core': link:../internal/core
+      '@sb/infra-core': link:../infra/infra-core
+      '@sb/infra-shared': link:../infra/infra-shared
+      '@sb/tools': link:../internal/tools
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0_constructs@10.1.228
       constructs: 10.1.228
@@ -100,8 +100,8 @@ importers:
 
   packages/e2e-tests:
     specifiers:
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/tools': '*'
+      '@sb/core': '*'
+      '@sb/tools': '*'
       chai-date-string: ^0.1.0
       cypress: ^8.0.0
       cypress-audit: ^0.3.0
@@ -142,8 +142,8 @@ importers:
       ramda: 0.27.2
       readline: 1.3.0
     devDependencies:
-      '@saas-boilerplate-app/core': link:../internal/core
-      '@saas-boilerplate-app/tools': link:../internal/tools
+      '@sb/core': link:../internal/core
+      '@sb/tools': link:../internal/tools
       cypress: 8.7.0
       cypress-multi-reporters: 1.6.2
       cypress-slack-reporter: 1.5.2_mmu7hjyz5fw2xhyhvbuslxq4vq
@@ -189,16 +189,16 @@ importers:
   packages/infra/infra-shared:
     specifiers:
       '@aws-cdk/aws-apigatewayv2-alpha': 2.66.0-alpha.0
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/infra-core': '*'
+      '@sb/core': '*'
+      '@sb/infra-core': '*'
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0
       cdk-ec2-key-pair: ^3.3.1
       constructs: ^10.1.225
     devDependencies:
       '@aws-cdk/aws-apigatewayv2-alpha': 2.66.0-alpha.0_pdphx5sboo3i2sdleu4kaaup2i
-      '@saas-boilerplate-app/core': link:../../internal/core
-      '@saas-boilerplate-app/infra-core': link:../infra-core
+      '@sb/core': link:../../internal/core
+      '@sb/infra-core': link:../infra-core
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0_constructs@10.1.228
       cdk-ec2-key-pair: 3.3.1_pdphx5sboo3i2sdleu4kaaup2i
@@ -217,10 +217,10 @@ importers:
       '@docusaurus/core': ^2.2.0
       '@docusaurus/preset-classic': ^2.2.0
       '@mdx-js/react': ^1.6.21
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/infra-core': '*'
-      '@saas-boilerplate-app/infra-shared': '*'
-      '@saas-boilerplate-app/tools': '*'
+      '@sb/core': '*'
+      '@sb/infra-core': '*'
+      '@sb/infra-shared': '*'
+      '@sb/tools': '*'
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0
       clsx: ^1.1.1
@@ -241,10 +241,10 @@ importers:
       react-router-config: 5.1.1_eilmositgdhro7yriqlb6666ai
       react-router-dom: 5.3.4_react@16.14.0
     devDependencies:
-      '@saas-boilerplate-app/core': link:../core
-      '@saas-boilerplate-app/infra-core': link:../../infra/infra-core
-      '@saas-boilerplate-app/infra-shared': link:../../infra/infra-shared
-      '@saas-boilerplate-app/tools': link:../tools
+      '@sb/core': link:../core
+      '@sb/infra-core': link:../../infra/infra-core
+      '@sb/infra-shared': link:../../infra/infra-shared
+      '@sb/tools': link:../tools
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0
       url-loader: 4.1.1
@@ -275,10 +275,10 @@ importers:
       '@nrwl/react': ^15.4.5
       '@nrwl/web': ^15.4.5
       '@nrwl/webpack': ^15.4.5
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/infra-core': '*'
-      '@saas-boilerplate-app/infra-shared': '*'
-      '@saas-boilerplate-app/tools': '*'
+      '@sb/core': '*'
+      '@sb/infra-core': '*'
+      '@sb/infra-shared': '*'
+      '@sb/tools': '*'
       '@svgr/webpack': ^6.5.1
       '@testing-library/jest-dom': ^4.2.4
       '@testing-library/react': ^9.3.2
@@ -304,10 +304,10 @@ importers:
       '@nrwl/react': 15.5.3
       '@nrwl/web': 15.5.3
       '@nrwl/webpack': 15.5.3
-      '@saas-boilerplate-app/core': link:../core
-      '@saas-boilerplate-app/infra-core': link:../../infra/infra-core
-      '@saas-boilerplate-app/infra-shared': link:../../infra/infra-shared
-      '@saas-boilerplate-app/tools': link:../tools
+      '@sb/core': link:../core
+      '@sb/infra-core': link:../../infra/infra-core
+      '@sb/infra-shared': link:../../infra/infra-shared
+      '@sb/tools': link:../tools
       '@svgr/webpack': 6.5.1
       '@testing-library/jest-dom': 4.2.4
       '@testing-library/react': 9.5.0_wcqkhtmu7mswc6yz4uyexck3ty
@@ -339,34 +339,23 @@ importers:
   packages/webapp:
     specifiers:
       '@apollo/client': ^3.7.9
-      '@apollo/rover': ^0.12.2
       '@esbuild-plugins/node-globals-polyfill': ^0.2.3
       '@esbuild-plugins/node-modules-polyfill': ^0.2.2
       '@formatjs/cli': ^5.1.3
       '@formatjs/intl-getcanonicallocales': ^2.0.4
       '@formatjs/intl-pluralrules': ^5.1.4
-      '@graphql-codegen/add': ^3.2.1
-      '@graphql-codegen/cli': ^2.13.11
-      '@graphql-codegen/client-preset': ^1.2.6
-      '@graphql-codegen/import-types-preset': ^2.2.6
-      '@graphql-codegen/typescript': ^2.8.1
-      '@graphql-codegen/typescript-graphql-request': ^4.5.8
-      '@graphql-codegen/typescript-operations': ^2.5.6
-      '@graphql-tools/merge': ^8.3.10
-      '@graphql-tools/schema': ^9.0.12
-      '@graphql-tools/stitch': ^8.7.33
-      '@graphql-typed-document-node/core': ^3.1.1
       '@iconify-icons/ion': ^1.2.4
       '@iconify/react': ^4.0.0
       '@nrwl/jest': ^15.6.3
       '@nrwl/js': ^15.6.3
       '@nrwl/react': ^15.6.3
       '@originjs/vite-plugin-commonjs': ^1.0.3
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/infra-core': '*'
-      '@saas-boilerplate-app/infra-shared': '*'
-      '@saas-boilerplate-app/tools': '*'
-      '@saas-boilerplate-app/webapp-core': '*'
+      '@sb/core': '*'
+      '@sb/infra-core': '*'
+      '@sb/infra-shared': '*'
+      '@sb/tools': '*'
+      '@sb/webapp-api-client': '*'
+      '@sb/webapp-core': '*'
       '@sentry/react': ^7.17.4
       '@storybook/addon-actions': ^6.5.16
       '@storybook/addon-backgrounds': ^6.5.16
@@ -387,7 +376,6 @@ importers:
       '@testing-library/react-hooks': ^8.0.1
       '@testing-library/user-event': ^14.4.3
       '@trivago/prettier-plugin-sort-imports': ^4.0.0
-      '@types/apollo-upload-client': ^17.0.2
       '@types/color': ^3.0.3
       '@types/fontfaceobserver': ^2.1.0
       '@types/invariant': ^2.2.35
@@ -407,12 +395,10 @@ importers:
       '@vitejs/plugin-legacy': ^4.0.1
       '@vitejs/plugin-react': ^3.1.0
       '@vitest/ui': ^0.28.4
-      apollo-upload-client: ^17.0.0
       aws-cdk: 2.66.0
       aws-cdk-lib: 2.66.0
       aws-sdk: ^2.1246.0
       axios: ^0.27.2
-      axios-case-converter: ^0.9.0
       babel-jest: 28.1.3
       babel-plugin-styled-components: ^2.0.7
       babel-plugin-transform-import-meta: ^2.2.0
@@ -427,9 +413,6 @@ importers:
       eslint-plugin-testing-library: ^5.9.1
       fontfaceobserver: ^2.3.0
       graphql: ^16.6.0
-      graphql-cli: ^4.1.0
-      graphql-schema-utilities: ^1.1.4
-      graphql-ws: ^5.11.2
       http-proxy-middleware: ^2.0.6
       http-status-codes: ^2.2.0
       immer: ^9.0.16
@@ -444,12 +427,10 @@ importers:
       jsdom: ^16.4.0
       juice: ^8.1.0
       mockdate: ^3.0.5
-      msw: ^1.0.0
       nodemailer: ^6.8.0
       normalize.css: ^8.0.1
       plop: ^3.1.1
       postcss: ^8.4.21
-      query-string: ^7.1.1
       ramda: ^0.28.0
       react: 18.2.0
       react-click-away-listener: ^2.2.2
@@ -467,6 +448,7 @@ importers:
       react-test-renderer: ^18.2.0
       regenerator-runtime: ^0.13.11
       rollup-plugin-node-builtins: ^2.1.2
+      rollup-plugin-peer-deps-external: ^2.2.4
       rollup-plugin-polyfill-node: ^0.12.0
       semver-compare: ^1.0.0
       storybook-dark-mode: ^2.0.5
@@ -485,9 +467,7 @@ importers:
       vite-plugin-svgr: ^2.4.0
       vite-tsconfig-paths: ^4.0.5
     dependencies:
-      '@apollo/client': 3.7.9_xe4twbeoqswbn2uas4ov5melbq
-      '@graphql-tools/schema': 9.0.13_graphql@16.6.0
-      '@graphql-tools/stitch': 8.7.36_graphql@16.6.0
+      '@apollo/client': 3.7.9_gdcq4dv6opitr3wbfwyjmanyra
       '@iconify-icons/ion': 1.2.7
       '@iconify/react': 4.0.1_react@18.2.0
       '@nrwl/jest': 15.6.3
@@ -496,14 +476,11 @@ importers:
       '@sentry/react': 7.31.1_react@18.2.0
       '@stripe/react-stripe-js': 1.16.4_keartrz7uyerl3wkpjpue4xbhy
       '@stripe/stripe-js': 1.46.0
-      apollo-upload-client: 17.0.0_c4ymifursyympcfzievhzyjcri
       axios: 0.27.2
-      axios-case-converter: 0.9.0_axios@0.27.2
       color: 4.2.3
       core-js: 3.27.2
       fontfaceobserver: 2.3.0
       graphql: 16.6.0
-      graphql-ws: 5.11.2_graphql@16.6.0
       http-proxy-middleware: 2.0.6
       http-status-codes: 2.2.0
       immer: 9.0.18
@@ -513,7 +490,6 @@ importers:
       nodemailer: 6.9.0
       normalize.css: 8.0.1
       plop: 3.1.1
-      query-string: 7.1.3
       ramda: 0.28.0
       react: 18.2.0
       react-click-away-listener: 2.2.2_biqbaboplfbrettd7655fr4n2y
@@ -536,27 +512,18 @@ importers:
       tslib: 2.4.1
       ua-parser-js: 1.0.33
     devDependencies:
-      '@apollo/rover': 0.12.2
       '@esbuild-plugins/node-globals-polyfill': 0.2.3
       '@esbuild-plugins/node-modules-polyfill': 0.2.2
       '@formatjs/cli': 5.1.12
       '@formatjs/intl-getcanonicallocales': 2.0.5
       '@formatjs/intl-pluralrules': 5.1.8
-      '@graphql-codegen/add': 3.2.3_graphql@16.6.0
-      '@graphql-codegen/cli': 2.16.4_graphql@16.6.0
-      '@graphql-codegen/client-preset': 1.2.6_graphql@16.6.0
-      '@graphql-codegen/import-types-preset': 2.2.6_graphql@16.6.0
-      '@graphql-codegen/typescript': 2.8.7_graphql@16.6.0
-      '@graphql-codegen/typescript-graphql-request': 4.5.8_graphql@16.6.0
-      '@graphql-codegen/typescript-operations': 2.5.12_graphql@16.6.0
-      '@graphql-tools/merge': 8.3.15_graphql@16.6.0
-      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
       '@originjs/vite-plugin-commonjs': 1.0.3
-      '@saas-boilerplate-app/core': link:../internal/core
-      '@saas-boilerplate-app/infra-core': link:../infra/infra-core
-      '@saas-boilerplate-app/infra-shared': link:../infra/infra-shared
-      '@saas-boilerplate-app/tools': link:../internal/tools
-      '@saas-boilerplate-app/webapp-core': link:../webapp-libs/webapp-core
+      '@sb/core': link:../internal/core
+      '@sb/infra-core': link:../infra/infra-core
+      '@sb/infra-shared': link:../infra/infra-shared
+      '@sb/tools': link:../internal/tools
+      '@sb/webapp-api-client': link:../webapp-libs/webapp-api-client
+      '@sb/webapp-core': link:../webapp-libs/webapp-core
       '@storybook/addon-actions': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/addon-backgrounds': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/addon-docs': 6.5.16_biqbaboplfbrettd7655fr4n2y
@@ -574,7 +541,6 @@ importers:
       '@testing-library/react-hooks': 8.0.1_5o4rppgvhtwde3ofpdnr72ma7q
       '@testing-library/user-event': 14.4.3_yxlyej73nftwmh2fiao7paxmlm
       '@trivago/prettier-plugin-sort-imports': 4.0.0
-      '@types/apollo-upload-client': 17.0.2_zgx26nsxq5fe72mb5nc2o6olje
       '@types/color': 3.0.3
       '@types/fontfaceobserver': 2.1.0
       '@types/invariant': 2.2.35
@@ -607,8 +573,6 @@ importers:
       eslint-plugin-react: 7.32.1
       eslint-plugin-react-hooks: 4.6.0
       eslint-plugin-testing-library: 5.9.1
-      graphql-cli: 4.1.0_graphql@16.6.0
-      graphql-schema-utilities: 1.1.5_graphql@16.6.0
       inquirer-directory: 2.2.0
       invariant: 2.2.4
       jest: 28.1.3
@@ -617,10 +581,10 @@ importers:
       jest-watch-typeahead: 2.2.2_jest@28.1.3
       jsdom: 16.7.0
       mockdate: 3.0.5
-      msw: 1.0.0
       postcss: 8.4.21
       react-test-renderer: 18.2.0_react@18.2.0
       rollup-plugin-node-builtins: 2.1.2
+      rollup-plugin-peer-deps-external: 2.2.4
       rollup-plugin-polyfill-node: 0.12.0
       storybook-dark-mode: 2.0.5_biqbaboplfbrettd7655fr4n2y
       stylelint: 14.16.1
@@ -633,9 +597,87 @@ importers:
       vite-plugin-svgr: 2.4.0_vite@4.1.1
       vite-tsconfig-paths: 4.0.5
 
-  packages/webapp-libs/webapp-core:
+  packages/webapp-libs/webapp-api-client:
     specifiers:
       '@apollo/client': ^3.7.9
+      '@apollo/rover': ^0.12.2
+      '@graphql-codegen/add': ^3.2.1
+      '@graphql-codegen/cli': ^2.13.11
+      '@graphql-codegen/client-preset': ^1.2.6
+      '@graphql-codegen/import-types-preset': ^2.2.6
+      '@graphql-codegen/typescript': ^2.8.1
+      '@graphql-codegen/typescript-graphql-request': ^4.5.8
+      '@graphql-codegen/typescript-operations': ^2.5.6
+      '@graphql-tools/merge': ^8.3.10
+      '@graphql-tools/schema': ^9.0.12
+      '@graphql-tools/stitch': ^8.7.33
+      '@graphql-typed-document-node/core': ^3.1.1
+      '@nrwl/jest': ^15.6.3
+      '@sb/webapp-core': '*'
+      '@types/apollo-upload-client': ^17.0.2
+      '@types/jest': 28.1.3
+      '@types/ramda': ^0.28.18
+      '@types/react': ^18.0.24
+      apollo-upload-client: ^17.0.0
+      axios: ^0.27.2
+      axios-case-converter: ^0.9.0
+      babel-jest: 28.1.3
+      graphql: ^16.6.0
+      graphql-cli: ^4.1.0
+      graphql-schema-utilities: ^1.1.4
+      graphql-ws: ^5.11.2
+      http-status-codes: ^2.2.0
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
+      jest-matcher-utils: ^29.4.2
+      jest-watch-typeahead: ^2.2.2
+      msw: ^1.0.0
+      query-string: ^7.1.1
+      ramda: ^0.28.0
+      react: 18.2.0
+      ts-jest: 28.0.5
+    dependencies:
+      '@graphql-tools/schema': 9.0.13_graphql@16.6.0
+      '@graphql-tools/stitch': 8.7.36_graphql@16.6.0
+      '@sb/webapp-core': link:../webapp-core
+      apollo-upload-client: 17.0.0_c4ymifursyympcfzievhzyjcri
+      axios: 0.27.2
+      axios-case-converter: 0.9.0_axios@0.27.2
+      http-status-codes: 2.2.0
+      query-string: 7.1.3
+    devDependencies:
+      '@apollo/client': 3.7.9_o7paodxqbevdia6ixjcodtofcm
+      '@apollo/rover': 0.12.2
+      '@graphql-codegen/add': 3.2.3_graphql@16.6.0
+      '@graphql-codegen/cli': 2.16.4_graphql@16.6.0
+      '@graphql-codegen/client-preset': 1.2.6_graphql@16.6.0
+      '@graphql-codegen/import-types-preset': 2.2.6_graphql@16.6.0
+      '@graphql-codegen/typescript': 2.8.7_graphql@16.6.0
+      '@graphql-codegen/typescript-graphql-request': 4.5.8_graphql@16.6.0
+      '@graphql-codegen/typescript-operations': 2.5.12_graphql@16.6.0
+      '@graphql-tools/merge': 8.3.15_graphql@16.6.0
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
+      '@nrwl/jest': 15.6.3
+      '@types/apollo-upload-client': 17.0.2_ouxcabus3txrhbd2fdoqq3qh3e
+      '@types/jest': 28.1.3
+      '@types/ramda': 0.28.22
+      '@types/react': 18.0.27
+      babel-jest: 28.1.3
+      graphql: 16.6.0
+      graphql-cli: 4.1.0_graphql@16.6.0
+      graphql-schema-utilities: 1.1.5_graphql@16.6.0
+      graphql-ws: 5.11.2_graphql@16.6.0
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
+      jest-matcher-utils: 29.4.2
+      jest-watch-typeahead: 2.2.2_jest@28.1.3
+      msw: 1.0.0
+      ramda: 0.28.0
+      react: 18.2.0
+      ts-jest: 28.0.5_gcleckb5zcuhbbyyhlubvkkx2y
+
+  packages/webapp-libs/webapp-core:
+    specifiers:
       '@iconify-icons/ion': ^1.2.4
       '@iconify/react': ^4.0.0
       '@nrwl/jest': ^15.6.3
@@ -699,7 +741,6 @@ importers:
       styled-theming: 2.2.0
       ts-jest: 28.0.5
     dependencies:
-      '@apollo/client': 3.7.9_biqbaboplfbrettd7655fr4n2y
       '@iconify-icons/ion': 1.2.7
       '@iconify/react': 4.0.1_react@18.2.0
       color: 4.2.3
@@ -767,8 +808,8 @@ importers:
   packages/workers:
     specifiers:
       '@aws-sdk/client-ses': ^3.272.0
-      '@saas-boilerplate-app/core': '*'
-      '@saas-boilerplate-app/tools': '*'
+      '@sb/core': '*'
+      '@sb/tools': '*'
       body-parser: ^1.19.0
       esbuild: 0.16.17
       express: ^4.17.1
@@ -785,8 +826,8 @@ importers:
       nodemailer: 6.9.0
       yaml: 2.2.1
     devDependencies:
-      '@saas-boilerplate-app/core': link:../internal/core
-      '@saas-boilerplate-app/tools': link:../internal/tools
+      '@sb/core': link:../internal/core
+      '@sb/tools': link:../internal/tools
       esbuild: 0.16.17
       serverless: 3.26.0
       serverless-esbuild: 1.37.2_esbuild@0.16.17
@@ -927,7 +968,7 @@ packages:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.17
 
-  /@apollo/client/3.7.9_biqbaboplfbrettd7655fr4n2y:
+  /@apollo/client/3.7.9_gdcq4dv6opitr3wbfwyjmanyra:
     resolution: {integrity: sha512-YnJvrJOVWrp4y/zdNvUaM8q4GuSHCEIecsRDTJhK/veT33P/B7lfqGJ24NeLdKMj8tDEuXYF7V0t+th4+rgC+Q==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -945,11 +986,12 @@ packages:
       subscriptions-transport-ws:
         optional: true
     dependencies:
-      '@graphql-typed-document-node/core': 3.1.1
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
       '@wry/context': 0.7.0
       '@wry/equality': 0.5.3
       '@wry/trie': 0.3.2
-      graphql-tag: 2.12.6
+      graphql: 16.6.0
+      graphql-tag: 2.12.6_graphql@16.6.0
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.2
       prop-types: 15.8.1
@@ -962,7 +1004,7 @@ packages:
       zen-observable-ts: 1.2.5
     dev: false
 
-  /@apollo/client/3.7.9_xe4twbeoqswbn2uas4ov5melbq:
+  /@apollo/client/3.7.9_o7paodxqbevdia6ixjcodtofcm:
     resolution: {integrity: sha512-YnJvrJOVWrp4y/zdNvUaM8q4GuSHCEIecsRDTJhK/veT33P/B7lfqGJ24NeLdKMj8tDEuXYF7V0t+th4+rgC+Q==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -991,7 +1033,6 @@ packages:
       optimism: 0.16.2
       prop-types: 15.8.1
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
       response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
@@ -6236,7 +6277,7 @@ packages:
     dependencies:
       '@formatjs/icu-messageformat-parser': 2.1.14
       '@types/json-stable-stringify': 1.0.34
-      '@types/node': 17.0.45
+      '@types/node': 16.11.7
       chalk: 4.1.2
       json-stable-stringify: 1.0.2
       ts-jest: 28.0.5_gcleckb5zcuhbbyyhlubvkkx2y
@@ -6353,7 +6394,7 @@ packages:
       shell-quote: 1.7.4
       string-env-interpolation: 1.0.1
       ts-log: 2.2.5
-      tslib: 2.4.1
+      tslib: 2.5.0
       yaml: 1.10.2
       yargs: 17.6.2
     transitivePeerDependencies:
@@ -6939,7 +6980,7 @@ packages:
     dependencies:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@graphql-tools/merge/8.3.1_graphql@15.3.0:
     resolution: {integrity: sha512-BMm99mqdNZbEYeTPK3it9r9S6rsZsQKtlqJsSBknAclXq2pGEfOxjcIZi+kBSkHZKPKCRrYDd5vY0+rUmIHVLg==}
@@ -7070,7 +7111,7 @@ packages:
       '@graphql-tools/merge': 8.3.15_graphql@16.6.0
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
       value-or-promise: 1.0.12
 
   /@graphql-tools/schema/9.0.4_graphql@16.6.0:
@@ -7097,7 +7138,7 @@ packages:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       '@graphql-tools/wrap': 9.3.1_graphql@16.6.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
       value-or-promise: 1.0.12
     dev: false
 
@@ -7279,12 +7320,6 @@ packages:
       tslib: 2.5.0
       value-or-promise: 1.0.12
 
-  /@graphql-typed-document-node/core/3.1.1:
-    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dev: false
-
   /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
     resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
     peerDependencies:
@@ -7422,7 +7457,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       jest-message-util: 28.1.3
       jest-util: 28.1.3
@@ -7433,7 +7468,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.4.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       jest-message-util: 29.4.2
       jest-util: 29.4.2
@@ -7454,14 +7489,14 @@ packages:
       '@jest/test-result': 28.1.3
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.7.1
       exit: 0.1.2
       graceful-fs: 4.2.10
       jest-changed-files: 28.1.3
-      jest-config: 28.1.3_@types+node@18.11.19
+      jest-config: 28.1.3_@types+node@16.11.7
       jest-haste-map: 28.1.3
       jest-message-util: 28.1.3
       jest-regex-util: 28.0.2
@@ -7489,7 +7524,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-mock: 28.1.3
 
   /@jest/expect-utils/28.1.3:
@@ -7513,7 +7548,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.3
       '@sinonjs/fake-timers': 9.1.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-message-util: 28.1.3
       jest-mock: 28.1.3
       jest-util: 28.1.3
@@ -7543,7 +7578,7 @@ packages:
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
       '@jridgewell/trace-mapping': 0.3.17
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -7580,7 +7615,7 @@ packages:
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
       '@jridgewell/trace-mapping': 0.3.17
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -7730,7 +7765,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/yargs': 15.0.15
       chalk: 4.1.2
     dev: true
@@ -7742,7 +7777,7 @@ packages:
       '@jest/schemas': 28.1.3
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/yargs': 17.0.20
       chalk: 4.1.2
 
@@ -7753,7 +7788,7 @@ packages:
       '@jest/schemas': 29.4.2
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/yargs': 17.0.20
       chalk: 4.1.2
 
@@ -9399,7 +9434,7 @@ packages:
     engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
     dependencies:
       '@slack/types': 1.10.0
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       axios: 0.21.4
     transitivePeerDependencies:
       - debug
@@ -9907,7 +9942,7 @@ packages:
       '@storybook/store': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/theming': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/ui': 6.5.16_biqbaboplfbrettd7655fr4n2y
-      '@types/node': 16.18.11
+      '@types/node': 16.11.7
       '@types/webpack': 4.41.33
       autoprefixer: 9.8.8
       babel-loader: 8.3.0_nwtvwtk5tmh22l2urnqucz7kqu
@@ -10136,7 +10171,7 @@ packages:
       '@babel/register': 7.18.9_@babel+core@7.20.12
       '@storybook/node-logger': 6.5.16
       '@storybook/semver': 7.3.2
-      '@types/node': 16.18.11
+      '@types/node': 16.11.7
       '@types/pretty-hrtime': 1.0.1
       babel-loader: 8.3.0_nwtvwtk5tmh22l2urnqucz7kqu
       babel-plugin-macros: 3.1.0
@@ -10205,7 +10240,7 @@ packages:
       '@storybook/semver': 7.3.2
       '@storybook/store': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/telemetry': 6.5.16_biqbaboplfbrettd7655fr4n2y
-      '@types/node': 16.18.11
+      '@types/node': 16.11.7
       '@types/node-fetch': 2.6.2
       '@types/pretty-hrtime': 1.0.1
       '@types/webpack': 4.41.33
@@ -10354,7 +10389,7 @@ packages:
       '@storybook/node-logger': 6.5.16
       '@storybook/theming': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/ui': 6.5.16_biqbaboplfbrettd7655fr4n2y
-      '@types/node': 16.18.11
+      '@types/node': 16.11.7
       '@types/webpack': 4.41.33
       babel-loader: 8.3.0_nwtvwtk5tmh22l2urnqucz7kqu
       case-sensitive-paths-webpack-plugin: 2.4.0
@@ -11246,10 +11281,10 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
 
-  /@types/apollo-upload-client/17.0.2_zgx26nsxq5fe72mb5nc2o6olje:
+  /@types/apollo-upload-client/17.0.2_ouxcabus3txrhbd2fdoqq3qh3e:
     resolution: {integrity: sha512-NphAiBqzZv3iY8Cq+qWyi0QUFFzJ+nVd7QKI/iKV8RfILrpYDL69F/vlhjn4BNxKlmc3LxJHymcf3gFzLBwuZQ==}
     dependencies:
-      '@apollo/client': 3.7.9_xe4twbeoqswbn2uas4ov5melbq
+      '@apollo/client': 3.7.9_o7paodxqbevdia6ixjcodtofcm
       '@types/extract-files': 8.1.1
       graphql: 16.6.0
     transitivePeerDependencies:
@@ -11292,19 +11327,19 @@ packages:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/bonjour/3.5.10:
     resolution: {integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/cacheable-request/6.0.3:
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/responselike': 1.0.0
     dev: true
 
@@ -11335,12 +11370,12 @@ packages:
     resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
     dependencies:
       '@types/express-serve-static-core': 4.17.32
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/cookie/0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
@@ -11376,7 +11411,7 @@ packages:
   /@types/express-serve-static-core/4.17.32:
     resolution: {integrity: sha512-aI5h/VOkxOF2Z1saPy0Zsxs5avets/iaiAJYznQFm5By/pamU31xWKL//epiF4OfUA2qTOc9PV6tCUjhO8wlZA==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
 
@@ -11402,27 +11437,27 @@ packages:
   /@types/fs-extra/8.1.2:
     resolution: {integrity: sha512-SvSrYXfWSc7R4eqnOzbQF4TZmfpNSM9FrSWLU3EUnWBuyZqNBOrv1B1JA3byUDPUl9z4Ab3jeZG2eDdySlgNMg==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/glob/7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/glob/8.0.1:
     resolution: {integrity: sha512-8bVUjXZvJacUFkJXHdyZ9iH1Eaj5V7I8c4NdH5sQJsdXkqT4CA5Dhb4yb4VE/3asyx4L9ayZr1NIhTsWHczmMw==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/graceful-fs/4.1.6:
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/hast/2.3.4:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
@@ -11453,7 +11488,7 @@ packages:
   /@types/http-proxy/1.17.9:
     resolution: {integrity: sha512-QsbSjA/fSk7xB+UXlCT3wHBy5ai9wOcNDWwZAtud+jXhwOM3l+EYZh8Lng4+/6n8uar0J7xILzqftJdJ/Wdfkw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/inquirer/6.5.0:
     resolution: {integrity: sha512-rjaYQ9b9y/VFGOpqBEXRavc3jh0a+e6evAbI31tMda8VlPaSy0AZJfXsvmIe3wklc7W6C3zCSfleuMXR7NOyXw==}
@@ -11471,7 +11506,7 @@ packages:
   /@types/interpret/1.1.1:
     resolution: {integrity: sha512-HZ4d0m2Ebl8DmrOdYZHgYyipj/8Ftq1/ssB/oQR7fqfUrwtTP7IW3BDi2V445nhPBLzZjEkApaPVp83moSCXlA==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/invariant/2.2.35:
@@ -11519,7 +11554,7 @@ packages:
   /@types/jsdom/16.2.15:
     resolution: {integrity: sha512-nwF87yjBKuX/roqGYerZZM0Nv1pZDMAT5YhOHYeM/72Fic+VEqJh4nyoqoapzJnW3pUlfxPY5FhgsJtM+dRnQQ==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/parse5': 6.0.3
       '@types/tough-cookie': 4.0.2
     dev: true
@@ -11542,27 +11577,27 @@ packages:
   /@types/jsonwebtoken/9.0.1:
     resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/liftoff/2.5.1:
     resolution: {integrity: sha512-nB3R6Q9CZcM07JgiTK6ibxqrG1reiHE+UX7em/W1DKwVBxDlfKWOefQjk4jubY5xX+GDxVsWR2KD1SenPby8ow==}
     dependencies:
       '@types/fined': 1.1.3
       '@types/interpret': 1.1.1
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/liftoff/4.0.0:
     resolution: {integrity: sha512-Ny/PJkO6nxWAQnaet8q/oWz15lrfwvdvBpuY4treB0CSsBO1CG0fVuNLngR3m3bepQLd+E4c3Y3DlC2okpUvPw==}
     dependencies:
       '@types/fined': 1.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: false
 
   /@types/loadable__component/5.13.4:
@@ -11603,7 +11638,7 @@ packages:
   /@types/node-fetch/2.6.2:
     resolution: {integrity: sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       form-data: 3.0.1
     dev: true
 
@@ -11613,7 +11648,6 @@ packages:
 
   /@types/node/16.11.7:
     resolution: {integrity: sha512-QB5D2sqfSjCmTuWcBWyJ+/44bcjO7VbjSbOE0ucoVbAsSNQc4Lt6QkgkVXkTDwkL4z/beecZNDvVX15D4P8Jbw==}
-    dev: true
 
   /@types/node/16.18.11:
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
@@ -11621,9 +11655,11 @@ packages:
 
   /@types/node/17.0.45:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+    dev: false
 
   /@types/node/18.11.19:
     resolution: {integrity: sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==}
+    dev: true
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -11664,7 +11700,7 @@ packages:
   /@types/pino/6.3.12:
     resolution: {integrity: sha512-dsLRTq8/4UtVSpJgl9aeqHvbh6pzdmjYD3C092SYgLD2TyoCqHpTJk6vp8DvCTGGc7iowZ2MoiYiVUUCcu7muw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/pino-pretty': 5.0.0
       '@types/pino-std-serializers': 4.0.0
       sonic-boom: 2.8.0
@@ -11748,13 +11784,13 @@ packages:
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/retry/0.12.0:
     resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
@@ -11762,7 +11798,7 @@ packages:
   /@types/sax/1.2.4:
     resolution: {integrity: sha512-pSAff4IAxJjfAXUG6tFkO7dsSbTmf8CtUpfhhZ5VhkRpC4628tJhh3+V6H1E+/Gs9piSzYKT5yzHO5M4GG9jkw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: false
 
   /@types/scheduler/0.16.2:
@@ -11785,12 +11821,12 @@ packages:
     resolution: {integrity: sha512-z5xyF6uh8CbjAu9760KDKsH2FcDxZ2tFCsA4HIMWE6IkiYMXfVoa+4f9KX+FN0ZLsaMw1WNG2ETLA6N+/YA+cg==}
     dependencies:
       '@types/mime': 3.0.1
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/set-cookie-parser/2.4.2:
     resolution: {integrity: sha512-fBZgytwhYAUkj/jC/FAV4RQ5EerRup1YQsXQCh8rZfiHkc4UahC192oH0smGwsXol3cL3A5oETuAHeQHmhXM4w==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/sinonjs__fake-timers/6.0.4:
@@ -11804,7 +11840,7 @@ packages:
   /@types/sockjs/0.3.33:
     resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/source-list-map/0.1.2:
     resolution: {integrity: sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==}
@@ -11862,7 +11898,7 @@ packages:
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/tough-cookie/4.0.2:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
@@ -11887,7 +11923,7 @@ packages:
   /@types/webpack-sources/3.2.0:
     resolution: {integrity: sha512-Ft7YH3lEVRQ6ls8k4Ff1oB4jN6oy/XmU6tQISKdhfh+1mR+viZFphS6WL0IrtDOzvefmJg5a0s7ZQoRXwqTEFg==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/source-list-map': 0.1.2
       source-map: 0.7.4
     dev: true
@@ -11895,7 +11931,7 @@ packages:
   /@types/webpack/4.41.33:
     resolution: {integrity: sha512-PPajH64Ft2vWevkerISMtnZ8rTs4YmRbs+23c402J0INmxDKCrhZNvwZYtzx96gY2wAtXdrK1BS2fiC8MlLr3g==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       '@types/tapable': 1.0.8
       '@types/uglify-js': 3.17.1
       '@types/webpack-sources': 3.2.0
@@ -11906,13 +11942,13 @@ packages:
   /@types/websocket/1.0.2:
     resolution: {integrity: sha512-B5m9aq7cbbD/5/jThEr33nUY8WEfVi6A2YKCTOvw5Ldy7mtsOkqRvGjnzy6g7iMMDsgu7xREuCzqATLDLQVKcQ==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
 
   /@types/ws/8.5.4:
     resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -11938,7 +11974,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
     dev: true
     optional: true
 
@@ -12860,7 +12896,7 @@ packages:
       '@apollo/client': ^3.0.0
       graphql: 14 - 16
     dependencies:
-      '@apollo/client': 3.7.9_xe4twbeoqswbn2uas4ov5melbq
+      '@apollo/client': 3.7.9_o7paodxqbevdia6ixjcodtofcm
       extract-files: 11.0.0
       graphql: 16.6.0
     dev: false
@@ -13464,7 +13500,7 @@ packages:
       camel-case: 4.1.2
       header-case: 2.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /axios-proxy-builder/0.1.2:
@@ -15029,7 +15065,7 @@ packages:
   /chrome-launcher/0.13.4:
     resolution: {integrity: sha512-nnzXiDbGKjDSK6t2I+35OAPBy5Pw/39bgkb/ZAFwMhwJbdYBp6aH+vW28ZgtjdU890Q7D+3wN/tB8N66q5Gi2A==}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       escape-string-regexp: 1.0.5
       is-wsl: 2.2.0
       lighthouse-logger: 1.3.0
@@ -18541,7 +18577,7 @@ packages:
     resolution: {integrity: sha512-EzV94NYKoO09GLXGjXj9JIlXijVck4ONSr5wiCWDvhsvj5jxSrzTmRU/9C1DyB6uToszLs8aifA6NQ7lEQdvFw==}
     engines: {node: '>= 0.8'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       require-like: 0.1.2
     dev: false
 
@@ -20443,15 +20479,6 @@ packages:
       iterall: 1.3.0
     dev: true
 
-  /graphql-tag/2.12.6:
-    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      tslib: 2.5.0
-    dev: false
-
   /graphql-tag/2.12.6_graphql@16.6.0:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
@@ -22337,7 +22364,7 @@ packages:
       '@jest/expect': 28.1.3
       '@jest/test-result': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -22498,7 +22525,7 @@ packages:
       - supports-color
     dev: true
 
-  /jest-config/28.1.3_@types+node@18.11.19:
+  /jest-config/28.1.3_@types+node@16.11.7:
     resolution: {integrity: sha512-MG3INjByJ0J4AsNBm7T3hsuxKQqFIiRo/AUqb1q9LRKI5UU6Aar9JHbr9Ivn1TVwfUD9KirRoM/T6u8XlcQPHQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     peerDependencies:
@@ -22513,7 +22540,7 @@ packages:
       '@babel/core': 7.20.12
       '@jest/test-sequencer': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       babel-jest: 28.1.3_@babel+core@7.20.12
       chalk: 4.1.2
       ci-info: 3.7.1
@@ -22590,7 +22617,7 @@ packages:
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
       '@types/jsdom': 16.2.15
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-mock: 28.1.3
       jest-util: 28.1.3
       jsdom: 19.0.0
@@ -22608,7 +22635,7 @@ packages:
       '@jest/environment': 28.1.3
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-mock: 28.1.3
       jest-util: 28.1.3
 
@@ -22632,7 +22659,7 @@ packages:
     dependencies:
       '@jest/types': 26.6.2
       '@types/graceful-fs': 4.1.6
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.10
@@ -22655,7 +22682,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.3
       '@types/graceful-fs': 4.1.6
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.10
@@ -22737,7 +22764,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
 
   /jest-pnp-resolver/1.2.3_jest-resolve@28.1.1:
     resolution: {integrity: sha512-+3NpwQEnRoIBtx4fyhblQDPgJI0H1IEIkX7ShLUjPGA7TtUTvI1oiKi3SR4oBR0hQhQR80l4WAe5RrXBwWMA8w==}
@@ -22822,7 +22849,7 @@ packages:
       '@jest/test-result': 28.1.3
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       emittery: 0.10.2
       graceful-fs: 4.2.10
@@ -22874,7 +22901,7 @@ packages:
     resolution: {integrity: sha512-S5wqyz0DXnNJPd/xfIzZ5Xnp1HrJWBczg8mMfMpN78OJ5eDxXyf+Ygld9wX1DnUWbIbhM1YDY95NjR4CBXkb2g==}
     engines: {node: '>= 10.14.2'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       graceful-fs: 4.2.10
     dev: true
 
@@ -22913,7 +22940,7 @@ packages:
     engines: {node: '>= 10.14.2'}
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       graceful-fs: 4.2.10
       is-ci: 2.0.0
@@ -22925,7 +22952,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -22936,7 +22963,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -22947,7 +22974,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.4.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -22986,7 +23013,7 @@ packages:
     dependencies:
       '@jest/test-result': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.10.2
@@ -22999,7 +23026,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.4.2
       '@jest/types': 29.4.2
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -23011,7 +23038,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -23020,7 +23047,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -23028,7 +23055,7 @@ packages:
     resolution: {integrity: sha512-CqRA220YV/6jCo8VWvAt1KKx6eek1VIHMPeLEbpcfSfkEeWyBNppynM/o6q+Wmw+sOhos2ml34wZbSX3G13//g==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -23036,7 +23063,7 @@ packages:
     resolution: {integrity: sha512-lY4AnnmsEWeiXirAIA0c9SDPbuCBq8IYuDVL8PMm0MZ2PEs2yPvRA/J64QBXuZp7CYKrDM/rmNrc9/i3KJQncw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-util: 29.4.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -29099,6 +29126,12 @@ packages:
       rollup-plugin-inject: 3.0.2
     dev: true
 
+  /rollup-plugin-peer-deps-external/2.2.4:
+    resolution: {integrity: sha512-AWdukIM1+k5JDdAqV/Cxd+nejvno2FVLVeZ74NKggm3Q5s9cbbcOgUPGdbxPi4BXu7xGaZ8HG12F+thImYu/0g==}
+    peerDependencies:
+      rollup: '*'
+    dev: true
+
   /rollup-plugin-peer-deps-external/2.2.4_rollup@2.79.1:
     resolution: {integrity: sha512-AWdukIM1+k5JDdAqV/Cxd+nejvno2FVLVeZ74NKggm3Q5s9cbbcOgUPGdbxPi4BXu7xGaZ8HG12F+thImYu/0g==}
     peerDependencies:
@@ -30187,7 +30220,7 @@ packages:
     resolution: {integrity: sha512-DI7/OuAUD+GMpR6dmu8lliO2Wg5zfeh+/xsdyJZCzd8o5JgFUjCeLsBDuZjIQJdwXS3J0L/uZYrELKYqx+PXog==}
     engines: {node: '>=8.0'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       image-ssim: 0.2.0
       jpeg-js: 0.4.4
     dev: false

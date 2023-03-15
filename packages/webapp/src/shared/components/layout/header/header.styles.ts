@@ -1,4 +1,4 @@
-import { color, elevation, media, size, transition } from '@saas-boilerplate-app/webapp-core/theme';
+import { color, elevation, media, size, transition } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { HeaderLogoIcon } from '../../../../images/icons';

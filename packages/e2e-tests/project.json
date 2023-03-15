@@ -5,7 +5,7 @@
   "sourceRoot": "packages/e2e-tests",
   "targets": {
     "setup": {
-      "executor": "@saas-boilerplate-app/tools:setup",
+      "executor": "@sb/tools:setup",
       "options": {
         "cwd": "packages/e2e-tests"
       }
@@ -31,18 +31,13 @@
         "color": true,
         "command": "docker-compose run --rm -T e2e-tests sh -c \"/bin/chamber exec env-${PROJECT_NAME}-${ENV_STAGE}-e2e -- ./scripts/run_tests.sh\""
       },
-      "dependsOn": [
-        "compose-build-image"
-      ]
+      "dependsOn": ["compose-build-image"]
     },
     "pretest-clear": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": [
-          "rm -rf mochareports/* || true",
-          "rm -rf cypress/reports/* || true"
-        ]
+        "commands": ["rm -rf mochareports/* || true", "rm -rf cypress/reports/* || true"]
       }
     },
     "generate-report": {
@@ -68,9 +63,7 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "pretest-clear"
-      ]
+      "dependsOn": ["pretest-clear"]
     },
     "all:headless:ff:qa": {
       "executor": "nx:run-commands",
@@ -83,9 +76,7 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "pretest-clear"
-      ]
+      "dependsOn": ["pretest-clear"]
     },
     "all:headless:edge:qa": {
       "executor": "nx:run-commands",
@@ -98,31 +89,23 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "pretest-clear"
-      ]
+      "dependsOn": ["pretest-clear"]
     },
     "open:qa": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
         "cwd": "packages/e2e-tests",
-        "commands": [
-          "cypress open --env configFile=qa"
-        ],
+        "commands": ["cypress open --env configFile=qa"],
         "parallel": false
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": [
-          "packages/e2e-tests/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/e2e-tests/**/*.ts"]
       }
     }
   },
-  "tags": [
-    "service"
-  ]
+  "tags": ["service"]
 }

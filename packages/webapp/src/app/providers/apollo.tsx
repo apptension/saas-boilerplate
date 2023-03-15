@@ -1,9 +1,8 @@
 import { ApolloProvider as Provider } from '@apollo/client';
-import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
-import { SnackbarEmitterActions, useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { apolloClient, apolloEmitter } from '@sb/webapp-api-client';
+import { useLocales } from '@sb/webapp-core/hooks';
+import { SnackbarEmitterActions, useSnackbar } from '@sb/webapp-core/snackbar';
 import { ReactNode, useEffect } from 'react';
-
-import { client, emitter } from '../../shared/services/graphqlApi/apolloClient';
 
 export const ApolloProvider = ({ children }: { children: ReactNode }) => {
   const { showMessage } = useSnackbar();
@@ -12,10 +11,10 @@ export const ApolloProvider = ({ children }: { children: ReactNode }) => {
   } = useLocales();
 
   useEffect(() => {
-    emitter.addEventListener(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, showMessage);
+    apolloEmitter.addEventListener(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, showMessage);
 
     return () => {
-      emitter.removeEventListener(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, showMessage);
+      apolloEmitter.removeEventListener(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, showMessage);
     };
   }, [showMessage]);
 
@@ -23,5 +22,5 @@ export const ApolloProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('LOCALES_LANGUAGE', language || '');
   }, [language]);
 
-  return <Provider client={client}>{children}</Provider>;
+  return <Provider client={apolloClient}>{children}</Provider>;
 };

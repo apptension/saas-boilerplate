@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
+
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
 import {
-  Subject as TrialExpiresSoonSubject,
   Template as TrialExpiresSoonEmail,
   TrialExpiresSoonProps,
+  Subject as TrialExpiresSoonSubject,
 } from './trialExpiresSoon.component';
 
 const Template: Story<TrialExpiresSoonProps> = (args: TrialExpiresSoonProps) => (

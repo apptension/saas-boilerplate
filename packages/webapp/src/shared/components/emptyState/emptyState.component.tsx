@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { Container, Text } from './emptyState.styles';
 
 export type EmptyStateProps = {

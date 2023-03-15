@@ -14,7 +14,7 @@ import {
   EnvironmentSettings,
   getCloudfrontCertificateArn,
   getHostedZone,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 export interface EnvComponentsStackProps
   extends StackProps,

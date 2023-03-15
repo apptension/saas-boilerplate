@@ -6,9 +6,12 @@ interface NotificationErrorBoundaryState {
 
 type NotificationErrorBoundaryProps = {
   children?: React.ReactNode;
-}
+};
 
-export class NotificationErrorBoundary extends React.Component<NotificationErrorBoundaryProps, NotificationErrorBoundaryState> {
+export class NotificationErrorBoundary extends React.Component<
+  NotificationErrorBoundaryProps,
+  NotificationErrorBoundaryState
+> {
   constructor(props: NotificationErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };

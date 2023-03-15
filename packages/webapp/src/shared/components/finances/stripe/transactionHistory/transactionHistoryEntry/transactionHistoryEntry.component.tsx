@@ -1,4 +1,5 @@
-import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime/formattedDate';
+import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { FormattedDate } from '@sb/webapp-core/components/dateTime/formattedDate';
 import { useIntl } from 'react-intl';
 
 import { useSubscriptionPlanDetails } from '../../../../../../routes/finances/hooks/useSubscriptionPlanDetails';
@@ -6,7 +7,6 @@ import {
   STRIPE_CHARGE_FRAGMENT,
   SUBSCRIPTION_PLAN_ITEM_FRAGMENT,
 } from '../../../../../../routes/finances/subscriptions/subscriptions.graphql';
-import { FragmentType, useFragment } from '../../../../../../shared/services/graphqlApi/__generated/gql';
 import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
 import { Amount, Card, Container, Details, TransactionDate } from './transactionHistoryEntry.styles';
 

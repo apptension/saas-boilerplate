@@ -8,7 +8,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import {
   EnvConstructProps,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 import { getInfraFunctionArnByName } from '../../lib/names';
 
 export interface CiEntrypointProps extends EnvConstructProps {

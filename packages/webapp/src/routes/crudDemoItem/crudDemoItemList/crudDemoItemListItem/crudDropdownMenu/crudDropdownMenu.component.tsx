@@ -1,7 +1,7 @@
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { Button, ButtonVariant, Link as ButtonLink } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { MouseEvent, useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';

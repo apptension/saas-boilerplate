@@ -5,11 +5,11 @@ import {
   EnvConstructProps,
   getHostedZone,
   getCloudfrontCertificateArn,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 import {
   UsEastResourcesStack,
   WebAppCloudFrontDistribution,
-} from '@saas-boilerplate-app/infra-shared';
+} from '@sb/infra-shared';
 
 export interface DocsStackProps extends StackProps, EnvConstructProps {}
 

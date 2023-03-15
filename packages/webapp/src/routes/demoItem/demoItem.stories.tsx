@@ -1,9 +1,10 @@
+import { demoItemFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../app/config/routes';
-import { demoItemFactory, fillDemoItemQuery } from '../../mocks/factories';
+import { fillDemoItemQuery } from '../../tests/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { createMockRouterProps } from '../../tests/utils/rendering';
 import { DemoItem } from './demoItem.component';

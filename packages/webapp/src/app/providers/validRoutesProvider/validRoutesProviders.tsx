@@ -1,7 +1,7 @@
-import { translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
-import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
-import { ResponsiveThemeProvider } from '@saas-boilerplate-app/webapp-core/providers';
-import { global } from '@saas-boilerplate-app/webapp-core/theme';
+import { translationMessages } from '@sb/webapp-core/config/i18n';
+import { useLocales } from '@sb/webapp-core/hooks';
+import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
+import { global } from '@sb/webapp-core/theme';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Outlet } from 'react-router-dom';

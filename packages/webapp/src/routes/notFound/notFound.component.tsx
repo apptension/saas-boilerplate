@@ -1,4 +1,4 @@
-import { typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { typography } from '@sb/webapp-core/theme';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 

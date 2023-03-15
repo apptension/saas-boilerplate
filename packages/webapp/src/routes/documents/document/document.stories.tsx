@@ -1,7 +1,7 @@
+import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { documentFactory } from '../../../mocks/factories';
 import { withProviders } from '../../../shared/utils/storybook';
 import { Document, DocumentProps } from './document.component';
 

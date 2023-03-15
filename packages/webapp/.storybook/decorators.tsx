@@ -1,6 +1,6 @@
-import { DEFAULT_LOCALE, translationMessages } from '@saas-boilerplate-app/webapp-core/config/i18n';
-import { ResponsiveThemeProvider } from '@saas-boilerplate-app/webapp-core/providers';
-import { global as globalTheme, initializeFontFace } from '@saas-boilerplate-app/webapp-core/theme';
+import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
+import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
+import { global as globalTheme, initializeFontFace } from '@sb/webapp-core/theme';
 import { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 

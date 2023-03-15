@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { useFormatFileSize } from '@saas-boilerplate-app/webapp-core/components/fileSize';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
 import { useApiForm } from '../../../hooks';

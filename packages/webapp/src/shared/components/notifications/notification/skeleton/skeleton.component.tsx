@@ -1,7 +1,8 @@
-import LoadingSkeleton from 'react-loading-skeleton';
-import { useIntl } from 'react-intl';
 import { forwardRef } from 'react';
-import { Container, Content, Avatar, Title } from './skeleton.styles';
+import { useIntl } from 'react-intl';
+import LoadingSkeleton from 'react-loading-skeleton';
+
+import { Avatar, Container, Content, Title } from './skeleton.styles';
 
 export const Skeleton = forwardRef<HTMLLIElement, Record<string, unknown>>((_, ref) => {
   const intl = useIntl();

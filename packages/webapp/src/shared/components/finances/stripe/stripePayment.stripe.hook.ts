@@ -1,8 +1,8 @@
+import { StripePaymentMethodType } from '@sb/webapp-api-client/api/stripe/paymentMethod';
+import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
 
-import { StripePaymentMethodType } from '../../../services/api/stripe/paymentMethod';
-import { StripePaymentIntentType } from '../../../services/graphqlApi/__generated/gql/graphql';
 import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,

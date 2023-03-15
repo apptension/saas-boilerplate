@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
 import { identity } from 'ramda';
+import { useMemo } from 'react';
+
 import { ConnectionType, mapConnection } from '../../utils/graphql';
 
 export const useMappedConnection = <ITEM>(data?: ConnectionType<ITEM>) =>

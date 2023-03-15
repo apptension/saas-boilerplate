@@ -1,11 +1,7 @@
+import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import {
-  fillAllStripeChargesQuery,
-  fillSubscriptionScheduleQueryWithPhases,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../mocks/factories';
+import { fillAllStripeChargesQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { Subscriptions } from './subscriptions.component';
 

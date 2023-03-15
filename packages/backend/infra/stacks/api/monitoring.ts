@@ -1,11 +1,11 @@
 import { Construct } from 'constructs';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as logs from 'aws-cdk-lib/aws-logs';
-import { EnvConstructProps } from '@saas-boilerplate-app/infra-core';
+import { EnvConstructProps } from '@sb/infra-core';
 import {
   MainDatabase,
   MainECSCluster,
-} from '@saas-boilerplate-app/infra-shared';
+} from '@sb/infra-shared';
 
 import { getApiServiceName } from './names';
 

@@ -1,9 +1,9 @@
 import documentIcon from '@iconify-icons/ion/document-text-outline';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { DocumentListItemFragment } from '@sb/webapp-api-client/graphql';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { FormattedMessage } from 'react-intl';
 
-import { DocumentListItemFragment } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useHandleDelete } from '../documents.hooks';
 import { Container, DeleteButton, IconContainer, Name, RelativeDate } from './document.styles';
 

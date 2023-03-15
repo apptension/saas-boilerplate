@@ -1,6 +1,6 @@
+import { StripePaymentMethodFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 
-import { StripePaymentMethodFragmentFragment } from '../../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import {
   ChangeHandlerType,
   MethodRemovedHandlerType,

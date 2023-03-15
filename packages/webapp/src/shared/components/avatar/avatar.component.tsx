@@ -1,4 +1,4 @@
-import { size as themeSize } from '@saas-boilerplate-app/webapp-core/theme';
+import { size as themeSize } from '@sb/webapp-core/theme';
 import { isNil } from 'ramda';
 import { HTMLAttributes } from 'react';
 import { useIntl } from 'react-intl';

@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
+import { SubscriptionPlan, SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { SubscriptionPlanItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { times } from 'ramda';
 import { useIntl } from 'react-intl';
 
-import { ActiveSubscriptionDetailsContextType } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { stripeSubscriptionQuery } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { SubscriptionPlan, SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { SubscriptionPlanItemFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { ActiveSubscriptionDetailsContextType } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 
 export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFragment | SubscriptionPlan) => {
   const intl = useIntl();

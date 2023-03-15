@@ -1,4 +1,4 @@
-import { gql } from '../../../services/graphqlApi/__generated/gql';
+import { gql } from '@sb/webapp-api-client/graphql';
 
 export const authChangePasswordMutation = gql(/* GraphQL */ `
   mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {

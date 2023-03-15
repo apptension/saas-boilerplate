@@ -1,7 +1,7 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import { currentUserFactory } from '../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
+import { fillCommonQueryWithUser } from '../../tests/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { Profile } from './profile.component';
 

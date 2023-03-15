@@ -1,8 +1,9 @@
+import { DocumentsDeleteMutationMutation } from '@sb/webapp-api-client/graphql';
+import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { fireEvent, screen } from '@testing-library/react';
 import { times } from 'ramda';
 
-import { documentFactory, fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../mocks/factories';
-import { DocumentsDeleteMutationMutation } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
+import { fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../tests/factories';
 import { render } from '../../../tests/utils/rendering';
 import { Documents } from '../documents.component';
 

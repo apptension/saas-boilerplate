@@ -1,6 +1,7 @@
 import { Story } from '@storybook/react';
+
 import { withProviders } from '../../../utils/storybook';
-import { SocialLoginButtons, SocialLoginButtonsProps, SignupButtonsVariant } from './socialLoginButtons.component';
+import { SignupButtonsVariant, SocialLoginButtons, SocialLoginButtonsProps } from './socialLoginButtons.component';
 
 const Template: Story<SocialLoginButtonsProps> = (args: SocialLoginButtonsProps) => {
   return <SocialLoginButtons {...args} />;

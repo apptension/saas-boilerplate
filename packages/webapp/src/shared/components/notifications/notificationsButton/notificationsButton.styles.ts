@@ -1,5 +1,5 @@
-import { Button as ButtonBase } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { color } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button as ButtonBase } from '@sb/webapp-core/components/buttons';
+import { color } from '@sb/webapp-core/theme';
 import styled, { css } from 'styled-components';
 
 type ButtonProps = { hasUnreadNotifications: boolean };

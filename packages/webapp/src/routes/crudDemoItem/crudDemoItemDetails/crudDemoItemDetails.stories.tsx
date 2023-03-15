@@ -3,7 +3,7 @@ import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { fillCrudDemoItemDetailsQuery } from '../../../mocks/factories/crudDemoItem';
+import { fillCrudDemoItemDetailsQuery } from '../../../tests/factories';
 import { withProviders } from '../../../shared/utils/storybook';
 import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from './crudDemoItemDetails.component';

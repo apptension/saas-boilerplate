@@ -1,7 +1,6 @@
+import { StripePaymentMethod } from '@sb/webapp-api-client/api/stripe/paymentMethod';
+import { StripePaymentMethodFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
-
-import { StripePaymentMethodFragmentFragment } from '../../../../../shared/services/graphqlApi/__generated/gql/graphql';
-import { StripePaymentMethod } from '../../../../services/api/stripe/paymentMethod';
 
 export enum StripePaymentMethodSelectionType {
   SAVED_PAYMENT_METHOD,

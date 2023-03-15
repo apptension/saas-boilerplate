@@ -1,4 +1,4 @@
-import { UnknownObject } from '@saas-boilerplate-app/webapp-core/utils/types';
+import { UnknownObject } from '@sb/webapp-core/utils/types';
 import juice from 'juice';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';

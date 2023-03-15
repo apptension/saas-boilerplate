@@ -1,9 +1,10 @@
+import { demoItemFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { demoItemFactory, fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../mocks/factories';
+import { fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../tests/factories';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { DemoItems } from '../demoItems.component';
 

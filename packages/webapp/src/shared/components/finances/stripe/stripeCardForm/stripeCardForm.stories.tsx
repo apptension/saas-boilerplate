@@ -1,6 +1,7 @@
-import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { Story } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
+
 import { stripePromise } from '../../../../services/stripe';
 import { StripeCardForm, StripeCardFormProps } from './stripeCardForm.component';
 

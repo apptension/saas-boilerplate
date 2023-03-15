@@ -1,8 +1,9 @@
+import { FieldError } from '@sb/webapp-api-client/api/types';
+import { path } from 'ramda';
 import { useCallback, useState } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
-import { path } from 'ramda';
+
 import { ErrorMessages, FieldErrorMessages } from '../useApiForm.types';
-import { FieldError } from '../../../services/api/types';
 
 export const useTranslatedErrors = <FormData extends FieldValues = FieldValues>(
   initialCustomMessages?: ErrorMessages<FormData>

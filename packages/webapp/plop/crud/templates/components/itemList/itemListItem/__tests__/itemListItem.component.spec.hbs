@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { gql } from '@sb/webapp-api-client/graphql';
 import { append } from 'ramda';
 import { Route, Routes, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { gql } from '../../../../../shared/services/graphqlApi/__generated/gql';
 import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { {{ pascalCase name }}ListItem } from '../{{ camelCase name }}ListItem.component';

@@ -2,7 +2,7 @@ import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { fillNotificationsListQuery } from '../../../../mocks/factories';
+import { fillNotificationsListQuery } from '../../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { NotificationsButton, NotificationsButtonProps } from './notificationsButton.component';
 

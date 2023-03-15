@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { BackButton } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 import { useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks';
-import { gql } from '../../../shared/services/graphqlApi/__generated/gql';
 import { Container, Header } from './crudDemoItemDetails.styles';
 
 export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `

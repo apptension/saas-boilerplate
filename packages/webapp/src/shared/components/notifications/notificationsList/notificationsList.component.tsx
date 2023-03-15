@@ -1,10 +1,10 @@
-import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { FragmentType } from '@sb/webapp-api-client/graphql';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { isEmpty } from 'ramda';
 import { ElementType } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { FragmentType } from '../../../services/graphqlApi/__generated/gql';
 import { EmptyState } from '../../emptyState';
 import { NotificationSkeleton } from '../notification';
 import { NOTIFICATIONS_STRATEGY } from '../notifications.constants';

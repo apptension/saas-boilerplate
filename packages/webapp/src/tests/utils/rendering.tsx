@@ -1,5 +1,5 @@
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
-import * as coreUtils from '@saas-boilerplate-app/webapp-core/tests/utils/rendering';
+import * as coreUtils from '@sb/webapp-core/tests/utils/rendering';
 import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
@@ -8,7 +8,7 @@ import { MemoryRouterProps } from 'react-router-dom';
 
 import { RoutesConfig } from '../../app/config/routes';
 import { CommonQuery } from '../../app/providers';
-import { fillCommonQueryWithUser } from '../../shared/utils/commonQuery';
+import { fillCommonQueryWithUser } from '../factories';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;

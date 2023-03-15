@@ -1,16 +1,16 @@
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { Button, ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
-import { useMediaQuery } from '@saas-boilerplate-app/webapp-core/hooks';
-import { media } from '@saas-boilerplate-app/webapp-core/theme';
+import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Icon } from '@sb/webapp-core/components/icons';
+import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { media } from '@sb/webapp-core/theme';
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../../shared/hooks';
-import { FragmentType, useFragment } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 

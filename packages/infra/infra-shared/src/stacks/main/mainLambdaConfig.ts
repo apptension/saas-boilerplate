@@ -6,7 +6,7 @@ import { MainVpc } from './mainVpc';
 import {
   EnvConstructProps,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 export interface MainLambdaConfigProps extends EnvConstructProps {
   mainVpc: MainVpc;

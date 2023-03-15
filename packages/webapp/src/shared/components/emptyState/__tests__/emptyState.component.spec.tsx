@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
-import { render, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../tests/utils/rendering';
 
+import { PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID, render } from '../../../../tests/utils/rendering';
 import { EmptyState, EmptyStateProps } from '../emptyState.component';
 
 describe('EmptyState: Component', () => {

@@ -1,4 +1,4 @@
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { Elements } from '@stripe/react-stripe-js';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';

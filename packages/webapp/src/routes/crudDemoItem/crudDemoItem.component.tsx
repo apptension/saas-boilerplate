@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
-import { RoutesConfig } from '../../app/config/routes';
+import { Route, Routes } from 'react-router-dom';
+
 import { NotFound } from '../../app/asyncComponents';
-import { CrudDemoItemList } from './crudDemoItemList';
-import { CrudDemoItemDetails } from './crudDemoItemDetails';
+import { RoutesConfig } from '../../app/config/routes';
 import { AddCrudDemoItem } from './addCrudDemoItem';
+import { CrudDemoItemDetails } from './crudDemoItemDetails';
+import { CrudDemoItemList } from './crudDemoItemList';
 import { EditCrudDemoItem } from './editCrudDemoItem';
 
 export const CrudDemoItem = () => {

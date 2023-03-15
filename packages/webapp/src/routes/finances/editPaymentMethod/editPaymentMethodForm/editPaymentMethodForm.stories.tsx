@@ -1,14 +1,14 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 import { times } from 'ramda';
 
-import {
-  fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../../shared/utils/storybook';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 

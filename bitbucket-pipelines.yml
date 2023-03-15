@@ -10,6 +10,7 @@ definitions:
     pnpmdocs: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebapp: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappcore: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappapiclient: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -97,6 +98,20 @@ pipelines:
               - pnpmwebappcore
               - clis
               - sonar
+        - step:
+            name: 'webapp-api-client: Lint & test'
+            image: atlassian/default-image:4
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-api-client...
+              - node_modules/.bin/nx run webapp-api-client:lint
+              - node_modules/.bin/nx run webapp-api-client:test
+            caches:
+              - pnpmwebappapiclient
+              - clis
         - step:
             name: 'backend: Build image & run tests'
             image: atlassian/default-image:3

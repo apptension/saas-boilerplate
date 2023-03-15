@@ -1,4 +1,4 @@
-import { circle, size } from '@saas-boilerplate-app/webapp-core/theme';
+import { circle, size } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { Container as ContainerBase } from '../notification.styles';

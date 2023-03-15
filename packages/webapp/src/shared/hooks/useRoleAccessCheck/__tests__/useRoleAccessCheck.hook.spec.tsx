@@ -1,7 +1,8 @@
-import { currentUserFactory } from '../../../../mocks/factories';
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { renderHook } from '../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
 import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';
 
 const render = ({ userRoles, allowedRoles }: { userRoles: Role[]; allowedRoles: Role | Role[] }) => {

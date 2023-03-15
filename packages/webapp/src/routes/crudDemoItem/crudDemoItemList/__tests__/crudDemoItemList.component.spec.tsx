@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { fillCrudDemoItemListQuery } from '../../../../mocks/factories/crudDemoItem';
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
+import { fillCommonQueryWithUser, fillCrudDemoItemListQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 

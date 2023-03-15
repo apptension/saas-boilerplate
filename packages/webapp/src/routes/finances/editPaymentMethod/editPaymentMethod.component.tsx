@@ -1,5 +1,5 @@
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { BackButton } from '@sb/webapp-core/components/buttons';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { Elements } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';

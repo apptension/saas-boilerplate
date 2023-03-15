@@ -1,12 +1,12 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { times } from 'ramda';
 
-import { currentUserFactory } from '../../../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { authUpdateUserProfileMutation } from '../../editProfileForm/editProfileForm.graphql';
 import { AvatarForm } from '../avatarForm.component';
 import { MAX_AVATAR_SIZE } from '../avatarForm.constants';

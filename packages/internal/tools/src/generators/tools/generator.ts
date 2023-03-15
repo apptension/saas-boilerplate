@@ -63,7 +63,7 @@ export default async function (tree: Tree, options: ToolsGeneratorSchema) {
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@saas-boilerplate-app/tools:build',
+        executor: '@sb/tools:build',
       },
     },
     tags: normalizedOptions.parsedTags,

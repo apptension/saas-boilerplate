@@ -5,7 +5,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import {
   EnvConstructProps,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 export class MainKmsKey extends Construct {
   key: kms.Key;

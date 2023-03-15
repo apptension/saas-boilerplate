@@ -1,7 +1,8 @@
+import { notificationFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { fillNotificationsListQuery, notificationFactory } from '../../../../mocks/factories';
+import { fillNotificationsListQuery } from '../../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { NotificationTypes } from '../notifications.types';
 import { NotificationsList, NotificationsListProps } from './notificationsList.component';

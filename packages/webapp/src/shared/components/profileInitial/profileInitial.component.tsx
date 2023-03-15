@@ -1,4 +1,4 @@
-import { CurrentUserType } from '../../services/graphqlApi/__generated/types';
+import { CurrentUserType } from '@sb/webapp-api-client/graphql';
 
 export type ProfileInitialProps = {
   profile?: CurrentUserType | null;

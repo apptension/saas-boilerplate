@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
 import { not } from 'ramda';
+import { useRef, useState } from 'react';
 
 /*
  * Hook to handle popups, dropdowns. etc open state.

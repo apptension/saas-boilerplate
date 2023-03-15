@@ -8,11 +8,11 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import {
   EnvConstructProps,
   getHostedZone,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 import {
   UsEastResourcesStack,
   WebAppCloudFrontDistribution,
-} from '@saas-boilerplate-app/infra-shared';
+} from '@sb/infra-shared';
 
 export interface GlobalToolsStackProps extends StackProps, EnvConstructProps {}
 

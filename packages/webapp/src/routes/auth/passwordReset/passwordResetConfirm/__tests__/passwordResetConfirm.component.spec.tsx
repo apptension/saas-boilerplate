@@ -1,3 +1,4 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -5,7 +6,6 @@ import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
 import { authRequestPasswordResetConfirmMutation } from '../../../../../shared/components/auth/passwordResetConfirmForm/passwordResetConfirmForm.graphql';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
 import { PasswordResetConfirm } from '../passwordResetConfirm.component';
 

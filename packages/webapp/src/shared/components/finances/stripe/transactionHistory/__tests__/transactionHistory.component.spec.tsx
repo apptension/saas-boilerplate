@@ -1,13 +1,9 @@
+import { Subscription } from '@sb/webapp-api-client/api/subscription/types';
+import { paymentMethodFactory, transactionHistoryEntryFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
-import {
-  fillAllPaymentsMethodsQuery,
-  fillAllStripeChargesQuery,
-  paymentMethodFactory,
-  transactionHistoryEntryFactory,
-} from '../../../../../../mocks/factories';
+import { fillAllPaymentsMethodsQuery, fillAllStripeChargesQuery } from '../../../../../../tests/factories';
 import { render } from '../../../../../../tests/utils/rendering';
-import { Subscription } from '../../../../../services/api/subscription/types';
 import { TransactionHistory } from '../transactionHistory.component';
 
 const Component = () => <TransactionHistory />;

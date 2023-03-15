@@ -1,7 +1,6 @@
-import { border, color, media, size, transition, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { border, color, media, size, transition, typography } from '@sb/webapp-core/theme';
 import { Link as LinkBase } from 'react-router-dom';
 import styled from 'styled-components';
-
 
 export const Container = styled.li`
   width: 100%;

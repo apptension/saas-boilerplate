@@ -1,7 +1,7 @@
-import { fontFamily, fontWeight } from '@saas-boilerplate-app/webapp-core/theme';
+import { ENV } from '@sb/webapp-core/config/env';
+import { fontFamily, fontWeight } from '@sb/webapp-core/theme';
 import styled, { css } from 'styled-components';
 
-import { ENV } from '../../app/config/env';
 import { Image } from './image';
 
 export const Table = styled.table`

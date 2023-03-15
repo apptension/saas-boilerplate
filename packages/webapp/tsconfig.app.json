@@ -19,8 +19,6 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx",
     "src/**/__mocks__/**/*.ts",
-    "src/mocks/reactIntl.tsx",
-    "src/mocks/icons.tsx",
     "src/setupTests.ts",
     "infra/**/*"
   ],

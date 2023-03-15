@@ -1,4 +1,4 @@
-import { Locale } from '@saas-boilerplate-app/webapp-core/config/i18n';
+import { Locale } from '@sb/webapp-core/config/i18n';
 import { ChangeEvent } from 'react';
 
 import { useLanguageRouter } from './languageSwitcher.hooks';

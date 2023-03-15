@@ -11,7 +11,7 @@ import * as coudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import * as s3Deploy from 'aws-cdk-lib/aws-s3-deployment';
-import { EnvironmentSettings } from '@saas-boilerplate-app/infra-core';
+import { EnvironmentSettings } from '@sb/infra-core';
 
 import { EnvComponentsStack } from '../stacks/components/stack';
 

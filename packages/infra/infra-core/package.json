@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate-app/infra-core",
+  "name": "@sb/infra-core",
   "version": "0.0.1",
   "type": "commonjs",
   "scripts": {

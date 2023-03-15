@@ -1,3 +1,11 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { Elements } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { fireEvent, screen } from '@testing-library/react';
@@ -6,17 +14,8 @@ import { append, times } from 'ramda';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import {
-  fillSubscriptionScheduleQuery,
-  fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../../mocks/factories';
+import { fillSubscriptionScheduleQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
 import { stripeUpdateDefaultPaymentMethodMutation } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';

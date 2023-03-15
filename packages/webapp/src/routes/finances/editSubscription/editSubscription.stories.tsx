@@ -1,12 +1,8 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import {
-  fillSubscriptionPlansAllQuery,
-  fillSubscriptionScheduleQueryWithPhases,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
+import { fillSubscriptionPlansAllQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { EditSubscription } from './editSubscription.component';
 

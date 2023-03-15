@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
 
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from '../passwordResetConfirmForm.component';
 import { authRequestPasswordResetConfirmMutation } from '../passwordResetConfirmForm.graphql';

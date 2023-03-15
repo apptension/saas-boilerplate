@@ -1,3 +1,10 @@
+import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -8,15 +15,7 @@ import {
   fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../mocks/factories';
-import {
-  SubscriptionPlanName,
-  Subscription as SubscriptionType,
-} from '../../../../shared/services/api/subscription/types';
+} from '../../../../tests/factories';
 import { matchTextContent } from '../../../../tests/utils/match';
 import { render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';

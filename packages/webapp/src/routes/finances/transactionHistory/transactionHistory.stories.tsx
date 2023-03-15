@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { fillAllStripeChargesQuery } from '../../../mocks/factories';
+import { fillAllStripeChargesQuery } from '../../../tests/factories';
 import { withProviders } from '../../../shared/utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 

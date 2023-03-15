@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, Locale } from '@saas-boilerplate-app/webapp-core/config/i18n';
-import { LocalesProvider } from '@saas-boilerplate-app/webapp-core/providers';
+import { DEFAULT_LOCALE, Locale } from '@sb/webapp-core/config/i18n';
+import { LocalesProvider } from '@sb/webapp-core/providers';
 import { renderHook } from '@testing-library/react-hooks';
 import { ReactNode } from 'react';
 
@@ -7,8 +7,8 @@ import { useLanguageFromParams } from '../useLanguageFromParams.hook';
 
 const mockSetLanguage = jest.fn();
 
-jest.mock('@saas-boilerplate-app/webapp-core/hooks', () => ({
-  ...jest.requireActual('@saas-boilerplate-app/webapp-core/hooks'),
+jest.mock('@sb/webapp-core/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-core/hooks'),
   useLocales: () => ({
     setLanguage: mockSetLanguage,
   }),

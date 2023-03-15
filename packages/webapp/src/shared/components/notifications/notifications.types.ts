@@ -1,6 +1,5 @@
-import { UnknownObject } from '@saas-boilerplate-app/webapp-core/utils/types';
-
-import { NotificationType as NotificationTypeBase } from '../../services/graphqlApi';
+import { NotificationType as NotificationTypeBase } from '@sb/webapp-api-client/graphql';
+import { UnknownObject } from '@sb/webapp-core/utils/types';
 
 export type NotificationType<T extends UnknownObject> = Omit<NotificationTypeBase, 'type' | 'data'> & {
   type: NotificationTypes;

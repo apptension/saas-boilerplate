@@ -1,11 +1,10 @@
+import { useQuery } from '@apollo/client';
+import { SchemaType } from '@sb/webapp-api-client';
 import { Suspense } from 'react';
 import { useParams } from 'react-router';
-import { useQuery } from '@apollo/client';
 
-import { SchemaType } from '../../shared/services/graphqlApi/apolloClient';
-
-import { DemoItemContent } from './demoItemContent.component';
 import { demoItemQuery } from './demoItem.graphql';
+import { DemoItemContent } from './demoItemContent.component';
 
 type Params = { id: string };
 

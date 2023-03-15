@@ -1,8 +1,8 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 
-import { currentUserFactory } from '../../../../mocks/factories';
-import { fillCommonQueryWithUser } from '../../../utils/commonQuery';
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { Header, HeaderProps } from './header.component';
 

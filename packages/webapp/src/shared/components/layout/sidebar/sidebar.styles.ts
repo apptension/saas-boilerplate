@@ -1,5 +1,5 @@
-import { ButtonVariant, Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { color, media, size, transition, typography, zIndex } from '@saas-boilerplate-app/webapp-core/theme';
+import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { color, media, size, transition, typography, zIndex } from '@sb/webapp-core/theme';
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate-app/infra-functions",
+  "name": "@sb/infra-functions",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",

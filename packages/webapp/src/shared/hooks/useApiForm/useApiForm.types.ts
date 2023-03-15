@@ -1,6 +1,6 @@
+import { FormSubmitError } from '@sb/webapp-api-client/api/types';
 import { DeepMap, FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
 
-import { FormSubmitError } from '../../services/api/types';
 import { useApiForm } from './useApiForm.hook';
 
 export type FieldErrorMessages = Record<string, string>;

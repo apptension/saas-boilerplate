@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
-import { useIntl } from 'react-intl';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
+import { ReactNode } from 'react';
+import { useIntl } from 'react-intl';
+
 import {
   StripeBillingInfoChangeEvent,
   StripePaymentMethodChangeEvent,

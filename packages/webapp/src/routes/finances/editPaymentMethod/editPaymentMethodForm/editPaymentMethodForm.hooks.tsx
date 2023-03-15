@@ -1,4 +1,6 @@
 import { useMutation } from '@apollo/client';
+import { StripePaymentMethodType } from '@sb/webapp-api-client/api/stripe/paymentMethod';
+import { StripeSetupIntentFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { GraphQLError } from 'graphql';
 
@@ -6,8 +8,6 @@ import {
   StripePaymentMethodSelection,
   StripePaymentMethodSelectionType,
 } from '../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.types';
-import { StripePaymentMethodType } from '../../../../shared/services/api/stripe/paymentMethod';
-import { StripeSetupIntentFragmentFragment } from '../../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { stripeCreateSetupIntentMutation } from './editPaymentMethodForm.graphql';
 
 interface UseStripeSetupIntentProps {

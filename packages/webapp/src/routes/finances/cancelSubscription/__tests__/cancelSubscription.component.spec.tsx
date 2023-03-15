@@ -1,3 +1,10 @@
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+} from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -5,14 +12,7 @@ import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import {
-  fillSubscriptionScheduleQuery,
-  paymentMethodFactory,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-} from '../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../shared/services/api/subscription/types';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { fillSubscriptionScheduleQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { CancelSubscription } from '../cancelSubscription.component';

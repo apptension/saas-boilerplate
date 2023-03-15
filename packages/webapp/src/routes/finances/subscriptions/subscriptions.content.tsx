@@ -1,10 +1,10 @@
-import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime';
+import { StripeSubscriptionQueryQuery } from '@sb/webapp-api-client/graphql';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useGenerateLocalePath } from '../../../shared/hooks';
-import { StripeSubscriptionQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 import { useActiveSubscriptionDetailsData } from '../hooks/useActiveSubscriptionDetailsData/useActiveSubscriptionDetailsData';
 import { Link, Row, RowValue, Subheader } from './subscriptions.styles';
 

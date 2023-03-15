@@ -1,7 +1,7 @@
+import { StripePaymentMethodCardBrand } from '@sb/webapp-api-client/api/stripe/paymentMethod';
+import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
 import { FormattedMessage } from 'react-intl';
 
-import { StripePaymentMethodCardBrand } from '../../../../services/api/stripe/paymentMethod';
-import { FragmentType, useFragment } from '../../../../services/graphqlApi/__generated/gql';
 import { STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT } from './stripePaymentMethodInfo.graphql';
 
 export type StripePaymentMethodInfoProps = {

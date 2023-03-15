@@ -1,8 +1,8 @@
+import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
-import { currentUserFactory } from '../../../mocks/factories';
+import { fillCommonQueryWithUser } from '../../../tests/factories';
 import { Role } from '../../../modules/auth/auth.types';
-import { fillCommonQueryWithUser } from '../../../shared/utils/commonQuery';
 import { render } from '../../../tests/utils/rendering';
 import { Profile } from '../profile.component';
 

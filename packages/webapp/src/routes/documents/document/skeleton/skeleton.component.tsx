@@ -1,4 +1,5 @@
 import LoadingSkeleton from 'react-loading-skeleton';
+
 import { Container } from './skeleton.styles';
 
 export const Skeleton = () => {

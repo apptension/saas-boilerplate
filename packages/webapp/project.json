@@ -6,7 +6,7 @@
   "implicitDependencies": ["tools"],
   "targets": {
     "setup": {
-      "executor": "@saas-boilerplate-app/tools:setup",
+      "executor": "@sb/tools:setup",
       "options": {
         "cwd": "packages/webapp"
       }
@@ -19,18 +19,14 @@
       },
       "configurations": {
         "generate-types": {
-          "commands": [
-            "pnpm run graphql-codegen -c ./graphql/codegen/contentful.yml",
-            "pnpm run graphql-codegen -c ./graphql/codegen/schemaTypes.yml",
-            "pnpm run graphql-codegen -c ./graphql/codegen/client.yml"
-          ],
+          "command": "nx run webapp-api-client:graphql:generate-types",
           "parallel": false
         },
         "generate-types:watch": {
-          "command": "pnpm run graphql-codegen -w -c ./graphql/codegen/client.yml"
+          "command": "nx run webapp-api-client:graphql:generate-types:watch"
         },
         "download-schema": {
-          "command": "/bin/sh ./scripts/download-graphql-schema.sh"
+          "command": "nx run webapp-api-client:graphql:download-schema"
         }
       }
     },

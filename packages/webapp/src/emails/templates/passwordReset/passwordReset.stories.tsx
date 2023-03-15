@@ -1,10 +1,11 @@
 import { Story } from '@storybook/react';
+
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
 import {
+  Template as PasswordResetEmail,
   PasswordResetProps,
   Subject as PasswordResetSubject,
-  Template as PasswordResetEmail,
 } from './passwordReset.component';
 
 const Template: Story<PasswordResetProps> = (args: PasswordResetProps) => (

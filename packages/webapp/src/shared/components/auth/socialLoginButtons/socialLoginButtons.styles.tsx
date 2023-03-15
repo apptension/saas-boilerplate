@@ -1,5 +1,5 @@
-import { Button, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { size } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { size } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 import { FacebookIcon, GoogleIcon } from '../../../../images/icons';

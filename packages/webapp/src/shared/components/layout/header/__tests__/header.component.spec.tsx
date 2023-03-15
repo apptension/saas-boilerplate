@@ -1,11 +1,15 @@
+import { currentUserFactory, notificationFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { currentUserFactory, fillNotificationsListQuery, fillNotificationsSubscriptionQuery, notificationFactory } from '../../../../../mocks/factories';
+import {
+  fillCommonQueryWithUser,
+  fillNotificationsListQuery,
+  fillNotificationsSubscriptionQuery,
+} from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { Header } from '../header.component';
 
 const getApolloMocks = () => [

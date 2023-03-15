@@ -1,7 +1,7 @@
+import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
 import { render } from '../../../../tests/utils/rendering';
-import { documentFactory } from '../../../../mocks/factories';
 import { Document } from '../document.component';
 
 describe('Document: Component', () => {

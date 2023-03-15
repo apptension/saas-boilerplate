@@ -1,5 +1,5 @@
 {
-  "name": "@saas-boilerplate-app/webapp-core",
+  "name": "@sb/webapp-core",
   "version": "0.0.1",
   "type": "commonjs",
   "scripts": {
@@ -8,7 +8,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@apollo/client": "^3.7.9",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
     "color": "^4.2.3",

@@ -1,9 +1,9 @@
+import { FormSubmitError } from '@sb/webapp-api-client/api/types';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { isEmpty, isNil, keys } from 'ramda';
 import { useCallback, useState } from 'react';
 import { FieldValues, Path, useForm } from 'react-hook-form';
 
-import { FormSubmitError } from '../../services/api/types';
 import { camelCaseKeys } from '../../utils/object';
 import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';

@@ -10,14 +10,14 @@ import {
   getHostedZone,
   ApplicationMultipleTargetGroupsFargateService,
   EnvironmentSettings,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 import {
   MainKmsKey,
   MainDatabase,
   MainECSCluster,
   EnvComponentsStack,
   FargateServiceResources,
-} from '@saas-boilerplate-app/infra-shared';
+} from '@sb/infra-shared';
 
 import { Monitoring } from './monitoring';
 import { getApiServiceName } from './names';

@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
-import { MarkdownPage } from '@saas-boilerplate-app/webapp-core/components/markdownPage';
+import { SchemaType } from '@sb/webapp-api-client';
+import { MarkdownPage } from '@sb/webapp-core/components/markdownPage';
 
 import { configContentfulAppQuery } from '../../modules/config/config.graphql';
-import { SchemaType } from '../../shared/services/graphqlApi/apolloClient';
 
 export const PrivacyPolicy = () => {
   const { data, loading } = useQuery(configContentfulAppQuery, {

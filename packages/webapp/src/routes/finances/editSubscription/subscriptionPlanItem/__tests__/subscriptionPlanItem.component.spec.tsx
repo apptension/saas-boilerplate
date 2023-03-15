@@ -1,4 +1,11 @@
 import { useQuery } from '@apollo/client';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
@@ -7,12 +14,7 @@ import {
   fillSubscriptionPlansAllQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../../shared/services/api/subscription/types';
+} from '../../../../../tests/factories';
 import { mapConnection } from '../../../../../shared/utils/graphql';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';

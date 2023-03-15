@@ -1,14 +1,16 @@
 import { useQuery } from '@apollo/client';
+import {
+  paymentMethodFactory,
+  subscriptionFactory,
+  subscriptionPhaseFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
 import {
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionFactory,
-  subscriptionPhaseFactory,
-} from '../../../../../../mocks/factories';
+} from '../../../../../../tests/factories';
 import { matchTextContent } from '../../../../../../tests/utils/match';
 import { render } from '../../../../../../tests/utils/rendering';
 import { mapConnection } from '../../../../../utils/graphql';

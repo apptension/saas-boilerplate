@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { useSnackbar } from '@saas-boilerplate-app/webapp-core/snackbar';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useCallback, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useParams } from 'react-router';

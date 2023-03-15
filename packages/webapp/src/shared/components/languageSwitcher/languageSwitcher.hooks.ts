@@ -1,5 +1,5 @@
-import { Locale, appLocales } from '@saas-boilerplate-app/webapp-core/config/i18n';
-import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
+import { Locale, appLocales } from '@sb/webapp-core/config/i18n';
+import { useLocales } from '@sb/webapp-core/hooks';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 
 import { LANG_PREFIX } from '../../../app/config/routes';

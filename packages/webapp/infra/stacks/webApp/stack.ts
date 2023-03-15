@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
-import { EnvConstructProps, getCloudfrontCertificateArn, getHostedZone } from '@saas-boilerplate-app/infra-core';
-import { UsEastResourcesStack, WebAppCloudFrontDistribution } from '@saas-boilerplate-app/infra-shared';
+import { EnvConstructProps, getCloudfrontCertificateArn, getHostedZone } from '@sb/infra-core';
+import { UsEastResourcesStack, WebAppCloudFrontDistribution } from '@sb/infra-shared';
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment';
 

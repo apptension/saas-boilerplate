@@ -1,7 +1,8 @@
 import { action } from '@storybook/addon-actions';
 import { Elements } from '@stripe/react-stripe-js';
-import { StripeCardForm, StripeCardFormProps } from '../stripeCardForm.component';
+
 import { render } from '../../../../../../tests/utils/rendering';
+import { StripeCardForm, StripeCardFormProps } from '../stripeCardForm.component';
 
 describe('StripeCardForm: Component', () => {
   const defaultProps: StripeCardFormProps = {

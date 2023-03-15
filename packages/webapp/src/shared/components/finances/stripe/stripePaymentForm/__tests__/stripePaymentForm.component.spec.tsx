@@ -1,19 +1,15 @@
+import { Subscription } from '@sb/webapp-api-client/api/subscription/types';
+import { paymentMethodFactory, subscriptionFactory } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { times } from 'ramda';
 
-import {
-  fillAllPaymentsMethodsQuery,
-  fillSubscriptionScheduleQuery,
-  paymentMethodFactory,
-  subscriptionFactory,
-} from '../../../../../../mocks/factories';
+import { fillAllPaymentsMethodsQuery, fillSubscriptionScheduleQuery } from '../../../../../../tests/factories';
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
-import { composeMockedQueryResult } from '../../../../../../tests/utils/fixtures';
 import { render } from '../../../../../../tests/utils/rendering';
-import { Subscription } from '../../../../../services/api/subscription/types';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
 import { stripeCreatePaymentIntentMutation } from '../stripePaymentForm.graphql';
 

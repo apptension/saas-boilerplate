@@ -1,6 +1,6 @@
-import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { RelativeDate as RelativeDateBase } from '@saas-boilerplate-app/webapp-core/components/dateTime/relativeDate';
-import { color, size, transition, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button } from '@sb/webapp-core/components/buttons';
+import { RelativeDate as RelativeDateBase } from '@sb/webapp-core/components/dateTime/relativeDate';
+import { color, size, transition, typography } from '@sb/webapp-core/theme';
 import styled, { css } from 'styled-components';
 
 import { NotificationThemeProps } from './notification.types';

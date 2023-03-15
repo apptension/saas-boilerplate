@@ -1,12 +1,9 @@
+import { paymentMethodFactory, subscriptionPhaseFactory } from '@sb/webapp-api-client/tests/factories';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
-import {
-  fillSubscriptionScheduleQueryWithPhases,
-  paymentMethodFactory,
-  subscriptionPhaseFactory,
-} from '../../../../../../mocks/factories';
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../../../../tests/factories';
 import { matchTextContent } from '../../../../../../tests/utils/match';
 import { render } from '../../../../../../tests/utils/rendering';
 import { useApiForm } from '../../../../../hooks';

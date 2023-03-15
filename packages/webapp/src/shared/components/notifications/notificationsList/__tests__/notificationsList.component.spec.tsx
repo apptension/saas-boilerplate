@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
+import { NotificationType } from '@sb/webapp-api-client/graphql';
+import { notificationFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { times } from 'ramda';
 
-import { fillNotificationsListQuery, notificationFactory } from '../../../../../mocks/factories';
+import { fillCommonQueryWithUser, fillNotificationsListQuery } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
-import { NotificationType } from '../../../../services/graphqlApi';
-import { fillCommonQueryWithUser } from '../../../../utils/commonQuery';
 import { notificationsListQuery } from '../../notifications.graphql';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 

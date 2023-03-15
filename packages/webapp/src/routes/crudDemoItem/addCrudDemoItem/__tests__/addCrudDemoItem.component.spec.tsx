@@ -1,8 +1,8 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { fillCommonQueryWithUser } from '../../../../shared/utils/commonQuery';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
+import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { render } from '../../../../tests/utils/rendering';
 import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
 

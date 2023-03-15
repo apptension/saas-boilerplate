@@ -1,5 +1,5 @@
-import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { size } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button } from '@sb/webapp-core/components/buttons';
+import { size } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 export const Form = styled.form.attrs(() => ({ noValidate: true }))`

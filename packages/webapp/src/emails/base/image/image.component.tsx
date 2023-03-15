@@ -1,5 +1,5 @@
+import { ENV } from '@sb/webapp-core/config/env';
 import { HTMLAttributes } from 'react';
-import { ENV } from '../../../app/config/env';
 
 export type ImageProps = HTMLAttributes<HTMLImageElement> & {
   src: string;

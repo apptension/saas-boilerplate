@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { fillDocumentsListQuery } from '../../mocks/factories';
+import { fillDocumentsListQuery } from '../../tests/factories';
 import { withProviders } from '../../shared/utils/storybook';
 import { Documents } from './documents.component';
 

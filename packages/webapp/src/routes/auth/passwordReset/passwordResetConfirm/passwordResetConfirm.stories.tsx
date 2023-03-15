@@ -1,7 +1,8 @@
 import { Story } from '@storybook/react';
 import { Route, Routes } from 'react-router';
-import { withProviders } from '../../../../shared/utils/storybook';
+
 import { RoutesConfig } from '../../../../app/config/routes';
+import { withProviders } from '../../../../shared/utils/storybook';
 import { createMockRouterProps } from '../../../../tests/utils/rendering';
 import { PasswordResetConfirm } from './passwordResetConfirm.component';
 

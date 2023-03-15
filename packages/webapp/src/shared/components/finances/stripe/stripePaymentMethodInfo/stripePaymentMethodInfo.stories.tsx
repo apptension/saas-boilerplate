@@ -1,13 +1,10 @@
 import { useQuery } from '@apollo/client';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import {
-  fillSubscriptionScheduleQueryWithPhases,
-  subscriptionPhaseFactory,
-  subscriptionPlanFactory,
-} from '../../../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../../services/api/subscription/types';
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
 import { mapConnection } from '../../../../utils/graphql';
 import { withProviders } from '../../../../utils/storybook';
 import { stripeSubscriptionQuery } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';

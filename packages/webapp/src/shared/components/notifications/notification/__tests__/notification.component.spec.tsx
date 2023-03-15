@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
+
+import { PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID, render } from '../../../../../tests/utils/rendering';
 import { Notification, NotificationProps } from '../notification.component';
-import { render, PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID } from '../../../../../tests/utils/rendering';
 import { mockedNotificationProps } from '../notification.fixtures';
 
 describe('Notification: Component', () => {

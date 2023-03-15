@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "setup-env": {
-      "executor": "@saas-boilerplate-app/tools:setup",
+      "executor": "@sb/tools:setup",
       "options": {
         "cwd": "./"
       }
@@ -17,9 +17,7 @@
         "cwd": "packages/internal/core",
         "command": "nx docker-create-volumes"
       },
-      "dependsOn": [
-        "setup-env"
-      ]
+      "dependsOn": ["setup-env"]
     },
     "docker-create-volumes": {
       "executor": "nx:run-commands",
@@ -47,40 +45,29 @@
           "docker-compose up --force-recreate -d backend workers"
         ]
       },
-      "dependsOn": [
-        "setup"
-      ]
+      "dependsOn": ["setup"]
     },
     "docker-compose:down": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
         "parallel": false,
-        "commands": [
-          "docker-compose down"
-        ]
+        "commands": ["docker-compose down"]
       }
     },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": [
-          "nx docker-compose:up",
-          "nx run webapp:start"
-        ],
+        "commands": ["nx docker-compose:up", "nx run webapp:start"],
         "parallel": false
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/internal/core/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/internal/core/**/*.ts"]
       }
     }
   },

@@ -1,5 +1,5 @@
-import { Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { color, elevation, media, size, transition, typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { Button } from '@sb/webapp-core/components/buttons';
+import { color, elevation, media, size, transition, typography } from '@sb/webapp-core/theme';
 import styled, { css } from 'styled-components';
 
 type ContainerProps = {

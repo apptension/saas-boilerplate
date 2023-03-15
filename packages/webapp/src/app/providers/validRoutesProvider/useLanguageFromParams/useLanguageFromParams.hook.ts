@@ -1,4 +1,4 @@
-import { useLocales } from '@saas-boilerplate-app/webapp-core/hooks';
+import { useLocales } from '@sb/webapp-core/hooks';
 import { useEffect } from 'react';
 
 import { useLocale } from '../../../../shared/hooks';

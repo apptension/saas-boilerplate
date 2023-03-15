@@ -1,4 +1,4 @@
---- 
+---
 title: Create new subscription plan
 ---
 
@@ -6,6 +6,7 @@ Available subscription plans are created by a custom django command
 `init_subscriptions`. It is called automatically in both local development environment, and in remote AWS environment.
 
 You can call this command manually if you want:
+
 ```sh
 ./manage.py init_subscriptions
 ```
@@ -14,7 +15,7 @@ You can call this command manually if you want:
 
 ### Subscription plan definition
 
-Subscription plan is a pair of a `Product` and `Price` Stripe instances. For 
+Subscription plan is a pair of a `Product` and `Price` Stripe instances. For
 simplicity, we call this pair a "subscription plan".
 
 All subscription plan definitions are instances of a `SubscriptionPlanConfig`
@@ -56,5 +57,5 @@ instance with necessary values and attach it to the specific `Product`.
 ### Subscription plan definition
 
 In the webapp subscription plans are defined by their name in the
-`SubscriptionPlanName` enum located in the `packages/webapp/src/shared/packages/api/subscription/types.ts` 
+`SubscriptionPlanName` enum located in the `packages/webapp/src/shared/packages/api/subscription/auth.types.ts`
 file.

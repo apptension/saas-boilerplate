@@ -1,7 +1,8 @@
+import { useOAuthLogin } from '@sb/webapp-api-client/api/auth';
 import { HTMLAttributes } from 'react';
 import { FormattedMessage } from 'react-intl';
+
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
-import { useOAuthLogin } from '../../../../modules/auth/auth.hooks';
 import { Container, FacebookButton, GoogleButton } from './socialLoginButtons.styles';
 
 export enum SignupButtonsVariant {

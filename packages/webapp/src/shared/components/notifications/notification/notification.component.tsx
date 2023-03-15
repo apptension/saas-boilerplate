@@ -1,11 +1,11 @@
 import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
-import { ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { Icon } from '@saas-boilerplate-app/webapp-core/components/icons';
+import { NotificationType } from '@sb/webapp-api-client/graphql';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Icon } from '@sb/webapp-core/components/icons';
 import { ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import { NotificationType } from '../../../services/graphqlApi';
 import { useToggleIsRead } from './notification.hooks';
 import { Actions, Avatar, Container, Content, MarkAsReadButton, RelativeDate, Title } from './notification.styles';
 import { NotificationTheme } from './notification.types';

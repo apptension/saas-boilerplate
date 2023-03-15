@@ -1,4 +1,4 @@
-import { BackButton } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { BackButton } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { useEditSubscription } from './editSubscription.hook';

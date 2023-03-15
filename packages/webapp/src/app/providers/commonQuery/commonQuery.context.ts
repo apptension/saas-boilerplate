@@ -1,5 +1,5 @@
+import { CommonQueryCurrentUserQueryQuery } from '@sb/webapp-api-client/graphql';
 import { createContext } from 'react';
-import { CommonQueryCurrentUserQueryQuery } from '../../../shared/services/graphqlApi/__generated/gql/graphql';
 
 type CommonDataContext = {
   data: CommonQueryCurrentUserQueryQuery | null;

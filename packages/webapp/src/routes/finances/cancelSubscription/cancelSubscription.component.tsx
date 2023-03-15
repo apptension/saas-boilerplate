@@ -1,6 +1,6 @@
-import { BackButton, Button } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import { FormattedDate } from '@saas-boilerplate-app/webapp-core/components/dateTime';
-import { typography } from '@saas-boilerplate-app/webapp-core/theme';
+import { BackButton, Button } from '@sb/webapp-core/components/buttons';
+import { FormattedDate } from '@sb/webapp-core/components/dateTime';
+import { typography } from '@sb/webapp-core/theme';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../activeSubscriptionContext/activeSubscriptionContext.hooks';

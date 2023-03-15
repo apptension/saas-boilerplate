@@ -1,13 +1,13 @@
-import { Story } from '@storybook/react';
-import { append, times } from 'ramda';
-
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import {
-  fillSubscriptionScheduleQueryWithPhases,
   paymentMethodFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
-} from '../../../mocks/factories';
-import { SubscriptionPlanName } from '../../../shared/services/api/subscription/types';
+} from '@sb/webapp-api-client/tests/factories';
+import { Story } from '@storybook/react';
+import { append, times } from 'ramda';
+
+import { fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../shared/utils/storybook';
 import { PaymentConfirm } from './paymentConfirm.component';
 

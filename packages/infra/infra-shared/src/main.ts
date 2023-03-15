@@ -3,7 +3,7 @@ import {
   loadEnvSettings,
   getGlobalStackName,
   getEnvStackName,
-} from '@saas-boilerplate-app/infra-core';
+} from '@sb/infra-core';
 
 import { GlobalStack } from './stacks/global';
 import { UsEastResourcesStack } from './stacks/usEastResources';

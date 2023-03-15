@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Routes, Route } from 'react-router';
+import { Route, Routes } from 'react-router';
 
-import { LanguageSwitcher } from '../index';
 import { render } from '../../../../tests/utils/rendering';
+import { LanguageSwitcher } from '../index';
 
 describe('LanguageSwitcher: Component', () => {
   const enPath = '/';

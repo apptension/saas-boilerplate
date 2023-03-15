@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+
 import { useOpenState } from '../useOpenState.hook';
 
 describe('useOpenState: Hook', () => {

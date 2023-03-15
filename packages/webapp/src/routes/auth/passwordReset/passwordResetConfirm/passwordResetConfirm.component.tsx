@@ -1,4 +1,4 @@
-import { Link } from '@saas-boilerplate-app/webapp-core/components/buttons';
+import { Link } from '@sb/webapp-core/components/buttons';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate, useParams } from 'react-router';

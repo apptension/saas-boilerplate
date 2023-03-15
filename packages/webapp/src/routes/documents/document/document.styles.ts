@@ -1,6 +1,6 @@
-import { border, size, typography } from '@saas-boilerplate-app/webapp-core/theme';
-import { Button, ButtonVariant } from '@saas-boilerplate-app/webapp-core/components/buttons';
-import * as coreDateTime from '@saas-boilerplate-app/webapp-core/components/dateTime';
+import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import * as coreDateTime from '@sb/webapp-core/components/dateTime';
+import { border, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
 export const Container = styled.li`

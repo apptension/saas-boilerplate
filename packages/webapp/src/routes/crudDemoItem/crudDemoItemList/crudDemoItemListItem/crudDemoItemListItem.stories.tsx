@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
-import { gql } from '../../../../shared/services/graphqlApi/__generated/gql';
 import { withProviders } from '../../../../shared/utils/storybook';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
 export default {
