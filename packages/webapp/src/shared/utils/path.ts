@@ -8,6 +8,7 @@ export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<
     index: `${root}/*`,
     ...absoluteNestedUrls,
   };
+
   return {
     ...paths,
     getRelativeUrl: (route: T) => nestedRoutes[route],

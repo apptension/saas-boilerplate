@@ -40,9 +40,10 @@ const render = () => {
 };
 
 export const initApp = async () => {
-  const detection = new UnsupportedBrowserDetection();
-  if (!detection.isSupported()) {
-    setUnsupportedClasses();
+  const { isInAppBrowser, isSupported, deviceType } = new UnsupportedBrowserDetection();
+
+  if (!isSupported()) {
+    setUnsupportedClasses(isInAppBrowser, deviceType, isSupported);
     return;
   }
 

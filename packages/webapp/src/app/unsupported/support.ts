@@ -1,15 +1,15 @@
-import { UnsupportedBrowserDetection } from './unsupportedBrowserDetection';
+export const setUnsupportedClasses = (
+  isInAppBrowser: boolean,
+  deviceType: 'mobile' | 'tablet' | 'desktop',
+  isSupported: () => boolean
+) => {
+  document.documentElement.className += ` device-${deviceType}`;
 
-const detection = new UnsupportedBrowserDetection();
-
-export const setUnsupportedClasses = () => {
-  document.documentElement.className += ` device-${detection.deviceType}`;
-
-  if (detection.isInAppBrowser) {
+  if (isInAppBrowser) {
     document.documentElement.className += ' in-app-browser';
   }
 
-  if (!detection.isSupported()) {
+  if (!isSupported()) {
     document.documentElement.className += ' unsupported';
     const unsupportedPageElement = document.querySelector<HTMLElement>('.unsupported-page');
     const headline = unsupportedPageElement?.querySelector<HTMLElement>('h1');

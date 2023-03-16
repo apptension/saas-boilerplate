@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client';
 import { SchemaType } from '@sb/webapp-api-client/graphql';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { DemoItemListItem } from './demoItemListItem';
 import { demoItemsAllQuery } from './demoItems.graphql';
 import { Container, Header, List } from './demoItems.styles';
 
-export const DemoItems: FC = () => {
+export const DemoItems = () => {
   const { data } = useQuery(demoItemsAllQuery, { context: { schemaType: SchemaType.Contentful } });
   const items = data?.demoItemCollection?.items;
 

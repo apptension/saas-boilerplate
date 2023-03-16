@@ -11,10 +11,11 @@ type AppProps = {
 };
 
 export const buildEmail = ({ name, data, lang = DEFAULT_LOCALE }: AppProps) => {
-  const { Template, Subject } = templates[name];
-  if (!Template) {
+  if (!templates[name]?.Template) {
     throw new Error(`Missing template ${name}`);
   }
+
+  const { Template, Subject } = templates[name];
 
   return {
     template: (

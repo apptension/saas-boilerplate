@@ -15,6 +15,7 @@ export const useGenerateAbsoluteLocalePath = () => {
     const localPath = generatePath(routePath, { ...params, lang: locale });
     const WEB_APP_URL = ENV.WEB_APP_URL ?? '';
     const separator = WEB_APP_URL.endsWith('/') || localPath.startsWith('/') ? '' : '/';
+
     return [WEB_APP_URL ?? '', localPath].join(separator);
   };
 };

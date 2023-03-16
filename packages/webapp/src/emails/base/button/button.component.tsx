@@ -10,6 +10,7 @@ export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {
 export const Button = (props: ButtonProps) => {
   const isExternalLink = props.linkTo.startsWith('http');
   const hrefUrl = isExternalLink ? props.linkTo : `${ENV.PUBLIC_URL}${props.linkTo}`;
+
   return (
     <Container {...props} href={hrefUrl}>
       {props.children}
