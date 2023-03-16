@@ -31,7 +31,10 @@ export const useLoginForm = () => {
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   const [commitLoginMutation, { loading }] = useMutation(authSinginMutation, {
-    onCompleted: () => {
+    onCompleted: ({ tokenAuth }) => {
+      if (tokenAuth?.otpAuthToken) {
+        return navigate(generateLocalePath(RoutesConfig.validateOtp));
+      }
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.home));
     },

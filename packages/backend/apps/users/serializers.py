@@ -1,3 +1,5 @@
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from django.conf import settings
 from django.contrib import auth as dj_auth
 from django.contrib.auth import password_validation, get_user_model
@@ -8,9 +10,12 @@ from rest_framework import exceptions, serializers, validators
 from rest_framework_simplejwt import serializers as jwt_serializers, tokens as jwt_tokens, exceptions as jwt_exceptions
 from rest_framework_simplejwt.serializers import PasswordField
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+from common.decorators import context_user_required
 
 from . import models, tokens, jwt, notifications
 from .services.users import get_role_names
+from .services import otp as otp_services
+from .utils import generate_otp_auth_token
 
 UPLOADED_AVATAR_SIZE_LIMIT = 1 * 1024 * 1024
 
@@ -214,9 +219,10 @@ class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer)
 
         self.fields[self.username_field] = serializers.CharField(write_only=True)
         self.fields['password'] = PasswordField(write_only=True)
+        self.fields['otp_auth_token'] = serializers.CharField(read_only=True, default=None)
 
-    access = serializers.CharField(read_only=True)
-    refresh = serializers.CharField(read_only=True)
+    access = serializers.CharField(read_only=True, default=None)
+    refresh = serializers.CharField(read_only=True, default=None)
 
     def validate(self, attrs):
         try:
@@ -227,6 +233,9 @@ class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer)
         return data
 
     def create(self, validated_data):
+        if self.user.otp_enabled and self.user.otp_verified:
+            return {"otp_auth_token": str(generate_otp_auth_token(self.user))}
+
         return validated_data
 
 
@@ -289,4 +298,72 @@ class LogoutSerializer(serializers.Serializer):
     def create(self, validated_data):
         refresh = validated_data.pop('refresh')
         refresh.blacklist()
+        return {'ok': True}
+
+
+@context_user_required
+class GenerateOTPSerializer(serializers.Serializer):
+    base32 = serializers.CharField(read_only=True)
+    otpauth_url = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        otp_base32, otp_auth_url = otp_services.generate_otp(self.context_user)
+        return {'base32': otp_base32, 'otpauth_url': otp_auth_url}
+
+
+@context_user_required
+class VerifyOTPSerializer(serializers.Serializer):
+    otp_verified = serializers.BooleanField(read_only=True)
+    otp_token = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        otp_services.verify_otp(self.context_user, validated_data.get("otp_token", ""))
+        return {'otp_verified': True}
+
+
+class ValidateOTPSerializer(serializers.Serializer):
+    user: models.User
+
+    otp_token = serializers.CharField(write_only=True)
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+
+    default_error_messages = {
+        'invalid_token': _(f'No valid token found in cookie \'{settings.OTP_AUTH_TOKEN_COOKIE}\''),
+    }
+
+    def validate(self, attrs):
+        request = self.context['request']
+
+        if not (raw_otp_auth_token := request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE)):
+            self.fail('invalid_token')
+
+        try:
+            otp_auth_token = jwt_tokens.AccessToken(raw_otp_auth_token)
+        except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
+            self.fail('invalid_token')
+
+        if not (user_id := otp_auth_token.get("user_id")):
+            self.fail('invalid_token')
+
+        try:
+            self.user = models.User.objects.get(id=user_id)
+        except models.User.DoesNotExist:
+            self.fail('invalid_token')
+
+        otp_services.validate_otp(self.user, attrs.get("otp_token", ""))
+
+        return attrs
+
+    def create(self, validated_data):
+        refresh = RefreshToken.for_user(self.user)
+        return {"refresh": str(refresh), "access": str(refresh.access_token)}
+
+
+@context_user_required
+class DisableOTPSerializer(serializers.Serializer):
+    ok = serializers.BooleanField(read_only=True)
+
+    def create(self, validated_data):
+        otp_services.disable_otp(self.context_user)
         return {'ok': True}

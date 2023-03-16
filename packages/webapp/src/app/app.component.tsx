@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { Role } from '../modules/auth/auth.types';
 import { PasswordReset } from '../routes/auth/passwordReset';
+import ValidateOtp from '../routes/auth/validateOtp';
 import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
 import { AuthRoute } from '../shared/components/routes/authRoute';
@@ -44,6 +45,7 @@ export const App = () => {
         <Route path={LANG_PREFIX} element={<AnonymousRoute />}>
           <Route path={RoutesConfig.signup} element={<Signup />} />
           <Route path={RoutesConfig.login} element={<Login />} />
+          <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute />}>

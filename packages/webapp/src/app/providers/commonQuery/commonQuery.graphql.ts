@@ -8,6 +8,8 @@ export const commonQueryCurrentUserFragment = gql(/* GraphQL */ `
     lastName
     roles
     avatar
+    otpVerified
+    otpEnabled
   }
 `);
 

@@ -9,4 +9,6 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
   email: 'mock@example.org',
   roles: [Role.ADMIN, Role.USER],
   avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',
+  otpEnabled: false,
+  otpVerified: false,
 }));

@@ -570,6 +570,8 @@ type StripeChargeTypeEdge {
 type CurrentUserType {
   id: ID!
   email: String!
+  otpEnabled: Boolean!
+  otpVerified: Boolean!
   firstName: String
   lastName: String
   roles: [String]
@@ -692,11 +694,15 @@ type ApiMutation {
   createSetupIntent(input: CreateSetupIntentMutationInput!): CreateSetupIntentMutationPayload
   changePassword(input: ChangePasswordMutationInput!): ChangePasswordMutationPayload
   updateCurrentUser(input: UpdateCurrentUserMutationInput!): UpdateCurrentUserMutationPayload
+  generateOtp(input: GenerateOTPMutationInput!): GenerateOTPMutationPayload
+  verifyOtp(input: VerifyOTPMutationInput!): VerifyOTPMutationPayload
+  disableOtp(input: DisableOTPMutationInput!): DisableOTPMutationPayload
   tokenAuth(input: ObtainTokenMutationInput!): ObtainTokenMutationPayload
   signUp(input: SingUpMutationInput!): SingUpMutationPayload
   confirm(input: ConfirmEmailMutationInput!): ConfirmEmailMutationPayload
   passwordReset(input: PasswordResetMutationInput!): PasswordResetMutationPayload
   passwordResetConfirm(input: PasswordResetConfirmationMutationInput!): PasswordResetConfirmationMutationPayload
+  validateOtp(input: ValidateOTPMutationInput!): ValidateOTPMutationPayload
   updateNotification(input: UpdateNotificationMutationInput!): UpdateNotificationMutationPayload
   markReadAllNotifications(input: MarkReadAllNotificationsMutationInput!): MarkReadAllNotificationsMutationPayload
   createCrudDemoItem(input: CreateCrudDemoItemMutationInput!): CreateCrudDemoItemMutationPayload
@@ -804,9 +810,23 @@ type CurrentUserEdge {
   "A cursor for use in pagination"
   cursor: String!
 }
+type GenerateOTPMutationPayload {
+  base32: String
+  otpauthUrl: String
+  clientMutationId: String
+}
+type VerifyOTPMutationPayload {
+  otpVerified: Boolean
+  clientMutationId: String
+}
+type DisableOTPMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
 type ObtainTokenMutationPayload {
   access: String
   refresh: String
+  otpAuthToken: String
   clientMutationId: String
 }
 type SingUpMutationPayload {
@@ -826,6 +846,11 @@ type PasswordResetMutationPayload {
 }
 type PasswordResetConfirmationMutationPayload {
   ok: Boolean
+  clientMutationId: String
+}
+type ValidateOTPMutationPayload {
+  access: String
+  refresh: String
   clientMutationId: String
 }
 type UpdateNotificationMutationPayload {
@@ -1312,6 +1337,16 @@ input UpdateCurrentUserMutationInput {
   avatar: Upload
   clientMutationId: String
 }
+input GenerateOTPMutationInput {
+  clientMutationId: String
+}
+input VerifyOTPMutationInput {
+  otpToken: String!
+  clientMutationId: String
+}
+input DisableOTPMutationInput {
+  clientMutationId: String
+}
 input ObtainTokenMutationInput {
   email: String!
   password: String!
@@ -1339,6 +1374,10 @@ input PasswordResetConfirmationMutationInput {
   newPassword: String!
   "Token"
   token: String!
+  clientMutationId: String
+}
+input ValidateOTPMutationInput {
+  otpToken: String!
   clientMutationId: String
 }
 input UpdateNotificationMutationInput {

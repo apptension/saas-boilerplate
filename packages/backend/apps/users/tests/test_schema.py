@@ -3,14 +3,17 @@ import os
 import re
 
 import pytest
+from common.acl.helpers import CommonGroups
+from config import settings
 from graphene_file_upload.django.testing import file_graphql_query
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken
-
-from common.acl.helpers import CommonGroups
+from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 from .. import models, tokens
+from ..utils import generate_otp_auth_token
 
 pytestmark = pytest.mark.django_db
+
+API_GRAPHQL_PATH = "/api/graphql/"
 
 
 def validate_jwt(response_data, user):
@@ -86,8 +89,9 @@ class TestObtainToken:
     MUTATION = '''
         mutation($input: ObtainTokenMutationInput!){
           tokenAuth(input: $input) {
-            access
-            refresh
+            access,
+            refresh,
+            otpAuthToken
           }
         }
     '''
@@ -109,6 +113,26 @@ class TestObtainToken:
         )
 
         assert validate_jwt(executed["data"]["tokenAuth"], user)
+        assert executed["data"]["tokenAuth"]["otpAuthToken"] is None
+
+    def test_get_otp_auth_token_if_otp_enabled(self, api_client, user_factory, faker):
+        user = user_factory.create(otp_enabled=True, otp_verified=True)
+        password = faker.password()
+        user.set_password(password)
+        user.save()
+
+        response = api_client.post(
+            path=API_GRAPHQL_PATH,
+            data={"query": self.MUTATION, "variables": {"input": {'email': user.email, 'password': password}}},
+            format="json",
+        )
+        otp_auth_token = response.json()["data"]["tokenAuth"]["otpAuthToken"]
+
+        assert otp_auth_token
+        assert response.cookies[settings.OTP_AUTH_TOKEN_COOKIE].value == otp_auth_token
+        assert AccessToken(otp_auth_token)["user_id"] == str(user.id)
+        assert response.json()["data"]["tokenAuth"]["access"] is None
+        assert response.json()["data"]["tokenAuth"]["refresh"] is None
 
 
 class TestCurrentUserQuery:
@@ -122,6 +146,8 @@ class TestCurrentUserQuery:
                 lastName
                 roles
                 avatar
+                otpEnabled
+                otpVerified
               }
             }
         '''
@@ -145,6 +171,8 @@ class TestCurrentUserQuery:
         assert re.match("https://cdn.example.com/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"]), data[
             "avatar"
         ]
+        assert data["otpEnabled"] == user.otp_enabled
+        assert data["otpVerified"] == user.otp_verified
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(
@@ -212,7 +240,7 @@ class TestUpdateCurrentUserMutation:
             client=api_client,
             variables={"input": {}},
             files={"avatar": avatar_file},
-            graphql_url="/api/graphql/",
+            graphql_url=API_GRAPHQL_PATH,
         )
         executed = json.loads(response.content)
         user.profile.refresh_from_db()
@@ -475,3 +503,152 @@ class TestResetPasswordConfirm:
         assert "errors" not in executed
         for jwt in jwts:
             assert BlacklistedToken.objects.filter(token__jti=jwt['jti']).exists()
+
+
+class TestGenerateOTPMutation:
+    GENERATE_OTP_MUTATION = '''
+        mutation($input: GenerateOTPMutationInput!)  {
+          generateOtp(input: $input) {
+            otpauthUrl,
+            base32
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(self.GENERATE_OTP_MUTATION, variable_values={'input': {}})
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_success(self, graphene_client, user):
+        expected_otpauth_url = f'otpauth://totp/{settings.OTP_AUTH_ISSUER_NAME}:{user.email}?secret='.replace(
+            '@', '%40'
+        )
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(self.GENERATE_OTP_MUTATION, variable_values={'input': {}})
+        otp_base_32 = executed['data']['generateOtp']['base32']
+        otp_auth_url = executed['data']['generateOtp']['otpauthUrl']
+
+        assert otp_base_32
+        assert expected_otpauth_url in otp_auth_url
+        assert models.User.objects.filter(id=user.id, otp_base32=otp_base_32, otp_auth_url=otp_auth_url).exists()
+
+
+class TestVerifyOTPMutation:
+    VERIFY_OTP_MUTATION = '''
+        mutation($input: VerifyOTPMutationInput!)  {
+          verifyOtp(input: $input) {
+            otpVerified,
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(self.VERIFY_OTP_MUTATION, variable_values={'input': {'otpToken': 'token'}})
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_success(self, graphene_client, user, totp_mock):
+        totp_mock(verify=True)
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(self.VERIFY_OTP_MUTATION, variable_values={'input': {'otpToken': 'token'}})
+
+        assert executed['data']['verifyOtp']['otpVerified'] is True
+        assert models.User.objects.filter(id=user.id, otp_enabled=True, otp_verified=True).exists()
+
+    def test_verification_fail(self, graphene_client, user, totp_mock):
+        totp_mock(verify=False)
+
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(self.VERIFY_OTP_MUTATION, variable_values={'input': {'otpToken': 'token'}})
+
+        assert executed["errors"][0]["message"] == "Verification token is invalid"
+        assert models.User.objects.filter(id=user.id, otp_enabled=False, otp_verified=False).exists()
+
+
+class TestValidateOTPMutation:
+    VALIDATE_OTP_MUTATION = '''
+        mutation($input: ValidateOTPMutationInput!)  {
+          validateOtp(input: $input) {
+            access,
+            refresh
+          }
+        }
+    '''
+
+    def test_return_error_and_delete_cookie_if_otp_auth_token_is_invalid(self, api_client):
+        api_client.cookies.load({settings.OTP_AUTH_TOKEN_COOKIE: "invalid_token"})
+
+        response = api_client.post(
+            path=API_GRAPHQL_PATH,
+            data={"query": self.VALIDATE_OTP_MUTATION, "variables": {'input': {'otpToken': 'token'}}},
+            format="json",
+        )
+
+        assert str(response.json()["errors"][0]["extensions"]) == str(
+            {
+                'non_field_errors': [
+                    {'message': "No valid token found in cookie 'otp_auth_token'", 'code': 'invalid_token'}
+                ]
+            }
+        )
+        assert response.cookies[settings.OTP_AUTH_TOKEN_COOKIE].value == ""
+
+    def test_return_error_for_otp_validation_failure(self, api_client, user_factory, totp_mock):
+        user = user_factory.create(otp_verified=False)
+        totp_mock(verify=False)
+        api_client.cookies.load({settings.OTP_AUTH_TOKEN_COOKIE: str(generate_otp_auth_token(user))})
+
+        response = api_client.post(
+            path=API_GRAPHQL_PATH,
+            data={"query": self.VALIDATE_OTP_MUTATION, "variables": {'input': {'otpToken': 'token'}}},
+            format="json",
+        )
+
+        assert response.json()["errors"][0]["message"] == "OTP must be verified first"
+
+    def test_success_sets_auth_cookies(self, api_client, user_factory, totp_mock):
+        user = user_factory.create(otp_verified=True, otp_enabled=True)
+        totp_mock(verify=True)
+        api_client.cookies.load({settings.OTP_AUTH_TOKEN_COOKIE: str(generate_otp_auth_token(user))})
+
+        response = api_client.post(
+            path=API_GRAPHQL_PATH,
+            data={"query": self.VALIDATE_OTP_MUTATION, "variables": {'input': {'otpToken': 'token'}}},
+            format="json",
+        )
+        response_data = response.json()["data"]
+
+        assert validate_jwt(response_data["validateOtp"], user)
+        assert response.cookies[settings.OTP_AUTH_TOKEN_COOKIE].value == ""
+        assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == response_data["validateOtp"]["access"]
+        assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == response_data["validateOtp"]["refresh"]
+
+
+class TestDisableOTPMutation:
+    DISABLE_OTP_MUTATION = '''
+        mutation($input: DisableOTPMutationInput!)  {
+          disableOtp(input: $input) {
+            ok,
+          }
+        }
+    '''
+
+    def test_return_error_for_unauthorized_user(self, graphene_client):
+        executed = graphene_client.mutate(self.DISABLE_OTP_MUTATION, variable_values={'input': {}})
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_success(self, graphene_client, user, totp_mock):
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.mutate(self.DISABLE_OTP_MUTATION, variable_values={'input': {}})
+
+        assert executed['data']['disableOtp']['ok'] is True
+        assert models.User.objects.filter(
+            id=user.id, otp_enabled=False, otp_verified=False, otp_base32=None, otp_auth_url=None
+        ).exists()

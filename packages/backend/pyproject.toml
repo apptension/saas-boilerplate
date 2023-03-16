@@ -60,6 +60,7 @@ dependencies = [
     "pillow~=9.4",
     "aws-xray-sdk~=2.11",
     "django-ratelimit>=4.0.0",
+    "pyotp>=2.8.0",
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}

@@ -49,6 +49,7 @@ describe('LoginForm: Component', () => {
         tokenAuth: {
           access: 'access-token',
           refresh: 'refresh-token',
+          otpAuthToken: null,
         },
       },
     });

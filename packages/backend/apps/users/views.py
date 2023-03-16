@@ -1,3 +1,4 @@
+from config import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -30,7 +31,14 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
             return response
 
         response = Response(serializer.data, status=status.HTTP_200_OK)
-        utils.set_auth_cookie(response, serializer.data)
+
+        utils.set_auth_cookie(
+            response,
+            {
+                settings.ACCESS_TOKEN_COOKIE: serializer.data.get("access"),
+                settings.REFRESH_TOKEN_COOKIE: serializer.data.get("refresh"),
+            },
+        )
         return response
 
 
@@ -66,8 +74,13 @@ def complete(request, backend, *args, **kwargs):
 
     def _do_login(backend, user, social_user):
         user.backend = "{0}.{1}".format(backend.__module__, backend.__class__.__name__)
-        token = jwt_tokens.RefreshToken.for_user(user)
-        backend.strategy.set_jwt(token)
+
+        if user.otp_verified and user.otp_enabled:
+            otp_auth_token = utils.generate_otp_auth_token(user)
+            backend.strategy.set_otp_auth_token(otp_auth_token)
+        else:
+            token = jwt_tokens.RefreshToken.for_user(user)
+            backend.strategy.set_jwt(token)
 
     return do_complete(
         request.backend,

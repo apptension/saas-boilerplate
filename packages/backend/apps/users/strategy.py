@@ -1,3 +1,4 @@
+from config import settings
 from social_django.strategy import DjangoStrategy
 
 from . import utils
@@ -5,7 +6,8 @@ from . import utils
 
 class DjangoJWTStrategy(DjangoStrategy):
     def __init__(self, storage, request=None, tpl=None):
-        self.token = None
+        self.refresh_token = None
+        self.otp_auth_token = None
         super(DjangoJWTStrategy, self).__init__(storage, request, tpl)
 
     def redirect(self, url):
@@ -17,14 +19,37 @@ class DjangoJWTStrategy(DjangoStrategy):
         """
         response = super(DjangoJWTStrategy, self).redirect(url)
 
-        if self.token:
+        if self._user_is_authenticated():
+            if self.refresh_token:
+                utils.set_auth_cookie(
+                    response,
+                    {
+                        settings.ACCESS_TOKEN_COOKIE: str(self.refresh_token.access_token),
+                        settings.REFRESH_TOKEN_COOKIE: str(self.refresh_token),
+                    },
+                )
+            elif self.otp_auth_token:
+                otp_validate_url = self._construct_otp_validate_url(url)
+                response = super(DjangoJWTStrategy, self).redirect(otp_validate_url)
+                response.set_cookie(
+                    settings.OTP_AUTH_TOKEN_COOKIE, str(self.otp_auth_token), settings.COOKIE_MAX_AGE, httponly=True
+                )
+
             # The token has a defined value, which means this is the
             # last step of the OAuth flow – we can flush the session
             self.session.flush()
 
-            utils.set_auth_cookie(response, {'access': str(self.token.access_token), 'refresh': str(self.token)})
-
         return response
 
     def set_jwt(self, token):
-        self.token = token
+        self.refresh_token = token
+
+    def set_otp_auth_token(self, token):
+        self.otp_auth_token = token
+
+    def _user_is_authenticated(self) -> bool:
+        return self.refresh_token or self.otp_auth_token
+
+    def _construct_otp_validate_url(self, url: str) -> str:
+        locale = self.session_get('locale')
+        return f"{url}/{locale}{settings.OTP_VALIDATE_PATH}"

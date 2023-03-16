@@ -52,6 +52,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
+    otp_enabled = models.BooleanField(default=False)
+    otp_verified = models.BooleanField(default=False)
+    otp_base32 = models.CharField(max_length=255, null=True)
+    otp_auth_url = models.CharField(max_length=255, null=True)
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"

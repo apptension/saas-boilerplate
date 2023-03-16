@@ -59,6 +59,8 @@ export interface ApiMutation {
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
   deletePaymentMethod?: Maybe<DeletePaymentMethodMutationPayload>;
+  disableOtp?: Maybe<DisableOtpMutationPayload>;
+  generateOtp?: Maybe<GenerateOtpMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   passwordReset?: Maybe<PasswordResetMutationPayload>;
   passwordResetConfirm?: Maybe<PasswordResetConfirmationMutationPayload>;
@@ -69,6 +71,8 @@ export interface ApiMutation {
   updateDefaultPaymentMethod?: Maybe<UpdateDefaultPaymentMethodMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
   updatePaymentIntent?: Maybe<UpdatePaymentIntentMutationPayload>;
+  validateOtp?: Maybe<ValidateOtpMutationPayload>;
+  verifyOtp?: Maybe<VerifyOtpMutationPayload>;
 }
 
 
@@ -137,6 +141,16 @@ export interface ApiMutationDeletePaymentMethodArgs {
 }
 
 
+export interface ApiMutationDisableOtpArgs {
+  input: DisableOtpMutationInput;
+}
+
+
+export interface ApiMutationGenerateOtpArgs {
+  input: GenerateOtpMutationInput;
+}
+
+
 export interface ApiMutationMarkReadAllNotificationsArgs {
   input: MarkReadAllNotificationsMutationInput;
 }
@@ -184,6 +198,16 @@ export interface ApiMutationUpdateNotificationArgs {
 
 export interface ApiMutationUpdatePaymentIntentArgs {
   input: UpdatePaymentIntentMutationInput;
+}
+
+
+export interface ApiMutationValidateOtpArgs {
+  input: ValidateOtpMutationInput;
+}
+
+
+export interface ApiMutationVerifyOtpArgs {
+  input: VerifyOtpMutationInput;
 }
 
 export interface ApiSubscription {
@@ -430,6 +454,8 @@ export interface CurrentUserType {
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   lastName?: Maybe<Scalars['String']>;
+  otpEnabled: Scalars['Boolean'];
+  otpVerified: Scalars['Boolean'];
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
 }
 
@@ -476,6 +502,16 @@ export interface DeletePaymentMethodMutationPayload {
   activeSubscription?: Maybe<SubscriptionScheduleType>;
   clientMutationId?: Maybe<Scalars['String']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+}
+
+export interface DisableOtpMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface DisableOtpMutationPayload {
+  __typename?: 'DisableOTPMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  ok?: Maybe<Scalars['Boolean']>;
 }
 
 export enum DjstripeChargeFailureCodeChoices {
@@ -926,6 +962,17 @@ export interface FileFieldType {
   url?: Maybe<Scalars['String']>;
 }
 
+export interface GenerateOtpMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface GenerateOtpMutationPayload {
+  __typename?: 'GenerateOTPMutationPayload';
+  base32?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']>;
+  otpauthUrl?: Maybe<Scalars['String']>;
+}
+
 export interface MarkReadAllNotificationsMutationInput {
   clientMutationId?: InputMaybe<Scalars['String']>;
 }
@@ -980,6 +1027,7 @@ export interface ObtainTokenMutationPayload {
   __typename?: 'ObtainTokenMutationPayload';
   access?: Maybe<Scalars['String']>;
   clientMutationId?: Maybe<Scalars['String']>;
+  otpAuthToken?: Maybe<Scalars['String']>;
   refresh?: Maybe<Scalars['String']>;
 }
 
@@ -1824,4 +1872,27 @@ export interface UserProfileType extends Node {
   id: Scalars['ID'];
   lastName: Scalars['String'];
   user: CurrentUserType;
+}
+
+export interface ValidateOtpMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  otpToken: Scalars['String'];
+}
+
+export interface ValidateOtpMutationPayload {
+  __typename?: 'ValidateOTPMutationPayload';
+  access?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']>;
+  refresh?: Maybe<Scalars['String']>;
+}
+
+export interface VerifyOtpMutationInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  otpToken: Scalars['String'];
+}
+
+export interface VerifyOtpMutationPayload {
+  __typename?: 'VerifyOTPMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']>;
+  otpVerified?: Maybe<Scalars['Boolean']>;
 }

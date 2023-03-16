@@ -1,4 +1,7 @@
+from rest_framework.exceptions import ValidationError
+
 import graphene
+from config import settings
 from graphene import relay
 from graphene_django import DjangoObjectType
 
@@ -18,10 +21,16 @@ class ObtainTokenMutation(mutations.SerializerMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
         mutation = super().mutate_and_get_payload(root, info, **input)
-        info.context._request.set_auth_cookie = {
-            "access": mutation.access,
-            "refresh": mutation.refresh,
-        }
+
+        if mutation.otp_auth_token:
+            info.context._request.set_cookies = {
+                settings.OTP_AUTH_TOKEN_COOKIE: mutation.otp_auth_token,
+            }
+        else:
+            info.context._request.set_auth_cookie = {
+                settings.ACCESS_TOKEN_COOKIE: mutation.access,
+                settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
+            }
 
         return mutation
 
@@ -34,8 +43,8 @@ class SingUpMutation(mutations.SerializerMutation):
     def mutate_and_get_payload(cls, root, info, **input):
         mutation = super().mutate_and_get_payload(root, info, **input)
         info.context._request.set_auth_cookie = {
-            "access": mutation.access,
-            "refresh": mutation.refresh,
+            settings.ACCESS_TOKEN_COOKIE: mutation.access,
+            settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
         }
 
         return mutation
@@ -63,6 +72,47 @@ class PasswordResetConfirmationMutation(mutations.SerializerMutation):
         serializer_class = serializers.PasswordResetConfirmationSerializer
 
 
+class GenerateOTPMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.GenerateOTPSerializer
+
+
+class VerifyOTPMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.VerifyOTPSerializer
+
+
+class ValidateOTPMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.ValidateOTPSerializer
+
+    @classmethod
+    @ratelimit.ratelimit(key="ip", rate=ratelimit.ip_throttle_rate)
+    def mutate_and_get_payload(cls, root, info, **input):
+        try:
+            mutation = super().mutate_and_get_payload(root, info, **input)
+        except ValidationError as error:
+            cls._delete_otp_auth_token_cookie(info)
+            raise error
+
+        info.context._request.set_auth_cookie = {
+            settings.ACCESS_TOKEN_COOKIE: mutation.access,
+            settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
+        }
+        cls._delete_otp_auth_token_cookie(info)
+
+        return mutation
+
+    @classmethod
+    def _delete_otp_auth_token_cookie(cls, info):
+        info.context._request.delete_cookies = [settings.OTP_AUTH_TOKEN_COOKIE]
+
+
+class DisableOTPMutation(mutations.SerializerMutation):
+    class Meta:
+        serializer_class = serializers.DisableOTPSerializer
+
+
 @permission_classes(policies.AnyoneFullAccess)
 class AnyoneMutation(graphene.ObjectType):
     token_auth = ObtainTokenMutation.Field()
@@ -70,11 +120,14 @@ class AnyoneMutation(graphene.ObjectType):
     confirm = ConfirmEmailMutation.Field()
     password_reset = PasswordResetMutation.Field()
     password_reset_confirm = PasswordResetConfirmationMutation.Field()
+    validate_otp = ValidateOTPMutation.Field()
 
 
-@permission_classes(policies.AnyoneFullAccess)
+@permission_classes(policies.IsAuthenticatedFullAccess)
 class AuthenticatedMutation(graphene.ObjectType):
-    pass
+    generate_otp = GenerateOTPMutation.Field()
+    verify_otp = VerifyOTPMutation.Field()
+    disable_otp = DisableOTPMutation.Field()
 
 
 class CurrentUserType(DjangoObjectType):
@@ -85,7 +138,7 @@ class CurrentUserType(DjangoObjectType):
 
     class Meta:
         model = models.User
-        fields = ("id", "email", "first_name", "last_name", "roles", "avatar")
+        fields = ("id", "email", "first_name", "last_name", "roles", "avatar", "otp_enabled", "otp_verified")
 
     def resolve_first_name(self, info):
         return get_user_from_resolver(info).profile.first_name

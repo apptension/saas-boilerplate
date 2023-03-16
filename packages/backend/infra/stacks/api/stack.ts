@@ -114,6 +114,7 @@ export class ApiStack extends Stack {
               DJANGO_ALLOWED_HOSTS: allowedHosts,
               CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
               RATELIMIT_IP_META_KEY: 'HTTP_X_FORWARDED_FOR',
+              OTP_AUTH_ISSUER_NAME: envSettings.domains.webApp,
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
                 props.envSettings
               ),

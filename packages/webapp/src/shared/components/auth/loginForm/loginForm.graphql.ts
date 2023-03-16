@@ -5,6 +5,7 @@ export const authSinginMutation = gql(/* GraphQL */ `
     tokenAuth(input: $input) {
       access
       refresh
+      otpAuthToken
     }
   }
 `);

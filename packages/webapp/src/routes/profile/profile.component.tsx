@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { AvatarForm } from '../../shared/components/auth/avatarForm';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
+import { TwoFactorAuthForm } from '../../shared/components/auth/twoFactorAuthForm';
 import { useAuth } from '../../shared/hooks';
 import { Container, EmailLabel, FormHeader, Header, HeaderInfo, RolesLabel } from './profile.styles';
 
@@ -44,6 +45,14 @@ export const Profile = () => {
         <FormattedMessage defaultMessage="Change password" id="Auth / Profile details / Change password header" />
       </FormHeader>
       <ChangePasswordForm />
+
+      <FormHeader>
+        <FormattedMessage
+          defaultMessage="Two-factor Authentication"
+          id="Auth / Profile details / Two-factor Authentication header"
+        />
+      </FormHeader>
+      <TwoFactorAuthForm isEnabled={currentUser?.otpEnabled} />
     </Container>
   );
 };

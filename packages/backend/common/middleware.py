@@ -1,4 +1,5 @@
 from aws_xray_sdk.core import xray_recorder
+from config import settings
 from django.db import connections, DEFAULT_DB_ALIAS
 from django.db.migrations.executor import MigrationExecutor
 from django.http import HttpResponse
@@ -70,3 +71,21 @@ class SentryMiddleware(object):
         if is_thenable(promise):
             return promise.catch(self.on_error)
         return promise
+
+
+class ManageCookiesMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        if (cookies := getattr(request, "set_cookies", None)) and response.status_code == 200:
+            for key, value in cookies.items():
+                response.set_cookie(key, value, max_age=settings.COOKIE_MAX_AGE, httponly=True)
+
+        if delete_cookies := getattr(request, "delete_cookies", []):
+            for cookie in delete_cookies:
+                response.delete_cookie(cookie)
+
+        return response

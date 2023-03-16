@@ -63,6 +63,7 @@ MIDDLEWARE = [
     #  HealthCheckMiddleware needs to be before the HostsRequestMiddleware
     "common.middleware.HealthCheckMiddleware",
     "aws_xray_sdk.ext.django.middleware.XRayMiddleware",
+    "common.middleware.ManageCookiesMiddleware",
     "common.middleware.SetAuthTokenCookieMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -204,6 +205,7 @@ SIMPLE_JWT = {
 ACCESS_TOKEN_COOKIE = 'token'
 REFRESH_TOKEN_COOKIE = 'refresh_token'
 REFRESH_TOKEN_LOGOUT_COOKIE = 'refresh_token_logout'
+COOKIE_MAX_AGE = 3600 * 24 * 14  # 14 days
 
 SOCIAL_AUTH_USER_MODEL = "users.User"
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
@@ -231,6 +233,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email',
 }
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["locale"]
 
 SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'config.urls_api.api_info',
@@ -293,3 +296,8 @@ XRAY_RECORDER = {
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS", default=[])
 
 RATELIMIT_IP_META_KEY = env("RATELIMIT_IP_META_KEY", default=None)
+
+OTP_AUTH_ISSUER_NAME = env("OTP_AUTH_ISSUER_NAME", default="")
+OTP_AUTH_TOKEN_COOKIE = 'otp_auth_token'
+OTP_AUTH_TOKEN_LIFETIME_MINUTES = datetime.timedelta(minutes=env.int('OTP_AUTH_TOKEN_LIFETIME_MINUTES', default=5))
+OTP_VALIDATE_PATH = "/auth/validate-otp"
