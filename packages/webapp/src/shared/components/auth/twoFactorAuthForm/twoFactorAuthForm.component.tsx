@@ -8,14 +8,14 @@ import { useCommonQuery } from '../../../../app/providers/commonQuery';
 import { useOpenState } from '../../../hooks';
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
-import { Container, CtaButton, Row } from './twoFactorAuthForm.styles';
+import { Container, CtaButton, ModalHeader, Row } from './twoFactorAuthForm.styles';
 
 export type TwoFactorAuthFormProps = {
   isEnabled?: boolean;
 };
 
 export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
-  const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false); //temporary - waiting for modal
+  const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
   const [commitDisableOtpMutation] = useMutation(disableOtpMutation, { variables: { input: {} } });
   const { reload } = useCommonQuery();
   const intl = useIntl();
@@ -24,10 +24,6 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
   const successMessage = intl.formatMessage({
     id: 'Auth / Two-factor / Disable success',
     defaultMessage: '🎉 Two-Factor Auth Disabled Successfully!',
-  });
-  const modalHeader = intl.formatMessage({
-    id: 'Auth / Two-factor / Modal header',
-    defaultMessage: 'Two-Factor Authentication (2FA)',
   });
 
   const disable2FA = async () => {
@@ -67,7 +63,15 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
           </CtaButton>
         </Row>
       )}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} header={modalHeader}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        header={
+          <ModalHeader>
+            <FormattedMessage defaultMessage="Two-Factor Authentication (2FA)" id="Auth / Two-factor / Modal header" />
+          </ModalHeader>
+        }
+      >
         <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
       </Modal>
     </Container>

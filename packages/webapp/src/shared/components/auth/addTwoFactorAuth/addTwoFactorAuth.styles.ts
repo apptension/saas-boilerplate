@@ -10,6 +10,7 @@ export const Container = styled.div`
   width: auto;
   max-width: 100%;
   text-align: left;
+  padding: ${sizeUnits(1)};
 `;
 
 export const Body = styled.div`
