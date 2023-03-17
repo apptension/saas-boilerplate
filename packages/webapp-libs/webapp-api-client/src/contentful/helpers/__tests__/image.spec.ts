@@ -31,5 +31,22 @@ describe('contentful / helpers / image', () => {
         expect(imageProps(image, options).src).toEqual('http://image.org?fit=fill&fl=progressive&fm=webp&h=100&q=50');
       });
     });
+
+    describe('with missing image url', () => {
+      it('should return empty string', () => {
+        const missingImage = {
+          title: 'Image title',
+        };
+
+        expect(imageProps(missingImage).src).toEqual('?fl=progressive&fm=jpg&q=90');
+      });
+    });
+
+    describe('with empty options', () => {
+      it('should return jpg url with default options', () => {
+        const emptyOptions = {};
+        expect(imageProps(image, emptyOptions).src).toEqual('http://image.org?fl=progressive&fm=jpg&q=90');
+      });
+    });
   });
 });

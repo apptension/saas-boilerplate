@@ -21,13 +21,10 @@ export type GraphQLValidationError<FormData extends FieldValues = FieldValues> =
   extensions: FormSubmitError<FormData>;
 };
 
-class UseApiFormWrapper<FormData extends FieldValues = FieldValues> {
-  wrapped(e: FormData) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useApiForm<FormData>();
-  }
-}
+type UseApiFormWrapper<FormData extends FieldValues = FieldValues> = {
+  wrapped: (e: FormData) => ReturnType<typeof useApiForm>;
+};
 
-export type ApiFormReturnType<FormData extends FieldValues = FieldValues> =
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  ReturnType<UseApiFormWrapper<FormData>['wrapped']> & { form: UseFormReturn<FormData, object> };
+export type ApiFormReturnType<FormData extends FieldValues = FieldValues> = ReturnType<
+  UseApiFormWrapper<FormData>['wrapped']
+> & { form: UseFormReturn<FormData, object> };

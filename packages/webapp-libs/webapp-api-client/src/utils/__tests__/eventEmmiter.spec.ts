@@ -39,6 +39,18 @@ describe('Emitter', () => {
       expect(emitter['listeners']['test']).not.toContain(mockCallback1);
       expect(emitter['listeners']['test']).toContain(mockCallback2);
     });
+
+    it('should not throw an error if the event type is not registered', () => {
+      emitter.removeEventListener('test', mockCallback1);
+      expect(emitter['listeners']['test']).toBeUndefined();
+    });
+
+    it('should not throw an error if the callback is not registered for the event type', () => {
+      emitter.addEventListener('test', mockCallback1);
+      emitter.removeEventListener('test', mockCallback2);
+      expect(emitter['listeners']['test']).toContain(mockCallback1);
+      expect(emitter['listeners']['test']).not.toContain(mockCallback2);
+    });
   });
 
   describe('dispatchEvent', () => {
@@ -55,6 +67,12 @@ describe('Emitter', () => {
       emitter.addEventListener('other', mockCallback2);
       emitter.dispatchEvent('test', 'payload');
       expect(mockCallback1).toHaveBeenCalledWith('payload');
+      expect(mockCallback2).not.toHaveBeenCalled();
+    });
+
+    it('should not throw an error if the event type is not registered', () => {
+      emitter.dispatchEvent('test', 'payload');
+      expect(mockCallback1).not.toHaveBeenCalled();
       expect(mockCallback2).not.toHaveBeenCalled();
     });
   });

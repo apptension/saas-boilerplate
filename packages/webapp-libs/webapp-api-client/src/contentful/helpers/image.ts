@@ -1,5 +1,6 @@
-import { mergeDeepRight } from 'ramda';
 import { stringify } from 'query-string';
+import { mergeDeepRight } from 'ramda';
+
 import { ContentfulAsset } from '../__generated/types';
 import { ContentfulPlain } from '../types';
 
@@ -45,7 +46,7 @@ const parseOptions = (overrides: ImageOptions) => {
 };
 
 const imageUrl = (image: ContentfulPlain<ContentfulAsset>, options: ImageOptions = {}) => {
-  return image?.url + '?' + parseOptions(options);
+  return (image?.url ?? '') + '?' + parseOptions(options);
 };
 
 export const imageProps = (image: ContentfulPlain<ContentfulAsset>, options: ImageOptions = {}) => ({

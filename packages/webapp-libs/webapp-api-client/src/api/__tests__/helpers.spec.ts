@@ -1,9 +1,10 @@
+import { ENV } from '@sb/webapp-core/config/env';
 import axios, { AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
 import { AUTH_URL } from '../auth';
 import { client } from '../client';
-import { validateStatus } from '../helpers';
+import { apiURLs, validateStatus } from '../helpers';
 import { createRefreshTokenInterceptor } from '../interceptors';
 
 describe('api', () => {
@@ -82,6 +83,45 @@ describe('api', () => {
           });
         });
       });
+    });
+  });
+
+  describe('apiURLs', () => {
+    const originalEnv = ENV.BASE_API_URL;
+
+    beforeAll(() => {
+      ENV.BASE_API_URL = 'https://api.example.com';
+    });
+
+    afterAll(() => {
+      ENV.BASE_API_URL = originalEnv;
+    });
+
+    it('should return an object with joined URLs based on root and nestedRoutes arguments', () => {
+      const nestedRoutes = {
+        getUsers: '/users',
+        getUserById: ({ id }: { id: string }) => `/users/${id}`,
+      };
+
+      const urls = apiURLs('api', nestedRoutes);
+      expect(urls).toEqual({
+        getUsers: `https://api.example.com/api/users/`,
+        getUserById: expect.any(Function),
+      });
+    });
+
+    it('returns object with urls with parameters', () => {
+      const urls = apiURLs('/root', {
+        get: ({ id }) => `/item/${id}`,
+        post: '/item',
+        put: ({ id }) => `/item/${id}`,
+        delete: ({ id }) => `/item/${id}`,
+      });
+
+      expect(urls.get({ id: 1 })).toEqual('https://api.example.com/root/item/1/');
+      expect(urls.post).toEqual('https://api.example.com/root/item/');
+      expect(urls.put({ id: 1 })).toEqual('https://api.example.com/root/item/1/');
+      expect(urls.delete({ id: 1 })).toEqual('https://api.example.com/root/item/1/');
     });
   });
 });
