@@ -1,10 +1,11 @@
 import { useMutation } from '@apollo/client';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { BackButton } from '../../../shared/components/backButton';
-import { useGenerateLocalePath, useSnackbar } from '../../../shared/hooks/';
 import {{ pascalCase name }}Form from '../{{ camelCase name }}Form';
 import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
 import { {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List/{{ camelCase name }}List.graphql';

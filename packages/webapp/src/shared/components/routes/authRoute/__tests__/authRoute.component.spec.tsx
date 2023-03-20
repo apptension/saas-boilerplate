@@ -1,8 +1,7 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { AuthRoute, AuthRouteProps } from '../authRoute.component';

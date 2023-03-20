@@ -1,14 +1,14 @@
 import closeIcon from '@iconify-icons/ion/close-outline';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { global as globalTheme, media } from '@sb/webapp-core/theme';
 import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
-import { useAuth, useGenerateLocalePath } from '../../../hooks';
+import { useAuth } from '../../../hooks';
 import { Avatar } from '../../avatar';
 import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';

@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { BackButton } from '@sb/webapp-core/components/buttons';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoItem.graphql';

@@ -1,0 +1,13 @@
+{
+  "name": "Untitled GraphQL Schema",
+  "projects": {
+    "api": {
+      "name": "GraphQL API",
+      "schemaPath": "packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql"
+    },
+    "contentful": {
+      "name": "Contentful API",
+      "schemaPath": "packages/webapp-libs/webapp-contentful/graphql/schema/contentful.graphql"
+    }
+  }
+}

@@ -1,9 +1,8 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { EditProfileForm } from '../editProfileForm.component';

@@ -4,13 +4,12 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { media } from '@sb/webapp-core/theme';
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../shared/hooks';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
 import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
 

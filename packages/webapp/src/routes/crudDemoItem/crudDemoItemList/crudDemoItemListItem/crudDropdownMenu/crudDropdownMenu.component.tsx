@@ -2,12 +2,12 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { MouseEvent, useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../../shared/hooks';
 import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export type CrudDropdownMenuProps = {

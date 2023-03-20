@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
-import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
 

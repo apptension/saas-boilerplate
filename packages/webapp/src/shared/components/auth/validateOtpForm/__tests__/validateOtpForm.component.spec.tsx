@@ -1,4 +1,4 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,7 +6,6 @@ import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { validateOtpMutation } from '../../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import { ValidateOtpForm } from '../validateOtpForm.component';

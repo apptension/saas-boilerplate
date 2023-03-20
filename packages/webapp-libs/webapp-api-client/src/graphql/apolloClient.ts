@@ -12,7 +12,6 @@ import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
 import { apiURL, auth } from '../api';
-import { url as contentfulUrl } from '../contentful';
 import { Emitter } from '../utils/eventEmitter';
 import { SchemaType } from './types';
 
@@ -92,7 +91,7 @@ const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forw
 });
 
 const httpContentfulLink = new HttpLink({
-  uri: contentfulUrl,
+  uri: `https://graphql.contentful.com/content/v1/spaces/${ENV.CONTENTFUL_SPACE}/environments/${ENV.CONTENTFUL_ENV}?access_token=${ENV.CONTENTFUL_TOKEN}`,
 });
 
 const splitHttpLink = split(

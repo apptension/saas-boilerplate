@@ -1,7 +1,5 @@
-import { useLocales } from '@sb/webapp-core/hooks';
+import { useLocale, useLocales } from '@sb/webapp-core/hooks';
 import { useEffect } from 'react';
-
-import { useLocale } from '../../../../shared/hooks';
 
 export const useLanguageFromParams = () => {
   const { setLanguage } = useLocales();

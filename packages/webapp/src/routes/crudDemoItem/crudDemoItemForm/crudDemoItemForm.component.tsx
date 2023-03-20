@@ -1,10 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks';
 import { useCrudDemoItemForm } from './crudDemoItemForm.hook';
 import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 

@@ -3,7 +3,7 @@ import type { StorybookViteConfig } from '@storybook/builder-vite';
 const { mergeConfig } = require('vite');
 
 const config: StorybookViteConfig = {
-  stories: ['../src/**/*.stories.tsx', '../../webapp-libs/webapp-core/src/**/*.stories.tsx'],
+  stories: ['../src/**/*.stories.tsx', '../../webapp-libs/**/src/**/*.stories.tsx'],
   addons: ['@storybook/addon-essentials', 'storybook-dark-mode'],
   staticDirs: ['../public'],
   core: {

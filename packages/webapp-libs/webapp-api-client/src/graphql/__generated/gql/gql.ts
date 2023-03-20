@@ -10,12 +10,19 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * 2. It is not minifiable, so the string of a GraphQL query will be multiple times inside the bundle.
  * 3. It does not support dead code elimination, so it will add unused operations.
  *
- * Therefore it is highly recommended to use the babel-plugin for production.
+ * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
+    "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
+    "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n": types.UseFavoriteDemoItem_ItemFragmentDoc,
+    "\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.UseFavoriteDemoItemListDeleteMutationDocument,
+    "\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListQueryDocument,
+    "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": types.DemoItemQueryDocument,
+    "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItemFragmentFragmentDoc,
+    "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
@@ -26,9 +33,6 @@ const documents = {
     "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
     "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
     "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
-    "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": types.DemoItemQueryDocument,
-    "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItemFragmentFragmentDoc,
-    "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
     "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
     "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListCreateMutationDocument,
@@ -67,10 +71,6 @@ const documents = {
     "\n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n": types.NotificationsButtonContentFragmentDoc,
     "\n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          data\n          createdAt\n          readAt\n          type\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.NotificationsListContentFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
-    "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
-    "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n": types.UseFavoriteDemoItem_ItemFragmentDoc,
-    "\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.UseFavoriteDemoItemListDeleteMutationDocument,
-    "\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListQueryDocument,
 };
 
 /**
@@ -99,6 +99,34 @@ export function gql(source: "\n  query commonQueryCurrentUserQuery {\n    curren
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"): (typeof documents)["\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n"): (typeof documents)["\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"): (typeof documents)["\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -139,18 +167,6 @@ export function gql(source: "\n  query editCrudDemoItemQuery($id: ID!) {\n    cr
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"): (typeof documents)["\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -303,22 +319,6 @@ export function gql(source: "\n  fragment notificationsListContentFragment on Qu
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n"): (typeof documents)["\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation useFavoriteDemoItemListDeleteMutation($input: DeleteFavoriteContentfulDemoItemMutationInput!) {\n    deleteFavoriteContentfulDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query useFavoriteDemoItemListQuery {\n    allContentfulDemoItemFavorites(first: 100) {\n      edges {\n        node {\n          ...useFavoriteDemoItem_item\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

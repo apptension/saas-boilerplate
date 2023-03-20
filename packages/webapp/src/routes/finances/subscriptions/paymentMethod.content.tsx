@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { StripeSubscriptionQueryQuery, useFragment } from '@sb/webapp-api-client/graphql';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { StripePaymentMethodInfo } from '../../../shared/components/finances/stripe/stripePaymentMethodInfo';
-import { useGenerateLocalePath } from '../../../shared/hooks';
-import { mapConnection } from '../../../shared/utils/graphql';
 import {
   subscriptionActiveFragment,
   subscriptionActivePlanDetailsQuery,

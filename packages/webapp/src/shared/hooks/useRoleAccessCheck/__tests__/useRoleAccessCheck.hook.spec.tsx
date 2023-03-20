@@ -1,6 +1,5 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 
-import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
 import { renderHook } from '../../../../tests/utils/rendering';
 import { useRoleAccessCheck } from '../useRoleAccessCheck.hook';

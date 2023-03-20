@@ -1,10 +1,9 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { times } from 'ramda';
 
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { authUpdateUserProfileMutation } from '../../editProfileForm/editProfileForm.graphql';

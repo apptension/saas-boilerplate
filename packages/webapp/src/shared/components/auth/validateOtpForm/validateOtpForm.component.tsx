@@ -1,12 +1,13 @@
 import { useMutation } from '@apollo/client';
+import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useCommonQuery } from '../../../../app/providers/commonQuery';
-import { useApiForm, useGenerateLocalePath } from '../../../hooks';
+import { useApiForm } from '../../../hooks';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import { Container, ErrorMessage, Header, SubmitButton } from './validateOtpForm.styles';
 

@@ -1,3 +1,4 @@
+import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { typography } from '@sb/webapp-core/theme';
 import { FormattedMessage, IntlProvider } from 'react-intl';
@@ -13,8 +14,6 @@ import {
   CancelSubscription,
   ConfirmEmail,
   CrudDemoItem,
-  DemoItem,
-  DemoItems,
   Documents,
   EditPaymentMethod,
   EditSubscription,
@@ -23,11 +22,9 @@ import {
   Login,
   Logout,
   NotFound,
-  PrivacyPolicy,
   Profile,
   Signup,
   Subscriptions,
-  TermsAndConditions,
   TransactionHistory, //<-- IMPORT ROUTE COMPONENT -->
 } from './asyncComponents';
 import { LANG_PREFIX, RoutesConfig } from './config/routes';
@@ -52,7 +49,7 @@ export const App = () => {
           <Route index element={<Home />} />
           <Route path={RoutesConfig.profile} element={<Profile />} />
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
-          <Route path={RoutesConfig.demoItem} element={<DemoItem />} />
+          <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem />} />
           <Route element={<ActiveSubscriptionContext />}>
             <Route path={RoutesConfig.subscriptions.index} element={<Subscriptions />} />

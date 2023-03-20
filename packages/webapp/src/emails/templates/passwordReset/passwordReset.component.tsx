@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks/localePaths';
+import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 

@@ -1,4 +1,8 @@
-import { currentUserFactory, notificationFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  notificationFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { media } from '@sb/webapp-core/theme';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,12 +10,8 @@ import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import {
-  fillCommonQueryWithUser,
-  fillNotificationsListQuery,
-  fillNotificationsSubscriptionQuery,
-} from '../../../../tests/factories';
 import { Role } from '../../../../modules/auth/auth.types';
+import { fillNotificationsListQuery, fillNotificationsSubscriptionQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { Layout } from '../layout.component';
 

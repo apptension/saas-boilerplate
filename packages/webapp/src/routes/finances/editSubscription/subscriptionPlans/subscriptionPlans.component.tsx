@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 
-import { mapConnection } from '../../../../shared/utils/graphql';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useActiveSubscriptionDetails } from '../../activeSubscriptionContext/activeSubscriptionContext.hooks';
 import { subscriptionPlansAllQuery } from './subscriptionPlans.graphql';
 import { PlanItem, Plans } from './subscriptionPlans.styles';

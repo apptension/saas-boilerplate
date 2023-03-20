@@ -1,10 +1,11 @@
 import { useMutation } from '@apollo/client';
+import { useCommonQuery } from '@sb/webapp-api-client/providers';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useCommonQuery } from '../../../../app/providers/commonQuery';
-import { useApiForm, useGenerateLocalePath } from '../../../hooks';
+import { useApiForm } from '../../../hooks';
 import { authSinginMutation } from './loginForm.graphql';
 import { LoginFormFields } from './loginForm.types';
 

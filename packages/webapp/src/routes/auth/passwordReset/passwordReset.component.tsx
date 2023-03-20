@@ -1,8 +1,8 @@
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { asyncComponent } from '@sb/webapp-core/utils/asyncComponent';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks';
-import { asyncComponent } from '../../../shared/utils/asyncComponent';
 
 // @ts-ignore
 const PasswordResetRequest = asyncComponent(() => import('./passwordResetRequest'));

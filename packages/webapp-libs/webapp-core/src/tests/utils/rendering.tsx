@@ -1,22 +1,11 @@
-import { render, renderHook, RenderOptions } from '@testing-library/react';
-import {
-  ComponentClass,
-  ComponentType,
-  FC,
-  PropsWithChildren,
-  ReactElement,
-} from 'react';
+import { RenderOptions, render, renderHook } from '@testing-library/react';
+import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-  DEFAULT_LOCALE,
-  Locale,
-  TranslationMessages,
-  translationMessages,
-} from '../../config/i18n';
+import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
 import { LocalesProvider, ResponsiveThemeProvider } from '../../providers';
 import { Snackbar, SnackbarProvider } from '../../snackbar';
 import { media, size } from '../../theme';
@@ -41,12 +30,7 @@ export type DefaultTestProvidersProps = PropsWithChildren<{
   intlMessages: TranslationMessages;
 }>;
 
-export function DefaultTestProviders({
-  children,
-  routerProps,
-  intlMessages,
-  intlLocale,
-}: DefaultTestProvidersProps) {
+export function DefaultTestProviders({ children, routerProps, intlMessages, intlLocale }: DefaultTestProvidersProps) {
   return (
     <MemoryRouter {...routerProps}>
       <HelmetProvider>
@@ -69,13 +53,9 @@ export function DefaultTestProviders({
   );
 }
 
-export type WrapperProps<
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
-> = Partial<P>;
+export type WrapperProps<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = Partial<P>;
 
-export function getWrapper<
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
->(
+export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
   WrapperComponent: ComponentClass<P> | FC<P>,
   wrapperProps: WrapperProps<P>
 ): {
@@ -100,13 +80,13 @@ export function getWrapper<
   };
 }
 
-export type CustomRenderOptions<
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
-> = RenderOptions & WrapperProps<P>;
+export type CustomRenderOptions<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = RenderOptions &
+  WrapperProps<P>;
 
-function customRender<
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
->(ui: ReactElement, options: CustomRenderOptions<P> = {}) {
+function customRender<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
+  ui: ReactElement,
+  options: CustomRenderOptions<P> = {}
+) {
   const { wrapper } = getWrapper(DefaultTestProviders, options);
 
   return {
@@ -117,11 +97,10 @@ function customRender<
   };
 }
 
-function customRenderHook<
-  Result,
-  Props,
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
->(hook: (initialProps: Props) => Result, options: CustomRenderOptions<P> = {}) {
+function customRenderHook<Result, Props, P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
+  hook: (initialProps: Props) => Result,
+  options: CustomRenderOptions<P> = {}
+) {
   const { wrapper } = getWrapper(DefaultTestProviders, options);
 
   return {

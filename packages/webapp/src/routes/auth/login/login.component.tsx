@@ -1,11 +1,11 @@
 import { Link } from '@sb/webapp-core/components/buttons';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
-import { useGenerateLocalePath } from '../../../shared/hooks';
 import { Container, Header, Links, OrDivider } from './login.styles';
 
 export const Login = () => {

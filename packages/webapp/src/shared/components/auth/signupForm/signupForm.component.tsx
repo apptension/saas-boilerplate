@@ -1,10 +1,10 @@
 import { Input } from '@sb/webapp-core/components/forms';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
-import { useGenerateLocalePath } from '../../../hooks';
 import { useSignupForm } from './signupForm.hooks';
 import { Checkbox, Container, ErrorMessage, InlineLink, SubmitButton } from './signupForm.styles';
 

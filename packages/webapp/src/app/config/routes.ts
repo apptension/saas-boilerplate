@@ -1,6 +1,6 @@
+import { RoutesConfig as ContentfulRoutesConfig } from '@sb/webapp-contentful/config/routes';
+import { getLocalePath, nestedPath } from '@sb/webapp-core/utils/path';
 import { Path, path } from 'ramda';
-
-import { getLocalePath, nestedPath } from '../../shared/utils/path';
 
 export const LANG_PREFIX = `/:lang/*`;
 
@@ -16,8 +16,6 @@ const routes = {
   privacyPolicy: 'privacy-policy',
   termsAndConditions: 'terms-and-conditions',
   confirmEmail: 'auth/confirm/:user/:token',
-  demoItems: 'demo-items',
-  demoItem: 'demo-items/:id',
   passwordReset: nestedPath('auth/reset-password', {
     confirm: 'confirm/:user/:token',
   }),
@@ -38,6 +36,7 @@ const routes = {
     list: '',
   }),
   documents: 'documents',
+  ...ContentfulRoutesConfig,
   //<-- INJECT ROUTE DEFINITION -->
 };
 export const RoutesConfig = {

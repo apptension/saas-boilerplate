@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import 'regenerator-runtime/runtime';
 
-import { ApiProvider, ApolloProvider, CommonQuery, RouterProvider, SentryProvider } from './providers';
+import { ApiProvider, RouterProvider, SentryProvider } from './providers';
 import { setUnsupportedClasses } from './unsupported/support';
 import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 
@@ -22,15 +22,11 @@ const render = () => {
         <SnackbarProvider>
           <RouterProvider>
             <HelmetProvider>
-              <ApolloProvider>
-                <ApiProvider>
-                  <CommonQuery>
-                    <Suspense>
-                      <App />
-                    </Suspense>
-                  </CommonQuery>
-                </ApiProvider>
-              </ApolloProvider>
+              <ApiProvider>
+                <Suspense>
+                  <App />
+                </Suspense>
+              </ApiProvider>
             </HelmetProvider>
           </RouterProvider>
         </SnackbarProvider>
@@ -41,7 +37,6 @@ const render = () => {
 
 export const initApp = async () => {
   const detection = new UnsupportedBrowserDetection();
-
   if (!detection.isSupported()) {
     setUnsupportedClasses(detection.isInAppBrowser, detection.deviceType, detection.isSupported);
     return;

@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks';
-import { mapConnection } from '../../../shared/utils/graphql';
 import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
 

@@ -1,7 +1,8 @@
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useAuth, useGenerateLocalePath } from '../../../hooks';
+import { useAuth } from '../../../hooks';
 
 export const AnonymousRoute = () => {
   const generateLocalePath = useGenerateLocalePath();

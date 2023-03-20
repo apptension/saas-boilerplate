@@ -1,9 +1,11 @@
 import { ApiClientEvents, apiEmitter } from '@sb/webapp-api-client';
+import { CommonQuery } from '@sb/webapp-api-client/providers';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { FC, PropsWithChildren, useCallback, useEffect } from 'react';
 import { generatePath, useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../config/routes';
+import { ApolloProvider } from './apollo';
 
 export const ApiProvider: FC<PropsWithChildren> = ({ children }) => {
   const {
@@ -26,5 +28,9 @@ export const ApiProvider: FC<PropsWithChildren> = ({ children }) => {
     localStorage.setItem('LOCALES_LANGUAGE', language || '');
   }, [language]);
 
-  return <>{children}</>;
+  return (
+    <ApolloProvider>
+      <CommonQuery>{children}</CommonQuery>
+    </ApolloProvider>
+  );
 };

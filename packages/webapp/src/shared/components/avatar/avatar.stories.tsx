@@ -1,8 +1,7 @@
 import { CurrentUserType } from '@sb/webapp-api-client/graphql';
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 
-import { fillCommonQueryWithUser } from '../../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { Avatar, AvatarProps } from './avatar.component';
 

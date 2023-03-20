@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { stripeAllChargesQuery } from '../../../../../routes/finances/subscriptions/subscriptions.graphql';
-import { mapConnection } from '../../../../utils/graphql';
 import { Container, Entry, HeaderCell, HeaderRow } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {

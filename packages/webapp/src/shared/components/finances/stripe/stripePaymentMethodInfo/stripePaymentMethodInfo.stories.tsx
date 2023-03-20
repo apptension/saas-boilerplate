@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
-import { mapConnection } from '../../../../utils/graphql';
 import { withProviders } from '../../../../utils/storybook';
 import { stripeSubscriptionQuery } from '../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from './stripePaymentMethodInfo.component';

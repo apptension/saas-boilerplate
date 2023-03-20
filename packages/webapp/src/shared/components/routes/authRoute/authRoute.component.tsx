@@ -1,8 +1,9 @@
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
-import { useAuth, useGenerateLocalePath, useRoleAccessCheck } from '../../../hooks';
+import { useAuth, useRoleAccessCheck } from '../../../hooks';
 
 export type AuthRouteProps = {
   allowedRoles?: Role | Role[];

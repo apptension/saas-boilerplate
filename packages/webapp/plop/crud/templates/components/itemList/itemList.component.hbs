@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { ButtonVariant } from '../../../shared/components/forms/button';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
-import { mapConnection } from '../../../shared/utils/graphql';
 import { {{ camelCase name }}ListQuery } from './{{ camelCase name }}List.graphql';
 import { AddNewLink, Container, Header, List } from './{{ camelCase name }}List.styles';
 import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem';

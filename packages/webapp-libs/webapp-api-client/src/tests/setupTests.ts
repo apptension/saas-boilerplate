@@ -11,7 +11,5 @@ afterEach(() => server.resetHandlers());
 // Clean up after the tests are finished.
 afterAll(() => server.close());
 
+// @ts-ignore
 axios.defaults.adapter = require('axios/lib/adapters/http');
-
-jest.mock('./contentful/schema');
-jest.mock('./graphql/schema');

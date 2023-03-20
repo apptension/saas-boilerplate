@@ -1,4 +1,4 @@
-import { asyncComponent } from '../shared/utils/asyncComponent';
+import { asyncComponent } from '@sb/webapp-core/utils/asyncComponent';
 
 export const Home = asyncComponent(() => import('../routes/home'));
 export const NotFound = asyncComponent(() => import('../routes/notFound'));
@@ -7,10 +7,6 @@ export const Login = asyncComponent(() => import('../routes/auth/login'));
 export const Logout = asyncComponent(() => import('../routes/auth/logout'));
 export const Profile = asyncComponent(() => import('../routes/profile'));
 export const ConfirmEmail = asyncComponent(() => import('../routes/auth/confirmEmail'));
-export const PrivacyPolicy = asyncComponent(() => import('../routes/privacyPolicy'));
-export const TermsAndConditions = asyncComponent(() => import('../routes/termsAndConditions'));
-export const DemoItems = asyncComponent(() => import('../routes/demoItems'));
-export const DemoItem = asyncComponent(() => import('../routes/demoItem'));
 export const CrudDemoItem = asyncComponent(() => import('../routes/crudDemoItem'));
 export const FinancesPaymentConfirm = asyncComponent(() => import('../routes/finances/paymentConfirm'));
 export const Subscriptions = asyncComponent(() => import('../routes/finances/subscriptions'));

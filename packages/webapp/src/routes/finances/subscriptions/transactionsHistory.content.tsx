@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../shared/hooks';
 import { stripeAllChargesQuery } from './subscriptions.graphql';
 import { Link, Row } from './subscriptions.styles';
 

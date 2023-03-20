@@ -30,6 +30,12 @@
       ],
       "@sb/webapp-api-client/*": [
         "packages/webapp-libs/webapp-api-client/src/*"
+      ],
+      "@sb/webapp-contentful": [
+        "packages/webapp-libs/webapp-contentful/src/index.ts"
+      ],
+      "@sb/webapp-contentful/*": [
+        "packages/webapp-libs/webapp-contentful/src/*"
       ]
     }
   },

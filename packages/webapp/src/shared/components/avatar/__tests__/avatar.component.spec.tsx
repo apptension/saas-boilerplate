@@ -1,8 +1,7 @@
 import { CurrentUserType } from '@sb/webapp-api-client/graphql';
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
-import { fillCommonQueryWithUser } from '../../../../tests/factories';
 import { render } from '../../../../tests/utils/rendering';
 import { Avatar } from '../avatar.component';
 

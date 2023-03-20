@@ -1,9 +1,8 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { fillCommonQueryWithUser } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { TwoFactorAuthForm, TwoFactorAuthFormProps } from '../twoFactorAuthForm.component';
 import { disableOtpMutation, generateOtpMutation } from '../twoFactorAuthForm.graphql';

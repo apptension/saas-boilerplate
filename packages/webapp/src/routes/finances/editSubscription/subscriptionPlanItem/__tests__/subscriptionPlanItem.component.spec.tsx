@@ -6,6 +6,7 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
@@ -15,7 +16,6 @@ import {
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
 } from '../../../../../tests/factories';
-import { mapConnection } from '../../../../../shared/utils/graphql';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { useActiveSubscriptionDetails } from '../../../activeSubscriptionContext/activeSubscriptionContext.hooks';

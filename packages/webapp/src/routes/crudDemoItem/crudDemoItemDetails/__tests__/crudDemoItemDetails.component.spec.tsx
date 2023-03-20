@@ -1,8 +1,9 @@
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { fillCommonQueryWithUser, fillCrudDemoItemDetailsQuery } from '../../../../tests/factories';
+import { fillCrudDemoItemDetailsQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemDetails } from '../crudDemoItemDetails.component';
 

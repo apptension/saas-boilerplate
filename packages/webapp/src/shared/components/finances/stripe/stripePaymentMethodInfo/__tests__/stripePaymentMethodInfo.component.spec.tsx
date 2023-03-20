@@ -4,6 +4,7 @@ import {
   subscriptionFactory,
   subscriptionPhaseFactory,
 } from '@sb/webapp-api-client/tests/factories';
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 
@@ -13,7 +14,6 @@ import {
 } from '../../../../../../tests/factories';
 import { matchTextContent } from '../../../../../../tests/utils/match';
 import { render } from '../../../../../../tests/utils/rendering';
-import { mapConnection } from '../../../../../utils/graphql';
 import { stripeSubscriptionQuery } from '../../stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from '../stripePaymentMethodInfo.component';
 

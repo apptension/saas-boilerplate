@@ -1,11 +1,10 @@
 import { ApolloError } from '@apollo/client';
-import { Link } from '@sb/webapp-core/components/buttons';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Input } from '@sb/webapp-core/components/form';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { Button, ButtonVariant } from '../../../shared/components/forms/button';
-import { Input } from '../../../shared/components/forms/input';
-import { useGenerateLocalePath } from '../../../shared/hooks/localePaths';
 import { use{{ pascalCase name }}Form } from './{{ camelCase name }}Form.hook';
 import { Buttons, Container, ErrorMessage, Fields, Form, Label } from './{{ camelCase name }}Form.styles';
 

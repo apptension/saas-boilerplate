@@ -1,8 +1,8 @@
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { useGenerateLocalePath } from '../../../../hooks';
 import { Notification } from '../../notification';
 import { NotificationType } from '../../notifications.types';
 

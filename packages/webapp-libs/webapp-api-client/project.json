@@ -22,18 +22,17 @@
       },
       "configurations": {
         "generate-types": {
-          "commands": [
-            "pnpm run graphql-codegen -c ./graphql/codegen/contentful.yml",
-            "pnpm run graphql-codegen -c ./graphql/codegen/schemaTypes.yml",
-            "pnpm run graphql-codegen -c ./graphql/codegen/client.yml"
-          ],
+          "commands": ["pnpm run graphql-codegen -c ./graphql/codegen.ts"],
           "parallel": false
         },
         "generate-types:watch": {
-          "command": "pnpm run graphql-codegen -w -c ./graphql/codegen/client.yml"
+          "commands": ["pnpm run graphql-codegen -w -c ./graphql/codegen.ts"]
         },
         "download-schema": {
-          "command": "/bin/sh ./scripts/download-graphql-schema.sh"
+          "commands": [
+            "/bin/sh ./scripts/download-graphql-schema.sh",
+            "nx run webapp-api-client:graphql:generate-types"
+          ]
         }
       }
     }

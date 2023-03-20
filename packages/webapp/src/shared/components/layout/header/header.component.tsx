@@ -1,5 +1,5 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { Snackbar } from '@sb/webapp-core/snackbar';
 import { media } from '@sb/webapp-core/theme';
 import { HTMLAttributes, useContext } from 'react';
@@ -8,7 +8,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useAuth, useGenerateLocalePath, useOpenState } from '../../../hooks';
+import { useAuth, useOpenState } from '../../../hooks';
 import { Notifications } from '../../notifications';
 import { LayoutContext } from '../layout.context';
 import {

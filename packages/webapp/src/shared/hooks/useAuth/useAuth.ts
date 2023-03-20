@@ -1,11 +1,10 @@
 import { CurrentUserType, useFragment } from '@sb/webapp-api-client/graphql';
+import { commonQueryCurrentUserFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
-import { useCommonQuery } from '../../../app/providers/commonQuery';
-import { commonQueryCurrentUserFragment } from '../../../app/providers/commonQuery/commonQuery.graphql';
-import { useGenerateLocalePath } from '../localePaths';
 
 export const useAuth = () => {
   const navigate = useNavigate();

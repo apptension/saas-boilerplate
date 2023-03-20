@@ -20,10 +20,10 @@ type ComposeMockedQueryResultProps = {
   errors?: GraphQLError[];
 };
 
-export const composeMockedQueryResult = (
-  query: DocumentNode,
+export function composeMockedQueryResult<T extends DocumentNode>(
+  query: T,
   { variables, data, errors }: ComposeMockedQueryResultProps
-): MockedResponse => {
+): MockedResponse {
   const result = {
     data,
     errors,
@@ -36,7 +36,7 @@ export const composeMockedQueryResult = (
     },
     result: jest.fn ? jest.fn(() => result) : () => structuredClone(result),
   };
-};
+}
 
 type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
   data: Array<any>;

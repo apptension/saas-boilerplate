@@ -1,4 +1,6 @@
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
+import { CommonQuery } from '@sb/webapp-api-client/providers';
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import * as coreUtils from '@sb/webapp-core/tests/utils/rendering';
 import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
@@ -7,8 +9,6 @@ import { generatePath } from 'react-router';
 import { MemoryRouterProps } from 'react-router-dom';
 
 import { RoutesConfig } from '../../app/config/routes';
-import { CommonQuery } from '../../app/providers';
-import { fillCommonQueryWithUser } from '../factories';
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
@@ -68,6 +68,7 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
       return Promise.resolve();
     }
 
+    // @ts-ignore
     await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
   };
 
