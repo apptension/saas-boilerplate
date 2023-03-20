@@ -38,7 +38,9 @@ export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = {
 export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
   props: StripePaymentMethodSelectorProps<T>
 ) => {
-  const { data, loading } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
+  const { data, loading } = useQuery(stripeSubscriptionQuery, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const {
     formControls: {
