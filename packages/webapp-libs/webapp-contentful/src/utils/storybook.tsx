@@ -4,8 +4,8 @@ import { Story } from '@storybook/react';
 import { WrapperProps, getWrapper } from '../tests/utils/rendering';
 
 export function withProviders(wrapperProps: WrapperProps = {}) {
-  return (StoryComponent: Story) => {
-    const { wrapper: WrapperComponent } = getWrapper(ApiTestProviders, wrapperProps);
+  return (StoryComponent: Story, storyContext: any) => {
+    const { wrapper: WrapperComponent } = getWrapper(ApiTestProviders, wrapperProps, storyContext);
 
     return (
       <WrapperComponent {...wrapperProps}>

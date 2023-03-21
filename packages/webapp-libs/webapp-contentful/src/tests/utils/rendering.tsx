@@ -1,5 +1,6 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
 import * as corePath from '@sb/webapp-core/utils/path';
+import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
@@ -8,12 +9,13 @@ export type WrapperProps = apiUtils.WrapperProps;
 
 export function getWrapper(
   WrapperComponent: ComponentClass<apiUtils.ApiTestProvidersProps> | FC<apiUtils.ApiTestProvidersProps>,
-  wrapperProps: WrapperProps
+  wrapperProps: WrapperProps,
+  storyContext?: StoryContext
 ): {
   wrapper: ComponentType<WrapperProps>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
-  return apiUtils.getWrapper(apiUtils.ApiTestProviders, wrapperProps);
+  return apiUtils.getWrapper(apiUtils.ApiTestProviders, wrapperProps, storyContext);
 }
 
 export type CustomRenderOptions = RenderOptions & WrapperProps;

@@ -9,13 +9,15 @@ import { createMockRouterProps } from '../../tests/utils/rendering';
 import { withProviders } from '../../utils/storybook';
 import { DemoItem } from './demoItem.component';
 
-const routePath = ['demoItem'];
 const defaultItemId = 'test-id';
 
 const Template: Story = () => {
   return (
     <Routes>
-      <Route path={corePath.getLocalePath(RoutesConfig.demoItem)} element={<DemoItem />} />
+      <Route
+        path={corePath.getLocalePath(RoutesConfig.demoItem)}
+        element={<DemoItem routesConfig={{ notFound: '/not-found' }} />}
+      />
     </Routes>
   );
 };
@@ -28,7 +30,7 @@ export default {
 export const Default = Template.bind({});
 Default.decorators = [
   withProviders({
-    routerProps: createMockRouterProps(routePath, { id: defaultItemId }),
+    routerProps: createMockRouterProps(RoutesConfig.demoItem, { id: defaultItemId }),
     apolloMocks: append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId })),
   }),
 ];
