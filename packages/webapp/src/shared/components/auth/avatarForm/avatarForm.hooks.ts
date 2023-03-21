@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
-import { useApiForm } from '../../../hooks';
 import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { UpdateAvatarFormFields } from './avatarForm.types';

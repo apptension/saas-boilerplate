@@ -1,6 +1,7 @@
 import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { typography } from '@sb/webapp-core/theme';
+import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
@@ -13,7 +14,6 @@ import { AuthRoute } from '../shared/components/routes/authRoute';
 import {
   CancelSubscription,
   ConfirmEmail,
-  CrudDemoItem,
   Documents,
   EditPaymentMethod,
   EditSubscription,
@@ -50,7 +50,7 @@ export const App = () => {
           <Route path={RoutesConfig.profile} element={<Profile />} />
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
           <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
-          <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem />} />
+          <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
           <Route element={<ActiveSubscriptionContext />}>
             <Route path={RoutesConfig.subscriptions.index} element={<Subscriptions />} />
             <Route path={RoutesConfig.subscriptions.changePlan} element={<EditSubscription />} />

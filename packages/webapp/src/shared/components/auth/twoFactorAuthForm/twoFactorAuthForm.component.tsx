@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Modal } from '@sb/webapp-core/components/modal';
+import { useOpenState } from '@sb/webapp-core/hooks';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { H5 } from '@sb/webapp-core/theme/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useOpenState } from '../../../hooks';
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
 import { Container, CtaButton, ModalHeader, Row } from './twoFactorAuthForm.styles';

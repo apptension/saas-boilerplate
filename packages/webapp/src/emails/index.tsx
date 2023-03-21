@@ -1,9 +1,9 @@
+import { camelCaseKeys } from '@sb/webapp-core/utils/object';
 import { UnknownObject } from '@sb/webapp-core/utils/types';
 import juice from 'juice';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 
-import { camelCaseKeys } from '../shared/utils/object';
 import { buildEmail } from './email';
 import { EmailComponentProps, EmailTemplateType } from './types';
 

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { ButtonSize, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
@@ -6,7 +7,6 @@ import * as QRCode from 'qrcode';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useApiForm } from '../../../hooks';
 import { generateOtpMutation, verifyOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import {
   Body,

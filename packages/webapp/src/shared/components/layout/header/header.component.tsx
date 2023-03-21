@@ -1,15 +1,16 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { useGenerateLocalePath, useMediaQuery, useOpenState } from '@sb/webapp-core/hooks';
 import { Snackbar } from '@sb/webapp-core/snackbar';
 import { media } from '@sb/webapp-core/theme';
+import { Notifications } from '@sb/webapp-notifications';
 import { HTMLAttributes, useContext } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useAuth, useOpenState } from '../../../hooks';
-import { Notifications } from '../../notifications';
+import notificationTemplates from '../../../constants/notificationTemplates';
+import { useAuth } from '../../../hooks';
 import { LayoutContext } from '../layout.context';
 import {
   Avatar,
@@ -70,7 +71,7 @@ export const Header = (props: HeaderProps) => {
 
         {isLoggedIn && (
           <>
-            <Notifications />
+            <Notifications templates={notificationTemplates} />
 
             <ProfileActions>
               <Avatar

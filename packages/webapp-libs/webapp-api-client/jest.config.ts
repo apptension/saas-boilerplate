@@ -6,14 +6,11 @@ export default {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/react/babel'] }],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(@iconify-icons|react-markdown)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(@iconify-icons|@sb)/)'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
     },
-  },
-  moduleNameMapper: {
-    'react-markdown': '<rootDir>/node_modules/react-markdown/react-markdown.min.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],

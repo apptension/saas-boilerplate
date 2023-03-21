@@ -1,26 +1,13 @@
 import { Story } from '@storybook/react';
-import {
-  DefaultTestProviders,
-  DefaultTestProvidersProps,
-  WrapperProps,
-  getWrapper,
-} from '../tests/utils/rendering';
 
-export function withProviders<
-  P extends DefaultTestProvidersProps = DefaultTestProvidersProps
->(wrapperProps: WrapperProps<P> = {}) {
+import { CoreTestProviders, WrapperProps, getWrapper } from '../tests/utils/rendering';
+
+export function withProviders(wrapperProps: WrapperProps = {}) {
   return (StoryComponent: Story) => {
-    const { wrapper: WrapperComponent } = getWrapper(
-      DefaultTestProviders,
-      wrapperProps
-    );
+    const { wrapper: WrapperComponent } = getWrapper(CoreTestProviders, wrapperProps);
 
     return (
-      <WrapperComponent
-        routerProps={wrapperProps.routerProps}
-        intlMessages={wrapperProps.intlMessages}
-        intlLocale={wrapperProps.intlLocale}
-      >
+      <WrapperComponent {...wrapperProps}>
         <StoryComponent />
       </WrapperComponent>
     );

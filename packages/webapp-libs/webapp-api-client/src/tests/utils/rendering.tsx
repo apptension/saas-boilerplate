@@ -1,5 +1,6 @@
 import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
 import * as coreUtils from '@sb/webapp-core/tests/utils/rendering';
+import { CoreTestProviders, CoreTestProvidersProps } from '@sb/webapp-core/tests/utils/rendering';
 import { StoryContext } from '@storybook/react';
 import { RenderOptions, render, renderHook, waitFor } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
@@ -7,18 +8,12 @@ import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } fr
 import { CommonQuery } from '../../providers';
 import { fillCommonQueryWithUser } from '../factories';
 
-export type DefaultTestProvidersProps = PropsWithChildren<
-  {
-    apolloMocks?: ReadonlyArray<MockedResponse>;
-    apolloProviderProps: MockedProviderProps;
-  } & coreUtils.DefaultTestProvidersProps
->;
+export type ApiTestProvidersProps = PropsWithChildren<{
+  apolloMocks?: ReadonlyArray<MockedResponse>;
+  apolloProviderProps?: MockedProviderProps;
+}>;
 
-export function DefaultTestProviders({
-  children,
-  apolloMocks = [],
-  apolloProviderProps = {},
-}: DefaultTestProvidersProps) {
+export function ApiTestProviders({ children, apolloMocks = [], apolloProviderProps = {} }: ApiTestProvidersProps) {
   return (
     <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
       <CommonQuery>{children}</CommonQuery>
@@ -26,23 +21,21 @@ export function DefaultTestProviders({
   );
 }
 
-export type WrapperProps<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = Partial<
-  Omit<P, 'apolloMocks'>
-> & {
+export type WrapperProps = Partial<Omit<ApiTestProvidersProps & CoreTestProvidersProps, 'apolloMocks'>> & {
   apolloMocks?:
     | ReadonlyArray<MockedResponse>
     | ((mocks: ReadonlyArray<MockedResponse>, storyContext?: StoryContext) => ReadonlyArray<MockedResponse>);
 };
 
-export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  WrapperComponent: ComponentClass<P> | FC<P>,
-  wrapperProps: WrapperProps<P>,
+export function getWrapper(
+  WrapperComponent: ComponentClass<ApiTestProvidersProps> | FC<ApiTestProvidersProps>,
+  wrapperProps: WrapperProps,
   storyContext?: StoryContext
 ): {
-  wrapper: ComponentType<P>;
+  wrapper: ComponentType<WrapperProps>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
-  const { wrapper: CoreWrapper } = coreUtils.getWrapper(coreUtils.DefaultTestProviders, wrapperProps);
+  const { wrapper: CoreWrapper } = coreUtils.getWrapper(CoreTestProviders, wrapperProps);
   const apolloMocks = (() => {
     const defaultApolloMocks = [fillCommonQueryWithUser()];
 
@@ -65,7 +58,7 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
     await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
   };
 
-  const wrapper = (props: P) => {
+  const wrapper = (props: WrapperProps) => {
     return (
       <CoreWrapper {...props} {...(wrapperProps ?? {})}>
         <WrapperComponent {...props} {...(wrapperProps ?? {})} apolloMocks={apolloMocks} />
@@ -79,14 +72,10 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
   };
 }
 
-export type CustomRenderOptions<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = RenderOptions &
-  WrapperProps<P>;
+export type CustomRenderOptions = RenderOptions & WrapperProps;
 
-function customRender<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  ui: ReactElement,
-  options: CustomRenderOptions<P> = {}
-) {
-  const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
+  const { wrapper, waitForApolloMocks } = getWrapper(ApiTestProviders, options);
 
   return {
     ...render(ui, {
@@ -97,11 +86,8 @@ function customRender<P extends DefaultTestProvidersProps = DefaultTestProviders
   };
 }
 
-function customRenderHook<Result, Props, P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  hook: (initialProps: Props) => Result,
-  options: CustomRenderOptions<P> = {}
-) {
-  const { wrapper, waitForApolloMocks } = getWrapper(DefaultTestProviders, options);
+function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, options: CustomRenderOptions = {}) {
+  const { wrapper, waitForApolloMocks } = getWrapper(ApiTestProviders, options);
 
   return {
     ...renderHook(hook, {

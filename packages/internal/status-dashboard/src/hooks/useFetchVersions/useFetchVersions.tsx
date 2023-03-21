@@ -1,9 +1,30 @@
 import { useEffect, useState } from 'react';
 
-type Version = unknown;
+type VersionValue = {
+  label: string;
+  value: string;
+};
+
+type Version = {
+  envs: Array<{
+    name: string;
+    version: string;
+    builtAt: string;
+    values: VersionValue[];
+  }>;
+  services: Record<
+    string,
+    Array<{
+      name: string;
+      version: string;
+      builtAt: string;
+      values: VersionValue[];
+    }>
+  >;
+};
 
 export const useFetchVersions = () => {
-  const [versions, setVersions] = useState<Version[]>([]);
+  const [versions, setVersions] = useState<Version>({ envs: [], services: {} });
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
 

@@ -23,8 +23,6 @@
       "@sb/infra-core": ["packages/infra/infra-core/src/index.ts"],
       "@sb/infra-shared": ["packages/infra/infra-shared/src/index.ts"],
       "@sb/tools": ["packages/internal/tools/src/index.ts"],
-      "@sb/webapp-core": ["packages/webapp-libs/webapp-core/src/index.ts"],
-      "@sb/webapp-core/*": ["packages/webapp-libs/webapp-core/src/*"],
       "@sb/webapp-api-client": [
         "packages/webapp-libs/webapp-api-client/src/index.ts"
       ],
@@ -36,6 +34,18 @@
       ],
       "@sb/webapp-contentful/*": [
         "packages/webapp-libs/webapp-contentful/src/*"
+      ],
+      "@sb/webapp-core": ["packages/webapp-libs/webapp-core/src/index.ts"],
+      "@sb/webapp-core/*": ["packages/webapp-libs/webapp-core/src/*"],
+      "@sb/webapp-crud-demo": [
+        "packages/webapp-libs/webapp-crud-demo/src/index.ts"
+      ],
+      "@sb/webapp-crud-demo/*": ["packages/webapp-libs/webapp-crud-demo/src/*"],
+      "@sb/webapp-notifications": [
+        "packages/webapp-libs/webapp-notifications/src/index.ts"
+      ],
+      "@sb/webapp-notifications/*": [
+        "packages/webapp-libs/webapp-notifications/src/*"
       ]
     }
   },

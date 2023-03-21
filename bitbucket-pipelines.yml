@@ -12,6 +12,8 @@ definitions:
     pnpmwebappcore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappapiclient: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappcontentful: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappcruddemo: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappnotifications: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -137,6 +139,46 @@ pipelines:
                   EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-contentful'
             caches:
               - pnpmwebappcontentful
+              - clis
+              - sonar
+        - step:
+            name: 'webapp-crud-demo: Lint & test'
+            image: atlassian/default-image:4
+            size: 2x
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-crud-demo...
+              - node_modules/.bin/nx run webapp-crud-demo:lint
+              - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-crud-demo'
+            caches:
+              - pnpmwebappcruddemo
+              - clis
+              - sonar
+        - step:
+            name: 'webapp-notifications: Lint & test'
+            image: atlassian/default-image:4
+            size: 2x
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-notifications...
+              - node_modules/.bin/nx run webapp-notifications:lint
+              - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-notifications'
+            caches:
+              - pnpmwebappnotifications
               - clis
               - sonar
         - step:

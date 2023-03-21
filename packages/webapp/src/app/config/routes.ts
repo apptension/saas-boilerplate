@@ -1,4 +1,5 @@
 import { RoutesConfig as ContentfulRoutesConfig } from '@sb/webapp-contentful/config/routes';
+import { RoutesConfig as CrudDemoRoutesConfig } from '@sb/webapp-crud-demo/config/routes';
 import { getLocalePath, nestedPath } from '@sb/webapp-core/utils/path';
 import { Path, path } from 'ramda';
 
@@ -13,17 +14,9 @@ const routes = {
   notFound: '404',
   profile: 'profile',
   admin: 'admin',
-  privacyPolicy: 'privacy-policy',
-  termsAndConditions: 'terms-and-conditions',
   confirmEmail: 'auth/confirm/:user/:token',
   passwordReset: nestedPath('auth/reset-password', {
     confirm: 'confirm/:user/:token',
-  }),
-  crudDemoItem: nestedPath('crud-demo-item', {
-    list: '',
-    details: ':id',
-    edit: ':id/edit',
-    add: 'add',
   }),
   finances: nestedPath('finances', {
     paymentConfirm: 'payment-confirm',
@@ -37,8 +30,10 @@ const routes = {
   }),
   documents: 'documents',
   ...ContentfulRoutesConfig,
+  ...CrudDemoRoutesConfig,
   //<-- INJECT ROUTE DEFINITION -->
 };
+
 export const RoutesConfig = {
   ...routes,
   getLocalePath: (routeKey: Path) => {

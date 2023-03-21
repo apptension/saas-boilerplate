@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useState } from 'react';
 
 import { TestProduct } from '../../../../modules/stripe/stripe.types';
-import { useApiForm } from '../../../hooks';
 import { useStripePayment } from './stripePayment.stripe.hook';
 import {
   stripeCreatePaymentIntentMutation,

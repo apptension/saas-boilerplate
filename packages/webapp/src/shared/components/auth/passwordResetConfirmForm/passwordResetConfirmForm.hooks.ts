@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useApiForm } from '../../../hooks';
 import { authRequestPasswordResetConfirmMutation } from './passwordResetConfirmForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 

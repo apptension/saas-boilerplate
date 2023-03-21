@@ -1,14 +1,14 @@
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import {
-  currentUserFactory,
-  fillCommonQueryWithUser,
+  fillNotificationsListQuery,
+  fillNotificationsSubscriptionQuery,
   notificationFactory,
-} from '@sb/webapp-api-client/tests/factories';
+} from '@sb/webapp-notifications/tests/factories';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../../app/config/routes';
-import { fillNotificationsListQuery, fillNotificationsSubscriptionQuery } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { Header } from '../header.component';
 

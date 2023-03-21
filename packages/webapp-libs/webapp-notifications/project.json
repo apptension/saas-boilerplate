@@ -1,0 +1,31 @@
+{
+  "name": "webapp-notifications",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-notifications/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/webapp-libs/webapp-notifications",
+        "main": "packages/webapp-libs/webapp-notifications/src/index.ts",
+        "tsConfig": "packages/webapp-libs/webapp-notifications/tsconfig.lib.json",
+        "assets": ["packages/webapp-libs/webapp-notifications/*.md"]
+      }
+    },
+    "graphql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp-libs/webapp-notifications",
+        "color": true
+      },
+      "configurations": {
+        "download-schema": {
+          "commands": ["/bin/sh ./scripts/download-graphql-schema.sh"]
+        }
+      }
+    }
+  },
+  "tags": []
+}

@@ -24,13 +24,13 @@ export const SnackbarMessages = styled.div`
   `}
 `;
 
-export type DefaultTestProvidersProps = PropsWithChildren<{
+export type CoreTestProvidersProps = PropsWithChildren<{
   routerProps: MemoryRouterProps;
   intlLocale: Locale;
   intlMessages: TranslationMessages;
 }>;
 
-export function DefaultTestProviders({ children, routerProps, intlMessages, intlLocale }: DefaultTestProvidersProps) {
+export function CoreTestProviders({ children, routerProps, intlMessages, intlLocale }: CoreTestProvidersProps) {
   return (
     <MemoryRouter {...routerProps}>
       <HelmetProvider>
@@ -53,17 +53,17 @@ export function DefaultTestProviders({ children, routerProps, intlMessages, intl
   );
 }
 
-export type WrapperProps<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = Partial<P>;
+export type WrapperProps = Partial<CoreTestProvidersProps>;
 
-export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  WrapperComponent: ComponentClass<P> | FC<P>,
-  wrapperProps: WrapperProps<P>
+export function getWrapper(
+  WrapperComponent: ComponentClass<CoreTestProvidersProps> | FC<CoreTestProvidersProps>,
+  wrapperProps: WrapperProps
 ): {
-  wrapper: ComponentType<P>;
+  wrapper: ComponentType<WrapperProps>;
 } {
   const defaultRouterProps: MemoryRouterProps = { initialEntries: ['/'] };
 
-  const wrapper = (props: P) => {
+  const wrapper = (props: PropsWithChildren<WrapperProps>) => {
     return (
       <WrapperComponent
         {...props}
@@ -80,14 +80,10 @@ export function getWrapper<P extends DefaultTestProvidersProps = DefaultTestProv
   };
 }
 
-export type CustomRenderOptions<P extends DefaultTestProvidersProps = DefaultTestProvidersProps> = RenderOptions &
-  WrapperProps<P>;
+export type CustomRenderOptions = RenderOptions & WrapperProps;
 
-function customRender<P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  ui: ReactElement,
-  options: CustomRenderOptions<P> = {}
-) {
-  const { wrapper } = getWrapper(DefaultTestProviders, options);
+function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
+  const { wrapper } = getWrapper(CoreTestProviders, options);
 
   return {
     ...render(ui, {
@@ -97,11 +93,8 @@ function customRender<P extends DefaultTestProvidersProps = DefaultTestProviders
   };
 }
 
-function customRenderHook<Result, Props, P extends DefaultTestProvidersProps = DefaultTestProvidersProps>(
-  hook: (initialProps: Props) => Result,
-  options: CustomRenderOptions<P> = {}
-) {
-  const { wrapper } = getWrapper(DefaultTestProviders, options);
+function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, options: CustomRenderOptions = {}) {
+  const { wrapper } = getWrapper(CoreTestProviders, options);
 
   return {
     ...renderHook(hook, {
@@ -112,3 +105,6 @@ function customRenderHook<Result, Props, P extends DefaultTestProvidersProps = D
 }
 
 export { customRender as render, customRenderHook as renderHook };
+
+export const PLACEHOLDER_TEST_ID = 'content';
+export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;

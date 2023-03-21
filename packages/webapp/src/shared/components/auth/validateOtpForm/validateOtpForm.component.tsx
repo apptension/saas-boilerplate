@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
@@ -7,7 +8,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useApiForm } from '../../../hooks';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import { Container, ErrorMessage, Header, SubmitButton } from './validateOtpForm.styles';
 
