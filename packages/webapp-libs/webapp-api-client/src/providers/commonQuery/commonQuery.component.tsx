@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client';
-import React, { FunctionComponent, PropsWithChildren, useCallback, useMemo } from 'react';
+import { setUserId } from '@sb/webapp-core/services/analytics';
+import { FunctionComponent, PropsWithChildren, useCallback, useMemo } from 'react';
 
+import { CurrentUserType } from '../../graphql';
 import commonDataContext from './commonQuery.context';
 import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
 
@@ -12,6 +14,10 @@ export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) 
   }, [refetch]);
 
   const value = useMemo(() => ({ data: data || null, reload }), [data, reload]);
+
+  const userId = (data?.currentUser as CurrentUserType)?.id;
+
+  if (userId) setUserId(userId);
 
   if (loading || !data) {
     return null;

@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +38,7 @@ export const useLoginForm = () => {
         return navigate(generateLocalePath(RoutesConfig.validateOtp));
       }
       reloadCommonQuery();
+      trackEvent('auth', 'log-in');
       navigate(generateLocalePath(RoutesConfig.home));
     },
     onError: (error) => {

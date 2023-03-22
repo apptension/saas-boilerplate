@@ -1,4 +1,5 @@
 import { LocalesProvider } from '@sb/webapp-core/providers';
+import { initAnalytics } from '@sb/webapp-core/services/analytics';
 import { SnackbarProvider } from '@sb/webapp-core/snackbar';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -37,10 +38,13 @@ const render = () => {
 
 export const initApp = async () => {
   const detection = new UnsupportedBrowserDetection();
+
   if (!detection.isSupported()) {
     setUnsupportedClasses(detection.isInAppBrowser, detection.deviceType, detection.isSupported);
     return;
   }
+
+  initAnalytics();
 
   // Chunked polyfill for browsers without Intl support
   if (!window.Intl) {

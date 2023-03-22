@@ -4,8 +4,9 @@ import 'isomorphic-fetch';
 import MockDate from 'mockdate';
 import 'regenerator-runtime/runtime';
 
-import './mocks/reactIntl';
+import { ENV } from '../config/env';
 import './mocks/icons';
+import './mocks/reactIntl';
 
 MockDate.set('2020-11-22');
 
@@ -20,3 +21,5 @@ window.matchMedia =
       removeListener: Function.prototype,
     };
   };
+
+ENV.ENVIRONMENT_NAME = 'test';
