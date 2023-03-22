@@ -18,8 +18,8 @@ export const Logout = () => {
         await auth.logout();
       } catch {}
 
-      invalidateApolloStore();
       reloadCommonQuery();
+      invalidateApolloStore();
       navigate(generateLocalePath(RoutesConfig.login));
     })();
   }, [reloadCommonQuery, generateLocalePath, navigate]);

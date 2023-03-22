@@ -141,5 +141,6 @@ export const client = new ApolloClient({
 });
 
 export const invalidateApolloStore = () => {
+  client.stop();
   client.resetStore();
 };
