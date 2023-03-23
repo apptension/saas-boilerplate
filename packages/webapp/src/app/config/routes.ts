@@ -4,7 +4,7 @@ import { getLocalePath, nestedPath } from '@sb/webapp-core/utils/path';
 import { RoutesConfig as CrudDemoRoutesConfig } from '@sb/webapp-crud-demo/config/routes';
 import { Path, path } from 'ramda';
 
-export const LANG_PREFIX = `/:lang/*`;
+export const LANG_PREFIX = `/:lang?/*`;
 
 const routes = {
   ...CoreRoutesConfig,

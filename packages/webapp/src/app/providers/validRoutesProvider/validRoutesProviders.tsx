@@ -2,9 +2,10 @@ import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
 import { global } from '@sb/webapp-core/theme';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { Layout } from '../../../shared/components/layout';
 import { useLanguageFromParams } from './useLanguageFromParams';
@@ -12,15 +13,21 @@ import { useLanguageFromParams } from './useLanguageFromParams';
 export const ValidRoutesProviders = () => {
   useLanguageFromParams();
 
+  const params = useParams();
+  const navigate = useNavigate();
+
   const {
     locales: { language },
   } = useLocales();
 
-  if (!language) {
-    return null;
-  }
+  useEffect(() => {
+    if (language && params.lang === undefined) {
+      const url = `/${language}/${params['*']}`;
+      navigate(url, { replace: true });
+    }
+  }, [language, params, navigate]);
 
-  return (
+  return !language ? null : (
     <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
       <>
         <FormattedMessage defaultMessage="Apptension Boilerplate" id="App / Page title">
