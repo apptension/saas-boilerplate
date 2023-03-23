@@ -2,24 +2,39 @@ import { resolve } from 'path';
 
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
+import react from '@vitejs/plugin-react';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import polyfillNode from 'rollup-plugin-polyfill-node';
-import { defineConfig, mergeConfig } from 'vite';
-
-import webappConfigFactory from './vite.config';
+import { defineConfig, loadEnv } from 'vite';
+import svgrPlugin from 'vite-plugin-svgr';
+import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(async (props) => {
-  const webappConfig = webappConfigFactory(props);
-  const sourceConfig = {
-    define: webappConfig.define,
-    plugins: webappConfig.plugins
-      .flat()
-      .filter(
-        (p) =>
-          !['vite:legacy-config', 'vite:legacy-generate-polyfill-chunk', 'vite:legacy-post-process'].includes(p.name)
-      ),
-  };
-  return mergeConfig(sourceConfig, {
+  const env = loadEnv(props.mode, process.cwd());
+
+  // expose .env as process.env instead of import.meta since jest does not import meta yet
+  const envWithProcessPrefix = Object.entries(env).reduce((prev, [key, val]) => {
+    return {
+      ...prev,
+      ['process.env.' + key]: `"${val}"`,
+    };
+  }, {});
+
+  return {
     cacheDir: '../../node_modules/.vite/emails',
+
+    define: envWithProcessPrefix,
+
+    plugins: [
+      react(),
+      viteTsConfigPaths({
+        projects: ['../../../tsconfig.base.json'],
+      }),
+      svgrPlugin(),
+      viteCommonjs(),
+      peerDepsExternal(),
+    ],
 
     resolve: {
       alias: {
@@ -51,7 +66,7 @@ export default defineConfig(async (props) => {
     build: {
       lib: {
         name: 'renderEmail',
-        entry: resolve(__dirname, 'src/emails/index.tsx'),
+        entry: resolve(__dirname, 'src/index.tsx'),
         fileName: 'index',
         formats: ['umd'],
       },
@@ -67,5 +82,5 @@ export default defineConfig(async (props) => {
         ],
       },
     },
-  });
+  };
 });

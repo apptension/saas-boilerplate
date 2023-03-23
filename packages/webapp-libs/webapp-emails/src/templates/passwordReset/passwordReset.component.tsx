@@ -1,6 +1,7 @@
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { FormattedMessage } from 'react-intl';
 
-import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 
@@ -11,7 +12,7 @@ export type PasswordResetProps = EmailComponentProps & {
 
 export const Template = ({ userId, token }: PasswordResetProps) => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(['passwordReset', 'confirm'], {
+  const url = generateLocalePath(RoutesConfig.passwordReset.confirm, {
     token,
     user: userId,
   });

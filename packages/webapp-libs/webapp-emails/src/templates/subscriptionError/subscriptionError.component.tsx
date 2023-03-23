@@ -1,11 +1,12 @@
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { FormattedMessage } from 'react-intl';
 
-import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks';
 import { Button, Layout } from '../../base';
 
 export const Template = () => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(['subscriptions', 'index']);
+  const url = generateLocalePath(RoutesConfig.subscriptions.index);
 
   return (
     <Layout

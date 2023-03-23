@@ -46,7 +46,9 @@
       ],
       "@sb/webapp-notifications/*": [
         "packages/webapp-libs/webapp-notifications/src/*"
-      ]
+      ],
+      "@sb/webapp-emails": ["packages/webapp-libs/webapp-emails/src/index.ts"],
+      "@sb/webapp-emails/*": ["packages/webapp-libs/webapp-emails/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

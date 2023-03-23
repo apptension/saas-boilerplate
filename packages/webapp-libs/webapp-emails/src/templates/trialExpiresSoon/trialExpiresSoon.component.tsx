@@ -1,7 +1,8 @@
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { FormattedMessage } from 'react-intl';
 
-import { useGenerateAbsoluteLocalePath } from '../../../shared/hooks';
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 
@@ -11,7 +12,7 @@ export type TrialExpiresSoonProps = EmailComponentProps & {
 
 export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(['home']);
+  const url = generateLocalePath(RoutesConfig.home);
 
   return (
     <Layout

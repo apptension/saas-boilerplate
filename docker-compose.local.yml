@@ -37,7 +37,7 @@ services:
 
   workers:
     volumes:
-      - ./packages/webapp/build/email-renderer/:/app/packages/workers/emails/renderer
+      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/packages/workers/emails/renderer
       - ./packages/workers/:/app/packages/workers/
       - /app/packages/workers/node_modules/
       - /app/packages/workers/__pypackages__/

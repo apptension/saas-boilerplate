@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
 import { Button } from '../';
-import { render } from '../../../../tests/utils/rendering';
+import { render } from '../../../tests/utils/rendering';
 
 const linkTo = '/example';
 const testId = 'test-button';

@@ -1,0 +1,27 @@
+{
+  "name": "webapp-emails",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-emails/src",
+  "projectType": "library",
+  "targets": {
+    "vite-build": {
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "default",
+      "options": {
+        "cwd": "packages/webapp-libs/webapp-emails",
+        "color": true,
+        "command": "pnpm run build"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "default",
+      "options": {
+        "cwd": "packages/webapp-libs/webapp-emails",
+        "color": true,
+        "command": "nx run tools:chamber-exec webapp nx run webapp-emails:vite-build"
+      }
+    }
+  },
+  "tags": []
+}

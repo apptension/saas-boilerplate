@@ -1,11 +1,9 @@
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { FormattedMessage } from 'react-intl';
 
-
-
-import { useGenerateAbsoluteLocalePath } from "../../../shared/hooks";
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
-
 
 export type AccountActivationProps = EmailComponentProps & {
   userId: string;
@@ -14,7 +12,7 @@ export type AccountActivationProps = EmailComponentProps & {
 
 export const Template = ({ userId, token }: AccountActivationProps) => {
   const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(['confirmEmail'], {
+  const url = generateLocalePath(RoutesConfig.confirmEmail, {
     token,
     user: userId,
   });

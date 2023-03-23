@@ -1,3 +1,4 @@
+export * from './useGenerateAbsoluteLocalePath';
 export * from './useGenerateLocalePath';
 export * from './useLocales';
 export * from './useLocale';

@@ -14,6 +14,7 @@ definitions:
     pnpmwebappcontentful: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappcruddemo: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappnotifications: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappemails: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -77,7 +78,7 @@ pipelines:
             script:
               - *initializeStep
               - *installWebappDeps
-              - node_modules/.bin/nx run webapp:build:app
+              - node_modules/.bin/nx run webapp:build
             caches:
               - pnpmwebapp
               - clis
@@ -182,6 +183,26 @@ pipelines:
               - clis
               - sonar
         - step:
+            name: 'webapp-emails: Lint & test'
+            image: atlassian/default-image:4
+            size: 2x
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-emails...
+              - node_modules/.bin/nx run webapp-emails:lint
+              - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-emails'
+            caches:
+              - pnpmwebappemails
+              - clis
+              - sonar
+        - step:
             name: 'backend: Build image & run tests'
             image: atlassian/default-image:3
             size: 2x
@@ -241,8 +262,8 @@ pipelines:
                 --include-workspace-root
                 --frozen-lockfile
                 --filter=workers...
-                --filter=webapp...
-              - node_modules/.bin/nx run webapp:build:emails
+                --filter=webapp-emails...
+              - node_modules/.bin/nx run webapp-emails:vite-build
               - node_modules/.bin/nx run workers:build
             services:
               - docker

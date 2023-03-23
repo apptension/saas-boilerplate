@@ -42,37 +42,12 @@
       },
       "dependsOn": ["setup", "graphql:generate-types"]
     },
-    "vite-build-old": {
-      "executor": "nx:run-commands",
-      "defaultConfiguration": "app",
-      "options": {
-        "cwd": "packages/webapp",
-        "color": true
-      },
-      "configurations": {
-        "app": {
-          "command": "pnpm run vite build"
-        },
-        "emails": {
-          "command": "pnpm run vite build -c ./vite.emails.config.ts"
-        }
-      },
-      "dependsOn": ["graphql:generate-types"]
-    },
     "vite-build": {
       "executor": "nx:run-commands",
-      "defaultConfiguration": "app",
       "options": {
         "cwd": "packages/webapp",
-        "color": true
-      },
-      "configurations": {
-        "app": {
-          "command": "pnpm run vite -c vite.config.ts build"
-        },
-        "emails": {
-          "command": "pnpm run vite -c vite.emails.config.ts build"
-        }
+        "color": true,
+        "command": "pnpm run build"
       },
       "dependsOn": ["graphql:generate-types"]
     },
@@ -80,15 +55,8 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",
-        "color": true
-      },
-      "configurations": {
-        "app": {
-          "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:app"
-        },
-        "emails": {
-          "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:emails"
-        }
+        "color": true,
+        "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:app"
       },
       "dependsOn": ["graphql:generate-types"]
     },
