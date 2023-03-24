@@ -37,8 +37,11 @@ export const useLoginForm = () => {
       if (tokenAuth?.otpAuthToken) {
         return navigate(generateLocalePath(RoutesConfig.validateOtp));
       }
+
       reloadCommonQuery();
+
       trackEvent('auth', 'log-in');
+
       navigate(generateLocalePath(RoutesConfig.home));
     },
     onError: (error) => {

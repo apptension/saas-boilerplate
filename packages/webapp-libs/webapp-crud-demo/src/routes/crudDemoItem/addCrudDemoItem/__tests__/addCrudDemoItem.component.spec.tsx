@@ -1,10 +1,13 @@
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { render } from '../../../../tests/utils/rendering';
 import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('AddCrudDemoItem: Component', () => {
   const Component = () => <AddCrudDemoItem />;
@@ -76,6 +79,8 @@ describe('AddCrudDemoItem: Component', () => {
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       const message = await screen.findByTestId('snackbar-message-1');
+
+      expect(trackEvent).toHaveBeenCalledWith('crud', 'add', 1);
       expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });

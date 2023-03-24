@@ -2,8 +2,25 @@ import { event, initialize, set } from 'react-ga';
 
 import { ENV } from '../../config/env';
 
-export type eventType = 'log-in' | 'log-in-oauth' | 'log-out' | 'sign-up';
-export type eventCategory = 'auth';
+type ActionMap = {
+  auth:
+    | 'log-in'
+    | 'log-in-oauth'
+    | 'log-out'
+    | 'sign-up'
+    | 'reset-password'
+    | 'reset-password-confirm'
+    | 'user-email-confirm'
+    | 'otp-disabled'
+    | 'otp-validate'
+    | 'otp-verify'
+    | 'otp-generate';
+  crud: 'add' | 'edit' | 'delete';
+  payment: 'make-payment';
+  subscription: 'change-plan' | 'cancel' | 'add-payment-method' | 'edit-payment-method';
+  profile: 'avatar-update' | 'personal-data-update' | 'password-update' | 'setup-2fa' | 'disable-2fa';
+  document: 'upload' | 'delete';
+};
 
 const isGaInitialized = () => Boolean(ENV.ENVIRONMENT_NAME === 'production' && ENV.GOOGLE_ANALYTICS_TRACKING_ID);
 
@@ -11,7 +28,7 @@ export const initAnalytics = () => {
   if (isGaInitialized()) initialize(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
 };
 
-export const trackEvent = (category: eventCategory, action: eventType, label?: string) => {
+export const trackEvent = <T extends keyof ActionMap>(category: T, action: ActionMap[T], label?: string) => {
   if (isGaInitialized()) event({ category, action, label });
 
   if (ENV.ENVIRONMENT_NAME === 'local') console.log('[Analytics] track event:', category, action, label);

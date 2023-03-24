@@ -2,14 +2,16 @@ import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client';
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../../config/routes';
 import { render } from '../../../../../tests/utils/rendering';
 import { CrudDemoItemListItem } from '../crudDemoItemListItem.component';
+import { crudDemoItemListItemDeleteMutation } from '../crudDemoItemListItem.graphql';
 
 const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   query crudDemoItemListItemTestQuery {
@@ -18,6 +20,8 @@ const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
     }
   }
 `);
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('CrudDemoItemListItem: Component', () => {
   const EditRouteMock = () => {
@@ -86,5 +90,37 @@ describe('CrudDemoItemListItem: Component', () => {
     expect(await screen.findByText(item.name)).toBeInTheDocument();
     await userEvent.click(screen.getByText(/edit/i));
     expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();
+  });
+  it('should delete item', async () => {
+    const item = { id: 'test-id', name: 'demo item name' };
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
+        data: {
+          item: {
+            ...item,
+            __typename: 'CrudDemoItemType',
+          },
+        },
+      }),
+      composeMockedQueryResult(crudDemoItemListItemDeleteMutation, {
+        data: {
+          deleteCrudDemoItem: {
+            deletedIds: [item.id],
+            __typename: 'DeleteCrudDemoItemMutationPayload',
+          },
+        },
+        variables: {
+          input: { id: item.id },
+        },
+      }),
+    ];
+
+    render(<Component />, { apolloMocks });
+    expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByText(/delete/i));
+
+    await waitFor(() => expect(trackEvent).toBeCalledWith('crud', 'delete', item.id));
   });
 });

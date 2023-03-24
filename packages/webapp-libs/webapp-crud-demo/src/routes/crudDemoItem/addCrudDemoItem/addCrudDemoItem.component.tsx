@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { BackButton } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
@@ -60,7 +61,10 @@ export const AddCrudDemoItem = () => {
     onCompleted: (data) => {
       const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
 
+      trackEvent('crud', 'add', id);
+
       showMessage(successMessage);
+
       if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, { id }));
     },
   });

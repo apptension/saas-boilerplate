@@ -1,14 +1,15 @@
 import { Subscription } from '@sb/webapp-api-client/api/subscription/types';
 import { paymentMethodFactory, subscriptionFactory } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { times } from 'ramda';
 
-import { fillAllPaymentsMethodsQuery, fillSubscriptionScheduleQuery } from '../../../../../../tests/factories';
 import { TestProduct } from '../../../../../../modules/stripe/stripe.types';
+import { fillAllPaymentsMethodsQuery, fillSubscriptionScheduleQuery } from '../../../../../../tests/factories';
 import { render } from '../../../../../../tests/utils/rendering';
 import { StripePaymentForm, StripePaymentFormProps } from '../stripePaymentForm.component';
 import { stripeCreatePaymentIntentMutation } from '../stripePaymentForm.graphql';
@@ -21,6 +22,8 @@ jest.mock('../../stripePayment.stripe.hook', () => {
     useStripePayment: () => ({ confirmPayment: mockConfirmPayment }),
   };
 });
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const mutationVariables = {
   input: {
@@ -97,7 +100,6 @@ describe('StripePaymentForm: Component', () => {
       expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).not.toBeDisabled();
       await sendForm();
       expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).toBeDisabled();
-
       expect(requestPaymentMutation.newData).toHaveBeenCalled();
     });
 
@@ -128,6 +130,7 @@ describe('StripePaymentForm: Component', () => {
       });
 
       expect(onSuccess).toHaveBeenCalled();
+      expect(trackEvent).toHaveBeenCalledWith('payment', 'make-payment', 'succeeded');
     });
   });
 

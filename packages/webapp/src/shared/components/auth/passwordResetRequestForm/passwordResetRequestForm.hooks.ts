@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useState } from 'react';
 
 import { authRequestPasswordResetMutation } from './passwordResetRequestForm.graphql';
@@ -13,6 +14,8 @@ export const usePasswordResetRequestForm = (onSubmitted) => {
 
   const [commitRequestPasswordReset, { loading }] = useMutation(authRequestPasswordResetMutation, {
     onCompleted: () => {
+      trackEvent('auth', 'reset-password');
+
       setSubmitted(true);
       onSubmitted?.();
     },

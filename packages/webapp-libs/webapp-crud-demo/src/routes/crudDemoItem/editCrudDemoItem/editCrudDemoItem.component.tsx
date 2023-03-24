@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { BackButton } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useParams } from 'react-router';
@@ -28,7 +29,13 @@ export const EditCrudDemoItem = () => {
 
   const generateLocalePath = useGenerateLocalePath();
   const [commitEditCrudDemoItemMutation, { error, loading: loadingMutation }] = useMutation(editCrudDemoItemMutation, {
-    onCompleted: () => showMessage(successMessage),
+    onCompleted: (data) => {
+      const id = data?.updateCrudDemoItem?.crudDemoItem?.id;
+
+      trackEvent('crud', 'edit', id);
+
+      showMessage(successMessage);
+    },
   });
 
   if (loading)

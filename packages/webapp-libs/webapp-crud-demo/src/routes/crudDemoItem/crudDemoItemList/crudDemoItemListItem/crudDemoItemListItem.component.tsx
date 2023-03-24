@@ -5,6 +5,7 @@ import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -36,6 +37,11 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
           },
         },
       });
+    },
+    onCompleted: (data) => {
+      const ids = data?.deleteCrudDemoItem?.deletedIds;
+
+      trackEvent('crud', 'delete', ids?.join(', '));
     },
   });
 

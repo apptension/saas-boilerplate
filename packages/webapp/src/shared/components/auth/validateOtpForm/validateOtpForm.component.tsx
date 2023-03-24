@@ -4,6 +4,7 @@ import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,6 +34,9 @@ export const ValidateOtpForm = () => {
   const { reload: reloadCommonQuery } = useCommonQuery();
   const [commitValidateOtpMutation] = useMutation(validateOtpMutation, {
     onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
+    onCompleted: () => {
+      trackEvent('auth', 'otp-validate');
+    },
   });
 
   const handleFormSubmit = async (values: { token: string }) => {

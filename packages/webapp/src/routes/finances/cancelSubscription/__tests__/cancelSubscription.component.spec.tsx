@@ -5,6 +5,7 @@ import {
   subscriptionPhaseFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -17,6 +18,8 @@ import { createMockRouterProps, render } from '../../../../tests/utils/rendering
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { CancelSubscription } from '../cancelSubscription.component';
 import { subscriptionCancelMutation } from '../cancelSubscription.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const fillSubscriptionScheduleQueryWithPhases = (phases: any) => {
   return fillSubscriptionScheduleQuery(
@@ -129,6 +132,7 @@ describe('CancelSubscription: Component', () => {
 
       const message = await screen.findByTestId('snackbar-message-1');
       expect(message).toHaveTextContent('You will be moved to free plan with the next billing period');
+      expect(trackEvent).toHaveBeenCalledWith('subscription', 'cancel');
     });
   });
 

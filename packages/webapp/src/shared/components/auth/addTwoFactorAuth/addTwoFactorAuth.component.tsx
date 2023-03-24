@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { ButtonSize, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import * as QRCode from 'qrcode';
 import React, { useEffect, useState } from 'react';
@@ -60,8 +61,17 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   const [commitVerifyOtpMutation] = useMutation(verifyOtpMutation, {
     onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
+    onCompleted: () => {
+      trackEvent('auth', 'otp-verify');
+    },
   });
-  const [commitGenerateOtpMutation] = useMutation(generateOtpMutation, { variables: { input: {} } });
+
+  const [commitGenerateOtpMutation] = useMutation(generateOtpMutation, {
+    variables: { input: {} },
+    onCompleted: () => {
+      trackEvent('auth', 'otp-generate');
+    },
+  });
 
   const submitHandler = async (values: { token: string }) => {
     const { data } = await commitVerifyOtpMutation({ variables: { input: { otpToken: values.token } } });

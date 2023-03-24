@@ -1,4 +1,5 @@
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -9,6 +10,8 @@ import { fillEditCrudDemoItemQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { EditCrudDemoItem } from '../editCrudDemoItem.component';
 import { editCrudDemoItemMutation } from '../editCrudDemoItem.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('EditCrudDemoItem: Component', () => {
   const defaultItemId = 'test-id';
@@ -28,11 +31,16 @@ describe('EditCrudDemoItem: Component', () => {
     updateCrudDemoItem: { crudDemoItem: { id: defaultItemId, name: newName, __typename: 'CrudDemoItemType' } },
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const Component = () => (
     <Routes>
       <Route path={routePath} element={<EditCrudDemoItem />} />
     </Routes>
   );
+
   it('should display prefilled form', async () => {
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
     const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
@@ -92,6 +100,7 @@ describe('EditCrudDemoItem: Component', () => {
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
       const message = await screen.findByTestId('snackbar-message-1');
+      expect(trackEvent).toHaveBeenCalledWith('crud', 'edit', defaultItemId);
       expect(message).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });

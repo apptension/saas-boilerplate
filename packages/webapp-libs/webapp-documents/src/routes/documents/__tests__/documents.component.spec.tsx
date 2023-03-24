@@ -1,11 +1,14 @@
 import { DocumentsDeleteMutationMutation } from '@sb/webapp-api-client/graphql';
 import { documentFactory } from '@sb/webapp-api-client/tests/factories';
-import { fireEvent, screen } from '@testing-library/react';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { times } from 'ramda';
 
 import { fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../tests/factories';
 import { render } from '../../../tests/utils/rendering';
 import { Documents } from '../documents.component';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('Documents: Component', () => {
   const Component = () => <Documents />;
@@ -34,9 +37,12 @@ describe('Documents: Component', () => {
 
     const mockRequest = fillDocumentsListQuery([generatedDoc]);
 
-    render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
+    render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest),
+    });
 
     const file = new File(['content'], `${generatedDoc.file?.name}`, { type: 'image/png' });
+
     fireEvent.change(await screen.findByTestId('file-input'), {
       target: { files: [file] },
     });
@@ -48,6 +54,7 @@ describe('Documents: Component', () => {
   it('should remove new item from the list', async () => {
     const generatedDoc = documentFactory();
     const id = generatedDoc.id as string;
+
     const mutationData: DocumentsDeleteMutationMutation = {
       deleteDocumentDemoItem: {
         deletedIds: [id],
@@ -68,5 +75,6 @@ describe('Documents: Component', () => {
     fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
 
     expect(deleteMutationMock.newData).toHaveBeenCalled();
+    await waitFor(() => expect(trackEvent).toHaveBeenCalledWith('document', 'delete', id));
   });
 });

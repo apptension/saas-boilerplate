@@ -1,11 +1,14 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
 
-import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { ChangePasswordForm } from '../changePasswordForm.component';
 import { authChangePasswordMutation } from '../changePasswordForm.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const formData = {
   oldPassword: 'old-pass',
@@ -57,6 +60,7 @@ describe('ChangePasswordForm: Component', () => {
 
     const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('Password successfully changed.');
+    expect(trackEvent).toHaveBeenCalledWith('profile', 'password-update');
   });
 
   it('should clear form', async () => {

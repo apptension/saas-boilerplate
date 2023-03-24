@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
@@ -17,7 +18,10 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
 
   const [commitPasswordResetConfirm, { loading }] = useMutation(authRequestPasswordResetConfirmMutation, {
     onCompleted: () => {
+      trackEvent('auth', 'reset-password-confirm');
+
       navigate(generateLocalePath(RoutesConfig.login));
+
       snackbar.showMessage(
         intl.formatMessage({
           defaultMessage: '🎉 Password reset successfully!',

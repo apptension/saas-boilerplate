@@ -1,5 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -8,6 +9,8 @@ import { TwoFactorAuthForm, TwoFactorAuthFormProps } from '../twoFactorAuthForm.
 import { disableOtpMutation, generateOtpMutation } from '../twoFactorAuthForm.graphql';
 
 const user = currentUserFactory();
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('TwoFactorAuthForm: Component', () => {
   const defaultProps: TwoFactorAuthFormProps = {};
@@ -45,5 +48,6 @@ describe('TwoFactorAuthForm: Component', () => {
     await userEvent.click(disableButton);
 
     expect(await screen.findByText(/Two-Factor Auth Disabled Successfully!/i)).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-disabled');
   });
 });

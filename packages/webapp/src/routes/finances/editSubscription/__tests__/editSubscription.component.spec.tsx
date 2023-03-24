@@ -1,6 +1,7 @@
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -11,6 +12,8 @@ import { createMockRouterProps, render } from '../../../../tests/utils/rendering
 import { ActiveSubscriptionContext } from '../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditSubscription } from '../editSubscription.component';
 import { subscriptionChangeActiveMutation } from '../editSubscription.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const mockMonthlyPlan = subscriptionPlanFactory({
   id: 'plan_monthly',
@@ -88,6 +91,7 @@ describe('EditSubscription: Component', () => {
       const message = await screen.findByTestId('snackbar-message-1');
       expect(message).toHaveTextContent('Plan changed successfully');
 
+      expect(trackEvent).toHaveBeenCalledWith('subscription', 'change-plan');
       expect(screen.getByText(placeholder)).toBeInTheDocument();
     });
   });

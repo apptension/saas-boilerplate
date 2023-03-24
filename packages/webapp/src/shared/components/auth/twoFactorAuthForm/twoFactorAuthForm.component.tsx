@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Modal } from '@sb/webapp-core/components/modal';
 import { useOpenState } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { H5 } from '@sb/webapp-core/theme/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -32,6 +33,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
     const isDeleted = data?.disableOtp?.ok;
     if (!isDeleted) return;
 
+    trackEvent('auth', 'otp-disabled');
     showMessage(successMessage);
     reload();
   };

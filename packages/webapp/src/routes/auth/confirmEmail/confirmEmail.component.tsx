@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useCallback, useEffect } from 'react';
 import { useIntl } from 'react-intl';
@@ -36,6 +37,8 @@ export const ConfirmEmail = () => {
 
   const [commitConfirmUserEmailMutation] = useMutation(authConfirmUserEmailMutation, {
     onCompleted: () => {
+      trackEvent('auth', 'user-email-confirm');
+
       showMessage(successMessage);
       navigate(generateLocalePath(RoutesConfig.login));
     },

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 
 import {
   documentListItemFragment,
@@ -32,6 +33,9 @@ export const useHandleDrop = () => {
         },
       });
     },
+    onCompleted: (data) => {
+      trackEvent('document', 'upload', data.createDocumentDemoItem?.documentDemoItemEdge?.node?.id);
+    },
   });
 
   return async (files: File[]) => {
@@ -53,6 +57,9 @@ export const useHandleDelete = () => {
       const deletedId = data?.deleteDocumentDemoItem?.deletedIds?.[0];
       const normalizedId = cache.identify({ id: deletedId, __typename: 'DocumentDemoItemType' });
       cache.evict({ id: normalizedId });
+    },
+    onCompleted: (data) => {
+      trackEvent('document', 'delete', data.deleteDocumentDemoItem?.deletedIds?.join(', '));
     },
   });
 

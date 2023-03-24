@@ -1,6 +1,7 @@
 import { MockedResponse } from '@apollo/client/testing';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
@@ -11,6 +12,8 @@ import { Role } from '../../../../modules/auth/auth.types';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { ConfirmEmail } from '../confirmEmail.component';
 import { authConfirmUserEmailMutation } from '../confirmEmail.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('ConfirmEmail: Component', () => {
   const user = 'user_id';
@@ -122,6 +125,7 @@ describe('ConfirmEmail: Component', () => {
 
         const message = await screen.findByTestId('snackbar-message-1');
         expect(message).toHaveTextContent('Congratulations! Your email has been confirmed.');
+        expect(trackEvent).toHaveBeenCalledWith('auth', 'user-email-confirm');
 
         expect(screen.getByText('Login page mock')).toBeInTheDocument();
       });

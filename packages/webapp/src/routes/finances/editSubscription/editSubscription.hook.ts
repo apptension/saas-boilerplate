@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +29,8 @@ export const useEditSubscription = () => {
       showMessage(failMessage);
     },
     onCompleted: () => {
+      trackEvent('subscription', 'change-plan');
+
       showMessage(successMessage);
       navigate(generateLocalePath(RoutesConfig.subscriptions.index));
     },

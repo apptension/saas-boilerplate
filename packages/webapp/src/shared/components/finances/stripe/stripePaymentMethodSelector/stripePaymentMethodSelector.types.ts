@@ -3,8 +3,8 @@ import { StripePaymentMethodFragmentFragment } from '@sb/webapp-api-client/graph
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 
 export enum StripePaymentMethodSelectionType {
-  SAVED_PAYMENT_METHOD,
-  NEW_CARD,
+  SAVED_PAYMENT_METHOD = 'savedPaymentMethod',
+  NEW_CARD = 'newCard',
 }
 
 export type StripeBillingInfoChangeEvent = {

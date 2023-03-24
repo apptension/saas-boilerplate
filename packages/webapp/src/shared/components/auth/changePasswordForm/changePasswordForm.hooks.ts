@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
@@ -39,7 +40,10 @@ export const useChangePasswordForm = () => {
 
   const [commitChangePasswordMutation, { loading }] = useMutation(authChangePasswordMutation, {
     onCompleted: () => {
+      trackEvent('profile', 'password-update');
+
       reset();
+
       snackbar.showMessage(
         intl.formatMessage({
           defaultMessage: 'Password successfully changed.',

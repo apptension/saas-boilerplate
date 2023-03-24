@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
@@ -22,6 +23,8 @@ export const useEditProfileForm = () => {
 
   const [commitUpdateUserMutation, { loading }] = useMutation(authUpdateUserProfileMutation, {
     onCompleted: () => {
+      trackEvent('profile', 'personal-data-update');
+
       snackbar.showMessage(
         intl.formatMessage({
           defaultMessage: 'Personal data successfully changed.',

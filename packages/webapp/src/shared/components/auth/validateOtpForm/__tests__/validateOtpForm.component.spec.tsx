@@ -1,5 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -11,6 +12,9 @@ import { validateOtpMutation } from '../../twoFactorAuthForm/twoFactorAuthForm.g
 import { ValidateOtpForm } from '../validateOtpForm.component';
 
 const mockNavigate = jest.fn();
+
+jest.mock('@sb/webapp-core/services/analytics');
+
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual<NodeModule>('react-router-dom'),
@@ -49,6 +53,7 @@ describe('ValidateOtpForm: Component', () => {
     await waitForApolloMocks();
 
     expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-validate');
   });
 
   it('should display error if token is invalid', async () => {

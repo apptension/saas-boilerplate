@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useState } from 'react';
 
 import { TestProduct } from '../../../../modules/stripe/stripe.types';
@@ -147,6 +148,9 @@ export const useStripePaymentIntent = (onSuccess: UseStripePaymentIntentProps) =
     const result = await confirmPayment(confirmPayload);
     if (!result) return;
     if (result.error) return setGenericError(result.error.message);
+
+    trackEvent('payment', 'make-payment', result.paymentIntent.status);
+
     if (result.paymentIntent?.status === 'succeeded') onSuccess(responsePaymentIntent);
   };
 

@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 
@@ -42,7 +43,10 @@ export const useAvatarForm = () => {
 
   const [commitAvatarMutation] = useMutation(authUpdateUserProfileMutation, {
     onCompleted: () => {
+      trackEvent('profile', 'avatar-update');
+
       reset();
+
       snackbar.showMessage(
         intl.formatMessage({
           defaultMessage: 'Avatar successfully changed.',

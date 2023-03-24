@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +23,9 @@ export const useCancelSubscription = () => {
   const [commitCancelActiveSubscriptionMutation] = useMutation(subscriptionCancelMutation, {
     onCompleted: () => {
       showMessage(successMessage);
+
+      trackEvent('subscription', 'cancel');
+
       navigate(generateLocalePath(RoutesConfig.subscriptions.index));
     },
     onError: (error) => reportError(error),

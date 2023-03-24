@@ -17,7 +17,7 @@ export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) 
 
   const userId = (data?.currentUser as CurrentUserType)?.id;
 
-  if (userId) setUserId(userId);
+  setUserId(userId ?? null);
 
   if (loading || !data) {
     return null;

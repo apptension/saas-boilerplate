@@ -1,12 +1,15 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
 
-import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetConfirmForm, PasswordResetConfirmFormProps } from '../passwordResetConfirmForm.component';
 import { authRequestPasswordResetConfirmMutation } from '../passwordResetConfirmForm.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('PasswordResetConfirmForm: Component', () => {
   const defaultProps: PasswordResetConfirmFormProps = {
@@ -57,6 +60,7 @@ describe('PasswordResetConfirmForm: Component', () => {
 
     const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('🎉 Password reset successfully!');
+    expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password-confirm');
   });
 
   it('should show error if required value is missing', async () => {

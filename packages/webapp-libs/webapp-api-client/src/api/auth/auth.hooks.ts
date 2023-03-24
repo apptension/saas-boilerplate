@@ -1,4 +1,5 @@
 import { useLocales } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useCallback } from 'react';
 
 import { apiURL } from '../helpers';
@@ -14,7 +15,8 @@ export const useOAuthLogin = () => {
 
   return useCallback(
     (provider: OAuthProvider) => {
-      window.location.href = getOauthUrl(provider, language);
+      trackEvent('auth', 'log-in-oauth', provider);
+      window.location.href = getOauthUrl(provider, language ?? undefined);
     },
     [language]
   );

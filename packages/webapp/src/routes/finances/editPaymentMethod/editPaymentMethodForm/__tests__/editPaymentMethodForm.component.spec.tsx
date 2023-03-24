@@ -14,12 +14,14 @@ import { append, times } from 'ramda';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { fillSubscriptionScheduleQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
 import { stripeUpdateDefaultPaymentMethodMutation } from '../../../../../shared/components/finances/stripe/stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
+import { fillSubscriptionScheduleQuery, fillSubscriptionScheduleQueryWithPhases } from '../../../../../tests/factories';
 import { render } from '../../../../../tests/utils/rendering';
 import { ActiveSubscriptionContext } from '../../../activeSubscriptionContext/activeSubscriptionContext.component';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from '../editPaymentMethodForm.component';
 import { stripeCreateSetupIntentMutation } from '../editPaymentMethodForm.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 jest.mock('@stripe/react-stripe-js', () => ({
   ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),

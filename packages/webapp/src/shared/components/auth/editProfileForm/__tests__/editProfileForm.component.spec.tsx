@@ -1,4 +1,5 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
@@ -7,6 +8,8 @@ import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { EditProfileForm } from '../editProfileForm.component';
 import { authUpdateUserProfileMutation } from '../editProfileForm.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const formData = {
   firstName: 'updated-first-name',
@@ -46,7 +49,9 @@ const renderComponent = (error?: GraphQLError[]) => {
     email: 'jack.white@mail.com',
     roles: [Role.ADMIN, Role.USER],
   });
+
   const apolloMocks = [fillCommonQueryWithUser(currentUser), requestMock(error)];
+
   return {
     ...render(<EditProfileForm />, { apolloMocks }),
     updatedUser: {
@@ -79,6 +84,7 @@ describe('EditProfileForm: Component', () => {
 
     const message = await screen.findByTestId('snackbar-message-1');
     expect(message).toHaveTextContent('Personal data successfully changed.');
+    expect(trackEvent).toHaveBeenCalledWith('profile', 'personal-data-update');
   });
 
   it('should display updated values', async () => {

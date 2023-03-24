@@ -1,5 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
@@ -9,6 +10,8 @@ import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { authSingupMutation } from '../signUpForm.graphql';
 import { SignupForm } from '../signupForm.component';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -66,6 +69,7 @@ describe('SignupForm: Component', () => {
     await waitForApolloMocks();
 
     expect(await mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(trackEvent).toHaveBeenCalledWith('auth', 'sign-up');
   });
 
   it('should show error if password value is missing', async () => {

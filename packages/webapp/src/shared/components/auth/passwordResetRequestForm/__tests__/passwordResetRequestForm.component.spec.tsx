@@ -1,12 +1,15 @@
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
 
-import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { PasswordResetRequestForm } from '../passwordResetRequestForm.component';
 import { authRequestPasswordResetMutation } from '../passwordResetRequestForm.graphql';
+
+jest.mock('@sb/webapp-core/services/analytics');
 
 describe('PasswordResetRequestForm: Component', () => {
   const Component = () => <PasswordResetRequestForm />;
@@ -43,6 +46,8 @@ describe('PasswordResetRequestForm: Component', () => {
     await waitFor(() => {
       expect(screen.getByText(/send the link again/i)).toBeInTheDocument();
     });
+
+    expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password');
   });
 
   it('should show error if required value is missing', async () => {

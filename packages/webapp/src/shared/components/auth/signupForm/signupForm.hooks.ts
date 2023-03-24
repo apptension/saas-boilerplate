@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,6 +40,8 @@ export const useSignupForm = () => {
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
   const [commitSignupMutation, { loading }] = useMutation(authSingupMutation, {
     onCompleted: () => {
+      trackEvent('auth', 'sign-up');
+
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.home));
     },
