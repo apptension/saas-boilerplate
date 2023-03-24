@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillDocumentsListQuery } from '../../tests/factories';
-import { withProviders } from '../../shared/utils/storybook';
+import { withProviders } from '../../utils/storybook';
 import { Documents } from './documents.component';
 
 const Template: Story = () => {

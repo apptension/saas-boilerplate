@@ -2,7 +2,7 @@ import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { withProviders } from '../../../shared/utils/storybook';
+import { withProviders } from '../../../utils/storybook';
 import { Document, DocumentProps } from './document.component';
 
 const Container = styled.div`

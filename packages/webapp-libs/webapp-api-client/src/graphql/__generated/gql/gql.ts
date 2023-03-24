@@ -32,6 +32,10 @@ const documents = {
     "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
     "\n  query editCrudDemoItemQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
     "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
+    "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
+    "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
+    "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListCreateMutationDocument,
+    "\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.DocumentsDeleteMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  subscription notificationsListSubscription {\n    notificationCreated {\n      edges {\n        node {\n          id\n          type\n          createdAt\n          readAt\n          data\n        }\n      }\n    }\n  }\n": types.NotificationsListSubscriptionDocument,
@@ -39,10 +43,6 @@ const documents = {
     "\n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          data\n          createdAt\n          readAt\n          type\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.NotificationsListContentFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
-    "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
-    "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListQueryDocument,
-    "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n": types.DocumentsListCreateMutationDocument,
-    "\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.DocumentsDeleteMutationDocument,
     "\n  mutation subscriptionCancelActiveSubscriptionMutation($input: CancelActiveSubscriptionMutationInput!) {\n    cancelActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n": types.SubscriptionCancelActiveSubscriptionMutationDocument,
     "\n  mutation stripeCreateSetupIntentMutation_($input: CreateSetupIntentMutationInput!) {\n    createSetupIntent(input: $input) {\n      setupIntent {\n        id\n        ...stripeSetupIntentFragment\n      }\n    }\n  }\n\n  fragment stripeSetupIntentFragment on StripeSetupIntentType {\n    id\n    clientSecret\n  }\n": types.StripeCreateSetupIntentMutation_Document,
     "\n  mutation subscriptionChangeActiveSubscriptionMutation($input: ChangeActiveSubscriptionMutationInput!) {\n    changeActiveSubscription(input: $input) {\n      subscriptionSchedule {\n        ...subscriptionActiveSubscriptionFragment\n        id\n      }\n    }\n  }\n": types.SubscriptionChangeActiveSubscriptionMutationDocument,
@@ -166,6 +166,22 @@ export function gql(source: "\n  mutation editCrudDemoItemContentMutation($input
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"): (typeof documents)["\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -191,22 +207,6 @@ export function gql(source: "\n  mutation notificationsListMarkAsReadMutation($i
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"): (typeof documents)["\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query documentsListQuery {\n    allDocumentDemoItems(first: 10) {\n      edges {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation documentsListCreateMutation($input: CreateDocumentDemoItemMutationInput!) {\n    createDocumentDemoItem(input: $input) {\n      documentDemoItemEdge {\n        node {\n          id\n          ...documentListItem\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation documentsDeleteMutation($input: DeleteDocumentDemoItemMutationInput!) {\n    deleteDocumentDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import styled from 'styled-components';
 
-import { withProviders } from '../../../../shared/utils/storybook';
+import { withProviders } from '../../../../utils/storybook';
 import { Skeleton } from './skeleton.component';
 
 const Container = styled.div`

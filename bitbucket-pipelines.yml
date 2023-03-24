@@ -13,6 +13,7 @@ definitions:
     pnpmwebappapiclient: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappcontentful: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappcruddemo: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappdocuments: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappnotifications: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappemails: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -160,6 +161,26 @@ pipelines:
                   EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-crud-demo'
             caches:
               - pnpmwebappcruddemo
+              - clis
+              - sonar
+        - step:
+            name: 'webapp-documents: Lint & test'
+            image: atlassian/default-image:4
+            size: 2x
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-documents...
+              - node_modules/.bin/nx run webapp-documents:lint
+              - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-documents'
+            caches:
+              - pnpmwebappdocuments
               - clis
               - sonar
         - step:

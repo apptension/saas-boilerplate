@@ -41,6 +41,10 @@
         "packages/webapp-libs/webapp-crud-demo/src/index.ts"
       ],
       "@sb/webapp-crud-demo/*": ["packages/webapp-libs/webapp-crud-demo/src/*"],
+      "@sb/webapp-documents": [
+        "packages/webapp-libs/webapp-documents/src/routes/index.ts"
+      ],
+      "@sb/webapp-documents/*": ["packages/webapp-libs/webapp-documents/src/*"],
       "@sb/webapp-notifications": [
         "packages/webapp-libs/webapp-notifications/src/index.ts"
       ],

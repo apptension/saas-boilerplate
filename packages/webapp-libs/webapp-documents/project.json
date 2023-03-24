@@ -1,0 +1,21 @@
+{
+  "name": "webapp-documents",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-documents/src",
+  "projectType": "library",
+  "targets": {
+    "graphql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp-libs/webapp-documents",
+        "color": true
+      },
+      "configurations": {
+        "download-schema": {
+          "commands": ["/bin/sh ./scripts/download-graphql-schema.sh"]
+        }
+      }
+    }
+  },
+  "tags": []
+}

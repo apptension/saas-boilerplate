@@ -80,6 +80,7 @@
     "@sb/webapp-api-client": "*",
     "@sb/webapp-contentful": "*",
     "@sb/webapp-crud-demo": "*",
+    "@sb/webapp-documents": "*",
     "@sb/webapp-notifications": "*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-backgrounds": "^6.5.16",

@@ -2,6 +2,7 @@ import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/weba
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { typography } from '@sb/webapp-core/theme';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
+import { Documents } from '@sb/webapp-documents/routes';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
@@ -14,7 +15,6 @@ import { AuthRoute } from '../shared/components/routes/authRoute';
 import {
   CancelSubscription,
   ConfirmEmail,
-  Documents,
   EditPaymentMethod,
   EditSubscription,
   FinancesPaymentConfirm,
