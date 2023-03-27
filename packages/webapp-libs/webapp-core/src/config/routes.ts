@@ -13,11 +13,4 @@ export const RoutesConfig = {
   passwordReset: nestedPath('auth/reset-password', {
     confirm: 'confirm/:user/:token',
   }),
-  // todo: move this to finances module
-  subscriptions: nestedPath('subscriptions', {
-    changePlan: 'edit',
-    paymentMethod: 'payment-method',
-    cancel: 'cancel',
-    list: '',
-  }),
 };

@@ -3,30 +3,24 @@ import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n
 import { typography } from '@sb/webapp-core/theme';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
 import { Documents } from '@sb/webapp-documents/routes';
+import { ActiveSubscriptionContext } from '@sb/webapp-finances/components/activeSubscriptionContext';
+import {
+  CancelSubscription,
+  EditPaymentMethod,
+  EditSubscription,
+  PaymentConfirm,
+  Subscriptions,
+  TransactionHistory,
+} from '@sb/webapp-finances/routes';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { Role } from '../modules/auth/auth.types';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import ValidateOtp from '../routes/auth/validateOtp';
-import { ActiveSubscriptionContext } from '../routes/finances/activeSubscriptionContext/activeSubscriptionContext.component';
 import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
 import { AuthRoute } from '../shared/components/routes/authRoute';
-import {
-  CancelSubscription,
-  ConfirmEmail,
-  EditPaymentMethod,
-  EditSubscription,
-  FinancesPaymentConfirm,
-  Home,
-  Login,
-  Logout,
-  NotFound,
-  Profile,
-  Signup,
-  Subscriptions,
-  TransactionHistory, //<-- IMPORT ROUTE COMPONENT -->
-} from './asyncComponents';
+import { ConfirmEmail, Home, Login, Logout, NotFound, Profile, Signup } from './asyncComponents';
 import { LANG_PREFIX, RoutesConfig } from './config/routes';
 import { ValidRoutesProviders } from './providers';
 
@@ -57,7 +51,7 @@ export const App = () => {
             <Route path={RoutesConfig.subscriptions.paymentMethod} element={<EditPaymentMethod />} />
             <Route path={RoutesConfig.subscriptions.cancel} element={<CancelSubscription />} />
           </Route>
-          <Route path={RoutesConfig.finances.paymentConfirm} element={<FinancesPaymentConfirm />} />
+          <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
           <Route path={RoutesConfig.finances.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path="*" element={<NotFound />} />

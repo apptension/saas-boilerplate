@@ -16,6 +16,7 @@ definitions:
     pnpmwebappdocuments: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappnotifications: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappemails: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebappfinances: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -221,6 +222,26 @@ pipelines:
                   EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-emails'
             caches:
               - pnpmwebappemails
+              - clis
+              - sonar
+        - step:
+            name: 'webapp-finances: Lint & test'
+            image: atlassian/default-image:4
+            size: 2x
+            script:
+              - *initializeStep
+              - pnpm install
+                --include-workspace-root
+                --frozen-lockfile
+                --filter=webapp-finances...
+              - node_modules/.bin/nx run webapp-finances:lint
+              - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
+              - pipe: sonarsource/sonarcloud-scan:1.4.0
+                variables:
+                  SONAR_TOKEN: ${SONAR_TOKEN}
+                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-finances'
+            caches:
+              - pnpmwebappfinances
               - clis
               - sonar
         - step:

@@ -2,13 +2,13 @@ import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { useCallback, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { useAuth } from '../../../shared/hooks';
-import { reportError } from '../../../shared/utils/reportError';
 import { authConfirmUserEmailMutation } from './confirmEmail.graphql';
 
 export const ConfirmEmail = () => {

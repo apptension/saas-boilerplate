@@ -1,20 +1,18 @@
 import { RoutesConfig as ContentfulRoutesConfig } from '@sb/webapp-contentful/config/routes';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
-import { getLocalePath, nestedPath } from '@sb/webapp-core/utils/path';
+import { getLocalePath } from '@sb/webapp-core/utils/path';
 import { RoutesConfig as CrudDemoRoutesConfig } from '@sb/webapp-crud-demo/config/routes';
+import { RoutesConfig as FinancesRoutesConfig } from '@sb/webapp-finances/config/routes';
 import { Path, path } from 'ramda';
 
 export const LANG_PREFIX = `/:lang?/*`;
 
 const routes = {
   ...CoreRoutesConfig,
-  finances: nestedPath('finances', {
-    paymentConfirm: 'payment-confirm',
-    history: 'history',
-  }),
   documents: 'documents',
   ...ContentfulRoutesConfig,
   ...CrudDemoRoutesConfig,
+  ...FinancesRoutesConfig,
   //<-- INJECT ROUTE DEFINITION -->
 };
 

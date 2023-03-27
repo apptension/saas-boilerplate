@@ -418,6 +418,7 @@ importers:
       '@sb/webapp-core': '*'
       '@sb/webapp-crud-demo': '*'
       '@sb/webapp-documents': '*'
+      '@sb/webapp-finances': '*'
       '@sb/webapp-notifications': '*'
       '@sentry/react': ^7.17.4
       '@storybook/addon-actions': ^6.5.16
@@ -430,8 +431,6 @@ importers:
       '@storybook/client-api': ^6.5.16
       '@storybook/client-logger': ^6.5.16
       '@storybook/react': ^6.5.16
-      '@stripe/react-stripe-js': ^1.14.2
-      '@stripe/stripe-js': ^1.42.1
       '@supercharge/strings': ^2.0.0
       '@testing-library/dom': ^8.19.0
       '@testing-library/jest-dom': ^5.16.5
@@ -541,8 +540,6 @@ importers:
       '@nrwl/js': 15.6.3
       '@nrwl/react': 15.6.3
       '@sentry/react': 7.31.1_react@18.2.0
-      '@stripe/react-stripe-js': 1.16.4_keartrz7uyerl3wkpjpue4xbhy
-      '@stripe/stripe-js': 1.46.0
       axios: 0.27.2
       color: 4.2.3
       core-js: 3.27.2
@@ -594,6 +591,7 @@ importers:
       '@sb/webapp-core': link:../webapp-libs/webapp-core
       '@sb/webapp-crud-demo': link:../webapp-libs/webapp-crud-demo
       '@sb/webapp-documents': link:../webapp-libs/webapp-documents
+      '@sb/webapp-finances': link:../webapp-libs/webapp-finances
       '@sb/webapp-notifications': link:../webapp-libs/webapp-notifications
       '@storybook/addon-actions': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/addon-backgrounds': 6.5.16_biqbaboplfbrettd7655fr4n2y
@@ -887,6 +885,7 @@ importers:
       '@nrwl/jest': ^15.6.3
       '@nrwl/js': ^15.6.3
       '@nrwl/react': ^15.6.3
+      '@sentry/react': ^7.17.4
       '@storybook/addon-actions': ^6.5.16
       '@storybook/addon-backgrounds': ^6.5.16
       '@storybook/addon-docs': ^6.5.16
@@ -960,6 +959,7 @@ importers:
       '@nrwl/jest': 15.6.3
       '@nrwl/js': 15.6.3
       '@nrwl/react': 15.6.3
+      '@sentry/react': 7.31.1_react@18.2.0
       '@storybook/addon-actions': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/addon-backgrounds': 6.5.16_biqbaboplfbrettd7655fr4n2y
       '@storybook/addon-docs': 6.5.16_biqbaboplfbrettd7655fr4n2y
@@ -1198,17 +1198,17 @@ importers:
       '@testing-library/dom': 8.20.0
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
-      '@testing-library/react-hooks': 8.0.1_5ndqzdd6t4rivxsukjv3i3ak2q
+      '@testing-library/react-hooks': 8.0.1_2zx2umvpluuhvlq44va5bta2da
       '@testing-library/user-event': 14.4.3_yxlyej73nftwmh2fiao7paxmlm
       '@types/jest': 28.1.3
       '@types/ramda': 0.28.23
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       '@types/styled-components': 5.1.26
       '@types/testing-library__jest-dom': 5.14.5
       babel-jest: 28.1.3
       eslint-plugin-formatjs: 4.3.9_ts-jest@28.0.5
-      eslint-plugin-jsx-a11y: 6.7.1
-      eslint-plugin-react: 7.32.1
+      eslint-plugin-jsx-a11y: 6.6.1
+      eslint-plugin-react: 7.31.11
       eslint-plugin-react-hooks: 4.6.0
       eslint-plugin-testing-library: 5.9.1
       jest: 28.1.3
@@ -1219,7 +1219,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-intl: 6.2.5_react@18.2.0
-      react-markdown: 8.0.5_3stiutgnnbnfnf3uowm5cip22i
+      react-markdown: 8.0.5_fan5qbzahqtxlm5dzefqlqx5ia
       react-router: 6.7.0_react@18.2.0
       react-router-dom: 6.7.0_biqbaboplfbrettd7655fr4n2y
       styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
@@ -1265,6 +1265,119 @@ importers:
       vite-plugin-eslint: 1.8.1_vite@4.1.1
       vite-plugin-svgr: 2.4.0_vite@4.1.1
       vite-tsconfig-paths: 4.0.5
+
+  packages/webapp-libs/webapp-finances:
+    specifiers:
+      '@apollo/client': ^3.7.9
+      '@apollo/rover': ^0.12.2
+      '@graphql-codegen/cli': ^2.13.11
+      '@iconify-icons/ion': ^1.2.4
+      '@iconify/react': ^4.0.0
+      '@nrwl/jest': ^15.8.6
+      '@nrwl/react': ^15.8.6
+      '@sb/webapp-api-client': '*'
+      '@sb/webapp-core': '*'
+      '@sb/webapp-notifications': '*'
+      '@storybook/addon-actions': ^6.5.16
+      '@storybook/addon-backgrounds': ^6.5.16
+      '@storybook/addon-docs': ^6.5.16
+      '@storybook/addon-essentials': ^6.5.16
+      '@storybook/addon-measure': ^6.5.16
+      '@storybook/addon-outline': ^6.5.16
+      '@storybook/builder-vite': ^0.4.0
+      '@storybook/client-api': ^6.5.16
+      '@storybook/client-logger': ^6.5.16
+      '@storybook/react': ^6.5.16
+      '@stripe/react-stripe-js': ^1.14.2
+      '@stripe/stripe-js': ^1.42.1
+      '@testing-library/dom': ^8.19.0
+      '@testing-library/jest-dom': ^5.16.5
+      '@testing-library/react': ^13.4.0
+      '@testing-library/react-hooks': ^8.0.1
+      '@testing-library/user-event': ^14.4.3
+      '@types/jest': 28.1.3
+      '@types/ramda': ^0.28.23
+      '@types/react': ^18.0.24
+      '@types/styled-components': ^5.1.26
+      '@types/testing-library__jest-dom': ^5.14.5
+      babel-jest: 28.1.3
+      eslint-plugin-formatjs: ^4.3.4
+      eslint-plugin-jsx-a11y: ^6.4.1
+      eslint-plugin-react: ^7.21.5
+      eslint-plugin-react-hooks: ^4.0.0
+      eslint-plugin-testing-library: ^5.9.1
+      graphql: ^16.6.0
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
+      jest-matcher-utils: ^29.4.2
+      jest-watch-typeahead: ^2.2.2
+      ramda: ^0.28.0
+      react: 18.2.0
+      react-click-away-listener: ^2.2.2
+      react-dom: 18.2.0
+      react-hook-form: ^7.34.0
+      react-intl: ^6.2.1
+      react-markdown: ^8.0.3
+      react-router: ^6.7.0
+      react-router-dom: ^6.7.0
+      styled-components: 5.3.6
+      ts-jest: 28.0.5
+    dependencies:
+      '@sb/webapp-api-client': link:../webapp-api-client
+      '@sb/webapp-core': link:../webapp-core
+      '@sb/webapp-notifications': link:../webapp-notifications
+      '@stripe/react-stripe-js': 1.16.4_keartrz7uyerl3wkpjpue4xbhy
+      '@stripe/stripe-js': 1.46.0
+      graphql: 16.6.0
+      react-click-away-listener: 2.2.2_biqbaboplfbrettd7655fr4n2y
+    devDependencies:
+      '@apollo/client': 3.7.9_gdcq4dv6opitr3wbfwyjmanyra
+      '@apollo/rover': 0.12.2
+      '@graphql-codegen/cli': 2.16.4_graphql@16.6.0
+      '@iconify-icons/ion': 1.2.7
+      '@iconify/react': 4.0.1_react@18.2.0
+      '@nrwl/jest': 15.8.6
+      '@nrwl/react': 15.8.6
+      '@storybook/addon-actions': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/addon-backgrounds': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/addon-docs': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/addon-essentials': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/addon-measure': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/addon-outline': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/builder-vite': 0.4.0_biqbaboplfbrettd7655fr4n2y
+      '@storybook/client-api': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@storybook/client-logger': 6.5.16
+      '@storybook/react': 6.5.16_biqbaboplfbrettd7655fr4n2y
+      '@testing-library/dom': 8.20.0
+      '@testing-library/jest-dom': 5.16.5
+      '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+      '@testing-library/react-hooks': 8.0.1_2zx2umvpluuhvlq44va5bta2da
+      '@testing-library/user-event': 14.4.3_yxlyej73nftwmh2fiao7paxmlm
+      '@types/jest': 28.1.3
+      '@types/ramda': 0.28.23
+      '@types/react': 18.0.25
+      '@types/styled-components': 5.1.26
+      '@types/testing-library__jest-dom': 5.14.5
+      babel-jest: 28.1.3
+      eslint-plugin-formatjs: 4.3.9_ts-jest@28.0.5
+      eslint-plugin-jsx-a11y: 6.6.1
+      eslint-plugin-react: 7.31.11
+      eslint-plugin-react-hooks: 4.6.0
+      eslint-plugin-testing-library: 5.9.1
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
+      jest-matcher-utils: 29.4.2
+      jest-watch-typeahead: 2.2.2_jest@28.1.3
+      ramda: 0.28.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.42.1_react@18.2.0
+      react-intl: 6.2.5_react@18.2.0
+      react-markdown: 8.0.5_fan5qbzahqtxlm5dzefqlqx5ia
+      react-router: 6.7.0_react@18.2.0
+      react-router-dom: 6.7.0_biqbaboplfbrettd7655fr4n2y
+      styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
+      ts-jest: 28.0.5_gcleckb5zcuhbbyyhlubvkkx2y
 
   packages/webapp-libs/webapp-notifications:
     specifiers:
@@ -6296,7 +6409,7 @@ packages:
       '@docusaurus/plugin-content-pages': 2.2.0_wcqkhtmu7mswc6yz4uyexck3ty
       '@docusaurus/utils': 2.2.0_@docusaurus+types@2.2.0
       '@types/history': 4.7.11
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       '@types/react-router-config': 5.0.6
       clsx: 1.2.1
       parse-numeric-range: 1.3.0
@@ -6385,7 +6498,7 @@ packages:
       react-dom: ^16.8.4 || ^17.0.0
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       commander: 5.1.0
       joi: 17.7.0
       react: 16.14.0
@@ -6910,7 +7023,7 @@ packages:
       json-stable-stringify: 1.0.2
       ts-jest: 28.0.5_gcleckb5zcuhbbyyhlubvkkx2y
       tslib: 2.5.0
-      typescript: 4.9.4
+      typescript: 4.8.4
     dev: true
 
   /@gar/promisify/1.1.3:
@@ -9019,7 +9132,7 @@ packages:
       '@jest/transform': 28.1.3
       '@jest/types': 28.1.3
       '@jridgewell/trace-mapping': 0.3.17
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -11296,7 +11409,6 @@ packages:
       '@sentry/types': 7.31.1
       '@sentry/utils': 7.31.1
       tslib: 1.14.1
-    dev: false
 
   /@sentry/core/7.31.1:
     resolution: {integrity: sha512-quaNU6z8jabmatBTDi28Wpff2yzfWIp/IU4bbi2QOtEiCNT+TQJXqlRTRMu9xLrX7YzyKCL5X2gbit/85lyWUg==}
@@ -11305,7 +11417,6 @@ packages:
       '@sentry/types': 7.31.1
       '@sentry/utils': 7.31.1
       tslib: 1.14.1
-    dev: false
 
   /@sentry/react/7.31.1_react@18.2.0:
     resolution: {integrity: sha512-h65vrF7xVFV+JAvgUJQSqfY4EPU+E4Y39nwjQdnMvdrhb3gjlhOUQTBVGibuM0/bvwm7vBgjfVSBOezavfp6eA==}
@@ -11319,7 +11430,6 @@ packages:
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       tslib: 1.14.1
-    dev: false
 
   /@sentry/replay/7.31.1:
     resolution: {integrity: sha512-sLArvwZn6IwA/bASctyhxN7LhdCXJvMmyTynRfmk7pzuNzBMc5CNlHeIsDpHrfQuH53IKicvl6cHnHyclu5DSA==}
@@ -11328,12 +11438,10 @@ packages:
       '@sentry/core': 7.31.1
       '@sentry/types': 7.31.1
       '@sentry/utils': 7.31.1
-    dev: false
 
   /@sentry/types/7.31.1:
     resolution: {integrity: sha512-1uzr2l0AxEnxUX/S0EdmXUQ15/kDsam8Nbdw4Gai8SU764XwQgA/TTjoewVP597CDI/AHKan67Y630/Ylmkx9w==}
     engines: {node: '>=8'}
-    dev: false
 
   /@sentry/utils/7.31.1:
     resolution: {integrity: sha512-ZsIPq29aNdP9q3R7qIzJhZ9WW+4DzE9g5SfGwx3UjTIxoRRBfdUJUbf7S+LKEdvCkKbyoDt6FLt5MiSJV43xBA==}
@@ -11341,7 +11449,6 @@ packages:
     dependencies:
       '@sentry/types': 7.31.1
       tslib: 1.14.1
-    dev: false
 
   /@serverless/dashboard-plugin/6.2.2_supports-color@8.1.1:
     resolution: {integrity: sha512-h3zOprpuWZCdAP7qoOKT2nboB+AaxMkGoSzOD0jIBpt9s0cXqLE2VFjR2vKn8Cvam47Qa3XYnT2/XN6tR6rZgQ==}
@@ -14021,7 +14128,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.13
       '@testing-library/dom': 8.20.0
-      '@types/react-dom': 18.0.10
+      '@types/react-dom': 18.0.9
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: true
@@ -14035,7 +14142,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.13
       '@testing-library/dom': 8.20.0
-      '@types/react-dom': 18.0.10
+      '@types/react-dom': 18.0.9
       react: 18.2.0
     dev: true
 
@@ -14307,7 +14414,7 @@ packages:
   /@types/hoist-non-react-statics/3.3.1:
     resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
     dependencies:
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       hoist-non-react-statics: 3.3.2
 
   /@types/html-minifier-terser/5.1.2:
@@ -14594,7 +14701,7 @@ packages:
   /@types/react-dom/18.0.10:
     resolution: {integrity: sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==}
     dependencies:
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
     dev: true
 
   /@types/react-dom/18.0.9:
@@ -14729,7 +14836,7 @@ packages:
     resolution: {integrity: sha512-KuKJ9Z6xb93uJiIyxo/+ksS7yLjS1KzG6iv5i78dhVg/X3u5t1H7juRWqVmodIdz6wGVaIApo1u01kmFRdJHVw==}
     dependencies:
       '@types/hoist-non-react-statics': 3.3.1
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       csstype: 3.1.1
     dev: true
 
@@ -14972,27 +15079,6 @@ packages:
       semver: 7.3.8
       tsutils: 3.21.0_typescript@4.8.4
       typescript: 4.8.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@typescript-eslint/typescript-estree/5.51.0_typescript@4.9.4:
-    resolution: {integrity: sha512-TSkNupHvNRkoH9FMA3w7TazVFcBPveAAmb7Sz+kArY6sLT86PA5Vx80cKlYmd8m3Ha2SwofM1KwraF24lM9FvA==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@typescript-eslint/types': 5.51.0
-      '@typescript-eslint/visitor-keys': 5.51.0
-      debug: 4.3.4
-      globby: 11.1.0
-      is-glob: 4.0.3
-      semver: 7.3.8
-      tsutils: 3.21.0_typescript@4.9.4
-      typescript: 4.9.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20977,11 +21063,11 @@ packages:
       '@formatjs/ts-transformer': 3.11.5_ts-jest@28.0.5
       '@types/eslint': 8.4.10
       '@types/picomatch': 2.3.0
-      '@typescript-eslint/typescript-estree': 5.51.0_typescript@4.9.4
+      '@typescript-eslint/typescript-estree': 5.51.0_typescript@4.8.4
       emoji-regex: 10.2.1
       picomatch: 2.3.1
       tslib: 2.5.0
-      typescript: 4.9.4
+      typescript: 4.8.4
     transitivePeerDependencies:
       - supports-color
       - ts-jest
@@ -25877,7 +25963,7 @@ packages:
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
       '@types/jsdom': 16.2.15
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       jest-mock: 28.1.3
       jest-util: 28.1.3
       jsdom: 19.0.0
@@ -26227,7 +26313,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.19
+      '@types/node': 16.11.7
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -35136,7 +35222,6 @@ packages:
 
   /trim/0.0.1:
     resolution: {integrity: sha512-YzQV+TZg4AxpKxaTHK3c3D+kRDCGVEE7LemdlQZoQXn0iennk10RsIoY6ikzAqJTc9Xjl9C1/waHom/J86ziAQ==}
-    deprecated: Use String.prototype.trim() instead
 
   /trough/1.0.5:
     resolution: {integrity: sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==}
@@ -35434,16 +35519,6 @@ packages:
       typescript: 4.8.4
     dev: true
 
-  /tsutils/3.21.0_typescript@4.9.4:
-    resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
-    engines: {node: '>= 6'}
-    peerDependencies:
-      typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
-    dependencies:
-      tslib: 1.14.1
-      typescript: 4.9.4
-    dev: true
-
   /tty-browserify/0.0.0:
     resolution: {integrity: sha512-JVa5ijo+j/sOoHGjw0sxw734b1LhBkQ3bvUGNdxnVXDCX81Yx7TFgnZygxrIIWn23hbfTaMYLwRmAxFyDuFmIw==}
     dev: true
@@ -35565,6 +35640,7 @@ packages:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: false
 
   /ua-parser-js/0.7.33:
     resolution: {integrity: sha512-s8ax/CeZdK9R/56Sui0WM6y9OFREJarMRHqLB2EwkovemBxNQ+Bqu8GAsUnVcXKgphb++ghr/B2BZx4mahujPw==}
