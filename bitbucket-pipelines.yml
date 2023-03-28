@@ -65,6 +65,7 @@ pipelines:
               - *initializeStep
               - *installWebappDeps
               - node_modules/.bin/nx run webapp:lint
+              - node_modules/.bin/nx run webapp:type-check
               - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -95,6 +96,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-core...
               - node_modules/.bin/nx run webapp-core:lint
+              - node_modules/.bin/nx run webapp-core:type-check
               - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -115,6 +117,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-api-client...
               - node_modules/.bin/nx run webapp-api-client:lint
+              - node_modules/.bin/nx run webapp-api-client:type-check
               - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -135,6 +138,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-contentful...
               - node_modules/.bin/nx run webapp-contentful:lint
+              - node_modules/.bin/nx run webapp-contentful:type-check
               - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -155,6 +159,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-crud-demo...
               - node_modules/.bin/nx run webapp-crud-demo:lint
+              - node_modules/.bin/nx run webapp-crud-demo:type-check
               - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -175,6 +180,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-documents...
               - node_modules/.bin/nx run webapp-documents:lint
+              - node_modules/.bin/nx run webapp-documents:type-check
               - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -195,6 +201,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-notifications...
               - node_modules/.bin/nx run webapp-notifications:lint
+              - node_modules/.bin/nx run webapp-notifications:type-check
               - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -215,6 +222,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-emails...
               - node_modules/.bin/nx run webapp-emails:lint
+              - node_modules/.bin/nx run webapp-emails:type-check
               - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:
@@ -235,6 +243,7 @@ pipelines:
                 --frozen-lockfile
                 --filter=webapp-finances...
               - node_modules/.bin/nx run webapp-finances:lint
+              - node_modules/.bin/nx run webapp-finances:type-check
               - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
               - pipe: sonarsource/sonarcloud-scan:1.4.0
                 variables:

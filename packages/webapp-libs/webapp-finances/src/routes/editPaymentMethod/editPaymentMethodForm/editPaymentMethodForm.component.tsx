@@ -1,4 +1,4 @@
-import { StripeSetupIntentFragmentFragment, useFragment } from '@sb/webapp-api-client/graphql';
+import { StripeSetupIntentFragmentFragment, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage } from 'react-intl';
@@ -59,7 +59,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   const { confirmCardSetup } = useStripeCardSetup();
   const { updateDefaultPaymentMethod } = useStripePaymentMethods({ onUpdateSuccess: onSuccess });
 
-  const activeSubscriptionFragment = useFragment(subscriptionActiveSubscriptionFragment, activeSubscription);
+  const activeSubscriptionFragment = getFragmentData(subscriptionActiveSubscriptionFragment, activeSubscription);
 
   const setCardAsDefault = (cardId: string) => {
     updateDefaultPaymentMethod(cardId);
@@ -73,7 +73,6 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     if (!data.paymentMethod.data.pk) return;
     return setCardAsDefault(data.paymentMethod.data.pk);
   };
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <StripePaymentMethodSelector

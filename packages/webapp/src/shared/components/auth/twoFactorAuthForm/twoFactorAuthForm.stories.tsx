@@ -11,4 +11,4 @@ export default {
 };
 
 export const Default = Template.bind({});
-Default.args = { children: 'text' };
+Default.args = {  };

@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
+import { PaymentMethodConnection, StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useState } from 'react';
@@ -12,6 +12,7 @@ import {
 } from './stripePaymentForm/stripePaymentForm.graphql';
 import {
   stripeDeletePaymentMethodMutation,
+  stripeSubscriptionQuery,
   stripeUpdateDefaultPaymentMethodMutation,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
 import {
@@ -26,39 +27,31 @@ interface UseStripePaymentMethodsProps {
 export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMethodsProps = {}) => {
   const [commitDeletePaymentMethodMutation] = useMutation(stripeDeletePaymentMethodMutation, {
     update(cache, { data }) {
-      cache.modify({
-        fields: {
-          allPaymentMethods(existingConnection = { edges: [] }) {
-            const deletedId = data?.deletePaymentMethod?.deletedIds?.[0];
-            if (!deletedId) return existingConnection;
-
-            const normalizedId = cache.identify({ id: deletedId, __typename: 'StripePaymentMethodType' });
-            return {
-              ...existingConnection,
-              edges: existingConnection.edges.filter(({ node }) => node.__ref !== normalizedId),
-            };
-          },
-        },
-      });
+      const deletedId = data?.deletePaymentMethod?.deletedIds?.[0];
+      const normalizedId = cache.identify({ id: deletedId, __typename: 'StripePaymentMethodType' });
+      cache.evict({ id: normalizedId });
+      cache.gc();
     },
   });
 
   const [commitUpdateDefaultPaymentMethodMutation] = useMutation(stripeUpdateDefaultPaymentMethodMutation, {
     onCompleted: () => onUpdateSuccess?.(),
     update(cache, { data }) {
+      const newPaymentMethod = data?.updateDefaultPaymentMethod?.paymentMethodEdge?.node;
+      if (!newPaymentMethod) return;
+
+      const normalizedId = cache.identify({ id: newPaymentMethod.id, __typename: 'StripePaymentMethodType' });
+      const { allPaymentMethods } = cache.readQuery({ query: stripeSubscriptionQuery }) ?? {};
+      const isAlreadyInConnection = allPaymentMethods?.edges?.some((edge) => edge?.node?.id === newPaymentMethod.id);
+
+      if (isAlreadyInConnection) return;
+
       cache.modify({
         fields: {
-          allPaymentMethods(existingConnection = { edges: [] }) {
-            const newPaymentMethod = data?.updateDefaultPaymentMethod?.paymentMethodEdge?.node;
-            if (!newPaymentMethod) return existingConnection;
-
-            const normalizedId = cache.identify({ id: newPaymentMethod.id, __typename: 'StripePaymentMethodType' });
-            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.__ref === normalizedId);
-            if (isAlreadyInStore) return existingConnection;
-
+          allPaymentMethods(existingConnection?: PaymentMethodConnection) {
             return {
               ...existingConnection,
-              edges: [...existingConnection.edges, { node: { __ref: normalizedId } }],
+              edges: [...(existingConnection?.edges ?? []), { node: { __ref: normalizedId } }],
             };
           },
         },

@@ -1,6 +1,6 @@
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
-import { FragmentType, gql, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, gql, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { ButtonProps, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useIntl } from 'react-intl';
@@ -18,7 +18,7 @@ export type NotificationsButtonProps = Omit<ButtonProps, 'children' | 'variant'>
 };
 
 export const NotificationsButton = ({ queryResult, ...props }: NotificationsButtonProps) => {
-  const data = useFragment(NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT, queryResult);
+  const data = getFragmentData(NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT, queryResult);
 
   return <Content hasUnreadNotifications={data?.hasUnreadNotifications ?? false} {...props} />;
 };

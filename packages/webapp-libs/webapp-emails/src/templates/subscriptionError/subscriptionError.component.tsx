@@ -1,5 +1,5 @@
 import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
-import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { RoutesConfig } from '@sb/webapp-finances/config/routes';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Layout } from '../../base';

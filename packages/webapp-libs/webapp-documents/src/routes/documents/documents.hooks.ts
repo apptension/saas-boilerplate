@@ -1,34 +1,42 @@
 import { useMutation } from '@apollo/client';
+import { DocumentDemoItemConnection } from '@sb/webapp-api-client';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 
 import {
   documentListItemFragment,
   documentsListCreateMutation,
   documentsListDeleteMutation,
+  documentsListQuery,
 } from './documents.graphql';
 
 export const useHandleDrop = () => {
   const [commitMutation] = useMutation(documentsListCreateMutation, {
     update(cache, { data }) {
+      const node = data?.createDocumentDemoItem?.documentDemoItemEdge?.node;
+      if (!node) {
+        return;
+      }
+
+      const { allDocumentDemoItems } = cache.readQuery({ query: documentsListQuery }) ?? {};
+      const isAlreadyInConnection = allDocumentDemoItems?.edges?.some((edge) => edge?.node?.id === node?.id);
+      if (isAlreadyInConnection) {
+        return;
+      }
+
+      const newEdge = {
+        node: cache.writeFragment({
+          data: {
+            createdAt: null,
+            ...node,
+          },
+          fragment: documentListItemFragment,
+        }),
+      };
+
       cache.modify({
         fields: {
-          allDocumentDemoItems(existingConnection = { edges: [] }) {
-            const node = data?.createDocumentDemoItem?.documentDemoItemEdge?.node;
-            if (!node) return existingConnection;
-
-            const normalizedId = cache.identify(node);
-
-            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.__ref === normalizedId);
-            if (isAlreadyInStore) return existingConnection;
-
-            const newFile = {
-              node: cache.writeFragment({
-                data: node,
-                fragment: documentListItemFragment,
-              }),
-            };
-
-            return { ...existingConnection, edges: [...existingConnection.edges, newFile] };
+          allDocumentDemoItems(existingConnection?: DocumentDemoItemConnection) {
+            return { ...existingConnection, edges: [...(existingConnection?.edges ?? []), newEdge] };
           },
         },
       });

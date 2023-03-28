@@ -1,18 +1,19 @@
 import documentIcon from '@iconify-icons/ion/document-text-outline';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { DocumentListItemFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { FormattedMessage } from 'react-intl';
 
+import { documentListItemFragment } from '../../../routes/documents';
 import { useHandleDelete } from '../documents.hooks';
 import { Container, DeleteButton, IconContainer, Name, RelativeDate } from './document.styles';
 
 export type DocumentProps = {
-  item: DocumentListItemFragment;
+  item: FragmentType<typeof documentListItemFragment>;
 };
 
 export const Document = ({ item }: DocumentProps) => {
-  const { id, file, createdAt } = item;
+  const { id, file, createdAt } = getFragmentData(documentListItemFragment, item);
 
   const handleDelete = useHandleDelete();
 

@@ -6,7 +6,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "graphql-codegen": "graphql-codegen"
+    "graphql-codegen": "graphql-codegen",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
     "@sb/webapp-core": "*",
@@ -34,6 +35,7 @@
     "msw": "^1.0.0"
   },
   "devDependencies": {
+    "@types/node": "^18.15.10",
     "@apollo/client": "^3.7.9",
     "@apollo/rover": "^0.12.2",
     "@graphql-codegen/add": "^4.0.1",

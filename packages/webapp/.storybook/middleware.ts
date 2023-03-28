@@ -13,9 +13,7 @@ module.exports = (router) => {
       fromEmail: 'from@saas.apptoku.com',
     };
 
-    const sesClient = new AWS.SES({
-      endpoint: config.awsEndpoint,
-    });
+    const sesClient = new AWS.SES();
 
     const { subject, html } = renderEmail(type, {
       ...data,

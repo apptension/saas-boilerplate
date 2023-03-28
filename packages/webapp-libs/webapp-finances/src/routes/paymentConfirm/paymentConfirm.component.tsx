@@ -1,3 +1,4 @@
+import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { Elements } from '@stripe/react-stripe-js';
@@ -5,7 +6,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { StripePaymentForm } from '../../components/stripe';
-import { RoutesConfig } from '../../config/routes';
 import { stripePromise } from '../../services/stripe';
 import { Container, Header, Subheader } from './paymentConfirm.styles';
 
@@ -33,7 +33,7 @@ export const PaymentConfirm = () => {
       <Elements stripe={stripePromise}>
         <StripePaymentForm
           onSuccess={() => {
-            navigate(generateLocalePath(RoutesConfig.home));
+            navigate(generateLocalePath(CoreRoutesConfig.home));
             showMessage(successMessage);
           }}
         />

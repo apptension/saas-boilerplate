@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client';
-import { StripeSubscriptionQueryQuery, useFragment } from '@sb/webapp-api-client/graphql';
+import { StripeSubscriptionQueryQuery, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { StripePaymentMethodInfo } from '../../components/stripe/stripePaymentMethodInfo';
 import { RoutesConfig } from '../../config/routes';
-import { subscriptionActiveFragment, subscriptionActivePlanDetailsQuery } from '../../hooks';
+import { subscriptionActivePlanDetailsQuery, subscriptionActiveSubscriptionFragment } from '../../hooks';
 import { Link, Row, RowValue } from './subscriptions.styles';
 
 export type PaymentMethodContentProps = {
@@ -17,7 +17,7 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
   const generateLocalePath = useGenerateLocalePath();
 
   const { data } = useQuery(subscriptionActivePlanDetailsQuery);
-  const activeSubscription = useFragment(subscriptionActiveFragment, data?.activeSubscription);
+  const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, data?.activeSubscription);
 
   if (!activeSubscription) return null;
 

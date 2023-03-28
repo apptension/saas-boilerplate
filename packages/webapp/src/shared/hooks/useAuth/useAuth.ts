@@ -1,4 +1,4 @@
-import { CurrentUserType, useFragment } from '@sb/webapp-api-client/graphql';
+import { CurrentUserType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { commonQueryCurrentUserFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useCallback } from 'react';
@@ -10,7 +10,7 @@ export const useAuth = () => {
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const { data } = useCommonQuery();
-  const profile = useFragment(commonQueryCurrentUserFragment, data?.currentUser);
+  const profile = getFragmentData(commonQueryCurrentUserFragment, data?.currentUser);
 
   const isLoggedIn = !!profile;
 

@@ -3,14 +3,13 @@ import dns from 'dns';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import { defineConfig, loadEnv } from 'vite';
+import { UserConfig, defineConfig, loadEnv } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 dns.setDefaultResultOrder('verbatim');
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode }): UserConfig => {
   const env = loadEnv(mode, process.cwd());
 
   // expose .env as process.env instead of import.meta since jest does not import meta yet
@@ -51,13 +50,10 @@ export default defineConfig(({ mode }) => {
       legacy(),
       react(),
       viteTsConfigPaths({
-        projects: [
-          '../../tsconfig.base.json'
-        ]
+        projects: ['../../tsconfig.base.json'],
       }),
       svgrPlugin(),
       viteCommonjs(),
-      peerDepsExternal(),
     ],
 
     build: {

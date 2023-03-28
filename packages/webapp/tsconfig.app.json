@@ -20,15 +20,9 @@
     "src/**/*.test.jsx",
     "src/**/__mocks__/**/*.ts",
     "src/setupTests.ts",
-    "infra/**/*"
+    "infra/**/*",
+    ".storybook/**/*",
+    "src/tests/**/*"
   ],
-  "include": [
-    "src/**/*.js",
-    "src/**/*.jsx",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "infra/**/*.tsx",
-    ".storybook/**/*.ts",
-    ".storybook/**/*.tsx"
-  ]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "infra/**/*.tsx"]
 }

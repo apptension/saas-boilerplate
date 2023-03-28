@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { authRequestPasswordResetMutation } from './passwordResetRequestForm.graphql';
 import { ResetPasswordFormFields } from './passwordResetRequestForm.types';
 
-export const usePasswordResetRequestForm = (onSubmitted) => {
+export const usePasswordResetRequestForm = (onSubmitted?: () => void) => {
   const [isSubmitted, setSubmitted] = useState(false);
 
   const form = useApiForm<ResetPasswordFormFields>();

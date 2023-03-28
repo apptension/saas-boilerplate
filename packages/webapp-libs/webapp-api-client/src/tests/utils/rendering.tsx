@@ -55,6 +55,7 @@ export function getWrapper(
       return Promise.resolve();
     }
 
+    // @ts-ignore
     await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
   };
 

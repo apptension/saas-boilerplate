@@ -25,7 +25,7 @@ type ActionMap = {
 const isGaInitialized = () => Boolean(ENV.ENVIRONMENT_NAME === 'production' && ENV.GOOGLE_ANALYTICS_TRACKING_ID);
 
 export const initAnalytics = () => {
-  if (isGaInitialized()) initialize(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
+  if (isGaInitialized()) initialize(ENV.GOOGLE_ANALYTICS_TRACKING_ID as string);
 };
 
 export const trackEvent = <T extends keyof ActionMap>(category: T, action: ActionMap[T], label?: string) => {

@@ -16,7 +16,7 @@ type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
   const { id } = useParams<Params>();
-  const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id } });
+  const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id: id ?? '' } });
   const crudDemoItem = data?.crudDemoItem;
 
   const { showMessage } = useSnackbar();

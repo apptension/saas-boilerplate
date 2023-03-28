@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { ContentfulDemoItemFavoriteConnection } from '@sb/webapp-api-client';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { pipe, pluck } from 'ramda';
 import { useMemo } from 'react';
@@ -15,7 +16,6 @@ export const useFavoriteDemoItem = (id: string) => {
   const handleDelete = useHandleDelete();
 
   const { data } = useQuery(useFavoriteDemoItemListQuery, { fetchPolicy: 'cache-and-network' });
-
   const getIds = pipe<any, any, string[]>(pluck('item'), pluck('pk'));
   const favorites = useMappedConnection(data?.allContentfulDemoItemFavorites);
   const favoritesIds = getIds(favorites);
@@ -38,27 +38,31 @@ export const useFavoriteDemoItem = (id: string) => {
 export const useHandleCreate = () => {
   const [commitCreateMutation] = useMutation(useFavoriteDemoItemListCreateMutation, {
     update(cache, { data }) {
+      const node = data?.createFavoriteContentfulDemoItem?.contentfulDemoItemFavoriteEdge?.node;
+      if (!node) {
+        return;
+      }
+      const normalizedId = cache.identify({ id: node.id, __typename: 'ContentfulDemoItemFavoriteType' });
+      const connection = cache.readQuery({ query: useFavoriteDemoItemListQuery });
+      const isAlreadyInConnection = connection?.allContentfulDemoItemFavorites?.edges?.some(
+        (edge) => edge?.node?.id === node?.id
+      );
+      if (isAlreadyInConnection) {
+        return;
+      }
+
+      const newEdge = {
+        node: cache.writeFragment({
+          id: normalizedId,
+          data: node,
+          fragment: useFavoriteDemoItemFragment,
+        }),
+        __typename: 'ContentfulDemoItemFavoriteEdge',
+      };
       cache.modify({
         fields: {
-          allContentfulDemoItemFavorites(existingConnection = { edges: [] }) {
-            const node = data?.createFavoriteContentfulDemoItem?.contentfulDemoItemFavoriteEdge?.node;
-            if (!node) return existingConnection;
-
-            const normalizedId = cache.identify({ id: node.id, __typename: 'ContentfulDemoItemFavoriteType' });
-
-            const isAlreadyInStore = existingConnection.edges.some(({ node }) => node.id === normalizedId);
-            if (isAlreadyInStore) return existingConnection;
-
-            const newItem = {
-              node: cache.writeFragment({
-                id: normalizedId,
-                data: node,
-                fragment: useFavoriteDemoItemFragment,
-              }),
-              __typename: 'contentfulDemoItemFavoriteEdge',
-            };
-
-            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
+          allContentfulDemoItemFavorites(existingConnection: ContentfulDemoItemFavoriteConnection) {
+            return { ...existingConnection, edges: [...existingConnection.edges, newEdge] };
           },
         },
       });
@@ -81,7 +85,6 @@ export const useHandleDelete = () => {
     update(cache, { data }) {
       const deletedId = data?.deleteFavoriteContentfulDemoItem?.deletedIds?.[0];
       const normalizedId = cache.identify({ id: deletedId, __typename: 'ContentfulDemoItemFavoriteType' });
-
       cache.evict({ id: normalizedId });
     },
   });

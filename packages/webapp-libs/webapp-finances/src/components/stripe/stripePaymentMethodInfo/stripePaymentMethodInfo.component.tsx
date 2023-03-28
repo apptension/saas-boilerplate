@@ -1,5 +1,5 @@
 import { StripePaymentMethodCardBrand } from '@sb/webapp-api-client/api/stripe/paymentMethod';
-import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT } from './stripePaymentMethodInfo.graphql';
@@ -13,7 +13,7 @@ const brandDisplayNames: Record<StripePaymentMethodCardBrand, string> = {
 };
 
 export const StripePaymentMethodInfo = ({ method }: StripePaymentMethodInfoProps) => {
-  const paymentMethod = useFragment(STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT, method);
+  const paymentMethod = getFragmentData(STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT, method);
 
   return paymentMethod ? (
     <>

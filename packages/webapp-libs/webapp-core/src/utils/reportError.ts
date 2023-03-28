@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react';
  */
 
 export const reportError = (error: any): void => {
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env['NODE_ENV'] !== 'test') {
     console.error(error); //eslint-disable-line
   }
 

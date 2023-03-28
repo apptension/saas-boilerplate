@@ -37,6 +37,7 @@ export const useFavoriteDemoItemListQuery = gql(/* GraphQL */ `
     allContentfulDemoItemFavorites(first: 100) {
       edges {
         node {
+          id
           ...useFavoriteDemoItem_item
         }
       }

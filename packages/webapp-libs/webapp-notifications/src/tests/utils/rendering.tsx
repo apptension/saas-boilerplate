@@ -4,11 +4,11 @@ import { RenderOptions, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
 
-export type WrapperProps = apiUtils.ApiTestProvidersProps;
+export type WrapperProps = apiUtils.WrapperProps;
 
 export function getWrapper(
-  WrapperComponent: ComponentClass<WrapperProps> | FC<WrapperProps>,
-  wrapperProps: apiUtils.WrapperProps
+  WrapperComponent: ComponentClass<apiUtils.ApiTestProvidersProps> | FC<apiUtils.ApiTestProvidersProps>,
+  wrapperProps: WrapperProps
 ): {
   wrapper: ComponentType<apiUtils.WrapperProps>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;

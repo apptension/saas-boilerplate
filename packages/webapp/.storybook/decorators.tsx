@@ -1,32 +1,31 @@
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
 import { global as globalTheme, initializeFontFace } from '@sb/webapp-core/theme';
+import { Story } from '@storybook/react';
 import { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 
-export { default as withRouter } from 'storybook-react-router';
-
-export const withTheme = (theme) => (story) =>
+export const withTheme = () => (StoryComponent: Story) =>
   (
     <ResponsiveThemeProvider>
       <>
         <globalTheme.GlobalStyle />
-        {story()}
+        <StoryComponent />
       </>
     </ResponsiveThemeProvider>
   );
 
-export const withIntl = (story) => (
+export const withIntl = (StoryComponent: Story) => (
   <IntlProvider locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
-    {story()}
+    <StoryComponent />
   </IntlProvider>
 );
 
-export const withFontFace = (story) => {
+export const withFontFace = (StoryComponent: Story) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     initializeFontFace();
   }, []);
 
-  return story();
+  return <StoryComponent />;
 };

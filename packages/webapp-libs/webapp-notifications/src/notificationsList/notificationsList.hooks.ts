@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, NotificationConnection, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 
@@ -21,11 +21,12 @@ export const useMarkAllAsRead = (message: string) => {
             hasUnreadNotifications() {
               return false;
             },
-            allNotifications(connection = { edges: [] }) {
+            allNotifications(connection: NotificationConnection) {
               const readAt = new Date().toISOString();
-              connection.edges.forEach((edge) => {
+              connection?.edges?.forEach((edge) => {
                 cache.modify({
-                  id: edge.node.__ref,
+                  // @ts-ignore
+                  id: edge?.node?.__ref,
                   fields: {
                     readAt() {
                       return readAt;
@@ -44,7 +45,7 @@ export const useMarkAllAsRead = (message: string) => {
 };
 
 export const useNotificationsListContent = (queryResult?: FragmentType<typeof notificationsListContentFragment>) => {
-  const data = useFragment(notificationsListContentFragment, queryResult);
+  const data = getFragmentData(notificationsListContentFragment, queryResult);
 
   const allNotifications = useMappedConnection(data?.allNotifications);
 

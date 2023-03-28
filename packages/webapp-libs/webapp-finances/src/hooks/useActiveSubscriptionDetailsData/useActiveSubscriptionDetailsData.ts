@@ -1,18 +1,18 @@
 import { SubscriptionPlan, SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
-import { SubscriptionActivePlanDetailsQuery_Query, useFragment } from '@sb/webapp-api-client/graphql';
+import { SubscriptionActivePlanDetailsQuery_Query, getFragmentData } from '@sb/webapp-api-client/graphql';
 
-import { useSubscriptionPlanDetails } from '../useSubscriptionPlanDetails';
-import { subscriptionActiveSubscriptionFragment } from './useActiveSubscriptionDetailsData.graphql';
+import { useSubscriptionPlanDetails } from '../';
+import { subscriptionActiveSubscriptionFragment } from './';
 
 export const useActiveSubscriptionDetailsData = (
   activeSubscriptionQuery: SubscriptionActivePlanDetailsQuery_Query['activeSubscription']
 ) => {
-  const activeSubscription = useFragment(subscriptionActiveSubscriptionFragment, activeSubscriptionQuery);
+  const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, activeSubscriptionQuery);
 
   const phases = activeSubscription?.phases || [];
   const currentPhasePlan = (phases[0]?.item?.price as SubscriptionPlan) ?? null;
 
-  const activeSubscriptionPlan = useSubscriptionPlanDetails(currentPhasePlan || undefined);
+  const activeSubscriptionPlan = useSubscriptionPlanDetails(currentPhasePlan);
   const activeSubscriptionPeriodEndDate = phases[0]?.endDate;
   const nextPhasePlan = (phases[1]?.item?.price as SubscriptionPlan) ?? currentPhasePlan;
 

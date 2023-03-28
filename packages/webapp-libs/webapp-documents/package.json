@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
     "@sb/webapp-api-client": "*",

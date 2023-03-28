@@ -8,7 +8,6 @@
  * - and both associated values are also arrays then the values will be concatenated
  * - otherwise take the value from default config or just first found if doesn't exist in default config
  */
-
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -21,7 +20,6 @@ const codegenConfigs = webappLibs
   .map((dirName) => path.resolve(webappLibsPath, dirName, 'graphql/codegen.ts'))
   .filter((codegenConfigPath) => fs.existsSync(codegenConfigPath))
   .map((codegenConfigPath) => require(codegenConfigPath));
-
 
 const config: CodegenConfig = {
   overwrite: true,
@@ -61,6 +59,7 @@ const config: CodegenConfig = {
       plugins: [],
       presetConfig: {
         gqlTagName: 'gql',
+        fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
       },
     },
   },

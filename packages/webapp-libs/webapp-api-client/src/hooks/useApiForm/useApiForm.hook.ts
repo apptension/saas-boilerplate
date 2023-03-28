@@ -2,13 +2,15 @@ import { camelCaseKeys } from '@sb/webapp-core/utils';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { isEmpty, isNil, keys } from 'ramda';
 import { useCallback, useState } from 'react';
-import { FieldValues, Path, useForm } from 'react-hook-form';
+import { FieldValues, Path, UseFormHandleSubmit, useForm } from 'react-hook-form';
 
 import { FormSubmitError } from '../../api/types';
-import { GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
+import { ApiFormReturnType, GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
-export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: UseApiFormArgs<FormData>) => {
+export const useApiForm = <FormData extends FieldValues = FieldValues>(
+  args?: UseApiFormArgs<FormData>
+): ApiFormReturnType<FormData> => {
   const [genericError, setGenericError] = useState<string>();
   const { translateErrorMessage } = useTranslatedErrors<FormData>(args?.errorMessages);
 
@@ -19,8 +21,8 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     (unsafeResponse: FormSubmitError<FormData>) => {
       const response = camelCaseKeys(unsafeResponse) as FormSubmitError<FormData>;
 
-      if (response.nonFieldErrors) {
-        setGenericError(translateErrorMessage('nonFieldErrors', response.nonFieldErrors[0]));
+      if (response['nonFieldErrors']) {
+        setGenericError(translateErrorMessage('nonFieldErrors', response['nonFieldErrors'][0]));
       }
 
       keys(response).forEach((field) => {
@@ -49,8 +51,8 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
         setResponseErrors({
           nonFieldErrors: errors.map((error) => {
             return {
-              message: (error.extensions?.message ?? error.message) as string,
-              code: (error.extensions?.code ?? error.message) as string,
+              message: (error.extensions?.['message'] ?? error['message']) as string,
+              code: (error.extensions?.['code'] ?? error['message']) as string,
             };
           }),
         });
@@ -59,7 +61,7 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(args?: Us
     [setResponseErrors]
   );
 
-  const handleSubmit: typeof form.handleSubmit = (onValid, onInvalid) => {
+  const handleSubmit: UseFormHandleSubmit<FormData> = (onValid, onInvalid) => {
     return (event) => {
       form.clearErrors();
       setGenericError(undefined);

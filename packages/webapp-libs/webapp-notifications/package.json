@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
     "@sb/webapp-core": "*",
@@ -29,6 +30,7 @@
     "styled-components": "5.3.6"
   },
   "devDependencies": {
+    "@graphql-typed-document-node/core": "^3.1.1",
     "@nrwl/react": "^15.8.6",
     "@nrwl/jest": "^15.8.6",
     "@iconify-icons/ion": "^1.2.4",

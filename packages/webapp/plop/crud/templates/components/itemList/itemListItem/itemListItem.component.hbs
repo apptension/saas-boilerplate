@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Icon } from '@sb/webapp-core/components/icon';
 import { MouseEvent } from 'react';
@@ -18,7 +18,7 @@ export type {{ pascalCase name }}ListItemProps = {
 
 export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}ListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const data = useFragment({{ camelCase name }}ListItemFragment, item);
+  const data = getFragmentData({{ camelCase name }}ListItemFragment, item);
   const [commitDeleteMutation, { loading }] = useMutation({{ camelCase name }}ListItemDeleteMutation, {
     update(cache, { data }) {
       const deletedId = data?.delete{{ pascalCase name }}?.deletedIds?.[0];

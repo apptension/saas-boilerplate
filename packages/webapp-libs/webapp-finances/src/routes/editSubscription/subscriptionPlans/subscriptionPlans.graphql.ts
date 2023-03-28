@@ -5,6 +5,7 @@ export const subscriptionPlansAllQuery = gql(/* GraphQL */ `
     allSubscriptionPlans(first: 100) {
       edges {
         node {
+          ...subscriptionPriceItemFragment
           id
           pk
           product {

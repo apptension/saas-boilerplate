@@ -1,7 +1,7 @@
-import { DeepMap, FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
+import { GraphQLError } from 'graphql/error/GraphQLError';
+import { DeepMap, FieldValues, UseFormHandleSubmit, UseFormProps, UseFormReturn } from 'react-hook-form';
 
 import { FormSubmitError } from '../../api/types';
-import { useApiForm } from './useApiForm.hook';
 
 export type FieldErrorMessages = Record<string, string>;
 
@@ -21,10 +21,14 @@ export type GraphQLValidationError<FormData extends FieldValues = FieldValues> =
   extensions: FormSubmitError<FormData>;
 };
 
-type UseApiFormWrapper<FormData extends FieldValues = FieldValues> = {
-  wrapped: (e: FormData) => ReturnType<typeof useApiForm>;
+export type ApiFormReturnType<FormData extends FieldValues = FieldValues> = {
+  form: UseFormReturn<FormData, object>;
+  handleSubmit: UseFormHandleSubmit<FormData>;
+  genericError?: string;
+  setApolloGraphQLResponseErrors: (errors: ReadonlyArray<GraphQLError>) => void;
+  setGenericError: (genericError: string | undefined) => void;
+  hasGenericErrorOnly: boolean;
+  formState: {
+    isSubmitSuccessful: boolean;
+  };
 };
-
-export type ApiFormReturnType<FormData extends FieldValues = FieldValues> = ReturnType<
-  UseApiFormWrapper<FormData>['wrapped']
-> & { form: UseFormReturn<FormData, object> };

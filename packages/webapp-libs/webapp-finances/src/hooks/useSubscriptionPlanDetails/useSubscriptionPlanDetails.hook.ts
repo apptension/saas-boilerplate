@@ -1,19 +1,15 @@
 import { useQuery } from '@apollo/client';
-import { SubscriptionPlan, SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
-import { SubscriptionPlanItemFragmentFragment } from '@sb/webapp-api-client/graphql';
+import { ResultOf } from '@graphql-typed-document-node/core';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { times } from 'ramda';
 import { useIntl } from 'react-intl';
 
 import { ActiveSubscriptionDetailsContextType } from '../../components/activeSubscriptionContext';
 import { stripeSubscriptionQuery } from '../../components/stripe';
+import { SUBSRIPTION_PRICE_ITEM_FRAGMENT } from '../../routes/editSubscription/subscriptionPlans';
 
-export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFragment | SubscriptionPlan) => {
+export const useSubscriptionPlanDisplayName = (productName: SubscriptionPlanName) => {
   const intl = useIntl();
-
-  const examplePlanFeatureItem = intl.formatMessage({
-    id: 'Subscription plan example feature / Free',
-    defaultMessage: 'Lorem ipsum dolor sit amet',
-  });
 
   const planDisplayNames: Record<SubscriptionPlanName, string> = {
     [SubscriptionPlanName.FREE]: intl.formatMessage({
@@ -30,6 +26,19 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFr
     }),
   };
 
+  return planDisplayNames[productName] ?? '';
+};
+
+export const useSubscriptionPlanDetails = (plan?: ResultOf<typeof SUBSRIPTION_PRICE_ITEM_FRAGMENT>) => {
+  const intl = useIntl();
+
+  const examplePlanFeatureItem = intl.formatMessage({
+    id: 'Subscription plan example feature / Free',
+    defaultMessage: 'Lorem ipsum dolor sit amet',
+  });
+
+  const planDisplayName = useSubscriptionPlanDisplayName(plan?.product?.name as SubscriptionPlanName);
+
   const planFeaturesList: Record<SubscriptionPlanName, Array<string>> = {
     [SubscriptionPlanName.FREE]: times(() => examplePlanFeatureItem, 5),
     [SubscriptionPlanName.MONTHLY]: times(() => examplePlanFeatureItem, 5),
@@ -38,8 +47,8 @@ export const useSubscriptionPlanDetails = (plan?: SubscriptionPlanItemFragmentFr
 
   return plan
     ? {
-        name: planDisplayNames[plan.product.name as SubscriptionPlanName],
-        features: planFeaturesList[plan.product.name as SubscriptionPlanName],
+        name: planDisplayName,
+        features: planFeaturesList[plan.product?.name as SubscriptionPlanName],
         price: (plan.unitAmount ?? 0) / 100,
         isFree: plan.product.name === SubscriptionPlanName.FREE,
       }

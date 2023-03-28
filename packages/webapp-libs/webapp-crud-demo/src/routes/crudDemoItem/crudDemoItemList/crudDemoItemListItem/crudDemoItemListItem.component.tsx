@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
@@ -23,29 +23,19 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const [commitDeleteMutation, { loading }] = useMutation(crudDemoItemListItemDeleteMutation, {
     update(cache, { data }) {
-      cache.modify({
-        fields: {
-          allCrudDemoItems(existingConnection = { edges: [] }) {
-            const deletedId = data?.deleteCrudDemoItem?.deletedIds?.[0];
-            if (!deletedId) return existingConnection;
-
-            const normalizedId = cache.identify({ id: deletedId, __typename: 'CrudDemoItemType' });
-            return {
-              ...existingConnection,
-              edges: existingConnection.edges.filter(({ node }) => node.__ref !== normalizedId),
-            };
-          },
-        },
+      data?.deleteCrudDemoItem?.deletedIds?.forEach((deletedId) => {
+        const normalizedId = cache.identify({ id: deletedId, __typename: 'CrudDemoItemType' });
+        cache.evict({ id: normalizedId });
       });
+      cache.gc();
     },
     onCompleted: (data) => {
       const ids = data?.deleteCrudDemoItem?.deletedIds;
-
       trackEvent('crud', 'delete', ids?.join(', '));
     },
   });
 
-  const data = useFragment(crudDemoItemListItemFragment, item);
+  const data = getFragmentData(crudDemoItemListItemFragment, item);
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

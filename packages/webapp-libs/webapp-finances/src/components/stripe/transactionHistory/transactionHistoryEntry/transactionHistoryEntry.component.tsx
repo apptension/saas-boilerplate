@@ -1,8 +1,9 @@
-import { FragmentType, useFragment } from '@sb/webapp-api-client/graphql';
+import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime/formattedDate';
 import { useIntl } from 'react-intl';
 
-import { useSubscriptionPlanDetails } from '../../../../hooks';
+import { useSubscriptionPlanDisplayName } from '../../../../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.hook';
 import {
   STRIPE_CHARGE_FRAGMENT,
   SUBSCRIPTION_PLAN_ITEM_FRAGMENT,
@@ -17,10 +18,10 @@ export type TransactionHistoryEntryProps = {
 
 export const TransactionHistoryEntry = ({ entry, className }: TransactionHistoryEntryProps) => {
   const intl = useIntl();
-  const data = useFragment(STRIPE_CHARGE_FRAGMENT, entry);
+  const data = getFragmentData(STRIPE_CHARGE_FRAGMENT, entry);
 
-  const subscriptionPlanData = useFragment(SUBSCRIPTION_PLAN_ITEM_FRAGMENT, data.invoice?.subscription?.plan);
-  const { name: entryProductName } = useSubscriptionPlanDetails(subscriptionPlanData ?? undefined);
+  const subscriptionPlanData = getFragmentData(SUBSCRIPTION_PLAN_ITEM_FRAGMENT, data.invoice?.subscription?.plan);
+  const entryProductName = useSubscriptionPlanDisplayName(subscriptionPlanData?.product?.name as SubscriptionPlanName);
 
   const noInvoiceDescription = intl.formatMessage({
     defaultMessage: 'Donation',

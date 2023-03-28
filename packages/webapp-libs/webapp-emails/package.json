@@ -7,11 +7,13 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "vite": "vite"
+    "vite": "vite",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
     "@sb/webapp-core": "*",
     "@sb/webapp-api-client": "*",
+    "@sb/webapp-finances": "*",
     "juice": "^8.1.0",
     "react-intl": "^6.2.1"
   },
@@ -22,6 +24,7 @@
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@vitejs/plugin-react": "^3.1.0",
     "@storybook/react": "^6.5.16",
+    "@types/node": "^18.15.10",
     "@types/rollup-plugin-peer-deps-external": "^2.2.1",
     "axios": "^0.27.2",
     "react": "18.2.0",

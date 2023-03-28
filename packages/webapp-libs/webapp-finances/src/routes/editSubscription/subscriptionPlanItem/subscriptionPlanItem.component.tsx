@@ -1,4 +1,4 @@
-import { FragmentType, StripeSubscriptionQueryQuery, useFragment } from '@sb/webapp-api-client/graphql';
+import { FragmentType, StripeSubscriptionQueryQuery, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetailsData, useSubscriptionPlanDetails } from '../../../hooks';
@@ -7,7 +7,7 @@ import { Container, Content, Feature, FeaturesList, Name, SelectButton } from '.
 
 export type SubscriptionPlanItemProps = {
   plan: FragmentType<typeof SUBSRIPTION_PRICE_ITEM_FRAGMENT>;
-  onSelect: (id: string | null | undefined) => void;
+  onSelect: (id: string | null) => void;
   className?: string;
   activeSubscription: StripeSubscriptionQueryQuery['activeSubscription'];
   loading: boolean;
@@ -20,14 +20,14 @@ export const SubscriptionPlanItem = ({
   activeSubscription,
   loading,
 }: SubscriptionPlanItemProps) => {
-  const data = useFragment(SUBSRIPTION_PRICE_ITEM_FRAGMENT, plan);
+  const data = getFragmentData(SUBSRIPTION_PRICE_ITEM_FRAGMENT, plan);
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
     useActiveSubscriptionDetailsData(activeSubscription);
   const isActive = activeSubscriptionPlan.name === name && !activeSubscriptionIsCancelled;
   const isScheduledForNextPeriod = nextSubscriptionPlanDetails.name === name;
 
-  const handleSelect = () => onSelect(data.pk);
+  const handleSelect = () => onSelect(data?.pk ?? null);
 
   return (
     <Container isActive={isActive} className={className}>

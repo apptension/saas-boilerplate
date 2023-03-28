@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
     "color": "^4.2.3",
@@ -30,6 +31,7 @@
     "styled-theming": "2.2.0"
   },
   "devDependencies": {
+    "@types/node": "^18.15.10",
     "@sentry/react": "^7.17.4",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",

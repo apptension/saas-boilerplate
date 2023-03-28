@@ -6,7 +6,7 @@ import { subscriptionPlansAllQuery } from './subscriptionPlans.graphql';
 import { PlanItem, Plans } from './subscriptionPlans.styles';
 
 export type SubscriptionPlansProps = {
-  onPlanSelection: (id: string | null | undefined) => void;
+  onPlanSelection: (id: string | null) => void;
   loading: boolean;
 };
 
@@ -20,7 +20,7 @@ export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlan
       {mapConnection(
         (plan) => (
           <PlanItem
-            key={plan.id}
+            key={plan?.id}
             plan={plan}
             onSelect={onPlanSelection}
             activeSubscription={activeSubscription}
