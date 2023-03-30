@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 interface ImportMetaEnv {
   readonly VITE_BASE_API_URL: string;
   readonly VITE_SUBSCRIPTIONS_URL: string;
@@ -9,6 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_CONTENTFUL_ENV: string;
   readonly VITE_CONTENTFUL_TOKEN: string;
   readonly VITE_STRIPE_PUBLISHABLE_KEY: string;
+  readonly VITE_GOOGLE_ANALYTICS_TRACKING_ID: string;
 }
 
 interface ImportMeta {
