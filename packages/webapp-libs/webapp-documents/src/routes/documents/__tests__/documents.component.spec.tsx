@@ -32,6 +32,16 @@ describe('Documents: Component', () => {
     expect(await screen.findByText('No documents')).toBeInTheDocument();
   });
 
+  it('should render maximum size state', async () => {
+    const documentsLength = 10;
+    const generatedDocs = times(() => documentFactory(), documentsLength);
+
+    const mockRequest = fillDocumentsListQuery(generatedDocs);
+    render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
+
+    expect(await screen.findByText('Cannot upload more than 10 documents')).toBeInTheDocument();
+  });
+
   it('should add new item to the list', async () => {
     const generatedDoc = documentFactory();
 
