@@ -1,0 +1,39 @@
+## Start the app
+
+### Start backend
+
+```
+nx run core:docker-compose:up
+```
+
+or a shorter version:
+
+```
+make up
+```
+
+This will run docker containers for all the backend services, in the _detached mode_.
+
+Backend is running on `http://localhost:5001`.
+
+Admin Panel is running on `http://admin.localhost:5001`.
+
+Workers trigger server is running on `http://localhost:3005`.
+
+Mailcatcher is running on `http://localhost:1080`. Check [dedicated doc ](/v1/features/dev-tools/mailcatcher) before using.
+
+### Start webapp
+
+```
+nx start webapp
+```
+
+Web app is running on `http://localhost:3000`.
+
+### Start documentation
+
+```
+nx start docs
+```
+
+Docs app is running on `http://localhost:3006`.
