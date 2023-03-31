@@ -24,12 +24,12 @@ describe('analytics', () => {
   });
 
   describe('initAnalytics', () => {
-    it('initializes in production environment', () => {
+    it('initialization', () => {
       initAnalytics();
 
       expect(initialize).toHaveBeenCalledWith(trackingId);
     });
-    it('skip initialization in production environment if tracking id is undefined', () => {
+    it('skip initialization if tracking id is undefined', () => {
       const trackingId = undefined;
 
       ENV.GOOGLE_ANALYTICS_TRACKING_ID = trackingId;
@@ -38,17 +38,10 @@ describe('analytics', () => {
 
       expect(initialize).not.toHaveBeenCalledWith(trackingId);
     });
-    it('skip initialization in development environment', () => {
-      ENV.ENVIRONMENT_NAME = 'local';
-
-      initAnalytics();
-
-      expect(initialize).not.toHaveBeenCalledWith(trackingId);
-    });
   });
 
   describe('trackEvent', () => {
-    it('log an event in analytics in production environment', () => {
+    it('log an event in analytics', () => {
       const category = 'auth';
       const action = 'log-in';
       const label = 'test label';
@@ -58,7 +51,7 @@ describe('analytics', () => {
       expect(event).toHaveBeenCalledWith({ category, action, label });
       expect(console.log).not.toBeCalled();
     });
-    it('do not log an event in analytics in production environment if tracking id is undefined', () => {
+    it('do not log an event in analytics if tracking id is undefined', () => {
       const trackingId = undefined;
 
       ENV.GOOGLE_ANALYTICS_TRACKING_ID = trackingId;
@@ -81,18 +74,18 @@ describe('analytics', () => {
 
       trackEvent(category, action, label);
 
-      expect(event).not.toHaveBeenCalledWith({ category, action, label });
+      expect(event).toHaveBeenCalledWith({ category, action, label });
       expect(console.log).toHaveBeenCalledWith('[Analytics] track event:', category, action, label);
     });
   });
 
   describe('setUserId', () => {
-    it('set user id in analytics in production environment', () => {
+    it('set user id in analytics', () => {
       setUserId(userId);
 
       expect(set).toHaveBeenCalledWith({ userId });
     });
-    it('do not set user id in analytics in production environment if tracking id is undefined', () => {
+    it('do not set user id in analytics if tracking id is undefined', () => {
       const trackingId = undefined;
 
       ENV.GOOGLE_ANALYTICS_TRACKING_ID = trackingId;
@@ -102,12 +95,12 @@ describe('analytics', () => {
       expect(set).not.toBeCalled();
       expect(console.log).not.toBeCalled();
     });
-    it('do not set user id in analytics and console log in development environment', () => {
+    it('console log an event in development environment', () => {
       ENV.ENVIRONMENT_NAME = 'local';
 
       setUserId(userId);
 
-      expect(set).not.toBeCalled();
+      expect(set).toBeCalled();
       expect(console.log).toHaveBeenCalledWith('[Analytics] set userId:', userId);
     });
   });

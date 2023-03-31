@@ -22,7 +22,7 @@ type ActionMap = {
   document: 'upload' | 'delete';
 };
 
-const isGaInitialized = () => Boolean(ENV.ENVIRONMENT_NAME === 'production' && ENV.GOOGLE_ANALYTICS_TRACKING_ID);
+const isGaInitialized = () => Boolean(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
 
 export const initAnalytics = () => {
   if (isGaInitialized()) initialize(ENV.GOOGLE_ANALYTICS_TRACKING_ID as string);
