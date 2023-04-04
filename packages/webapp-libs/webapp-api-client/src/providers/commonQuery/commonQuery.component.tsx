@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { setUserId } from '@sb/webapp-core/services/analytics';
-import { FunctionComponent, PropsWithChildren, useCallback, useMemo } from 'react';
+import { FunctionComponent, PropsWithChildren, useCallback, useEffect, useMemo } from 'react';
 
 import { CurrentUserType } from '../../graphql';
 import commonDataContext from './commonQuery.context';
@@ -17,7 +17,9 @@ export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) 
 
   const userId = (data?.currentUser as CurrentUserType)?.id;
 
-  setUserId(userId ?? null);
+  useEffect(() => {
+    userId && setUserId(userId);
+  }, [userId]);
 
   if (loading || !data) {
     return null;

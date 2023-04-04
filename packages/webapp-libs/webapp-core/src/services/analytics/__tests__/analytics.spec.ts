@@ -1,17 +1,17 @@
-import { event, initialize, set } from 'react-ga';
-
-import { initAnalytics, setUserId, trackEvent } from '../';
+import { setUserId, trackEvent } from '../';
 import { ENV } from '../../../config/env';
-
-jest.mock('react-ga');
 
 const trackingId = 'TEST_TRACKING_ID';
 const userId = 'TEST_USER_ID';
 
 describe('analytics', () => {
+  let gtagSpy: jest.SpyInstance;
   const originalConsoleLog = console.log;
 
   beforeEach(() => {
+    gtagSpy = jest.fn();
+    // @ts-ignore
+    window.gtag = gtagSpy;
     console.log = jest.fn();
 
     ENV.ENVIRONMENT_NAME = 'production';
@@ -23,23 +23,6 @@ describe('analytics', () => {
     console.log = originalConsoleLog;
   });
 
-  describe('initAnalytics', () => {
-    it('initialization', () => {
-      initAnalytics();
-
-      expect(initialize).toHaveBeenCalledWith(trackingId);
-    });
-    it('skip initialization if tracking id is undefined', () => {
-      const trackingId = undefined;
-
-      ENV.GOOGLE_ANALYTICS_TRACKING_ID = trackingId;
-
-      initAnalytics();
-
-      expect(initialize).not.toHaveBeenCalledWith(trackingId);
-    });
-  });
-
   describe('trackEvent', () => {
     it('log an event in analytics', () => {
       const category = 'auth';
@@ -48,13 +31,11 @@ describe('analytics', () => {
 
       trackEvent(category, action, label);
 
-      expect(event).toHaveBeenCalledWith({ category, action, label });
+      expect(gtagSpy).toHaveBeenCalledWith('event', action, { event_category: category, event_label: label });
       expect(console.log).not.toBeCalled();
     });
     it('do not log an event in analytics if tracking id is undefined', () => {
-      const trackingId = undefined;
-
-      ENV.GOOGLE_ANALYTICS_TRACKING_ID = trackingId;
+      ENV.GOOGLE_ANALYTICS_TRACKING_ID = undefined;
 
       const category = 'auth';
       const action = 'log-in';
@@ -62,7 +43,7 @@ describe('analytics', () => {
 
       trackEvent(category, action, label);
 
-      expect(event).not.toHaveBeenCalledWith({ category, action, label });
+      expect(gtagSpy).not.toHaveBeenCalled();
       expect(console.log).not.toBeCalled();
     });
     it('console log an event in analytics in development environment', () => {
@@ -74,7 +55,7 @@ describe('analytics', () => {
 
       trackEvent(category, action, label);
 
-      expect(event).toHaveBeenCalledWith({ category, action, label });
+      expect(gtagSpy).toHaveBeenCalledWith('event', action, { event_category: category, event_label: label });
       expect(console.log).toHaveBeenCalledWith('[Analytics] track event:', category, action, label);
     });
   });
@@ -83,7 +64,7 @@ describe('analytics', () => {
     it('set user id in analytics', () => {
       setUserId(userId);
 
-      expect(set).toHaveBeenCalledWith({ userId });
+      expect(gtagSpy).toHaveBeenCalledWith('set', { user_id: userId });
     });
     it('do not set user id in analytics if tracking id is undefined', () => {
       const trackingId = undefined;
@@ -92,7 +73,7 @@ describe('analytics', () => {
 
       setUserId(userId);
 
-      expect(set).not.toBeCalled();
+      expect(gtagSpy).not.toBeCalled();
       expect(console.log).not.toBeCalled();
     });
     it('console log an event in development environment', () => {
@@ -100,7 +81,7 @@ describe('analytics', () => {
 
       setUserId(userId);
 
-      expect(set).toBeCalled();
+      expect(gtagSpy).toBeCalled();
       expect(console.log).toHaveBeenCalledWith('[Analytics] set userId:', userId);
     });
   });

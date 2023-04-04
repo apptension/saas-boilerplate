@@ -1,5 +1,3 @@
-import { event, initialize, set } from 'react-ga';
-
 import { ENV } from '../../config/env';
 
 type ActionMap = {
@@ -22,20 +20,18 @@ type ActionMap = {
   document: 'upload' | 'delete';
 };
 
-const isGaInitialized = () => Boolean(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
+export const isAvailable = () => Boolean(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
 
-export const initAnalytics = () => {
-  if (isGaInitialized()) initialize(ENV.GOOGLE_ANALYTICS_TRACKING_ID as string);
-};
+export const getTrackingId = () => ENV.GOOGLE_ANALYTICS_TRACKING_ID;
 
 export const trackEvent = <T extends keyof ActionMap>(category: T, action: ActionMap[T], label?: string) => {
-  if (isGaInitialized()) event({ category, action, label });
+  if (isAvailable() && window.gtag) window.gtag('event', action, { event_category: category, event_label: label });
 
   if (ENV.ENVIRONMENT_NAME === 'local') console.log('[Analytics] track event:', category, action, label);
 };
 
 export const setUserId = (userId: string | number | null) => {
-  if (isGaInitialized()) set({ userId });
+  if (isAvailable() && window.gtag) window.gtag('set', { user_id: userId });
 
   if (ENV.ENVIRONMENT_NAME === 'local') console.log('[Analytics] set userId:', userId);
 };

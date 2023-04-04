@@ -28,6 +28,7 @@
     "@swc/core": "^1.2.173",
     "@swc/helpers": "~0.4.11",
     "@testing-library/react": "13.4.0",
+    "@types/gtag.js": "^0.0.12",
     "@types/jest": "28.1.1",
     "@types/node": "16.11.7",
     "@types/react": "18.0.25",

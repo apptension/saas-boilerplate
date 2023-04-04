@@ -19,6 +19,7 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
+    "types": ["@types/gtag.js"],
     "paths": {
       "@sb/infra-core": ["packages/infra/infra-core/src/index.ts"],
       "@sb/infra-shared": ["packages/infra/infra-shared/src/index.ts"],

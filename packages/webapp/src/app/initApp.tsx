@@ -1,5 +1,5 @@
+import { GTM } from '@sb/webapp-core/components/gtm';
 import { LocalesProvider } from '@sb/webapp-core/providers';
-import { initAnalytics } from '@sb/webapp-core/services/analytics';
 import { SnackbarProvider } from '@sb/webapp-core/snackbar';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -27,6 +27,7 @@ const render = () => {
                 <Suspense>
                   <App />
                 </Suspense>
+                <GTM />
               </ApiProvider>
             </HelmetProvider>
           </RouterProvider>
@@ -43,8 +44,6 @@ export const initApp = async () => {
     setUnsupportedClasses(detection.isInAppBrowser, detection.deviceType, detection.isSupported);
     return;
   }
-
-  initAnalytics();
 
   // Chunked polyfill for browsers without Intl support
   if (!window.Intl) {
