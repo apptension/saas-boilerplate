@@ -197,6 +197,172 @@ module.exports = {
             },
           ],
         },
+        {
+          type: 'category',
+          label: 'In-app notification module',
+
+          link: {
+            type: 'generated-index',
+            title: 'In-app notification module',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/notifications',
+          },
+          items: ['v2/working-with-sb/notifications/create-notification'],
+        },
+        {
+          type: 'category',
+          label: 'Assets management',
+
+          link: {
+            type: 'generated-index',
+            title: 'Assets management',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/asset-management',
+          },
+          items: [
+            'v2/working-with-sb/asset-management/file-upload',
+            'v2/working-with-sb/asset-management/create-signed-url',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'User module / Authentication and authorization',
+
+          link: {
+            type: 'generated-index',
+            title: 'User module / Authentication and authorization',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/users',
+          },
+          items: [
+            'v2/working-with-sb/users/create-profile-field',
+            'v2/working-with-sb/users/create-oauth-method',
+            'v2/working-with-sb/users/admin-page',
+            'v2/working-with-sb/users/create-role',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Payments (Stripe integration)',
+
+          link: {
+            type: 'generated-index',
+            title: 'Payments (Stripe integration)',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/payments',
+          },
+          items: [
+            'v2/working-with-sb/payments/one-time-payment-form',
+            'v2/working-with-sb/payments/subscription-access',
+            'v2/working-with-sb/payments/create-subscription-plan',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Contentful',
+
+          link: {
+            type: 'generated-index',
+            title: 'Contentful',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/contentful',
+          },
+          items: [
+            'v2/working-with-sb/contentful/demo-item-model',
+            'v2/working-with-sb/contentful/sync-data',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Writing tests',
+
+          link: {
+            type: 'generated-index',
+            title: 'Writing tests',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/tests',
+          },
+          items: [
+            'v2/working-with-sb/tests/webapp',
+            'v2/working-with-sb/tests/backend',
+            'v2/working-with-sb/tests/e2e',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Infrastructure',
+
+          link: {
+            type: 'generated-index',
+            title: 'Infrastructure',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/infrastructure',
+          },
+          items: ['v2/working-with-sb/infrastructure/create-environment'],
+        },
+        {
+          type: 'category',
+          label: 'Emails',
+
+          link: {
+            type: 'generated-index',
+            title: 'Emails',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/emails',
+          },
+          items: [
+            'v2/working-with-sb/emails/create-email-template',
+            'v2/working-with-sb/emails/send-email',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Async workers',
+
+          link: {
+            type: 'generated-index',
+            title: 'Async workers',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/async-workers',
+          },
+          items: [
+            'v2/working-with-sb/async-workers/run-async-job',
+            'v2/working-with-sb/async-workers/create-sls-package',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Devtools',
+
+          link: {
+            type: 'generated-index',
+            title: 'Devtools',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/dev-tools',
+          },
+          items: [
+            'v2/working-with-sb/dev-tools/version-matrix',
+            'v2/working-with-sb/dev-tools/mailcatcher',
+            'v2/working-with-sb/dev-tools/sentry',
+            'v2/working-with-sb/dev-tools/ssh-into-container',
+            'v2/working-with-sb/dev-tools/configure-cicd-notifications',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Configure IDE and editors',
+
+          link: {
+            type: 'generated-index',
+            title: 'Configure IDE and editors',
+            description: 'TODO: >description<',
+            slug: '/working-with-sb/ide-editors',
+          },
+          items: [
+            'v2/working-with-sb/ide-editors/configure-pycharm',
+            'v2/working-with-sb/ide-editors/configure-vscode',
+          ],
+        },
       ],
     },
   ],
