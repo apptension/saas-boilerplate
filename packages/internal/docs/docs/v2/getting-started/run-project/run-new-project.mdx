@@ -1,6 +1,54 @@
 ---
 title: Run new project
-description: TODO >Run new project description<
+description: Setup a fresh project with SaaS Boilerplate
 ---
 
-TBD
+import Requirements from './_requirements.mdx';
+import InstallDeps from './_install-deps.mdx';
+import StartApp from './_start-app.mdx';
+
+## Fresh project setup
+
+This guide should be followed right after initializing an empty repository with SaaS Boilerplate project. If you'd like to start with an already existing project, please visit [Launch existing project](./run-existing-project).
+
+<Requirements />
+
+### Setup using CLI
+
+You can use a special CLI tool to run a new local instance of the SaaS Boilerplate as soon as possible. It will clone the repository and take care of setting up the environment. Run the following command in the directory where you would like to create a new project:
+
+```shell
+npx @apptension/saas-boilerplate-cli init .
+```
+
+After the initialization process is complete, you will be able to start the app as described in the [Start the app](#start-the-app) section of the documentation.
+
+### Manual setup
+
+<InstallDeps />
+
+#### Adjust `.env.shared` files
+Root and almost all packages allow configuration through environmental variables. For local machines, those need to be present in so-called `.env` files. These are, of course, ignored in GIT to avoid secret values being committed and shared with everyone. We prepared a set of defaults in the form of `.env.shared` files located in the same directories that will be enough to run the project locally, but a few need to be adjusted before you start the project for the first time.
+
+:::caution
+
+Never store any secret values in those files!
+
+:::
+
+##### `.env.shared` (in project root)
+
+| Name           | Example | Description                                                                         |
+|----------------|---------|-------------------------------------------------------------------------------------|
+| `PROJECT_NAME` | `myapp` | The name of your project (best if 3-5 characters to avoid AWS names being too long) |
+
+##### `./packages/backend/.env.shared`
+
+| Name                     | Example                            | Description                                                                                        |
+|--------------------------|------------------------------------|----------------------------------------------------------------------------------------------------|
+| `DJANGO_SECRET_KEY`      | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I` | 50-character random string; [docs](https://docs.djangoproject.com/en/3.1/ref/settings/#secret-key) |
+| `HASHID_FIELD_SALT`      | `t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U` | 50-character random string; [docs](https://django-hashid-field.readthedocs.io/en/latest/)          |
+| `ADMIN_EMAIL`            | `admin@example.com`                | Will be used to create the first super admin user                                                  |
+| `ADMIN_DEFAULT_PASSWORD` | `AvPZpabgj9Z8`                     | Will be used to create the first super admin user                                                  |
+
+<StartApp />

@@ -1,6 +1,24 @@
 ---
 title: How to SSH into a backend container?
-description: TODO >Description<
+description: Run commands inside ECS container
 ---
 
-TBD
+AWS Exec is a new functionality that allows users to run an interactive shell or a single command against a container
+inside a task deployed on either Amazon EC2 or AWS Fargate.
+You can find more information about AWS Exec [here](https://aws.amazon.com/blogs/containers/new-using-amazon-ecs-exec-access-your-containers-fargate-ec2/).
+
+## Prerequisites
+
+To use AWS Exec, you will need to install the additional `SSM Session Manager` plugin for `AWS CLI`.
+The installation guide is available [here](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html).
+
+### Usage
+
+Unlike an SSH bastion, AWS Exec does not create a new, separate task, but instead connects to an existing, running container.
+Therefore, you need to specify the `CLUSTER_NAME`, `TASK_ID`, and `CONTAINER_NAME` in your commands.
+
+Here's an example command that allows you to run an interactive shell inside a selected container:
+
+```shell
+aws-vault exec <SELECTED_AWS_VAULT_PROFILE> -- aws ecs execute-command --cluster <CLUSTER_NAME> --region <REGION> --task <TASK_ID> --container <CONTAINER_NAME> --command "/bin/bash" --interactive
+```

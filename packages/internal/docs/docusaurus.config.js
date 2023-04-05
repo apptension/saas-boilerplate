@@ -22,6 +22,10 @@ module.exports = {
       links: [],
       copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by Apptension.`,
     },
+    colorMode: {
+      defaultMode: 'dark',
+      respectPrefersColorScheme: true,
+    },
   },
   presets: [
     [

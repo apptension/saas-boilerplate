@@ -1,0 +1,53 @@
+### Start the app
+
+This section provides instructions for running the SaaS Boilerplate locally on your machine. It covers three main areas: starting the local dev web server, starting the backend services using docker-compose, and (optionally) launching a local documentation instance based on Docusaurus.
+
+#### Start backend
+
+Project includes a set of backend services that can be run using docker-compose:
+
+```bash
+nx run core:docker-compose:up
+```
+
+or a shorter version:
+
+```bash
+make up
+```
+
+This will run docker containers for all the backend services in the detached mode.
+
+Backend is running on `http://localhost:5001`.
+
+Admin Panel is running on `http://admin.localhost:5001`.
+
+Workers trigger server is running on `http://localhost:3005`.
+
+Mailcatcher is running on `http://localhost:1080`. Check the [dedicated doc](/v2/working-with-sb/dev-tools/sentry) before using.
+
+#### Start webapp
+
+To start the local development web server, you'll need to run a following command in your terminal:
+
+```bash
+nx start webapp
+```
+
+Web app is running on `http://localhost:3000`.
+
+#### Start documentation
+
+Finally, the SaaS Boilerplate comes with a local documentation instance based on Docusaurus. This provides easy access to the documentation while you're working on your SaaS product, so you can quickly find answers to any questions you may have.
+
+```bash
+nx start docs
+```
+
+Docs app is running on `http://localhost:3006`.
+
+:::tip
+
+Once you've successfully set up your project, you can check out the "[Working with SaaS Boilerplate](/working-with-sb)" documentation to learn more about how to take advantage of the boilerplate's features and best practices.
+
+:::

@@ -5,16 +5,15 @@ module.exports = {
       label: 'Documentation',
 
       link: {
-        type: 'generated-index',
-        title: 'SaaS Boilerplate by Apptension Docs',
-        description: 'SaaS Boilerplate by Apptension Docs',
-        slug: '/',
+        type: 'doc',
+        id: 'v2/index',
       },
       items: [
         {
           type: 'link',
           label: 'Getting started',
-          href: '/getting-started',
+          href: '/v2/getting-started',
+          description: 'Setup and run the project locally',
         },
         {
           type: 'link',
@@ -46,10 +45,8 @@ module.exports = {
       label: 'Getting started',
 
       link: {
-        type: 'generated-index',
-        title: 'Getting started',
-        description: 'TODO: >Getting started description<',
-        slug: '/getting-started',
+        type: 'doc',
+        id: 'v2/getting-started/index',
       },
       items: [
         'v2/getting-started/run-project/run-new-project',
@@ -298,7 +295,11 @@ module.exports = {
             description: 'TODO: >description<',
             slug: '/working-with-sb/infrastructure',
           },
-          items: ['v2/working-with-sb/infrastructure/create-environment'],
+          items: [
+            'v2/working-with-sb/infrastructure/initial-setup',
+            'v2/working-with-sb/infrastructure/create-environment',
+            'v2/working-with-sb/infrastructure/env-variables',
+          ],
         },
         {
           type: 'category',
@@ -311,6 +312,7 @@ module.exports = {
             slug: '/working-with-sb/emails',
           },
           items: [
+            'v2/working-with-sb/emails/build-emails',
             'v2/working-with-sb/emails/create-email-template',
             'v2/working-with-sb/emails/send-email',
           ],

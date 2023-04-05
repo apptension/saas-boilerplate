@@ -1,6 +1,69 @@
 ---
-title: Mailcatcher
-description: TODO >Description<
+title: Sentry
+description: Configure error tracking on your environments
 ---
 
-TBD
+[Sentry](https://sentry.io) is an error tracking and monitoring tool that helps developers track and fix issues in their
+applications. It is designed to capture errors, exceptions, and performance metrics in real-time and provide developers
+with actionable insights into how their applications are performing.
+
+The SaaS Boilerplate comes with an integration with Sentry out of the box, which includes both transaction and error
+tracking. We highly recommend configuring this integration for all remote environments, as Sentry is a powerful tool for
+developers looking to improve the quality and reliability of their applications. By leveraging Sentry's tools and
+features, you can quickly identify and resolve issues in your code and ensure that your SaaS product is performing at
+its best.
+
+Enabling Sentry tracking for your environment is a simple process that involves configuring an environment variable for
+the backend service. To get started, follow the instructions below.
+
+## Prerequisites
+
+Before you can set up Sentry tracking, you will need to have your own **Sentry DSN**.
+Please refer to the [Sentry docs](https://docs.sentry.io/) for information on how to create an account and obtain the
+**DSN** for your project.
+
+## Setting up Sentry for AWS environment
+
+##### Start an AWS vault session
+
+To start an AWS vault session, run the following command in the root directory of your project:
+
+```shell
+make aws-vault ENV_STAGE=<STAGE_NAME>
+```
+
+##### Set variables in AWS
+
+To set the required variables in AWS, start the SSM editor tool by running the following command in the root directory of your project:
+
+```shell
+make -C packages/backend secrets
+```
+
+Variables are set in JSON format, so add the following key:
+
+```json
+{
+  "SENTRY_DSN": "<YOUR_SENTRY_DSN>"
+}
+```
+
+:::tip
+
+For more information on setting up environment variables, see our documentation
+[here](/v2/working-with-sb/infrastructure/env-variables).
+:::
+
+
+## Feature removal
+
+- Remove `SENTRY_DSN`, `SENTRY_TRACES_SAMPLE_RATE` variables from `packages/backend/config/settings.py` module along with
+`common.middleware.SentryMiddleware` middleware and following import:
+```python title="packages/backend/config/settings.py"
+from . import monitoring
+```
+- Remove `sentry_sdk.init()` call in `packages/backend/config/monitoring.py`.
+- Remove `SentryMiddleware` from `packages/backend/common/middleware.py` module.
+- Remove `sentry_sdk.init()` call in `packages/workers/utils/monitoring.py`.
+- Remove `SENTRY_DSN` variables from `packages/workers/workers.conf.yml` and `packages/workers/settings/base.py` files.
+- Remove `sentry-sdk` from `pdm.lock`.

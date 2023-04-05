@@ -1,0 +1,56 @@
+---
+title: How to configure environment variables on AWS?
+description: TODO >Description<
+---
+
+Every running application requires environment-specific runtime values to function properly. These values could include
+secret keys for third-party services, boolean flags enabling features, and much more.
+
+To manage these variables, the SaaS Boilerplate leverages AWS Systems Manager Parameter Store and a tool called
+[`chamber`](https://github.com/segmentio/chamber). With these tools, managing environment variables is easy and secure.
+
+:::caution
+
+Before deploying your application's code, you must set all required environmental variables!
+
+:::
+
+:::note
+
+The steps below assume that you have properly configured the **AWS vault** tool for your environment. If you need help
+with this, you can find instructions [here](/v2/working-with-sb/infrastructure/initial-setup).
+
+:::
+
+## Set env variables for the service
+
+## Setting environment variables for a service
+
+### Using the CLI tool
+
+To set environment variables for a service using the CLI tool, first log in to your AWS vault with the correct `ENV_STAGE`:
+
+```shell
+make login ENV_STAGE=<STAGE_NAME>
+```
+
+You can then set the environment variables for the service (such as `backend`) in JSON format using the following `make` rule:
+
+```shell
+make -C packages/<SERVICE_NAME> secrets
+```
+
+This will download a JSON secrets file, open it in Vim, and re-upload it when you save the file.
+
+### Manually using the AWS console
+
+Alternatively, you can set your environment variables manually by going to the
+[AWS console](https://console.aws.amazon.com/) and adding or editing the parameters in the
+`Systems Manager > Parameter Store` section.
+
+Note that the **Name** of every parameter should follow this naming convention:
+```
+/env-<PROJECT_NAME>-<STAGE_NAME>-<SERVICE_NAME>/<ENVIRONMENT_VARIABLE_NAME>
+```
+in order to be correctly loaded into
+a container environment using `chamber`.
