@@ -10,6 +10,11 @@ services:
       - POSTGRES_USER=backend
       - POSTGRES_PASSWORD=backend
       - POSTGRES_DB=backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -19,8 +24,10 @@ services:
     ports:
       - "5001:5001"
     depends_on:
-      - db
-      - stripemock
+      stripemock:
+        condition: service_started
+      db:
+        condition: service_healthy
     restart: unless-stopped
     links:
       - db
@@ -36,7 +43,8 @@ services:
       context: .
       dockerfile: ./packages/workers/Dockerfile
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     links:
       - db
 

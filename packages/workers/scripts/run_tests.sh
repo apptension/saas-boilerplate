@@ -11,8 +11,6 @@ else
    cov_report=html
 fi
 
-./scripts/wait-for-it.sh db:5432
-
 python setup.py create_db
 pytest --cov --cov-config=.coveragerc --cov-report="${cov_report}"
 

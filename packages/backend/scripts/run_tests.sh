@@ -15,8 +15,6 @@ else
    cov_report=html
 fi
 
-./scripts/wait-for-it.sh db:5432
-
 env $(cat .test.env | xargs) python ./manage.py makemigrations --check --dry-run
 pytest --cov --cov-config=/app/.coveragerc --cov-report="${cov_report}"
 

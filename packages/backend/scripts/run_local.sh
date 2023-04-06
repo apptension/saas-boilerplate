@@ -6,8 +6,6 @@ set -o nounset
 
 . $(dirname "$0")/install_localstack_fixtures.sh
 
-./scripts/wait-for-it.sh db:5432
-
 echo "Install LocalStack fixture"
 
 wait_for_s3
