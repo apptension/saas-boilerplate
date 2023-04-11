@@ -113,6 +113,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           </MenuLink>
         </RoleAccess>
 
+        <RoleAccess>
+          <MenuLink to={generateLocalePath(RoutesConfig.saasIdeas)} onClick={closeSidebar}>
+            <FormattedMessage defaultMessage="Generate SaaS ideas" id="Home / saas ideas link" />
+          </MenuLink>
+        </RoleAccess>
+
         {!isDesktop && (
           <RoleAccess>
             <MenuLink to={generateLocalePath(RoutesConfig.logout)} onClick={closeSidebar}>

@@ -53,7 +53,15 @@ THIRD_PARTY_APPS = [
     "aws_xray_sdk.ext.django",
 ]
 
-LOCAL_APPS = ["apps.content", "apps.demo", "apps.finances", "apps.users", "apps.notifications", "apps.websockets"]
+LOCAL_APPS = [
+    "apps.content",
+    "apps.demo",
+    "apps.finances",
+    "apps.users",
+    "apps.notifications",
+    "apps.websockets",
+    "apps.integrations",
+]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -301,3 +309,6 @@ OTP_AUTH_ISSUER_NAME = env("OTP_AUTH_ISSUER_NAME", default="")
 OTP_AUTH_TOKEN_COOKIE = 'otp_auth_token'
 OTP_AUTH_TOKEN_LIFETIME_MINUTES = datetime.timedelta(minutes=env.int('OTP_AUTH_TOKEN_LIFETIME_MINUTES', default=5))
 OTP_VALIDATE_PATH = "/auth/validate-otp"
+
+
+OPENAI_API_KEY = env("OPENAI_API_KEY", default="")

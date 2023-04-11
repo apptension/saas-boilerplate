@@ -57,7 +57,13 @@
       "@sb/webapp-finances": [
         "packages/webapp-libs/webapp-finances/src/index.ts"
       ],
-      "@sb/webapp-finances/*": ["packages/webapp-libs/webapp-finances/src/*"]
+      "@sb/webapp-finances/*": ["packages/webapp-libs/webapp-finances/src/*"],
+      "@sb/webapp-generative-ai": [
+        "packages/webapp-libs/webapp-generative-ai/src/index.ts"
+      ],
+      "@sb/webapp-generative-ai/*": [
+        "packages/webapp-libs/webapp-generative-ai/src/*"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

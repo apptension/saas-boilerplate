@@ -21,6 +21,7 @@ pytest_plugins = [
     'apps.content.tests.fixtures',
     'apps.notifications.tests.fixtures',
     'apps.websockets.tests.fixtures',
+    'apps.integrations.tests.fixtures',
 ]
 
 

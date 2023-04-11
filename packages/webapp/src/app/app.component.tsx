@@ -12,6 +12,7 @@ import {
   Subscriptions,
   TransactionHistory,
 } from '@sb/webapp-finances/routes';
+import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
 import { FormattedMessage, IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
@@ -54,6 +55,7 @@ export const App = () => {
           <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
           <Route path={RoutesConfig.finances.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
+          <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute allowedRoles={Role.ADMIN} />}>

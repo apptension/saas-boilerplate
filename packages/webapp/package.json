@@ -82,6 +82,7 @@
     "@sb/webapp-documents": "*",
     "@sb/webapp-notifications": "*",
     "@sb/webapp-finances": "*",
+    "@sb/webapp-generative-ai": "*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-backgrounds": "^6.5.16",
     "@storybook/addon-docs": "^6.5.16",

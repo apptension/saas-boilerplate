@@ -4,6 +4,7 @@ from apps.demo import schema as demo_schema
 from apps.finances import schema as finances_schema
 from apps.notifications import schema as notifications_schema
 from apps.users import schema as users_schema
+from apps.integrations import schema as integrations_schema
 from common.graphql.utils import graphql_query, graphql_mutation, graphql_subscription
 
 schema = graphene.Schema(
@@ -16,6 +17,7 @@ schema = graphene.Schema(
             users_schema.AuthenticatedMutation,
             users_schema.Mutation,
             finances_schema.Mutation,
+            integrations_schema.Mutation,
         ]
     ),
     subscription=graphql_subscription(([notifications_schema.Subscription])),

@@ -61,6 +61,8 @@ dependencies = [
     "aws-xray-sdk~=2.11",
     "django-ratelimit>=4.0.0",
     "pyotp>=2.8.0",
+    "openai>=0.27.2",
+    "pydantic>=1.10.7",
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}

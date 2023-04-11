@@ -54,6 +54,7 @@ const documents = {
     "\n  query stripeAllChargesQuery {\n    allCharges {\n      edges {\n        node {\n          id\n          ...stripeChargeFragment\n        }\n      }\n    }\n  }\n": types.StripeAllChargesQueryDocument,
     "\n  fragment stripeChargeFragment on StripeChargeType {\n    id\n    created\n    billingDetails\n    paymentMethod {\n      ...stripePaymentMethodFragment\n      id\n    }\n    amount\n    invoice {\n      id\n      subscription {\n        plan {\n          ...subscriptionPlanItemFragment\n        }\n      }\n    }\n  }\n": types.StripeChargeFragmentFragmentDoc,
     "\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    amount\n  }\n": types.SubscriptionPlanItemFragmentFragmentDoc,
+    "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n": types.GenerateSaasIdeasMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  subscription notificationsListSubscription {\n    notificationCreated {\n      edges {\n        node {\n          id\n          type\n          createdAt\n          readAt\n          data\n        }\n      }\n    }\n  }\n": types.NotificationsListSubscriptionDocument,
@@ -71,6 +72,8 @@ const documents = {
     "\n  mutation verifyOtp($input: VerifyOTPMutationInput!) {\n    verifyOtp(input: $input) {\n      otpVerified\n    }\n  }\n": types.VerifyOtpDocument,
     "\n  mutation validateOtp($input: ValidateOTPMutationInput!) {\n    validateOtp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.ValidateOtpDocument,
     "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n": types.DisableOtpDocument,
+    "\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n": types.UsernameQueryDocument,
+    "\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n": types.ExampleDocumentsQueryDocument,
 };
 
 /**
@@ -254,6 +257,10 @@ export function gql(source: "\n  fragment subscriptionPlanItemFragment on Subscr
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n"): (typeof documents)["\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -319,6 +326,14 @@ export function gql(source: "\n  mutation validateOtp($input: ValidateOTPMutatio
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
