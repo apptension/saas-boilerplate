@@ -17,14 +17,14 @@ ENV PIP_NO_CACHE_DIR off
 RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq \
   && update-ca-certificates \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir setuptools pdm~=2.4.5 gunicorn awscli
+  && pip install --no-cache-dir setuptools pdm~=2.5.2 gunicorn awscli
 
 
 COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
 
-COPY pdm.lock pyproject.toml .pdm.toml /pkgs/
+COPY pdm.lock pyproject.toml pdm.toml /pkgs/
 RUN pdm sync \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*

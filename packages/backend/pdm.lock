@@ -32,7 +32,7 @@ summary = "A library for parsing ISO 8601 strings."
 
 [[package]]
 name = "asgiref"
-version = "3.5.2"
+version = "3.6.0"
 requires_python = ">=3.7"
 summary = "ASGI specs, helper code, and adapters"
 
@@ -220,12 +220,12 @@ dependencies = [
 
 [[package]]
 name = "django"
-version = "4.0.8"
+version = "4.2"
 requires_python = ">=3.8"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 dependencies = [
-    "asgiref<4,>=3.4.1",
-    "sqlparse>=0.2.2",
+    "asgiref<4,>=3.6.0",
+    "sqlparse>=0.3.1",
     "tzdata; sys_platform == \"win32\"",
 ]
 
@@ -1150,8 +1150,9 @@ dependencies = [
 ]
 
 [metadata]
-lock_version = "4.1"
-content_hash = "sha256:18b8d79ac5ee39c4d05d1c2f0f071c1853a691b33668d2953b1d710790e7c354"
+lock_version = "4.2"
+groups = ["default", "dev"]
+content_hash = "sha256:f9c9527c8c24944d231f7cbf25ec687e35db2bf6a1b15ac3b008911169817bdb"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1251,9 +1252,9 @@ content_hash = "sha256:18b8d79ac5ee39c4d05d1c2f0f071c1853a691b33668d2953b1d71079
     {url = "https://files.pythonhosted.org/packages/cb/72/be3db445b03944bfbb2b02b82d00cb2a2bcf96275c4543f14bf60fa79e12/aniso8601-9.0.1.tar.gz", hash = "sha256:72e3117667eedf66951bb2d93f4296a56b94b078a8a95905a052611fb3f1b973"},
     {url = "https://files.pythonhosted.org/packages/e3/04/e97c12dc034791d7b504860acfcdd2963fa21ae61eaca1c9d31245f812c3/aniso8601-9.0.1-py2.py3-none-any.whl", hash = "sha256:1d2b7ef82963909e93c4f24ce48d4de9e66009a21bf1c1e1c85bdd0812fe412f"},
 ]
-"asgiref 3.5.2" = [
-    {url = "https://files.pythonhosted.org/packages/1f/35/e7d59b92ceffb1dc62c65156278de378670b46ab2364a3ea7216fe194ba3/asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
-    {url = "https://files.pythonhosted.org/packages/af/6d/ea3a5c3027c3f14b0321cd4f7e594c776ebe64e4b927432ca6917512a4f7/asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
+"asgiref 3.6.0" = [
+    {url = "https://files.pythonhosted.org/packages/78/2d/797c0537426266d6c9377a2ed6a4ac61e50c2d5b1ab4da101a4b9bfe26e2/asgiref-3.6.0.tar.gz", hash = "sha256:9567dfe7bd8d3c8c892227827c41cce860b368104c3431da67a0c5a65a949506"},
+    {url = "https://files.pythonhosted.org/packages/8f/29/38d10a47b322a77b2d12c2b79c789f52956f733cb701d4d5157c76b5f238/asgiref-3.6.0-py3-none-any.whl", hash = "sha256:71e68008da809b957b7ee4b43dbccff33d1b23519fb8344e33f049897077afac"},
 ]
 "async-timeout 4.0.2" = [
     {url = "https://files.pythonhosted.org/packages/54/6e/9678f7b2993537452710ffb1750c62d2c26df438aa621ad5fa9d1507a43a/async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},
@@ -1476,9 +1477,9 @@ content_hash = "sha256:18b8d79ac5ee39c4d05d1c2f0f071c1853a691b33668d2953b1d71079
     {url = "https://files.pythonhosted.org/packages/27/72/5fe128b53d7839e6a96125040614b1007e7cd823f0f5fb46cc600550d33e/dj_stripe-2.6.3-py3-none-any.whl", hash = "sha256:113bf47075b1232f7e634147d4d91bab54969eb902b200ceb7b04ed13b380920"},
     {url = "https://files.pythonhosted.org/packages/f1/4f/43767e5501ef4a9e5b98cb31463abd29ba746d33fda5b8b74209b33ba568/dj_stripe-2.6.3.tar.gz", hash = "sha256:905f052a834b254329eef409f67a622a783806a8b64d9fb3debed0a69178c211"},
 ]
-"django 4.0.8" = [
-    {url = "https://files.pythonhosted.org/packages/1a/de/08d8a349ed0e3e1999eb86ae0347cc9eaf634cd65f1eb80b9387ac1dbe3c/Django-4.0.8.tar.gz", hash = "sha256:07e6433f263c3839939cfabeb6d7557841e0419e47759a7b7d37f6d44d40adcb"},
-    {url = "https://files.pythonhosted.org/packages/e1/d0/d90528978da16288d470bb423abad307ed7ae724090132ff6bf67d6a5579/Django-4.0.8-py3-none-any.whl", hash = "sha256:27cb08fa6458c1eff8b97c4c2d03774646fb26feeaa4587dca10c49e6d4fc6a3"},
+"django 4.2" = [
+    {url = "https://files.pythonhosted.org/packages/9a/bb/48aa3e0850923096dff2766d21a6004d6e1a3317f0bd400ba81f586754e1/Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},
+    {url = "https://files.pythonhosted.org/packages/d9/40/6012f98b14b64b4d3dc47b0c2f116fccbd0795ab35515d0c40dac73b81b8/Django-4.2-py3-none-any.whl", hash = "sha256:ad33ed68db9398f5dfb33282704925bce044bef4261cd4fb59e4e7f9ae505a78"},
 ]
 "django-environ 0.9.0" = [
     {url = "https://files.pythonhosted.org/packages/60/5a/f231f5d3e15217cdf0164019cff5c4a7e5ba6bb5fd502759f94972786e17/django_environ-0.9.0-py2.py3-none-any.whl", hash = "sha256:f21a5ef8cc603da1870bbf9a09b7e5577ab5f6da451b843dbcc721a7bca6b3d9"},

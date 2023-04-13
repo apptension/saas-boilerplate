@@ -4,8 +4,8 @@ __pycache__/
 db.sqlite3
 .pytest_cache/
 .env
-.pdm.toml
 .ruff_cache
+.pdm-python
 
 # Coverage
 .coverage
