@@ -72,8 +72,6 @@ const documents = {
     "\n  mutation verifyOtp($input: VerifyOTPMutationInput!) {\n    verifyOtp(input: $input) {\n      otpVerified\n    }\n  }\n": types.VerifyOtpDocument,
     "\n  mutation validateOtp($input: ValidateOTPMutationInput!) {\n    validateOtp(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.ValidateOtpDocument,
     "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n": types.DisableOtpDocument,
-    "\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n": types.UsernameQueryDocument,
-    "\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n": types.ExampleDocumentsQueryDocument,
 };
 
 /**
@@ -326,14 +324,6 @@ export function gql(source: "\n  mutation validateOtp($input: ValidateOTPMutatio
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query usernameQuery {\n    currentUser {\n      id\n      firstName\n      lastName\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query exampleDocumentsQuery {\n    allDocumentDemoItems {\n      edges {\n        node {\n          id\n          file {\n            name\n          }\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
