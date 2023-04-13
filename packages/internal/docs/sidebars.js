@@ -30,7 +30,11 @@ module.exports = {
           label: 'What is SaaS Boilerplate by Apptension',
           href: '/introduction',
         },
-        'v2/api-reference',
+        {
+          type: 'link',
+          label: 'API Reference',
+          href: '/v2/api-reference',
+        },
         {
           type: 'link',
           label: 'Old docs (v1)',
@@ -38,6 +42,52 @@ module.exports = {
         },
       ],
     },
+  ],
+  apiReferenceSidebar: [
+    {
+      type: 'category',
+      label: "API Reference",
+
+      link: {
+        type: 'doc',
+        id: 'v2/api-reference/index'
+      },
+      items: [
+        {
+          type: 'category',
+          label: "back-end",
+          link: {
+            type: 'doc',
+            id: 'v2/api-reference/backend/index'
+          },
+          items: [
+            'v2/api-reference/backend/graphql-mutations'
+          ]
+        },
+        {
+          type: 'category',
+          label: "webapp-core",
+          link: {
+            type: 'doc',
+            id: 'v2/api-reference/webapp-core/index'
+          },
+          items: [
+            'v2/api-reference/webapp-core/components'
+          ]
+        },
+        {
+          type: 'category',
+          label: "webapp-api-client",
+          link: {
+            type: 'doc',
+            id: 'v2/api-reference/webapp-api-client/index'
+          },
+          items: [
+              'v2/api-reference/webapp-api-client/hooks'
+          ]
+        }
+      ]
+    }
   ],
   gettingStartedSidebar: [
     {
@@ -122,10 +172,10 @@ module.exports = {
           },
           items: [
             'v2/working-with-sb/guides/create-react-component',
-            'v2/working-with-sb/guides/form-with-mutation',
             'v2/working-with-sb/guides/real-time-data',
             'v2/working-with-sb/guides/new-route',
-            'v2/working-with-sb/guides/another-graphql-api',
+            'v2/working-with-sb/guides/form-with-mutation',
+            'v2/working-with-sb/guides/adding-new-mutation',
             'v2/working-with-sb/guides/backend-model',
             'v2/working-with-sb/guides/component-with-query',
           ],

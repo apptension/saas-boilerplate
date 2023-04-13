@@ -1,0 +1,147 @@
+---
+title: How to add a new mutation to back-end API?
+description: TODO >Description<
+---
+
+## Django model based mutation
+
+Let's imagine you have a `store` module and you want to include a new database model that allows your users to create
+new products.
+
+:::info
+
+If you're also interested in front-end part of this guide check out [Form with mutation](./form-with-mutation) guide.
+
+:::
+
+### Create Django model
+
+You may already have your own model, but the examples in this guide are built upon the following Django model:
+
+```python title="packages/backend/apps/store/models.py"
+import hashid_field
+from django.db import models
+
+
+class Product(models.Model):
+    id = hashid_field.HashidAutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+```
+
+### Create Django Rest Framework serializer
+
+In Saas Boilerplate, GraphQL mutations use DRF Serializers to validate data and run business logic.
+
+:::warning
+
+Even if you use DRF `ModelSerializer`, all fields are treated as write-only. This is because mutations return GraphQL
+type objects, which are defined independently from serializers.
+
+:::
+
+```python title="packages/backend/apps/store/serializers.py"
+from hashid_field import rest as hidrest
+from rest_framework import serializers
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
+
+    class Meta:
+        model = models.Product
+        fields = ('id', 'name',)
+```
+
+This is essentially a regular DRF serializer. Although this example only demonstrates the "create" aspect of CRUD, you can perform all side effects in either the `update` or `create` method.
+
+Moreover, you can connect this serializer to more than one mutation, similar to how you would do it with DRF views.
+
+### Define GraphQL type and connection
+
+You can use Graphene Django to automatically generate GraphQL schema for Django models. Your future mutation will
+reference those types to build both input and output schema.
+
+```python title="packages/backend/apps/store/schema.py"
+from graphene import relay
+from graphene_django import DjangoObjectType
+
+from . import models
+
+class ProductType(DjangoObjectType):
+    class Meta:
+        model = models.Product
+        interfaces = (relay.Node,)
+        fields = "__all__"
+
+
+class ProductConnection(graphene.Connection):
+    class Meta:
+        node = ProductType
+```
+
+- [DjangoObjectType](https://docs.graphene-python.org/projects/django/en/latest/queries/) – automatically transforms a
+Django Model into a ObjectType for you
+- [Connection](https://docs.graphene-python.org/en/latest/relay/connection/) – A connection is a vitaminized version of
+a List that provides ways of slicing and paginating through it.
+
+### Create mutation object
+
+Next, you need to create a mutation object that references the previously created serializer class. Please ensure that
+you also define an `edge_class` in `Meta`, or else your schema will not include the `productEdge` field. This field
+could be useful to your frontend, as it can be used to easily push newly created data into an existing collection.
+
+```python title="packages/backend/apps/store/schema.py"
+from common.graphql import mutations
+from . import models, serializers
+
+class CreateProductMutation(mutations.CreateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+```
+
+- [CreateModelMutation](../../api-reference/backend/graphql-mutations#createmodelmutation) – a base class that
+makes django model based mutations that create instances much simpler
+
+:::tip
+
+SaaS Boilerplate also implements:
+- [UpdateModelMutation](../../api-reference/backend/graphql-mutations#updatemodelmutation),
+- [DeleteModelMutation](../../api-reference/backend/graphql-mutations#deletemodelmutation)
+- and a more generic [SerializerMutation](../../api-reference/backend/graphql-mutations#serializermutation).
+
+:::
+
+### Create mutation field in schema
+
+Last but not least we need to connect our mutation to the GraphQL schema!
+
+```python title="packages/backend/apps/store/schema.py"
+class Mutation(graphene.ObjectType):
+    create_product = CreateProductMutation.Field()
+```
+
+It is possible that the referenced file already contains a `Mutation` object. If that is the case, you can add your mutation as another field beside the existing ones.
+
+However, if it does not exist yet, it is important to add it to the root of the schema. Think of this similarly to
+`urls.py` used by Django apps. It is located in `config` python package.
+
+```python title="packages/backend/config/schema.py"
+from apps.store import schema as store_schema
+
+# ...
+
+schema = graphene.Schema(
+    query=graphql_query([
+        # ...
+        store_schema.Query,
+    ]),
+    mutation=graphql_mutation(
+        [
+            # ...
+            store_schema.Mutation,
+        ]
+    ),
+)
+
+```

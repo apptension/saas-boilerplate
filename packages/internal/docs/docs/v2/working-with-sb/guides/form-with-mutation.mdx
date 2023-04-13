@@ -1,6 +1,220 @@
 ---
 title: How to write a form that commits a mutation?
-description: TODO >Description<
+description: In this guide you'll use react-hook-form to manage state of a form and commit a mutation when user submits it.
 ---
 
-TBD
+In this guide you'll learn how to use helpers provided by SaaS boilerplate to work with `react-hook-form` to manage
+state of a form, commit a mutation when user submits it, and render errors returned from back-end.
+
+:::info
+
+If you're looking for back-end implementation related to this guide take a look at
+[Adding new mutation](./adding-new-mutation) guide.
+
+:::
+
+### Create a new React component
+
+Let's begin by creating a new React component named `ProductForm`. You can refer to the
+[Create React component](./create-react-component) guide to create an empty one.
+
+### Define a type describing form fields data
+
+To fully leverage the benefits of typing, you will need to define a type that describes the data collected by the form.
+For this guide, you can use the following type:
+
+```ts title="src/routes/productForm/productForm.types.ts"
+export type ProductFormFields = {
+  name: string;
+};
+```
+
+To prevent potential circular dependency issues, we suggest placing this type in a separate file named
+`productForm.types`.
+
+:::tip
+
+You can use [yup](https://github.com/jquense/yup) to define a validation schema and
+[infer the type](https://github.com/jquense/yup#typescript-integration) automatically. react-hook-form has a built-in
+support for such schema.
+
+:::
+
+### Define a custom hook to manage form state
+
+It's a good practice to encapsulate the logic of a form in a custom hook. As the logic tends to grow in complexity,
+this approach has the potential to separate the presentation and business logic, making the code more manageable and
+easier to maintain.
+
+```ts title="src/routes/productForm/productForm.hooks.ts"
+export const useCreateProductForm = () => {
+  const form = useApiForm<ProductFields>();
+
+ const handleSubmit = form.handleSubmit(async (data: ProductFields) => {
+   // You'll commit mutation here
+ });
+
+ return { form, handleSubmit };
+};
+```
+
+[useApiForm](../../api-reference/webapp-api-client/hooks#useapiform) – custom wrapper around
+[`useForm`](https://react-hook-form.com/api/useform/) hook from `react-hook-form` that helps you to work with
+SaaS Boilerplate GraphQL API.
+
+### Implement empty form component
+
+Since you already have a custom hook, the next step is to create an empty form that includes only a submit button.
+This will allow you to verify whether your configuration is correct.
+
+Take `handleSubmit` returned from `useCreateProductForm` and pass it to `form.onSubmit` prop.
+
+```tsx title="src/routes/productForm/productForm.component.tsx"
+import { Button } from '@sb/webapp-core/components/buttons';
+import { FormattedMessage } from 'react-intl';
+
+import { useCreateProductForm } from './productForm.hooks'
+
+export const ProductForm = () => {
+  const { handleSubmit } = useCreateProductForm();
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Button type="submit">
+        <FormattedMessage defaultMessage="Submit" id="Product form / Submit button" />
+      </Button>
+    </form>
+  );
+};
+```
+
+- [Button](../../api-reference/webapp-core/components#buttonsbutton) – reusable button component from `@sb/webapp-core`.
+You can customize it as much as you want.
+- [FormattedMessage](https://formatjs.io/docs/react-intl/components/#formattedmessage) – This component uses the
+[formatMessage](https://formatjs.io/docs/react-intl/api#formatmessage) API and has props that correspond to a Message
+Descriptor.
+
+### Add first form control
+
+Next you can add an actual form control to collect the `name` value our mutation expects to receive. You should use
+`react-intl` to format any labels, placeholders, and error messages.
+
+```tsx title="src/routes/productForm/productForm.component.tsx"
+// highlight-next-line
+import { Input } from '@sb/webapp-core/components/forms';
+import { Button } from '@sb/webapp-core/components/buttons';
+// highlight-next-line
+import { FormattedMessage, useIntl } from 'react-intl';
+
+import { useCreateProductForm } from './productForm.hooks'
+
+export const ProductForm = () => {
+// highlight-next-line
+  const intl = useIntl();
+  const {
+// highlight-start
+    form: {
+      register,
+      formState: { errors, isSubmitting },
+    },
+// highlight-end
+    handleSubmit,
+  } = useCreateProductForm();
+
+  return (
+    <form onSubmit={handleSubmit}>
+// highlight-start
+      <Input
+        {...register('name', {
+          required: {
+            value: true,
+            message: intl.formatMessage({
+              defaultMessage: 'Name is required',
+              id: 'Product form / Name required',
+            }),
+          },
+        })}
+        label={intl.formatMessage({
+          defaultMessage: 'Name:',
+          id: 'Product Form / Name label',
+        })}
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Name',
+          id: 'Product form / Name placeholder',
+        })}
+        error={errors.name?.message}
+      />
+// highlight-end
+
+// highlight-next-line
+      <Button type="submit" disabled={isSubmitting}>
+        <FormattedMessage defaultMessage="Submit" id="Product form / Submit button" />
+      </Button>
+    </form>
+  );
+};
+```
+
+- form.[register](https://react-hook-form.com/api/useform/register/) – Method that allows you to register an input or select
+element and apply validation rules
+- [Input](../../api-reference/webapp-core/components#formsinput) – Controlled input component compatible with
+`react-hook-form`.
+
+### Define GraphQL mutation
+
+Proceed to create a new file named `productForm.graphql.ts`. In this file, implement a mutation using the autogenerated
+`gql` helper function that resides in `@sb/webapp-api-client` package. Adding this mutation will automatically
+generate all necessary TypeScript types inside `@sb/webapp-api-client` package.
+
+```ts title="src/routes/productForm/productForm.graphql.ts"
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const createProductMutation = gql(/* GraphQL */ `
+  mutation createProductMutation($input: CreateProductMutationInput!) {
+    createProduct(input: $input) {
+      productEdge {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`);
+```
+### Commit mutation in form hook
+
+```ts title="src/routes/productForm/productForm.hooks.ts"
+// highlight-start
+import { useMutation } from '@apollo/client';
+
+import { createProductMutation } from './productForm.graphql'
+// highlight-end
+
+export const useCreateProductForm = () => {
+  const form = useApiForm<ProductFields>();
+
+// highlight-start
+  const [commitMutation] = useMutation(createProductMutation, {
+    onError: (error) => {
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    }
+  });
+// highlight-end
+
+ const handleSubmit = form.handleSubmit(async (data: ProductFields) => {
+// highlight-next-line
+   await commitMutation({ variables: { input: data } });
+ });
+
+ return { form, handleSubmit };
+};
+```
+- [useMutation](https://www.apollographql.com/docs/react/data/mutations/#usemutation-api) – Apollo client hook that
+helps modify back-end data with mutations.
+- Using `async` handler makes sure the `form.formState.isSubmitting` prop is `true` when the request is in flight.
+
+## Key points
+- Use [useApiForm](../../api-reference/webapp-api-client/hooks#useapiform) hook to control form state
+- Commit mutations inside custom hooks instead of directly in components to decouple logic from presentation layer
+- Use `react-intl` to format input labels, placeholders, and error messages
