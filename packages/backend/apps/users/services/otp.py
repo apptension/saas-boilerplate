@@ -42,7 +42,7 @@ def validate_otp(user: User, otp_token: str):
 def disable_otp(user: User):
     user.otp_enabled = False
     user.otp_verified = False
-    user.otp_base32 = None
-    user.otp_auth_url = None
+    user.otp_base32 = ""
+    user.otp_auth_url = ""
 
     user.save()

@@ -54,12 +54,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     otp_enabled = models.BooleanField(default=False)
     otp_verified = models.BooleanField(default=False)
-    otp_base32 = models.CharField(max_length=255, null=True)
-    otp_auth_url = models.CharField(max_length=255, null=True)
+    otp_base32 = models.CharField(max_length=255, blank=True, default='')
+    otp_auth_url = models.CharField(max_length=255, blank=True, default='')
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
+
+    def __str__(self) -> str:
+        return self.email
 
     @property
     def is_staff(self):
@@ -80,6 +83,9 @@ class UserAvatar(ImageWithThumbnailMixin, models.Model):
     THUMBNAIL_SIZE = (128, 128)
     ERROR_FIELD_NAME = "avatar"
 
+    def __str__(self) -> str:
+        return str(self.id)
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -88,3 +94,6 @@ class UserProfile(models.Model):
     avatar = models.OneToOneField(
         UserAvatar, on_delete=models.SET_NULL, null=True, blank=True, related_name="user_profile"
     )
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"

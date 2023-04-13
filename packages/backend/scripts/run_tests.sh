@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-flake8
+ruff check .
 
 if [ "${CI:-}" = "true" ]
 then

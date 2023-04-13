@@ -5,6 +5,7 @@ db.sqlite3
 .pytest_cache/
 .env
 .pdm.toml
+.ruff_cache
 
 # Coverage
 .coverage

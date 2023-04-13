@@ -27,7 +27,7 @@ def task_apply(mocker):
                 event_bus == entry_kwarg["EventBusName"]
                 and source == entry_kwarg["Source"]
                 and detail_type == entry_kwarg["DetailType"]
-                and all([call_detail[key] == value for key, value in data.items()])
+                and all(call_detail[key] == value for key, value in data.items())
             )
             if match:
                 return

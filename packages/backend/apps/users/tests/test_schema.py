@@ -650,5 +650,5 @@ class TestDisableOTPMutation:
 
         assert executed['data']['disableOtp']['ok'] is True
         assert models.User.objects.filter(
-            id=user.id, otp_enabled=False, otp_verified=False, otp_base32=None, otp_auth_url=None
+            id=user.id, otp_enabled=False, otp_verified=False, otp_base32="", otp_auth_url=""
         ).exists()

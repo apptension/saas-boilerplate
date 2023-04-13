@@ -63,7 +63,9 @@ class TaskLocalInvoke(Task):
             due_date = datetime.now(tz=pytz.utc)
 
         entry = self.get_entry(data)
-        response = requests.post(settings.TASKS_LOCAL_URL, json={**entry, 'Time': datetime.now().isoformat()})
+        response = requests.post(
+            settings.TASKS_LOCAL_URL, json={**entry, 'Time': datetime.now().isoformat()}, timeout=10
+        )
         logger.info(f"Invoking local task: {entry=} at {due_date.isoformat()}")
         logger.info(f"Invoke local response status code: {response.status_code}")
 

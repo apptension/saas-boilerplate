@@ -12,13 +12,16 @@ User = get_user_model()
 
 
 class CrudDemoItem(models.Model):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.edited_by: Optional[User] = None
-
     id = hashid_field.HashidAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.edited_by: Optional[User] = None
 
 
 class ContentfulDemoItemFavorite(models.Model):
@@ -32,6 +35,9 @@ class ContentfulDemoItemFavorite(models.Model):
     class Meta:
         unique_together = [['item', 'user']]
 
+    def __str__(self) -> str:
+        return str(self.id)
+
 
 class DocumentDemoItem(models.Model):
     file = models.FileField(upload_to=UniqueFilePathGenerator("documents"))
@@ -39,3 +45,6 @@ class DocumentDemoItem(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="documents"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return str(self.id)

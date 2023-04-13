@@ -21,6 +21,9 @@ class Notification(models.Model):
 
     objects = managers.NotificationManager()
 
+    def __str__(self) -> str:
+        return str(self.id)
+
     @property
     def is_read(self) -> bool:
         return self.read_at is not None

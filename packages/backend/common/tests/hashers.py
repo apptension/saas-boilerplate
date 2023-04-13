@@ -42,4 +42,3 @@ class DangerousMockHasher(hashers.BasePasswordHasher):
 
     def harden_runtime(self, password, encoded):
         """Defined as a no-op to silence the super() class warning"""
-        pass

@@ -328,7 +328,7 @@ dependencies = [
     "inflection>=0.3.1",
     "packaging>=21.0",
     "pytz>=2021.1",
-    "ruamel.yaml>=0.16.13",
+    "ruamel-yaml>=0.16.13",
     "uritemplate>=3.0.0",
 ]
 
@@ -394,8 +394,8 @@ dependencies = [
     "cffi>=1.12.2; platform_python_implementation == \"CPython\" and sys_platform == \"win32\"",
     "greenlet>=2.0.0; platform_python_implementation == \"CPython\"",
     "setuptools",
-    "zope.event",
-    "zope.interface",
+    "zope-event",
+    "zope-interface",
 ]
 
 [[package]]
@@ -954,10 +954,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "ruamel.yaml"
+name = "ruamel-yaml"
 version = "0.17.21"
 requires_python = ">=3"
 summary = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
+
+[[package]]
+name = "ruff"
+version = "0.0.261"
+requires_python = ">=3.7"
+summary = "An extremely fast Python linter, written in Rust."
 
 [[package]]
 name = "s3transfer"
@@ -1127,7 +1133,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "zope.event"
+name = "zope-event"
 version = "4.6"
 summary = "Very basic event publishing system"
 dependencies = [
@@ -1135,7 +1141,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "zope.interface"
+name = "zope-interface"
 version = "6.0"
 requires_python = ">=3.7"
 summary = "Interfaces for Python"
@@ -1145,7 +1151,7 @@ dependencies = [
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:15a73dda76fb0032a3015b122ca1ccb55e310da284d800ed2872a04c5d3448ca"
+content_hash = "sha256:18b8d79ac5ee39c4d05d1c2f0f071c1853a691b33668d2953b1d710790e7c354"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -2346,9 +2352,28 @@ content_hash = "sha256:15a73dda76fb0032a3015b122ca1ccb55e310da284d800ed2872a04c5
     {url = "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7"},
     {url = "https://files.pythonhosted.org/packages/aa/65/7d973b89c4d2351d7fb232c2e452547ddfa243e93131e7cfa766da627b52/rsa-4.9.tar.gz", hash = "sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21"},
 ]
-"ruamel.yaml 0.17.21" = [
+"ruamel-yaml 0.17.21" = [
     {url = "https://files.pythonhosted.org/packages/46/a9/6ed24832095b692a8cecc323230ce2ec3480015fbfa4b79941bd41b23a3c/ruamel.yaml-0.17.21.tar.gz", hash = "sha256:8b7ce697a2f212752a35c1ac414471dc16c424c9573be4926b56ff3f5d23b7af"},
     {url = "https://files.pythonhosted.org/packages/9e/cb/938214ac358fbef7058343b3765c79a1b7ed0c366f7f992ce7ff38335652/ruamel.yaml-0.17.21-py3-none-any.whl", hash = "sha256:742b35d3d665023981bd6d16b3d24248ce5df75fdb4e2924e93a05c1f8b61ca7"},
+]
+"ruff 0.0.261" = [
+    {url = "https://files.pythonhosted.org/packages/0d/92/a8ca1c04dc47e7ac2667e445654590d689105fc106026df55cbcfcac0693/ruff-0.0.261-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:cc970f6ece0b4950e419f0252895ee42e9e8e5689c6494d18f5dc2c6ebb7f798"},
+    {url = "https://files.pythonhosted.org/packages/14/40/96c3a8831a5fbac714ead0064ad6681526385908f2dd06f83391d6c7e08a/ruff-0.0.261-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:4bcec45abdf65c1328a269cf6cc193f7ff85b777fa2865c64cf2c96b80148a2c"},
+    {url = "https://files.pythonhosted.org/packages/1b/a4/e89fbf5777404eb4b4532f5b06a709129eecdf6dcef0980688bec5f6b949/ruff-0.0.261-py3-none-win_amd64.whl", hash = "sha256:0fbc689c23609edda36169c8708bb91bab111d8f44cb4a88330541757770ab30"},
+    {url = "https://files.pythonhosted.org/packages/2e/8b/5f6b7a8d4cc8dac3dcd2573180a7dbca839a73055df2e067272c543d997f/ruff-0.0.261-py3-none-musllinux_1_2_i686.whl", hash = "sha256:39abd02342cec0c131b2ddcaace08b2eae9700cab3ca7dba64ae5fd4f4881bd0"},
+    {url = "https://files.pythonhosted.org/packages/2e/eb/8dfafe1ee789a495d85d679f5f788f275d9ea4f84add1668a05a749aadc1/ruff-0.0.261-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:d1293acc64eba16a11109678dc4743df08c207ed2edbeaf38b3e10eb2597321b"},
+    {url = "https://files.pythonhosted.org/packages/41/13/3bf7e11662facd924f63944417f315d9f9dd49a0b5c96b6193d7c01f3552/ruff-0.0.261-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:581e64fa1518df495ca890a605ee65065101a86db56b6858f848bade69fc6489"},
+    {url = "https://files.pythonhosted.org/packages/42/22/15a913ffaef2be5e26c9a57beea3cb2b3d10a10022e28355ffa0178f65b3/ruff-0.0.261-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:aaa4f52a6e513f8daa450dac4859e80390d947052f592f0d8e796baab24df2fc"},
+    {url = "https://files.pythonhosted.org/packages/4f/52/530a6cff10ab024ed4d11b42ad1551961269d786787385a839ce65bbbb81/ruff-0.0.261-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:f268d52a71bf410aa45c232870c17049df322a7d20e871cfe622c9fc784aab7b"},
+    {url = "https://files.pythonhosted.org/packages/63/6f/d2e08cf5b0217a8b2ba7e123c30f799c5c201a176a3bc0a74cce846ce143/ruff-0.0.261-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:6c5f397ec0af42a434ad4b6f86565027406c5d0d0ebeea0d5b3f90c4bf55bc82"},
+    {url = "https://files.pythonhosted.org/packages/6b/4b/307aecf586a0747d950cb5c3e77c90c7547335aa5e57c602e80b0a9f6c20/ruff-0.0.261.tar.gz", hash = "sha256:c1c715b0d1e18f9c509d7c411ca61da3543a4aa459325b1b1e52b8301d65c6d2"},
+    {url = "https://files.pythonhosted.org/packages/6b/82/3523ff1f158883782e7df9e46575146ba202144af9cbb83a296af19e97b9/ruff-0.0.261-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d95596e2f4cafead19a6d1ec0b86f8fda45ba66fe934de3956d71146a87959b3"},
+    {url = "https://files.pythonhosted.org/packages/75/2c/3ecfee398c2608fb752caa19febab02381a4e55d7a18cae052df19cdc161/ruff-0.0.261-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:8fa98e747e0fe185d65a40b0ea13f55c492f3b5f9a032a1097e82edaddb9e52e"},
+    {url = "https://files.pythonhosted.org/packages/97/7f/141919718fcacfec51ec23e6cb5c73bddf51be58f9549830951384470eb8/ruff-0.0.261-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8dbd0cee5a81b0785dc0feeb2640c1e31abe93f0d77c5233507ac59731a626f1"},
+    {url = "https://files.pythonhosted.org/packages/9c/aa/da57cbfc20c854d339a65c082b26c4ca9b4fbc7c6496934b46c68163a3d6/ruff-0.0.261-py3-none-win_arm64.whl", hash = "sha256:d2eddc60ae75fc87f8bb8fd6e8d5339cf884cd6de81e82a50287424309c187ba"},
+    {url = "https://files.pythonhosted.org/packages/d6/a2/0d5b08e9f27d0aa5369446a6146b5b4fe4ce4625732f49858dbed8768316/ruff-0.0.261-py3-none-win32.whl", hash = "sha256:daff64b4e86e42ce69e6367d63aab9562fc213cd4db0e146859df8abc283dba0"},
+    {url = "https://files.pythonhosted.org/packages/dc/3a/209f1e016e6ed885e788b6021508aa257bd202ccbc72fae0a0f309e9e719/ruff-0.0.261-py3-none-macosx_10_7_x86_64.whl", hash = "sha256:6624a966c4a21110cee6780333e2216522a831364896f3d98f13120936eff40a"},
+    {url = "https://files.pythonhosted.org/packages/e3/e9/717b326c9cfcf95461ea2b52a740de10da9abb0c8209a6fd29f1c946447c/ruff-0.0.261-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:2dba68a9e558ab33e6dd5d280af798a2d9d3c80c913ad9c8b8e97d7b287f1cc9"},
 ]
 "s3transfer 0.6.0" = [
     {url = "https://files.pythonhosted.org/packages/5e/c6/af903b5fab3f9b5b1e883f49a770066314c6dcceb589cf938d48c89556c1/s3transfer-0.6.0-py3-none-any.whl", hash = "sha256:06176b74f3a15f61f1b4f25a1fc29a4429040b7647133a463da8fa5bd28d5ecd"},
@@ -2572,11 +2597,11 @@ content_hash = "sha256:15a73dda76fb0032a3015b122ca1ccb55e310da284d800ed2872a04c5
     {url = "https://files.pythonhosted.org/packages/f1/e1/e76a76353444f895a1f0b52e71c28d27a25c4657e51ed30666ef7bb7ff74/yarl-1.8.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:009a028127e0a1755c38b03244c0bea9d5565630db9c4cf9572496e947137a87"},
     {url = "https://files.pythonhosted.org/packages/f9/fa/9c746d29462714663d04cf9e34cc44a86efa17705a811c77556643b80f1b/yarl-1.8.2-cp38-cp38-win_amd64.whl", hash = "sha256:326dd1d3caf910cd26a26ccbfb84c03b608ba32499b5d6eeb09252c920bcbe4f"},
 ]
-"zope.event 4.6" = [
+"zope-event 4.6" = [
     {url = "https://files.pythonhosted.org/packages/42/49/ba8610674cad200da2f9c87b5f52fdcf18b02dd743a8a1e90726803cc42f/zope.event-4.6.tar.gz", hash = "sha256:81d98813046fc86cc4136e3698fee628a3282f9c320db18658c21749235fce80"},
     {url = "https://files.pythonhosted.org/packages/8b/a8/3ab9648dc08d2ab7543145ec174a2d982d08fb996d50d9a4d3e057da7132/zope.event-4.6-py2.py3-none-any.whl", hash = "sha256:73d9e3ef750cca14816a9c322c7250b0d7c9dbc337df5d1b807ff8d3d0b9e97c"},
 ]
-"zope.interface 6.0" = [
+"zope-interface 6.0" = [
     {url = "https://files.pythonhosted.org/packages/0c/76/b55fe32619f145fe81f57e22565112bc67c1856e06680b5a02eaefe88e7c/zope.interface-6.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:eba51599370c87088d8882ab74f637de0c4f04a6d08a312dce49368ba9ed5c2a"},
     {url = "https://files.pythonhosted.org/packages/0f/60/05b514d6edbcae939d3b3342aad358e29b86c4d0161c77c78a5ec8255b11/zope.interface-6.0-cp37-cp37m-win_amd64.whl", hash = "sha256:042f2381118b093714081fd82c98e3b189b68db38ee7d35b63c327c470ef8373"},
     {url = "https://files.pythonhosted.org/packages/18/27/f4930daa37267aee9866e7909ce7a372f9b8e316946b838f8b22e7f5a26f/zope.interface-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:f299c020c6679cb389814a3b81200fe55d428012c5e76da7e722491f5d205990"},

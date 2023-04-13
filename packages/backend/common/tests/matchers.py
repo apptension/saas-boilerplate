@@ -26,9 +26,7 @@ class FuzzyDict(calleee.base.BaseMatcher):
             raise TypeError("%s() requires at least one argument" % (self.__class__.__name__,))
 
         self.attr_names = list(args)
-        self.attr_dict = dict(
-            (k, v if isinstance(v, calleee.base.BaseMatcher) else calleee.Eq(v)) for k, v in kwargs.items()
-        )
+        self.attr_dict = {k: v if isinstance(v, calleee.base.BaseMatcher) else calleee.Eq(v) for k, v in kwargs.items()}
 
     def match(self, value):
         for name in self.attr_names:

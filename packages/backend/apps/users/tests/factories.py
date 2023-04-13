@@ -35,7 +35,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         plain_password = kwargs.pop('password', 'secret')
         password = hashers.make_password(plain_password)
         user = super()._create(*args, **kwargs, password=password)
-        setattr(user, '_faker_password', plain_password)
+        user._faker_password = plain_password
         return user
 
     @factory.post_generation

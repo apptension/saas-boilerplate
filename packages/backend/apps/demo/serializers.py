@@ -1,11 +1,10 @@
+from config import settings
 from hashid_field import rest as hidrest
 from rest_framework import serializers
 from django.utils.translation import gettext as _
 
 from apps.content import models as content_models
 from . import models
-
-UPLOADED_DOCUMENT_SIZE_LIMIT = 10 * 1024 * 1024
 
 
 class CrudDemoItemSerializer(serializers.ModelSerializer):
@@ -27,12 +26,12 @@ class DocumentDemoItemSerializer(serializers.ModelSerializer):
     file = serializers.FileField(required=False)
 
     def validate(self, attrs):
-        if not self.instance and attrs["created_by"].documents.count() >= 10:
+        if not self.instance and attrs["created_by"].documents.count() >= settings.USER_DOCUMENTS_NUMBER_LIMIT:
             raise serializers.ValidationError(_('User has reached documents number limit.'))
         return attrs
 
     def validate_file(self, file):
-        if file.size > UPLOADED_DOCUMENT_SIZE_LIMIT:
+        if file.size > settings.UPLOADED_DOCUMENT_SIZE_LIMIT:
             raise serializers.ValidationError(_('File is too large.'))
         return file
 

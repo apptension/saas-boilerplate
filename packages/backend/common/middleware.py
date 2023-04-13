@@ -50,7 +50,7 @@ class SetAuthTokenCookieMiddleware:
 class SentryMiddleware(object):
     @staticmethod
     def _get_validation_error_first_detail(detail):
-        if isinstance(detail, list) or isinstance(detail, dict):
+        if isinstance(detail, (list, dict)):
             return next(iter(detail), detail)
         return detail
 
@@ -80,7 +80,7 @@ class ManageCookiesMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        if (cookies := getattr(request, "set_cookies", None)) and response.status_code == 200:
+        if (cookies := getattr(request, "set_cookies", None)) and response.status_code == 200:  # noqa: PLR2004
             for key, value in cookies.items():
                 response.set_cookie(key, value, max_age=settings.COOKIE_MAX_AGE, httponly=True)
 
