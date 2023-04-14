@@ -312,8 +312,7 @@ XRAY_RECORDER = {
 }
 
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS", default=[])
-
-RATELIMIT_IP_META_KEY = env("RATELIMIT_IP_META_KEY", default=None)
+RATELIMIT_IP_META_KEY = "common.utils.get_client_ip"
 
 OTP_AUTH_ISSUER_NAME = env("OTP_AUTH_ISSUER_NAME", default="")
 OTP_AUTH_TOKEN_COOKIE = 'otp_auth_token'

@@ -9,7 +9,7 @@ from graphql.execution import ExecutionResult
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.exceptions import APIException
 from rest_framework.settings import api_settings
-from sentry_sdk import start_transaction
+from sentry_sdk import start_transaction, capture_exception
 
 from common.acl import policies
 
@@ -25,8 +25,11 @@ class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
 
     @staticmethod
     def format_error(error):
-        if hasattr(error, 'original_error') and isinstance(error.original_error, APIException):
-            error.extensions = error.original_error.get_full_details()
+        if hasattr(error, 'original_error'):
+            if isinstance(error.original_error, APIException):
+                error.extensions = error.original_error.get_full_details()
+            else:
+                capture_exception(error.original_error)
 
         if isinstance(error, GraphQLError):
             return error.formatted
