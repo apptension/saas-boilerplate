@@ -1,6 +1,134 @@
 ---
-title: How to create a new React component in web app?
-description: TODO >Description<
+title: How to create a new React component in web application?
+description: Create an example component structure and display it in application
 ---
+import BarrelExportsPartial from '../../shared/partials/_barrel-exports.mdx';
 
-TBD
+In this guide, we will show you how to create a new React component in a web application package using SaaS Boilerplate.
+The component will be named `ExampleComponent`, and it will display an `Example component message`.
+
+## Create Component Skeleton
+
+First, create a component main file and a separate styles file under `packages/webapp/src/shared/components/exampleComponent/`.
+The component file should look like this:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.component.tsx" showLineNumbers
+import { FormattedMessage } from 'react-intl';
+
+import { Container } from './example.styles';
+
+export const ExampleComponent = () => {
+  return (
+    <Container>
+      <h1>
+        <FormattedMessage defaultMessage="Example component message" id="ExampleComponent / Header message" />
+      </h1>
+    </Container>
+  );
+};
+```
+
+:::info
+
+In this example, we are using the `react-intl` package to localize the message. It is recommended to use only localized copy in the entire project from the start of the development. The component styles file should look like this:
+
+:::
+
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.styles.ts" showLineNumbers
+import { typography } from '@sb/webapp-core/theme';
+import styled from 'styled-components';
+
+export const Container = styled.div`
+  ${typography.heading5};
+`;
+```
+
+:::info
+
+In this example, we are using the `typography` object from the `@sb/webapp-core/theme` package, which contains all project-wide theme parts like sizes, colors, and fonts.
+
+:::
+
+<BarrelExportsPartial />
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/index.ts" showLineNumbers
+export { ExampleComponent } from './example.component';
+```
+
+## Create a test for the Component
+
+Create a directory `__tests__` in the component folder that will contain all tests along with the following file:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/__tests__/example.component.spec.tsx" showLineNumbers
+import { render } from '../../../../tests/utils/rendering';
+import { ExampleComponent } from '../exampleComponent.component';
+
+describe('ExampleComponent: Component', () => {
+  const Component = () => <ExampleComponent />;
+
+  it('should render without errors', () => {
+    render(<Component />);
+  });
+});
+```
+:::info
+
+This test will simply check if the component renders without any issues. For more information about testing web
+application components, please visit the
+[Writing tests for webapp](../tests/webapp) section.
+
+:::
+
+## Create a Storybook File
+
+The last step of creating the component structure will be to create a Storybook file so that the newly created
+component will be displayed along with all other components in Storybook tool.
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.stories.tsx" showLineNumbers
+import { Story } from '@storybook/react';
+import { ExampleComponent } from './example.component';
+
+const Template: Story = () => {
+  return <ExampleComponent />;
+};
+
+export default {
+  title: 'Shared/ExampleComponent',
+  component: ExampleComponent,
+};
+
+export const Default = Template.bind({});
+```
+
+## Display component on application home page
+
+Finally, you can use the ready component on the home page of the app by importing it and displaying it under the
+welcome message:
+
+```jsx title="packages/webapp/src/routes/home/home.component.tsx" showLineNumbers
+...
+import { ExampleComponent } from '../../shared/components/example.component';
+...
+return (
+    <Container>
+        ...
+        <typography.H1>
+            <FormattedMessage defaultMessage="Welcome!" id="Home / title" />
+        </typography.H1>
+
+        // highlight-next-line
+        <ExampleComponent />
+    <Container />
+);
+...
+```
+
+## Generating components
+
+:::tip
+
+The example component structure can be generated automatically using `plop` command.
+Check the `webapp` [API reference](../../api-reference) for more information.
+
+:::

@@ -1,6 +1,306 @@
 ---
-title: How to write a component that fetches data from back-end?
+title: How to write a React component that fetches data from back-end?
 description: TODO >Description<
 ---
 
-TBD
+import ComponentStructurePartial from '../../shared/partials/_component-structure.mdx';
+import TestingCustomRenderPartial from '../../shared/partials/_testing-custom-render.mdx';
+import TestingComponentLoadingStatePartial from '../../shared/partials/_testing-component-loading-state.mdx';
+
+In this guide, you will learn how to write a component that fetches data from the backend using a GraphQL API.
+
+<ComponentStructurePartial />
+
+
+## Execute query and display data
+
+Before you can fetch data for the component, you need to write a GraphQL query. For the purpose of this guide, we will
+assume that there is a `todo` object defined in the GraphQL schema and that you want to query for its `id` and `name`.
+
+Create the following file with the query:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.graphql.ts" showLineNumbers
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const todoQuery = gql(/* GraphQL */ `
+  query todoQuery {
+    todo {
+      id
+      name
+    }
+  }
+`);
+```
+
+Notice that it uses `gql` from the `@sb/webapp-api-client/graphql` package, which is a generated object based on the
+available schema.
+
+Now you can modify the component file to use the above query and fetch the data:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.component.tsx" showLineNumbers
+// highlight-next-line
+import { useQuery } from '@apollo/client';
+import { FormattedMessage } from 'react-intl';
+
+// highlight-next-line
+import { todoQuery } from './example.graphql';
+import { Container } from './example.styles';
+
+export const ExampleComponent = () => {
+  // highlight-next-line
+  const { loading, data } = useQuery(todoQuery);
+  return (
+    <Container>
+    // highlight-start
+      {!loading && data ? (
+        `Fetched todo: ${data.todo?.id} ${data.todo?.name}`
+      ) : (
+        <FormattedMessage defaultMessage="Loading..." id="ExampleComponent / loading" />
+      )}
+    // highlight-end
+    </Container>
+  );
+};
+
+```
+
+The code above will use the [`useQuery`](https://www.apollographql.com/docs/react/api/react/hooks#usequery) hook from
+the Apollo library and display the data inside the component.
+
+:::info
+
+Note that because of how Apollo works, an XHR request with a query might not be fired in favor of cached data in its
+internal store.
+
+:::
+
+### Modify storybook
+
+Changes made above will break storybook for `ExampleComponent`. You can address them by following these changes:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.stories.tsx"
+// highlight-next-line
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { Story } from '@storybook/react';
+// highlight-next-line
+import { append } from 'ramda';
+
+// highlight-next-line
+import { withProviders } from '../../utils/storybook';
+import { ExampleComponent } from './example.component';
+// highlight-next-line
+import { todoQuery } from './example.graphql';
+
+const Template: Story = () => {
+  return <ExampleComponent />;
+};
+
+// highlight-next-line
+const todo = { id: 1, name: 'Todo' };
+
+export default {
+  title: 'Shared/ExampleComponent',
+  component: ExampleComponent,
+  // highlight-start
+  decorators: [
+    withProviders({
+      apolloMocks: append(
+        composeMockedQueryResult(todoQuery, {
+          data: {
+            todo
+          }
+        })
+      ),
+    }),
+  ],
+  // highlight-end
+};
+
+export const Default = Template.bind({});
+```
+
+The code above uses some internal SaaS Boilerplate helpers that aid in writing Storybooks and tests efficiently:
+- `composeMockedQueryResult`: This is a helper that prepares a mocked query result for the given query object for the Apollo `MockedProvider`. You can read more about mocking queries [here](https://www.apollographql.com/docs/react/development-testing/testing#the-mockedprovider-component).
+- [`withProviders`](../../api-reference/webapp/utils#withproviders): This is a helper that wraps a Storybook story with the necessary providers (including `MockedProvider`).
+
+The modified Storybook code will wrap every story in this file with the necessary providers that inject a mock query result, allowing the component to load data defined in the story.
+
+
+### Testing changes
+
+Last thing to modify are the tests. Current test doesn't cover loading data and render on loading state.
+We would like to test if it displays correct data after query fetch with success.
+At the end of the test you can see assertions for loading text and first name that checks if they are rendered
+correctly.
+
+<TestingComponentLoadingStatePartial />
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/__tests__/example.component.spec.tsx"
+// highlight-next-line
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { screen } from '@testing-library/react';
+// highlight-next-line
+import { append } from 'ramda';
+
+import { render } from '../../../../tests/utils/rendering';
+import { ExampleComponent } from '../example.component';
+
+describe('ExampleComponent: Component', () => {
+  const Component = () => <ExampleComponent />;
+
+  // highlight-start
+  it('should render user name', async () => {
+    const todo = { id: 1, name: 'Todo' };
+    const loadingText = 'Loading...';
+
+    render(<Component />, { apolloMocks: append(composeMockedQueryResult({
+      data: {
+        todo
+      }
+    }))});
+
+    expect(await screen.findByText(loadingText)).toBeInTheDocument();
+
+    expect(await screen.findByText(firstName)).toBeInTheDocument();
+  });
+  // highlight-end
+});
+```
+
+<TestingCustomRenderPartial />
+
+
+## Working with collections
+
+In the second part of this guide, you will learn how to fetch collections from a GraphQL API.
+
+As in the previous part of this guide, we will assume that there is a collection of `todos` in the GraphQL schema and
+that the component will fetch a list of items from this collection.
+
+### Modify query
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.graphql.ts" showLineNumbers
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const todosQuery = gql(/* GraphQL */ `
+  query todosQuery {
+    todos {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`);
+```
+
+### Modify the component
+
+To display a collection of items, you can use the `mapConnection` helper. This helper is used to transform a GraphQL
+connection object into an array of objects.
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.component.tsx" showLineNumbers
+import { useQuery } from '@apollo/client';
+// highlight-next-line
+import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { FormattedMessage } from 'react-intl';
+
+// highlight-next-line
+import { todosQuery } from './example.graphql';
+import { Container } from './example.styles';
+
+export const ExampleComponent = () => {
+  // highlight-next-line
+  const { loading, data } = useQuery(todosQuery);
+  return (
+    <Container>
+      {!loading && data ? (
+        // highlight-next-line
+        mapConnection((node) => <div key={node?.id}>{node?.name}</div>, data.todos)
+      ) : (
+        <FormattedMessage defaultMessage="Loading..." id="ExampleComponent / loading" />
+      )}
+    </Container>
+  );
+};
+
+```
+
+### Modify storybook and tests
+
+The last thing to do is to modify storybook and tests to handle collection of items:
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/example.stories.tsx"
+// highlight-next-line
+import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { Story } from '@storybook/react';
+import { append } from 'ramda';
+
+import { withProviders } from '../../utils/storybook';
+import { ExampleComponent } from './example.component';
+import { todosQuery } from './example.graphql';
+
+const Template: Story = () => {
+  return <ExampleComponent />;
+};
+
+// highlight-next-line
+const todos = [{ id: 1, name: 'Todo 1' }, { id: 2, name: 'Todo 2' }];
+
+export default {
+  title: 'Shared/ExampleComponent',
+  component: ExampleComponent,
+  decorators: [
+    withProviders({
+      apolloMocks: append(
+        // highlight-start
+        composeMockedListQueryResult(todosQuery,
+        'todos',
+        'todosQuery',
+        {
+          data: todos
+        })
+        // highlight-end
+      ),
+    }),
+  ],
+};
+
+export const Default = Template.bind({});
+```
+
+```jsx title="packages/webapp/src/shared/components/exampleComponent/__tests__/example.component.spec.tsx"
+// highlight-next-line
+import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { screen } from '@testing-library/react';
+import { append } from 'ramda';
+
+import { render } from '../../../../tests/utils/rendering';
+import { ExampleComponent } from '../example.component';
+
+describe('ExampleComponent: Component', () => {
+  const Component = () => <ExampleComponent />;
+
+  // highlight-next-line
+  it('should render list', async () => {
+    // highlight-next-line
+    const todos = [{ id: 1, name: 'Todo 1' }, { id: 2, name: 'Todo 2' }];
+    const loadingText = 'Loading...';
+
+    render(<Component />, {
+      apolloMocks: append(
+        // highlight-next-line
+        composeMockedListQueryResult(todosQuery, 'todos', 'todosQuery', { data: todos })
+      ),
+    });
+
+    // check if the loaded is rendered
+    expect(await screen.findByText(loadingText)).toBeInTheDocument();
+
+    // next, check if the first name is rendered correctly
+    expect(await screen.findByText(todos[0].name)).toBeInTheDocument();
+  });
+});
+```

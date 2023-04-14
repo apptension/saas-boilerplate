@@ -1,6 +1,8 @@
 {{#if hasProps}}
 import { ReactNode } from 'react';
 {{/if}}
+import { FormattedMessage } from 'react-intl';
+
 import { Container } from './{{ camelCase name }}.styles';
 {{#if hasProps}}
 
@@ -12,7 +14,7 @@ export type {{ pascalCase name }}Props = {
 export const {{ pascalCase name }} = ({{#if hasProps}}{ children }: {{ pascalCase name }}Props{{/if}}) => {
   return (
     <Container>
-      <h1>{{ pascalCase name }} component</h1>
+      <h1><FormattedMessage defaultMessage="{{ pascalCase name }} component" id="{{ pascalCase name }} / message" /></h1>
     </Container>
   );
 };
