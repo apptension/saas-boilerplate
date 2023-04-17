@@ -82,4 +82,12 @@ def complete(request, backend, *args, **kwargs):
             token = jwt_tokens.RefreshToken.for_user(user)
             backend.strategy.set_jwt(token)
 
-    return do_complete(request.backend, _do_login, request.user, REDIRECT_FIELD_NAME, request, *args, **kwargs)
+    return do_complete(
+        request.backend,
+        _do_login,
+        user=request.user,
+        redirect_name=REDIRECT_FIELD_NAME,
+        request=request,
+        *args,  # noqa: B026
+        **kwargs
+    )
