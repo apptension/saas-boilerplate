@@ -2,6 +2,7 @@ import { MockedResponse } from '@apollo/client/testing';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 import { append } from 'ramda';
@@ -21,14 +22,14 @@ describe('ConfirmEmail: Component', () => {
 
   const Component = () => (
     <Routes>
-      <Route path={RoutesConfig.getLocalePath(['confirmEmail'])} element={<ConfirmEmail />} />
-      <Route path={RoutesConfig.getLocalePath(['login'])} element={<span>Login page mock</span>} />
+      <Route path={getLocalePath(RoutesConfig.confirmEmail)} element={<ConfirmEmail />} />
+      <Route path={getLocalePath(RoutesConfig.login)} element={<span>Login page mock</span>} />
     </Routes>
   );
 
   describe('token is invalid', () => {
     it('should show error message and redirect to login ', async () => {
-      const routerProps = createMockRouterProps('confirmEmail', { user, token });
+      const routerProps = createMockRouterProps(RoutesConfig.confirmEmail, { user, token });
       const requestMock = composeMockedQueryResult(authConfirmUserEmailMutation, {
         variables: {
           input: { user, token },
@@ -65,7 +66,7 @@ describe('ConfirmEmail: Component', () => {
   describe('token is valid', () => {
     describe('user is logged out', () => {
       it('should show success message and redirect to login ', async () => {
-        const routerProps = createMockRouterProps('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps(RoutesConfig.confirmEmail, { user, token });
 
         const requestMock = composeMockedQueryResult(authConfirmUserEmailMutation, {
           variables: {
@@ -114,7 +115,7 @@ describe('ConfirmEmail: Component', () => {
       });
 
       it('should show success message and redirect to login ', async () => {
-        const routerProps = createMockRouterProps('confirmEmail', { user, token });
+        const routerProps = createMockRouterProps(RoutesConfig.confirmEmail, { user, token });
 
         const { waitForApolloMocks } = render(<Component />, {
           routerProps,

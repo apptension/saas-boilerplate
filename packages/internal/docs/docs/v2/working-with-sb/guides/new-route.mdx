@@ -1,6 +1,205 @@
 ---
 title: How to add a new route in web app?
-description: TODO >Description<
+description: This guide will show you how to quickly create a new React Router route component.
 ---
 
-TBD
+SaaS Boilerplate's web application is using [React router](https://reactrouter.com/en/main) to enable client side
+routing. This guide will show you how to quickly create a new route component.
+
+## What is a route component?
+
+Routes are arguably the most crucial aspect of an application using React Router. They link URL segments to components,
+data loading, and data mutations. With route nesting, complex application layouts and data dependencies are simplified
+and made more declarative.
+
+Think of it like this: if you want to display a certain component when URL in address bar changes, creating a new route
+is the tool you need!
+
+## Create route component
+
+Route components are not really any different from regular React components. To follow this guide you'll need an empty
+component, which we'll creatively name `Example`.
+
+```tsx title=packages/webapp/src/routes/example/example.component.tsx showLineNumbers
+import { FormattedMessage } from 'react-intl';
+
+export const Example = () => {
+  return (
+    <h1>
+      <FormattedMessage defaultMessage="Example component message" id="Example / Header message" />
+    </h1>
+  );
+};
+```
+
+:::info
+
+You can refer to the [Create React component](./create-react-component) guide for more details on creating new
+components.
+
+:::
+
+## Create a lazy-loaded component
+You can use a simple helper function to create lazy-loaded components: `asyncComponent`. Its role is to
+add `Suspense` so that you don't have to clutter `App` component too much with repeated `Suspense` usage.
+
+```ts title=packages/webapp/src/app/asyncComponents.ts showLineNumbers
+import { asyncComponent } from '@sb/webapp-core/utils/asyncComponent';
+
+export const Example = asyncComponent(() => import('../routes/example'));
+```
+
+:::info
+
+You can read more on code splitting with `lazy` in React [documentation](https://react.dev/reference/react/lazy)
+
+:::
+
+## Define a path for the route
+
+### Regular path
+
+It's recommended to define your routes in a `RouteConfig` map to avoid using string literals. This allows
+you to import the object and reference `RoutesConfig.example` anywhere in your code.
+
+```ts title=packages/webapp/src/config/routes.ts showLineNumbers
+export const RoutesConfig = {
+  // existing routes here ...
+  example: 'example'
+};
+```
+
+The `string` value is a `path` pattern to match against the URL. You'll be passing this directly to `Route` component.
+Check official [documentation](https://reactrouter.com/en/main/route/route#path) to learn more about it (e.g. how to
+define params).
+
+### Nested path
+
+You can also define nested paths using `nestedPath` helper function and access is anywhere in the code like this:
+`RoutesConfig.example.edit`. It would produce a path segment equal to `'example/:id/edit'`.
+
+```ts title=packages/webapp/src/config/routes.ts showLineNumbers
+import { nestedPath } from '@sb/webapp-core/utils';
+
+export const RoutesConfig = {
+  example: nestedPath('example', {
+    list: '',
+    details: ':id',
+    edit: ':id/edit',
+    add: 'add',
+  }),
+};
+```
+
+- [`nestedPath`](../../api-reference/webapp-core/utils#nestedpath) – helper function to define typed nested route
+config
+
+## Render route component
+Most high-level route components are rendered in the `App` component. You have the ability to determine whether a
+component is public or private based on the user's authentication status or role.
+
+### Route available to everyone
+A public route is the simplest; there is no access control, so anyone can access it. You can render this type of route
+directly inside the `<Route path={LANG_PREFIX} />` component.
+
+```tsx title="packages/webapp/src/app/app.component.tsx" showLineNumbers
+import { Route, Routes } from 'react-router-dom';
+
+import { Example } from './asyncComponents';
+import { LANG_PREFIX, RoutesConfig } from './config/routes';
+import { ValidRoutesProviders } from './providers';
+
+export const App = () => {
+  return (
+    <Routes>
+      <Route element={<ValidRoutesProviders />}>
+// highlight-start
+        <Route path={LANG_PREFIX}>
+          <Route path={RoutesConfig.example} element={<Example />} />
+          { /* other routes here */ }
+        </Route>
+// highlight-end
+      </Route>
+    </Routes>
+  );
+};
+
+export default App;
+```
+
+- [`ValidRoutesProviders`](../../api-reference/webapp/components#validroutesproviders) – renders various language-dependant
+providers.
+
+### Routes only for authenticated users
+In order to define that route can only be accessed by authenticated users, nest your route under
+`<Route path={LANG_PREFIX} element={<AuthRoute />}>`. You can also define a specific role that can access the page
+(e.g. `admin`)
+
+```tsx title="packages/webapp/src/app/app.component.tsx" showLineNumbers
+import { Route, Routes } from 'react-router-dom';
+
+import { AuthRoute } from '../shared/components/routes/authRoute';
+import { Example } from './asyncComponents';
+import { LANG_PREFIX } from './config/routes';
+import { ValidRoutesProviders } from './providers';
+
+export const App = () => {
+  return (
+    <Routes>
+      <Route element={<ValidRoutesProviders />}>
+// highlight-start
+        <Route path={LANG_PREFIX} element={<AuthRoute />}>
+          <Route index element={<Example />} />
+          { /* other routes here */ }
+        </Route>
+// highlight-end
+      </Route>
+    </Routes>
+  );
+};
+
+export default App;
+```
+
+- [`ValidRoutesProviders`](../../api-reference/webapp/components#validroutesproviders) – renders various language-dependant
+providers.
+- [`AuthRoute`](../../api-reference/webapp/components#authroute) – Component that only renders for authenticated user.
+You can use `allowedRoles` prop to control specific role.
+
+### Routes only for anonymous users
+
+```tsx title="packages/webapp/src/app/app.component.tsx" showLineNumbers
+import { Route, Routes } from 'react-router-dom';
+
+import { AnonymousRoute } from '../shared/components/routes/anonymousRoute';
+import { Example } from './asyncComponents';
+import { LANG_PREFIX, RoutesConfig } from './config/routes';
+import { ValidRoutesProviders } from './providers';
+
+export const App = () => {
+  return (
+    <Routes>
+      <Route element={<ValidRoutesProviders />}>
+// highlight-start
+        <Route path={LANG_PREFIX} element={<AnonymousRoute />}>
+          <Route path={RoutesConfig.example} element={<Example />} />
+           { /* other routes here */ }
+        </Route>
+// highlight-end
+      </Route>
+    </Routes>
+  );
+};
+
+export default App;
+```
+
+- [`ValidRoutesProviders`](../../api-reference/webapp/components#validroutesproviders) – renders various language-dependant
+providers.
+- [`AnonymousRoute`](../../api-reference/webapp/components#anonymousroute) – renders route only for anonymous users
+
+:::tip
+
+If you want to learn more about Routes check official React Router's [documentation](https://reactrouter.com/en/main/route/route)
+
+:::

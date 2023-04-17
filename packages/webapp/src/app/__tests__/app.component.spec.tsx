@@ -1,3 +1,4 @@
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -10,7 +11,7 @@ describe('App: Component', () => {
   const Component: FC = () => (
     <Routes>
       <Route element={<ValidRoutesProviders />}>
-        <Route path={RoutesConfig.getLocalePath(['home'])} element={<span data-testid="content" />} />
+        <Route path={getLocalePath(RoutesConfig.home)} element={<span data-testid="content" />} />
       </Route>
     </Routes>
   );

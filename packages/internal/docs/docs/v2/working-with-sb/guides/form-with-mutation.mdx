@@ -46,7 +46,7 @@ It's a good practice to encapsulate the logic of a form in a custom hook. As the
 this approach has the potential to separate the presentation and business logic, making the code more manageable and
 easier to maintain.
 
-```ts title="src/routes/productForm/productForm.hooks.ts"
+```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
 export const useCreateProductForm = () => {
   const form = useApiForm<ProductFields>();
 
@@ -69,7 +69,7 @@ This will allow you to verify whether your configuration is correct.
 
 Take `handleSubmit` returned from `useCreateProductForm` and pass it to `form.onSubmit` prop.
 
-```tsx title="src/routes/productForm/productForm.component.tsx"
+```tsx title="packages/webapp/src/routes/productForm/productForm.component.tsx" showLineNumbers
 import { Button } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
@@ -99,7 +99,7 @@ Descriptor.
 Next you can add an actual form control to collect the `name` value our mutation expects to receive. You should use
 `react-intl` to format any labels, placeholders, and error messages.
 
-```tsx title="src/routes/productForm/productForm.component.tsx"
+```tsx title="packages/webapp/src/routes/productForm/productForm.component.tsx" showLineNumbers
 // highlight-next-line
 import { Input } from '@sb/webapp-core/components/forms';
 import { Button } from '@sb/webapp-core/components/buttons';
@@ -166,7 +166,7 @@ Proceed to create a new file named `productForm.graphql.ts`. In this file, imple
 `gql` helper function that resides in `@sb/webapp-api-client` package. Adding this mutation will automatically
 generate all necessary TypeScript types inside `@sb/webapp-api-client` package.
 
-```ts title="src/routes/productForm/productForm.graphql.ts"
+```ts title="packages/webapp/src/routes/productForm/productForm.graphql.ts"
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const createProductMutation = gql(/* GraphQL */ `
@@ -184,7 +184,7 @@ export const createProductMutation = gql(/* GraphQL */ `
 ```
 ### Commit mutation in form hook
 
-```ts title="src/routes/productForm/productForm.hooks.ts"
+```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
 // highlight-start
 import { useMutation } from '@apollo/client';
 

@@ -1,0 +1,38 @@
+---
+title: Hooks
+description: webapp-core hooks API Reference
+---
+
+## useGenerateLocalePath
+A hook that returns a function you can use to generate a path that includes proper locale code. Underneath, it uses
+[`generatePath`](https://reactrouter.com/en/main/utils/generate-path#generatepath) function exported by
+`react-router-dom`.
+
+Returns [`GenerateLocalePath`](#generatelocalepath-function) function.
+
+### Example usage
+```tsx showLineNumbers
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { Link } from 'react-router-dom';
+
+const Example = () => {
+    const generateLocalePath = useGenerateLocalePath();
+
+    return (
+      <Link to={generateLocalePath(RoutesConfig.example.edit, { id: 'item-id' })}>
+        Press me
+      </Link>
+    )
+}
+```
+
+## Types
+
+### `GenerateLocalePath` function
+
+#### Arguments
+
+| Name / type           | Description                                     |
+| --------------------- |-------------------------------------------------|
+| `path`<br/>string     | URL segment                                     |
+| `params`<br/> Record  | Set of params that should be interpolated into the path |

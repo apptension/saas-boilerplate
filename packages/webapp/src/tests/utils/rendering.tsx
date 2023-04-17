@@ -3,6 +3,7 @@ import { RenderOptions, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
 
+import {getLocalePath} from "@sb/webapp-core/utils";
 import { RoutesConfig } from '../../app/config/routes';
 
 export type WrapperProps = apiUtils.WrapperProps;
@@ -46,12 +47,12 @@ function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, 
 export { customRender as render, customRenderHook as renderHook };
 
 export const createMockRouterProps = (
-  pathName: string | Array<string>,
+  pathName: string,
   params?: Record<string, any>
 ): MemoryRouterProps => {
   return {
     initialEntries: [
-      generatePath(RoutesConfig.getLocalePath(Array.isArray(pathName) ? pathName : [pathName]), {
+      generatePath(getLocalePath(pathName), {
         lang: 'en',
         ...(params ?? {}),
       }),

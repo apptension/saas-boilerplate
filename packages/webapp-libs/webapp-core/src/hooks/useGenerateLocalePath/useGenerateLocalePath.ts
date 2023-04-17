@@ -13,3 +13,5 @@ export const useGenerateLocalePath = () => {
     [lang]
   );
 };
+
+export type GenerateLocalePath = ReturnType<typeof useGenerateLocalePath>;

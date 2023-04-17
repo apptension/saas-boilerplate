@@ -1,4 +1,5 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import {
   fillNotificationsListQuery,
   fillNotificationsSubscriptionQuery,
@@ -22,9 +23,9 @@ describe('Header: Component', () => {
   const Component = () => (
     <Routes>
       <Route path="/" element={<Header />} />
-      <Route path={RoutesConfig.getLocalePath(['home'])} element={<span>Home mock route</span>} />
-      <Route path={RoutesConfig.getLocalePath(['profile'])} element={<span>Profile mock route</span>} />
-      <Route path={RoutesConfig.getLocalePath(['logout'])} element={<span>Logout mock route</span>} />
+      <Route path={getLocalePath(RoutesConfig.home)} element={<span>Home mock route</span>} />
+      <Route path={getLocalePath(RoutesConfig.profile)} element={<span>Profile mock route</span>} />
+      <Route path={getLocalePath(RoutesConfig.logout)} element={<span>Logout mock route</span>} />
     </Routes>
   );
 

@@ -1,5 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { media } from '@sb/webapp-core/theme';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import {
   fillNotificationsListQuery,
   fillNotificationsSubscriptionQuery,
@@ -28,13 +29,13 @@ jest.mock('@sb/webapp-core/theme', () => {
 });
 
 describe('Layout: Component', () => {
-  const homeRoutePath = ['home'];
+  const homeRoutePath = RoutesConfig.home;
   const privacyPolicyPlaceholder = 'PP placeholder';
 
   const Component = ({ routeKey = homeRoutePath }) => (
     <Routes>
       <Route
-        path={RoutesConfig.getLocalePath(routeKey)}
+        path={getLocalePath(routeKey)}
         element={
           <Layout>
             <span data-testid="content" />
@@ -42,7 +43,7 @@ describe('Layout: Component', () => {
         }
       />
       <Route
-        path={RoutesConfig.getLocalePath(['privacyPolicy'])}
+        path={getLocalePath(RoutesConfig.privacyPolicy)}
         element={
           <Layout>
             <span>{privacyPolicyPlaceholder}</span>
@@ -59,7 +60,7 @@ describe('Layout: Component', () => {
 
     describe('on /auth routes', () => {
       it('should not show open menu button', async () => {
-        const authPath = ['login'];
+        const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
         const apolloMocks = append(
           fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
@@ -206,7 +207,7 @@ describe('Layout: Component', () => {
 
     describe('on /auth routes', () => {
       it('should not show menu links', async () => {
-        const authPath = ['login'];
+        const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
         const apolloMocks = append(
           fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })

@@ -5,7 +5,7 @@ description: TODO >Description<
 
 ## Django model based mutation
 
-Let's imagine you have a `store` module and you want to include a new database model that allows your users to create
+Let's imagine you have a `store` module, and you want to include a new database model that allows your users to create
 new products.
 
 :::info
@@ -18,7 +18,7 @@ If you're also interested in front-end part of this guide check out [Form with m
 
 You may already have your own model, but the examples in this guide are built upon the following Django model:
 
-```python title="packages/backend/apps/store/models.py"
+```python title="packages/backend/apps/store/models.py" showLineNumbers
 import hashid_field
 from django.db import models
 
@@ -39,7 +39,7 @@ type objects, which are defined independently from serializers.
 
 :::
 
-```python title="packages/backend/apps/store/serializers.py"
+```python title="packages/backend/apps/store/serializers.py" showLineNumbers
 from hashid_field import rest as hidrest
 from rest_framework import serializers
 
@@ -61,7 +61,7 @@ Moreover, you can connect this serializer to more than one mutation, similar to 
 You can use Graphene Django to automatically generate GraphQL schema for Django models. Your future mutation will
 reference those types to build both input and output schema.
 
-```python title="packages/backend/apps/store/schema.py"
+```python title="packages/backend/apps/store/schema.py" showLineNumbers
 from graphene import relay
 from graphene_django import DjangoObjectType
 
@@ -90,7 +90,7 @@ Next, you need to create a mutation object that references the previously create
 you also define an `edge_class` in `Meta`, or else your schema will not include the `productEdge` field. This field
 could be useful to your frontend, as it can be used to easily push newly created data into an existing collection.
 
-```python title="packages/backend/apps/store/schema.py"
+```python title="packages/backend/apps/store/schema.py" showLineNumbers
 from common.graphql import mutations
 from . import models, serializers
 
@@ -126,7 +126,7 @@ It is possible that the referenced file already contains a `Mutation` object. If
 However, if it does not exist yet, it is important to add it to the root of the schema. Think of this similarly to
 `urls.py` used by Django apps. It is located in `config` python package.
 
-```python title="packages/backend/config/schema.py"
+```python title="packages/backend/config/schema.py" showLineNumbers
 from apps.store import schema as store_schema
 
 # ...

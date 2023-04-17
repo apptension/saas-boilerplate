@@ -69,7 +69,7 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/webapp/index',
           },
-          items: ['v2/api-reference/webapp/utils'],
+          items: ['v2/api-reference/webapp/utils', 'v2/api-reference/webapp/components'],
         },
         {
           type: 'category',
@@ -78,7 +78,11 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/webapp-core/index',
           },
-          items: ['v2/api-reference/webapp-core/components'],
+          items: [
+            'v2/api-reference/webapp-core/utils',
+            'v2/api-reference/webapp-core/components',
+            'v2/api-reference/webapp-core/hooks',
+          ],
         },
         {
           type: 'category',

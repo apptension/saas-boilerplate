@@ -1,0 +1,52 @@
+---
+title: Utils
+description: webapp-core utils API Reference
+---
+
+## nestedPath
+Helper function to define typed nested route config
+
+### Example usage
+
+#### In route config
+```ts showLineNumbers
+import { nestedPath } from '@sb/webapp-core/utils';
+
+export const RoutesConfig = {
+  example: nestedPath('example', {
+    list: '',
+    details: ':id',
+    edit: ':id/edit',
+    add: 'add',
+  }),
+};
+```
+
+#### When defining a route component
+
+
+```tsx
+import { Route } from 'react-router-dom';
+
+<Route path={RoutesConfig.example.edit} element={<CrudDemoItemEdit />} />
+```
+
+#### When creating a link
+
+```tsx showLineNumbers
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { Link } from 'react-router-dom';
+
+const Example = () => {
+    const generateLocalePath = useGenerateLocalePath();
+
+    return (
+      <Link to={generateLocalePath(RoutesConfig.example.edit, { id: 'item-id' })}>
+        Press me
+      </Link>
+    )
+}
+```
+
+- [`useGenerateLocalePath`](./hooks#usegeneratelocalepath) – a hook that returns a function you can use to generate a
+path that includes proper locale code

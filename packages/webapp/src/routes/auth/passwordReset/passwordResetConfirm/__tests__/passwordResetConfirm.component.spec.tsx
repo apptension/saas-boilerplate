@@ -1,4 +1,5 @@
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -22,13 +23,13 @@ const LoginPageMock = <span>Login page mock</span>;
 describe('PasswordResetConfirm: Component', () => {
   const Component = () => (
     <Routes>
-      <Route path={RoutesConfig.getLocalePath(['passwordReset', 'confirm'])} element={<PasswordResetConfirm />} />
-      <Route path={RoutesConfig.getLocalePath(['login'])} element={LoginPageMock} />
+      <Route path={getLocalePath(RoutesConfig.passwordReset.confirm)} element={<PasswordResetConfirm />} />
+      <Route path={getLocalePath(RoutesConfig.login)} element={LoginPageMock} />
       <Route path="*" element={LoginPageMock} />
     </Routes>
   );
 
-  const routePath = ['passwordReset', 'confirm'];
+  const routePath = RoutesConfig.passwordReset.confirm;
 
   const fillForm = async (newPassword: string) => {
     await userEvent.type(await screen.findByLabelText(/^new password$/i), newPassword);
