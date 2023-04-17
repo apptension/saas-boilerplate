@@ -1,6 +1,91 @@
 ---
 title: How to update schema?
-description: TODO >Description<
+description: Update TypeScript types based on GraphQL schema
 ---
 
-TBD
+
+One of the advantages of using GraphQL is the ability to generate TypeScript types from the GraphQL schema. This ensures
+that the types used in the client code match those defined in the schema, which helps avoid errors and makes it easier to refactor the codebase.
+
+
+:::info
+
+Apollo Client documentation provides detailed information on how to
+[use TypeScript with Apollo Client](https://www.apollographql.com/docs/react/development-testing/static-typing).
+
+:::info
+
+After making changes to the schema on the back-end, the types in the client application need to be updated accordingly.
+In this article, we will describe the steps that need to be taken to update types based on the GraphQL schema in the
+webapp application.
+
+## Updating GraphQL TypeScript types instructions
+
+To update types in the webapp application code, two steps need to be taken:
+
+1. **Download schemas**
+
+    To download the GraphQL schemas, run the command:
+    ```bash
+    nx run webapp:graphql:download-schema
+    ```
+    This command will introspect
+    and save both schemas (main back-end API and Contentful API) to files located at
+    ```
+    packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql
+    packages/webapp-libs/webapp-contentful/graphql/schema/contentful.graphql
+    ```
+
+    Then you can generate types based on the downloaded files.
+
+2. **Generate types**
+
+    To generate the types based on the downloaded GraphQL schemas, run the following command:
+    ```bash
+    nx run webapp:graphql:generate-types
+    ```
+    This command uses the [`graphql-codegen`](https://the-guild.dev/graphql/codegen) tool and a special configuration
+    defined in `packages/webapp-libs/webapp-api-client/graphql/codegen.ts`.
+    This configuration looks for `graphql/codegen.ts` files in the `webapp-libs` directory and merges them into a single
+    configuration. Based on this configuration, it generates ready to use TypeScript types in
+    `packages/webapp-libs/webapp-api-client/src/graphql/__generated`.
+
+### Example Usage of the Generated Types
+
+Once the types have been generated, they can be used in the webapp code. For example, suppose you woulid like to have a
+query that fetches data from the API:
+
+```typescript title=posts.graphql.ts showLineNumbers
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const getPostsQuery = gql(/* GraphQL */`
+  query getPostsQuery() {
+    posts {
+      id
+      title
+    }
+  }
+`);
+```
+
+```typescript title=posts.component.tsx showLineNumbers
+import { useQuery } from '@apollo/client';
+import { getPostsQuery } from './posts.graphql';
+
+function Posts() {
+  const { loading, error, data } = useQuery(getPostsQuery);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return (
+    <ul>
+      {data?.posts.map(post => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+In the example above `data` returned from `useQuery` has correct types.
