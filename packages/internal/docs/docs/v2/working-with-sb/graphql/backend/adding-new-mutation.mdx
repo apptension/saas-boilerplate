@@ -10,7 +10,7 @@ new products.
 
 :::info
 
-If you're also interested in front-end part of this guide check out [Form with mutation](./form-with-mutation) guide.
+If you're also interested in front-end part of this guide check out [Form with mutation](../web-app/form-with-mutation) guide.
 
 :::
 
@@ -100,15 +100,15 @@ class CreateProductMutation(mutations.CreateModelMutation):
         edge_class = ProductConnection.Edge
 ```
 
-- [CreateModelMutation](../../api-reference/backend/graphql-mutations#createmodelmutation) – a base class that
+- [CreateModelMutation](../../../api-reference/backend/graphql-mutations#createmodelmutation) – a base class that
 makes django model based mutations that create instances much simpler
 
 :::tip
 
 SaaS Boilerplate also implements:
-- [UpdateModelMutation](../../api-reference/backend/graphql-mutations#updatemodelmutation),
-- [DeleteModelMutation](../../api-reference/backend/graphql-mutations#deletemodelmutation)
-- and a more generic [SerializerMutation](../../api-reference/backend/graphql-mutations#serializermutation).
+- [UpdateModelMutation](../../../api-reference/backend/graphql-mutations#updatemodelmutation),
+- [DeleteModelMutation](../../../api-reference/backend/graphql-mutations#deletemodelmutation)
+- and a more generic [SerializerMutation](../../../api-reference/backend/graphql-mutations#serializermutation).
 
 :::
 

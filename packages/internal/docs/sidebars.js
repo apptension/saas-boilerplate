@@ -3,7 +3,6 @@ module.exports = {
     {
       type: 'category',
       label: 'Documentation',
-
       link: {
         type: 'doc',
         id: 'v2/index',
@@ -47,7 +46,7 @@ module.exports = {
     {
       type: 'category',
       label: 'API Reference',
-
+      collapsed: false,
       link: {
         type: 'doc',
         id: 'v2/api-reference/index',
@@ -56,6 +55,7 @@ module.exports = {
         {
           type: 'category',
           label: 'back-end',
+          collapsed: false,
           link: {
             type: 'doc',
             id: 'v2/api-reference/backend/index',
@@ -69,7 +69,11 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/webapp/index',
           },
-          items: ['v2/api-reference/webapp/utils', 'v2/api-reference/webapp/components'],
+          collapsed: false,
+          items: [
+            'v2/api-reference/webapp/utils',
+            'v2/api-reference/webapp/components',
+          ],
         },
         {
           type: 'category',
@@ -78,6 +82,7 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/webapp-core/index',
           },
+          collapsed: false,
           items: [
             'v2/api-reference/webapp-core/utils',
             'v2/api-reference/webapp-core/components',
@@ -91,6 +96,7 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/webapp-api-client/index',
           },
+          collapsed: false,
           items: ['v2/api-reference/webapp-api-client/hooks'],
         },
       ],
@@ -170,21 +176,57 @@ module.exports = {
         {
           type: 'category',
           label: 'Generic guides',
-
           link: {
             type: 'generated-index',
             title: 'Generic guides',
             description: 'TODO: >description<',
             slug: '/working-with-sb/guides',
           },
+          collapsed: false,
           items: [
-            'v2/working-with-sb/guides/create-react-component',
-            'v2/working-with-sb/guides/component-with-query',
+            {
+              type: 'category',
+              label: 'Web app',
+
+              link: {
+                type: 'generated-index',
+                title: 'Web app generic guides',
+                description: 'TODO: >description<',
+                slug: '/working-with-sb/guides/web-app',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/guides/web-app/create-react-component',
+                  label: 'Add React component',
+                },
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/guides/web-app/new-route',
+                  label: 'Add route component',
+                },
+              ],
+            },
+            {
+              type: 'category',
+              label: 'Back-end',
+
+              link: {
+                type: 'generated-index',
+                title: 'Back-end generic guides',
+                description: 'TODO: >description<',
+                slug: '/working-with-sb/guides/backend',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/guides/backend/backend-model',
+                  label: 'Create new model',
+                },
+              ],
+            },
+
             'v2/working-with-sb/guides/real-time-data',
-            'v2/working-with-sb/guides/new-route',
-            'v2/working-with-sb/guides/form-with-mutation',
-            'v2/working-with-sb/guides/adding-new-mutation',
-            'v2/working-with-sb/guides/backend-model',
           ],
         },
         {
@@ -207,7 +249,6 @@ module.exports = {
         {
           type: 'category',
           label: 'Working with GraphQL',
-
           link: {
             type: 'generated-index',
             title: 'Working with GraphQL',
@@ -242,11 +283,39 @@ module.exports = {
                 slug: '/working-with-sb/graphql/web-app',
               },
               items: [
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/graphql/web-app/component-with-query',
+                  label: 'Fetch data from back-end',
+                },
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/graphql/web-app/form-with-mutation',
+                  label: 'Form component with mutation',
+                },
                 'v2/working-with-sb/graphql/web-app/update-schema',
                 'v2/working-with-sb/graphql/web-app/use-fragments',
                 'v2/working-with-sb/graphql/web-app/naming-conventions',
                 'v2/working-with-sb/graphql/web-app/use-api-form',
                 'v2/working-with-sb/graphql/web-app/subscriptions',
+              ],
+            },
+            {
+              type: 'category',
+              label: 'Backend',
+
+              link: {
+                type: 'generated-index',
+                title: 'Web app',
+                description: 'TODO: >description<',
+                slug: '/working-with-sb/graphql/backend',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/graphql/backend/adding-new-mutation',
+                  label: 'Add a new mutation',
+                },
               ],
             },
           ],

@@ -9,6 +9,11 @@ module.exports = {
   organizationName: 'apptension', // Usually your GitHub org/user name.
   projectName: 'saas-boilerplate-app', // Usually your repo name.
   themeConfig: {
+    docs: {
+      sidebar: {
+        autoCollapseCategories: false,
+      },
+    },
     navbar: {
       title: 'SaaS Boilerplate by Apptension',
       logo: {

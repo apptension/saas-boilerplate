@@ -9,14 +9,14 @@ state of a form, commit a mutation when user submits it, and render errors retur
 :::info
 
 If you're looking for back-end implementation related to this guide take a look at
-[Adding new mutation](./adding-new-mutation) guide.
+[Adding new mutation](../backend/adding-new-mutation) guide.
 
 :::
 
 ### Create a new React component
 
 Let's begin by creating a new React component named `ProductForm`. You can refer to the
-[Create React component](./create-react-component) guide to create an empty one.
+[Create React component](../../guides/web-app/create-react-component) guide to create an empty one.
 
 ### Define a type describing form fields data
 
@@ -58,7 +58,7 @@ export const useCreateProductForm = () => {
 };
 ```
 
-[useApiForm](../../api-reference/webapp-api-client/hooks#useapiform) – custom wrapper around
+[useApiForm](../../../api-reference/webapp-api-client/hooks#useapiform) – custom wrapper around
 [`useForm`](https://react-hook-form.com/api/useform/) hook from `react-hook-form` that helps you to work with
 SaaS Boilerplate GraphQL API.
 
@@ -88,7 +88,7 @@ export const ProductForm = () => {
 };
 ```
 
-- [Button](../../api-reference/webapp-core/components#buttonsbutton) – reusable button component from `@sb/webapp-core`.
+- [Button](../../../api-reference/webapp-core/components#buttonsbutton) – reusable button component from `@sb/webapp-core`.
 You can customize it as much as you want.
 - [FormattedMessage](https://formatjs.io/docs/react-intl/components/#formattedmessage) – This component uses the
 [formatMessage](https://formatjs.io/docs/react-intl/api#formatmessage) API and has props that correspond to a Message
@@ -157,7 +157,7 @@ export const ProductForm = () => {
 
 - form.[register](https://react-hook-form.com/api/useform/register/) – Method that allows you to register an input or select
 element and apply validation rules
-- [Input](../../api-reference/webapp-core/components#formsinput) – Controlled input component compatible with
+- [Input](../../../api-reference/webapp-core/components#formsinput) – Controlled input component compatible with
 `react-hook-form`.
 
 ### Define GraphQL mutation
@@ -215,6 +215,6 @@ helps modify back-end data with mutations.
 - Using `async` handler makes sure the `form.formState.isSubmitting` prop is `true` when the request is in flight.
 
 ## Key points
-- Use [useApiForm](../../api-reference/webapp-api-client/hooks#useapiform) hook to control form state
+- Use [useApiForm](../../../api-reference/webapp-api-client/hooks#useapiform) hook to control form state
 - Commit mutations inside custom hooks instead of directly in components to decouple logic from presentation layer
 - Use `react-intl` to format input labels, placeholders, and error messages
