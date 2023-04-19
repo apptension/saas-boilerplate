@@ -1,6 +1,83 @@
 ---
-title: How to create a new django app and model in back-end?
-description: TODO >Description<
+title: How to create a new Django app and model in back-end?
+description: Create an example Django app and declare a model inside it
 ---
 
-TBD
+In this guide, we will show you how to create a new Django app in the backend package using SaaS Boilerplate.
+The app will be named `store`, and it will contain a `Product` model. Follow these steps:
+
+## Create new Django app
+
+First, navigate to the backend directory of the boilerplate by running the following command in your terminal:
+
+```
+cd packages/backend
+```
+
+Next, create a new Django app using the following command:
+
+```shell title="packages/backend" showLineNumbers
+make create-app app_name=store
+```
+
+:::info
+
+Django will generate a new directory named after the app within `packages/backend/apps`. This directory will contain various files and folders that make up your app, including:
+
+- `models.py`: This is where you define the data models for your app.
+- `views.py`: This is where you define the views (functions or methods) that handle HTTP requests and return HTTP responses.
+- `urls.py`: This is where you define the URL patterns for your app.
+- `admin.py`: This is where you can define how your app's models are displayed and edited in the Django admin interface.
+
+:::
+
+App needs to be included in the `LOCAL_APPS` list in the `settings.py` file to make it available to the rest of your project.
+
+```python title="packages/backend/config/settings.py" showLineNumbers
+LOCAL_APPS = [
+    "apps.content",
+    ...
+    "apps.store",
+]
+```
+
+Once you have created your app, you can start building out its functionality by adding models, views, URLs, and other components as needed.
+
+
+## Create new model
+
+Navigate to your new app directory and create a simple Django model inside `models.py` named `Product` with two fields - id and name:
+
+```python title="packages/backend/apps/store/models.py" showLineNumbers
+import hashid_field
+from django.db import models
+
+
+class Product(models.Model):
+  id = hashid_field.HashidAutoField(primary_key=True)
+  name = models.CharField(max_length=255)
+```
+
+:::info
+
+SaaS Boilerplate comes with the ability to use Hashid fields in your Django models.
+Hashids are a way of generating short, unique, and non-sequential ids from a given input.
+They are typically used to obfuscate database ids and make them harder to guess or predict.
+
+:::
+
+## Create and run database migrations
+
+Next, you need to create a migration for your new model. Run the following command:
+
+```shell title="packages/backend" showLineNumbers
+make makemigrations
+```
+
+This will create a new migration file for your app. Now, migrate your database by running the following command:
+
+```shell title="packages/backend" showLineNumbers
+make migrate
+```
+
+This will create the necessary database tables for your app.
