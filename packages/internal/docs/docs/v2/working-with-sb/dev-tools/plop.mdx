@@ -1,0 +1,28 @@
+---
+title: Plop
+description: Generating project files and code snippets
+---
+
+The `plop` tool is a popular and powerful tool for generating project files and code snippets. It allows you to create
+custom generators that will automate repetitive tasks and improve your development workflow. In this project, we have
+configured several generators that you can use to quickly create common project elements.
+
+#### Usage
+
+To run `plop` tool use the following command from `packages/webapp` directory:
+
+```bash
+pnpm run plop
+```
+
+##### Possible `plop` generators:
+
+| Generator name | Generated component        | Description                                                                                                                        |
+|----------------|----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `component`    | Generate a React component | Check [How to create a new React component in web application](../../working-with-sb/guides/web-app/create-react-component) guide! |
+| `hook`         | Generate a React hook      |                                                                                                                                    |
+| `crud`         | Generate a CRUD            | This generator will create a basic CRUD (Create, Read, Update, Delete) component with some basic functionality                     |
+| `icon`         | Register icon              |                                                                                                                                    |
+| `notification` | Generate a notification    |                                                                                                                                    |
+| `email`        | Generate an email          | This generator will create a new email template with the basic structure already in place.                                         |
+

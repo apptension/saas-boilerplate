@@ -2,7 +2,7 @@
 
 chamber_service_name=env-${PROJECT_NAME}-${ENV_STAGE}-$1
 
-if [[ ${ENV_STAGE} == "local" ]]; then
+if [[ -z "${ENV_STAGE}" ]] || [[ "${ENV_STAGE}" == "local" ]]; then
   echo "Skipping secrets fetching with chamber for service ${chamber_service_name}..."
   exec "${@:2}"
 else

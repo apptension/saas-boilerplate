@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "private": true,
   "scripts": {
-    "build": "vite -c vite.config.ts build",
+    "build": "nx run build-with-env",
     "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --out-file src/translations/en.json --ignore src/tests/mocks/**",
     "lint": "pnpm run lint:js && pnpm run lint:css",
     "lint:css": "stylelint './src/**/*.ts'",

@@ -7,10 +7,7 @@ test:
 	nx test
 
 build:
-	nx build:app
-
-build-emails:
-	nx build:emails
+	nx build
 
 deploy:
 	nx deploy

@@ -7,7 +7,6 @@ module.exports = function (plop) {
   [
     require('./plop/reactComponent'),
     require('./plop/reactHook'),
-    require('./plop/apiModel'),
     require('./plop/crud'),
     require('./plop/icon'),
     require('./plop/notification'),

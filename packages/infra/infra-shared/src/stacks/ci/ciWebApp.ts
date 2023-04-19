@@ -4,10 +4,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
 
 interface WebAppCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -89,8 +86,8 @@ export class WebappCiConfig extends ServiceCiConfig {
           build: {
             commands: [
               'nx run webapp:lint',
-              'nx run webapp:test:app --watchAll=false',
-              'nx run webapp:build:app',
+              'nx run webapp:test --watchAll=false',
+              'nx run webapp:build',
             ],
           },
         },

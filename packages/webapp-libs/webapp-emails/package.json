@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "commonjs",
   "scripts": {
-    "build": "vite -c vite.config.ts build",
+    "build": "nx run build-for-env",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",

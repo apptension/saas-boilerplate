@@ -42,21 +42,21 @@
       },
       "dependsOn": ["setup", "graphql:generate-types"]
     },
-    "vite-build": {
+    "build-vite": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "command": "pnpm run build"
+        "command": "pnpm run vite -c vite.config.ts build"
       },
       "dependsOn": ["graphql:generate-types"]
     },
-    "build": {
+    "build-with-env": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "command": "nx run tools:chamber-exec webapp nx run webapp:vite-build:app"
+        "command": "nx run tools:chamber-exec webapp nx run webapp:build-vite"
       },
       "dependsOn": ["graphql:generate-types"]
     },

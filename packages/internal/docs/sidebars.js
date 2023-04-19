@@ -71,6 +71,7 @@ module.exports = {
           },
           collapsed: false,
           items: [
+            'v2/api-reference/webapp/commands',
             'v2/api-reference/webapp/utils',
             'v2/api-reference/webapp/components',
           ],
@@ -97,7 +98,20 @@ module.exports = {
             id: 'v2/api-reference/webapp-api-client/index',
           },
           collapsed: false,
-          items: ['v2/api-reference/webapp-api-client/hooks'],
+          items: [
+            'v2/api-reference/webapp-api-client/hooks',
+            'v2/api-reference/webapp-api-client/commands',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'webapp-emails',
+          link: {
+            type: 'doc',
+            id: 'v2/api-reference/webapp-emails/index',
+          },
+          collapsed: false,
+          items: ['v2/api-reference/webapp-emails/commands'],
         },
       ],
     },
@@ -474,6 +488,7 @@ module.exports = {
             'v2/working-with-sb/dev-tools/sentry',
             'v2/working-with-sb/dev-tools/ssh-into-container',
             'v2/working-with-sb/dev-tools/configure-cicd-notifications',
+            'v2/working-with-sb/dev-tools/plop',
           ],
         },
         {
