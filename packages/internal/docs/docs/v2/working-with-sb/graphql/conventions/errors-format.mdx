@@ -1,6 +1,60 @@
 ---
 title: Errors format
-description: TODO >Description<
+description: Formats of error responses
 ---
 
-TBD
+This page describes the formats of error responses returned by the server in the case of an error.
+Adhering to a consistent error format helps standardize error handling on the client side and makes it easier to handle errors in a predictable manner.
+
+
+## Field validators
+
+```json
+{
+  "message": "GraphQlValidationError",
+  "locations": [{"line": 3, "column": 11}],
+  "path": ["createProduct"],
+  "extensions": {
+    "name": [{"message": "Product name cannot contain special characters.", "code": "invalid"}]
+  }
+}
+```
+
+The `message` field specifies the type of error that occurred. In this case, it is a validation error.
+
+The `locations` field provides information about where in the GraphQL document the error occurred.
+In this example, it indicates that the error occurred on line 3, column 11.
+
+The `path` field specifies the path of the field in the GraphQL schema that caused the error.
+In this case, it indicates that the error occurred while attempting to create a product.
+
+The `extensions` field provides additional information about the error.
+In this example, it indicates that the validation error is related to the `name` field of the product being created.
+The `"message"` field specifies the specific issue with the input data, which in this case is that the product name cannot contain special characters.
+The `"code"` field specifies the type of validation error, which is `"invalid"` in this case.
+
+## Object validation
+
+```json
+{
+  "message": "GraphQlValidationError",
+  "locations": [{"line": 3, "column": 11}],
+  "path": ["createProduct"],
+  "extensions": {
+    "non_field_errors": [
+        {"message": "Price must be greater than zero.", "code": "invalid_price"},
+        {"message": "Product name can only contain letters and numbers.", "code": "invalid_product_name"}
+    ]
+  }
+}
+```
+
+The `message`, `locations`, and `path` fields are the same as in the previous example.
+
+The `extensions` field provides additional information about the error, specifically that there are multiple validation errors related to the product being created.
+
+The `non_field_errors` field indicates that the validation errors are not specific to a particular field in the product schema.
+Instead, it includes a list of error messages and error codes, each specifying a different validation issue.
+
+In this example, the first error message specifies that the price must be greater than zero, and the second error message specifies that the product name can only contain letters and numbers.
+The error codes allow the frontend to differentiate between different types of validation errors.

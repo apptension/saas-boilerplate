@@ -1,0 +1,226 @@
+---
+title: Working with serializers
+description: Creating a Django Rest Framework Serializer with SaaS Boilerplate
+---
+
+Serialization is the process of converting complex data types into a format that can be easily transmitted and stored.
+In this guide, we will show you how to use Django Rest Framework serializers with SaaS Boilerplate by Apptension.
+
+## Create Django models
+
+For the sake of this example let's use the Customer and Product models inside `store` package.
+Those models are related through a foreign key, where a customer can have multiple products associated with them.
+The HashidAutoField is used for the primary key of both models to provide a unique and secure identifier for the objects.
+
+:::info
+
+Check out the ["How to create a new Django app and model in back-end?"](../../guides/backend/backend-model) guide if you've missed it.
+
+:::
+
+```python title="packages/backend/apps/store/models.py" showLineNumbers
+import hashid_field
+from django.db import models
+
+
+class Customer(models.Model):
+    id = hashid_field.HashidAutoField(primary_key=True)
+    email = models.EmailField()
+
+
+class Product(models.Model):
+    id = hashid_field.HashidAutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='products')
+```
+
+:::tip
+
+We have also added a `related_name` attribute to the foreign key field.
+This allows us to access the related products of a customer by calling "customer.products" instead of "product_set" which is the default related name.
+
+:::
+
+## Create a Django Rest Framework serializer
+
+:::info
+
+If you're not familiar with Django Rest Framework serializers here's the [official documentation](https://www.django-rest-framework.org/api-guide/serializers/).
+
+:::
+
+In this example, we'll create a serializer for the "Product" model:
+
+```python title="packages/backend/apps/store/serializers.py" showLineNumbers
+from hashid_field import rest as hidrest
+from rest_framework import serializers
+from .models import Product, Customer
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
+    customer = serializers.PrimaryKeyRelatedField(
+        queryset=Customer.objects.all(),
+        pk_field=rest.HashidSerializerCharField(),
+        write_only=True,
+    )
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'price', 'customer')
+```
+
+:::info
+
+The `id` is a custom serializer field used for hashing the ID of a model.
+Here's a breakdown of the key components of this field:
+
+- `HashidSerializerCharField`: This is a custom serializer field provided by the `hashid_field` package that hashes an integer ID field using the Hashids algorithm and returns the hashed value as a string.
+- `source_field="store.Product.id"`: This attribute specifies the name of the source field that the serializer field should use to hash the ID. In this case, it's set to `"store.Product.id"`, which means that the serializer field should use the `id` field of the `Product` model.
+
+:::
+
+`customer` is a field that is used to relate the instance being serialized to a `Customer` instance in the database.
+`PrimaryKeyRelatedField` is a serializer field that represents the target of the relationship as a primary key.
+The `queryset` parameter specifies the set of objects that can be selected.
+`pk_field` specifies the serializer field to use when serializing the primary key value. In this case, `HashidSerializerCharField` is used to serialize the primary key as a Hashid string.
+
+## Data validation
+
+
+:::info
+
+More detailed overview on validation can be found in [Django Rest Framework Validation](https://www.django-rest-framework.org/api-guide/serializers/#validation) section.
+
+:::
+
+### Field validators
+
+Field validators are functions that take a value, perform some checks on it, and return the value if it's valid or raise a `serializers.ValidationError` if it's not.
+You can write a custom validation method for the `name` field in the `ProductSerializer` to disallow special characters.
+Here's an example implementation:
+
+```python title="packages/backend/apps/store/serializers.py" showLineNumbers
+from hashid_field import rest as hidrest
+from rest_framework import serializers
+from .models import Product, Customer
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
+    customer = serializers.PrimaryKeyRelatedField(
+      queryset=Customer.objects.all(),
+      pk_field=rest.HashidSerializerCharField(),
+      write_only=True,
+    )
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'price', 'customer')
+
+    def validate_name(self, value):
+      """
+      Check that the name field does not contain special characters.
+      """
+      special_chars = "!@#$%^&*()-+?_=,<>/"
+      if any(char in special_chars for char in value):
+          raise serializers.ValidationError("Product name cannot contain special characters.")
+
+      return value
+```
+
+In the above code, we have added a `validate_name` method to the `ProductSerializer` to validate the `name` field.
+The method checks if the `value` parameter contains any special characters and raises a `serializers.ValidationError` if it does.
+
+### Object validation
+
+The `validate` method in DRF serializers allows you to perform custom validations on multiple fields at once.
+It provides an opportunity to perform more complex validation logic that involves multiple fields or attributes.
+Here's an example implementation on how to override the `validate` method of the `ProductSerializer` to validate both the `name` and `price` fields.
+The method checks if the `price` field is greater than zero and raises a `serializers.ValidationError` if it's not.
+It also checks if the `name` field only contains letters and numbers
+
+:::warning
+
+The `validate` method is called after all the individual field-level validations have been performed.
+
+:::
+
+```python title="packages/backend/apps/store/serializers.py" showLineNumbers
+from hashid_field import rest as hidrest
+from rest_framework import serializers
+from .models import Product, Customer
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
+    customer = serializers.PrimaryKeyRelatedField(
+      queryset=Customer.objects.all(),
+      pk_field=rest.HashidSerializerCharField(),
+      write_only=True,
+    )
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'price', 'customer')
+
+    def validate(self, data):
+        """
+        Check that the price is greater than zero and the name only contains letters and numbers.
+        """
+        if data['price'] <= 0:
+            raise serializers.ValidationError("Price must be greater than zero.", code="invalid_price")
+
+        if not data['name'].isalnum():
+            raise serializers.ValidationError("Product name can only contain letters and numbers.", code="invalid_product_name")
+
+        return data
+```
+
+## Returning errors to frontend
+
+### Field validators
+
+In a GraphQL API, if a validation error is raised inside a field validator, the response will include an error message formatted like this:
+
+```json
+{
+  "message": "GraphQlValidationError",
+  "locations": [{"line": 3, "column": 11}],
+  "path": ["createProduct"],
+  "extensions": {
+    "name": [{"message": "Product name cannot contain special characters.", "code": "invalid"}]
+  }
+}
+```
+
+:::info
+
+See the ["Errors format: Field validators"](../conventions/errors-format/#field-validators) for a detailed description.
+
+:::
+
+### Object validation
+
+When it comes to errors raised inside the `validate` method, the error message will look like below:
+
+```json
+{
+  "message": "GraphQlValidationError",
+  "locations": [{"line": 3, "column": 11}],
+  "path": ["createProduct"],
+  "extensions": {
+    "non_field_errors": [
+        {"message": "Price must be greater than zero.", "code": "invalid_price"},
+        {"message": "Product name can only contain letters and numbers.", "code": "invalid_product_name"}
+    ]
+  }
+}
+```
+
+:::info
+
+See the ["Errors format: Object validation"](../conventions/errors-format/#object-validation) for a detailed description.
+
+:::

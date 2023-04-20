@@ -330,6 +330,11 @@ module.exports = {
                   id: 'v2/working-with-sb/graphql/backend/adding-new-mutation',
                   label: 'Add a new mutation',
                 },
+                {
+                  type: 'doc',
+                  id: 'v2/working-with-sb/graphql/backend/working-with-serializers',
+                  label: 'Working with serializers',
+                },
               ],
             },
           ],
