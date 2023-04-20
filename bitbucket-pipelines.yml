@@ -46,394 +46,456 @@ definitions:
       --frozen-lockfile
       --filter=webapp...
 
+  steps:
+    - step: &codecommitPush
+        name: Push code to CodeCommit
+        clone:
+          depth: full
+        script:
+          - git remote add codecommit "$CODE_COMMIT_REPO"
+          - git push --force -u codecommit "$BITBUCKET_BRANCH"
+          - git push codecommit --tags --force
+
+    - step: &webappTest
+        name: 'webapp: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - *installWebappDeps
+          - node_modules/.bin/nx run webapp:lint
+          - node_modules/.bin/nx run webapp:type-check
+          - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp'
+        caches:
+          - pnpmwebapp
+          - clis
+          - sonar
+    - step: &webappBuild
+        name: 'webapp: Build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - *installWebappDeps
+          - node_modules/.bin/nx run webapp:build
+        caches:
+          - pnpmwebapp
+          - clis
+    - step: &webappCoreTest
+        name: 'webapp-core: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-core...
+          - node_modules/.bin/nx run webapp-core:lint
+          - node_modules/.bin/nx run webapp-core:type-check
+          - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-core'
+        caches:
+          - pnpmwebappcore
+          - clis
+          - sonar
+    - step: &webappApiClientTest
+        name: 'webapp-api-client: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-api-client...
+          - node_modules/.bin/nx run webapp-api-client:lint
+          - node_modules/.bin/nx run webapp-api-client:type-check
+          - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-api-client'
+        caches:
+          - pnpmwebappapiclient
+          - clis
+          - sonar
+    - step: &webappContentfulTest
+        name: 'webapp-contentful: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-contentful...
+          - node_modules/.bin/nx run webapp-contentful:lint
+          - node_modules/.bin/nx run webapp-contentful:type-check
+          - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-contentful'
+        caches:
+          - pnpmwebappcontentful
+          - clis
+          - sonar
+    - step: &webappCrudTest
+        name: 'webapp-crud-demo: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-crud-demo...
+          - node_modules/.bin/nx run webapp-crud-demo:lint
+          - node_modules/.bin/nx run webapp-crud-demo:type-check
+          - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-crud-demo'
+        caches:
+          - pnpmwebappcruddemo
+          - clis
+          - sonar
+    - step: &webappDocsTest
+        name: 'webapp-documents: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-documents...
+          - node_modules/.bin/nx run webapp-documents:lint
+          - node_modules/.bin/nx run webapp-documents:type-check
+          - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-documents'
+        caches:
+          - pnpmwebappdocuments
+          - clis
+          - sonar
+    - step: &webappNotificationsTest
+        name: 'webapp-notifications: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-notifications...
+          - node_modules/.bin/nx run webapp-notifications:lint
+          - node_modules/.bin/nx run webapp-notifications:type-check
+          - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-notifications'
+        caches:
+          - pnpmwebappnotifications
+          - clis
+          - sonar
+    - step: &webappEmailsTest
+        name: 'webapp-emails: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-emails...
+          - node_modules/.bin/nx run webapp-emails:lint
+          - node_modules/.bin/nx run webapp-emails:type-check
+          - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-emails'
+        caches:
+          - pnpmwebappemails
+          - clis
+          - sonar
+    - step: &webappFinancesTest
+        name: 'webapp-finances: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-finances...
+          - node_modules/.bin/nx run webapp-finances:lint
+          - node_modules/.bin/nx run webapp-finances:type-check
+          - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-finances'
+        caches:
+          - pnpmwebappfinances
+          - clis
+          - sonar
+    - step: &webappGenAiTest
+        name: 'webapp-generative-ai: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-generative-ai...
+          - node_modules/.bin/nx run webapp-generative-ai:lint
+          - node_modules/.bin/nx run webapp-generative-ai:type-check
+          - node_modules/.bin/nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-generative-ai'
+        caches:
+          - pnpmwebappgenerativeai
+          - clis
+          - sonar
+    - step: &backendBuildAndTest
+        name: 'backend: Build image & run tests'
+        image: atlassian/default-image:3
+        size: 2x
+        script:
+          - *initializeStep
+          - *setupAwsCli
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=backend...
+          - node_modules/.bin/nx run backend:lint:js
+          - node_modules/.bin/nx run backend:test
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/backend'
+        services:
+          - docker
+        caches:
+          - docker
+          - pnpmbackend
+          - clis
+          - sonar
+
+    - step: &workersTest
+        name: 'async-workers: Lint & test'
+        image: atlassian/default-image:3
+        size: 2x
+        script:
+          - *initializeStep
+          - *setupAwsCli
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=workers...
+          - node_modules/.bin/nx run workers:lint
+          - node_modules/.bin/nx run workers:test
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/workers'
+        services:
+          - docker
+        caches:
+          - docker
+          - pnpmworkers
+          - clis
+          - sonar
+    - step: &workersBuild
+        name: 'async-workers: Build'
+        image: atlassian/default-image:3
+        size: 2x
+        script:
+          - *initializeStep
+          - *setupAwsCli
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=workers...
+            --filter=webapp-emails...
+          - node_modules/.bin/nx run webapp-emails:build-vite
+          - node_modules/.bin/nx run workers:build
+        services:
+          - docker
+        caches:
+          - docker
+          - pnpmworkers
+          - clis
+          - sonar
+
+    # Infra steps
+
+    - step: &infraCoreBuild
+        name: 'infra/infra-core: Lint & build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=infra-core...
+          - node_modules/.bin/nx run infra-core:lint
+          - node_modules/.bin/nx run infra-core:build
+        caches:
+          - pnpminfracore
+          - clis
+
+    - step: &infraSharedBuild
+        name: 'infra/infra-shared: Lint & build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=infra-shared...
+          - node_modules/.bin/nx run infra-shared:lint
+          - node_modules/.bin/nx run infra-shared:build
+        caches:
+          - pnpminfrashared
+          - clis
+
+    - step: &infraFunctionsBuild
+        name: 'infra/infra-functions: Lint & build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=infra-functions...
+          - node_modules/.bin/nx run infra-functions:lint
+          - node_modules/.bin/nx run infra-functions:build
+        caches:
+          - pnpminfrafunctions
+          - clis
+
+    # Internal steps
+
+    - step: &internalDocsBuild
+        name: 'internal/docs: Lint & build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=docs...
+          - node_modules/.bin/nx run docs:lint
+          - node_modules/.bin/nx run docs:build
+        caches:
+          - pnpmdocs
+          - clis
+    - step: &internalStatusDashboardBuild
+        name: 'internal/status-dashboard: Lint & build'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=status-dashboard...
+          - node_modules/.bin/nx run status-dashboard:lint
+          - node_modules/.bin/nx run status-dashboard:build
+        caches:
+          - pnpmstatusdashboard
+          - clis
+
+    - step: &internalToolsBuild
+        name: 'internal/tools: Lint'
+        image: atlassian/default-image:4
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=tools...
+          - node_modules/.bin/nx run tools:lint
+        caches:
+          - pnpmtools
+          - clis
+
 pipelines:
   default:
     - parallel:
-        - step:
-            name: Push code to CodeCommit
-            clone:
-              depth: full
-            script:
-              - git remote add codecommit "$CODE_COMMIT_REPO"
-              - git push --force -u codecommit "$BITBUCKET_BRANCH"
-              - git push codecommit --tags --force
+        - step: *codecommitPush
 
-        - step:
-            name: 'webapp: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - *installWebappDeps
-              - node_modules/.bin/nx run webapp:lint
-              - node_modules/.bin/nx run webapp:type-check
-              - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp'
-            caches:
-              - pnpmwebapp
-              - clis
-              - sonar
-        - step:
-            name: 'webapp: Build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - *installWebappDeps
-              - node_modules/.bin/nx run webapp:build
-            caches:
-              - pnpmwebapp
-              - clis
-        - step:
-            name: 'webapp-core: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-core...
-              - node_modules/.bin/nx run webapp-core:lint
-              - node_modules/.bin/nx run webapp-core:type-check
-              - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-core'
-            caches:
-              - pnpmwebappcore
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-api-client: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-api-client...
-              - node_modules/.bin/nx run webapp-api-client:lint
-              - node_modules/.bin/nx run webapp-api-client:type-check
-              - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-api-client'
-            caches:
-              - pnpmwebappapiclient
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-contentful: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-contentful...
-              - node_modules/.bin/nx run webapp-contentful:lint
-              - node_modules/.bin/nx run webapp-contentful:type-check
-              - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-contentful'
-            caches:
-              - pnpmwebappcontentful
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-crud-demo: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-crud-demo...
-              - node_modules/.bin/nx run webapp-crud-demo:lint
-              - node_modules/.bin/nx run webapp-crud-demo:type-check
-              - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-crud-demo'
-            caches:
-              - pnpmwebappcruddemo
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-documents: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-documents...
-              - node_modules/.bin/nx run webapp-documents:lint
-              - node_modules/.bin/nx run webapp-documents:type-check
-              - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-documents'
-            caches:
-              - pnpmwebappdocuments
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-notifications: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-notifications...
-              - node_modules/.bin/nx run webapp-notifications:lint
-              - node_modules/.bin/nx run webapp-notifications:type-check
-              - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-notifications'
-            caches:
-              - pnpmwebappnotifications
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-emails: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-emails...
-              - node_modules/.bin/nx run webapp-emails:lint
-              - node_modules/.bin/nx run webapp-emails:type-check
-              - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-emails'
-            caches:
-              - pnpmwebappemails
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-finances: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-finances...
-              - node_modules/.bin/nx run webapp-finances:lint
-              - node_modules/.bin/nx run webapp-finances:type-check
-              - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-finances'
-            caches:
-              - pnpmwebappfinances
-              - clis
-              - sonar
-        - step:
-            name: 'webapp-generative-ai: Lint & test'
-            image: atlassian/default-image:4
-            size: 2x
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=webapp-generative-ai...
-              - node_modules/.bin/nx run webapp-generative-ai:lint
-              - node_modules/.bin/nx run webapp-generative-ai:type-check
-              - node_modules/.bin/nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-generative-ai'
-            caches:
-              - pnpmwebappgenerativeai
-              - clis
-              - sonar
-        - step:
-            name: 'backend: Build image & run tests'
-            image: atlassian/default-image:3
-            size: 2x
-            script:
-              - *initializeStep
-              - *setupAwsCli
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=backend...
-              - node_modules/.bin/nx run backend:lint:js
-              - node_modules/.bin/nx run backend:test
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/backend'
-            services:
-              - docker
-            caches:
-              - docker
-              - pnpmbackend
-              - clis
-              - sonar
+        - step: *webappTest
+        - step: *webappBuild
+        - step: *webappCoreTest
+        - step: *webappApiClientTest
+        - step: *webappContentfulTest
+        - step: *webappCrudTest
+        - step: *webappDocsTest
+        - step: *webappNotificationsTest
+        - step: *webappEmailsTest
+        - step: *webappFinancesTest
+        - step: *webappGenAiTest
 
-        - step:
-            name: 'async-workers: Lint & test'
-            image: atlassian/default-image:3
-            size: 2x
-            script:
-              - *initializeStep
-              - *setupAwsCli
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=workers...
-              - node_modules/.bin/nx run workers:lint
-              - node_modules/.bin/nx run workers:test
-              - pipe: sonarsource/sonarcloud-scan:1.4.0
-                variables:
-                  SONAR_TOKEN: ${SONAR_TOKEN}
-                  EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/workers'
-            services:
-              - docker
-            caches:
-              - docker
-              - pnpmworkers
-              - clis
-              - sonar
-        - step:
-            name: 'async-workers: Build'
-            image: atlassian/default-image:3
-            size: 2x
-            script:
-              - *initializeStep
-              - *setupAwsCli
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=workers...
-                --filter=webapp-emails...
-              - node_modules/.bin/nx run webapp-emails:build-vite
-              - node_modules/.bin/nx run workers:build
-            services:
-              - docker
-            caches:
-              - docker
-              - pnpmworkers
-              - clis
-              - sonar
+        - step: *backendBuildAndTest
 
-        # Infra steps
+        - step: *workersTest
+        - step: *workersBuild
 
-        - step:
-            name: 'infra/infra-core: Lint & build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=infra-core...
-              - node_modules/.bin/nx run infra-core:lint
-              - node_modules/.bin/nx run infra-core:build
-            caches:
-              - pnpminfracore
-              - clis
+        - step: *infraCoreBuild
+        - step: *infraSharedBuild
+        - step: *infraFunctionsBuild
 
-        - step:
-            name: 'infra/infra-shared: Lint & build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=infra-shared...
-              - node_modules/.bin/nx run infra-shared:lint
-              - node_modules/.bin/nx run infra-shared:build
-            caches:
-              - pnpminfrashared
-              - clis
+        - step: *internalDocsBuild
+        - step: *internalStatusDashboardBuild
+        - step: *internalToolsBuild
 
-        - step:
-            name: 'infra/infra-functions: Lint & build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=infra-functions...
-              - node_modules/.bin/nx run infra-functions:lint
-              - node_modules/.bin/nx run infra-functions:build
-            caches:
-              - pnpminfrafunctions
-              - clis
+  branches:
+    master:
+      - parallel:
+        - step: *codecommitPush
 
-        # Internal steps
+        - step: *webappTest
+        - step: *webappBuild
+        - step: *webappCoreTest
+        - step: *webappApiClientTest
+        - step: *webappContentfulTest
+        - step: *webappCrudTest
+        - step: *webappDocsTest
+        - step: *webappNotificationsTest
+        - step: *webappEmailsTest
+        - step: *webappFinancesTest
+        - step: *webappGenAiTest
 
-        - step:
-            name: 'internal/docs: Lint & build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=docs...
-              - node_modules/.bin/nx run docs:lint
-              - node_modules/.bin/nx run docs:build
-            caches:
-              - pnpmdocs
-              - clis
-        - step:
-            name: 'internal/status-dashboard: Lint & build'
-            image: atlassian/default-image:4
-            script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=status-dashboard...
-              - node_modules/.bin/nx run status-dashboard:lint
-              - node_modules/.bin/nx run status-dashboard:build
-            caches:
-              - pnpmstatusdashboard
-              - clis
+        - step: *backendBuildAndTest
 
+        - step: *workersTest
+        - step: *workersBuild
+
+        - step: *infraCoreBuild
+        - step: *infraSharedBuild
+        - step: *infraFunctionsBuild
+
+        - step: *internalDocsBuild
+        - step: *internalStatusDashboardBuild
+        - step: *internalToolsBuild
         - step:
-            name: 'internal/tools: Lint'
-            image: atlassian/default-image:4
+            name: Delete unused branches from CodeCommit
             script:
-              - *initializeStep
-              - pnpm install
-                --include-workspace-root
-                --frozen-lockfile
-                --filter=tools...
-              - node_modules/.bin/nx run tools:lint
-            caches:
-              - pnpmtools
-              - clis
+              - /bin/bash packages/internal/tools/scripts/clean-codebuild-branches.sh
