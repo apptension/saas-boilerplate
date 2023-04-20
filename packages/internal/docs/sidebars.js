@@ -113,6 +113,7 @@ module.exports = {
           collapsed: false,
           items: ['v2/api-reference/webapp-emails/commands'],
         },
+        'v2/api-reference/env',
       ],
     },
   ],
