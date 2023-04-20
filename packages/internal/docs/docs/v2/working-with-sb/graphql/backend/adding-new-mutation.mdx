@@ -5,8 +5,7 @@ description: TODO >Description<
 
 ## Django model based mutation
 
-Let's imagine you have a `store` module, and you want to include a new database model that allows your users to create
-new products.
+Let's imagine you have a `store` module, and you want to include a new database model that allows your users to create, update and delete products.
 
 :::info
 
@@ -52,7 +51,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name',)
 ```
 
-This is essentially a regular DRF serializer. Although this example only demonstrates the "create" aspect of CRUD, you can perform all side effects in either the `update` or `create` method.
+This is essentially a regular DRF serializer. You can perform all side effects in either the `update` or `create` method.
 
 Moreover, you can connect this serializer to more than one mutation, similar to how you would do it with DRF views.
 
@@ -84,15 +83,19 @@ Django Model into a ObjectType for you
 - [Connection](https://docs.graphene-python.org/en/latest/relay/connection/) – A connection is a vitaminized version of
 a List that provides ways of slicing and paginating through it.
 
-### Create mutation object
+### Define mutations
 
-Next, you need to create a mutation object that references the previously created serializer class. Please ensure that
-you also define an `edge_class` in `Meta`, or else your schema will not include the `productEdge` field. This field
-could be useful to your frontend, as it can be used to easily push newly created data into an existing collection.
+#### CreateModelMutation
+
+The `CreateModelMutation` class provides a generic implementation of a mutation that creates a new object of the specified model type.
+It handles the creation of the object and validation of the input data, and returns the newly created object as part of the mutation response.
+Please ensure that you also define an `edge_class` in `Meta`, or else your schema will not include the `productEdge` field.
+This field could be useful to your frontend, as it can be used to easily push newly created data into an existing collection.
 
 ```python title="packages/backend/apps/store/schema.py" showLineNumbers
 from common.graphql import mutations
 from . import models, serializers
+
 
 class CreateProductMutation(mutations.CreateModelMutation):
     class Meta:
@@ -100,25 +103,102 @@ class CreateProductMutation(mutations.CreateModelMutation):
         edge_class = ProductConnection.Edge
 ```
 
-- [CreateModelMutation](../../../api-reference/backend/graphql-mutations#createmodelmutation) – a base class that
-makes django model based mutations that create instances much simpler
+#### UpdateModelMutation
+
+The `UpdateModelMutation` class provides a generic implementation of a mutation that updates an object of the specified model type.
+It handles the update of the object and validation of the input data, and returns the updated object as part of the mutation response.
+`Meta` class fields are the same as above.
+
+```python title="packages/backend/apps/store/schema.py" showLineNumbers
+from common.graphql import mutations
+from . import models, serializers
+
+
+class CreateProductMutation(mutations.CreateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+
+
+class UpdateProductMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+```
+
+#### DeleteModelMutation
+
+The `DeleteModelMutation` class is a subclass of `ClientIDMutation`.
+It serves as a blueprint for mutations that delete objects from the database.
+
+The `Meta` class attribute is used to specify the model that this mutation will operate on. In this case, it is set to `models.Product`.
+
+To delete the object, developers can simply pass the `id` of the `Product` object they wish to delete as a parameter to the mutation.
+The mutation will delete the object from the database and return a payload containing the ID of the deleted object.
+
+```python title="packages/backend/apps/store/schema.py" showLineNumbers
+from common.graphql import mutations
+from . import models, serializers
+
+
+class CreateProductMutation(mutations.CreateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+
+
+class UpdateProductMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+
+
+class DeleteProductMutation(mutations.DeleteModelMutation):
+    class Meta:
+        model = models.Product
+```
 
 :::tip
 
-SaaS Boilerplate also implements:
+See the API Reference for:
+- [CreateModelMutation](../../../api-reference/backend/graphql-mutations#createmodelmutation)
 - [UpdateModelMutation](../../../api-reference/backend/graphql-mutations#updatemodelmutation),
 - [DeleteModelMutation](../../../api-reference/backend/graphql-mutations#deletemodelmutation)
 - and a more generic [SerializerMutation](../../../api-reference/backend/graphql-mutations#serializermutation).
 
 :::
 
-### Create mutation field in schema
+### Create mutation fields in schema
 
-Last but not least we need to connect our mutation to the GraphQL schema!
+Last but not least we need to connect our mutations to the GraphQL schema!
 
-```python title="packages/backend/apps/store/schema.py"
+```python title="packages/backend/apps/store/schema.py" showLineNumbers
+import graphene
+from common.graphql import mutations
+from . import models, serializers
+
+
+class CreateProductMutation(mutations.CreateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+
+
+class UpdateProductMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.ProductSerializer
+        edge_class = ProductConnection.Edge
+
+
+class DeleteProductMutation(mutations.DeleteModelMutation):
+    class Meta:
+        model = models.Product
+
+
 class Mutation(graphene.ObjectType):
     create_product = CreateProductMutation.Field()
+    update_product = UpdateProductMutation.Field()
+    delete_product = DeleteProductMutation.Field()
 ```
 
 It is possible that the referenced file already contains a `Mutation` object. If that is the case, you can add your mutation as another field beside the existing ones.
