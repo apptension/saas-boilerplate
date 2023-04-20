@@ -60,7 +60,10 @@ module.exports = {
             type: 'doc',
             id: 'v2/api-reference/backend/index',
           },
-          items: ['v2/api-reference/backend/graphql-mutations'],
+          items: [
+            'v2/api-reference/backend/commands',
+            'v2/api-reference/backend/graphql-mutations',
+          ],
         },
         {
           type: 'category',
@@ -99,8 +102,8 @@ module.exports = {
           },
           collapsed: false,
           items: [
-            'v2/api-reference/webapp-api-client/hooks',
             'v2/api-reference/webapp-api-client/commands',
+            'v2/api-reference/webapp-api-client/hooks',
           ],
         },
         {
