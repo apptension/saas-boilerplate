@@ -117,6 +117,7 @@ module.exports = {
           items: ['v2/api-reference/webapp-emails/commands'],
         },
         'v2/api-reference/env',
+        'v2/api-reference/env-files',
       ],
     },
   ],
@@ -446,8 +447,8 @@ module.exports = {
           },
           items: [
             'v2/working-with-sb/infrastructure/initial-setup',
-            'v2/working-with-sb/infrastructure/create-environment',
             'v2/working-with-sb/infrastructure/env-variables',
+            'v2/working-with-sb/infrastructure/create-environment',
           ],
         },
         {

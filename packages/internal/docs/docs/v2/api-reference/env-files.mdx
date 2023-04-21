@@ -1,0 +1,96 @@
+---
+title: .env files
+description: Description of the .env files
+---
+
+Below you can find a list of different `.env` files used in the project along with description of it's content.
+
+:::info
+
+Find more about using `.env` files in the [`How to work with .env files?`](../working-with-sb/project-structure/env-files)
+guide.
+
+:::
+
+### Common values used in `.env`, `.env.shared` and `.env.{env-id}` files:
+
+| Name                     | Description                                                                                                                            | Example                                       |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| `PROJECT_NAME`           | The name of your project (best if 3-5 characters to avoid AWS names being to long)                                                     | `saas`                                        |
+| `AWS_DEFAULT_REGION`     | Default AWS region for you application                                                                                                 | `eu-west-1`                                   |
+| `COMPOSE_PATH_SEPARATOR` | Check official `docker-compose` [documentation](https://docs.docker.com/compose/environment-variables/envvars/#compose_path_separator) | `:`                                           |
+| `COMPOSE_FILE`           | Check official `docker-compose` [documentation](https://docs.docker.com/compose/environment-variables/envvars/#compose_file)           | `docker-compose.yml:docker-compose.local.yml` |
+| `ENV_STAGE`              | Name of you stage                                                                                                                      | `local`                                       |
+| `SB_HOSTED_ZONE_ID`      | Id of a AWS Route53 hosted zone of a domain used to host services of this environment                                                  | ``                                            |
+| `SB_HOSTED_ZONE_NAME`    | Name of a AWS Route53 hosted zone of a domain used to host services of this environment                                                | `example.com`                                 |
+| `SB_DOMAIN_ADMIN_PANEL`  | A domain used to host an admin panel service                                                                                           | `admin.example.com`                           |
+| `SB_DOMAIN_API`          | A domain used to host an API backend service                                                                                           | `api.example.com`                             |
+| `SB_DOMAIN_WEB_APP`      | A domain used to host the web application                                                                                              | `app.example.com`                             |
+| `SB_DOMAIN_DOCS`         | A domain used to host the documentation                                                                                                | `docs.example.com`                            |
+| `SB_DOMAIN_WWW`          |                                                                                                                                        | `www.example.com`                             |
+| `SB_DOMAIN_CDN`          | A domain used to static assets delivery                                                                                                | `cdn.example.com`                             |
+
+
+
+### `.env`
+
+:::caution
+
+This file should not be committed to the repository
+
+:::
+
+Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
+following values:
+
+
+| Name                | Description                                                                                                                          | Example            |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|--------------------|
+| `AWS_VAULT_PROFILE` | Name of your AWS vault profile. Learn more about AWS vault [here](../working-with-sb/infrastructure/initial-setup#aws-vault-profile) | `saas-boilerplate` |
+| `NX_BRANCH`         |                                                                                                                                      | `local`            |
+
+
+### `.env.shared`
+
+:::info
+
+Content of this file doesn't contain any additional values other than
+[common values](#common-values-used-in-env-envshared-and-envenv-id-files) described above.
+
+:::
+
+### `.env.{env-id}`
+
+File contains configuration of the specific environment with the `{env-id}` id.
+
+Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
+following values:
+
+
+| Name                               | Description                                                                  | Example                        |
+|------------------------------------|------------------------------------------------------------------------------|--------------------------------|
+| `SB_DEPLOY_BRANCHES`               | A list of branches that will trigger automatic deployment of the environment | `master`                       |
+| `SB_BASIC_AUTH`                    | Basic Auth configuration for the environment                                 | `username:password`            |
+| `SB_CLOUDFRONT_CERTIFICATE_ARN`    |                                                                              |                                |
+| `SB_LOAD_BALANCER_CERTIFICATE_ARN` |                                                                              |                                |
+| `SB_CERTIFICATE_DOMAIN`            |                                                                              | `env.example.com`              |
+| `VITE_SUBSCRIPTIONS_URL`           | An websocket endpoint for web application to connect used for subscriptions  | `wss://app.env.example.com/ws` |
+
+### `.env.test`
+
+Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
+following values:
+
+| Name      | Description | Example |
+|-----------|-------------|---------|
+| `VERSION` |             | `test`  |
+
+### `.env.tools`
+
+| Name                             | Description                                                              | Example              |
+|----------------------------------|--------------------------------------------------------------------------|----------------------|
+| `SB_TOOLS_ENABLED`               | Flat if tools are enabled                                                | `true`               |
+| `SB_TOOLS_BASIC_AUTH`            | Basic Auth configuration of the tools service                            | `user:password`      |
+| `SB_TOOLS_HOSTED_ZONE_ID`        | Id of a AWS Route53 hosted zone of a domain used to host tools service   | ``                   |
+| `SB_TOOLS_HOSTED_ZONE_NAME`      | Name of a AWS Route53 hosted zone of a domain used to host tools service | `tools.example.com`  |
+| `SB_TOOLS_DOMAIN_VERSION_MATRIX` |                                                                          | `status.example.com` |
