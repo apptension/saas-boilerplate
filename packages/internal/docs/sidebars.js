@@ -185,7 +185,32 @@ module.exports = {
         'v2/introduction/the-problem',
         'v2/introduction/architecture',
         'v2/introduction/stack-description',
-        'v2/introduction/features',
+        {
+          type: 'category',
+          label: 'Features',
+          collapsed: false,
+          link: {
+            type: 'doc',
+            id: 'v2/introduction/features/index',
+          },
+          items: [
+            'v2/introduction/features/auth',
+            'v2/introduction/features/emails',
+            'v2/introduction/features/notifications',
+            'v2/introduction/features/openai',
+            'v2/introduction/features/stripe',
+            'v2/introduction/features/iac',
+            'v2/introduction/features/cicd',
+            'v2/introduction/features/cms',
+            'v2/introduction/features/admin',
+            'v2/introduction/features/e2e',
+            'v2/introduction/features/graphql',
+            'v2/introduction/features/assets',
+            'v2/introduction/features/workers',
+            'v2/introduction/features/crud',
+            'v2/introduction/features/dev-tools',
+          ],
+        },
         'v2/introduction/development',
       ],
     },
@@ -357,12 +382,10 @@ module.exports = {
         {
           type: 'category',
           label: 'In-app notification module',
-
+          collapsed: false,
           link: {
-            type: 'generated-index',
-            title: 'In-app notification module',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/notifications',
+            type: 'doc',
+            id: 'v2/working-with-sb/notifications/index',
           },
           items: ['v2/working-with-sb/notifications/create-notification'],
         },
@@ -384,13 +407,12 @@ module.exports = {
         {
           type: 'category',
           label: 'User module / Authentication and authorization',
-
+          collapsed: false,
           link: {
-            type: 'generated-index',
-            title: 'User module / Authentication and authorization',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/users',
+            type: 'doc',
+            id: 'v2/working-with-sb/users/index',
           },
+
           items: [
             'v2/working-with-sb/users/create-profile-field',
             'v2/working-with-sb/users/create-oauth-method',

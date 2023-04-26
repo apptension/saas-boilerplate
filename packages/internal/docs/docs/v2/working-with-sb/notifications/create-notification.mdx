@@ -1,6 +1,72 @@
 ---
 title: How to create a new in-app notification?
-description: TODO >Description<
+description: Add custom notification guide
 ---
 
-TBD
+SaaS Boilerplate comes with pre-configured in-app notifications support that allows you to keep your users informed of
+important updates and actions within your application. Both the backend and frontend share the `type`, which is a
+`CONSTANT_CASED` identifier.
+
+### Webapp Reference
+
+Generating a new notification is simple. You can use the following command from the `webapp` package:
+
+```shell
+yarn plop notification <type>
+```
+
+> `<type>` is the notification identifier and name at once.
+
+The command generates `component` and `story` files under the `src/shared/components/notifications/templates/<type>/`
+path in the `webapp` package directory. The notification is automatically registered, so no further actions are
+required.
+
+In the `<type>.component.tsx` file, you will see the component based on the `<Notification/>` interface that you can use
+to compose your notification. You need to define the `data` inside `NotificationType`:
+
+```typescript
+type ItemAddedProps = NotificationType<{
+  user: string | null;
+  itemId: number;
+}>;
+```
+:::caution
+Keep in mind that mistakes in the data type (e.g., missing nulls) might produce error-prone code. Be careful!
+:::
+
+### Backend Reference
+
+The backend comes with built-in support for in-app notifications and the possibility to implement other types of
+notifications.
+
+#### Strategies
+
+The enabled notification strategies are configurable with the `NOTIFICATIONS_STRATEGIES` variable in the `settings.py`
+file, which has a default value of `["InAppNotificationStrategy"]`.
+
+To write your own notification strategy, you need to extend the `BaseNotificationStrategy` class, which can be found in
+the `apps/notifications/strategies.py` file. The only method that needs to be implemented is:
+
+```python
+@staticmethod
+def send_notification(user: str, type: str, data: dict):
+    ...
+```
+
+There is also a second method that may come in handy:
+
+```python
+@staticmethod
+def should_send_notification(user: str, type: str):
+    ...
+```
+
+With this method, you can decide whether a specific user should receive a notification with a specific type with that
+strategy.
+
+#### Sending Notifications
+
+To send notifications to users, simply call the `send_notification` function, which can be found in the
+`apps.notifications.sender` module. It iterates through all enabled strategies and sends notifications with the
+specified type and payload to the specified user.
+

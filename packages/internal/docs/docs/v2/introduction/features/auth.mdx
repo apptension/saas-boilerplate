@@ -1,0 +1,70 @@
+---
+title: Authentication and authorization
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+SaaS Boilerplate comes packed with authentication and authorization functionality that is built-in, making it easy for
+you to secure your SaaS application. The system includes login, signup, and password forgot pages, as well as email
+verification, to ensure that only authorized users can access your application.
+
+### Login and Sign up
+
+The login and signup pages are designed to be simple and user-friendly (and fully customisable). Users can log in with
+their email address and password, or they can use social authentication with Google or Facebook. The signup page
+allows new users to register for an account by providing their email address and password.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/auth/login.png")} alt="Login page" />
+  <img src={useBaseUrl("img/features/auth/signup.png")} alt="Sign up page" />
+</p>
+
+### Password Forgot
+
+In case a user forgets their password, the password forgot page allows them to reset their password by providing their
+email address. An email is sent to the user with a link to reset their password.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/auth/password-forgot.png")} alt="Forgot password page" />
+</p>
+
+### Email Verification
+
+Email verification is a critical part of the authentication process. When a user signs up, an email is sent to their
+email address with a verification link. The user must click on the link to verify their email address.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/auth/verification-email.png")} alt="Email verification message" />
+</p>
+
+### Profile Page
+
+Once a user has logged in, they can access their profile page. From here, they can edit their first- and last name,
+update their avatar, change their password, and enable two-factor authentication (2FA) for their account.
+2FA adds an additional layer of security to the application, making it more difficult for unauthorized users to access
+user accounts.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/auth/profile.png")} alt="Profile page" />
+</p>
+
+### Role Management
+
+User rights are implemented with the role management system. This system allows you to define roles and assign them to
+users. The roles determine what actions a user can perform within the application. For example, you can create an admin
+role that has access to all features of the application, while a standard user role only has access to basic features.
+
+:::info
+
+If you would like to learn more about the technical aspects of the authentication and authorization system in SaaS
+Boilerplate, or if you need to adjust it to meet the specific needs of your application, please refer to our
+[User Module](../../../working-with-sb/users) guides for detailed information.
+
+:::
+
+----
+
+_SaaS Boilerplate provides a robust authentication and authorization system out of the box, allowing you to secure your
+SaaS application quickly. With login, signup, and password forgot screens, email verification, social authentication
+and 2FA, your users' accounts are well protected. The role management system provides granular control over user rights,
+ensuring that users only have access to what they need to perform their tasks._

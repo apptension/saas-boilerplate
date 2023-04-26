@@ -1,0 +1,51 @@
+---
+title: Notifications
+description: In-app notifications
+---
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+
+SaaS Boilerplate comes packed with in-app notifications functionality that allows you to keep your users informed of
+important updates and actions within your application. The system is designed to be user-friendly and customizable,
+making it easy for developers to add new types of notifications to the system.
+
+### Notification Icon
+
+Logged in users can see the notification icon in the top right corner of the application page. By clicking on the icon,
+users can see the list of system notifications. The icon has an indicator of unread notifications, providing users with
+a visual cue to check their notifications.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/notifications/notification.png")} alt="Notifications icon" />
+  <img src={useBaseUrl("img/features/notifications/notification-unread.png")} alt="Notifications icon" />
+</p>
+
+### List of Notifications
+
+The list of notifications is fully customizable, allowing you to tailor the notifications to the needs of your
+application. Users can mark all notifications as read from the menu, making it easy to keep track of new notifications.
+The status and list of notifications are updated using live GraphQL subscriptions over websocket communication, ensuring
+that users always have the latest information.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/notifications/notification-open.png")} alt="Notifications list" />
+</p>
+
+### Adding New Notifications
+
+Adding new types of notifications to the system is straightforward, thanks to the easy-to-use `plop` generator and
+developer-friendly documentation. Developers can quickly add new notifications to the system, allowing them to keep
+users informed of important updates and actions within the application.
+
+:::info
+For detailed information on how to add new notifications to the system, please refer to our
+[technical guide](../../../working-with-sb/notifications).
+This guide provides step-by-step instructions on how to use the APIs to add new notifications to the system, as well as
+how to customize the notifications to meet the needs of your application.
+:::
+
+----
+
+_In-app notifications are an essential part of any modern SaaS application, allowing you to keep your users informed of
+important updates and actions within the application. SaaS Boilerplate provides a robust notification system out of the
+box, with a user-friendly interface and customizable notifications._
