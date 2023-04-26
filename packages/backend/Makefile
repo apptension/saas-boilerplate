@@ -1,6 +1,11 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../Makefile.base.mk
 
+IS_BACKEND_CURRENT_DIR := $(shell pwd | grep 'packages/backend')
+ifneq ($(IS_BACKEND_CURRENT_DIR),)
+	export COMPOSE_FILE=$(SELF_DIR)/../../docker-compose.yml:$(SELF_DIR)/../../docker-compose.local.yml
+endif
+
 setup:
 	chmod +x ./scripts/*.sh
 
@@ -33,8 +38,8 @@ makemigrations:
 migrate:
 	docker-compose run --rm -T backend sh -c "python ./manage.py migrate"
 
-flake8:
-	docker-compose run --rm -T --no-deps backend flake8
+ruff:
+	docker-compose run --rm -T --no-deps backend ruff check .
 
 black:
 	docker-compose run --rm -T --no-deps backend black --config=pyproject.toml .
