@@ -3,7 +3,7 @@ from rest_framework import HTTP_HEADER_ENCODING
 from rest_framework_simplejwt import authentication
 
 
-class JSONWebTokenAuthentication(authentication.JWTAuthentication):
+class JSONWebTokenCookieAuthentication(authentication.JWTAuthentication):
     def get_header(self, request):
         """
         Extracts the header containing the JSON web token from the given

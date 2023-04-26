@@ -628,6 +628,22 @@ class TestValidateOTPMutation:
         assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == response_data["validateOtp"]["access"]
         assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == response_data["validateOtp"]["refresh"]
 
+    def test_success_with_otp_auth_token_in_payload(self, api_client, user_factory, totp_mock):
+        user = user_factory.create(otp_verified=True, otp_enabled=True)
+        totp_mock(verify=True)
+
+        response = api_client.post(
+            path=API_GRAPHQL_PATH,
+            data={
+                "query": self.VALIDATE_OTP_MUTATION,
+                "variables": {'input': {'otpToken': 'token', 'otpAuthToken': str(generate_otp_auth_token(user))}},
+            },
+            format="json",
+        )
+        response_data = response.json()["data"]
+
+        assert validate_jwt(response_data["validateOtp"], user)
+
 
 class TestDisableOTPMutation:
     DISABLE_OTP_MUTATION = '''

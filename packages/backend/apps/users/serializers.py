@@ -240,16 +240,16 @@ class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer)
 
 
 class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
-    refresh = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(required=False)
     access = serializers.CharField(read_only=True)
 
     default_error_messages = {
-        'invalid_token': _('No valid token found in cookie \'refresh_token\''),
+        'invalid_token': _('No valid token found in cookie \'refresh_token\' or field \'refresh\''),
     }
 
     def validate(self, attrs):
         request = self.context['request']
-        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
+        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE) or attrs.get('refresh')
 
         if not raw_token:
             self.fail('invalid_token')
@@ -275,15 +275,16 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
 
 
 class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=False)
     ok = serializers.BooleanField(read_only=True)
 
     default_error_messages = {
-        'invalid_token': _('No valid token found in cookie \'refresh_token\''),
+        'invalid_token': _('No valid token found in cookie \'refresh_token\' or field \'refresh\''),
     }
 
     def validate(self, attrs):
         request = self.context['request']
-        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE)
+        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE) or attrs.get('refresh')
 
         if not raw_token:
             self.fail('invalid_token')
@@ -325,6 +326,7 @@ class ValidateOTPSerializer(serializers.Serializer):
     user: models.User
 
     otp_token = serializers.CharField(write_only=True)
+    otp_auth_token = serializers.CharField(required=False, write_only=True)
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
 
@@ -335,7 +337,9 @@ class ValidateOTPSerializer(serializers.Serializer):
     def validate(self, attrs):
         request = self.context['request']
 
-        if not (raw_otp_auth_token := request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE)):
+        if not (
+            raw_otp_auth_token := request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or attrs.get('otp_auth_token')
+        ):
             self.fail('invalid_token')
 
         try:

@@ -19,6 +19,12 @@ def validate_jwt(response_data, user):
 
 
 class TestTokenRefresh:
+    def test_return_error_if_no_cookie_or_payload_is_sent(self, api_client):
+        response = api_client.post(reverse('jwt_token_refresh'))
+        assert response.json() == {
+            'non_field_errors': ["No valid token found in cookie 'refresh_token' or field 'refresh'"]
+        }
+
     def test_return_error_for_invalid_refresh_token(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)
         api_client.cookies = SimpleCookie(
@@ -36,7 +42,7 @@ class TestTokenRefresh:
         assert response.cookies[settings.ACCESS_TOKEN_COOKIE].value == ''
         assert response.cookies[settings.REFRESH_TOKEN_COOKIE].value == ''
 
-    def test_refresh(self, api_client, user: models.User):
+    def test_refresh_cookie_auth(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)
         api_client.cookies = SimpleCookie(
             {
@@ -52,22 +58,28 @@ class TestTokenRefresh:
         new_refresh_token_raw = response.cookies[settings.REFRESH_TOKEN_COOKIE].value
         assert AccessToken(new_access_token_raw), new_access_token_raw
         assert RefreshToken(new_refresh_token_raw), new_refresh_token_raw
+        assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()
 
-    def test_blacklist_old_token(self, api_client, user: models.User):
+    def test_refresh_sent_in_payload(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)
-        api_client.cookies = SimpleCookie(
-            {
-                settings.ACCESS_TOKEN_COOKIE: str(refresh.access_token),
-                settings.REFRESH_TOKEN_COOKIE: str(refresh),
-            }
-        )
 
-        api_client.post(reverse('jwt_token_refresh'))
+        response = api_client.post(reverse('jwt_token_refresh'), data={'refresh': str(refresh)})
 
+        assert response.status_code == status.HTTP_200_OK
+        new_access_token_raw = response.json().get('access')
+        new_refresh_token_raw = response.json().get('refresh')
+        assert AccessToken(new_access_token_raw), new_access_token_raw
+        assert RefreshToken(new_refresh_token_raw), new_refresh_token_raw
         assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()
 
 
 class TestLogout:
+    def test_raise_error_if_no_cookie_or_payload_is_sent(self, api_client):
+        response = api_client.post(reverse('logout'))
+        assert response.json() == {
+            'non_field_errors': ["No valid token found in cookie 'refresh_token' or field 'refresh'"]
+        }
+
     def test_clear_cookies(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)
         api_client.cookies = SimpleCookie(
@@ -83,7 +95,7 @@ class TestLogout:
         assert not response.cookies[settings.REFRESH_TOKEN_COOKIE].value
         assert not response.cookies[settings.REFRESH_TOKEN_LOGOUT_COOKIE].value
 
-    def test_blacklist_old_token(self, api_client, user: models.User):
+    def test_blacklist_old_token_with_cookie_auth(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)
         api_client.cookies = SimpleCookie(
             {
@@ -93,4 +105,9 @@ class TestLogout:
 
         api_client.post(reverse('logout'))
 
+        assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()
+
+    def test_blacklist_old_token_with_refresh_in_payload(self, api_client, user: models.User):
+        refresh = RefreshToken.for_user(user)
+        api_client.post(reverse('logout'), data={'refresh': str(refresh)})
         assert BlacklistedToken.objects.filter(token__jti=refresh['jti']).exists()

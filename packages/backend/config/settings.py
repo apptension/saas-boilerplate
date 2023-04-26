@@ -208,7 +208,8 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "common.utils.custom_exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "apps.users.authentication.JSONWebTokenAuthentication",
+        "apps.users.authentication.JSONWebTokenCookieAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         'rest_framework.authentication.SessionAuthentication',
     ),
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day"},
