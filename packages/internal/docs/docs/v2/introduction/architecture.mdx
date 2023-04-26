@@ -1,6 +1,44 @@
 ---
 title: Architecture
-description: TODO >Architecture description<
+description: System architecture description
 ---
 
-TBD
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+## Services included in SaaS Boilerplate
+
+SaaS Boilerplate comes with a set of pre-configured services that are ready to be deployed on
+[AWS](https://aws.amazon.com/) cloud infrastructure.
+
+The project follows a monorepo repository layout and utilizes the [NX](https://nx.dev/) build system. A `Makefile` is
+also included with predefined rules, which should not be changed unless you know what you are doing. Most of these rules
+are used in CodeBuild jobs in the CI pipeline.
+
+All services are located in the `packages` directory at the root of the repository. Standard installation of the
+SaaS Boilerplate contains following services:
+
+- React web application
+- Django backend and admin panel
+- Serverless asynchronous workers
+
+## System Architecture diagram
+
+The following diagram illustrates the standard set of AWS services used and configured for every application environment.
+
+<p align="center">
+  <img src={useBaseUrl("img/system-diagram-v1.png")} alt="System Diagram" />
+</p>
+
+## CI/CD Architecture
+
+### Continuous integration / Continuous Deployment
+
+SaaS Boilerplate comes with a preconfigured Continuous Integration (CI) / Continuous Deployment (CD) pipeline
+implemented with AWS CodeCommit, AWS CodeBuild, and AWS CodePipeline for each deployed environment.
+
+The deployment pipeline is configured to start automatically after each code push to a specific set of branches to the
+CodeCommit repository created by the CI/CD CDK stack. Each environment can have a different branch configuration.
+
+<p align="center">
+  <img src={useBaseUrl("img/cicd-diagram-v3.png")} alt="CI/CD Diagram" />
+</p>
