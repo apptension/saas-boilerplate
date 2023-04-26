@@ -14,30 +14,41 @@ import ValueList from './valueList';
 const VersionMatrix = () => {
   const { versions } = useFetchVersions();
 
+  const forcedServiceOrder = ['webapp', 'api', 'workers', 'migrations'];
+
   return (
     <CardContainer>
-      {versions.envs.map(({ name, version, builtAt, values }, i) => (
+      {versions.envs.map(({ name: envName, version, builtAt, values }, i) => (
         <Card key={i}>
-          <CardHeader>{name}</CardHeader>
+          <CardHeader>{envName}</CardHeader>
           <CardBadge>{version}</CardBadge>
           <Divider>Built at {builtAt}</Divider>
 
-          {versions.services[name] &&
-            versions.services[name].map((service, i) => (
-              <CardService key={i}>
-                <div>
-                  <strong>{service.name}</strong>
-                </div>
+          {versions.services[envName] &&
+            Object.keys(versions.services[envName])
+              .sort((a, b) => {
+                return (
+                  forcedServiceOrder.indexOf(a) - forcedServiceOrder.indexOf(b)
+                );
+              })
+              .map((serviceName, i) => {
+                const service = versions.services[envName][serviceName];
+                return (
+                  <CardService key={i}>
+                    <div>
+                      <strong>{service.name}</strong>
+                    </div>
 
-                <CardBadge smaller dark={service.version === version}>
-                  {service.version}
-                </CardBadge>
+                    <CardBadge smaller dark={service.version === version}>
+                      {service.version}
+                    </CardBadge>
 
-                <div>{service.builtAt}</div>
+                    <div>{service.builtAt}</div>
 
-                <ValueList items={service.values} />
-              </CardService>
-            ))}
+                    <ValueList items={service.values} />
+                  </CardService>
+                );
+              })}
 
           <Divider />
           <ValueList items={values} />

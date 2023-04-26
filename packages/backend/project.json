@@ -52,7 +52,7 @@
         "api": {
           "commands": [
             "nx cdk:deploy:api",
-            "nx run tools:upload-service-version api \"url=https://${DOMAIN_API}\""
+            "nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
           ],
           "parallel": false
         },

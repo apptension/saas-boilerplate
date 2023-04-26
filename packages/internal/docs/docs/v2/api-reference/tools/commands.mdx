@@ -1,0 +1,42 @@
+---
+title: CLI commands
+description: Commands within `tools` package context
+---
+
+import RunOnCICautionPartial from '../../shared/partials/_run-on-ci-caution.mdx'
+
+This page contains a list of CLI commands that you can use within the `tools` package context.
+
+### `nx run tools:upload-version SERVICES`
+
+<RunOnCICautionPartial />
+
+Command run on the `upload version` deployment pipeline step. It will collect information about deployed application
+state like: `environment name`, `version`, `built time` along with passed `services` argument and save the data on the
+S3 bucket that is accessed by the [`Version matrix`](../../working-with-sb/dev-tools/version-matrix) tool.
+
+Arguments:
+- `SERVICES`: comma separated list of services that are deployed during environment update
+
+```bash title="Example usage"
+nx run tools:upload-version migrations,api,workers,webapp
+```
+
+---
+
+### `nx run tools:upload-service-version SERVICE [ADDITIONAL_DATA]`
+
+<RunOnCICautionPartial />
+
+Command run on the end of the application service deployment. It will collect information about deployed application
+service state like: `service name`, `version`, `built time` and save the data on the S3 bucket that is accessed
+by the [`Version matrix`](../../working-with-sb/dev-tools/version-matrix) tool.
+
+Arguments:
+- `SERVICE`: name of the service that is updated
+- `ADDITIONAL_DATA`: (Optional) argument used to pass additional data about deployment in format: `arg_name=arg_value`.
+Used for example to pass the `url` data of the deployed service
+
+```bash title="Example usage"
+nx run tools:upload-service-version workers
+```

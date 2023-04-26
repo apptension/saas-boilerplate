@@ -116,6 +116,16 @@ module.exports = {
           collapsed: false,
           items: ['v2/api-reference/webapp-emails/commands'],
         },
+        {
+          type: 'category',
+          label: 'tools',
+          link: {
+            type: 'doc',
+            id: 'v2/api-reference/tools/index',
+          },
+          collapsed: false,
+          items: ['v2/api-reference/tools/commands'],
+        },
         'v2/api-reference/env',
         'v2/api-reference/env-files',
       ],

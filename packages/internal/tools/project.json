@@ -65,7 +65,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/tools",
-        "command": "ts-node --project tsconfig.lib.json ./src/upload-service-version"
+        "command": "env-cmd -f ../../../.env.tools ts-node --project tsconfig.lib.json ./src/upload-service-version"
       }
     },
     "upload-version": {

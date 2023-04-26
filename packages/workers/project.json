@@ -44,7 +44,8 @@
       "options": {
         "color": true,
         "commands": [
-          "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/deploy.sh"
+          "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/deploy.sh",
+          "nx run tools:upload-service-version workers"
         ],
         "parallel": false
       },

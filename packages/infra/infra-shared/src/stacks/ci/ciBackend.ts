@@ -5,10 +5,7 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
 
 interface BackendCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -247,6 +244,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           'logs:*',
           'route53:*',
           'stepfunctions:*',
+          's3:*',
         ],
         resources: ['*'],
       })

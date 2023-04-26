@@ -33,12 +33,37 @@ export const useFetchVersions = () => {
     setError(undefined);
 
     try {
-      const response = await fetch(
-        `${process.env.NX_VERSIONS_BASE_URL}/versions.json`
-      );
-      const versions = await response.json();
+      const baseUrl = process.env.NX_VERSIONS_BASE_URL;
+      const response = await fetch(`${baseUrl}/versions.json`);
+      const envs = await response.json();
 
-      setVersions(versions);
+      const services = await Promise.all(
+        envs.map(async (env) =>
+          Promise.all(
+            env.services.map(async (serviceName) =>
+              fetch(`${baseUrl}/${env.name}-${serviceName}.json`).then(
+                async (r) => ({
+                  envName: env.name,
+                  ...(await r.json()),
+                })
+              )
+            )
+          )
+        )
+      );
+
+      const servicesMap = services.reduce((out, envServices) => {
+        return envServices.reduce((mapped, service) => {
+          mapped[service.envName] = mapped[service.envName] ?? {};
+          mapped[service.envName][service.name] = service;
+          return mapped;
+        }, out);
+      }, {});
+
+      setVersions({
+        envs,
+        services: servicesMap,
+      });
     } catch (error) {
       setError(error as Error);
     } finally {

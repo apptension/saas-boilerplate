@@ -26,8 +26,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "aws-cdk": "2.33.0",
-    "aws-cdk-lib": "2.33.0",
+    "aws-cdk": "2.66.0",
+    "aws-cdk-lib": "2.66.0",
     "constructs": "^10.1.225",
     "babel-plugin-styled-components": "^2.0.7"
   },

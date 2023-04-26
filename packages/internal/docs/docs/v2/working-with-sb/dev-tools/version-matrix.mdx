@@ -1,6 +1,58 @@
 ---
 title: Version matrix
-description: TODO >Description<
 ---
 
-TBD
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+This tool displays a list of all environment stages (e.g. `dev`, `stage`, `prod`) and their metadata:
+
+- Currently deployed version
+- Deployment time
+- List of services deployed to the environment stage
+- Links to services available through HTTPS
+
+
+<img
+  src={useBaseUrl("img/version-matrix.png")}
+  alt="Version matrix"
+  height="300"
+/>
+
+## Configuration
+
+You can configure version matrix in `.env.tools` file in the root of your project. You can find the details in
+[`.env.tools` API Reference](../../api-reference/env-files#envtools).
+
+
+## Deployment
+
+Deployment of the version matrix service contains two steps. First, you need to run build command:
+```shell
+nx run status-dashboard:build
+```
+
+After successful build you can run AWS deployment script:
+
+```shell
+nx run status-dashboard:deploy
+```
+
+:::caution
+
+This command should be called only within `make login ENV_STAGE=<STAGE_NAME>` command and assumes that
+[AWS vault](../../working-with-sb/infrastructure/initial-setup#aws-vault-profile) is configured.
+
+:::
+
+
+## Updating version on CI pipeline
+
+Application environment version and individual services versions are updated automatically on the CI/CD pipeline using
+`nx run tools:upload-version` and `nx run tools:upload-service-version` commands.
+
+:::info
+
+Find more about `nx run tools:upload-version` and `nx run tools:upload-service-version` commands in the
+[`tools` package API Reference](../../api-reference/tools/commands).
+
+:::
