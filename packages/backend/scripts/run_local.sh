@@ -22,5 +22,12 @@ echo "LocalStack fixtures installed"
 
 python manage.py contentful_sync
 python manage.py migrate
-python manage.py init_subscriptions
+
+if (echo "$STRIPE_LIVE_SECRET_KEY" | grep "<CHANGE_ME>") && (echo "$STRIPE_TEST_SECRET_KEY" | grep "<CHANGE_ME>"); then
+    echo "Stripe initialization skipped"
+else
+    python manage.py init_subscriptions
+    echo "Stripe initialized"
+fi
+
 python manage.py runserver 0.0.0.0:5001
