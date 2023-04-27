@@ -1,0 +1,58 @@
+---
+title: Payments and subscriptions
+description: Integration with Stripe
+---
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+SaaS Boilerplate provides a payments and subscriptions functionality out of the box based on the integration with
+Stripe. This functionality is divided into two parts: **[payments](#payments)** and
+**[subscription management](#subscription-management)**.
+
+### Payments
+
+The payments functionality allows users to define payment methods (including multiple cards) that are stored in the
+Stripe merchant account. Users can edit and update their payment methods at any time.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/payments/card-form.png")} alt="Payment method form" />
+</p>
+
+The payment form allows users to make transactions with a defined amount of USD, using an already added payment method
+or adding a new card for one time charge. Successful transactions are added to the transaction history list.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/payments/payment-form.png")} alt="Payment form" />
+  <img src={useBaseUrl("img/features/subscriptions/transaction-history.png")} alt="Transaction history" />
+</p>
+
+### Subscription management
+
+The subscription management functionality allows users to select one of the three pre-defined plans in the Stripe admin
+panel: Free, Monthly, and Yearly. The selected plan is automatically registered as an active subscription in the system
+and can be used in the business logic of the application. The system supports changing and canceling subscriptions
+based on the rules defined by the application administrator in Stripe.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/subscriptions/plans.png")} alt="Subscription plans" />
+  <img src={useBaseUrl("img/features/subscriptions/subscriptions.png")} alt="Active subscription" />
+</p>
+
+
+:::info
+If you would like to learn more about the technical aspects of the payments and subscriptions in SaaS Boilerplate,
+or if you need to adjust it to meet the specific needs of your application, please refer to our
+[Payments (Stripe integration)](../../../working-with-sb/payments) guides for detailed information.
+:::
+
+----
+
+Having Stripe payments integrated from the start of a SaaS project offers several advantages. First, it allows for a
+seamless user experience, as users can easily subscribe to paid plans and make payments without leaving the application.
+Second, it allows for better financial tracking and reporting, as all payment information is stored in the Stripe
+merchant account. Finally, it provides a scalable payment solution that can grow with the application, as Stripe
+supports a wide range of payment methods and currencies.
+
+_Payments and subscriptions functionality is a critical component of any SaaS application. SaaS Boilerplate offers a
+robust payments and subscriptions solution out of the box, integrated with Stripe. This functionality includes payment
+method management, a payment form for transactions, active subscription management, and the ability to change and cancel
+subscriptions._

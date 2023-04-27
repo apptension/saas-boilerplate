@@ -198,7 +198,7 @@ module.exports = {
             'v2/introduction/features/emails',
             'v2/introduction/features/notifications',
             'v2/introduction/features/openai',
-            'v2/introduction/features/stripe',
+            'v2/introduction/features/payments',
             'v2/introduction/features/iac',
             'v2/introduction/features/cicd',
             'v2/introduction/features/cms',
@@ -412,7 +412,6 @@ module.exports = {
             type: 'doc',
             id: 'v2/working-with-sb/users/index',
           },
-
           items: [
             'v2/working-with-sb/users/create-profile-field',
             'v2/working-with-sb/users/create-oauth-method',
@@ -423,12 +422,10 @@ module.exports = {
         {
           type: 'category',
           label: 'Payments (Stripe integration)',
-
+          collapsed: false,
           link: {
-            type: 'generated-index',
-            title: 'Payments (Stripe integration)',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/payments',
+            type: 'doc',
+            id: 'v2/working-with-sb/payments/index',
           },
           items: [
             'v2/working-with-sb/payments/one-time-payment-form',
