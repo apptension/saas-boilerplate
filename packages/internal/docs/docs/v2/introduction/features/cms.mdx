@@ -3,4 +3,46 @@ title: CMS
 description: Contentful integration
 ---
 
-TBD
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+SaaS Boilerplate offers a powerful CMS functionality out of the box that is integrated with Contentful.
+
+Using the CMS functionality in SaaS Boilerplate allows developers and administrators to easily manage content in the
+application, without having to modify the code. This makes it easy to update content, such as terms and conditions or
+pricing plans, without needing to redeploy the application.
+
+#### Contentful
+
+[Contentful](https://www.contentful.com/) is a flexible and scalable content management system that allows developers
+to create and manage content in a headless fashion. Contentful makes it easy to manage content across multiple channels
+and platforms, including websites, mobile apps, and IoT devices.
+
+### CMS Functionality in SaaS Boilerplate
+
+SaaS Boilerplate offers two parts of the application that use content from the CMS.
+
+Firstly, content for "Terms and Conditions" and "Privacy Policy" documents in the application are loaded from the CMS
+instance. This functionality demonstrates how to manage and show mainly static text in the application.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/contentful/privacy-policy.png")} alt="Privacy policy example" />
+</p>
+
+Secondly, all items from the "Demo Contentful Items" application page are synced with Contentful. On the list, users can
+see different items that the application admin can manage through the CMS. Each item has a "star" indicator that can be
+clicked and saved as a "favorite" item. This example shows how to fill application content managed from CMS and link the
+custom application logic with it.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/contentful/items.png")} alt="Contentful items example" />
+</p>
+
+
+#### Extending and using the CMS Functionality
+
+The two implementations of the CMS functionality in SaaS Boilerplate are just examples of how to use the integration
+with Contentful. The functionality is easy to extend and use in different places throughout the application.
+
+Developers can use the CMS functionality to manage and deliver content in different parts of the application, such as
+pricing plans, product descriptions, or blog posts. The flexibility of Contentful allows developers to create and manage
+content in a headless fashion, making it easy to deliver content across multiple channels and platforms.
