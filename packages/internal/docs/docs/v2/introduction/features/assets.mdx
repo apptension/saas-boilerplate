@@ -1,5 +1,40 @@
 ---
 title: Assets management
 ---
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
-TBD
+SaaS Boilerplate comes packed with assets management functionality that allows developers to create file uploads and
+deliver assets to end-users through a CDN easily. This functionality also includes ready-to-use logic for creating image
+thumbnails, making it easy to manage and display images on your website.
+
+### Documents Page
+
+As an example functionality of the assets management, SaaS Boilerplate contains a `Documents` page that allows users to
+drop a file to be uploaded into S3 storage. The uploaded file is then listed and users can remove it from the system if
+needed.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/assets/upload-form.png")} alt="Upload file form" />
+  <img src={useBaseUrl("img/features/assets/file.png")} alt="Uploaded file" />
+</p>
+
+### User Profile Avatar
+
+The assets management functionality is also used in the user profile to upload a user avatar. Users can upload an image,
+which is then stored in the S3 bucket and delivered to end-users through the CDN. The avatar image can be displayed
+throughout the application, providing users with a personalized experience.
+
+### Thumbnails
+
+SaaS Boilerplate includes ready-to-use logic for creating image thumbnails, making it easy to display images of
+different sizes on your website.
+
+----
+
+:::info
+
+If you would like to learn more about the technical aspects of the assets management in SaaS Boilerplate, or if you need
+to adjust it to meet the specific needs of your application, please refer to our
+[Assets management](../../../working-with-sb/asset-management) guides for detailed information.
+
+:::
