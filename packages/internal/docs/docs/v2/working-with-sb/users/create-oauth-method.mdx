@@ -1,6 +1,99 @@
 ---
 title: How to add a new social login method?
-description: TODO >Description<
+description: Social authentication and authorization with pyhon-social-auth
 ---
 
-TBD
+The SaaS Boilerplate uses the [python-social-auth](https://python-social-auth.readthedocs.io/en/latest/) package to provide social login functionality with Django.
+This package is a popular Python library that provides an easy-to-use interface for implementing social authentication in web applications.
+
+With `python-social-auth`, developers can quickly and easily add social login functionality for popular social networks like Facebook, Twitter, and Google.
+The package provides a range of features to simplify the authentication process, including OAuth and OpenID support, customizable authentication backends, and support for multiple authentication providers.
+
+## Add a new backend social login provider
+
+The `python-social-auth` package supports a wide range of authentication backends for popular social networks and identity providers.
+A full list of available backends can be found in the package's official documentation, which is available [here](https://python-social-auth.readthedocs.io/en/latest/backends/index.html).
+
+The documentation provides detailed information on each backend, including the required settings and configuration options, as well as any limitations or special considerations that developers should be aware of.
+This makes it easy for developers to choose the right backend for their specific use case, and to configure the backend correctly for their application.
+
+Here's a simple example on how to connect Facebook OAuth2:
+
+1. Visit the [Facebook App Creation](https://developers.facebook.com/apps/) to register a new app.
+
+2. Fill the following settings with `App ID` and `App secret` from Facebook Developer dashboard.
+
+```python title="packages/backend/config/settings.py"
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
+```
+
+3. You can configure additional settings depending on the backend. For example, define `SOCIAL_AUTH_FACEBOOK_SCOPE` to get extra permissions from Facebook.
+```python title="packages/backend/config/settings.py"
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+```
+
+:::tip
+For more detailed overview on [this](https://python-social-auth.readthedocs.io/en/latest/backends/facebook.html#facebook) and other backends integrations, please follow the related documentation.
+:::
+
+## Add a new social login button in webapp
+
+In order to use social login provider in webapp that is different from configured out of the box you need to modify code
+in two files.
+
+To add a social login provider to the webapp that is different from the ones configured out of the box, you need to
+modify the code in two files.
+
+1. Modify the `OAuthProvider` enum defined in `packages/webapp/src/modules/auth/auth.types.ts`:
+
+```typescript title="packages/webapp/src/modules/auth/auth.types.ts" showLineNumbers
+export enum OAuthProvider {
+  Google = 'google-oauth2',
+  Facebook = 'facebook',
+  // highlight-next-line
+  CustomOAuth = 'custom',
+}
+```
+
+2. Use the defined enum value in the `SocialLoginButtons` component, defined in
+`packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.component.tsx`:
+
+```jsx title="packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.component.tsx" showLineNumbers
+...
+export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProps) => {
+  const oAuthLogin = useOAuthLogin();
+  const handleFacebookLogin = () => oAuthLogin(OAuthProvider.Facebook);
+  // highlight-next-line
+  const handleCustomLogin = () => oAuthLogin(OAuthProvider.CustomOAuth);
+
+  return (
+    <Container {...props}>
+      <FacebookButton onClick={handleFacebookLogin}>
+        {variant === SignupButtonsVariant.LOGIN ? (
+          <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
+        ) : (
+          <FormattedMessage defaultMessage="Sign up with Facebook" id="Auth / Signup / Facebook signup button" />
+        )}
+      </FacebookButton>
+
+      // highlight-start
+      <CustomButton onClick={handleCustomLogin}>
+        {variant === SignupButtonsVariant.LOGIN ? (
+          <FormattedMessage defaultMessage="Log in with Custom provider" id="Auth / Login / Custom login button" />
+        ) : (
+          <FormattedMessage defaultMessage="Sign up with Custom provider" id="Auth / Signup / Custom signup button" />
+        )}
+      </CustomButton>
+      // highlight-end
+    </Container>
+  );
+};
+```
+
+::::note
+Note that you must define the `<CustomButton />` component in
+`packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.styles.tsx` before you can use it.
+::::
