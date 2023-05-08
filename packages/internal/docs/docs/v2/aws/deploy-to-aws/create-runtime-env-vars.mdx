@@ -1,0 +1,91 @@
+---
+description: Steps required to deploy SaaS Boilerplate on AWS
+---
+
+# Step 4: Create runtime environment variables
+
+Every running application requires environment-specific runtime values to function properly. These values could include
+secret keys for third-party services, boolean flags enabling features, and much more.
+
+To manage these variables, the SaaS Boilerplate leverages AWS Systems Manager Parameter Store and a tool called
+[`chamber`](https://github.com/segmentio/chamber). With these tools, managing environment variables is easy and secure.
+
+:::caution
+
+Before deploying your application's code, you must set all required environmental variables!
+
+:::
+
+## Install chamber CLI tool
+
+Follow the [official instructions](https://github.com/segmentio/chamber#installing) on how to install chamber.
+
+## Switch context to proper environment stage
+
+Run the following command that will switch context to specific environment stage.
+
+```shell
+make set-env ENV_STAGE=qa
+```
+
+## How does it work?
+
+### Using the CLI tool
+
+You can then set the environment variables for the service (such as `backend`) in JSON format using the following `make` rule:
+
+```shell
+make -C packages/<SERVICE_NAME> secrets
+```
+
+This will download a JSON secrets file, open it in Vim, and re-upload it when you save the file.
+
+### Manually using the AWS console
+
+Alternatively, you can set your environment variables manually by going to the
+[AWS console](https://console.aws.amazon.com/) and adding or editing the parameters in the
+`Systems Manager > Parameter Store` section.
+
+Note that the **Name** of every parameter should follow this naming convention:
+
+```
+/env-<PROJECT_NAME>-<STAGE_NAME>-<SERVICE_NAME>/<ENVIRONMENT_VARIABLE_NAME>
+```
+
+in order to be correctly loaded into
+
+### Set env variables for backend
+
+import BackendEnvVars from '../../shared/partials/env-vars/_backend.mdx';
+
+```shell
+make -C packages/backend secrets
+```
+
+<BackendEnvVars optional={false} />
+
+Check the [api reference](../../api-reference/env#backend-service) for full list of backend env vars.
+
+### Set env variables for workers
+
+import WorkersEnvVars from '../../shared/partials/env-vars/_workers.mdx';
+
+```shell
+make -C packages/workers secrets
+```
+
+<WorkersEnvVars optional={false} />
+
+Check the [api reference](../../api-reference/env#workers-service) for full list of workers env vars.
+
+### Set env variables for web app
+
+import WebappEnvVars from '../../shared/partials/env-vars/_webapp.mdx';
+
+```shell
+make -C packages/webapp secrets
+```
+
+<WebappEnvVars optional={false} />
+
+Check the [api reference](../../api-reference/env#webapp-service) for full list of web app env vars.

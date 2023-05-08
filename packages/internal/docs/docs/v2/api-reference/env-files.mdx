@@ -14,8 +14,15 @@ guide.
 
 ### Common values used in `.env`, `.env.shared` and `.env.{env-id}` files:
 
+:::info
+`SB_HOSTED_ZONE_ID` and `SB_HOSTED_ZONE_NAME` can be skipped if you are using externally managed DNS. In that case,
+certificates for CloudFront distribution and Load Balancer should be already generated, and their ARNs provided in
+`SB_CLOUDFRONT_CERTIFICATE_ARN` and `SB_LOAD_BALANCER_CERTIFICATE_ARN` parameters. As the last step,
+CNAME DNS records pointing to CloudFront distribution and Load Balancer need to be manually added.
+:::
+
 | Name                     | Description                                                                                                                            | Example                                       |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | `PROJECT_NAME`           | The name of your project (best if 3-5 characters to avoid AWS names being to long)                                                     | `saas`                                        |
 | `AWS_DEFAULT_REGION`     | Default AWS region for you application                                                                                                 | `eu-west-1`                                   |
 | `COMPOSE_PATH_SEPARATOR` | Check official `docker-compose` [documentation](https://docs.docker.com/compose/environment-variables/envvars/#compose_path_separator) | `:`                                           |
@@ -27,10 +34,7 @@ guide.
 | `SB_DOMAIN_API`          | A domain used to host an API backend service                                                                                           | `api.example.com`                             |
 | `SB_DOMAIN_WEB_APP`      | A domain used to host the web application                                                                                              | `app.example.com`                             |
 | `SB_DOMAIN_DOCS`         | A domain used to host the documentation                                                                                                | `docs.example.com`                            |
-| `SB_DOMAIN_WWW`          |                                                                                                                                        | `www.example.com`                             |
 | `SB_DOMAIN_CDN`          | A domain used to static assets delivery                                                                                                | `cdn.example.com`                             |
-
-
 
 ### `.env`
 
@@ -43,12 +47,10 @@ This file should not be committed to the repository
 Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
 following values:
 
-
-| Name                | Description                                                                                                                          | Example            |
-|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|--------------------|
-| `AWS_VAULT_PROFILE` | Name of your AWS vault profile. Learn more about AWS vault [here](../working-with-sb/infrastructure/initial-setup#aws-vault-profile) | `saas-boilerplate` |
-| `NX_BRANCH`         |                                                                                                                                      | `local`            |
-
+| Name                | Description                                                                                                                                             | Example            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `AWS_VAULT_PROFILE` | Name of your AWS vault profile. Learn more about AWS vault [here](../aws/deploy-to-aws/configure-aws-credentials#store-aws-credentials-in-secure-place) | `saas-boilerplate` |
+| `NX_BRANCH`         |                                                                                                                                                         | `local`            |
 
 ### `.env.shared`
 
@@ -66,15 +68,14 @@ File contains configuration of the specific environment with the `{env-id}` id.
 Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
 following values:
 
-
-| Name                               | Description                                                                  | Example                        |
-|------------------------------------|------------------------------------------------------------------------------|--------------------------------|
-| `SB_DEPLOY_BRANCHES`               | A list of branches that will trigger automatic deployment of the environment | `master`                       |
-| `SB_BASIC_AUTH`                    | Basic Auth configuration for the environment                                 | `username:password`            |
-| `SB_CLOUDFRONT_CERTIFICATE_ARN`    |                                                                              |                                |
-| `SB_LOAD_BALANCER_CERTIFICATE_ARN` |                                                                              |                                |
-| `SB_CERTIFICATE_DOMAIN`            |                                                                              | `env.example.com`              |
-| `VITE_SUBSCRIPTIONS_URL`           | An websocket endpoint for web application to connect used for subscriptions  | `wss://app.env.example.com/ws` |
+| Name                               | Description                                                                                                                                                  | Example                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| `SB_DEPLOY_BRANCHES`               | A list of branches that will trigger automatic deployment of the environment                                                                                 | `master`                       |
+| `SB_BASIC_AUTH`                    | Basic Auth configuration for the environment                                                                                                                 | `username:password`            |
+| `SB_CLOUDFRONT_CERTIFICATE_ARN`    | ARN of already generated certificate that should be attached to CloudFront distribution. This certificate needs to be generated in us-east-1 region.         |                                |
+| `SB_LOAD_BALANCER_CERTIFICATE_ARN` | ARN of already generated certificate that should be attached to Load Balancer. This certificate needs to be generated in the same region as the application. |                                |
+| `SB_CERTIFICATE_DOMAIN`            | The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name                                                | `env.example.com`              |
+| `VITE_SUBSCRIPTIONS_URL`           | An websocket endpoint for web application to connect used for subscriptions                                                                                  | `wss://app.env.example.com/ws` |
 
 ### `.env.test`
 
@@ -82,13 +83,13 @@ Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-i
 following values:
 
 | Name      | Description | Example |
-|-----------|-------------|---------|
+| --------- | ----------- | ------- |
 | `VERSION` |             | `test`  |
 
 ### `.env.tools`
 
 | Name                             | Description                                                                       | Example              |
-|----------------------------------|-----------------------------------------------------------------------------------|----------------------|
+| -------------------------------- | --------------------------------------------------------------------------------- | -------------------- |
 | `SB_TOOLS_ENABLED`               | Flag if tools are enabled                                                         | `true`               |
 | `SB_TOOLS_BASIC_AUTH`            | Basic Auth configuration of the version matrix service                            | `user:password`      |
 | `SB_TOOLS_HOSTED_ZONE_ID`        | Id of a AWS Route53 hosted zone of a domain used to host version matrix service   |                      |

@@ -103,7 +103,7 @@ builds the web application using [`vite build`](https://vitejs.dev/guide/cli.htm
 
 It is used in CI pipeline and runs `nx webapp:build-vite` inside `webapp` environment context using `chamber`.
 
-To find more about using `chamber` in the project check [How to configure environment variables on AWS?](../../working-with-sb/infrastructure/env-variables) guide.
+To find more about using `chamber` in the project check [How to configure environment variables on AWS?](../../aws/deploy-to-aws/create-runtime-env-vars) guide.
 
 ---
 
@@ -123,11 +123,10 @@ Alias command for [`nx build`](#nx-run-webappbuild-vite).
 
 It starts `secrets-editor` with the `webapp` context (`SERVICE_NAME=webapp`): tool that helps to set up an environment
 variables for AWS environment. Find more about setting environment variables for a service
-[here](../../working-with-sb/infrastructure/env-variables#using-the-cli-tool).
+[here](../../aws/deploy-to-aws/create-runtime-env-vars#using-the-cli-tool).
 
 :::caution
 
-This command should be called only within `make login ENV_STAGE=<STAGE_NAME>` command and assumes that
-[AWS vault](../../working-with-sb/infrastructure/initial-setup#aws-vault-profile) is configured.
+This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
 
 :::

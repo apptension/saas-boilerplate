@@ -1,0 +1,36 @@
+---
+description: Steps required to deploy SaaS Boilerplate on AWS
+---
+
+# Step 1: Initialize an environment stage in code repository
+
+SaaS Boilerplate provides the ability to deploy various versions of your application, such as QA, staging, or
+production. You have the flexibility to determine their naming conventions and the number of environments required.
+The only exception is the local environment, which is a specialized preconfigured environment utilized for running
+SaaS Boilerplate on local machine.
+
+All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
+policies and preferences.
+
+This article will guide you through all the necessary steps to deploy a new environment to AWS.
+
+## Create a configuration file
+
+You can use a simple dotenv file in root of the project that will describe your environment.
+For example to create a QA env stage configuration run following command:
+
+```bash
+cp .env.stage-example .env.qa
+```
+
+## Learn more
+
+Follow the [API reference of the `.env`](../../api-reference/env-files) files for the details of the contents of the
+environment stage dotenv file.
+
+:::info
+
+To learn more about using `.env` files in SaaS Boilerplate by Apptension read the
+[`How to work with .env files?`](../../working-with-sb/project-structure/env-files) article.
+
+:::

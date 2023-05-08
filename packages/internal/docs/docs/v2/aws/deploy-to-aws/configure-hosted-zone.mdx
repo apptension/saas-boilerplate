@@ -1,0 +1,51 @@
+---
+description: Steps required to deploy SaaS Boilerplate on AWS
+---
+# Step 3: Configure hosted zone
+
+## Configure hosted zone
+
+In order to access any environment you need to have a public Hosted Zone in AWS Route53.
+SaaS Boilerplate will use this hosted zone's domain to route traffic to your app.
+
+:::info
+
+A hosted zone is a container for records, and records contain information about how you want to route traffic for a specific domain, such as example.com, and its subdomains (acme.example.com, zenith.example.com). A hosted zone and the corresponding domain have the same name.
+
+Source: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
+
+:::
+
+### Create a new hosted zone
+
+Depending on your use case there are multiple approaches to creating a hosted zone:
+
+1.  You don't have a domain yet.
+
+    - Follow this tutorial prepared by AWS team: [Domain registration docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
+
+2.  You have a domain registered in external DNR (e.g. GoDaddy).
+
+    - Active domain (with users) – follow this tutorial by AWS team: [Migrate active DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-in-use.html)
+    - Inactive domain (no users) – follow this tutorial by AWS team: [Migrate inactive DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html)
+
+3.  You have a domain in Route53 already and want to create a subdomain for the env.
+
+    - Follow this tutorial prepared by AWS team: [Route traffic for subdomains](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html)
+
+4.  You have a domain in Route53 already.
+
+    - You most likely already have a hosted zone! You're good to go.
+
+### Read hosted zone parameters
+
+In the end you should be able to go to the AWS web panel and get _Hosted Zone ID_ and _Hosted Zone Name_.
+
+:::info
+
+You can open AWS web panel with `make aws-login ENV_STAGE=qa` command if you configured `aws-vault`
+
+:::
+
+- `id` of the hosted zone
+- `name` of the hosted zone

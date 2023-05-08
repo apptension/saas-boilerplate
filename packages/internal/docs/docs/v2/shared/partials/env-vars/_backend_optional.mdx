@@ -1,0 +1,21 @@
+**Required** variables for Stripe usage:
+
+| Name                      | Description                                                                                             | Example                 |
+|---------------------------|---------------------------------------------------------------------------------------------------------|-------------------------|
+| `STRIPE_TEST_SECRET_KEY`  | Use this one for Stripe test mode. [docs](https://stripe.com/docs/keys)                                 | `sk_test_4dEFRCLCgCb`   |
+| `STRIPE_LIVE_SECRET_KEY`  | Use this one for Stripe live mode. [docs](https://stripe.com/docs/keys)                                 | `sk_4dEFRCLCgCbMy6O4FX` |
+| `DJSTRIPE_WEBHOOK_SECRET` | [docs](https://stripe.com/docs/webhooks/best-practices#endpoint-secrets)                                | `whsec_12345`           |
+| `STRIPE_LIVE_MODE`        | (bool) Set `true` or `false` to toggle between `live` and `test` Stripe mode. By default set to `False` | `true`                  |
+
+**Optional** variables:
+
+| Name                                 | Description                                                                                                                                                                                                              | Example                                      |
+|--------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|
+| `SENTRY_DSN`                         | [Sentry](https://sentry.io/) client key                                                                                                                                                                                  | `https://(...)@(...).ingest.sentry.io/(...)` |
+| `SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS` | Allowed hosts for OAuth redirection. Check [Python Social Auth](https://python-social-auth.readthedocs.io/en/latest/configuration/settings.html#processing-redirects-and-urlopen) package documentation for more details | `app.demo.saas.apptoku.com`                  |
+| `SOCIAL_AUTH_FACEBOOK_KEY`           | Client key for Facebook OAuth integration                                                                                                                                                                                |                                              |
+| `SOCIAL_AUTH_FACEBOOK_SECRET`        | Client secret for Facebook OAuth integration                                                                                                                                                                             |                                              |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY`      | Client key for Google OAuth integration                                                                                                                                                                                  |                                              |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET`   | Client secret for Google OAuth integration                                                                                                                                                                               |                                              |
+| `SUBSCRIPTION_TRIAL_PERIOD_DAYS`     | Number of days for subscription trial. By default set to `7`                                                                                                                                                             | `1`                                          |
+| `OPENAI_API_KEY`                     | OpenAI API for generative AI module                                                                                                                                                                                      |                                              |

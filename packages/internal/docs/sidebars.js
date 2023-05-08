@@ -16,23 +16,28 @@ module.exports = {
         },
         {
           type: 'link',
+          label: 'Working with SaaS Boilerplate',
+          href: '/working-with-sb',
+        },
+        {
+          type: 'link',
+          label: 'Amazon Web Services',
+          href: '/v2/aws',
+        },
+        {
+          type: 'link',
           label: 'Tutorials',
           href: '/tutorials',
         },
         {
           type: 'link',
-          label: 'Working with SaaS Boilerplate by Apptension',
-          href: '/working-with-sb',
-        },
-        {
-          type: 'link',
-          label: 'What is SaaS Boilerplate by Apptension',
-          href: '/introduction',
-        },
-        {
-          type: 'link',
           label: 'API Reference',
           href: '/v2/api-reference',
+        },
+        {
+          type: 'link',
+          label: 'What is SaaS Boilerplate',
+          href: '/introduction',
         },
         {
           type: 'link',
@@ -151,6 +156,68 @@ module.exports = {
       ],
     },
   ],
+  awsSidebar: [
+    {
+      type: 'category',
+      label: 'AWS',
+      link: {
+        type: 'doc',
+        id: 'v2/aws/index',
+      },
+      items: [
+        {
+          type: 'category',
+          label: 'Deploy to AWS',
+          link: {
+            type: 'doc',
+            id: 'v2/aws/deploy-to-aws/index',
+          },
+          items: [
+            'v2/aws/deploy-to-aws/create-env-stage-in-repo',
+            'v2/aws/deploy-to-aws/configure-aws-credentials',
+            'v2/aws/deploy-to-aws/configure-hosted-zone',
+            'v2/aws/deploy-to-aws/create-runtime-env-vars',
+            'v2/aws/deploy-to-aws/run-deployment-commands',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Continuous integration',
+          link: {
+            type: 'doc',
+            id: 'v2/aws/cicd/index',
+          },
+          items: [
+            'v2/aws/cicd/trigger-cicd-manually',
+            'v2/aws/cicd/auto-deploy',
+            'v2/aws/cicd/configure-cicd-notifications',
+            'v2/aws/cicd/setup-docker-hub',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Guides',
+          link: {
+            type: 'doc',
+            id: 'v2/aws/guides/index',
+          },
+          items: ['v2/aws/guides/aws-exec'],
+        },
+        {
+          type: 'category',
+          label: 'Architecture',
+          link: {
+            type: 'doc',
+            id: 'v2/aws/architecture/index',
+          },
+          items: [
+            'v2/aws/architecture/system-architecture',
+            'v2/aws/architecture/cicd-architecture',
+          ],
+        },
+      ],
+    },
+  ],
   tutorialsSidebar: [
     {
       type: 'category',
@@ -172,13 +239,12 @@ module.exports = {
   introductionSidebar: [
     {
       type: 'category',
-      label: 'What is SaaS Boilerplate by Apptension?',
+      label: 'What is SaaS Boilerplate?',
 
       link: {
         type: 'generated-index',
-        title: 'What is SaaS Boilerplate by Apptension?',
-        description:
-          'TODO: >What is SaaS Boilerplate by Apptension? description<',
+        title: 'What is SaaS Boilerplate?',
+        description: 'TODO: >What is SaaS Boilerplate? description<',
         slug: '/introduction',
       },
       items: [
@@ -218,11 +284,11 @@ module.exports = {
   workingWithSidebar: [
     {
       type: 'category',
-      label: 'Working with SaaS Boilerplate by Apptension',
+      label: 'Working with SaaS Boilerplate',
 
       link: {
         type: 'generated-index',
-        title: 'Working with SaaS Boilerplate by Apptension',
+        title: 'Working with SaaS Boilerplate',
         description: 'TODO: >description<',
         slug: '/working-with-sb',
       },
@@ -382,7 +448,6 @@ module.exports = {
         {
           type: 'category',
           label: 'In-app notification module',
-          collapsed: false,
           link: {
             type: 'doc',
             id: 'v2/working-with-sb/notifications/index',
@@ -407,7 +472,6 @@ module.exports = {
         {
           type: 'category',
           label: 'User module / Authentication and authorization',
-          collapsed: false,
           link: {
             type: 'doc',
             id: 'v2/working-with-sb/users/index',
@@ -466,22 +530,6 @@ module.exports = {
         },
         {
           type: 'category',
-          label: 'Infrastructure',
-
-          link: {
-            type: 'generated-index',
-            title: 'Infrastructure',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/infrastructure',
-          },
-          items: [
-            'v2/working-with-sb/infrastructure/initial-setup',
-            'v2/working-with-sb/infrastructure/env-variables',
-            'v2/working-with-sb/infrastructure/create-environment',
-          ],
-        },
-        {
-          type: 'category',
           label: 'Emails',
 
           link: {
@@ -526,7 +574,6 @@ module.exports = {
             'v2/working-with-sb/dev-tools/mailcatcher',
             'v2/working-with-sb/dev-tools/sentry',
             'v2/working-with-sb/dev-tools/ssh-into-container',
-            'v2/working-with-sb/dev-tools/configure-cicd-notifications',
             'v2/working-with-sb/dev-tools/plop',
           ],
         },
@@ -568,7 +615,7 @@ module.exports = {
             type: 'generated-index',
             title: 'Getting started',
             description:
-              'Learn about the most important SaaS Boilerplate by Apptension concepts!',
+              'Learn about the most important SaaS Boilerplate concepts!',
             slug: '/v1/index',
           },
           items: [

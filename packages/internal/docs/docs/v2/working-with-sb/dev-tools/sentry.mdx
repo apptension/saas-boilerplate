@@ -51,17 +51,18 @@ Variables are set in JSON format, so add the following key:
 :::tip
 
 For more information on setting up environment variables, see our documentation
-[here](/v2/working-with-sb/infrastructure/env-variables).
+[here](../../aws/deploy-to-aws/create-runtime-env-vars#using-the-cli-tool).
 :::
-
 
 ## Feature removal
 
 - Remove `SENTRY_DSN`, `SENTRY_TRACES_SAMPLE_RATE` variables from `packages/backend/config/settings.py` module along with
-`common.middleware.SentryMiddleware` middleware and following import:
+  `common.middleware.SentryMiddleware` middleware and following import:
+
 ```python title="packages/backend/config/settings.py"
 from . import monitoring
 ```
+
 - Remove `sentry_sdk.init()` call in `packages/backend/config/monitoring.py`.
 - Remove `SentryMiddleware` from `packages/backend/common/middleware.py` module.
 - Remove `sentry_sdk.init()` call in `packages/workers/utils/monitoring.py`.

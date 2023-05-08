@@ -11,10 +11,8 @@ setup:
 # Infrastructure deployment
 #
 
-deploy-global-infra:
-	nx run --output-style=stream infra-shared:deploy:global
-
 deploy-env-infra:
+	nx run --output-style=stream infra-shared:deploy:global
 	nx run --output-style=stream infra-shared:deploy:main
 	nx run --output-style=stream infra-shared:deploy:db
 	nx run --output-style=stream infra-functions:deploy
@@ -29,7 +27,7 @@ upload-version:
 #
 
 build:
-	nx run-many --output-style=stream --target=build
+	nx run-many --output-style=stream --target=build backend,workers,webapp
 
 lint:
 	nx run-many --output-style=stream --target=lint

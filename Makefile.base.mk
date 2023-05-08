@@ -33,9 +33,6 @@ export HOST_UID
 # As such, default shell of the user has to be get the other way.
 USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
-aws-login:
-	aws-vault login $(AWS_VAULT_PROFILE)
-
 up:
 	nx run --output-style=stream core:docker-compose:up
 
@@ -56,8 +53,19 @@ prune:
 	docker system prune -af
 
 
-login:
+set-env:
+ifeq ($(ENV_STAGE), local)
+	$(error Please set ENV_STAGE to other value than "local")
+endif
+ifeq (, $(shell which aws-vault))
+	$(USER_SHELL)
+else
 	aws-vault exec $(AWS_VAULT_PROFILE) -- $(USER_SHELL)
+endif
+
+aws-login:
+	aws-vault login $(AWS_VAULT_PROFILE)
+
 
 secrets-editor: SERVICE_NAME?=
 secrets-editor:

@@ -1,0 +1,20 @@
+# Trigger CI/CD deployment manually
+
+You can also trigger a deployment manually using AWS Console!
+
+1. Navigate to `CodeBuild` service.
+
+2. Find the entrypoint project named `<PROJECT_NAME>-<ENV_STAGE_NAME>` (e.g. `mypro-qa`) and navigate to it by pressing
+   its name.
+
+3. Press the "Start build with overrides" button.
+
+4. Select the source branch and optionally a commit ID.
+
+5. Submit by pressing "Start build" button.
+
+6. The Pipeline should start in a few seconds.
+
+:::info
+You can also build and deploy apps from your local device. [Read more](../deploy-to-aws/run-deployment-commands#deploy-applications-code)
+:::

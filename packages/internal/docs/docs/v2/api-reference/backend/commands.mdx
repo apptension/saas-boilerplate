@@ -119,11 +119,10 @@ Runs `python ./manage.py djstripe_sync_models` inside backend container.
 
 It starts `secrets-editor` with the `backend` context (`SERVICE_NAME=backend`): tool that helps to set up an environment
 variables for AWS environment. Find more about setting environment variables for a service
-[here](../../working-with-sb/infrastructure/env-variables#using-the-cli-tool).
+[here](../../aws/deploy-to-aws/create-runtime-env-vars#using-the-cli-tool).
 
 :::caution
 
-This command should be called only within `make login ENV_STAGE=<STAGE_NAME>` command and assumes that
-[AWS vault](../../working-with-sb/infrastructure/initial-setup#aws-vault-profile) is configured.
+This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
 
 :::

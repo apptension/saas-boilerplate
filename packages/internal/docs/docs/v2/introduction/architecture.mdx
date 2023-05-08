@@ -3,7 +3,10 @@ title: Architecture
 description: System architecture description
 ---
 
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+import SystemArchitecture from '../shared/partials/architecture/_system_architecture.mdx';
+import CiCdArchitecture from '../shared/partials/architecture/_cicd_architecture.mdx';
 
 ## Services included in SaaS Boilerplate
 
@@ -21,24 +24,6 @@ SaaS Boilerplate contains following services:
 - Django backend and admin panel
 - Serverless asynchronous workers
 
-## System Architecture diagram
+<SystemArchitecture />
 
-The following diagram illustrates the standard set of AWS services used and configured for every application environment.
-
-<p align="center">
-  <img src={useBaseUrl("img/system-diagram-v1.png")} alt="System Diagram" />
-</p>
-
-## CI/CD Architecture
-
-### Continuous integration / Continuous Deployment
-
-SaaS Boilerplate comes with a preconfigured Continuous Integration (CI) / Continuous Deployment (CD) pipeline
-implemented with AWS CodeCommit, AWS CodeBuild, and AWS CodePipeline for each deployed environment.
-
-The deployment pipeline is configured to start automatically after each code push to a specific set of branches to the
-CodeCommit repository created by the CI/CD CDK stack. Each environment can have a different branch configuration.
-
-<p align="center">
-  <img src={useBaseUrl("img/cicd-diagram-v3.png")} alt="CI/CD Diagram" />
-</p>
+<CiCdArchitecture />

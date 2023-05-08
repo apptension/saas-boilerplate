@@ -1,0 +1,13 @@
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+## CI/CD architecture diagram
+
+SaaS Boilerplate comes with a preconfigured Continuous Integration (CI) / Continuous Deployment (CD) pipeline
+implemented with AWS CodeCommit, AWS CodeBuild, and AWS CodePipeline for each deployed environment.
+
+The deployment pipeline is configured to start automatically after each code push to a specific set of branches to the
+CodeCommit repository created by the CI/CD CDK stack. Each environment can have a different branch configuration.
+
+<p align="center">
+  <img src={useBaseUrl("img/cicd-diagram-v3.png")} alt="CI/CD Diagram" />
+</p>

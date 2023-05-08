@@ -39,8 +39,7 @@ nx run status-dashboard:deploy
 
 :::caution
 
-This command should be called only within `make login ENV_STAGE=<STAGE_NAME>` command and assumes that
-[AWS vault](../../working-with-sb/infrastructure/initial-setup#aws-vault-profile) is configured.
+This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
 
 :::
 
