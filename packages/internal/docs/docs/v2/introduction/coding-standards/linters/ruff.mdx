@@ -1,0 +1,63 @@
+---
+title: Ruff
+description: Python linter
+---
+
+## What is Ruff?
+
+Per [Ruff's official documentation](https://beta.ruff.rs/docs/):
+
+>Ruff aims to be orders of magnitude faster than alternative tools while integrating more functionality behind a single, common interface.
+>Ruff can be used to replace Flake8 (plus dozens of plugins), isort, pydocstyle, yesqa, eradicate, pyupgrade, and autoflake, all while executing tens or hundreds of times faster than any individual tool.
+
+This quote highlights the performance benefits of using Ruff over alternative Python linters.
+By integrating multiple linting rules behind a single interface, Ruff is able to provide a more efficient and streamlined development experience.
+Additionally, Ruff's speed allows it to execute multiple linting rules much faster than traditional tools, making it a powerful option for large-scale development projects.
+
+## Configuration
+
+Ruff is configured via `pyproject.toml` file inside the `backend` package.
+To learn how to configure Ruff on your own and customize the config file, please refer to [Ruff's Configuration docs section](https://beta.ruff.rs/docs/configuration/).
+The following rules are configured out-of-the-box:
+
+- [Pyflakes](https://beta.ruff.rs/docs/rules/#pyflakes-f)
+
+- [Pycodestyle](https://beta.ruff.rs/docs/rules/#pycodestyle-e-w)
+
+- [Bandit](https://beta.ruff.rs/docs/rules/#flake8-bandit-s)
+
+- [flake8-bugbear](https://beta.ruff.rs/docs/rules/#flake8-bugbear-b)
+
+- [flake8-builtins](https://beta.ruff.rs/docs/rules/#flake8-builtins-a)
+
+- [flake8-comprehensions](https://beta.ruff.rs/docs/rules/#flake8-comprehensions-c4)
+
+- [flake8-django](https://beta.ruff.rs/docs/rules/#flake8-django-dj)
+
+- [flake8-pie](https://beta.ruff.rs/docs/rules/#flake8-pie-pie)
+
+- [flake8-simplify](https://beta.ruff.rs/docs/rules/#flake8-simplify-sim)
+
+- [pylint refactor](https://beta.ruff.rs/docs/rules/#refactor-plr)
+
+- [flake8-print](https://beta.ruff.rs/docs/rules/#flake8-print-t20)
+
+
+
+:::caution
+Rules that are ignored:
+
+- `S101` - Use of assert detected
+
+- `A003` - Class attribute {name} is shadowing a python builtin
+
+- `S105` - Possible hardcoded password: "{}"
+
+- `SIM105` - Use contextlib.suppress({exception}) instead of try-except-pass
+
+- `A002` - Argument {name} is shadowing a python builtin
+
+- `B904` - Within an except clause, raise exceptions with raise ... from err or raise ... from None to distinguish them from errors in exception handling
+
+- `PLR0913` - Too many arguments to function call ({c_args} > {max_args})
+:::

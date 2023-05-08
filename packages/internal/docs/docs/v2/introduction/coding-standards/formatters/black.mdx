@@ -1,0 +1,37 @@
+---
+title: Black
+description: Python formatter
+---
+
+## What is Black?
+
+Black is a popular open-source Python code formatter that automatically formats Python code to conform to a consistent style.
+Black is designed to simplify the process of formatting code by removing debates over formatting choices and enforcing a uniform style across projects.
+
+The key features of Black include:
+
+- Automatic formatting: Black reformats code automatically, without requiring manual changes from developers.
+
+- Uniform style: Black enforces a uniform style across projects, removing debates over formatting choices.
+
+- Configurable: Black is highly configurable and can be adjusted to suit specific projects and preferences.
+
+- Easy to use: Black is easy to use and integrates well with popular IDEs and text editors.
+
+:::info
+For more information, please refer to [Black's official documentation page](https://black.readthedocs.io/en/stable/#).
+:::
+
+## Configuration
+
+Black is configured via `pyproject.toml` file inside the `backend` package.
+To learn how to configure Black on your own and customize the config file, please refer to [Black's Usage and Configuration docs section](https://black.readthedocs.io/en/stable/usage_and_configuration/index.html#).
+The following settings are configured out-of-the-box:
+
+- `line-length = 120`: This option sets the maximum line length for formatted code to 120 characters. If a line exceeds this length, Black will automatically wrap it onto multiple lines.
+
+- `skip-string-normalization = true`: This option tells Black to skip normalization of string literals. String normalization is the process of converting different types of quotes to a consistent style. By skipping normalization, Black preserves the original style of string literals.
+
+- `exclude = "/(.git|.tox|migrations|libs|docs|data)/"`: This option specifies a regular expression pattern for files and directories to exclude from formatting.
+
+- `target-versions = "py311"`: This option specifies the target version of Python for formatted code. In this case, Black will format code to be compatible with Python 3.11.

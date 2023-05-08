@@ -277,6 +277,43 @@ module.exports = {
             'v2/introduction/features/dev-tools',
           ],
         },
+        {
+          type: 'category',
+          label: 'Coding standards',
+          collapsed: false,
+          link: {
+            type: 'doc',
+            id: 'v2/introduction/coding-standards/index',
+          },
+          items: [
+            {
+              type: 'category',
+              label: 'Formatters',
+              collapsed: false,
+              link: {
+                type: 'doc',
+                id: 'v2/introduction/coding-standards/formatters/index',
+              },
+              items: [
+                'v2/introduction/coding-standards/formatters/black',
+                'v2/introduction/coding-standards/formatters/prettier',
+              ],
+            },
+            {
+              type: 'category',
+              label: 'Linters',
+              collapsed: false,
+              link: {
+                type: 'doc',
+                id: 'v2/introduction/coding-standards/linters/index',
+              },
+              items: [
+                'v2/introduction/coding-standards/linters/ruff',
+                'v2/introduction/coding-standards/linters/eslint',
+              ],
+            },
+          ],
+        },
         'v2/introduction/development',
       ],
     },

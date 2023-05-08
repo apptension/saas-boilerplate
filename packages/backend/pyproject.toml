@@ -65,7 +65,6 @@ dev = [
     "calleee~=0.4",
     "drf-yasg~=1.21",
     "factory-boy~=3.2",
-    "flake8~=6.0",
     "moto[all]~=4.1",
     "pytest~=7.2",
     "pytest-django~=4.5",
