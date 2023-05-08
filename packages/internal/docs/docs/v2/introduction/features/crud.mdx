@@ -1,5 +1,26 @@
 ---
 title: CRUD model generator
 ---
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
-TBD
+CRUD (Create, Read, Update, Delete) is a standard set of database operations that are commonly used in web applications.
+These operations allow developers to interact with the database and perform basic functions such as creating, reading,
+updating, and deleting data. Scaffolding CRUD functionality can speed up custom feature development by providing a
+starting point for developers to build upon.
+
+### CRUD Example Items
+
+SaaS Boilerplate comes with a built-in example CRUD module under the `CRUD Example Items` tab in the application. This
+module contains a list of created items that are stored in the database and loaded through the GraphQL backend API.
+Users can create, update, and delete items from the list.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/crud/list.png")} alt="Items list" />
+  <img src={useBaseUrl("img/features/crud/form.png")} alt="New item form" />
+</p>
+
+### CRUD Generator Functionality
+
+SaaS Boilerplate also includes a CRUD generator functionality that allows developers to easily generate frontend code
+for CRUD for new database models that will be created during the development of the future SaaS application. This
+functionality generates the basic frontend code for each CRUD operation, including forms, tables, and input validation.
