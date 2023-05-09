@@ -15,7 +15,8 @@
       "options": {
         "color": true,
         "command": "docker-compose build e2e-tests"
-      }
+      },
+      "dependsOn": ["setup"]
     },
     "pull-base-image": {
       "executor": "nx:run-commands",
