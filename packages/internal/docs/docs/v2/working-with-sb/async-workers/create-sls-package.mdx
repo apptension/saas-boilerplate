@@ -1,6 +1,128 @@
 ---
 title: How to create a new Serverless package?
-description: TODO >Description<
+description: Guiding you through the process of creating a new Serverless package
 ---
 
-TBD
+In the context of the SaaS Boilerplate, asynchronous jobs are handled by AWS Lambda functions, which are managed by the Serverless Framework.
+The Serverless Framework is an open-source framework for building applications that use serverless compute services such as AWS Lambda.
+The framework provides a set of tools and abstractions that simplify the process of deploying and managing serverless applications.
+
+Lambda functions can be triggered by events and can run code in response to those events.
+The result of the task execution is returned by the AWS Lambda function as a response to the event.
+This allows the SaaS application to handle asynchronous jobs without the need for dedicated servers or infrastructure.
+
+:::info
+Make sure to check the official [Serverless Framework documentation](https://www.serverless.com/framework/docs)
+:::
+
+
+## Defining handlers
+
+Let's define an `example_task_handler()` AWS lambda handler function to log the incoming event:
+
+```python title="packages/workers/example/handlers.py" showLineNumbers
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+
+def example_task_handler(event, context):
+    logger.info(event)
+```
+
+:::tip
+You can check more examples in ["Lambda function handler in Python"](https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html)
+:::
+
+The `example_task_handler()` function is a handler function for an AWS Lambda.
+The `event` parameter is a dictionary that contains information about the event that triggered the Lambda function.
+
+
+## Registering handlers
+
+To use the defined AWS Lambda function handler in the SaaS Boilerplate, it needs to be added to the `serverless.yml` file.
+
+The `serverless.yml` file is a configuration file used by the Serverless Framework to deploy and manage serverless applications.
+
+To add the AWS Lambda function handler to the `serverless.yml` file, you need to define a function in the `functions` section of the file. The `functions` section is where you define the AWS Lambda functions that make up your application.
+
+For the above example, you would add the following code to the `serverless.yml` file:
+
+```yaml title="packages/workers/serverless.yml"
+functions:
+  ExampleTaskHandler:
+    handler: example.handlers.example_task_handler
+    environment: ${self:custom.conf.ExampleTaskHandler.environment}
+    events:
+      - eventBridge:
+          eventBus: "event-bus-arn"
+          pattern:
+            source:
+              - backend.example_task
+```
+
+Here is a breakdown of what each of the properties means:
+
+- `handler`: This property specifies the path to the handler function for this Lambda function.
+In this case, it is `example.handlers.example_task_handler`.
+This means that when the `ExampleTaskHandler` function is triggered, it will execute the code in the `example_task_handler` file.
+
+- `environment`: This property specifies the environment variables to be used by the `ExampleTaskHandler` function.
+In this case, it references the `self:custom.conf.ExampleTaskHandler.environment` variable, which will be defined in the next section of this guide.
+
+- `events`: This property specifies the events that trigger this Lambda function.
+In this case, it is an EventBridge event. The `eventBus` property specifies the Amazon EventBridge event bus that the function is listening to, and the `pattern` property specifies the event pattern to match against incoming events.
+In this case, the function will be triggered by events with a `source` of `backend.example_task`.
+
+:::tip
+Helpful resources:
+- [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html)
+- [AWS Lambda Events](https://www.serverless.com/framework/docs/providers/aws/guide/events)
+:::
+
+## Configuration
+
+It's possible to add custom configuration to AWS Lambda function handler.
+In this example, let's add a custom environment variable to be accessible from inside the handler function.
+
+```yaml title="packages/workers/serverless.yml"
+custom:
+  ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
+  conf: ${file(./${self:custom.confFile.${self:provider.stage}})}
+  confFile:
+    local: workers.conf.local.yml
+    dev: workers.conf.yml
+    qa: workers.conf.yml
+    prod: workers.conf.yml
+```
+
+The `ssmService` field specifies the name of the AWS Systems Manager (SSM) parameter that contains the environment variables for the Lambda functions.
+The SSM parameter is named based on the project name, deployment stage, and the word "workers".
+
+For example, if the project name is "saas-boilerplate", and the deployment stage is `dev`, the SSM parameter name would be `env-saas-boilerplate-dev-workers`.
+The use of SSM parameters allows for the secure storage and retrieval of environment variables for the Lambda functions.
+
+:::info
+More information on [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+:::
+
+The `conf` field specifies the path to the configuration file that contains the settings for the Lambda functions.
+The value of the `conf` field is defined using the Serverless Framework's `${file()}` syntax, which allows for the use of a file as a variable.
+
+The `${self:custom.confFile.${self:provider.stage}}` syntax is used to specify the name of the configuration file based on the current deployment stage.
+The `provider.stage` variable is used to determine the current deployment stage, and the `confFile` object is used to map the deployment stage to the appropriate configuration file.
+
+For example, if the deployment stage is `prod`, the `conf` variable will be set to the contents of the `workers.conf.yml` file.
+If the deployment stage is `local`, the `conf` variable will be set to the contents of the `workers.conf.local.yml` file.
+
+Let's pass `HASHID_SALT` parameter from AWS SSM to our `ExampleTaskHandler`:
+
+```yaml title="packages/workers/workers.conf.yml"
+ExampleTaskHandler:
+  environment:
+    HASHID_SALT: ${ssm:/${self:custom.ssmService}/HASHID_SALT}
+```
+
+`${ssm:/${self:custom.ssmService}/HASHID_SALT}` is an AWS Systems Manager Parameter Store reference that retrieves the value of `HASHID_SALT` from the Parameter Store.
+The `self:custom.ssmService` refers to the name of the SSM service that is defined in the `serverless.yml` file.

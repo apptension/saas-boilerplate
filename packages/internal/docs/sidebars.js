@@ -584,11 +584,9 @@ module.exports = {
         {
           type: 'category',
           label: 'Async workers',
-
           link: {
             type: 'generated-index',
             title: 'Async workers',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/async-workers',
           },
           items: [
