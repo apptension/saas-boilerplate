@@ -37,7 +37,7 @@ module.exports = {
         {
           type: 'link',
           label: 'What is SaaS Boilerplate',
-          href: '/introduction',
+          href: '/v2/introduction',
         },
         {
           type: 'link',
@@ -242,10 +242,8 @@ module.exports = {
       label: 'What is SaaS Boilerplate?',
 
       link: {
-        type: 'generated-index',
-        title: 'What is SaaS Boilerplate?',
-        description: 'TODO: >What is SaaS Boilerplate? description<',
-        slug: '/introduction',
+        type: 'doc',
+        id: 'v2/introduction/index',
       },
       items: [
         'v2/introduction/the-problem',
