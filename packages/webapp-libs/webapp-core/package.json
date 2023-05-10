@@ -90,6 +90,6 @@
     "styled-components": "5.3.6",
     "styled-theming": "2.2.0",
     "ts-jest": "28.0.5",
-    "vite": "^4.1.1"
+    "vite": "^4.3.5"
   }
 }
