@@ -172,6 +172,7 @@ export class EnvComponentsStack extends Stack {
         ),
       }
     );
+    distribution.addBehavior('/public/*', bucketOrigin);
 
     this.createDnsRecord(props, distribution);
 
@@ -187,12 +188,10 @@ export class EnvComponentsStack extends Stack {
   }
 
   private createExportsBucket(props: EnvComponentsStackProps) {
-    return new s3.Bucket(this, "ExportsBucket", {
-      bucketName: EnvComponentsStack.getExportsBucketName(
-        props.envSettings
-      ),
+    return new s3.Bucket(this, 'ExportsBucket', {
+      bucketName: EnvComponentsStack.getExportsBucketName(props.envSettings),
       accessControl: s3.BucketAccessControl.PRIVATE,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
   }
 

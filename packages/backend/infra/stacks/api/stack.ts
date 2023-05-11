@@ -216,6 +216,7 @@ export class ApiStack extends Stack {
       EnvComponentsStack.getFileUploadsBucketName(envSettings)
     );
     fileUploadsBucket.grantReadWrite(taskRole);
+    fileUploadsBucket.grantPutAcl(taskRole);
 
     const eventBus = events.EventBus.fromEventBusName(
       this,

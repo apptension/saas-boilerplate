@@ -168,9 +168,9 @@ class TestCurrentUserQuery:
         assert data["firstName"] == "Grzegorz"
         assert data["lastName"] == "Brzęczyszczykiewicz"
         assert set(data["roles"]) == {"user", "admin"}
-        assert re.match("https://cdn.example.com/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"]), data[
-            "avatar"
-        ]
+        assert re.match(
+            "https://cdn.example.com/public/avatars/thumbnails/[a-z0-9]{16}/avatar.jpg", data["avatar"]
+        ), data["avatar"]
         assert data["otpEnabled"] == user.otp_enabled
         assert data["otpVerified"] == user.otp_verified
 

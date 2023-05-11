@@ -26,5 +26,5 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 
 
 class PublicS3Boto3StorageWithCDN(CustomS3Boto3Storage):
-    default_acl = "public-read"
     querystring_auth = False
+    location = 'public'
