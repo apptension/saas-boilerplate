@@ -6,6 +6,9 @@ description: Setup a fresh project with SaaS Boilerplate
 import Requirements from './_requirements.mdx';
 import InstallDeps from './_install-deps.mdx';
 import StartApp from './_start-app.mdx';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
 
 ## Fresh project setup
 
@@ -13,13 +16,27 @@ This guide should be followed right after initializing an empty repository with 
 
 <Requirements />
 
-### Setup using CLI
+### Setup using CLI starter kit
 
 You can use a special CLI tool to run a new local instance of the SaaS Boilerplate as soon as possible. It will clone the repository and take care of setting up the environment. Run the following command in the directory where you would like to create a new project:
 
-```shell
-npx @apptension/saas-boilerplate-cli init .
-```
+<Tabs>
+  <TabItem value="npm" label="npm" default>
+    <CodeBlock>
+      npm init saas-boilerplate
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    <CodeBlock>
+      pnpm create saas-boilerplate
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+    <CodeBlock>
+      yarn create saas-boilerplate
+    </CodeBlock>
+  </TabItem>
+</Tabs>
 
 After the initialization process is complete, you will be able to start the app as described in the [Start the app](#start-the-app) section of the documentation.
 
