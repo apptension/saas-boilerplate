@@ -1,6 +1,215 @@
 ---
-title: How to add a one-time payment form?
-description: TODO >Description<
+description: This guide will show you how easy it is to implement a simple payment
 ---
 
-TBD
+# How to add a one-time payment?
+
+A one-time payment refers to a type of transaction in which a user pays for a specific product or a set of products
+only once, without incurring any additional payments, such as a subscription.
+
+:::tip
+The SaaS Boilerplate provides an exemplary one-time payment flow implementation. The code displayed below is readily
+available in the pristine SaaS Boilerplate repository for your ease of use. Feel free to customize it as needed to suit
+your requirements.
+:::
+
+## Create payment intent
+
+Use the Payment Intents API to build an integration that can handle complex payment flows. It tracks a payment from
+creation through checkout, and triggers additional authentication steps when required.
+
+Some of the advantages of using the Payment Intents API include:
+
+- Automatic authentication handling
+- No double charges
+- No idempotency key issues
+- Support for Strong Customer Authentication (SCA) and similar regulatory changes
+
+Source: [Payment Intents API documentation](https://stripe.com/docs/payments/payment-intents)
+
+### Create serializer
+
+This is a simplest possible serializer that does not accept any input parameters. In real-life implementation
+you of course need to add some sort of product identifier, basket ID, or similar to calculate the price.
+
+In the following example we hardcoded $15 as the amount to be paid.
+
+```python title=packages/backend/apps/finances/serializers.py
+from djstripe import models as djstripe_models
+from rest_framework import serializers, exceptions
+
+
+class PaymentIntentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = djstripe_models.PaymentIntent
+        fields = ('id', 'amount', 'currency', 'client_secret')
+        read_only_fields = ('id', 'amount', 'currency', 'client_secret')
+
+    def create(self, validated_data):
+        request = self.context['request']
+
+        (customer, _) = djstripe_models.Customer.get_or_create(request.user)
+        payment_intent_response = djstripe_models.PaymentIntent._api_create(
+            amount=15*100, # $15
+            currency="usd",
+            customer=customer.id,
+            setup_future_usage="off_session",
+        )
+        return djstripe_models.PaymentIntent.sync_from_stripe_data(payment_intent_response)
+
+```
+
+SaaS Boilerplate repository already has a serializer just like this implemented as an example in
+`packages/backend/apps/finances/serializers.py` for your convenience. It also supports updating payment intents
+when your customer decides to change products they are interested in.
+
+### Create mutation object
+
+The serializer was, of course, just the beginning. Next, you should create a mutation object and incorporate it into the
+GraphQL schema. This will enable the frontend to call it when the user submits the form.
+
+```python title=packages/backend/apps/finances/schema.py
+from djstripe import models as djstripe_models
+
+from common.graphql import mutations
+from . import serializers
+
+# highlight-start
+class CreatePaymentIntentMutation(mutations.CreateModelMutation):
+    class Meta:
+        model = djstripe_models.PaymentIntent
+        serializer_class = serializers.PaymentIntentSerializer
+# highlight-end
+
+
+class Mutation(graphene.ObjectType):
+# highlight-start
+    create_payment_intent = CreatePaymentIntentMutation.Field()
+# highlight-end
+```
+
+SaaS Boilerplate repository already has a mutation just like this implemented as an example in
+`packages/backend/apps/finances/schema.py` for your convenience.
+
+:::info
+If you want to learn more about creating mutations check out
+[How to add a new mutation to back-end API](../graphql/backend/adding-new-mutation) guide.
+:::
+
+### Re-generate GraphQL types
+
+You can either restart the dev server or run the following command to re-generate GraphQL types:
+
+```shell
+nx run webapp:graphql:generate-types
+```
+
+### Create payment intent in web app
+
+Let's create a hook that wraps the logic of managing payment intents.
+
+```ts
+import { useMutation } from '@apollo/client';
+import { StripePaymentIntentType, gql } from '@sb/webapp-api-client/graphql';
+import { GraphQLError } from 'graphql';
+
+export const stripeCreatePaymentIntentMutation = gql(/* GraphQL */ `
+  mutation stripeCreatePaymentIntentMutation_(
+    $input: CreatePaymentIntentMutationInput!
+  ) {
+    createPaymentIntent(input: $input) {
+      paymentIntent {
+        id
+        amount
+        clientSecret
+        currency
+        pk
+      }
+    }
+  }
+`);
+
+export const useStripePaymentIntent = () => {
+  const [commitCreatePaymentIntentMutation, { loading }] = useMutation(
+    stripeCreatePaymentIntentMutation
+  );
+
+  const createPaymentIntent = async (): Promise<{
+    errors?: readonly GraphQLError[];
+    paymentIntent?: StripePaymentIntentType | null;
+  }> => {
+    const { data, errors } = await commitCreatePaymentIntentMutation({});
+
+    if (errors) return { errors };
+
+    return { paymentIntent: data?.createPaymentIntent?.paymentIntent };
+  };
+
+  return { createPaymentIntent, loading };
+};
+```
+
+The SaaS Boilerplate repository already includes a hook similar to this as an implemented example. You can find it in
+the following path: `packages/webapp-libs/webapp-finances/src/components/stripePayment.hooks.ts`. This hook is provided
+for your convenience. Additionally, it supports the updating of payment intents when your customer decides to change
+the products they are interested in.
+
+
+## Confirm payment
+
+Next you'll create a hook that uses `react-stripe-js` library to collect information from `CardNumberElement` and
+confirm the payment.
+
+Read official [Stripe Elements](https://stripe.com/docs/stripe-js/react) documentation to learn how to build Stripe
+forms.
+
+```ts
+import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
+import {
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
+
+export const useStripePayment = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const confirmPayment = async (paymentIntent: StripePaymentIntentType) => {
+    if (!stripe) return null;
+
+    const card = elements?.getElement(CardNumberElement) ?? null;
+    if (!card) return null;
+
+    return await stripe.confirmCardPayment(paymentIntent.clientSecret, {
+      payment_method: {
+        card,
+      },
+    });
+  };
+
+  return { confirmPayment };
+};
+```
+
+## Combine into a form
+
+For now the creation of form itself goes beyond the scope of this guide but in future you'll be able to find concrete
+implementation of Stripe elements with react-hook-form.
+
+Read official [Stripe Elements](https://stripe.com/docs/stripe-js/react) documentation to learn how to build Stripe
+forms.
+
+The simplest approach is to create the payment intent in form submit handler and confirm it right away:
+
+```ts
+const { createPaymentIntent } = useStripePaymentIntent();
+const { confirmPayment } = useStripePayment();
+
+const handleSubmit = form.handleSubmit(async () => {
+  const { paymentIntent, errors } = await createPaymentIntent();
+  if (!errors) {
+    confirmPayment(paymentIntent);
+  }
+});
+```

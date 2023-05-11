@@ -1,7 +1,8 @@
+import { StripePaymentIntentType } from '@sb/webapp-api-client';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TestProduct } from '../../../types';
-import { UseStripePaymentIntentProps, useStripePaymentIntent } from '../stripePayment.hooks';
+import { useStripePaymentForm } from '../stripePayment.hooks';
 import { StripePaymentMethodSelector } from '../stripePaymentMethodSelector';
 import {
   ErrorMessage,
@@ -15,12 +16,12 @@ import {
 } from './stripePaymentForm.styles';
 
 export type StripePaymentFormProps = {
-  onSuccess: UseStripePaymentIntentProps;
+  onSuccess: (paymentIntent: StripePaymentIntentType) => void;
 };
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();
-  const { onSubmit, apiFormControls, loading } = useStripePaymentIntent(onSuccess);
+  const { onSubmit, apiFormControls, loading } = useStripePaymentForm(onSuccess);
 
   const {
     form: {

@@ -16,6 +16,10 @@ export const stripeCreatePaymentIntentMutation = gql(/* GraphQL */ `
       paymentIntent {
         ...stripePaymentIntentFragment
         id
+        amount
+        clientSecret
+        currency
+        pk
       }
     }
   }
@@ -27,6 +31,10 @@ export const stripeUpdatePaymentIntentMutation = gql(/* GraphQL */ `
       paymentIntent {
         ...stripePaymentIntentFragment
         id
+        amount
+        clientSecret
+        currency
+        pk
       }
     }
   }

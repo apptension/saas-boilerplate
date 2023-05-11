@@ -1,7 +1,9 @@
-import { useMutation } from '@apollo/client';
+import { BaseMutationOptions, useMutation } from '@apollo/client';
+import { ApolloError } from '@apollo/client/errors';
 import { PaymentMethodConnection, StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { GraphQLError } from 'graphql';
 import { useState } from 'react';
 
 import { TestProduct } from '../../types';
@@ -15,10 +17,7 @@ import {
   stripeSubscriptionQuery,
   stripeUpdateDefaultPaymentMethodMutation,
 } from './stripePaymentMethodSelector/stripePaymentMethodSelector.graphql';
-import {
-  PaymentFormFields,
-  StripePaymentMethodSelection,
-} from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
+import { PaymentFormFields } from './stripePaymentMethodSelector/stripePaymentMethodSelector.types';
 
 interface UseStripePaymentMethodsProps {
   onUpdateSuccess?: () => void;
@@ -86,7 +85,61 @@ type StripePaymentFormFields = PaymentFormFields & {
   product: TestProduct;
 };
 
-export type UseStripePaymentIntentProps = (paymentIntent: StripePaymentIntentType) => void;
+export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptions?: BaseMutationOptions) => void) => {
+  const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntentType | undefined | null>(null);
+
+  const [commitCreatePaymentIntentMutation, { loading: createLoading }] = useMutation(
+    stripeCreatePaymentIntentMutation,
+    { onError }
+  );
+
+  const [commitUpdatePaymentIntentMutation, { loading: updateLoading }] = useMutation(
+    stripeUpdatePaymentIntentMutation,
+    { onError }
+  );
+
+  /**
+   * This function is responsible for creating a new payment intent and updating it if it has been created before.
+   *
+   * @param product This product will be passed to the payment intent create and update API endpoints. Backend should
+   * handle amount and currency update based on the ID of this product.
+   */
+  const updateOrCreatePaymentIntent = async (
+    product: TestProduct
+  ): Promise<{ errors?: readonly GraphQLError[]; paymentIntent?: StripePaymentIntentType | null }> => {
+    if (!paymentIntent) {
+      const { data, errors } = await commitCreatePaymentIntentMutation({
+        variables: {
+          input: {
+            product,
+          },
+        },
+      });
+      if (errors) {
+        return { errors };
+      }
+      setPaymentIntent(data?.createPaymentIntent?.paymentIntent);
+      return { paymentIntent: data?.createPaymentIntent?.paymentIntent };
+    }
+
+    const { data, errors } = await commitUpdatePaymentIntentMutation({
+      variables: {
+        input: {
+          product,
+          id: paymentIntent.id,
+        },
+      },
+    });
+
+    if (errors) {
+      return { errors };
+    }
+
+    return { paymentIntent: data?.updatePaymentIntent?.paymentIntent };
+  };
+
+  return { updateOrCreatePaymentIntent, loading: createLoading || updateLoading };
+};
 
 /**
  * This react hook is responsible for tracking whether a payment intent has already been created in the current
@@ -96,89 +149,33 @@ export type UseStripePaymentIntentProps = (paymentIntent: StripePaymentIntentTyp
  * analysts to track how customers behave.
  *
  */
-export const useStripePaymentIntent = (onSuccess: UseStripePaymentIntentProps) => {
-  const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntentType | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<StripePaymentMethodSelection | null>(null);
+export const useStripePaymentForm = (onSuccess: (paymentIntent: StripePaymentIntentType) => void) => {
   const { confirmPayment } = useStripePayment();
+
+  const { updateOrCreatePaymentIntent, loading } = useStripePaymentIntent((error) => {
+    setApolloGraphQLResponseErrors(error.graphQLErrors);
+  });
 
   const apiFormControls = useApiForm<StripePaymentFormFields>({
     mode: 'onChange',
   });
   const { setGenericError, setApolloGraphQLResponseErrors, handleSubmit } = apiFormControls;
 
-  const [commitCreatePaymentIntentMutation, { loading: createLoading }] = useMutation(
-    stripeCreatePaymentIntentMutation,
-    {
-      onCompleted: ({ createPaymentIntent }) => {
-        handleCompletedPaymentIntent(createPaymentIntent?.paymentIntent as StripePaymentIntentType);
-      },
-      onError: (error) => {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
-      },
-    }
-  );
-
-  const [commitUpdatePaymentIntentMutation, { loading: updateLoading }] = useMutation(
-    stripeUpdatePaymentIntentMutation,
-    {
-      onCompleted: ({ updatePaymentIntent }) =>
-        handleCompletedPaymentIntent(updatePaymentIntent?.paymentIntent as StripePaymentIntentType),
-      onError: (error) => {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
-      },
-    }
-  );
-
-  const handleCompletedPaymentIntent = async (responsePaymentIntent: StripePaymentIntentType) => {
-    if (!responsePaymentIntent || !paymentMethod) return;
-    setPaymentIntent(responsePaymentIntent);
-
-    const confirmPayload = {
-      paymentMethod: paymentMethod,
-      paymentIntent: responsePaymentIntent,
-    };
-
-    const result = await confirmPayment(confirmPayload);
-    if (!result) return;
-    if (result.error) return setGenericError(result.error.message);
-
-    trackEvent('payment', 'make-payment', result.paymentIntent.status);
-
-    if (result.paymentIntent?.status === 'succeeded') onSuccess(responsePaymentIntent);
-  };
-
-  /**
-   * This function is responsible for creating a new payment intent and updating it if it has been created before.
-   *
-   * @param product This product will be passed to the payment intent create and update API endpoints. Backend should
-   * handle amount and currency update based on the ID of this product.
-   */
-  const updateOrCreatePaymentIntent = (product: TestProduct) => {
-    if (!paymentIntent) {
-      commitCreatePaymentIntentMutation({
-        variables: {
-          input: {
-            product,
-          },
-        },
-      });
-      return;
-    }
-
-    commitUpdatePaymentIntentMutation({
-      variables: {
-        input: {
-          product,
-          id: paymentIntent.id,
-        },
-      },
-    });
-  };
-
   const onSubmit = handleSubmit(async (data: StripePaymentFormFields) => {
-    setPaymentMethod(data.paymentMethod);
-    updateOrCreatePaymentIntent(data.product);
+    const { paymentIntent } = await updateOrCreatePaymentIntent(data.product);
+    if (!paymentIntent) return;
+
+    const confirmResult = await confirmPayment({
+      paymentMethod: data.paymentMethod,
+      paymentIntent: paymentIntent,
+    });
+    if (!confirmResult) return;
+    if (confirmResult.error) return setGenericError(confirmResult.error.message);
+
+    trackEvent('payment', 'make-payment', confirmResult.paymentIntent.status);
+
+    if (confirmResult.paymentIntent?.status === 'succeeded') onSuccess(paymentIntent);
   });
 
-  return { paymentIntent, apiFormControls, onSubmit, loading: createLoading || updateLoading };
+  return { apiFormControls, onSubmit, loading };
 };
