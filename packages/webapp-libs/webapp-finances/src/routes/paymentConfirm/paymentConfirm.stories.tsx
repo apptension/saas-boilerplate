@@ -4,18 +4,18 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append, times } from 'ramda';
 
 import { fillSubscriptionScheduleQueryWithPhases } from '../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
 import { PaymentConfirm } from './paymentConfirm.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <PaymentConfirm />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/Finances/PaymentConfirm',
   component: PaymentConfirm,
   decorators: [
@@ -25,7 +25,11 @@ export default {
         fillSubscriptionScheduleQueryWithPhases(
           [
             subscriptionPhaseFactory({
-              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+              item: {
+                price: subscriptionPlanFactory({
+                  product: { name: SubscriptionPlanName.FREE },
+                }),
+              },
             }),
           ],
           times(() => paymentMethodFactory(), 3)
@@ -35,5 +39,9 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+  args: {},
+};

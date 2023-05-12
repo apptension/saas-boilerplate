@@ -1,5 +1,5 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../../utils/storybook';
@@ -9,7 +9,7 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Container>
       <AvatarForm />
@@ -22,9 +22,12 @@ export default {
   component: AvatarForm,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
-  }),
-];
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
+    }),
+  ],
+};

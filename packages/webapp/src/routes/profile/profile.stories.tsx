@@ -1,13 +1,10 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
-
-
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../shared/utils/storybook';
 import { Profile } from './profile.component';
 
-
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <Profile />;
 };
 
@@ -16,9 +13,12 @@ export default {
   component: Profile,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
-  }),
-];
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
+    }),
+  ],
+};

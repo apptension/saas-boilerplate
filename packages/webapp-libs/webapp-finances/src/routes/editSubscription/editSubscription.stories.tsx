@@ -1,19 +1,21 @@
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { fillSubscriptionPlansAllQuery, fillSubscriptionScheduleQueryWithPhases } from '../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
 import { EditSubscription } from './editSubscription.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <EditSubscription />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Subscriptions/EditSubscription',
   component: EditSubscription,
 };
+
+export default meta;
 
 const mockMonthlyPlan = subscriptionPlanFactory({
   id: 'plan_monthly',
@@ -22,7 +24,7 @@ const mockMonthlyPlan = subscriptionPlanFactory({
 });
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
 
-export const FreeActive = Template.bind({});
+export const FreeActive: StoryObj<typeof meta> = Template.bind({});
 FreeActive.args = { children: 'text' };
 FreeActive.decorators = [
   withActiveSubscriptionContext,
@@ -39,7 +41,7 @@ FreeActive.decorators = [
   }),
 ];
 
-export const MonthlyActive = Template.bind({});
+export const MonthlyActive: StoryObj<typeof meta> = Template.bind({});
 MonthlyActive.args = { children: 'text' };
 MonthlyActive.decorators = [
   withActiveSubscriptionContext,

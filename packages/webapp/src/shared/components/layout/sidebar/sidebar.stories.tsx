@@ -1,11 +1,11 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { useMemo } from 'react';
 
 import { withProviders } from '../../../utils/storybook';
 import { LayoutContext } from '../layout.context';
 import { Sidebar } from './sidebar.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   const value = useMemo(
     () => ({
       isSidebarAvailable: true,
@@ -27,6 +27,8 @@ export default {
   component: Sidebar,
 };
 
-export const Default = Template.bind({});
-Default.args = {};
-Default.decorators = [withProviders({})];
+export const Default = {
+  render: Template,
+  args: {},
+  decorators: [withProviders({})],
+};

@@ -1,14 +1,16 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../utils/storybook';
 import { LanguageSwitcher } from '.';
 
-const Template: Story = () => <LanguageSwitcher />;
+const Template: StoryFn = () => <LanguageSwitcher />;
 
 export default {
   title: 'Shared/LanguageSwitcher',
   decorators: [withProviders()],
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default = {
+  render: Template,
+  args: {},
+};

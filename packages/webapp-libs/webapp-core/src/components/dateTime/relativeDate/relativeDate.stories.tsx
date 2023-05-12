@@ -1,8 +1,9 @@
-import { Story } from '@storybook/react';
-import { RelativeDate, RelativeDateProps } from './relativeDate.component';
-import { dateMinuteAgo, DAY, nowSub } from './relativeDate.fixtures';
+import { StoryFn } from '@storybook/react';
 
-const Template: Story<RelativeDateProps> = (args: RelativeDateProps) => {
+import { RelativeDate, RelativeDateProps } from './relativeDate.component';
+import { DAY, dateMinuteAgo, nowSub } from './relativeDate.fixtures';
+
+const Template: StoryFn<RelativeDateProps> = (args: RelativeDateProps) => {
   return <RelativeDate {...args} />;
 };
 
@@ -11,14 +12,22 @@ export default {
   component: RelativeDate,
 };
 
-export const Default = Template.bind({});
-Default.args = { date: new Date() };
+export const Default = {
+  render: Template,
+  args: { date: new Date() },
+};
 
-export const MinuteAgo = Template.bind({});
-MinuteAgo.args = { date: dateMinuteAgo() };
+export const MinuteAgo = {
+  render: Template,
+  args: { date: dateMinuteAgo() },
+};
 
-export const WeekAgo = Template.bind({});
-WeekAgo.args = { date: nowSub(DAY * 7) };
+export const WeekAgo = {
+  render: Template,
+  args: { date: nowSub(DAY * 7) },
+};
 
-export const YearAgo = Template.bind({});
-YearAgo.args = { date: nowSub(DAY * 365) };
+export const YearAgo = {
+  render: Template,
+  args: { date: nowSub(DAY * 365) },
+};

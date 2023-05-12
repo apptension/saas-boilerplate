@@ -1,9 +1,14 @@
-import { addDecorator } from '@storybook/react';
-import 'normalize.css/normalize.css';
+import { Preview } from '@storybook/react';
+import * as jest from 'jest-mock';
+
 import { withFontFace, withIntl, withTheme } from './decorators';
 
-addDecorator(withIntl);
-addDecorator(withTheme());
-addDecorator(withFontFace);
+//@ts-ignore
+window.jest = jest;
 
-export const parameters = { layout: 'fullscreen' };
+const preview: Preview = {
+  parameters: { layout: 'fullscreen' },
+  decorators: [withIntl, withTheme(), withFontFace],
+};
+
+export default preview;

@@ -1,7 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
+
 import { RadioButton, RadioButtonProps } from './radioButton.component';
 
-const Template: Story<RadioButtonProps> = (args: RadioButtonProps) => {
+const Template: StoryFn<RadioButtonProps> = (args: RadioButtonProps) => {
   return <RadioButton {...args} />;
 };
 
@@ -10,26 +11,38 @@ export default {
   component: RadioButton,
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  children: 'Value',
+export const Default = {
+  render: Template,
+
+  args: {
+    children: 'Value',
+  },
 };
 
-export const Checked = Template.bind({});
-Checked.args = {
-  ...Default.args,
-  checked: true,
+export const Checked = {
+  render: Template,
+
+  args: {
+    ...Default.args,
+    checked: true,
+  },
 };
 
-export const Disabled = Template.bind({});
-Disabled.args = {
-  ...Default.args,
-  disabled: true,
+export const Disabled = {
+  render: Template,
+
+  args: {
+    ...Default.args,
+    disabled: true,
+  },
 };
 
-export const DisabledChecked = Template.bind({});
-DisabledChecked.args = {
-  ...Default.args,
-  disabled: true,
-  checked: true,
+export const DisabledChecked = {
+  render: Template,
+
+  args: {
+    ...Default.args,
+    disabled: true,
+    checked: true,
+  },
 };

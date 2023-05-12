@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
@@ -10,8 +10,10 @@ import { withProviders } from '../../../utils/storybook';
 import { stripeSubscriptionQuery } from '../stripePaymentMethodSelector';
 import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from './stripePaymentMethodInfo.component';
 
-const Template: Story<StripePaymentMethodInfoProps> = (args: StripePaymentMethodInfoProps) => {
-  const { data } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
+const Template: StoryFn<StripePaymentMethodInfoProps> = (args: StripePaymentMethodInfoProps) => {
+  const { data } = useQuery(stripeSubscriptionQuery, {
+    nextFetchPolicy: 'cache-and-network',
+  });
 
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
   const firstPaymentMethod = paymentMethods?.[0];
@@ -19,7 +21,7 @@ const Template: Story<StripePaymentMethodInfoProps> = (args: StripePaymentMethod
   return <StripePaymentMethodInfo method={firstPaymentMethod} />;
 };
 
-export default {
+const meta: Meta<typeof StripePaymentMethodInfo> = {
   title: 'Shared/Finances/Stripe/StripePaymentMethodInfo',
   component: StripePaymentMethodInfo,
   decorators: [
@@ -27,7 +29,11 @@ export default {
       apolloMocks: append(
         fillSubscriptionScheduleQueryWithPhases([
           subscriptionPhaseFactory({
-            item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+            item: {
+              price: subscriptionPlanFactory({
+                product: { name: SubscriptionPlanName.FREE },
+              }),
+            },
           }),
         ])
       ),
@@ -35,4 +41,8 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

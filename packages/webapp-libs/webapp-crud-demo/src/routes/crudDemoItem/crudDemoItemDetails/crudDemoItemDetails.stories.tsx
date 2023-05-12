@@ -1,5 +1,5 @@
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
@@ -11,7 +11,7 @@ import { CrudDemoItemDetails } from './crudDemoItemDetails.component';
 
 const defaultItemId = 'test-id';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Routes>
       <Route path={getLocalePath(RoutesConfig.crudDemoItem.details)} element={<CrudDemoItemDetails />} />
@@ -24,14 +24,18 @@ export default {
   component: CrudDemoItemDetails,
 };
 
-export const Default = Template.bind({});
 const variables = { id: defaultItemId };
 const data = {
   name: 'Demo item name',
 };
-Default.decorators = [
-  withProviders({
-    routerProps: createMockRouterProps(RoutesConfig.crudDemoItem.details, variables),
-    apolloMocks: append(fillCrudDemoItemDetailsQuery(data, variables)),
-  }),
-];
+
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      routerProps: createMockRouterProps(RoutesConfig.crudDemoItem.details, variables),
+      apolloMocks: append(fillCrudDemoItemDetailsQuery(data, variables)),
+    }),
+  ],
+};

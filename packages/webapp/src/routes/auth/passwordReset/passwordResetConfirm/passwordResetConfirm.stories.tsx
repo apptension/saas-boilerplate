@@ -1,5 +1,5 @@
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -11,7 +11,7 @@ const routePath = RoutesConfig.passwordReset.confirm;
 const userParam = 'user';
 const tokenParam = 'token';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Routes>
       <Route path={getLocalePath(routePath)} element={<PasswordResetConfirm />} />
@@ -24,9 +24,15 @@ export default {
   component: PasswordResetConfirm,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    routerProps: createMockRouterProps(routePath, { user: userParam, token: tokenParam }),
-  }),
-];
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      routerProps: createMockRouterProps(routePath, {
+        user: userParam,
+        token: tokenParam,
+      }),
+    }),
+  ],
+};

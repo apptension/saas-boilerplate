@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { Dropzone, DropzoneProps } from './dropzone.component';
 
-const Template: Story<DropzoneProps> = (args: DropzoneProps) => {
+const Template: StoryFn<DropzoneProps> = (args: DropzoneProps) => {
   return <Dropzone {...args} />;
 };
 
@@ -13,5 +13,7 @@ export default {
   decorators: [withProviders()],
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default = {
+  render: Template,
+  args: {},
+};

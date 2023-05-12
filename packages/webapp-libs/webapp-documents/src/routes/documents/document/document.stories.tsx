@@ -1,6 +1,6 @@
 import { makeFragmentData } from '@sb/webapp-api-client';
 import { documentFactory } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { documentListItemFragment } from '../';
@@ -12,7 +12,7 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-const Template: Story<DocumentProps> = (args: DocumentProps) => {
+const Template: StoryFn<DocumentProps> = (args: DocumentProps) => {
   const generatedDoc = documentFactory();
   const { file, createdAt } = generatedDoc;
   const id = generatedDoc.id as string;
@@ -26,7 +26,7 @@ const Template: Story<DocumentProps> = (args: DocumentProps) => {
   );
 };
 
-export default {
+const meta: Meta<typeof Document> = {
   title: 'Routes/Documents/Document',
   component: Document,
   decorators: [withProviders({})],
@@ -39,4 +39,8 @@ export default {
   },
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta & DocumentProps> = {
+  render: Template,
+};

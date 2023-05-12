@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
@@ -8,8 +8,14 @@ import {
   Subject as UserExportAdminSubject,
 } from './userExportAdmin.component';
 
-const Template: Story<UserExportAdminProps> = (args: UserExportAdminProps) => (
-  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<UserExportAdminSubject />} emailData={args}>
+const Template: StoryFn<UserExportAdminProps> = (
+  args: UserExportAdminProps
+) => (
+  <EmailStory
+    type={EmailTemplateType.ACCOUNT_ACTIVATION}
+    subject={<UserExportAdminSubject />}
+    emailData={args}
+  >
     <UserExportAdminEmail {...args} />
   </EmailStory>
 );
@@ -19,16 +25,19 @@ export default {
   component: UserExportAdminEmail,
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
-  data: [
-    {
-      email: 'email1@example.com',
-      export_url: 'export_url',
-    },
-    {
-      email: 'email2@example.com',
-      export_url: 'export_url',
-    },
-  ],
+export const Primary = {
+  render: Template,
+
+  args: {
+    data: [
+      {
+        email: 'email1@example.com',
+        export_url: 'export_url',
+      },
+      {
+        email: 'email2@example.com',
+        export_url: 'export_url',
+      },
+    ],
+  },
 };

@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { SignupButtonsVariant, SocialLoginButtons, SocialLoginButtonsProps } from './socialLoginButtons.component';
 
-const Template: Story<SocialLoginButtonsProps> = (args: SocialLoginButtonsProps) => {
+const Template: StoryFn<SocialLoginButtonsProps> = (args: SocialLoginButtonsProps) => {
   return <SocialLoginButtons {...args} />;
 };
 
@@ -13,8 +13,12 @@ export default {
   decorators: [withProviders()],
 };
 
-export const Login = Template.bind({});
-Login.args = { variant: SignupButtonsVariant.LOGIN };
+export const Login = {
+  render: Template,
+  args: { variant: SignupButtonsVariant.LOGIN },
+};
 
-export const Signup = Template.bind({});
-Signup.args = { variant: SignupButtonsVariant.SIGNUP };
+export const Signup = {
+  render: Template,
+  args: { variant: SignupButtonsVariant.SIGNUP },
+};

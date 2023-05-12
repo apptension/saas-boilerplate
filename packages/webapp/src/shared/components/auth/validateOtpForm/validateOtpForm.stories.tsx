@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { ValidateOtpForm } from './validateOtpForm.component';
 
-const Template: Story = (args) => {
+const Template: StoryFn = (args) => {
   return <ValidateOtpForm {...args} />;
 };
 
@@ -11,5 +11,7 @@ export default {
   component: ValidateOtpForm,
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default = {
+  render: Template,
+  args: {},
+};

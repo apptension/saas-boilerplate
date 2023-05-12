@@ -1,7 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
+
 import { TwoFactorAuthForm, TwoFactorAuthFormProps } from './twoFactorAuthForm.component';
 
-const Template: Story<TwoFactorAuthFormProps> = (args) => {
+const Template: StoryFn<TwoFactorAuthFormProps> = (args) => {
   return <TwoFactorAuthForm {...args} />;
 };
 
@@ -10,5 +11,7 @@ export default {
   component: TwoFactorAuthForm,
 };
 
-export const Default = Template.bind({});
-Default.args = {  };
+export const Default = {
+  render: Template,
+  args: {},
+};

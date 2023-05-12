@@ -1,15 +1,15 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillDocumentsListQuery } from '../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { Documents } from './documents.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <Documents />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/Documents',
   component: Documents,
   decorators: [
@@ -19,4 +19,8 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

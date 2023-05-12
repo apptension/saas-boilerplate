@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { appConfigFactory, fillContentfulAppConfigQuery } from '../../tests/factories';
@@ -73,14 +73,17 @@ Cum huc palantesque tamen desiluit inexperrectus, toto, patitur!
   total: 1,
 });
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <PrivacyPolicy />;
 };
-
-export default {
+const meta: Meta = {
   title: 'Routes/PrivacyPolicy',
   component: PrivacyPolicy,
   decorators: [withProviders({ apolloMocks: append(requestMock) })],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

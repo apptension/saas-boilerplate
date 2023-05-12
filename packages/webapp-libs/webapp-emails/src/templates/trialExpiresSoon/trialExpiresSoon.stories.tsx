@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
@@ -8,8 +8,14 @@ import {
   Subject as TrialExpiresSoonSubject,
 } from './trialExpiresSoon.component';
 
-const Template: Story<TrialExpiresSoonProps> = (args: TrialExpiresSoonProps) => (
-  <EmailStory type={EmailTemplateType.TRIAL_EXPIRES_SOON} subject={<TrialExpiresSoonSubject />} emailData={args}>
+const Template: StoryFn<TrialExpiresSoonProps> = (
+  args: TrialExpiresSoonProps
+) => (
+  <EmailStory
+    type={EmailTemplateType.TRIAL_EXPIRES_SOON}
+    subject={<TrialExpiresSoonSubject />}
+    emailData={args}
+  >
     <TrialExpiresSoonEmail {...args} />
   </EmailStory>
 );
@@ -19,7 +25,10 @@ export default {
   component: TrialExpiresSoonEmail,
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
-  expiryDate: '10/10/2020',
+export const Primary = {
+  render: Template,
+
+  args: {
+    expiryDate: '10/10/2020',
+  },
 };

@@ -1,13 +1,13 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { action } from '@storybook/addon-actions';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { Header, HeaderProps } from './header.component';
 
 type StoryArgType = HeaderProps & { isLoggedIn: boolean };
 
-const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
+const Template: StoryFn<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
   return <Header {...args} />;
 };
 
@@ -23,8 +23,12 @@ export default {
   ],
 };
 
-export const LoggedOut = Template.bind({});
-LoggedOut.args = { isLoggedIn: false };
+export const LoggedOut = {
+  render: Template,
+  args: { isLoggedIn: false },
+};
 
-export const LoggedIn = Template.bind({});
-LoggedIn.args = { isLoggedIn: true, onClick: action('Menu open') };
+export const LoggedIn = {
+  render: Template,
+  args: { isLoggedIn: true, onClick: action('Menu open') },
+};

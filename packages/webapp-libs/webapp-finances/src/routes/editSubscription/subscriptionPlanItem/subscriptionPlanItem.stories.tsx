@@ -9,7 +9,7 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const Wrapper = () => {
   );
 };
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Routes>
       <Route element={<ActiveSubscriptionContext />}>
@@ -69,92 +69,129 @@ freePlan.product.name = SubscriptionPlanName.FREE;
 const monthlyPlan = subscriptionPlanFactory();
 monthlyPlan.product.name = SubscriptionPlanName.MONTHLY;
 
-export default {
+const meta: Meta = {
   title: 'Shared/Subscriptions/SubscriptionPlanItem',
   component: SubscriptionPlanItem,
 };
 
-export const Free = Template.bind({});
-Free.decorators = [
-  withProviders({
-    ...defaultProvidersOptions,
-    apolloMocks: () => [
-      fillCommonQueryWithUser(currentUserFactory()),
-      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })]),
-      fillSubscriptionScheduleQueryWithPhases([
-        subscriptionPhaseFactory({
-          item: { price: monthlyPlan },
-        }),
-      ]),
-    ],
-  }),
-];
+export default meta;
 
-export const ActiveFree = Template.bind({});
-ActiveFree.decorators = [
-  withProviders({
-    ...defaultProvidersOptions,
-    apolloMocks: () => [
-      fillCommonQueryWithUser(currentUserFactory()),
-      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } })]),
-      fillSubscriptionScheduleQueryWithPhases([
-        subscriptionPhaseFactory({
-          item: { price: freePlan },
-        }),
-      ]),
-    ],
-  }),
-];
+export const Free: StoryObj<typeof meta> = {
+  render: Template,
 
-export const Paid = Template.bind({});
-Paid.decorators = [
-  withProviders({
-    ...defaultProvidersOptions,
-    apolloMocks: () => [
-      fillCommonQueryWithUser(currentUserFactory()),
-      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
-      fillSubscriptionScheduleQueryWithPhases([
-        subscriptionPhaseFactory({
-          item: { price: freePlan },
-        }),
-      ]),
-    ],
-  }),
-];
+  decorators: [
+    withProviders({
+      ...defaultProvidersOptions,
+      apolloMocks: () => [
+        fillCommonQueryWithUser(currentUserFactory()),
+        fillSubscriptionPlansAllQuery([
+          subscriptionPlanFactory({
+            product: { name: SubscriptionPlanName.FREE },
+          }),
+        ]),
+        fillSubscriptionScheduleQueryWithPhases([
+          subscriptionPhaseFactory({
+            item: { price: monthlyPlan },
+          }),
+        ]),
+      ],
+    }),
+  ],
+};
 
-export const ActivePaid = Template.bind({});
-ActivePaid.decorators = [
-  withProviders({
-    ...defaultProvidersOptions,
-    apolloMocks: () => [
-      fillCommonQueryWithUser(currentUserFactory()),
-      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
-      fillSubscriptionScheduleQueryWithPhases([
-        subscriptionPhaseFactory({
-          item: { price: monthlyPlan },
-        }),
-      ]),
-    ],
-  }),
-];
+export const ActiveFree: StoryObj<typeof meta> = {
+  render: Template,
 
-export const WithTrialEligible = Template.bind({});
-WithTrialEligible.decorators = [
-  withProviders({
-    ...defaultProvidersOptions,
-    apolloMocks: () => [
-      fillCommonQueryWithUser(currentUserFactory()),
-      fillSubscriptionPlansAllQuery([subscriptionPlanFactory({ product: { name: SubscriptionPlanName.MONTHLY } })]),
-      fillSubscriptionScheduleQuery(
-        subscriptionFactory({
-          canActivateTrial: true,
-          phases: [
-            subscriptionPhaseFactory({
-              item: { price: monthlyPlan },
-            }),
-          ],
-        })
-      ),
-    ],
-  }),
-];
+  decorators: [
+    withProviders({
+      ...defaultProvidersOptions,
+      apolloMocks: () => [
+        fillCommonQueryWithUser(currentUserFactory()),
+        fillSubscriptionPlansAllQuery([
+          subscriptionPlanFactory({
+            product: { name: SubscriptionPlanName.FREE },
+          }),
+        ]),
+        fillSubscriptionScheduleQueryWithPhases([
+          subscriptionPhaseFactory({
+            item: { price: freePlan },
+          }),
+        ]),
+      ],
+    }),
+  ],
+};
+
+export const Paid: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      ...defaultProvidersOptions,
+      apolloMocks: () => [
+        fillCommonQueryWithUser(currentUserFactory()),
+        fillSubscriptionPlansAllQuery([
+          subscriptionPlanFactory({
+            product: { name: SubscriptionPlanName.MONTHLY },
+          }),
+        ]),
+        fillSubscriptionScheduleQueryWithPhases([
+          subscriptionPhaseFactory({
+            item: { price: freePlan },
+          }),
+        ]),
+      ],
+    }),
+  ],
+};
+
+export const ActivePaid: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      ...defaultProvidersOptions,
+      apolloMocks: () => [
+        fillCommonQueryWithUser(currentUserFactory()),
+        fillSubscriptionPlansAllQuery([
+          subscriptionPlanFactory({
+            product: { name: SubscriptionPlanName.MONTHLY },
+          }),
+        ]),
+        fillSubscriptionScheduleQueryWithPhases([
+          subscriptionPhaseFactory({
+            item: { price: monthlyPlan },
+          }),
+        ]),
+      ],
+    }),
+  ],
+};
+
+export const WithTrialEligible: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      ...defaultProvidersOptions,
+      apolloMocks: () => [
+        fillCommonQueryWithUser(currentUserFactory()),
+        fillSubscriptionPlansAllQuery([
+          subscriptionPlanFactory({
+            product: { name: SubscriptionPlanName.MONTHLY },
+          }),
+        ]),
+        fillSubscriptionScheduleQuery(
+          subscriptionFactory({
+            canActivateTrial: true,
+            phases: [
+              subscriptionPhaseFactory({
+                item: { price: monthlyPlan },
+              }),
+            ],
+          })
+        ),
+      ],
+    }),
+  ],
+};

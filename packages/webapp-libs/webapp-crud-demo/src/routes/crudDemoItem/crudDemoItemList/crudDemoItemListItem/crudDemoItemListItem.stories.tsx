@@ -1,11 +1,14 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { append } from 'ramda';
 
 import { withProviders } from '../../../../utils/storybook';
-import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
+import {
+  CrudDemoItemListItem,
+  CrudDemoItemListItemProps,
+} from './crudDemoItemListItem.component';
 
 export default {
   title: 'CrudDemoItem / CrudDemoItemList / CrudDemoItemListItem',
@@ -27,25 +30,35 @@ const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   }
 `);
 
-const Template: Story<CrudDemoItemListItemProps> = (args: CrudDemoItemListItemProps) => {
+const Template: StoryFn<CrudDemoItemListItemProps> = (
+  args: CrudDemoItemListItemProps
+) => {
   const { loading, data } = useQuery(crudDemoItemListItemTestQuery);
-  return !loading && data?.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
+  return !loading && data?.item ? (
+    <CrudDemoItemListItem {...args} item={data.item} />
+  ) : (
+    <span />
+  );
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: append(
-      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
-        data: {
-          item: {
-            __typename: 'CrudDemoItemType',
-            id: 1,
-            name: 'Demo item name',
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(
+        composeMockedQueryResult(crudDemoItemListItemTestQuery, {
+          data: {
+            item: {
+              __typename: 'CrudDemoItemType',
+              id: 1,
+              name: 'Demo item name',
+            },
           },
-        },
-      })
-    ),
-  }),
-];
-Default.args = {};
+        })
+      ),
+    }),
+  ],
+
+  args: {},
+};

@@ -1,7 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
+
 import { FormattedDate, FormattedDateProps } from './formattedDate.component';
 
-const Template: Story<FormattedDateProps> = (args: FormattedDateProps) => {
+const Template: StoryFn<FormattedDateProps> = (args: FormattedDateProps) => {
   return <FormattedDate {...args} />;
 };
 
@@ -10,5 +11,7 @@ export default {
   component: FormattedDate,
 };
 
-export const Default = Template.bind({});
-Default.args = { value: new Date() };
+export const Default = {
+  render: Template,
+  args: { value: new Date() },
+};

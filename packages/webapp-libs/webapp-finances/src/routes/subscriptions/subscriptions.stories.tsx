@@ -1,15 +1,15 @@
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { fillAllStripeChargesQuery, fillSubscriptionScheduleQueryWithPhases } from '../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
 import { Subscriptions } from './subscriptions.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <Subscriptions />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/Subscriptions/Subscription details',
   component: Subscriptions,
   decorators: [
@@ -28,4 +28,8 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

@@ -1,14 +1,18 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { Skeleton } from './skeleton.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <Skeleton />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Notifications/Notification/Skeleton',
   component: Skeleton,
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

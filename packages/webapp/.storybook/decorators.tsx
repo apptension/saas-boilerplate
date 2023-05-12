@@ -1,11 +1,11 @@
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
 import { global as globalTheme, initializeFontFace } from '@sb/webapp-core/theme';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 
-export const withTheme = () => (StoryComponent: Story) =>
+export const withTheme = () => (StoryComponent: StoryFn) =>
   (
     <ResponsiveThemeProvider>
       <>
@@ -15,13 +15,13 @@ export const withTheme = () => (StoryComponent: Story) =>
     </ResponsiveThemeProvider>
   );
 
-export const withIntl = (StoryComponent: Story) => (
+export const withIntl = (StoryComponent: StoryFn) => (
   <IntlProvider locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
     <StoryComponent />
   </IntlProvider>
 );
 
-export const withFontFace = (StoryComponent: Story) => {
+export const withFontFace = (StoryComponent: StoryFn) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     initializeFontFace();

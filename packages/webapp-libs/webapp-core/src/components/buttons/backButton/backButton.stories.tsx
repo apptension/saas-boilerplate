@@ -1,11 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { BackButton, BackButtonProps } from './backButton.component';
 
-const Template: Story<BackButtonProps> = (args: BackButtonProps) => (
-  <BackButton {...args} />
-);
+const Template: StoryFn<BackButtonProps> = (args: BackButtonProps) => <BackButton {...args} />;
 
 export default {
   title: 'Core/BackButton',

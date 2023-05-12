@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import {
   contentfulDemoItemFavoriteFactory,
@@ -11,52 +11,60 @@ import { DemoItems } from './demoItems.component';
 
 const data = [demoItemFactory(), demoItemFactory(), demoItemFactory()];
 
-const Template: Story = ({ hasFavourite = false, ...args }) => {
+const Template: StoryFn = ({ hasFavourite = false, ...args }) => {
   return <DemoItems {...args} />;
 };
 
-export default {
+const meta: Meta = {
   title: 'ContentfulDemo / DemoItems',
   component: DemoItems,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: (defaultMocks, { args: { hasFavourite = false } }: any) =>
-      defaultMocks.concat([
-        fillDemoItemsAllQuery(data),
-        fillUseFavouriteDemoItemListQuery(
-          hasFavourite
-            ? [
-                contentfulDemoItemFavoriteFactory({
-                  item: { pk: data[0].sys.id },
-                  __typename: 'ContentfulDemoItemFavoriteType',
-                }),
-              ]
-            : []
-        ),
-      ]),
-  }),
-];
+export default meta;
 
-export const WithFavorited = Template.bind({});
-WithFavorited.args = { hasFavourite: true };
-WithFavorited.decorators = [
-  withProviders({
-    apolloMocks: (defaultMocks, { args: { hasFavourite = true } }: any) =>
-      defaultMocks.concat([
-        fillDemoItemsAllQuery(data),
-        fillUseFavouriteDemoItemListQuery(
-          hasFavourite
-            ? [
-                contentfulDemoItemFavoriteFactory({
-                  item: { pk: data[0].sys.id },
-                  __typename: 'ContentfulDemoItemFavoriteType',
-                }),
-              ]
-            : []
-        ),
-      ]),
-  }),
-];
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks, { args: { hasFavourite = false } }: any) =>
+        defaultMocks.concat([
+          fillDemoItemsAllQuery(data),
+          fillUseFavouriteDemoItemListQuery(
+            hasFavourite
+              ? [
+                  contentfulDemoItemFavoriteFactory({
+                    item: { pk: data[0].sys.id },
+                    __typename: 'ContentfulDemoItemFavoriteType',
+                  }),
+                ]
+              : []
+          ),
+        ]),
+    }),
+  ],
+};
+
+export const WithFavorited: StoryObj<typeof meta> = {
+  render: Template,
+  args: { hasFavourite: true },
+
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks, { args: { hasFavourite = true } }: any) =>
+        defaultMocks.concat([
+          fillDemoItemsAllQuery(data),
+          fillUseFavouriteDemoItemListQuery(
+            hasFavourite
+              ? [
+                  contentfulDemoItemFavoriteFactory({
+                    item: { pk: data[0].sys.id },
+                    __typename: 'ContentfulDemoItemFavoriteType',
+                  }),
+                ]
+              : []
+          ),
+        ]),
+    }),
+  ],
+};

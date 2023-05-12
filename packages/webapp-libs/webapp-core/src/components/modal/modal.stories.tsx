@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { Modal, ModalProps } from './modal.component';
 
-const Template: Story<ModalProps> = (args: ModalProps) => {
+const Template: StoryFn<ModalProps> = (args: ModalProps) => {
   return <Modal {...args} />;
 };
 

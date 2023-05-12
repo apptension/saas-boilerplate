@@ -1,6 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { size } from '@sb/webapp-core/theme';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../../utils/storybook';
@@ -11,7 +11,7 @@ const Container = styled.div`
   ${size.contentWithLimitedWidth};
 `;
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Container>
       <EditProfileForm />
@@ -24,9 +24,12 @@ export default {
   component: EditProfileForm,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
-  }),
-];
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: [fillCommonQueryWithUser(currentUserFactory())],
+    }),
+  ],
+};

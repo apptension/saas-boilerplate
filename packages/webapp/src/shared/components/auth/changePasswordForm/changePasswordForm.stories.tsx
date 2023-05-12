@@ -1,5 +1,5 @@
 import { size } from '@sb/webapp-core/theme';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../../utils/storybook';
@@ -10,7 +10,7 @@ const Container = styled.div`
   ${size.contentWithLimitedWidth};
 `;
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Container>
       <ChangePasswordForm />
@@ -23,5 +23,7 @@ export default {
   component: ChangePasswordForm,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [withProviders({})];
+export const Default = {
+  render: Template,
+  decorators: [withProviders({})],
+};

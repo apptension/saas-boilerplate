@@ -1,5 +1,5 @@
 import * as corePath from '@sb/webapp-core/utils/path';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
@@ -11,7 +11,7 @@ import { DemoItem } from './demoItem.component';
 
 const defaultItemId = 'test-id';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Routes>
       <Route
@@ -21,16 +21,22 @@ const Template: Story = () => {
     </Routes>
   );
 };
-
-export default {
+const meta: Meta = {
   title: 'ContentfulDemo / DemoItem',
   component: DemoItem,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    routerProps: createMockRouterProps(RoutesConfig.demoItem, { id: defaultItemId }),
-    apolloMocks: append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId })),
-  }),
-];
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      routerProps: createMockRouterProps(RoutesConfig.demoItem, {
+        id: defaultItemId,
+      }),
+      apolloMocks: append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId })),
+    }),
+  ],
+};

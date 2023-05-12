@@ -1,15 +1,15 @@
 import { paymentMethodFactory, transactionHistoryEntryFactory } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { fillAllStripeChargesQuery } from '../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <TransactionHistory />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Finances/Stripe/TransactionHistory',
   component: TransactionHistory,
   decorators: [
@@ -19,12 +19,18 @@ export default {
           transactionHistoryEntryFactory({
             created: new Date(2020, 5, 5).toString(),
             amount: 50,
-            paymentMethod: paymentMethodFactory({ card: { last4: '1234' }, billingDetails: { name: 'Owner 1' } }),
+            paymentMethod: paymentMethodFactory({
+              card: { last4: '1234' },
+              billingDetails: { name: 'Owner 1' },
+            }),
           }),
           transactionHistoryEntryFactory({
             created: new Date(2020, 10, 10).toString(),
             amount: 100,
-            paymentMethod: paymentMethodFactory({ card: { last4: '9876' }, billingDetails: { name: 'Owner 2' } }),
+            paymentMethod: paymentMethodFactory({
+              card: { last4: '9876' },
+              billingDetails: { name: 'Owner 2' },
+            }),
           }),
         ];
         return defaultMocks.concat([fillAllStripeChargesQuery(data)]);
@@ -33,4 +39,8 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

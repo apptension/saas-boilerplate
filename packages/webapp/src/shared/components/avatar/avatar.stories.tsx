@@ -1,13 +1,13 @@
 import { CurrentUserType } from '@sb/webapp-api-client/graphql';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../utils/storybook';
 import { Avatar, AvatarProps } from './avatar.component';
 
 type StoryArgsType = AvatarProps & { profile: CurrentUserType };
 
-const Template: Story<StoryArgsType> = ({ profile, ...args }: StoryArgsType) => {
+const Template: StoryFn<StoryArgsType> = ({ profile, ...args }: StoryArgsType) => {
   return <Avatar {...args} />;
 };
 
@@ -23,14 +23,24 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
-Default.args = { profile: currentUserFactory() };
+export const Default = {
+  render: Template,
+  args: { profile: currentUserFactory() },
+};
 
-export const NoAvatarUser = Template.bind({});
-NoAvatarUser.args = { profile: currentUserFactory({ avatar: null }) };
+export const NoAvatarUser = {
+  render: Template,
+  args: { profile: currentUserFactory({ avatar: null }) },
+};
 
-export const NoNameUser = Template.bind({});
-NoNameUser.args = { profile: currentUserFactory({ firstName: '', lastName: '', avatar: null }) };
+export const NoNameUser = {
+  render: Template,
+  args: {
+    profile: currentUserFactory({ firstName: '', lastName: '', avatar: null }),
+  },
+};
 
-export const CustomSize = Template.bind({});
-CustomSize.args = { size: 100 };
+export const CustomSize = {
+  render: Template,
+  args: { size: 100 },
+};

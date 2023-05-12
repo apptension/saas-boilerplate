@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "plugin:@nrwl/nx/react",
-    "../../.eslintrc.json"
-  ],
+  "extends": ["plugin:@nrwl/nx/react", "../../.eslintrc.json"],
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
@@ -11,18 +8,13 @@
     "plop/*",
     "build/**/*",
     "cdk.out/**/*",
+    "storybook-static",
     "plopfile.js",
     "setupTests.js"
   ],
-  "plugins": [
-    "react-hooks",
-    "formatjs",
-    "testing-library"
-  ],
+  "plugins": ["react-hooks", "formatjs", "testing-library"],
   "rules": {
-    "import/order": [
-      "error"
-    ],
+    "import/order": ["error"],
     "formatjs/no-offset": "error",
     "react/jsx-curly-brace-presence": "error"
   },
@@ -46,13 +38,8 @@
       }
     },
     {
-      "files": [
-        "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
-      ],
-      "extends": [
-        "plugin:testing-library/react"
-      ],
+      "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/react"],
       "rules": {
         "testing-library/render-result-naming-convention": "off",
         "testing-library/no-node-access": "off"

@@ -1,16 +1,16 @@
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
-import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
 import { fillSubscriptionScheduleQueryWithPhases } from '../../tests/factories';
+import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
 import { CancelSubscription } from './cancelSubscription.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <CancelSubscription />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/Subscriptions/CancelSubscription',
   component: CancelSubscription,
   decorators: [
@@ -27,5 +27,8 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

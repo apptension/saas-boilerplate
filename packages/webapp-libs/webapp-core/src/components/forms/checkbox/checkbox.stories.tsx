@@ -1,7 +1,7 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { Checkbox, CheckboxProps } from './checkbox.component';
 
-const Template: Story<CheckboxProps> = (args: CheckboxProps) => {
+const Template: StoryFn<CheckboxProps> = (args: CheckboxProps) => {
   return <Checkbox {...args} />;
 };
 
@@ -10,17 +10,27 @@ export default {
   component: Checkbox,
 };
 
-export const WithLabel = Template.bind({});
-WithLabel.args = { label: 'Checkbox' };
+export const WithLabel = {
+  render: Template,
+  args: { label: 'Checkbox' },
+};
 
-export const Checked = Template.bind({});
-Checked.args = { label: 'Checkbox', checked: true };
+export const Checked = {
+  render: Template,
+  args: { label: 'Checkbox', checked: true },
+};
 
-export const SemiChecked = Template.bind({});
-SemiChecked.args = { label: 'Checkbox', semiChecked: true, checked: true };
+export const SemiChecked = {
+  render: Template,
+  args: { label: 'Checkbox', semiChecked: true, checked: true },
+};
 
-export const NoLabel = Template.bind({});
-NoLabel.args = {};
+export const NoLabel = {
+  render: Template,
+  args: {},
+};
 
-export const Invalid = Template.bind({});
-Invalid.args = { label: 'Checkbox', error: 'Invalid value' };
+export const Invalid = {
+  render: Template,
+  args: { label: 'Checkbox', error: 'Invalid value' },
+};

@@ -1,9 +1,14 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
-import { CrudDemoItemForm, CrudDemoItemFormProps } from './crudDemoItemForm.component';
+import {
+  CrudDemoItemForm,
+  CrudDemoItemFormProps,
+} from './crudDemoItemForm.component';
 
-const Template: Story<CrudDemoItemFormProps> = (args: CrudDemoItemFormProps) => {
+const Template: StoryFn<CrudDemoItemFormProps> = (
+  args: CrudDemoItemFormProps
+) => {
   return <CrudDemoItemForm {...args} />;
 };
 
@@ -12,14 +17,20 @@ export default {
   component: CrudDemoItemForm,
 };
 
-export const WithInitialData = Template.bind({});
-WithInitialData.args = {
-  initialData: {
-    name: 'initial name',
-  },
-};
-WithInitialData.decorators = [withProviders({})];
+export const WithInitialData = {
+  render: Template,
 
-export const WithoutData = Template.bind({});
-WithoutData.args = {};
-WithoutData.decorators = [withProviders({})];
+  args: {
+    initialData: {
+      name: 'initial name',
+    },
+  },
+
+  decorators: [withProviders({})],
+};
+
+export const WithoutData = {
+  render: Template,
+  args: {},
+  decorators: [withProviders({})],
+};

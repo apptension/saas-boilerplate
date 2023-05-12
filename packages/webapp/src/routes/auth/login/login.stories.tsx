@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../shared/utils/storybook';
 import { Login } from './login.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <Login />;
 };
 
@@ -12,5 +12,7 @@ export default {
   component: Login,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [withProviders({})];
+export const Default = {
+  render: Template,
+  decorators: [withProviders({})],
+};

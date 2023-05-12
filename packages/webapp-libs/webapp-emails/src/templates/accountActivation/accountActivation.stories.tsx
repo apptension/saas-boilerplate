@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
@@ -8,8 +8,14 @@ import {
   Subject as AccountActivationSubject,
 } from './accountActivation.component';
 
-const Template: Story<AccountActivationProps> = (args: AccountActivationProps) => (
-  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<AccountActivationSubject />} emailData={args}>
+const Template: StoryFn<AccountActivationProps> = (
+  args: AccountActivationProps
+) => (
+  <EmailStory
+    type={EmailTemplateType.ACCOUNT_ACTIVATION}
+    subject={<AccountActivationSubject />}
+    emailData={args}
+  >
     <AccountActivationEmail {...args} />
   </EmailStory>
 );
@@ -19,8 +25,11 @@ export default {
   component: AccountActivationEmail,
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
-  token: 'token-value',
-  userId: 'user-id',
+export const Primary = {
+  render: Template,
+
+  args: {
+    token: 'token-value',
+    userId: 'user-id',
+  },
 };

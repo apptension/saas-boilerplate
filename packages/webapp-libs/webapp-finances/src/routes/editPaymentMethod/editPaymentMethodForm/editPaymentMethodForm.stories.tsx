@@ -5,18 +5,18 @@ import {
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { action } from '@storybook/addon-actions';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { times } from 'ramda';
 
 import { fillSubscriptionScheduleQueryWithPhases } from '../../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../../utils/storybook';
 import { EditPaymentMethodForm, EditPaymentMethodFormProps } from './editPaymentMethodForm.component';
 
-const Template: Story<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
+const Template: StoryFn<EditPaymentMethodFormProps> = (args: EditPaymentMethodFormProps) => {
   return <EditPaymentMethodForm {...args} />;
 };
 
-export default {
+const meta: Meta<typeof EditPaymentMethodForm> = {
   title: 'Shared/Subscriptions/EditPaymentMethodForm',
   component: EditPaymentMethodForm,
   decorators: [
@@ -28,7 +28,11 @@ export default {
           fillSubscriptionScheduleQueryWithPhases(
             [
               subscriptionPhaseFactory({
-                item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+                item: {
+                  price: subscriptionPlanFactory({
+                    product: { name: SubscriptionPlanName.FREE },
+                  }),
+                },
               }),
             ],
             paymentMethods
@@ -39,8 +43,12 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
+export default meta;
 
-Default.args = {
-  onSuccess: action('onSuccess'),
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+
+  args: {
+    onSuccess: action('onSuccess'),
+  },
 };

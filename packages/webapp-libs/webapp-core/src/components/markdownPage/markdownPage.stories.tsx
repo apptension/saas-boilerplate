@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../utils/storybook';
 import { MarkdownPage, MarkdownPageProps } from './markdownPage.component';
@@ -14,7 +14,7 @@ const markdown = `
 - and second one
 `;
 
-const Template: Story<MarkdownPageProps> = (args: MarkdownPageProps) => {
+const Template: StoryFn<MarkdownPageProps> = (args: MarkdownPageProps) => {
   return <MarkdownPage {...args} />;
 };
 
@@ -24,5 +24,7 @@ export default {
   decorators: [withProviders()],
 };
 
-export const Default = Template.bind({});
-Default.args = { markdown };
+export const Default = {
+  render: Template,
+  args: { markdown },
+};

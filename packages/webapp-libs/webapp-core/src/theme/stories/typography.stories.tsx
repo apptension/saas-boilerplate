@@ -1,12 +1,23 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
-import { H1, H2, H3, H4, H5, Paragraph, ParagraphBold, Label, MicroLabel, UltraMicroLabel } from '../typography';
+import {
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+  Paragraph,
+  ParagraphBold,
+  Label,
+  MicroLabel,
+  UltraMicroLabel,
+} from '../typography';
 
 const Container = styled.div`
   margin: 20px;
 `;
 
-const Template: Story = () => (
+const Template: StoryFn = () => (
   <Container>
     <H1>Heading 1</H1>
     <H2>Heading 2</H2>
@@ -32,4 +43,6 @@ export default {
   component: Container,
 };
 
-export const Primary = Template.bind({});
+export const Primary = {
+  render: Template,
+};

@@ -1,10 +1,11 @@
 import { action } from '@storybook/addon-actions';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { ButtonVariant } from '../button';
 import { Link, LinkProps } from './link.component';
 
-const Template: Story<LinkProps> = (args: LinkProps) => {
+const Template: StoryFn<LinkProps> = (args: LinkProps) => {
   return <Link {...args} />;
 };
 
@@ -20,28 +21,50 @@ const defaultArgs = {
   variant: ButtonVariant.PRIMARY,
 };
 
-export const InternalPrimary = Template.bind({});
-InternalPrimary.args = { ...defaultArgs, to: '/internal-route' };
-
-export const ExternalPrimary = Template.bind({});
-ExternalPrimary.args = { ...defaultArgs, href: 'https://apptension.com' };
-
-export const InternalSecondary = Template.bind({});
-InternalSecondary.args = {
-  ...defaultArgs,
-  to: '/internal-route',
-  variant: ButtonVariant.SECONDARY,
+export const InternalPrimary = {
+  render: Template,
+  args: { ...defaultArgs, to: '/internal-route' },
 };
 
-export const ExternalSecondary = Template.bind({});
-ExternalSecondary.args = { ...defaultArgs, href: 'https://apptension.com', variant: ButtonVariant.SECONDARY };
-
-export const InternalRaw = Template.bind({});
-InternalRaw.args = {
-  ...defaultArgs,
-  to: '/internal-route',
-  variant: ButtonVariant.RAW,
+export const ExternalPrimary = {
+  render: Template,
+  args: { ...defaultArgs, href: 'https://apptension.com' },
 };
 
-export const ExternalRaw = Template.bind({});
-ExternalRaw.args = { ...defaultArgs, href: 'https://apptension.com', variant: ButtonVariant.RAW };
+export const InternalSecondary = {
+  render: Template,
+
+  args: {
+    ...defaultArgs,
+    to: '/internal-route',
+    variant: ButtonVariant.SECONDARY,
+  },
+};
+
+export const ExternalSecondary = {
+  render: Template,
+  args: {
+    ...defaultArgs,
+    href: 'https://apptension.com',
+    variant: ButtonVariant.SECONDARY,
+  },
+};
+
+export const InternalRaw = {
+  render: Template,
+
+  args: {
+    ...defaultArgs,
+    to: '/internal-route',
+    variant: ButtonVariant.RAW,
+  },
+};
+
+export const ExternalRaw = {
+  render: Template,
+  args: {
+    ...defaultArgs,
+    href: 'https://apptension.com',
+    variant: ButtonVariant.RAW,
+  },
+};

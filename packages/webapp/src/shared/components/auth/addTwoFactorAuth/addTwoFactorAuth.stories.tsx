@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { AddTwoFactorAuth, AddTwoFactorAuthProps } from './addTwoFactorAuth.component';
 
-const Template: Story<AddTwoFactorAuthProps> = (args) => {
+const Template: StoryFn<AddTwoFactorAuthProps> = (args) => {
   return <AddTwoFactorAuth {...args} />;
 };
 
@@ -12,7 +12,8 @@ export default {
   component: AddTwoFactorAuth,
 };
 
-export const Default = Template.bind({});
-
-Default.args = {};
-Default.decorators = [withProviders({})];
+export const Default = {
+  render: Template,
+  args: {},
+  decorators: [withProviders({})],
+};

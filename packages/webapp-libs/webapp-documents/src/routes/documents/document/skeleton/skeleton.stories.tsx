@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../../../utils/storybook';
@@ -9,7 +9,7 @@ const Container = styled.div`
   padding: 10px;
 `;
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Container>
       <Skeleton />
@@ -17,10 +17,14 @@ const Template: Story = () => {
   );
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/Documents/Document/Skeleton',
   component: Skeleton,
   decorators: [withProviders()],
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+};

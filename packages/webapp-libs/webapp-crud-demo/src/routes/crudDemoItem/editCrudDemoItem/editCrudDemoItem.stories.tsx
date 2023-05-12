@@ -1,5 +1,5 @@
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
@@ -11,10 +11,13 @@ import { EditCrudDemoItem } from './editCrudDemoItem.component';
 
 const defaultItemId = 'test-id';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <Routes>
-      <Route path={getLocalePath(RoutesConfig.crudDemoItem.edit)} element={<EditCrudDemoItem />} />
+      <Route
+        path={getLocalePath(RoutesConfig.crudDemoItem.edit)}
+        element={<EditCrudDemoItem />}
+      />
     </Routes>
   );
 };
@@ -24,17 +27,22 @@ export default {
   component: EditCrudDemoItem,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: append(
-      fillEditCrudDemoItemQuery(
-        {
-          name: 'Default name',
-        },
-        { id: defaultItemId }
-      )
-    ),
-    routerProps: createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId }),
-  }),
-];
+export const Default = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(
+        fillEditCrudDemoItemQuery(
+          {
+            name: 'Default name',
+          },
+          { id: defaultItemId }
+        )
+      ),
+      routerProps: createMockRouterProps(RoutesConfig.crudDemoItem.edit, {
+        id: defaultItemId,
+      }),
+    }),
+  ],
+};

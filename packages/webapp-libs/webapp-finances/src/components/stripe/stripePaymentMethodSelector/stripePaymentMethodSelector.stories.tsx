@@ -5,7 +5,7 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { append, times } from 'ramda';
 
@@ -15,7 +15,7 @@ import { withActiveSubscriptionContext, withProviders } from '../../../utils/sto
 import { StripePaymentMethodSelector, StripePaymentMethodSelectorProps } from './stripePaymentMethodSelector.component';
 import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 
-const Template: Story<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
+const Template: StoryFn<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
   args: StripePaymentMethodSelectorProps<PaymentFormFields>
 ) => {
   const formControls = useApiForm<PaymentFormFields>();
@@ -26,7 +26,7 @@ const Template: Story<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
   );
 };
 
-export default {
+const meta: Meta<typeof StripePaymentMethodSelector> = {
   title: 'Shared/Finances/Stripe/StripePaymentMethodSelector',
   component: StripePaymentMethodSelector,
   decorators: [
@@ -36,7 +36,11 @@ export default {
         fillSubscriptionScheduleQueryWithPhases(
           [
             subscriptionPhaseFactory({
-              item: { price: subscriptionPlanFactory({ product: { name: SubscriptionPlanName.FREE } }) },
+              item: {
+                price: subscriptionPlanFactory({
+                  product: { name: SubscriptionPlanName.FREE },
+                }),
+              },
             }),
           ],
           times(() => paymentMethodFactory(), 3)
@@ -46,5 +50,9 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
-Default.args = {};
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+  args: {},
+};

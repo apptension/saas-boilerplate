@@ -1,15 +1,15 @@
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillAllStripeChargesQuery } from '../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { TransactionHistory } from './transactionHistory.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <TransactionHistory />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Routes/TransactionHistory',
   component: TransactionHistory,
   decorators: [
@@ -19,5 +19,9 @@ export default {
   ],
 };
 
-export const Default = Template.bind({});
-Default.args = { children: 'text' };
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+  args: { children: 'text' },
+};

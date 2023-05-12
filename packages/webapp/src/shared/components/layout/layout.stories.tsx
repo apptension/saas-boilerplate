@@ -1,6 +1,6 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { fillNotificationsListQuery } from '@sb/webapp-notifications/tests/factories';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../utils/storybook';
@@ -15,7 +15,7 @@ const MockContent = styled.div`
 
 type StoryArgType = LayoutProps & { isLoggedIn: boolean };
 
-const Template: Story<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
+const Template: StoryFn<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
   return <Layout {...args} />;
 };
 
@@ -32,8 +32,12 @@ export default {
   ],
 };
 
-export const LoggedOut = Template.bind({});
-LoggedOut.args = { isLoggedIn: false, children: <MockContent /> };
+export const LoggedOut = {
+  render: Template,
+  args: { isLoggedIn: false, children: <MockContent /> },
+};
 
-export const LoggedIn = Template.bind({});
-LoggedIn.args = { isLoggedIn: true, children: <MockContent /> };
+export const LoggedIn = {
+  render: Template,
+  args: { isLoggedIn: true, children: <MockContent /> },
+};

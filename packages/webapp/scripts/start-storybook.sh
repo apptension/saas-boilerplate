@@ -15,4 +15,4 @@ if version_gte "${node_version}" "v17.0.0"; then
   export NODE_OPTIONS="${NODE_OPTIONS:-} --openssl-legacy-provider"
 fi
 
-$SCRIPT_DIR/../node_modules/.bin/start-storybook --port 5002
+storybook dev --port 5002

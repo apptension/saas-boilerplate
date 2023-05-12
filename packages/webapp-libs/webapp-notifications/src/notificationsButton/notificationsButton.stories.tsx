@@ -1,24 +1,29 @@
 import { action } from '@storybook/addon-actions';
-import { Story } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillNotificationsListQuery } from '../tests/factories';
 import { withProviders } from '../utils/storybook';
 import { NotificationsButton, NotificationsButtonProps } from './notificationsButton.component';
 
-const Template: Story<NotificationsButtonProps> = (args: NotificationsButtonProps) => {
+const Template: StoryFn<NotificationsButtonProps> = (args: NotificationsButtonProps) => {
   return <NotificationsButton {...args} />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Notifications/NotificationsButton',
   component: NotificationsButton,
 };
 
-export const Default = Template.bind({});
-Default.args = { onClick: action('on click') };
-Default.decorators = [
-  withProviders({
-    apolloMocks: append(fillNotificationsListQuery([])),
-  }),
-];
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+  args: { onClick: action('on click') },
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillNotificationsListQuery([])),
+    }),
+  ],
+};

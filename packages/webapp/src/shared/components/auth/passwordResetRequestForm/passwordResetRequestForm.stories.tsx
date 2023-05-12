@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { PasswordResetRequestForm } from './passwordResetRequestForm.component';
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <PasswordResetRequestForm />;
 };
 
@@ -12,5 +12,7 @@ export default {
   component: PasswordResetRequestForm,
 };
 
-export const Default = Template.bind({});
-Default.decorators = [withProviders({})];
+export const Default = {
+  render: Template,
+  decorators: [withProviders({})],
+};

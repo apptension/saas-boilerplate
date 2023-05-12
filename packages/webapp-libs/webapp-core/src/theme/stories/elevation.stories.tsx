@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 import { light, lightest, medium, strong, strongest } from '../elevation';
 
@@ -30,7 +30,7 @@ const BoxStrongest = styled(Box)`
   ${strongest}
 `;
 
-const Template: Story = () => (
+const Template: StoryFn = () => (
   <>
     <BoxLightest />
     <BoxLight />
@@ -45,4 +45,6 @@ export default {
   component: Box,
 };
 
-export const Elevation = Template.bind({});
+export const Elevation = {
+  render: Template,
+};
