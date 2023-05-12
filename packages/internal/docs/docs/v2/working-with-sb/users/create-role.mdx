@@ -1,6 +1,59 @@
 ---
 title: How to add a new user role?
-description: TODO >Description<
+description: Adding a new user role
 ---
 
-TBD
+To add a new user role to the SaaS Boilerplate, you need to add it to the `CommonGroups` class and create a Django migration to insert the group into the database.
+
+The `CommonGroups` class is located in the `common.acl` module and is used to define the different user roles in the application.
+To add a new role, simply add a new string value to the `CommonGroups` class, for example:
+
+```python title="packages/backend/common/acl/helpers.py" showLineNumbers
+class CommonGroups:
+    User = 'user'
+    Admin = 'admin'
+    Support = 'support'
+```
+
+Once you have added the new role to the `CommonGroups` class, you need to create an empty Django migration to insert the new group into the database.
+To do this, run the following command:
+
+```shell
+python manage.py makemigrations --empty users
+```
+
+This will create a new empty migration file in the `users` app. Open the migration file and add the following code to the `operations` list:
+
+```python title="packages/backend/apps/users/migrations/0007_example_migration.py" showLineNumbers
+from django.db import migrations
+from common.acl.helpers import CommonGroups
+
+
+def create_support_role(apps, schema_editor):
+    db_alias = schema_editor.connection.alias
+
+    Group = apps.get_model("auth", "Group")
+    Group.objects.using(db_alias).create(name=CommonGroups.Support)
+
+
+def remove_support_role(apps, schema_editor):
+    Group = apps.get_model("auth", "Group")
+    Group.objects.filter(name=CommonGroups.Support).delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('users', '0006_case_insensitive_collation'),
+    ]
+
+    operations = [
+        migrations.RunPython(create_support_role, remove_support_role),
+    ]
+```
+
+The migration file defines two functions: `create_support_role` and `remove_support_role`.
+The `create_support_role` function creates a new `Group` object with the name `CommonGroups.Support` and saves it to the database.
+The `remove_support_role` function removes the `Support` group from the database.
+
+The `operations` list includes a single operation that runs the `create_support_role` function when the migration is applied and the `remove_support_role` function when the migration is reversed.
