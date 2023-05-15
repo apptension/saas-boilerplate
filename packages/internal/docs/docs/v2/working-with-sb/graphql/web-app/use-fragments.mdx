@@ -1,6 +1,137 @@
 ---
-title: How to use Fragments?
-description: TODO >Description<
+description: In this guide you'll learn how to use GraphQL fragments
 ---
 
-TBD
+# How to use Fragments?
+
+## What are GraphQL fragments?
+
+A [GraphQL fragment](https://graphql.org/learn/queries/#fragments) is a piece of logic that can be shared between
+multiple queries and mutations.
+
+Here's the declaration of a `NameParts` fragment that can be used with any `Person` object:
+
+```graphql
+fragment NameParts on Person {
+  firstName
+  lastName
+}
+```
+
+Every fragment includes a subset of the fields that belong to its associated type. In the above example, the `Person`
+type must declare `firstName` and `lastName` fields for the `NameParts` fragment to be valid.
+
+We can now include the `NameParts` fragment in any number of queries and mutations that refer to `Person` objects, like
+so:
+
+```graphql
+query GetPerson {
+  people(id: "7") {
+    ...NameParts
+    avatar(size: LARGE)
+  }
+}
+```
+
+> You precede an included fragment with three periods (`...`), much like JavaScript [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
+
+Based on our `NameParts` definition, the above query is equivalent to:
+
+```graphql
+query GetPerson {
+  people(id: "7") {
+    firstName
+    lastName
+    avatar(size: LARGE)
+  }
+}
+```
+
+If we later change which fields are included in the `NameParts` fragment, we automatically change which fields are
+included in operations that use the fragment. This reduces the effort required to keep fields consistent across a set of
+operations.
+
+> Source: [Apollo client documentation](https://www.apollographql.com/docs/react/data/fragments/)
+
+## Example usage
+
+### Create a query
+
+We'll use a query that already exists in SaaS Boilerplate in a very similar form, but with fewer fields to make the
+example easier to read. This query returns an object of type `CurrentUserType`.
+
+As you probably know, in typical apps it's possible to retrieve the current user's data through multiple different
+operations, including:
+
+- Direct query on page refresh,
+- Data returned immediately when the user successfully logs into the app,
+- Data returned immediately when the user's email is confirmed.
+
+All of those operations will have their own GraphQL query, or mutation but we always want to have the same fields of the
+`CurrentUserType` returned. Fragments are a great way to specify the core set of those fields, like so:
+
+Next simplify define the fragment with fields of your choice:
+
+```ts
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const currentUserFragment = gql(/* GraphQL */ `
+  fragment currentUserFragment on CurrentUserType {
+    id
+    email
+    firstName
+    lastName
+  }
+`);
+```
+
+### Include the fragment in a GraphQL operation
+
+You can include the `currentUserFragment` fragment in a GraphQL operation like so:
+
+```ts
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const currentUserQuery = gql(/* GraphQL */ `
+  query currentUserQuery {
+    currentUser {
+      id
+      ...currentUserFragment
+    }
+  }
+`);
+```
+
+### Query data in a component
+
+SaaS Boilerplate uses [Codegen](https://the-guild.dev/graphql/codegen) to generate typed queries, mutations,
+subscriptions, and GraphQL resolvers. Additionally, it uses [client-preset](https://the-guild.dev/graphql/codegen/plugins/presets/preset-client)
+plugin to integrate with Apollo GraphQL client.
+
+This plugin has [Fragment Masking](https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#fragment-masking)
+enabled by default. It means that in order to get fragment's data you need to use the automatically generated
+`getFragmentData` helper function, like so:
+
+```tsx
+import { useQuery } from '@apollo/client';
+import { getFragmentData } from '@sb/webapp-api-client/graphql';
+
+const UserProfile = () => {
+  const { data } = useQuery(currentUserQuery, {
+    nextFetchPolicy: 'network-only',
+  });
+  const profile = getFragmentData(currentUserFragment, data?.currentUser);
+
+  return (
+    <span>
+      {profile.firstName} {profile.lastName}
+    </span>
+  );
+};
+```
+
+Otherwise, TyperScript compiler would throw an error if you tried to access `data.firstName` directly.
+
+## Advanced fragments usage
+
+Fore more advances fragments usage, make sure you check the [Apollo client documentation](https://www.apollographql.com/docs/react/data/fragments/).
