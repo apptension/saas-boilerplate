@@ -1,6 +1,147 @@
 ---
 title: How to show a certain page for admin user?
-description: TODO >Description<
+description: Show or hide pages based on user role
 ---
 
-TBD
+## Access Policies
+
+Access policies are used in the SaaS Boilerplate to restrict access to queries and mutations.
+This ensures that only authorized users can perform certain actions in the application.
+
+### Creating new Access Policy
+
+To define an access policy, you can create a new class that extends the `AccessPolicy` class.
+Within the class, you can define a list of statements that specify who is allowed to perform certain actions.
+
+For example, the following code defines an access policy that grants full access to administrators:
+
+```python title="packages/backend/common/acl/policies.py" showLineNumbers
+from rest_access_policy import AccessPolicy
+from .helpers import make_statement, Action, Effect, Principal, CommonGroups
+
+
+class AdminFullAccess(AccessPolicy):
+    statements = [
+        make_statement(principal=Principal.group(CommonGroups.Admin), action=Action.Any, effect=Effect.Allow)
+    ]
+```
+
+:::info
+Access policies in the SaaS Boilerplate are implemented using the [Django REST - Access Policy](https://rsinger86.github.io/drf-access-policy/) library.
+This library provides a simple and flexible way to define access policies.
+:::
+
+:::tip
+To learn more about user groups you can check the ["How to add a new user role?"](./create-role) article.
+:::
+
+In this example, the `AdminFullAccess` class extends the `AccessPolicy` class and defines a single statement.
+The statement grants any action to the `Admin` group, which is defined in the `CommonGroups` module.
+
+With this access policy in place, any query or mutation that is protected by it will only be accessible to users who belong to the `Admin` group.
+
+### Restricting access with Access Policies
+
+:::caution
+By default, the SaaS Boilerplate uses the `IsAuthenticated` permission class from Django REST Framework to restrict access to API endpoints.
+This means that only authenticated users are able to access the API endpoints.
+
+You can change the default permissions by modifying the `REST_FRAMEWORK` setting in your Django settings file.
+For example, the following code sets the `DEFAULT_PERMISSION_CLASSES` to allow any user to access the API endpoints:
+
+```python title="packages/backend/config/settings.py"
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+}
+```
+
+It's important to note that modifying the default permissions can have security implications, so you should carefully consider the permissions that you set for your API endpoints.
+It's generally recommended to use more restrictive permissions by default and only allow more permissive access on a per-endpoint basis.
+:::
+
+To apply an access policy to a query or mutation, you can use the `@permission_classes` decorator and specify the access policy class that you want to use.
+
+For example, the following code applies the `AdminFullAccess` access policy to the `example_admin_mutation` mutation:
+
+```python title="packages/backend/apps/users/schema.py" showLineNumbers
+import graphene
+from common.acl import policies
+from common.graphql.acl.decorators import permission_classes
+
+
+@permission_classes(policies.AdminFullAccess)
+class AdminMutation(graphene.ObjectType):
+    example_admin_mutation = ExampleAdminMutation.Field()
+```
+
+With this access policy in place, only the admin user will be able to access the `example_admin_mutation` mutation.
+You can create additional access policies and apply them to specific mutations or queries to restrict access only to authorized users.
+
+It's important to note that the access policy will be applied to all fields within the mutation or query.
+If you need to apply different access policies to different fields, you will need to split the mutation or query into separate mutations or queries and apply the appropriate access policies to each.
+
+:::note
+Alternatively, you can use the `permission_classes` decorator on a per-field basis to apply specific access policies to individual fields within a query or mutation.
+When you use `permission_classes` on a per-field basis, it overrides any `permission_classes` that are defined on the query or mutation class.
+
+```python title="packages/backend/apps/users/schema.py" showLineNumbers
+import graphene
+from common.acl import policies
+from common.graphql.acl.decorators import permission_classes
+
+
+class Mutation(graphene.ObjectType):
+    all_access_mutation = permission_classes(policies.AnyoneFullAccess)(ExampleAllAccessMutation.Field())
+```
+
+By using access policies to restrict access to queries and mutations in your SaaS application, you can ensure that only authorized users are able to perform certain actions, helping to keep your application secure.
+:::
+
+## Auth routes
+
+### Loading roles using common query
+
+Web application uses following GraphQL query to load currently logged-in user roles from back-end:
+
+```graphql showLineNumbers
+query currentUserQuery {
+    currentUser {
+// highlight-next-line
+        roles
+        id
+    }
+}
+```
+
+:::info
+This query is run on every page refresh and login state change.
+:::
+
+The result is stored in ApolloClient memory store and it is used by `useRoleAccessCheck` hooks.
+
+### Restricting access to page based on user role
+
+To add a page that should be accessible only by users that have `admin` role edit
+`packages/webapp/src/app/app.component.tsx` file that contain all web application routes and add `<Route/>` with the
+`<AuthRoute/>` as an element property similar to the following code:
+
+```tsx title="packages/webapp/src/app/app.component.tsx" showLineNumbers
+//...
+import { Role } from '../modules/auth/auth.types';
+import { AuthRoute } from '../shared/components/routes/authRoute';
+//...
+<Route element={<AuthRoute allowedRoles={Role.ADMIN} />}>
+  <Route
+    path={"..."}
+    element={
+      <span>
+        Page that only Admins shoudl see
+      </span>
+    }
+  />
+</Route>
+//...
+```
+
+In the above example `Page that only Admins shoudl see` will be rendered only for users that has `Role.ADMIN` role
+assigned in the database.
