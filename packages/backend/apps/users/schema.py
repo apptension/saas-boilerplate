@@ -140,16 +140,20 @@ class CurrentUserType(DjangoObjectType):
         model = models.User
         fields = ("id", "email", "first_name", "last_name", "roles", "avatar", "otp_enabled", "otp_verified")
 
-    def resolve_first_name(self, info):
+    @staticmethod
+    def resolve_first_name(parent, info):
         return get_user_from_resolver(info).profile.first_name
 
-    def resolve_last_name(self, info):
+    @staticmethod
+    def resolve_last_name(parent, info):
         return get_user_from_resolver(info).profile.last_name
 
-    def resolve_roles(self, info):
+    @staticmethod
+    def resolve_roles(parent, info):
         return get_role_names(get_user_from_resolver(info))
 
-    def resolve_avatar(self, info):
+    @staticmethod
+    def resolve_avatar(parent, info):
         return get_user_avatar_url(get_user_from_resolver(info))
 
 
@@ -201,7 +205,8 @@ class ChangePasswordMutation(mutations.SerializerMutation):
 class Query(graphene.ObjectType):
     current_user = graphene.Field(CurrentUserType)
 
-    def resolve_current_user(self, info, **kwargs):
+    @staticmethod
+    def resolve_current_user(root, info, **kwargs):
         return info.context.user if info.context.user.is_authenticated else None
 
 

@@ -1,6 +1,233 @@
 ---
 title: How to add a new field to user profile?
-description: TODO >Description<
+description: Add fields to UserProfile model
 ---
 
-TBD
+:::info
+This section assumes that you know how to work with mutations, serializers and Django models.
+If not, here are some helpful articles:
+- ["How to create a new Django app and model in back-end?"](../guides/backend/backend-model)
+- ["How to add a new mutation to back-end API?"](../graphql/backend/adding-new-mutation)
+- ["Working with serializers"](../graphql/backend/working-with-serializers)
+:::
+
+## UserProfile model
+
+In SaaS Boilerplate, the `UserProfile` model is designed to be customizable and extensible.
+This means that you can easily add additional fields to the `UserProfile` model as needed.
+
+To add additional fields to the `UserProfile` model, you can follow the same steps as you would to add a single field.
+Simply modify the `UserProfile` class definition in `models.py` to include the new fields, create a database migration, and apply the migration.
+
+For example, if you wanted to add a field for the user's phone number, you could add the following line to the `UserProfile` class definition:
+
+```python title="packages/backend/apps/users/models.py" showLineNumbers
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    # ...
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    # ...
+    # highlight-next-line
+    phone_number = models.CharField(max_length=20, blank=True, default='')  # New field
+```
+
+Then, you need to create a new migration and apply it.
+
+## Filling UserProfile field on signup
+
+### Updating the UserManager
+
+The `UserManager` is a class that is responsible for creating a user and related models.
+It is part of the `users` app and is used to manage the creation and modification of user accounts.
+To add a `phone_number` value on signup, you can simply add `phone_number` argument to the `create_user` method, and than pass it to `UserProfile.objects.create`.
+
+```python title="packages/backend/apps/users/models.py" showLineNumbers
+from django.db import models
+from django.contrib.auth.models import BaseUserManager, Group, AbstractBaseUser, PermissionsMixin
+from common.acl.helpers import CommonGroups
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, phone_number=''):
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(
+            email=self.normalize_email(email),
+        )
+        user.set_password(password)
+        user_group = Group.objects.get(name=CommonGroups.User)
+        user.save(using=self._db)
+
+        user.groups.add(user_group)
+
+        # highlight-next-line
+        UserProfile.objects.create(user=user, phone_number=phone_number)
+
+        return user
+
+    # ...
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    # ...
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    # ...
+    phone_number = models.CharField(max_length=20, blank=True, default='')  # New field
+```
+
+:::note
+Remember about adjusting the `create_superuser` method of `UserManager` accordingly if needed.
+:::
+
+### Updating UserSignupSerializer
+
+The signup process in the SaaS Boilerplate is conducted by the `SignUpMutation` class, which uses the `UserSignupSerializer`.
+
+The `UserSignupSerializer` is responsible for handling the business logic of creating a new user account.
+It validates the input data, creates a new user account using the `UserManager` class, and returns the serialized data for the new user.
+
+To fill the `phone_number` field during the signup process, you need to add this field to the `UserSignupSerializer` class `Meta` fields and then inside the `create` method, pass the `validated_data["phone_number"]` to the `create_user` method of the `UserManager` class.
+
+Inside the `Meta` class of the `UserSignupSerializer`, add the `phone_number` field to the `fields` attribute. For example:
+
+```python title="packages/backend/apps/users/serializers.py" showLineNumbers
+from django.contrib import auth as dj_auth
+from rest_framework import serializers
+
+
+class UserSignupSerializer(serializers.ModelSerializer):
+  # ...
+
+  class Meta:
+      model = dj_auth.get_user_model()
+      fields = (
+          "id",
+          # ...
+          "phone_number"
+      )
+```
+
+Then, inside the `create` method of the `UserSignupSerializer`, pass the `validated_data["phone_number"]` to the `create_user` method of the `UserManager` class.
+
+```python title="packages/backend/apps/users/serializers.py" showLineNumbers
+from django.contrib import auth as dj_auth
+from django.contrib.auth.models import update_last_login
+from rest_framework import serializers
+from rest_framework_simplejwt import  tokens as jwt_tokens
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+
+from . import  tokens,  notifications
+
+
+class UserSignupSerializer(serializers.ModelSerializer):
+  # ...
+
+  def create(self, validated_data):
+      user = dj_auth.get_user_model().objects.create_user(
+          email=validated_data["email"],
+          password=validated_data["password"],
+          # highlight-next-line
+          phone_number=validated_data["phone_number"]
+      )
+
+      refresh = jwt_tokens.RefreshToken.for_user(user)
+
+      if jwt_api_settings.UPDATE_LAST_LOGIN:
+          update_last_login(None, user)
+
+      notifications.AccountActivationEmail(
+          user=user, data={'user_id': user.id.hashid, 'token': tokens.account_activation_token.make_token(user)}
+      ).send()
+
+      return {
+        'id': user.id,
+        'email': user.email,
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
+        # highlight-next-line
+        'phone_number': user.profile.phone_number
+      }
+```
+
+## Update CurrentUserType
+
+The current logged-in user can be fetched by `currentUser` query which uses `CurrentUserType` class (a subclass of the `DjangoObjectType` provided by the `graphene-django` library).
+
+:::tip
+More information on Queries and DjangoObjectTypes can be found at [Graphene-Django "Queries & ObjectTypes"](https://docs.graphene-python.org/projects/django/en/latest/queries/#queries-objecttypes)
+:::
+
+```python title="packages/backend/apps/users/schema.py" showLineNumbers
+import graphene
+from graphene_django import DjangoObjectType
+
+from . import models
+from .services.users import get_user_from_resolver
+
+
+class CurrentUserType(DjangoObjectType):
+    phone_number = graphene.String()
+
+    class Meta:
+        model = models.User
+        fields = (
+          "id",
+          # ...
+          "phone_number"
+        )
+
+    @staticmethod
+    def resolve_phone_number(parent, info):
+        return get_user_from_resolver(info).profile.phone_number
+```
+
+The `phone_number` field is defined as a `graphene.String()` field on the `CurrentUserType` class.
+This field will be returned in the GraphQL query response alongside the default fields provided by the `DjangoObjectType`.
+
+The `Meta` inner class of `CurrentUserType` specifies that the model to be used is the `User` model from the `models.py` file.
+The `fields` attribute specifies which fields should be returned in the GraphQL response. It's required to add `phone_number` field there.
+
+The `resolve_phone_number` method is a static method that returns the phone number for the currently authenticated user.
+This method takes two arguments: `parent` and `info`.
+The `parent` argument refers to the parent object in a GraphQL query, while the `info` argument contains information about the current GraphQL execution context.
+This function is used to retrieve the current user's profile and return the `phone_number` field.
+
+The `get_user_from_resolver` function is a utility function that retrieves the current authenticated user from the GraphQL execution context.
+
+:::note
+> This Parent Value Object (parent) is sometimes named obj, parent, or source in other GraphQL documentation. It can also be named after the value object being resolved (ex. root for a root Query or Mutation, and person for a Person value object). Sometimes this argument will be named self in Graphene code, but this can be misleading due to Implicit staticmethod while executing queries in Graphene.
+
+— Graphene-Python documentation on ["Naming convention"](https://docs.graphene-python.org/en/latest/types/objecttypes/#naming-convention)
+:::
+
+## Updating the UserProfile
+
+The `UpdateCurrentUserMutation` class uses the `serializers.UserProfileSerializer` to handle the business logic of updating the current user's profile information.
+It defines the fields that can be updated and how they should be validated.
+To make the `phone_number` available to update, you can simply put add it into `fields` property of the `Meta` class.
+
+```python title="packages/backend/apps/users/serializers.py" showLineNumbers
+from rest_framework import serializers
+from . import models
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    # ...
+
+    class Meta:
+        model = models.UserProfile
+        fields = (
+            # ...
+            "phone_number"
+        )
+```
