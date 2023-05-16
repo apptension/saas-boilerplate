@@ -20,7 +20,19 @@ module.exports = {
         alt: 'SaaS Boilerplate by Apptension',
         src: 'img/logo.svg',
       },
-      items: [],
+      items: [
+        {
+          label: 'SaaS Boilerplate website',
+          href: 'https://apptension.com/saas-boilerplate',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/apptension/saas-boilerplate',
+          position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
+        },
+      ],
     },
     footer: {
       style: 'dark',
