@@ -15,7 +15,7 @@ import {
 } from './button.types';
 import { COLOR_SCALES_RECORD } from './button.constants';
 
-type ButtonThemeProps = ThemeProps<ButtonTheme>;
+export  type ButtonThemeProps = ThemeProps<ButtonTheme>;
 
 const extractPropsColorScale = ({ theme: { color } }: ButtonThemeProps) =>
   COLOR_SCALES_RECORD[color as ButtonColor] as

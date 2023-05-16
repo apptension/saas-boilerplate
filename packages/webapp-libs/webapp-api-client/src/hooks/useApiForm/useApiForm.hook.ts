@@ -8,6 +8,12 @@ import { FormSubmitError } from '../../api/types';
 import { ApiFormReturnType, GraphQLValidationError, UseApiFormArgs } from './useApiForm.types';
 import { useTranslatedErrors } from './useTranslatedErrors';
 
+/**
+ *
+ * @param args
+ *
+ * @category hook
+ */
 export const useApiForm = <FormData extends FieldValues = FieldValues>(
   args?: UseApiFormArgs<FormData>
 ): ApiFormReturnType<FormData> => {

@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React from 'react';
 
 import { CommonQueryCurrentUserQueryQuery } from '../../graphql';
 
@@ -7,7 +7,7 @@ type CommonDataContext = {
   reload: () => void;
 };
 
-export default createContext<CommonDataContext>({
+export default React.createContext<CommonDataContext>({
   data: null,
   reload: () => {
     return;

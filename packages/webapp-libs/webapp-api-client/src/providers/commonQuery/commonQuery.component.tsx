@@ -1,12 +1,19 @@
 import { useQuery } from '@apollo/client';
 import { setUserId } from '@sb/webapp-core/services/analytics';
-import { FunctionComponent, PropsWithChildren, useCallback, useEffect, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useMemo } from 'react';
 
 import { CurrentUserType } from '../../graphql';
 import commonDataContext from './commonQuery.context';
 import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
 
-export const CommonQuery: FunctionComponent<PropsWithChildren> = ({ children }) => {
+/**
+ *
+ * @param children
+ * @constructor
+ *
+ * @category Component
+ */
+export const CommonQuery = ({ children }: PropsWithChildren) => {
   const { loading, data, refetch } = useQuery(commonQueryCurrentUserQuery, { nextFetchPolicy: 'network-only' });
 
   const reload = useCallback(async () => {

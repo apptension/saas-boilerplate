@@ -56,8 +56,41 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [require.resolve('./src/css/custom.css')],
         },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-webapp-api-client',
+        entryPoints: [
+          '../../webapp-libs/webapp-api-client/src/hooks/index.ts',
+          '../../webapp-libs/webapp-api-client/src/providers/index.ts',
+        ],
+        tsconfig: '../../webapp-libs/webapp-api-client/tsconfig.lib.json',
+        out: 'v2/api-reference/webapp-api-client/generated',
+        readme: 'none',
+        watch: process.env.TYPEDOC_WATCH,
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-webapp-core',
+        entryPoints: [
+          '../../webapp-libs/webapp-core/src/utils/index.ts',
+          '../../webapp-libs/webapp-core/src/hooks/index.ts',
+          '../../webapp-libs/webapp-core/src/theme/index.ts',
+          '../../webapp-libs/webapp-core/src/components/buttons/index.ts',
+          '../../webapp-libs/webapp-core/src/components/forms/index.ts',
+        ],
+        tsconfig: '../../webapp-libs/webapp-core/tsconfig.lib.json',
+        out: 'v2/api-reference/webapp-core/generated',
+        readme: 'none',
+        watch: process.env.TYPEDOC_WATCH,
       },
     ],
   ],

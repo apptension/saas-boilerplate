@@ -1,7 +1,12 @@
-import styled from 'styled-components';
-import { Icon } from '@iconify/react';
+import { Icon, IconProps } from '@iconify/react';
+import React from 'react';
+import styled, { DefaultTheme, StyledComponent } from 'styled-components';
 
-export const Container = styled(Icon)<{ size: number }>`
+type IconContainerProps = { size: number };
+export const Container: StyledComponent<
+  (props: IconProps & IconContainerProps) => React.ReactElement<IconProps, string | React.JSXElementConstructor<any>>,
+  DefaultTheme
+> = styled(Icon)<IconContainerProps>`
   font-size: ${(props) => props.size}px;
   line-height: 0;
 `;

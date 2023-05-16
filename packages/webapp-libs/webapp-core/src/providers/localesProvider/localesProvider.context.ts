@@ -1,4 +1,4 @@
-import { Dispatch, createContext } from 'react';
+import React from 'react';
 
 import { LocalesAction, LocalesState } from './localesProvider.types';
 
@@ -6,9 +6,9 @@ export const localesInitialState: LocalesState = {
   language: null,
 };
 
-export const LocalesContext = createContext<{
+export const LocalesContext = React.createContext<{
   locales: LocalesState;
-  dispatch: Dispatch<LocalesAction>;
+  dispatch: React.Dispatch<LocalesAction>;
 }>({
   locales: localesInitialState,
   dispatch: () => undefined,

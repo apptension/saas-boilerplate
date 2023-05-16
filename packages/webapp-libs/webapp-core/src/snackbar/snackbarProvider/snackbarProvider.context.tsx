@@ -1,4 +1,4 @@
-import { Dispatch, createContext } from 'react';
+import React from 'react';
 
 import { SnackbarAction, SnackbarState } from './snackbarProvider.types';
 
@@ -7,9 +7,9 @@ export const snackbarInitialState: SnackbarState = {
   messages: [],
 };
 
-export const SnackbarContext = createContext<{
+export const SnackbarContext = React.createContext<{
   snackbar: SnackbarState;
-  dispatch: Dispatch<SnackbarAction>;
+  dispatch: React.Dispatch<SnackbarAction>;
 }>({
   snackbar: snackbarInitialState,
   dispatch: () => undefined,
