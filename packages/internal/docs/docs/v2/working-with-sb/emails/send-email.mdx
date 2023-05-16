@@ -1,6 +1,99 @@
 ---
 title: How to send an email from backend?
-description: TODO >Description<
+description: Send emails programmatically using Django and async workers
 ---
 
-TBD
+In the SaaS Boilerplate, you can send emails from the backend by creating a new class that subclasses the `Email` class.
+The `Email` class is a base class that provides common functionality for sending emails.
+
+:::caution
+This guide assumes that you are already familiar with async workers and Django REST Framework (DRF) serializers.
+If you are not familiar with these concepts, we recommend that you read the following articles:
+- ["Working with serializers"](../graphql/backend/working-with-serializers)
+- ["How to create a new Serverless package?"](../async-workers/create-sls-package)
+- ["How to run an async job from backend?"](../async-workers/run-async-job)
+:::
+
+## Email Serializer
+
+In the SaaS Boilerplate, email data is serialized using the Django REST Framework serializers.
+Serializers define how data should be converted to and from JSON format, making it easy to transmit data over the [Amazon EventBridge API](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html).
+
+Here's an example of an email serializer used in the SaaS Boilerplate:
+
+```python title="packages/backend/apps/users/email_serializers.py" showLineNumbers
+from rest_framework import serializers
+
+
+class AccountActivationEmailSerializer(serializers.Serializer):
+    user_id = serializers.CharField()
+    token = serializers.CharField()
+```
+
+In this example, the `AccountActivationEmailSerializer` defines two fields - `user_id` and `token` - that are used to serialize email data for the account activation email.
+
+When an email is sent, the email data is first validated using the serializer to ensure that it contains the required fields and that the data is in the expected format. Once validated, the serializer is used to convert the email data to JSON format, which can then be transmitted over the API.
+
+## Email Class and Sending Emails
+
+To create a new email class, you can subclass the `common.emails.Email` class and define the necessary properties and methods.
+In the SaaS Boilerplate, the `Email` class is a subclass of the `common.tasks.Task` class, which emits the email event to be handled by async workers.
+The email handler then uses the [AWS SES](https://docs.aws.amazon.com/ses/index.html) to send the email.
+
+For example, the following code defines a new email class that sends the account activation email:
+
+```python title="packages/backend/apps/users/notifications.py" showLineNumbers
+from common import emails
+from . import email_serializers
+
+
+class UserEmail(emails.Email):
+    def __init__(self, user, data=None):
+        super().__init__(to=user.email, data=data)
+
+
+class AccountActivationEmail(UserEmail):
+    name = 'ACCOUNT_ACTIVATION'
+    serializer_class = email_serializers.AccountActivationEmailSerializer
+```
+
+In this example, the `UserEmail` class is defined as a subclass of the `Email` class.
+It takes a `user` argument and automatically sets the email recipient to the user's email address.
+
+The `AccountActivationEmail` class then subclasses the `UserEmail` class and specifies the name of the email as `'ACCOUNT_ACTIVATION'`, along with the serializer class to use for serializing the email data.
+
+To send an activation email, you can simply invoke the `AccountActivationEmail` class and call the `send()` method with the required parameters.
+
+```python title="packages/backend/apps/users/serializers.py" showLineNumbers
+from django.contrib import auth as dj_auth
+from django.contrib.auth.models import update_last_login
+from rest_framework import serializers
+from rest_framework_simplejwt import tokens as jwt_tokens
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+
+from . import tokens, notifications
+
+
+class UserSignupSerializer(serializers.ModelSerializer):
+    # ...
+
+    def create(self, validated_data):
+        user = dj_auth.get_user_model().objects.create_user(
+            validated_data["email"],
+            validated_data["password"],
+        )
+
+        refresh = jwt_tokens.RefreshToken.for_user(user)
+
+        if jwt_api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, user)
+
+        # highlight-next-line
+        notifications.AccountActivationEmail(
+        # highlight-next-line
+            user=user, data={'user_id': user.id.hashid, 'token': tokens.account_activation_token.make_token(user)}
+        # highlight-next-line
+        ).send()
+
+        return {'id': user.id, 'email': user.email, 'access': str(refresh.access_token), 'refresh': str(refresh)}
+```
