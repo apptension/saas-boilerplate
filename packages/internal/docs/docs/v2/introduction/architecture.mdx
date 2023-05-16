@@ -3,14 +3,13 @@ title: Architecture
 description: System architecture description
 ---
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
+import ProjectName from '../shared/components/ProjectName.component';
 import SystemArchitecture from '../shared/partials/architecture/_system_architecture.mdx';
 import CiCdArchitecture from '../shared/partials/architecture/_cicd_architecture.mdx';
 
-## Services included in SaaS Boilerplate
+## Services included in <ProjectName/>
 
-SaaS Boilerplate comes with a set of pre-configured services that are ready to be deployed on
+<ProjectName/> comes with a set of pre-configured services that are ready to be deployed on
 [AWS](https://aws.amazon.com/) cloud infrastructure.
 
 The project follows a monorepo repository layout and utilizes the [NX](https://nx.dev/) build system. A `Makefile` is
@@ -18,7 +17,7 @@ also included with predefined rules, which should not be changed unless you know
 are used in CodeBuild jobs in the CI pipeline.
 
 All services are located in the `packages` directory at the root of the repository. Standard installation of the
-SaaS Boilerplate contains following services:
+<ProjectName/> contains following services:
 
 - React web application
 - Django backend and admin panel

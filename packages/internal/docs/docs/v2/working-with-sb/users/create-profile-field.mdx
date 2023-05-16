@@ -2,6 +2,7 @@
 title: How to add a new field to user profile?
 description: Add fields to UserProfile model
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
 :::info
 This section assumes that you know how to work with mutations, serializers and Django models.
@@ -13,7 +14,7 @@ If not, here are some helpful articles:
 
 ## UserProfile model
 
-In SaaS Boilerplate, the `UserProfile` model is designed to be customizable and extensible.
+In <ProjectName/>, the `UserProfile` model is designed to be customizable and extensible.
 This means that you can easily add additional fields to the `UserProfile` model as needed.
 
 To add additional fields to the `UserProfile` model, you can follow the same steps as you would to add a single field.
@@ -91,7 +92,7 @@ Remember about adjusting the `create_superuser` method of `UserManager` accordin
 
 ### Updating UserSignupSerializer
 
-The signup process in the SaaS Boilerplate is conducted by the `SignUpMutation` class, which uses the `UserSignupSerializer`.
+The signup process in the <ProjectName/> is conducted by the `SignUpMutation` class, which uses the `UserSignupSerializer`.
 
 The `UserSignupSerializer` is responsible for handling the business logic of creating a new user account.
 It validates the input data, creates a new user account using the `UserManager` class, and returns the serialized data for the new user.

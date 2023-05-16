@@ -1,13 +1,14 @@
 ---
 description: Steps required to deploy SaaS Boilerplate on AWS
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 4: Create runtime environment variables
 
 Every running application requires environment-specific runtime values to function properly. These values could include
 secret keys for third-party services, boolean flags enabling features, and much more.
 
-To manage these variables, the SaaS Boilerplate leverages AWS Systems Manager Parameter Store and a tool called
+To manage these variables, the <ProjectName/> leverages AWS Systems Manager Parameter Store and a tool called
 [`chamber`](https://github.com/segmentio/chamber). With these tools, managing environment variables is easy and secure.
 
 :::caution

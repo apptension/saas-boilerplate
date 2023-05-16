@@ -1,6 +1,7 @@
 ---
 description: In this guide you'll learn how to use GraphQL fragments
 ---
+import ProjectName from '../../../shared/components/ProjectName.component';
 
 # How to use Fragments?
 
@@ -57,7 +58,7 @@ operations.
 
 ### Create a query
 
-We'll use a query that already exists in SaaS Boilerplate in a very similar form, but with fewer fields to make the
+We'll use a query that already exists in <ProjectName/> in a very similar form, but with fewer fields to make the
 example easier to read. This query returns an object of type `CurrentUserType`.
 
 As you probably know, in typical apps it's possible to retrieve the current user's data through multiple different
@@ -104,7 +105,7 @@ export const currentUserQuery = gql(/* GraphQL */ `
 
 ### Query data in a component
 
-SaaS Boilerplate uses [Codegen](https://the-guild.dev/graphql/codegen) to generate typed queries, mutations,
+<ProjectName/> uses [Codegen](https://the-guild.dev/graphql/codegen) to generate typed queries, mutations,
 subscriptions, and GraphQL resolvers. Additionally, it uses [client-preset](https://the-guild.dev/graphql/codegen/plugins/presets/preset-client)
 plugin to integrate with Apollo GraphQL client.
 

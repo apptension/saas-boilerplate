@@ -1,6 +1,7 @@
 ---
 description: This guide will show you how easy it is to implement a simple payment
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
 # How to add a one-time payment?
 
@@ -8,8 +9,8 @@ A one-time payment refers to a type of transaction in which a user pays for a sp
 only once, without incurring any additional payments, such as a subscription.
 
 :::tip
-The SaaS Boilerplate provides an exemplary one-time payment flow implementation. The code displayed below is readily
-available in the pristine SaaS Boilerplate repository for your ease of use. Feel free to customize it as needed to suit
+The <ProjectName/> provides an exemplary one-time payment flow implementation. The code displayed below is readily
+available in the pristine <ProjectName/> repository for your ease of use. Feel free to customize it as needed to suit
 your requirements.
 :::
 
@@ -59,7 +60,7 @@ class PaymentIntentSerializer(serializers.ModelSerializer):
 
 ```
 
-SaaS Boilerplate repository already has a serializer just like this implemented as an example in
+<ProjectName/> repository already has a serializer just like this implemented as an example in
 `packages/backend/apps/finances/serializers.py` for your convenience. It also supports updating payment intents
 when your customer decides to change products they are interested in.
 
@@ -88,7 +89,7 @@ class Mutation(graphene.ObjectType):
 # highlight-end
 ```
 
-SaaS Boilerplate repository already has a mutation just like this implemented as an example in
+<ProjectName/> repository already has a mutation just like this implemented as an example in
 `packages/backend/apps/finances/schema.py` for your convenience.
 
 :::info
@@ -149,7 +150,7 @@ export const useStripePaymentIntent = () => {
 };
 ```
 
-The SaaS Boilerplate repository already includes a hook similar to this as an implemented example. You can find it in
+The <ProjectName/> repository already includes a hook similar to this as an implemented example. You can find it in
 the following path: `packages/webapp-libs/webapp-finances/src/components/stripePayment.hooks.ts`. This hook is provided
 for your convenience. Additionally, it supports the updating of payment intents when your customer decides to change
 the products they are interested in.

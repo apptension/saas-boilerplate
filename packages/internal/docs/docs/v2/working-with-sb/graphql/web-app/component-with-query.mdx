@@ -3,6 +3,7 @@ title: How to write a React component that fetches data from back-end?
 description: TODO >Description<
 ---
 
+import ProjectName from '../../../shared/components/ProjectName.component';
 import ComponentStructurePartial from '../../../shared/partials/_component-structure.mdx';
 import TestingCustomRenderPartial from '../../../shared/partials/_testing-custom-render.mdx';
 import TestingComponentLoadingStatePartial from '../../../shared/partials/_testing-component-loading-state.mdx';
@@ -119,7 +120,7 @@ export default {
 export const Default = Template.bind({});
 ```
 
-The code above uses some internal SaaS Boilerplate helpers that aid in writing Storybooks and tests efficiently:
+The code above uses some internal <ProjectName/> helpers that aid in writing Storybooks and tests efficiently:
 - `composeMockedQueryResult`: This is a helper that prepares a mocked query result for the given query object for the Apollo `MockedProvider`. You can read more about mocking queries [here](https://www.apollographql.com/docs/react/development-testing/testing#the-mockedprovider-component).
 - [`withProviders`](../../../api-reference/webapp/utils#withproviders): This is a helper that wraps a Storybook story with the necessary providers (including `MockedProvider`).
 

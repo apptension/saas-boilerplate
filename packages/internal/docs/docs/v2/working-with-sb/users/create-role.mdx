@@ -2,8 +2,9 @@
 title: How to add a new user role?
 description: Adding a new user role
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
-To add a new user role to the SaaS Boilerplate, you need to add it to the `CommonGroups` class and create a Django migration to insert the group into the database.
+To add a new user role to the <ProjectName/>, you need to add it to the `CommonGroups` class and create a Django migration to insert the group into the database.
 
 The `CommonGroups` class is located in the `common.acl` module and is used to define the different user roles in the application.
 To add a new role, simply add a new string value to the `CommonGroups` class, for example:

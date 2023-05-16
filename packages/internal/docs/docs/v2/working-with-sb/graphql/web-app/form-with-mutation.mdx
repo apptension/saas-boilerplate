@@ -3,7 +3,9 @@ title: How to write a form that commits a mutation?
 description: In this guide you'll use react-hook-form to manage state of a form and commit a mutation when user submits it.
 ---
 
-In this guide you'll learn how to use helpers provided by SaaS boilerplate to work with `react-hook-form` to manage
+import ProjectName from '../../../shared/components/ProjectName.component';
+
+In this guide you'll learn how to use helpers provided by <ProjectName/> to work with `react-hook-form` to manage
 state of a form, commit a mutation when user submits it, and render errors returned from back-end.
 
 :::info
@@ -60,7 +62,7 @@ export const useCreateProductForm = () => {
 
 [useApiForm](../../../api-reference/webapp-api-client/hooks#useapiform) – custom wrapper around
 [`useForm`](https://react-hook-form.com/api/useform/) hook from `react-hook-form` that helps you to work with
-SaaS Boilerplate GraphQL API.
+<ProjectName/> GraphQL API.
 
 ### Implement empty form component
 

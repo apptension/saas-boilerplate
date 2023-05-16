@@ -10,7 +10,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "files": [],
-  "include": [],
+  "include": ["./src/types.d.ts"],
   "references": [
     {
       "path": "./tsconfig.infra.json"

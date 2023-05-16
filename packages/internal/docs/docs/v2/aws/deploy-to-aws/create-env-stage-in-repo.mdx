@@ -1,13 +1,14 @@
 ---
 description: Steps required to deploy SaaS Boilerplate on AWS
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 1: Initialize an environment stage in code repository
 
-SaaS Boilerplate provides the ability to deploy various versions of your application, such as QA, staging, or
+<ProjectName/> provides the ability to deploy various versions of your application, such as QA, staging, or
 production. You have the flexibility to determine their naming conventions and the number of environments required.
 The only exception is the local environment, which is a specialized preconfigured environment utilized for running
-SaaS Boilerplate on local machine.
+<ProjectName/> on local machine.
 
 All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
 policies and preferences.
@@ -30,7 +31,7 @@ environment stage dotenv file.
 
 :::info
 
-To learn more about using `.env` files in SaaS Boilerplate by Apptension read the
+To learn more about using `.env` files in <ProjectName/> read the
 [`How to work with .env files?`](../../working-with-sb/project-structure/env-files) article.
 
 :::

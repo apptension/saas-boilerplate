@@ -2,8 +2,9 @@
 title: How to create a new Serverless package?
 description: Guiding you through the process of creating a new Serverless package
 ---
+import ProjectName from '../../shared/components/ProjectName.component';
 
-In the context of the SaaS Boilerplate, asynchronous jobs are handled by AWS Lambda functions, which are managed by the Serverless Framework.
+In the context of the <ProjectName/>, asynchronous jobs are handled by AWS Lambda functions, which are managed by the Serverless Framework.
 The Serverless Framework is an open-source framework for building applications that use serverless compute services such as AWS Lambda.
 The framework provides a set of tools and abstractions that simplify the process of deploying and managing serverless applications.
 
@@ -41,7 +42,7 @@ The `event` parameter is a dictionary that contains information about the event 
 
 ## Registering handlers
 
-To use the defined AWS Lambda function handler in the SaaS Boilerplate, it needs to be added to the `serverless.yml` file.
+To use the defined AWS Lambda function handler in the <ProjectName/>, it needs to be added to the `serverless.yml` file.
 
 The `serverless.yml` file is a configuration file used by the Serverless Framework to deploy and manage serverless applications.
 

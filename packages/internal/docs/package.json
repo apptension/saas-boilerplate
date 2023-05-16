@@ -23,10 +23,14 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
+    "@docusaurus/module-type-aliases": "^2.4.0",
+    "@docusaurus/types": "^2.4.0",
     "@sb/core": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
     "@sb/tools": "*",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "url-loader": "^4.1.1"

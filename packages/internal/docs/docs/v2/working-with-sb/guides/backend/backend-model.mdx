@@ -2,8 +2,9 @@
 title: How to create a new Django app and model in back-end?
 description: Create an example Django app and declare a model inside it
 ---
+import ProjectName from '../../../shared/components/ProjectName.component';
 
-In this guide, we will show you how to create a new Django app in the backend package using SaaS Boilerplate.
+In this guide, we will show you how to create a new Django app in the backend package using <ProjectName/>.
 The app will be named `store`, and it will contain a `Product` model. Follow these steps:
 
 ## Create new Django app
@@ -60,7 +61,7 @@ class Product(models.Model):
 
 :::info
 
-SaaS Boilerplate comes with the ability to use Hashid fields in your Django models.
+<ProjectName/> comes with the ability to use Hashid fields in your Django models.
 Hashids are a way of generating short, unique, and non-sequential ids from a given input.
 They are typically used to obfuscate database ids and make them harder to guess or predict.
 

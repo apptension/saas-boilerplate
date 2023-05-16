@@ -1,13 +1,13 @@
 module.exports = {
   title: 'SaaS Boilerplate by Apptension',
   tagline: 'SaaS Boilerplate is not a boiler on a plate',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://docs.demo.saas.apptoku.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/logo.svg',
-  organizationName: 'apptension', // Usually your GitHub org/user name.
-  projectName: 'saas-boilerplate-app', // Usually your repo name.
+  organizationName: 'Apptension',
+  projectName: 'saas-boilerplate',
   themeConfig: {
     docs: {
       sidebar: {
@@ -25,12 +25,15 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by Apptension.`,
+      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com" target="_blank">Apptension</a>.`,
     },
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
+  },
+  customFields: {
+    projectName: 'SaaS Boilerplate',
   },
   presets: [
     [
