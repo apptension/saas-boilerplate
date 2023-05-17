@@ -9,10 +9,68 @@ import { ApiFormReturnType, GraphQLValidationError, UseApiFormArgs } from './use
 import { useTranslatedErrors } from './useTranslatedErrors';
 
 /**
+ * A wrapper hook around a [`useForm`](https://react-hook-form.com/api/useform/) hook from `react-hook-form` library.
  *
- * @param args
+ * In addition to full `react-hook-form` functionality it is able to transform GraphQL validation errors returned from
+ * backend into proper field errors.
+ *
+ * Read more about working with this library in official [`react-hook-form`](https://react-hook-form.com/api/)
+ * documentation.
+ *
+ * @param args An extension of `react-hook-form` [UseFormProps](https://react-hook-form.com/ts/#UseFormProps)
  *
  * @category hook
+ *
+ * @example
+ * You can pass errors from GraphQL response to automatically populate `react-hook-form` errors.
+ *
+ *
+ * ```ts
+ * const { setApolloGraphQLResponseErrors } = useApiForm<LoginFormFields>();
+ *
+ * const [commitLoginMutation] = useMutation(authSignInMutation, {
+ *   onError: (error) => {
+ *     // highlight-next-line
+ *     setApolloGraphQLResponseErrors(error.graphQLErrors);
+ *   },
+ * });
+ *
+ * const handleLogin = handleSubmit(async (data: LoginFormFields) => {
+ *   const { errors } = await commitLoginMutation({
+ *     variables: {
+ *       input: data,
+ *     },
+ *   });
+ *   if (errors) {
+ *     // highlight-next-line
+ *     setApolloGraphQLResponseErrors(errors);
+ *   }
+ * });
+ *
+ *
+ * ```
+ *
+ * @example
+ * You can pass custom label for generic non-field errors.
+ *
+ * ```ts
+ * const { genericError } = useApiForm<LoginFormFields>({
+ *   errorMessages: {
+ *     nonFieldErrors: {
+ *       no_active_account: intl.formatMessage({
+ *         defaultMessage: 'Incorrect authentication credentials.',
+ *         id: 'Login form / error / no active account',
+ *       }),
+ *       authentication_failed: intl.formatMessage({
+ *         defaultMessage: 'Incorrect authentication credentials.',
+ *         id: 'Login form / error / authentication failed',
+ *       }),
+ *     },
+ *   },
+ * });
+ *
+ * console.log(genericError);
+ * ```
  */
 export const useApiForm = <FormData extends FieldValues = FieldValues>(
   args?: UseApiFormArgs<FormData>

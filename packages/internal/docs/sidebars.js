@@ -447,7 +447,6 @@ module.exports = {
                 'v2/working-with-sb/graphql/web-app/update-schema',
                 'v2/working-with-sb/graphql/web-app/use-fragments',
                 'v2/working-with-sb/graphql/web-app/naming-conventions',
-                'v2/working-with-sb/graphql/web-app/use-api-form',
                 'v2/working-with-sb/graphql/web-app/subscriptions',
               ],
             },

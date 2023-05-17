@@ -1,2 +1,2 @@
 export { useApiForm } from './useApiForm.hook';
-export type { ApiFormReturnType } from './useApiForm.types';
+export type { ApiFormReturnType, UseApiFormArgs } from './useApiForm.types';
