@@ -300,6 +300,7 @@ importers:
       typedoc: ^0.24.7
       typedoc-plugin-markdown: ^3.15.3
       url-loader: ^4.1.1
+      webapp: '*'
     dependencies:
       '@docusaurus/core': 2.4.0_jj4ivaqdxhf3qcdyjfmrovebpy
       '@docusaurus/preset-classic': 2.4.0_t3ygi6roghqd3tusc66jla2hse
@@ -327,6 +328,7 @@ importers:
       typedoc: 0.24.7
       typedoc-plugin-markdown: 3.15.3_typedoc@0.24.7
       url-loader: 4.1.1
+      webapp: link:../../webapp
 
   packages/internal/local-ws-server:
     specifiers:
@@ -6770,7 +6772,7 @@ packages:
     peerDependencies:
       react: '*'
     dependencies:
-      '@types/react': 18.0.25
+      '@types/react': 18.0.27
       prop-types: 15.8.1
       react: 16.14.0
 
@@ -10095,7 +10097,7 @@ packages:
       react: '>=16'
     dependencies:
       '@types/mdx': 2.0.5
-      '@types/react': 18.0.25
+      '@types/react': 18.0.27
       react: 18.2.0
     dev: true
 

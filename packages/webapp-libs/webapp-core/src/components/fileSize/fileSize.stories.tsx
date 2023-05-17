@@ -1,31 +1,28 @@
-import { StoryFn } from '@storybook/react';
-import { FileSize, FileSizeProps } from './fileSize.component';
+import { Meta, StoryObj } from '@storybook/react';
 
-const Template: StoryFn<FileSizeProps> = (args: FileSizeProps) => {
-  return <FileSize {...args} />;
-};
+import { FileSize } from './fileSize.component';
 
-export default {
+type Story = StoryObj<typeof FileSize>;
+
+const meta: Meta<typeof FileSize> = {
   title: 'Core/FileSize',
   component: FileSize,
 };
 
-export const Bytes = {
-  render: Template,
+export default meta;
+
+export const Bytes: Story = {
   args: { size: 102 },
 };
 
-export const Kilobytes = {
-  render: Template,
+export const Kilobytes: Story = {
   args: { size: 2048 },
 };
 
-export const Decimal = {
-  render: Template,
+export const Decimal: Story = {
   args: { size: 1300 },
 };
 
-export const NoDecimal = {
-  render: Template,
+export const NoDecimal: Story = {
   args: { size: 1300, decimals: 0 },
 };

@@ -122,7 +122,7 @@ export const Default = Template.bind({});
 
 The code above uses some internal <ProjectName/> helpers that aid in writing Storybooks and tests efficiently:
 - `composeMockedQueryResult`: This is a helper that prepares a mocked query result for the given query object for the Apollo `MockedProvider`. You can read more about mocking queries [here](https://www.apollographql.com/docs/react/development-testing/testing#the-mockedprovider-component).
-- [`withProviders`](../../../api-reference/webapp/utils#withproviders): This is a helper that wraps a Storybook story with the necessary providers (including `MockedProvider`).
+- [`withProviders`](../../../api-reference/webapp/generated/modules/shared_utils_storybook#withproviders): This is a helper that wraps a Storybook story with the necessary providers (including `MockedProvider`).
 
 The modified Storybook code will wrap every story in this file with the necessary providers that inject a mock query result, allowing the component to load data defined in the story.
 

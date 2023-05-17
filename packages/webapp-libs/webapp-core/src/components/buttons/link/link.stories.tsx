@@ -1,19 +1,19 @@
 import { action } from '@storybook/addon-actions';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { ButtonVariant } from '../button';
-import { Link, LinkProps } from './link.component';
+import { Link } from './link.component';
 
-const Template: StoryFn<LinkProps> = (args: LinkProps) => {
-  return <Link {...args} />;
-};
+type Story = StoryObj<typeof Link>;
 
-export default {
+const meta: Meta<typeof Link> = {
   title: 'Core/Link',
   component: Link,
   decorators: [withProviders()],
 };
+
+export default meta;
 
 const defaultArgs = {
   children: 'Press me',
@@ -21,19 +21,15 @@ const defaultArgs = {
   variant: ButtonVariant.PRIMARY,
 };
 
-export const InternalPrimary = {
-  render: Template,
+export const InternalPrimary: Story = {
   args: { ...defaultArgs, to: '/internal-route' },
 };
 
-export const ExternalPrimary = {
-  render: Template,
+export const ExternalPrimary: Story = {
   args: { ...defaultArgs, href: 'https://apptension.com' },
 };
 
-export const InternalSecondary = {
-  render: Template,
-
+export const InternalSecondary: Story = {
   args: {
     ...defaultArgs,
     to: '/internal-route',
@@ -41,8 +37,7 @@ export const InternalSecondary = {
   },
 };
 
-export const ExternalSecondary = {
-  render: Template,
+export const ExternalSecondary: Story = {
   args: {
     ...defaultArgs,
     href: 'https://apptension.com',
@@ -50,9 +45,7 @@ export const ExternalSecondary = {
   },
 };
 
-export const InternalRaw = {
-  render: Template,
-
+export const InternalRaw: Story = {
   args: {
     ...defaultArgs,
     to: '/internal-route',
@@ -60,8 +53,7 @@ export const InternalRaw = {
   },
 };
 
-export const ExternalRaw = {
-  render: Template,
+export const ExternalRaw: Story = {
   args: {
     ...defaultArgs,
     href: 'https://apptension.com',

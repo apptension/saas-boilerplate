@@ -1,17 +1,16 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { FormattedDate, FormattedDateProps } from './formattedDate.component';
+import { FormattedDate } from './formattedDate.component';
 
-const Template: StoryFn<FormattedDateProps> = (args: FormattedDateProps) => {
-  return <FormattedDate {...args} />;
-};
+type Story = StoryObj<typeof FormattedDate>;
 
-export default {
+const meta: Meta<typeof FormattedDate> = {
   title: 'Core/DateTime/FormattedDate',
   component: FormattedDate,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { value: new Date() },
 };

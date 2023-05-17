@@ -1,17 +1,17 @@
-import { StoryFn } from '@storybook/react';
 import closeIcon from '@iconify-icons/ion/close-outline';
-import { Icon, IconProps } from './icon.component';
+import { Meta, StoryObj } from '@storybook/react';
 
-const Template: StoryFn<IconProps> = (args: IconProps) => {
-  return <Icon {...args} />;
-};
+import { Icon } from './icon.component';
 
-export default {
+type Story = StoryObj<typeof Icon>;
+
+const meta: Meta<typeof Icon> = {
   title: 'Core/Icon',
   component: Icon,
 };
 
-export const Close = {
-  render: Template,
+export default meta;
+
+export const Close: Story = {
   args: { icon: closeIcon },
 };

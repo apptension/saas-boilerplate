@@ -1,32 +1,27 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { Modal, ModalProps } from './modal.component';
+import { Modal } from './modal.component';
 
-const Template: StoryFn<ModalProps> = (args: ModalProps) => {
-  return <Modal {...args} />;
-};
+type Story = StoryObj<typeof Modal>;
 
-export default {
+const meta: Meta<typeof Modal> = {
   title: 'Shared/Modal',
   component: Modal,
 };
 
-export const Open = Template.bind({
-  isOpen: true,
-  children: <>Modal content</>,
-});
-Open.args = {
-  isOpen: true,
-  children: <>Modal content</>,
+export default meta;
+
+export const Open: Story = {
+  args: {
+    isOpen: true,
+    children: <>Modal content</>,
+  },
 };
 
-export const CustomHeader = Template.bind({
-  isOpen: true,
-  header: <>Custom header</>,
-  children: <>Modal content</>,
-});
-CustomHeader.args = {
-  isOpen: true,
-  header: <>Custom header</>,
-  children: <>Modal content</>,
+export const CustomHeader: Story = {
+  args: {
+    isOpen: true,
+    header: <>Custom header</>,
+    children: <>Modal content</>,
+  },
 };

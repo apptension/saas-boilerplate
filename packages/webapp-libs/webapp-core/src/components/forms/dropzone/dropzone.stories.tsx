@@ -1,19 +1,18 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
-import { Dropzone, DropzoneProps } from './dropzone.component';
+import { Dropzone } from './dropzone.component';
 
-const Template: StoryFn<DropzoneProps> = (args: DropzoneProps) => {
-  return <Dropzone {...args} />;
-};
+type Story = StoryObj<typeof Dropzone>;
 
-export default {
+const meta: Meta<typeof Dropzone> = {
   title: 'Core/Forms/Dropzone',
   component: Dropzone,
   decorators: [withProviders()],
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: {},
 };

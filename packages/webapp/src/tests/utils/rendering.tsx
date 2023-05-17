@@ -1,10 +1,8 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { RenderOptions, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
-
-import {getLocalePath} from "@sb/webapp-core/utils";
-import { RoutesConfig } from '../../app/config/routes';
 
 export type WrapperProps = apiUtils.WrapperProps;
 
@@ -20,6 +18,11 @@ export function getWrapper(
 
 export type CustomRenderOptions = RenderOptions & WrapperProps;
 
+/**
+ *
+ * @param ui
+ * @param options
+ */
 function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
   const { wrapper, waitForApolloMocks } = getWrapper(apiUtils.ApiTestProviders, options);
 
@@ -32,6 +35,11 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
   };
 }
 
+/**
+ *
+ * @param hook
+ * @param options
+ */
 function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, options: CustomRenderOptions = {}) {
   const { wrapper, waitForApolloMocks } = getWrapper(apiUtils.ApiTestProviders, options);
 
@@ -46,10 +54,12 @@ function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, 
 
 export { customRender as render, customRenderHook as renderHook };
 
-export const createMockRouterProps = (
-  pathName: string,
-  params?: Record<string, any>
-): MemoryRouterProps => {
+/**
+ *
+ * @param pathName
+ * @param params
+ */
+export const createMockRouterProps = (pathName: string, params?: Record<string, any>): MemoryRouterProps => {
   return {
     initialEntries: [
       generatePath(getLocalePath(pathName), {

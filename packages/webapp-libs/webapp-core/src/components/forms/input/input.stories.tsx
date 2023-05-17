@@ -1,42 +1,37 @@
-import { StoryFn } from '@storybook/react';
-import { Input, InputProps } from './input.component';
+import { Meta, StoryObj } from '@storybook/react';
 
-const Template: StoryFn<InputProps> = (args: InputProps) => {
-  return <Input {...args} />;
-};
+import { Input } from './input.component';
 
-export default {
+type Story = StoryObj<typeof Input>;
+
+const meta: Meta<typeof Input> = {
   title: 'Core/Forms/Input',
   component: Input,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { type: 'text' },
 };
 
-export const Labeled = {
-  render: Template,
+export const Labeled: Story = {
   args: { type: 'text', label: 'Enter your name here' },
 };
 
-export const Required = {
-  render: Template,
+export const Required: Story = {
   args: { type: 'text', label: 'Enter your name here', required: true },
 };
 
-export const WithPlaceholder = {
-  render: Template,
+export const WithPlaceholder: Story = {
   args: { type: 'text', placeholder: 'Enter your name here' },
 };
 
-export const Invalid = {
-  render: Template,
+export const Invalid: Story = {
   args: { type: 'text', error: 'Invalid value', label: 'Enter your name here' },
 };
 
-export const Disabled = {
-  render: Template,
+export const Disabled: Story = {
   args: {
     type: 'text',
     disabled: true,

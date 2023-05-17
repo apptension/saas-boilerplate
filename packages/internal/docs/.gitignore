@@ -23,5 +23,6 @@ yarn-error.log*
 .idea
 
 # Generated files
+docs/v2/api-reference/webapp/generated
 docs/v2/api-reference/webapp-core/generated
 docs/v2/api-reference/webapp-api-client/generated

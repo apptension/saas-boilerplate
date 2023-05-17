@@ -1,45 +1,37 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { RadioButton, RadioButtonProps } from './radioButton.component';
+import { RadioButton } from './radioButton.component';
 
-const Template: StoryFn<RadioButtonProps> = (args: RadioButtonProps) => {
-  return <RadioButton {...args} />;
-};
+type Story = StoryObj<typeof RadioButton>;
 
-export default {
+const meta: Meta<typeof RadioButton> = {
   title: 'Core/Forms/RadioButton',
   component: RadioButton,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
 
+export const Default: Story = {
   args: {
     children: 'Value',
   },
 };
 
-export const Checked = {
-  render: Template,
-
+export const Checked: Story = {
   args: {
     ...Default.args,
     checked: true,
   },
 };
 
-export const Disabled = {
-  render: Template,
-
+export const Disabled: Story = {
   args: {
     ...Default.args,
     disabled: true,
   },
 };
 
-export const DisabledChecked = {
-  render: Template,
-
+export const DisabledChecked: Story = {
   args: {
     ...Default.args,
     disabled: true,

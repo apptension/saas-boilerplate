@@ -1,36 +1,32 @@
-import { StoryFn } from '@storybook/react';
-import { Checkbox, CheckboxProps } from './checkbox.component';
+import { Meta, StoryObj } from '@storybook/react';
 
-const Template: StoryFn<CheckboxProps> = (args: CheckboxProps) => {
-  return <Checkbox {...args} />;
-};
+import { Checkbox } from './checkbox.component';
 
-export default {
+type Story = StoryObj<typeof Checkbox>;
+
+const meta: Meta<typeof Checkbox> = {
   title: 'Core/Forms/Checkbox',
   component: Checkbox,
 };
 
-export const WithLabel = {
-  render: Template,
+export default meta;
+
+export const WithLabel: Story = {
   args: { label: 'Checkbox' },
 };
 
-export const Checked = {
-  render: Template,
+export const Checked: Story = {
   args: { label: 'Checkbox', checked: true },
 };
 
-export const SemiChecked = {
-  render: Template,
+export const SemiChecked: Story = {
   args: { label: 'Checkbox', semiChecked: true, checked: true },
 };
 
-export const NoLabel = {
-  render: Template,
+export const NoLabel: Story = {
   args: {},
 };
 
-export const Invalid = {
-  render: Template,
+export const Invalid: Story = {
   args: { label: 'Checkbox', error: 'Invalid value' },
 };

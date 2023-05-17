@@ -1,17 +1,16 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { EmptyState, EmptyStateProps } from './emptyState.component';
+import { EmptyState } from './emptyState.component';
 
-const Template: StoryFn<EmptyStateProps> = (args: EmptyStateProps) => {
-  return <EmptyState {...args} />;
-};
+type Story = StoryObj<typeof EmptyState>;
 
-export default {
+const meta: Meta<typeof EmptyState> = {
   title: 'Shared/EmptyState',
   component: EmptyState,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { children: 'No resources' },
 };

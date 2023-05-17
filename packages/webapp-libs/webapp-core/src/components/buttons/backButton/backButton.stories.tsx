@@ -1,15 +1,18 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
-import { BackButton, BackButtonProps } from './backButton.component';
+import { BackButton } from './backButton.component';
 
-const Template: StoryFn<BackButtonProps> = (args: BackButtonProps) => <BackButton {...args} />;
+type Story = StoryObj<typeof BackButton>;
 
-export default {
+const meta: Meta<typeof BackButton> = {
   title: 'Core/BackButton',
   component: BackButton,
   decorators: [withProviders()],
 };
 
-export const Primary = Template.bind({});
-Primary.args = { to: '#' };
+export default meta;
+
+export const Primary: Story = {
+  args: { to: '#' },
+};

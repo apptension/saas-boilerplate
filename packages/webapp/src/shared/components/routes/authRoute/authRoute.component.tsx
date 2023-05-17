@@ -9,6 +9,22 @@ export type AuthRouteProps = {
   allowedRoles?: Role | Role[];
 };
 
+/**
+ * Renders route only for authenticated users
+ *
+ * @param allowedRoles
+ * @constructor
+ *
+ * @category Component
+ *
+ * @example
+ * Example route configuration using `AuthRoute` component:
+ * ```tsx showLineNumbers
+ * <Route path="/" element={<AuthRoute allowedRoles={Role.ADMIN} />}>
+ *   <Route index element={<span>Page accessible only by admins</span>} />
+ * </Route>
+ * ```
+ */
 export const AuthRoute = ({ allowedRoles = [Role.ADMIN, Role.USER] }: AuthRouteProps) => {
   const { isLoggedIn } = useAuth();
   const { isAllowed } = useRoleAccessCheck(allowedRoles);

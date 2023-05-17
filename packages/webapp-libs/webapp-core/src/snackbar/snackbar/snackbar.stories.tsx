@@ -1,50 +1,44 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { Fragment, useEffect } from 'react';
 
-import { useSnackbar } from '../useSnackbar';
 import { withProviders } from '../../utils/storybook';
+import { useSnackbar } from '../useSnackbar';
 import { Snackbar } from './snackbar.component';
 
+type Story = StoryObj<typeof Snackbar>;
 type Props = { messages: Array<string | null> };
 
-const Template: StoryFn<Props> = ({ messages }: Props) => {
+const Template = ({ messages }: Props) => {
   const { showMessage } = useSnackbar();
 
   useEffect(() => {
-    messages?.forEach((message) =>
-      showMessage(message, { hideDelay: 60 * 1000 })
-    );
+    messages?.forEach((message) => showMessage(message, { hideDelay: 60 * 1000 }));
   }, [showMessage, messages]);
 
   return <Fragment />;
 };
 
-export default {
+const meta: Meta<typeof Snackbar> = {
   title: 'Core/Snackbar',
-  component: Snackbar,
+  component: Template,
+  decorators: [withProviders()],
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { messages: ['first message', 'second message'] },
-  decorators: [withProviders()],
 };
 
-export const GenericError = {
-  render: Template,
+export const GenericError: Story = {
   args: { messages: [null] },
-  decorators: [withProviders()],
 };
 
-export const LongMessages = {
-  render: Template,
-
+export const LongMessages: Story = {
   args: {
     messages: [
       'very long message example very long message',
       'even longer message example even longer message example even longer message example even longer message example',
     ],
   },
-
-  decorators: [withProviders()],
 };

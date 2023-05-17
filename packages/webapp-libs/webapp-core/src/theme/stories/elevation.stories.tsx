@@ -1,5 +1,6 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
+
 import { light, lightest, medium, strong, strongest } from '../elevation';
 
 const Box = styled.div`
@@ -30,21 +31,23 @@ const BoxStrongest = styled(Box)`
   ${strongest}
 `;
 
-const Template: StoryFn = () => (
-  <>
-    <BoxLightest />
-    <BoxLight />
-    <BoxMedium />
-    <BoxStrong />
-    <BoxStrongest />
-  </>
-);
+type Story = StoryObj<typeof Box>;
 
-export default {
+const meta: Meta<typeof Box> = {
   title: 'Styleguide/Elevation',
   component: Box,
 };
 
-export const Elevation = {
-  render: Template,
+export default meta;
+
+export const Elevation: Story = {
+  render: () => (
+    <>
+      <BoxLightest />
+      <BoxLight />
+      <BoxMedium />
+      <BoxStrong />
+      <BoxStrongest />
+    </>
+  ),
 };

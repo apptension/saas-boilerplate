@@ -1,33 +1,29 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { RelativeDate, RelativeDateProps } from './relativeDate.component';
+import { RelativeDate } from './relativeDate.component';
 import { DAY, dateMinuteAgo, nowSub } from './relativeDate.fixtures';
 
-const Template: StoryFn<RelativeDateProps> = (args: RelativeDateProps) => {
-  return <RelativeDate {...args} />;
-};
+type Story = StoryObj<typeof RelativeDate>;
 
-export default {
+const meta: Meta<typeof RelativeDate> = {
   title: 'Core/DateTime/RelativeDate',
   component: RelativeDate,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { date: new Date() },
 };
 
-export const MinuteAgo = {
-  render: Template,
+export const MinuteAgo: Story = {
   args: { date: dateMinuteAgo() },
 };
 
-export const WeekAgo = {
-  render: Template,
+export const WeekAgo: Story = {
   args: { date: nowSub(DAY * 7) },
 };
 
-export const YearAgo = {
-  render: Template,
+export const YearAgo: Story = {
   args: { date: nowSub(DAY * 365) },
 };

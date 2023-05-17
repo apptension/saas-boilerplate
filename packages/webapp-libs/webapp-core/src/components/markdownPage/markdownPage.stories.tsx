@@ -1,7 +1,9 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../utils/storybook';
-import { MarkdownPage, MarkdownPageProps } from './markdownPage.component';
+import { MarkdownPage } from './markdownPage.component';
+
+type Story = StoryObj<typeof MarkdownPage>;
 
 const markdown = `
 ## Hello world
@@ -14,17 +16,14 @@ const markdown = `
 - and second one
 `;
 
-const Template: StoryFn<MarkdownPageProps> = (args: MarkdownPageProps) => {
-  return <MarkdownPage {...args} />;
-};
-
-export default {
+const meta: Meta<typeof MarkdownPage> = {
   title: 'Core/MarkdownPage',
   component: MarkdownPage,
   decorators: [withProviders()],
 };
 
-export const Default = {
-  render: Template,
+export default meta;
+
+export const Default: Story = {
   args: { markdown },
 };

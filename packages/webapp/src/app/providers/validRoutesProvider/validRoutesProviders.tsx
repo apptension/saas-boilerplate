@@ -10,6 +10,12 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Layout } from '../../../shared/components/layout';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
+/**
+ *
+ * @constructor
+ *
+ * @category Component
+ */
 export const ValidRoutesProviders = () => {
   useLanguageFromParams();
 
