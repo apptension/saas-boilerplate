@@ -586,7 +586,7 @@ module.exports = {
           },
           items: [
             'v2/working-with-sb/async-workers/run-async-job',
-            'v2/working-with-sb/async-workers/create-sls-package',
+            'v2/working-with-sb/async-workers/create-workers-module',
           ],
         },
         {
