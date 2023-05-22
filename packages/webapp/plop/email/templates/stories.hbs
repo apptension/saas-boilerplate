@@ -1,4 +1,5 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
+
 import { EmailTemplateType } from '../../types';
 import { EmailStory } from '../../emailStory/emailStory.component';
 import {
@@ -7,7 +8,7 @@ import {
   {{ pascalCase name }}Props,
 } from './{{ camelCase name }}.component';
 
-const Template: Story<{{ pascalCase name }}Props> = (args) => (
+const Template: StoryFn<{{ pascalCase name }}Props> = (args) => (
   <EmailStory type={EmailTemplateType.{{ constantCase name }}{{ append '}'}} subject={<{{ pascalCase name }}Subject />} emailData={args}>
     <{{ pascalCase name }}Email {...args} />
   </EmailStory>

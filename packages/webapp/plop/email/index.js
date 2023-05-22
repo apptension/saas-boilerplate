@@ -3,7 +3,7 @@ const path = require('path');
 const templatesPath = path.join(__dirname, 'templates');
 
 module.exports = (plop) => {
-  const emailsNamespace = 'src/emails';
+  const emailsNamespace = '../webapp-libs/webapp-emails/src';
   const templates = path.join(emailsNamespace, 'templates', '{{ camelCase name }}');
 
   plop.setGenerator('email', {

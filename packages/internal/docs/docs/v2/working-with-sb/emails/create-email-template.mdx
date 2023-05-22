@@ -1,6 +1,161 @@
 ---
-title: How to write a new email template?
-description: TODO >Description<
+description: Learn how to create a new email template using React
 ---
 
-TBD
+# How to write a new email template?
+
+By default, you should use a `plop` generator to create a new template, but it's still a good idea to read how to do
+it [manually](#create-template-manually) to understand all the ins and outs.
+
+## Option 1: Generate files with `plop`
+
+You can use `plop` to generate all necessary files and types of an empty email template.
+
+Just run the following command in `packages/webapp` directory:
+
+```shell
+plop email MyEmailName
+```
+
+:::info
+You should not change the name of generated components unless you're sure what you're doing.
+:::
+
+## Option 2: Create template manually
+
+### Create email type
+
+Every email needs a specific type. It's a crucial value that the backend uses to choose the right template when sending
+out emails. Just make sure it's exactly the same in both packages.
+
+```tsx title=packages/webapp-libs/webapp-emails/src/types.ts
+export enum EmailTemplateType {
+  // highlight-next-line
+  MY_EMAIL_NAME = 'MY_EMAIL_NAME',
+  //<-- INJECT EMAIL TYPE -->
+}
+```
+
+:::warning
+Do not remove the `//<-- INJECT EMAIL TYPE -->` comment. It's necessary for `plop` generator to work properly.
+:::
+
+### Create template body component
+
+The body of the email should be defined in a `Template` component, with this exact name. In the following example you'll
+get a simple component, with a logo, title, a paragraph of text, and a link that looks like a button:
+
+```tsx title=packages/webapp-libs/webapp-emails/src/templates/myEmailName/myEmailName.component.tsx
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core/hooks';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { FormattedMessage } from 'react-intl';
+
+import { EmailComponentProps } from '../../types';
+import { Button, Layout } from '../../base';
+
+
+export type MyEmailNameProps = EmailComponentProps & {
+    // props passed from backend
+};
+
+export const Template = ({}: MyEmailNameProps) => {
+  const generateLocalePath = useGenerateAbsoluteLocalePath();
+  const url = generateLocalePath(RoutesConfig.home);
+
+  return (
+    <Layout
+      title={<FormattedMessage defaultMessage="Title" id="Email / MyEmailName / Title" />}
+      text={<FormattedMessage defaultMessage="Text" id="Email / MyEmailName / Text" />}
+    >
+      <Button linkTo={url}>
+        <FormattedMessage defaultMessage="Button" id="Email / MyEmailName / Link label" />
+      </Button>
+    </Layout>
+  );
+};
+```
+
+### Create subject component
+
+Next, create a `Subject` component that renders the value used as the subject of the email.
+This component should be located right alongside the `Template` component.
+
+```tsx title=packages/webapp-libs/webapp-emails/src/templates/myEmailName/myEmailName.component.tsx
+// highlight-next-line
+export const Subject = ({}: MyEmailNameProps) => <FormattedMessage defaultMessage="Subject" id="Email / MyEmailName / Subject" />
+```
+
+### Barrel export
+
+Don't forget to export those components.
+
+```tsx title=packages/webapp-libs/webapp-emails/src/templates/myEmailName/index.ts
+export * from './myEmailName.component';
+```
+
+### Create storybook
+
+It's a good idea to create a storybook story for the email template. It's quite difficult to test the email if
+you have to send it every time you change something. On top of that storybook allows you to send the email to a defined
+email address with a press of a button in web browser!
+
+```tsx
+import { StoryFn } from '@storybook/react';
+
+import { EmailTemplateType } from '../../types';
+import { EmailStory } from '../../emailStory/emailStory.component';
+import {
+  Template as MyEmailNameEmail,
+  Subject as MyEmailNameSubject,
+  MyEmailNameProps,
+} from './myEmailName.component';
+
+const Template: StoryFn<MyEmailNameProps> = (args) => (
+  <EmailStory type={EmailTemplateType.MY_EMAIL_NAME} subject={<MyEmailNameSubject />} emailData={args}>
+    <MyEmailNameEmail {...args} />
+  </EmailStory>
+);
+
+export default {
+  title: 'Emails/MyEmailName',
+  component: MyEmailNameEmail,
+};
+
+export const Primary = Template.bind({});
+Primary.args = {};
+```
+
+### Add email to configuration
+
+```tsx title=packages/webapp-libs/webapp-emails/src/templates/templates.config.ts
+import { EmailTemplateDefinition, EmailTemplateType } from '../types';
+// highlight-next-line
+import * as MyEmailName from './myEmailName';
+//<-- INJECT EMAIL TEMPLATE IMPORT -->
+
+export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {
+// highlight-next-line
+  [EmailTemplateType.MY_EMAIL_NAME]: MyEmailName,
+  //<-- INJECT EMAIL TEMPLATE -->
+};
+
+```
+
+:::warning
+Do not remove `//<-- INJECT EMAIL TEMPLATE IMPORT -->` or `//<-- INJECT EMAIL TEMPLATE -->` comments. They are necessary
+for `plop` generator to work properly.
+:::
+
+## Edit template file
+
+You can now open `packages/webapp-libs/webapp-emails/src/templates/myEmailName/myEmailName.component.tsx` file; you'll
+see two React components there:
+- `Template` – body of the email.
+- `Subject` – subject line of the email. You should probably keep this as simple as possible. Ideally rendering just a
+string value.
+
+You can modify the contents of those components as much as you want:
+- They can receive props, that will be set in runtime on server side while dispatching an email using this template.
+- They can use `react-intl` for i18n support; `lang` parameter is passed by backend to define which language the email
+should be rendered in.
+- To be fair, they can use any type of logic you'd normally use in React.
