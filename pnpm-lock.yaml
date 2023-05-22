@@ -6772,7 +6772,7 @@ packages:
     peerDependencies:
       react: '*'
     dependencies:
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       prop-types: 15.8.1
       react: 16.14.0
 
@@ -10097,7 +10097,7 @@ packages:
       react: '>=16'
     dependencies:
       '@types/mdx': 2.0.5
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       react: 18.2.0
     dev: true
 
@@ -13957,7 +13957,7 @@ packages:
   /@types/hoist-non-react-statics/3.3.1:
     resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
     dependencies:
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       hoist-non-react-statics: 3.3.2
 
   /@types/html-minifier-terser/6.1.0:
@@ -14263,7 +14263,7 @@ packages:
     resolution: {integrity: sha512-db1mx37a1EJDf1XeX8jJN7R3PZABmJQXR8r28yUjVMFSjkmnQo6X6pOEEmNl+Tp2gYQOGPdYbFIipBtdElZ3Yg==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       '@types/react-router': 5.1.20
 
   /@types/react-router-dom/5.3.3:
@@ -14277,7 +14277,7 @@ packages:
     resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
 
   /@types/react-test-renderer/18.0.0:
     resolution: {integrity: sha512-C7/5FBJ3g3sqUahguGi03O79b8afNeSD6T8/GU50oQrJCU0bVCCGQHaGKUbg2Ce8VQEEqTw8/HiS6lXHHdgkdQ==}
@@ -30634,7 +30634,7 @@ packages:
       '@formatjs/intl-displaynames': 6.2.3
       '@formatjs/intl-listformat': 7.1.7
       '@types/hoist-non-react-statics': 3.3.1
-      '@types/react': 18.0.27
+      '@types/react': 18.0.25
       hoist-non-react-statics: 3.3.2
       intl-messageformat: 10.2.5
       react: 18.2.0

@@ -7,6 +7,11 @@
       "factory": "./src/generators/tools/generator",
       "schema": "./src/generators/tools/schema.json",
       "description": "tools generator"
+    },
+    "webapp-lib": {
+      "factory": "./src/generators/webapp-lib/generator",
+      "schema": "./src/generators/webapp-lib/schema.json",
+      "description": "webapp-lib generator"
     }
   }
 }

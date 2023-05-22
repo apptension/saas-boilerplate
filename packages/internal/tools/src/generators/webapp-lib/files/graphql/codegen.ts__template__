@@ -1,0 +1,12 @@
+import { CodegenConfig } from '@graphql-codegen/cli';
+
+const config: Partial<CodegenConfig> = {
+  generates: {
+    'src/graphql/__generated/gql/': {
+      documents: ['../<%= projectName %>/src/**/*.ts', '../<%= projectName %>/src/**/*.tsx'],
+      plugins: [],
+    },
+  },
+};
+
+export default config;

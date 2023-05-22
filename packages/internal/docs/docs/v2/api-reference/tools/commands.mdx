@@ -7,6 +7,23 @@ import RunOnCICautionPartial from '../../shared/partials/_run-on-ci-caution.mdx'
 
 This page contains a list of CLI commands that you can use within the `tools` package context.
 
+## Generators
+
+### `nx g @sb/tools:webapp-lib`
+
+Generates a project structure for a new webapp library that you can import from other webapp libraries or webapp
+package.
+
+
+```shell title="Example usage"
+nx g @sb/tools:webapp-lib --directory webapp-libs mylib
+```
+
+To learn more about creating a new webapp library check out the
+[How to create a new webapp library package?](../../working-with-sb/project-structure/create-web-lib) guide.
+
+## Other commands
+
 ### `nx run tools:upload-version SERVICES`
 
 <RunOnCICautionPartial />

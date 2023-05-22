@@ -1,6 +1,79 @@
 ---
-title: How to create a new web lib package?
-description: TODO >Description<
+description: This guide will teach you how to create a new library in webapp-libs directory and import it in webapp
 ---
 
-TBD
+# How to create a new webapp library package?
+
+SaaS Boilerplate uses [nx](https://nx.dev/) to manage the monorepo, `pnpm` workspaces and TypeScript paths to link to
+proper directories when importing any dependencies.
+
+In truth, it doesn't matter where you put the library, but SaaS Boilerplate follows a pattern of putting all libraries
+that are imported by `packages/webapp` or it's dependencies into `packages/webapp-libs` directory. You can easily change that by
+simple find and replace command run on the whole project.
+
+## Generate the package
+
+A new webapp library needs a few different files, so SaaS Boilerplate comes with a generator to make the job easier.
+Run the following command to generate basic scaffold:
+
+```shell
+nx g @sb/tools:webapp-lib --directory webapp-libs mylib
+```
+
+- `mylib` should be the name of your library
+
+:::info
+Generator templates are located in `packages/internal/tools/src/generators/webapp-lib/files`.
+As your project grows there might be a need to modify those files, or add new ones. Don't be afraid to experiment;
+generators are an awesome tool to increase your team productivity.
+:::
+
+
+
+## Configure TypeScript paths
+
+There's one manual step that you need to perform yourself for now: adding your lib to TypeScript paths so that when you
+import it inside `webapp` package ts compiler won't throw an error.
+
+Modify `tsconfig.base.json` located in the root of your monorepo.
+
+```json title=tsconfig.base.json
+{
+  "compilerOptions": {
+    "paths": {
+// highlight-start
+      "@sb/webapp-libs-mylib/*": [
+        "packages/webapp-libs/mylib/src/*"
+      ]
+// highlight-end
+    }
+  }
+}
+
+```
+
+## Install in webapp package
+
+First add the dependency to proper `package.json` file:
+
+```json title=packages/webapp/package.json
+{
+  "dependencies": {
+// highlight-next-line
+    "@sb/webapp-libs-mylib": "*"
+  }
+}
+```
+
+Install dependencies:
+
+```shell
+pnpm i
+```
+
+## Import the library
+
+You should be able to import the library in any TypeScript file located in `packages/webapp`:
+```ts
+import * as mylib from '@sb/webapp-libs-mylib';
+```

@@ -46,12 +46,6 @@
         "packages/webapp-libs/webapp-documents/src/routes/index.ts"
       ],
       "@sb/webapp-documents/*": ["packages/webapp-libs/webapp-documents/src/*"],
-      "@sb/webapp-notifications": [
-        "packages/webapp-libs/webapp-notifications/src/index.ts"
-      ],
-      "@sb/webapp-notifications/*": [
-        "packages/webapp-libs/webapp-notifications/src/*"
-      ],
       "@sb/webapp-emails": ["packages/webapp-libs/webapp-emails/src/index.ts"],
       "@sb/webapp-emails/*": ["packages/webapp-libs/webapp-emails/src/*"],
       "@sb/webapp-finances": [
@@ -63,6 +57,12 @@
       ],
       "@sb/webapp-generative-ai/*": [
         "packages/webapp-libs/webapp-generative-ai/src/*"
+      ],
+      "@sb/webapp-notifications": [
+        "packages/webapp-libs/webapp-notifications/src/index.ts"
+      ],
+      "@sb/webapp-notifications/*": [
+        "packages/webapp-libs/webapp-notifications/src/*"
       ]
     }
   },
