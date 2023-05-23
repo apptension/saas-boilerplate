@@ -4,6 +4,13 @@
   "sourceRoot": "packages/internal/docs/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "dependsOn": [],
+      "options": {
+        "cwd": "packages/internal/docs"
+      },
+      "command": "pnpm run build:app"
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
