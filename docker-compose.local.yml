@@ -21,6 +21,7 @@ services:
   backend:
     volumes:
       - ./packages/backend/:/app
+      - ./packages/backend/docs:/app/docs
       - /app/__pypackages__
       - web_backend_staticfiles:/app/static
     env_file:

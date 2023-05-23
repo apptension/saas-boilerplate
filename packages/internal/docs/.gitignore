@@ -26,3 +26,4 @@ yarn-error.log*
 docs/v2/api-reference/webapp/generated
 docs/v2/api-reference/webapp-core/generated
 docs/v2/api-reference/webapp-api-client/generated
+docs/v2/api-reference/backend/generated

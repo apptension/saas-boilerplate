@@ -10,6 +10,24 @@
       "options": {
         "lintFilePatterns": ["packages/internal/docs/**/*.{js,jsx,ts,tsx}"]
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/internal/docs",
+        "color": true,
+        "commands": ["nx run backend:build-docs", "pnpm run build"],
+        "parallel": false
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/internal/docs",
+        "color": true,
+        "commands": ["nx run backend:build-docs", "pnpm start"],
+        "parallel": false
+      }
     }
   },
   "tags": []

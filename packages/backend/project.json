@@ -40,6 +40,16 @@
       },
       "dependsOn": ["test"]
     },
+    "build-docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["/bin/bash scripts/build_docs.sh"],
+        "parallel": false
+      },
+      "dependsOn": ["compose-build-image"]
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {

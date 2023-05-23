@@ -12,13 +12,14 @@ class FuzzyDict(calleee.base.BaseMatcher):
         * have the keys/values that correspond exactly
           to positional dict
 
-    Examples::
-
-        FuzzyDict('foo')  # `foo` attribute with any value
-        FuzzyDict('foo', 'bar')  # `foo` and `bar` attributes with any values
-        FuzzyDict(foo=42)  # `foo` attribute with value of 42
-        FuzzyDict(bar=Integer())  # `bar` attribute whose value is an integer
-        FuzzyDict('foo', bar='x')  # `foo` with any value, `bar` with value of 'x'
+    Examples:
+    ```python
+    FuzzyDict('foo')  # `foo` attribute with any value
+    FuzzyDict('foo', 'bar')  # `foo` and `bar` attributes with any values
+    FuzzyDict(foo=42)  # `foo` attribute with value of 42
+    FuzzyDict(bar=Integer())  # `bar` attribute whose value is an integer
+    FuzzyDict('foo', bar='x')  # `foo` with any value, `bar` with value of 'x'
+    ```
     """
 
     def __init__(self, *args, **kwargs):

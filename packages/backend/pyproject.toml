@@ -75,6 +75,8 @@ dev = [
     "pytest-cov~=4.0",
     "pytest-freezer>=0.4.6",
     "ruff>=0.0.261",
+    "novella>=0.2.5",
+    "pydoc-markdown[novella]>=4.6.4",
 ]
 [project]
 name = ""

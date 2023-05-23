@@ -1,0 +1,20 @@
+loaders:
+  - type: python
+    search_path: [.]
+    packages: ['common', 'apps', 'config']
+processors:
+  - type: filter
+    skip_empty_modules: true
+  - type: smart
+  - type: crossref
+renderer:
+  type: docusaurus
+  docs_base_path: docs
+  relative_output_path: generated
+  relative_sidebar_path: sidebar.json
+  sidebar_top_level_label: null
+  markdown:
+    data_code_block: true
+    render_typehint_in_data_header: true
+    code_headers: true
+    descriptive_class_title: false

@@ -4,6 +4,7 @@ services:
   backend:
     volumes:
       - ./packages/backend/cov:/app/cov
+      - ./packages/backend/docs:/app/docs
     environment:
       - CI=true
 

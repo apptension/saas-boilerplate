@@ -21,6 +21,7 @@ def permission_classes(*perms: types.PermissionsClasses):
 
     Example usage:
 
+    ```python
     @permission_classes(IsAuthenticatedFullAccess)
     class Query(graphene.ObjectType):
         all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection)
@@ -41,6 +42,7 @@ def permission_classes(*perms: types.PermissionsClasses):
             CreateOrUpdateCrudDemoItemMutation.Field()
         )
         delete_crud_demo_item = DeleteCrudDemoItemMutation.Field()
+    ```
 
     Access to `resolve_crud_demo_item_by_id` will be allowed by anyone
     but other Fields/Connections declared in `Query` will be available only for authenticated users.

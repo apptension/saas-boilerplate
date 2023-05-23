@@ -15,6 +15,9 @@ test:
 build:
 	nx build
 
+build-docs:
+	nx build-docs
+
 deploy-api:
 	nx deploy:api
 
