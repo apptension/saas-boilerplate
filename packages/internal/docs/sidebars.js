@@ -67,7 +67,6 @@ module.exports = {
           },
           items: [
             'v2/api-reference/backend/commands',
-            'v2/api-reference/backend/graphql-mutations',
             {
               type: 'category',
               label: 'Modules',
