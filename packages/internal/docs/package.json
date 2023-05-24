@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "nx exec -- docusaurus",
-    "build:app": "TYPEDOC_WATCH=false docusaurus build",
+    "build:app": "NODE_OPTIONS=\"--max-old-space-size=2048\" TYPEDOC_WATCH=false docusaurus build",
     "swizzle": "nx exec -- docusaurus swizzle",
-    "start": "TYPEDOC_WATCH=true nx exec --  docusaurus start --port 3006",
+    "start": "NODE_OPTIONS=\"--max-old-space-size=2048\" TYPEDOC_WATCH=true nx exec --  docusaurus start --port 3006",
     "serve": "nx exec -- docusaurus serve --port 3006",
     "clear": "nx exec -- docusaurus clear",
     "deploy": "nx exec -- cdk deploy *DocsStack"

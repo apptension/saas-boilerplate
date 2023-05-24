@@ -411,7 +411,6 @@ definitions:
             --frozen-lockfile
             --filter=backend...
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - export NODE_OPTIONS="--max-old-space-size=2048"  # Prevent FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
           - node_modules/.bin/nx run docs:lint
           - node_modules/.bin/nx run docs:build
         services:
