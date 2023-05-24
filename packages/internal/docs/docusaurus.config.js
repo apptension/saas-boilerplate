@@ -69,6 +69,8 @@ module.exports = {
         entryPoints: [
           '../../webapp-libs/webapp-api-client/src/hooks/index.ts',
           '../../webapp-libs/webapp-api-client/src/providers/index.ts',
+          '../../webapp-libs/webapp-api-client/src/tests/utils/rendering.tsx',
+          '../../webapp-libs/webapp-api-client/src/tests/utils/fixtures.ts',
         ],
         tsconfig: '../../webapp-libs/webapp-api-client/tsconfig.lib.json',
         out: 'v2/api-reference/webapp-api-client/generated',
@@ -102,7 +104,7 @@ module.exports = {
           '../../webapp/src/app/providers/index.ts',
           '../../webapp/src/shared/components/routes/index.ts',
           '../../webapp/src/shared/utils/storybook.tsx',
-          // '../../webapp/src/tests/utils/rendering.tsx',
+          '../../webapp/src/tests/utils/rendering.tsx',
         ],
         tsconfig: '../../webapp/tsconfig.app.json',
         out: 'v2/api-reference/webapp/generated',

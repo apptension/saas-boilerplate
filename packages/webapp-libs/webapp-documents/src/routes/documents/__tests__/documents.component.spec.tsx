@@ -1,10 +1,9 @@
 import { DocumentsDeleteMutationMutation } from '@sb/webapp-api-client/graphql';
-import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { times } from 'ramda';
 
-import { fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../tests/factories';
+import { documentFactory, fillDocumentDeleteQuery, fillDocumentsListQuery } from '../../../tests/factories';
 import { render } from '../../../tests/utils/rendering';
 import { Documents } from '../documents.component';
 

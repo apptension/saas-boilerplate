@@ -1,9 +1,9 @@
 import { makeFragmentData } from '@sb/webapp-api-client';
-import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { documentListItemFragment } from '../';
+import { documentFactory } from '../../../tests/factories';
 import { withProviders } from '../../../utils/storybook';
 import { Document, DocumentProps } from './document.component';
 

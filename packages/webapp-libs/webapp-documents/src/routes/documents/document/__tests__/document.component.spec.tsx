@@ -1,6 +1,6 @@
-import { documentFactory } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 
+import { documentFactory } from '../../../../tests/factories';
 import { render } from '../../../../tests/utils/rendering';
 import { Document } from '../document.component';
 

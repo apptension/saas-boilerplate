@@ -21,8 +21,7 @@
     "src/**/__mocks__/**/*.ts",
     "src/setupTests.ts",
     "infra/**/*",
-    ".storybook/**/*",
-    "src/tests/**/*"
+    ".storybook/**/*"
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "infra/**/*.tsx"]
 }
