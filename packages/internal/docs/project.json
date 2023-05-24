@@ -4,13 +4,6 @@
   "sourceRoot": "packages/internal/docs/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "dependsOn": [],
-      "options": {
-        "cwd": "packages/internal/docs"
-      },
-      "command": "pnpm run build:app"
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -20,10 +13,11 @@
     },
     "build": {
       "executor": "nx:run-commands",
+      "dependsOn": [],
       "options": {
         "cwd": "packages/internal/docs",
         "color": true,
-        "commands": ["nx run backend:build-docs", "pnpm run build"],
+        "commands": ["nx run backend:build-docs", "pnpm run build:app"],
         "parallel": false
       }
     },
