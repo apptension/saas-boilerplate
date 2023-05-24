@@ -126,3 +126,15 @@ variables for AWS environment. Find more about setting environment variables for
 This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
 
 :::
+
+---
+
+### `make remote-shell`
+
+Executes shell script which connects to the ECS backend task and starts an interactive shell session inside it.
+
+:::caution
+
+This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
+
+:::

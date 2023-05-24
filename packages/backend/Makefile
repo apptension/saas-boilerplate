@@ -56,3 +56,6 @@ sync-stripe:
 secrets:
 	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=backend
 
+remote-shell:
+	./scripts/execute_remote.sh
+
