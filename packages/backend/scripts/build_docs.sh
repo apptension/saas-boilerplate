@@ -5,9 +5,9 @@ rm -rf "$GENERATED_BACKEND_DOCS_PATH"
 
 if [ "${CI:-}" = "true" ]
 then
-  COMPOSE_FILE=../../docker-compose.yml:../../docker-compose.ci.yml
+  export COMPOSE_FILE=../../docker-compose.yml:../../docker-compose.ci.yml
 else
-  COMPOSE_FILE=../../docker-compose.yml:../../docker-compose.local.yml
+  export COMPOSE_FILE=../../docker-compose.yml:../../docker-compose.local.yml
 fi
 
 docker-compose run --rm -T --no-deps backend sh -c "pydoc-markdown"
