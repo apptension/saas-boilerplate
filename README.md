@@ -1,18 +1,32 @@
-# SaaS Boilerplate
+[//]: # '<p align="center">[NICE LOGO HERE]</p>'
 
-<p align="center"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="AWS Boilerplate License" /> <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance" /> </p>
+<h3 style="text-align: center">
+Build SaaS products faster in React, Django and AWS.
+<br/>
+A complete SaaS starter kit to set up your project in 3 days instead of 3 weeks.
+</h3>
+
+[![Version](https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
+[![License](https://img.shields.io/github/license/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
+
+---
+
+📖 [**SaaS Boilerplate Documentation**](https://docs.demo.saas.apptoku.com/)
+
+🌟 [**SaaS Boilerplate Page**](https://www.apptension.com/saas-boilerplate)
+
+🚀 [**SaaS Boilerplate Demo**](https://app.demo.saas.apptoku.com/)
+
+---
 
 The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you
 would normally have to spend on system infrastructure's configuration. It contains a number of services that a typical
 web application has (frontend, backend api, admin panel, workers) as well as their continuous deployment. Using this
 boilerplate you can deploy multiple environments, each representing a different stage in your pipeline.
 
-## Hosted documentation
+## Getting started
 
-Until you will modify this project, you can use documentation from the source SaaS Boilerplate project which is available [here](https://docs.demo.saas.apptoku.com/)
-⚠️ This may be outdated, prefer the **Local documentation** as documented in then next section.
-
-## Requirements
+### Requirements
 
 - Install [Docker](https://docs.docker.com/get-docker)
 - Install [Node.js](https://nodejs.org/en/download/) version 16.14 or above (which can be checked by running `node -v`).
@@ -23,7 +37,7 @@ Until you will modify this project, you can use documentation from the source Sa
 - Install [nx](https://nx.dev/getting-started/intro#why-nx) version 15.4.5. After you install Node.js call
   `npm install -g nx@15.4.5`
 
-### Optional
+#### Optional
 
 - Install [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
   `pdm --version`)
@@ -33,28 +47,40 @@ Until you will modify this project, you can use documentation from the source Sa
   (which can be checked by running `aws --version`)
   - you need this one if you want to deploy SaaS Boilerplate to AWS from your machine
 
-## Adjust `.env.shared` files
+### Fresh installation
 
-Root and almost all packages allow configuration through environmental variables. For local machine those
-need to be present in so called `.env` files. We prepared a set of example defaults in form or `.env.shared` files but
-a few need to be adjusted before you start the project for the first time.
+#### Setup using CLI starter kit
 
-##### `.env.shared` (in project root)
+You can use a special CLI tool to run a new local instance of the SaaS Boilerplate as soon as possible. It will clone
+the repository and take care of setting up the environment. Run the following command in the directory where you would
+like to create a new project:
 
-| Name         | Example | Description                                                                        |
-| ------------ | ------- | ---------------------------------------------------------------------------------- |
-| PROJECT_NAME | myapp   | The name of your project (best if 3-5 characters to avoid AWS names being to long) |
+**_Using `npm`:_**
 
-##### `./packages/backend/.env.shared`
+```bash
+npm init saas-boilerplate
+```
 
-| Name                   | Example                           | Description                                                                                          |
-| ---------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| DJANGO_SECRET_KEY      | Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I  | 50 character random string; [docs](https://docs.djangoproject.com/en/3.0/ref/settings/#secret-key)   |
-| HASHID_FIELD_SALT      | t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U | 50 character random string; [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt) |
-| ADMIN_EMAIL            | admin@exmaple.com                 | Will be used to create first super admin user                                                        |
-| ADMIN_DEFAULT_PASSWORD | AvPZpabgj9Z8                      | Will be used to create first super admin user                                                        |
+**_Using `pnpm`:_**
 
-## Install dependencies
+```bash
+pnpm create saas-boilerplate
+```
+
+**_Using `yarn`:_**
+
+```bash
+yarn create saas-boilerplate
+```
+
+#### Manual setup
+
+For the manual setup clone this repository and follow the steps in
+[Getting started guide](https://docs.demo.saas.apptoku.com/v2/getting-started/run-project/run-new-project#manual-setup).
+
+### Run existing project
+
+#### Install dependencies
 
 The project is configured to use pnpm workspaces, which means that you can install `node_modules` of all packages in
 repository, with single command:
@@ -63,9 +89,9 @@ repository, with single command:
 pnpm install
 ```
 
-## Start the app
+### Start the app
 
-### Start backend
+#### Start backend
 
 ```sh
 nx run core:docker-compose:up
@@ -77,22 +103,82 @@ or a shorter version:
 make up
 ```
 
-### Start webapp
+#### Start webapp
 
 ```sh
 nx start webapp
 ```
 
-### Local documentation
+#### Local documentation
 
-In order to run your local documentation server execute following commands:
+In order to run your local documentation server execute following command:
 
 ```sh
 nx start docs
 ```
 
+## Tech stack
 
-## Important information
+Front-end stack:
 
-> All changes, new features and project related technical information should be documented by being added to the `docs`
-> package!
+- React
+- GraphQL
+- Apollo Client
+- styled-components
+- jest
+- Storybook
+- Vite
+
+Back-end stack:
+
+- Python
+- Django
+- Django REST Framework
+- Graphene Django
+- dj-stripe
+- Postgres
+
+Infrastructure:
+
+- NX
+- AWS infrastructure written in AWS CDK
+- Github or Bitbucket
+
+3rd party services:
+
+- Stripe
+- Contentful
+- Sentry
+- SonarCloud
+- OpenAI
+
+The [detailed stack description](https://docs.demo.saas.apptoku.com/v2/introduction/stack-description) is available in the documentation.
+
+## Features
+
+This boilerplate includes plenty of ready to use features that you can adjust to you needs:
+
+- [Authentication and authorization](https://docs.demo.saas.apptoku.com/v2/introduction/features/auth)
+- [Notifications](https://docs.demo.saas.apptoku.com/v2/introduction/features/notifications)
+- [Emails](https://docs.demo.saas.apptoku.com/v2/introduction/features/emails)
+- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/v2/introduction/features/payments)
+- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/v2/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/v2/introduction/features/cicd)
+- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/v2/introduction/features/cms)
+- [Admin panel](https://docs.demo.saas.apptoku.com/v2/introduction/features/admin)
+- [CRUD generators](https://docs.demo.saas.apptoku.com/v2/introduction/features/crud)
+
+... and more
+
+The full list with the descriptions can be found in the [features documentation](https://docs.demo.saas.apptoku.com/).
+
+## License
+
+[TODO]
+
+## Contributing
+
+[TODO]
+
+## Author
+
+[Info about Apptension]
