@@ -26,11 +26,6 @@ module.exports = {
         },
         {
           type: 'link',
-          label: 'Tutorials',
-          href: '/tutorials',
-        },
-        {
-          type: 'link',
           label: 'API Reference',
           href: '/v2/api-reference',
         },
@@ -155,11 +150,6 @@ module.exports = {
       items: [
         'v2/getting-started/run-project/run-new-project',
         'v2/getting-started/run-project/run-existing-project',
-        {
-          type: 'link',
-          label: 'Tutorials',
-          href: '/tutorials',
-        },
       ],
     },
   ],
@@ -225,24 +215,6 @@ module.exports = {
       ],
     },
   ],
-  tutorialsSidebar: [
-    {
-      type: 'category',
-      label: 'Tutorials',
-
-      link: {
-        type: 'generated-index',
-        title: 'Tutorials',
-        description: 'TODO: >Tutorials description<',
-        slug: '/tutorials',
-      },
-      items: [
-        'v2/tutorials/deploy-to-aws',
-        'v2/tutorials/crud',
-        'v2/tutorials/deploy-to-production',
-      ],
-    },
-  ],
   introductionSidebar: [
     {
       type: 'category',
@@ -299,10 +271,7 @@ module.exports = {
                 type: 'doc',
                 id: 'v2/introduction/coding-standards/formatters/index',
               },
-              items: [
-                'v2/introduction/coding-standards/formatters/black',
-                'v2/introduction/coding-standards/formatters/prettier',
-              ],
+              items: ['v2/introduction/coding-standards/formatters/black'],
             },
             {
               type: 'category',
@@ -312,14 +281,10 @@ module.exports = {
                 type: 'doc',
                 id: 'v2/introduction/coding-standards/linters/index',
               },
-              items: [
-                'v2/introduction/coding-standards/linters/ruff',
-                'v2/introduction/coding-standards/linters/eslint',
-              ],
+              items: ['v2/introduction/coding-standards/linters/ruff'],
             },
           ],
         },
-        'v2/introduction/development',
       ],
     },
   ],
@@ -331,7 +296,6 @@ module.exports = {
       link: {
         type: 'generated-index',
         title: 'Working with SaaS Boilerplate',
-        description: 'TODO: >description<',
         slug: '/working-with-sb',
       },
       items: [
@@ -341,7 +305,6 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Generic guides',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/guides',
           },
           collapsed: false,
@@ -353,7 +316,6 @@ module.exports = {
               link: {
                 type: 'generated-index',
                 title: 'Web app generic guides',
-                description: 'TODO: >description<',
                 slug: '/working-with-sb/guides/web-app',
               },
               items: [
@@ -376,7 +338,6 @@ module.exports = {
               link: {
                 type: 'generated-index',
                 title: 'Back-end generic guides',
-                description: 'TODO: >description<',
                 slug: '/working-with-sb/guides/backend',
               },
               items: [
@@ -387,8 +348,6 @@ module.exports = {
                 },
               ],
             },
-
-            'v2/working-with-sb/guides/real-time-data',
           ],
         },
         {
@@ -398,15 +357,9 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Project structure',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/project-structure',
           },
-          items: [
-            'v2/working-with-sb/project-structure/create-web-lib',
-            'v2/working-with-sb/project-structure/remove-web-lib',
-            'v2/working-with-sb/project-structure/env-files',
-            'v2/working-with-sb/project-structure/create-nx-command',
-          ],
+          items: ['v2/working-with-sb/project-structure/create-web-lib'],
         },
         {
           type: 'category',
@@ -414,7 +367,6 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Working with GraphQL',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/graphql',
           },
           items: [
@@ -425,14 +377,9 @@ module.exports = {
               link: {
                 type: 'generated-index',
                 title: 'Conventions',
-                description: 'TODO: >description<',
                 slug: '/working-with-sb/graphql/conventions',
               },
-              items: [
-                'v2/working-with-sb/graphql/conventions/nodes-connections',
-                'v2/working-with-sb/graphql/conventions/paging',
-                'v2/working-with-sb/graphql/conventions/errors-format',
-              ],
+              items: ['v2/working-with-sb/graphql/conventions/errors-format'],
             },
             {
               type: 'category',
@@ -441,7 +388,6 @@ module.exports = {
               link: {
                 type: 'generated-index',
                 title: 'Web app',
-                description: 'TODO: >description<',
                 slug: '/working-with-sb/graphql/web-app',
               },
               items: [
@@ -457,8 +403,6 @@ module.exports = {
                 },
                 'v2/working-with-sb/graphql/web-app/update-schema',
                 'v2/working-with-sb/graphql/web-app/use-fragments',
-                'v2/working-with-sb/graphql/web-app/naming-conventions',
-                'v2/working-with-sb/graphql/web-app/subscriptions',
               ],
             },
             {
@@ -468,7 +412,6 @@ module.exports = {
               link: {
                 type: 'generated-index',
                 title: 'Web app',
-                description: 'TODO: >description<',
                 slug: '/working-with-sb/graphql/backend',
               },
               items: [
@@ -497,21 +440,6 @@ module.exports = {
         },
         {
           type: 'category',
-          label: 'Assets management',
-
-          link: {
-            type: 'generated-index',
-            title: 'Assets management',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/asset-management',
-          },
-          items: [
-            'v2/working-with-sb/asset-management/file-upload',
-            'v2/working-with-sb/asset-management/create-signed-url',
-          ],
-        },
-        {
-          type: 'category',
           label: 'User module / Authentication and authorization',
           link: {
             type: 'doc',
@@ -532,11 +460,7 @@ module.exports = {
             type: 'doc',
             id: 'v2/working-with-sb/payments/index',
           },
-          items: [
-            'v2/working-with-sb/payments/one-time-payment-form',
-            'v2/working-with-sb/payments/subscription-access',
-            'v2/working-with-sb/payments/create-subscription-plan',
-          ],
+          items: ['v2/working-with-sb/payments/one-time-payment-form'],
         },
         {
           type: 'category',
@@ -545,13 +469,9 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Contentful',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/contentful',
           },
-          items: [
-            'v2/working-with-sb/contentful/demo-item-model',
-            'v2/working-with-sb/contentful/sync-data',
-          ],
+          items: ['v2/working-with-sb/contentful/sync-data'],
         },
         {
           type: 'category',
@@ -560,13 +480,11 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Writing tests',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/tests',
           },
           items: [
             'v2/working-with-sb/tests/webapp',
             'v2/working-with-sb/tests/backend',
-            'v2/working-with-sb/tests/e2e',
           ],
         },
         {
@@ -576,11 +494,9 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Emails',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/emails',
           },
           items: [
-            'v2/working-with-sb/emails/build-emails',
             'v2/working-with-sb/emails/create-email-template',
             'v2/working-with-sb/emails/send-email',
           ],
@@ -605,7 +521,6 @@ module.exports = {
           link: {
             type: 'generated-index',
             title: 'Devtools',
-            description: 'TODO: >description<',
             slug: '/working-with-sb/dev-tools',
           },
           items: [
@@ -614,21 +529,6 @@ module.exports = {
             'v2/working-with-sb/dev-tools/sentry',
             'v2/working-with-sb/dev-tools/ssh-into-container',
             'v2/working-with-sb/dev-tools/plop',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Configure IDE and editors',
-
-          link: {
-            type: 'generated-index',
-            title: 'Configure IDE and editors',
-            description: 'TODO: >description<',
-            slug: '/working-with-sb/ide-editors',
-          },
-          items: [
-            'v2/working-with-sb/ide-editors/configure-pycharm',
-            'v2/working-with-sb/ide-editors/configure-vscode',
           ],
         },
       ],
