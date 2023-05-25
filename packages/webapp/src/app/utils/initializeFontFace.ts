@@ -1,10 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import interPrimary from './fonts/Inter-Regular.woff';
+import { interFontName } from '@sb/webapp-core/theme/font';
+
+import interPrimary from '../../assets/fonts/Inter-Regular.woff';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import interBold from './fonts/Inter-SemiBold.woff';
-import { interFontName } from './font';
+import interBold from '../../assets/fonts/Inter-SemiBold.woff';
 
 const fontFace = (
   name: string,

@@ -2,7 +2,8 @@ import 'normalize.css/normalize.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import { initApp } from './app/initApp';
-import { observeFont } from './app/observeFont';
+import { initializeFontFace } from './app/utils/initializeFontFace';
+import { observeFont } from './app/utils/observeFont';
 
 declare global {
   interface Window {
@@ -12,3 +13,4 @@ declare global {
 
 observeFont();
 initApp();
+initializeFontFace();

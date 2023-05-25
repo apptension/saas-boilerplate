@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { Icon, Container } from './button.styles';
+import styled, { ThemeProvider } from 'styled-components';
+
+import { Container, Icon } from './button.styles';
 import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -11,7 +12,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   fixedWidth?: boolean;
 };
 
-export const Button = ({
+const ButtonBase = ({
   children,
   icon,
   fixedWidth,
@@ -32,3 +33,5 @@ export const Button = ({
     </ThemeProvider>
   );
 };
+
+export const Button = styled(ButtonBase)``;

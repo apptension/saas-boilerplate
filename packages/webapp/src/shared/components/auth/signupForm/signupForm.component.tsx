@@ -1,3 +1,4 @@
+import { Link } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { size } from '@sb/webapp-core/theme';
@@ -6,7 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
 import { useSignupForm } from './signupForm.hooks';
-import { Checkbox, Container, ErrorMessage, InlineLink, SubmitButton } from './signupForm.styles';
+import { Checkbox, Container, ErrorMessage, SubmitButton } from './signupForm.styles';
 
 export const SignupForm = () => {
   const intl = useIntl();
@@ -105,17 +106,17 @@ export const SignupForm = () => {
           },
           {
             termsLink: (
-              <InlineLink to={generateLocalePath(RoutesConfig.termsAndConditions)}>
+              <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                 <FormattedMessage id="Auth / Signup / Accept checkbox / T&C link" defaultMessage="Terms of Use" />
-              </InlineLink>
+              </Link>
             ),
             policyLink: (
-              <InlineLink to={generateLocalePath(RoutesConfig.privacyPolicy)}>
+              <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                 <FormattedMessage
                   id="Auth / Signup / Accept checkbox / Privacy policy link"
                   defaultMessage="Privacy Policy"
                 />
-              </InlineLink>
+              </Link>
             ),
           }
         )}

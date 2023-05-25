@@ -1,11 +1,15 @@
 import { Button, Link } from '@sb/webapp-core/components/buttons';
 import { Checkbox as CheckboxBase } from '@sb/webapp-core/components/forms';
 import { color, size, typography } from '@sb/webapp-core/theme';
-import { ComponentProps } from 'react';
 import styled from 'styled-components';
 
 export const Container = styled.form.attrs(() => ({ noValidate: true }))`
   ${size.formFieldWidth};
+
+  ${Link} {
+    display: inline;
+    ${typography.microlabel};
+  }
 `;
 
 export const ErrorMessage = styled(typography.MicroLabel)`
@@ -20,9 +24,4 @@ export const SubmitButton = styled(Button).attrs(() => ({ type: 'submit', fixedW
 export const Checkbox = styled(CheckboxBase)`
   margin-top: ${size.sizeUnits(5)};
   white-space: pre-wrap;
-`;
-
-export const InlineLink = styled(Link)<ComponentProps<typeof Link>>`
-  display: inline;
-  ${typography.microlabel};
 `;
