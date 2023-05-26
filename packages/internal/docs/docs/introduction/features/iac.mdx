@@ -1,0 +1,44 @@
+---
+title: Infrastructure as a Code
+description: Built on top of AWS CDK
+---
+
+As the number of cloud-based applications increases, it’s becoming more and more important to manage infrastructure in a
+reliable and consistent way. Infrastructure as code (IaC) is a methodology that allows developers to automate the
+provisioning and deployment of cloud-based infrastructure using software development techniques. The SaaS Boilerplate
+uses IaC and the AWS Cloud Development Kit ([CDK](https://docs.aws.amazon.com/cdk/index.html)) to make infrastructure
+management simple and straightforward.
+
+### Benefits of IaC and CDK
+
+There are several benefits to using IaC and CDK in projects. First and foremost, IaC allows you to automate the
+provisioning and deployment of infrastructure, which reduces the time and effort required to maintain your
+infrastructure. This automation also makes it easier to replicate your infrastructure across multiple environments,
+such as development, staging, and production. With IaC, developers can deploy infrastructure in a consistent and
+repeatable way, which reduces the risk of errors and improves the reliability of the applications.
+
+[CDK](https://docs.aws.amazon.com/cdk/index.html) is a popular library for building infrastructure as code in AWS. It
+allows to define the infrastructure using familiar programming languages like TypeScript, which makes it easier for
+developers to manage infrastructure as part of their codebase. CDK also provides a high-level object-oriented
+abstraction over AWS CloudFormation, which simplifies the creation of complex infrastructure components.
+
+### Infrastructure as Code in the SaaS Boilerplate
+
+The SaaS Boilerplate includes Amazon Web Services infrastructure that contains Continuous Integration and
+Continuous Deployment. [All infrastructure](/introduction/architecture#system-architecture-diagram) (excluding 3rd
+party services) is kept in the TypeScript code that uses CDK library. The SaaS Boilerplate contains ready-to-use
+infrastructure components that are common in most web applications, such as async workers, CDN, database, load balancer
+with autoscaling.
+
+
+The process of setting up the working application and development infrastructure is automated, which makes it easy to
+spin up multiple environments of the application by the team based on project needs. The SaaS Boilerplate provides a
+consistent and repeatable way to deploy infrastructure, which reduces the risk of errors and improves the reliability
+of your applications.
+
+:::info
+
+If you would like to learn more about the technical aspects of the included infrastructure in SaaS Boilerplate, please
+refer to our [Amazon Web Services](../../aws) documentation for detailed information.
+
+:::
