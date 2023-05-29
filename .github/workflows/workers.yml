@@ -1,4 +1,4 @@
-name: Workers
+name: "Workers: Lint & test"
 
 on:
   push:
@@ -8,33 +8,28 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v1
-      - uses: dschep/install-pipenv-action@v1
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/services/workers/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pipenv
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/services/workers/Pipfile') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+      - uses: ./.github/workflows/actions/initialize
 
       - shell: bash
-        run: echo "test" > VERSION
+        run: pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=workers...
 
-      - shell: bash
-        env:
-          ENV_STAGE: test
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: make -C services/workers test
+      - name: Lint workers
+        shell: bash
+        run: node_modules/.bin/nx run workers:lint
+
+      - name: Test workers
+        shell: bash
+        run: node_modules/.bin/nx run workers:test
+
+#      - name: SonarCloud Scan
+#        uses: sonarsource/sonarcloud-github-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
