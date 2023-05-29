@@ -3,29 +3,6 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/webapp-libs/webapp-crud-demo/src",
   "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/webapp-libs/webapp-crud-demo",
-        "main": "packages/webapp-libs/webapp-crud-demo/src/index.ts",
-        "tsConfig": "packages/webapp-libs/webapp-crud-demo/tsconfig.lib.json",
-        "assets": ["packages/webapp-libs/webapp-crud-demo/*.md"]
-      }
-    },
-    "graphql": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/webapp-libs/webapp-crud-demo",
-        "color": true
-      },
-      "configurations": {
-        "download-schema": {
-          "commands": ["/bin/sh ./scripts/download-graphql-schema.sh"]
-        }
-      }
-    }
-  },
+  "targets": {},
   "tags": []
 }
