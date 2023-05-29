@@ -26,15 +26,51 @@ jobs:
       - name: Build
         shell: bash
         run: node_modules/.bin/nx run webapp:build
-
   test:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         node-version: [ 16, 18 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=webapp...
+
+      - name: "Lint"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:lint
+
+      - name: "Type check"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:type-check
+
+      - name: "Test"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: webapp-libs/packages/webapp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  test-lib:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16, 18 ]
         webapp-lib-name:
-          - webapp
           - webapp-core
           - webapp-api-client
           - webapp-contentful
@@ -68,8 +104,10 @@ jobs:
         shell: bash
         run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:test --watchAll=false --maxWorkers=20% --coverage
 
-#      - name: SonarCloud Scan
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+            projectBaseDir: "webapp-libs/packages/webapp-libs/${{ matrix.webapp-lib-name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
