@@ -1,4 +1,4 @@
-name: "Backend: Build image & run tests"
+name: "Backend"
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: "Webapp-libs: Lint & test"
+name: "Webapp"
 
 on:
   push:
