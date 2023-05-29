@@ -107,7 +107,7 @@ jobs:
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
-            projectBaseDir: "webapp-libs/packages/webapp-libs/${{ matrix.webapp-lib-name }}"
+            projectBaseDir: "packages/webapp-libs/${{ matrix.webapp-lib-name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
