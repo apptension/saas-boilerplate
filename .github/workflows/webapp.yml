@@ -5,6 +5,27 @@ on:
     branches: [ '**' ]
 
 jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [ 16 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=webapp...
+
+      - name: Build
+        shell: bash
+        run: node_modules/.bin/nx run webapp:build
+
   test:
     runs-on: ubuntu-20.04
     strategy:
