@@ -267,11 +267,11 @@ dependencies = [
 
 [[package]]
 name = "dj-stripe"
-version = "2.6.3"
+version = "2.7.2"
 requires_python = ">=3.7.12,<4.0.0"
 summary = "Django + Stripe made easy"
 dependencies = [
-    "django>=3.2.5",
+    "django>=3.2",
     "jsonfield>=3.0",
     "stripe>=2.48.0",
 ]
@@ -1300,7 +1300,7 @@ dependencies = [
 [metadata]
 lock_version = "4.2"
 groups = ["default", "dev"]
-content_hash = "sha256:63bc4e0baf50c40d396d5d1422ecbd71866d037fa9c9ce1de21910f243ac35c6"
+content_hash = "sha256:17d47c29bfc8e3fb99e2a17de2667a16e258f8e44dbfefe895f32a5fef84bee0"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1645,9 +1645,9 @@ content_hash = "sha256:63bc4e0baf50c40d396d5d1422ecbd71866d037fa9c9ce1de21910f24
     {url = "https://files.pythonhosted.org/packages/51/6a/c3a0408646408f7283b7bc550c30a32cc791181ec4618592eec13e066ce3/Deprecated-1.2.13-py2.py3-none-any.whl", hash = "sha256:64756e3e14c8c5eea9795d93c524551432a0be75629f8f29e67ab8caf076c76d"},
     {url = "https://files.pythonhosted.org/packages/c8/d1/e412abc2a358a6b9334250629565fe12697ca1cdee4826239eddf944ddd0/Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
 ]
-"dj-stripe 2.6.3" = [
-    {url = "https://files.pythonhosted.org/packages/27/72/5fe128b53d7839e6a96125040614b1007e7cd823f0f5fb46cc600550d33e/dj_stripe-2.6.3-py3-none-any.whl", hash = "sha256:113bf47075b1232f7e634147d4d91bab54969eb902b200ceb7b04ed13b380920"},
-    {url = "https://files.pythonhosted.org/packages/f1/4f/43767e5501ef4a9e5b98cb31463abd29ba746d33fda5b8b74209b33ba568/dj_stripe-2.6.3.tar.gz", hash = "sha256:905f052a834b254329eef409f67a622a783806a8b64d9fb3debed0a69178c211"},
+"dj-stripe 2.7.2" = [
+    {url = "https://files.pythonhosted.org/packages/8d/2c/8d81e5fdfec0156c66c548cf5f4d12cb0aaf4434d2473bf3560c638073df/dj_stripe-2.7.2-py3-none-any.whl", hash = "sha256:5e75d9210211472358a5dc2fc054d5103b03f9ba068eb3820aa8f3b5da001675"},
+    {url = "https://files.pythonhosted.org/packages/e4/8c/90cf46224c5d174ce26dd834db3cf82491438a734ef7aeca288d6862046b/dj_stripe-2.7.2.tar.gz", hash = "sha256:56f490331d5a71676e101f9f9dd7409aa324f4483e0847c494887a3879ec48bf"},
 ]
 "django 4.2" = [
     {url = "https://files.pythonhosted.org/packages/9a/bb/48aa3e0850923096dff2766d21a6004d6e1a3317f0bd400ba81f586754e1/Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},

@@ -59,7 +59,7 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
   });
 
   const deletePaymentMethod = (id: string) => {
-    commitDeletePaymentMethodMutation({
+    return commitDeletePaymentMethodMutation({
       variables: {
         input: {
           id,
@@ -69,7 +69,7 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
   };
 
   const updateDefaultPaymentMethod = (id: string) => {
-    commitUpdateDefaultPaymentMethodMutation({
+    return commitUpdateDefaultPaymentMethodMutation({
       variables: {
         input: {
           id,

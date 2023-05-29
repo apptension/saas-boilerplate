@@ -1124,6 +1124,8 @@ export enum DjstripeChargeStatusChoices {
 }
 
 export enum DjstripeInvoiceBillingReasonChoices {
+  /** Automatic pending invoice item invoice */
+  AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE = 'AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE',
   /** Manual */
   MANUAL = 'MANUAL',
   /** Subscription */
@@ -1172,6 +1174,8 @@ export enum DjstripeInvoiceStatusChoices {
 export enum DjstripePaymentMethodTypeChoices {
   /** Acss Dbit */
   ACSS_DEBIT = 'ACSS_DEBIT',
+  /** Affirm */
+  AFFIRM = 'AFFIRM',
   /** Afterpay Clearpay */
   AFTERPAY_CLEARPAY = 'AFTERPAY_CLEARPAY',
   /** Alipay */
@@ -1182,12 +1186,16 @@ export enum DjstripePaymentMethodTypeChoices {
   BACS_DEBIT = 'BACS_DEBIT',
   /** Bancontact */
   BANCONTACT = 'BANCONTACT',
+  /** BLIK */
+  BLIK = 'BLIK',
   /** Boleto */
   BOLETO = 'BOLETO',
   /** Card */
   CARD = 'CARD',
   /** Card present */
   CARD_PRESENT = 'CARD_PRESENT',
+  /** Customer Balance */
+  CUSTOMER_BALANCE = 'CUSTOMER_BALANCE',
   /** EPS */
   EPS = 'EPS',
   /** FPX */
@@ -1202,14 +1210,26 @@ export enum DjstripePaymentMethodTypeChoices {
   INTERAC_PRESENT = 'INTERAC_PRESENT',
   /** Klarna */
   KLARNA = 'KLARNA',
+  /** Konbini */
+  KONBINI = 'KONBINI',
+  /** Link */
+  LINK = 'LINK',
   /** OXXO */
   OXXO = 'OXXO',
   /** Przelewy24 */
   P24 = 'P24',
+  /** PayNow */
+  PAYNOW = 'PAYNOW',
+  /** Pix */
+  PIX = 'PIX',
+  /** PromptPay */
+  PROMPTPAY = 'PROMPTPAY',
   /** SEPA Direct Debit */
   SEPA_DEBIT = 'SEPA_DEBIT',
   /** SOFORT */
   SOFORT = 'SOFORT',
+  /** ACH Direct Debit */
+  US_BANK_ACCOUNT = 'US_BANK_ACCOUNT',
   /** Wechat Pay */
   WECHAT_PAY = 'WECHAT_PAY'
 }
@@ -2379,8 +2399,6 @@ export type SubscriptionSchedulePhaseType = {
 
 export type SubscriptionScheduleType = Node & {
   __typename?: 'SubscriptionScheduleType';
-  /** Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period. */
-  billingThresholds?: Maybe<Scalars['String']>;
   canActivateTrial?: Maybe<Scalars['Boolean']>;
   /** Time at which the subscription schedule was canceled. */
   canceledAt?: Maybe<Scalars['DateTime']>;
@@ -2551,6 +2569,7 @@ export type UserProfileType = Node & {
 
 export type ValidateOtpMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
+  otpAuthToken?: InputMaybe<Scalars['String']>;
   otpToken: Scalars['String'];
 };
 
