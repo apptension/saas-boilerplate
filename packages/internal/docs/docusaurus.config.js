@@ -23,7 +23,7 @@ module.exports = {
       items: [
         {
           label: 'SaaS Boilerplate website',
-          href: 'https://apptension.com/saas-boilerplate',
+          href: 'https://apptension.com/saas-boilerplate?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate',
           position: 'right',
         },
         {
@@ -37,7 +37,7 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com" target="_blank">Apptension</a>.`,
+      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate" target="_blank">Apptension</a>.`,
     },
     colorMode: {
       defaultMode: 'dark',
