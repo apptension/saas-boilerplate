@@ -1,0 +1,32 @@
+name: "internal/status-dashboard"
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16, 18 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=status-dashboard...
+
+      - name: Lint
+        shell: bash
+        run: node_modules/.bin/nx run status-dashboard:lint
+
+      - name: Build
+        shell: bash
+        run: node_modules/.bin/nx run status-dashboard:build

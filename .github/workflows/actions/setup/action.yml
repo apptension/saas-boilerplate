@@ -12,3 +12,6 @@ runs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
+
+    - run: cp .env.test .env
+      shell: bash
