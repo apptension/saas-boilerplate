@@ -11,6 +11,7 @@ jobs:
       matrix:
         node-version: [ 16 ]
         webapp-lib-name:
+          - webapp
           - webapp-core
           - webapp-api-client
           - webapp-contentful
@@ -30,19 +31,19 @@ jobs:
         run: pnpm install
             --include-workspace-root
             --frozen-lockfile
-            --filter=webapp-core...
+            --filter=${{ matrix.webapp-lib-name }}...
 
-      - name: Lint
+      - name: "${{ matrix.webapp-lib-name }}: Lint"
         shell: bash
-        run: node_modules/.bin/nx run webapp-core:lint
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:lint
 
-      - name: Type check
+      - name: "${{ matrix.webapp-lib-name }}: Type check"
         shell: bash
-        run: node_modules/.bin/nx run webapp-core:type-check
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:type-check
 
-      - name: Test
+      - name: "${{ matrix.webapp-lib-name }}: Test"
         shell: bash
-        run: node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:test --watchAll=false --maxWorkers=20% --coverage
 
 #      - name: SonarCloud Scan
 #        uses: sonarsource/sonarcloud-github-action@master
