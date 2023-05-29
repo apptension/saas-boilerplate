@@ -1,4 +1,4 @@
-name: Backend
+name: "Backend: Build image & run tests"
 
 on:
   push:
@@ -6,17 +6,32 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [ 16 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
 
       - shell: bash
-        run: echo "test" > VERSION
+        run: pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=backend...
 
-      - shell: bash
-        env:
-          PROJECT_NAME: test
-          ENV_STAGE: test
-        run: make -C services/backend test
+      - name: Lint infra
+        shell: bash
+        run: node_modules/.bin/nx run backend:lint:js
+
+      - name: Lint & test backend
+        shell: bash
+        run: node_modules/.bin/nx run backend:test
+
+#      - name: SonarCloud Scan
+#        uses: sonarsource/sonarcloud-github-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
