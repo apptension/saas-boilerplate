@@ -6,13 +6,15 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [ 16 ]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - uses: ./.github/workflows/actions/initialize
+      - uses: ./.github/workflows/actions/setup
 
       - shell: bash
         run: pnpm install
