@@ -3,7 +3,7 @@
 <h3 style="text-align: center">
 Build SaaS products faster in React, Django and AWS.
 <br/>
-A complete SaaS starter kit to set up your project in 3 days instead of 3 weeks.
+A complete SaaS starter kit based on a battle-tested stack with out-of-the-box features every SaaS should have
 </h3>
 
 [![Version](https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
@@ -19,10 +19,34 @@ A complete SaaS starter kit to set up your project in 3 days instead of 3 weeks.
 
 ---
 
-The primary objective of this boilerplate is to give you a production ready code that reduces the amount of time you
-would normally have to spend on system infrastructure's configuration. It contains a number of services that a typical
-web application has (frontend, backend api, admin panel, workers) as well as their continuous deployment. Using this
-boilerplate you can deploy multiple environments, each representing a different stage in your pipeline.
+Supercharge your SaaS development with our comprehensive starter kit, designed to accelerate your project and save you
+valuable time and resources. Our battle-tested boilerplate eliminates the need for extensive configuration and
+development work, allowing you to focus on innovation from day one.
+
+SaaS Boilerplate includes essential features that every SaaS application requires, such as frontend, backend API, admin
+panel, and workers. With a scalable AWS-based architecture and continuous deployment, you can easily deploy multiple
+environments representing different stages in your pipeline.
+
+Say goodbye to weeks of setup and coding. Our proven stack and ready-to-use features empower you to jumpstart your
+project and prioritize building your product's intellectual property. Unlock your SaaS potential faster than ever before
+and seamlessly transition from setup to innovation.
+
+## Features
+
+This boilerplate includes plenty of ready to use features that you can adjust to you needs:
+
+- [Authentication and authorization](https://docs.demo.saas.apptoku.com/v2/introduction/features/auth)
+- [Notifications](https://docs.demo.saas.apptoku.com/v2/introduction/features/notifications)
+- [Emails](https://docs.demo.saas.apptoku.com/v2/introduction/features/emails)
+- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/v2/introduction/features/payments)
+- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/v2/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/v2/introduction/features/cicd)
+- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/v2/introduction/features/cms)
+- [Admin panel](https://docs.demo.saas.apptoku.com/v2/introduction/features/admin)
+- [CRUD generators](https://docs.demo.saas.apptoku.com/v2/introduction/features/crud)
+
+... and more
+
+The full list with the descriptions can be found in the [features documentation](https://docs.demo.saas.apptoku.com/).
 
 ## Getting started
 
@@ -153,23 +177,6 @@ Infrastructure:
 - OpenAI
 
 The [detailed stack description](https://docs.demo.saas.apptoku.com/v2/introduction/stack-description) is available in the documentation.
-
-## Features
-
-This boilerplate includes plenty of ready to use features that you can adjust to you needs:
-
-- [Authentication and authorization](https://docs.demo.saas.apptoku.com/v2/introduction/features/auth)
-- [Notifications](https://docs.demo.saas.apptoku.com/v2/introduction/features/notifications)
-- [Emails](https://docs.demo.saas.apptoku.com/v2/introduction/features/emails)
-- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/v2/introduction/features/payments)
-- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/v2/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/v2/introduction/features/cicd)
-- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/v2/introduction/features/cms)
-- [Admin panel](https://docs.demo.saas.apptoku.com/v2/introduction/features/admin)
-- [CRUD generators](https://docs.demo.saas.apptoku.com/v2/introduction/features/crud)
-
-... and more
-
-The full list with the descriptions can be found in the [features documentation](https://docs.demo.saas.apptoku.com/).
 
 ## How was the SaaS Boilerplate created?
 
