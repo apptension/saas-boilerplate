@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "Wojciech-Florczak",
+      "name": "Wojciech Florczak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53352540?v=4",
+      "profile": "http://wojciech.dev",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "aws-boilerplate",
+  "projectOwner": "apptension"
+}
