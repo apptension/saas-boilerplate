@@ -16,6 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - shell: bash
         run: pnpm install
@@ -37,6 +39,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - shell: bash
         run: pnpm install
@@ -51,6 +55,26 @@ jobs:
       - name: "Type check"
         shell: bash
         run: node_modules/.bin/nx run webapp:type-check
+
+      - name: "Test"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+
+  sonarcloud-scan:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: 18
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=webapp...
 
       - name: "Test"
         shell: bash
@@ -85,6 +109,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - shell: bash
         run: pnpm install

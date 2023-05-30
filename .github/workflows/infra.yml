@@ -20,6 +20,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - shell: bash
         run: pnpm install

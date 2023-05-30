@@ -1,5 +1,9 @@
 name: "Initialize"
 description: ""
+inputs:
+  node-version:
+    required: true
+    default: 18
 runs:
   using: "composite"
   steps:
@@ -7,10 +11,10 @@ runs:
       with:
         version: 7
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
     - run: cp .env.test .env
