@@ -1,16 +1,20 @@
-name: "Backend"
+name: "Infra"
 
 on:
   push:
     branches: [ '**' ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         node-version: [ 16, 18 ]
+        infra-lib-name:
+          - infra-core
+          - infra-shared
+          - infra-functions
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,20 +27,12 @@ jobs:
         run: pnpm install
             --include-workspace-root
             --frozen-lockfile
-            --filter=backend...
+            --filter=${{ matrix.infra-lib-name }}...
 
-      - name: Lint infra
+      - name: "${{ matrix.infra-lib-name }}: Lint"
         shell: bash
-        run: node_modules/.bin/nx run backend:lint:js
+        run: node_modules/.bin/nx run ${{ matrix.infra-lib-name }}:lint
 
-      - name: Lint & test backend
+      - name: "${{ matrix.infra-lib-name }}: Build"
         shell: bash
-        run: node_modules/.bin/nx run backend:test
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-            projectBaseDir: packages/backend
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: node_modules/.bin/nx run ${{ matrix.infra-lib-name }}:build
