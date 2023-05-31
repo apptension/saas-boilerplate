@@ -323,6 +323,7 @@ definitions:
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_BACKEND_PROJECT_KEY: ${SONAR_BACKEND_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/backend'
         services:
