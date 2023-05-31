@@ -69,6 +69,7 @@ definitions:
           - node_modules/.bin/nx run webapp:lint
           - node_modules/.bin/nx run webapp:type-check
           - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -102,6 +103,7 @@ definitions:
           - node_modules/.bin/nx run webapp-core:lint
           - node_modules/.bin/nx run webapp-core:type-check
           - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -125,6 +127,7 @@ definitions:
           - node_modules/.bin/nx run webapp-api-client:lint
           - node_modules/.bin/nx run webapp-api-client:type-check
           - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -148,6 +151,7 @@ definitions:
           - node_modules/.bin/nx run webapp-contentful:lint
           - node_modules/.bin/nx run webapp-contentful:type-check
           - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -171,6 +175,7 @@ definitions:
           - node_modules/.bin/nx run webapp-crud-demo:lint
           - node_modules/.bin/nx run webapp-crud-demo:type-check
           - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -194,6 +199,7 @@ definitions:
           - node_modules/.bin/nx run webapp-documents:lint
           - node_modules/.bin/nx run webapp-documents:type-check
           - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -217,6 +223,7 @@ definitions:
           - node_modules/.bin/nx run webapp-notifications:lint
           - node_modules/.bin/nx run webapp-notifications:type-check
           - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -240,6 +247,7 @@ definitions:
           - node_modules/.bin/nx run webapp-emails:lint
           - node_modules/.bin/nx run webapp-emails:type-check
           - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -263,6 +271,7 @@ definitions:
           - node_modules/.bin/nx run webapp-finances:lint
           - node_modules/.bin/nx run webapp-finances:type-check
           - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -286,6 +295,7 @@ definitions:
           - node_modules/.bin/nx run webapp-generative-ai:lint
           - node_modules/.bin/nx run webapp-generative-ai:type-check
           - node_modules/.bin/nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -309,6 +319,7 @@ definitions:
             --filter=backend...
           - node_modules/.bin/nx run backend:lint:js
           - node_modules/.bin/nx run backend:test
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
@@ -335,6 +346,7 @@ definitions:
             --filter=workers...
           - node_modules/.bin/nx run workers:lint
           - node_modules/.bin/nx run workers:test
+          - if [ -z "${SONAR_ORGANIZATION}" ]; exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
               SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
