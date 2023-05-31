@@ -55,12 +55,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button
-        variant={ButtonVariant.RAW}
-        onClick={handleDelete}
-        disabled={loading}
-        icon={<Icon size={14} icon={deleteIcon} />}
-      >
+      <Button variant="link" onClick={handleDelete} disabled={loading} icon={<Icon size={14} icon={deleteIcon} />}>
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>

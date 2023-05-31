@@ -1,38 +1,27 @@
-import styled, {
-  css,
-  FlattenInterpolation,
-  ThemeProps,
-} from 'styled-components';
-import theme from 'styled-theming';
 import Color from 'color';
-import { size, transition, color, typography, media } from '../../../theme';
-import { colorScale, ColorScaleIndex } from '../../../theme/utils/colorScale';
-import {
-  ButtonColor,
-  ButtonSize,
-  ButtonTheme,
-  ButtonVariant,
-} from './button.types';
-import { COLOR_SCALES_RECORD } from './button.constants';
+import styled, { FlattenInterpolation, ThemeProps, css } from 'styled-components';
+import theme from 'styled-theming';
 
-export  type ButtonThemeProps = ThemeProps<ButtonTheme>;
+import { color, media, size, transition, typography } from '../../../theme';
+import { ColorScaleIndex, colorScale } from '../../../theme/utils/colorScale';
+import { COLOR_SCALES_RECORD } from './button.constants';
+import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
+
+export type ButtonThemeProps = ThemeProps<ButtonTheme>;
 
 const extractPropsColorScale = ({ theme: { color } }: ButtonThemeProps) =>
-  COLOR_SCALES_RECORD[color as ButtonColor] as
-    | (typeof COLOR_SCALES_RECORD)[ButtonColor]
-    | undefined;
+  COLOR_SCALES_RECORD[color as ButtonColor] as (typeof COLOR_SCALES_RECORD)[ButtonColor] | undefined;
 
 export const getColor = (props: ButtonThemeProps) => {
   const propsColorScale = extractPropsColorScale(props);
   return propsColorScale?.base ?? props.theme.color;
 };
 
-export const getColorScale =
-  (index: ColorScaleIndex) => (props: ButtonThemeProps) => {
-    const propsColorScale = extractPropsColorScale(props);
-    const scale = propsColorScale ?? colorScale(props.theme.color);
-    return scale.get(index);
-  };
+export const getColorScale = (index: ColorScaleIndex) => (props: ButtonThemeProps) => {
+  const propsColorScale = extractPropsColorScale(props);
+  const scale = propsColorScale ?? colorScale(props.theme.color);
+  return scale.get(index);
+};
 
 export const getColorBasedOnColorPropDarkness = (props: ButtonThemeProps) => {
   const propsColor = getColor(props);
@@ -46,12 +35,7 @@ const specialStates = ({
   fixedWidth,
   fluidWidth,
 }: {
-  [key in
-    | 'hover'
-    | 'active'
-    | 'disabled'
-    | 'fixedWidth'
-    | 'fluidWidth']?: FlattenInterpolation<ButtonThemeProps>;
+  [key in 'hover' | 'active' | 'disabled' | 'fixedWidth' | 'fluidWidth']?: FlattenInterpolation<ButtonThemeProps>;
 }) => css<ButtonThemeProps>`
   &:not(:disabled) {
     &:focus,
@@ -219,8 +203,7 @@ export const baseButtonStyle = css<ButtonThemeProps>`
   align-items: center;
   text-align: center;
   cursor: pointer;
-  transition: background-color ${transition.primary},
-    border-color ${transition.primary}, color ${transition.primary};
+  transition: background-color ${transition.primary}, border-color ${transition.primary}, color ${transition.primary};
 
   ${specialStates({
     hover: css<ButtonThemeProps>`
@@ -258,10 +241,6 @@ export const baseButtonStyle = css<ButtonThemeProps>`
     [ButtonVariant.RAW]: rawBaseButtonStyle,
     [ButtonVariant.ROUND]: roundBaseButtonStyle,
   })};
-`;
-
-export const Container = styled.button<ButtonThemeProps>`
-  ${baseButtonStyle}
 `;
 
 export const Icon = styled.span`
