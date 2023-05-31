@@ -69,8 +69,11 @@ definitions:
           - node_modules/.bin/nx run webapp:lint
           - node_modules/.bin/nx run webapp:type-check
           - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_PROJECT_KEY: ${SONAR_WEBAPP_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp'
         caches:
@@ -100,8 +103,11 @@ definitions:
           - node_modules/.bin/nx run webapp-core:lint
           - node_modules/.bin/nx run webapp-core:type-check
           - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_CORE_PROJECT_KEY: ${SONAR_WEBAPP_CORE_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-core'
         caches:
@@ -121,8 +127,11 @@ definitions:
           - node_modules/.bin/nx run webapp-api-client:lint
           - node_modules/.bin/nx run webapp-api-client:type-check
           - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_API_CLIENT_PROJECT_KEY: ${SONAR_WEBAPP_API_CLIENT_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-api-client'
         caches:
@@ -142,8 +151,11 @@ definitions:
           - node_modules/.bin/nx run webapp-contentful:lint
           - node_modules/.bin/nx run webapp-contentful:type-check
           - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_CONTENTFUL_PROJECT_KEY: ${SONAR_WEBAPP_CONTENTFUL_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-contentful'
         caches:
@@ -163,8 +175,11 @@ definitions:
           - node_modules/.bin/nx run webapp-crud-demo:lint
           - node_modules/.bin/nx run webapp-crud-demo:type-check
           - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_CRUD_DEMO_PROJECT_KEY: ${SONAR_WEBAPP_CRUD_DEMO_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-crud-demo'
         caches:
@@ -184,8 +199,11 @@ definitions:
           - node_modules/.bin/nx run webapp-documents:lint
           - node_modules/.bin/nx run webapp-documents:type-check
           - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_DOCUMENTS_PROJECT_KEY: ${SONAR_WEBAPP_DOCUMENTS_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-documents'
         caches:
@@ -205,8 +223,11 @@ definitions:
           - node_modules/.bin/nx run webapp-notifications:lint
           - node_modules/.bin/nx run webapp-notifications:type-check
           - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY: ${SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-notifications'
         caches:
@@ -226,8 +247,11 @@ definitions:
           - node_modules/.bin/nx run webapp-emails:lint
           - node_modules/.bin/nx run webapp-emails:type-check
           - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_EMAILS_PROJECT_KEY: ${SONAR_WEBAPP_EMAILS_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-emails'
         caches:
@@ -247,8 +271,11 @@ definitions:
           - node_modules/.bin/nx run webapp-finances:lint
           - node_modules/.bin/nx run webapp-finances:type-check
           - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_FINANCES_PROJECT_KEY: ${SONAR_WEBAPP_FINANCES_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-finances'
         caches:
@@ -268,8 +295,11 @@ definitions:
           - node_modules/.bin/nx run webapp-generative-ai:lint
           - node_modules/.bin/nx run webapp-generative-ai:type-check
           - node_modules/.bin/nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY: ${SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-generative-ai'
         caches:
@@ -289,8 +319,11 @@ definitions:
             --filter=backend...
           - node_modules/.bin/nx run backend:lint:js
           - node_modules/.bin/nx run backend:test
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_BACKEND_PROJECT_KEY: ${SONAR_BACKEND_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/backend'
         services:
@@ -314,8 +347,11 @@ definitions:
             --filter=workers...
           - node_modules/.bin/nx run workers:lint
           - node_modules/.bin/nx run workers:test
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WORKERS_PROJECT_KEY: ${SONAR_WORKERS_PROJECT_KEY}
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/workers'
         services:
