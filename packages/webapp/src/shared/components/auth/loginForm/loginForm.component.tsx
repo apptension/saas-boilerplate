@@ -1,10 +1,11 @@
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { emailPattern } from '../../../constants';
 import { useLoginForm } from './loginForm.hooks';
-import { Container, ErrorMessage, SubmitButton } from './loginForm.styles';
+import { Container, ErrorMessage } from './loginForm.styles';
 
 export const LoginForm = () => {
   const intl = useIntl();
@@ -81,9 +82,9 @@ export const LoginForm = () => {
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton disabled={loading}>
+      <Button disabled={loading} type="submit" className="mt-2">
         <FormattedMessage defaultMessage="Log in" id="Auth / login button" />
-      </SubmitButton>
+      </Button>
     </Container>
   );
 };

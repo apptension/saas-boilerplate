@@ -1,7 +1,7 @@
 import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
-import { FragmentType, gql, getFragmentData } from '@sb/webapp-api-client/graphql';
-import { ButtonProps, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { FragmentType, getFragmentData, gql } from '@sb/webapp-api-client/graphql';
+import { ButtonProps } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useIntl } from 'react-intl';
 
@@ -32,7 +32,6 @@ const Content = ({ hasUnreadNotifications, ...props }: ContentProps) => {
 
   return (
     <Button
-      variant={ButtonVariant.ROUND}
       hasUnreadNotifications={hasUnreadNotifications}
       aria-label={intl.formatMessage({
         defaultMessage: 'Open notifications',

@@ -1,4 +1,4 @@
-import { Link } from '@sb/webapp-core/components/buttons';
+import { Button, Link } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { size } from '@sb/webapp-core/theme';
@@ -7,7 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
 import { useSignupForm } from './signupForm.hooks';
-import { Checkbox, Container, ErrorMessage, SubmitButton } from './signupForm.styles';
+import { Checkbox, Container, ErrorMessage } from './signupForm.styles';
 
 export const SignupForm = () => {
   const intl = useIntl();
@@ -125,9 +125,9 @@ export const SignupForm = () => {
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton disabled={loading}>
+      <Button type="submit" disabled={loading} className="mt-2">
         <FormattedMessage defaultMessage="Sign up" id="Auth / signup button" />
-      </SubmitButton>
+      </Button>
     </Container>
   );
 };

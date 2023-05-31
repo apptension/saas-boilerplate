@@ -2,10 +2,10 @@ import Color from 'color';
 import styled, { FlattenInterpolation, ThemeProps, css } from 'styled-components';
 import theme from 'styled-theming';
 
-import { color, media, size, transition, typography } from '../../../theme';
+import { color, media, transition, typography } from '../../../theme';
 import { ColorScaleIndex, colorScale } from '../../../theme/utils/colorScale';
 import { COLOR_SCALES_RECORD } from './button.constants';
-import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
+import { ButtonColor, ButtonTheme, ButtonVariant } from './button.types';
 
 export type ButtonThemeProps = ThemeProps<ButtonTheme>;
 
@@ -59,24 +59,7 @@ const specialStates = ({
   })};
 `;
 
-const fullShape = css<ButtonThemeProps>`
-  padding: ${theme<ButtonTheme, ButtonSize>('size', {
-    [ButtonSize.NORMAL]: css`
-      ${size.contentVerticalPadding} ${size.smallContentHorizontalPadding}
-    `,
-    [ButtonSize.SMALL]: css`
-      ${media.responsiveValue(size.sizeUnits(0.5), {
-        [media.Breakpoint.TABLET]: size.sizeUnits(0.75),
-      })} ${media.responsiveValue(size.sizeUnits(1), {
-        [media.Breakpoint.TABLET]: size.sizeUnits(1.5),
-      })}
-    `,
-  })};
-  height: ${theme<ButtonTheme, ButtonSize>('size', {
-    [ButtonSize.NORMAL]: '40px',
-    [ButtonSize.SMALL]: '25px',
-  })};
-`;
+const fullShape = css<ButtonThemeProps>``;
 
 const rawShape = css`
   padding: 0;
@@ -238,7 +221,7 @@ export const baseButtonStyle = css<ButtonThemeProps>`
     [ButtonVariant.PRIMARY]: primaryBaseButtonStyle,
     [ButtonVariant.SECONDARY]: secondaryBaseButtonStyle,
     [ButtonVariant.FLAT]: flatBaseButtonStyle,
-    [ButtonVariant.RAW]: rawBaseButtonStyle,
+    [ButtonVariant.GHOST]: rawBaseButtonStyle,
     [ButtonVariant.ROUND]: roundBaseButtonStyle,
   })};
 `;

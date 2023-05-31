@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Modal } from '@sb/webapp-core/components/modal';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -9,7 +10,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
-import { Container, CtaButton, ModalHeader, Row } from './twoFactorAuthForm.styles';
+import { Container, ModalHeader, Row } from './twoFactorAuthForm.styles';
 
 export type TwoFactorAuthFormProps = {
   isEnabled?: boolean;
@@ -48,9 +49,9 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
               id="Auth / Two-factor / Using two-factor auth"
             />
           </H5>
-          <CtaButton onClick={() => disable2FA()}>
+          <Button type="submit" onClick={() => disable2FA()} className="mt-2">
             <FormattedMessage defaultMessage="Disable 2FA" id="Auth / Two-factor / Disable button" />
-          </CtaButton>
+          </Button>
         </Row>
       ) : (
         <Row>
@@ -60,9 +61,9 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
               id="Auth / Two-factor / Not using two-factor auth"
             />
           </H5>
-          <CtaButton onClick={() => setIsModalOpen(true)}>
+          <Button type="submit" onClick={() => setIsModalOpen(true)} className="mt-2">
             <FormattedMessage defaultMessage="Setup 2FA" id="Auth / Two-factor / Setup button" />
-          </CtaButton>
+          </Button>
         </Row>
       )}
       <Modal

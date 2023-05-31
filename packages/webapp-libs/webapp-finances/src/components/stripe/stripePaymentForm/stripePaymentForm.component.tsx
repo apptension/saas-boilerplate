@@ -1,4 +1,5 @@
 import { StripePaymentIntentType } from '@sb/webapp-api-client';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TestProduct } from '../../../types';
@@ -12,7 +13,6 @@ import {
   ProductListItem,
   ProductListItemButton,
   StripePaymentFormContainer,
-  SubmitButton,
 } from './stripePaymentForm.styles';
 
 export type StripePaymentFormProps = {
@@ -68,13 +68,17 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         <StripePaymentMethodSelector formControls={apiFormControls} />
       </StripePaymentFormContainer>
 
-      <SubmitButton disabled={!formState.isValid || formState.isSubmitting || loading}>
+      <Button
+        type="submit"
+        disabled={!formState.isValid || formState.isSubmitting || loading}
+        className="mt-2 w-full max-w-none"
+      >
         <FormattedMessage
           values={{ amount: amountValue ? `${amountValue} USD` : '' }}
           defaultMessage="Pay {amount}"
           id="Stripe / payment form / pay CTA"
         />
-      </SubmitButton>
+      </Button>
     </Form>
   );
 };

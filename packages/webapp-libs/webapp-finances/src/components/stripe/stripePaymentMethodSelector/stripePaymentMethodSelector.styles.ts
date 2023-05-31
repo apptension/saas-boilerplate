@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, RadioButton } from '@sb/webapp-core/components/buttons';
+import { RadioButton } from '@sb/webapp-core/components/buttons';
 import { color, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
@@ -17,13 +17,6 @@ export const PaymentMethodListItem = styled.li`
 export const ExistingPaymentMethodItem = styled(RadioButton)`
   width: 100%;
   position: relative;
-`;
-
-export const NewPaymentMethodItem = styled(Button).attrs((props: { isSelected: boolean }) => ({
-  variant: props.isSelected ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
-}))<{ isSelected: boolean }>`
-  width: 100%;
-  max-width: none;
 `;
 
 export const CardElementContainer = styled.div`

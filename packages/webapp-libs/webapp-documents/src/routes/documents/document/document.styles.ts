@@ -1,4 +1,3 @@
-import { Button } from '@sb/webapp-core/components/buttons';
 import * as coreDateTime from '@sb/webapp-core/components/dateTime';
 import { border, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
@@ -27,8 +26,4 @@ export const Name = styled.a`
 
 export const IconContainer = styled.div`
   ${size.verticalPadding(size.sizeUnits(1))}
-`;
-
-export const DeleteButton = styled(Button).attrs({ variant: 'destructive' })`
-  margin-top: ${size.sizeUnits(1)};
 `;

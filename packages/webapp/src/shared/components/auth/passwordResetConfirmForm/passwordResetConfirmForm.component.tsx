@@ -1,9 +1,10 @@
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';
-import { Container, ErrorMessage, SubmitButton } from './passwordResetConfirmForm.styles';
+import { Container, ErrorMessage } from './passwordResetConfirmForm.styles';
 
 export type PasswordResetConfirmFormProps = {
   user: string;
@@ -92,9 +93,9 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton disabled={loading}>
+      <Button type="submit" disabled={loading} className="mt-2">
         <FormattedMessage defaultMessage="Confirm the change" id="Auth / Reset password confirm / Submit button" />
-      </SubmitButton>
+      </Button>
     </Container>
   );
 };

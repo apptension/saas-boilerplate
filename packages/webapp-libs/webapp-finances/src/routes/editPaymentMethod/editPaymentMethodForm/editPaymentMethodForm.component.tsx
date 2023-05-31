@@ -1,5 +1,6 @@
 import { StripeSetupIntentFragmentFragment, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage } from 'react-intl';
 
@@ -12,7 +13,7 @@ import {
 } from '../../../components/stripe';
 import { subscriptionActiveSubscriptionFragment } from '../../../hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
-import { Form, SubmitButton } from './editPaymentMethodForm.styles';
+import { Form } from './editPaymentMethodForm.styles';
 
 type ChangePaymentFormFields = PaymentFormFields;
 
@@ -80,9 +81,9 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
         initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
       />
 
-      <SubmitButton disabled={!formState.isValid || formState.isSubmitting}>
+      <Button disabled={!formState.isValid || formState.isSubmitting} className="mt-2 w-full" type="submit">
         <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
-      </SubmitButton>
+      </Button>
     </Form>
   );
 };

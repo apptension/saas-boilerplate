@@ -1,4 +1,3 @@
-import { Button } from '@sb/webapp-core/components/buttons';
 import { color } from '@sb/webapp-core/theme';
 import { fullContentHeight, sizeUnits } from '@sb/webapp-core/theme/size';
 import { H4, MicroLabel } from '@sb/webapp-core/theme/typography';
@@ -18,10 +17,6 @@ export const Container = styled.div`
 
 export const Header = styled(H4)`
   margin-bottom: ${sizeUnits(2)};
-`;
-
-export const SubmitButton = styled(Button)`
-  margin-top: ${sizeUnits(3)};
 `;
 
 export const ErrorMessage = styled(MicroLabel)`

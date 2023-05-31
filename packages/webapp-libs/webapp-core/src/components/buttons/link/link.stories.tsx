@@ -49,7 +49,7 @@ export const InternalRaw: Story = {
   args: {
     ...defaultArgs,
     to: '/internal-route',
-    variant: ButtonVariant.RAW,
+    variant: ButtonVariant.GHOST,
   },
 };
 
@@ -57,6 +57,6 @@ export const ExternalRaw: Story = {
   args: {
     ...defaultArgs,
     href: 'https://apptension.com',
-    variant: ButtonVariant.RAW,
+    variant: ButtonVariant.GHOST,
   },
 };

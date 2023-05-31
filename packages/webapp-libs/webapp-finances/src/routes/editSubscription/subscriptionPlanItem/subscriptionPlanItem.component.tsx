@@ -1,9 +1,10 @@
 import { FragmentType, StripeSubscriptionQueryQuery, getFragmentData } from '@sb/webapp-api-client/graphql';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetailsData, useSubscriptionPlanDetails } from '../../../hooks';
 import { SUBSRIPTION_PRICE_ITEM_FRAGMENT } from '../subscriptionPlans';
-import { Container, Content, Feature, FeaturesList, Name, SelectButton } from './subscriptionPlanItem.styles';
+import { Container, Content, Feature, FeaturesList, Name } from './subscriptionPlanItem.styles';
 
 export type SubscriptionPlanItemProps = {
   plan: FragmentType<typeof SUBSRIPTION_PRICE_ITEM_FRAGMENT>;
@@ -49,13 +50,13 @@ export const SubscriptionPlanItem = ({
         </FeaturesList>
       </Content>
 
-      <SelectButton onClick={handleSelect} disabled={isScheduledForNextPeriod || isFree || loading}>
+      <Button onClick={handleSelect} disabled={isScheduledForNextPeriod || isFree || loading} className="mt-2">
         <FormattedMessage
           defaultMessage="Select ({price} USD)"
           id="Change plan item / Select button"
           values={{ price }}
         />
-      </SelectButton>
+      </Button>
     </Container>
   );
 };

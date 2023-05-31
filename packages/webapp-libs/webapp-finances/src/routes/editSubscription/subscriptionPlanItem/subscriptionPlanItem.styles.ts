@@ -24,11 +24,6 @@ export const Name = styled.h3`
   margin-bottom: ${size.sizeUnits(2)};
 `;
 
-export const SelectButton = styled(Button)`
-  margin-top: ${size.sizeUnits(4)};
-  width: 100%;
-`;
-
 export const FeaturesList = styled.ul`
   list-style: inside;
 `;

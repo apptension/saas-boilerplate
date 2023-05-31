@@ -58,7 +58,7 @@ export const Notification = ({
         }}
       >
         {hasAvatar && <Avatar src={avatar} />}
-        <MarkAsReadButton variant={ButtonVariant.RAW} onClick={onToggleIsRead}>
+        <MarkAsReadButton variant="ghost" onClick={onToggleIsRead}>
           <Icon icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
         </MarkAsReadButton>
         <RelativeDate date={new Date(createdAt as string)} />

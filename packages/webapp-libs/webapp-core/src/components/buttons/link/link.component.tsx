@@ -26,7 +26,7 @@ export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkP
 const LinkBase = (props: LinkProps) => {
   const {
     children,
-    variant = ButtonVariant.RAW,
+    variant = ButtonVariant.GHOST,
     size = ButtonSize.NORMAL,
     color = ButtonColor.PRIMARY,
     icon,

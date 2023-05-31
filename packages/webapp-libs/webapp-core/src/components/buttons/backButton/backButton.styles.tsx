@@ -1,10 +1,11 @@
-import styled from 'styled-components';
 import backIcon from '@iconify-icons/ion/chevron-back';
 import { ComponentProps } from 'react';
-import { Icon } from '../../icons';
+import styled from 'styled-components';
+
 import { sizeUnits } from '../../../theme/size';
-import { Link } from '../link';
+import { Icon } from '../../icons';
 import { ButtonVariant } from '../button';
+import { Link } from '../link';
 
 const BackIcon = styled(Icon).attrs(() => ({ icon: backIcon }))`
   font-size: ${sizeUnits(2)};
@@ -12,7 +13,7 @@ const BackIcon = styled(Icon).attrs(() => ({ icon: backIcon }))`
 
 export const Container = styled(Link).attrs(() => ({
   icon: <BackIcon />,
-  variant: ButtonVariant.RAW,
+  variant: ButtonVariant.GHOST,
 }))<ComponentProps<typeof Link>>`
   margin-bottom: ${sizeUnits(2)};
 `;

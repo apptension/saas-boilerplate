@@ -57,7 +57,7 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
             <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
           </ButtonLink>
           <Button
-            variant={ButtonVariant.FLAT}
+            variant="destructive"
             onClick={handleDelete}
             disabled={loading}
             icon={<Icon size={14} icon={deleteIcon} />}
