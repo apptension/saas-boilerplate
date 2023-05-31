@@ -9,7 +9,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/ssm-editor",
-        "command": ""
+        "command": "echo skip"
       }
     },
     "compose-build-image": {
