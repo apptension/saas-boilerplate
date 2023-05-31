@@ -1,4 +1,4 @@
-name: CodeCommitSync
+name: "Push code to AWS CodeCommit"
 
 on:
   push:
@@ -15,6 +15,7 @@ jobs:
       - shell: bash
         env:
           CODE_COMMIT_REPO: ${{ secrets.CODE_COMMIT_REPO }}
+        if: env.CODE_COMMIT_REPO != ''
         run: |
           git remote add codecommit "$CODE_COMMIT_REPO"
           git push -u codecommit ${GITHUB_REF#refs/heads/} --force
