@@ -62,11 +62,6 @@ jobs:
         shell: bash
         run: node_modules/.bin/nx run workers:test
 
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        if: env.SONAR_ORGANIZATION != ''
+      - uses: ./.github/workflows/actions/sonarcloud-scan
         with:
           projectBaseDir: packages/workers
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
