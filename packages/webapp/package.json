@@ -90,6 +90,7 @@
     "@storybook/addon-essentials": "^7.0.10",
     "@storybook/addon-measure": "^7.0.10",
     "@storybook/addon-outline": "^7.0.10",
+    "@storybook/addon-styling": "^1.0.8",
     "@storybook/client-api": "^7.0.10",
     "@storybook/client-logger": "^7.0.10",
     "@storybook/react": "^7.0.10",
