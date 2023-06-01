@@ -44,7 +44,7 @@ export class UsEastResourcesStack extends Stack {
     );
 
     const authFunction = new lambda.Function(this, 'AuthFunction', {
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, 'authLambda')),
       handler: 'index.handler',
       role: executionRole,

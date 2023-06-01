@@ -31,13 +31,13 @@ export class DocsStack extends Stack {
           sources: [s3Deployment.Source.asset(filesPath)],
           domainZone,
           domainName: props.envSettings.domains.docs,
-          apiDomainName: props.envSettings.domains.api,
           certificateArn,
           authLambdaSSMParameterName:
             UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(
               props.envSettings
             ),
           distributionPaths: ['/*'],
+          basicAuth: props.envSettings.appBasicAuth,
         }
       );
     }
