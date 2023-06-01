@@ -22,8 +22,7 @@ export class DocsStack extends Stack {
     const domainZone = getHostedZone(this, props.envSettings);
     const certificateArn = getCloudfrontCertificateArn(props.envSettings);
 
-    const filesPath = `${__dirname}/../../..//build`;
-    console.log(filesPath)
+    const filesPath = `${__dirname}/../../../build`;
     if (fs.existsSync(filesPath)) {
       this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(
         this,
