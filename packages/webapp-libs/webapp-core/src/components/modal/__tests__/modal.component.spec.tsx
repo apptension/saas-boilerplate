@@ -11,12 +11,11 @@ describe('Modal: Component', () => {
   it('should be open', async () => {
     render(
       <Dialog open={true}>
-        {' '}
         <DialogContent> {content}</DialogContent>
       </Dialog>
     );
 
-    expect(await screen.findByText(content)).toBeTruthy();
+    expect(await screen.findByText(content)).toBeInTheDocument();
   });
   it('should have custom header', async () => {
     render(
@@ -26,8 +25,8 @@ describe('Modal: Component', () => {
       </Dialog>
     );
 
-    expect(await screen.findByText(content)).toBeTruthy();
-    expect(await screen.findByText(header)).toBeTruthy();
+    expect(await screen.findByText(content)).toBeInTheDocument();
+    expect(await screen.findByText(header)).toBeInTheDocument();
   });
   it('should be close', async () => {
     render(
