@@ -10,7 +10,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, label, required, type, ...props }: InputProps, ref) => {
     return (
-      <div className={cn(`relative w-full max-w-xs`)}>
+      <div className={cn(`relative w-full max-w-xs`, className)}>
         <label className="flex flex-col items-start">
           <input
             type={type}
