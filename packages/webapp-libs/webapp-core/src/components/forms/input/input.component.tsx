@@ -26,7 +26,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             {...props}
           />
-          {label && <p className={`text-xs mb-1 order-first ${!!error && 'text-red-500'}`}>{label}</p>}
+          {label && (
+            <p
+              className={cn(`text-xs mb-1 order-first`, {
+                'text-red-500': !!error,
+              })}
+            >
+              {label}
+            </p>
+          )}
         </label>
         <p className="leading-3 text-xs absolute m-0 top-[calc(100%+4px)] text-red-500">{error}</p>
       </div>
