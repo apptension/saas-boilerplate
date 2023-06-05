@@ -1,5 +1,6 @@
 import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
-import { cn } from '@sb/webapp-core/lib/utils';
+
+import { cn } from '../../../lib/utils';
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
