@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT } from './stripePaymentMethodInfo.graphql';
 
 export type StripePaymentMethodInfoProps = {
-  method: FragmentType<typeof STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT>;
+  method?: FragmentType<typeof STRIPE_ALL_PAYMENTS_METHODS_FRAGMENT> | null;
 };
 
 const brandDisplayNames: Record<StripePaymentMethodCardBrand, string> = {

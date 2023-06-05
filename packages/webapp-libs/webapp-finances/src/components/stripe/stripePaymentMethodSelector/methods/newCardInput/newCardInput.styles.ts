@@ -86,3 +86,8 @@ export const StripeFieldLabel = styled.p`
     color: ${color.error};
   }
 `;
+
+export const ErrorMessage = styled(typography.MicroLabel)`
+  margin-top: 2px;
+  color: ${color.error};
+`;

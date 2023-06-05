@@ -21,10 +21,11 @@ export type StripePaymentFormProps = {
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();
-  const { onSubmit, apiFormControls, loading } = useStripePaymentForm(onSuccess);
-
-  const { form, hasGenericErrorOnly, genericError } = apiFormControls;
-
+  const {
+    onSubmit,
+    apiFormControls: { form, hasGenericErrorOnly, genericError },
+    loading,
+  } = useStripePaymentForm(onSuccess);
   const amountValue = form.watch('product');
 
   return (
@@ -58,7 +59,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
       </div>
 
       <StripePaymentFormContainer>
-        <StripePaymentMethodSelector form={form} />
+        <StripePaymentMethodSelector control={form.control} />
       </StripePaymentFormContainer>
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}

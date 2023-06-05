@@ -81,9 +81,9 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
   return { deletePaymentMethod, updateDefaultPaymentMethod };
 };
 
-type StripePaymentFormFields = PaymentFormFields & {
+interface StripePaymentFormFields extends PaymentFormFields {
   product: TestProduct;
-};
+}
 
 export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptions?: BaseMutationOptions) => void) => {
   const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntentType | undefined | null>(null);

@@ -62,12 +62,16 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
       return createSetupIntent();
     }
 
-    if (!data.paymentMethod.data.pk) return;
-    await updateDefaultPaymentMethod(data.paymentMethod.data.pk);
+    if (!data.paymentMethod.savedPaymentMethod.pk) return;
+    await updateDefaultPaymentMethod(data.paymentMethod.savedPaymentMethod.pk);
   };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <StripePaymentMethodSelector form={form} initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id} />
+      <StripePaymentMethodSelector
+        control={form.control}
+        initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
+      />
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 

@@ -19,11 +19,8 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
   const { data } = useQuery(subscriptionActivePlanDetailsQuery);
   const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, data?.activeSubscription);
 
-  if (!activeSubscription) return null;
-
   const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
-  const defaultMethod =
-    paymentMethods.find(({ id }) => id === activeSubscription.defaultPaymentMethod?.id) || paymentMethods[0];
+  const defaultMethod = paymentMethods.find(({ id }) => id === activeSubscription?.defaultPaymentMethod?.id);
 
   return (
     <>
@@ -34,7 +31,7 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
         </RowValue>
       </Row>
       <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)}>
-        {activeSubscription.defaultPaymentMethod ? (
+        {activeSubscription?.defaultPaymentMethod ? (
           <FormattedMessage defaultMessage="Edit payment method" id="My subscription / Edit payment method button" />
         ) : (
           <FormattedMessage defaultMessage="Add payment method" id="My subscription / Add payment method button" />
