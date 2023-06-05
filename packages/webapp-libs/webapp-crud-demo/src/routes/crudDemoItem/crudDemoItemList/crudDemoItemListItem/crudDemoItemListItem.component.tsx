@@ -49,18 +49,13 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderInlineButtons = () => (
     <InlineButtons>
       <Link
-        variant={ButtonVariant.RAW}
+        variant={ButtonVariant.GHOST}
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button
-        variant={ButtonVariant.RAW}
-        onClick={handleDelete}
-        disabled={loading}
-        icon={<Icon size={14} icon={deleteIcon} />}
-      >
+      <Button variant="link" onClick={handleDelete} disabled={loading} icon={<Icon size={14} icon={deleteIcon} />}>
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>
@@ -71,7 +66,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   return (
     <Container>
       <LinkContainer>
-        <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
+        <Link variant={ButtonVariant.GHOST} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
           <Text>{data.name}</Text>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}

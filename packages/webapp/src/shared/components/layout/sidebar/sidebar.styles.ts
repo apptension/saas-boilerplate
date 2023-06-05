@@ -1,4 +1,4 @@
-import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Link } from '@sb/webapp-core/components/buttons';
 import { color, media, size, transition, typography, zIndex } from '@sb/webapp-core/theme';
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
@@ -55,9 +55,7 @@ export const MenuLinks = styled.nav`
   flex-direction: column;
 `;
 
-export const MenuLink = styled(Link).attrs(() => ({ variant: ButtonVariant.FLAT, navLink: true }))<
-  ComponentProps<typeof Link>
->`
+export const MenuLink = styled(Link)<ComponentProps<typeof Link>>`
   height: ${size.sizeUnits(6)};
   padding-left: ${size.sizeUnits(5)};
   ${typography.labelBold};

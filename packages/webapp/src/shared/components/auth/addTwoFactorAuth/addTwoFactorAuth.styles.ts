@@ -1,4 +1,3 @@
-import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { color } from '@sb/webapp-core/theme';
 import { horizontalPadding, sizeUnits, verticalMargin } from '@sb/webapp-core/theme/size';
@@ -57,13 +56,6 @@ export const QRCodeContainer = styled.div`
 export const QRCodeImg = styled.img`
   width: 264px;
   height: 264px;
-`;
-
-export const CtaButton = styled(Button)`
-  width: auto;
-  :not(:last-child) {
-    margin-right: ${sizeUnits(2)};
-  }
 `;
 
 export const ErrorMessage = styled(MicroLabel)`

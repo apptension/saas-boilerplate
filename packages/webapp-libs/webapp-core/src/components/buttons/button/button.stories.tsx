@@ -4,7 +4,6 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Icon } from '../../icons';
 import { Button } from './button.component';
-import { ButtonColor, ButtonSize, ButtonVariant } from './button.types';
 
 type Story = StoryObj<typeof Button>;
 
@@ -20,24 +19,8 @@ export const Primary: Story = {
     children: 'Press me',
     onClick: action('Clicked me'),
     disabled: false,
-    variant: ButtonVariant.PRIMARY,
-    color: ButtonColor.PRIMARY,
-    size: ButtonSize.NORMAL,
-  },
-};
-
-export const PrimaryCustomColor: Story = {
-  args: { ...Primary.args, color: '#3cd48d' },
-};
-
-export const PrimaryCustomColorDark: Story = {
-  args: { ...Primary.args, color: '#34403b' },
-};
-
-export const PrimaryWithFixedWidth: Story = {
-  args: {
-    ...Primary.args,
-    fixedWidth: true,
+    variant: 'default',
+    size: 'default',
   },
 };
 
@@ -51,14 +34,14 @@ export const PrimaryDisabled: Story = {
 export const PrimarySmall: Story = {
   args: {
     ...Primary.args,
-    size: ButtonSize.SMALL,
+    size: 'sm',
   },
 };
 
 export const Secondary: Story = {
   args: {
     ...Primary.args,
-    variant: ButtonVariant.SECONDARY,
+    variant: 'secondary',
   },
 };
 
@@ -76,52 +59,58 @@ export const SecondaryDisabled: Story = {
   },
 };
 
-export const Flat: Story = {
+export const Destructive: Story = {
   args: {
     ...Primary.args,
-    variant: ButtonVariant.FLAT,
+    variant: 'destructive',
   },
 };
 
-export const FlatDisabled: Story = {
+export const DestructiveDisabled: Story = {
   args: {
-    ...Flat.args,
+    ...Destructive.args,
     disabled: true,
   },
 };
 
-export const Raw: Story = {
+export const Outline: Story = {
   args: {
     ...Primary.args,
-    variant: ButtonVariant.RAW,
+    variant: 'outline',
   },
 };
 
-export const RawWithIcon: Story = {
+export const OutlineDisabled: Story = {
   args: {
-    ...Raw.args,
-    icon: <Icon icon={editIcon} size={24} />,
-  },
-};
-
-export const RawDisabled: Story = {
-  args: {
-    ...Raw.args,
+    ...Outline.args,
     disabled: true,
   },
 };
 
-export const Round: Story = {
+export const Ghost: Story = {
   args: {
     ...Primary.args,
-    variant: ButtonVariant.ROUND,
-    children: <Icon icon={editIcon} size={24} />,
+    variant: 'ghost',
   },
 };
 
-export const RoundDisabled: Story = {
+export const GhostDisabled: Story = {
   args: {
-    ...Round.args,
+    ...Ghost.args,
+    disabled: true,
+  },
+};
+
+export const Link: Story = {
+  args: {
+    ...Primary.args,
+    variant: 'link',
+  },
+};
+
+export const LinkDisabled: Story = {
+  args: {
+    ...Link.args,
     disabled: true,
   },
 };

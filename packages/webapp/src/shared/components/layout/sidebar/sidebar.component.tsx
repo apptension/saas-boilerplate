@@ -1,5 +1,5 @@
 import closeIcon from '@iconify-icons/ion/close-outline';
-import { Link } from '@sb/webapp-core/components/buttons';
+import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { global as globalTheme, media } from '@sb/webapp-core/theme';
@@ -64,64 +64,119 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
       <MenuLinks>
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.home)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.home)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Dashboard" id="Home / dashboard link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.demoItems)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.demoItems)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Demo Contentful items" id="Home / demo contentful items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.crudDemoItem.list)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.crudDemoItem.list)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="CRUD Example Items" id="Home / CRUD example items link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess allowedRoles={Role.ADMIN}>
-          <MenuLink to={generateLocalePath(RoutesConfig.admin)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.admin)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Admin" id="Home / admin link" />
           </MenuLink>
         </RoleAccess>
 
-        <MenuLink to={generateLocalePath(RoutesConfig.privacyPolicy)} onClick={closeSidebar}>
+        <MenuLink
+          to={generateLocalePath(RoutesConfig.privacyPolicy)}
+          onClick={closeSidebar}
+          navLink
+          variant={ButtonVariant.SECONDARY}
+        >
           <FormattedMessage defaultMessage="Privacy policy" id="Home / privacy policy link" />
         </MenuLink>
 
-        <MenuLink to={generateLocalePath(RoutesConfig.termsAndConditions)} onClick={closeSidebar}>
+        <MenuLink
+          to={generateLocalePath(RoutesConfig.termsAndConditions)}
+          onClick={closeSidebar}
+          navLink
+          variant={ButtonVariant.SECONDARY}
+        >
           <FormattedMessage defaultMessage="Terms and conditions" id="Home / t&c link" />
         </MenuLink>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.finances.paymentConfirm)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.finances.paymentConfirm)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Payment demo" id="Home / payment demo link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.subscriptions.index)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.subscriptions.index)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="My Subscription" id="Home / my subscriptions link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.documents)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.documents)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Documents" id="Home / documents link" />
           </MenuLink>
         </RoleAccess>
 
         <RoleAccess>
-          <MenuLink to={generateLocalePath(RoutesConfig.saasIdeas)} onClick={closeSidebar}>
+          <MenuLink
+            to={generateLocalePath(RoutesConfig.saasIdeas)}
+            onClick={closeSidebar}
+            navLink
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Generate SaaS ideas" id="Home / saas ideas link" />
           </MenuLink>
         </RoleAccess>
 
         {!isDesktop && (
           <RoleAccess>
-            <MenuLink to={generateLocalePath(RoutesConfig.logout)} onClick={closeSidebar}>
+            <MenuLink
+              to={generateLocalePath(RoutesConfig.logout)}
+              onClick={closeSidebar}
+              navLink
+              variant={ButtonVariant.SECONDARY}
+            >
               <FormattedMessage defaultMessage="Logout" id="Home / logout link" />
             </MenuLink>
           </RoleAccess>

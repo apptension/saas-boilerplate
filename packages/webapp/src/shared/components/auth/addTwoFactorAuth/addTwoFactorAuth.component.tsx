@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { ButtonSize, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
 import * as QRCode from 'qrcode';
@@ -17,7 +17,6 @@ import {
   ConfigList,
   ConfigListItem,
   Container,
-  CtaButton,
   ErrorMessage,
   InlineButtons,
   MainHeader,
@@ -198,15 +197,15 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
           />
           {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
           <InlineButtons>
-            <CtaButton type="button" variant={ButtonVariant.SECONDARY} size={ButtonSize.NORMAL} onClick={closeModal}>
+            <Button type="button" variant={ButtonVariant.SECONDARY} onClick={closeModal}>
               <FormattedMessage defaultMessage="Close" id="Auth / Add Two-factor / Close button" />
-            </CtaButton>
-            <CtaButton type="submit" size={ButtonSize.NORMAL}>
+            </Button>
+            <Button type="submit">
               <FormattedMessage
                 defaultMessage="Verify & Activate"
                 id="Auth / Add Two-factor / Verify & Activate button"
               />
-            </CtaButton>
+            </Button>
           </InlineButtons>
         </CodeForm>
       </Body>

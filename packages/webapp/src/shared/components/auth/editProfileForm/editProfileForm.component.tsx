@@ -1,9 +1,10 @@
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { FIRST_NAME_MAX_LENGTH, LAST_NAME_MAX_LENGTH } from './editProfileForm.constants';
 import { useEditProfileForm } from './editProfileForm.hooks';
-import { Container, ErrorMessage, Form, FormFieldsRow, SubmitButton } from './editProfileForm.styles';
+import { Container, ErrorMessage, Form, FormFieldsRow } from './editProfileForm.styles';
 
 export const EditProfileForm = () => {
   const intl = useIntl();
@@ -61,9 +62,9 @@ export const EditProfileForm = () => {
         </FormFieldsRow>
 
         {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        <SubmitButton disabled={loading}>
+        <Button type="submit" disabled={loading} className="mt-2">
           <FormattedMessage defaultMessage="Update personal data" id="Auth / Update profile/ Submit button" />
-        </SubmitButton>
+        </Button>
       </Form>
     </Container>
   );

@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { ReactNode } from 'react';
-import { Container } from './backButton.styles';
+
+import { ButtonVariant } from '../';
+import { BackIcon, Container } from './backButton.styles';
 
 export type BackButtonProps = {
   to?: string;
@@ -17,10 +19,8 @@ export const BackButton = ({ to, children }: BackButtonProps) => {
   };
 
   return (
-    <Container to={to} onClick={handleBackClick}>
-      {children ?? (
-        <FormattedMessage defaultMessage="Go back" id="Back Button / Go back" />
-      )}
+    <Container to={to} onClick={handleBackClick} icon={<BackIcon />} variant={ButtonVariant.GHOST}>
+      {children ?? <FormattedMessage defaultMessage="Go back" id="Back Button / Go back" />}
     </Container>
   );
 };

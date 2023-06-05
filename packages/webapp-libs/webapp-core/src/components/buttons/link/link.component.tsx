@@ -1,59 +1,38 @@
 import { omit } from 'ramda';
 import { AnchorHTMLAttributes, ReactNode } from 'react';
-import { LinkProps as RouterLinkProps, NavLinkProps as RouterNavLinkProps } from 'react-router-dom';
-import styled, { ThemeProvider } from 'styled-components';
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+  NavLink as RouterNavLink,
+  NavLinkProps as RouterNavLinkProps,
+} from 'react-router-dom';
 
-import { ButtonTheme, ButtonVariant } from '../button';
-import { Icon } from '../button/button.styles';
-import { ButtonColor, ButtonSize } from '../button/button.types';
-import { HtmlLinkContainer, RouterLinkContainer, RouterNavLinkContainer } from './link.styles';
+import { Button, ButtonBaseProps, ButtonVariant } from '../button';
+import { ButtonSize } from '../button/button.types';
 import { isInternalLink, isInternalNavLink } from './link.utils';
 
-type BaseProps = {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  color?: ButtonColor;
-  icon?: ReactNode;
-  navLink?: boolean;
-};
-
-export type InternalLinkProps = RouterLinkProps & BaseProps;
-export type InternalNavLinkProps = RouterNavLinkProps & BaseProps;
-export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & BaseProps;
+export type LinkNavLinkExtension = { navLink?: boolean; children?: ReactNode };
+export type InternalLinkProps = RouterLinkProps & ButtonBaseProps & LinkNavLinkExtension;
+export type InternalNavLinkProps = RouterNavLinkProps & ButtonBaseProps & LinkNavLinkExtension;
+export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & ButtonBaseProps & LinkNavLinkExtension;
 
 export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkProps;
 
-const LinkBase = (props: LinkProps) => {
-  const {
-    children,
-    variant = ButtonVariant.RAW,
-    size = ButtonSize.NORMAL,
-    color = ButtonColor.PRIMARY,
-    icon,
-    ...linkProps
-  } = props;
-  const theme: ButtonTheme = { variant, size, color, isDisabled: false };
-  const content = (
-    <>
-      {icon ? <Icon>{icon}</Icon> : null}
-      {children}
-    </>
-  );
+export const Link = (props: LinkProps) => {
+  const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, ...linkProps } = props;
 
-  const renderInternalLink = (props: InternalLinkProps | InternalNavLinkProps) =>
+  const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
-      <RouterNavLinkContainer {...omit(['navLink'], props)}>{content}</RouterNavLinkContainer>
+      <RouterNavLink {...omit(['navLink'], props)}>{children}</RouterNavLink>
     ) : (
-      <RouterLinkContainer {...(props as InternalLinkProps)}>{content}</RouterLinkContainer>
+      <RouterLink {...(props as InternalLinkProps)}>{children}</RouterLink>
     );
 
-  const renderExternalLink = (props: ExternalLinkProps) => <HtmlLinkContainer {...props}>{content}</HtmlLinkContainer>;
+  const renderExternalLink = (props: ExternalLinkProps) => <a {...props}>{children}</a>;
 
   return (
-    <ThemeProvider theme={theme}>
+    <Button asChild variant={variant} size={size} icon={icon}>
       {isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps as ExternalLinkProps)}
-    </ThemeProvider>
+    </Button>
   );
 };
-
-export const Link = styled(LinkBase)``;

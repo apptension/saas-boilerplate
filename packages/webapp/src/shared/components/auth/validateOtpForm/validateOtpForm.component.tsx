@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { ButtonSize } from '@sb/webapp-core/components/buttons';
+import { Button, ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
-import { Container, ErrorMessage, Header, SubmitButton } from './validateOtpForm.styles';
+import { Container, ErrorMessage, Header } from './validateOtpForm.styles';
 
 export type ValidateOtpFormFields = {
   token: string;
@@ -81,9 +81,9 @@ export const ValidateOtpForm = () => {
           autoComplete="off"
         />
         {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        <SubmitButton type="submit" size={ButtonSize.NORMAL}>
+        <Button type="submit" size={ButtonSize.NORMAL} className="mt-2">
           <FormattedMessage defaultMessage="Submit" id="Auth / Validate OTP / Submit button" />
-        </SubmitButton>
+        </Button>
       </form>
     </Container>
   );

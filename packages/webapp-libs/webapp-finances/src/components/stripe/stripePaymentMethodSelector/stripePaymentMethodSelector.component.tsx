@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { ApiFormReturnType } from '@sb/webapp-api-client/hooks';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { isEmpty } from 'ramda';
@@ -19,7 +20,6 @@ import {
   ErrorMessage,
   ExistingPaymentMethodItem,
   Heading,
-  NewPaymentMethodItem,
   PaymentMethodList,
   PaymentMethodListItem,
 } from './stripePaymentMethodSelector.styles';
@@ -178,21 +178,22 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
 
               {paymentMethods?.length > 0 && (
                 <PaymentMethodListItem>
-                  <NewPaymentMethodItem
+                  <Button
                     type="button"
-                    isSelected={value.type === StripePaymentMethodSelectionType.NEW_CARD}
+                    variant={value.type === StripePaymentMethodSelectionType.NEW_CARD ? 'default' : 'secondary'}
                     onClick={() => {
                       handleChange({
                         type: StripePaymentMethodSelectionType.NEW_CARD,
                         data: null,
                       });
                     }}
+                    className="w-full"
                   >
                     <FormattedMessage
                       defaultMessage="Add a new card"
                       id="Stripe / payment method selector / new card option"
                     />
-                  </NewPaymentMethodItem>
+                  </Button>
                 </PaymentMethodListItem>
               )}
             </PaymentMethodList>

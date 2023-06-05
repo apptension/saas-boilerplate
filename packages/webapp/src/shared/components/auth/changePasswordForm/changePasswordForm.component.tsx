@@ -1,8 +1,9 @@
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useChangePasswordForm } from './changePasswordForm.hooks';
-import { Container, ErrorMessage, FormFieldsRow, SubmitButton } from './changePasswordForm.styles';
+import { Container, ErrorMessage, FormFieldsRow } from './changePasswordForm.styles';
 
 export const ChangePasswordForm = () => {
   const intl = useIntl();
@@ -104,9 +105,9 @@ export const ChangePasswordForm = () => {
       </FormFieldsRow>
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
 
-      <SubmitButton disabled={loading}>
+      <Button disabled={loading} type="submit" className="mt-2">
         <FormattedMessage defaultMessage="Change password" id="Auth / Change password / Submit button" />
-      </SubmitButton>
+      </Button>
     </Container>
   );
 };
