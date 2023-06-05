@@ -1,0 +1,38 @@
+---
+title: Pre-configured CI/CD
+---
+
+Continuous Integration and Continuous Deployment (CI/CD) is a methodology that allows developers to automate the process
+of building, testing, and deploying their applications. CI/CD helps to reduce the time and effort required to release
+new features and bug fixes, while also improving the quality and reliability of the application. The SaaS Boilerplate
+includes a pre-configured CI/CD pipeline that uses AWS services like AWS CodeCommit, AWS CodeBuild, and AWS CodePipeline
+to automate the deployment process.
+
+### Benefits of CI/CD
+
+There are several benefits to using CI/CD in your projects. First and foremost, it allows you to automate the process of
+building, testing, and deploying your application. This automation reduces the time and effort required to deploy new
+features and bug fixes, which allows you to release updates more frequently. CI/CD also helps to improve the quality
+and reliability of your application by automating the testing process and reducing the risk of errors.
+
+### Pre-configured CI/CD in the SaaS Boilerplate
+
+The SaaS Boilerplate includes a pre-configured CI/CD pipeline that is included in the infrastructure as code out of the
+box. The pipeline uses AWS services like AWS CodeCommit, AWS CodeBuild, and AWS CodePipeline to automate the deployment
+process for each environment. The deployment pipeline is configured to start automatically after each code push to a
+specific set of branches to the CodeCommit repository created by the CI/CD CDK stack. Each environment can have a
+different branch configuration, which allows for greater flexibility in managing the deployment process.
+
+The AWS pipeline can be triggered by Bitbucket Pipeline or Github action, which allows you to use your preferred
+development workflow.
+
+The SaaS Boilerplate provides a consistent and repeatable way to deploy your application, which
+reduces the risk of errors and improves the reliability of your application. The pre-configured CI/CD pipeline is easy
+to set up and can be customized to meet the specific needs of your project.
+
+:::info
+If you would like to learn more about the technical aspects of the CI/CD in SaaS Boilerplate, please refer to following
+resources:
+- [CI/CD architecture](/aws/architecture/cicd-architecture)
+- [Continuous integration technical documentation](/aws/cicd/)
+:::

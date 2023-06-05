@@ -1,5 +1,5 @@
 GENERATED_BACKEND_DOCS_PATH=docs/generated
-GENERATED_BACKEND_DOCS_INTERNAL_PATH=../internal/docs/docs/v2/api-reference/backend
+GENERATED_BACKEND_DOCS_INTERNAL_PATH=../internal/docs/docs/api-reference/backend
 
 rm -rf "$GENERATED_BACKEND_DOCS_PATH"
 

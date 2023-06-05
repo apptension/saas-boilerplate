@@ -23,7 +23,7 @@ module.exports = {
       items: [
         {
           label: 'SaaS Boilerplate website',
-          href: 'https://apptension.com/saas-boilerplate',
+          href: 'https://apptension.com/saas-boilerplate?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate',
           position: 'right',
         },
         {
@@ -37,7 +37,7 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com" target="_blank">Apptension</a>.`,
+      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate" target="_blank">Apptension</a>.`,
     },
     colorMode: {
       defaultMode: 'dark',
@@ -73,7 +73,7 @@ module.exports = {
           '../../webapp-libs/webapp-api-client/src/tests/utils/fixtures.ts',
         ],
         tsconfig: '../../webapp-libs/webapp-api-client/tsconfig.lib.json',
-        out: 'v2/api-reference/webapp-api-client/generated',
+        out: 'api-reference/webapp-api-client/generated',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
       },
@@ -91,7 +91,7 @@ module.exports = {
           '../../webapp-libs/webapp-core/src/tests/utils/rendering.tsx',
         ],
         tsconfig: '../../webapp-libs/webapp-core/tsconfig.lib.json',
-        out: 'v2/api-reference/webapp-core/generated',
+        out: 'api-reference/webapp-core/generated',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
       },
@@ -107,7 +107,7 @@ module.exports = {
           '../../webapp/src/tests/utils/rendering.tsx',
         ],
         tsconfig: '../../webapp/tsconfig.app.json',
-        out: 'v2/api-reference/webapp/generated',
+        out: 'api-reference/webapp/generated',
         readme: 'none',
         watch: process.env.TYPEDOC_WATCH,
       },

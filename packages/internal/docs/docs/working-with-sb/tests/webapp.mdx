@@ -1,0 +1,240 @@
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Writing tests for webapp
+
+Writing tests for your web application is essential to ensure the correctness and reliability of your product. In this
+guide, you will go through some of the best practices for testing your web application.
+
+## Testing stack
+
+<ProjectName /> comes with an extensive testing stack that allows you to test your components, queries, and mutations.
+It uses popular testing libraries such as <a href="https://jestjs.io/">Jest</a>,&nbsp;
+<a href="https://testing-library.com/">React Testing Library</a>, and&nbsp;
+<a href="https://www.apollographql.com/docs/react/development-testing/testing">Apollo Client</a> to provide a robust
+and reliable testing environment. It also includes some custom helpers that speeds up and simplify work.
+
+
+## Custom render methods
+
+<ProjectName /> provides a custom&nbsp;
+<a href="../../api-reference/webapp/generated/modules/tests_utils_rendering#render">render</a> and&nbsp;
+<a href="../../api-reference/webapp/generated/modules/tests_utils_rendering#renderhook">renderHook</a> methods to
+simplify the testing process. The <code>render</code> method from <code>@testing-library/react</code> is wrapped with
+additional functionality to handle setup of providers like the Apollo Client. This method provides a convenient way to
+render your components within pre-configured test environment.
+<br />
+<br />
+Here's an example of how to use the custom render method:
+
+```tsx showLineNumbers
+//highlight-next-line
+import { render } from '../../../../../tests/utils/rendering';
+
+//...
+it('should render ', async () => {
+  render(<Component />);
+
+  expect(screen.getByText('Rendered')).toBeInTheDocument();
+});
+```
+
+## Testing components with queries
+
+In testing environment all queries that are expected to be executed from the components that are being tested should be
+mocked. To do that you can prepare mocked queries using [`fill*` methods](#defining-and-using-fill-methods) or
+[helper methods](../../api-reference/webapp-api-client/generated/modules/tests_utils_fixtures) and pass them to `render`
+method using `apolloMocks` property.
+
+You can also use the
+[`waitForApolloMocks`](../../api-reference/webapp-api-client/generated/modules/tests_utils_rendering#waitforapollomocks)
+function that is returned from `render` method to wait for all (or some) mocks to be executed to assert the correct
+state of the rendered results.
+
+Here's an example of how to test component that expect data from logged user:
+
+```tsx showLineNumbers
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { Role } from '../../../../../modules/auth/auth.types';
+import { render } from '../../../../../tests/utils/rendering';
+
+//...
+it('should render ', async () => {
+  const apolloMocks = [
+    fillCommonQueryWithUser(
+      currentUserFactory({
+        roles: [Role.ADMIN],
+      })
+    )
+  ];
+  const { waitForApolloMocks } = render(<Component />, {
+    apolloMocks,
+  });
+
+  await waitForApolloMocks();
+
+  expect(screen.getByText('Rendered')).toBeInTheDocument();
+});
+```
+
+You can also pass a function to the `apolloMocks` prop to modify the default mocks:
+
+```tsx showLineNumbers
+render(<Component />, {
+    //highlight-next-line
+    apolloMocks: (defaultApolloMocks) => defaultApolloMocks.concat(customMock),
+});
+```
+
+:::info
+To get more information about possible arguments and setup of test providers check the
+[`webapp/test/utils/rendering.tsx` API reference](../../api-reference/webapp/generated/modules/tests_utils_rendering#render).
+:::
+
+### Advanced example
+
+Here's an advanced example of testing a component with queries and routing structure:
+
+```tsx showLineNumbers
+import { getLocalePath } from '@sb/webapp-core/utils';
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+
+import { RoutesConfig } from '../../../../app/config/routes';
+import { Role } from '../../../../modules/auth/auth.types';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { authConfirmUserEmailMutation } from '../confirmEmail.graphql';
+
+//...
+describe('ConfirmEmail: Component', () => {
+    const user = 'user_id';
+    const token = 'token';
+
+    // Create a component structure with routing that will imitate real app
+    const Component = () => (
+        <Routes>
+          <Route path={getLocalePath(RoutesConfig.confirmEmail)} element={<ConfirmEmail />} />
+          <Route path={getLocalePath(RoutesConfig.login)} element={<span>Login page mock</span>} />
+        </Routes>
+    );
+
+    it('should show success message and redirect to login ', async () => {
+        // Configure mocks:
+        const apolloMocks = [
+          // 1. Common query mock (logged-in user)
+          fillCommonQueryWithUser(
+            currentUserFactory({
+              roles: [Role.ADMIN],
+            })
+          ),
+          // 2. Confirm email mutation with the correct user, token and successful result
+          composeMockedQueryResult(authConfirmUserEmailMutation, {
+            variables: {
+              input: { user, token },
+            },
+            data: {
+              confirm: {
+                ok: true,
+              },
+            },
+          }),
+        ];
+        // Configure initial router props
+        const routerProps = createMockRouterProps(RoutesConfig.confirmEmail, { user, token });
+
+        // Call render method from `webapp/src/tests/utils/rendering.tsx`
+        const { waitForApolloMocks } = render(<Component />, {
+          routerProps,
+          apolloMocks,
+        });
+
+        // Wait for all queries
+        await waitForApolloMocks();
+
+        // Assert the final expected result
+        expect(screen.getByText('Login page mock')).toBeInTheDocument();
+    });
+});
+```
+
+## Defining factories
+
+<ProjectName /> provides a way to define factories that generate mock data for your tests using&nbsp;
+<code>createDeepFactory</code> method from <code>@sb/webapp-api-client/tests/utils</code>.
+<br/>
+<br/>
+Here's an example of how to define a factory:
+
+```ts showLineNumbers title="packages/webapp-libs/webapp-documents/src/tests/factories/document.ts"
+import { DocumentDemoItemType } from '@sb/webapp-api-client/graphql';
+import {
+  createDeepFactory,
+  makeId,
+} from '@sb/webapp-api-client/tests/utils';
+//...
+export const documentFactory = createDeepFactory<Partial<DocumentDemoItemType>>(() => ({
+  id: makeId(32),
+  createdAt: new Date().toISOString(),
+  file: {
+    name: `${makeId(32)}.png`,
+    url: `http://localhost/image/${makeId(32)}.png`,
+  },
+}));
+```
+
+Later in tests or storybook you can import and use the factory:
+```ts
+import { documentFactory } from '@sb/webapp-documents/src/tests/factories/document'
+//...
+const document = documentFactory();
+// or
+const document = documentFactory({ file: { name: 'image.png', url: 'http://example/image.png' } })
+```
+
+## Defining and using `fill*` methods
+
+<ProjectName /> provides a way to define <code>fill*</code> methods that generate mock queries for Apollo&nbsp;
+<code>MockedProvider</code>. These methods can be used to create mock query results that match the query schema.
+
+:::info
+Check
+[testing helper methods API reference](../../api-reference/webapp-api-client/generated/modules/tests_utils_fixtures)
+on how to compose mocked GraphQL query results.
+:::
+
+Here's an example of how to define a <code>fill*</code> method:
+
+```ts showLineNumbers title="packages/webapp-libs/webapp-documents/src/tests/factories/document.ts"
+import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { times } from 'ramda';
+
+import { documentsListQuery } from '../../routes/documents/documents.graphql';
+//...
+// highlight-start
+export const fillDocumentsListQuery = (data = times(() => documentFactory(), 3)) => {
+  return composeMockedListQueryResult(documentsListQuery, 'allDocumentDemoItems', 'DocumentDemoItemType', { data });
+};
+// highlight-end
+```
+
+Usage of defined `fill*` method in unit test:
+
+```tsx showLineNumbers
+import { times } from 'ramda';
+import { documentFactory, fillDocumentsListQuery } from '../../../tests/factories';
+import { render } from '../../../tests/utils/rendering';
+
+//...
+describe('Documents: Component', () => {
+  it('should render maximum size state', async () => {
+    const documentsLength = 3;
+    const generatedDocs = times(() => documentFactory(), documentsLength);
+
+    //highlight-next-line
+    const mockRequest = fillDocumentsListQuery(generatedDocs);
+    render(<Documents />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
+
+    expect(await screen.findAllByRole('link')).toHaveLength(documentsLength);
+    expect(screen.getAllByRole('listitem')).toHaveLength(documentsLength);
+  });
+});
+```

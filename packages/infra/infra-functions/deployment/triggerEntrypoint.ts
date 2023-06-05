@@ -1,10 +1,10 @@
-import * as AWS from 'aws-sdk';
+import { CodeBuild } from '@aws-sdk/client-codebuild';
 import globToRegExp from 'glob-to-regexp';
 
 export const handler = async (event) => {
   console.log('Start trigger entrypoint', { event });
 
-  const codebuild = new AWS.CodeBuild();
+  const codebuild = new CodeBuild({ region: process.env.AWS_DEFAULT_REGION });
   const branches = process.env.DEPLOY_BRANCHES?.split(',') ?? [];
   const projectName = process.env.PROJECT_NAME;
   if (!projectName) {
@@ -28,13 +28,12 @@ export const handler = async (event) => {
         projectName,
         sourceVersion: referenceName,
       })
-      .on('success', function (response) {
+      .then((response) => {
         console.log('Codebuild started!', response);
       })
-      .on('error', function (error, response) {
-        console.log('Run codebuild error', error, response);
-      })
-      .promise();
+      .catch((error) => {
+        console.log('Run codebuild error', error);
+      });
   }
 
   return { event, branches, filteredBranches };

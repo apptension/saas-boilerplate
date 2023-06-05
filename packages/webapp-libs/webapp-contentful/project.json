@@ -4,16 +4,6 @@
   "sourceRoot": "packages/webapp-libs/webapp-contentful/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/webapp-libs/webapp-contentful",
-        "main": "packages/webapp-libs/webapp-contentful/src/index.ts",
-        "tsConfig": "packages/webapp-libs/webapp-contentful/tsconfig.lib.json",
-        "assets": ["packages/webapp-libs/webapp-contentful/*.md"]
-      }
-    },
     "graphql": {
       "executor": "nx:run-commands",
       "options": {

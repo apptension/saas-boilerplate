@@ -41,6 +41,7 @@
         "color": true,
         "parallel": false,
         "commands": [
+          "nx run-many --target=setup",
           "nx run-many --target=compose-build-image --projects=backend,workers",
           "docker-compose up --force-recreate -d backend workers"
         ]

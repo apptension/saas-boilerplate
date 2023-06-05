@@ -10,7 +10,16 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": [],
+            "allow": [
+              "@sb/webapp-core/**",
+              "@sb/webapp-api-client/**",
+              "@sb/webapp-contentful/**",
+              "@sb/webapp-crud-demo/**",
+              "@sb/webapp-documents/**",
+              "@sb/webapp-finances/**",
+              "@sb/webapp-generative-ai/**",
+              "@sb/webapp-notifications/**"
+            ],
             "depConstraints": [
               {
                 "sourceTag": "*",

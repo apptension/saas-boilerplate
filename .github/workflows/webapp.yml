@@ -1,0 +1,134 @@
+name: "Webapp"
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16, 18 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=webapp...
+
+      - name: Build
+        shell: bash
+        run: node_modules/.bin/nx run webapp:build
+
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16, 18 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=webapp...
+
+      - name: "Lint"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:lint
+
+      - name: "Type check"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:type-check
+
+      - name: "Test"
+        shell: bash
+        run: node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        if: env.SONAR_ORGANIZATION != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_WEBAPP_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_PROJECT_KEY }}
+        with:
+          projectBaseDir: packages/webapp
+
+  test-lib:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16, 18 ]
+        webapp-lib-name:
+          - webapp-core
+          - webapp-api-client
+          - webapp-contentful
+          - webapp-crud-demo
+          - webapp-documents
+          - webapp-notifications
+          - webapp-emails
+          - webapp-finances
+          - webapp-generative-ai
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - shell: bash
+        run: pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=${{ matrix.webapp-lib-name }}...
+
+      - name: "${{ matrix.webapp-lib-name }}: Lint"
+        shell: bash
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:lint
+
+      - name: "${{ matrix.webapp-lib-name }}: Type check"
+        shell: bash
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:type-check
+
+      - name: "${{ matrix.webapp-lib-name }}: Test"
+        shell: bash
+        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:test --watchAll=false --maxWorkers=20% --coverage
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        if: env.SONAR_ORGANIZATION != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_WEBAPP_API_CLIENT_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_API_CLIENT_PROJECT_KEY }}
+          SONAR_WEBAPP_CONTENTFUL_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_CONTENTFUL_PROJECT_KEY }}
+          SONAR_WEBAPP_CORE_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_CORE_PROJECT_KEY }}
+          SONAR_WEBAPP_CRUD_DEMO_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_CRUD_DEMO_PROJECT_KEY }}
+          SONAR_WEBAPP_DOCUMENTS_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_DOCUMENTS_PROJECT_KEY }}
+          SONAR_WEBAPP_EMAILS_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_EMAILS_PROJECT_KEY }}
+          SONAR_WEBAPP_FINANCES_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_FINANCES_PROJECT_KEY }}
+          SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY }}
+          SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY }}
+        with:
+            projectBaseDir: "packages/webapp-libs/${{ matrix.webapp-lib-name }}"

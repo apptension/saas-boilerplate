@@ -4,16 +4,6 @@
   "sourceRoot": "packages/webapp-libs/webapp-api-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/webapp-libs/webapp-api-client",
-        "main": "packages/webapp-libs/webapp-api-client/src/index.ts",
-        "tsConfig": "packages/webapp-libs/webapp-api-client/tsconfig.lib.json",
-        "assets": ["packages/webapp-libs/webapp-api-client/*.md"]
-      }
-    },
     "graphql": {
       "executor": "nx:run-commands",
       "options": {
