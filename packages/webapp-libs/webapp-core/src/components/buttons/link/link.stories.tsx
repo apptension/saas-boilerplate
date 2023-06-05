@@ -18,15 +18,14 @@ export default meta;
 const defaultArgs = {
   children: 'Press me',
   onClick: action('Clicked me'),
-  variant: ButtonVariant.PRIMARY,
 };
 
 export const InternalPrimary: Story = {
-  args: { ...defaultArgs, to: '/internal-route' },
+  args: { ...defaultArgs, to: '/internal-route', variant: ButtonVariant.PRIMARY },
 };
 
 export const ExternalPrimary: Story = {
-  args: { ...defaultArgs, href: 'https://apptension.com' },
+  args: { ...defaultArgs, href: 'https://apptension.com', variant: ButtonVariant.PRIMARY },
 };
 
 export const InternalSecondary: Story = {

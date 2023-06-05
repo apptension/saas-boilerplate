@@ -50,7 +50,7 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
 
         <Menu isOpen={isOpen}>
           <ButtonLink
-            variant={ButtonVariant.FLAT}
+            variant={ButtonVariant.SECONDARY}
             to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
           >

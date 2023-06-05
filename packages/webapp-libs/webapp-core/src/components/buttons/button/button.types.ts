@@ -12,8 +12,8 @@ export enum ButtonVariant {
   PRIMARY = 'default',
   SECONDARY = 'secondary',
   GHOST = 'ghost',
-  FLAT = 'FLAT',
   ROUND = 'ROUND',
+  LINK = 'link',
 }
 
 export enum ButtonSize {

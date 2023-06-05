@@ -3,10 +3,12 @@ import { Checkbox as CheckboxBase } from '@sb/webapp-core/components/forms';
 import { color, size, typography } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
+const LinkStyled = styled(Link)``;
+
 export const Container = styled.form.attrs(() => ({ noValidate: true }))`
   ${size.formFieldWidth};
 
-  ${Link} {
+  ${LinkStyled} {
     display: inline;
     ${typography.microlabel};
   }
