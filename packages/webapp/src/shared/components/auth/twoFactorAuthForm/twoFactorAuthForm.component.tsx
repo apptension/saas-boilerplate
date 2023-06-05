@@ -5,12 +5,11 @@ import { Dialog, DialogContent } from '@sb/webapp-core/components/modal';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
-import { H5 } from '@sb/webapp-core/theme/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
-import { Container, ModalHeader, Row } from './twoFactorAuthForm.styles';
+import { Container } from './twoFactorAuthForm.styles';
 
 export type TwoFactorAuthFormProps = {
   isEnabled?: boolean;
