@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Modal } from '@sb/webapp-core/components/modal';
+import { Dialog, DialogContent } from '@sb/webapp-core/components/modal';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';
@@ -42,41 +42,37 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
   return (
     <Container>
       {isEnabled ? (
-        <Row>
-          <H5>
-            <FormattedMessage
-              defaultMessage="Your account is using two-factor authentication"
-              id="Auth / Two-factor / Using two-factor auth"
-            />
-          </H5>
-          <Button type="submit" onClick={() => disable2FA()} className="mt-2">
+        <div className="flex flex-col items-start">
+          <FormattedMessage
+            defaultMessage="Your account is using two-factor authentication"
+            id="Auth / Two-factor / Using two-factor auth"
+          />
+          <Button type="submit" className="mt-1" onClick={() => disable2FA()}>
             <FormattedMessage defaultMessage="Disable 2FA" id="Auth / Two-factor / Disable button" />
           </Button>
-        </Row>
+        </div>
       ) : (
-        <Row>
-          <H5>
-            <FormattedMessage
-              defaultMessage="Your account is not using two-factor authentication"
-              id="Auth / Two-factor / Not using two-factor auth"
-            />
-          </H5>
-          <Button type="submit" onClick={() => setIsModalOpen(true)} className="mt-2">
+        <div className="flex flex-col items-start mb-1">
+          <FormattedMessage
+            defaultMessage="Your account is not using two-factor authentication"
+            id="Auth / Two-factor / Not using two-factor auth"
+          />
+          <Button type="submit" className="mt-1" onClick={() => setIsModalOpen(true)}>
             <FormattedMessage defaultMessage="Setup 2FA" id="Auth / Two-factor / Setup button" />
           </Button>
-        </Row>
+        </div>
       )}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        header={
-          <ModalHeader>
-            <FormattedMessage defaultMessage="Two-Factor Authentication (2FA)" id="Auth / Two-factor / Modal header" />
-          </ModalHeader>
-        }
+
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(e) => {
+          setIsModalOpen(e);
+        }}
       >
-        <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
-      </Modal>
+        <DialogContent>
+          <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };
