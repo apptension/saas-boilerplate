@@ -1,43 +1,53 @@
 import { fireEvent, screen } from '@testing-library/react';
+import React from 'react';
 
 import { render } from '../../../tests/utils/rendering';
-import { Modal } from '../modal.component';
+import { Dialog, DialogContent, DialogHeader } from '../modal.component';
 
 describe('Modal: Component', () => {
   const content = 'content';
   const header = 'header';
 
   it('should be open', async () => {
-    render(<Modal isOpen={true}>{content}</Modal>);
+    render(
+      <Dialog open={true}>
+        {' '}
+        <DialogContent> {content}</DialogContent>
+      </Dialog>
+    );
 
-    expect(await screen.findByText(content)).toBeInTheDocument();
+    expect(await screen.findByText(content)).toBeTruthy();
   });
   it('should have custom header', async () => {
     render(
-      <Modal isOpen={true} header={header}>
-        {content}
-      </Modal>
+      <Dialog open={true}>
+        <DialogHeader>{header}</DialogHeader>
+        <DialogContent> {content}</DialogContent>
+      </Dialog>
     );
 
-    expect(await screen.findByText(content)).toBeInTheDocument();
-    expect(await screen.findByText(header)).toBeInTheDocument();
-    expect(screen.queryByTestId('modal-icon-container')).toBeNull();
+    expect(await screen.findByText(content)).toBeTruthy();
+    expect(await screen.findByText(header)).toBeTruthy();
   });
   it('should be close', async () => {
-    render(<Modal isOpen={false}>{content}</Modal>);
+    render(
+      <Dialog defaultOpen={false} open={false}>
+        <DialogContent> {content}</DialogContent>
+      </Dialog>
+    );
 
     expect(screen.queryByText(content)).toBeNull();
   });
   it('should be call onClose on IconContainer submit', async () => {
-    const onClose = jest.fn();
+    const onOpenChange = jest.fn();
 
     render(
-      <Modal isOpen={true} onClose={onClose}>
-        {content}
-      </Modal>
+      <Dialog open={true} onOpenChange={onOpenChange}>
+        <DialogContent>{content}</DialogContent>
+      </Dialog>
     );
 
     fireEvent.click(await screen.findByTestId('modal-icon-container'));
-    expect(onClose).toHaveBeenCalled();
+    expect(onOpenChange).toHaveBeenCalled();
   });
 });
