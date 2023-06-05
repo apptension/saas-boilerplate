@@ -1,35 +1,48 @@
-import checkedIcon from '@iconify-icons/ion/checkmark';
-import semicheckedIcon from '@iconify-icons/ion/remove-outline';
-import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
-import { ThemeProvider } from 'styled-components';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import { Check } from 'lucide-react';
+import { ReactNode, forwardRef } from 'react';
+import * as React from 'react';
+import { cn } from '@sb/webapp-core/lib/utils';
 
-import { CheckIcon, Checkmark, Container, Field, Label, Message } from './checkbox.styles';
-import { CheckboxTheme } from './checkbox.types';
+export type CheckboxProps = React.ForwardRefExoticComponent<
+  CheckboxPrimitive.CheckboxProps &
+    React.RefAttributes<HTMLButtonElement> & {
+      label?: ReactNode;
+      error?: string;
+    }
+>;
 
-export type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
-  label?: ReactNode;
-  error?: string;
-  semiChecked?: boolean;
-};
+const Checkbox = forwardRef<
+  React.ElementRef<typeof CheckboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<CheckboxProps>
+>(({ label, error, className, ...props }, ref) => (
+  <div className={cn('flex items-center relative', className)}>
+    <label className="inline-flex items-center">
+      <CheckboxPrimitive.Root
+        ref={ref}
+        className={cn(
+          `peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground transition-all duration-200 ease-in`,
+          {
+            'border-red-500': !!error,
+          }
+        )}
+        {...props}
+      >
+        <CheckboxPrimitive.Indicator className={cn('flex items-center justify-center text-current')}>
+          <Check className="h-4 w-4" />
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
+      <p
+        className={cn('text-sm font-medium leading-none ml-2', {
+          'text-red-500': !!error,
+        })}
+      >
+        {label}
+      </p>
+    </label>
+    <p className="leading-3 text-xs absolute m-0 top-[calc(100%+4px)] text-red-500">{error}</p>
+  </div>
+));
+Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ error, label, className, ...checkboxProps }: CheckboxProps, ref) => {
-    const icon = checkboxProps.semiChecked ? semicheckedIcon : checkedIcon;
-    const theme: CheckboxTheme = { invalid: !!error };
-
-    return (
-      <ThemeProvider theme={theme}>
-        <Container className={className}>
-          <Label>
-            <Field type="checkbox" {...checkboxProps} ref={ref} />
-            <Checkmark>
-              <CheckIcon icon={icon} />
-            </Checkmark>
-            {label}
-          </Label>
-          <Message>{error}</Message>
-        </Container>
-      </ThemeProvider>
-    );
-  }
-);
+export { Checkbox };
