@@ -1,5 +1,5 @@
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
-import { StripeElementChangeEvent } from '@stripe/stripe-js';
+import { StripeElementChangeEvent, StripeElementType } from '@stripe/stripe-js';
 import { ReactNode } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { useIntl } from 'react-intl';
@@ -41,34 +41,34 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
     },
   });
 
+  const stripeRequiredErrorMap: Partial<Record<StripeElementType, string>> = {
+    cardNumber: intl.formatMessage({
+      defaultMessage: 'Card number is required',
+      id: 'Stripe / Payment / Card number required',
+    }),
+    cardExpiry: intl.formatMessage({
+      defaultMessage: 'Card expiry is required',
+      id: 'Stripe / Payment / Card expiry required',
+    }),
+    cardCvc: intl.formatMessage({
+      defaultMessage: 'Card CVC is required',
+      id: 'Stripe / Payment / Card CVC is required',
+    }),
+  };
+
   const validateStripeElement = (value: StripeElementChangeEvent) => {
     if (value.empty) {
-      if (value.elementType === 'cardNumber') {
-        return intl.formatMessage({
-          defaultMessage: 'Card number is required',
-          id: 'Stripe / Payment / Card number required',
-        });
-      }
-
-      if (value.elementType === 'cardExpiry') {
-        return intl.formatMessage({
-          defaultMessage: 'Card expiry is required',
-          id: 'Stripe / Payment / Card expiry required',
-        });
-      }
-
-      if (value.elementType === 'cardCvc') {
-        return intl.formatMessage({
-          defaultMessage: 'Card CVC is required',
-          id: 'Stripe / Payment / Card CVC is required',
-        });
-      }
+      return (
+        stripeRequiredErrorMap[value.elementType] ||
+        intl.formatMessage({
+          defaultMessage: 'This field is required',
+          id: 'Stripe / Payment / Card field required',
+        })
+      );
     }
-
     if (value.error) {
       return value.error.message;
     }
-
     return true;
   };
 

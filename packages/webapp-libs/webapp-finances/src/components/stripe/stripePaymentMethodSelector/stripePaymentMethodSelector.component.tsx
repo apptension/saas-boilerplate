@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { StripeSubscriptionQueryQuery } from '@sb/webapp-api-client';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { isEmpty } from 'ramda';
@@ -24,18 +25,64 @@ import { PaymentFormFields, StripePaymentMethodSelectionType } from './stripePay
 
 export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = {
   control: Control<T>;
-  initialValueId?: string;
+  defaultSavedPaymentMethodId?: string;
 };
 
-export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
-  props: StripePaymentMethodSelectorProps<T>
-) => {
-  const control = props.control as unknown as Control<PaymentFormFields>;
-  const { initialValueId } = props;
-
+/**
+ * A complex input component that populates paymentMethod field of a react-hook-form form. It lists all saved
+ * payment methods and also includes a form to add a new credit card using Stripe Elements.
+ *
+ * @param defaultSavedPaymentMethodId an id of a payment method that should be selected by default. Useful for example
+ * when showing a list of payment methods where one is being used in a recurring subscription
+ * @param control a react-hook-form Control object
+ * @constructor
+ */
+export const StripePaymentMethodSelector = <T extends PaymentFormFields>({
+  defaultSavedPaymentMethodId,
+  control,
+}: StripePaymentMethodSelectorProps<T>) => {
   const { data, loading } = useQuery(stripeSubscriptionQuery, {
     fetchPolicy: 'cache-and-network',
   });
+
+  if (loading) {
+    return (
+      <span>
+        <FormattedMessage defaultMessage="Loading..." id="Loading message" />
+      </span>
+    );
+  }
+
+  return (
+    <StripePaymentMethodSelectorInner
+      data={data}
+      control={control}
+      defaultSavedPaymentMethodId={defaultSavedPaymentMethodId}
+    />
+  );
+};
+
+export type StripePaymentMethodSelectorInnerProps<T extends PaymentFormFields> = StripePaymentMethodSelectorProps<T> & {
+  data?: StripeSubscriptionQueryQuery;
+};
+
+/**
+ * This component is extracted from the StripePaymentMethodSelector to make sure the defaultValue of a
+ * paymentMethod.type form field is set correctly after data is fetched from backend. It's not easy to change the
+ * default value of a react-hook-form field dynamically, so we defer the first render of the controller.
+ *
+ * @param defaultSavedPaymentMethodId an id of a payment method that should be selected by default. Useful for example
+ * when showing a list of payment methods where one is being used in a recurring subscription
+ * @param data
+ * @param control a react-hook-form Control object
+ * @constructor
+ */
+export const StripePaymentMethodSelectorInner = <T extends PaymentFormFields>({
+  defaultSavedPaymentMethodId,
+  data,
+  ...props
+}: StripePaymentMethodSelectorInnerProps<T>) => {
+  const control = props.control as unknown as Control<PaymentFormFields>;
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
   const { deletePaymentMethod } = useStripePaymentMethods();
 
@@ -51,7 +98,8 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
     name: 'paymentMethod.savedPaymentMethod',
     control,
     defaultValue:
-      (initialValueId && paymentMethods.find((method) => method.id === initialValueId)) || paymentMethods[0],
+      (defaultSavedPaymentMethodId && paymentMethods.find((method) => method.id === defaultSavedPaymentMethodId)) ||
+      paymentMethods[0],
   });
 
   const isExistingMethodSelected = (id: string) => {
@@ -86,14 +134,6 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
 
     await deletePaymentMethod(deletedPaymentMethod.pk);
   };
-
-  if (loading) {
-    return (
-      <span>
-        <FormattedMessage defaultMessage="Loading..." id="Loading message" />
-      </span>
-    );
-  }
 
   return (
     <Container>

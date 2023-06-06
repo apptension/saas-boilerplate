@@ -70,7 +70,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     <Form onSubmit={handleSubmit(onSubmit)}>
       <StripePaymentMethodSelector
         control={form.control}
-        initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
+        defaultSavedPaymentMethodId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
       />
 
       {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}

@@ -58,24 +58,12 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
     },
   });
 
-  const deletePaymentMethod = (id: string) => {
-    return commitDeletePaymentMethodMutation({
-      variables: {
-        input: {
-          id,
-        },
-      },
-    });
+  const deletePaymentMethod = async (id: string) => {
+    return await commitDeletePaymentMethodMutation({ variables: { input: { id } } });
   };
 
-  const updateDefaultPaymentMethod = (id: string) => {
-    return commitUpdateDefaultPaymentMethodMutation({
-      variables: {
-        input: {
-          id,
-        },
-      },
-    });
+  const updateDefaultPaymentMethod = async (id: string) => {
+    return await commitUpdateDefaultPaymentMethodMutation({ variables: { input: { id } } });
   };
 
   return { deletePaymentMethod, updateDefaultPaymentMethod };
