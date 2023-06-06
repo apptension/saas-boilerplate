@@ -59,7 +59,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
 
   const onSubmit = async (data: ChangePaymentFormFields) => {
     if (data.paymentMethod.type === StripePaymentMethodSelectionType.NEW_CARD) {
-      return createSetupIntent();
+      return await createSetupIntent();
     }
 
     if (!data.paymentMethod.savedPaymentMethod.pk) return;

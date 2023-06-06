@@ -287,6 +287,8 @@ type SubscriptionScheduleType implements Node {
   metadata: String
   "A description of this object."
   description: String
+  "Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period."
+  billingThresholds: String
   "Time at which the subscription schedule was canceled."
   canceledAt: DateTime
   "Time at which the subscription schedule was completed."
@@ -304,9 +306,9 @@ type SubscriptionScheduleType implements Node {
   releasedSubscription: StripeSubscriptionType
   "The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`."
   status: DjstripeSubscriptionScheduleStatusChoices!
-  subscription: StripeSubscriptionType
   "The schedule associated with this subscription."
   subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
+  subscription: StripeSubscriptionType
   defaultPaymentMethod: StripePaymentMethodType
   canActivateTrial: Boolean
 }
@@ -1005,8 +1007,6 @@ enum DjstripeSubscriptionScheduleStatusChoices {
 enum DjstripePaymentMethodTypeChoices {
   "Acss Dbit"
   ACSS_DEBIT
-  "Affirm"
-  AFFIRM
   "Afterpay Clearpay"
   AFTERPAY_CLEARPAY
   "Alipay"
@@ -1017,16 +1017,12 @@ enum DjstripePaymentMethodTypeChoices {
   BACS_DEBIT
   "Bancontact"
   BANCONTACT
-  "BLIK"
-  BLIK
   "Boleto"
   BOLETO
   "Card"
   CARD
   "Card present"
   CARD_PRESENT
-  "Customer Balance"
-  CUSTOMER_BALANCE
   "EPS"
   EPS
   "FPX"
@@ -1041,26 +1037,14 @@ enum DjstripePaymentMethodTypeChoices {
   INTERAC_PRESENT
   "Klarna"
   KLARNA
-  "Konbini"
-  KONBINI
-  "Link"
-  LINK
   "OXXO"
   OXXO
   "Przelewy24"
   P24
-  "PayNow"
-  PAYNOW
-  "Pix"
-  PIX
-  "PromptPay"
-  PROMPTPAY
   "SEPA Direct Debit"
   SEPA_DEBIT
   "SOFORT"
   SOFORT
-  "ACH Direct Debit"
-  US_BANK_ACCOUNT
   "Wechat Pay"
   WECHAT_PAY
 }
@@ -1241,8 +1225,6 @@ enum DjstripeChargeFailureCodeChoices {
   URL_INVALID
 }
 enum DjstripeInvoiceBillingReasonChoices {
-  "Automatic pending invoice item invoice"
-  AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE
   "Manual"
   MANUAL
   "Subscription"
