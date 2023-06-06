@@ -1,5 +1,5 @@
 import { Button, Link } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
+import { Checkbox, Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -7,7 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
 import { useSignupForm } from './signupForm.hooks';
-import { Checkbox, Container, ErrorMessage } from './signupForm.styles';
+import { Container, ErrorMessage } from './signupForm.styles';
 
 export const SignupForm = () => {
   const intl = useIntl();
@@ -22,6 +22,15 @@ export const SignupForm = () => {
     loading,
     handleSignup,
   } = useSignupForm();
+  console.log({
+    ...register('acceptTerms', {
+      required: true,
+    }),
+  });
+
+  const { onChange } = register('acceptTerms', {
+    required: true,
+  });
 
   return (
     <Container onSubmit={handleSignup}>
@@ -91,13 +100,7 @@ export const SignupForm = () => {
 
       <Checkbox
         {...register('acceptTerms', {
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'You need to accept terms and conditions',
-              id: 'Auth / Signup / Terms and conditions required',
-            }),
-          },
+          required: true,
         })}
         label={intl.formatMessage(
           {
