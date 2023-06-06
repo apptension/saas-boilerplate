@@ -64,8 +64,11 @@ jobs:
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: packages/workers
+        if: env.SONAR_ORGANIZATION != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_WORKERS_PROJECT_KEY: ${{ vars.SONAR_WORKERS_PROJECT_KEY }}
+        with:
+          projectBaseDir: packages/workers

@@ -35,14 +35,14 @@ and seamlessly transition from setup to innovation.
 
 This boilerplate includes plenty of ready to use features that you can adjust to you needs:
 
-- [Authentication and authorization](https://docs.demo.saas.apptoku.com/v2/introduction/features/auth)
-- [Notifications](https://docs.demo.saas.apptoku.com/v2/introduction/features/notifications)
-- [Emails](https://docs.demo.saas.apptoku.com/v2/introduction/features/emails)
-- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/v2/introduction/features/payments)
-- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/v2/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/v2/introduction/features/cicd)
-- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/v2/introduction/features/cms)
-- [Admin panel](https://docs.demo.saas.apptoku.com/v2/introduction/features/admin)
-- [CRUD generators](https://docs.demo.saas.apptoku.com/v2/introduction/features/crud)
+- [Authentication and authorization](https://docs.demo.saas.apptoku.com/introduction/features/auth)
+- [Notifications](https://docs.demo.saas.apptoku.com/introduction/features/notifications)
+- [Emails](https://docs.demo.saas.apptoku.com/introduction/features/emails)
+- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/introduction/features/payments)
+- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/introduction/features/cicd)
+- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/introduction/features/cms)
+- [Admin panel](https://docs.demo.saas.apptoku.com/introduction/features/admin)
+- [CRUD generators](https://docs.demo.saas.apptoku.com/introduction/features/crud)
 
 ... and more
 
@@ -57,7 +57,7 @@ The full list with the descriptions can be found in the [features documentation]
   You can use [nvm](https://github.com/nvm-sh/nvm) for managing multiple Node versions installed on a single machine.
 - Install [Python](https://www.python.org/downloads/) version 3.8 (which can be checked by running `python3 -v`). You can use [`pyenv`](https://github.com/pyenv/pyenv)
   for managing multiple Python versions installed on a single machine.
-- Install [pnpm](https://pnpm.io/installation) version 7 or above (which can be checked by running `pnpm --version`)
+- Install [pnpm](https://pnpm.io/installation) version 8 or above (which can be checked by running `pnpm --version`)
 - Install [nx](https://nx.dev/getting-started/intro#why-nx) version 15.4.5. After you install Node.js call
   `npm install -g nx@15.4.5`
 
@@ -100,7 +100,7 @@ yarn create saas-boilerplate
 #### Manual setup
 
 For the manual setup clone this repository and follow the steps in
-[Getting started guide](https://docs.demo.saas.apptoku.com/v2/getting-started/run-project/run-new-project#manual-setup).
+[Getting started guide](https://docs.demo.saas.apptoku.com/getting-started/run-project/run-new-project#manual-setup).
 
 ### Run existing project
 
@@ -176,7 +176,7 @@ Infrastructure:
 - SonarCloud
 - OpenAI
 
-The [detailed stack description](https://docs.demo.saas.apptoku.com/v2/introduction/stack-description) is available in the documentation.
+The [detailed stack description](https://docs.demo.saas.apptoku.com/introduction/stack-description) is available in the documentation.
 
 ## How was the SaaS Boilerplate created?
 

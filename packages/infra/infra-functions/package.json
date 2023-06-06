@@ -11,12 +11,12 @@
     "remove": "sls remove"
   },
   "dependencies": {
-    "glob-to-regexp": "^0.4.1",
-    "aws-sdk": "^2.1313.0"
+    "@aws-sdk/client-codebuild": "^3.342.0",
+    "glob-to-regexp": "^0.4.1"
   },
   "devDependencies": {
+    "esbuild": "^0.16.17",
     "serverless": "^3.25.1",
-    "serverless-esbuild": "^1.37.0",
-    "esbuild": "^0.16.17"
+    "serverless-esbuild": "^1.37.0"
   }
 }

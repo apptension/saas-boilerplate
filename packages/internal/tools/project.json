@@ -8,28 +8,28 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/tools",
-        "main": "packages/tools/src/index.ts",
-        "tsConfig": "packages/tools/tsconfig.lib.json",
+        "outputPath": "dist/packages/internal/tools/build",
+        "main": "packages/internal/tools/src/index.ts",
+        "tsConfig": "packages/internal/tools/tsconfig.lib.json",
         "assets": [
-          "packages/tools/*.md",
+          "packages/internal/tools/*.md",
           {
-            "input": "./packages/tools/src",
+            "input": "./packages/internal/tools/src",
             "glob": "**/!(*.ts)",
             "output": "./src"
           },
           {
-            "input": "./packages/tools/src",
+            "input": "./packages/internal/tools/src",
             "glob": "**/*.d.ts",
             "output": "./src"
           },
           {
-            "input": "./packages/tools",
+            "input": "./packages/internal/tools",
             "glob": "generators.json",
             "output": "."
           },
           {
-            "input": "./packages/tools",
+            "input": "./packages/internal/tools",
             "glob": "executors.json",
             "output": "."
           }
@@ -40,7 +40,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/tools/jest.config.ts",
+        "jestConfig": "packages/internal/tools/jest.config.ts",
         "passWithNoTests": true
       }
     },

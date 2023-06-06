@@ -14,7 +14,7 @@ RUN chown -R node:node /home/node \
     && chmod -R 770 /home/node \
     && chown -R node:node /root/.cache/Cypress
 
-RUN npm install -g nx@^15.4.5 pnpm@^7.25.0
+RUN npm install -g nx@^15.4.5 pnpm@^8.6.1
 
 COPY --chown=node:node --from=chamber /chamber /bin/chamber
 

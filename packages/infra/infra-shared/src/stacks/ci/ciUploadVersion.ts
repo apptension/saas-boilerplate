@@ -50,7 +50,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^7.25.0',
+              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
