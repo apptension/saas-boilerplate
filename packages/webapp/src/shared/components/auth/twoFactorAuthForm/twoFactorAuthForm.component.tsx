@@ -9,7 +9,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
-import { Container } from './twoFactorAuthForm.styles';
 
 export type TwoFactorAuthFormProps = {
   isEnabled?: boolean;
@@ -39,7 +38,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
   };
 
   return (
-    <Container>
+    <div>
       {isEnabled ? (
         <div className="flex flex-col items-start">
           <FormattedMessage
@@ -72,6 +71,6 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
           <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
         </DialogContent>
       </Dialog>
-    </Container>
+    </div>
   );
 };
