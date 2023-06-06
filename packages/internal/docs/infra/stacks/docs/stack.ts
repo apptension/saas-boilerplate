@@ -22,8 +22,7 @@ export class DocsStack extends Stack {
     const domainZone = getHostedZone(this, props.envSettings);
     const certificateArn = getCloudfrontCertificateArn(props.envSettings);
 
-    const filesPath = `${__dirname}/../../..//build`;
-    console.log(filesPath)
+    const filesPath = `${__dirname}/../../../build`;
     if (fs.existsSync(filesPath)) {
       this.webAppCloudFrontDistribution = new WebAppCloudFrontDistribution(
         this,
@@ -32,13 +31,13 @@ export class DocsStack extends Stack {
           sources: [s3Deployment.Source.asset(filesPath)],
           domainZone,
           domainName: props.envSettings.domains.docs,
-          apiDomainName: props.envSettings.domains.api,
           certificateArn,
           authLambdaSSMParameterName:
             UsEastResourcesStack.getAuthLambdaVersionArnSSMParameterName(
               props.envSettings
             ),
           distributionPaths: ['/*'],
+          basicAuth: props.envSettings.appBasicAuth,
         }
       );
     }
