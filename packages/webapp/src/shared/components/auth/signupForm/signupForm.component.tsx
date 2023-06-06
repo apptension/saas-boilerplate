@@ -22,15 +22,6 @@ export const SignupForm = () => {
     loading,
     handleSignup,
   } = useSignupForm();
-  console.log({
-    ...register('acceptTerms', {
-      required: true,
-    }),
-  });
-
-  const { onChange } = register('acceptTerms', {
-    required: true,
-  });
 
   return (
     <Container onSubmit={handleSignup}>
