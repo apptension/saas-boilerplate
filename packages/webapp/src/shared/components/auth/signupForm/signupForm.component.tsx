@@ -1,22 +1,12 @@
 import { Button, Link } from '@sb/webapp-core/components/buttons';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-} from '@sb/webapp-core/components/forms';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { size } from '@sb/webapp-core/theme';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
 import { useSignupForm } from './signupForm.hooks';
-import { Checkbox, Container, ErrorMessage } from './signupForm.styles';
+import { Checkbox, ErrorMessage } from './signupForm.styles';
 
 export const SignupForm = () => {
   const intl = useIntl();
