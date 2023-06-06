@@ -57,7 +57,7 @@ The full list with the descriptions can be found in the [features documentation]
   You can use [nvm](https://github.com/nvm-sh/nvm) for managing multiple Node versions installed on a single machine.
 - Install [Python](https://www.python.org/downloads/) version 3.8 (which can be checked by running `python3 -v`). You can use [`pyenv`](https://github.com/pyenv/pyenv)
   for managing multiple Python versions installed on a single machine.
-- Install [pnpm](https://pnpm.io/installation) version 7 or above (which can be checked by running `pnpm --version`)
+- Install [pnpm](https://pnpm.io/installation) version 8 or above (which can be checked by running `pnpm --version`)
 - Install [nx](https://nx.dev/getting-started/intro#why-nx) version 15.4.5. After you install Node.js call
   `npm install -g nx@15.4.5`
 

@@ -80,7 +80,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: [
               'go get github.com/segmentio/chamber',
-              'npm i -g nx@^15.4.5 pnpm@^7.25.0',
+              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -190,7 +190,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^7.25.0',
+              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
