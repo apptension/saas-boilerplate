@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
 
 import { authUpdateUserProfileMutation } from '../editProfileForm/editProfileForm.graphql';
@@ -12,7 +12,7 @@ import { UpdateAvatarFormFields } from './avatarForm.types';
 export const useAvatarForm = () => {
   const intl = useIntl();
   const formatFileSize = useFormatFileSize();
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
 
   const fileTooLargeMessage = intl.formatMessage(
     {
@@ -47,12 +47,12 @@ export const useAvatarForm = () => {
 
       reset();
 
-      snackbar.showMessage(
-        intl.formatMessage({
+      toast({
+        description: intl.formatMessage({
           defaultMessage: 'Avatar successfully changed.',
           id: 'Auth / Avatar Form / Success message',
-        })
-      );
+        }),
+      });
     },
     onError: (error) => {
       setApolloGraphQLResponseErrors(error.graphQLErrors);

@@ -6,7 +6,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
 import { ENV } from '@sb/webapp-core/config/env';
-import { SnackbarEmitterActions } from '@sb/webapp-core/snackbar';
+import { ToastEmitterActions } from '@sb/webapp-core/toast';
 import { createUploadLink } from 'apollo-upload-client';
 import { createClient } from 'graphql-ws';
 import { Kind, OperationTypeNode } from 'graphql/language';
@@ -38,7 +38,7 @@ const httpApiLink = createUploadLink({
 });
 
 function showNetworkErrorMessage() {
-  emitter.dispatchEvent(SnackbarEmitterActions.SNACKBAR_SHOW_MESSAGE, 'Network error occurred');
+  emitter.dispatchEvent(ToastEmitterActions.ADD_TOAST, { description: 'Network error occurred' });
 }
 
 const handleApiErrors = (

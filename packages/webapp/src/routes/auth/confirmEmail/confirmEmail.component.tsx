@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { useCallback, useEffect } from 'react';
 import { useIntl } from 'react-intl';
@@ -17,7 +17,7 @@ export const ConfirmEmail = () => {
   const generateLocalePath = useGenerateLocalePath();
   const params = useParams<{ token: string; user: string }>();
   const { isLoggedIn } = useAuth();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const loggedOutSuccessMessage = intl.formatMessage({
     id: 'ConfirmEmail.LoggedOutSuccessMessage',
     defaultMessage: 'Congratulations! Now you can log in.',
@@ -39,11 +39,11 @@ export const ConfirmEmail = () => {
     onCompleted: () => {
       trackEvent('auth', 'user-email-confirm');
 
-      showMessage(successMessage);
+      toast({ description: successMessage });
       navigate(generateLocalePath(RoutesConfig.login));
     },
     onError: () => {
-      showMessage(errorMessage);
+      toast({ description: errorMessage, variant: 'destructive' });
       navigate(generateLocalePath(RoutesConfig.login));
     },
   });

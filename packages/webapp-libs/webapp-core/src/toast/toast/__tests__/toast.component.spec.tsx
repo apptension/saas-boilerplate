@@ -3,20 +3,20 @@ import userEvent from '@testing-library/user-event';
 import { Fragment, useEffect } from 'react';
 
 import { render } from '../../../tests/utils/rendering';
-import { useSnackbar } from '../../useSnackbar';
+import { useToast } from '../../useToast';
 
 const Component = () => {
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
 
   useEffect(() => {
-    showMessage('first message');
-    showMessage('second message');
-  }, [showMessage]);
+    toast({ description: 'first message' });
+    toast({ description: 'second message' });
+  }, [toast]);
 
   return <Fragment />;
 };
 
-describe('Snackbar: Component', () => {
+describe('Toast: Component', () => {
   it('should render all messages', async () => {
     render(<Component />);
 
@@ -25,7 +25,7 @@ describe('Snackbar: Component', () => {
   });
 
   describe('message close icon is clicked', () => {
-    it('should dispatch hideMessage with proper id', async () => {
+    it('should dispatch hideToast with proper id', async () => {
       render(<Component />);
 
       const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/i)[0];

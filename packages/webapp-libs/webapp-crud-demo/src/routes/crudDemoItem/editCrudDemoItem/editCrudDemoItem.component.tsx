@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { BackButton } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useParams } from 'react-router';
 
@@ -19,7 +19,7 @@ export const EditCrudDemoItem = () => {
   const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id: id ?? '' } });
   const crudDemoItem = data?.crudDemoItem;
 
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
@@ -34,7 +34,7 @@ export const EditCrudDemoItem = () => {
 
       trackEvent('crud', 'edit', id);
 
-      showMessage(successMessage);
+      toast({ description: successMessage });
     },
   });
 

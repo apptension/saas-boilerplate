@@ -75,7 +75,7 @@ describe('StripePaymentForm: Component', () => {
 
     await waitForApolloMocks(1);
 
-    expect(await screen.findAllByRole('list')).toHaveLength(2);
+    expect(await screen.findAllByRole('listitem')).toHaveLength(2);
   });
 
   describe('action completes successfully', () => {

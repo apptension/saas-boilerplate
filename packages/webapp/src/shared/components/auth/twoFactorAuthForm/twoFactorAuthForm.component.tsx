@@ -4,7 +4,7 @@ import { Button } from '@sb/webapp-core/components/buttons';
 import { Dialog, DialogContent } from '@sb/webapp-core/components/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
@@ -19,7 +19,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
   const [commitDisableOtpMutation] = useMutation(disableOtpMutation, { variables: { input: {} } });
   const { reload } = useCommonQuery();
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Two-factor / Disable success',
@@ -33,7 +33,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
     if (!isDeleted) return;
 
     trackEvent('auth', 'otp-disabled');
-    showMessage(successMessage);
+    toast({ description: successMessage });
     reload();
   };
 

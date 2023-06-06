@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { FragmentType, NotificationConnection, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 
 import { notificationsListContentFragment, notificationsListMarkAsReadMutation } from './notificationsList.graphql';
 
 export const useMarkAllAsRead = (message: string) => {
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
 
   const [commitMarkAsReadMutation] = useMutation(notificationsListMarkAsReadMutation);
 
@@ -40,7 +40,7 @@ export const useMarkAllAsRead = (message: string) => {
         });
       },
     });
-    snackbar.showMessage(message);
+    toast({ description: message });
   };
 };
 
