@@ -15,11 +15,11 @@ export const useToast = () => {
   const { toastState, dispatch } = context;
 
   const ref = useRef({
-    lastMessageId: toastState.lastToastId,
+    lastToastId: toastState.lastToastId,
   });
 
   useEffect(() => {
-    ref.current.lastMessageId = toastState.lastToastId;
+    ref.current.lastToastId = toastState.lastToastId;
   }, [toastState.lastToastId]);
 
   const hideToast = useCallback(
@@ -31,22 +31,22 @@ export const useToast = () => {
 
   const toast = useCallback(
     ({ ...props }: ToasterToastProps, { hideDelay = DEFAULT_TOAST_ONSCREEN_TIME }: { hideDelay?: number } = {}) => {
-      const newMessageId = ++ref.current.lastMessageId;
+      const newToastId = ++ref.current.lastToastId;
       const action: ToastActionType = {
         type: 'ADD_TOAST',
         payload: {
           ...props,
-          id: newMessageId,
+          id: newToastId,
           open: true,
           onOpenChange: (open) => {
-            if (!open) hideToast(newMessageId);
+            if (!open) hideToast(newToastId);
           },
         } as ToasterToast,
       };
       dispatch(action);
 
       setTimeout(() => {
-        dispatch({ type: 'DISMISS_TOAST', payload: newMessageId });
+        dispatch({ type: 'DISMISS_TOAST', payload: newToastId });
       }, hideDelay);
     },
     [dispatch, hideToast]

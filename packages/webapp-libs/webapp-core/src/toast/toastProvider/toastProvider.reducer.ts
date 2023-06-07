@@ -6,7 +6,7 @@ export const toastReducer = (state: ToastState, { type, payload }: ToastActionTy
     case 'ADD_TOAST':
       return {
         ...state,
-        lastMessageId: payload.id,
+        lastToastId: payload.id,
         toasts: [...state.toasts, payload],
       };
     case 'DISMISS_TOAST':
