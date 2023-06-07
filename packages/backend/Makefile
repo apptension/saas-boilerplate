@@ -10,22 +10,22 @@ setup:
 	chmod +x ./scripts/*.sh
 
 test:
-	nx test
+	pnpm nx test
 
 build:
-	nx build
+	pnpm nx build
 
 build-docs:
-	nx build-docs
+	pnpm nx build-docs
 
 deploy-api:
-	nx deploy:api
+	pnpm nx deploy:api
 
 deploy-migrations:
-	nx deploy:migrations
+	pnpm nx deploy:migrations
 
 deploy:
-	nx deploy
+	pnpm nx deploy
 
 # Local CLI rules
 

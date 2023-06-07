@@ -60,14 +60,14 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=infra-shared...`,
             ],
           },
-          build: { commands: ['nx run infra-shared:deploy:components'] },
+          build: { commands: ['pnpm nx run infra-shared:deploy:components'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

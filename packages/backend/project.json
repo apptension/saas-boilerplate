@@ -15,7 +15,7 @@
       "options": {
         "color": true,
         "commands": [
-          "nx run core:docker-login",
+          "pnpm nx run core:docker-login",
           "docker-compose build backend"
         ],
         "parallel": false
@@ -61,16 +61,16 @@
       "configurations": {
         "api": {
           "commands": [
-            "nx cdk:deploy:api",
-            "nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
+            "pnpm nx cdk:deploy:api",
+            "pnpm nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
           ],
           "parallel": false
         },
         "migrations": {
           "commands": [
-            "nx cdk:deploy:migrations",
-            "nx run trigger-migrations-job",
-            "nx run tools:upload-service-version migrations"
+            "pnpm nx cdk:deploy:migrations",
+            "pnpm nx run trigger-migrations-job",
+            "pnpm nx run tools:upload-service-version migrations"
           ],
           "parallel": false
         }

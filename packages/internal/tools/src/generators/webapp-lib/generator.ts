@@ -6,8 +6,7 @@ import {
   names,
   offsetFromRoot,
   Tree,
-
-} from '@nrwl/devkit';
+} from '@nx/devkit';
 import * as path from 'path';
 import { WebappLibGeneratorSchema } from './schema';
 

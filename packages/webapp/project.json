@@ -19,16 +19,16 @@
       },
       "configurations": {
         "generate-types": {
-          "commands": ["nx run webapp-api-client:graphql:generate-types"],
+          "commands": ["pnpm nx run webapp-api-client:graphql:generate-types"],
           "parallel": false
         },
         "generate-types:watch": {
-          "commands": ["nx run webapp-api-client:graphql:generate-types:watch"]
+          "commands": ["pnpm nx run webapp-api-client:graphql:generate-types:watch"]
         },
         "download-schema": {
           "commands": [
-            "nx run webapp-api-client:graphql:download-schema",
-            "nx run webapp-contentful:graphql:download-schema"
+            "pnpm nx run webapp-api-client:graphql:download-schema",
+            "pnpm nx run webapp-contentful:graphql:download-schema"
           ]
         }
       }
@@ -38,7 +38,7 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "commands": ["pnpm run vite", "nx run webapp:graphql:generate-types:watch"]
+        "commands": ["pnpm run vite", "pnpm nx run webapp:graphql:generate-types:watch"]
       },
       "dependsOn": ["setup", "graphql:generate-types"]
     },
@@ -56,12 +56,12 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "command": "nx run tools:chamber-exec webapp nx run webapp:build-vite"
+        "command": "pnpm nx run tools:chamber-exec webapp nx run webapp:build-vite"
       },
       "dependsOn": ["graphql:generate-types"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/webapp/**/*.{ts,tsx,js,jsx}"]
@@ -74,7 +74,7 @@
         "color": true,
         "commands": [
           "pnpm run cdk deploy *WebAppStack",
-          "nx run tools:upload-service-version webapp \"url=https://${SB_DOMAIN_WEB_APP}\""
+          "pnpm nx run tools:upload-service-version webapp \"url=https://${SB_DOMAIN_WEB_APP}\""
         ],
         "parallel": false
       }

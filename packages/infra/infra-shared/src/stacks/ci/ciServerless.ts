@@ -80,7 +80,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: [
               'go get github.com/segmentio/chamber',
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -90,9 +90,9 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              `nx run ${props.name}:lint`,
-              'nx run webapp-emails:build',
-              `nx run ${props.name}:test`,
+              `pnpm nx run ${props.name}:lint`,
+              'pnpm nx run webapp-emails:build',
+              `pnpm nx run ${props.name}:test`,
             ],
           },
         },
@@ -190,14 +190,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=workers...`,
             ],
           },
-          build: { commands: [`nx run ${props.name}:deploy`] },
+          build: { commands: [`pnpm nx run ${props.name}:deploy`] },
         },
         cache: {
           paths: this.defaultCachePaths,

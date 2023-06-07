@@ -76,7 +76,7 @@ export class WebappCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: [
               'go get github.com/segmentio/chamber',
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -85,9 +85,9 @@ export class WebappCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              'nx run webapp:lint',
-              'nx run webapp:test --watchAll=false',
-              'nx run webapp:build',
+              'pnpm nx run webapp:lint',
+              'pnpm nx run webapp:test --watchAll=false',
+              'pnpm nx run webapp:build',
             ],
           },
         },
@@ -145,14 +145,14 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=webapp...`,
             ],
           },
-          build: { commands: ['nx run webapp:deploy'] },
+          build: { commands: ['pnpm nx run webapp:deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

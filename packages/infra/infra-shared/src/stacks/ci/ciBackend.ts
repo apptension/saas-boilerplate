@@ -76,7 +76,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -84,7 +84,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             ],
           },
           build: {
-            commands: ['nx run backend:build'],
+            commands: ['pnpm nx run backend:build'],
           },
         },
       }),
@@ -143,14 +143,14 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=backend...`,
             ],
           },
-          build: { commands: ['nx run backend:deploy:api'] },
+          build: { commands: ['pnpm nx run backend:deploy:api'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -202,14 +202,14 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=backend...`,
             ],
           },
-          build: { commands: ['nx run backend:deploy:migrations'] },
+          build: { commands: ['pnpm nx run backend:deploy:migrations'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
