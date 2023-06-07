@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { cn } from '@sb/webapp-core/lib/utils';
+
+import { cn } from '../../../../lib/utils';
 
 type FormItemContextValue = {
   id: string;

@@ -1,8 +1,8 @@
 import * as LabelPrimitive from '@radix-ui/react-label';
 import React from 'react';
 
+import { cn } from '../../../../lib/utils';
 import { useFormField } from '../formField';
-import { cn } from '@sb/webapp-core/lib/utils';
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
