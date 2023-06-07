@@ -41,7 +41,7 @@ export const useToast = () => {
           onOpenChange: (open) => {
             if (!open) hideToast(newMessageId);
           },
-        },
+        } as ToasterToast,
       };
       dispatch(action);
 
