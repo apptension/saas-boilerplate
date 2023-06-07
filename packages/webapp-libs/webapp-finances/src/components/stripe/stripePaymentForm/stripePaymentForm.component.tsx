@@ -21,21 +21,15 @@ export type StripePaymentFormProps = {
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();
-  const { onSubmit, apiFormControls, loading } = useStripePaymentForm(onSuccess);
-
   const {
-    form: {
-      register,
-      formState: { errors },
-      formState,
-      watch,
-    },
-  } = apiFormControls;
-
-  const amountValue = watch('product');
+    onSubmit,
+    apiFormControls: { form, hasGenericErrorOnly, genericError },
+    loading,
+  } = useStripePaymentForm(onSuccess);
+  const amountValue = form.watch('product');
 
   return (
-    <Form onSubmit={onSubmit}>
+    <Form noValidate onSubmit={onSubmit}>
       <div>
         <Heading>
           <FormattedMessage defaultMessage="Choose the product" id="Stripe / payment form / product label" />
@@ -45,7 +39,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
           {Object.values(TestProduct).map((amount) => (
             <ProductListItem key={amount}>
               <ProductListItemButton
-                {...register('product', {
+                {...form.register('product', {
                   required: {
                     value: true,
                     message: intl.formatMessage({
@@ -61,14 +55,16 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
             </ProductListItem>
           ))}
         </ProductListContainer>
-        <ErrorMessage>{errors.product?.message}</ErrorMessage>
+        <ErrorMessage>{form.formState.errors.product?.message}</ErrorMessage>
       </div>
 
       <StripePaymentFormContainer>
-        <StripePaymentMethodSelector formControls={apiFormControls} />
+        <StripePaymentMethodSelector control={form.control} />
       </StripePaymentFormContainer>
 
-      <SubmitButton disabled={!formState.isValid || formState.isSubmitting || loading}>
+      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+
+      <SubmitButton disabled={!form.formState.isValid || form.formState.isSubmitting || loading}>
         <FormattedMessage
           values={{ amount: amountValue ? `${amountValue} USD` : '' }}
           defaultMessage="Pay {amount}"

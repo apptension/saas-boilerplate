@@ -1,4 +1,8 @@
-import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  Subscription,
+  SubscriptionPlanName,
+  Subscription as SubscriptionType,
+} from '@sb/webapp-api-client/api/subscription/types';
 import {
   paymentMethodFactory,
   subscriptionFactory,
@@ -14,6 +18,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ActiveSubscriptionContext } from '../../../components/activeSubscriptionContext';
 import {
   fillActivePlanDetailsQuery,
+  fillAllPaymentsMethodsQuery,
   fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
@@ -21,12 +26,12 @@ import {
 import { render } from '../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
 
-const defaultPaymentPlan = [paymentMethodFactory()];
+const paymentMethodsMock = [paymentMethodFactory()];
 
 const defaultActivePlan = {
-  id: defaultPaymentPlan[0].id,
+  id: paymentMethodsMock[0].id,
   defaultPaymentMethod: {
-    id: defaultPaymentPlan[0].id,
+    id: paymentMethodsMock[0].id,
   },
 };
 
@@ -83,12 +88,22 @@ describe('Subscriptions: Component', () => {
   });
 
   it('should render default payment method', async () => {
-    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory(), defaultPaymentPlan);
-
-    render(<Component />, {
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat(requestSubscriptionScheduleMock, resolveActiveSubscriptionMocks()),
+    const subscription = subscriptionFactory({
+      defaultPaymentMethod: paymentMethodsMock[0],
     });
+    const requestAllPaymentMethodsMock = fillAllPaymentsMethodsQuery(paymentMethodsMock as Partial<Subscription>[]);
+    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscription, paymentMethodsMock);
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat(
+          requestSubscriptionScheduleMock,
+          requestAllPaymentMethodsMock,
+          resolveActiveSubscriptionMocks()
+        ),
+    });
+
+    await waitForApolloMocks();
 
     expect(await screen.findByText('MockLastName Visa **** 9999')).toBeInTheDocument();
   });

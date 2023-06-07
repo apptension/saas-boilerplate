@@ -12,7 +12,7 @@ import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
 
 const StripePaymentMethodSelectorWithControls = () => {
   const formControls = useApiForm<PaymentFormFields>();
-  return <StripePaymentMethodSelector formControls={formControls} />;
+  return <StripePaymentMethodSelector control={formControls.form.control} />;
 };
 
 const Component = () => {

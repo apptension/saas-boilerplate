@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div``;
 
-export const Form = styled.form.attrs(() => ({ noValidate: true }))`
+export const Form = styled.form`
   width: 100%;
   max-width: 480px;
 `;

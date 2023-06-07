@@ -184,6 +184,7 @@ describe('EditPaymentMethodForm: Component', () => {
     expect(await screen.findByRole('button', { name: /save/i })).not.toBeDisabled();
 
     await submitForm();
+    await waitForApolloMocks();
 
     expect(onSuccess).toHaveBeenCalled();
   });

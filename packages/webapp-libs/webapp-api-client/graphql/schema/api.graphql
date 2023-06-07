@@ -1387,6 +1387,7 @@ input PasswordResetConfirmationMutationInput {
 }
 input ValidateOTPMutationInput {
   otpToken: String!
+  otpAuthToken: String
   clientMutationId: String
 }
 input UpdateNotificationMutationInput {

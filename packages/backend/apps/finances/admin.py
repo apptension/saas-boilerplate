@@ -7,15 +7,10 @@ admin.site.unregister(djstripe_models.Charge)
 
 
 @admin.register(djstripe_models.PaymentIntent)
-class PaymentIntentAdmin(djstripe_admin.PaymentIntentAdmin):
+class PaymentIntentAdmin(djstripe_admin.StripeModelAdmin):
     change_form_template = 'djstripe/paymentintent/admin/change_form.html'
 
 
 @admin.register(djstripe_models.Charge)
-class ChargeAdmin(djstripe_admin.ChargeAdmin):
+class ChargeAdmin(djstripe_admin.StripeModelAdmin):
     change_form_template = 'djstripe/charge/admin/change_form.html'
-
-
-@admin.register(djstripe_models.SubscriptionSchedule)
-class SubscriptionScheduleAdmin(djstripe_admin.StripeModelAdmin):
-    pass

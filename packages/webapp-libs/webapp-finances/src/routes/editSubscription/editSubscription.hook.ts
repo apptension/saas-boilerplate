@@ -36,10 +36,10 @@ export const useEditSubscription = () => {
     },
   });
 
-  const selectPlan = (plan: string | null) => {
+  const selectPlan = async (plan: string | null) => {
     if (!plan) return;
 
-    commitChangeActiveSubscriptionMutation({
+    await commitChangeActiveSubscriptionMutation({
       variables: {
         input: {
           price: plan,

@@ -22,19 +22,21 @@ export const useStripePayment = () => {
     if (!stripe) return null;
 
     if (paymentMethod.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD) {
-      if (paymentMethod.data.type === (StripePaymentMethodType.Card as string)) {
-        if (!paymentMethod.data.pk)
-          return {
-            error: {
-              message: intl.formatMessage({
-                defaultMessage: 'Wrong payment method used',
-                id: 'Stripe / Confirm payment / Wrong payment method',
-              }),
-            },
-            paymentIntent: null,
-          };
+      if (!paymentMethod.savedPaymentMethod.pk) {
+        return {
+          error: {
+            message: intl.formatMessage({
+              defaultMessage: 'Wrong payment method used',
+              id: 'Stripe / Confirm payment / Wrong payment method',
+            }),
+          },
+          paymentIntent: null,
+        };
+      }
+
+      if (paymentMethod.savedPaymentMethod.type === StripePaymentMethodType.Card.toString()) {
         return await stripe.confirmCardPayment(paymentIntent.clientSecret, {
-          payment_method: paymentMethod.data.pk,
+          payment_method: paymentMethod.savedPaymentMethod.pk,
         });
       }
 
@@ -56,7 +58,7 @@ export const useStripePayment = () => {
         return await stripe.confirmCardPayment(paymentIntent.clientSecret, {
           payment_method: {
             card,
-            billing_details: { name: paymentMethod.data?.name },
+            billing_details: { name: paymentMethod.newCard?.name },
           },
         });
       }
