@@ -39,7 +39,7 @@ type DialogContentProps = React.ForwardRefExoticComponent<
 const DialogContent = forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<DialogContentProps>
->(({ className, children, testId = 'modal-icon-container', ...props }, ref) => (
+>(({ className, children, testId = 'dialog-icon-container', ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content

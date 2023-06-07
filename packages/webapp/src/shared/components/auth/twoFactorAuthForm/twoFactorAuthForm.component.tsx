@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Dialog, DialogContent } from '@sb/webapp-core/components/modal';
+import { Dialog, DialogContent } from '@sb/webapp-core/components/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useSnackbar } from '@sb/webapp-core/snackbar';

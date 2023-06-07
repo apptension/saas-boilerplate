@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { zIndex, color } from '../../theme';
+import { color, zIndex } from '../../theme';
 import { sizeUnits } from '../../theme/size';
 
 export const Overlay = styled.div`
@@ -10,7 +10,7 @@ export const Overlay = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: ${zIndex.overlay}};
+  z-index: ${zIndex.overlay};
 `;
 
 export const Container = styled.div`

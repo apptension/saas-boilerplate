@@ -2,9 +2,9 @@ import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
 import { render } from '../../../tests/utils/rendering';
-import { Dialog, DialogContent, DialogHeader } from '../modal.component';
+import { Dialog, DialogContent, DialogHeader } from '../dialog.component';
 
-describe('Modal: Component', () => {
+describe('Dialog: Component', () => {
   const content = 'content';
   const header = 'header';
 
@@ -46,7 +46,7 @@ describe('Modal: Component', () => {
       </Dialog>
     );
 
-    fireEvent.click(await screen.findByTestId('modal-icon-container'));
+    fireEvent.click(await screen.findByTestId('dialog-icon-container'));
     expect(onOpenChange).toHaveBeenCalled();
   });
 });
