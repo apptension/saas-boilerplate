@@ -38,7 +38,10 @@ const httpApiLink = createUploadLink({
 });
 
 function showNetworkErrorMessage() {
-  emitter.dispatchEvent(ToastEmitterActions.ADD_TOAST, { description: 'Network error occurred' });
+  emitter.dispatchEvent(ToastEmitterActions.ADD_TOAST, {
+    description: 'Network error occurred',
+    variant: 'destructive',
+  });
 }
 
 const handleApiErrors = (
