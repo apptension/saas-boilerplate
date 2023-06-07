@@ -13,15 +13,14 @@ export default meta;
 
 export const Open: Story = {
   args: {
-    isOpen: true,
+    open: true,
     children: <>Dialog content</>,
   },
 };
 
 export const CustomHeader: Story = {
   args: {
-    isOpen: true,
-    header: <>Custom header</>,
+    open: true,
     children: <>Dialog content</>,
   },
 };
