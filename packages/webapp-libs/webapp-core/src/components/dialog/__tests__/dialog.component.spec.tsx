@@ -1,8 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
+import { Dialog, DialogContent, DialogHeader } from '../';
 import { render } from '../../../tests/utils/rendering';
-import { Dialog, DialogContent, DialogHeader } from '../dialog.component';
 
 describe('Dialog: Component', () => {
   const content = 'content';
