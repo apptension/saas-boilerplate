@@ -71,6 +71,7 @@ export const Header = (props: HeaderProps) => {
 
         {isLoggedIn && (
           <>
+            {/* Here */}
             <Notifications templates={notificationTemplates} />
 
             <ProfileActions>

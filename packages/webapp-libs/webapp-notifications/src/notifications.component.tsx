@@ -1,5 +1,6 @@
 import { NetworkStatus, useQuery } from '@apollo/client';
 import { ResultOf } from '@graphql-typed-document-node/core';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { ElementType, FC, useEffect } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
@@ -60,19 +61,19 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
   };
 
   return (
-    <>
-      <NotificationsButton queryResult={data} onClick={notifications.toggle} />
-      <ClickAwayListener onClickAway={notifications.clickAway}>
-        <>
-          <NotificationsList
-            templates={templates}
-            isOpen={notifications.isOpen}
-            queryResult={data}
-            loading={loading}
-            onLoadMore={onLoadMore}
-          />
-        </>
-      </ClickAwayListener>
-    </>
+    <Popover>
+      <PopoverTrigger>
+        <NotificationsButton queryResult={data} onClick={notifications.toggle} />
+      </PopoverTrigger>
+      <PopoverContent align="end" side="bottom" sideOffset={24}>
+        <NotificationsList
+          templates={templates}
+          isOpen={notifications.isOpen}
+          queryResult={data}
+          loading={loading}
+          onLoadMore={onLoadMore}
+        />
+      </PopoverContent>
+    </Popover>
   );
 };

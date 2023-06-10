@@ -6,42 +6,14 @@ type ContainerProps = {
   isOpen: boolean;
 };
 export const Container = styled.div<ContainerProps>`
-  position: fixed;
   background-color: ${color.white};
-  overflow-y: auto;
-  z-index: 1;
-  right: 0;
-  top: ${size.header};
-  width: 100%;
-  height: calc(100% - ${size.header});
+  z-index: 50;
   display: grid;
   grid-template-rows: 70px;
-  grid-template-columns: 1fr max-content;
+  grid-template-columns: 1fr 1fr;
   grid-template-areas:
     'title button'
     'list list';
-
-  ${(props) =>
-    transition.withVisibility({
-      isVisible: props.isOpen,
-      duration: '0.1s',
-      properties: [
-        {
-          name: 'opacity',
-          valueWhenHidden: '0',
-          valueWhenVisible: '1',
-        },
-      ],
-    })}
-
-  ${media.media(media.Breakpoint.TABLET)`
-      ${elevation.lightest};
-      width: ${size.sizeUnits(40)};
-      height: auto;
-      max-height: calc(100% - ${size.header} - ${size.sizeUnits(2)});
-      top: calc(${size.header} - ${size.sizeUnits(1)});
-      right: ${size.sizeUnits(5)};
-  `}
 `;
 
 const topRow = css`
@@ -60,7 +32,7 @@ export const Title = styled.h6`
 `;
 
 export const MarkAllAsReadButton = styled(Button)`
-  ${topRow};
+  align-self: center;
   ${typography.microlabel};
   grid-area: button;
 `;
