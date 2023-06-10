@@ -65,7 +65,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
       <PopoverTrigger>
         <NotificationsButton queryResult={data} onClick={notifications.toggle} />
       </PopoverTrigger>
-      <PopoverContent align="end" side="bottom" sideOffset={24}>
+      <PopoverContent align="end" side="bottom" sideOffset={15}>
         <NotificationsList
           templates={templates}
           isOpen={notifications.isOpen}

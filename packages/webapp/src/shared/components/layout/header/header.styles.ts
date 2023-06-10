@@ -59,32 +59,15 @@ export const ProfileActions = styled.div`
   `}
 `;
 
-export const Menu = styled.div<{ isOpen: boolean }>`
-  position: absolute;
-  right: 0;
-  z-index: 1;
+export const Menu = styled.div`
   border-radius: 4px;
   overflow: hidden;
   top: ${size.sizeUnits(5)};
-  min-width: ${size.sizeUnits(21)};
+  /* min-width: ${size.sizeUnits(21)}; */
   text-align: left;
-  ${elevation.lightest};
   display: flex;
   flex-direction: column;
   background-color: ${color.white};
-
-  ${(props) =>
-    transition.withVisibility({
-      isVisible: props.isOpen,
-      duration: '0.1s',
-      properties: [
-        {
-          name: 'opacity',
-          valueWhenHidden: '0',
-          valueWhenVisible: '1',
-        },
-      ],
-    })};
 
   & > * {
     padding-left: 11px;
@@ -92,6 +75,7 @@ export const Menu = styled.div<{ isOpen: boolean }>`
 `;
 
 export const Avatar = styled(AvatarBase)`
+  margin-left: 8px;
   cursor: pointer;
 `;
 

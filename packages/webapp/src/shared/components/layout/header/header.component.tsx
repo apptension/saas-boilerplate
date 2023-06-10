@@ -1,4 +1,5 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath, useMediaQuery, useOpenState } from '@sb/webapp-core/hooks';
 import { Snackbar } from '@sb/webapp-core/snackbar';
 import { media } from '@sb/webapp-core/theme';
@@ -71,22 +72,28 @@ export const Header = (props: HeaderProps) => {
 
         {isLoggedIn && (
           <>
-            {/* Here */}
             <Notifications templates={notificationTemplates} />
 
-            <ProfileActions>
-              <Avatar
-                onClick={userDropdown.toggle}
-                tabIndex={0}
-                aria-expanded={userDropdown.isOpen}
-                aria-label={intl.formatMessage({
-                  id: 'Header / Open profile menu aria label',
-                  defaultMessage: 'Open profile menu',
-                })}
-              />
+            <Popover
+              open={userDropdown.isOpen}
+              onOpenChange={(open) => {
+                userDropdown.setIsOpen(open);
+              }}
+            >
+              <PopoverTrigger>
+                <Avatar
+                  onClick={userDropdown.toggle}
+                  tabIndex={0}
+                  aria-expanded={userDropdown.isOpen}
+                  aria-label={intl.formatMessage({
+                    id: 'Header / Open profile menu aria label',
+                    defaultMessage: 'Open profile menu',
+                  })}
+                />
+              </PopoverTrigger>
 
-              <ClickAwayListener onClickAway={userDropdown.clickAway}>
-                <Menu isOpen={userDropdown.isOpen}>
+              <PopoverContent asChild align="end" side="bottom" sideOffset={24}>
+                <Menu>
                   <ButtonLink
                     onClick={userDropdown.close}
                     to={generateLocalePath(RoutesConfig.profile)}
@@ -102,8 +109,8 @@ export const Header = (props: HeaderProps) => {
                     <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
                   </ButtonLink>
                 </Menu>
-              </ClickAwayListener>
-            </ProfileActions>
+              </PopoverContent>
+            </Popover>
           </>
         )}
       </Content>
