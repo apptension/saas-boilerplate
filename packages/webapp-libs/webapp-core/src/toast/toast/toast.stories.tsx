@@ -30,8 +30,8 @@ export const Default: Story = {
   args: { toasts: [{ description: 'first message' }, { description: 'second message', variant: 'destructive' }] },
 };
 
-export const Error: Story = {
-  args: { toasts: [{ description: 'Error', variant: 'destructive' }] },
+export const ErrorState: Story = {
+  args: { toasts: [{ description: 'Error state', variant: 'destructive' }] },
 };
 
 export const LongMessages: Story = {
