@@ -68,14 +68,14 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=e2e-tests^...`,
             ],
           },
-          build: { commands: ['nx run e2e-tests:test'] },
+          build: { commands: ['pnpm nx run e2e-tests:test'] },
         },
         cache: {
           paths: this.defaultCachePaths,

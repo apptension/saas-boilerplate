@@ -2,16 +2,16 @@ SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/../../Makefile.base.mk
 
 lint:
-	nx lint
+	pnpm nx lint
 
 test:
-	nx test
+	pnpm nx test
 
 build:
-	nx build
+	pnpm nx build
 
 deploy:
-	nx deploy
+	pnpm nx deploy
 
 flake8:
 	flake8

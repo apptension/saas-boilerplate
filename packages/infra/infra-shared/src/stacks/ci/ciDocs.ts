@@ -68,14 +68,14 @@ export class DocsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=docs...`,
             ],
           },
-          build: { commands: ['nx run docs:build'] },
+          build: { commands: ['pnpm nx run docs:build'] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -121,14 +121,14 @@ export class DocsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=docs...`,
             ],
           },
-          build: { commands: ['nx run docs:deploy'] },
+          build: { commands: ['pnpm nx run docs:deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

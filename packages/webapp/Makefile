@@ -4,13 +4,13 @@ include $(SELF_DIR)/../../Makefile.base.mk
 .PHONY: build test
 
 test:
-	nx test
+	pnpm nx test
 
 build:
-	nx build
+	pnpm nx build
 
 deploy:
-	nx deploy
+	pnpm nx deploy
 
 secrets:
 	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=webapp

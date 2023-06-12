@@ -69,5 +69,5 @@ aws-login:
 
 secrets-editor: SERVICE_NAME?=
 secrets-editor:
-	nx run ssm-editor:compose-build-image
+	pnpm nx run ssm-editor:compose-build-image
 	docker-compose run --rm --entrypoint /bin/bash ssm-editor /scripts/run.sh $(SERVICE_NAME)

@@ -5,7 +5,7 @@ include $(SELF_DIR)/../Makefile.base.mk
 
 test: CHAMBER_SERVICE_NAME=env-${PROJECT_ENV_NAME}-e2e
 test:
-	nx test
+	pnpm nx test
 
 secrets:
 	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=e2e

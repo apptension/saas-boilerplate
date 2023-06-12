@@ -15,7 +15,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
-        "command": "nx docker-create-volumes"
+        "command": "pnpm nx docker-create-volumes"
       },
       "dependsOn": ["setup-env"]
     },
@@ -65,7 +65,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/internal/core/**/*.ts"]

@@ -1,6 +1,6 @@
 {
+  "name": "e2e-tests",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/e2e-tests",
   "projectType": "application",
   "sourceRoot": "packages/e2e-tests",
   "targets": {
@@ -60,7 +60,7 @@
         "cwd": "packages/e2e-tests",
         "commands": [
           "cypress run --env configFile=qa --browser chrome --headless",
-          "nx generate:report"
+          "pnpm nx generate:report"
         ],
         "parallel": false
       },
@@ -73,7 +73,7 @@
         "cwd": "packages/e2e-tests",
         "commands": [
           "cypress run --env configFile=qa --browser firefox --headless",
-          "nx generate:report"
+          "pnpm nx generate:report"
         ],
         "parallel": false
       },
@@ -86,7 +86,7 @@
         "cwd": "packages/e2e-tests",
         "commands": [
           "cypress run --env configFile=qa --browser edge --headless",
-          "nx generate:report"
+          "pnpm nx generate:report"
         ],
         "parallel": false
       },
@@ -102,7 +102,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["packages/e2e-tests/**/*.ts"]
       }

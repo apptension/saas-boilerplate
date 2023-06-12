@@ -13,4 +13,4 @@ else
    black --config=pyproject.toml .
 fi
 
-nx lint:js
+pnpm nx lint:js

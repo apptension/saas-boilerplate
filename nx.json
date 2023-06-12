@@ -58,7 +58,7 @@
     "libsDir": "packages"
   },
   "generators": {
-    "@nrwl/react": {
+    "@nx/react": {
       "application": {
         "style": "styled-components",
         "linter": "eslint",
