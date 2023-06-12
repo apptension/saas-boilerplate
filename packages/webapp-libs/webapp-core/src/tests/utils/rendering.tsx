@@ -4,27 +4,10 @@ import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } fr
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
 import { LocalesProvider, ResponsiveThemeProvider } from '../../providers';
-import { Snackbar, SnackbarProvider } from '../../snackbar';
-import { media, size } from '../../theme';
-
-/** @ignore */
-export const SnackbarMessages = styled.div`
-  position: fixed;
-  top: ${size.sizeUnits(1)};
-  z-index: 1;
-  width: 100%;
-
-  ${media.media(media.Breakpoint.TABLET)`
-    top: ${size.sizeUnits(3)};
-    width: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  `}
-`;
+import { ToastProvider, Toaster } from '../../toast';
 
 /**
  * A set of properties that are passed to [`CoreTestProviders`](#coretestproviders) component to override the initial
@@ -38,7 +21,7 @@ export type CoreTestProvidersProps = PropsWithChildren<{
 
 /**
  * Component that renders a set of providers used in tests globally like: `MemoryRouter`, `LocalesProvider`,
- * `SnackbarProvider`, `IntlProvider`, etc...
+ * `ToastProvider`, `IntlProvider`, etc...
  *
  * It is used in [`render`](#render) and [`renderHook`](#renderhook) methods.
  * @param children
@@ -53,16 +36,14 @@ export function CoreTestProviders({ children, routerProps, intlMessages, intlLoc
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <LocalesProvider>
-            <SnackbarProvider>
+            <ToastProvider>
               <IntlProvider locale={intlLocale} messages={intlMessages}>
                 <>
                   {children}
-                  <SnackbarMessages>
-                    <Snackbar />
-                  </SnackbarMessages>
+                  <Toaster />
                 </>
               </IntlProvider>
-            </SnackbarProvider>
+            </ToastProvider>
           </LocalesProvider>
         </ResponsiveThemeProvider>
       </HelmetProvider>

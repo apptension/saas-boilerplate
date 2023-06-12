@@ -2,8 +2,8 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
 import { typography } from '@sb/webapp-core/theme';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -18,7 +18,7 @@ const MAX_KEYWORDS_LENGTH = 200;
 export const SaasIdeas = () => {
   const intl = useIntl();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
 
   const {
     form: {
@@ -33,7 +33,7 @@ export const SaasIdeas = () => {
   });
 
   const [commitGenerateSaasIdeasMutation, { data, loading }] = useMutation(generateSaasIdeasMutation, {
-    onError: (error) => showMessage(error.message),
+    onError: (error) => toast({ description: error.message, variant: 'destructive' }),
   });
 
   const handleFormSubmit = handleSubmit(async (data) => {

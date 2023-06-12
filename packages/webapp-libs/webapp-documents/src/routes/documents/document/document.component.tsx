@@ -3,6 +3,7 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { documentListItemFragment } from '../../../routes/documents';
@@ -27,7 +28,14 @@ export const Document = ({ item }: DocumentProps) => {
       <Name title={file?.name ?? ''} target="_blank" href={file?.url ?? undefined}>
         {file?.name}
       </Name>
-      <Button variant="destructive" className="mt-1" icon={<Icon icon={deleteIcon} />} onClick={() => handleDelete(id)}>
+      <Button
+        variant="destructive"
+        className="mt-1"
+        icon={<Icon icon={deleteIcon} />}
+        onClick={() => {
+          handleDelete(id).catch(reportError);
+        }}
+      >
         <FormattedMessage defaultMessage="Delete" id="Documents / Document / Delete button" />
       </Button>
     </Container>

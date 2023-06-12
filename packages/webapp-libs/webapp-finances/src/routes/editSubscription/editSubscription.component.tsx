@@ -1,4 +1,5 @@
 import { BackButton } from '@sb/webapp-core/components/buttons';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useEditSubscription } from './editSubscription.hook';
@@ -19,7 +20,12 @@ export const EditSubscription = () => {
         <FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />
       </Subheader>
 
-      <SubscriptionPlans onPlanSelection={selectPlan} loading={loading} />
+      <SubscriptionPlans
+        onPlanSelection={(id) => {
+          selectPlan(id).catch(reportError);
+        }}
+        loading={loading}
+      />
     </Container>
   );
 };

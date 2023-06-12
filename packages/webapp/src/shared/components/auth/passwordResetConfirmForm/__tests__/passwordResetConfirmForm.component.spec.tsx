@@ -58,8 +58,8 @@ describe('PasswordResetConfirmForm: Component', () => {
     await fillForm();
     await sendForm();
 
-    const message = await screen.findByTestId('snackbar-message-1');
-    expect(message).toHaveTextContent('🎉 Password reset successfully!');
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('🎉 Password reset successfully!');
     expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password-confirm');
   });
 

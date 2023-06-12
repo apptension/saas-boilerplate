@@ -1,6 +1,6 @@
 import { GTM } from '@sb/webapp-core/components/gtm';
 import { LocalesProvider } from '@sb/webapp-core/providers';
-import { SnackbarProvider } from '@sb/webapp-core/snackbar';
+import { ToastProvider } from '@sb/webapp-core/toast';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
@@ -20,7 +20,7 @@ const render = () => {
   root.render(
     <SentryProvider>
       <LocalesProvider>
-        <SnackbarProvider>
+        <ToastProvider>
           <RouterProvider>
             <HelmetProvider>
               <ApiProvider>
@@ -31,7 +31,7 @@ const render = () => {
               </ApiProvider>
             </HelmetProvider>
           </RouterProvider>
-        </SnackbarProvider>
+        </ToastProvider>
       </LocalesProvider>
     </SentryProvider>
   );

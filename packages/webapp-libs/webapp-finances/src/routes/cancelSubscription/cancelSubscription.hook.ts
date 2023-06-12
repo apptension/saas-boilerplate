@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { subscriptionCancelMutation } from './cancelSubscription.graphql';
 
 export const useCancelSubscription = () => {
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
 
@@ -22,7 +22,7 @@ export const useCancelSubscription = () => {
 
   const [commitCancelActiveSubscriptionMutation] = useMutation(subscriptionCancelMutation, {
     onCompleted: () => {
-      showMessage(successMessage);
+      toast({ description: successMessage });
 
       trackEvent('subscription', 'cancel');
 

@@ -2,10 +2,10 @@ import { ReactNode } from 'react';
 import ReactDropzone, { DropzoneProps as ReactDropzoneProps } from 'react-dropzone';
 import { FormattedMessage } from 'react-intl';
 
-import { useSnackbar } from '../../../snackbar';
 import { useGenerateErrorMessages } from './dropzone.hooks';
 import { Container, Text } from './dropzone.styles';
 import { ErrorMessagesRecord } from './dropzone.types';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 
 export type DropzoneProps = ReactDropzoneProps & {
   label?: ReactNode;
@@ -13,14 +13,14 @@ export type DropzoneProps = ReactDropzoneProps & {
 };
 
 export const Dropzone = ({ label, disabled, onDrop, ...props }: DropzoneProps) => {
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
   const generateErrorMessages = useGenerateErrorMessages(props);
 
   const handleDrop: ReactDropzoneProps['onDrop'] = (files, fileRejection, event) => {
     generateErrorMessages(fileRejection)
       .filter((value, index, array) => array.indexOf(value) === index)
       .forEach((error) => {
-        snackbar.showMessage(error);
+        toast({ description: error, variant: 'destructive' });
       });
     onDrop?.(files, fileRejection, event);
   };
