@@ -82,8 +82,8 @@ describe('EditProfileForm: Component', () => {
     await fillForm();
     await submitForm();
 
-    const message = await screen.findByTestId('snackbar-message-1');
-    expect(message).toHaveTextContent('Personal data successfully changed.');
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('Personal data successfully changed.');
     expect(trackEvent).toHaveBeenCalledWith('profile', 'personal-data-update');
   });
 
@@ -104,8 +104,8 @@ describe('EditProfileForm: Component', () => {
 
     await submitForm();
 
-    const snackbar = await screen.findByTestId('snackbar');
-    expect(snackbar).toBeEmptyDOMElement();
+    const toaster = await screen.findByTestId('toaster');
+    expect(toaster).toBeEmptyDOMElement();
 
     expect(screen.getByText('First name is too long')).toBeInTheDocument();
   });

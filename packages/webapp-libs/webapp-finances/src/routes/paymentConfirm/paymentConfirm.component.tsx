@@ -1,6 +1,6 @@
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Elements } from '@stripe/react-stripe-js';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { Container, Header, Subheader } from './paymentConfirm.styles';
 
 export const PaymentConfirm = () => {
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
 
@@ -34,7 +34,7 @@ export const PaymentConfirm = () => {
         <StripePaymentForm
           onSuccess={() => {
             navigate(generateLocalePath(CoreRoutesConfig.home));
-            showMessage(successMessage);
+            toast({ description: successMessage });
           }}
         />
       </Elements>

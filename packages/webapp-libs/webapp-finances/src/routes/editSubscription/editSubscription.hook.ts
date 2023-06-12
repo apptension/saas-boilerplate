@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import { subscriptionChangeActiveMutation } from './editSubscription.graphql';
 
 export const useEditSubscription = () => {
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
 
@@ -26,20 +26,20 @@ export const useEditSubscription = () => {
 
   const [commitChangeActiveSubscriptionMutation, { loading }] = useMutation(subscriptionChangeActiveMutation, {
     onError: () => {
-      showMessage(failMessage);
+      toast({ description: failMessage, variant: 'destructive' });
     },
     onCompleted: () => {
       trackEvent('subscription', 'change-plan');
 
-      showMessage(successMessage);
+      toast({ description: successMessage });
       navigate(generateLocalePath(RoutesConfig.subscriptions.index));
     },
   });
 
-  const selectPlan = (plan: string | null) => {
+  const selectPlan = async (plan: string | null) => {
     if (!plan) return;
 
-    commitChangeActiveSubscriptionMutation({
+    await commitChangeActiveSubscriptionMutation({
       variables: {
         input: {
           price: plan,

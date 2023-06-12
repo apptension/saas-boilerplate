@@ -1,5 +1,6 @@
 import { StripePaymentIntentType } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TestProduct } from '../../../types';
@@ -35,7 +36,11 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const amountValue = watch('product');
 
   return (
-    <Form onSubmit={onSubmit}>
+    <Form
+      onSubmit={(e) => {
+        onSubmit(e).catch(reportError);
+      }}
+    >
       <div>
         <Heading>
           <FormattedMessage defaultMessage="Choose the product" id="Stripe / payment form / product label" />

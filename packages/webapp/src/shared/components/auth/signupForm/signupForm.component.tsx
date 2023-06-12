@@ -1,6 +1,7 @@
 import { Button, Link } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -29,7 +30,12 @@ export const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col" onSubmit={handleSignup}>
+      <form
+        className="flex flex-col"
+        onSubmit={(e) => {
+          handleSignup(e).catch(reportError);
+        }}
+      >
         <FormField
           control={form.control}
           name="email"

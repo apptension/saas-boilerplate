@@ -51,8 +51,8 @@ export const useSignupForm = (args?: UseApiFormArgs<SignupFormFields>) => {
     },
   });
 
-  const handleSignup = handleSubmit((data: SignupFormFields) => {
-    commitSignupMutation({
+  const handleSignup = handleSubmit(async (data: SignupFormFields) => {
+    await commitSignupMutation({
       variables: {
         input: {
           email: data.email,
