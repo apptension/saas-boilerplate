@@ -11,7 +11,7 @@ describe('Dialog: Component', () => {
   it('should be open', async () => {
     render(
       <Dialog open={true}>
-        <DialogContent> {content}</DialogContent>
+        <DialogContent>{content}</DialogContent>
       </Dialog>
     );
 
@@ -21,7 +21,7 @@ describe('Dialog: Component', () => {
     render(
       <Dialog open={true}>
         <DialogHeader>{header}</DialogHeader>
-        <DialogContent> {content}</DialogContent>
+        <DialogContent>{content}</DialogContent>
       </Dialog>
     );
 
@@ -31,7 +31,7 @@ describe('Dialog: Component', () => {
   it('should be close', async () => {
     render(
       <Dialog defaultOpen={false} open={false}>
-        <DialogContent> {content}</DialogContent>
+        <DialogContent>{content}</DialogContent>
       </Dialog>
     );
 
