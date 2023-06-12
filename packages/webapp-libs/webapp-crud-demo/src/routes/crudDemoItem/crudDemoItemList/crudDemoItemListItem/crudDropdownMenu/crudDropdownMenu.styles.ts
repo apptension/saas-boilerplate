@@ -25,8 +25,7 @@ export const ToggleButtonCircle = styled.div`
   flex-shrink: 0;
 `;
 
-export const Menu = styled.div<{ isOpen: boolean }>`
-  position: absolute;
+export const Menu = styled.div`
   top: 0;
   right: ${size.sizeUnits(3)};
   z-index: 1;
@@ -37,20 +36,6 @@ export const Menu = styled.div<{ isOpen: boolean }>`
   ${elevation.lightest};
   display: flex;
   flex-direction: column;
-  background-color: ${color.white};
-
-  ${(props) =>
-    transition.withVisibility({
-      isVisible: props.isOpen,
-      duration: '0.1s',
-      properties: [
-        {
-          name: 'opacity',
-          valueWhenHidden: '0',
-          valueWhenVisible: '1',
-        },
-      ],
-    })};
 
   & > * {
     padding-left: 11px;

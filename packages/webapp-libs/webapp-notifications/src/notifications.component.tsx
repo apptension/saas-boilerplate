@@ -3,7 +3,6 @@ import { ResultOf } from '@graphql-typed-document-node/core';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { ElementType, FC, useEffect } from 'react';
-import ClickAwayListener from 'react-click-away-listener';
 
 import { notificationsListQuery, notificationsListSubscription } from './notifications.graphql';
 import { NotificationTypes } from './notifications.types';

@@ -63,7 +63,6 @@ export const Menu = styled.div`
   border-radius: 4px;
   overflow: hidden;
   top: ${size.sizeUnits(5)};
-  /* min-width: ${size.sizeUnits(21)}; */
   text-align: left;
   display: flex;
   flex-direction: column;
