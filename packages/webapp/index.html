@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="/icons/favicon.ico" />
@@ -21,7 +21,7 @@
     <link rel="manifest" href="/manifest.json" />
     <title>Apptension Boilerplate</title>
   </head>
-  <body>
+  <body class="h-full">
     <!-- Display a message if JS has been disabled on the browser. -->
     <noscript
       >If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>, please
@@ -29,10 +29,10 @@
     </noscript>
 
     <div class="unsupported-page" style="display: none">
-      <h1 class="heading" />
+      <h1 />
     </div>
 
-    <div id="root"></div>
+    <div id="root" class="min-h-full"></div>
     <script>
       window.global = window;
     </script>
