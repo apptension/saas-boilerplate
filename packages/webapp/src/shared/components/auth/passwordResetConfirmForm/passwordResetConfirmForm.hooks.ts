@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
@@ -11,7 +11,7 @@ import { authRequestPasswordResetConfirmMutation } from './passwordResetConfirmF
 import { ResetPasswordFormFields } from './passwordResetConfirmForm.types';
 
 export const usePasswordResetConfirmForm = (user: string, token: string) => {
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const intl = useIntl();
@@ -22,12 +22,12 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
 
       navigate(generateLocalePath(RoutesConfig.login));
 
-      snackbar.showMessage(
-        intl.formatMessage({
+      toast({
+        description: intl.formatMessage({
           defaultMessage: '🎉 Password reset successfully!',
           id: 'Auth / Reset password confirm / Success message',
-        })
-      );
+        }),
+      });
     },
     onError: (error) => {
       setApolloGraphQLResponseErrors(error.graphQLErrors);

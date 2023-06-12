@@ -1,6 +1,6 @@
 import { BackButton } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Elements } from '@stripe/react-stripe-js';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethod
 
 export const EditPaymentMethod = () => {
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
 
@@ -28,7 +28,7 @@ export const EditPaymentMethod = () => {
         <EditPaymentMethodForm
           onSuccess={() => {
             navigate(generateLocalePath(RoutesConfig.subscriptions.index));
-            showMessage(successMessage);
+            toast({ description: successMessage });
           }}
         />
       </Elements>

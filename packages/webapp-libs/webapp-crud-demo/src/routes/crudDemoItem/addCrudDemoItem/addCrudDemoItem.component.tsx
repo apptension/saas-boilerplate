@@ -3,7 +3,7 @@ import { gql } from '@sb/webapp-api-client/graphql';
 import { BackButton } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
@@ -28,7 +28,7 @@ export const addCrudDemoItemMutation = gql(/* GraphQL */ `
 
 export const AddCrudDemoItem = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const intl = useIntl();
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ export const AddCrudDemoItem = () => {
 
       trackEvent('crud', 'add', id);
 
-      showMessage(successMessage);
+      toast({ description: successMessage });
 
       if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, { id }));
     },

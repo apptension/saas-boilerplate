@@ -89,8 +89,8 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(monthlyButton);
       expect(monthlyButton).toBeDisabled();
 
-      const message = await screen.findByTestId('snackbar-message-1');
-      expect(message).toHaveTextContent('Plan changed successfully');
+      const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('Plan changed successfully');
 
       expect(trackEvent).toHaveBeenCalledWith('subscription', 'change-plan');
       expect(screen.getByText(placeholder)).toBeInTheDocument();
@@ -113,8 +113,8 @@ describe('EditSubscription: Component', () => {
       await userEvent.click(await screen.findByText(/monthly/i));
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
-      const message = await screen.findByTestId('snackbar-message-1');
-      expect(message).toHaveTextContent('You need first to add a payment method. Go back and set it there');
+      const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('You need first to add a payment method. Go back and set it there');
     });
   });
 });
