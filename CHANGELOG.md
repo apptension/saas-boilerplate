@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.1](https://github.com/apptension/saas-boilerplate/compare/2.0.0-alpha.0...2.0.0-alpha.1) (2023-06-12)
+
+### ⚠ BREAKING CHANGES
+
+- Upgrade nx.js to v16 (#194)
+
+### Features
+
+- Add a default Github pull request template ([#173](https://github.com/apptension/saas-boilerplate/issues/173)) ([b41e120](https://github.com/apptension/saas-boilerplate/commit/b41e1203693948198b8f135f71ec0ac321a22c47))
+- Add condition that pushes code to CodeCommit only CODE_COMMIT_REPO secret is defined ([#171](https://github.com/apptension/saas-boilerplate/issues/171)) ([1e6b864](https://github.com/apptension/saas-boilerplate/commit/1e6b864d440e909e01a83765e3fb4cb591117e7e))
+- Use env variables for sonar configs ([#175](https://github.com/apptension/saas-boilerplate/issues/175)) ([f46bc91](https://github.com/apptension/saas-boilerplate/commit/f46bc912b774c929045efffebcbcc79de1eaa018))
+
+### Bug Fixes
+
+- [#181](https://github.com/apptension/saas-boilerplate/issues/181) Migrate from CloudFrontWebDistribution to the newer Distribution construct, fix WepAppStack deployment ([#185](https://github.com/apptension/saas-boilerplate/issues/185)) ([3472b7c](https://github.com/apptension/saas-boilerplate/commit/3472b7ce9265c3f9da7d2e9f4bb3af4c2dc7ec1d))
+- Add command that runs all setup targets to make sure all .env files are created ([#177](https://github.com/apptension/saas-boilerplate/issues/177)) ([#178](https://github.com/apptension/saas-boilerplate/issues/178)) ([c55a322](https://github.com/apptension/saas-boilerplate/commit/c55a32229b3a6272b7f796d3a5a5358776a36b15))
+
+- Upgrade nx.js to v16 ([#194](https://github.com/apptension/saas-boilerplate/issues/194)) ([4006b84](https://github.com/apptension/saas-boilerplate/commit/4006b84988516f26d551baada9c94fd4bae66d67))
+
 ## [2.0.0-alpha.0](https://github.com/apptension/saas-boilerplate/compare/1.1.1...2.0.0-alpha.0) (2023-05-30)
 
 ### Features

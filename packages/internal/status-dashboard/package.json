@@ -1,6 +1,6 @@
 {
   "name": "status-dashboard",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "private": true,
   "scripts": {
     "deploy": "env-cmd -f ../../../.env.tools cdk deploy *StatusDashboardStack",
