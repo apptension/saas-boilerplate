@@ -60,7 +60,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i pnpm@^8.6.1',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
