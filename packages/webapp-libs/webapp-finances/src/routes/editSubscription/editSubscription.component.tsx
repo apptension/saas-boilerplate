@@ -1,4 +1,5 @@
 import { BackButton } from '@sb/webapp-core/components/buttons';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useEditSubscription } from './editSubscription.hook';

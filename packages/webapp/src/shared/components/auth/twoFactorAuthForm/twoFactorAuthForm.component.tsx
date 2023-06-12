@@ -5,6 +5,7 @@ import { Dialog, DialogContent } from '@sb/webapp-core/components/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
@@ -45,7 +46,13 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
             defaultMessage="Your account is using two-factor authentication"
             id="Auth / Two-factor / Using two-factor auth"
           />
-          <Button type="submit" className="mt-1" onClick={() => disable2FA()}>
+          <Button
+            type="submit"
+            className="mt-1"
+            onClick={() => {
+              disable2FA().catch(reportError);
+            }}
+          >
             <FormattedMessage defaultMessage="Disable 2FA" id="Auth / Two-factor / Disable button" />
           </Button>
         </div>

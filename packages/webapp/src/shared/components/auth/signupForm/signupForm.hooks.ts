@@ -3,7 +3,6 @@ import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { reportError } from '@sb/webapp-core/utils/reportError';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -51,15 +50,15 @@ export const useSignupForm = () => {
     },
   });
 
-  const handleSignup = handleSubmit((data: SignupFormFields) => {
-    commitSignupMutation({
+  const handleSignup = handleSubmit(async (data: SignupFormFields) => {
+    await commitSignupMutation({
       variables: {
         input: {
           email: data.email,
           password: data.password,
         },
       },
-    }).catch(reportError);
+    });
   });
 
   return { ...form, loading, handleSignup };
