@@ -26,6 +26,7 @@ export const ToggleButtonCircle = styled.div`
 `;
 
 export const Menu = styled.div`
+  position: absolute;
   top: 0;
   right: ${size.sizeUnits(3)};
   z-index: 1;

@@ -25,6 +25,7 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
     <Popover>
       <PopoverTrigger>
         <ToggleButton
+          data-testid="toggle-button"
           aria-label={intl.formatMessage({
             defaultMessage: 'Open item actions',
             id: 'CrudDemoItemList.Open item actions',
