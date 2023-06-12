@@ -19,7 +19,12 @@ export const EditSubscription = () => {
         <FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />
       </Subheader>
 
-      <SubscriptionPlans onPlanSelection={selectPlan} loading={loading} />
+      <SubscriptionPlans
+        onPlanSelection={(id) => {
+          selectPlan(id).catch(reportError);
+        }}
+        loading={loading}
+      />
     </Container>
   );
 };
