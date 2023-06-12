@@ -21,7 +21,11 @@ export const SignupForm = () => {
     genericError,
     loading,
     handleSignup,
-  } = useSignupForm();
+  } = useSignupForm({
+    defaultValues: {
+      acceptTerms: false,
+    },
+  });
 
   return (
     <Form {...form}>
@@ -116,6 +120,7 @@ export const SignupForm = () => {
               <FormControl>
                 <Checkbox
                   checked={field.value}
+                  onCheckedChange={field.onChange}
                   {...register('acceptTerms', {
                     required: {
                       value: true,
