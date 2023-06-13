@@ -1,6 +1,10 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Route, Routes } from 'react-router-dom';
 
+import { RoutesConfig } from '../../../../../app/config/routes';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { LayoutContext } from '../../layout.context';
@@ -17,7 +21,10 @@ const getApolloMocks = (role: Role = Role.USER) => [
 describe('Sidebar: Component', () => {
   const Component = () => (
     <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
-      <Sidebar />
+      <Routes>
+        <Route path="/" element={<Sidebar />} />
+        <Route path={getLocalePath(RoutesConfig.home)} element={<span>Home mock route</span>} />
+      </Routes>
     </LayoutContext.Provider>
   );
   describe('user is logged out', () => {
@@ -40,6 +47,15 @@ describe('Sidebar: Component', () => {
   });
 
   describe('user is logged in', () => {
+    it('should open homepage when clicked on "home" link', async () => {
+      const apolloMocks = getApolloMocks();
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+      await waitForApolloMocks();
+
+      await userEvent.click(await screen.findByLabelText(/home/i));
+      expect(screen.getByText('Home mock route')).toBeInTheDocument();
+    });
+
     describe('with user role', () => {
       it('should show link to dashboard', async () => {
         const apolloMocks = getApolloMocks();

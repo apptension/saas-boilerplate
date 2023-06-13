@@ -30,14 +30,6 @@ describe('Header: Component', () => {
   );
 
   describe('user is logged in', () => {
-    it('should open homepage when clicked on "home" link', async () => {
-      const apolloMocks = getApolloMocks();
-      render(<Component />, { apolloMocks });
-
-      await userEvent.click(await screen.findByLabelText(/home/i));
-      expect(screen.getByText('Home mock route')).toBeInTheDocument();
-    });
-
     it('should open profile when clicked on "profile" link', async () => {
       const apolloMocks = getApolloMocks();
       render(<Component />, { apolloMocks });

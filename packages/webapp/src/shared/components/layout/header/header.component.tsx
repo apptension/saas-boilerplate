@@ -1,27 +1,16 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { useGenerateLocalePath, useMediaQuery, useOpenState } from '@sb/webapp-core/hooks';
-import { media } from '@sb/webapp-core/theme';
+import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
 import { HTMLAttributes, useContext } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import notificationTemplates from '../../../constants/notificationTemplates';
 import { useAuth } from '../../../hooks';
 import { LayoutContext } from '../layout.context';
-import {
-  Avatar,
-  Container,
-  Content,
-  HeaderLogo,
-  Menu,
-  MenuContainer,
-  MenuLine,
-  MenuToggleButton,
-  ProfileActions,
-} from './header.styles';
+import { Avatar, Menu, MenuLine, ProfileActions } from './header.styles';
 
 export type HeaderProps = HTMLAttributes<HTMLElement>;
 
@@ -29,15 +18,23 @@ export const Header = (props: HeaderProps) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
-  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const userDropdown = useOpenState(false);
   const { isLoggedIn } = useAuth();
 
   return (
-    <Container {...props}>
-      <Content>
-        {isSidebarAvailable && !isDesktop && (
-          <MenuToggleButton
+    <header
+      {...props}
+      className={cn(
+        'sticky top-0 drop-shadow bg-primary-foreground/90 backdrop-blur-sm ring-1 ring-slate-800/10',
+        props.className
+      )}
+    >
+      <div className="flex flex-row h-16 px-8 gap-x-6 items-center justify-end">
+        {isSidebarAvailable && (
+          <div
+            className="block lg:hidden w-6 cursor-pointer justify-self-start"
+            role="button"
+            tabIndex={0}
             onClick={() => setSideMenuOpen(true)}
             aria-expanded={isSideMenuOpen}
             aria-label={intl.formatMessage({
@@ -48,20 +45,10 @@ export const Header = (props: HeaderProps) => {
             <MenuLine />
             <MenuLine />
             <MenuLine />
-          </MenuToggleButton>
+          </div>
         )}
 
-        <MenuContainer>
-          <Link
-            to={generateLocalePath(RoutesConfig.home)}
-            aria-label={intl.formatMessage({
-              id: 'Header / Home link aria label',
-              defaultMessage: 'Go back home',
-            })}
-          >
-            <HeaderLogo />
-          </Link>
-        </MenuContainer>
+        <div className="flex-1"></div>
 
         {isLoggedIn && (
           <>
@@ -99,7 +86,7 @@ export const Header = (props: HeaderProps) => {
             </ProfileActions>
           </>
         )}
-      </Content>
-    </Container>
+      </div>
+    </header>
   );
 };

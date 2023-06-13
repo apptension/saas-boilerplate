@@ -1,14 +1,7 @@
 import { color, elevation, media, size, transition } from '@sb/webapp-core/theme';
 import styled from 'styled-components';
 
-import { HeaderLogoIcon } from '../../../../images/icons';
 import { Avatar as AvatarBase } from '../../avatar';
-
-export const Container = styled.header`
-  height: ${size.header};
-  border-bottom: 1px solid ${color.greyScale.get(95)};
-  background-color: ${color.white};
-`;
 
 export const Content = styled.div`
   ${size.contentWrapper};
@@ -23,8 +16,6 @@ export const Content = styled.div`
     justify-content: flex-start;
   `};
 `;
-
-export const HeaderLogo = styled(HeaderLogoIcon)``;
 
 export const MenuToggleButton = styled.div.attrs(() => ({ role: 'button', tabIndex: 0 }))`
   display: block;
@@ -41,12 +32,6 @@ export const MenuLine = styled.span`
   height: 1px;
   margin-top: 3px;
   margin-bottom: 3px;
-`;
-
-export const MenuContainer = styled.div`
-  ${media.media(media.Breakpoint.TABLET)`
-    margin-right: auto;
-  `}
 `;
 
 export const ProfileActions = styled.div`
