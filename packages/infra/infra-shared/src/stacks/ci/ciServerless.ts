@@ -198,6 +198,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \

@@ -76,6 +76,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -152,6 +153,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -219,6 +221,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
