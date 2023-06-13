@@ -3,6 +3,7 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -64,13 +65,16 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
 
   return (
-    <Container>
-      <LinkContainer>
-        <Link variant={ButtonVariant.GHOST} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
-          <Text>{data.name}</Text>
-        </Link>
-        {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
-      </LinkContainer>
-    </Container>
+    <Card>
+      <CardContent className="pt-6">
+        <div className="space-y-2">
+          <label htmlFor="date" className="shrink-0">
+            Pick a date
+          </label>
+          {/* <DatePickerWithRange className="[&>button]:w-[260px]" /> */}
+          {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
