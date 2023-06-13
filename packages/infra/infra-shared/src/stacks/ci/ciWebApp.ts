@@ -166,6 +166,14 @@ export class WebappCiConfig extends ServiceCiConfig {
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: ['cloudformation:*'],
         resources: [
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,

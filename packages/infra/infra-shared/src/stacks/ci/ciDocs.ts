@@ -4,10 +4,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
 
 interface DocsCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -61,7 +58,7 @@ export class DocsCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: DocsCiConfigProps) {
-    return new codebuild.Project(this, 'DocsBuildProject', {
+    const project = new codebuild.Project(this, 'DocsBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-docs`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -98,6 +95,16 @@ export class DocsCiConfig extends ServiceCiConfig {
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
+
+    return project;
   }
 
   private createDeployAction(
@@ -147,6 +154,14 @@ export class DocsCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-DocsStack/*`,
         ],
+      })
+    );
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
       })
     );
 

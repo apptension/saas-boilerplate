@@ -140,6 +140,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:*'],
         resources: ['*'],
       })
