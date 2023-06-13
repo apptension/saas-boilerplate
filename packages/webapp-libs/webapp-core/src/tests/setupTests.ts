@@ -12,6 +12,8 @@ MockDate.set('2020-11-22');
 
 jest.disableAutomock();
 
+global.ResizeObserver = require('resize-observer-polyfill');
+
 window.matchMedia =
   window.matchMedia ||
   function () {
