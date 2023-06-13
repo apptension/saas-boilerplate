@@ -127,7 +127,7 @@ describe('Layout: Component', () => {
         );
         const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks });
         await waitForApolloMocks(0);
-        expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
+        expect(screen.getByLabelText(/close menu/i).classList).toContain('opacity-0');
       });
 
       describe('user opens the menu', () => {
@@ -165,8 +165,10 @@ describe('Layout: Component', () => {
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
+          const closeBtn = screen.getByLabelText(/close menu/i);
+          expect(closeBtn.classList).not.toContain('opacity-0');
           await userEvent.click(screen.getByText(/privacy policy/i));
-          expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
+          expect(closeBtn.classList).toContain('opacity-0');
         });
 
         it('should close the menu when close icon is clicked', async () => {
@@ -184,8 +186,9 @@ describe('Layout: Component', () => {
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
-          await userEvent.click(screen.getByLabelText(/close menu/i));
-          expect(screen.queryByText(/privacy policy/i)).not.toBeVisible();
+          const closeBtn = screen.getByLabelText(/close menu/i);
+          await userEvent.click(closeBtn);
+          expect(closeBtn.classList).toContain('opacity-0');
         });
       });
     });

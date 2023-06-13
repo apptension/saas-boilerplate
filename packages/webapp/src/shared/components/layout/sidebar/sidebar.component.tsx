@@ -38,7 +38,6 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       'bg-primary/80 text-white': isActive,
     });
   return (
-    // <Container {...props} className={cn('', props.className)} isOpen={isSideMenuOpen}>
     <>
       <div
         className={cn('fixed lg:hidden inset-0 bg-black/80 pointer-events-none transition-opacity opacity-0', {
