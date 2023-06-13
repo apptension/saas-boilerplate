@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
 
 import { authChangePasswordMutation } from './changePasswordForm.graphql';
@@ -9,7 +9,7 @@ import { ChangePasswordFormFields } from './changePasswordForm.types';
 
 export const useChangePasswordForm = () => {
   const intl = useIntl();
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
 
   const form = useApiForm<ChangePasswordFormFields>({
     errorMessages: {
@@ -44,12 +44,12 @@ export const useChangePasswordForm = () => {
 
       reset();
 
-      snackbar.showMessage(
-        intl.formatMessage({
+      toast({
+        description: intl.formatMessage({
           defaultMessage: 'Password successfully changed.',
           id: 'Auth / Change password / Success message',
-        })
-      );
+        }),
+      });
     },
     onError: (error) => {
       setApolloGraphQLResponseErrors(error.graphQLErrors);

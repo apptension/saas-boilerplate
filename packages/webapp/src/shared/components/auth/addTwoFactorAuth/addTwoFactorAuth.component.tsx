@@ -3,7 +3,7 @@ import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import * as QRCode from 'qrcode';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -38,7 +38,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   const [base32, setBase32] = useState('');
   const [otpAuthUrl, setOtpAuthUrl] = useState('');
   const intl = useIntl();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const { reload } = useCommonQuery();
 
   const form = useApiForm<VerifyOtpFormFields>();
@@ -80,7 +80,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
     reload();
     closeModal();
-    showMessage(successMessage);
+    toast({ description: successMessage });
   };
 
   useEffect(() => {

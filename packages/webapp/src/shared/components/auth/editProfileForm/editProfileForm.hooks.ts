@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
 
 import { useAuth } from '../../../hooks';
@@ -11,7 +11,7 @@ import { UpdateProfileFormFields } from './editProfileForm.types';
 export const useEditProfileForm = () => {
   const intl = useIntl();
   const { currentUser } = useAuth();
-  const snackbar = useSnackbar();
+  const { toast } = useToast();
   const form = useApiForm<UpdateProfileFormFields>({
     defaultValues: {
       firstName: currentUser?.firstName ?? '',
@@ -25,12 +25,12 @@ export const useEditProfileForm = () => {
     onCompleted: () => {
       trackEvent('profile', 'personal-data-update');
 
-      snackbar.showMessage(
-        intl.formatMessage({
+      toast({
+        description: intl.formatMessage({
           defaultMessage: 'Personal data successfully changed.',
           id: 'Auth / Update profile/ Success message',
-        })
-      );
+        }),
+      });
     },
     onError: (error) => {
       setApolloGraphQLResponseErrors(error.graphQLErrors);

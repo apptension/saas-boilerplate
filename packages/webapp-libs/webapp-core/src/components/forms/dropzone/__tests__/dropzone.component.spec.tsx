@@ -32,7 +32,7 @@ describe('Dropzone: Component', () => {
     expect(onDrop).toHaveBeenCalledWith([file], [], expect.anything());
   });
 
-  it('should call onDrop with invalidated files and print snackbar message', async () => {
+  it('should call onDrop with invalidated files and print toast message', async () => {
     const onDrop = jest.fn();
 
     render(<Component onDrop={onDrop} maxFiles={1} />);
@@ -57,7 +57,7 @@ describe('Dropzone: Component', () => {
       expect.anything()
     );
 
-    const message = await screen.findByTestId('snackbar-message-1');
-    expect(message).toHaveTextContent('Cannot accept more than 1 file');
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('Cannot accept more than 1 file');
   });
 });

@@ -68,8 +68,8 @@ describe('AvatarForm: Component', () => {
       expect(image.src).toContain(avatarUrl);
     });
 
-    const message = await screen.findByTestId('snackbar-message-1');
-    expect(message).toHaveTextContent('Avatar successfully changed.');
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('Avatar successfully changed.');
     expect(trackEvent).toHaveBeenCalledWith('profile', 'avatar-update');
   });
 

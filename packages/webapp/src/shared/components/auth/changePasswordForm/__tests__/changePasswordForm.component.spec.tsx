@@ -58,8 +58,8 @@ describe('ChangePasswordForm: Component', () => {
     await submitForm();
     await waitForApolloMocks();
 
-    const message = await screen.findByTestId('snackbar-message-1');
-    expect(message).toHaveTextContent('Password successfully changed.');
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('Password successfully changed.');
     expect(trackEvent).toHaveBeenCalledWith('profile', 'password-update');
   });
 
@@ -92,8 +92,8 @@ describe('ChangePasswordForm: Component', () => {
     await fillForm({ newPassword: null });
     await submitForm();
 
-    const snackbar = await screen.findByTestId('snackbar');
-    expect(snackbar).toBeEmptyDOMElement();
+    const toaster = await screen.findByTestId('toaster');
+    expect(toaster).toBeEmptyDOMElement();
 
     expect(screen.getByText('New password is required')).toBeInTheDocument();
   });
@@ -105,8 +105,8 @@ describe('ChangePasswordForm: Component', () => {
     await fillForm({ confirmNewPassword: 'misspelled-pass' });
     await submitForm();
 
-    const snackbar = await screen.findByTestId('snackbar');
-    expect(snackbar).toBeEmptyDOMElement();
+    const toaster = await screen.findByTestId('toaster');
+    expect(toaster).toBeEmptyDOMElement();
 
     expect(screen.getByText('Passwords must match')).toBeInTheDocument();
   });
@@ -133,8 +133,8 @@ describe('ChangePasswordForm: Component', () => {
     await fillForm();
     await submitForm();
 
-    const snackbar = await screen.findByTestId('snackbar');
-    expect(snackbar).toBeEmptyDOMElement();
+    const toaster = await screen.findByTestId('toaster');
+    expect(toaster).toBeEmptyDOMElement();
 
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
@@ -157,8 +157,8 @@ describe('ChangePasswordForm: Component', () => {
     await fillForm();
     await submitForm();
 
-    const snackbar = await screen.findByTestId('snackbar');
-    expect(snackbar).toBeEmptyDOMElement();
+    const toaster = await screen.findByTestId('toaster');
+    expect(toaster).toBeEmptyDOMElement();
 
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });

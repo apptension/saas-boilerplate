@@ -78,10 +78,10 @@ describe('AddCrudDemoItem: Component', () => {
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      const message = await screen.findByTestId('snackbar-message-1');
+      const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('crud', 'add', 1);
-      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
+      expect(toast).toHaveTextContent('🎉 Changes saved successfully!');
     });
   });
 });

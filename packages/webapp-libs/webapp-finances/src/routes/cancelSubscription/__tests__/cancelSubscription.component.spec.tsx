@@ -5,8 +5,8 @@ import {
   subscriptionPhaseFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
-import { getLocalePath } from '@sb/webapp-core/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -131,8 +131,8 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      const message = await screen.findByTestId('snackbar-message-1');
-      expect(message).toHaveTextContent('You will be moved to free plan with the next billing period');
+      const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('You will be moved to free plan with the next billing period');
       expect(trackEvent).toHaveBeenCalledWith('subscription', 'cancel');
     });
   });
@@ -151,8 +151,8 @@ describe('CancelSubscription: Component', () => {
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
 
-      const snackbar = await screen.findByTestId('snackbar');
-      expect(snackbar).toBeEmptyDOMElement();
+      const toaster = await screen.findByTestId('toaster');
+      expect(toaster).toBeEmptyDOMElement();
     });
   });
 });

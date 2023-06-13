@@ -22,14 +22,16 @@ describe('MarkdownPage: Component', () => {
 
   it('should render unordered list', async () => {
     render(<Component markdown={'* item \n * another item'} />);
-    expect(await screen.findByRole('list')).toBeInTheDocument();
+    // additional item from Toast element
+    expect(await screen.findAllByRole('list')).toHaveLength(2);
     const allListItems = screen.getAllByRole('listitem').map((i) => i.textContent);
     expect(allListItems).toEqual(['item', 'another item']);
   });
 
   it('should render ordered list', async () => {
     render(<Component markdown={'1) item \n 2) another item'} />);
-    expect(await screen.findByRole('list')).toBeInTheDocument();
+    // additional item from Toast element
+    expect(await screen.findAllByRole('list')).toHaveLength(2);
     const allListItems = screen.getAllByRole('listitem').map((i) => i.textContent);
     expect(allListItems).toEqual(['item', 'another item']);
   });

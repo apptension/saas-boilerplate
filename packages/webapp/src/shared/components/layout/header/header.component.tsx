@@ -1,7 +1,6 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath, useMediaQuery, useOpenState } from '@sb/webapp-core/hooks';
-import { Snackbar } from '@sb/webapp-core/snackbar';
 import { media } from '@sb/webapp-core/theme';
 import { Notifications } from '@sb/webapp-notifications';
 import { HTMLAttributes, useContext } from 'react';
@@ -22,7 +21,6 @@ import {
   MenuLine,
   MenuToggleButton,
   ProfileActions,
-  SnackbarMessages,
 } from './header.styles';
 
 export type HeaderProps = HTMLAttributes<HTMLElement>;
@@ -64,10 +62,6 @@ export const Header = (props: HeaderProps) => {
             <HeaderLogo />
           </Link>
         </MenuContainer>
-
-        <SnackbarMessages>
-          <Snackbar />
-        </SnackbarMessages>
 
         {isLoggedIn && (
           <>

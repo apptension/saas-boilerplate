@@ -77,17 +77,3 @@ export const Avatar = styled(AvatarBase)`
   margin-left: 8px;
   cursor: pointer;
 `;
-
-export const SnackbarMessages = styled.div`
-  position: fixed;
-  top: ${size.sizeUnits(1)};
-  z-index: 1;
-  width: 100%;
-
-  ${media.media(media.Breakpoint.TABLET)`
-    top: ${size.sizeUnits(3)};
-    width: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  `}
-`;

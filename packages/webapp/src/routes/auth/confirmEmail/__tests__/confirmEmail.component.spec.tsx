@@ -56,8 +56,8 @@ describe('ConfirmEmail: Component', () => {
 
       await waitForApolloMocks();
 
-      const message = await screen.findByTestId('snackbar-message-1');
-      expect(message).toHaveTextContent('Invalid token.');
+      const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('Invalid token.');
 
       expect(await screen.findByText('Login page mock')).toBeInTheDocument();
     });
@@ -84,8 +84,8 @@ describe('ConfirmEmail: Component', () => {
           apolloMocks: append(requestMock),
         });
 
-        const message = await screen.findByTestId('snackbar-message-1');
-        expect(message).toHaveTextContent('Congratulations! Now you can log in.');
+        const toast = await screen.findByTestId('toast-1');
+        expect(toast).toHaveTextContent('Congratulations! Now you can log in.');
 
         expect(await screen.findByText('Login page mock')).toBeInTheDocument();
       });
@@ -124,8 +124,8 @@ describe('ConfirmEmail: Component', () => {
 
         await waitForApolloMocks();
 
-        const message = await screen.findByTestId('snackbar-message-1');
-        expect(message).toHaveTextContent('Congratulations! Your email has been confirmed.');
+        const toast = await screen.findByTestId('toast-1');
+        expect(toast).toHaveTextContent('Congratulations! Your email has been confirmed.');
         expect(trackEvent).toHaveBeenCalledWith('auth', 'user-email-confirm');
 
         expect(screen.getByText('Login page mock')).toBeInTheDocument();
