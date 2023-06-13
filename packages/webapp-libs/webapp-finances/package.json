@@ -14,8 +14,7 @@
     "@sb/webapp-notifications": "*",
     "@stripe/react-stripe-js": "^1.14.2",
     "@stripe/stripe-js": "^1.42.1",
-    "graphql": "^16.6.0",
-    "react-click-away-listener": "^2.2.2"
+    "graphql": "^16.6.0"
   },
   "peerDependencies": {
     "@apollo/client": "^3.7.9",
