@@ -3,9 +3,10 @@ import { Icon } from '@sb/webapp-core/components/icons';
 import React from 'react';
 import { FieldError } from 'react-hook-form';
 
+import { Avatar } from '../../avatar';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { useAvatarForm } from './avatarForm.hooks';
-import { Avatar, Container, FileInput, IconContainer, Message } from './avatarForm.styles';
+import { Container, FileInput, IconContainer, Message } from './avatarForm.styles';
 
 export const AvatarForm = () => {
   const {
@@ -42,7 +43,7 @@ export const AvatarForm = () => {
             }}
           />
         </IconContainer>
-        <Avatar size={80} />
+        <Avatar className="h-20 w-20" />
       </Container>
 
       <Message>{(errors.avatar as FieldError)?.message}</Message>
