@@ -42,7 +42,7 @@ export const AvatarForm = () => {
             }}
           />
         </IconContainer>
-        <Avatar />
+        <Avatar size={80} />
       </Container>
 
       <Message>{(errors.avatar as FieldError)?.message}</Message>
