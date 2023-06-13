@@ -40,7 +40,6 @@ export const List = styled.ul`
 
   ${media.media(media.Breakpoint.TABLET)`
     margin-top: ${size.sizeUnits(2)};
-    border: ${border.light};
 
     > li:not(:last-child) {
       border-bottom: ${border.light};
