@@ -6,9 +6,9 @@ import { cn } from '../../../lib/utils';
 const AvatarImage = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Image>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image ref={ref} className={cn('aspect-square h-full w-full', className)} {...props} />
-));
+>(({ className, ...props }, ref) => {
+  return <AvatarPrimitive.Image ref={ref} className={cn('aspect-square h-full w-full', className)} {...props} />;
+});
 
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 

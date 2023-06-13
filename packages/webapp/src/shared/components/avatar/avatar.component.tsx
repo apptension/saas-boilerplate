@@ -17,14 +17,19 @@ export const Avatar = ({ size, ...props }: AvatarProps) => {
   const avatar = currentUser?.avatar;
 
   return (
-    <AvatarContainer className={`w-[${size ? size : 40}px] h-[${size ? size : 40}px]`}>
+    <AvatarContainer {...props} className={`w-[${size ? size : 40}px] h-[${size ? size : 40}px]`}>
       <AvatarImage
+        onLoadingStatusChange={(status) => {
+          console.log(status, 'statusstatus');
+        }}
         src={isNil(avatar) ? undefined : avatar}
         alt={intl.formatMessage({ defaultMessage: 'user avatar', id: 'Avatar / Image alt' })}
       />
-      <AvatarFallback>
+      <AvatarFallback delayMs={2}>
         <ProfileInitial profile={currentUser} />
       </AvatarFallback>
     </AvatarContainer>
   );
 };
+
+// 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg'
