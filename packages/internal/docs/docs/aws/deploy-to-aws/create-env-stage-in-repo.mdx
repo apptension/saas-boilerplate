@@ -1,30 +1,108 @@
 ---
 description: Steps required to deploy SaaS Boilerplate on AWS
 ---
+
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 1: Initialize an environment stage in code repository
+# Step 3: Initialize an environment stage
 
 <ProjectName/> provides the ability to deploy various versions of your application, such as QA, staging, or
 production. You have the flexibility to determine their naming conventions and the number of environments required.
-The only exception is the local environment, which is a specialized preconfigured environment utilized for running
+The only exception is the `local` environment, which is a specialized preconfigured environment utilized for running
 <ProjectName/> on local machine.
 
 All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
 policies and preferences.
 
-This article will guide you through all the necessary steps to deploy a new environment to AWS.
+In essence, they are defined through different environmental variables. To manage these variables, the <ProjectName/>
+leverages AWS Systems Manager Parameter Store and a tool called [`chamber`](https://github.com/segmentio/chamber).
+With these tools, managing environment variables is easy and secure.
 
-## Create a configuration file
+:::caution
 
-You can use a simple dotenv file in root of the project that will describe your environment.
-For example to create a QA env stage configuration run following command:
+Before deploying the infrastructure to AWS, you must set all required environmental variables!
 
-```bash
-cp .env.stage-example .env.qa
+:::
+
+## Install chamber CLI
+
+Follow the [official instructions](https://github.com/segmentio/chamber#installing) on how to install chamber.
+
+## Bootstrap CDK
+
+In <ProjectName/>, AWS CDK is used to define infrastructure as a code. It also needs to create a KMS key with alias
+`parameter_store_key` that `chamber` is using to manage secure values.
+
+Before you deploy anything to AWS you need to run following initialization command:
+
+```shell
+make bootstrap-infra
 ```
 
-## Learn more
+If you're deploying a second environment stage to the
+same AWS account as the previous one you will receive an information that bootstrap has already been run.
 
-Follow the [API reference of the `.env`](../../api-reference/env-files) files for the details of the contents of the
-environment stage dotenv file.
+## Set required env variables in SSM Parameter Store
+
+Open a shell terminal with proper AWS credentials available. If you followed a
+[previous step](./configure-aws-credentials) you can run following command to do it:
+
+```shell
+make set-env ENV_STAGE=qa
+```
+
+Let's assume your stage is named `qa` and the project is named `saas`.
+Here's a list of all required env variables that you should set and a command that you should use to set them.
+
+### Set project name
+
+Each stage can have a different project name if you want but recommended approach is to use the same across all stages.
+
+```shell
+chamber write qa PROJECT_NAME saas
+```
+
+### Configure domains
+
+For this step you'll need the hosted zone parameters that you acquired in the previous step of this guide.
+
+```shell
+chamber write qa SB_HOSTED_ZONE_ID XYZ
+chamber write qa SB_HOSTED_ZONE_NAME example.com
+chamber write qa SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
+chamber write qa SB_DOMAIN_API api.qa.example.com
+chamber write qa SB_DOMAIN_CDN cdn.qa.example.com
+chamber write qa SB_DOMAIN_DOCS docs.qa.example.com
+chamber write qa SB_DOMAIN_WEB_APP app.qa.example.com
+```
+
+:::info
+`SB_HOSTED_ZONE_ID` and `SB_HOSTED_ZONE_NAME` can be skipped if you are using externally managed DNS. In that case,
+certificates for CloudFront distribution and Load Balancer should be already generated, and their ARNs provided in
+`SB_CLOUDFRONT_CERTIFICATE_ARN` and `SB_LOAD_BALANCER_CERTIFICATE_ARN` parameters. As the last step,
+CNAME DNS records pointing to CloudFront distribution and Load Balancer need to be manually added.
+:::
+
+### \[Optional\] Protect the website with basic auth
+
+It's a good idea to prevent unauthorized access to staging environments so we suggest to set a basic auth password
+if this isn't a production environment.
+
+```shell
+chamber write qa SB_BASIC_AUTH username:password
+```
+
+### \[Optional\] Configure automatic deployment for selected branches
+
+If you want a deployment to be stared automatically when a commit is pushed to certain branch you can list them in the
+`SB_DEPLOY_BRANCHES` variable.
+
+```shell
+chamber write qa SB_DEPLOY_BRANCHES master
+```
+
+## Env variable validation
+
+You can look up the validator in `packages/internal/core/stage-env-validator.js`, which runs on every `nx` command that
+is executed. It will throw an error if you forget to set any required variables. Feel free to add other variables in
+there if you need.

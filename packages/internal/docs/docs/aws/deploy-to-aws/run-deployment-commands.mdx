@@ -1,10 +1,9 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+description: Steps required to deploy SaaS Boilerplate apps on AWS
 ---
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 5: Run deployment commands
-
+# Step 6: Deploy the app
 
 ## Switch context to proper environment stage
 
@@ -13,33 +12,6 @@ Run the following command that will switch context to specific environment stage
 ```shell
 make set-env ENV_STAGE=qa
 ```
-
-
-
-## Deploy environment infrastructure
-
-### Bootstrap CDK
-
-<ProjectName/> uses AWS CDK to define infrastructure as a code. Before you deploy anything to AWS you need to
-run an initialization command.
-
-```shell
-make bootstrap-infra
-```
-
-If you're deploying a second environment stage to the
-same AWS account as the previous one you will receive an information that bootstrap has already been run.
-
-
-### Deploy infrastructure
-
-Deploy an actual infrastructure of your app by running following command:
-
-```shell
-make deploy-env-infra
-```
-
-This command will run CDK deployment of all environment specific infrastructure components like: database, CI/CD.
 
 
 ## Deploy application's code
@@ -71,4 +43,4 @@ make deploy-env-app
 ## Open the app
 
 If you followed the guide and everything went right, your app should be deployed and each service should be available
-under domains configured in your `.env.qa` file.
+under configured domains.
