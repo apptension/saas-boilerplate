@@ -378,11 +378,14 @@ importers:
   packages/internal/core:
     devDependencies:
       dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
+        specifier: ^16.1.4
+        version: 16.1.4
       env-cmd:
         specifier: ^10.1.0
         version: 10.1.0
+      envalid:
+        specifier: ^7.3.1
+        version: 7.3.1
 
   packages/internal/docs:
     dependencies:
@@ -9844,7 +9847,7 @@ packages:
       '@types/jsonwebtoken': 9.0.1
       chalk: 4.1.2
       debug: 4.3.4(supports-color@8.1.1)
-      dotenv: 16.0.3
+      dotenv: 16.1.4
       graphql: 16.6.0
       graphql-request: 5.1.0(graphql@16.6.0)
       http-proxy-agent: 5.0.0
@@ -19278,6 +19281,11 @@ packages:
   /dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
+    dev: true
+
+  /dotenv@16.1.4:
+    resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
+    engines: {node: '>=12'}
 
   /dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
@@ -19452,6 +19460,13 @@ packages:
     dependencies:
       commander: 4.1.1
       cross-spawn: 7.0.3
+    dev: true
+
+  /envalid@7.3.1:
+    resolution: {integrity: sha512-KL1YRwn8WcoF/Ty7t+yLLtZol01xr9ZJMTjzoGRM8NaSU+nQQjSWOQKKJhJP2P57bpdakJ9jbxqQX4fGTOicZg==}
+    engines: {node: '>=8.12'}
+    dependencies:
+      tslib: 2.3.1
     dev: true
 
   /envinfo@7.8.1:
@@ -25590,7 +25605,7 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       app-root-dir: 1.0.2
-      dotenv: 16.0.3
+      dotenv: 16.1.4
       dotenv-expand: 10.0.0
 
   /lazystream@1.0.1:
