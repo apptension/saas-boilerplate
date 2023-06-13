@@ -1,5 +1,4 @@
 import { Avatar as AvatarContainer, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/avatar';
-import { cn } from '@sb/webapp-core/lib/utils';
 import { isNil } from 'ramda';
 import { HTMLAttributes } from 'react';
 import { useIntl } from 'react-intl';
@@ -23,7 +22,7 @@ export const Avatar = ({ size = 40, ...props }: AvatarProps) => {
         src={isNil(avatar) ? undefined : avatar}
         alt={intl.formatMessage({ defaultMessage: 'user avatar', id: 'Avatar / Image alt' })}
       />
-      <AvatarFallback delayMs={2}>
+      <AvatarFallback>
         <ProfileInitial profile={currentUser} />
       </AvatarFallback>
     </AvatarContainer>
