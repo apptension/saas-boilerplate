@@ -1,4 +1,5 @@
 import { Avatar as AvatarContainer, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/avatar';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { isNil } from 'ramda';
 import { HTMLAttributes } from 'react';
 import { useIntl } from 'react-intl';
@@ -17,7 +18,7 @@ export const Avatar = ({ size, ...props }: AvatarProps) => {
   const avatar = currentUser?.avatar;
 
   return (
-    <AvatarContainer className={`w-[${size ? size : 40}px] h-[${size ? size : 40}px]`}>
+    <AvatarContainer {...props} className={cn(`w-[${size ? size : 40}px] h-[${size ? size : 40}px]`, props.className)}>
       <AvatarImage
         src={isNil(avatar) ? undefined : avatar}
         alt={intl.formatMessage({ defaultMessage: 'user avatar', id: 'Avatar / Image alt' })}
