@@ -4,11 +4,20 @@ import { ComponentProps } from 'react';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  ${size.verticalPadding(size.sizeUnits(4))};
-  ${media.media(media.Breakpoint.TABLET)`
+  /* ${size.verticalPadding(size.sizeUnits(4))}; */
+  /* ${media.media(media.Breakpoint.TABLET)`
     ${size.verticalPadding(size.sizeUnits(2))};
     ${size.horizontalPadding(size.sizeUnits(5))};
-  `};
+  `}; */
+  ${size.verticalPadding(size.sizeUnits(2))}
+
+  ${size.horizontalPadding(size.sizeUnits(5))};
+  ${size.verticalPadding(size.sizeUnits(2))};
+  ${size.horizontalPadding(size.sizeUnits(5))};
+  /* ${media.media(media.Breakpoint.TABLET)`
+    ${size.verticalPadding(size.sizeUnits(2))};
+    ${size.horizontalPadding(size.sizeUnits(5))};
+  `}; */
 `;
 
 export const Header = styled.h1`
@@ -38,11 +47,17 @@ export const List = styled.ul`
   margin-top: ${size.sizeUnits(1)};
   border-radius: 4px;
 
-  ${media.media(media.Breakpoint.TABLET)`
+  margin-top: ${size.sizeUnits(2)};
+
+  > li:not(:last-child) {
+    border-bottom: ${border.light};
+  }
+
+  /* ${media.media(media.Breakpoint.TABLET)`
     margin-top: ${size.sizeUnits(2)};
 
     > li:not(:last-child) {
       border-bottom: ${border.light};
     }
-  `};
+  `}; */
 `;

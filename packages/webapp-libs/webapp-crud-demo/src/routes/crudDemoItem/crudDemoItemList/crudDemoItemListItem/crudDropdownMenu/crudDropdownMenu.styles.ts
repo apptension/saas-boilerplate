@@ -16,7 +16,7 @@ export const ToggleButton = styled.div.attrs(() => ({ role: 'button', tabIndex: 
 `;
 
 export const ToggleButtonCircle = styled.div`
-  background-color: ${color.skyBlueScale.get(50)};
+  /* background-color: ${color.skyBlueScale.get(50)}; */
   width: 4px;
   height: 4px;
   border-radius: 50%;

@@ -43,9 +43,9 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
           })}
           aria-expanded={isOpen}
         >
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
+          <ToggleButtonCircle className="bg-slate-400" />
+          <ToggleButtonCircle className="bg-slate-400" />
+          <ToggleButtonCircle className="bg-slate-400" />
         </ToggleButton>
 
         <Menu isOpen={isOpen}>
