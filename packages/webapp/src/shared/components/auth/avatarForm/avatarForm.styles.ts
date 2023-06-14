@@ -17,7 +17,7 @@ export const Container = styled.div`
   `};
 `;
 
-export const Avatar = styled(AvatarBase).attrs(() => ({ size: 80 }))`
+export const Avatar = styled(AvatarBase)`
   position: absolute;
   left: 0;
   top: 0;
