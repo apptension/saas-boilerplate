@@ -9,7 +9,6 @@ import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../../config/routes';
-import { Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export type CrudDropdownMenuProps = {
   itemId: string;
@@ -25,20 +24,21 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
   return (
     <Popover>
       <PopoverTrigger>
-        <ToggleButton
+        <Button
+          variant="ghost"
+          className="flex flex-col"
           data-testid="toggle-button"
           aria-label={intl.formatMessage({
             defaultMessage: 'Open item actions',
             id: 'CrudDemoItemList.Open item actions',
           })}
         >
-          <ToggleButtonCircle className="bg-slate-400" />
-          <ToggleButtonCircle className="bg-slate-400" />
-          <ToggleButtonCircle className="bg-slate-400" />
-        </ToggleButton>
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className={cn('p-1', className)}>
-        {/* <Menu> */}
         <div className="flex flex-col">
           <ButtonLink
             variant={ButtonVariant.GHOST}
@@ -58,7 +58,6 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
             <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
           </Button>
         </div>
-        {/* </Menu> */}
       </PopoverContent>
     </Popover>
   );
