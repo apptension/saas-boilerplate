@@ -12,7 +12,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../config/routes';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
-import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { Container, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { CrudDropdownMenu } from './crudDropdownMenu';
 
 export type CrudDemoItemListItemProps = {
   item: FragmentType<typeof crudDemoItemListItemFragment>;
@@ -76,7 +77,9 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     </InlineButtons>
   );
 
-  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
+  const renderButtonsMenu = () => (
+    <CrudDropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
+  );
 
   return (
     <Container>

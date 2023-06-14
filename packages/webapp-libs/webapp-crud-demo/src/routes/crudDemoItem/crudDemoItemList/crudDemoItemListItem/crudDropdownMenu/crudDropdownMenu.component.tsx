@@ -4,6 +4,7 @@ import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/compo
 import { Icon } from '@sb/webapp-core/components/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -36,24 +37,28 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
           <ToggleButtonCircle className="bg-slate-400" />
         </ToggleButton>
       </PopoverTrigger>
-      <PopoverContent className={className}>
-        <Menu>
+      <PopoverContent className={cn('p-1', className)}>
+        {/* <Menu> */}
+        <div className="flex flex-col">
           <ButtonLink
-            variant={ButtonVariant.SECONDARY}
+            variant={ButtonVariant.GHOST}
             to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
+            className="justify-start mb-2"
           >
             <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
           </ButtonLink>
           <Button
-            variant="destructive"
+            variant="ghost"
             onClick={handleDelete}
             disabled={loading}
+            className="justify-start"
             icon={<Icon size={14} icon={deleteIcon} />}
           >
             <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
           </Button>
-        </Menu>
+        </div>
+        {/* </Menu> */}
       </PopoverContent>
     </Popover>
   );
