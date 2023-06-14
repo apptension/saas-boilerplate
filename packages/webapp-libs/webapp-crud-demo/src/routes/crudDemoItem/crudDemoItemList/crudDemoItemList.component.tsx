@@ -8,7 +8,6 @@ import { PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
-import { Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
@@ -32,14 +31,14 @@ export const CrudDemoItemList = () => {
       return (
         <Card className="mt-4">
           <CardContent>
-            <List>
+            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li]:border-slate-200 [&>li:last-child]:border-none">
               {mapConnection(
                 (node) => (
                   <CrudDemoItemListItem item={node} key={node.id} />
                 ),
                 data.allCrudDemoItems
               )}
-            </List>
+            </ul>
           </CardContent>
         </Card>
       );
@@ -48,8 +47,8 @@ export const CrudDemoItemList = () => {
   };
 
   return (
-    <Container>
-      <Header>CRUD Example Items</Header>
+    <div className="py-4 px-12">
+      <h1 className="text-2xl mb-3 leading-6 font-bold">CRUD Example Items</h1>
       <Link
         className="flex w-fit items-center rounded-md border border-input px-3 py-2 text-sm ring-offset-background
         placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
@@ -68,6 +67,6 @@ export const CrudDemoItemList = () => {
       ) : (
         renderList()
       )}
-    </Container>
+    </div>
   );
 };
