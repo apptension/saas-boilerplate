@@ -20,7 +20,7 @@ export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & Button
 export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkProps;
 
 export const Link = (props: LinkProps) => {
-  const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, ...linkProps } = props;
+  const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, className, ...linkProps } = props;
 
   const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
@@ -32,7 +32,7 @@ export const Link = (props: LinkProps) => {
   const renderExternalLink = (props: ExternalLinkProps) => <a {...props}>{children}</a>;
 
   return (
-    <Button asChild variant={variant} size={size} icon={icon}>
+    <Button className={`${className}`} variant={variant} size={size} icon={icon}>
       {isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps as ExternalLinkProps)}
     </Button>
   );

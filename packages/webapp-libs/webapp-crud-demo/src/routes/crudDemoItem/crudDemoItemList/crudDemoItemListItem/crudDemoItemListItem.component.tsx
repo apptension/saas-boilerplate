@@ -3,7 +3,6 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -57,7 +56,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
         disabled:opacity-50 hover:bg-accent hover:text-accent-foreground"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
-        // icon={<Icon size={14} icon={editIcon} />}
+        icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
