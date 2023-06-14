@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import 'core-js/stable';
 import 'isomorphic-fetch';
 import MockDate from 'mockdate';
+import { identity } from 'ramda';
 import 'regenerator-runtime/runtime';
 
 import { ENV } from '../config/env';
@@ -30,3 +31,24 @@ ENV.ENVIRONMENT_NAME = 'test';
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 window.HTMLElement.prototype.releasePointerCapture = jest.fn();
 window.HTMLElement.prototype.hasPointerCapture = jest.fn();
+
+const DELAY = 100;
+
+const orignalGlobalImage = window.Image;
+
+beforeAll(() => {
+  (window.Image as any) = class MockImage {
+    onload: () => void = identity<void>;
+    src = '';
+    constructor() {
+      setTimeout(() => {
+        this.onload();
+      }, DELAY);
+      return this;
+    }
+  };
+});
+
+afterAll(() => {
+  window.Image = orignalGlobalImage;
+});
