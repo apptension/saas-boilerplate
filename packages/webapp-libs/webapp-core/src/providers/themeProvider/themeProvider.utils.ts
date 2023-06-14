@@ -1,0 +1,15 @@
+import { Themes } from './themeProvider.types';
+
+const MEDIA = '(prefers-color-scheme: dark)';
+
+export const getSystemTheme = (e?: MediaQueryList | MediaQueryListEvent): Themes => {
+  if (!e) e = window.matchMedia(MEDIA);
+  const isDark = e.matches;
+  return isDark ? Themes.DARK : Themes.LIGHT;
+};
+
+export const setThemeInDOM = (theme: Themes) => {
+  const classList = document.querySelector('html')?.classList;
+  classList?.remove?.(theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT);
+  classList?.add?.(theme);
+};

@@ -3,8 +3,8 @@ import { Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
-import { global as globalTheme, media } from '@sb/webapp-core/theme';
-import { HTMLAttributes, useCallback, useContext, useEffect } from 'react';
+import { media } from '@sb/webapp-core/theme';
+import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -21,22 +21,13 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
 
-  useEffect(() => {
-    if (!isDesktop && isSideMenuOpen) {
-      document.body.classList.add(globalTheme.NO_SCROLL_CLASSNAME);
-    } else {
-      document.body.classList.remove(globalTheme.NO_SCROLL_CLASSNAME);
-    }
-
-    return () => {
-      document.body.classList.remove(globalTheme.NO_SCROLL_CLASSNAME);
-    };
-  }, [isDesktop, isSideMenuOpen]);
-
   const menuItemClassName = ({ isActive = false }) =>
-    cn('text-primary hover:bg-primary hover:text-white rounded-md px-3 py-2 text-sm font-medium leading-6', {
-      'bg-primary/80 text-white': isActive,
-    });
+    cn(
+      'text-primary hover:bg-primary hover:text-primary-foreground rounded-md px-3 py-2 text-sm font-medium leading-6',
+      {
+        'bg-primary text-primary-foreground hover:bg-primary/90': isActive,
+      }
+    );
   return (
     <>
       <div
