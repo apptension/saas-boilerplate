@@ -54,7 +54,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
         placeholder:text-muted-foreground focus:outline-none focus:ring-2 
         focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
-        disabled:opacity-50 hover:bg-accent hover:text-accent-foreground"
+        disabled:opacity-50"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
