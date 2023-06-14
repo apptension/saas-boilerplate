@@ -1606,6 +1606,9 @@ importers:
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
+      lucide-react:
+        specifier: ^0.224.0
+        version: 0.224.0(react@18.2.0)
       msw:
         specifier: ^1.0.0
         version: 1.0.0(typescript@4.8.4)
@@ -8889,7 +8892,7 @@ packages:
       '@types/node': 16.11.7
       chalk: 4.1.2
       json-stable-stringify: 1.0.2
-      ts-jest: 28.0.5(@babel/core@7.21.8)(babel-jest@28.1.3)(esbuild@0.16.17)(jest@28.1.3)(typescript@4.8.4)
+      ts-jest: 28.0.5(@babel/core@7.21.8)(babel-jest@28.1.3)(esbuild@0.17.18)(jest@28.1.3)(typescript@4.8.4)
       tslib: 2.5.0
       typescript: 4.8.4
     dev: true
@@ -25264,7 +25267,7 @@ packages:
       pretty-format: 28.1.3
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1(@swc/core@1.3.27)(@types/node@16.11.7)(typescript@4.8.4)
+      ts-node: 10.9.1(@swc/core@1.3.27)(@types/node@18.15.10)(typescript@4.8.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -25343,7 +25346,7 @@ packages:
       pretty-format: 28.1.3
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1(@swc/core@1.3.27)(@types/node@16.11.7)(typescript@4.8.4)
+      ts-node: 10.9.1(@swc/core@1.3.27)(@types/node@18.15.10)(typescript@4.8.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -27124,7 +27127,6 @@ packages:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
-    dev: true
 
   /lunr@2.3.9:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
@@ -34736,6 +34738,7 @@ packages:
       typescript: 4.8.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
 
   /ts-node@10.9.1(@swc/core@1.3.27)(@types/node@18.15.10)(typescript@4.8.4):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
@@ -34767,7 +34770,6 @@ packages:
       typescript: 4.8.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: true
 
   /ts-node@9.1.1(typescript@4.8.4):
     resolution: {integrity: sha512-hPlt7ZACERQGf03M253ytLY3dHbGNGrAq9qIHWUY9XHYl1z7wYngSr3OQ5xmui8o2AaxsONxIzjafLUiWBo1Fg==}
