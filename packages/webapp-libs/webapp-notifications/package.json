@@ -12,7 +12,6 @@
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
     "graphql": "^16.6.0",
-    "react-click-away-listener": "^2.2.2",
     "react-infinite-scroll-hook": "^4.0.4"
   },
   "peerDependencies": {

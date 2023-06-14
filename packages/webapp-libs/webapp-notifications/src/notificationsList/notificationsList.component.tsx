@@ -37,7 +37,7 @@ export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) 
       <Title>
         <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
       </Title>
-      <MarkAllAsReadButton variant={ButtonVariant.GHOST} onClick={markAllAsRead}>
+      <MarkAllAsReadButton className="mx-0" variant={ButtonVariant.GHOST} onClick={markAllAsRead}>
         <FormattedMessage
           defaultMessage="Mark all as read"
           id="Notifications / Notifications List / Mark all as read button"

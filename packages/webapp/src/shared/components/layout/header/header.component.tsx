@@ -1,9 +1,9 @@
 import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
 import { HTMLAttributes, useContext } from 'react';
-import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
@@ -55,34 +55,43 @@ export const Header = (props: HeaderProps) => {
             <Notifications templates={notificationTemplates} />
 
             <ProfileActions>
-              <Avatar
-                onClick={userDropdown.toggle}
-                tabIndex={0}
-                aria-expanded={userDropdown.isOpen}
-                aria-label={intl.formatMessage({
-                  id: 'Header / Open profile menu aria label',
-                  defaultMessage: 'Open profile menu',
-                })}
-              />
+              <Popover
+                open={userDropdown.isOpen}
+                onOpenChange={(open) => {
+                  userDropdown.setIsOpen(open);
+                }}
+              >
+                <PopoverTrigger>
+                  <Avatar
+                    onClick={userDropdown.toggle}
+                    tabIndex={0}
+                    aria-expanded={userDropdown.isOpen}
+                    aria-label={intl.formatMessage({
+                      id: 'Header / Open profile menu aria label',
+                      defaultMessage: 'Open profile menu',
+                    })}
+                  />
+                </PopoverTrigger>
 
-              <ClickAwayListener onClickAway={userDropdown.clickAway}>
-                <Menu isOpen={userDropdown.isOpen}>
-                  <ButtonLink
-                    onClick={userDropdown.close}
-                    to={generateLocalePath(RoutesConfig.profile)}
-                    variant={ButtonVariant.SECONDARY}
-                  >
-                    <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
-                  </ButtonLink>
-                  <ButtonLink
-                    onClick={userDropdown.close}
-                    to={generateLocalePath(RoutesConfig.logout)}
-                    variant={ButtonVariant.SECONDARY}
-                  >
-                    <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
-                  </ButtonLink>
-                </Menu>
-              </ClickAwayListener>
+                <PopoverContent asChild align="end" side="bottom" sideOffset={24}>
+                  <Menu>
+                    <ButtonLink
+                      onClick={userDropdown.close}
+                      to={generateLocalePath(RoutesConfig.profile)}
+                      variant={ButtonVariant.SECONDARY}
+                    >
+                      <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
+                    </ButtonLink>
+                    <ButtonLink
+                      onClick={userDropdown.close}
+                      to={generateLocalePath(RoutesConfig.logout)}
+                      variant={ButtonVariant.SECONDARY}
+                    >
+                      <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
+                    </ButtonLink>
+                  </Menu>
+                </PopoverContent>
+              </Popover>
             </ProfileActions>
           </>
         )}

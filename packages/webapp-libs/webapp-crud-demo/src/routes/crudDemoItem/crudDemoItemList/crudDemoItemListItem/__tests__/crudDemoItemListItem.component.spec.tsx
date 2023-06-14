@@ -88,6 +88,8 @@ describe('CrudDemoItemListItem: Component', () => {
 
     render(<Component />, { apolloMocks });
     expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId(/toggle-button/i));
+
     await userEvent.click(screen.getByText(/edit/i));
     expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();
   });
@@ -119,6 +121,7 @@ describe('CrudDemoItemListItem: Component', () => {
 
     render(<Component />, { apolloMocks });
     expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId(/toggle-button/i));
     await userEvent.click(screen.getByText(/delete/i));
 
     await waitFor(() => expect(trackEvent).toBeCalledWith('crud', 'delete', item.id));
