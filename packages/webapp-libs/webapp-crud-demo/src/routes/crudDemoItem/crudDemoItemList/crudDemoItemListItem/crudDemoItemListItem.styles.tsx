@@ -56,7 +56,3 @@ export const Text = styled.p`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 `;
-
-export const DropdownMenu = styled(CrudDropdownMenu)`
-  padding-left: ${size.sizeUnits(2)};
-`;
