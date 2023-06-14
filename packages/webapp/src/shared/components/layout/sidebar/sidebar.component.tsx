@@ -37,6 +37,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
     cn('text-primary hover:bg-primary hover:text-white rounded-md px-3 py-2 text-sm font-medium leading-6', {
       'bg-primary/80 text-white': isActive,
     });
+
   return (
     <>
       <div
@@ -87,6 +88,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           <nav className="flex flex-col gap-y-1 -mx-2">
             <RoleAccess>
               <Link
+                variant="default"
                 className={menuItemClassName}
                 to={generateLocalePath(RoutesConfig.home)}
                 onClick={closeSidebar}

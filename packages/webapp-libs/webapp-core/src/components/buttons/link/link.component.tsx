@@ -28,7 +28,7 @@ export const Link = (props: LinkProps) => {
 
   const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
-      <RouterNavLink className={cn(buttonVariants({ variant, className }))} {...omit(['navLink'], props)}>
+      <RouterNavLink className={className} {...omit(['navLink'], props)}>
         {renderIcon()}
         {children}
       </RouterNavLink>
