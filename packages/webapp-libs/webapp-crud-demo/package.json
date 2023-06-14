@@ -13,6 +13,7 @@
     "@sb/webapp-core": "*",
     "@sb/webapp-notifications": "*",
     "graphql": "^16.6.0",
+    "lucide-react": "^0.224.0",
     "react-click-away-listener": "^2.2.2"
   },
   "peerDependencies": {

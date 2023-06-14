@@ -48,15 +48,22 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   };
 
   const renderInlineButtons = () => (
-    <InlineButtons>
+    <InlineButtons className="flex">
       <Link
         variant={ButtonVariant.GHOST}
+        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
-        icon={<Icon size={14} icon={editIcon} />}
+        // icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button variant="link" onClick={handleDelete} disabled={loading} icon={<Icon size={14} icon={deleteIcon} />}>
+      <Button
+        variant={ButtonVariant.GHOST}
+        onClick={handleDelete}
+        disabled={loading}
+        icon={<Icon size={14} icon={deleteIcon} />}
+        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
     </InlineButtons>
@@ -65,13 +72,15 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
 
   return (
-    <Card>
+    <Card className="mb-4">
       <CardContent className="pt-6">
-        <div className="space-y-2">
-          <label htmlFor="date" className="shrink-0">
-            Pick a date
-          </label>
-          {/* <DatePickerWithRange className="[&>button]:w-[260px]" /> */}
+        <div className="flex items-center justify-between space-y-2">
+          <Link
+            variant={ButtonVariant.GHOST}
+            to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
+          >
+            <Text>{data.name}</Text>
+          </Link>
           {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
         </div>
       </CardContent>
