@@ -6,6 +6,8 @@ import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface BackendCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -109,13 +111,13 @@ export class BackendCiConfig extends ServiceCiConfig {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
-    project.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -183,13 +185,13 @@ export class BackendCiConfig extends ServiceCiConfig {
       })
     );
 
-    project.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -250,6 +252,14 @@ export class BackendCiConfig extends ServiceCiConfig {
         ],
       })
     );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

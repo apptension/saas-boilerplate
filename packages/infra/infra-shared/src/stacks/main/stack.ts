@@ -1,11 +1,12 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { EnvConstructProps } from '@sb/infra-core';
+import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 
 import { MainVpc } from './mainVpc';
 import { MainECSCluster } from './mainEcsCluster';
 import { MainKmsKey } from './mainKmsKey';
 import { MainLambdaConfig } from './mainLambdaConfig';
 import { MainCertificates } from './mainCertificates';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export interface EnvMainStackProps extends StackProps, EnvConstructProps {}
 
@@ -43,5 +44,40 @@ export class EnvMainStack extends Stack {
       envSettings,
       mainVpc: this.mainVpc,
     });
+  }
+
+  static getIamPolicyStatementsForEnvParameters(
+    envSettings: EnvironmentSettings
+  ) {
+    const alias = MainKmsKey.getKeyAlias(envSettings);
+    return [
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'kms:Get*',
+          'kms:Describe*',
+          'kms:List*',
+          'kms:Decrypt',
+          'kms:Verify',
+        ],
+        resources: ['*'],
+        conditions: {
+          StringEquals: { 'kms:RequestAlias': alias },
+          'ForAnyValue:StringEquals': { 'kms:ResourceAliases': alias },
+        },
+      }),
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['ssm:DescribeParameters'],
+        resources: ['*'],
+      }),
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['ssm:GetParameter*'],
+        resources: [
+          `arn:aws:ssm:::parameter/env-${envSettings.projectName}-${envSettings.envStage}*`,
+        ],
+      }),
+    ];
   }
 }

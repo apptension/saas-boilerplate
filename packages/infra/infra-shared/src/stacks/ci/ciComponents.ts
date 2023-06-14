@@ -15,6 +15,8 @@ import { Artifact, IStage } from 'aws-cdk-lib/aws-codepipeline';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -88,13 +90,13 @@ export class ComponentsCiConfig extends ServiceCiConfig {
       })
     );
 
-    project.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new PolicyStatement({

@@ -5,6 +5,8 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface ServerlessCiConfigProps extends EnvConstructProps {
   name: string;
@@ -129,21 +131,19 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       ),
     });
 
-    dockerAssumeRole.addToPolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
 
-    project.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
 
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -234,6 +234,20 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
+
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -264,14 +278,6 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     dockerAssumeRole.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
-
-    dockerAssumeRole.addToPolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
         actions: [
           'iam:*',
           'cloudfront:*',
@@ -279,8 +285,6 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           'lambda:*',
           'apigateway:*',
           'logs:*',
-          'kms:*',
-          'ssm:*',
           'events:*',
           'ec2:DescribeSecurityGroups',
           'ec2:DescribeSubnets',
