@@ -19,10 +19,6 @@ export const Checked: Story = {
   args: { label: 'Checkbox', checked: true },
 };
 
-export const SemiChecked: Story = {
-  args: { label: 'Checkbox', semiChecked: true, checked: true },
-};
-
 export const NoLabel: Story = {
   args: {},
 };
