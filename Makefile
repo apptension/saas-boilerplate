@@ -3,6 +3,7 @@ include $(SELF_DIR)/Makefile.base.mk
 
 bootstrap-infra:
 	pnpm nx run tools:bootstrap-infra
+	pnpm nx run --output-style=stream infra-shared:bootstrap
 
 setup:
 	pnpm nx run-many --skip-nx-cache --target=setup --projects=core,backend,workers,webapp,e2e-tests

@@ -3,10 +3,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codebuildActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
 
 interface UploadVersionCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -50,6 +47,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -72,6 +70,14 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

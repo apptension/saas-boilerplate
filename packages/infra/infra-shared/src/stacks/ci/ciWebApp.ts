@@ -75,7 +75,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'go get github.com/segmentio/chamber',
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -145,6 +145,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -162,6 +163,14 @@ export class WebappCiConfig extends ServiceCiConfig {
       environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

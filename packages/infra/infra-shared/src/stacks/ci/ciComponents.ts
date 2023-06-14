@@ -13,10 +13,8 @@ import {
 } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Artifact, IStage } from 'aws-cdk-lib/aws-codepipeline';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -60,6 +58,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
@@ -86,6 +85,14 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ComponentsStack/*`,
         ],
+      })
+    );
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
       })
     );
 

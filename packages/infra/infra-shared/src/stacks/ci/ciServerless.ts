@@ -140,6 +140,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
+        actions: ['kms:*', 'ssm:*'],
+        resources: ['*'],
+      })
+    );
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:*'],
         resources: ['*'],
       })
@@ -190,6 +198,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
+              'go install github.com/segmentio/chamber/v2@latest',
               'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
