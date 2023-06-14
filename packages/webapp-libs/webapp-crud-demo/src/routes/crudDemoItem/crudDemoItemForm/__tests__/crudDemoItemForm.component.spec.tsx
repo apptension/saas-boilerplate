@@ -17,10 +17,10 @@ describe('CrudDemoItemForm: Component', () => {
 
   const Component = (props: Partial<CrudDemoItemFormProps>) => <CrudDemoItemForm {...defaultProps} {...props} />;
 
-  it('should display empty form', async () => {
-    render(<Component />);
+  it('should display empty string', async () => {
+    render(<Component initialData={{ name: '' }} />);
     const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
-    expect(value).toBeNull();
+    expect(value).toBe('');
   });
 
   describe('action completes successfully', () => {

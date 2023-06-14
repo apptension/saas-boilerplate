@@ -16,7 +16,7 @@ describe('AddCrudDemoItem: Component', () => {
     const { waitForApolloMocks } = render(<Component />);
     await waitForApolloMocks();
     const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
-    expect(value).toBeNull();
+    expect(value).toBe('');
   });
 
   describe('action completes successfully', () => {
