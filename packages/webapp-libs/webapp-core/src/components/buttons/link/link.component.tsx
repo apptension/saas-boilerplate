@@ -7,9 +7,11 @@ import {
   NavLinkProps as RouterNavLinkProps,
 } from 'react-router-dom';
 
-import { Button, ButtonBaseProps, ButtonVariant } from '../button';
+import { ButtonBaseProps, ButtonVariant } from '../button';
+import { buttonVariants } from '../button/button.styles';
 import { ButtonSize } from '../button/button.types';
 import { isInternalLink, isInternalNavLink } from './link.utils';
+import { cn } from '@sb/webapp-core/lib/utils';
 
 export type LinkNavLinkExtension = { navLink?: boolean; children?: ReactNode };
 export type InternalLinkProps = RouterLinkProps & ButtonBaseProps & LinkNavLinkExtension;
@@ -21,18 +23,27 @@ export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkP
 export const Link = (props: LinkProps) => {
   const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, className, ...linkProps } = props;
 
+  const renderIcon = () => icon && <span className="mr-1">{icon}</span>;
+
   const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
-      <RouterNavLink {...omit(['navLink'], props)}>{children}</RouterNavLink>
+      <RouterNavLink className={cn(buttonVariants({ variant, className }))} {...omit(['navLink'], props)}>
+        {renderIcon()}
+        {children}
+      </RouterNavLink>
     ) : (
-      <RouterLink {...(props as InternalLinkProps)}>{children}</RouterLink>
+      <RouterLink className={cn(buttonVariants({ variant, className }))} {...(props as InternalLinkProps)}>
+        {renderIcon()}
+        {children}
+      </RouterLink>
     );
 
-  const renderExternalLink = (props: ExternalLinkProps) => <a {...props}>{children}</a>;
-
-  return (
-    <Button className={`${className}`} variant={variant} size={size} icon={icon}>
-      {isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps as ExternalLinkProps)}
-    </Button>
+  const renderExternalLink = (props: ExternalLinkProps) => (
+    <a className={cn(buttonVariants({ variant, className }))} {...props}>
+      {renderIcon()}
+      {children}
+    </a>
   );
+
+  return isInternalLink(linkProps) ? renderInternalLink(linkProps) : renderExternalLink(linkProps as ExternalLinkProps);
 };
