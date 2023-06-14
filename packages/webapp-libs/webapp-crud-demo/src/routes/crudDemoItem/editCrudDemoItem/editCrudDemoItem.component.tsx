@@ -10,7 +10,6 @@ import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoItem.graphql';
-import { Container, Header } from './editCrudDemoItem.styles';
 
 type Params = { id: string };
 
@@ -40,24 +39,23 @@ export const EditCrudDemoItem = () => {
 
   if (loading)
     return (
-      <Container>
+      <div className="py-4 px-12">
         <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </Container>
+      </div>
     );
   if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
     commitEditCrudDemoItemMutation({ variables: { input: { id: crudDemoItem.id, name: formData.name } } });
   };
-
   return (
-    <Container>
+    <div className="py-4 px-12">
       <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <Header>
+      <h1 className="text-2xl mb-3 leading-6 font-bold">
         <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
-      </Header>
+      </h1>
 
       <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
-    </Container>
+    </div>
   );
 };
