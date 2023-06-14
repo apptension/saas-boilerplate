@@ -31,9 +31,9 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
             id: 'CrudDemoItemList.Open item actions',
           })}
         >
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
+          <ToggleButtonCircle className="bg-slate-400" />
+          <ToggleButtonCircle className="bg-slate-400" />
+          <ToggleButtonCircle className="bg-slate-400" />
         </ToggleButton>
       </PopoverTrigger>
       <PopoverContent className={className}>

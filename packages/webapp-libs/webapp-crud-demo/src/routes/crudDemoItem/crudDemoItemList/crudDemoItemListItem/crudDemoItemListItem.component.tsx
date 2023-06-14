@@ -51,7 +51,11 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     <InlineButtons className="flex">
       <Link
         variant={ButtonVariant.GHOST}
-        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-10 w-full items-center justify-between rounded-md border 
+        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
+        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
+        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
+        disabled:opacity-50 hover:bg-accent hover:text-accent-foreground"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         // icon={<Icon size={14} icon={editIcon} />}
       >
@@ -62,7 +66,11 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         onClick={handleDelete}
         disabled={loading}
         icon={<Icon size={14} icon={deleteIcon} />}
-        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-10 w-full items-center justify-between rounded-md border 
+        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
+        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
+        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
+        disabled:opacity-50"
       >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
@@ -72,18 +80,13 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
 
   return (
-    <Card className="mb-4">
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <Link
-            variant={ButtonVariant.GHOST}
-            to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
-          >
-            <Text>{data.name}</Text>
-          </Link>
-          {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
-        </div>
-      </CardContent>
-    </Card>
+    <Container>
+      <LinkContainer>
+        <Link variant={ButtonVariant.GHOST} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
+          <Text>{data.name}</Text>
+        </Link>
+        {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+      </LinkContainer>
+    </Container>
   );
 };

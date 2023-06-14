@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { PlusCircle } from 'lucide-react';
@@ -29,14 +30,18 @@ export const CrudDemoItemList = () => {
   const renderList = () => {
     if (data) {
       return (
-        <List>
-          {mapConnection(
-            (node) => (
-              <CrudDemoItemListItem item={node} key={node.id} />
-            ),
-            data.allCrudDemoItems
-          )}
-        </List>
+        <Card className="mt-4">
+          <CardContent>
+            <List>
+              {mapConnection(
+                (node) => (
+                  <CrudDemoItemListItem item={node} key={node.id} />
+                ),
+                data.allCrudDemoItems
+              )}
+            </List>
+          </CardContent>
+        </Card>
       );
     }
     return null;
@@ -47,7 +52,8 @@ export const CrudDemoItemList = () => {
       <Header>CRUD Example Items</Header>
       <Link
         className="flex w-fit items-center rounded-md border border-input px-3 py-2 text-sm ring-offset-background
-        placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
+        disabled:cursor-not-allowed disabled:opacity-50 hover:bg-accent hover:text-accent-foreground"
         to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
         variant={ButtonVariant.PRIMARY}
       >

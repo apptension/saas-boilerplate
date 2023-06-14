@@ -30,10 +30,10 @@ export const LinkContainer = styled.div`
     color: ${color.listItem.active.text};
   }
 
-  ${media.media(media.Breakpoint.TABLET)`
+  /* ${media.media(media.Breakpoint.TABLET)`
     padding-right: ${size.sizeUnits(3)};
     justify-content: space-between;
-  `}
+  `} */
 `;
 
 export const InlineButtons = styled.div`
