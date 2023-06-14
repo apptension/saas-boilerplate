@@ -1,12 +1,11 @@
 import { ApolloError } from '@apollo/client';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { useCrudDemoItemForm } from './crudDemoItemForm.hook';
-import { Buttons, Container, ErrorMessage, Fields, Form } from './crudDemoItemForm.styles';
 
 const MAX_NAME_LENGTH = 255;
 
@@ -30,56 +29,70 @@ export const CrudDemoItemForm = ({ initialData, onSubmit, error, loading }: Crud
       register,
       formState: { errors },
     },
+    form,
     genericError,
     hasGenericErrorOnly,
     handleFormSubmit,
   } = useCrudDemoItemForm({ initialData, onSubmit, error });
 
   return (
-    <Container>
-      <Form onSubmit={handleFormSubmit}>
-        <Fields>
-          <Input
-            {...register('name', {
-              maxLength: {
-                value: MAX_NAME_LENGTH,
-                message: intl.formatMessage({
-                  defaultMessage: 'Name is too long',
-                  id: 'CrudDemoItem form / Name max length error',
-                }),
-              },
-              required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'Name is required',
-                  id: 'CrudDemoItem form / Name required',
-                }),
-              },
-            })}
-            label={intl.formatMessage({
-              defaultMessage: 'Name:',
-              id: 'CrudDemoItem Form / Name label',
-            })}
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Name',
-              id: 'CrudDemoItem form / Name placeholder',
-            })}
-            error={errors.name?.message}
-          />
+    <Form {...form}>
+      <form className="flex flex-col" onSubmit={handleFormSubmit}>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...register('name', {
+                    maxLength: {
+                      value: MAX_NAME_LENGTH,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Name is too long',
+                        id: 'CrudDemoItem form / Name max length error',
+                      }),
+                    },
+                    required: {
+                      value: true,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Name is required',
+                        id: 'CrudDemoItem form / Name required',
+                      }),
+                    },
+                  })}
+                  label={intl.formatMessage({
+                    defaultMessage: 'Name:',
+                    id: 'CrudDemoItem Form / Name label',
+                  })}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Name',
+                    id: 'CrudDemoItem form / Name placeholder',
+                  })}
+                  error={errors.name?.message}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
-          {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        </Fields>
+        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
 
-        <Buttons>
-          <Link to={generateLocalePath(RoutesConfig.crudDemoItem.list)} variant={ButtonVariant.SECONDARY}>
+        <div className="mt-6">
+          <Link
+            className="mr-4"
+            to={generateLocalePath(RoutesConfig.crudDemoItem.list)}
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Cancel" id="CrudDemoItem form / Cancel button" />
           </Link>
 
           <Button type="submit" disabled={loading}>
             <FormattedMessage defaultMessage="Save changes" id="CrudDemoItem form / Submit button" />
           </Button>
-        </Buttons>
-      </Form>
-    </Container>
+        </div>
+      </form>
+    </Form>
   );
 };
