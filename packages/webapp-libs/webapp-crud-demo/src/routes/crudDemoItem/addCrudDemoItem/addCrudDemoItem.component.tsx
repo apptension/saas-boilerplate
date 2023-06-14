@@ -11,7 +11,6 @@ import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
-import { Container, Header } from './addCrudDemoItem.styles';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
   mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
@@ -78,12 +77,12 @@ export const AddCrudDemoItem = () => {
   };
 
   return (
-    <Container>
+    <div className="py-4 px-12">
       <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <Header>
+      <h1 className="text-2xl mb-3 leading-6 font-bold">
         <FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />
-      </Header>
+      </h1>
       <CrudDemoItemForm onSubmit={onFormSubmit} error={error} loading={loadingMutation} />
-    </Container>
+    </div>
   );
 };
