@@ -8,7 +8,7 @@ import { PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
-import { AddNewLink, Container, Header, List } from './crudDemoItemList.styles';
+import { Container, Header, List } from './crudDemoItemList.styles';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
