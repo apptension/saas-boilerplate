@@ -78,14 +78,14 @@ export const Header = (props: HeaderProps) => {
                     <ButtonLink
                       onClick={userDropdown.close}
                       to={generateLocalePath(RoutesConfig.profile)}
-                      variant={ButtonVariant.SECONDARY}
+                      variant={ButtonVariant.GHOST}
                     >
                       <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
                     </ButtonLink>
                     <ButtonLink
                       onClick={userDropdown.close}
                       to={generateLocalePath(RoutesConfig.logout)}
-                      variant={ButtonVariant.SECONDARY}
+                      variant={ButtonVariant.GHOST}
                     >
                       <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
                     </ButtonLink>
