@@ -1,11 +1,11 @@
 import { Link } from '@sb/webapp-core/components/buttons';
+import { H3, Small } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
-import { Container, Header, Links, Text } from './passwordResetRequest.styles';
 
 export const PasswordResetRequest = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -14,15 +14,16 @@ export const PasswordResetRequest = () => {
   const handleSubmit = useCallback(() => setIsSubmitted(true), []);
 
   return (
-    <Container>
-      <Header>
+    <div className="m-auto flex max-w-xs flex-col items-center justify-center gap-6 2xl:mt-32">
+      <H3>
         {isSubmitted ? (
           <FormattedMessage defaultMessage="Done!" id="Auth / reset password / request sent heading" />
         ) : (
           <FormattedMessage defaultMessage="Forgot password?" id="Auth / reset password / heading" />
         )}
-      </Header>
-      <Text>
+      </H3>
+
+      <Small>
         {isSubmitted ? (
           <FormattedMessage
             defaultMessage="We’ve sent a link to the given email address. You should receive it soon."
@@ -34,15 +35,15 @@ export const PasswordResetRequest = () => {
             id="Auth / Reset password / description"
           />
         )}
-      </Text>
+      </Small>
 
       <PasswordResetRequestForm onSubmitted={handleSubmit} />
 
-      <Links>
+      <div className="flex w-full flex-row justify-center">
         <Link to={generateLocalePath(RoutesConfig.login)}>
           <FormattedMessage defaultMessage="Go back to log in" id="Auth / Reset password / login link" />
         </Link>
-      </Links>
-    </Container>
+      </div>
+    </div>
   );
 };

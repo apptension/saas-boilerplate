@@ -1,10 +1,9 @@
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
-import { size } from '@sb/webapp-core/theme';
+import { Small } from '@sb/webapp-core/components/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';
-import { Container, ErrorMessage } from './passwordResetConfirmForm.styles';
 
 export type PasswordResetConfirmFormProps = {
   user: string;
@@ -27,75 +26,72 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   } = usePasswordResetConfirmForm(user, token);
 
   return (
-    <Container onSubmit={handlePasswordResetConfirm}>
-      <size.FormFieldsRow>
-        <Input
-          {...register('newPassword', {
-            required: {
-              value: true,
-              message: intl.formatMessage({
-                defaultMessage: 'Password is required',
-                id: 'Auth / Reset password confirm / Old password required',
-              }),
-            },
-            minLength: {
-              value: 8,
-              message: intl.formatMessage({
-                defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                id: 'Auth / Reset password confirm / Password too short',
-              }),
-            },
-          })}
-          type="password"
-          required
-          label={intl.formatMessage({
-            defaultMessage: 'New password',
-            id: 'Auth / Reset password confirm / Password label',
-          })}
-          placeholder={intl.formatMessage({
-            defaultMessage: 'Write new password here...',
-            id: 'Auth / Reset password confirm / Password placeholder',
-          })}
-          error={errors.newPassword?.message}
-        />
-      </size.FormFieldsRow>
-      <size.FormFieldsRow>
-        <Input
-          {...register('confirmPassword', {
-            validate: {
-              required: (value) =>
-                value?.length > 0 ||
-                intl.formatMessage({
-                  defaultMessage: 'Repeat new password is required',
-                  id: 'Auth / Reset password confirm / Password required',
-                }),
-              mustMatch: (value) =>
-                getValues().newPassword === value ||
-                intl.formatMessage({
-                  defaultMessage: 'Passwords must match',
-                  id: 'Auth / Reset password confirm / Password must match',
-                }),
-            },
-          })}
-          type="password"
-          required
-          label={intl.formatMessage({
-            defaultMessage: 'Repeat new password',
-            id: 'Auth / Login / Confirm password label',
-          })}
-          placeholder={intl.formatMessage({
-            defaultMessage: 'Confirm your new password here...',
-            id: 'Auth / Login / Confirm password placeholder',
-          })}
-          error={errors.confirmPassword?.message}
-        />
-      </size.FormFieldsRow>
+    <form noValidate className="flex w-full flex-col gap-6" onSubmit={handlePasswordResetConfirm}>
+      <Input
+        {...register('newPassword', {
+          required: {
+            value: true,
+            message: intl.formatMessage({
+              defaultMessage: 'Password is required',
+              id: 'Auth / Reset password confirm / Old password required',
+            }),
+          },
+          minLength: {
+            value: 8,
+            message: intl.formatMessage({
+              defaultMessage: 'Password is too short. It must contain at least 8 characters.',
+              id: 'Auth / Reset password confirm / Password too short',
+            }),
+          },
+        })}
+        type="password"
+        required
+        label={intl.formatMessage({
+          defaultMessage: 'New password',
+          id: 'Auth / Reset password confirm / Password label',
+        })}
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Write new password here...',
+          id: 'Auth / Reset password confirm / Password placeholder',
+        })}
+        error={errors.newPassword?.message}
+      />
 
-      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+      <Input
+        {...register('confirmPassword', {
+          validate: {
+            required: (value) =>
+              value?.length > 0 ||
+              intl.formatMessage({
+                defaultMessage: 'Repeat new password is required',
+                id: 'Auth / Reset password confirm / Password required',
+              }),
+            mustMatch: (value) =>
+              getValues().newPassword === value ||
+              intl.formatMessage({
+                defaultMessage: 'Passwords must match',
+                id: 'Auth / Reset password confirm / Password must match',
+              }),
+          },
+        })}
+        type="password"
+        required
+        label={intl.formatMessage({
+          defaultMessage: 'Repeat new password',
+          id: 'Auth / Login / Confirm password label',
+        })}
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Confirm your new password here...',
+          id: 'Auth / Login / Confirm password placeholder',
+        })}
+        error={errors.confirmPassword?.message}
+      />
 
-      <Button type="submit" disabled={loading} className="mt-2">
+      {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+
+      <Button type="submit" disabled={loading}>
         <FormattedMessage defaultMessage="Confirm the change" id="Auth / Reset password confirm / Submit button" />
       </Button>
-    </Container>
+    </form>
   );
 };
