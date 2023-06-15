@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { FacebookIcon, GoogleIcon } from '../../../../images/icons';
 import { OAuthProvider } from '../../../../modules/auth/auth.types';
-import { Container } from './socialLoginButtons.styles';
 
 export enum SignupButtonsVariant {
   LOGIN,
@@ -22,8 +21,13 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
   const handleFacebookLogin = () => oAuthLogin(OAuthProvider.Facebook);
 
   return (
-    <Container {...props}>
-      <Button icon={<FacebookIcon />} variant={ButtonVariant.SECONDARY} onClick={handleFacebookLogin}>
+    <div className="flex w-full flex-col gap-4" {...props}>
+      <Button
+        className="flex gap-1"
+        icon={<FacebookIcon />}
+        variant={ButtonVariant.SECONDARY}
+        onClick={handleFacebookLogin}
+      >
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
         ) : (
@@ -31,13 +35,18 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
         )}
       </Button>
 
-      <Button icon={<GoogleIcon />} variant={ButtonVariant.SECONDARY} onClick={handleGoogleLogin}>
+      <Button
+        className="flex gap-1"
+        icon={<GoogleIcon />}
+        variant={ButtonVariant.SECONDARY}
+        onClick={handleGoogleLogin}
+      >
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Google" id="Auth / Login / Google login button" />
         ) : (
           <FormattedMessage defaultMessage="Sign up with Google" id="Auth / Signup / Google signup button" />
         )}
       </Button>
-    </Container>
+    </div>
   );
 };
