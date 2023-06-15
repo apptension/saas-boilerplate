@@ -14,7 +14,6 @@ import {
 import { Artifact, IStage } from 'aws-cdk-lib/aws-codepipeline';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
