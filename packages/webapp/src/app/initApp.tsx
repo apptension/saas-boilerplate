@@ -1,5 +1,5 @@
 import { GTM } from '@sb/webapp-core/components/gtm';
-import { LocalesProvider } from '@sb/webapp-core/providers';
+import { LocalesProvider, ThemeProvider } from '@sb/webapp-core/providers';
 import { ToastProvider } from '@sb/webapp-core/toast';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -20,18 +20,20 @@ const render = () => {
   root.render(
     <SentryProvider>
       <LocalesProvider>
-        <ToastProvider>
-          <RouterProvider>
-            <HelmetProvider>
-              <ApiProvider>
-                <Suspense>
-                  <App />
-                </Suspense>
-                <GTM />
-              </ApiProvider>
-            </HelmetProvider>
-          </RouterProvider>
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <RouterProvider>
+              <HelmetProvider>
+                <ApiProvider>
+                  <Suspense>
+                    <App />
+                  </Suspense>
+                  <GTM />
+                </ApiProvider>
+              </HelmetProvider>
+            </RouterProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </LocalesProvider>
     </SentryProvider>
   );

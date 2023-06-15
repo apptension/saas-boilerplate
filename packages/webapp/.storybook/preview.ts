@@ -1,4 +1,4 @@
-import { withThemeByDataAttribute } from '@storybook/addon-styling';
+import { withThemeByClassName } from '@storybook/addon-styling';
 import { Preview } from '@storybook/react';
 import * as jest from 'jest-mock';
 
@@ -14,13 +14,12 @@ const preview: Preview = {
     withIntl,
     withTheme(),
     withFontFace,
-    withThemeByDataAttribute({
+    withThemeByClassName({
       themes: {
         light: 'light',
         dark: 'dark',
       },
       defaultTheme: 'light',
-      attributeName: 'data-mode',
     }),
   ],
 };

@@ -1,4 +1,5 @@
 import { Link } from '@sb/webapp-core/components/buttons';
+import { H3, Small } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -6,7 +7,6 @@ import { useNavigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
-import { Container, Header, Links, Text } from './passwordResetConfirm.styles';
 
 export const PasswordResetConfirm = () => {
   type Params = {
@@ -30,21 +30,22 @@ export const PasswordResetConfirm = () => {
   }
 
   return (
-    <Container>
-      <Header>
+    <div className="m-auto flex max-w-xs flex-col items-center justify-center gap-6 2xl:mt-32">
+      <H3>
         <FormattedMessage defaultMessage="Change your password" id="Auth / Confirm reset password / heading" />
-      </Header>
-      <Text>
+      </H3>
+
+      <Small>
         <FormattedMessage defaultMessage="Set your new password." id="Auth / Confirm reset password / description" />
-      </Text>
+      </Small>
 
       <PasswordResetConfirmForm user={params.user} token={params.token} />
 
-      <Links>
+      <div className="mt-8 flex w-full flex-row justify-between">
         <Link to={generateLocalePath(RoutesConfig.login)}>
           <FormattedMessage defaultMessage="Go back to log in" id="Auth / Confirm reset password / login link" />
         </Link>
-      </Links>
-    </Container>
+      </div>
+    </div>
   );
 };
