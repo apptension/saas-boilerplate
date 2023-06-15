@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { typography } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
@@ -11,7 +11,6 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import Typewriter from 'typewriter-effect/dist/core';
 
 import { generateSaasIdeasMutation } from './saasIdeas.graphql';
-import { Container, Field, List, ListItem, Title } from './saasIdeas.styles';
 
 const MAX_KEYWORDS_LENGTH = 200;
 
@@ -26,6 +25,7 @@ export const SaasIdeas = () => {
       formState: { errors },
       handleSubmit,
     },
+    form,
   } = useApiForm({
     defaultValues: {
       keywords: '',
@@ -118,7 +118,7 @@ export const SaasIdeas = () => {
     },
   });
   return (
-    <Container>
+    <div className="py-4 px-12">
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'SaaS Ideas',
@@ -126,9 +126,9 @@ export const SaasIdeas = () => {
         })}
       />
 
-      <Title>
+      <h1 className="text-4xl mb-6 leading-6 font-bold">
         <FormattedMessage defaultMessage="Generate your SaaS ideas using chatGPT!" id="SaaS ideas / title" />
-      </Title>
+      </h1>
 
       <typography.Paragraph>
         <FormattedMessage
@@ -137,40 +137,54 @@ export const SaasIdeas = () => {
         />
       </typography.Paragraph>
 
-      <form onSubmit={handleFormSubmit} noValidate={true}>
-        <Field>
-          <Input
-            {...registerKeywords}
-            label={intl.formatMessage({
-              defaultMessage: 'Keywords:',
-              id: 'SaaS ideas Form / Keywords label',
-            })}
-            error={errors.keywords?.message}
-            ref={(e) => {
-              registerKeywords.ref(e);
-              inputRef.current = e;
-            }}
-            maxLength={MAX_KEYWORDS_LENGTH}
+      <Form {...form}>
+        <form onSubmit={handleFormSubmit} noValidate={true}>
+          <FormField
+            name="keywords"
+            render={({ field }) => (
+              <FormItem className="mt-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    {...registerKeywords}
+                    label={intl.formatMessage({
+                      defaultMessage: 'Keywords:',
+                      id: 'SaaS ideas Form / Keywords label',
+                    })}
+                    error={errors.keywords?.message}
+                    ref={(e) => {
+                      registerKeywords.ref(e);
+                      inputRef.current = e;
+                    }}
+                    maxLength={MAX_KEYWORDS_LENGTH}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </Field>
 
-        <Button type="submit" disabled={loading}>
-          <FormattedMessage defaultMessage="Generate your SaaS ideas" id="SaaS ideas form / Submit button" />
-        </Button>
-      </form>
+          <Button className="mt-5" type="submit" disabled={loading}>
+            <FormattedMessage defaultMessage="Generate your SaaS ideas" id="SaaS ideas form / Submit button" />
+          </Button>
+        </form>
+      </Form>
 
-      <List>
+      <ul className="max-w-md">
         {loading ? (
-          <ListItem>
+          <li className="mx-5">
             <LoadingSkeleton height={8} width={480} />
             <LoadingSkeleton height={8} width={460} />
             <LoadingSkeleton height={8} width={480} />
             <LoadingSkeleton height={8} width={400} />
-          </ListItem>
+          </li>
         ) : (
-          data?.generateSaasIdeas?.ideas?.map((idea, index) => <ListItem key={index}>{idea}</ListItem>)
+          data?.generateSaasIdeas?.ideas?.map((idea, index) => (
+            <li className="mx-5" key={index}>
+              {idea}
+            </li>
+          ))
         )}
-      </List>
-    </Container>
+      </ul>
+    </div>
   );
 };
