@@ -6,7 +6,6 @@ import { FormattedMessage } from 'react-intl';
 import { useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
-import { Container, Header } from './crudDemoItemDetails.styles';
 
 export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `
   query crudDemoItemDetailsQuery($id: ID!) {
@@ -41,9 +40,9 @@ export const CrudDemoItemDetails = () => {
   const itemData = data?.crudDemoItem;
 
   return (
-    <Container>
+    <div className="py-4 px-12">
       <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <Header>{itemData?.name}</Header>
-    </Container>
+      <h1 className="text-2xl mb-3 leading-6 font-bold">{itemData?.name}</h1>
+    </div>
   );
 };

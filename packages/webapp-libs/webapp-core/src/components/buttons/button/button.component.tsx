@@ -4,7 +4,8 @@ import * as React from 'react';
 import { ReactNode } from 'react';
 
 import { cn } from '../../../lib/utils';
-import { Icon, buttonVariants } from './button.styles';
+import { buttonVariants } from './button.styles';
+import { renderIcon } from './button.utils';
 
 export interface ButtonBaseProps extends VariantProps<typeof buttonVariants> {
   asChild?: boolean;
@@ -23,7 +24,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
         <>
-          {icon ? <Icon>{icon}</Icon> : null}
+          {renderIcon({ icon })}
           {children}
         </>
       </Comp>

@@ -12,7 +12,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../config/routes';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
-import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { CrudDropdownMenu } from './crudDropdownMenu';
 
 export type CrudDemoItemListItemProps = {
   item: FragmentType<typeof crudDemoItemListItemFragment>;
@@ -47,30 +47,54 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   };
 
   const renderInlineButtons = () => (
-    <InlineButtons>
+    <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
       <Link
         variant={ButtonVariant.GHOST}
+        className="flex h-10 w-full items-center justify-between rounded-md border 
+        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
+        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
+        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
+        disabled:opacity-50 group-active:border-blue-500"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button variant="link" onClick={handleDelete} disabled={loading} icon={<Icon size={14} icon={deleteIcon} />}>
+      <Button
+        variant={ButtonVariant.GHOST}
+        onClick={handleDelete}
+        disabled={loading}
+        icon={<Icon size={14} icon={deleteIcon} />}
+        className="flex h-10 w-full items-center justify-between rounded-md border 
+        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
+        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
+        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
+        disabled:opacity-50 group-active:border-blue-500"
+      >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
-    </InlineButtons>
+    </div>
   );
 
-  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
+  const renderButtonsMenu = () => (
+    <CrudDropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
+  );
 
   return (
-    <Container>
-      <LinkContainer>
-        <Link variant={ButtonVariant.GHOST} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
-          <Text>{data.name}</Text>
+    <li>
+      <div
+        tabIndex={0}
+        className="group flex items-center justify-between w-full min-w-15 p-4 transition hover:bg-sky-50 focus:outline-none active:text-blue-500 active:bg-blue-100"
+      >
+        <Link
+          className="border-input"
+          variant={ButtonVariant.GHOST}
+          to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
+        >
+          <p className="text-base">{data.name}</p>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
-      </LinkContainer>
-    </Container>
+      </div>
+    </li>
   );
 };

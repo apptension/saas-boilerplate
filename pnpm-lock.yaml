@@ -1615,6 +1615,9 @@ importers:
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
+      lucide-react:
+        specifier: ^0.224.0
+        version: 0.224.0(react@18.2.0)
       msw:
         specifier: ^1.0.0
         version: 1.0.0(typescript@4.8.4)

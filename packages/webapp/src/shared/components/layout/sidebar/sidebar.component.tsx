@@ -78,6 +78,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           <nav className="flex flex-col gap-y-1 -mx-2">
             <RoleAccess>
               <Link
+                variant="default"
                 className={menuItemClassName}
                 to={generateLocalePath(RoutesConfig.home)}
                 onClick={closeSidebar}
