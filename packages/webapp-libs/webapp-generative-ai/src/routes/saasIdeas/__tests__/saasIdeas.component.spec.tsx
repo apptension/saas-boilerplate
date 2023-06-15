@@ -24,7 +24,7 @@ describe('SaasIdeas: Component', () => {
     const { waitForApolloMocks } = render(<Component />);
     await waitForApolloMocks();
     const value = (await getKeywordInput()).getAttribute('value');
-    expect(value).toBeNull();
+    expect(value).toBe('');
   });
 
   it('should show error if input is empty', async () => {
