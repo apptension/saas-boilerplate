@@ -1,4 +1,3 @@
-import { cn } from '@sb/webapp-core/lib/utils';
 import { isNil } from 'ramda';
 import { ReactNode, useMemo, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -28,7 +27,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <LayoutContext.Provider value={value}>
-      <div className={cn(`lg:pl-${shouldDisplaySidebar ? 72 : 0}`)}>
+      <div className={shouldDisplaySidebar ? 'lg:pl-72' : undefined}>
         <Header />
         <main className="py-10">{children}</main>
       </div>
