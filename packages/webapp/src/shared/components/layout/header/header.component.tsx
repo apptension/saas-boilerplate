@@ -1,8 +1,10 @@
-import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
+import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
+import { Sun } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -20,14 +22,12 @@ export const Header = (props: HeaderProps) => {
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
   const userDropdown = useOpenState(false);
   const { isLoggedIn } = useAuth();
+  const { toggleTheme } = useTheme();
 
   return (
     <header
       {...props}
-      className={cn(
-        'sticky top-0 drop-shadow bg-primary-foreground/90 backdrop-blur-sm ring-1 ring-slate-800/10',
-        props.className
-      )}
+      className={cn('sticky top-0 bg-primary-foreground/80 backdrop-blur-sm border-b', props.className)}
     >
       <div className="flex flex-row h-16 px-8 gap-x-6 items-center justify-end">
         {isSidebarAvailable && (
@@ -49,6 +49,10 @@ export const Header = (props: HeaderProps) => {
         )}
 
         <div className="flex-1"></div>
+
+        <Button variant="ghost" onClick={() => toggleTheme()} className="rounded-full w-10 h-10 px-0">
+          <Sun />
+        </Button>
 
         {isLoggedIn && (
           <>

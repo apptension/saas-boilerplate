@@ -41,6 +41,7 @@
     "isomorphic-fetch": "^3.0.0",
     "jest-mock": "^29.5.0",
     "juice": "^8.1.0",
+    "lucide-react": "^0.224.0",
     "nodemailer": "^6.8.0",
     "plop": "^3.1.1",
     "qrcode": "^1.5.1",
