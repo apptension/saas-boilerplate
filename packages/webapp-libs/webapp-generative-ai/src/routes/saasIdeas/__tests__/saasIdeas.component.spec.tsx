@@ -1,6 +1,7 @@
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { GraphQLError } from 'graphql/error';
 import { append } from 'ramda';
 
 import { render } from '../../../tests/utils/rendering';
@@ -37,6 +38,7 @@ describe('SaasIdeas: Component', () => {
   it('should show results', async () => {
     const ideas = ['idea 1', 'idea 2'];
     const keywords = ['test_keyword'];
+
     const mutationMock = composeMockedQueryResult(generateSaasIdeasMutation, {
       data: {
         generateSaasIdeas: {
@@ -49,6 +51,7 @@ describe('SaasIdeas: Component', () => {
         },
       },
     });
+
     const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(mutationMock) });
     await waitForApolloMocks(0);
     await userEvent.type(await getKeywordInput(), keywords.join(' '));
@@ -56,5 +59,33 @@ describe('SaasIdeas: Component', () => {
     await waitForApolloMocks();
     expect(await screen.findByText(ideas[0])).toBeInTheDocument();
     expect(await screen.findByText(ideas[1])).toBeInTheDocument();
+  });
+
+  it('should show error', async () => {
+    const ideas: string[] = [];
+    const keywords = ['test_keyword'];
+
+    const errors = [new GraphQLError('error')];
+    const mutationMock = composeMockedQueryResult(generateSaasIdeasMutation, {
+      data: {
+        generateSaasIdeas: null,
+      },
+      errors: errors,
+      variables: {
+        input: {
+          keywords,
+        },
+      },
+    });
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mutationMock),
+    });
+    await waitForApolloMocks(0);
+    await userEvent.type(await getKeywordInput(), keywords.join(' '));
+    await userEvent.click(getSubmitBtn());
+    await waitForApolloMocks();
+
+    expect(await screen.findByText('error')).toBeInTheDocument();
   });
 });
