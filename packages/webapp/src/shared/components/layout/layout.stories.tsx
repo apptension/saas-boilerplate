@@ -1,10 +1,10 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { fillNotificationsListQuery } from '@sb/webapp-notifications/tests/factories';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { withProviders } from '../../utils/storybook';
-import { Layout, LayoutProps } from './layout.component';
+import { Layout } from './layout.component';
 
 const MockContent = styled.div`
   position: absolute;
@@ -13,31 +13,37 @@ const MockContent = styled.div`
   background-color: lightgray;
 `;
 
-type StoryArgType = LayoutProps & { isLoggedIn: boolean };
-
-const Template: StoryFn<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
-  return <Layout {...args} />;
+const Template: StoryFn = ({ isLoggedIn, ...args }) => {
+  return (
+    <Layout {...args}>
+      <MockContent />
+    </Layout>
+  );
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Layout',
   component: Layout,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks, { args: { isLoggedIn } }: any) => [
-        fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null),
-        fillNotificationsListQuery([], { hasUnreadNotifications: false }),
-      ],
+      apolloMocks: (defaultMocks, { args: { isLoggedIn = false } }: any) => {
+        return [
+          fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null),
+          fillNotificationsListQuery([], { hasUnreadNotifications: false }),
+        ];
+      },
     }),
   ],
 };
 
-export const LoggedOut = {
+export default meta;
+
+export const LoggedOut: StoryObj<typeof meta> = {
   render: Template,
-  args: { isLoggedIn: false, children: <MockContent /> },
+  args: { isLoggedIn: false },
 };
 
-export const LoggedIn = {
+export const LoggedIn: StoryObj<typeof meta> = {
   render: Template,
-  args: { isLoggedIn: true, children: <MockContent /> },
+  args: { isLoggedIn: true },
 };
