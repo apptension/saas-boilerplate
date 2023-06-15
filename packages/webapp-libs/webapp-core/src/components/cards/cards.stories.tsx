@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Card } from './cards.component';
+import { Card, CardContent, CardHeader } from './';
 
 type Story = StoryObj<typeof Card>;
 
@@ -13,12 +13,17 @@ export default meta;
 
 export const Open: Story = {
   args: {
-    children: <>Card content</>,
+    children: <CardContent>Card content</CardContent>,
   },
 };
 
 export const CustomHeader: Story = {
   args: {
-    children: <>Card content</>,
+    children: (
+      <>
+        <CardHeader>CustomHeader</CardHeader>
+        <CardContent>Card content</CardContent>
+      </>
+    ),
   },
 };
