@@ -27,7 +27,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <LayoutContext.Provider value={value}>
-      <div className="lg:pl-72">
+      <div className={isSideMenuOpen ? 'lg:pl-72' : undefined}>
         <Header />
         <main className="py-10">{children}</main>
       </div>
