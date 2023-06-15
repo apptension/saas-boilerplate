@@ -1,5 +1,6 @@
 import { Button, Link } from '@sb/webapp-core/components/buttons';
-import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { Checkbox, Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { Small } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -7,7 +8,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
 import { useSignupForm } from './signupForm.hooks';
-import { Checkbox, ErrorMessage } from './signupForm.styles';
 
 export const SignupForm = () => {
   const intl = useIntl();
@@ -31,7 +31,8 @@ export const SignupForm = () => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col"
+        noValidate
+        className="flex w-full flex-col gap-6"
         onSubmit={(e) => {
           handleSignup(e).catch(reportError);
         }}
@@ -40,7 +41,7 @@ export const SignupForm = () => {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="mb-6">
+            <FormItem>
               <FormControl>
                 <Input
                   {...field}
@@ -81,7 +82,7 @@ export const SignupForm = () => {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="mb-1">
+            <FormItem>
               <FormControl>
                 <Input
                   {...field}
@@ -122,7 +123,7 @@ export const SignupForm = () => {
           control={form.control}
           name="acceptTerms"
           render={({ field }) => (
-            <FormItem className="mb-6">
+            <FormItem>
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -167,9 +168,9 @@ export const SignupForm = () => {
           )}
         />
 
-        {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
 
-        <Button type="submit" disabled={loading} className="mt-2">
+        <Button type="submit" disabled={loading}>
           <FormattedMessage defaultMessage="Sign up" id="Auth / signup button" />
         </Button>
       </form>
