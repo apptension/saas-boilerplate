@@ -147,6 +147,7 @@
     "juice": "^8.1.0",
     "mockdate": "^3.0.5",
     "postcss": "^8.4.21",
+    "prettier-plugin-tailwindcss": "^0.3.0",
     "react-test-renderer": "^18.2.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-polyfill-node": "^0.12.0",
