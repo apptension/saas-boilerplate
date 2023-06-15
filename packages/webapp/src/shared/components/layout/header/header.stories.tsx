@@ -1,17 +1,15 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { action } from '@storybook/addon-actions';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
-import { Header, HeaderProps } from './header.component';
+import { Header } from './header.component';
 
-type StoryArgType = HeaderProps & { isLoggedIn: boolean };
-
-const Template: StoryFn<StoryArgType> = ({ isLoggedIn, ...args }: StoryArgType) => {
+const Template: StoryFn = ({ isLoggedIn, ...args }) => {
   return <Header {...args} />;
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Layout/Header',
   component: Header,
   decorators: [
@@ -23,12 +21,14 @@ export default {
   ],
 };
 
-export const LoggedOut = {
+export default meta;
+
+export const LoggedOut: StoryObj<typeof meta> = {
   render: Template,
   args: { isLoggedIn: false },
 };
 
-export const LoggedIn = {
+export const LoggedIn: StoryObj<typeof meta> = {
   render: Template,
   args: { isLoggedIn: true, onClick: action('Menu open') },
 };
