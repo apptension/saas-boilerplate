@@ -1,4 +1,3 @@
-import { PlusCircle } from 'lucide-react';
 import { omit } from 'ramda';
 import { AnchorHTMLAttributes, ReactNode } from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 import { ButtonBaseProps, ButtonVariant } from '../button';
 import { buttonVariants } from '../button/button.styles';
 import { ButtonSize } from '../button/button.types';
+import { renderIcon } from '../button/button.utils';
 import { isInternalLink, isInternalNavLink } from './link.utils';
 import { cn } from '@sb/webapp-core/lib/utils';
 
@@ -24,24 +24,22 @@ export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkP
 export const Link = (props: LinkProps) => {
   const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, className, ...linkProps } = props;
 
-  const renderIcon = () => icon && <span className="mr-1">{icon}</span>;
-
   const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
       <RouterNavLink className={className} {...omit(['navLink'], props)}>
-        {renderIcon()}
+        {renderIcon({ icon })}
         {children}
       </RouterNavLink>
     ) : (
       <RouterLink className={cn(buttonVariants({ variant, className }))} {...(props as InternalLinkProps)}>
-        {renderIcon()}
+        {renderIcon({ icon })}
         {children}
       </RouterLink>
     );
 
   const renderExternalLink = (props: ExternalLinkProps) => (
     <a className={cn(buttonVariants({ variant, className }))} {...props}>
-      {renderIcon()}
+      {renderIcon({ icon })}
       {children}
     </a>
   );
