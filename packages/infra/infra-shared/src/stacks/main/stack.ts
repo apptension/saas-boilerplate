@@ -47,23 +47,23 @@ export class EnvMainStack extends Stack {
   }
 
   static getIamPolicyStatementsForEnvParameters(
-    envSettings: EnvironmentSettings
+    envSettings: EnvironmentSettings,
+    region = '*',
+    account = '*'
   ) {
     const alias = MainKmsKey.getKeyAlias(envSettings);
     return [
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: [
-          'kms:Get*',
-          'kms:Describe*',
-          'kms:List*',
-          'kms:Decrypt',
-          'kms:Verify',
-        ],
+        actions: ['kms:Decrypt'],
         resources: ['*'],
         conditions: {
-          StringEquals: { 'kms:RequestAlias': alias },
-          'ForAnyValue:StringEquals': { 'kms:ResourceAliases': alias },
+          'ForAllValues:StringLike': {
+            'kms:ResourceAliases': [`alias/*${alias}*`],
+          },
+          'ForAnyValue:StringLike': {
+            'kms:ResourceAliases': [`alias/*${alias}*`],
+          },
         },
       }),
       new iam.PolicyStatement({
@@ -75,7 +75,7 @@ export class EnvMainStack extends Stack {
         effect: iam.Effect.ALLOW,
         actions: ['ssm:GetParameter*'],
         resources: [
-          `arn:aws:ssm:::parameter/env-${envSettings.projectName}-${envSettings.envStage}*`,
+          `arn:aws:ssm:${region}:${account}:parameter/env-${envSettings.projectName}-${envSettings.envStage}-*`,
         ],
       }),
     ];

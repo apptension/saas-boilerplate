@@ -7,27 +7,27 @@ export class BootstrapStack extends Stack {
   key: kms.Key;
 
   static getParameterStoreKeyAlias() {
-    return 'alias/parameter_store_key';
+    return 'parameter_store_key';
   }
 
   static getIamPolicyStatementsForEnvParameters(
-    envSettings: EnvironmentSettings
+    envSettings: EnvironmentSettings,
+    region = '*',
+    account = '*'
   ) {
     const alias = BootstrapStack.getParameterStoreKeyAlias();
     return [
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: [
-          'kms:Get*',
-          'kms:Describe*',
-          'kms:List*',
-          'kms:Decrypt',
-          'kms:Verify',
-        ],
+        actions: ['kms:Decrypt'],
         resources: ['*'],
         conditions: {
-          StringEquals: { 'kms:RequestAlias': alias },
-          'ForAnyValue:StringEquals': { 'kms:ResourceAliases': alias },
+          'ForAllValues:StringLike': {
+            'kms:ResourceAliases': [`alias/*${alias}*`],
+          },
+          'ForAnyValue:StringLike': {
+            'kms:ResourceAliases': [`alias/*${alias}*`],
+          },
         },
       }),
       new iam.PolicyStatement({
@@ -38,7 +38,9 @@ export class BootstrapStack extends Stack {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['ssm:GetParameter*'],
-        resources: [`arn:aws:ssm:::parameter/${envSettings.envStage}*`],
+        resources: [
+          `arn:aws:ssm:${region}:${account}:parameter/${envSettings.envStage}/*`,
+        ],
       }),
     ];
   }
@@ -47,7 +49,7 @@ export class BootstrapStack extends Stack {
     super(scope, id, props);
 
     this.key = new kms.Key(this, 'Key', {
-      alias: BootstrapStack.getParameterStoreKeyAlias(),
+      alias: `alias/${BootstrapStack.getParameterStoreKeyAlias()}`,
     });
 
     this.key.addToResourcePolicy(
