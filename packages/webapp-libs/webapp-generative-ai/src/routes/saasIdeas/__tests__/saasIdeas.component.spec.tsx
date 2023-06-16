@@ -62,7 +62,6 @@ describe('SaasIdeas: Component', () => {
   });
 
   it('should show error', async () => {
-    const ideas: string[] = [];
     const keywords = ['test_keyword'];
 
     const errors = [new GraphQLError('error')];
