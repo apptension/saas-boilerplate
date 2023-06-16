@@ -6,7 +6,7 @@ import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/for
 import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { Trash2 } from 'lucide-react';
+import { ChevronLeft, Trash2 } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
@@ -133,7 +133,7 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
         const renderNewCardForm = () => (
           <div className="space-y-3">
             {!isEmpty(paymentMethods) ? (
-              <Button onClick={handleBackToCardSelection} variant="outline">
+              <Button size="sm" onClick={handleBackToCardSelection} variant="outline" icon={<ChevronLeft size={16} />}>
                 <FormattedMessage
                   defaultMessage="Back to card list"
                   id="Stripe / payment method selector / back to card list"

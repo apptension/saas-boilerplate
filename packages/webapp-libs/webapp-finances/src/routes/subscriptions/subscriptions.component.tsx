@@ -1,43 +1,75 @@
+import { Separator } from '@sb/webapp-core/components/separator';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
 import { PaymentMethodContent } from './paymentMethod.content';
 import { SubscriptionsContent } from './subscriptions.content';
-import { Container, Header, Section, Subheader } from './subscriptions.styles';
 import { TransactionsHistoryContent } from './transactionsHistory.content';
 
 export const Subscriptions = () => {
   const { allPaymentMethods, activeSubscription } = useActiveSubscriptionDetails();
 
   return (
-    <Container>
-      <Section>
-        <Header>
-          <FormattedMessage defaultMessage="Subscriptions" id="My subscription / Header" />
-        </Header>
+    <div className="px-8 space-y-8 flex-1 lg:max-w-2xl">
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-medium">
+            <FormattedMessage defaultMessage="My subscription" id="My subscription / Header" />
+          </h3>
 
-        <SubscriptionsContent activeSubscription={activeSubscription} />
-      </Section>
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage
+              defaultMessage="This is an example of subscription management page"
+              id="My subscription / Subheading"
+            />
+          </p>
+        </div>
+        <Separator />
+        <div>
+          <SubscriptionsContent activeSubscription={activeSubscription} />
+        </div>
+      </div>
 
-      <Section>
-        <Header>
-          <FormattedMessage defaultMessage="Payments" id="My subscription / Payments header" />
-        </Header>
+      <Separator />
 
-        <Subheader>
-          <FormattedMessage defaultMessage="Payment method" id="My subscription / Payment method header" />
-        </Subheader>
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-medium">
+            <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />
+          </h3>
 
-        <PaymentMethodContent allPaymentMethods={allPaymentMethods} />
-      </Section>
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage
+              defaultMessage="Manage you payment methods in application"
+              id="My subscription / Payment methods subheader"
+            />
+          </p>
+        </div>
+        <Separator />
+        <div>
+          <PaymentMethodContent allPaymentMethods={allPaymentMethods} />
+        </div>
+      </div>
 
-      <Section>
-        <Header>
-          <FormattedMessage defaultMessage="History" id="My subscription / History header" />
-        </Header>
+      <Separator />
 
-        <TransactionsHistoryContent />
-      </Section>
-    </Container>
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-medium">
+            <FormattedMessage defaultMessage="History" id="My subscription / History header" />
+          </h3>
+
+          <p className="text-sm text-muted-foreground">
+            <FormattedMessage defaultMessage="View transaction history" id="My subscription / History subheader" />
+          </p>
+        </div>
+
+        <Separator />
+
+        <div>
+          <TransactionsHistoryContent />
+        </div>
+      </div>
+    </div>
   );
 };

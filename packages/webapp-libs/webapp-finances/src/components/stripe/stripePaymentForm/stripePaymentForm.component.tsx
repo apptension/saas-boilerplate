@@ -27,9 +27,8 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
 
   const {
     form: { formState, watch },
+    form,
   } = apiFormControls;
-
-  const { form } = apiFormControls;
 
   const amountValue = watch('product');
 
@@ -93,11 +92,7 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
           <StripePaymentMethodSelector formControls={apiFormControls} />
         </div>
 
-        <Button
-          type="submit"
-          disabled={!formState.isValid || formState.isSubmitting || loading}
-          className="w-full max-w-none"
-        >
+        <Button type="submit" disabled={!formState.isValid || formState.isSubmitting || loading}>
           <FormattedMessage
             values={{ amount: amountValue ? `${amountValue} USD` : '' }}
             defaultMessage="Pay {amount}"
