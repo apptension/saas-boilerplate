@@ -2,10 +2,7 @@ import { Construct } from 'constructs';
 import { CfnOutput } from 'aws-cdk-lib';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  EnvironmentSettings,
-} from '@sb/infra-core';
+import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 
 export class MainKmsKey extends Construct {
   key: kms.Key;
@@ -19,6 +16,7 @@ export class MainKmsKey extends Construct {
   static getMainKmsOutputExportName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectEnvName}-mainKmsKeyArn`;
   }
+
 
   constructor(scope: Construct, id: string, props: EnvConstructProps) {
     super(scope, id);

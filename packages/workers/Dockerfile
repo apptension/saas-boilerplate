@@ -1,3 +1,9 @@
+##
+# Chamber installation stage
+##
+
+FROM segment/chamber:2 AS chamber
+
 FROM python:3.9-slim-bullseye
 
 ENV APP_PATH=/app
@@ -16,6 +22,8 @@ RUN \
   pip install -U pip~=23.0.1 && pip install "urllib3<2" pdm~=2.5.2 && \
   npm i -g npm@^8 pnpm@^8.6.1 && \
   rm -rf /var/lib/apt/lists/*
+
+COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
 COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/.pdm.toml /pkgs/
