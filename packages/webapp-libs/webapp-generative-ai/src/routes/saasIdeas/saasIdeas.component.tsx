@@ -1,17 +1,16 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { typography } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Typewriter from 'typewriter-effect/dist/core';
 
 import { generateSaasIdeasMutation } from './saasIdeas.graphql';
-import { Container, Field, List, ListItem, Title } from './saasIdeas.styles';
 
 const MAX_KEYWORDS_LENGTH = 200;
 
@@ -26,6 +25,7 @@ export const SaasIdeas = () => {
       formState: { errors },
       handleSubmit,
     },
+    form,
   } = useApiForm({
     defaultValues: {
       keywords: '',
@@ -118,7 +118,7 @@ export const SaasIdeas = () => {
     },
   });
   return (
-    <Container>
+    <div className="py-4 px-12">
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'SaaS Ideas',
@@ -126,9 +126,9 @@ export const SaasIdeas = () => {
         })}
       />
 
-      <Title>
+      <h1 className="text-4xl mb-6 leading-8 font-bold">
         <FormattedMessage defaultMessage="Generate your SaaS ideas using chatGPT!" id="SaaS ideas / title" />
-      </Title>
+      </h1>
 
       <typography.Paragraph>
         <FormattedMessage
@@ -137,40 +137,54 @@ export const SaasIdeas = () => {
         />
       </typography.Paragraph>
 
-      <form onSubmit={handleFormSubmit} noValidate={true}>
-        <Field>
-          <Input
-            {...registerKeywords}
-            label={intl.formatMessage({
-              defaultMessage: 'Keywords:',
-              id: 'SaaS ideas Form / Keywords label',
-            })}
-            error={errors.keywords?.message}
-            ref={(e) => {
-              registerKeywords.ref(e);
-              inputRef.current = e;
-            }}
-            maxLength={MAX_KEYWORDS_LENGTH}
+      <Form {...form}>
+        <form onSubmit={handleFormSubmit} noValidate={true}>
+          <FormField
+            name="keywords"
+            render={({ field }) => (
+              <FormItem className="mt-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    {...registerKeywords}
+                    label={intl.formatMessage({
+                      defaultMessage: 'Keywords:',
+                      id: 'SaaS ideas Form / Keywords label',
+                    })}
+                    error={errors.keywords?.message}
+                    ref={(e) => {
+                      registerKeywords.ref(e);
+                      inputRef.current = e;
+                    }}
+                    maxLength={MAX_KEYWORDS_LENGTH}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </Field>
 
-        <Button type="submit" disabled={loading}>
-          <FormattedMessage defaultMessage="Generate your SaaS ideas" id="SaaS ideas form / Submit button" />
-        </Button>
-      </form>
+          <Button className="mt-5" type="submit" disabled={loading}>
+            <FormattedMessage defaultMessage="Generate your SaaS ideas" id="SaaS ideas form / Submit button" />
+          </Button>
+        </form>
+      </Form>
 
-      <List>
+      <ul className="max-w-xs md:max-w-md">
         {loading ? (
-          <ListItem>
-            <LoadingSkeleton height={8} width={480} />
-            <LoadingSkeleton height={8} width={460} />
-            <LoadingSkeleton height={8} width={480} />
-            <LoadingSkeleton height={8} width={400} />
-          </ListItem>
+          <li className="lg:mx-5 md:mx-5 [&>*]:mt-5">
+            <Skeleton className="h-4 w-64 md:w-80" />
+            <Skeleton className="h-4 w-72 md:w-96" />
+            <Skeleton className="h-4 w-64 md:w-80" />
+            <Skeleton className="h-4 w-60 md:w-72" />
+          </li>
         ) : (
-          data?.generateSaasIdeas?.ideas?.map((idea, index) => <ListItem key={index}>{idea}</ListItem>)
+          data?.generateSaasIdeas?.ideas?.map((idea, index) => (
+            <li className="mx-5" key={index}>
+              {idea}
+            </li>
+          ))
         )}
-      </List>
-    </Container>
+      </ul>
+    </div>
   );
 };
