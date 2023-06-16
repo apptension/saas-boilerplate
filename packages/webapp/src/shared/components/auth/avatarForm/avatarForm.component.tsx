@@ -32,7 +32,7 @@ export const AvatarForm = () => {
         <label
           tabIndex={0}
           className={cn(
-            'absolute -left-2 -top-2 z-[1] flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-blue-500 text-white'
+            'dark:text- absolute -left-2 -top-2 z-[1] flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-secondary'
           )}
         >
           <Icon icon={cameraIcon} size={18} />
