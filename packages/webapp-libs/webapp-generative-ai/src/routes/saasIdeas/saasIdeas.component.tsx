@@ -2,12 +2,12 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { typography } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Typewriter from 'typewriter-effect/dist/core';
 
 import { generateSaasIdeasMutation } from './saasIdeas.graphql';
@@ -126,7 +126,7 @@ export const SaasIdeas = () => {
         })}
       />
 
-      <h1 className="text-4xl mb-6 leading-6 font-bold">
+      <h1 className="text-4xl mb-6 leading-8 font-bold">
         <FormattedMessage defaultMessage="Generate your SaaS ideas using chatGPT!" id="SaaS ideas / title" />
       </h1>
 
@@ -169,13 +169,13 @@ export const SaasIdeas = () => {
         </form>
       </Form>
 
-      <ul className="max-w-md">
+      <ul className="max-w-xs md:max-w-md">
         {loading ? (
-          <li className="mx-5">
-            <LoadingSkeleton height={8} width={480} />
-            <LoadingSkeleton height={8} width={460} />
-            <LoadingSkeleton height={8} width={480} />
-            <LoadingSkeleton height={8} width={400} />
+          <li className="lg:mx-5 md:mx-5 [&>*]:mt-5">
+            <Skeleton className="h-4 w-64 md:w-80" />
+            <Skeleton className="h-4 w-72 md:w-96" />
+            <Skeleton className="h-4 w-64 md:w-80" />
+            <Skeleton className="h-4 w-60 md:w-72" />
           </li>
         ) : (
           data?.generateSaasIdeas?.ideas?.map((idea, index) => (
