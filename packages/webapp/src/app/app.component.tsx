@@ -1,6 +1,5 @@
 import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
-import { typography } from '@sb/webapp-core/theme';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
 import { Documents } from '@sb/webapp-documents/routes';
 import { ActiveSubscriptionContext } from '@sb/webapp-finances/components/activeSubscriptionContext';
@@ -13,10 +12,11 @@ import {
   TransactionHistory,
 } from '@sb/webapp-finances/routes';
 import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
-import { FormattedMessage, IntlProvider } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { Role } from '../modules/auth/auth.types';
+import { Admin } from '../routes/admin';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import ValidateOtp from '../routes/auth/validateOtp';
 import { AnonymousRoute, AuthRoute } from '../shared/components/routes';
@@ -58,14 +58,7 @@ export const App = () => {
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute allowedRoles={Role.ADMIN} />}>
-          <Route
-            path={RoutesConfig.admin}
-            element={
-              <typography.H1>
-                <FormattedMessage defaultMessage="This page is only visible for admins" id="Admin / Heading" />
-              </typography.H1>
-            }
-          />
+          <Route path={RoutesConfig.admin} element={<Admin />} />
         </Route>
 
         <Route path={LANG_PREFIX}>

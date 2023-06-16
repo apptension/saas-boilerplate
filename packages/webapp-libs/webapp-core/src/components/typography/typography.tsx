@@ -2,35 +2,39 @@ import { HtmlHTMLAttributes, forwardRef } from 'react';
 
 import { cn } from '../../lib/utils';
 
-export type HeadingProps = HtmlHTMLAttributes<HTMLHeadElement>;
+export type HeadingProps = HtmlHTMLAttributes<HTMLHeadingElement>;
 
-export const H1 = forwardRef<HTMLHeadElement, HeadingProps>(({ children, className, ...props }) => {
+export const H1 = forwardRef<HTMLHeadingElement, HeadingProps>(({ children, className, ...props }, ref) => {
   return (
-    <h1 {...props} className={cn('scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl', className)}>
+    <h1
+      {...props}
+      ref={ref}
+      className={cn('scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl', className)}
+    >
       {children}
     </h1>
   );
 });
 
-export const H2 = forwardRef<HTMLHeadElement, HeadingProps>(({ children, className, ...props }) => {
+export const H2 = forwardRef<HTMLHeadingElement, HeadingProps>(({ children, className, ...props }, ref) => {
   return (
-    <h2 {...props} className={cn('tracking-tight" scroll-m-20 text-3xl font-semibold', className)}>
+    <h2 {...props} ref={ref} className={cn('tracking-tight" scroll-m-20 text-3xl font-semibold', className)}>
       {children}
     </h2>
   );
 });
 
-export const H3 = forwardRef<HTMLHeadElement, HeadingProps>(({ children, className, ...props }) => {
+export const H3 = forwardRef<HTMLHeadingElement, HeadingProps>(({ children, className, ...props }, ref) => {
   return (
-    <h3 {...props} className={cn('scroll-m-20 text-2xl font-semibold tracking-tight', className)}>
+    <h3 {...props} ref={ref} className={cn('scroll-m-20 text-2xl font-semibold tracking-tight', className)}>
       {children}
     </h3>
   );
 });
 
-export const H4 = forwardRef<HTMLHeadElement, HeadingProps>(({ children, className, ...props }) => {
+export const H4 = forwardRef<HTMLHeadingElement, HeadingProps>(({ children, className, ...props }, ref) => {
   return (
-    <h4 {...props} className={cn('scroll-m-20 text-xl font-semibold tracking-tight', className)}>
+    <h4 {...props} ref={ref} className={cn('scroll-m-20 text-xl font-semibold tracking-tight', className)}>
       {children}
     </h4>
   );
@@ -68,9 +72,9 @@ export const ParagraphBold = forwardRef<HTMLParagraphElement, ParagraphProps>(
 
 export type SmallProps = HtmlHTMLAttributes<HTMLElement>;
 
-export const Small = forwardRef<HTMLElement, SmallProps>(({ children, className, ...props }) => {
+export const Small = forwardRef<HTMLElement, SmallProps>(({ children, className, ...props }, ref) => {
   return (
-    <small {...props} className={cn('text-sm font-medium leading-none', className)}>
+    <small {...props} ref={ref} className={cn('text-sm font-medium leading-none', className)}>
       {children}
     </small>
   );
