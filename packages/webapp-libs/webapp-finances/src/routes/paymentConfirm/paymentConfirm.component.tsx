@@ -1,3 +1,4 @@
+import { Separator } from '@sb/webapp-core/components/separator';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -7,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { StripePaymentForm } from '../../components/stripe';
 import { stripePromise } from '../../services/stripe';
-import { Container, Header, Subheader } from './paymentConfirm.styles';
 
 export const PaymentConfirm = () => {
   const intl = useIntl();
@@ -21,14 +21,21 @@ export const PaymentConfirm = () => {
   });
 
   return (
-    <Container>
-      <Header>
-        <FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />
-      </Header>
+    <div className="px-8 space-y-6 flex-1 lg:max-w-2xl">
+      <div>
+        <h3 className="text-lg font-medium">
+          <FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />
+        </h3>
 
-      <Subheader>
-        <FormattedMessage defaultMessage="Donate" id="Finances / Stripe / Payment confirm / subheading" />
-      </Subheader>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage
+            defaultMessage="This is an example of single payment form, like donation"
+            id="Finances / Stripe / Payment confirm / subheading"
+          />
+        </p>
+      </div>
+
+      <Separator />
 
       <Elements stripe={stripePromise}>
         <StripePaymentForm
@@ -38,6 +45,6 @@ export const PaymentConfirm = () => {
           }}
         />
       </Elements>
-    </Container>
+    </div>
   );
 };

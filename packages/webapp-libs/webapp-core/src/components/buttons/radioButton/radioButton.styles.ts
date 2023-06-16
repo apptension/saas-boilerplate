@@ -1,99 +1,24 @@
-import styled from 'styled-components';
-import { typography, border, color, transition, size } from '../../../theme';
+import { cva } from 'class-variance-authority';
 
-export const Container = styled.label`
-  display: inline-block;
-`;
-
-export const GhostInput = styled.input`
-  position: absolute;
-  height: 0;
-  width: 0;
-  opacity: 0;
-`;
-
-export const Label = styled.span`
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 50px;
-  transition: background-color ${transition.primary},
-    border-color ${transition.primary}, color ${transition.primary};
-  width: auto;
-  border: 1px solid ${color.radio.main};
-  background: ${color.white};
-  color: ${color.text};
-  cursor: pointer;
-
-  input:checked ~ & {
-    background: ${color.radio.main};
-    color: ${color.white};
+export const radioButtonVariants = cva(
+  'inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background cursor-pointer space-x-2',
+  {
+    variants: {
+      variant: {
+        outline:
+          'border border-input hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:border [&:has(:disabled)]:text-accent-foreground/50',
+        ghost:
+          'hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:border [&:has(:disabled)]:text-accent-foreground/50',
+      },
+      size: {
+        default: 'h-10 py-2 px-4',
+        sm: 'h-9 px-3 rounded-md',
+        lg: 'h-11 px-8 rounded-md',
+      },
+    },
+    defaultVariants: {
+      variant: 'ghost',
+      size: 'default',
+    },
   }
-
-  input:disabled ~ & {
-    border-color: ${color.radio.disabled.main};
-    color: ${color.radio.disabled.text};
-  }
-
-  input:active ~ &,
-  input:focus ~ & {
-    ${border.outline};
-  }
-
-  input:disabled:checked ~ & {
-    background-color: ${color.radio.disabled.main};
-  }
-
-  input:not(:disabled):not(:checked) ~ &:hover {
-    background-color: ${color.radio.hover.main};
-    border-color: ${color.radio.hover.border};
-    color: ${color.radio.main};
-  }
-`;
-
-export const LabelText = styled.span`
-  ${typography.labelBold};
-`;
-
-export const Dot = styled.div`
-  display: flex;
-  width: ${size.sizeUnits(2)};
-  height: ${size.sizeUnits(2)};
-  background: ${color.white};
-  border: 1px solid ${color.radio.main};
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  margin-right: ${size.sizeUnits(1)};
-
-  &:after {
-    content: '';
-    width: ${size.sizeUnits(1)};
-    height: ${size.sizeUnits(1)};
-    border-radius: 50%;
-    background-color: transparent;
-    transition: background-color ${transition.primary};
-  }
-
-  input:checked ~ ${/* sc-selector */ Label} > &:after {
-    background: ${color.radio.main};
-  }
-
-  input:disabled ~ ${/* sc-selector */ Label} > & {
-    border-color: ${color.radio.disabled.main};
-  }
-
-  input:disabled:checked ~ ${/* sc-selector */ Label} > & {
-    &:after {
-      background-color: ${color.radio.disabled.main};
-    }
-  }
-
-  input:not(:disabled):not(:checked) ~ ${/* sc-selector */ Label}:hover > & {
-    border-color: ${color.radio.hover.border};
-
-    &:after {
-      background-color: ${color.radio.hover.border};
-    }
-  }
-`;
+);
