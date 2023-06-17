@@ -1,14 +1,17 @@
+import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/skeleton';
 import LoadingSkeleton from 'react-loading-skeleton';
-
-import { Container } from './skeleton.styles';
 
 export const Skeleton = () => {
   return (
-    <Container>
-      <LoadingSkeleton height={14} width={50} />
+    <div className="[&>*]:mb-4">
+      <SkeletonComponent className="h-6 w-12" />
+      <SkeletonComponent className="h-12 w-12" />
+      <SkeletonComponent className="h-7 w-32" />
+      <SkeletonComponent className="h-7 w-18" />
+      {/* <LoadingSkeleton height={14} width={50} />
       <LoadingSkeleton height={30} width={30} />
       <LoadingSkeleton height={16} width={120} />
-      <LoadingSkeleton height={16} width={60} />
-    </Container>
+      <LoadingSkeleton height={16} width={60} /> */}
+    </div>
   );
 };

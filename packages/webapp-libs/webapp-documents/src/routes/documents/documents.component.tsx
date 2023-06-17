@@ -10,7 +10,6 @@ import { Document, DocumentSkeleton } from './document';
 import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';
 import { documentsListQuery } from './documents.graphql';
 import { useHandleDrop } from './documents.hooks';
-import { Container, Header, List } from './documents.styles';
 
 type ListContentProps = {
   data: DocumentsListQueryQuery;
@@ -44,11 +43,11 @@ export const ListContent = ({ data }: ListContentProps) => {
           <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
-        <List>
+        <ul className="grid mt-6 grid-cols-new gap-4">
           {documents.map((document) => (
             <Document item={document} key={document.id} />
           ))}
-        </List>
+        </ul>
       )}
     </>
   );
@@ -58,21 +57,21 @@ export const Documents = () => {
   const { data } = useQuery(documentsListQuery);
 
   return (
-    <Container>
-      <Header>
+    <div className="py-4 px-12">
+      <h1 className="text-2xl mb-3 leading-6 font-bold">
         <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
-      </Header>
+      </h1>
       {data ? (
         <ListContent data={data} />
       ) : (
         <>
           <Dropzone disabled />
-          <List>
+          <ul className="grid mt-6 grid-cols-new gap-4">
             <DocumentSkeleton />
             <DocumentSkeleton />
-          </List>
+          </ul>
         </>
       )}
-    </Container>
+    </div>
   );
 };
