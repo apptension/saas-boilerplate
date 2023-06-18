@@ -43,7 +43,7 @@ export const ListContent = ({ data }: ListContentProps) => {
           <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
-        <ul className="grid mt-6 grid-cols-new gap-4">
+        <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-4">
           {documents.map((document) => (
             <Document item={document} key={document.id} />
           ))}
@@ -66,7 +66,7 @@ export const Documents = () => {
       ) : (
         <>
           <Dropzone disabled />
-          <ul className="grid mt-6 grid-cols-new gap-4">
+          <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-4">
             <DocumentSkeleton />
             <DocumentSkeleton />
           </ul>

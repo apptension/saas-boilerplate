@@ -20,7 +20,7 @@ export const Document = ({ item }: DocumentProps) => {
   const handleDelete = useHandleDelete();
 
   return (
-    <li className="flex flex-col items-center p-6 rounded border-input">
+    <li className="flex flex-col items-center p-6 rounded border border-input">
       <RelativeDate className="text-base" date={new Date(createdAt as string)} />
       <div className="px-3">
         <Icon icon={documentIcon} size={32} />
@@ -29,7 +29,8 @@ export const Document = ({ item }: DocumentProps) => {
         className="text-base underline whitespace-nowrap max-w-[100%] overflow-hidden text-ellipsis"
         title={file?.name ?? ''}
         target="_blank"
-        href={file?.url ?? undefined} rel="noreferrer"
+        href={file?.url ?? undefined}
+        rel="noreferrer"
       >
         {file?.name}
       </a>

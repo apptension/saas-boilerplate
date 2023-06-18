@@ -5,11 +5,6 @@ module.exports = {
   content: [],
   darkMode: ['class'],
   theme: {
-    extends: {
-      gridTemplateColumns: {
-        new: 'repeat(auto-fill, minmax(160px, 1fr))',
-      },
-    },
     container: {
       center: true,
       padding: '2rem',
