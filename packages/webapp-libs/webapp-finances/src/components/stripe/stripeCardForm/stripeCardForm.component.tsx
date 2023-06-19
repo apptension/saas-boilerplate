@@ -14,10 +14,9 @@ import { StripeIframeClasses, StripeIframeStyles } from './stripeCardForm.styles
 type StripeFieldProps = {
   children: ReactNode;
   label: string;
-  small?: boolean;
 };
 
-const StripeField = ({ children, label, small }: StripeFieldProps) => (
+const StripeField = ({ children, label }: StripeFieldProps) => (
   <label>
     <p className="text-xs font-medium">{label}</p>
     <div>{children}</div>
@@ -69,7 +68,7 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
           </StripeField>
         </div>
         <div className="min-w-[90px] w-1/7">
-          <StripeField small label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
+          <StripeField label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
             <CardExpiryElement
               onChange={handleDataChange}
               options={{ style: StripeIframeStyles, classes: StripeIframeClasses }}
@@ -77,7 +76,7 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
           </StripeField>
         </div>
         <div className="min-w-[90px] w-1/7">
-          <StripeField small label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
+          <StripeField label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
             <CardCvcElement
               onChange={handleDataChange}
               options={{ style: StripeIframeStyles, classes: StripeIframeClasses }}
