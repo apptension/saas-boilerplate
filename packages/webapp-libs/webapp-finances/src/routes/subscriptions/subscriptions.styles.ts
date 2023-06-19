@@ -7,20 +7,6 @@ export const Container = styled.div`
   ${size.verticalPadding(size.sizeUnits(2))};
 `;
 
-export const Section = styled.section`
-  ${size.contentWrapper};
-  padding-bottom: ${size.sizeUnits(4)};
-
-  & + & {
-    border-top: 1px solid ${color.greyScale.get(95)};
-    padding-top: ${size.sizeUnits(4)};
-  }
-
-  ${media.media(media.Breakpoint.TABLET)`
-    padding-bottom: ${size.sizeUnits(6)};
-  `};
-`;
-
 export const Header = styled.h1`
   ${typography.heading3};
 `;

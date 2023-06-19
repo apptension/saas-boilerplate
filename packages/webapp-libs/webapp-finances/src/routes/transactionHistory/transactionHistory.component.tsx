@@ -1,18 +1,21 @@
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { FormattedMessage } from 'react-intl';
 
 import { TransactionHistory as TransactionHistoryList } from '../../components/stripe/transactionHistory';
-import { Container, Header } from './transactionHistory.styles';
 
 export const TransactionHistory = () => {
   return (
-    <Container>
-      <BackButton />
-      <Header>
-        <FormattedMessage defaultMessage="Transaction history" id="Stripe / Transaction History / Header" />
-      </Header>
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Transaction history" id="Stripe / Transaction History / Header" />}
+        subheader={
+          <FormattedMessage defaultMessage="View transaction history" id="Stripe / Transaction History / Subheader" />
+        }
+      />
 
       <TransactionHistoryList />
-    </Container>
+    </PageLayout>
   );
 };

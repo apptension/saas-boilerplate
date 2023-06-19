@@ -1,5 +1,6 @@
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { paymentMethodFactory, subscriptionPhaseFactory } from '@sb/webapp-api-client/tests/factories';
+import { Form } from '@sb/webapp-core/components/forms';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
@@ -12,7 +13,11 @@ import { PaymentFormFields } from '../stripePaymentMethodSelector.types';
 
 const StripePaymentMethodSelectorWithControls = () => {
   const formControls = useApiForm<PaymentFormFields>();
-  return <StripePaymentMethodSelector formControls={formControls} />;
+  return (
+    <Form {...formControls.form}>
+      <StripePaymentMethodSelector formControls={formControls} />
+    </Form>
+  );
 };
 
 const Component = () => {
@@ -47,7 +52,7 @@ describe('StripePaymentMethodSelector: Component', () => {
 
       await waitForApolloMocks();
 
-      expect(await screen.findByText(/add a new card/i)).toBeInTheDocument();
+      expect(await screen.findByText(/use a new card/i)).toBeInTheDocument();
     });
   });
 
@@ -62,7 +67,7 @@ describe('StripePaymentMethodSelector: Component', () => {
     it('should not show add new method button', async () => {
       render(<Component />);
 
-      expect(screen.queryByText(/add a new card/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/use a new card/i)).not.toBeInTheDocument();
     });
   });
 });

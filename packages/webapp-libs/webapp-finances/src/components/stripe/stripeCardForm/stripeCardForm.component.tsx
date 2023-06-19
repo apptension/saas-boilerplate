@@ -1,3 +1,4 @@
+import { Input } from '@sb/webapp-core/components/forms';
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { ReactNode } from 'react';
@@ -8,26 +9,18 @@ import {
   StripePaymentMethodChangeEvent,
   StripePaymentMethodSelectionType,
 } from '../stripePaymentMethodSelector';
-import {
-  Container,
-  StripeFieldContainer,
-  StripeFieldElement,
-  StripeFieldLabel,
-  StripeIframeStyles,
-  StripeNameField,
-} from './stripeCardForm.styles';
+import { StripeIframeClasses, StripeIframeStyles } from './stripeCardForm.styles';
 
 type StripeFieldProps = {
   children: ReactNode;
   label: string;
-  small?: boolean;
 };
 
-const StripeField = ({ children, label, small }: StripeFieldProps) => (
-  <StripeFieldContainer small={small}>
-    <StripeFieldLabel>{label}</StripeFieldLabel>
-    <StripeFieldElement>{children}</StripeFieldElement>
-  </StripeFieldContainer>
+const StripeField = ({ children, label }: StripeFieldProps) => (
+  <label>
+    <p className="text-xs font-medium">{label}</p>
+    <div>{children}</div>
+  </label>
 );
 
 export type StripeCardFormProps = {
@@ -45,8 +38,9 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
   };
 
   return (
-    <Container>
-      <StripeNameField
+    <div className="space-y-3">
+      <Input
+        className="w-full max-w-none mb-3"
         name="name"
         required
         label={intl.formatMessage({
@@ -60,17 +54,36 @@ export const StripeCardForm = ({ onChange }: StripeCardFormProps) => {
         onChange={(e) => handleDataChange({ value: e.target.value, elementType: 'name' })}
       />
 
-      <StripeField label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}>
-        <CardNumberElement onChange={handleDataChange} options={{ style: StripeIframeStyles, showIcon: true }} />
-      </StripeField>
-
-      <StripeField small label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
-        <CardExpiryElement onChange={handleDataChange} options={{ style: StripeIframeStyles }} />
-      </StripeField>
-
-      <StripeField small label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
-        <CardCvcElement onChange={handleDataChange} options={{ style: StripeIframeStyles }} />
-      </StripeField>
-    </Container>
+      <div className="flex flex-row space-x-2">
+        <div className="flex-1">
+          <StripeField label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}>
+            <CardNumberElement
+              onChange={handleDataChange}
+              options={{
+                style: StripeIframeStyles,
+                classes: StripeIframeClasses,
+                showIcon: true,
+              }}
+            />
+          </StripeField>
+        </div>
+        <div className="min-w-[90px] w-1/7">
+          <StripeField label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
+            <CardExpiryElement
+              onChange={handleDataChange}
+              options={{ style: StripeIframeStyles, classes: StripeIframeClasses }}
+            />
+          </StripeField>
+        </div>
+        <div className="min-w-[90px] w-1/7">
+          <StripeField label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
+            <CardCvcElement
+              onChange={handleDataChange}
+              options={{ style: StripeIframeStyles, classes: StripeIframeClasses }}
+            />
+          </StripeField>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
+import { Link } from '@sb/webapp-core/components/buttons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../config/routes';
 import { stripeAllChargesQuery } from './subscriptions.graphql';
-import { Link, Row } from './subscriptions.styles';
 
 export const TransactionsHistoryContent = () => {
   const generateLocalePath = useGenerateLocalePath();
@@ -14,16 +14,16 @@ export const TransactionsHistoryContent = () => {
 
   if (!length)
     return (
-      <Row>
+      <div className="mt-1 text-muted-foreground">
         <FormattedMessage
           defaultMessage="You don't have any history to show"
           id="My subscription / No transaction history"
         />
-      </Row>
+      </div>
     );
 
   return (
-    <Link to={generateLocalePath(RoutesConfig.finances.history)}>
+    <Link to={generateLocalePath(RoutesConfig.finances.history)} variant="default">
       <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
     </Link>
   );

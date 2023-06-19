@@ -5,6 +5,7 @@ import {
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
+import { Form } from '@sb/webapp-core/components/forms';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { append, times } from 'ramda';
@@ -20,9 +21,11 @@ const Template: StoryFn<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
 ) => {
   const formControls = useApiForm<PaymentFormFields>();
   return (
-    <Elements stripe={stripePromise}>
-      <StripePaymentMethodSelector {...args} formControls={formControls} />
-    </Elements>
+    <Form {...formControls.form}>
+      <Elements stripe={stripePromise}>
+        <StripePaymentMethodSelector {...args} formControls={formControls} />
+      </Elements>
+    </Form>
   );
 };
 
