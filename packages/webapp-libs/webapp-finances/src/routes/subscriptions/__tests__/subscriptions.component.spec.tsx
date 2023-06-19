@@ -90,6 +90,8 @@ describe('Subscriptions: Component', () => {
         defaultMocks.concat(requestSubscriptionScheduleMock, resolveActiveSubscriptionMocks()),
     });
 
+    await userEvent.click(await screen.findByText('Payment methods'));
+
     expect(await screen.findByText('MockLastName Visa **** 9999')).toBeInTheDocument();
   });
 
@@ -186,14 +188,14 @@ describe('Subscriptions: Component', () => {
       const requestMock = resolveSubscriptionDetailsQuery();
 
       const { waitForApolloMocks } = render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
       });
       await waitForApolloMocks();
 
-      expect(screen.queryByText(/free trial info/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Free trial expiry date/gi)).not.toBeInTheDocument();
     });
 
-    it('should be displayed if user has  trial active', async () => {
+    it('should be displayed if user has trial active', async () => {
       const activeSubscription = subscriptionFactory({
         subscription: {
           trialEnd: new Date('Jan 1, 2099 GMT').toISOString(),
@@ -213,7 +215,7 @@ describe('Subscriptions: Component', () => {
       });
 
       expect(
-        await screen.findByText(matchTextContent(/free trial info.*expiry date.*january 01, 2099/gi))
+        await screen.findByText(matchTextContent(/Free trial expiry date.*january 01, 2099/gi))
       ).toBeInTheDocument();
     });
   });

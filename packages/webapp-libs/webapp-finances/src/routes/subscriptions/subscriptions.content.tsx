@@ -80,7 +80,7 @@ export const SubscriptionsContent = ({ activeSubscription }: SubscriptionsConten
               <AlarmClock className="h-5 w-5" />
               <div className="space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  <FormattedMessage defaultMessage="Expiry date:" id="My subscription / Trial expiry date" />
+                  <FormattedMessage defaultMessage="Free trial expiry date:" id="My subscription / Trial expiry date" />
                 </p>
                 <p className="text-sm text-muted-foreground">
                   <FormattedDate value={trialEnd} />
