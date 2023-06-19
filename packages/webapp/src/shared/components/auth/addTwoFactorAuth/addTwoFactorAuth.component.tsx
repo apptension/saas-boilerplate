@@ -2,6 +2,9 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Input } from '@sb/webapp-core/components/forms';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { H1, H4, Paragraph, Small } from '@sb/webapp-core/components/typography';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import * as QRCode from 'qrcode';
@@ -9,21 +12,6 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { generateOtpMutation, verifyOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
-import {
-  Body,
-  BodyParagraph,
-  CodeForm,
-  CodeInput,
-  ConfigList,
-  ConfigListItem,
-  Container,
-  ErrorMessage,
-  InlineButtons,
-  MainHeader,
-  QRCodeContainer,
-  QRCodeImg,
-  SectionHeader,
-} from './addTwoFactorAuth.styles';
 import { VerifyOtpFormFields } from './addTwoFactorAuth.types';
 
 export type AddTwoFactorAuthProps = {
@@ -34,14 +22,16 @@ const bTag = (chunks: React.ReactNode[]) => <b>{chunks}</b>;
 const spanTag = (chunks: React.ReactNode[]) => <span>{chunks}</span>;
 
 export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
-  const [qrcodeUrl, setqrCodeUrl] = useState('');
-  const [base32, setBase32] = useState('');
-  const [otpAuthUrl, setOtpAuthUrl] = useState('');
   const intl = useIntl();
   const { toast } = useToast();
   const { reload } = useCommonQuery();
 
+  const [base32, setBase32] = useState('');
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [otpAuthUrl, setOtpAuthUrl] = useState('');
+
   const form = useApiForm<VerifyOtpFormFields>();
+
   const {
     handleSubmit,
     hasGenericErrorOnly,
@@ -85,7 +75,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   useEffect(() => {
     if (!otpAuthUrl) return;
-    QRCode.toDataURL(otpAuthUrl, { scale: 8 }).then(setqrCodeUrl);
+    QRCode.toDataURL(otpAuthUrl, { scale: 8 }).then(setQrCodeUrl);
   }, [otpAuthUrl]);
 
   useEffect(() => {
@@ -103,50 +93,53 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   }, [commitGenerateOtpMutation]);
 
   return (
-    <Container aria-hidden={true}>
-      <Body>
-        <MainHeader>
+    <div aria-hidden={true} className="w-auto p-2 text-left">
+      <div className="px-4">
+        <H1 className="text-lg lg:text-xl">
           <FormattedMessage
             defaultMessage="Configuring Google Authenticator or Authy"
             id="Auth / Add Two-factor / Configuring authenticator"
           />
-        </MainHeader>
-        <ConfigList>
-          <ConfigListItem>
+        </H1>
+        <Separator className="mb-2 mt-1" />
+        <ol className="flex list-none flex-col gap-2 pl-0">
+          <li className="text-sm">
             <FormattedMessage
               defaultMessage="Install Google Authenticator (IOS - Android) or Authy (IOS - Android)."
               id="Auth / Add Two-factor / Install authenticator app"
             />
-          </ConfigListItem>
-          <ConfigListItem>
+          </li>
+          <li className="text-sm">
             <FormattedMessage
               defaultMessage={`In the authenticator app, select "+" icon.`}
               id="Auth / Add Two-factor / Click add icon"
             />
-          </ConfigListItem>
-          <ConfigListItem>
+          </li>
+          <li className="text-sm">
             <FormattedMessage
               defaultMessage={`Select "Scan a barcode (or QR code)" and use the phone's camera to scan this barcode.`}
               id="Auth / Add Two-factor / Use camera to scan qr code"
             />
-          </ConfigListItem>
-        </ConfigList>
+          </li>
+        </ol>
         <div>
-          <SectionHeader>
+          <H4 className="mt-4 text-lg">
             <FormattedMessage defaultMessage="Scan QR Code" id="Auth / Add Two-factor / Scan QR Code" />
-          </SectionHeader>
-          <QRCodeContainer>
-            <QRCodeImg src={qrcodeUrl} alt="qrcode url" />
-          </QRCodeContainer>
+          </H4>
+          <Separator className="mb-2 mt-1" />
+          <div className="flex justify-center p-4">
+            <img src={qrCodeUrl} alt="qrcode url" className="h-64 w-64" />
+          </div>
         </div>
         <div>
-          <SectionHeader>
+          <H4 className="mt-4 text-lg">
             <FormattedMessage
               defaultMessage="Or Enter Code Into Your App"
               id="Auth / Add Two-factor / Enter code in app"
             />
-          </SectionHeader>
-          <BodyParagraph>
+          </H4>
+          <Separator className="mb-2 mt-1" />
+          <Paragraph firstChildMargin={false} className="my-0 text-sm">
             <FormattedMessage
               defaultMessage="SecretKey: <b>{base32}</b> <span>(Base32 encoded)</span>"
               id="Auth / Add Two-factor / Secret key encoded"
@@ -156,22 +149,23 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
                 base32,
               }}
             />
-          </BodyParagraph>
+          </Paragraph>
         </div>
         <div>
-          <SectionHeader>
+          <H4 className="mt-4 text-lg">
             <FormattedMessage defaultMessage="Verify Code" id="Auth / Add Two-factor / Verify Code" />
-          </SectionHeader>
-          <BodyParagraph>
+          </H4>
+          <Separator className="mb-2 mt-1" />
+          <Paragraph firstChildMargin={false} className="my-0 text-sm">
             <FormattedMessage
               defaultMessage="For changing the setting, please verify the authentication code"
               id="Auth / Add Two-factor / Verify code for changing the setting"
             />
             :
-          </BodyParagraph>
+          </Paragraph>
         </div>
-        <CodeForm onSubmit={handleSubmit(submitHandler)}>
-          <CodeInput
+        <form className="relative" onSubmit={handleSubmit(submitHandler)}>
+          <Input
             {...register('token', {
               required: {
                 value: true,
@@ -194,9 +188,12 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
             autoFocus
             error={errors.token?.message}
             autoComplete="off"
+            className="mb-8 mt-4 w-48"
           />
-          {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-          <InlineButtons>
+
+          {hasGenericErrorOnly ? <Small className="absolute top-11 text-red-500">{genericError}</Small> : null}
+
+          <div className="flex flex-row gap-4">
             <Button type="button" variant={ButtonVariant.SECONDARY} onClick={closeModal}>
               <FormattedMessage defaultMessage="Close" id="Auth / Add Two-factor / Close button" />
             </Button>
@@ -206,9 +203,9 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
                 id="Auth / Add Two-factor / Verify & Activate button"
               />
             </Button>
-          </InlineButtons>
-        </CodeForm>
-      </Body>
-    </Container>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
