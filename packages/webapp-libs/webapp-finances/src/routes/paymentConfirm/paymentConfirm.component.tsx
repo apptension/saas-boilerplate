@@ -1,3 +1,5 @@
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -7,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { StripePaymentForm } from '../../components/stripe';
 import { stripePromise } from '../../services/stripe';
-import { Container, Header, Subheader } from './paymentConfirm.styles';
 
 export const PaymentConfirm = () => {
   const intl = useIntl();
@@ -21,14 +22,16 @@ export const PaymentConfirm = () => {
   });
 
   return (
-    <Container>
-      <Header>
-        <FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />
-      </Header>
-
-      <Subheader>
-        <FormattedMessage defaultMessage="Donate" id="Finances / Stripe / Payment confirm / subheading" />
-      </Subheader>
+    <PageLayout>
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />}
+        subheader={
+          <FormattedMessage
+            defaultMessage="This is an example of single payment form, like donation"
+            id="Finances / Stripe / Payment confirm / subheading"
+          />
+        }
+      />
 
       <Elements stripe={stripePromise}>
         <StripePaymentForm
@@ -38,6 +41,6 @@ export const PaymentConfirm = () => {
           }}
         />
       </Elements>
-    </Container>
+    </PageLayout>
   );
 };

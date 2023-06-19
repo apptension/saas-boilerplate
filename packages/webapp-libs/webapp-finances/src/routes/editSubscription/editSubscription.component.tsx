@@ -1,24 +1,21 @@
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useEditSubscription } from './editSubscription.hook';
-import { Container, Header, Subheader } from './editSubscription.styles';
 import { SubscriptionPlans } from './subscriptionPlans';
 
 export const EditSubscription = () => {
   const { selectPlan, loading } = useEditSubscription();
 
   return (
-    <Container>
-      <BackButton />
-      <Header>
-        <FormattedMessage defaultMessage="Plans" id="Change plan / Heading" />
-      </Header>
-
-      <Subheader>
-        <FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />
-      </Subheader>
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Plans" id="Change plan / Heading" />}
+        subheader={<FormattedMessage defaultMessage="Choose a plan" id="Change plan / Subheading" />}
+      />
 
       <SubscriptionPlans
         onPlanSelection={(id) => {
@@ -26,6 +23,6 @@ export const EditSubscription = () => {
         }}
         loading={loading}
       />
-    </Container>
+    </PageLayout>
   );
 };

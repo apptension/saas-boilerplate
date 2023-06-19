@@ -114,7 +114,7 @@ describe('EditPaymentMethodForm: Component', () => {
   };
 
   const pressNewCardButton = async () => {
-    await userEvent.click(await screen.findByRole('button', { name: /Add a new card/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /Use a new card/i }));
   };
 
   const newCardData = {

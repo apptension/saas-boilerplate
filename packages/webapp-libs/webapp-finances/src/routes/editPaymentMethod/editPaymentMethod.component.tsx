@@ -1,13 +1,13 @@
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Elements } from '@stripe/react-stripe-js';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../config/routes';
 import { stripePromise } from '../../services/stripe';
-import { Container } from './editPaymentMethod.styles';
 import { EditPaymentMethodForm } from './editPaymentMethodForm/editPaymentMethodForm.component';
 
 export const EditPaymentMethod = () => {
@@ -22,8 +22,15 @@ export const EditPaymentMethod = () => {
   });
 
   return (
-    <Container>
-      <BackButton />
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Payment methods" id="Finances / Payment methods / heading" />}
+        subheader={
+          <FormattedMessage defaultMessage="Edit your payment methods" id="Finances / Payment methods / subheading" />
+        }
+      />
+
       <Elements stripe={stripePromise}>
         <EditPaymentMethodForm
           onSuccess={() => {
@@ -32,6 +39,6 @@ export const EditPaymentMethod = () => {
           }}
         />
       </Elements>
-    </Container>
+    </PageLayout>
   );
 };

@@ -1,14 +1,42 @@
 import { screen } from '@testing-library/react';
 import { empty } from 'ramda';
+import { useForm } from 'react-hook-form';
 
 import { render } from '../../../../tests/utils/rendering';
+import { Form, FormField } from '../../../forms';
+import { RadioGroup } from '../../../forms/radioGroup';
 import { RadioButton, RadioButtonProps } from '../radioButton.component';
 
-describe('RadioButton: Component', () => {
-  const defaultProps: RadioButtonProps = { children: 'label' };
+type FormValues = {
+  field: string;
+};
 
-  const Component = (props: Partial<RadioButtonProps>) => {
-    return <RadioButton {...defaultProps} {...props} />;
+describe('RadioButton: Component', () => {
+  const exampleValue = 'value';
+  const defaultProps: Partial<RadioButtonProps> = { children: 'label' };
+
+  const Component = (props: Partial<RadioButtonProps> & Partial<FormValues>) => {
+    const { field, ...radioButtonProps } = props;
+    const defaultValues: Partial<FormValues> = {
+      field,
+    };
+    const form = useForm<FormValues>({
+      defaultValues,
+    });
+    return (
+      <Form {...form}>
+        <FormField
+          control={form.control}
+          name="field"
+          render={() => (
+            <RadioGroup defaultValue={defaultValues.field}>
+              <RadioButton value={exampleValue} {...defaultProps} {...radioButtonProps} />
+              );
+            </RadioGroup>
+          )}
+        />
+      </Form>
+    );
   };
 
   it('should render with correct label', async () => {
@@ -17,7 +45,7 @@ describe('RadioButton: Component', () => {
   });
 
   it('should pass props to input element', async () => {
-    render(<Component checked onChange={empty} />);
-    expect(await screen.findByRole('radio')).toHaveAttribute('checked');
+    render(<Component onChange={empty} field={exampleValue} />);
+    expect(await screen.findByRole('radio')).toHaveAttribute('data-state', 'checked');
   });
 });

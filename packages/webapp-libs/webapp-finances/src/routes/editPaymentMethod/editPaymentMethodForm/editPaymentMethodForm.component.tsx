@@ -1,7 +1,9 @@
 import { StripeSetupIntentFragmentFragment, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
+import { Form } from '@sb/webapp-core/components/forms';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../../components/activeSubscriptionContext';
@@ -13,7 +15,6 @@ import {
 } from '../../../components/stripe';
 import { subscriptionActiveSubscriptionFragment } from '../../../hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
-import { Form } from './editPaymentMethodForm.styles';
 
 type ChangePaymentFormFields = PaymentFormFields;
 
@@ -30,6 +31,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     setGenericError,
     setApolloGraphQLResponseErrors,
     form: { formState, getValues },
+    form,
   } = apiFormControls;
 
   const onCreateSetupIntentSuccess = async (setupIntent: StripeSetupIntentFragmentFragment) => {
@@ -75,15 +77,23 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
     return setCardAsDefault(data.paymentMethod.data.pk);
   };
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <StripePaymentMethodSelector
-        formControls={apiFormControls}
-        initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
-      />
+    <Form {...form}>
+      <form
+        noValidate
+        onSubmit={(e) => {
+          handleSubmit(onSubmit)(e).catch(reportError);
+        }}
+        className="space-y-8"
+      >
+        <StripePaymentMethodSelector
+          formControls={apiFormControls}
+          initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
+        />
 
-      <Button disabled={!formState.isValid || formState.isSubmitting} className="mt-2 w-full" type="submit">
-        <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
-      </Button>
+        <Button disabled={!formState.isValid || formState.isSubmitting} className="mt-2" type="submit">
+          <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
+        </Button>
+      </form>
     </Form>
   );
 };
