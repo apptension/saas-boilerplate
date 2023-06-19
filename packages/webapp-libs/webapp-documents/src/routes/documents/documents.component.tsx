@@ -64,7 +64,7 @@ export const Documents = () => {
         </h3>
         <p className="text-sm text-muted-foreground">
           <FormattedMessage
-            defaultMessage="This is an example of single payment form, like donation"
+            defaultMessage="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
             id="Finances / Stripe / Payment confirm / subheading"
           />
         </p>
