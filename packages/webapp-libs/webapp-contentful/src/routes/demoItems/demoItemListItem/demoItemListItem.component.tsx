@@ -43,6 +43,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
           defaultMessage: 'Is favorite',
           id: 'Demo Item / Is favorite',
         })}
+        className="mr-4"
         onClick={(e) => {
           setFavorite(!isFavorite);
         }}
