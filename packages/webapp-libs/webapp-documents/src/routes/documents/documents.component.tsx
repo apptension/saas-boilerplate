@@ -3,6 +3,7 @@ import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Dropzone } from '@sb/webapp-core/components/forms';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
+import { H3 } from '@sb/webapp-core/theme/typography';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 
@@ -57,10 +58,18 @@ export const Documents = () => {
   const { data } = useQuery(documentsListQuery);
 
   return (
-    <div className="py-4 px-12">
-      <h1 className="text-2xl mb-3 leading-6 font-bold">
-        <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
-      </h1>
+    <div className="px-8 space-y-6 ">
+      <div>
+        <h3 className="text-lg font-medium">
+          <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage
+            defaultMessage="This is an example of single payment form, like donation"
+            id="Finances / Stripe / Payment confirm / subheading"
+          />
+        </p>
+      </div>
       {data ? (
         <ListContent data={data} />
       ) : (
