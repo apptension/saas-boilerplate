@@ -10,7 +10,7 @@ export const EditSubscription = () => {
   const { selectPlan, loading } = useEditSubscription();
 
   return (
-    <PageLayout>
+    <PageLayout className="lg:max-w-4xl">
       <PageHeadline
         hasBackButton
         header={<FormattedMessage defaultMessage="Plans" id="Change plan / Heading" />}

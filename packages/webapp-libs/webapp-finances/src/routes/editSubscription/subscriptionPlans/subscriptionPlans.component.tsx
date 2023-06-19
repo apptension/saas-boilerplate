@@ -2,8 +2,8 @@ import { useQuery } from '@apollo/client';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 
 import { useActiveSubscriptionDetails } from '../../../components/activeSubscriptionContext';
+import { SubscriptionPlanItem } from '../subscriptionPlanItem';
 import { subscriptionPlansAllQuery } from './subscriptionPlans.graphql';
-import { PlanItem, Plans } from './subscriptionPlans.styles';
 
 export type SubscriptionPlansProps = {
   onPlanSelection: (id: string | null) => void;
@@ -16,10 +16,10 @@ export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlan
   const { data } = useQuery(subscriptionPlansAllQuery);
 
   return (
-    <Plans>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {mapConnection(
         (plan) => (
-          <PlanItem
+          <SubscriptionPlanItem
             key={plan?.id}
             plan={plan}
             onSelect={onPlanSelection}
@@ -29,6 +29,6 @@ export const SubscriptionPlans = ({ onPlanSelection, loading }: SubscriptionPlan
         ),
         data?.allSubscriptionPlans
       )}
-    </Plans>
+    </div>
   );
 };
