@@ -45,9 +45,13 @@ export type ParagraphProps = HtmlHTMLAttributes<HTMLParagraphElement> & {
 };
 
 export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
-  ({ children, className, notFirstChildMargin = true, ...props }) => {
+  ({ children, className, notFirstChildMargin = true, ...props }, ref) => {
     return (
-      <p {...props} className={cn(`leading-7 ${notFirstChildMargin ? '[&:not(:first-child)]:mt-6' : null}`, className)}>
+      <p
+        {...props}
+        ref={ref}
+        className={cn(`leading-7 ${notFirstChildMargin ? '[&:not(:first-child)]:mt-6' : null}`, className)}
+      >
         {children}
       </p>
     );
@@ -55,9 +59,10 @@ export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
 );
 
 export const ParagraphBold = forwardRef<HTMLParagraphElement, ParagraphProps>(
-  ({ children, className, notFirstChildMargin, ...props }) => {
+  ({ children, className, notFirstChildMargin, ...props }, ref) => {
     return (
       <p
+        ref={ref}
         {...props}
         className={cn(
           `font-semibold leading-7 ${notFirstChildMargin ? '[&:not(:first-child)]:mt-6' : null}`,

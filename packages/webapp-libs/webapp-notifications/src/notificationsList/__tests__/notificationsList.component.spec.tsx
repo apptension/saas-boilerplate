@@ -47,7 +47,7 @@ describe('NotificationsList: Component', () => {
     const { waitForApolloMocks } = renderWithNotifications([], { hasUnreadNotifications: false });
     await waitForApolloMocks(0);
 
-    expect(screen.getAllByLabelText('Loading notification')).toHaveLength(2);
+    expect(screen.getAllByTestId('Skeleton')).toHaveLength(2);
     expect(await screen.findByText('Mark all as read')).toBeInTheDocument();
     expect(await screen.findByText('No notifications')).toBeInTheDocument();
     expect(screen.queryAllByText(/notification-mock/i)).toHaveLength(0);
@@ -69,7 +69,7 @@ describe('NotificationsList: Component', () => {
 
     await waitForApolloMocks(0);
 
-    expect(screen.getAllByLabelText('Loading notification')).toHaveLength(2);
+    expect(screen.getAllByTestId('Skeleton')).toHaveLength(2);
     expect(await screen.findByText('Mark all as read')).toBeInTheDocument();
     expect(await screen.findAllByText(/notification-mock/i)).toHaveLength(notifications.length);
   });

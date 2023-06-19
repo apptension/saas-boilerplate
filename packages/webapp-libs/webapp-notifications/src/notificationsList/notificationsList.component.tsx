@@ -50,8 +50,8 @@ export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) 
       <div className="grid-cols-1 w-full">
         {props.loading ? (
           <div className="flex w-full flex-col gap-4">
-            <Skeleton className="h-16" />
-            <Skeleton className="h-16" />
+            <Skeleton className="h-16" data-testid="Skeleton" />
+            <Skeleton className="h-16" data-testid="Skeleton" />
           </div>
         ) : (
           <Content {...props} />
