@@ -110,7 +110,7 @@ export class CiPipeline extends Construct {
               bucket: props.entrypointArtifactBucket,
               bucketKey: CiEntrypoint.getArtifactsName(props.envSettings),
               output: CiPipeline.getSourceOutputArtifact(props.envSettings),
-              trigger: S3Trigger.POLL,
+              trigger: S3Trigger.EVENTS,
             }),
           ],
         },
