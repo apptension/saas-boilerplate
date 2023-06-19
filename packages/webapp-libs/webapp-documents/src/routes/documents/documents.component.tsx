@@ -3,7 +3,6 @@ import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Dropzone } from '@sb/webapp-core/components/forms';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
-import { H3 } from '@sb/webapp-core/theme/typography';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 
@@ -44,7 +43,7 @@ export const ListContent = ({ data }: ListContentProps) => {
           <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
-        <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-4">
+        <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
           {documents.map((document) => (
             <Document item={document} key={document.id} />
           ))}
@@ -75,7 +74,7 @@ export const Documents = () => {
       ) : (
         <>
           <Dropzone disabled />
-          <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-4">
+          <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
             <DocumentSkeleton />
             <DocumentSkeleton />
           </ul>
