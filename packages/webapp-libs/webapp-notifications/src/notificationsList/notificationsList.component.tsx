@@ -1,6 +1,7 @@
 import { FragmentType } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
+import { Separator } from '@sb/webapp-core/components/separator';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { H4 } from '@sb/webapp-core/components/typography';
 import { isEmpty } from 'ramda';
@@ -34,7 +35,7 @@ export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) 
 
   return (
     <div className="z-50 flex flex-col">
-      <div className="flex flex-row items-center justify-around">
+      <div className="flex flex-row items-center justify-between">
         <H4 className="text-base">
           <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
         </H4>
@@ -45,6 +46,7 @@ export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) 
           />
         </Button>
       </div>
+      <Separator orientation="horizontal" className="my-2" />
       <div className="grid-cols-1 w-full">
         {props.loading ? (
           <div className="flex w-full flex-col gap-4">
