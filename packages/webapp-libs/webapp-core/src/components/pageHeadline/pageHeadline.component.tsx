@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { BackButton } from '../buttons';
+import { BackButton } from '../buttons/backButton';
 import { Separator } from '../separator';
 import { H3, Paragraph } from '../typography';
 
