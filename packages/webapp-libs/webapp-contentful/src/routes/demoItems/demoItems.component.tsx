@@ -11,7 +11,11 @@ export const DemoItems = () => {
   const { data } = useQuery(demoItemsAllQuery, { context: { schemaType: SchemaType.Contentful } });
   const items = data?.demoItemCollection?.items;
 
-  const item = demoItemFactory();
+  const item = demoItemFactory({
+    image: {
+      url: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',
+    },
+  });
 
   return (
     <div className="py-4 px-12">

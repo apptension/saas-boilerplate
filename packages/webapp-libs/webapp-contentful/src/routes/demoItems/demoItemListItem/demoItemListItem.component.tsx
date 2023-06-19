@@ -1,15 +1,13 @@
-import favoriteIconFilled from '@iconify-icons/ion/star';
-import favoriteIconOutlined from '@iconify-icons/ion/star-outline';
 import { DemoItemListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { Button, Link } from '@sb/webapp-core/components/buttons';
-import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
+import { Star } from 'lucide-react';
 import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { imageProps } from '../../../helpers';
 import { useFavoriteDemoItem } from '../../../hooks';
-import { Container, FavoriteIcon, Thumbnail, Title } from './demoItemListItem.styles';
 
 export type DemoItemListItemProps = {
   id: string;
@@ -20,22 +18,23 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const intl = useIntl();
   const { setFavorite, isFavorite } = useFavoriteDemoItem(id);
   const generateLocalePath = useGenerateLocalePath();
-  //   export const FavoriteIcon = styled.button`
-  //   padding: 0;
-  //   margin: 0;
-  //   line-height: 0;
-  //   background: none;
-  //   border: none;
-  //   color: ${color.skyBlueScale.get(50)};
-  //   cursor: pointer;
-
-  //   &:focus {
-  //     ${border.outline};
-  //   }
-  // `;
 
   return (
     <li className="flex items-center w-[100%]">
+      <Link
+        className="p-8 w-[100%] justify-start hover:no-underline"
+        to={generateLocalePath(RoutesConfig.demoItem, { id })}
+      >
+        {item.image && (
+          <img
+            className="object-cover rounded w-16 h-12"
+            {...imageProps(item.image, { size: { height: 50 } })}
+            role="presentation"
+          />
+        )}
+        <p className="px-4">{item.title}</p>
+      </Link>
+
       <Button
         variant="ghost"
         role="checkbox"
@@ -48,15 +47,17 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
           setFavorite(!isFavorite);
         }}
       >
-        <Icon icon={isFavorite ? favoriteIconFilled : favoriteIconOutlined} />
+        <Star
+          className={cn({
+            'fill-none': !isFavorite,
+            'text-slate-700': !isFavorite,
+            'fill-slate-700': isFavorite,
+            'dark:fill-slate-400': isFavorite,
+            'dark:text-slate-400': isFavorite,
+            'dark:fill-none': !isFavorite,
+          })}
+        />
       </Button>
-      <Link
-        className="p-8 w-[100%] justify-start hover:no-underline"
-        to={generateLocalePath(RoutesConfig.demoItem, { id })}
-      >
-        {item.image && <Thumbnail {...imageProps(item.image, { size: { height: 50 } })} role="presentation" />}
-        <p>{item.title}</p>
-      </Link>
     </li>
   );
 };
