@@ -38,7 +38,7 @@ export const Profile = () => {
             />
           </Paragraph>
 
-          <Paragraph notFirstChildMargin={false}>
+          <Paragraph firstChildMargin={false}>
             <FormattedMessage
               defaultMessage="Email: {email}"
               id="Auth / Profile details / Email label"
@@ -46,7 +46,7 @@ export const Profile = () => {
             />
           </Paragraph>
 
-          <Paragraph notFirstChildMargin={false}>
+          <Paragraph firstChildMargin={false}>
             <FormattedMessage
               defaultMessage="Roles: {roles}"
               id="Auth / Profile details / Roles label"
