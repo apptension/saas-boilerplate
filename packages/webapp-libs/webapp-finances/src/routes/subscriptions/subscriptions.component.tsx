@@ -1,3 +1,5 @@
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { FormattedMessage } from 'react-intl';
 
@@ -10,21 +12,17 @@ export const Subscriptions = () => {
   const { allPaymentMethods, activeSubscription } = useActiveSubscriptionDetails();
 
   return (
-    <div className="px-8 space-y-8 flex-1 lg:max-w-2xl">
+    <PageLayout>
       <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium">
-            <FormattedMessage defaultMessage="My subscription" id="My subscription / Header" />
-          </h3>
-
-          <p className="text-sm text-muted-foreground">
+        <PageHeadline
+          header={<FormattedMessage defaultMessage="My subscription" id="My subscription / Header" />}
+          subheader={
             <FormattedMessage
               defaultMessage="This is an example of subscription management page"
               id="My subscription / Subheading"
             />
-          </p>
-        </div>
-        <Separator />
+          }
+        />
         <div>
           <SubscriptionsContent activeSubscription={activeSubscription} />
         </div>
@@ -33,19 +31,16 @@ export const Subscriptions = () => {
       <Separator />
 
       <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium">
-            <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />
-          </h3>
-
-          <p className="text-sm text-muted-foreground">
+        <PageHeadline
+          header={<FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />}
+          subheader={
             <FormattedMessage
               defaultMessage="Manage you payment methods in application"
               id="My subscription / Payment methods subheader"
             />
-          </p>
-        </div>
-        <Separator />
+          }
+        />
+
         <div>
           <PaymentMethodContent allPaymentMethods={allPaymentMethods} />
         </div>
@@ -54,22 +49,17 @@ export const Subscriptions = () => {
       <Separator />
 
       <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium">
-            <FormattedMessage defaultMessage="History" id="My subscription / History header" />
-          </h3>
-
-          <p className="text-sm text-muted-foreground">
+        <PageHeadline
+          header={<FormattedMessage defaultMessage="History" id="My subscription / History header" />}
+          subheader={
             <FormattedMessage defaultMessage="View transaction history" id="My subscription / History subheader" />
-          </p>
-        </div>
-
-        <Separator />
+          }
+        />
 
         <div>
           <TransactionsHistoryContent />
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };

@@ -1,5 +1,5 @@
-import { BackButton } from '@sb/webapp-core/components/buttons';
-import { Separator } from '@sb/webapp-core/components/separator';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Elements } from '@stripe/react-stripe-js';
@@ -22,19 +22,14 @@ export const EditPaymentMethod = () => {
   });
 
   return (
-    <div className="px-8 space-y-6 flex-1 lg:max-w-2xl">
-      <div>
-        <BackButton className="float-right" />
-        <h3 className="text-lg font-medium">
-          <FormattedMessage defaultMessage="Payment methods" id="Finances / Payment methods / heading" />
-        </h3>
-
-        <p className="text-sm text-muted-foreground">
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Payment methods" id="Finances / Payment methods / heading" />}
+        subheader={
           <FormattedMessage defaultMessage="Edit your payment methods" id="Finances / Payment methods / subheading" />
-        </p>
-      </div>
-
-      <Separator />
+        }
+      />
 
       <Elements stripe={stripePromise}>
         <EditPaymentMethodForm
@@ -44,6 +39,6 @@ export const EditPaymentMethod = () => {
           }}
         />
       </Elements>
-    </div>
+    </PageLayout>
   );
 };

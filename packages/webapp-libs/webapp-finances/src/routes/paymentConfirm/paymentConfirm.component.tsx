@@ -1,4 +1,5 @@
-import { Separator } from '@sb/webapp-core/components/separator';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -21,21 +22,16 @@ export const PaymentConfirm = () => {
   });
 
   return (
-    <div className="px-8 space-y-6 flex-1 lg:max-w-2xl">
-      <div>
-        <h3 className="text-lg font-medium">
-          <FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />
-        </h3>
-
-        <p className="text-sm text-muted-foreground">
+    <PageLayout>
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />}
+        subheader={
           <FormattedMessage
             defaultMessage="This is an example of single payment form, like donation"
             id="Finances / Stripe / Payment confirm / subheading"
           />
-        </p>
-      </div>
-
-      <Separator />
+        }
+      />
 
       <Elements stripe={stripePromise}>
         <StripePaymentForm
@@ -45,6 +41,6 @@ export const PaymentConfirm = () => {
           }}
         />
       </Elements>
-    </div>
+    </PageLayout>
   );
 };
