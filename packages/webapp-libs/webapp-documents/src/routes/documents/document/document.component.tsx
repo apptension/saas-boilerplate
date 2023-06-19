@@ -41,7 +41,6 @@ export const Document = ({ item }: DocumentProps) => {
       <Button
         variant="ghost"
         className="px-1"
-        icon={<Icon icon={deleteIcon} />}
         onClick={() => {
           handleDelete(id).catch(reportError);
         }}
@@ -49,7 +48,9 @@ export const Document = ({ item }: DocumentProps) => {
           defaultMessage: 'Delete',
           id: 'Documents / Document / Delete button',
         })}
-      />
+      >
+        <Icon icon={deleteIcon} />
+      </Button>
     </li>
   );
 };
