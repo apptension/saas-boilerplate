@@ -1,9 +1,12 @@
 import { useQuery } from '@apollo/client';
-import deleteIcon from '@iconify-icons/ion/trash-outline';
+import { StripePaymentMethodFragmentFragment } from '@sb/webapp-api-client';
 import { ApiFormReturnType } from '@sb/webapp-api-client/hooks';
-import { Button } from '@sb/webapp-core/components/buttons';
-import { Icon } from '@sb/webapp-core/components/icons';
+import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
+import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
+import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
+import { Separator } from '@sb/webapp-core/components/separator';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { ChevronLeft, Trash2 } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
@@ -13,16 +16,6 @@ import { StripeCardForm } from '../stripeCardForm';
 import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import { stripeSubscriptionQuery } from './stripePaymentMethodSelector.graphql';
-import {
-  CardElementContainer,
-  Container,
-  DeleteButton,
-  ErrorMessage,
-  ExistingPaymentMethodItem,
-  Heading,
-  PaymentMethodList,
-  PaymentMethodListItem,
-} from './stripePaymentMethodSelector.styles';
 import {
   PaymentFormFields,
   StripePaymentMethodSelection,
@@ -44,10 +37,7 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
 
   const {
     formControls: {
-      form: {
-        control,
-        formState: { errors },
-      },
+      form: { control },
       genericError,
       hasGenericErrorOnly,
     },
@@ -126,10 +116,92 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
         const handleChange = changeHandler(onChange, value);
         const handleMethodRemoved = methodRemovedHandler(onChange, value, paymentMethods, deletePaymentMethod);
 
+        const handleCreateNewCard = () => {
+          handleChange({
+            type: StripePaymentMethodSelectionType.NEW_CARD,
+            data: null,
+          });
+        };
+
+        const handleBackToCardSelection = () => {
+          handleChange({
+            type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
+            data: defaultValue.data as StripePaymentMethodFragmentFragment,
+          });
+        };
+
+        const renderNewCardForm = () => (
+          <div className="space-y-3">
+            {!isEmpty(paymentMethods) ? (
+              <Button size="sm" onClick={handleBackToCardSelection} variant="outline" icon={<ChevronLeft size={16} />}>
+                <FormattedMessage
+                  defaultMessage="Back to card list"
+                  id="Stripe / payment method selector / back to card list"
+                />
+              </Button>
+            ) : null}
+
+            <StripeCardForm onChange={handleChange} />
+          </div>
+        );
+
+        const renderCardSelection = () => (
+          <>
+            <RadioGroup
+              defaultValue={
+                value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD ? value.data.id : undefined
+              }
+            >
+              {paymentMethods.map((paymentMethod) => {
+                return (
+                  <RadioButton
+                    key={paymentMethod.id}
+                    value={paymentMethod.id}
+                    onChange={() => {
+                      handleChange({
+                        type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
+                        data: paymentMethod,
+                      });
+                    }}
+                    className="w-full"
+                  >
+                    <span className="grow">
+                      <StripePaymentMethodInfo method={paymentMethod} />
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (paymentMethod.pk) {
+                          handleMethodRemoved(paymentMethod.pk);
+                        }
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </RadioButton>
+                );
+              })}
+            </RadioGroup>
+            <Separator />
+            <span className="text-muted-foreground">
+              <FormattedMessage defaultMessage="or" id="Stripe / payment method selector / or" />
+            </span>
+            <Button type="button" variant="link" onClick={handleCreateNewCard}>
+              <FormattedMessage
+                defaultMessage="Use a new card"
+                id="Stripe / payment method selector / new card option"
+              />
+            </Button>
+          </>
+        );
+
+        const isNewCardEnabled = value?.type === StripePaymentMethodSelectionType.NEW_CARD;
         return (
-          <Container>
-            <Heading>
-              {isEmpty(paymentMethods) ? (
+          <FormItem>
+            <FormLabel>
+              {isEmpty(paymentMethods) || isNewCardEnabled ? (
                 <FormattedMessage
                   defaultMessage="Enter card details"
                   id="Stripe / payment method selector / enter card details"
@@ -140,73 +212,14 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>(
                   id="Stripe / payment method selector / select payment method"
                 />
               )}
-            </Heading>
+            </FormLabel>
 
-            <PaymentMethodList>
-              {paymentMethods.map((paymentMethod) => {
-                const isSelected =
-                  value.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD &&
-                  paymentMethod.id === value.data.id;
+            {isNewCardEnabled ? renderNewCardForm() : renderCardSelection()}
 
-                return (
-                  <PaymentMethodListItem key={paymentMethod.id}>
-                    <ExistingPaymentMethodItem
-                      checked={isSelected}
-                      value={paymentMethod.id}
-                      onChange={() => {
-                        handleChange({
-                          type: StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD,
-                          data: paymentMethod,
-                        });
-                      }}
-                    >
-                      <StripePaymentMethodInfo method={paymentMethod} />
-                      <DeleteButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (paymentMethod.pk) {
-                            handleMethodRemoved(paymentMethod.pk);
-                          }
-                        }}
-                      >
-                        <Icon size={16} icon={deleteIcon} />
-                      </DeleteButton>
-                    </ExistingPaymentMethodItem>
-                  </PaymentMethodListItem>
-                );
-              })}
+            <FormMessage />
 
-              {paymentMethods?.length > 0 && (
-                <PaymentMethodListItem>
-                  <Button
-                    type="button"
-                    variant={value.type === StripePaymentMethodSelectionType.NEW_CARD ? 'default' : 'secondary'}
-                    onClick={() => {
-                      handleChange({
-                        type: StripePaymentMethodSelectionType.NEW_CARD,
-                        data: null,
-                      });
-                    }}
-                    className="w-full"
-                  >
-                    <FormattedMessage
-                      defaultMessage="Add a new card"
-                      id="Stripe / payment method selector / new card option"
-                    />
-                  </Button>
-                </PaymentMethodListItem>
-              )}
-            </PaymentMethodList>
-
-            {value?.type === StripePaymentMethodSelectionType.NEW_CARD && (
-              <CardElementContainer>
-                <StripeCardForm onChange={handleChange} />
-              </CardElementContainer>
-            )}
-
-            <ErrorMessage>{errors.paymentMethod?.message?.toString()}</ErrorMessage>
-            {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-          </Container>
+            {hasGenericErrorOnly && <p className="mt-1 text-red-500">{genericError}</p>}
+          </FormItem>
         );
       }}
     />
