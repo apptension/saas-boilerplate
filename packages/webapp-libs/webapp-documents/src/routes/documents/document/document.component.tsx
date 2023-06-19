@@ -27,7 +27,7 @@ export const Document = ({ item }: DocumentProps) => {
         <Icon icon={documentIcon} size={48} />
       </div>
 
-      <div className="flex justify-center flex-col px-4 max-w-[100%] overflow-hidden whitespace-nowrap">
+      <div className="flex justify-center flex-col px-4 w-[100%] max-w-[100%] overflow-hidden whitespace-nowrap">
         <a
           className="text-sm text-ellipsis overflow-hidden whitespace-nowrap text-blue-500"
           title={file?.name ?? ''}
