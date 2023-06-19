@@ -1,5 +1,7 @@
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Separator } from '@sb/webapp-core/components/separator';
-import { H2, H3, Paragraph, Small } from '@sb/webapp-core/components/typography';
+import { H3, Paragraph, Small } from '@sb/webapp-core/components/typography';
 import { FormattedMessage } from 'react-intl';
 
 import { AvatarForm } from '../../shared/components/auth/avatarForm';
@@ -12,19 +14,16 @@ export const Profile = () => {
   const { currentUser } = useAuth();
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col items-center gap-8 px-4 py-6 md:mx-0 md:max-w-none md:items-start">
-      <div>
-        <H2 className="w-full text-left">
-          <FormattedMessage defaultMessage="User profile" id="Auth / Profile details / Header" />
-        </H2>
-        <Small className="text-muted-foreground">
+    <PageLayout>
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="User profile" id="Auth / Profile details / Header" />}
+        subheader={
           <FormattedMessage
             defaultMessage="Here you can find more information about your account and edit it"
             id="Auth / Profile details / Label"
           />
-        </Small>
-      </div>
-      <Separator orientation="horizontal" />
+        }
+      />
 
       <div className="flex flex-row gap-3">
         <AvatarForm />
@@ -106,6 +105,6 @@ export const Profile = () => {
         <Separator orientation="horizontal" />
         <TwoFactorAuthForm isEnabled={currentUser?.otpEnabled} />
       </div>
-    </div>
+    </PageLayout>
   );
 };
