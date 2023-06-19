@@ -4,35 +4,35 @@ import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
-import { Sun } from 'lucide-react';
+import { Menu, Sun } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import notificationTemplates from '../../../constants/notificationTemplates';
 import { useAuth } from '../../../hooks';
+import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
-import { Avatar, Menu, MenuLine, ProfileActions } from './header.styles';
 
 export type HeaderProps = HTMLAttributes<HTMLElement>;
 
 export const Header = (props: HeaderProps) => {
   const intl = useIntl();
-  const generateLocalePath = useGenerateLocalePath();
-  const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
-  const userDropdown = useOpenState(false);
   const { isLoggedIn } = useAuth();
   const { toggleTheme } = useTheme();
+  const userDropdown = useOpenState(false);
+  const generateLocalePath = useGenerateLocalePath();
+  const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
 
   return (
     <header
       {...props}
-      className={cn('sticky top-0 bg-primary-foreground/80 backdrop-blur-sm border-b', props.className)}
+      className={cn('sticky top-0 border-b bg-primary-foreground/80 backdrop-blur-sm', props.className)}
     >
-      <div className="flex flex-row h-16 px-8 gap-x-6 items-center justify-end">
+      <div className="flex h-16 flex-row items-center justify-end gap-x-6 px-8">
         {isSidebarAvailable && (
           <div
-            className="block lg:hidden w-6 cursor-pointer justify-self-start"
+            className="block w-6 cursor-pointer justify-self-start lg:hidden"
             role="button"
             tabIndex={0}
             onClick={() => setSideMenuOpen(true)}
@@ -42,15 +42,13 @@ export const Header = (props: HeaderProps) => {
               defaultMessage: 'Open menu',
             })}
           >
-            <MenuLine />
-            <MenuLine />
-            <MenuLine />
+            <Menu />
           </div>
         )}
 
         <div className="flex-1"></div>
 
-        <Button variant="ghost" onClick={() => toggleTheme()} className="rounded-full w-10 h-10 px-0">
+        <Button variant="ghost" onClick={() => toggleTheme()} className="h-10 w-10 rounded-full px-0">
           <Sun />
         </Button>
 
@@ -58,7 +56,7 @@ export const Header = (props: HeaderProps) => {
           <>
             <Notifications templates={notificationTemplates} />
 
-            <ProfileActions>
+            <div className="relative ml-2 hidden md:block">
               <Popover
                 open={userDropdown.isOpen}
                 onOpenChange={(open) => {
@@ -67,6 +65,7 @@ export const Header = (props: HeaderProps) => {
               >
                 <PopoverTrigger>
                   <Avatar
+                    className="cursor-pointer"
                     onClick={userDropdown.toggle}
                     tabIndex={0}
                     aria-expanded={userDropdown.isOpen}
@@ -78,7 +77,7 @@ export const Header = (props: HeaderProps) => {
                 </PopoverTrigger>
 
                 <PopoverContent asChild align="end" side="bottom" sideOffset={24}>
-                  <Menu>
+                  <div className="top-10 flex flex-col overflow-hidden rounded">
                     <ButtonLink
                       onClick={userDropdown.close}
                       to={generateLocalePath(RoutesConfig.profile)}
@@ -93,10 +92,10 @@ export const Header = (props: HeaderProps) => {
                     >
                       <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
                     </ButtonLink>
-                  </Menu>
+                  </div>
                 </PopoverContent>
               </Popover>
-            </ProfileActions>
+            </div>
           </>
         )}
       </div>
