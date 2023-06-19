@@ -1,10 +1,8 @@
-import documentIcon from '@iconify-icons/ion/document-text-outline';
-import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { RelativeDate } from '@sb/webapp-core/components/dateTime';
-import { Icon } from '@sb/webapp-core/components/icons';
 import { reportError } from '@sb/webapp-core/utils/reportError';
+import { File, Trash2 } from 'lucide-react';
 import { useIntl } from 'react-intl';
 
 import { documentListItemFragment } from '../../../routes/documents';
@@ -24,7 +22,7 @@ export const Document = ({ item }: DocumentProps) => {
   return (
     <li className="flex items-center justify-between px-3 py-6 rounded border border-input">
       <div className="w-fit h-fit">
-        <Icon icon={documentIcon} size={48} />
+        <File size={32} />
       </div>
       <div className="flex justify-center flex-col px-4 w-[100%] max-w-[100%] overflow-hidden whitespace-nowrap">
         <a
@@ -49,7 +47,7 @@ export const Document = ({ item }: DocumentProps) => {
           id: 'Documents / Document / Delete button',
         })}
       >
-        <Icon icon={deleteIcon} />
+        <Trash2 size={20} />
       </Button>
     </li>
   );

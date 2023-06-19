@@ -12,6 +12,7 @@
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
     "graphql": "^16.6.0",
+    "lucide-react": "^0.224.0",
     "react-loading-skeleton": "^3.1.0"
   },
   "peerDependencies": {
