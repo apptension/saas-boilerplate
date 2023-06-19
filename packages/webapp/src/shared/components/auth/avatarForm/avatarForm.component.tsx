@@ -1,12 +1,12 @@
 import cameraIcon from '@iconify-icons/ion/camera-outline';
+import { Message as MessageBase } from '@sb/webapp-core/components/forms/input/input.styles';
 import { Icon } from '@sb/webapp-core/components/icons';
-import React from 'react';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { FieldError } from 'react-hook-form';
 
 import { Avatar } from '../../avatar';
 import { MAX_AVATAR_SIZE } from './avatarForm.constants';
 import { useAvatarForm } from './avatarForm.hooks';
-import { Container, FileInput, IconContainer, Message } from './avatarForm.styles';
 
 export const AvatarForm = () => {
   const {
@@ -28,10 +28,16 @@ export const AvatarForm = () => {
   });
   return (
     <>
-      <Container>
-        <IconContainer>
+      <div className="relative mb-0 h-20 w-20 md:mb-4 ">
+        <label
+          tabIndex={0}
+          className={cn(
+            'dark:text- absolute -left-2 -top-2 z-[1] flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-secondary'
+          )}
+        >
           <Icon icon={cameraIcon} size={18} />
-          <FileInput
+          <input
+            className="hidden"
             {...avatarField}
             data-testid="file-input"
             accept="image/*"
@@ -42,11 +48,11 @@ export const AvatarForm = () => {
               await handleAvatarUpload();
             }}
           />
-        </IconContainer>
+        </label>
         <Avatar className="h-20 w-20" />
-      </Container>
+      </div>
 
-      <Message>{(errors.avatar as FieldError)?.message}</Message>
+      <MessageBase className="static text-left">{(errors.avatar as FieldError)?.message}</MessageBase>
     </>
   );
 };
