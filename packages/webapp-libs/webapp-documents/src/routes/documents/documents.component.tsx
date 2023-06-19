@@ -10,7 +10,6 @@ import { Document, DocumentSkeleton } from './document';
 import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';
 import { documentsListQuery } from './documents.graphql';
 import { useHandleDrop } from './documents.hooks';
-import { Container, Header, List } from './documents.styles';
 
 type ListContentProps = {
   data: DocumentsListQueryQuery;
@@ -44,11 +43,11 @@ export const ListContent = ({ data }: ListContentProps) => {
           <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
-        <List>
+        <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
           {documents.map((document) => (
             <Document item={document} key={document.id} />
           ))}
-        </List>
+        </ul>
       )}
     </>
   );
@@ -58,21 +57,29 @@ export const Documents = () => {
   const { data } = useQuery(documentsListQuery);
 
   return (
-    <Container>
-      <Header>
-        <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
-      </Header>
+    <div className="px-8 space-y-6 ">
+      <div>
+        <h3 className="text-lg font-medium">
+          <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage
+            defaultMessage="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
+            id="Finances / Stripe / Payment confirm / subheading"
+          />
+        </p>
+      </div>
       {data ? (
         <ListContent data={data} />
       ) : (
         <>
           <Dropzone disabled />
-          <List>
+          <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
             <DocumentSkeleton />
             <DocumentSkeleton />
-          </List>
+          </ul>
         </>
       )}
-    </Container>
+    </div>
   );
 };
