@@ -3,6 +3,7 @@ import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Form } from '@sb/webapp-core/components/forms';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../../components/activeSubscriptionContext';
@@ -77,7 +78,13 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   };
   return (
     <Form {...form}>
-      <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        noValidate
+        onSubmit={(e) => {
+          handleSubmit(onSubmit)(e).catch(reportError);
+        }}
+        className="space-y-8"
+      >
         <StripePaymentMethodSelector
           formControls={apiFormControls}
           initialValueId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
