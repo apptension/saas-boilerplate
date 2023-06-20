@@ -6,6 +6,7 @@ import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { imageProps } from '../../helpers/image';
+import { demoItemFactory } from '@sb/webapp-contentful/tests/factories';
 
 type DemoItemContentProps = {
   data: DemoItemQueryQuery;
@@ -30,7 +31,7 @@ export const DemoItemContent: FC<DemoItemContentProps> = ({ data, routesConfig }
     <PageLayout>
       <PageHeadline hasBackButton header={item?.title} />
       <p className="text-base">{item?.description}</p>
-      {item?.image && <img className="w-[100%]" {...imageProps(item.image)} />}
+      {item?.image && <img className="max-w-[100%] object-cover" {...imageProps(item.image)} />}
     </PageLayout>
   );
 };
