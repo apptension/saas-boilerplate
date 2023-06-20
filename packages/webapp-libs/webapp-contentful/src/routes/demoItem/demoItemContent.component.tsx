@@ -6,7 +6,6 @@ import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { imageProps } from '../../helpers/image';
-import { demoItemFactory } from '@sb/webapp-contentful/tests/factories';
 
 type DemoItemContentProps = {
   data: DemoItemQueryQuery;
