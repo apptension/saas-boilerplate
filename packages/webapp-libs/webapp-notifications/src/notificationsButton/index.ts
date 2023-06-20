@@ -1,1 +1,1 @@
-export { NotificationsButton } from './notificationsButton.component';
+export { NotificationsButton, NotificationsButtonFallback } from './notificationsButton.component';

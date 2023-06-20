@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client';
 import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Dropzone } from '@sb/webapp-core/components/forms';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
@@ -57,18 +59,17 @@ export const Documents = () => {
   const { data } = useQuery(documentsListQuery);
 
   return (
-    <div className="px-8 space-y-6 ">
-      <div>
-        <h3 className="text-lg font-medium">
-          <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
-        </h3>
-        <p className="text-sm text-muted-foreground">
+    <PageLayout className="px-8 space-y-6 ">
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Documents" id="Documents / Header" />}
+        subheader={
           <FormattedMessage
             defaultMessage="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
             id="Finances / Stripe / Payment confirm / subheading"
           />
-        </p>
-      </div>
+        }
+      />
+
       {data ? (
         <ListContent data={data} />
       ) : (
@@ -80,6 +81,6 @@ export const Documents = () => {
           </ul>
         </>
       )}
-    </div>
+    </PageLayout>
   );
 };

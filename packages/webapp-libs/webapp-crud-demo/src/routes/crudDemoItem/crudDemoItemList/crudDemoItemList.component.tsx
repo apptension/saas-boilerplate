@@ -36,7 +36,7 @@ export const CrudDemoItemList = () => {
       return (
         <Card className="mt-4">
           <CardContent>
-            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li]:border-slate-200 [&>li:last-child]:border-none">
+            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li:last-child]:border-none">
               {mapConnection(
                 (node) => (
                   <CrudDemoItemListItem item={node} key={node.id} />
@@ -70,12 +70,16 @@ export const CrudDemoItemList = () => {
   return (
     <PageLayout>
       <PageHeadline
-        header={<FormattedMessage id="CrudDemoItemList / Headline" defaultMessage="CRUD Example Items" />}
+        header={<FormattedMessage id="CrudDemoItemList / Title" defaultMessage="CRUD Example Items" />}
+        subheader={
+          <FormattedMessage
+            id="CrudDemoItemList / Subheader"
+            defaultMessage="Interactive CRUD samples to explore and understand features"
+          />
+        }
       />
+
       <Link
-        className="flex w-fit items-center rounded-md border border-input px-3 py-2 text-sm ring-offset-background
-        placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
-        disabled:cursor-not-allowed disabled:opacity-50"
         to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
         variant={ButtonVariant.PRIMARY}
         icon={<PlusCircle className="mr-2 h-4 w-4" />}
