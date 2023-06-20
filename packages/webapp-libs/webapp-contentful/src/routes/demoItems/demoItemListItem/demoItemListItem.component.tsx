@@ -25,7 +25,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
     <li className="flex items-center w-[100%]">
       <Link
         className="p-8 w-[100%] justify-start hover:no-underline w-[100%] max-w-[100%] overflow-hidden whitespace-nowrap"
-        to={generateLocalePath(RoutesConfig.demoItem, { id: 'dsadas' })}
+        to={generateLocalePath(RoutesConfig.demoItem, { id })}
       >
         {item.image && (
           <img
