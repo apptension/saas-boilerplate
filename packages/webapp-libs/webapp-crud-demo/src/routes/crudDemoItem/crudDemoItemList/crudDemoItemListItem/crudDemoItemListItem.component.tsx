@@ -5,6 +5,7 @@ import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { MouseEvent } from 'react';
@@ -81,17 +82,16 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   );
 
   return (
-    <li>
+    <li className="group dark:hover:text-slate-500">
       <div
         tabIndex={0}
-        className="group flex items-center justify-between w-full min-w-15 p-4 transition hover:bg-sky-50 focus:outline-none active:text-blue-500 active:bg-blue-100"
+        className="group-hover:dark:text-slate-500 flex items-center justify-between w-full min-w-15 p-4 transition-colors hover:bg-sky-50 focus:outline-none active:text-blue-500 active:bg-blue-100"
       >
         <Link
-          className="border-input"
-          variant={ButtonVariant.GHOST}
+          className="border-input transition-colors group-hover:dark:text-slate-500 hover:no-underline w-[100%] justify-start"
           to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
         >
-          <p className="text-base">{data.name}</p>
+          <p className={cn('dark:hover:text-slate-500 text-base transition-colors')}>{data.name}</p>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
       </div>
