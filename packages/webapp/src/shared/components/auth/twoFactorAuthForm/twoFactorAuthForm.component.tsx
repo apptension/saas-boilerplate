@@ -16,11 +16,12 @@ export type TwoFactorAuthFormProps = {
 };
 
 export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
-  const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
-  const [commitDisableOtpMutation] = useMutation(disableOtpMutation, { variables: { input: {} } });
-  const { reload } = useCommonQuery();
   const intl = useIntl();
   const { toast } = useToast();
+  const { reload } = useCommonQuery();
+
+  const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
+  const [commitDisableOtpMutation] = useMutation(disableOtpMutation, { variables: { input: {} } });
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Two-factor / Disable success',
@@ -41,7 +42,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
   return (
     <div>
       {isEnabled ? (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start gap-y-1">
           <FormattedMessage
             defaultMessage="Your account is using two-factor authentication"
             id="Auth / Two-factor / Using two-factor auth"
@@ -57,7 +58,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col items-start mb-1">
+        <div className="flex flex-col items-start gap-y-1">
           <FormattedMessage
             defaultMessage="Your account is not using two-factor authentication"
             id="Auth / Two-factor / Not using two-factor auth"
