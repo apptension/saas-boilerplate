@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { ThemeAction, ThemeState } from './themeProvider.types';
-import { getSystemTheme, setThemeInDOM } from './themeProvider.utils';
+import { getSystemTheme, getTheme, setThemeInDOM } from './themeProvider.utils';
 
 export const themeInitialState: ThemeState = {
-  theme: getSystemTheme(),
+  theme: getTheme(getSystemTheme()),
 };
 
 setThemeInDOM(themeInitialState.theme);

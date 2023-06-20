@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+export const THEME_DEFAULT_STORAGE_KEY = 'theme';
+
 export enum Themes {
   LIGHT = 'light',
   DARK = 'dark',
@@ -13,4 +15,5 @@ export interface ThemeState {
 
 export type ThemeProviderProps = {
   children: ReactNode;
+  storageKey: string;
 };
