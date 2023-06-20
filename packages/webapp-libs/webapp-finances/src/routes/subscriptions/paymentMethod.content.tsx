@@ -43,9 +43,19 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
     </Card>
   );
 
+  const renderEmptyList = () => (
+    <div className="mt-1 text-muted-foreground text-sm">
+      <FormattedMessage
+        defaultMessage="You don't have any payment method added."
+        id="My subscription / No credit card"
+      />
+    </div>
+  );
+
   return (
     <div className="space-y-3">
       {defaultMethod && renderCardDetails()}
+      {paymentMethods.length === 0 && renderEmptyList()}
       <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)} variant="default">
         {paymentMethods.length ? (
           <FormattedMessage defaultMessage="Edit payment methods" id="My subscription / Edit payment method button" />

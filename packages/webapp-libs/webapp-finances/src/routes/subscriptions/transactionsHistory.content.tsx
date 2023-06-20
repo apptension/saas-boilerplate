@@ -14,7 +14,7 @@ export const TransactionsHistoryContent = () => {
 
   if (!length)
     return (
-      <div className="mt-1 text-muted-foreground">
+      <div className="mt-1 text-muted-foreground text-sm">
         <FormattedMessage
           defaultMessage="You don't have any history to show"
           id="My subscription / No transaction history"
