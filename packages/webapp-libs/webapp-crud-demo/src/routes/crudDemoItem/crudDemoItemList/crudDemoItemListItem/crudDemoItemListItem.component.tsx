@@ -5,6 +5,7 @@ import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { MouseEvent } from 'react';
@@ -50,11 +51,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
       <Link
         variant={ButtonVariant.GHOST}
-        className="flex h-10 w-full items-center justify-between rounded-md border 
-        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
-        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
-        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
-        disabled:opacity-50 group-active:border-blue-500"
+        className="border"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
@@ -63,13 +60,9 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       <Button
         variant={ButtonVariant.GHOST}
         onClick={handleDelete}
+        className="border"
         disabled={loading}
         icon={<Icon size={14} icon={deleteIcon} />}
-        className="flex h-10 w-full items-center justify-between rounded-md border 
-        border-input bg-transparent px-3 py-2 text-sm ring-offset-background 
-        placeholder:text-muted-foreground focus:outline-none focus:ring-2 
-        focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed 
-        disabled:opacity-50 group-active:border-blue-500"
       >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
@@ -79,12 +72,15 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderButtonsMenu = () => (
     <CrudDropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
   );
-
+  //
   return (
     <li>
       <div
         tabIndex={0}
-        className="group flex items-center justify-between w-full min-w-15 p-4 transition hover:bg-sky-50 focus:outline-none active:text-blue-500 active:bg-blue-100"
+        className={cn(
+          'group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none',
+          'hover:bg-secondary hover:text-secondary-foreground'
+        )}
       >
         <Link
           className="border-input"

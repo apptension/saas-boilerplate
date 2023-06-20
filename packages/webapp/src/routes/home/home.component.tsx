@@ -1,4 +1,5 @@
-import { typography } from '@sb/webapp-core/theme';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -6,7 +7,7 @@ export const Home = () => {
   const intl = useIntl();
 
   return (
-    <div className="px-8">
+    <PageLayout>
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'Homepage',
@@ -14,9 +15,10 @@ export const Home = () => {
         })}
       />
 
-      <typography.H1>
-        <FormattedMessage defaultMessage="Welcome!" id="Home / title" />
-      </typography.H1>
-    </div>
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Welcome!" id="Home / header" />}
+        subheader={<FormattedMessage defaultMessage="This is the dashboard page" id="Home / subheader" />}
+      />
+    </PageLayout>
   );
 };
