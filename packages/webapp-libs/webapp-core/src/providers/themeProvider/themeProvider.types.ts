@@ -15,5 +15,5 @@ export interface ThemeState {
 
 export type ThemeProviderProps = {
   children: ReactNode;
-  storageKey: string;
+  storageKey?: string;
 };
