@@ -7,7 +7,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { DemoItemListItem } from './demoItemListItem';
 import { demoItemsAllQuery } from './demoItems.graphql';
-import { demoItemFactory } from '@sb/webapp-contentful/tests/factories';
 
 export const DemoItems = () => {
   const { data } = useQuery(demoItemsAllQuery, { context: { schemaType: SchemaType.Contentful } });

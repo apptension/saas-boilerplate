@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../config/routes';
 import { imageProps } from '../../../helpers';
 import { useFavoriteDemoItem } from '../../../hooks';
+import { demoItemFactory } from '@sb/webapp-contentful/tests/factories';
 
 export type DemoItemListItemProps = {
   id: string;
@@ -16,14 +17,16 @@ export type DemoItemListItemProps = {
 
 export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const intl = useIntl();
+
   const { setFavorite, isFavorite } = useFavoriteDemoItem(id);
+
   const generateLocalePath = useGenerateLocalePath();
 
   return (
     <li className="flex items-center w-[100%]">
       <Link
-        className="p-8 w-[100%] justify-start hover:no-underline"
-        to={generateLocalePath(RoutesConfig.demoItem, { id })}
+        className="p-8 w-[100%] justify-start hover:no-underline w-[100%] max-w-[100%] overflow-hidden whitespace-nowrap"
+        to={generateLocalePath(RoutesConfig.demoItem, { id: 'dsadas' })}
       >
         {item.image && (
           <img
@@ -32,7 +35,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
             role="presentation"
           />
         )}
-        <p className="px-4">{item.title}</p>
+        <p className="px-4 text-ellipsis overflow-hidden whitespace-nowrap">{item.title}</p>
       </Link>
 
       <Button
@@ -50,12 +53,8 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
       >
         <Star
           className={cn({
-            'fill-none': !isFavorite,
-            'text-slate-700': !isFavorite,
-            'fill-slate-700': isFavorite,
-            'dark:fill-slate-400': isFavorite,
-            'dark:text-slate-400': isFavorite,
-            'dark:fill-none': !isFavorite,
+            'fill-none text-slate-700 dark:fill-none': !isFavorite,
+            'fill-slate-700 dark:fill-slate-400 dark:text-slate-400': isFavorite,
           })}
         />
       </Button>
