@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -39,9 +40,9 @@ export const EditCrudDemoItem = () => {
 
   if (loading)
     return (
-      <div className="py-4 px-12">
+      <PageLayout>
         <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </div>
+      </PageLayout>
     );
   if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
@@ -49,13 +50,12 @@ export const EditCrudDemoItem = () => {
     commitEditCrudDemoItemMutation({ variables: { input: { id: crudDemoItem.id, name: formData.name } } });
   };
   return (
-    <div className="py-4 px-12">
-      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <h1 className="text-2xl mb-3 leading-6 font-bold">
-        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
-      </h1>
-
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />}
+      />
       <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
-    </div>
+    </PageLayout>
   );
 };

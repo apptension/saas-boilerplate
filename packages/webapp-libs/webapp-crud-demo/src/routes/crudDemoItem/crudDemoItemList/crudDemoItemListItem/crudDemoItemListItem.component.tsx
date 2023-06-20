@@ -88,10 +88,16 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
         className="group-hover:dark:text-slate-500 flex items-center justify-between w-full min-w-15 p-4 transition-colors hover:bg-sky-50 focus:outline-none active:text-blue-500 active:bg-blue-100"
       >
         <Link
-          className="border-input transition-colors group-hover:dark:text-slate-500 hover:no-underline w-[100%] justify-start"
+          className="border-input transition-colors group-hover:dark:text-slate-500 hover:no-underline w-[100%] justify-start min-w-0 max-w-[100%] cursor-pointer"
           to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
         >
-          <p className={cn('dark:hover:text-slate-500 text-base transition-colors')}>{data.name}</p>
+          <p
+            className={cn(
+              'dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis'
+            )}
+          >
+            {data.name}
+          </p>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
       </div>

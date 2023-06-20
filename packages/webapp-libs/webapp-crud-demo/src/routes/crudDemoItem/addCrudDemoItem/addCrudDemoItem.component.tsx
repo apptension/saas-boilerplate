@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -77,12 +78,13 @@ export const AddCrudDemoItem = () => {
   };
 
   return (
-    <div className="py-4 px-12">
-      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <h1 className="text-2xl mb-3 leading-6 font-bold">
-        <FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />
-      </h1>
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />}
+      />
+
       <CrudDemoItemForm onSubmit={onFormSubmit} error={error} loading={loadingMutation} />
-    </div>
+    </PageLayout>
   );
 };
