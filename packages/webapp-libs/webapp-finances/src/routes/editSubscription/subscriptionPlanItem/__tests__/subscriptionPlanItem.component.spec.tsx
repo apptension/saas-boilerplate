@@ -96,7 +96,7 @@ describe('SubscriptionPlanItem: Component', () => {
       render(<Wrapper />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
       });
-      expect(await screen.findByText(/10 USD/i)).toBeInTheDocument();
+      expect(await screen.findByText(/\$10/i)).toBeInTheDocument();
     });
   });
 

@@ -18,7 +18,7 @@ export const PageHeadline = ({ hasBackButton = false, header, subheader, ...prop
         <H3 className="text-lg font-medium">{header}</H3>
 
         {subheader && (
-          <Paragraph notFirstChildMargin={false} className="text-muted-foreground text-sm">
+          <Paragraph firstChildMargin={false} className="text-muted-foreground text-sm">
             {subheader}
           </Paragraph>
         )}
