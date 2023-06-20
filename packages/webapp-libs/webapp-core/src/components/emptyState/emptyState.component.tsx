@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import React from 'react';
 
-import { Container, Text } from './emptyState.styles';
+import { cn } from '../../lib/utils';
+import { Small } from '../typography';
 
 export type EmptyStateProps = {
-  children?: ReactNode;
+  children?: React.ReactNode;
   className?: string;
 };
 /**
@@ -12,8 +13,8 @@ export type EmptyStateProps = {
  */
 export const EmptyState = ({ children, className }: EmptyStateProps) => {
   return (
-    <Container className={className}>
-      <Text>{children}</Text>
-    </Container>
+    <span className={cn('my-6 flex items-center justify-center align-middle', className)}>
+      <Small className="text-center">{children}</Small>
+    </span>
   );
 };
