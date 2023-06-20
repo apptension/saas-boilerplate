@@ -22,19 +22,13 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
 
   return (
-    <li className="flex items-center w-[100%]">
+    <li className="flex items-center ">
       <Link
-        className="p-8 w-[100%] justify-start hover:no-underline w-[100%] max-w-[100%] overflow-hidden whitespace-nowrap"
+        className="p-8 min-w-0 w-[100%] justify-start hover:no-underline"
         to={generateLocalePath(RoutesConfig.demoItem, { id })}
       >
-        {item.image && (
-          <img
-            className="object-cover rounded w-16 h-12"
-            {...imageProps(item.image, { size: { height: 50 } })}
-            role="presentation"
-          />
-        )}
-        <p className="px-4 text-ellipsis overflow-hidden whitespace-nowrap">{item.title}</p>
+        {item.image && <img className="object-cover rounded h-12" {...imageProps(item.image)} role="presentation" />}
+        <p className="text-md px-2 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
       </Link>
 
       <Button
@@ -45,7 +39,7 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
           defaultMessage: 'Is favorite',
           id: 'Demo Item / Is favorite',
         })}
-        className="mr-4"
+        className="mr-2"
         onClick={(e) => {
           setFavorite(!isFavorite);
         }}
