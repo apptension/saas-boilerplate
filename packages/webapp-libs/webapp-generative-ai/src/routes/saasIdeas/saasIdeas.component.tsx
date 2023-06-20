@@ -2,8 +2,9 @@ import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
-import { typography } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -118,7 +119,7 @@ export const SaasIdeas = () => {
     },
   });
   return (
-    <div className="py-4 px-12">
+    <PageLayout>
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'SaaS Ideas',
@@ -126,23 +127,22 @@ export const SaasIdeas = () => {
         })}
       />
 
-      <h1 className="text-4xl mb-6 leading-8 font-bold">
-        <FormattedMessage defaultMessage="Generate your SaaS ideas using chatGPT!" id="SaaS ideas / title" />
-      </h1>
-
-      <typography.Paragraph>
-        <FormattedMessage
-          defaultMessage="SaaS idea generator powered by AI. Input a keyword and get personalized SaaS ideas."
-          id="SaaS ideas / description"
-        />
-      </typography.Paragraph>
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Generate your SaaS ideas using chatGPT!" id="SaaS ideas / title" />}
+        subheader={
+          <FormattedMessage
+            defaultMessage="SaaS idea generator powered by AI. Input a keyword and get personalized SaaS ideas."
+            id="SaaS ideas / description"
+          />
+        }
+      />
 
       <Form {...form}>
         <form onSubmit={handleFormSubmit} noValidate={true}>
           <FormField
             name="keywords"
             render={({ field }) => (
-              <FormItem className="mt-2">
+              <FormItem>
                 <FormControl>
                   <Input
                     {...field}
@@ -185,6 +185,6 @@ export const SaasIdeas = () => {
           ))
         )}
       </ul>
-    </div>
+    </PageLayout>
   );
 };

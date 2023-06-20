@@ -91,15 +91,17 @@ export const SubscriptionsContent = ({ activeSubscription }: SubscriptionsConten
         </CardContent>
       </Card>
 
-      <Link to={generateLocalePath(RoutesConfig.subscriptions.changePlan)} variant={ButtonVariant.PRIMARY}>
-        <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
-      </Link>
-
-      {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
-        <Link to={generateLocalePath(RoutesConfig.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
-          <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
+      <div className="flex flex-row gap-x-6">
+        <Link to={generateLocalePath(RoutesConfig.subscriptions.changePlan)} variant={ButtonVariant.PRIMARY}>
+          <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
         </Link>
-      )}
+
+        {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
+          <Link to={generateLocalePath(RoutesConfig.subscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
+            <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
+          </Link>
+        )}
+      </div>
     </>
   );
 };
