@@ -8,7 +8,6 @@ import { useIntl } from 'react-intl';
 import { RoutesConfig } from '../../../config/routes';
 import { imageProps } from '../../../helpers';
 import { useFavoriteDemoItem } from '../../../hooks';
-import { demoItemFactory } from '@sb/webapp-contentful/tests/factories';
 
 export type DemoItemListItemProps = {
   id: string;
