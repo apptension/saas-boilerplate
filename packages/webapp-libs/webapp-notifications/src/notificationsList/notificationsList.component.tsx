@@ -17,13 +17,12 @@ import { useMarkAllAsRead, useNotificationsListContent } from './notificationsLi
 
 export type NotificationsListProps = {
   templates: Record<NotificationTypes, ElementType>;
-  isOpen: boolean;
   queryResult?: FragmentType<typeof notificationsListContentFragment>;
   loading: boolean;
   onLoadMore: (cursor: string, count: number) => void;
 };
 
-export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) => {
+export const NotificationsList = (props: NotificationsListProps) => {
   const intl = useIntl();
 
   const markAllAsRead = useMarkAllAsRead(
