@@ -17,7 +17,6 @@ const meta: Meta<typeof NotificationsList> = {
 
 export const Default: StoryObj<typeof meta> = {
   render: Template,
-  args: { isOpen: true },
 
   decorators: [
     withProviders({
@@ -48,7 +47,6 @@ export const Default: StoryObj<typeof meta> = {
 
 export const Empty: StoryObj<typeof meta> = {
   render: Template,
-  args: { isOpen: true },
 
   decorators: [
     withProviders({
