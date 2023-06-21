@@ -4,13 +4,13 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-flake8
-
 if [ "${CI:-}" = "true" ]
 then
   black --config=pyproject.toml --check .
+  ruff check .
 else
-   black --config=pyproject.toml .
+  black --config=pyproject.toml .
+  ruff check --fix .
 fi
 
 pnpm nx lint:js
