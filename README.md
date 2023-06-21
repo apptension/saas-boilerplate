@@ -148,7 +148,9 @@ Front-end stack:
 - React
 - GraphQL
 - Apollo Client
-- styled-components
+- tailwindcss
+- shadcn/ui
+- styled-components (optional)
 - jest
 - Storybook
 - Vite
