@@ -4,7 +4,6 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
-import { FormattedMessage } from 'react-intl';
 import { useParams } from 'react-router';
 
 export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `
