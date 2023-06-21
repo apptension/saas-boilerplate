@@ -72,7 +72,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const renderButtonsMenu = () => (
     <CrudDropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
   );
-  //
+
   return (
     <li className="group dark:hover:text-slate-500">
       <div
