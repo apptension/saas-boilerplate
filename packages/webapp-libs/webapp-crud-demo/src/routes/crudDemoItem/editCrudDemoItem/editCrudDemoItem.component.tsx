@@ -43,8 +43,8 @@ export const EditCrudDemoItem = () => {
   if (loading)
     return (
       <PageLayout>
-        <div className="flex w-[100%] justify-between items-center">
-          <Skeleton className="h-4 w-[50%]" />
+        <div className="flex w-full justify-between items-center">
+          <Skeleton className="h-4 w-1/2" />
           <Skeleton className="h-6 w-8" />
         </div>
         <Separator />
