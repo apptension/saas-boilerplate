@@ -4,7 +4,12 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
+import { GlobalECR } from '../global/resources/globalECR';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -65,30 +70,28 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       assumedBy: new iam.AccountRootPrincipal(),
     });
 
+    const installCommands = this.getAssumeRoleCommands();
+    const preBuildCommands = [
+      ...this.getWorkspaceSetupCommands(
+        PnpmWorkspaceFilters.WEBAPP_EMAILS,
+        PnpmWorkspaceFilters.WORKERS
+      ),
+      this.getECRLoginCommand(),
+    ];
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+      props.envSettings.dockerImages.workersBaseImage
+    }`;
+
     const project = new codebuild.Project(this, 'BuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-${props.name}`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
           install: {
-            commands: [
-              'TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`',
-              'export TEMP_ROLE',
-              'export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.AccessKeyId\')',
-              'export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SecretAccessKey\')',
-              'export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SessionToken\')',
-            ],
+            commands: installCommands,
           },
           pre_build: {
-            commands: [
-              'go get github.com/segmentio/chamber',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=workers... \
-                --filter=webapp-emails...`,
-            ],
+            commands: preBuildCommands,
           },
           build: {
             commands: [
@@ -124,6 +127,10 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
         },
+        WORKERS_BASE_IMAGE: {
+          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: baseImage,
+        },
       },
       cache: codebuild.Cache.local(
         codebuild.LocalCacheMode.CUSTOM,
@@ -143,6 +150,11 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     ).forEach((statement) => {
       dockerAssumeRole.addToPolicy(statement);
       project.addToRolePolicy(statement);
+    });
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) => {
+      project.addToRolePolicy(statement);
+      dockerAssumeRole.addToPolicy(statement);
     });
 
     project.addToRolePolicy(
@@ -182,29 +194,25 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       assumedBy: new iam.AccountRootPrincipal(),
     });
 
+    const installCommands = this.getAssumeRoleCommands();
+    const preBuildCommands = [
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.WORKERS),
+      this.getECRLoginCommand(),
+    ];
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+      props.envSettings.dockerImages.workersBaseImage
+    }`;
+
     const project = new codebuild.Project(this, 'DeployProject', {
       projectName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
           install: {
-            commands: [
-              'TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`',
-              'export TEMP_ROLE',
-              'export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.AccessKeyId\')',
-              'export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SecretAccessKey\')',
-              'export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SessionToken\')',
-            ],
+            commands: installCommands,
           },
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=workers...`,
-            ],
+            commands: preBuildCommands,
           },
           build: { commands: [`pnpm nx run ${props.name}:deploy`] },
         },
@@ -229,6 +237,10 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         ASSUME_ROLE_ARN: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
+        },
+        WORKERS_BASE_IMAGE: {
+          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: baseImage,
         },
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),

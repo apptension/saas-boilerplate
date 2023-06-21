@@ -1,6 +1,8 @@
+ARG E2E_TESTS_BASE_IMAGE=cypress/included:12.3.0
+
 FROM segment/chamber:2 AS chamber
 
-FROM cypress/included:12.3.0 AS base
+FROM $E2E_TESTS_BASE_IMAGE AS base
 ENV APP_PATH=/home/node/app
 ENV SRC_CORE_PATH=packages/internal/core
 ENV CORE_PATH=$APP_PATH/$SRC_CORE_PATH

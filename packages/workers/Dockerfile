@@ -1,10 +1,11 @@
+ARG WORKERS_BASE_IMAGE=python:3.9-slim-bullseye
 ##
 # Chamber installation stage
 ##
 
 FROM segment/chamber:2 AS chamber
 
-FROM python:3.9-slim-bullseye
+FROM $WORKERS_BASE_IMAGE
 
 ENV APP_PATH=/app
 ENV SRC_CORE_PATH=packages/internal/core
