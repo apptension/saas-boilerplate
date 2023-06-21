@@ -26,9 +26,7 @@ export const ChangePasswordForm = () => {
       <form
         noValidate
         onSubmit={handleChangePassword}
-        className={cn(
-          'flex max-w-xs flex-row flex-wrap items-end justify-center gap-x-8 gap-y-4 md:max-w-full md:justify-start'
-        )}
+        className={cn('flex max-w-xs flex-row flex-wrap items-end justify-center gap-4 md:max-w-full md:justify-start')}
       >
         <div className="w-full">
           <Input
@@ -50,7 +48,7 @@ export const ChangePasswordForm = () => {
           />
         </div>
 
-        <div className="flex w-full flex-row flex-wrap gap-x-8">
+        <div className="flex w-full flex-row flex-wrap gap-4">
           <Input
             {...register('newPassword', {
               required: {
