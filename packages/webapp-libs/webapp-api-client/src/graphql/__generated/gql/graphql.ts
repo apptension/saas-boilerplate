@@ -2551,6 +2551,7 @@ export type UserProfileType = Node & {
 
 export type ValidateOtpMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
+  otpAuthToken?: InputMaybe<Scalars['String']>;
   otpToken: Scalars['String'];
 };
 

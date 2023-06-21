@@ -1,9 +1,9 @@
 {
   "name": "@sb/webapp-emails",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "type": "commonjs",
   "scripts": {
-    "build": "nx run build-for-env",
+    "build": "pnpm nx run build-for-env",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",

@@ -6,6 +6,8 @@ import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface BackendCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -76,7 +78,8 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -84,7 +87,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             ],
           },
           build: {
-            commands: ['nx run backend:build'],
+            commands: ['pnpm nx run backend:build'],
           },
         },
       }),
@@ -107,6 +110,15 @@ export class BackendCiConfig extends ServiceCiConfig {
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -143,14 +155,15 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=backend...`,
             ],
           },
-          build: { commands: ['nx run backend:deploy:api'] },
+          build: { commands: ['pnpm nx run backend:deploy:api'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -171,6 +184,14 @@ export class BackendCiConfig extends ServiceCiConfig {
         ],
       })
     );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -202,14 +223,15 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=backend...`,
             ],
           },
-          build: { commands: ['nx run backend:deploy:migrations'] },
+          build: { commands: ['pnpm nx run backend:deploy:migrations'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -230,6 +252,14 @@ export class BackendCiConfig extends ServiceCiConfig {
         ],
       })
     );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

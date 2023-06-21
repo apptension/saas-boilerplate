@@ -5,4 +5,4 @@ set -o pipefail
 set -o nounset
 
 # TODO: fix e2e tests
-#nx all:headless:chrome:qa
+#pnpm nx all:headless:chrome:qa

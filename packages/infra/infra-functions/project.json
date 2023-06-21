@@ -1,6 +1,6 @@
 {
+  "name": "infra-functions",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/infra/infra-functions",
   "projectType": "application",
   "sourceRoot": "packages/infra/infra-functions",
   "targets": {
@@ -13,25 +13,19 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": [
-          "packages/infra/infra-functions/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/infra/infra-functions/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/infra/infra-functions"
-      ],
+      "executor": "@nx/jest:jest",
+      "outputs": ["coverage/packages/infra/infra-functions"],
       "options": {
         "jestConfig": "services/auth/jest.config.js",
         "passWithNoTests": true
       }
     }
   },
-  "tags": [
-    "service"
-  ]
+  "tags": ["service"]
 }

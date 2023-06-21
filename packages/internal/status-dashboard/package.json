@@ -1,6 +1,6 @@
 {
   "name": "status-dashboard",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "private": true,
   "scripts": {
     "deploy": "env-cmd -f ../../../.env.tools cdk deploy *StatusDashboardStack",
@@ -15,9 +15,7 @@
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
-    "@nrwl/react": "^15.4.5",
-    "@nrwl/webpack": "^15.4.5",
-    "@nrwl/web": "^15.4.5",
+    "@nx/webpack": "^16.3.2",
     "@sb/core": "*",
     "@sb/tools": "*",
     "@sb/infra-core": "*",
@@ -29,7 +27,9 @@
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "constructs": "^10.1.225",
-    "babel-plugin-styled-components": "^2.0.7"
+    "babel-plugin-styled-components": "^2.0.7",
+    "@nx/web": "^16.3.2",
+    "@nx/react": "^16.3.2"
   },
   "eslintConfig": {
     "extends": "react-app"

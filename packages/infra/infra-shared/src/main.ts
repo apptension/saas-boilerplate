@@ -11,10 +11,13 @@ import { EnvMainStack } from './stacks/main';
 import { EnvDbStack } from './stacks/db';
 import { EnvComponentsStack } from './stacks/components';
 import { EnvCiStack } from './stacks/ci';
+import { BootstrapStack } from './stacks/bootstrap';
 
 (async () => {
   const envSettings = await loadEnvSettings();
   const app = new App();
+
+  new BootstrapStack(app, 'sb-bootstrap');
 
   new GlobalStack(app, getGlobalStackName('GlobalStack', envSettings), {
     envSettings,

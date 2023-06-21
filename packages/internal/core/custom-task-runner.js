@@ -1,9 +1,9 @@
 const path = require('path');
 const util = require('util');
-const fs = require('fs');
 const exec = util.promisify(require('child_process').exec);
 const { default: defaultTaskRunner } = require('nx/tasks-runners/default');
 const dotenv = require('dotenv');
+const { validateStageEnv } = require('./stage-env-validator');
 
 async function loadVersionEnv() {
   if (process.env.VERSION) {
@@ -22,16 +22,19 @@ async function loadStageEnv() {
     return;
   }
 
-  const dotEnvPath = path.join(
-    __dirname,
-    `../../../.env.${process.env.ENV_STAGE}`
+  const { stdout: chamberOutput } = await exec(
+    `chamber export ${process.env.ENV_STAGE} --format dotenv`
   );
-  console.log(`Loading env from ${dotEnvPath}`);
-  dotenv.config({ path: dotEnvPath });
+
+  const parsed = dotenv.parse(Buffer.from(chamberOutput));
+  dotenv.populate(process.env, parsed);
+
+  await validateStageEnv();
 }
 
 module.exports = async (...args) => {
   await loadStageEnv();
+
   await loadVersionEnv();
   return defaultTaskRunner(...args);
 };

@@ -103,7 +103,6 @@ export class CiEntrypoint extends Construct {
         build: {
           commands: [
             'app_version=$(bash packages/internal/core/scripts/get-version.sh)',
-            'cp .env.${ENV_STAGE} .env',
             'echo "VERSION=${app_version}" >> .env',
           ],
         },

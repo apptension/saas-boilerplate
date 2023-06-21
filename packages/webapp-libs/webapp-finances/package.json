@@ -1,6 +1,6 @@
 {
   "name": "@sb/webapp-finances",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "type": "commonjs",
   "scripts": {
     "test": "jest",
@@ -14,10 +14,10 @@
     "@sb/webapp-notifications": "*",
     "@stripe/react-stripe-js": "^1.14.2",
     "@stripe/stripe-js": "^1.42.1",
-    "graphql": "^16.6.0"
+    "react-click-away-listener": "^2.2.2",
+    "styled-components": "5.3.6"
   },
   "peerDependencies": {
-    "@apollo/client": "^3.7.9",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
     "@storybook/react": "^7.0.10",
@@ -37,18 +37,12 @@
     "react-intl": "^6.2.1",
     "react-markdown": "^8.0.3",
     "react-router": "^6.7.0",
-    "react-router-dom": "^6.7.0",
-    "styled-components": "5.3.6"
+    "react-router-dom": "^6.7.0"
   },
   "devDependencies": {
-    "@apollo/client": "^3.7.9",
-    "@apollo/rover": "^0.12.2",
     "@graphql-codegen/cli": "^2.13.11",
-    "@graphql-typed-document-node/core": "^3.1.1",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
-    "@nrwl/jest": "^15.8.6",
-    "@nrwl/react": "^15.8.6",
     "@storybook/addon-actions": "^7.0.10",
     "@storybook/addon-backgrounds": "^7.0.10",
     "@storybook/addon-docs": "^7.0.10",
@@ -66,7 +60,6 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "28.1.3",
     "@types/ramda": "^0.28.23",
-    "@types/react": "^18.0.24",
     "@types/styled-components": "^5.1.26",
     "@types/testing-library__jest-dom": "^5.14.5",
     "babel-jest": "28.1.3",
@@ -90,6 +83,8 @@
     "react-router-dom": "^6.7.0",
     "storybook": "^7.0.10",
     "styled-components": "5.3.6",
-    "ts-jest": "28.0.5"
+    "ts-jest": "28.0.5",
+    "@nx/react": "^16.3.2",
+    "@nx/jest": "^16.3.2"
   }
 }
