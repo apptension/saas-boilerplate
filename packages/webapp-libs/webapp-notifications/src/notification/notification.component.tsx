@@ -61,11 +61,7 @@ export const Notification = ({
       }}
     >
       {hasAvatar ? (
-        <img
-          src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg"
-          alt=""
-          className="mr-3 rounded-full w-10 h-10 object-cover"
-        />
+        <img src={avatar} alt="" className="mr-3 rounded-full w-10 h-10 object-cover" />
       ) : (
         <div className="flex items-center justify-center p-3 h-10 w-10 dark:bg-muted-foreground bg-slate-300 rounded-full mr-3">
           <Bell />
