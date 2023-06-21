@@ -13,7 +13,7 @@ describe('Home: Component', () => {
 
   it('should display dashboard items', async () => {
     render(<Component />);
-    // 6 items + heading
-    expect(await screen.findAllByRole('heading')).toHaveLength(7);
+    // 6 items + heading + alert
+    expect(await screen.findAllByRole('heading')).toHaveLength(8);
   });
 });
