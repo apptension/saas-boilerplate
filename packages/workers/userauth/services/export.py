@@ -11,6 +11,7 @@ from demo.services.export import CrudDemoItemDataExport, DocumentDemoItemFileExp
 from ..models import User
 from ..types import UserType
 from utils import hashid
+from ..constants import ExportUserArchiveRootPaths
 
 
 class UserDataExport(UserDataExportable):
@@ -60,7 +61,7 @@ class ExportUserArchive:
 
     def _export_user_archive_to_zip(self, user_data: dict, user_files: list[str]) -> str:
         s3 = boto3.client("s3", endpoint_url=settings.AWS_S3_ENDPOINT_URL)
-        archive_filename = f"/tmp/{self._user_id}.zip"
+        archive_filename = f"/{ExportUserArchiveRootPaths.LOCAL_ROOT.value}/{self._user_id}.zip"
 
         with zipfile.ZipFile(archive_filename, "w", zipfile.ZIP_DEFLATED) as zf:
             json_data_filename = f"{self._user_id}/{self._user_id}.json"
@@ -88,4 +89,4 @@ class ExportUserArchive:
 
     def _get_user_archive_obj_key(self) -> str:
         timestamp = datetime.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
-        return f"exports/{self._user_id}_{timestamp}.zip"
+        return f"{ExportUserArchiveRootPaths.S3_ROOT.value}/{self._user_id}_{timestamp}.zip"
