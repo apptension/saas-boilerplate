@@ -23,7 +23,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
   const menuItemClassName = ({ isActive = false }) =>
     cn(
-      'text-primary hover:bg-primary hover:text-primary-foreground rounded-md px-3 py-2 text-sm font-medium leading-6',
+      'rounded-md px-3 py-2 text-sm font-medium leading-6 text-primary hover:bg-primary hover:text-primary-foreground',
       {
         'bg-primary text-primary-foreground hover:bg-primary/90': isActive,
       }
@@ -31,16 +31,16 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <>
       <div
-        className={cn('fixed lg:hidden inset-0 bg-black/80 pointer-events-none transition-opacity opacity-0', {
-          'opacity-100 pointer-events-auto': isSideMenuOpen,
+        className={cn('pointer-events-none fixed inset-0 bg-black/80 opacity-0 transition-opacity lg:hidden', {
+          'pointer-events-auto opacity-100': isSideMenuOpen,
         })}
         onClick={closeSidebar}
       ></div>
       <div
         className={cn(
-          'fixed top-6 left-80 lg:hidden lg:pointer-events-none cursor-pointer text-white opacity-0 transition-opacity',
+          'fixed left-80 top-6 cursor-pointer text-white opacity-0 transition-opacity lg:pointer-events-none lg:hidden',
           {
-            'block lg:hidden opacity-100': isSideMenuOpen,
+            'block opacity-100 lg:hidden': isSideMenuOpen,
           }
         )}
         role="button"
@@ -55,15 +55,15 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       <div
         {...props}
         className={cn(
-          'fixed inset-y-0 flex w-72 bg-primary-foreground -left-72 lg:left-0 transition-transform lg:transition-none duration-300 border-r',
+          'fixed inset-y-0 -left-72 flex w-72 border-r bg-primary-foreground transition-transform duration-300 lg:left-0 lg:transition-none',
           {
             'translate-x-72 lg:translate-x-0': isSideMenuOpen,
           },
           props.className
         )}
       >
-        <div className="px-6 overflow-auto flex flex-col grow gap-y-7">
-          <div className="h-16 flex items-center">
+        <div className="flex grow flex-col gap-y-7 overflow-auto px-6">
+          <div className="flex h-16 items-center">
             <Link
               to={generateLocalePath(RoutesConfig.home)}
               aria-label={intl.formatMessage({
@@ -75,7 +75,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
             </Link>
           </div>
 
-          <nav className="flex flex-col gap-y-1 -mx-2">
+          <nav className="-mx-2 flex flex-col gap-y-1">
             <RoleAccess>
               <Link
                 variant="default"
@@ -91,11 +91,55 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
             <RoleAccess>
               <Link
                 className={menuItemClassName}
+                to={generateLocalePath(RoutesConfig.finances.paymentConfirm)}
+                onClick={closeSidebar}
+                navLink
+              >
+                <FormattedMessage defaultMessage="Payment demo" id="Home / payment demo link" />
+              </Link>
+            </RoleAccess>
+
+            <RoleAccess>
+              <Link
+                className={menuItemClassName}
+                to={generateLocalePath(RoutesConfig.subscriptions.index)}
+                onClick={closeSidebar}
+                navLink
+              >
+                <FormattedMessage defaultMessage="My Subscription" id="Home / my subscriptions link" />
+              </Link>
+            </RoleAccess>
+
+            <RoleAccess>
+              <Link
+                className={menuItemClassName}
+                to={generateLocalePath(RoutesConfig.saasIdeas)}
+                onClick={closeSidebar}
+                navLink
+              >
+                <FormattedMessage defaultMessage="Generate SaaS ideas" id="Home / saas ideas link" />
+              </Link>
+            </RoleAccess>
+
+            <RoleAccess>
+              <Link
+                className={menuItemClassName}
                 to={generateLocalePath(RoutesConfig.demoItems)}
                 onClick={closeSidebar}
                 navLink
               >
                 <FormattedMessage defaultMessage="Demo Contentful items" id="Home / demo contentful items link" />
+              </Link>
+            </RoleAccess>
+
+            <RoleAccess>
+              <Link
+                className={menuItemClassName}
+                to={generateLocalePath(RoutesConfig.documents)}
+                onClick={closeSidebar}
+                navLink
+              >
+                <FormattedMessage defaultMessage="Documents" id="Home / documents link" />
               </Link>
             </RoleAccess>
 
@@ -138,50 +182,6 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
             >
               <FormattedMessage defaultMessage="Terms and conditions" id="Home / t&c link" />
             </Link>
-
-            <RoleAccess>
-              <Link
-                className={menuItemClassName}
-                to={generateLocalePath(RoutesConfig.finances.paymentConfirm)}
-                onClick={closeSidebar}
-                navLink
-              >
-                <FormattedMessage defaultMessage="Payment demo" id="Home / payment demo link" />
-              </Link>
-            </RoleAccess>
-
-            <RoleAccess>
-              <Link
-                className={menuItemClassName}
-                to={generateLocalePath(RoutesConfig.subscriptions.index)}
-                onClick={closeSidebar}
-                navLink
-              >
-                <FormattedMessage defaultMessage="My Subscription" id="Home / my subscriptions link" />
-              </Link>
-            </RoleAccess>
-
-            <RoleAccess>
-              <Link
-                className={menuItemClassName}
-                to={generateLocalePath(RoutesConfig.documents)}
-                onClick={closeSidebar}
-                navLink
-              >
-                <FormattedMessage defaultMessage="Documents" id="Home / documents link" />
-              </Link>
-            </RoleAccess>
-
-            <RoleAccess>
-              <Link
-                className={menuItemClassName}
-                to={generateLocalePath(RoutesConfig.saasIdeas)}
-                onClick={closeSidebar}
-                navLink
-              >
-                <FormattedMessage defaultMessage="Generate SaaS ideas" id="Home / saas ideas link" />
-              </Link>
-            </RoleAccess>
 
             {!isDesktop && (
               <RoleAccess>
