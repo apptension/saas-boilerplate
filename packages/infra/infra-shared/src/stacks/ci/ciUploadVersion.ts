@@ -3,7 +3,11 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codebuildActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -48,15 +52,10 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=core \
-                --filter=tools`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.CORE,
+              PnpmWorkspaceFilters.TOOLS
+            ),
           },
           build: {
             commands: [

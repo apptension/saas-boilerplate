@@ -1,3 +1,4 @@
+ARG BACKEND_BASE_IMAGE=python:3.11-slim-bullseye
 ##
 # Chamber installation stage
 ##
@@ -7,8 +8,7 @@ FROM segment/chamber:2 AS chamber
 ##
 # App build stage
 ##
-
-FROM python:3.11-slim-bullseye AS backend_build
+FROM $BACKEND_BASE_IMAGE AS backend_build
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off

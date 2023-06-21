@@ -5,6 +5,9 @@ on:
   push:
     branches: [ '**' ]
 
+env:
+  WORKERS_BASE_IMAGE: python:3.9-slim-bullseye
+
 jobs:
   build:
     runs-on: ubuntu-20.04

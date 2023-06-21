@@ -7,6 +7,9 @@ services:
       - ./packages/backend/docs:/app/docs
     environment:
       - CI=true
+    build:
+      args:
+        - BACKEND_BASE_IMAGE=${BACKEND_BASE_IMAGE}
 
   workers:
     volumes:
@@ -22,6 +25,9 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
+    build:
+      args:
+        - WORKERS_BASE_IMAGE=${WORKERS_BASE_IMAGE}
 
   e2e-tests:
     environment:
@@ -33,3 +39,6 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
+    build:
+      args:
+        - E2E_TESTS_BASE_IMAGE=${E2E_TESTS_BASE_IMAGE}
