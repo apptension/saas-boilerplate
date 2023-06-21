@@ -11,12 +11,7 @@
   "dependencies": {
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
-<<<<<<< HEAD
     "react-click-away-listener": "^2.2.2",
-=======
-    "graphql": "^16.6.0",
-    "lucide-react": "^0.224.0",
->>>>>>> cf40c973 (feat:#174 Improve notifications styles)
     "react-infinite-scroll-hook": "^4.0.4"
   },
   "peerDependencies": {
