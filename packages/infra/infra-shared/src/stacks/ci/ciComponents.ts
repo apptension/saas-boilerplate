@@ -72,7 +72,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
