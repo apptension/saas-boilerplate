@@ -1,3 +1,6 @@
+import { Input } from '@sb/webapp-core/components/forms';
+import { useTheme } from '@sb/webapp-core/hooks/useTheme';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent, StripeElementType } from '@stripe/stripe-js';
 import { ReactNode } from 'react';
@@ -10,21 +13,29 @@ import * as S from './newCardInput.styles';
 type StripeFieldProps = {
   children: ReactNode;
   label: string;
-  small?: boolean;
+  hasError?: boolean;
 };
 
-const StripeField = ({ children, label, small }: StripeFieldProps) => (
-  <S.StripeFieldContainer small={small}>
-    <S.StripeFieldLabel>{label}</S.StripeFieldLabel>
-    <S.StripeFieldElement>{children}</S.StripeFieldElement>
-  </S.StripeFieldContainer>
+const StripeField = ({ children, label, hasError }: StripeFieldProps) => (
+  <label>
+    <p
+      className={cn('text-xs font-medium', {
+        'text-red-500': hasError,
+      })}
+    >
+      {label}
+    </p>
+    <div>{children}</div>
+  </label>
 );
 
 type NewCardInputProps = {
   control: Control<PaymentFormFields>;
 };
+
 export const NewCardInput = ({ control }: NewCardInputProps) => {
   const intl = useIntl();
+  const { theme } = useTheme();
   const nameController = useController({
     name: 'paymentMethod.newCard.name',
     defaultValue: '',
@@ -113,8 +124,9 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
 
   return (
     <>
-      <S.Container>
-        <S.StripeNameField
+      <div className="space-y-6">
+        <Input
+          className="w-full max-w-none mb-3"
           {...nameController.field}
           required
           label={intl.formatMessage({
@@ -125,28 +137,55 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
             defaultMessage: 'Write here...',
             id: 'Stripe form / Name placeholder',
           })}
+          error={nameController.fieldState.error?.message?.toString()}
         />
 
-        <StripeField label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}>
-          <CardNumberElement
-            {...cardNumberController.field}
-            options={{ style: S.StripeIframeStyles, showIcon: true }}
-          />
-        </StripeField>
+        <div className="flex flex-row space-x-2">
+          <div className="flex-1">
+            <StripeField
+              label={intl.formatMessage({ defaultMessage: 'Card number', id: 'Stripe form / card number' })}
+              hasError={!!cardNumberController.fieldState.error?.message?.toString()}
+            >
+              <CardNumberElement
+                {...cardNumberController.field}
+                options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses, showIcon: true }}
+              />
+            </StripeField>
+          </div>
+          <div className="min-w-[90px] w-1/7">
+            <StripeField
+              label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}
+              hasError={!!cardExpiryController.fieldState.error?.message?.toString()}
+            >
+              <CardExpiryElement
+                {...cardExpiryController.field}
+                options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses }}
+              />
+            </StripeField>
+          </div>
+          <div className="min-w-[90px] w-1/7">
+            <StripeField
+              label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}
+              hasError={!!cardCvcController.fieldState.error?.message?.toString()}
+            >
+              <CardCvcElement
+                {...cardCvcController.field}
+                options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses }}
+              />
+            </StripeField>
+          </div>
+        </div>
+      </div>
 
-        <StripeField small label={intl.formatMessage({ defaultMessage: 'Year', id: 'Stripe form / expiry date' })}>
-          <CardExpiryElement {...cardExpiryController.field} options={{ style: S.StripeIframeStyles }} />
-        </StripeField>
-
-        <StripeField small label={intl.formatMessage({ defaultMessage: 'CVC', id: 'Stripe form / CVC' })}>
-          <CardCvcElement {...cardCvcController.field} options={{ style: S.StripeIframeStyles }} />
-        </StripeField>
-      </S.Container>
-
-      <S.ErrorMessage>{nameController.fieldState.error?.message?.toString()}</S.ErrorMessage>
-      <S.ErrorMessage>{cardNumberController.fieldState.error?.message?.toString()}</S.ErrorMessage>
-      <S.ErrorMessage>{cardExpiryController.fieldState.error?.message?.toString()}</S.ErrorMessage>
-      <S.ErrorMessage>{cardCvcController.fieldState.error?.message?.toString()}</S.ErrorMessage>
+      <div className="m-0 text-xs leading-3 text-red-500">
+        {cardNumberController.fieldState.error?.message?.toString()}
+      </div>
+      <div className="m-0 text-xs leading-3 text-red-500">
+        {cardExpiryController.fieldState.error?.message?.toString()}
+      </div>
+      <div className="m-0 text-xs leading-3 text-red-500">
+        {cardCvcController.fieldState.error?.message?.toString()}
+      </div>
     </>
   );
 };

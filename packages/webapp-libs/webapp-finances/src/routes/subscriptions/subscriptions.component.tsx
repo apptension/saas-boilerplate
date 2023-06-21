@@ -1,6 +1,5 @@
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Separator } from '@sb/webapp-core/components/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
 import { FormattedMessage } from 'react-intl';
 

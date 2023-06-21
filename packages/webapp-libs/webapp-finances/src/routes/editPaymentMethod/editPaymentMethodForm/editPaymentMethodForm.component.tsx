@@ -13,7 +13,6 @@ import {
   StripePaymentMethodSelector,
   useStripePaymentMethods,
 } from '../../../components/stripe';
-import { ErrorMessage } from '../../../components/stripe/stripePaymentForm/stripePaymentForm.styles';
 import { subscriptionActiveSubscriptionFragment } from '../../../hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
 
@@ -82,7 +81,7 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
           defaultSavedPaymentMethodId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
         />
 
-        {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+        {hasGenericErrorOnly && <div className="text-red-500">{genericError}</div>}
 
         <Button disabled={!form.formState.isValid || form.formState.isSubmitting} className="mt-2" type="submit">
           <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />

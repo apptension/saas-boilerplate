@@ -15,10 +15,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             className={cn(
-              `h-10 w-full border-input transition-all duration-200 ease-in rounded-md border border-input bg-transparent 
-              px-3 py-2 text-primary text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm 
-              file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 
-              focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+              `border-input border-input text-primary ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring h-10 w-full rounded-md border 
+              bg-transparent px-3 py-2 text-sm transition-all duration-200 ease-in file:border-0 
+              file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none 
+              focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
               {
                 'border-red-500': !!error,
               }
@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           {label && (
             <p
-              className={cn(`text-xs mb-1 order-first`, {
+              className={cn(`order-first mb-1 text-xs`, {
                 'text-red-500': !!error,
               })}
             >
@@ -36,7 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </p>
           )}
         </label>
-        <p className="leading-3 text-xs absolute m-0 top-[calc(100%+4px)] text-red-500">{error}</p>
+        <p className="absolute top-[calc(100%+4px)] m-0 text-xs leading-3 text-red-500">{error}</p>
       </div>
     );
   }

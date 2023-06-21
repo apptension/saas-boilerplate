@@ -1,8 +1,4 @@
-import {
-  Subscription,
-  SubscriptionPlanName,
-  Subscription as SubscriptionType,
-} from '@sb/webapp-api-client/api/subscription/types';
+import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
 import {
   paymentMethodFactory,
   subscriptionFactory,
@@ -18,7 +14,6 @@ import { Route, Routes } from 'react-router-dom';
 import { ActiveSubscriptionContext } from '../../../components/activeSubscriptionContext';
 import {
   fillActivePlanDetailsQuery,
-  fillAllPaymentsMethodsQuery,
   fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
@@ -91,16 +86,10 @@ describe('Subscriptions: Component', () => {
     const subscription = subscriptionFactory({
       defaultPaymentMethod: paymentMethodsMock[0],
     });
-    const requestAllPaymentMethodsMock = fillAllPaymentsMethodsQuery(paymentMethodsMock as Partial<Subscription>[]);
     const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscription, paymentMethodsMock);
 
     const { waitForApolloMocks } = render(<Component />, {
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat(
-          requestSubscriptionScheduleMock,
-          requestAllPaymentMethodsMock,
-          resolveActiveSubscriptionMocks()
-        ),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock),
     });
 
     await waitForApolloMocks();
