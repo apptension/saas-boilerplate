@@ -111,7 +111,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -222,7 +222,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,

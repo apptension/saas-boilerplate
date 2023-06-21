@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -217,11 +217,11 @@ importers:
         specifier: '*'
         version: link:../internal/tools
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       constructs:
         specifier: ^10.1.225
         version: 10.1.228
@@ -335,11 +335,11 @@ importers:
   packages/infra/infra-core:
     devDependencies:
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       constructs:
         specifier: ^10.1.225
         version: 10.1.228
@@ -367,7 +367,7 @@ importers:
     devDependencies:
       '@aws-cdk/aws-apigatewayv2-alpha':
         specifier: 2.66.0-alpha.0
-        version: 2.66.0-alpha.0(aws-cdk-lib@2.66.0)(constructs@10.1.228)
+        version: 2.66.0-alpha.0(aws-cdk-lib@2.84.0)(constructs@10.1.228)
       '@sb/core':
         specifier: '*'
         version: link:../../internal/core
@@ -375,14 +375,14 @@ importers:
         specifier: '*'
         version: link:../infra-core
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       cdk-ec2-key-pair:
         specifier: ^3.3.1
-        version: 3.3.1(aws-cdk-lib@2.66.0)(constructs@10.1.228)
+        version: 3.3.1(aws-cdk-lib@2.84.0)(constructs@10.1.228)
       constructs:
         specifier: ^10.1.225
         version: 10.1.228
@@ -454,11 +454,11 @@ importers:
         specifier: '*'
         version: link:../../webapp-libs/webapp-core
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       docusaurus-plugin-typedoc:
         specifier: ^0.19.2
         version: 0.19.2(typedoc-plugin-markdown@3.15.3)(typedoc@0.24.7)
@@ -558,11 +558,11 @@ importers:
         specifier: ^7.1.2
         version: 7.2.1(@testing-library/dom@8.20.0)
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       babel-plugin-styled-components:
         specifier: ^2.0.7
         version: 2.0.7(styled-components@5.3.6)
@@ -586,8 +586,8 @@ importers:
         specifier: ^0.28.22
         version: 0.28.22
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       plop:
         specifier: ^2.7.4
         version: 2.7.6
@@ -896,11 +896,11 @@ importers:
         specifier: ^0.28.4
         version: 0.28.4
       aws-cdk:
-        specifier: 2.66.0
-        version: 2.66.0
+        specifier: ^2.84.0
+        version: 2.84.0
       aws-cdk-lib:
-        specifier: 2.66.0
-        version: 2.66.0(constructs@10.1.228)
+        specifier: ^2.84.0
+        version: 2.84.0(constructs@10.1.228)
       aws-sdk:
         specifier: ^2.1246.0
         version: 2.1299.0
@@ -2696,26 +2696,26 @@ packages:
     dependencies:
       default-browser-id: 3.0.0
 
-  /@aws-cdk/asset-awscli-v1@2.2.75:
-    resolution: {integrity: sha512-O5E9ZdrNtx9Q8/KrVPjS9DdHbCsa2NsOURa+7eUnlD6n6K3oipPdiceeaUmznjyKhm8oYuHvxdr8qDluxPxGUg==}
+  /@aws-cdk/asset-awscli-v1@2.2.198:
+    resolution: {integrity: sha512-RfOMXFMyZ5Ca8ytB3/vs6srFH5HVV4M2JS9Wsb/uXPEpSblEmuf31iGVfN6Q+xRoNPm8icsquCRQ79JBqH4yjA==}
     dev: true
 
   /@aws-cdk/asset-kubectl-v20@2.1.1:
     resolution: {integrity: sha512-U1ntiX8XiMRRRH5J1IdC+1t5CE89015cwyt5U63Cpk0GnMlN5+h9WsWMlKlPXZR4rdq/m806JRlBMRpBUB2Dhw==}
     dev: true
 
-  /@aws-cdk/asset-node-proxy-agent-v5@2.0.64:
-    resolution: {integrity: sha512-pUG6YX1JTKTMca7YF8D+sCndDQvv5jOS9N+bvsrSVhS0LX499XdPOuKwnM4MZNGV9iEn8xqNlMJPYFdEp1nQaw==}
+  /@aws-cdk/asset-node-proxy-agent-v5@2.0.165:
+    resolution: {integrity: sha512-bsyLQD/vqXQcc9RDmlM1XqiFNO/yewgVFXmkMcQkndJbmE/jgYkzewwYGrBlfL725hGLQipXq19+jwWwdsXQqg==}
     dev: true
 
-  /@aws-cdk/aws-apigatewayv2-alpha@2.66.0-alpha.0(aws-cdk-lib@2.66.0)(constructs@10.1.228):
+  /@aws-cdk/aws-apigatewayv2-alpha@2.66.0-alpha.0(aws-cdk-lib@2.84.0)(constructs@10.1.228):
     resolution: {integrity: sha512-ekFNe220j0HJaeC0BntrZoIoO8oRWfaEDowkTVoCKzBaZcPrRoMQz6b6KjedZHd+zKh0HaYRZSqLrunzcfx0CA==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       aws-cdk-lib: ^2.66.0
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.66.0(constructs@10.1.228)
+      aws-cdk-lib: 2.84.0(constructs@10.1.228)
       constructs: 10.1.228
     dev: true
 
@@ -10184,7 +10184,7 @@ packages:
       '@types/jsonwebtoken': 9.0.1
       chalk: 4.1.2
       debug: 4.3.4(supports-color@8.1.1)
-      dotenv: 16.1.4
+      dotenv: 16.0.3
       graphql: 16.6.0
       graphql-request: 5.1.0(graphql@16.6.0)
       http-proxy-agent: 5.0.0
@@ -12276,7 +12276,7 @@ packages:
       node-dir: 0.1.17
       node-fetch: 2.6.8
       open: 7.4.2
-      semver: 7.3.8
+      semver: 7.5.2
       simple-git: 3.16.0(supports-color@8.1.1)
       type: 2.7.2
       uuid: 8.3.2
@@ -12779,7 +12779,7 @@ packages:
       esbuild-plugin-alias: 0.2.1
       express: 4.18.2
       find-cache-dir: 3.3.2
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       process: 0.11.10
       util: 0.12.5
     transitivePeerDependencies:
@@ -12813,7 +12813,7 @@ packages:
       browser-assert: 1.2.1
       es-module-lexer: 0.9.3
       express: 4.18.2
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       glob-promise: 6.0.2(glob@8.1.0)
       magic-string: 0.27.0
@@ -12963,7 +12963,7 @@ packages:
       esbuild-register: 3.4.2(esbuild@0.17.18)
       file-system-cache: 2.1.1
       find-up: 5.0.0
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 8.1.0
       glob-promise: 6.0.2(glob@8.1.0)
       handlebars: 4.7.7
@@ -13008,7 +13008,7 @@ packages:
       compression: 1.7.4
       detect-port: 1.5.1
       express: 4.18.2
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       globby: 11.1.0
       ip: 2.0.0
       lodash: 4.17.21
@@ -13017,7 +13017,7 @@ packages:
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
       read-pkg-up: 7.0.1
-      semver: 7.3.8
+      semver: 7.5.2
       serve-favicon: 2.5.0
       telejson: 7.1.0
       ts-dedent: 2.2.0
@@ -13048,7 +13048,7 @@ packages:
       '@babel/types': 7.21.5
       '@storybook/csf': 0.1.0
       '@storybook/types': 7.0.10
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       recast: 0.23.1
       ts-dedent: 2.2.0
     transitivePeerDependencies:
@@ -13098,7 +13098,7 @@ packages:
       memoizerific: 1.11.3
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      semver: 7.3.8
+      semver: 7.5.2
       store2: 2.14.2
       telejson: 7.1.0
       ts-dedent: 2.2.0
@@ -13315,7 +13315,7 @@ packages:
       chalk: 4.1.2
       detect-package-manager: 2.0.1
       fetch-retry: 5.0.3
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       isomorphic-unfetch: 3.1.0
       nanoid: 3.3.6
       read-pkg-up: 7.0.1
@@ -14824,7 +14824,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.3.8
+      semver: 7.5.2
       tsutils: 3.21.0(typescript@4.9.4)
       typescript: 4.9.4
     transitivePeerDependencies:
@@ -14845,7 +14845,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.3.8
+      semver: 7.5.2
       tsutils: 3.21.0(typescript@5.0.4)
       typescript: 5.0.4
     transitivePeerDependencies:
@@ -14887,7 +14887,7 @@ packages:
       eslint: 8.34.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0(eslint@8.34.0)
-      semver: 7.3.8
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -16040,24 +16040,25 @@ packages:
       - supports-color
     dev: false
 
-  /aws-cdk-lib@2.66.0(constructs@10.1.228):
-    resolution: {integrity: sha512-Qmw+lB8uFO+wJX8czw05ciUJObB5gJ5euOXYXXC9BuFPMy1WTA+HYqgSRvgv2mIEnjQb1zlG05oNalvH24Ha7Q==}
+  /aws-cdk-lib@2.84.0(constructs@10.1.228):
+    resolution: {integrity: sha512-4zLtCLCIs5Ia4WRGqiXRwxSkpGaNy3NxMexO9qYHSuIYpqf4sHObzZ0tDHZCFL5Wkui3sCu3OLQWrRHrr93HvA==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
-      '@aws-cdk/asset-awscli-v1': 2.2.75
+      '@aws-cdk/asset-awscli-v1': 2.2.198
       '@aws-cdk/asset-kubectl-v20': 2.1.1
-      '@aws-cdk/asset-node-proxy-agent-v5': 2.0.64
+      '@aws-cdk/asset-node-proxy-agent-v5': 2.0.165
       '@balena/dockerignore': 1.0.2
       case: 1.6.3
       constructs: 10.1.228
-      fs-extra: 9.1.0
+      fs-extra: 11.1.1
       ignore: 5.2.4
       jsonschema: 1.4.1
       minimatch: 3.1.2
       punycode: 2.3.0
-      semver: 7.3.8
+      semver: 7.5.2
+      table: 6.8.1
       yaml: 1.10.2
     dev: true
     bundledDependencies:
@@ -16069,10 +16070,11 @@ packages:
       - minimatch
       - punycode
       - semver
+      - table
       - yaml
 
-  /aws-cdk@2.66.0:
-    resolution: {integrity: sha512-UQ2NJsL+j1I8N0/rabORBC74Q84vZD+wK5K8tfX7a7hwCqqmon7TJ7c3lUsQgVGpbi66grcrDxmm4dXeB6cb0w==}
+  /aws-cdk@2.84.0:
+    resolution: {integrity: sha512-XypGsMW+H6DLLIPt4zG5KWv1FuUlpS6jqEROxg5maJFFsRaQnMkfgXP/ZT1IELyIWCYAZl6xD1rz7WRS3yMueA==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     optionalDependencies:
@@ -16726,7 +16728,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       bin-version: 6.0.0
-      semver: 7.3.8
+      semver: 7.5.2
       semver-truncate: 2.0.0
     dev: true
 
@@ -17289,13 +17291,13 @@ packages:
     resolution: {integrity: sha512-vlNK021QdI7PNeiUh/lKkC/mNHHfV0m/Ad5JoI0TYtlBnJAslM/JIkm/tGC88bkLIwO6OQ5uV6ztS6kVAtCDlg==}
     dev: false
 
-  /cdk-ec2-key-pair@3.3.1(aws-cdk-lib@2.66.0)(constructs@10.1.228):
+  /cdk-ec2-key-pair@3.3.1(aws-cdk-lib@2.84.0)(constructs@10.1.228):
     resolution: {integrity: sha512-CmGy2ebHK+sZYJmylERt5QnsmFm/4Kjuqc0A3DdWTu28j+foAAPF5KjzgwRcNerqnwys56MI4zjWgNBiyXUPpA==}
     peerDependencies:
       aws-cdk-lib: ^2.0.0
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.66.0(constructs@10.1.228)
+      aws-cdk-lib: 2.84.0(constructs@10.1.228)
       constructs: 10.1.228
     dev: true
 
@@ -18613,7 +18615,7 @@ packages:
       postcss-modules-scope: 3.0.0(postcss@8.4.23)
       postcss-modules-values: 4.0.0(postcss@8.4.23)
       postcss-value-parser: 4.2.0
-      semver: 7.3.8
+      semver: 7.5.2
       webpack: 5.75.0(@swc/core@1.3.27)
     dev: false
 
@@ -18630,7 +18632,7 @@ packages:
       postcss-modules-scope: 3.0.0(postcss@8.4.23)
       postcss-modules-values: 4.0.0(postcss@8.4.23)
       postcss-value-parser: 4.2.0
-      semver: 7.3.8
+      semver: 7.5.2
       webpack: 5.85.1(@swc/core@1.3.27)
     dev: true
 
@@ -21646,7 +21648,7 @@ packages:
   /file-system-cache@2.1.1:
     resolution: {integrity: sha512-vgZ1uDsK29DM4pptUOv47zdJO2tYM5M/ERyAE9Jk0QBN6e64Md+a+xJSOp68dCCDH4niFMVD8nC8n8A5ic0bmg==}
     dependencies:
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       ramda: 0.28.0
 
   /file-type@16.5.4:
@@ -21988,7 +21990,7 @@ packages:
       memfs: 3.4.13
       minimatch: 3.1.2
       schema-utils: 2.7.0
-      semver: 7.3.8
+      semver: 7.5.2
       tapable: 1.1.3
       typescript: 5.0.4
       webpack: 5.75.0(@swc/core@1.3.27)
@@ -22015,7 +22017,7 @@ packages:
       minimatch: 3.1.2
       node-abort-controller: 3.0.1
       schema-utils: 3.1.1
-      semver: 7.3.8
+      semver: 7.5.2
       tapable: 2.2.1
       typescript: 5.0.4
       webpack: 5.85.1(@swc/core@1.3.27)
@@ -22106,6 +22108,14 @@ packages:
 
   /fs-extra@11.1.0:
     resolution: {integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw==}
+    engines: {node: '>=14.14'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+
+  /fs-extra@11.1.1:
+    resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
     engines: {node: '>=14.14'}
     dependencies:
       graceful-fs: 4.2.10
@@ -25314,7 +25324,7 @@ packages:
       jest-util: 28.1.3
       natural-compare: 1.4.0
       pretty-format: 28.1.3
-      semver: 7.3.8
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -25345,7 +25355,7 @@ packages:
       jest-util: 29.5.0
       natural-compare: 1.4.0
       pretty-format: 29.5.0
-      semver: 7.3.8
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
 
@@ -25907,7 +25917,7 @@ packages:
       jws: 3.2.2
       lodash: 4.17.21
       ms: 2.1.3
-      semver: 7.3.8
+      semver: 7.5.2
 
   /jsprim@1.4.2:
     resolution: {integrity: sha512-P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw==}
@@ -27905,7 +27915,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.11.0
-      semver: 7.3.8
+      semver: 7.5.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -27944,7 +27954,7 @@ packages:
       fs2: 0.3.9
       memoizee: 0.4.15
       node-fetch: 2.6.8
-      semver: 7.3.8
+      semver: 7.5.2
       type: 2.7.2
       validate-npm-package-name: 3.0.0
     transitivePeerDependencies:
@@ -28040,7 +28050,7 @@ packages:
       fast-glob: 3.2.7
       figures: 3.2.0
       flat: 5.0.2
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       glob: 7.1.4
       ignore: 5.2.4
       js-yaml: 4.1.0
@@ -29288,7 +29298,7 @@ packages:
       cosmiconfig: 7.1.0
       klona: 2.0.6
       postcss: 8.4.23
-      semver: 7.3.8
+      semver: 7.5.2
       webpack: 5.85.1(@swc/core@1.3.27)
     dev: true
 
@@ -29302,7 +29312,7 @@ packages:
       cosmiconfig: 7.1.0
       klona: 2.0.6
       postcss: 8.4.21
-      semver: 7.3.8
+      semver: 7.5.2
       webpack: 5.75.0(@swc/core@1.3.27)
     dev: false
 
@@ -31751,6 +31761,13 @@ packages:
     dependencies:
       lru-cache: 6.0.0
 
+  /semver@7.5.2:
+    resolution: {integrity: sha512-SoftuTROv/cRjCze/scjGyiDtcUyxw1rgYQSZY7XTmtR5hX+dm76iDbTH8TkLPHCQmlbQVSSbNZCPM2hb0knnQ==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
@@ -33109,7 +33126,7 @@ packages:
       mime: 2.6.0
       qs: 6.11.0
       readable-stream: 3.6.0
-      semver: 7.3.8
+      semver: 7.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -33891,7 +33908,7 @@ packages:
       chalk: 4.1.2
       enhanced-resolve: 5.12.0
       micromatch: 4.0.5
-      semver: 7.3.8
+      semver: 7.5.2
       typescript: 5.0.4
       webpack: 5.85.1(@swc/core@1.3.27)
     dev: true
@@ -34552,7 +34569,7 @@ packages:
       is-yarn-global: 0.3.0
       latest-version: 5.1.0
       pupa: 2.1.1
-      semver: 7.3.8
+      semver: 7.5.2
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
     dev: false

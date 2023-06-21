@@ -67,7 +67,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });

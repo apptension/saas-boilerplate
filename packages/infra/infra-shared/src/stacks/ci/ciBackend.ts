@@ -99,7 +99,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -178,7 +178,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
@@ -241,7 +241,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
