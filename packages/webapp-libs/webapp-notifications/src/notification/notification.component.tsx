@@ -1,11 +1,9 @@
-import mailOpenOutlineIcon from '@iconify-icons/ion/mail-open-outline';
-import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
 import { NotificationType } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { RelativeDate } from '@sb/webapp-core/components/dateTime/relativeDate';
-import { Icon } from '@sb/webapp-core/components/icons';
 import { H4, Small } from '@sb/webapp-core/components/typography';
 import { cn } from '@sb/webapp-core/lib/utils';
+import { Bell, Mail, MailOpen } from 'lucide-react';
 import { ReactNode } from 'react';
 
 import { useToggleIsRead } from './notification.hooks';
@@ -62,20 +60,31 @@ export const Notification = ({
         }
       }}
     >
-      {hasAvatar && <img src={avatar} alt="" className="m-1 rounded-full w-6 h-6 object-cover" />}
+      {hasAvatar ? (
+        <img
+          src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg"
+          alt=""
+          className="mr-3 rounded-full w-10 h-10 object-cover"
+        />
+      ) : (
+        <div className="flex items-center justify-center p-3 h-10 w-10 dark:bg-muted-foreground bg-slate-300 rounded-full mr-3">
+          <Bell />
+        </div>
+      )}
       <div className="flex flex-col w-full">
+        <H4 className="text-sm">{title}</H4>
+        <p className="mt-1 text-xs">{content}</p>
         <div className="flex flex-row justify-between items-center">
-          <Small className="text-xs">
+          <Small className="text-xs text-muted-foreground">
             <RelativeDate date={new Date(createdAt as string)} />
           </Small>
-          <Button className="p-1 h-6" variant={ButtonVariant.GHOST} onClick={onToggleIsRead}>
-            <Icon size={16} icon={isRead ? mailOpenOutlineIcon : mailOutlineIcon} />
-          </Button>
         </div>
-        <H4 className="text-sm">{title}</H4>
-        <p className="mt-1 text-sm">{content}</p>
+
         {children && <footer className="flex flex-row flex-wrap items-start mt-2 gap-2">{children}</footer>}
       </div>
+      <Button className="p-1 h-6" variant={ButtonVariant.GHOST} onClick={onToggleIsRead}>
+        {isRead ? <MailOpen size={16} /> : <Mail size={16} />}
+      </Button>
     </li>
   );
 };

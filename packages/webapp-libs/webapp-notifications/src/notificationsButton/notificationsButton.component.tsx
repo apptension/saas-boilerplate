@@ -1,8 +1,6 @@
-import mailOutlineIcon from '@iconify-icons/ion/mail-outline';
-import mailUnreadOutlineIcon from '@iconify-icons/ion/mail-unread-outline';
 import { FragmentType, getFragmentData, gql } from '@sb/webapp-api-client/graphql';
 import { ButtonProps } from '@sb/webapp-core/components/buttons';
-import { Icon } from '@sb/webapp-core/components/icons';
+import { Mail, MailPlus } from 'lucide-react';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 
@@ -44,7 +42,7 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
         {...props}
         ref={ref}
       >
-        <Icon icon={hasUnreadNotifications ? mailUnreadOutlineIcon : mailOutlineIcon} />
+        {hasUnreadNotifications ? <MailPlus /> : <Mail />}
       </Button>
     );
   }
