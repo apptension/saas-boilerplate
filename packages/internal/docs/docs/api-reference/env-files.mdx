@@ -5,7 +5,7 @@ description: Description of the .env files
 
 Below you can find a list of different `.env` files used in the project along with description of it's content.
 
-### Common values used in `.env`, `.env.shared` and `.env.{env-id}` files:
+### Common values used in `.env`, `.env.shared` files:
 
 :::info
 `SB_HOSTED_ZONE_ID` and `SB_HOSTED_ZONE_NAME` can be skipped if you are using externally managed DNS. In that case,
@@ -53,22 +53,6 @@ Content of this file doesn't contain any additional values other than
 [common values](#common-values-used-in-env-envshared-and-envenv-id-files) described above.
 
 :::
-
-### `.env.{env-id}`
-
-File contains configuration of the specific environment with the `{env-id}` id.
-
-Apart from the [common values](#common-values-used-in-env-envshared-and-envenv-id-files) this file should contain
-following values:
-
-| Name                               | Description                                                                                                                                                  | Example                        |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
-| `SB_DEPLOY_BRANCHES`               | A list of branches that will trigger automatic deployment of the environment                                                                                 | `master`                       |
-| `SB_BASIC_AUTH`                    | Basic Auth configuration for the environment                                                                                                                 | `username:password`            |
-| `SB_CLOUDFRONT_CERTIFICATE_ARN`    | ARN of already generated certificate that should be attached to CloudFront distribution. This certificate needs to be generated in us-east-1 region.         |                                |
-| `SB_LOAD_BALANCER_CERTIFICATE_ARN` | ARN of already generated certificate that should be attached to Load Balancer. This certificate needs to be generated in the same region as the application. |                                |
-| `SB_CERTIFICATE_DOMAIN`            | The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name                                                | `env.example.com`              |
-| `VITE_SUBSCRIPTIONS_URL`           | An websocket endpoint for web application to connect used for subscriptions                                                                                  | `wss://app.env.example.com/ws` |
 
 ### `.env.test`
 

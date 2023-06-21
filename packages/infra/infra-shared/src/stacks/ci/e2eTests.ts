@@ -4,10 +4,9 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cc from 'aws-cdk-lib/aws-codecommit';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface E2ETestsCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -41,13 +40,6 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
     const dockerAssumeRole = new iam.Role(this, 'BuildDockerAssume', {
       assumedBy: new iam.AccountRootPrincipal(),
     });
-    dockerAssumeRole.addToPolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
 
     const basicAuth = props.envSettings.appBasicAuth?.split(':');
 
@@ -68,14 +60,15 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
           },
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=e2e-tests^...`,
             ],
           },
-          build: { commands: ['nx run e2e-tests:test'] },
+          build: { commands: ['pnpm nx run e2e-tests:test'] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -111,6 +104,20 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
           : {}),
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
+    });
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
     });
 
     project.addToRolePolicy(

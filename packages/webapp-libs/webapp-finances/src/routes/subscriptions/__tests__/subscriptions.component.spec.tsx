@@ -21,12 +21,12 @@ import {
 import { render } from '../../../tests/utils/rendering';
 import { Subscriptions } from '../subscriptions.component';
 
-const defaultPaymentPlan = [paymentMethodFactory()];
+const paymentMethodsMock = [paymentMethodFactory()];
 
 const defaultActivePlan = {
-  id: defaultPaymentPlan[0].id,
+  id: paymentMethodsMock[0].id,
   defaultPaymentMethod: {
-    id: defaultPaymentPlan[0].id,
+    id: paymentMethodsMock[0].id,
   },
 };
 
@@ -83,12 +83,16 @@ describe('Subscriptions: Component', () => {
   });
 
   it('should render default payment method', async () => {
-    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory(), defaultPaymentPlan);
-
-    render(<Component />, {
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat(requestSubscriptionScheduleMock, resolveActiveSubscriptionMocks()),
+    const subscription = subscriptionFactory({
+      defaultPaymentMethod: paymentMethodsMock[0],
     });
+    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscription, paymentMethodsMock);
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock),
+    });
+
+    await waitForApolloMocks();
 
     await userEvent.click(await screen.findByText('Payment methods'));
 

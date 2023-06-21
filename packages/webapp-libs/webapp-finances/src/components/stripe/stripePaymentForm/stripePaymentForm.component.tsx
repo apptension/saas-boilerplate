@@ -23,14 +23,13 @@ export type StripePaymentFormProps = {
 
 export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
   const intl = useIntl();
-  const { onSubmit, apiFormControls, loading } = useStripePaymentForm(onSuccess);
-
   const {
-    form: { formState, watch },
-    form,
-  } = apiFormControls;
+    onSubmit,
+    apiFormControls: { form, hasGenericErrorOnly, genericError },
+    loading,
+  } = useStripePaymentForm(onSuccess);
 
-  const amountValue = watch('product');
+  const amountValue = form.watch('product');
 
   return (
     <Form {...form}>
@@ -89,10 +88,12 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
         />
 
         <div className="mt-3">
-          <StripePaymentMethodSelector formControls={apiFormControls} />
+          <StripePaymentMethodSelector control={form.control} />
         </div>
 
-        <Button type="submit" disabled={!formState.isValid || formState.isSubmitting || loading}>
+        {hasGenericErrorOnly && <div className="text-red-500">{genericError}</div>}
+
+        <Button type="submit" disabled={!form.formState.isValid || form.formState.isSubmitting || loading}>
           <FormattedMessage
             values={{ amount: amountValue ? `${amountValue} USD` : '' }}
             defaultMessage="Pay {amount}"

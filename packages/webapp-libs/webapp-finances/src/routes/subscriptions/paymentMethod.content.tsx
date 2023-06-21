@@ -21,9 +21,7 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
   const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, data?.activeSubscription);
 
   const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);
-  const defaultMethod =
-    (activeSubscription && paymentMethods.find(({ id }) => id === activeSubscription.defaultPaymentMethod?.id)) ||
-    paymentMethods[0];
+  const defaultMethod = paymentMethods.find(({ id }) => id === activeSubscription?.defaultPaymentMethod?.id);
 
   const renderCardDetails = () => (
     <Card>

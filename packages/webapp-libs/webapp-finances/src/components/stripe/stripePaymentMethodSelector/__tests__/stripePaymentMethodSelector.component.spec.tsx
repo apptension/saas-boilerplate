@@ -15,7 +15,7 @@ const StripePaymentMethodSelectorWithControls = () => {
   const formControls = useApiForm<PaymentFormFields>();
   return (
     <Form {...formControls.form}>
-      <StripePaymentMethodSelector formControls={formControls} />
+      <StripePaymentMethodSelector control={formControls.form.control} />
     </Form>
   );
 };

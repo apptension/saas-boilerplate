@@ -19,7 +19,7 @@
       "options": {
         "cwd": "packages/webapp-libs/webapp-emails",
         "color": true,
-        "command": "nx run tools:chamber-exec webapp nx run webapp-emails:build-vite"
+        "command": "pnpm nx run tools:chamber-exec webapp nx run webapp-emails:build-vite"
       }
     }
   },

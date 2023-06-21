@@ -3,10 +3,9 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codebuildActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface UploadVersionCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -50,7 +49,8 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -60,7 +60,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              'nx run tools:upload-version migrations,api,workers,webapp',
+              'pnpm nx run tools:upload-version migrations,api,workers,webapp',
             ],
           },
         },
@@ -72,6 +72,14 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

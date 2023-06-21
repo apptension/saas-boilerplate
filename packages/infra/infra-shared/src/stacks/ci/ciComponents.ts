@@ -13,10 +13,9 @@ import {
 } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Artifact, IStage } from 'aws-cdk-lib/aws-codepipeline';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -60,14 +59,15 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=infra-shared...`,
             ],
           },
-          build: { commands: ['nx run infra-shared:deploy:components'] },
+          build: { commands: ['pnpm nx run infra-shared:deploy:components'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -88,6 +88,14 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         ],
       })
     );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new PolicyStatement({

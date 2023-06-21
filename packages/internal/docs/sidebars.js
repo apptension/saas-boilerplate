@@ -165,9 +165,10 @@ module.exports = {
             id: 'aws/deploy-to-aws/index',
           },
           items: [
-            'aws/deploy-to-aws/create-env-stage-in-repo',
             'aws/deploy-to-aws/configure-aws-credentials',
             'aws/deploy-to-aws/configure-hosted-zone',
+            'aws/deploy-to-aws/create-env-stage-in-repo',
+            'aws/deploy-to-aws/deploy-infrastructure',
             'aws/deploy-to-aws/create-runtime-env-vars',
             'aws/deploy-to-aws/run-deployment-commands',
           ],

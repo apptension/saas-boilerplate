@@ -4,10 +4,9 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import {
-  EnvConstructProps,
-  ServiceCiConfig,
-} from '@sb/infra-core';
+import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface DocsCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -61,21 +60,22 @@ export class DocsCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: DocsCiConfigProps) {
-    return new codebuild.Project(this, 'DocsBuildProject', {
+    const project = new codebuild.Project(this, 'DocsBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-docs`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=docs...`,
             ],
           },
-          build: { commands: ['nx run docs:build'] },
+          build: { commands: ['pnpm nx run docs:build'] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -98,6 +98,16 @@ export class DocsCiConfig extends ServiceCiConfig {
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    return project;
   }
 
   private createDeployAction(
@@ -121,14 +131,15 @@ export class DocsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=docs...`,
             ],
           },
-          build: { commands: ['nx run docs:deploy'] },
+          build: { commands: ['pnpm nx run docs:deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -149,6 +160,14 @@ export class DocsCiConfig extends ServiceCiConfig {
         ],
       })
     );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

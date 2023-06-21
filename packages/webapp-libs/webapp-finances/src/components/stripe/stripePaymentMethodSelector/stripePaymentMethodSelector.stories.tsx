@@ -19,11 +19,11 @@ import { PaymentFormFields } from './stripePaymentMethodSelector.types';
 const Template: StoryFn<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
   args: StripePaymentMethodSelectorProps<PaymentFormFields>
 ) => {
-  const formControls = useApiForm<PaymentFormFields>();
+  const { form } = useApiForm<PaymentFormFields>();
   return (
-    <Form {...formControls.form}>
+    <Form {...form}>
       <Elements stripe={stripePromise}>
-        <StripePaymentMethodSelector {...args} formControls={formControls} />
+        <StripePaymentMethodSelector {...args} control={form.control} />
       </Elements>
     </Form>
   );

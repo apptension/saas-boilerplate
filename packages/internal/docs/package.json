@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "private": true,
   "scripts": {
     "docusaurus": "nx exec -- docusaurus",
@@ -31,8 +31,6 @@
     "@sb/webapp-core": "*",
     "@sb/webapp-api-client": "*",
     "@sb/tools": "*",
-    "@types/react": "^18.0.24",
-    "@types/react-dom": "^18.0.8",
     "aws-cdk": "2.66.0",
     "aws-cdk-lib": "2.66.0",
     "typedoc": "^0.24.7",

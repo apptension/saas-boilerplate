@@ -7,3 +7,4 @@ source = /app
 
 [report]
 include = apps/*, common/*
+omit = */migrations/**, */tests/**

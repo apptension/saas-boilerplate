@@ -18,8 +18,10 @@ export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupInten
     onError: (error) => onError(error.graphQLErrors),
   });
 
-  const createSetupIntent = () => {
-    if (!data?.createSetupIntent?.setupIntent) commitCreateSetupIntentMutation({ variables: { input: {} } });
+  const createSetupIntent = async () => {
+    if (!data?.createSetupIntent?.setupIntent) {
+      await commitCreateSetupIntentMutation({ variables: { input: {} } });
+    }
   };
 
   return { createSetupIntent };
@@ -40,9 +42,9 @@ export const useStripeCardSetup = () => {
     }
 
     if (paymentMethod.type === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD) {
-      if (paymentMethod.data.type === (StripePaymentMethodType.Card as string)) {
+      if (paymentMethod.savedPaymentMethod.type === StripePaymentMethodType.Card.toString()) {
         return await stripe.confirmCardSetup(setupIntent.clientSecret, {
-          payment_method: paymentMethod.data.id,
+          payment_method: paymentMethod.savedPaymentMethod.id,
         });
       }
 
@@ -60,7 +62,7 @@ export const useStripeCardSetup = () => {
         return await stripe.confirmCardSetup(setupIntent.clientSecret, {
           payment_method: {
             card,
-            billing_details: { name: paymentMethod.data?.name },
+            billing_details: { name: paymentMethod.newCard?.name },
           },
         });
       }

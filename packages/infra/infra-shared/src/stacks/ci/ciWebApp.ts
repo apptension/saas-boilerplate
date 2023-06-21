@@ -5,6 +5,8 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import { BootstrapStack } from '../bootstrap';
+import { EnvMainStack } from '../main';
 
 interface WebAppCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -75,8 +77,8 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'go get github.com/segmentio/chamber',
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
@@ -85,9 +87,9 @@ export class WebappCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              'nx run webapp:lint',
-              'nx run webapp:test --watchAll=false',
-              'nx run webapp:build',
+              'pnpm nx run webapp:lint',
+              'pnpm nx run webapp:test --watchAll=false',
+              'pnpm nx run webapp:build',
             ],
           },
         },
@@ -113,13 +115,13 @@ export class WebappCiConfig extends ServiceCiConfig {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
-    project.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['kms:*', 'ssm:*'],
-        resources: ['*'],
-      })
-    );
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     return project;
   }
@@ -145,14 +147,15 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: [
-              'npm i -g nx@^15.4.5 pnpm@^8.6.1',
+              'go install github.com/segmentio/chamber/v2@latest',
+              'npm i -g pnpm@^8.6.1',
               `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile \
                 --filter=webapp...`,
             ],
           },
-          build: { commands: ['nx run webapp:deploy'] },
+          build: { commands: ['pnpm nx run webapp:deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -162,6 +165,14 @@ export class WebappCiConfig extends ServiceCiConfig {
       environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings
+    ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
       new iam.PolicyStatement({

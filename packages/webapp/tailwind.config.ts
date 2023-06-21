@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { createGlobPatternsForDependencies } from '@nrwl/react/tailwind';
+import { createGlobPatternsForDependencies } from '@nx/react/tailwind';
 import { Config } from 'tailwindcss';
 
 const packagesDir = __dirname.replace('/webapp', '');

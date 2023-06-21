@@ -1,0 +1,27 @@
+---
+description: Steps required to deploy SaaS Boilerplate infrastructure on AWS
+---
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Step 4: Deploy infrastructure
+
+
+## Switch context to proper environment stage
+
+Run the following command that will switch context to specific environment stage.
+
+```shell
+make set-env ENV_STAGE=qa
+```
+
+
+
+## Deploy the infrastructure
+
+Deploy an actual infrastructure of your app by running following command:
+
+```shell
+make deploy-env-infra
+```
+
+This command will run CDK deployment of all environment specific infrastructure components like: database, CI/CD.
