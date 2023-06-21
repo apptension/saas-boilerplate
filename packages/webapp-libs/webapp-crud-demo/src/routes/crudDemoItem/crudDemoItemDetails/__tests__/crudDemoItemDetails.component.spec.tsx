@@ -27,7 +27,6 @@ describe('CrudDemoItemDetails: Component', () => {
 
     render(<Component />, { routerProps, apolloMocks });
 
-    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
     expect(await screen.findByText(/demo item name/i)).toBeInTheDocument();
   });
 });

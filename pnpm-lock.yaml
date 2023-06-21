@@ -1184,6 +1184,9 @@ importers:
       '@types/node':
         specifier: ^18.15.10
         version: 18.15.10
+      lucide-react:
+        specifier: ^0.224.0
+        version: 0.224.0(react@18.2.0)
       msw:
         specifier: ^1.0.0
         version: 1.0.0(typescript@4.8.4)

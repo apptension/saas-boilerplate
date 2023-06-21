@@ -1,12 +1,11 @@
 import { DemoItemQueryQuery } from '@sb/webapp-api-client/graphql';
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-import { RoutesConfig } from '../../config/routes';
 import { imageProps } from '../../helpers/image';
-import { Container, Description, Image, Title } from './demoItem.styles';
 
 type DemoItemContentProps = {
   data: DemoItemQueryQuery;
@@ -28,11 +27,10 @@ export const DemoItemContent: FC<DemoItemContentProps> = ({ data, routesConfig }
   }, [routesConfig.notFound, generateLocalePath, navigate, item]);
 
   return (
-    <Container>
-      <BackButton to={generateLocalePath(RoutesConfig.demoItems)} />
-      <Title>{item?.title}</Title>
-      <Description>{item?.description}</Description>
-      {item?.image && <Image {...imageProps(item.image)} />}
-    </Container>
+    <PageLayout>
+      <PageHeadline hasBackButton header={item?.title} />
+      <p className="text-base">{item?.description}</p>
+      {item?.image && <img className="max-w-[100%] object-cover" {...imageProps(item.image)} />}
+    </PageLayout>
   );
 };

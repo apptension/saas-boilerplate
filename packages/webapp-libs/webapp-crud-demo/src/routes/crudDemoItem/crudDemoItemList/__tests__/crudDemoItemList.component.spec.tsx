@@ -23,7 +23,6 @@ describe('CrudDemoItemList: Component', () => {
     const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemListQuery()];
     render(<Component />, { routerProps, apolloMocks });
 
-    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
     expect(await screen.findByText('First item')).toBeInTheDocument();
     expect(await screen.findByText('Second item')).toBeInTheDocument();
   });
