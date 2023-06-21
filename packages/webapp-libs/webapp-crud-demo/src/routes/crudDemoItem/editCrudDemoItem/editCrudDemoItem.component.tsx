@@ -1,5 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -39,9 +42,22 @@ export const EditCrudDemoItem = () => {
 
   if (loading)
     return (
-      <div className="py-4 px-12">
-        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </div>
+      <PageLayout>
+        <div className="flex w-[100%] justify-between items-center">
+          <Skeleton className="h-4 w-[50%]" />
+          <Skeleton className="h-6 w-8" />
+        </div>
+        <Separator />
+        <div className="flex flex-col">
+          <div className="mt-6">
+            <Skeleton className="h-8 w-48 mb-4" />
+            <div className="flex gap-4">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+          </div>
+        </div>
+      </PageLayout>
     );
   if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
@@ -49,13 +65,12 @@ export const EditCrudDemoItem = () => {
     commitEditCrudDemoItemMutation({ variables: { input: { id: crudDemoItem.id, name: formData.name } } });
   };
   return (
-    <div className="py-4 px-12">
-      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <h1 className="text-2xl mb-3 leading-6 font-bold">
-        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
-      </h1>
-
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />}
+      />
       <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
-    </div>
+    </PageLayout>
   );
 };
