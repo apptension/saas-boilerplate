@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/alert';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
 import { Separator } from '@sb/webapp-core/components/separator';
@@ -74,7 +75,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               </Link>
             </div>
 
-            <nav className="-mx-2 flex flex-col gap-y-1">
+            <nav className="-mx-2 flex grow flex-col gap-y-1">
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
@@ -181,6 +182,28 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 <FormattedMessage defaultMessage="Terms and conditions" id="Home / t&c link" />
               </Link>
             </nav>
+            <Alert variant="info">
+              <AlertTitle className="text-sm">
+                SaaS Boilerplate by{' '}
+                <a href="https://apptension.com" target="_blank" rel="noreferrer">
+                  Apptension
+                </a>
+              </AlertTitle>
+              <AlertDescription>
+                <a
+                  target="_blank"
+                  className="underline"
+                  href="https://github.com/apptension/saas-boilerplate"
+                  rel="noreferrer"
+                >
+                  GitHub repository
+                </a>
+                <br />
+                <a target="_blank" className="underline" href="https://docs.demo.saas.apptoku.com/" rel="noreferrer">
+                  Documentation
+                </a>
+              </AlertDescription>
+            </Alert>
           </div>
           <nav className="-mx-2 flex flex-col gap-y-1 px-6 pb-2">
             {!isDesktop && (
