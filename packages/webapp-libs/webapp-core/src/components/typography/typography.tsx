@@ -50,7 +50,7 @@ export const Paragraph = forwardRef<HTMLParagraphElement, ParagraphProps>(
       <p
         {...props}
         ref={ref}
-        className={cn(`leading-7 ${firstChildMargin ? '[&:not(:first-child)]:mt-6' : ''}`, className)}
+        className={cn({ '[&:not(:first-child)]:mt-6': firstChildMargin }, 'leading-7', className)}
       >
         {children}
       </p>
@@ -64,7 +64,7 @@ export const ParagraphBold = forwardRef<HTMLParagraphElement, ParagraphProps>(
       <p
         ref={ref}
         {...props}
-        className={cn(`font-semibold leading-7 ${firstChildMargin ? '[&:not(:first-child)]:mt-6' : ''}`, className)}
+        className={cn({ '[&:not(:first-child)]:mt-6': firstChildMargin }, 'font-semibold leading-7', className)}
       >
         {children}
       </p>
