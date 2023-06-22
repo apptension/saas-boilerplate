@@ -25,11 +25,8 @@ export const Header = (props: HeaderProps) => {
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
 
   return (
-    <header
-      {...props}
-      className={cn('sticky top-0 z-10 border-b bg-primary-foreground/80 backdrop-blur-sm', props.className)}
-    >
-      <div className="flex h-16 flex-row items-center justify-end gap-x-6 px-8">
+    <header {...props} className={cn('sticky top-0 z-10 border-b bg-background/80 backdrop-blur-sm', props.className)}>
+      <div className="flex h-16 flex-row items-center justify-end gap-x-4 px-8">
         {isSidebarAvailable && (
           <div
             className="block w-6 cursor-pointer justify-self-start lg:hidden"
