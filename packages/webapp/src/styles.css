@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    --font-sans: Inter Regular, Helvetica, Arial, sans-serif;
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
@@ -76,6 +77,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
