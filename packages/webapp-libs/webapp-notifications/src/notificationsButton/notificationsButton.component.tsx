@@ -1,10 +1,8 @@
 import { FragmentType, getFragmentData, gql } from '@sb/webapp-api-client/graphql';
-import { ButtonProps } from '@sb/webapp-core/components/buttons';
+import { Button, ButtonProps } from '@sb/webapp-core/components/buttons';
 import { Bell, BellDot } from 'lucide-react';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
-
-import { Button } from './notificationsButton.styles';
 
 export const NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT = gql(/* GraphQL */ `
   fragment notificationsButtonContent on Query {
