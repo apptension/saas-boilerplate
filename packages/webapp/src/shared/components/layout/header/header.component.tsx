@@ -4,7 +4,7 @@ import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
-import { Menu, Sun } from 'lucide-react';
+import { Menu, Sun , LogOut, User } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -76,12 +76,14 @@ export const Header = (props: HeaderProps) => {
                   />
                 </PopoverTrigger>
 
-                <PopoverContent asChild align="end" side="bottom" sideOffset={24}>
+                <PopoverContent className="w-48 p-2" asChild align="end" side="bottom" sideOffset={24}>
                   <div className="top-10 flex flex-col overflow-hidden rounded">
                     <ButtonLink
                       onClick={userDropdown.close}
                       to={generateLocalePath(RoutesConfig.profile)}
                       variant={ButtonVariant.GHOST}
+                      icon={<User size={20} />}
+                      className="justify-start"
                     >
                       <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
                     </ButtonLink>
@@ -89,6 +91,8 @@ export const Header = (props: HeaderProps) => {
                       onClick={userDropdown.close}
                       to={generateLocalePath(RoutesConfig.logout)}
                       variant={ButtonVariant.GHOST}
+                      className="justify-start"
+                      icon={<LogOut size={20} />}
                     >
                       <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
                     </ButtonLink>

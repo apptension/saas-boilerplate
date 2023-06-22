@@ -4,6 +4,7 @@ import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { H4 } from '@sb/webapp-core/components/typography';
+import { CheckCheck } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { ElementType } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
@@ -38,7 +39,12 @@ export const NotificationsList = (props: NotificationsListProps) => {
         <H4 className="text-base">
           <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
         </H4>
-        <Button className="mx-0" variant={ButtonVariant.GHOST} onClick={markAllAsRead}>
+        <Button
+          icon={<CheckCheck size={16} />}
+          className="mx-0 text-xs text-muted-foreground"
+          variant={ButtonVariant.GHOST}
+          onClick={markAllAsRead}
+        >
           <FormattedMessage
             defaultMessage="Mark all as read"
             id="Notifications / Notifications List / Mark all as read button"
@@ -46,7 +52,7 @@ export const NotificationsList = (props: NotificationsListProps) => {
         </Button>
       </div>
       <Separator orientation="horizontal" className="my-2" />
-      <div className="grid-cols-1 w-full">
+      <div className="grid-cols-1 w-full overflow-y-scroll max-h-96">
         {props.loading ? (
           <div className="flex w-full flex-col gap-4">
             <Skeleton className="h-16" data-testid="Skeleton" />

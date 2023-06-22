@@ -1,7 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { NotificationType } from '@sb/webapp-api-client';
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { GraphQLError } from 'graphql';
 import { times } from 'ramda';
 
 import { NotificationTypes } from '../../';
@@ -9,6 +12,7 @@ import { notificationsListQuery } from '../../notifications.graphql';
 import { fillNotificationsListQuery, notificationFactory } from '../../tests/factories';
 import { render } from '../../tests/utils/rendering';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
+import { notificationsListMarkAsReadMutation } from '../notificationsList.graphql';
 
 const NotificationMock = ({ type }: NotificationType) => {
   return <span>notification-mock: {type}</span>;
@@ -23,7 +27,6 @@ describe('NotificationsList: Component', () => {
           [NotificationTypes.CRUD_ITEM_CREATED]: NotificationMock,
           [NotificationTypes.CRUD_ITEM_UPDATED]: NotificationMock,
         }}
-        isOpen
         onLoadMore={() => null}
         loading={loading}
         queryResult={data}
@@ -70,7 +73,8 @@ describe('NotificationsList: Component', () => {
     await waitForApolloMocks(0);
 
     expect(screen.getAllByTestId('Skeleton')).toHaveLength(2);
-    expect(await screen.findByText('Mark all as read')).toBeInTheDocument();
+    const t = await screen.findByText('Mark all as read');
+    expect(t).toBeInTheDocument();
     expect(await screen.findAllByText(/notification-mock/i)).toHaveLength(notifications.length);
   });
 
@@ -82,5 +86,25 @@ describe('NotificationsList: Component', () => {
     renderWithNotifications([...correctNotifications, malformedNotification], { hasUnreadNotifications: false });
 
     expect(await screen.findAllByText(/notification-mock/i)).toHaveLength(correctNotifications.length);
+  });
+
+  it('should render toast after click Mark all as read button', async () => {
+    const mutationMock = composeMockedQueryResult(notificationsListMarkAsReadMutation, {
+      data: { markReadAllNotifications: { ok: true } },
+      variables: {
+        input: {},
+      },
+    });
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mutationMock),
+    });
+
+    await waitForApolloMocks(0);
+    await userEvent.click(await screen.findByText('Mark all as read'));
+    await waitForApolloMocks();
+
+    expect(await screen.findByText('All notifications marked as read.')).toBeInTheDocument();
+    expect(await screen.findByText('No notifications')).toBeInTheDocument();
   });
 });
