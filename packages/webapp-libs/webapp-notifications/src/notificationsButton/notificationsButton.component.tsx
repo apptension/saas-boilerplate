@@ -34,6 +34,8 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
 
     return (
       <Button
+        variant="ghost"
+        className="h-10 w-10 rounded-full px-0"
         data-unread={hasUnreadNotifications}
         aria-label={intl.formatMessage({
           defaultMessage: 'Open notifications',
