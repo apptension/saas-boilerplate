@@ -1,6 +1,7 @@
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime/formattedDate';
+import { TableCell, TableRow } from '@sb/webapp-core/components/table';
 import { useIntl } from 'react-intl';
 
 import { useSubscriptionPlanDisplayName } from '../../../../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.hook';
@@ -9,7 +10,6 @@ import {
   SUBSCRIPTION_PLAN_ITEM_FRAGMENT,
 } from '../../../../routes/subscriptions/subscriptions.graphql';
 import { StripePaymentMethodInfo } from '../../stripePaymentMethodInfo';
-import { Amount, Card, Container, Details, TransactionDate } from './transactionHistoryEntry.styles';
 
 export type TransactionHistoryEntryProps = {
   entry: FragmentType<typeof STRIPE_CHARGE_FRAGMENT>;
@@ -37,11 +37,11 @@ export const TransactionHistoryEntry = ({ entry, className }: TransactionHistory
   );
 
   return (
-    <Container className={className}>
-      <TransactionDate>{data.created && <FormattedDate value={data.created.toString()} />}</TransactionDate>
-      <Details>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</Details>
-      <Card>{data.paymentMethod && <StripePaymentMethodInfo method={data.paymentMethod} />}</Card>
-      <Amount>{data.amount} USD</Amount>
-    </Container>
+    <TableRow className={className}>
+      <TableCell>{data.created && <FormattedDate value={data.created.toString()} />}</TableCell>
+      <TableCell>{entryProductName ? subscriptionPaymentDescription : noInvoiceDescription}</TableCell>
+      <TableCell>{data.paymentMethod && <StripePaymentMethodInfo method={data.paymentMethod} />}</TableCell>
+      <TableCell>{data.amount} USD</TableCell>
+    </TableRow>
   );
 };
