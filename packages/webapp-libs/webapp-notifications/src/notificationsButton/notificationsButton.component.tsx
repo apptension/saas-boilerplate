@@ -1,6 +1,6 @@
 import { FragmentType, getFragmentData, gql } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonProps } from '@sb/webapp-core/components/buttons';
-import { Mail, MailPlus } from 'lucide-react';
+import { Bell, BellDot } from 'lucide-react';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 
@@ -42,7 +42,7 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
         {...props}
         ref={ref}
       >
-        {hasUnreadNotifications ? <MailPlus className="w-8 h-6" /> : <Mail className="w-7 h-5" />}
+        {hasUnreadNotifications ? <BellDot className="[&>circle]:stroke-red-500" /> : <Bell />}
       </Button>
     );
   }
