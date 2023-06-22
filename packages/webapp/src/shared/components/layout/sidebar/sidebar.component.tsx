@@ -8,10 +8,10 @@ import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { HeaderLogoIcon } from '../../../../images/icons';
 import { Role } from '../../../../modules/auth/auth.types';
 import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
-import { Logo } from './sidebar.styles';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
@@ -71,7 +71,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 defaultMessage: 'Go back home',
               })}
             >
-              <Logo />
+              <HeaderLogoIcon />
             </Link>
           </div>
 
