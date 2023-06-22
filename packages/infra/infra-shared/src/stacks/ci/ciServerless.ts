@@ -260,6 +260,11 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       project.addToRolePolicy(statement);
     });
 
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) => {
+      dockerAssumeRole.addToPolicy(statement);
+      project.addToRolePolicy(statement);
+    });
+
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
