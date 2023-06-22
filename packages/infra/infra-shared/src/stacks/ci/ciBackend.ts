@@ -5,7 +5,12 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
+import { GlobalECR } from '../global/resources/globalECR';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -71,20 +76,21 @@ export class BackendCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: BackendCiConfigProps) {
+    const preBuildCommands = [
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.BACKEND),
+      this.getECRLoginCommand(),
+    ];
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+      props.envSettings.dockerImages.backendBaseImage
+    }`;
+
     const project = new codebuild.Project(this, 'BackendBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-backend`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=backend...`,
-            ],
+            commands: preBuildCommands,
           },
           build: {
             commands: ['pnpm nx run backend:build'],
@@ -93,7 +99,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -105,6 +111,10 @@ export class BackendCiConfig extends ServiceCiConfig {
           DOCKER_PASSWORD: {
             type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
             value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
+          },
+          BACKEND_BASE_IMAGE: {
+            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: baseImage,
           },
         },
       },
@@ -125,6 +135,10 @@ export class BackendCiConfig extends ServiceCiConfig {
         actions: ['secretsmanager:*'],
         resources: ['*'],
       })
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement)
     );
     props.backendRepository.grantPullPush(project);
 
@@ -154,14 +168,9 @@ export class BackendCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=backend...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.BACKEND
+            ),
           },
           build: { commands: ['pnpm nx run backend:deploy:api'] },
         },
@@ -169,7 +178,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
@@ -222,14 +231,9 @@ export class BackendCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=backend...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.BACKEND
+            ),
           },
           build: { commands: ['pnpm nx run backend:deploy:migrations'] },
         },
@@ -237,7 +241,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });

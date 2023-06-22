@@ -1,4 +1,8 @@
-import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
+import {
+  Subscription,
+  SubscriptionPlanName,
+  Subscription as SubscriptionType,
+} from '@sb/webapp-api-client/api/subscription/types';
 import {
   paymentMethodFactory,
   subscriptionFactory,
@@ -14,6 +18,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ActiveSubscriptionContext } from '../../../components/activeSubscriptionContext';
 import {
   fillActivePlanDetailsQuery,
+  fillAllPaymentsMethodsQuery,
   fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,

@@ -74,6 +74,8 @@
     "react-router-dom": "^6.7.0",
     "storybook": "^7.0.10",
     "styled-components": "5.3.6",
-    "ts-jest": "28.0.5"
+    "ts-jest": "28.0.5",
+    "@nx/react": "^16.3.2",
+    "@nx/jest": "^16.3.2"
   }
 }

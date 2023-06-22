@@ -14,8 +14,8 @@
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
     "@sb/tools": "*",
-    "aws-cdk": "2.66.0",
-    "aws-cdk-lib": "2.66.0",
+    "aws-cdk": "^2.84.0",
+    "aws-cdk-lib": "^2.84.0",
     "constructs": "^10.1.225"
   }
 }

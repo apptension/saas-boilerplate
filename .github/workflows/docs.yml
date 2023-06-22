@@ -4,6 +4,9 @@ on:
   push:
     branches: [ '**' ]
 
+env:
+  BACKEND_BASE_IMAGE: python:3.11-slim-bullseye
+
 jobs:
   build:
     runs-on: ubuntu-20.04

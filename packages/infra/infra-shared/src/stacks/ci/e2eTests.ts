@@ -4,7 +4,12 @@ import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cc from 'aws-cdk-lib/aws-codecommit';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
+import { GlobalECR } from '../global/resources/globalECR';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -43,6 +48,15 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
 
     const basicAuth = props.envSettings.appBasicAuth?.split(':');
 
+    const installCommands = this.getAssumeRoleCommands();
+    const preBuildCommands = [
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.E2E_TESTS),
+      this.getECRLoginCommand(),
+    ];
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+      props.envSettings.dockerImages.e2eTestsBaseImage
+    }`;
+
     const project = new codebuild.Project(this, 'E2ETestsProject', {
       projectName: `${props.envSettings.projectEnvName}-e2e-tests`,
       source: codebuild.Source.codeCommit({ repository: props.codeRepository }),
@@ -50,23 +64,10 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           install: {
-            commands: [
-              'TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`',
-              'export TEMP_ROLE',
-              'export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.AccessKeyId\')',
-              'export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SecretAccessKey\')',
-              'export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SessionToken\')',
-            ],
+            commands: installCommands,
           },
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=e2e-tests^...`,
-            ],
+            commands: preBuildCommands,
           },
           build: { commands: ['pnpm nx run e2e-tests:test'] },
         },
@@ -76,13 +77,17 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
         ASSUME_ROLE_ARN: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
+        },
+        E2E_TESTS_BASE_IMAGE: {
+          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: baseImage,
         },
         ...(basicAuth
           ? {
@@ -126,6 +131,10 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
         actions: ['sts:AssumeRole'],
         resources: [dockerAssumeRole.roleArn],
       })
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement)
     );
 
     return project;

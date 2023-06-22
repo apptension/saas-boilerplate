@@ -11,17 +11,17 @@ from sqlalchemy.engine import url
 def create_test_database():
     env = Env()
     DB_CONNECTION = json.loads(env('DB_CONNECTION'))
+    db_url_params = {
+        'drivername': DB_CONNECTION['engine'],
+        'host': DB_CONNECTION['host'],
+        'port': DB_CONNECTION['port'],
+        'username': DB_CONNECTION['username'],
+        'password': DB_CONNECTION['password'],
+        'database': DB_CONNECTION['conndbname'],
+    }
+
     template_engine = create_engine(
-        url.URL.create(
-            **{
-                'drivername': DB_CONNECTION['engine'],
-                'host': DB_CONNECTION['host'],
-                'port': DB_CONNECTION['port'],
-                'username': DB_CONNECTION['username'],
-                'password': DB_CONNECTION['password'],
-                'database': DB_CONNECTION['conndbname'],
-            }
-        ),
+        url.URL.create(**db_url_params),
         echo=False,
     )
 
@@ -49,11 +49,9 @@ class CreateTestDB(Command):
 
     def initialize_options(self):
         """Defined as noop since this method must be implemented by all command classes."""
-        pass
 
     def finalize_options(self):
         """Defined as noop since this method must be implemented by all command classes."""
-        pass
 
     def run(self):
         load_dotenv(dotenv_path='.env.test', override=True)

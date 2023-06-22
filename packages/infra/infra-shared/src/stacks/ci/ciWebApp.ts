@@ -4,7 +4,11 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -76,14 +80,9 @@ export class WebappCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=webapp...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.WEBAPP
+            ),
           },
           build: {
             commands: [
@@ -102,7 +101,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         },
       }),
       environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -146,14 +145,9 @@ export class WebappCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=webapp...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.WEBAPP
+            ),
           },
           build: { commands: ['pnpm nx run webapp:deploy'] },
         },
@@ -162,7 +156,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
 

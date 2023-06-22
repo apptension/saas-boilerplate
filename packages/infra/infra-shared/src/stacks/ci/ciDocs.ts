@@ -4,9 +4,14 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipelineActions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
+import { GlobalECR } from '../global/resources/globalECR';
 
 interface DocsCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -60,20 +65,21 @@ export class DocsCiConfig extends ServiceCiConfig {
   }
 
   private createBuildProject(props: DocsCiConfigProps) {
+    const preBuildCommands = [
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
+      this.getECRLoginCommand(),
+    ];
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+      props.envSettings.dockerImages.backendBaseImage
+    }`;
+
     const project = new codebuild.Project(this, 'DocsBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-docs`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=docs...`,
-            ],
+            commands: preBuildCommands,
           },
           build: { commands: ['pnpm nx run docs:build'] },
         },
@@ -87,13 +93,25 @@ export class DocsCiConfig extends ServiceCiConfig {
       }),
       environment: {
         privileged: true,
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
         VITE_ENVIRONMENT_NAME: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: props.envSettings.envStage,
+        },
+        DOCKER_USERNAME: {
+          type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: 'GlobalBuildSecrets:DOCKER_USERNAME',
+        },
+        DOCKER_PASSWORD: {
+          type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
+        },
+        BACKEND_BASE_IMAGE: {
+          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: baseImage,
         },
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
@@ -106,6 +124,10 @@ export class DocsCiConfig extends ServiceCiConfig {
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
       props.envSettings
     ).forEach((statement) => project.addToRolePolicy(statement));
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement)
+    );
 
     return project;
   }
@@ -130,14 +152,7 @@ export class DocsCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=docs...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
           },
           build: { commands: ['pnpm nx run docs:deploy'] },
         },
@@ -146,7 +161,7 @@ export class DocsCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
 

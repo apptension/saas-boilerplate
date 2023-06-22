@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/prompts": "^2.4.2",
     "@types/ramda": "^0.28.22",
-    "aws-cdk": "2.66.0",
+    "aws-cdk": "^2.84.0",
     "plop": "^2.7.4",
     "ts-node": "^9.1.1"
   },

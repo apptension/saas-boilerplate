@@ -5,10 +5,7 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
-import {
-  EnvConstructProps,
-  EnvironmentSettings,
-} from '@sb/infra-core';
+import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 import { getInfraFunctionArnByName } from '../../lib/names';
 
 export interface CiEntrypointProps extends EnvConstructProps {
@@ -77,7 +74,7 @@ export class CiEntrypoint extends Construct {
         path: '',
       }),
       environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
       },
       environmentVariables: {
         CI: {

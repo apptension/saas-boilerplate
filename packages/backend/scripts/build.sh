@@ -15,7 +15,12 @@ fi
 
 docker pull "$BACKEND_REPO_URI:latest" || true
 
-docker build --target backend -t "$BACKEND_REPO_URI:$VERSION" .
+if [[ -z "${BACKEND_BASE_IMAGE}" ]]; then
+  docker build --target backend -t "$BACKEND_REPO_URI:$VERSION" .
+else
+  docker build --target backend -t "$BACKEND_REPO_URI:$VERSION" --build-arg BACKEND_BASE_IMAGE="$BACKEND_BASE_IMAGE" .
+fi
+
 docker push "$BACKEND_REPO_URI:$VERSION"
 
 docker tag "$BACKEND_REPO_URI:$VERSION" "$BACKEND_REPO_URI:latest"

@@ -12,8 +12,12 @@ import {
   CodeBuildActionProps,
 } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Artifact, IStage } from 'aws-cdk-lib/aws-codepipeline';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { EnvConstructProps, ServiceCiConfig } from '@sb/infra-core';
+import {
+  EnvConstructProps,
+  PnpmWorkspaceFilters,
+  ServiceCiConfig,
+} from '@sb/infra-core';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
@@ -58,14 +62,9 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           pre_build: {
-            commands: [
-              'go install github.com/segmentio/chamber/v2@latest',
-              'npm i -g pnpm@^8.6.1',
-              `pnpm install \
-                --include-workspace-root \
-                --frozen-lockfile \
-                --filter=infra-shared...`,
-            ],
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.INFRA_SHARED
+            ),
           },
           build: { commands: ['pnpm nx run infra-shared:deploy:components'] },
         },
@@ -73,14 +72,14 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           paths: [...this.defaultCachePaths],
         },
       }),
-      environment: { buildImage: LinuxBuildImage.STANDARD_6_0 },
+      environment: { buildImage: LinuxBuildImage.STANDARD_7_0 },
       environmentVariables: { ...this.defaultEnvVariables },
       cache: Cache.local(LocalCacheMode.CUSTOM),
     });
 
     project.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: ['cloudformation:*'],
         resources: [
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
@@ -98,8 +97,8 @@ export class ComponentsCiConfig extends ServiceCiConfig {
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
         actions: [
           'iam:*',
           'sts:*',
