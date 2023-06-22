@@ -3,8 +3,8 @@
   "version": "2.0.0-alpha.1",
   "private": true,
   "scripts": {
-    "deploy": "env-cmd -f ../../../.env.tools cdk deploy *StatusDashboardStack",
-    "diff": "env-cmd -f ../../../.env.tools cdk diff *StatusDashboardStack"
+    "deploy": "cdk deploy *StatusDashboardStack",
+    "diff": "cdk diff *StatusDashboardStack"
   },
   "dependencies": {
     "aws-sdk": "^2.703.0",
