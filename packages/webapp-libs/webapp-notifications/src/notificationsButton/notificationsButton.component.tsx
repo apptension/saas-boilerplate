@@ -1,10 +1,8 @@
 import { FragmentType, getFragmentData, gql } from '@sb/webapp-api-client/graphql';
-import { ButtonProps } from '@sb/webapp-core/components/buttons';
-import { Mail, MailPlus } from 'lucide-react';
+import { Button, ButtonProps } from '@sb/webapp-core/components/buttons';
+import { Bell, BellDot } from 'lucide-react';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
-
-import { Button } from './notificationsButton.styles';
 
 export const NOTIFICATIONS_BUTTON_CONTENT_FRAGMENT = gql(/* GraphQL */ `
   fragment notificationsButtonContent on Query {
@@ -44,7 +42,7 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
         {...props}
         ref={ref}
       >
-        {hasUnreadNotifications ? <MailPlus /> : <Mail />}
+        {hasUnreadNotifications ? <BellDot className="[&>circle]:stroke-red-500" /> : <Bell />}
       </Button>
     );
   }
