@@ -4,7 +4,6 @@ import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { GraphQLError } from 'graphql';
 import { times } from 'ramda';
 
 import { NotificationTypes } from '../../';

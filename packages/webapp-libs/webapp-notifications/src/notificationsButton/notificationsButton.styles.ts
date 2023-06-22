@@ -5,17 +5,17 @@ import styled, { css } from 'styled-components';
 type ButtonProps = { 'data-unread': boolean };
 
 export const Button = styled(ButtonBase)<ButtonProps>`
-  svg {
+  /* svg {
     width: 23px;
     height: 18px;
 
     ${(props) =>
-      props['data-unread'] &&
-      css`
-        circle,
-        path:last-of-type {
-          fill: ${color.error};
-        }
-      `};
-  }
+    props['data-unread'] &&
+    css`
+      circle {
+        fill: ${color.error};
+        stroke: ${color.error};
+      }
+    `};
+  } */
 `;
