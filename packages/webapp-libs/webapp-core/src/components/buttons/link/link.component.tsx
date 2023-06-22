@@ -31,14 +31,14 @@ export const Link = (props: LinkProps) => {
         {children}
       </RouterNavLink>
     ) : (
-      <RouterLink className={cn(buttonVariants({ variant, className }))} {...(props as InternalLinkProps)}>
+      <RouterLink className={cn(buttonVariants({ variant, className }), className)} {...(props as InternalLinkProps)}>
         {renderIcon({ icon })}
         {children}
       </RouterLink>
     );
 
   const renderExternalLink = (props: ExternalLinkProps) => (
-    <a className={cn(buttonVariants({ variant, className }))} {...props}>
+    <a className={cn(buttonVariants({ variant, className }), className)} {...props}>
       {renderIcon({ icon })}
       {children}
     </a>
