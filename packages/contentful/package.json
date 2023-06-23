@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.4.1",
-    "contentful-cli": "^1.5.26",
+    "contentful-cli": "^1.19.1",
     "contentful-migration": "^4.0.7",
     "dotenv": "^8.2.0"
   }
