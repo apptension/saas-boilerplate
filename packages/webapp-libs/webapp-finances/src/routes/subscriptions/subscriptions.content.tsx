@@ -91,7 +91,7 @@ export const SubscriptionsContent = ({ activeSubscription }: SubscriptionsConten
         </CardContent>
       </Card>
 
-      <div className="flex flex-row gap-x-6">
+      <div className="flex flex-col sm:flex-row gap-6">
         <Link to={generateLocalePath(RoutesConfig.subscriptions.changePlan)} variant={ButtonVariant.PRIMARY}>
           <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
         </Link>
