@@ -89,6 +89,14 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: baseImage,
         },
+        DOCKER_USERNAME: {
+          type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: 'GlobalBuildSecrets:DOCKER_USERNAME',
+        },
+        DOCKER_PASSWORD: {
+          type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+          value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
+        },
         ...(basicAuth
           ? {
               CYPRESS_BASIC_AUTH_LOGIN: {
@@ -125,16 +133,17 @@ export class E2ETestsCiConfig extends ServiceCiConfig {
       project.addToRolePolicy(statement);
     });
 
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) => {
+      project.addToRolePolicy(statement);
+      dockerAssumeRole.addToPolicy(statement);
+    });
+
     project.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['sts:AssumeRole'],
         resources: [dockerAssumeRole.roleArn],
       })
-    );
-
-    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
-      project.addToRolePolicy(statement)
     );
 
     return project;

@@ -1,3 +1,15 @@
+let algoliaSearch = {};
+if (process.env.ALGOLIA_APP_ID) {
+  algoliaSearch = {
+    algolia: {
+      appId: process.env.ALGOLIA_APP_ID,
+      apiKey: process.env.ALGOLIA_API_KEY,
+      indexName: process.env.ALGOLIA_INDEX_NAME,
+      contextualSearch: true,
+    },
+  };
+}
+
 module.exports = {
   title: 'SaaS Boilerplate by Apptension',
   tagline: 'SaaS Boilerplate is not a boiler on a plate',
@@ -22,6 +34,10 @@ module.exports = {
       },
       items: [
         {
+          type: 'search',
+          position: 'right',
+        },
+        {
           label: 'SaaS Boilerplate website',
           href: 'https://apptension.com/saas-boilerplate?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate',
           position: 'right',
@@ -43,6 +59,7 @@ module.exports = {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
+    ...algoliaSearch,
   },
   customFields: {
     projectName: 'SaaS Boilerplate',
