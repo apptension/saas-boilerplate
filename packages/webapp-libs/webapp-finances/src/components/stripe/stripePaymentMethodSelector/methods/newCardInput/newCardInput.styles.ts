@@ -1,5 +1,4 @@
 import { Themes } from '@sb/webapp-core/providers/themeProvider';
-import { color } from '@sb/webapp-core/theme';
 
 export const StripeIframeStyles = (theme: Themes) => ({
   base: {
@@ -13,7 +12,7 @@ export const StripeIframeStyles = (theme: Themes) => ({
     border: `1px solid red`,
     padding: '10px',
   },
-  invalid: { color: color.input.invalid, iconColor: color.input.invalid },
+  invalid: { color: '#ef4444', iconColor: '#ef4444' },
 });
 
 export const StripeIframeClasses = {

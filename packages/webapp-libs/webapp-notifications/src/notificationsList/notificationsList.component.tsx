@@ -52,7 +52,7 @@ export const NotificationsList = (props: NotificationsListProps) => {
         </Button>
       </div>
       <Separator orientation="horizontal" className="my-2" />
-      <div className="grid-cols-1 w-full overflow-y-scroll max-h-96">
+      <div className="grid-cols-1 w-full overflow-y-auto max-h-96">
         {props.loading ? (
           <div className="flex w-full flex-col gap-4">
             <Skeleton className="h-16" data-testid="Skeleton" />

@@ -1,6 +1,6 @@
 import cameraIcon from '@iconify-icons/ion/camera-outline';
-import { Message as MessageBase } from '@sb/webapp-core/components/forms/input/input.styles';
 import { Icon } from '@sb/webapp-core/components/icons';
+import { Small } from '@sb/webapp-core/components/typography';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { FieldError } from 'react-hook-form';
 
@@ -27,7 +27,7 @@ export const AvatarForm = () => {
     },
   });
   return (
-    <>
+    <div>
       <div className="relative mb-0 h-20 w-20 md:mb-4 ">
         <label
           tabIndex={0}
@@ -52,7 +52,7 @@ export const AvatarForm = () => {
         <Avatar className="h-20 w-20" />
       </div>
 
-      <MessageBase className="static text-left">{(errors.avatar as FieldError)?.message}</MessageBase>
-    </>
+      <Small className="static m-0 text-left text-red-500">{(errors.avatar as FieldError)?.message}</Small>
+    </div>
   );
 };

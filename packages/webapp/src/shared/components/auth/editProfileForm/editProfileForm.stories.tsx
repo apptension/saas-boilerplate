@@ -1,21 +1,14 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { size } from '@sb/webapp-core/theme';
 import { StoryFn } from '@storybook/react';
-import styled from 'styled-components';
 
 import { withProviders } from '../../../utils/storybook';
 import { EditProfileForm } from './editProfileForm.component';
 
-const Container = styled.div`
-  ${size.contentWrapper};
-  ${size.contentWithLimitedWidth};
-`;
-
 const Template: StoryFn = () => {
   return (
-    <Container>
+    <div className="mx-auto w-full max-w-2xl px-4 lg:px-10">
       <EditProfileForm />
-    </Container>
+    </div>
   );
 };
 
