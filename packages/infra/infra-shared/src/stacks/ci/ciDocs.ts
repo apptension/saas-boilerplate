@@ -81,7 +81,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: preBuildCommands,
           },
-          build: { commands: ['pnpm nx run docs:build'] },
+          build: { commands: ['pnpm nx run docs:build-with-env'] },
         },
         cache: {
           paths: this.defaultCachePaths,
