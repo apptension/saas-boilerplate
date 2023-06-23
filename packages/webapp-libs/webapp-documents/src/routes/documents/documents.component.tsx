@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client';
 import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Dropzone } from '@sb/webapp-core/components/forms';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { isEmpty } from 'ramda';
 import { FormattedMessage } from 'react-intl';
@@ -10,7 +12,6 @@ import { Document, DocumentSkeleton } from './document';
 import { MAX_FILES, MAX_FILE_SIZE } from './documents.constants';
 import { documentsListQuery } from './documents.graphql';
 import { useHandleDrop } from './documents.hooks';
-import { Container, Header, List } from './documents.styles';
 
 type ListContentProps = {
   data: DocumentsListQueryQuery;
@@ -44,11 +45,11 @@ export const ListContent = ({ data }: ListContentProps) => {
           <FormattedMessage defaultMessage="No documents" id="Documents / Empty" />
         </EmptyState>
       ) : (
-        <List>
+        <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
           {documents.map((document) => (
             <Document item={document} key={document.id} />
           ))}
-        </List>
+        </ul>
       )}
     </>
   );
@@ -58,21 +59,28 @@ export const Documents = () => {
   const { data } = useQuery(documentsListQuery);
 
   return (
-    <Container>
-      <Header>
-        <FormattedMessage defaultMessage="Documents" id="Documents / Header" />
-      </Header>
+    <PageLayout className="px-8 space-y-6 ">
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Documents" id="Documents / Header" />}
+        subheader={
+          <FormattedMessage
+            defaultMessage="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
+            id="Finances / Stripe / Payment confirm / subheading"
+          />
+        }
+      />
+
       {data ? (
         <ListContent data={data} />
       ) : (
         <>
           <Dropzone disabled />
-          <List>
+          <ul className="grid mt-6 grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
             <DocumentSkeleton />
             <DocumentSkeleton />
-          </List>
+          </ul>
         </>
       )}
-    </Container>
+    </PageLayout>
   );
 };

@@ -1,18 +1,27 @@
-import { forwardRef, InputHTMLAttributes } from 'react';
-import { Container, GhostInput, Label, Dot, LabelText } from './radioButton.styles';
+import { VariantProps } from 'class-variance-authority';
+import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
+import * as React from 'react';
 
-export type RadioButtonProps = InputHTMLAttributes<HTMLInputElement>;
+import { cn } from '../../../lib/utils';
+import { FormControl, FormItem, FormLabel } from '../../forms';
+import { RadioGroupItem } from '../../forms/radioGroup';
+import { radioButtonVariants } from './radioButton.styles';
 
-export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
-  ({ children, className, ...inputProps }: RadioButtonProps, ref) => {
-    return (
-      <Container className={className}>
-        <GhostInput {...inputProps} type="radio" ref={ref} />
-        <Label>
-          <Dot />
-          <LabelText>{children}</LabelText>
-        </Label>
-      </Container>
-    );
-  }
-);
+export type RadioButtonProps = ComponentPropsWithoutRef<typeof RadioGroupItem> &
+  VariantProps<typeof radioButtonVariants>;
+
+export const RadioButton = forwardRef<
+  ElementRef<typeof RadioGroupItem>,
+  ComponentPropsWithoutRef<typeof RadioGroupItem>
+>(({ children, className, size, variant = 'ghost', ...inputProps }: RadioButtonProps, ref) => {
+  return (
+    <FormItem>
+      <FormLabel className={cn(radioButtonVariants({ variant, size, className }))}>
+        <FormControl>
+          <RadioGroupItem {...inputProps} />
+        </FormControl>
+        <div className="flex flex-1 items-center space-x-2">{children}</div>
+      </FormLabel>
+    </FormItem>
+  );
+});

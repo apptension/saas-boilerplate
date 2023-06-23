@@ -1,14 +1,12 @@
-import { typography } from '@sb/webapp-core/theme';
+import { H3 } from '@sb/webapp-core/components/typography';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-
-import { Container } from './notFound.styles';
 
 export const NotFound = () => {
   const intl = useIntl();
 
   return (
-    <Container>
+    <div className="mx-auto flex w-full  justify-center ">
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'Not found',
@@ -16,9 +14,9 @@ export const NotFound = () => {
         })}
       />
 
-      <typography.H1>
+      <H3>
         <FormattedMessage defaultMessage="Error: 404" id="Not found / error message" />
-      </typography.H1>
-    </Container>
+      </H3>
+    </div>
   );
 };

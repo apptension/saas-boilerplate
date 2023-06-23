@@ -2,13 +2,13 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { MouseEvent, useState } from 'react';
-import ClickAwayListener from 'react-click-away-listener';
+import { cn } from '@sb/webapp-core/lib/utils';
+import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../../config/routes';
-import { Container, Menu, ToggleButton, ToggleButtonCircle } from './crudDropdownMenu.styles';
 
 export type CrudDropdownMenuProps = {
   itemId: string;
@@ -18,54 +18,47 @@ export type CrudDropdownMenuProps = {
 };
 
 export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: CrudDropdownMenuProps) => {
-  const [isOpen, setOpen] = useState(false);
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
 
   return (
-    <ClickAwayListener
-      onClickAway={(e) => {
-        if (isOpen) {
-          setOpen(false);
-          e.preventDefault();
-        }
-      }}
-    >
-      <Container className={className}>
-        <ToggleButton
-          onClick={(e) => {
-            e.preventDefault();
-            setOpen((isOpen) => !isOpen);
-          }}
+    <Popover>
+      <PopoverTrigger>
+        <Button
+          variant="ghost"
+          className="flex flex-col"
+          data-testid="toggle-button"
           aria-label={intl.formatMessage({
             defaultMessage: 'Open item actions',
             id: 'CrudDemoItemList.Open item actions',
           })}
-          aria-expanded={isOpen}
         >
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
-          <ToggleButtonCircle />
-        </ToggleButton>
-
-        <Menu isOpen={isOpen}>
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+          <div className="block w-1 h-1 rounded-[50%] my-0.5 bg-slate-400 shrink-0" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className={cn('p-1', className)}>
+        <div className="flex flex-col">
           <ButtonLink
-            variant={ButtonVariant.FLAT}
+            variant={ButtonVariant.GHOST}
             to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
+            className="justify-start mb-2"
           >
             <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
           </ButtonLink>
           <Button
-            variant={ButtonVariant.FLAT}
+            variant="ghost"
             onClick={handleDelete}
             disabled={loading}
+            className="justify-start"
             icon={<Icon size={14} icon={deleteIcon} />}
           >
             <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
           </Button>
-        </Menu>
-      </Container>
-    </ClickAwayListener>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };

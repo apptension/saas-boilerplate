@@ -1,9 +1,10 @@
+import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
+import { Small } from '@sb/webapp-core/components/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { emailPattern } from '../../../constants';
 import { usePasswordResetRequestForm } from './passwordResetRequestForm.hooks';
-import { Container, ErrorMessage, SubmitButton } from './passwordResetRequestForm.styles';
 
 type PasswordResetRequestFormProps = {
   onSubmitted?: () => void;
@@ -25,7 +26,7 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
   } = usePasswordResetRequestForm(onSubmitted);
 
   return (
-    <Container onSubmit={handleResetRequestPassword}>
+    <form noValidate className="flex w-full flex-col gap-6" onSubmit={handleResetRequestPassword}>
       <Input
         {...register('email', {
           required: {
@@ -56,15 +57,15 @@ export const PasswordResetRequestForm = ({ onSubmitted }: PasswordResetRequestFo
         error={errors.email?.message}
       />
 
-      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+      {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
 
-      <SubmitButton disabled={loading}>
+      <Button type="submit" disabled={loading}>
         {isSubmitted ? (
           <FormattedMessage defaultMessage="Send the link again" id="Auth / Request password reset / Resend button" />
         ) : (
           <FormattedMessage defaultMessage="Send the link" id="Auth / Request password reset / Submit button" />
         )}
-      </SubmitButton>
-    </Container>
+      </Button>
+    </form>
   );
 };

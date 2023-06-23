@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { ButtonSize } from '@sb/webapp-core/components/buttons';
+import { Button, ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
+import { H3, Small } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -10,17 +11,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
-import { Container, ErrorMessage, Header, SubmitButton } from './validateOtpForm.styles';
 
 export type ValidateOtpFormFields = {
   token: string;
 };
 
 export const ValidateOtpForm = () => {
-  const form = useApiForm<ValidateOtpFormFields>();
-  const generateLocalePath = useGenerateLocalePath();
   const intl = useIntl();
   const navigate = useNavigate();
+  const form = useApiForm<ValidateOtpFormFields>();
+  const generateLocalePath = useGenerateLocalePath();
   const {
     handleSubmit,
     hasGenericErrorOnly,
@@ -48,14 +48,15 @@ export const ValidateOtpForm = () => {
   };
 
   return (
-    <Container>
-      <Header>
+    <div className="m-auto flex max-w-sm flex-col items-center justify-center text-center align-middle lg:mt-32">
+      <H3 className="mb-8">
         <FormattedMessage
           defaultMessage="Please enter the authentication code from your OTP provider app to sign in."
           id="Auth / Validate OTP / Enter code from app"
         />
-      </Header>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      </H3>
+
+      <form className="flex w-full max-w-xs flex-col gap-6" onSubmit={handleSubmit(handleFormSubmit)}>
         <Input
           {...register('token', {
             required: {
@@ -80,11 +81,13 @@ export const ValidateOtpForm = () => {
           error={errors.token?.message}
           autoComplete="off"
         />
-        {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        <SubmitButton type="submit" size={ButtonSize.NORMAL}>
+
+        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+
+        <Button type="submit" size={ButtonSize.NORMAL} className="mt-2">
           <FormattedMessage defaultMessage="Submit" id="Auth / Validate OTP / Submit button" />
-        </SubmitButton>
+        </Button>
       </form>
-    </Container>
+    </div>
   );
 };

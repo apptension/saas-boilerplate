@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
-import { BackButton } from '@sb/webapp-core/components/buttons';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
@@ -11,7 +12,6 @@ import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
-import { Container, Header } from './addCrudDemoItem.styles';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
   mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
@@ -28,7 +28,7 @@ export const addCrudDemoItemMutation = gql(/* GraphQL */ `
 
 export const AddCrudDemoItem = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { showMessage } = useSnackbar();
+  const { toast } = useToast();
   const intl = useIntl();
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ export const AddCrudDemoItem = () => {
 
       trackEvent('crud', 'add', id);
 
-      showMessage(successMessage);
+      toast({ description: successMessage });
 
       if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, { id }));
     },
@@ -78,12 +78,13 @@ export const AddCrudDemoItem = () => {
   };
 
   return (
-    <Container>
-      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <Header>
-        <FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />
-      </Header>
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />}
+      />
+
       <CrudDemoItemForm onSubmit={onFormSubmit} error={error} loading={loadingMutation} />
-    </Container>
+    </PageLayout>
   );
 };

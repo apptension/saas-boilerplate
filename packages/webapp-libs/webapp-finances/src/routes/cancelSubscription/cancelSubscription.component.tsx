@@ -1,12 +1,13 @@
 import { BackButton, Button } from '@sb/webapp-core/components/buttons';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
-import { typography } from '@sb/webapp-core/theme';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Paragraph, ParagraphBold } from '@sb/webapp-core/components/typography';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
 import { useActiveSubscriptionDetailsData } from '../../hooks';
 import { useCancelSubscription } from './cancelSubscription.hook';
-import { Container, Row, RowValue } from './cancelSubscription.styles';
 
 export const CancelSubscription = () => {
   const { activeSubscription } = useActiveSubscriptionDetails();
@@ -19,33 +20,43 @@ export const CancelSubscription = () => {
   if (!activeSubscription) return null;
 
   return (
-    <Container>
-      <BackButton />
-      <typography.H3>
-        <FormattedMessage defaultMessage="Current plan info" id="Cancel subscription / Current plan header" />
-      </typography.H3>
-      <Row>
+    <PageLayout className="flex space-y-4 flex-col">
+      <div className="flex">
+        <BackButton />
+      </div>
+
+      <PageHeadline
+        header={<FormattedMessage defaultMessage="Current plan info" id="Cancel subscription / Current plan header" />}
+        subheader={
+          <FormattedMessage
+            defaultMessage="Details about your current plan"
+            id="Cancel subscription / Current plan label"
+          />
+        }
+      />
+
+      <Paragraph className="flex flex-row">
         <FormattedMessage defaultMessage="Active plan:" id="Cancel subscription / Active plan" />
-        <RowValue>{activeSubscriptionPlan?.name}</RowValue>
-      </Row>
-      <Row>
-        <FormattedMessage defaultMessage="Active plan price" id="Cancel subscription / Active plan price" />
-        <RowValue>{activeSubscriptionPlan?.price} USD</RowValue>
-      </Row>
+        <ParagraphBold>{activeSubscriptionPlan?.name}</ParagraphBold>
+      </Paragraph>
+
+      <Paragraph className="flex flex-row mt-0">
+        <FormattedMessage defaultMessage="Active plan price:" id="Cancel subscription / Active plan price" />
+        <ParagraphBold>{activeSubscriptionPlan?.price} USD</ParagraphBold>
+      </Paragraph>
+
       {activeSubscriptionRenewalDate && (
-        <Row>
+        <Paragraph className="flex flex-row">
           <FormattedMessage defaultMessage="Next renewal / expiry:" id="Cancel subscription / Next renewal" />
-          <RowValue>
+          <ParagraphBold>
             <FormattedDate value={activeSubscriptionRenewalDate} />
-          </RowValue>
-        </Row>
+          </ParagraphBold>
+        </Paragraph>
       )}
 
-      <Row>
-        <Button onClick={handleCancel}>
-          <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
-        </Button>
-      </Row>
-    </Container>
+      <Button className="w-fit" onClick={handleCancel}>
+        <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
+      </Button>
+    </PageLayout>
   );
 };

@@ -1,12 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
-import { BackButton } from '@sb/webapp-core/components/buttons';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { FormattedMessage } from 'react-intl';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useParams } from 'react-router';
-
-import { RoutesConfig } from '../../../config/routes';
-import { Container, Header } from './crudDemoItemDetails.styles';
 
 export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `
   query crudDemoItemDetailsQuery($id: ID!) {
@@ -21,7 +19,6 @@ export const CrudDemoItemDetails = () => {
   type Params = {
     id: string;
   };
-  const generateLocalePath = useGenerateLocalePath();
   const { id } = useParams<keyof Params>() as Params;
 
   const { loading, data } = useQuery(crudDemoItemDetailsQuery, {
@@ -32,18 +29,21 @@ export const CrudDemoItemDetails = () => {
 
   if (loading) {
     return (
-      <span>
-        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </span>
+      <PageLayout>
+        <div className="flex w-full justify-between items-center">
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-6 w-8" />
+        </div>
+        <Separator />
+      </PageLayout>
     );
   }
 
   const itemData = data?.crudDemoItem;
 
   return (
-    <Container>
-      <BackButton to={generateLocalePath(RoutesConfig.crudDemoItem.list)} />
-      <Header>{itemData?.name}</Header>
-    </Container>
+    <PageLayout>
+      <PageHeadline hasBackButton header={itemData?.name} />
+    </PageLayout>
   );
 };

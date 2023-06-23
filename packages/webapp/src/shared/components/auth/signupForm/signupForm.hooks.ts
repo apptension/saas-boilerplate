@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { UseApiFormArgs, useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -10,13 +10,14 @@ import { RoutesConfig } from '../../../../app/config/routes';
 import { authSingupMutation } from './signUpForm.graphql';
 import { SignupFormFields } from './signupForm.types';
 
-export const useSignupForm = () => {
+export const useSignupForm = (args?: UseApiFormArgs<SignupFormFields>) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const { reload: reloadCommonQuery } = useCommonQuery();
 
   const form = useApiForm<SignupFormFields>({
+    ...args,
     errorMessages: {
       email: {
         unique: intl.formatMessage({
@@ -50,8 +51,8 @@ export const useSignupForm = () => {
     },
   });
 
-  const handleSignup = handleSubmit((data: SignupFormFields) => {
-    commitSignupMutation({
+  const handleSignup = handleSubmit(async (data: SignupFormFields) => {
+    await commitSignupMutation({
       variables: {
         input: {
           email: data.email,

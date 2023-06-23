@@ -1,6 +1,9 @@
 import { StripeSetupIntentFragmentFragment, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Form } from '@sb/webapp-core/components/forms';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../../components/activeSubscriptionContext';
@@ -10,10 +13,8 @@ import {
   StripePaymentMethodSelector,
   useStripePaymentMethods,
 } from '../../../components/stripe';
-import { ErrorMessage } from '../../../components/stripe/stripePaymentForm/stripePaymentForm.styles';
 import { subscriptionActiveSubscriptionFragment } from '../../../hooks';
 import { useStripeCardSetup, useStripeSetupIntent } from './editPaymentMethodForm.hooks';
-import { Form, SubmitButton } from './editPaymentMethodForm.styles';
 
 type ChangePaymentFormFields = PaymentFormFields;
 
@@ -67,17 +68,25 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <StripePaymentMethodSelector
-        control={form.control}
-        defaultSavedPaymentMethodId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
-      />
+    <Form {...form}>
+      <form
+        noValidate
+        onSubmit={(e) => {
+          handleSubmit(onSubmit)(e).catch(reportError);
+        }}
+        className="space-y-8"
+      >
+        <StripePaymentMethodSelector
+          control={form.control}
+          defaultSavedPaymentMethodId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
+        />
 
-      {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
+        {hasGenericErrorOnly && <div className="text-red-500">{genericError}</div>}
 
-      <SubmitButton disabled={!form.formState.isValid || form.formState.isSubmitting}>
-        <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
-      </SubmitButton>
+        <Button disabled={!form.formState.isValid || form.formState.isSubmitting} className="mt-2" type="submit">
+          <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />
+        </Button>
+      </form>
     </Form>
   );
 };

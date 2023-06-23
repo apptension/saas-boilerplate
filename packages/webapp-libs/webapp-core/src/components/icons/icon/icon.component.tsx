@@ -1,6 +1,5 @@
-import { ComponentProps } from 'react';
 import { Icon as IconifyIcon } from '@iconify/react';
-import { Container } from './icon.styles';
+import { ComponentProps } from 'react';
 
 export type IconProps = {
   icon: ComponentProps<typeof IconifyIcon>['icon'];
@@ -9,5 +8,5 @@ export type IconProps = {
 };
 
 export const Icon = ({ icon, className, size }: IconProps) => {
-  return <Container icon={icon} className={className} size={size ?? 24} />;
+  return <IconifyIcon icon={icon} className={className} style={{ fontSize: size ?? 24 }} />;
 };

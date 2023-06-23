@@ -1,7 +1,7 @@
 import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
-import { global } from '@sb/webapp-core/theme';
+import { Toaster } from '@sb/webapp-core/toast';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
@@ -40,13 +40,13 @@ export const ValidRoutesProviders = () => {
           {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
         </FormattedMessage>
 
-        <global.GlobalStyle />
-
         <ResponsiveThemeProvider>
           <Layout>
             <Outlet />
           </Layout>
         </ResponsiveThemeProvider>
+
+        <Toaster />
       </>
     </IntlProvider>
   );

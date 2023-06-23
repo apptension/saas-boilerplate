@@ -24,7 +24,7 @@ describe('SocialLoginButtons: Component', () => {
     describe('Google log in button is clicked', () => {
       it('should trigger google oauth flow', async () => {
         render(<Component variant={SignupButtonsVariant.LOGIN} />);
-        await userEvent.click(await screen.findByText(/log in with Google/i));
+        await userEvent.click(await screen.findByText(/Log in with Google/i));
         expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Google);
       });
     });
@@ -32,7 +32,7 @@ describe('SocialLoginButtons: Component', () => {
     describe('Facebook log in button is clicked', () => {
       it('should trigger facebook oauth flow', async () => {
         render(<Component variant={SignupButtonsVariant.LOGIN} />);
-        await userEvent.click(await screen.findByText(/log in with Facebook/i));
+        await userEvent.click(await screen.findByText(/Log in with Facebook/i));
         expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Facebook);
       });
     });
@@ -42,7 +42,7 @@ describe('SocialLoginButtons: Component', () => {
     describe('Google sign up button is clicked', () => {
       it('should trigger google oauth flow', async () => {
         render(<Component variant={SignupButtonsVariant.SIGNUP} />);
-        await userEvent.click(await screen.findByText(/sign up with Google/i));
+        await userEvent.click(await screen.findByText(/Sign up with Google/i));
         expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Google);
       });
     });
@@ -50,7 +50,7 @@ describe('SocialLoginButtons: Component', () => {
     describe('Facebook sign up button is clicked', () => {
       it('should trigger facebook oauth flow', async () => {
         render(<Component variant={SignupButtonsVariant.SIGNUP} />);
-        await userEvent.click(await screen.findByText(/sign up with Facebook/i));
+        await userEvent.click(await screen.findByText(/Sign up with Facebook/i));
         expect(mockOAuthLogin).toHaveBeenCalledWith(OAuthProvider.Facebook);
       });
     });

@@ -12,7 +12,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../../config/routes';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
-import { Container, DropdownMenu, InlineButtons, LinkContainer, Text } from './crudDemoItemListItem.styles';
+import { CrudDropdownMenu } from './crudDropdownMenu';
 
 export type CrudDemoItemListItemProps = {
   item: FragmentType<typeof crudDemoItemListItemFragment>;
@@ -47,35 +47,44 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   };
 
   const renderInlineButtons = () => (
-    <InlineButtons>
+    <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
       <Link
-        variant={ButtonVariant.RAW}
+        variant={ButtonVariant.GHOST}
+        className="border"
         to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
       <Button
-        variant={ButtonVariant.RAW}
+        variant={ButtonVariant.GHOST}
         onClick={handleDelete}
+        className="border"
         disabled={loading}
         icon={<Icon size={14} icon={deleteIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
       </Button>
-    </InlineButtons>
+    </div>
   );
 
-  const renderButtonsMenu = () => <DropdownMenu itemId={data.id} handleDelete={handleDelete} loading={loading} />;
+  const renderButtonsMenu = () => (
+    <CrudDropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
+  );
 
   return (
-    <Container>
-      <LinkContainer>
-        <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}>
-          <Text>{data.name}</Text>
+    <li className="group dark:hover:text-slate-500">
+      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-secondary hover:text-secondary-foreground dark:hover:text-slate-100">
+        <Link
+          className="border-input transition-colors group-hover:dark:text-slate-100 hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer"
+          to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
+        >
+          <p className="dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis">
+            {data.name}
+          </p>
         </Link>
         {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
-      </LinkContainer>
-    </Container>
+      </div>
+    </li>
   );
 };

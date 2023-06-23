@@ -3,8 +3,9 @@ import { ReactNode, useMemo, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
 import { NO_NAVIGATION_ROUTES } from '../../../app/config/routes';
+import { Header } from './header';
 import { LayoutContext } from './layout.context';
-import { Content, Header, Sidebar } from './layout.styles';
+import { Sidebar } from './sidebar';
 
 export type LayoutProps = {
   children?: ReactNode;
@@ -26,9 +27,11 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <LayoutContext.Provider value={value}>
-      <Header />
+      <div className={shouldDisplaySidebar ? 'lg:pl-72' : undefined}>
+        <Header />
+        <main className="py-10">{children}</main>
+      </div>
       {shouldDisplaySidebar && <Sidebar />}
-      <Content withSidebar={shouldDisplaySidebar}>{children}</Content>
     </LayoutContext.Provider>
   );
 };

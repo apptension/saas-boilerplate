@@ -62,12 +62,17 @@ describe('StripePaymentForm: Component', () => {
   );
 
   const selectProduct = async (value = TestProduct.A) =>
-    userEvent.click(await screen.findByRole('radio', { name: `${value} USD` }));
+    userEvent.click(await screen.findByRole('radio', { name: `$${value}` }));
   const sendForm = async () => userEvent.click(await screen.findByRole('button', { name: /Pay \d+ USD/i }));
 
   it('should render without errors', async () => {
     const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
-    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory());
+    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(
+      subscriptionFactory({
+        defaultPaymentMethod: allPaymentsMock[0],
+      }),
+      allPaymentsMock
+    );
 
     const { waitForApolloMocks } = render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock, requestMock),
@@ -75,13 +80,17 @@ describe('StripePaymentForm: Component', () => {
 
     await waitForApolloMocks(1);
 
-    expect(await screen.findAllByRole('list')).toHaveLength(2);
+    expect(await screen.findAllByRole('radio')).toHaveLength(allPaymentsMock.length + Object.keys(TestProduct).length);
   });
 
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
-      const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory());
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(
+        subscriptionFactory({
+          defaultPaymentMethod: allPaymentsMock[0],
+        })
+      );
       const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
         data: mutationData,

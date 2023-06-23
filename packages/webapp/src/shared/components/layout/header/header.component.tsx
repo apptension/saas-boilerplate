@@ -1,45 +1,37 @@
-import { Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { useGenerateLocalePath, useMediaQuery, useOpenState } from '@sb/webapp-core/hooks';
-import { Snackbar } from '@sb/webapp-core/snackbar';
-import { media } from '@sb/webapp-core/theme';
+import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
+import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
+import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
+import { Menu, Sun , LogOut, User } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
-import ClickAwayListener from 'react-click-away-listener';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import notificationTemplates from '../../../constants/notificationTemplates';
 import { useAuth } from '../../../hooks';
+import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
-import {
-  Avatar,
-  Container,
-  Content,
-  HeaderLogo,
-  Menu,
-  MenuContainer,
-  MenuLine,
-  MenuToggleButton,
-  ProfileActions,
-  SnackbarMessages,
-} from './header.styles';
 
 export type HeaderProps = HTMLAttributes<HTMLElement>;
 
 export const Header = (props: HeaderProps) => {
   const intl = useIntl();
+  const { isLoggedIn } = useAuth();
+  const { toggleTheme } = useTheme();
+  const userDropdown = useOpenState(false);
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen, isSidebarAvailable } = useContext(LayoutContext);
-  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
-  const userDropdown = useOpenState(false);
-  const { isLoggedIn } = useAuth();
 
   return (
-    <Container {...props}>
-      <Content>
-        {isSidebarAvailable && !isDesktop && (
-          <MenuToggleButton
+    <header {...props} className={cn('sticky top-0 z-10 border-b bg-background/80 backdrop-blur-sm', props.className)}>
+      <div className="flex h-16 flex-row items-center justify-end gap-x-4 px-8">
+        {isSidebarAvailable && (
+          <div
+            className="block w-6 cursor-pointer justify-self-start lg:hidden"
+            role="button"
+            tabIndex={0}
             onClick={() => setSideMenuOpen(true)}
             aria-expanded={isSideMenuOpen}
             aria-label={intl.formatMessage({
@@ -47,65 +39,67 @@ export const Header = (props: HeaderProps) => {
               defaultMessage: 'Open menu',
             })}
           >
-            <MenuLine />
-            <MenuLine />
-            <MenuLine />
-          </MenuToggleButton>
+            <Menu />
+          </div>
         )}
 
-        <MenuContainer>
-          <Link
-            to={generateLocalePath(RoutesConfig.home)}
-            aria-label={intl.formatMessage({
-              id: 'Header / Home link aria label',
-              defaultMessage: 'Go back home',
-            })}
-          >
-            <HeaderLogo />
-          </Link>
-        </MenuContainer>
+        <div className="flex-1"></div>
 
-        <SnackbarMessages>
-          <Snackbar />
-        </SnackbarMessages>
+        <Button variant="ghost" onClick={() => toggleTheme()} className="h-10 w-10 rounded-full px-0">
+          <Sun />
+        </Button>
 
         {isLoggedIn && (
           <>
             <Notifications templates={notificationTemplates} />
 
-            <ProfileActions>
-              <Avatar
-                onClick={userDropdown.toggle}
-                tabIndex={0}
-                aria-expanded={userDropdown.isOpen}
-                aria-label={intl.formatMessage({
-                  id: 'Header / Open profile menu aria label',
-                  defaultMessage: 'Open profile menu',
-                })}
-              />
+            <div className="relative ml-2 hidden md:block">
+              <Popover
+                open={userDropdown.isOpen}
+                onOpenChange={(open) => {
+                  userDropdown.setIsOpen(open);
+                }}
+              >
+                <PopoverTrigger>
+                  <Avatar
+                    className="cursor-pointer"
+                    onClick={userDropdown.toggle}
+                    tabIndex={0}
+                    aria-expanded={userDropdown.isOpen}
+                    aria-label={intl.formatMessage({
+                      id: 'Header / Open profile menu aria label',
+                      defaultMessage: 'Open profile menu',
+                    })}
+                  />
+                </PopoverTrigger>
 
-              <ClickAwayListener onClickAway={userDropdown.clickAway}>
-                <Menu isOpen={userDropdown.isOpen}>
-                  <ButtonLink
-                    onClick={userDropdown.close}
-                    to={generateLocalePath(RoutesConfig.profile)}
-                    variant={ButtonVariant.FLAT}
-                  >
-                    <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
-                  </ButtonLink>
-                  <ButtonLink
-                    onClick={userDropdown.close}
-                    to={generateLocalePath(RoutesConfig.logout)}
-                    variant={ButtonVariant.FLAT}
-                  >
-                    <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
-                  </ButtonLink>
-                </Menu>
-              </ClickAwayListener>
-            </ProfileActions>
+                <PopoverContent className="w-48 p-2" asChild align="end" side="bottom" sideOffset={24}>
+                  <div className="top-10 flex flex-col overflow-hidden rounded">
+                    <ButtonLink
+                      onClick={userDropdown.close}
+                      to={generateLocalePath(RoutesConfig.profile)}
+                      variant={ButtonVariant.GHOST}
+                      icon={<User size={20} />}
+                      className="justify-start"
+                    >
+                      <FormattedMessage defaultMessage="Profile" id="Header / Profile button" />
+                    </ButtonLink>
+                    <ButtonLink
+                      onClick={userDropdown.close}
+                      to={generateLocalePath(RoutesConfig.logout)}
+                      variant={ButtonVariant.GHOST}
+                      className="justify-start"
+                      icon={<LogOut size={20} />}
+                    >
+                      <FormattedMessage defaultMessage="Log out" id="Header / Logout button" />
+                    </ButtonLink>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </>
         )}
-      </Content>
-    </Container>
+      </div>
+    </header>
   );
 };

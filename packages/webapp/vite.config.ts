@@ -1,8 +1,10 @@
 import dns from 'dns';
+import { join } from 'path';
 
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
+import tailwind from 'tailwindcss';
 import { UserConfig, defineConfig, loadEnv } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
@@ -45,6 +47,12 @@ export default defineConfig(({ mode }): UserConfig => {
     },
 
     define: envWithProcessPrefix,
+
+    css: {
+      postcss: {
+        plugins: [tailwind({ config: join(__dirname, 'tailwind.config.ts') }), require('autoprefixer')()],
+      },
+    },
 
     plugins: [
       legacy(),

@@ -1,8 +1,11 @@
 import { useQuery } from '@apollo/client';
-import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { StripeSubscriptionQueryQuery } from '@sb/webapp-api-client';
-import { Icon } from '@sb/webapp-core/components/icons';
+import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
+import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
+import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
+import { Separator } from '@sb/webapp-core/components/separator';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { ChevronLeft, Trash2 } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { Control, PathValue, useController } from 'react-hook-form';
 import { FormattedMessage } from 'react-intl';
@@ -11,16 +14,6 @@ import { useStripePaymentMethods } from '../stripePayment.hooks';
 import { StripePaymentMethodInfo } from '../stripePaymentMethodInfo';
 import { NewCardInput } from './methods';
 import { stripeSubscriptionQuery } from './stripePaymentMethodSelector.graphql';
-import {
-  CardElementContainer,
-  Container,
-  DeleteButton,
-  ExistingPaymentMethodItem,
-  Heading,
-  NewPaymentMethodItem,
-  PaymentMethodList,
-  PaymentMethodListItem,
-} from './stripePaymentMethodSelector.styles';
 import { PaymentFormFields, StripePaymentMethodSelectionType } from './stripePaymentMethodSelector.types';
 
 export type StripePaymentMethodSelectorProps<T extends PaymentFormFields> = {
@@ -135,10 +128,77 @@ export const StripePaymentMethodSelectorInner = <T extends PaymentFormFields>({
     await deletePaymentMethod(deletedPaymentMethod.pk);
   };
 
+  const handleBackToCardSelection = () => {
+    typeController.field.onChange(StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD);
+  };
+
+  const renderNewCardForm = () => (
+    <div className="space-y-3">
+      {!isEmpty(paymentMethods) ? (
+        <Button size="sm" onClick={handleBackToCardSelection} variant="outline" icon={<ChevronLeft size={16} />}>
+          <FormattedMessage
+            defaultMessage="Back to card list"
+            id="Stripe / payment method selector / back to card list"
+          />
+        </Button>
+      ) : null}
+
+      <NewCardInput control={control} />
+    </div>
+  );
+
+  const renderCardSelection = () => (
+    <>
+      <RadioGroup
+        defaultValue={
+          typeController.field.value === StripePaymentMethodSelectionType.SAVED_PAYMENT_METHOD
+            ? savedPaymentMethodController.field.value?.id
+            : undefined
+        }
+      >
+        {paymentMethods.map((paymentMethod) => {
+          return (
+            <RadioButton
+              key={paymentMethod.id}
+              value={paymentMethod.id}
+              onChange={() => {
+                handleExistingSelected(paymentMethod);
+              }}
+              className="w-full"
+            >
+              <span className="grow">
+                <StripePaymentMethodInfo method={paymentMethod} />
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDelete(paymentMethod.id);
+                }}
+              >
+                <Trash2 size={16} />
+              </Button>
+            </RadioButton>
+          );
+        })}
+      </RadioGroup>
+
+      <Separator />
+      <span className="text-muted-foreground">
+        <FormattedMessage defaultMessage="or" id="Stripe / payment method selector / or" />
+      </span>
+      <Button type="button" variant="link" onClick={handleNewCardSelected}>
+        <FormattedMessage defaultMessage="Use a new card" id="Stripe / payment method selector / new card option" />
+      </Button>
+    </>
+  );
+
+  const isNewCardEnabled = typeController.field.value === StripePaymentMethodSelectionType.NEW_CARD;
   return (
-    <Container>
-      <Heading>
-        {isEmpty(paymentMethods) ? (
+    <FormItem>
+      <FormLabel>
+        {isEmpty(paymentMethods) || isNewCardEnabled ? (
           <FormattedMessage
             defaultMessage="Enter card details"
             id="Stripe / payment method selector / enter card details"
@@ -149,47 +209,11 @@ export const StripePaymentMethodSelectorInner = <T extends PaymentFormFields>({
             id="Stripe / payment method selector / select payment method"
           />
         )}
-      </Heading>
+      </FormLabel>
 
-      <PaymentMethodList>
-        {paymentMethods.map((paymentMethod) => {
-          return (
-            <PaymentMethodListItem key={paymentMethod.id}>
-              <ExistingPaymentMethodItem
-                checked={isExistingMethodSelected(paymentMethod.id)}
-                value={paymentMethod.id}
-                onChange={() => handleExistingSelected(paymentMethod)}
-              >
-                <StripePaymentMethodInfo method={paymentMethod} />
-                <DeleteButton onClick={(e) => handleDelete(paymentMethod.id)}>
-                  <Icon size={16} icon={deleteIcon} />
-                </DeleteButton>
-              </ExistingPaymentMethodItem>
-            </PaymentMethodListItem>
-          );
-        })}
+      {isNewCardEnabled ? renderNewCardForm() : renderCardSelection()}
 
-        {paymentMethods?.length > 0 && (
-          <PaymentMethodListItem>
-            <NewPaymentMethodItem
-              type="button"
-              isSelected={typeController.field.value === StripePaymentMethodSelectionType.NEW_CARD}
-              onClick={handleNewCardSelected}
-            >
-              <FormattedMessage
-                defaultMessage="Add a new card"
-                id="Stripe / payment method selector / new card option"
-              />
-            </NewPaymentMethodItem>
-          </PaymentMethodListItem>
-        )}
-      </PaymentMethodList>
-
-      {typeController.field.value === StripePaymentMethodSelectionType.NEW_CARD && (
-        <CardElementContainer>
-          <NewCardInput control={control} />
-        </CardElementContainer>
-      )}
-    </Container>
+      <FormMessage />
+    </FormItem>
   );
 };

@@ -52,8 +52,8 @@ import { WrapperProps, getWrapper } from '../../tests/utils/rendering';
  *
  */
 export function withProviders(wrapperProps: WrapperProps = {}) {
-  return (StoryComponent: StoryFn) => {
-    const { wrapper: WrapperComponent } = getWrapper(ApiTestProviders, wrapperProps) as any;
+  return (StoryComponent: StoryFn, storyContext: any) => {
+    const { wrapper: WrapperComponent } = getWrapper(ApiTestProviders, wrapperProps, storyContext) as any;
 
     return (
       <WrapperComponent {...wrapperProps}>

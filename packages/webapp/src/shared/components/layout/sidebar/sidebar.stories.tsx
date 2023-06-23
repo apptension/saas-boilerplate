@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { useMemo } from 'react';
 
 import { withProviders } from '../../../utils/storybook';
@@ -22,12 +22,14 @@ const Template: StoryFn = () => {
   );
 };
 
-export default {
+const meta: Meta = {
   title: 'Shared/Layout/Sidebar',
   component: Sidebar,
 };
 
-export const Default = {
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
   render: Template,
   args: {},
   decorators: [withProviders({})],

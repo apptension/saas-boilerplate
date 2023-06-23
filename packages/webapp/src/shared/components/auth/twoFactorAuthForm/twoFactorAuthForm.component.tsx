@@ -1,26 +1,27 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { Modal } from '@sb/webapp-core/components/modal';
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Dialog, DialogContent } from '@sb/webapp-core/components/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
-import { H5 } from '@sb/webapp-core/theme/typography';
+import { useToast } from '@sb/webapp-core/toast/useToast';
+import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AddTwoFactorAuth } from '../addTwoFactorAuth';
 import { disableOtpMutation } from './twoFactorAuthForm.graphql';
-import { Container, CtaButton, ModalHeader, Row } from './twoFactorAuthForm.styles';
 
 export type TwoFactorAuthFormProps = {
   isEnabled?: boolean;
 };
 
 export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
+  const intl = useIntl();
+  const { toast } = useToast();
+  const { reload } = useCommonQuery();
+
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
   const [commitDisableOtpMutation] = useMutation(disableOtpMutation, { variables: { input: {} } });
-  const { reload } = useCommonQuery();
-  const intl = useIntl();
-  const { showMessage } = useSnackbar();
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Two-factor / Disable success',
@@ -34,48 +35,50 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
     if (!isDeleted) return;
 
     trackEvent('auth', 'otp-disabled');
-    showMessage(successMessage);
+    toast({ description: successMessage });
     reload();
   };
 
   return (
-    <Container>
+    <div>
       {isEnabled ? (
-        <Row>
-          <H5>
-            <FormattedMessage
-              defaultMessage="Your account is using two-factor authentication"
-              id="Auth / Two-factor / Using two-factor auth"
-            />
-          </H5>
-          <CtaButton onClick={() => disable2FA()}>
+        <div className="flex flex-col items-start gap-y-1">
+          <FormattedMessage
+            defaultMessage="Your account is using two-factor authentication"
+            id="Auth / Two-factor / Using two-factor auth"
+          />
+          <Button
+            type="submit"
+            className="mt-1"
+            onClick={() => {
+              disable2FA().catch(reportError);
+            }}
+          >
             <FormattedMessage defaultMessage="Disable 2FA" id="Auth / Two-factor / Disable button" />
-          </CtaButton>
-        </Row>
+          </Button>
+        </div>
       ) : (
-        <Row>
-          <H5>
-            <FormattedMessage
-              defaultMessage="Your account is not using two-factor authentication"
-              id="Auth / Two-factor / Not using two-factor auth"
-            />
-          </H5>
-          <CtaButton onClick={() => setIsModalOpen(true)}>
+        <div className="flex flex-col items-start gap-y-1">
+          <FormattedMessage
+            defaultMessage="Your account is not using two-factor authentication"
+            id="Auth / Two-factor / Not using two-factor auth"
+          />
+          <Button type="submit" className="mt-1" onClick={() => setIsModalOpen(true)}>
             <FormattedMessage defaultMessage="Setup 2FA" id="Auth / Two-factor / Setup button" />
-          </CtaButton>
-        </Row>
+          </Button>
+        </div>
       )}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        header={
-          <ModalHeader>
-            <FormattedMessage defaultMessage="Two-Factor Authentication (2FA)" id="Auth / Two-factor / Modal header" />
-          </ModalHeader>
-        }
+
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(e) => {
+          setIsModalOpen(e);
+        }}
       >
-        <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
-      </Modal>
-    </Container>
+        <DialogContent>
+          <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };

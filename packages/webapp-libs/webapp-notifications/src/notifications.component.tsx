@@ -1,12 +1,11 @@
 import { NetworkStatus, useQuery } from '@apollo/client';
 import { ResultOf } from '@graphql-typed-document-node/core';
-import { useOpenState } from '@sb/webapp-core/hooks';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
 import { ElementType, FC, useEffect } from 'react';
-import ClickAwayListener from 'react-click-away-listener';
 
 import { notificationsListQuery, notificationsListSubscription } from './notifications.graphql';
 import { NotificationTypes } from './notifications.types';
-import { NotificationsButton } from './notificationsButton';
+import { NotificationsButton, NotificationsButtonFallback } from './notificationsButton';
 import { NotificationsList, notificationsListContentFragment } from './notificationsList';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.constants';
 
@@ -15,8 +14,6 @@ type NotificationsProps = {
 };
 
 export const Notifications: FC<NotificationsProps> = ({ templates }) => {
-  const notifications = useOpenState(false);
-
   const { loading, data, fetchMore, networkStatus, subscribeToMore } = useQuery(notificationsListQuery);
 
   useEffect(() => {
@@ -47,7 +44,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
   }, [subscribeToMore]);
 
   if (loading && networkStatus === NetworkStatus.loading) {
-    return <NotificationsButton.Fallback />;
+    return <NotificationsButtonFallback />;
   }
 
   const onLoadMore = (cursor: string, count = NOTIFICATIONS_PER_PAGE) => {
@@ -60,19 +57,13 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
   };
 
   return (
-    <>
-      <NotificationsButton queryResult={data} onClick={notifications.toggle} />
-      <ClickAwayListener onClickAway={notifications.clickAway}>
-        <>
-          <NotificationsList
-            templates={templates}
-            isOpen={notifications.isOpen}
-            queryResult={data}
-            loading={loading}
-            onLoadMore={onLoadMore}
-          />
-        </>
-      </ClickAwayListener>
-    </>
+    <Popover>
+      <PopoverTrigger data-testid="notifications-trigger-testid" asChild>
+        <NotificationsButton queryResult={data} />
+      </PopoverTrigger>
+      <PopoverContent className="md:w-96 w-72" align="end" side="bottom" sideOffset={15}>
+        <NotificationsList templates={templates} queryResult={data} loading={loading} onLoadMore={onLoadMore} />
+      </PopoverContent>
+    </Popover>
   );
 };

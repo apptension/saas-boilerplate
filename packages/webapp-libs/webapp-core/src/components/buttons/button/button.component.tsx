@@ -1,37 +1,34 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import { Slot } from '@radix-ui/react-slot';
+import { type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
+import { ReactNode } from 'react';
 
-import { Container, Icon } from './button.styles';
-import { ButtonColor, ButtonSize, ButtonTheme, ButtonVariant } from './button.types';
+import { cn } from '../../../lib/utils';
+import { buttonVariants } from './button.styles';
+import { renderIcon } from './button.utils';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  color?: ButtonColor | string;
+export interface ButtonBaseProps extends VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
   icon?: ReactNode;
-  fixedWidth?: boolean;
-};
+}
 
-const ButtonBase = ({
-  children,
-  icon,
-  fixedWidth,
-  variant = ButtonVariant.PRIMARY,
-  size = ButtonSize.NORMAL,
-  color = ButtonColor.PRIMARY,
-  disabled = false,
-  ...other
-}: ButtonProps) => {
-  const theme: ButtonTheme = { variant, size, color, isDisabled: disabled, fixedWidth };
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ButtonBaseProps {}
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Container disabled={disabled} {...other}>
-        {icon ? <Icon>{icon}</Icon> : null}
-        {children}
-      </Container>
-    </ThemeProvider>
-  );
-};
-
-export const Button = styled(ButtonBase)``;
+/**
+ * [`shadcn/ui` docs](https://ui.shadcn.com/docs/components/button)
+ *
+ */
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, icon, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return (
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
+        <>
+          {renderIcon({ icon })}
+          {children}
+        </>
+      </Comp>
+    );
+  }
+);
+Button.displayName = 'Button';

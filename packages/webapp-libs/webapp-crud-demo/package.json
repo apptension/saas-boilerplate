@@ -12,7 +12,8 @@
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
     "@sb/webapp-notifications": "*",
-    "react-click-away-listener": "^2.2.2"
+    "react-click-away-listener": "^2.2.2",
+    "lucide-react": "^0.224.0"
   },
   "peerDependencies": {
     "@iconify-icons/ion": "^1.2.4",

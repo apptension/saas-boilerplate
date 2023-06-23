@@ -1,28 +1,29 @@
 import { FragmentType } from '@sb/webapp-api-client/graphql';
-import { ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { H4 } from '@sb/webapp-core/components/typography';
+import { CheckCheck } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { ElementType } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { NotificationSkeleton } from '../notification';
 import { NotificationTypes } from '../notifications.types';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { notificationsListContentFragment } from './notificationsList.graphql';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
-import { Container, List, MarkAllAsReadButton, Title } from './notificationsList.styles';
 
 export type NotificationsListProps = {
   templates: Record<NotificationTypes, ElementType>;
-  isOpen: boolean;
   queryResult?: FragmentType<typeof notificationsListContentFragment>;
   loading: boolean;
   onLoadMore: (cursor: string, count: number) => void;
 };
 
-export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) => {
+export const NotificationsList = (props: NotificationsListProps) => {
   const intl = useIntl();
 
   const markAllAsRead = useMarkAllAsRead(
@@ -33,27 +34,35 @@ export const NotificationsList = ({ isOpen, ...props }: NotificationsListProps) 
   );
 
   return (
-    <Container isOpen={isOpen}>
-      <Title>
-        <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
-      </Title>
-      <MarkAllAsReadButton variant={ButtonVariant.RAW} onClick={markAllAsRead}>
-        <FormattedMessage
-          defaultMessage="Mark all as read"
-          id="Notifications / Notifications List / Mark all as read button"
-        />
-      </MarkAllAsReadButton>
-      <List>
+    <div className="z-50 flex flex-col">
+      <div className="flex flex-row items-center justify-between">
+        <H4 className="text-base">
+          <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
+        </H4>
+        <Button
+          icon={<CheckCheck size={16} />}
+          className="mx-0 text-xs text-muted-foreground"
+          variant={ButtonVariant.GHOST}
+          onClick={markAllAsRead}
+        >
+          <FormattedMessage
+            defaultMessage="Mark all as read"
+            id="Notifications / Notifications List / Mark all as read button"
+          />
+        </Button>
+      </div>
+      <Separator orientation="horizontal" className="my-2" />
+      <div className="grid-cols-1 w-full overflow-y-auto max-h-96">
         {props.loading ? (
-          <>
-            <NotificationSkeleton />
-            <NotificationSkeleton />
-          </>
+          <div className="flex w-full flex-col gap-4">
+            <Skeleton className="h-16" data-testid="Skeleton" />
+            <Skeleton className="h-16" data-testid="Skeleton" />
+          </div>
         ) : (
           <Content {...props} />
         )}
-      </List>
-    </Container>
+      </div>
+    </div>
   );
 };
 
@@ -95,10 +104,10 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
         );
       })}
       {(hasNext || loading) && (
-        <>
-          <NotificationSkeleton ref={scrollSensorRef} />
-          <NotificationSkeleton />
-        </>
+        <div ref={scrollSensorRef} className="flex w-full flex-col gap-4">
+          <Skeleton className="h-16" />
+          <Skeleton className="h-16" />
+        </div>
       )}
     </>
   );

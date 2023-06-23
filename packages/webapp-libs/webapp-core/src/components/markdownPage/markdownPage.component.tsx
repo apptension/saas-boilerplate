@@ -1,5 +1,6 @@
-import { BackButton } from '../buttons';
-import { Container, Markdown } from './markdownPage.styles';
+import ReactMarkdown from 'react-markdown';
+
+import { PageLayout } from '../pageLayout';
 
 export type MarkdownPageProps = {
   markdown?: string | null;
@@ -7,9 +8,8 @@ export type MarkdownPageProps = {
 
 export const MarkdownPage = ({ markdown }: MarkdownPageProps) => {
   return (
-    <Container>
-      <BackButton />
-      <Markdown>{markdown ?? ''}</Markdown>
-    </Container>
+    <PageLayout>
+      <ReactMarkdown className="prose dark:prose-invert">{markdown ?? ''}</ReactMarkdown>
+    </PageLayout>
   );
 };
