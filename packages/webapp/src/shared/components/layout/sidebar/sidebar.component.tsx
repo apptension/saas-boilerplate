@@ -3,20 +3,23 @@ import { Link } from '@sb/webapp-core/components/buttons';
 import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { useTheme } from '@sb/webapp-core/hooks/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
+import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { media } from '@sb/webapp-core/theme';
 import { X } from 'lucide-react';
 import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { HeaderLogoIcon } from '../../../../images/icons';
+import { HeaderLogoDarkIcon, HeaderLogoIcon } from '../../../../images/icons';
 import { Role } from '../../../../modules/auth/auth.types';
 import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
+  const { theme } = useTheme();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
@@ -71,7 +74,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   defaultMessage: 'Go back home',
                 })}
               >
-                <HeaderLogoIcon />
+                {theme === Themes.DARK ? <HeaderLogoIcon /> : <HeaderLogoDarkIcon />}
               </Link>
             </div>
 
