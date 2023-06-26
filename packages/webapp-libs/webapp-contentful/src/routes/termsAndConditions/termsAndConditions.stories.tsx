@@ -83,6 +83,8 @@ const meta: Meta = {
   decorators: [withProviders({ apolloMocks: append(requestMock) })],
 };
 
+export default meta;
+
 export const Default: StoryObj<typeof meta> = {
   render: Template,
 };

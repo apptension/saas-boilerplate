@@ -3,7 +3,7 @@ import { Preview } from '@storybook/react';
 import * as jest from 'jest-mock';
 
 import '../src/styles.css';
-import { withFontFace, withIntl, withTheme } from './decorators';
+import { withIntl } from './decorators';
 
 //@ts-ignore
 window.jest = jest;
@@ -12,8 +12,6 @@ const preview: Preview = {
   parameters: { layout: 'fullscreen' },
   decorators: [
     withIntl,
-    withTheme(),
-    withFontFace,
     withThemeByClassName({
       themes: {
         light: 'light',
