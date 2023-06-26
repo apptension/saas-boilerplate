@@ -144,7 +144,7 @@ export const SignupForm = () => {
                     },
                     {
                       termsLink: (
-                        <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
+                        <Link className="h-fit p-0 text-xs" to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                           <FormattedMessage
                             id="Auth / Signup / Accept checkbox / T&C link"
                             defaultMessage="Terms of Use"
@@ -152,7 +152,7 @@ export const SignupForm = () => {
                         </Link>
                       ),
                       policyLink: (
-                        <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
+                        <Link className="h-fit p-0 text-xs" to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                           <FormattedMessage
                             id="Auth / Signup / Accept checkbox / Privacy policy link"
                             defaultMessage="Privacy Policy"
