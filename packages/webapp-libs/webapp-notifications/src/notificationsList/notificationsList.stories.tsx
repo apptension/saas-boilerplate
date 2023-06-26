@@ -15,6 +15,8 @@ const meta: Meta<typeof NotificationsList> = {
   component: NotificationsList,
 };
 
+export default meta;
+
 export const Default: StoryObj<typeof meta> = {
   render: Template,
 

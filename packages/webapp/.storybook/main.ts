@@ -5,9 +5,6 @@ const config: StorybookConfig = {
   stories: ['../src/**/*.stories.tsx', '../../webapp-libs/**/src/**/*.stories.tsx'],
   addons: ['@storybook/addon-essentials', '@storybook/addon-styling', 'storybook-dark-mode'],
   staticDirs: ['../public'],
-  features: {
-    storyStoreV7: false,
-  },
   core: {},
   async viteFinal(config, options) {
     return mergeConfig(config, {});
