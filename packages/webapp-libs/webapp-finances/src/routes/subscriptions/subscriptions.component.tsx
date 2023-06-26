@@ -23,7 +23,7 @@ export const Subscriptions = () => {
         }
       />
       <Tabs defaultValue="currentSubscription">
-        <TabsList className="flex flex-col sm:flex-row h-full sm:h-10">
+        <TabsList className="flex flex-col sm:flex-row h-full sm:h-10 sm:w-fit w-full">
           <TabsTrigger value="currentSubscription">
             <FormattedMessage defaultMessage="Current subscription" id="My subscription / Current subscription" />
           </TabsTrigger>
