@@ -1,10 +1,10 @@
-import { Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { HtmlHTMLAttributes } from 'react';
 
 import { H1, H2, H3, H4, Paragraph, ParagraphBold, Small } from './typography';
 
 const Container = ({ children }: HtmlHTMLAttributes<HTMLDivElement>) => (
-  <div className="flex flex-row gap-4">{children}</div>
+  <div className="flex flex-col gap-4">{children}</div>
 );
 
 const meta: Meta<typeof Container> = {
@@ -14,7 +14,7 @@ const meta: Meta<typeof Container> = {
 
 export default meta;
 
-export const Primary = {
+export const Default: StoryObj<typeof meta> = {
   render: () => (
     <Container>
       <H1>Heading 1</H1>

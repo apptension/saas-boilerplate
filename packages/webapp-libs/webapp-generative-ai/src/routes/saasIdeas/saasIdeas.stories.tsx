@@ -8,7 +8,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Generative AI / SaasIdeas',
+  title: 'Routes / SaasIdeas',
   component: Template,
 };
 

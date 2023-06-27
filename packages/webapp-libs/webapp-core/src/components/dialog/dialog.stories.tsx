@@ -5,7 +5,7 @@ import { Dialog } from './dialog.component';
 type Story = StoryObj<typeof Dialog>;
 
 const meta: Meta<typeof Dialog> = {
-  title: 'Shared/Dialog',
+  title: 'Core/Dialog',
   component: Dialog,
 };
 

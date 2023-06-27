@@ -22,7 +22,7 @@ const Template: StoryFn = () => {
   );
 };
 const meta: Meta = {
-  title: 'ContentfulDemo / DemoItem',
+  title: 'Contentful Demo / DemoItem',
   component: DemoItem,
 };
 

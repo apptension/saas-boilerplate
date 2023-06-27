@@ -5,7 +5,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 type Story = StoryObj<typeof Table>;
 
 const meta: Meta<typeof Table> = {
-  title: 'Shared/Table',
+  title: 'Core/Table',
   component: Table,
 };
 

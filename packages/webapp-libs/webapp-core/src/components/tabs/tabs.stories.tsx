@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './';
 type Story = StoryObj<typeof Tabs>;
 
 const meta: Meta<typeof Tabs> = {
-  title: 'Shared/Tabs',
+  title: 'Core/Tabs',
   component: Tabs,
 };
 

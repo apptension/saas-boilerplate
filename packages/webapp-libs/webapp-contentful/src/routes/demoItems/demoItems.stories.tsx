@@ -16,7 +16,7 @@ const Template: StoryFn = ({ hasFavourite = false, ...args }) => {
 };
 
 const meta: Meta = {
-  title: 'ContentfulDemo / DemoItems',
+  title: 'Contentful Demo / DemoItems',
   component: DemoItems,
 };
 
