@@ -97,7 +97,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   onClick={closeSidebar}
                   navLink
                 >
-                  <FormattedMessage defaultMessage="Payment demo" id="Home / payment demo link" />
+                  <FormattedMessage defaultMessage="Payments" id="Home / payments link" />
                 </Link>
               </RoleAccess>
 
@@ -108,7 +108,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   onClick={closeSidebar}
                   navLink
                 >
-                  <FormattedMessage defaultMessage="My Subscription" id="Home / my subscriptions link" />
+                  <FormattedMessage defaultMessage="Subscriptions" id="Home / subscriptions link" />
                 </Link>
               </RoleAccess>
 
@@ -119,7 +119,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   onClick={closeSidebar}
                   navLink
                 >
-                  <FormattedMessage defaultMessage="Generate SaaS ideas" id="Home / saas ideas link" />
+                  <FormattedMessage defaultMessage="OpenAI Integration" id="Home / openai integration link" />
                 </Link>
               </RoleAccess>
 
@@ -130,7 +130,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   onClick={closeSidebar}
                   navLink
                 >
-                  <FormattedMessage defaultMessage="Demo Contentful items" id="Home / demo contentful items link" />
+                  <FormattedMessage defaultMessage="Content items" id="Home / content items link" />
                 </Link>
               </RoleAccess>
 
@@ -152,7 +152,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   onClick={closeSidebar}
                   navLink
                 >
-                  <FormattedMessage defaultMessage="CRUD Example Items" id="Home / CRUD example items link" />
+                  <FormattedMessage defaultMessage="CRUD" id="Home / CRUD link" />
                 </Link>
               </RoleAccess>
 
