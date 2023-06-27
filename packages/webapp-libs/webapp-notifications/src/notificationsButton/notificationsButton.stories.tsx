@@ -11,7 +11,7 @@ const Template: StoryFn<NotificationsButtonProps> = (args: NotificationsButtonPr
 };
 
 const meta: Meta = {
-  title: 'Shared/Notifications/NotificationsButton',
+  title: 'Notifications/NotificationsButton',
   component: NotificationsButton,
 };
 

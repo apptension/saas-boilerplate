@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { fillCrudDemoItemListQuery } from '../../../tests/factories';
@@ -9,12 +9,14 @@ const Template: StoryFn = () => {
   return <CrudDemoItemList />;
 };
 
-export default {
+const meta: Meta = {
   title: 'CrudDemoItem / CrudDemoItemList',
   component: CrudDemoItemList,
 };
 
-export const Default = {
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
   render: Template,
 
   decorators: [

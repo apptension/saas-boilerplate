@@ -1,26 +1,21 @@
 import { NotificationTypes } from '@sb/webapp-notifications';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../utils/storybook';
-import {
-  CrudItemUpdated,
-  CrudItemUpdatedProps,
-} from './crudItemUpdated.component';
+import { CrudItemUpdated, CrudItemUpdatedProps } from './crudItemUpdated.component';
 
-const Template: StoryFn<CrudItemUpdatedProps> = (
-  args: CrudItemUpdatedProps
-) => {
+const Template: StoryFn<CrudItemUpdatedProps> = (args: CrudItemUpdatedProps) => {
   return <CrudItemUpdated {...args} />;
 };
 
-export default {
-  title: 'Notifications/CrudItemUpdated',
-  component: CrudItemUpdated,
+const meta: Meta = {
+  title: 'Notifications/CrudItem/CrudItemUpdated',
+  component: Template,
 };
 
-export const Default = {
-  render: Template,
+export default meta;
 
+export const Default: StoryObj<typeof meta> = {
   args: {
     type: NotificationTypes.CRUD_ITEM_UPDATED,
     readAt: null,

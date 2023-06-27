@@ -11,7 +11,7 @@ const Template: StoryFn<NotificationsListProps> = (args: NotificationsListProps)
 };
 
 const meta: Meta<typeof NotificationsList> = {
-  title: 'Shared/Notifications/NotificationsList',
+  title: 'Notifications/NotificationsList',
   component: NotificationsList,
 };
 

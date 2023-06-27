@@ -1,16 +1,13 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 
 import { withProviders } from '../../../../utils/storybook';
-import {
-  CrudDemoItemListItem,
-  CrudDemoItemListItemProps,
-} from './crudDemoItemListItem.component';
+import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
-export default {
+const meta: Meta = {
   title: 'CrudDemoItem / CrudDemoItemList / CrudDemoItemListItem',
   component: CrudDemoItemListItem,
   argTypes: {
@@ -22,6 +19,8 @@ export default {
   },
 };
 
+export default meta;
+
 const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   query crudDemoItemListItemDefaultStoryQuery {
     item: crudDemoItem(id: "test-id") {
@@ -30,20 +29,13 @@ const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
   }
 `);
 
-const Template: StoryFn<CrudDemoItemListItemProps> = (
-  args: CrudDemoItemListItemProps
-) => {
+const Template: StoryFn<Partial<CrudDemoItemListItemProps>> = (args) => {
   const { loading, data } = useQuery(crudDemoItemListItemTestQuery);
-  return !loading && data?.item ? (
-    <CrudDemoItemListItem {...args} item={data.item} />
-  ) : (
-    <span />
-  );
+  return !loading && data?.item ? <CrudDemoItemListItem {...args} item={data.item} /> : <span />;
 };
 
-export const Default = {
+export const Default: StoryObj<typeof meta> = {
   render: Template,
-
   decorators: [
     withProviders({
       apolloMocks: append(
