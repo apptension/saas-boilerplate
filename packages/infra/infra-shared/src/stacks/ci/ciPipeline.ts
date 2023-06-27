@@ -6,10 +6,7 @@ import {
 } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { aws_codecommit as cc, aws_ecr as ecr } from 'aws-cdk-lib';
-import {
-  EnvConstructProps,
-  EnvironmentSettings,
-} from '@sb/infra-core';
+import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 
 import { CiEntrypoint } from './ciEntrypoint';
 import { BackendCiConfig } from './ciBackend';
@@ -17,7 +14,6 @@ import { WebappCiConfig } from './ciWebApp';
 import { ServerlessCiConfig } from './ciServerless';
 import { UploadVersionCiConfig } from './ciUploadVersion';
 import { ComponentsCiConfig } from './ciComponents';
-import { E2ETestsCiConfig } from './e2eTests';
 import { DocsCiConfig } from './ciDocs';
 
 export interface CiPipelineProps extends EnvConstructProps {
@@ -29,7 +25,6 @@ export interface CiPipelineProps extends EnvConstructProps {
 export class CiPipeline extends Construct {
   buildStageName = 'Build';
   deployStageName = 'Deploy';
-  postDeployStageName = 'PostDeploy';
 
   static getSourceOutputArtifact(envSettings: EnvironmentSettings) {
     return Artifact.artifact(`${envSettings.projectEnvName}-source`);
@@ -48,10 +43,6 @@ export class CiPipeline extends Construct {
     );
     const buildStage = this.selectStage(this.buildStageName, pipeline);
     const deployStage = this.selectStage(this.deployStageName, pipeline);
-    const postDeployStage = this.selectStage(
-      this.postDeployStageName,
-      pipeline
-    );
 
     new ComponentsCiConfig(this, 'ComponentsConfig', {
       buildStage,
@@ -95,13 +86,6 @@ export class CiPipeline extends Construct {
       stage: deployStage,
       inputArtifact: sourceOutputArtifact,
     });
-
-    new E2ETestsCiConfig(this, 'E2ETestsConfig', {
-      envSettings: props.envSettings,
-      codeRepository: props.codeRepository,
-      stage: postDeployStage,
-      inputArtifact: sourceOutputArtifact,
-    });
   }
 
   private selectStage(name: string, pipeline: Pipeline) {
@@ -136,10 +120,6 @@ export class CiPipeline extends Construct {
         },
         {
           stageName: this.deployStageName,
-          actions: [],
-        },
-        {
-          stageName: this.postDeployStageName,
           actions: [],
         },
       ],
