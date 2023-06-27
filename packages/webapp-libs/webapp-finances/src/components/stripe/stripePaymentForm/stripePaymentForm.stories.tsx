@@ -16,7 +16,7 @@ import { StripePaymentForm, StripePaymentFormProps } from './stripePaymentForm.c
 
 const Template: StoryFn<StripePaymentFormProps> = (args: StripePaymentFormProps) => {
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={{ locale: 'en' }}>
       <StripePaymentForm {...args} />
     </Elements>
   );
