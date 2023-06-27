@@ -8,7 +8,7 @@ import { withProviders } from '../../../../utils/storybook';
 import { CrudDemoItemListItem, CrudDemoItemListItemProps } from './crudDemoItemListItem.component';
 
 const meta: Meta = {
-  title: 'CrudDemoItem / CrudDemoItemList / CrudDemoItemListItem',
+  title: 'Crud Demo Item / CrudDemoItemList / CrudDemoItemListItem',
   component: CrudDemoItemListItem,
   argTypes: {
     item: {

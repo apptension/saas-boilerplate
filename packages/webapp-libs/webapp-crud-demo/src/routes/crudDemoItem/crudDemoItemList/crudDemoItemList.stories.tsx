@@ -10,7 +10,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'CrudDemoItem / CrudDemoItemList',
+  title: 'Crud Demo Item / CrudDemoItemList',
   component: CrudDemoItemList,
 };
 

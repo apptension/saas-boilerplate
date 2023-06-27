@@ -1,5 +1,5 @@
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
@@ -14,20 +14,19 @@ const defaultItemId = 'test-id';
 const Template: StoryFn = () => {
   return (
     <Routes>
-      <Route
-        path={getLocalePath(RoutesConfig.crudDemoItem.edit)}
-        element={<EditCrudDemoItem />}
-      />
+      <Route path={getLocalePath(RoutesConfig.crudDemoItem.edit)} element={<EditCrudDemoItem />} />
     </Routes>
   );
 };
 
-export default {
-  title: 'CrudDemoItem / EditCrudDemoItem',
+const meta: Meta = {
+  title: 'Crud Demo Item / EditCrudDemoItem',
   component: EditCrudDemoItem,
 };
 
-export const Default = {
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
   render: Template,
 
   decorators: [

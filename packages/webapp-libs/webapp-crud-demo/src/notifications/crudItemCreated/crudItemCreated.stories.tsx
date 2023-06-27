@@ -9,7 +9,7 @@ const Template: StoryFn<CrudItemCreatedProps> = (args) => {
 };
 
 const meta: Meta = {
-  title: 'Notifications/CrudItem/CrudItemCreated',
+  title: 'Crud Demo Item/Notifications/CrudItemCreated',
   component: Template,
 };
 

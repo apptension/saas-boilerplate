@@ -1,5 +1,5 @@
 import { getLocalePath } from '@sb/webapp-core/utils';
-import { StoryFn } from '@storybook/react';
+import { StoryFn, StoryObj } from '@storybook/react';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
 
@@ -20,7 +20,7 @@ const Template: StoryFn = () => {
 };
 
 export default {
-  title: 'CrudDemoItem / CrudDemoItemDetails',
+  title: 'Crud Demo Item / CrudDemoItemDetails',
   component: CrudDemoItemDetails,
 };
 
@@ -29,7 +29,7 @@ const data = {
   name: 'Demo item name',
 };
 
-export const Default = {
+export const Default: StoryObj = {
   render: Template,
 
   decorators: [
