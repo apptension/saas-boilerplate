@@ -27,7 +27,7 @@ export const PaymentConfirm = () => {
         header={<FormattedMessage defaultMessage="Payments" id="Finances / Stripe / Payment confirm / heading" />}
         subheader={
           <FormattedMessage
-            defaultMessage="This is an example of single payment form, like donation"
+            defaultMessage="Example of a single payment form powered by Stripe. You can make donations by selecting an amount and providing credit card details"
             id="Finances / Stripe / Payment confirm / subheading"
           />
         }
