@@ -16,7 +16,12 @@ export const DemoItems = () => {
     <PageLayout>
       <PageHeadline
         header={<FormattedMessage defaultMessage="Contentful items" id="Contentful Items / List header" />}
-        subheader={<FormattedMessage defaultMessage="List of contentful items" id="Contentful Items / List header" />}
+        subheader={
+          <FormattedMessage
+            defaultMessage="Contenful integration makes it easy to view and manage content and media assets such as images."
+            id="Contentful Items / List header"
+          />
+        }
       />
 
       <ul className="w-[100%] [&>*]:border-b [&>*]:border-input [&>*:last-child]:border-none rounded">
