@@ -14,7 +14,7 @@ export const withActiveSubscriptionContext = (StoryComponent: Story) => {
         <Route
           index
           element={
-            <Elements stripe={stripePromise}>
+            <Elements stripe={stripePromise} options={{ locale: 'en' }}>
               <StoryComponent />
             </Elements>
           }

@@ -22,7 +22,7 @@ const Template: StoryFn<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
   const { form } = useApiForm<PaymentFormFields>();
   return (
     <Form {...form}>
-      <Elements stripe={stripePromise}>
+      <Elements stripe={stripePromise} options={{ locale: 'en' }}>
         <StripePaymentMethodSelector {...args} control={form.control} />
       </Elements>
     </Form>

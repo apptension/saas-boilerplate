@@ -33,7 +33,7 @@ export const PaymentConfirm = () => {
         }
       />
 
-      <Elements stripe={stripePromise}>
+      <Elements stripe={stripePromise} options={{ locale: 'en' }}>
         <StripePaymentForm
           onSuccess={() => {
             navigate(generateLocalePath(CoreRoutesConfig.home));

@@ -31,7 +31,7 @@ export const EditPaymentMethod = () => {
         }
       />
 
-      <Elements stripe={stripePromise}>
+      <Elements stripe={stripePromise} options={{ locale: 'en' }}>
         <EditPaymentMethodForm
           onSuccess={() => {
             navigate(generateLocalePath(RoutesConfig.subscriptions.index));
