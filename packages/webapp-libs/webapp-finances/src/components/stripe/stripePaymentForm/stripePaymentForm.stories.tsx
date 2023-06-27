@@ -23,7 +23,7 @@ const Template: StoryFn<StripePaymentFormProps> = (args: StripePaymentFormProps)
 };
 
 const meta: Meta<typeof StripePaymentForm> = {
-  title: 'Shared/Finances/Stripe/StripePaymentForm',
+  title: 'Finances/StripePaymentForm',
   component: StripePaymentForm,
   decorators: [
     withProviders({
