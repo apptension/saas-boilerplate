@@ -242,7 +242,6 @@ module.exports = {
             'introduction/features/cicd',
             'introduction/features/cms',
             'introduction/features/admin',
-            'introduction/features/e2e',
             'introduction/features/graphql',
             'introduction/features/assets',
             'introduction/features/workers',

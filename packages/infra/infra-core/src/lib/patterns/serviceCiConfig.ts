@@ -18,7 +18,6 @@ export enum PnpmWorkspaceFilters {
   CORE = 'core',
   TOOLS = 'tools',
   WEBAPP = 'webapp...',
-  E2E_TESTS = 'e2e-tests^...',
 }
 
 export class ServiceCiConfig extends Construct implements IServiceCiConfig {
