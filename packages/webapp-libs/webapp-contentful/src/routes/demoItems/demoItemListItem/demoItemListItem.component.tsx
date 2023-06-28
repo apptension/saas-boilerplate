@@ -6,7 +6,7 @@ import { Star } from 'lucide-react';
 import { useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
-import { imageProps } from '../../../helpers';
+import { ResizingBehavior, imageProps } from '../../../helpers';
 import { useFavoriteDemoItem } from '../../../hooks';
 
 export type DemoItemListItemProps = {
@@ -22,13 +22,23 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
 
   return (
-    <li className="flex items-center ">
+    <li className="flex items-center p-2">
       <Link
         className="p-8 min-w-0 w-[100%] justify-start hover:no-underline"
         to={generateLocalePath(RoutesConfig.demoItem, { id })}
       >
-        {item.image && <img className="object-cover rounded h-12" {...imageProps(item.image)} role="presentation" />}
-        <p className="text-md px-2 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
+        {item.image && (
+          <div className="bg-black p-2 inline-block rounded-md">
+            <img
+              className="object-cover rounded h-12"
+              {...imageProps(item.image, { size: { width: 50, height: 50 }, resizingBehavior: ResizingBehavior.PAD })}
+              role="presentation"
+            />
+          </div>
+        )}
+        <p className="text-lg text-muted-foreground px-4 overflow-hidden whitespace-nowrap text-ellipsis">
+          {item.title}
+        </p>
       </Link>
 
       <Button

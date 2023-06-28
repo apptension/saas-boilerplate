@@ -15,10 +15,10 @@ export const DemoItems = () => {
   return (
     <PageLayout>
       <PageHeadline
-        header={<FormattedMessage defaultMessage="Contentful items" id="Contentful Items / List header" />}
+        header={<FormattedMessage defaultMessage="Content items" id="Contentful Items / List header" />}
         subheader={
           <FormattedMessage
-            defaultMessage="Contenful integration makes it easy to view and manage content and media assets such as images."
+            defaultMessage="This demo page showcases a dynamic list of items, each managed by Contentful headless CMS. The list not only presents an array of items but also demonstrates how each item can be synchronized with our application's database. This synchronization enables the integration of the application's business logic with the content managed in Contentful. You can interact with the list by clicking the star icon next to each item."
             id="Contentful Items / List header"
           />
         }
