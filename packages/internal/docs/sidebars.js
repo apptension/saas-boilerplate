@@ -16,6 +16,11 @@ module.exports = {
         },
         {
           type: 'link',
+          label: 'What is SaaS Boilerplate',
+          href: '/introduction',
+        },
+        {
+          type: 'link',
           label: 'Working with SaaS Boilerplate',
           href: '/working-with-sb',
         },
@@ -28,11 +33,6 @@ module.exports = {
           type: 'link',
           label: 'API Reference',
           href: '/api-reference',
-        },
-        {
-          type: 'link',
-          label: 'What is SaaS Boilerplate',
-          href: '/introduction',
         },
       ],
     },
@@ -242,7 +242,6 @@ module.exports = {
             'introduction/features/cicd',
             'introduction/features/cms',
             'introduction/features/admin',
-            'introduction/features/e2e',
             'introduction/features/graphql',
             'introduction/features/assets',
             'introduction/features/workers',

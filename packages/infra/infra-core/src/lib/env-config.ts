@@ -24,7 +24,6 @@ declare const process: {
     SB_TOOLS_DOMAIN_VERSION_MATRIX: string;
     SB_BACKEND_BASE_IMAGE: string;
     SB_WORKERS_BASE_IMAGE: string;
-    SB_E2E_TESTS_BASE_IMAGE: string;
   };
 };
 
@@ -70,7 +69,6 @@ interface WebAppConfig {
 interface DockerImages {
   backendBaseImage: string;
   workersBaseImage: string;
-  e2eTestsBaseImage: string;
 }
 
 export interface EnvironmentSettings {
@@ -151,7 +149,6 @@ async function readEnvConfig(): Promise<EnvConfigFileContent> {
     dockerImages: {
       backendBaseImage: process.env.SB_BACKEND_BASE_IMAGE ?? '',
       workersBaseImage: process.env.SB_WORKERS_BASE_IMAGE ?? '',
-      e2eTestsBaseImage: process.env.SB_E2E_TESTS_BASE_IMAGE ?? '',
     },
   };
 }
