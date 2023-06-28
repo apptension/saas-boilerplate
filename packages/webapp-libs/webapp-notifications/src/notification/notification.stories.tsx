@@ -20,7 +20,7 @@ const Template: StoryFn<NotificationProps> = (args: NotificationProps) => {
 };
 
 const meta: Meta<typeof Notification> = {
-  title: 'Shared/Notifications/Notification',
+  title: 'Notifications/Notification',
   component: Notification,
   decorators: [withProviders()],
 };

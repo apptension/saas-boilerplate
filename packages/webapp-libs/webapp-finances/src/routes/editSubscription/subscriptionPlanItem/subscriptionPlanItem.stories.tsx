@@ -70,7 +70,7 @@ const monthlyPlan = subscriptionPlanFactory();
 monthlyPlan.product.name = SubscriptionPlanName.MONTHLY;
 
 const meta: Meta = {
-  title: 'Shared/Subscriptions/SubscriptionPlanItem',
+  title: 'Routes/Subscriptions/SubscriptionPlanItem',
   component: SubscriptionPlanItem,
 };
 

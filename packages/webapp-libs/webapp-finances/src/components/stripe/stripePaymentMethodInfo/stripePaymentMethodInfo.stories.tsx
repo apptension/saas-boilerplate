@@ -22,7 +22,7 @@ const Template: StoryFn<StripePaymentMethodInfoProps> = (args: StripePaymentMeth
 };
 
 const meta: Meta<typeof StripePaymentMethodInfo> = {
-  title: 'Shared/Finances/Stripe/StripePaymentMethodInfo',
+  title: 'Finances/StripePaymentMethodInfo',
   component: StripePaymentMethodInfo,
   decorators: [
     withProviders({

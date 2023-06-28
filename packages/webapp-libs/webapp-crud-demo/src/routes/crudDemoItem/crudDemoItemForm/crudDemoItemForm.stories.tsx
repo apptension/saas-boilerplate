@@ -1,25 +1,20 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
-import {
-  CrudDemoItemForm,
-  CrudDemoItemFormProps,
-} from './crudDemoItemForm.component';
+import { CrudDemoItemForm, CrudDemoItemFormProps } from './crudDemoItemForm.component';
 
-const Template: StoryFn<CrudDemoItemFormProps> = (
-  args: CrudDemoItemFormProps
-) => {
+const Template: StoryFn<CrudDemoItemFormProps> = (args: CrudDemoItemFormProps) => {
   return <CrudDemoItemForm {...args} />;
 };
 
-export default {
-  title: 'CrudDemoItem / CrudDemoItemForm',
-  component: CrudDemoItemForm,
+const meta: Meta = {
+  title: 'Crud Demo Item / CrudDemoItemForm',
+  component: Template,
 };
 
-export const WithInitialData = {
-  render: Template,
+export default meta;
 
+export const WithInitialData: StoryObj<typeof meta> = {
   args: {
     initialData: {
       name: 'initial name',
@@ -29,8 +24,6 @@ export const WithInitialData = {
   decorators: [withProviders({})],
 };
 
-export const WithoutData = {
-  render: Template,
-  args: {},
+export const WithoutData: StoryObj<typeof meta> = {
   decorators: [withProviders({})],
 };

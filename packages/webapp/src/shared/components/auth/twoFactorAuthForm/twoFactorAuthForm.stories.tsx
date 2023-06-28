@@ -7,7 +7,7 @@ const Template: StoryFn<TwoFactorAuthFormProps> = (args) => {
 };
 
 export default {
-  title: 'Shared/TwoFactorAuthForm',
+  title: 'Shared/Auth/TwoFactorAuthForm',
   component: TwoFactorAuthForm,
 };
 

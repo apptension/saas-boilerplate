@@ -1,4 +1,4 @@
 export * from './backButton';
 export * from './button';
 export * from './link';
-export * from './radioButton';
+export * from '../forms/radioButton';

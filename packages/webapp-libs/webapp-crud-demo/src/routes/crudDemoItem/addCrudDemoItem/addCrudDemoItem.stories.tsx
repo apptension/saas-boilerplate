@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react';
+import { StoryFn, StoryObj } from '@storybook/react';
 
 import { withProviders } from '../../../utils/storybook';
 import { AddCrudDemoItem } from './addCrudDemoItem.component';
@@ -8,11 +8,11 @@ const Template: StoryFn = () => {
 };
 
 export default {
-  title: 'CrudDemoItem / AddCrudDemoItem',
+  title: 'Crud Demo Item / AddCrudDemoItem',
   component: AddCrudDemoItem,
 };
 
-export const Default = {
+export const Default: StoryObj = {
   render: Template,
   decorators: [withProviders({})],
 };

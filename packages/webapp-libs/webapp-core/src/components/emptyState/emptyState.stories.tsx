@@ -5,7 +5,7 @@ import { EmptyState } from './emptyState.component';
 type Story = StoryObj<typeof EmptyState>;
 
 const meta: Meta<typeof EmptyState> = {
-  title: 'Shared/EmptyState',
+  title: 'Core/EmptyState',
   component: EmptyState,
 };
 

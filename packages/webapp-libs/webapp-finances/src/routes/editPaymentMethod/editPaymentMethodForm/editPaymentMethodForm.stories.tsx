@@ -17,7 +17,7 @@ const Template: StoryFn<EditPaymentMethodFormProps> = (args: EditPaymentMethodFo
 };
 
 const meta: Meta<typeof EditPaymentMethodForm> = {
-  title: 'Shared/Subscriptions/EditPaymentMethodForm',
+  title: 'Routes/Subscriptions/EditPaymentMethodForm',
   component: EditPaymentMethodForm,
   decorators: [
     withActiveSubscriptionContext,

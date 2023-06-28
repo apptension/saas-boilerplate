@@ -2,9 +2,9 @@ import { VariantProps } from 'class-variance-authority';
 import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
 import * as React from 'react';
 
+import { FormControl, FormItem, FormLabel } from '..';
 import { cn } from '../../../lib/utils';
-import { FormControl, FormItem, FormLabel } from '../../forms';
-import { RadioGroupItem } from '../../forms/radioGroup';
+import { RadioGroupItem } from '../radioGroup';
 import { radioButtonVariants } from './radioButton.styles';
 
 export type RadioButtonProps = ComponentPropsWithoutRef<typeof RadioGroupItem> &

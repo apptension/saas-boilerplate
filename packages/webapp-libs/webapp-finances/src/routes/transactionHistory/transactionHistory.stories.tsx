@@ -10,7 +10,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Routes/TransactionHistory',
+  title: 'Routes/Finances/TransactionHistory',
   component: TransactionHistory,
   decorators: [
     withProviders({

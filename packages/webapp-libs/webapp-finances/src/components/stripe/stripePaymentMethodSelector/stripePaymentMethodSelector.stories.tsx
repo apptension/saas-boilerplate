@@ -30,7 +30,7 @@ const Template: StoryFn<StripePaymentMethodSelectorProps<PaymentFormFields>> = (
 };
 
 const meta: Meta<typeof StripePaymentMethodSelector> = {
-  title: 'Shared/Finances/Stripe/StripePaymentMethodSelector',
+  title: 'Finances/StripePaymentMethodSelector',
   component: StripePaymentMethodSelector,
   decorators: [
     withActiveSubscriptionContext,

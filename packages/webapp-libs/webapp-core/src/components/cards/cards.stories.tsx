@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from './';
 type Story = StoryObj<typeof Card>;
 
 const meta: Meta<typeof Card> = {
-  title: 'Shared/Card',
+  title: 'Core/Card',
   component: Card,
 };
 
