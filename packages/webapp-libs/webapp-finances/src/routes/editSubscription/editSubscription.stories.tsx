@@ -11,7 +11,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Shared/Subscriptions/EditSubscription',
+  title: 'Routes/Subscriptions/EditSubscription',
   component: EditSubscription,
 };
 

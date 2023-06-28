@@ -7,7 +7,7 @@ import { AlertTitle } from './alertTitle';
 type Story = StoryObj<typeof Alert>;
 
 const meta: Meta<typeof Alert> = {
-  title: 'Shared/Alert',
+  title: 'Core/Alert',
   component: Alert,
 };
 
