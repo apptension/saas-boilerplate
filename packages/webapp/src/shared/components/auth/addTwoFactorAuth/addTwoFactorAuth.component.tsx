@@ -93,7 +93,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   }, [commitGenerateOtpMutation]);
 
   return (
-    <div aria-hidden={true} className="w-auto p-2 text-left">
+    <div aria-hidden={true} className="max-h-[92vh] w-auto overflow-y-auto p-2 text-left">
       <div className="px-4">
         <H1 className="text-lg lg:text-xl">
           <FormattedMessage
