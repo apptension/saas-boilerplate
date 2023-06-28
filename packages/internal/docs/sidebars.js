@@ -16,6 +16,11 @@ module.exports = {
         },
         {
           type: 'link',
+          label: 'What is SaaS Boilerplate',
+          href: '/introduction',
+        },
+        {
+          type: 'link',
           label: 'Working with SaaS Boilerplate',
           href: '/working-with-sb',
         },
@@ -28,11 +33,6 @@ module.exports = {
           type: 'link',
           label: 'API Reference',
           href: '/api-reference',
-        },
-        {
-          type: 'link',
-          label: 'What is SaaS Boilerplate',
-          href: '/introduction',
         },
       ],
     },
