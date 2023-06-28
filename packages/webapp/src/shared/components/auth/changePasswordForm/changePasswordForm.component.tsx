@@ -48,7 +48,12 @@ export const ChangePasswordForm = () => {
           />
         </div>
 
-        <div className="flex w-full flex-row flex-wrap gap-4">
+        <div
+          className={cn(
+            { 'gap-8': !!errors.newPassword, 'gap-4': !errors.newPassword },
+            'flex w-full flex-row flex-wrap'
+          )}
+        >
           <Input
             {...register('newPassword', {
               required: {
@@ -110,7 +115,7 @@ export const ChangePasswordForm = () => {
 
         {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
 
-        <Button disabled={loading} type="submit" className="w-full md:w-fit">
+        <Button disabled={loading} type="submit" className={cn({ 'mt-4': !!errors.newPassword }, 'w-full md:w-fit')}>
           <FormattedMessage defaultMessage="Change password" id="Auth / Change password / Submit button" />
         </Button>
       </form>
