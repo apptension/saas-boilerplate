@@ -7,7 +7,7 @@ import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Navigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
@@ -17,6 +17,7 @@ import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoI
 type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
+  const navigate = useNavigate();
   const { id } = useParams<Params>();
   const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id: id ?? '' } });
   const crudDemoItem = data?.crudDemoItem;
@@ -37,6 +38,8 @@ export const EditCrudDemoItem = () => {
       trackEvent('crud', 'edit', id);
 
       toast({ description: successMessage });
+
+      navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },
   });
 
