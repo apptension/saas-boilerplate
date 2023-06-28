@@ -29,8 +29,12 @@ export const DemoItemContent: FC<DemoItemContentProps> = ({ data, routesConfig }
   return (
     <PageLayout>
       <PageHeadline hasBackButton header={item?.title} />
-      <p className="text-base">{item?.description}</p>
-      {item?.image && <img className="max-w-[100%] object-cover" {...imageProps(item.image)} />}
+      {item?.image && (
+        <div className="bg-black p-2 inline-block rounded-md">
+          <img className="max-w-[100%] object-cover" {...imageProps(item.image)} />
+        </div>
+      )}
+      <p className="text-base whitespace-pre-wrap">{item?.description}</p>
     </PageLayout>
   );
 };

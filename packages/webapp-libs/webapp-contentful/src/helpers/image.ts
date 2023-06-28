@@ -29,14 +29,15 @@ interface ImageOptions {
 }
 
 const defaultOptions: ImageOptions = {
-  format: ImageFormat.JPG,
+  format: ImageFormat.PNG,
   quality: 90,
 };
 
 const parseOptions = (overrides: ImageOptions) => {
   const options = mergeDeepRight(defaultOptions, overrides);
+  const formatAdditionalOptions = options.format === ImageFormat.JPG ? { fl: 'progressive' } : {};
   return stringify({
-    fl: 'progressive',
+    ...formatAdditionalOptions,
     fm: options.format,
     q: options.quality,
     fit: options.resizingBehavior,

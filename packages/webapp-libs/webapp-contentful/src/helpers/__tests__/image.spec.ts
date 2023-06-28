@@ -15,12 +15,18 @@ describe('contentful / helpers / image', () => {
         expect(imageProps(image).alt).toEqual('Image title');
       });
 
-      it('should return jpg url with default options', () => {
-        expect(imageProps(image).src).toEqual('http://image.org?fl=progressive&fm=jpg&q=90');
+      it('should return png url with default options', () => {
+        expect(imageProps(image).src).toEqual('http://image.org?fm=png&q=90');
       });
     });
 
     describe('with custom options', () => {
+      it('should return jpg url with fl=progressive options when set format to jpg', () => {
+        expect(imageProps(image, { format: ImageFormat.JPG }).src).toEqual(
+          'http://image.org?fl=progressive&fm=jpg&q=90'
+        );
+      });
+
       it('should return src using custom options', () => {
         const options = {
           format: ImageFormat.WEBP,
@@ -30,7 +36,7 @@ describe('contentful / helpers / image', () => {
           quality: 50,
           resizingBehavior: ResizingBehavior.FILL,
         };
-        expect(imageProps(image, options).src).toEqual('http://image.org?fit=fill&fl=progressive&fm=webp&h=100&q=50');
+        expect(imageProps(image, options).src).toEqual('http://image.org?fit=fill&fm=webp&h=100&q=50');
       });
     });
 
@@ -40,14 +46,14 @@ describe('contentful / helpers / image', () => {
           title: 'Image title',
         };
 
-        expect(imageProps(missingImage).src).toEqual('?fl=progressive&fm=jpg&q=90');
+        expect(imageProps(missingImage).src).toEqual('?fm=png&q=90');
       });
     });
 
     describe('with empty options', () => {
-      it('should return jpg url with default options', () => {
+      it('should return png url with default options', () => {
         const emptyOptions = {};
-        expect(imageProps(image, emptyOptions).src).toEqual('http://image.org?fl=progressive&fm=jpg&q=90');
+        expect(imageProps(image, emptyOptions).src).toEqual('http://image.org?fm=png&q=90');
       });
     });
   });
