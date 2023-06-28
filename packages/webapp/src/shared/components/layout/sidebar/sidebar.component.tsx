@@ -167,6 +167,10 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 </Link>
               </RoleAccess>
 
+              <p className="my-2 ml-2 mt-4 text-sm text-muted-foreground">
+                <FormattedMessage defaultMessage="Static pages" id="Sidebar / static pages" />
+              </p>
+
               <Link
                 className={menuItemClassName}
                 to={generateLocalePath(RoutesConfig.privacyPolicy)}
