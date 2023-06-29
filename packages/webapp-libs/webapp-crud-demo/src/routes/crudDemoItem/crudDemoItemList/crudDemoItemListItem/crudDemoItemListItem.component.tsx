@@ -7,8 +7,9 @@ import { Icon } from '@sb/webapp-core/components/icons';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
+import { useToast } from '@sb/webapp-core/toast';
 import { MouseEvent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../config/routes';
 import { crudDemoItemListItemDeleteMutation, crudDemoItemListItemFragment } from './crudDemoItemListItem.graphql';
@@ -21,6 +22,14 @@ export type CrudDemoItemListItemProps = {
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
+  const { toast } = useToast();
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    id: 'CrudDemoItem form / Success message',
+    defaultMessage: '🎉 Item deleted successfully!',
+  });
+
   const [commitDeleteMutation, { loading }] = useMutation(crudDemoItemListItemDeleteMutation, {
     update(cache, { data }) {
       data?.deleteCrudDemoItem?.deletedIds?.forEach((deletedId) => {
@@ -32,6 +41,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     onCompleted: (data) => {
       const ids = data?.deleteCrudDemoItem?.deletedIds;
       trackEvent('crud', 'delete', ids?.join(', '));
+      toast({ description: successMessage });
     },
   });
 

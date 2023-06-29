@@ -34,7 +34,7 @@ export const AddCrudDemoItem = () => {
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / Success message',
-    defaultMessage: '🎉 Changes saved successfully!',
+    defaultMessage: '🎉 Item added successfully!',
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
