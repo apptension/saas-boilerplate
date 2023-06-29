@@ -24,6 +24,9 @@
     "@apollo/client": "^3.7.9",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
+    "@nx/jest": "^16.3.2",
+    "@nx/js": "^16.3.2",
+    "@nx/react": "^16.3.2",
     "@sentry/react": "^7.17.4",
     "@storybook/cli": "^7.0.23",
     "axios": "^0.27.2",
@@ -59,10 +62,7 @@
     "styled-components": "5.3.6",
     "styled-theming": "2.2.0",
     "tslib": "^2.3.0",
-    "ua-parser-js": "^1.0.32",
-    "@nx/js": "^16.3.2",
-    "@nx/react": "^16.3.2",
-    "@nx/jest": "^16.3.2"
+    "ua-parser-js": "^1.0.32"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
