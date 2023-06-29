@@ -308,7 +308,7 @@ definitions:
           - sonar
     - step: &backendBuildAndTest
         name: 'backend: Build image & run tests'
-        image: atlassian/default-image:3
+        image: atlassian/default-image:4
         size: 2x
         script:
           - *initializeStep
@@ -336,7 +336,7 @@ definitions:
 
     - step: &workersTest
         name: 'async-workers: Lint & test'
-        image: atlassian/default-image:3
+        image: atlassian/default-image:4
         size: 2x
         script:
           - *initializeStep
@@ -363,7 +363,7 @@ definitions:
           - sonar
     - step: &workersBuild
         name: 'async-workers: Build'
-        image: atlassian/default-image:3
+        image: atlassian/default-image:4
         size: 2x
         script:
           - *initializeStep
