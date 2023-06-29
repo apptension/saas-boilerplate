@@ -65,7 +65,7 @@ export const AddCrudDemoItem = () => {
 
       toast({ description: successMessage });
 
-      if (id) navigate(generateLocalePath(RoutesConfig.crudDemoItem.details, { id }));
+      navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },
   });
 
