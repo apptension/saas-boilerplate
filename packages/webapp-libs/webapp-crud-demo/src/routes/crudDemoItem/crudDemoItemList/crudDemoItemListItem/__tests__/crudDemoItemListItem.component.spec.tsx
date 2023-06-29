@@ -126,4 +126,43 @@ describe('CrudDemoItemListItem: Component', () => {
 
     await waitFor(() => expect(trackEvent).toBeCalledWith('crud', 'delete', item.id));
   });
+
+  it('should show success message', async () => {
+    const item = { id: 'test-id', name: 'demo item name' };
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
+        data: {
+          item: {
+            ...item,
+            __typename: 'CrudDemoItemType',
+          },
+        },
+      }),
+      composeMockedQueryResult(crudDemoItemListItemDeleteMutation, {
+        data: {
+          deleteCrudDemoItem: {
+            deletedIds: [item.id],
+            __typename: 'DeleteCrudDemoItemMutationPayload',
+          },
+        },
+        variables: {
+          input: { id: item.id },
+        },
+      }),
+    ];
+
+    render(<Component />, { apolloMocks });
+    expect(await screen.findByText(item.name)).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId(/toggle-button/i));
+    await userEvent.click(screen.getByText(/delete/i));
+
+    await waitFor(() => expect(trackEvent).toBeCalledWith('crud', 'delete', item.id));
+
+    const toast = await screen.findByTestId('toast-1');
+
+    expect(trackEvent).toHaveBeenCalledWith('crud', 'delete', item.id);
+    expect(toast).toHaveTextContent('🎉 Item deleted successfully!');
+  });
 });
