@@ -56,7 +56,7 @@ export const Home = () => {
     },
     {
       title: intl.formatMessage({
-        defaultMessage: 'CMS items',
+        defaultMessage: 'Content items',
         id: 'Home / CMD items / Title',
       }),
       subtitle: intl.formatMessage({
@@ -78,7 +78,7 @@ export const Home = () => {
     },
     {
       title: intl.formatMessage({
-        defaultMessage: 'CRUD Example',
+        defaultMessage: 'CRUD',
         id: 'Home / CRUD / Title',
       }),
       subtitle: intl.formatMessage({
@@ -131,7 +131,12 @@ export const Home = () => {
             <strong>For further assistance:</strong>
             <ol>
               <li>
-                <a target="_blank" className="underline" href="https://github.com/apptension/saas-boilerplate" rel="noreferrer">
+                <a
+                  target="_blank"
+                  className="underline"
+                  href="https://github.com/apptension/saas-boilerplate"
+                  rel="noreferrer"
+                >
                   Visit our GitHub repository
                 </a>
               </li>
