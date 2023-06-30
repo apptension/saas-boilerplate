@@ -1,6 +1,10 @@
 module.exports = {
   bumpFiles: [
     {
+      filename: './package.json',
+      type: 'json',
+    },
+    {
       filename: './packages/webapp/package.json',
       type: 'json',
     },
