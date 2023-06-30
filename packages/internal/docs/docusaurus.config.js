@@ -10,6 +10,15 @@ if (process.env.ALGOLIA_APP_ID) {
   };
 }
 
+let gtag = {};
+if (process.env.GTAG_TRACKING_ID) {
+  gtag = {
+    gtag: {
+      trackingID: process.env.GTAG_TRACKING_ID,
+      anonymizeIP: true,
+    },
+  };
+}
 module.exports = {
   title: 'SaaS Boilerplate by Apptension',
   tagline: 'SaaS Boilerplate is not a boiler on a plate',
@@ -75,6 +84,7 @@ module.exports = {
         theme: {
           customCss: [require.resolve('./src/css/custom.css')],
         },
+        ...gtag,
       },
     ],
   ],
