@@ -28,6 +28,7 @@
   --ifm-font-family-monospace: 'Inter Regular, sans-serif';
 
   --ifm-color-primary: hsl(222.2 47.4% 11.2%);
+  --ifm-color-secondary: hsl(210 40% 96.1%);
   --ifm-background-color: hsl(0 0% 100%);
 
   --ifm-menu-link-padding-vertical: 0.5rem;
@@ -41,6 +42,7 @@ footer {
 html[data-theme='dark'] {
   --ifm-hover-overlay: hsl(216 34% 17%);
   --ifm-color-primary: hsl(210 40% 98%);
+  --ifm-color-secondary: hsl(222.2 47.4% 11.2%);
   --ifm-background-color: hsl(224 71% 4%);
   --ifm-background-surface-color: hsl(223 47% 11%);
 }
@@ -81,9 +83,9 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-searchbox-background: var(--ifm-color-secondary);
   --docsearch-searchbox-focus-background: var(--ifm-color-white);
   /* Hit */
-  --docsearch-hit-color: var(--ifm-font-color-base);
-  --docsearch-hit-active-color: var(--ifm-color-white);
-  --docsearch-hit-background: var(--ifm-color-white);
+  --docsearch-hit-color: var(--ifm-color-primary);
+  --docsearch-hit-active-color: var(--ifm-color-secondary);
+  --docsearch-hit-background: var(--ifm-color-secondary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-color-white);
 }
@@ -98,9 +100,9 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-searchbox-background: var(--ifm-background-color);
   --docsearch-searchbox-focus-background: var(--ifm-color-black);
   /* Hit */
-  --docsearch-hit-color: var(--ifm-font-color-base);
-  --docsearch-hit-active-color: var(--ifm-color-white);
-  --docsearch-hit-background: var(--ifm-color-emphasis-100);
+  --docsearch-hit-color: var(--ifm-color-primary);
+  --docsearch-hit-active-color: var(--ifm-color-secondary);
+  --docsearch-hit-background: var(--ifm-color-secondary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-background-surface-color);
   --docsearch-key-gradient: linear-gradient(
