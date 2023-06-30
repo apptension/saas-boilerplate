@@ -1,25 +1,24 @@
 import { ApolloError } from '@apollo/client';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/form';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { use{{ pascalCase name }}Form } from './{{ camelCase name }}Form.hook';
-import { Buttons, Container, ErrorMessage, Fields, Form, Label } from './{{ camelCase name }}Form.styles';
+import { RoutesConfig } from '../../../config/routes';
+import { use{{ pascalCase name }}Form } from './{{ pascalCase name }}Form.hook';
 
 const MAX_NAME_LENGTH = 255;
 
-export interface {{ pascalCase name }}FormFields {
+export type {{ pascalCase name }}FormFields = {
   name: string;
-}
+};
 
 export type {{ pascalCase name }}FormProps = {
   onSubmit: (formData: {{ pascalCase name }}FormFields) => void;
   loading: boolean;
   initialData?: {{ pascalCase name }}FormFields | null;
   error?: ApolloError;
-}
+};
 
 export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loading }: {{ pascalCase name }}FormProps) => {
   const intl = useIntl();
@@ -30,56 +29,70 @@ export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loadin
       register,
       formState: { errors },
     },
+    form,
     genericError,
     hasGenericErrorOnly,
     handleFormSubmit,
   } = use{{ pascalCase name }}Form({ initialData, onSubmit, error });
 
   return (
-    <Container>
-      <Form onSubmit={handleFormSubmit}>
-        <Fields>
-          <Label>
-            <FormattedMessage defaultMessage="Name:" id="{{ pascalCase name }} Form / Name label" />
-          </Label>
-          <Input
-            {...register('name', {
-              maxLength: {
-                value: MAX_NAME_LENGTH,
-                message: intl.formatMessage({
-                  defaultMessage: 'Name is too long',
-                  id: '{{ pascalCase name }} form / Name max length error',
-                }),
-              },
-              required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'Name is required',
-                  description: '{{ pascalCase name }} form / Name required',
-                }),
-              },
-            })}
-            name="name"
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Name',
-              description: '{{ pascalCase name }} form / Name placeholder',
-            })}
-            error={errors.name?.message}
-          />
+    <Form {...form}>
+      <form className="flex flex-col" onSubmit={handleFormSubmit}>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...register('name', {
+                    maxLength: {
+                      value: MAX_NAME_LENGTH,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Name is too long',
+                        id: '{{ pascalCase name }} form / Name max length error',
+                      }),
+                    },
+                    required: {
+                      value: true,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Name is required',
+                        id: '{{ pascalCase name }} form / Name required',
+                      }),
+                    },
+                  })}
+                  label={intl.formatMessage({
+                    defaultMessage: 'Name:',
+                    id: '{{ pascalCase name }} Form / Name label',
+                  })}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Name',
+                    id: '{{ pascalCase name }} form / Name placeholder',
+                  })}
+                  error={errors.name?.message}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
-          {hasGenericErrorOnly && <ErrorMessage>{genericError}</ErrorMessage>}
-        </Fields>
+        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
 
-        <Buttons>
-          <Link to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} variant={ButtonVariant.SECONDARY}>
+        <div className="mt-6">
+          <Link
+            className="mr-4"
+            to={generateLocalePath(RoutesConfig.{{ pascalCase name }}.list)}
+            variant={ButtonVariant.SECONDARY}
+          >
             <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }} form / Cancel button" />
           </Link>
 
           <Button type="submit" disabled={loading}>
             <FormattedMessage defaultMessage="Save changes" id="{{ pascalCase name }} form / Submit button" />
           </Button>
-        </Buttons>
-      </Form>
-    </Container>
+        </div>
+      </form>
+    </Form>
   );
 };

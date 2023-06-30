@@ -1,9 +1,18 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 
+export const edit{{ pascalCase name }}Query = gql(/* GraphQL */ `
+  query edit{{ pascalCase name }}Query($id: ID!) {
+    {{ pascalCase name }}(id: $id) {
+      id
+      name
+    }
+  }
+`);
+
 export const edit{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
   mutation edit{{ pascalCase name }}ContentMutation($input: Update{{ pascalCase name }}MutationInput!) {
     update{{ pascalCase name }}(input: $input) {
-      {{ camelCase name }} {
+      {{ pascalCase name }} {
         id
         name
       }
