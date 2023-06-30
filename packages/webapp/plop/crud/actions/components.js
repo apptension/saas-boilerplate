@@ -19,11 +19,6 @@ const componentActions = (name, templatePath, routeName = `{{ camelCase name }}`
   },
   {
     type: 'add',
-    path: `src/routes/${routeName}/${name}/${name}.styles.tsx`,
-    templateFile: path.join(templatesPath, `${templatePath}/${templatePath}.styles.hbs`),
-  },
-  {
-    type: 'add',
     path: `src/routes/${routeName}/${name}/index.tsx`,
     templateFile: path.join(templatesPath, `${templatePath}/index.hbs`),
   },
@@ -79,8 +74,13 @@ module.exports = [
   },
   {
     type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.styles.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/itemListItem.styles.hbs`),
+    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropDownMenu/{{ camelCase name }}DropDownMenu.component.tsx`,
+    templateFile: path.join(templatesPath, `itemList/itemListItem/itemDropDownMenu/itemDropDownMenu.hbs`),
+  },
+  {
+    type: 'add',
+    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropDownMenu/index.ts`,
+    templateFile: path.join(templatesPath, `itemList/itemListItem/itemDropDownMenu/index.hbs`),
   },
   {
     type: 'add',

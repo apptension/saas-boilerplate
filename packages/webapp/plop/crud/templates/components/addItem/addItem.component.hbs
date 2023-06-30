@@ -9,9 +9,10 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
-import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form';
+import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
 import { {{ pascalCase name }}FormFields } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
-import { {{ pascalCase name }}ListItemFragment } from '../{{ pascalCase name }}List/{{ pascalCase name }}ListItem';
+import {  {{ camelCase name }}ListItemFragment } from '../{{ pascalCase name }}List/{{ pascalCase name }}List.graphql';
+
 
 export const add{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
   mutation add{{ pascalCase name }}Mutation($input: Create{{ pascalCase name }}MutationInput!) {
@@ -49,7 +50,7 @@ export const Add{{ pascalCase name }} = () => {
             const newItem = {
               node: cache.writeFragment({
                 data: node,
-                fragment: {{ pascalCase name }}ListItemFragment,
+                fragment: {{ camelCase name }}ListItemFragment,
               }),
               __typename: '{{ pascalCase name }}Edge',
             };

@@ -13,6 +13,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List.graphql';
+import { {{ pascalCase name }}DropdownMenu } from './{{ camelCase name }}DropdownMenu';
+
 
 export type {{ pascalCase name }}ListItemProps = {
   item: FragmentType<typeof {{ camelCase name }}ListItemFragment>;
@@ -79,7 +81,7 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
   );
 
   const renderButtonsMenu = () => (
-    <div className="w-40" />
+    <{{ pascalCase name }}DropdownMenu className="w-40" itemId={data.id} handleDelete={handleDelete} loading={loading} />
   );
 
   return (
