@@ -74,7 +74,7 @@ export const CrudDemoItemList = () => {
         subheader={
           <FormattedMessage
             id="CrudDemoItemList / Subheader"
-            defaultMessage="Interactive CRUD samples to explore and understand features"
+            defaultMessage="Interactive CRUD examples to explore and understand features"
           />
         }
       />
