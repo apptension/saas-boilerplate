@@ -3,8 +3,9 @@ const path = require('path');
 const templatesPath = path.join(__dirname, 'templates');
 
 module.exports = (plop) => {
+  const notificationsLibNamespace = '../webapp-libs/webapp-notifications/src';
   const notificationsNamespace = 'src/shared/components/notifications';
-  const notificationDirectory = path.join(notificationsNamespace, 'templates/{{ camelCase name }}');
+  const notificationDirectory = path.join(notificationsNamespace, '{{ camelCase name }}');
 
   plop.setGenerator('notification', {
     description: 'Generate a notification',
@@ -33,27 +34,15 @@ module.exports = (plop) => {
       },
       {
         type: 'modify',
-        path: `${notificationsNamespace}/templates/index.ts`,
+        path: `${notificationsNamespace}/index.ts`,
         pattern: /(\/\/<-- INJECT NOTIFICATION EXPORT -->)/g,
         template: "export { {{ pascalCase name }} } from './{{ camelCase name }}';\n$1",
       },
       {
         type: 'modify',
-        path: `${notificationsNamespace}/notifications.types.ts`,
+        path: `${notificationsLibNamespace}/notifications.types.ts`,
         pattern: /(\/\/<-- INJECT NOTIFICATION TYPE -->)/g,
         template: "{{ constantCase name }} = '{{ constantCase name }}',\n  $1",
-      },
-      {
-        type: 'modify',
-        path: `${notificationsNamespace}/notifications.constants.ts`,
-        pattern: /(\/\/<-- INJECT NOTIFICATION COMPONENT IMPORT -->)/g,
-        template: '{{ pascalCase name }},\n  $1',
-      },
-      {
-        type: 'modify',
-        path: `${notificationsNamespace}/notifications.constants.ts`,
-        pattern: /(\/\/<-- INJECT NOTIFICATION STRATEGY -->)/g,
-        template: '[NotificationTypes.{{ constantCase name }}]: {{ pascalCase name }},\n  $1',
       },
     ],
   });

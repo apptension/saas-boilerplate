@@ -1,13 +1,13 @@
-import { Story } from '@storybook/react';
-import { NotificationTypes } from '../../notifications.types';
+import { NotificationTypes } from '@sb/webapp-notifications';
+import { StoryFn } from '@storybook/react';
 import { {{ pascalCase name }}, {{ pascalCase name }}Props } from './{{ camelCase name }}.component';
 
-const Template: Story<{{ pascalCase name }}Props> = (args) => {
+const Template: StoryFn<{{ pascalCase name }}Props> = (args) => {
   return <{{ pascalCase name }} {...args} />;
 };
 
 export default {
-  title: 'Notifications/{{ pascalCase name }}',
+  title: 'Shared/Notifications/{{ pascalCase name }}',
   component: {{ pascalCase name }},
 };
 
@@ -15,7 +15,9 @@ export const Default = Template.bind({});
 Default.args = {
   type: NotificationTypes.{{ constantCase name }},
   readAt: null,
-  createdAt: '2021-06-17T11:45:33',
+  createdAt: new Date(),
   id: 'mock-uuid',
-  data: {},
+  data: {
+    exampleDataProp: 'exampleDataProp'
+  },
 };

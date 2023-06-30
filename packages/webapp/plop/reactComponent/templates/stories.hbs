@@ -1,12 +1,12 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { {{ pascalCase name }}{{#if hasProps}}, {{ pascalCase name }}Props{{/if}} } from './{{ camelCase name }}.component';
 
 {{#if hasProps}}
-const Template: Story<{{ pascalCase name }}Props> = (args) => {
+const Template: StoryFn<{{ pascalCase name }}Props> = (args) => {
   return <{{ pascalCase name }} {...args} />;
 };
 {{else}}
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return <{{ pascalCase name }} />;
 };
 {{/if}}
