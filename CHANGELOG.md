@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/apptension/aws-boilerplate/compare/2.0.0-alpha.1...2.0.0) (2023-06-30)
+
+### ⚠ BREAKING CHANGES
+
+- Load env variables required to build and deploy the app from AWS SSM Parameter Store instead of .env files (#205)
+- [#174](https://github.com/apptension/aws-boilerplate/issues/174) Implement new UI look based on Radix UI and Tailwindcss ([#254](https://github.com/apptension/aws-boilerplate/issues/254)) ([f0d1ad8](https://github.com/apptension/aws-boilerplate/commit/f0d1ad8432be52beedb471e616053f13afeb9566))
+
+### Features
+
+- Load env variables required to build and deploy the app from AWS SSM Parameter Store instead of .env files ([#205](https://github.com/apptension/aws-boilerplate/issues/205)) ([a3d76b8](https://github.com/apptension/aws-boilerplate/commit/a3d76b8efef250fc834fd2bf87f68e436ffc1dad))
+- [#174](https://github.com/apptension/aws-boilerplate/issues/174) Implement new UI look based on Radix UI and Tailwindcss ([#254](https://github.com/apptension/aws-boilerplate/issues/254)) ([f0d1ad8](https://github.com/apptension/aws-boilerplate/commit/f0d1ad8432be52beedb471e616053f13afeb9566))
+- [#264](https://github.com/apptension/aws-boilerplate/issues/264) Remove E2E tests ([#281](https://github.com/apptension/aws-boilerplate/issues/281)) ([47c3803](https://github.com/apptension/aws-boilerplate/commit/47c3803ec17782b4620558ab99a49834ccffa153))
+- [#279](https://github.com/apptension/aws-boilerplate/issues/279) Style demo items images, add better description of the Contentful integration ([#291](https://github.com/apptension/aws-boilerplate/issues/291)) ([8ea05c1](https://github.com/apptension/aws-boilerplate/commit/8ea05c1106f5f5a63ebf11cd4bf196b604f6b2f9))
+- Adapt plop to new components ([#304](https://github.com/apptension/aws-boilerplate/issues/304)) ([158e57a](https://github.com/apptension/aws-boilerplate/commit/158e57adccae1f44cf31644667e5a7ddefe42c02))
+- Add Algolia search to docs ([#237](https://github.com/apptension/aws-boilerplate/issues/237)) ([7faf4a2](https://github.com/apptension/aws-boilerplate/commit/7faf4a23181b83696126d18995461290724ee68a))
+- Add and sort storybook stories ([#290](https://github.com/apptension/aws-boilerplate/issues/290)) ([efc6f9b](https://github.com/apptension/aws-boilerplate/commit/efc6f9b32c3f8ec3aeb5054346c44b0d7501fe76))
+- Add Gtag tracking to the docs ([#305](https://github.com/apptension/aws-boilerplate/issues/305)) ([272896e](https://github.com/apptension/aws-boilerplate/commit/272896e5b21bcf10746aa5c9b38dea082eb2a261))
+- Change logo in docs ([#283](https://github.com/apptension/aws-boilerplate/issues/283)) ([f2d6682](https://github.com/apptension/aws-boilerplate/commit/f2d6682cb84683177a6b683657897a54a978656e)), closes [#269](https://github.com/apptension/aws-boilerplate/issues/269) [#269](https://github.com/apptension/aws-boilerplate/issues/269)
+- Implement more restrictive permissions for access to SSM parameter store and KMS keys ([#208](https://github.com/apptension/aws-boilerplate/issues/208)) ([44a1842](https://github.com/apptension/aws-boilerplate/commit/44a1842cc39347bc252f2d7a7057afefd3d2ec9e))
+- Replace flake8 with ruff inside workers ([#241](https://github.com/apptension/aws-boilerplate/issues/241)) ([d831176](https://github.com/apptension/aws-boilerplate/commit/d831176acad21ab8c345315a5d1b4792202ed509))
+- Update crud plop ([#307](https://github.com/apptension/aws-boilerplate/issues/307)) ([e268c8f](https://github.com/apptension/aws-boilerplate/commit/e268c8f757c3d1b031f18a93fa66550699fe9383))
+- Update SB logo ([#261](https://github.com/apptension/aws-boilerplate/issues/261)) ([ef67255](https://github.com/apptension/aws-boilerplate/commit/ef67255c14bb2aa16926b89a6bb528f38fb8e521))
+- Upgrade and speed up storybook ([#267](https://github.com/apptension/aws-boilerplate/issues/267)) ([278174f](https://github.com/apptension/aws-boilerplate/commit/278174f9a93bc99936df1fb3c8aa6492ec07939b))
+- Upgrade build CodeBuild images to 7.0 ([#239](https://github.com/apptension/aws-boilerplate/issues/239)) ([6cac2d6](https://github.com/apptension/aws-boilerplate/commit/6cac2d62f401d5804e38bf69a4a09dc060e9cae9))
+
+### Bug Fixes
+
+- [#280](https://github.com/apptension/aws-boilerplate/issues/280) Set `en` locale for Stripe elements instead of default `auto` ([#284](https://github.com/apptension/aws-boilerplate/issues/284)) ([e368efe](https://github.com/apptension/aws-boilerplate/commit/e368efed948b7c7ceedad601ac428c377b14b747))
+- [#297](https://github.com/apptension/aws-boilerplate/issues/297) Fix missing graphql dependency issue ([#302](https://github.com/apptension/aws-boilerplate/issues/302)) ([9ba5d7f](https://github.com/apptension/aws-boilerplate/commit/9ba5d7fdd1055faee06808d634bc80fa0adc483e))
+- Error message overlaps the button [#289](https://github.com/apptension/aws-boilerplate/issues/289) ([#292](https://github.com/apptension/aws-boilerplate/issues/292)) ([826e0f9](https://github.com/apptension/aws-boilerplate/commit/826e0f96132fba0a8bf3c853c0d251f518c6d881))
+- Fix Bitbucket pipelines ([#300](https://github.com/apptension/aws-boilerplate/issues/300)) ([951650a](https://github.com/apptension/aws-boilerplate/commit/951650a45524b02418e530afd1de09f99a72a086))
+- Fix the TS2742 errors by moving some of the dependencies to root package.json ([#201](https://github.com/apptension/aws-boilerplate/issues/201)) ([8eb8816](https://github.com/apptension/aws-boilerplate/commit/8eb8816e3dd4e8e3139bc4fe20db4fc5520fa966))
+- Navigation after editing or adding new crud item ([#296](https://github.com/apptension/aws-boilerplate/issues/296)) ([86f63c0](https://github.com/apptension/aws-boilerplate/commit/86f63c099d52f4e776e1fea6482b914995a9e8b0))
+- Reference tools' env variables via AWS Parameter Store ([#253](https://github.com/apptension/aws-boilerplate/issues/253)) ([fc9d6fc](https://github.com/apptension/aws-boilerplate/commit/fc9d6fc558cbe57fe55f7cd5d142c004cab03b59))
+- Refresh contentful item list page ([#298](https://github.com/apptension/aws-boilerplate/issues/298)) ([66b9b66](https://github.com/apptension/aws-boilerplate/commit/66b9b6648334e7277531f8a4bd78477010a450e2))
+- Scroll on 2FA page - [#288](https://github.com/apptension/aws-boilerplate/issues/288) ([#294](https://github.com/apptension/aws-boilerplate/issues/294)) ([8dd2925](https://github.com/apptension/aws-boilerplate/commit/8dd29259f446df0142faa435b96b38f8318e80af))
+- Squash user migrations and create initial superuser with UserProfile ([#199](https://github.com/apptension/aws-boilerplate/issues/199)) ([1759239](https://github.com/apptension/aws-boilerplate/commit/17592391bf405726b81c3254d803b35b1926f640)), closes [#180](https://github.com/apptension/aws-boilerplate/issues/180)
+- Sync stripe's Product and Price models before initialising subscriptions locally ([#231](https://github.com/apptension/aws-boilerplate/issues/231)) ([1ab9ba4](https://github.com/apptension/aws-boilerplate/commit/1ab9ba46c0a8d3b1714c78e183ce46b81bc32909))
+- Use ECR public images with Pull-Through-Cache inside AWS CodePipeline ([#215](https://github.com/apptension/aws-boilerplate/issues/215)) ([e8be123](https://github.com/apptension/aws-boilerplate/commit/e8be1235cdf94f1207b193a27f2f31d7b7b3ff22))
+
 ## [2.0.0-alpha.1](https://github.com/apptension/saas-boilerplate/compare/2.0.0-alpha.0...2.0.0-alpha.1) (2023-06-12)
 
 ### ⚠ BREAKING CHANGES
