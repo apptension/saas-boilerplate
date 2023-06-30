@@ -6,15 +6,43 @@
  */
 
 /* You can override the default Infima variables here. */
+@font-face {
+  font-family: 'Inter Regular, sans-serif';
+  src: url('../assets/fonts/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter Regular, sans-serif';
+  src: url('../assets/fonts/Inter-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --ifm-color-primary: #0080ff;
-  --ifm-color-primary-dark: #0073e6;
-  --ifm-color-primary-darker: #006dd9;
-  --ifm-color-primary-darkest: #005ab3;
-  --ifm-color-primary-light: #1a8dff;
-  --ifm-color-primary-lighter: #2693ff;
-  --ifm-color-primary-lightest: #4da6ff;
   --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Inter Regular, sans-serif';
+  --ifm-font-family-monospace: 'Inter Regular, sans-serif';
+
+  --ifm-color-primary: hsl(222.2 47.4% 11.2%);
+  --ifm-background-color: hsl(0 0% 100%);
+
+  --ifm-menu-link-padding-vertical: 0.5rem;
+  --ifm-menu-link-padding-horizontal: 1rem;
+}
+
+footer {
+  --ifm-link-color: hsl(0 0% 100%);
+}
+
+html[data-theme='dark'] {
+  --ifm-hover-overlay: hsl(216 34% 17%);
+  --ifm-color-primary: hsl(210 40% 98%);
+  --ifm-background-color: hsl(224 71% 4%);
+  --ifm-background-surface-color: hsl(223 47% 11%);
 }
 
 .docusaurus-highlight-code-line {
