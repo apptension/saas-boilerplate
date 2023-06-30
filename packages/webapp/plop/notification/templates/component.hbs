@@ -1,14 +1,15 @@
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { Notification, NotificationType } from '@sb/webapp-notifications';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
-import { RoutesConfig } from '../../../../../app/config/routes';
-import { Notification } from '../../notification';
-import { NotificationType } from '../../notifications.types';
+import { RoutesConfig } from '../../../../app/config/routes';
 
-export type {{ pascalCase name }}Props = NotificationType<{}>;
+export type {{ pascalCase name }}Props = NotificationType<{
+  exampleDataProp: string;
+}>;
 
-export const {{ pascalCase name }} = ({ data: {}, ...restProps }: {{ pascalCase name }}Props) => {
+export const {{ pascalCase name }} = ({ data, ...restProps }: {{ pascalCase name }}Props) => {
   const generateLocalePath = useGenerateLocalePath();
   const navigate = useNavigate();
 

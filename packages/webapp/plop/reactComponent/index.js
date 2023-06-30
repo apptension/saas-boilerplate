@@ -44,11 +44,6 @@ module.exports = (plop) => {
       },
       {
         type: 'add',
-        path: `${componentDirectory}/{{ camelCase name }}.styles.ts`,
-        templateFile: path.join(templatesPath, 'styles.hbs'),
-      },
-      {
-        type: 'add',
         path: `${componentDirectory}/{{ camelCase name }}.stories.tsx`,
         templateFile: path.join(templatesPath, 'stories.hbs'),
         data: {
