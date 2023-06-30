@@ -11,6 +11,6 @@ module.exports = (plop) => {
         message: 'Name:',
       },
     ],
-    actions: [...moduleActions, ...componentsActions],
+    actions: [...componentsActions, ...moduleActions],
   });
 };

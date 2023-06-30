@@ -1,56 +1,79 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { useSnackbar } from '@sb/webapp-core/snackbar';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Navigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { BackButton } from '../../../shared/components/backButton';
-import {{ pascalCase name }}Form from '../{{ camelCase name }}Form';
-import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
-import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
-import { edit{{ pascalCase name }}Mutation } from './edit{{ pascalCase name }}.graphql';
-import { Container, Header } from './edit{{ pascalCase name }}.styles';
+import { RoutesConfig } from '../../../config/routes';
+import { {{ pascalCase name }}ItemForm } from '../{{ pascalCase name }}ItemForm';
+import { {{ pascalCase name }}ItemFormFields } from '../{{ pascalCase name }}ItemForm/{{ pascalCase name }}ItemForm.component';
+import { edit{{ pascalCase name }}ItemMutation, edit{{ pascalCase name }}ItemQuery } from './edit{{ pascalCase name }}Item.graphql';
 
-export const Edit{{ pascalCase name }} = () => {
-  const { id } = useParams<{ id: string }>();
-  const { itemData, loading } = use{{ pascalCase name }}(id);
+type Params = { id: string };
 
-  const { showMessage } = useSnackbar();
+export const Edit{{ pascalCase name }}Item = () => {
+  const navigate = useNavigate();
+  const { id } = useParams<Params>();
+  const { data, loading } = useQuery(edit{{ pascalCase name }}ItemQuery, { variables: { id: id ?? '' } });
+  const {{ pascalCase name }}Item = data?.{{ pascalCase name }}Item;
+
+  const { toast } = useToast();
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
-    id: '{{ pascalCase name }} form / Success message',
+    id: '{{ pascalCase name }}Item form / Success message',
     defaultMessage: '🎉 Changes saved successfully!',
   });
 
   const generateLocalePath = useGenerateLocalePath();
-  const [commitEdit{{ pascalCase name }}Mutation, { error, loading: loadingMutation }] = useMutation(
-    edit{{ pascalCase name }}Mutation,
-    {
-      onCompleted: () => showMessage(successMessage),
-    }
-  );
+  const [commitEdit{{ pascalCase name }}ItemMutation, { error, loading: loadingMutation }] = useMutation(edit{{ pascalCase name }}ItemMutation, {
+    onCompleted: (data) => {
+      const id = data?.update{{ pascalCase name }}Item?.{{ pascalCase name }}Item?.id;
+
+      trackEvent('crud', 'edit', id);
+
+      toast({ description: successMessage });
+
+      navigate(generateLocalePath(RoutesConfig.{{ pascalCase name }}Item.list));
+    },
+  });
+
   if (loading)
     return (
-      <Container>
-        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </Container>
+      <PageLayout>
+        <div className="flex w-full justify-between items-center">
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-6 w-8" />
+        </div>
+        <Separator />
+        <div className="flex flex-col">
+          <div className="mt-6">
+            <Skeleton className="h-8 w-48 mb-4" />
+            <div className="flex gap-4">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+          </div>
+        </div>
+      </PageLayout>
     );
-  if (!itemData) return <Navigate to={generateLocalePath(RoutesConfig.{{ camelCase name }}.index)} />;
+  if (!{{ pascalCase name }}Item) return <Navigate to={generateLocalePath(RoutesConfig.{{ pascalCase name }}Item.index)} />;
 
-
-  const onFormSubmit = (formData: {{ pascalCase name }}FormFields) => {
-    commitEdit{{ pascalCase name }}Mutation({ variables: { input: { id: itemData.id, name: formData.name } } });
+  const onFormSubmit = (formData: {{ pascalCase name }}ItemFormFields) => {
+    commitEdit{{ pascalCase name }}ItemMutation({ variables: { input: { id: {{ pascalCase name }}Item.id, name: formData.name } } });
   };
-
   return (
-    <Container>
-      <BackButton to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} />
-      <Header>
-        <FormattedMessage defaultMessage="Edit CRUD Example Item" id="Edit{{ pascalCase name }} / Header" />
-      </Header>
-      <{{ pascalCase name }}Form initialData={itemData} loading={loadingMutation} error={error} onSubmit={onFormSubmit} />
-    </Container>
+    <PageLayout>
+      <PageHeadline
+        hasBackButton
+        header={<FormattedMessage defaultMessage="Edit CRUD Example Item" id="Edit{{ pascalCase name }}Item / Header" />}
+      />
+      <{{ pascalCase name }}ItemForm onSubmit={onFormSubmit} initialData={ {{ pascalCase name }}Item} error={error} loading={loadingMutation} />
+    </PageLayout>
   );
 };

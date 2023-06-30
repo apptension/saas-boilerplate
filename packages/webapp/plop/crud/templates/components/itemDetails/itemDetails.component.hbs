@@ -1,29 +1,49 @@
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { FormattedMessage } from 'react-intl';
+import { useQuery } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useParams } from 'react-router';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { BackButton } from '../../../shared/components/backButton';
-import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}';
-import { Container, Header } from './{{ camelCase name }}Details.styles';
+export const {{ pascalCase name }}DetailsQuery = gql(/* GraphQL */ `
+  query {{ pascalCase name }}DetailsQuery($id: ID!) {
+    {{ pascalCase name }}(id: $id) {
+      id
+      name
+    }
+  }
+`);
 
 export const {{ pascalCase name }}Details = () => {
-  const generateLocalePath = useGenerateLocalePath();
-  const { id } = useParams<{ id: string }>();
-  const { itemData, loading } = use{{ pascalCase name }}(id);
+  type Params = {
+    id: string;
+  };
+  const { id } = useParams<keyof Params>() as Params;
+
+  const { loading, data } = useQuery({{ pascalCase name }}DetailsQuery, {
+    variables: {
+      id,
+    },
+  });
 
   if (loading) {
     return (
-      <span>
-        <FormattedMessage defaultMessage="Loading ..." id="Loading message" />
-      </span>
+      <PageLayout>
+        <div className="flex w-full justify-between items-center">
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-6 w-8" />
+        </div>
+        <Separator />
+      </PageLayout>
     );
   }
 
+  const itemData = data?.{{ pascalCase name }};
+
   return (
-    <Container>
-      <BackButton to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} />
-      <Header>{itemData?.name}</Header>
-    </Container>
+    <PageLayout>
+      <PageHeadline hasBackButton header={itemData?.name} />
+    </PageLayout>
   );
 };

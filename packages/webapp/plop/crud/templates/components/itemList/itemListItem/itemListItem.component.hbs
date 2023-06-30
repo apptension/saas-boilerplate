@@ -1,16 +1,18 @@
 import { useMutation } from '@apollo/client';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
-import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { Icon } from '@sb/webapp-core/components/icon';
+import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { Icon } from '@sb/webapp-core/components/icons';
+import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { media } from '@sb/webapp-core/theme';
+import { useToast } from '@sb/webapp-core/toast';
 import { MouseEvent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List.graphql';
-import { Container, InlineButtons, LinkContainer, Text } from './{{ camelCase name }}ListItem.styles';
 
 export type {{ pascalCase name }}ListItemProps = {
   item: FragmentType<typeof {{ camelCase name }}ListItemFragment>;
@@ -18,12 +20,27 @@ export type {{ pascalCase name }}ListItemProps = {
 
 export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}ListItemProps) => {
   const generateLocalePath = useGenerateLocalePath();
-  const data = getFragmentData({{ camelCase name }}ListItemFragment, item);
+  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
+  const { toast } = useToast();
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    id: '{{ pascalCase name }} form / Success message',
+    defaultMessage: '🎉 Item deleted successfully!',
+  });
+
   const [commitDeleteMutation, { loading }] = useMutation({{ camelCase name }}ListItemDeleteMutation, {
     update(cache, { data }) {
-      const deletedId = data?.delete{{ pascalCase name }}?.deletedIds?.[0];
-      const normalizedId = cache.identify({ id: deletedId, __typename: '{{ pascalCase name }}Type' });
-      cache.evict({ id: normalizedId });
+      data?.delete{{ camelCase name }}?.deletedIds?.forEach((deletedId) => {
+        const normalizedId = cache.identify({ id: deletedId, __typename: '{{ camelCase name }}Type' });
+        cache.evict({ id: normalizedId });
+      });
+      cache.gc();
+    },
+    onCompleted: (data) => {
+      const ids = data?.delete{{ camelCase name }}?.deletedIds;
+      trackEvent('crud', 'delete', ids?.join(', '));
+      toast({ description: successMessage });
     },
   });
 
@@ -36,34 +53,48 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
     });
   };
 
+  const data = getFragmentData({{ camelCase name }}ListItemFragment, item);
+
+
   const renderInlineButtons = () => (
-    <InlineButtons>
+    <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
       <Link
-        variant={ButtonVariant.RAW}
+        variant={ButtonVariant.GHOST}
+        className="border"
         to={generateLocalePath(RoutesConfig.{{ camelCase name }}.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
-        <FormattedMessage id="{{ pascalCase name }} list / Edit link" defaultMessage="Edit" />
+        <FormattedMessage id="{{ camelCase name }} list / Edit link" defaultMessage="Edit" />
       </Link>
       <Button
-        variant={ButtonVariant.RAW}
+        variant={ButtonVariant.GHOST}
         onClick={handleDelete}
+        className="border"
         disabled={loading}
         icon={<Icon size={14} icon={deleteIcon} />}
       >
-        <FormattedMessage id="{{ pascalCase name }} list / Delete button" defaultMessage="Delete" />
+        <FormattedMessage id="{{ camelCase name }} list / Delete button" defaultMessage="Delete" />
       </Button>
-    </InlineButtons>
+    </div>
+  );
+
+  const renderButtonsMenu = () => (
+    <div className="w-40" />
   );
 
   return (
-    <Container>
-      <LinkContainer>
-        <Link variant={ButtonVariant.RAW} to={generateLocalePath(RoutesConfig.{{ camelCase name }}.details, { id: data.id })}>
-          <Text>{data.name}</Text>
+    <li className="group dark:hover:text-slate-500">
+      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-secondary hover:text-secondary-foreground dark:hover:text-slate-100">
+        <Link
+          className="border-input transition-colors group-hover:dark:text-slate-100 hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer"
+          to={generateLocalePath(RoutesConfig.{{ camelCase name }}.details, { id: data.id })}
+        >
+          <p className="dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis">
+            {data.name}
+          </p>
         </Link>
-        {renderInlineButtons()}
-      </LinkContainer>
-    </Container>
+        {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+      </div>
+    </li>
   );
 };
