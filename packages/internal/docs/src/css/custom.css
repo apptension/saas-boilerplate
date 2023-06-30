@@ -86,6 +86,8 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-hit-color: var(--ifm-color-primary);
   --docsearch-hit-active-color: var(--ifm-color-secondary);
   --docsearch-hit-background: var(--ifm-color-secondary);
+  /* Highlight */
+  --docsearch-highlight-color: var(--ifm-color-primary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-color-white);
 }
@@ -103,6 +105,8 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-hit-color: var(--ifm-color-primary);
   --docsearch-hit-active-color: var(--ifm-color-secondary);
   --docsearch-hit-background: var(--ifm-color-secondary);
+  /* Highlight */
+  --docsearch-highlight-color: var(--ifm-color-primary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-background-surface-color);
   --docsearch-key-gradient: linear-gradient(
