@@ -4,6 +4,7 @@ import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
 import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
 import { Separator } from '@sb/webapp-core/components/separator';
+import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { ChevronLeft, Trash2 } from 'lucide-react';
 import { isEmpty } from 'ramda';
@@ -40,9 +41,17 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>({
 
   if (loading) {
     return (
-      <span>
-        <FormattedMessage defaultMessage="Loading..." id="Loading message" />
-      </span>
+      <div className="space-y-2 w-full">
+        <Skeleton className="w-32 h-8" />
+        <Skeleton className="w-full h-8" />
+        <div className="flex w-full">
+          <Skeleton className="w-full h-8" />
+          <div className="w-[15%] flex ml-2">
+            <Skeleton className="w-full h-8" />
+            <Skeleton className="ml-2 w-full h-8" />
+          </div>
+        </div>
+      </div>
     );
   }
 
