@@ -21,12 +21,9 @@ export const CancelSubscription = () => {
 
   return (
     <PageLayout className="flex space-y-4 flex-col">
-      <div className="flex">
-        <BackButton />
-      </div>
-
       <PageHeadline
         header={<FormattedMessage defaultMessage="Current plan info" id="Cancel subscription / Current plan header" />}
+        hasBackButton
         subheader={
           <FormattedMessage
             defaultMessage="Details about your current plan"
@@ -36,19 +33,19 @@ export const CancelSubscription = () => {
       />
 
       <Paragraph className="flex flex-row">
-        <FormattedMessage defaultMessage="Active plan:" id="Cancel subscription / Active plan" />
-        <ParagraphBold>{activeSubscriptionPlan?.name}</ParagraphBold>
+        <FormattedMessage defaultMessage="Active plan: " id="Cancel subscription / Active plan" />
+        <ParagraphBold className="ml-1">{activeSubscriptionPlan?.name}</ParagraphBold>
       </Paragraph>
 
       <Paragraph className="flex flex-row mt-0">
         <FormattedMessage defaultMessage="Active plan price:" id="Cancel subscription / Active plan price" />
-        <ParagraphBold>{activeSubscriptionPlan?.price} USD</ParagraphBold>
+        <ParagraphBold className="ml-1">{activeSubscriptionPlan?.price} USD</ParagraphBold>
       </Paragraph>
 
       {activeSubscriptionRenewalDate && (
         <Paragraph className="flex flex-row">
-          <FormattedMessage defaultMessage="Next renewal / expiry:" id="Cancel subscription / Next renewal" />
-          <ParagraphBold>
+          <FormattedMessage defaultMessage="Next renewal / expiry: " id="Cancel subscription / Next renewal" />
+          <ParagraphBold className="ml-1">
             <FormattedDate value={activeSubscriptionRenewalDate} />
           </ParagraphBold>
         </Paragraph>
