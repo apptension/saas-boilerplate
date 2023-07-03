@@ -137,19 +137,19 @@ html[data-theme='dark'] .header-github-link:before {
   color: var(--docsearch-muted-color);
 }
 
-a {
+p a {
   color: #1634cf;
 }
 
-a:hover {
+p a:hover {
   color: #1634cf;
 }
 
-[data-theme='dark'] a {
+[data-theme='dark'] p a {
   color: #8192e4;
 }
 
-[data-theme='dark'] a:hover {
+[data-theme='dark'] p a:hover {
   color: #8192e4;
 }
 
