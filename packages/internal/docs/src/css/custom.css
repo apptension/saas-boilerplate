@@ -6,15 +6,42 @@
  */
 
 /* You can override the default Infima variables here. */
+@font-face {
+  font-family: 'Inter Regular, sans-serif';
+  src: url('../assets/fonts/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter Regular, sans-serif';
+  src: url('../assets/fonts/Inter-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --ifm-color-primary: #0080ff;
-  --ifm-color-primary-dark: #0073e6;
-  --ifm-color-primary-darker: #006dd9;
-  --ifm-color-primary-darkest: #005ab3;
-  --ifm-color-primary-light: #1a8dff;
-  --ifm-color-primary-lighter: #2693ff;
-  --ifm-color-primary-lightest: #4da6ff;
   --ifm-code-font-size: 95%;
+  --aa-font-family: 'Inter Regular, sans-serif';
+  --ifm-font-family-base: 'Inter Regular, sans-serif';
+  --ifm-font-family-monospace: 'Inter Regular, sans-serif';
+
+  --ifm-color-primary: hsl(222.2 47.4% 11.2%);
+  --ifm-color-secondary: hsl(210 40% 96.1%);
+  --ifm-background-color: hsl(0 0% 100%);
+
+  --ifm-menu-link-padding-vertical: 0.5rem;
+  --ifm-menu-link-padding-horizontal: 1rem;
+}
+
+html[data-theme='dark'] {
+  --ifm-hover-overlay: hsl(216 34% 17%);
+  --ifm-color-primary: hsl(210 40% 98%);
+  --ifm-color-secondary: hsl(222.2 47.4% 11.2%);
+  --ifm-background-color: hsl(224 71% 4%);
+  --ifm-background-surface-color: hsl(223 47% 11%);
 }
 
 .docusaurus-highlight-code-line {
@@ -42,6 +69,12 @@ html[data-theme='dark'] .header-github-link:before {
     no-repeat;
 }
 
+@media (min-width: 800px) {
+  .DocSearch {
+    min-width: 250px;
+  }
+}
+
 [data-theme='light'] .DocSearch {
   /* --docsearch-primary-color: var(--ifm-color-primary); */
   /* --docsearch-text-color: var(--ifm-font-color-base); */
@@ -53,9 +86,11 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-searchbox-background: var(--ifm-color-secondary);
   --docsearch-searchbox-focus-background: var(--ifm-color-white);
   /* Hit */
-  --docsearch-hit-color: var(--ifm-font-color-base);
-  --docsearch-hit-active-color: var(--ifm-color-white);
-  --docsearch-hit-background: var(--ifm-color-white);
+  --docsearch-hit-color: var(--ifm-color-primary);
+  --docsearch-hit-active-color: var(--ifm-color-secondary);
+  --docsearch-hit-background: var(--ifm-color-secondary);
+  /* Highlight */
+  --docsearch-highlight-color: var(--ifm-color-primary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-color-white);
 }
@@ -70,9 +105,11 @@ html[data-theme='dark'] .header-github-link:before {
   --docsearch-searchbox-background: var(--ifm-background-color);
   --docsearch-searchbox-focus-background: var(--ifm-color-black);
   /* Hit */
-  --docsearch-hit-color: var(--ifm-font-color-base);
-  --docsearch-hit-active-color: var(--ifm-color-white);
-  --docsearch-hit-background: var(--ifm-color-emphasis-100);
+  --docsearch-hit-color: var(--ifm-color-primary);
+  --docsearch-hit-active-color: var(--ifm-color-secondary);
+  --docsearch-hit-background: var(--ifm-color-secondary);
+  /* Highlight */
+  --docsearch-highlight-color: var(--ifm-color-primary);
   /* Footer */
   --docsearch-footer-background: var(--ifm-background-surface-color);
   --docsearch-key-gradient: linear-gradient(
@@ -80,4 +117,46 @@ html[data-theme='dark'] .header-github-link:before {
     var(--ifm-color-emphasis-200) 0%,
     var(--ifm-color-emphasis-100) 100%
   );
+}
+
+[data-theme='light'] .DocSearch .DocSearch-Button-Key {
+  box-shadow: none;
+  background: white;
+}
+
+[data-theme='light'] .DocSearch .DocSearch-Search-Icon {
+  color: var(--docsearch-muted-color);
+}
+
+[data-theme='dark'] .DocSearch .DocSearch-Button-Key {
+  box-shadow: none;
+  background: var(--ifm-color-secondary);
+}
+
+[data-theme='dark'] .DocSearch .DocSearch-Search-Icon {
+  color: var(--docsearch-muted-color);
+}
+
+p a {
+  color: #1634cf;
+}
+
+p a:hover {
+  color: #1634cf;
+}
+
+[data-theme='dark'] p a {
+  color: #8192e4;
+}
+
+[data-theme='dark'] p a:hover {
+  color: #8192e4;
+}
+
+.footer__copyright {
+  color: white;
+}
+
+.footer__copyright a {
+  color: white;
 }
