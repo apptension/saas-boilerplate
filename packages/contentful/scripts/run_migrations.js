@@ -1,8 +1,8 @@
-const fs = require("fs").promises;
-const path = require("path");
-const { runMigration } = require("contentful-migration");
+const fs = require('fs').promises;
+const path = require('path');
+const { runMigration } = require('contentful-migration');
 
-require("dotenv").config();
+require('dotenv').config();
 
 const defaultOptions = {
   spaceId: process.env.CONTENTFUL_SPACE_ID,
@@ -19,7 +19,7 @@ async function runFile(filePath) {
 }
 
 async function run() {
-  const migrationsDir = path.join(__dirname, "../migrations");
+  const migrationsDir = path.join(__dirname, '../migrations');
   const files = await fs.readdir(migrationsDir);
   const sortedFiles = files.sort((a, b) => {
     const extractNum = (name) => parseInt(name.substring(0, 4), 10);
@@ -34,7 +34,7 @@ async function run() {
 (async () => {
   try {
     await run();
-    console.log("Migration Done!");
+    console.log('Migration Done!');
   } catch (e) {
     console.error(e);
   }
