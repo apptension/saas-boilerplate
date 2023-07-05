@@ -1,15 +1,27 @@
-[//]: # '<p align="center">[NICE LOGO HERE]</p>'
+<p align="center">
+  <img src="./.github/images/sb-logo.svg" alt="SaaS Boilerplate" style="max-width: 600px; width: 100%;">
+</p>
 
-<h3 style="text-align: center">
-Build SaaS products faster in React, Django and AWS.
-<br/>
-A complete SaaS starter kit based on a battle-tested stack with out-of-the-box features every SaaS should have
-</h3>
+<h1 align="center">Build SaaS products faster in React, Django and AWS.</h1>
+<h2 align="center">A complete SaaS starter kit based on a battle-tested stack with out-of-the-box features every SaaS should have</h2>
 
-[![Version](https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
-[![License](https://img.shields.io/github/license/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
-[![Twitter Follow](https://img.shields.io/twitter/follow/apptension?style=for-the-badge&logo=twitter)](https://twitter.com/apptension)
-[![Discord](https://img.shields.io/discord/1122849885335597088?style=for-the-badge&logo=discord)](https://discord.gg/J6bz3BUQ)
+<p align="center">
+  <a href="https://github.com/apptension/saas-boilerplate">
+    <img src="https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge" alt="Version">
+  </a>
+
+  <a href="https://github.com/apptension/saas-boilerplate">
+    <img src="https://img.shields.io/github/license/apptension/saas-boilerplate?style=for-the-badge" alt="License">
+  </a>
+
+  <a href="https://twitter.com/apptension">
+    <img src="https://img.shields.io/twitter/follow/apptension?style=for-the-badge&logo=twitter" alt="Follow Us on Twitter">
+  </a>
+
+  <a href="https://discord.gg/J6bz3BUQ">
+    <img src="https://img.shields.io/discord/1122849885335597088?style=for-the-badge&logo=discord" alt="Chat with us on Discord">
+  </a>
+</p>
 
 ---
 
