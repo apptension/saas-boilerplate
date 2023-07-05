@@ -26,7 +26,7 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logo.svg',
+  favicon: 'img/favicon.png',
   organizationName: 'Apptension',
   projectName: 'saas-boilerplate',
   themeConfig: {
@@ -40,6 +40,7 @@ module.exports = {
       logo: {
         alt: 'SaaS Boilerplate by Apptension',
         src: 'img/logo.svg',
+        srcDark: 'img/logoDark.svg',
       },
       items: [
         {

@@ -74,7 +74,11 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   defaultMessage: 'Go back home',
                 })}
               >
-                {theme === Themes.DARK ? <HeaderLogoIcon /> : <HeaderLogoDarkIcon />}
+                {theme === Themes.DARK ? (
+                  <HeaderLogoIcon className="h-14 w-52" />
+                ) : (
+                  <HeaderLogoDarkIcon className="h-14 w-52" />
+                )}
               </Link>
             </div>
 
