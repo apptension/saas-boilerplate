@@ -8,6 +8,8 @@ A complete SaaS starter kit based on a battle-tested stack with out-of-the-box f
 
 [![Version](https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
 [![License](https://img.shields.io/github/license/apptension/saas-boilerplate?style=for-the-badge)](https://github.com/apptension/saas-boilerplate)
+[![Twitter Follow](https://img.shields.io/twitter/follow/apptension?style=for-the-badge&logo=twitter)](https://twitter.com/apptension)
+[![Discord](https://img.shields.io/discord/1122849885335597088?style=for-the-badge&logo=discord)](https://discord.gg/J6bz3BUQ)
 
 ---
 
@@ -211,5 +213,7 @@ SaaS Boilerplate is licensed under the [MIT License](./LICENSE).
 We welcome contributions from anyone interested in improving SaaS Boilerplate. Please keep in mind that this project follows a [Code of Conduct](./CODE_OF_CONDUCT.md) to ensure a welcoming community for all.
 
 For more detailed information on how to contribute to this project, please refer to our [Contributing Guide](./CONTRIBUTING.md).
+
+If you have any questions about contributing, please join our [Discord server](https://discord.gg/J6bz3BUQ) - we are happy to help you!
 
 Thank you for considering contributing to SaaS Boilerplate!
