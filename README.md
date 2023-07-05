@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./.github/images/sb-logo.svg" alt="SaaS Boilerplate" style="max-width: 600px; width: 100%;">
+  <img src="./.github/images/sb-logo.svg" alt="SaaS Boilerplate" width="600">
 </p>
 
 <h1 align="center">Build SaaS products faster in React, Django and AWS.</h1>
