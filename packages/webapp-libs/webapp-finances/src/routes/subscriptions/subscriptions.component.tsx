@@ -1,15 +1,17 @@
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
-import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
-import { PaymentMethodContent } from './paymentMethod.content';
-import { SubscriptionsContent } from './subscriptions.content';
-import { TransactionsHistoryContent } from './transactionsHistory.content';
+import { RoutesConfig } from '../../config/routes';
+import { useActiveSubscriptionQueryLoader } from '../../hooks';
 
 export const Subscriptions = () => {
-  const { allPaymentMethods, activeSubscription } = useActiveSubscriptionDetails();
+  const location = useLocation();
+  const generateLocalePath = useGenerateLocalePath();
+  const activeSubscriptionData = useActiveSubscriptionQueryLoader();
 
   return (
     <PageLayout>
@@ -22,73 +24,26 @@ export const Subscriptions = () => {
           />
         }
       />
-      <Tabs defaultValue="currentSubscription">
+      <Tabs defaultValue={location.pathname}>
         <TabsList className="flex flex-col sm:flex-row h-full sm:h-10 sm:w-fit w-full">
-          <TabsTrigger value="currentSubscription">
-            <FormattedMessage defaultMessage="Current subscription" id="My subscription / Current subscription" />
-          </TabsTrigger>
-          <TabsTrigger value="paymentMethod">
-            <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods" />
-          </TabsTrigger>
-          <TabsTrigger value="transactionHistory">
-            <FormattedMessage defaultMessage="Transaction history" id="My subscription / Transaction history" />
-          </TabsTrigger>
+          <Link to={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
+              <FormattedMessage defaultMessage="Current subscription" id="My subscription / Current subscription" />
+            </TabsTrigger>
+          </Link>
+          <Link to={generateLocalePath(RoutesConfig.paymentMethods.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.paymentMethods.index)}>
+              <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods" />
+            </TabsTrigger>
+          </Link>
+          <Link to={generateLocalePath(RoutesConfig.transactionHistory.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.transactionHistory.index)}>
+              <FormattedMessage defaultMessage="Transaction history" id="My subscription / Transaction history" />
+            </TabsTrigger>
+          </Link>
         </TabsList>
 
-        <TabsContent value="currentSubscription">
-          <div className="space-y-6 pt-4">
-            <PageHeadline
-              header={
-                <FormattedMessage
-                  defaultMessage="Current subscription"
-                  id="My subscription / Current subscription header"
-                />
-              }
-              subheader={
-                <FormattedMessage
-                  defaultMessage="Manage your subscription"
-                  id="My subscription / Current subscription subheader"
-                />
-              }
-            />
-            <SubscriptionsContent activeSubscription={activeSubscription} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="paymentMethod">
-          <div className="space-y-6 pt-4">
-            <PageHeadline
-              header={
-                <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />
-              }
-              subheader={
-                <FormattedMessage
-                  defaultMessage="Manage your payment methods in application"
-                  id="My subscription / Payment methods subheader"
-                />
-              }
-            />
-
-            <div>
-              <PaymentMethodContent allPaymentMethods={allPaymentMethods} />
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="transactionHistory">
-          <div className="space-y-6 pt-4">
-            <PageHeadline
-              header={<FormattedMessage defaultMessage="History" id="My subscription / History header" />}
-              subheader={
-                <FormattedMessage defaultMessage="View transaction history" id="My subscription / History subheader" />
-              }
-            />
-
-            <div>
-              <TransactionsHistoryContent />
-            </div>
-          </div>
-        </TabsContent>
+        <Outlet context={{ ...activeSubscriptionData }} />
       </Tabs>
     </PageLayout>
   );

@@ -8,8 +8,11 @@ import {
   EditPaymentMethod,
   EditSubscription,
   PaymentConfirm,
+  PaymentMethodContent,
   Subscriptions,
+  SubscriptionsContent,
   TransactionHistory,
+  TransactionsHistoryContent,
 } from '@sb/webapp-finances/routes';
 import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
 import { IntlProvider } from 'react-intl';
@@ -46,13 +49,17 @@ export const App = () => {
           <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
           <Route element={<ActiveSubscriptionContext />}>
-            <Route path={RoutesConfig.subscriptions.index} element={<Subscriptions />} />
-            <Route path={RoutesConfig.subscriptions.changePlan} element={<EditSubscription />} />
-            <Route path={RoutesConfig.subscriptions.paymentMethod} element={<EditPaymentMethod />} />
-            <Route path={RoutesConfig.subscriptions.cancel} element={<CancelSubscription />} />
+            <Route element={<Subscriptions />}>
+              <Route index path={RoutesConfig.currentSubscriptions.index} element={<SubscriptionsContent />} />
+              <Route path={RoutesConfig.paymentMethods.index} element={<PaymentMethodContent />} />
+              <Route path={RoutesConfig.transactionHistory.index} element={<TransactionsHistoryContent />} />
+            </Route>
+            <Route path={RoutesConfig.currentSubscriptions.edit} element={<EditSubscription />} />
+            <Route path={RoutesConfig.currentSubscriptions.cancel} element={<CancelSubscription />} />
+            <Route path={RoutesConfig.paymentMethods.edit} element={<EditPaymentMethod />} />
           </Route>
-          <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
-          <Route path={RoutesConfig.finances.history} element={<TransactionHistory />} />
+          <Route path={RoutesConfig.transactionHistory.paymentConfirm} element={<PaymentConfirm />} />
+          <Route path={RoutesConfig.transactionHistory.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
           <Route path="*" element={<NotFound />} />

@@ -30,7 +30,7 @@ export const Home = () => {
         defaultMessage: 'Example of single payment form.',
         id: 'Home / Payments / Subtitle',
       }),
-      link: generateLocalePath(RoutesConfig.finances.paymentConfirm),
+      link: generateLocalePath(RoutesConfig.transactionHistory.paymentConfirm),
     },
     {
       title: intl.formatMessage({
@@ -41,7 +41,7 @@ export const Home = () => {
         defaultMessage: 'Example of subscription management.',
         id: 'Home / Subscriptions / Subtitle',
       }),
-      link: generateLocalePath(RoutesConfig.subscriptions.index),
+      link: generateLocalePath(RoutesConfig.currentSubscriptions.index),
     },
     {
       title: intl.formatMessage({

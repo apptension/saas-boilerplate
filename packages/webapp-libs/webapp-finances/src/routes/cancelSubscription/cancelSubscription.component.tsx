@@ -1,4 +1,4 @@
-import { BackButton, Button } from '@sb/webapp-core/components/buttons';
+import { Button } from '@sb/webapp-core/components/buttons';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
