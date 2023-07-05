@@ -24,7 +24,7 @@ export const Subscriptions = () => {
           />
         }
       />
-      <Tabs defaultValue={location.pathname}>
+      <Tabs value={location.pathname}>
         <TabsList className="flex flex-col sm:flex-row h-full sm:h-10 sm:w-fit w-full">
           <Link to={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
             <TabsTrigger value={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>

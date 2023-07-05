@@ -1,7 +1,7 @@
 import { nestedPath } from '@sb/webapp-core/utils';
 
 export const RoutesConfig = {
-  currentSubscriptions: nestedPath('subscriptions/current-subscriptions', {
+  currentSubscriptions: nestedPath('subscriptions/current-subscription', {
     edit: 'edit',
     cancel: 'cancel',
   }),
