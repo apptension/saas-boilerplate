@@ -70,5 +70,5 @@ body:
           required: true
         - label: Check that there isn't [already an issue](https://github.com/apptension/saas-boilerplate/issues) that reports the same bug to avoid creating a duplicate.
           required: true
-        - label: Check that this is a concrete bug. For Q&A open a [GitHub Discussion](https://github.com/apptension/saas-boilerplate/discussions) or join our [Discord Chat Server](https://discord.gg/J6bz3BUQ).
+        - label: Check that this is a concrete bug. For Q&A open a [GitHub Discussion](https://github.com/apptension/saas-boilerplate/discussions) or join our [Discord Chat Server](https://discord.apptension.com).
           required: true

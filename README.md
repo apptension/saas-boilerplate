@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/twitter/follow/apptension?style=for-the-badge&logo=twitter" alt="Follow Us on Twitter">
   </a>
 
-  <a href="https://discord.gg/J6bz3BUQ">
+  <a href="https://discord.apptension.com">
     <img src="https://img.shields.io/discord/1122849885335597088?style=for-the-badge&logo=discord" alt="Chat with us on Discord">
   </a>
 </p>
@@ -226,6 +226,6 @@ We welcome contributions from anyone interested in improving SaaS Boilerplate. P
 
 For more detailed information on how to contribute to this project, please refer to our [Contributing Guide](./CONTRIBUTING.md).
 
-If you have any questions about contributing, please join our [Discord server](https://discord.gg/J6bz3BUQ) - we are happy to help you!
+If you have any questions about contributing, please join our [Discord server](https://discord.apptension.com) - we are happy to help you!
 
 Thank you for considering contributing to SaaS Boilerplate!

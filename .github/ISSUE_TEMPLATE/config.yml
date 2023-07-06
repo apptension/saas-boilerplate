@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Discord Chat
-    url: https://discord.gg/J6bz3BUQ
+    url: https://discord.apptension.com
     about: Ask questions and discuss with other SaaS Boilerplate users.
   - name: Questions & Discussions
     url: https://github.com/apptension/saas-boilerplate/discussions
