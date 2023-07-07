@@ -69,7 +69,7 @@ const resolveSubscriptionCancelMutation = (errors?: GraphQLError[]) => {
   });
 };
 
-const routePath = RoutesConfig.subscriptions.list;
+const routePath = RoutesConfig.subscriptions.currentSubscription.cancel;
 
 const Component = () => {
   return (

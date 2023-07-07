@@ -1,8 +1,4 @@
-import {
-  Subscription,
-  SubscriptionPlanName,
-  Subscription as SubscriptionType,
-} from '@sb/webapp-api-client/api/subscription/types';
+import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
 import {
   paymentMethodFactory,
   subscriptionFactory,
@@ -10,20 +6,22 @@ import {
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
+import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { ActiveSubscriptionContext } from '../../../components/activeSubscriptionContext';
+import { RoutesConfig } from '../../../config/routes';
+import { CurrentSubscriptionContent, PaymentMethodContent, TransactionsHistoryContent } from '../../../routes';
 import {
   fillActivePlanDetailsQuery,
-  fillAllPaymentsMethodsQuery,
   fillAllStripeChargesQuery,
   fillSubscriptionScheduleQuery,
   fillSubscriptionScheduleQueryWithPhases,
 } from '../../../tests/factories';
-import { render } from '../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { Subscriptions } from '../currentSubscription.component';
 
 const paymentMethodsMock = [paymentMethodFactory()];
@@ -69,12 +67,31 @@ const EDIT_PLACEHOLDER_ID = 'edit';
 const Component = () => (
   <Routes>
     <Route element={<ActiveSubscriptionContext />}>
-      <Route index element={<Subscriptions />} />
-      <Route path="/en/subscriptions/cancel" element={<span data-testid={CANCEL_PLACEHOLDER_ID} />} />
-      <Route path="/en/subscriptions/edit" element={<span data-testid={EDIT_PLACEHOLDER_ID} />} />
+      <Route element={<Subscriptions />}>
+        <Route index path={getLocalePath(RoutesConfig.subscriptions.index)} element={<CurrentSubscriptionContent />} />
+        <Route
+          path={getLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}
+          element={<PaymentMethodContent />}
+        />
+        <Route
+          path={getLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}
+          element={<TransactionsHistoryContent />}
+        />
+      </Route>
+      <Route
+        path={RoutesConfig.subscriptions.currentSubscription.getLocalePath('cancel')}
+        element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
+      />
+      <Route
+        path={RoutesConfig.subscriptions.currentSubscription.getLocalePath('edit')}
+        element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
+      />
     </Route>
   </Routes>
 );
+
+const currentSubscriptionTabPath = RoutesConfig.subscriptions.index;
+const currentSubscriptionTabRouterProps = createMockRouterProps(currentSubscriptionTabPath);
 
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
@@ -82,6 +99,7 @@ describe('Subscriptions: Component', () => {
 
     render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      routerProps: currentSubscriptionTabRouterProps,
     });
 
     expect(await screen.findByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
@@ -95,6 +113,7 @@ describe('Subscriptions: Component', () => {
 
     const { waitForApolloMocks } = render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock),
+      routerProps: currentSubscriptionTabRouterProps,
     });
 
     await waitForApolloMocks();
@@ -110,6 +129,7 @@ describe('Subscriptions: Component', () => {
 
       render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        routerProps: currentSubscriptionTabRouterProps,
       });
 
       expect(await screen.findByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
@@ -117,7 +137,7 @@ describe('Subscriptions: Component', () => {
 
     it('should not render cancellation date', async () => {
       const requestMock = resolveSubscriptionDetailsQuery();
-      render(<Component />, { apolloMocks: append(requestMock) });
+      render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
       expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
     });
@@ -129,6 +149,7 @@ describe('Subscriptions: Component', () => {
 
       render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        routerProps: currentSubscriptionTabRouterProps,
       });
 
       expect(await screen.findByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
@@ -136,7 +157,7 @@ describe('Subscriptions: Component', () => {
 
     it('should not render next renewal date', async () => {
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
-      render(<Component />, { apolloMocks: append(requestMock) });
+      render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
       expect(screen.queryByText(/next renewal/gi)).not.toBeInTheDocument();
     });
@@ -148,6 +169,7 @@ describe('Subscriptions: Component', () => {
 
       render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        routerProps: currentSubscriptionTabRouterProps,
       });
 
       await userEvent.click(await screen.findByText(/edit subscription/i));
@@ -158,7 +180,7 @@ describe('Subscriptions: Component', () => {
   describe('cancel subscription button', () => {
     it('should be hidden if subscription is already canceled', async () => {
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
-      render(<Component />, { apolloMocks: append(requestMock) });
+      render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
@@ -173,7 +195,7 @@ describe('Subscriptions: Component', () => {
       ];
 
       const requestMock = fillSubscriptionScheduleQueryWithPhases(phases);
-      render(<Component />, { apolloMocks: append(requestMock) });
+      render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
       expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
     });
@@ -185,6 +207,7 @@ describe('Subscriptions: Component', () => {
 
       render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        routerProps: currentSubscriptionTabRouterProps,
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
@@ -198,6 +221,7 @@ describe('Subscriptions: Component', () => {
 
       const { waitForApolloMocks } = render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+        routerProps: currentSubscriptionTabRouterProps,
       });
       await waitForApolloMocks();
 
@@ -221,6 +245,7 @@ describe('Subscriptions: Component', () => {
 
       render(<Component />, {
         apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        routerProps: currentSubscriptionTabRouterProps,
       });
 
       expect(
