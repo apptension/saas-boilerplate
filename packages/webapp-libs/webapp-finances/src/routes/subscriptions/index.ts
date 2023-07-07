@@ -1,1 +1,1 @@
-export { Subscriptions as default } from './subscriptions.component';
+export { Subscriptions as default } from './currentSubscription.component';

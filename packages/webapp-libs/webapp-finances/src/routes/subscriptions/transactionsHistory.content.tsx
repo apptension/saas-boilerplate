@@ -15,7 +15,7 @@ const TransactionsHistoryContent = () => {
   const length = data?.allCharges?.edges?.length ?? 0;
 
   return (
-    <TabsContent value={generateLocalePath(RoutesConfig.transactionHistory.index)}>
+    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}>
       <div className="space-y-6 pt-4">
         <PageHeadline
           header={<FormattedMessage defaultMessage="History" id="My subscription / History header" />}
@@ -33,7 +33,7 @@ const TransactionsHistoryContent = () => {
           </div>
         ) : (
           <div>
-            <Link to={generateLocalePath(RoutesConfig.transactionHistory.history)} variant="default">
+            <Link to={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.history)} variant="default">
               <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
             </Link>
           </div>

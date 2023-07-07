@@ -27,7 +27,7 @@ const SubscriptionsContent = () => {
   } = useActiveSubscriptionDetailsData(activeSubscription);
 
   return (
-    <TabsContent value={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
+    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.index)}>
       <div className="space-y-6 pt-4">
         <PageHeadline
           header={
@@ -111,12 +111,18 @@ const SubscriptionsContent = () => {
             </CardContent>
           </Card>
           <div className="flex flex-col sm:flex-row gap-6">
-            <Link to={generateLocalePath(RoutesConfig.currentSubscriptions.edit)} variant={ButtonVariant.PRIMARY}>
+            <Link
+              to={generateLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
+              variant={ButtonVariant.PRIMARY}
+            >
               <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
             </Link>
 
             {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
-              <Link to={generateLocalePath(RoutesConfig.currentSubscriptions.cancel)} variant={ButtonVariant.SECONDARY}>
+              <Link
+                to={generateLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
+                variant={ButtonVariant.SECONDARY}
+              >
                 <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
               </Link>
             )}

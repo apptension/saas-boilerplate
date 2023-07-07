@@ -26,18 +26,18 @@ export const Subscriptions = () => {
       />
       <Tabs value={location.pathname}>
         <TabsList className="flex flex-col sm:flex-row h-full sm:h-10 sm:w-fit w-full">
-          <Link to={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
-            <TabsTrigger value={generateLocalePath(RoutesConfig.currentSubscriptions.index)}>
+          <Link to={generateLocalePath(RoutesConfig.subscriptions.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.subscriptions.index)}>
               <FormattedMessage defaultMessage="Current subscription" id="My subscription / Current subscription" />
             </TabsTrigger>
           </Link>
-          <Link to={generateLocalePath(RoutesConfig.paymentMethods.index)}>
-            <TabsTrigger value={generateLocalePath(RoutesConfig.paymentMethods.index)}>
+          <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}>
               <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods" />
             </TabsTrigger>
           </Link>
-          <Link to={generateLocalePath(RoutesConfig.transactionHistory.index)}>
-            <TabsTrigger value={generateLocalePath(RoutesConfig.transactionHistory.index)}>
+          <Link to={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}>
+            <TabsTrigger value={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}>
               <FormattedMessage defaultMessage="Transaction history" id="My subscription / Transaction history" />
             </TabsTrigger>
           </Link>

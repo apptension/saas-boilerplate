@@ -100,7 +100,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateLocalePath(RoutesConfig.transactionHistory.paymentConfirm)}
+                  to={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.paymentConfirm)}
                   onClick={closeSidebar}
                   navLink
                 >
@@ -110,8 +110,8 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
               <RoleAccess>
                 <Link
-                  className={menuItemClassName({ isActive: pathname.includes('subscriptions') })}
-                  to={generateLocalePath(RoutesConfig.currentSubscriptions.index)}
+                  className={menuItemClassName}
+                  to={generateLocalePath(RoutesConfig.subscriptions.index)}
                   onClick={closeSidebar}
                   navLink
                 >

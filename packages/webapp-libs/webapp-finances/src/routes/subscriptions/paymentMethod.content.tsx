@@ -52,7 +52,7 @@ const PaymentMethodContent = () => {
   );
 
   return (
-    <TabsContent value={generateLocalePath(RoutesConfig.paymentMethods.index)}>
+    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}>
       <div className="space-y-6 pt-4">
         <PageHeadline
           header={<FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />}
@@ -68,7 +68,7 @@ const PaymentMethodContent = () => {
           <div className="space-y-3">
             {defaultMethod && renderCardDetails()}
             {paymentMethods.length === 0 && renderEmptyList()}
-            <Link to={generateLocalePath(RoutesConfig.paymentMethods.edit)} variant="default">
+            <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
               {paymentMethods.length ? (
                 <FormattedMessage
                   defaultMessage="Edit payment methods"

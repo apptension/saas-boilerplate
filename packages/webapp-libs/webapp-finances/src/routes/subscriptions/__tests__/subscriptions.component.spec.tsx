@@ -24,7 +24,7 @@ import {
   fillSubscriptionScheduleQueryWithPhases,
 } from '../../../tests/factories';
 import { render } from '../../../tests/utils/rendering';
-import { Subscriptions } from '../subscriptions.component';
+import { Subscriptions } from '../currentSubscription.component';
 
 const paymentMethodsMock = [paymentMethodFactory()];
 

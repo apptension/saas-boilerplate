@@ -5,12 +5,12 @@ import { Documents } from '@sb/webapp-documents/routes';
 import { ActiveSubscriptionContext } from '@sb/webapp-finances/components/activeSubscriptionContext';
 import {
   CancelSubscription,
+  CurrentSubscriptionContent,
   EditPaymentMethod,
   EditSubscription,
   PaymentConfirm,
   PaymentMethodContent,
   Subscriptions,
-  SubscriptionsContent,
   TransactionHistory,
   TransactionsHistoryContent,
 } from '@sb/webapp-finances/routes';
@@ -50,16 +50,19 @@ export const App = () => {
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
           <Route element={<ActiveSubscriptionContext />}>
             <Route element={<Subscriptions />}>
-              <Route index path={RoutesConfig.currentSubscriptions.index} element={<SubscriptionsContent />} />
-              <Route path={RoutesConfig.paymentMethods.index} element={<PaymentMethodContent />} />
-              <Route path={RoutesConfig.transactionHistory.index} element={<TransactionsHistoryContent />} />
+              <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
+              <Route path={RoutesConfig.subscriptions.paymentMethods.index} element={<PaymentMethodContent />} />
+              <Route
+                path={RoutesConfig.subscriptions.transactionHistory.index}
+                element={<TransactionsHistoryContent />}
+              />
             </Route>
-            <Route path={RoutesConfig.currentSubscriptions.edit} element={<EditSubscription />} />
-            <Route path={RoutesConfig.currentSubscriptions.cancel} element={<CancelSubscription />} />
-            <Route path={RoutesConfig.paymentMethods.edit} element={<EditPaymentMethod />} />
+            <Route path={RoutesConfig.subscriptions.currentSubscription.edit} element={<EditSubscription />} />
+            <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
+            <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
           </Route>
-          <Route path={RoutesConfig.transactionHistory.paymentConfirm} element={<PaymentConfirm />} />
-          <Route path={RoutesConfig.transactionHistory.history} element={<TransactionHistory />} />
+          <Route path={RoutesConfig.subscriptions.transactionHistory.paymentConfirm} element={<PaymentConfirm />} />
+          <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
           <Route path="*" element={<NotFound />} />
