@@ -6,12 +6,12 @@ import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { PlusCircle , ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
-import { useCrudDemoPaginationQuery } from '@sb/webapp-crud-demo/hooks';
+import { usePaginationQuery } from '@sb/webapp-crud-demo/hooks/useCrudDemoPaginatioQuery/useCrudDemoPaginationQuery.hook';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
   query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {
@@ -35,10 +35,14 @@ export const CRUD_ITEMS_PER_PAGE = 8;
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = useCrudDemoPaginationQuery({
-    variables: {
-      first: CRUD_ITEMS_PER_PAGE,
+
+  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginationQuery(crudDemoItemListQuery, {
+    hookOptions: {
+      variables: {
+        first: CRUD_ITEMS_PER_PAGE,
+      },
     },
+    dataKey: 'allCrudDemoItems',
   });
 
   const renderList = () => {
