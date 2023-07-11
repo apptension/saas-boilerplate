@@ -1,6 +1,6 @@
 import { QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
+import { useCallback, useEffect, useState } from 'react';
 import { Exact, InputMaybe } from '@sb/webapp-api-client/graphql';
-import { useEffect, useState } from 'react';
 
 type CursorsInput = Exact<{
   first?: InputMaybe<number> | undefined;
@@ -18,45 +18,41 @@ export const usePaginationQuery = <T extends TypedDocumentNode>(
     dataKey: keyof ExtractGeneric<T>;
   }
 ) => {
-  const [cachedCursrors, setCachedCursors] = useState<Array<string>>([]);
+  const [cachedCursors, setCachedCursors] = useState<Array<string>>([]);
   const [hasPrevious, setHasPrevious] = useState<boolean>(false);
   const [hasNext, setHasNext] = useState<boolean>(false);
-
   const { data, loading, fetchMore } = useQuery<ExtractGeneric<T>, CursorsInput>(query, options.hookOptions);
 
   useEffect(() => {
-    setHasPrevious(cachedCursrors.length === 0);
+    setHasPrevious(cachedCursors.length > 0);
     setHasNext(data?.[options.dataKey]?.pageInfo.hasNextPage ?? false);
-  }, [data]);
+  }, [data, cachedCursors.length, options.dataKey]);
 
-  const loadNext = () => {
+  const loadNext = useCallback(() => {
     if (data) {
-      const p = data[options.dataKey];
-
-      if (p) {
-        const { endCursor } = p.pageInfo;
-
+      const queryData = data[options.dataKey];
+      if (queryData) {
+        const { endCursor } = queryData.pageInfo;
         if (endCursor) {
           setCachedCursors((prev) => [...prev, endCursor]);
+          fetchMore({
+            variables: {
+              after: endCursor,
+            },
+            updateQuery: (_, { fetchMoreResult }) => {
+              return fetchMoreResult;
+            },
+          });
         }
-        fetchMore({
-          variables: {
-            after: endCursor,
-          },
-          updateQuery: (_, { fetchMoreResult }) => {
-            return fetchMoreResult;
-          },
-        });
       }
     }
-  };
+  }, [data, setCachedCursors, fetchMore, options.dataKey]);
 
-  const loadPrevious = () => {
-    const newCachedCursors = cachedCursrors.slice(0, -1);
-
+  const loadPrevious = useCallback(() => {
+    const newCachedCursors = cachedCursors.slice(0, -1);
     setCachedCursors(newCachedCursors);
-
     const lastEndCursor = newCachedCursors.length > 0 ? newCachedCursors[newCachedCursors.length - 1] : undefined;
+
     fetchMore({
       variables: {
         after: lastEndCursor,
@@ -65,7 +61,7 @@ export const usePaginationQuery = <T extends TypedDocumentNode>(
         return fetchMoreResult;
       },
     });
-  };
+  }, [cachedCursors, setCachedCursors, fetchMore]);
 
   return { data, loading, hasNext, hasPrevious, loadNext, loadPrevious };
 };

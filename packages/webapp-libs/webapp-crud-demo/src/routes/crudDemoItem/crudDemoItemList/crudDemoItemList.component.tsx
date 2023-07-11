@@ -1,9 +1,9 @@
 import { gql } from '@sb/webapp-api-client/graphql';
+import { usePaginationQuery } from '@sb/webapp-api-client/hooks';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
-import { usePaginationQuery } from '@sb/webapp-crud-demo/hooks/useCrudDemoPaginatioQuery/useCrudDemoPaginationQuery.hook';
+import { Skeleton } from './skeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
   query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {
@@ -104,37 +104,13 @@ export const CrudDemoItemList = () => {
       </Link>
 
       {loading ? (
-        <Card>
-          <CardContent>
-            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li:last-child]:border-none">
-              <li className="py-16">
-                <div className="flex items-center justify-between w-full min-w-15 p-4">
-                  <Skeleton className="w-48 h-4" />
-                  <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
-                    <Skeleton className="w-16 h-8" />
-                    <Skeleton className="w-16 h-8" />
-                  </div>
-                </div>
-              </li>
-
-              <li className="py-16">
-                <div className="flex items-center justify-between w-full min-w-15 p-4">
-                  <Skeleton className="w-64 h-4" />
-                  <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
-                    <Skeleton className="w-16 h-8" />
-                    <Skeleton className="w-16 h-8" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+        <Skeleton />
       ) : (
         <>
           {renderList()}
           <div className="flex justify-end w-full gap-4">
             <Button
-              disabled={hasPrevious}
+              disabled={!hasPrevious}
               variant="outline"
               onClick={() => {
                 loadPrevious();
