@@ -1,30 +1,35 @@
 import fastify from 'fastify';
-import WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 import Cookies from 'cookies';
 import jwtDecode from 'jwt-decode';
 import { nanoid } from 'nanoid';
 
 import { Api } from './api.js';
 
-const connectionsMap = {}
+const connectionsMap = {};
 
-const wss = new WebSocket.Server({ clientTracking: true, noServer: true });
+const wss = new WebSocketServer({ clientTracking: true, noServer: true });
 const app = fastify({
   logger: {
-    prettyPrint: true,
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+      },
+    },
   },
 });
 
 app.server.on('upgrade', async (request, socket, head) => {
-  app.log.info("Upgrade connection");
+  app.log.info('Upgrade connection');
   const cookies = new Cookies(request, null);
-  const token = cookies.get("token");
+  const token = cookies.get('token');
   let userId = null;
   try {
-    const userData = jwtDecode(token)
+    const userData = jwtDecode(token);
     userId = userData?.['user_id'] ?? null;
   } catch (e) {
-    app.log.error("Unable to get user id from upgrade request");
+    app.log.error('Unable to get user id from upgrade request');
   }
   if (!userId) {
     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
@@ -33,7 +38,7 @@ app.server.on('upgrade', async (request, socket, head) => {
     try {
       const connectionId = nanoid(32);
       await Api.connect(userId, connectionId);
-      wss.handleUpgrade(request, socket, head, ws => {
+      wss.handleUpgrade(request, socket, head, (ws) => {
         ws.connectionId = connectionId;
         connectionsMap[connectionId] = { userId, ws };
         wss.emit('connection', ws, request);
@@ -47,12 +52,14 @@ app.server.on('upgrade', async (request, socket, head) => {
 });
 
 app.post('/:connectionId', async (request, reply) => {
-  connectionsMap[request.params.connectionId]?.ws.send(JSON.stringify(request.body));
+  connectionsMap[request.params.connectionId]?.ws.send(
+    JSON.stringify(request.body)
+  );
   return {};
 });
 
-wss.on('connection', ws => {
-  ws.on("close", async () => {
+wss.on('connection', (ws) => {
+  ws.on('close', async () => {
     try {
       delete connectionsMap[ws.connectionId];
       await Api.disconnect(ws.connectionId);
@@ -60,7 +67,7 @@ wss.on('connection', ws => {
       app.log.error(e);
     }
   });
-  ws.on("message", async data => {
+  ws.on('message', async (data) => {
     try {
       await Api.message(ws.connectionId, data);
     } catch (e) {
