@@ -1,5 +1,5 @@
 import { CrudDemoItemType } from '../../graphql';
-import { crudDemoItemListItemTestQuery } from '../../hooks/usePaginationQuery/__tests__/usePaginationQuery.hook.spec';
+import { crudDemoItemPaginationListTestQuery } from '../../hooks/usePaginationQuery/__tests__/usePaginationQuery.hook.spec';
 import { composeMockedPaginatedListQueryResult, createDeepFactory, makeId } from '../utils';
 
 export const crudDemoItemFactory = createDeepFactory<CrudDemoItemType>(() => ({
@@ -13,7 +13,7 @@ export const fillCrudDemoItemPaginationListQuery = (
   variables?: Record<string, any>
 ) => {
   return composeMockedPaginatedListQueryResult(
-    crudDemoItemListItemTestQuery,
+    crudDemoItemPaginationListTestQuery,
     'allCrudDemoItems',
     'CrudDemoItemType',
     {
