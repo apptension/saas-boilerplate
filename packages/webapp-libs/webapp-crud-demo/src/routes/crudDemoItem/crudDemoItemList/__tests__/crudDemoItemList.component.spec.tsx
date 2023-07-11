@@ -1,11 +1,14 @@
-import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import {
+  crudDemoItemFactory,
+  fillCommonQueryWithUser,
+  fillCrudDemoItemPaginationListQuery,
+} from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../config/routes';
-import { fillCrudDemoItemListQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 
@@ -17,19 +20,26 @@ describe('CrudDemoItemList: Component', () => {
     </Routes>
   );
 
+  const allItems = [...Array(2)].map((_, i) =>
+    crudDemoItemFactory({
+      id: `item-${i + 1}`,
+      name: `${i + 1} item`,
+    })
+  );
+
   it('should render all items', async () => {
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.list);
 
-    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemListQuery()];
+    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemPaginationListQuery(allItems, {}, { first: 8 })];
     render(<Component />, { routerProps, apolloMocks });
 
-    expect(await screen.findByText('First item')).toBeInTheDocument();
-    expect(await screen.findByText('Second item')).toBeInTheDocument();
+    expect(await screen.findByText('1 item')).toBeInTheDocument();
+    expect(await screen.findByText('2 item')).toBeInTheDocument();
   });
 
   it('should render link to add new item form', async () => {
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.list);
-    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemListQuery()];
+    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemPaginationListQuery(allItems, {}, { first: 8 })];
 
     render(<Component />, { routerProps, apolloMocks });
 
