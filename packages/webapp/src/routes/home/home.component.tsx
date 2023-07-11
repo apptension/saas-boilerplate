@@ -41,7 +41,7 @@ export const Home = () => {
         defaultMessage: 'Example of subscription management.',
         id: 'Home / Subscriptions / Subtitle',
       }),
-      link: generateLocalePath(RoutesConfig.subscriptions.index),
+      link: generateLocalePath(RoutesConfig.subscriptions.currentSubscription.index),
     },
     {
       title: intl.formatMessage({

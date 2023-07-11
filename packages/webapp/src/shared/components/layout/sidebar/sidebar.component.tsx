@@ -10,6 +10,7 @@ import { media } from '@sb/webapp-core/theme';
 import { X } from 'lucide-react';
 import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useLocation } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { HeaderLogoDarkIcon, HeaderLogoIcon } from '../../../../images/icons';
@@ -20,6 +21,7 @@ import { LayoutContext } from '../layout.context';
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
   const { theme } = useTheme();
+  const { pathname } = useLocation();
   const generateLocalePath = useGenerateLocalePath();
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
@@ -30,6 +32,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
     cn(buttonVariants({ variant: 'ghost' }), 'justify-start', {
       'bg-accent text-accent-foreground': isActive,
     });
+
   return (
     <>
       <div

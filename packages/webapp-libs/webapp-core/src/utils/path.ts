@@ -1,6 +1,15 @@
-import { map } from 'ramda';
+import { is, map } from 'ramda';
 
 export const getLocalePath = (p: string) => `/:lang/${p}`;
+
+const assignGetLocalePath =
+  <T>(paths: Partial<T>) =>
+  (route: keyof T) => {
+    if (typeof paths[route] !== 'string') {
+      throw Error('Invalid route');
+    }
+    return getLocalePath(paths[route] as string);
+  };
 
 /**
  * Helper function to define typed nested route config
@@ -51,8 +60,16 @@ export const getLocalePath = (p: string) => `/:lang/${p}`;
  * }
  * ```
  */
-export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<T, string>) => {
-  const absoluteNestedUrls = map<Record<T, string>, Record<T, string>>((value) => root + '/' + value, nestedRoutes);
+export const nestedPath = <T extends object>(root: string, nestedRoutes: T) => {
+  const absoluteUrlsMapper = (value: any) => {
+    if (is(Object, value)) {
+      return mapRoot(root, value);
+    } else {
+      return root + '/' + value;
+    }
+  };
+
+  const absoluteNestedUrls = map<T, T>(absoluteUrlsMapper, nestedRoutes);
   const paths = {
     index: `${root}/*`,
     ...absoluteNestedUrls,
@@ -60,7 +77,21 @@ export const nestedPath = <T extends string>(root: string, nestedRoutes: Record<
 
   return {
     ...paths,
-    getRelativeUrl: (route: T) => nestedRoutes[route],
-    getLocalePath: (route: T) => getLocalePath(paths[route]),
+    getRelativeUrl: (route: keyof T) => nestedRoutes[route],
+    getLocalePath: assignGetLocalePath<T>(paths),
+  };
+};
+
+const mapRoot = <N>(root: string, obj: N): N => {
+  const override: Partial<N> = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'string') {
+      override[key] = (root + '/' + obj[key]) as N[Extract<keyof N, string>];
+    }
+  }
+  return {
+    ...obj,
+    ...override,
+    getLocalePath: assignGetLocalePath<N>(override),
   };
 };

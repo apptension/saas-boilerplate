@@ -3,7 +3,7 @@ import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { fillAllStripeChargesQuery, fillSubscriptionScheduleQueryWithPhases } from '../../tests/factories';
 import { withActiveSubscriptionContext, withProviders } from '../../utils/storybook';
-import { Subscriptions } from './subscriptions.component';
+import { Subscriptions } from './currentSubscription.component';
 
 const Template: StoryFn = () => {
   return <Subscriptions />;

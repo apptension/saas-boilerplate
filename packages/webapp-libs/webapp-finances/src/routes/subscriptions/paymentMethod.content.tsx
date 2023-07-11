@@ -1,21 +1,22 @@
 import { useQuery } from '@apollo/client';
-import { StripeSubscriptionQueryQuery, getFragmentData } from '@sb/webapp-api-client/graphql';
+import { getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
+import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { TabsContent } from '@sb/webapp-core/components/tabs';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';
 
+import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
 import { StripePaymentMethodInfo } from '../../components/stripe/stripePaymentMethodInfo';
 import { RoutesConfig } from '../../config/routes';
 import { subscriptionActivePlanDetailsQuery, subscriptionActiveSubscriptionFragment } from '../../hooks';
 
-export type PaymentMethodContentProps = {
-  allPaymentMethods?: StripeSubscriptionQueryQuery['allPaymentMethods'];
-};
-
-export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContentProps) => {
+const PaymentMethodContent = () => {
   const generateLocalePath = useGenerateLocalePath();
+
+  const { allPaymentMethods } = useActiveSubscriptionDetails();
 
   const { data } = useQuery(subscriptionActivePlanDetailsQuery);
   const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, data?.activeSubscription);
@@ -51,16 +52,40 @@ export const PaymentMethodContent = ({ allPaymentMethods }: PaymentMethodContent
   );
 
   return (
-    <div className="space-y-3">
-      {defaultMethod && renderCardDetails()}
-      {paymentMethods.length === 0 && renderEmptyList()}
-      <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethod)} variant="default">
-        {paymentMethods.length ? (
-          <FormattedMessage defaultMessage="Edit payment methods" id="My subscription / Edit payment method button" />
-        ) : (
-          <FormattedMessage defaultMessage="Add payment methods" id="My subscription / Add payment method button" />
-        )}
-      </Link>
-    </div>
+    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}>
+      <div className="space-y-6 pt-4">
+        <PageHeadline
+          header={<FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />}
+          subheader={
+            <FormattedMessage
+              defaultMessage="Manage your payment methods in application"
+              id="My subscription / Payment methods subheader"
+            />
+          }
+        />
+
+        <div>
+          <div className="space-y-3">
+            {defaultMethod && renderCardDetails()}
+            {paymentMethods.length === 0 && renderEmptyList()}
+            <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
+              {paymentMethods.length ? (
+                <FormattedMessage
+                  defaultMessage="Edit payment methods"
+                  id="My subscription / Edit payment method button"
+                />
+              ) : (
+                <FormattedMessage
+                  defaultMessage="Add payment methods"
+                  id="My subscription / Add payment method button"
+                />
+              )}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </TabsContent>
   );
 };
+
+export default PaymentMethodContent;
