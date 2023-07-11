@@ -1,16 +1,17 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 import { usePaginationQuery } from '@sb/webapp-api-client/hooks';
-import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
+import { Pagination } from './pagination';
 import { Skeleton } from './skeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
@@ -108,26 +109,7 @@ export const CrudDemoItemList = () => {
       ) : (
         <>
           {renderList()}
-          <div className="flex justify-end w-full gap-4">
-            <Button
-              disabled={!hasPrevious}
-              variant="outline"
-              onClick={() => {
-                loadPrevious();
-              }}
-            >
-              <ChevronLeft />
-            </Button>
-            <Button
-              disabled={!hasNext}
-              variant="outline"
-              onClick={() => {
-                loadNext();
-              }}
-            >
-              <ChevronRight />
-            </Button>
-          </div>
+          <Pagination hasNext={hasNext} hasPrevious={hasPrevious} loadNext={loadNext} loadPrevious={loadPrevious} />
         </>
       )}
     </PageLayout>
