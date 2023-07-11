@@ -61,7 +61,7 @@ export const App = () => {
             <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
             <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
           </Route>
-          <Route path={RoutesConfig.subscriptions.transactionHistory.paymentConfirm} element={<PaymentConfirm />} />
+          <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
           <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />

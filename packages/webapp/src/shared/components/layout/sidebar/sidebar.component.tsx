@@ -100,7 +100,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateLocalePath(RoutesConfig.subscriptions.transactionHistory.paymentConfirm)}
+                  to={generateLocalePath(RoutesConfig.finances.paymentConfirm)}
                   onClick={closeSidebar}
                   navLink
                 >
