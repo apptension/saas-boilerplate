@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 import Cookies from 'cookies';
 import jwtDecode from 'jwt-decode';
 import { nanoid } from 'nanoid';
@@ -8,7 +8,7 @@ import { Api } from './api.js';
 
 const connectionsMap = {};
 
-const wss = new WebSocket.Server({ clientTracking: true, noServer: true });
+const wss = new WebSocketServer({ clientTracking: true, noServer: true });
 const app = fastify({
   logger: {
     transport: {
