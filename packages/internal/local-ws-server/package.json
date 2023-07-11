@@ -9,11 +9,11 @@
     "start": "nodemon index.js"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.4.0",
     "cookies": "^0.8.0",
     "fastify": "^4.19.2",
     "jwt-decode": "^3.1.2",
-    "nanoid": "^3.3.6",
+    "nanoid": "^4.0.2",
     "pino-pretty": "^10.0.1",
     "ws": "^7.5.2"
   },
