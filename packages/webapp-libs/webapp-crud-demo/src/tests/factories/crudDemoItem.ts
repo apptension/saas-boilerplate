@@ -1,4 +1,11 @@
-import { composeMockedListQueryResult, composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { CrudDemoItemType } from '@sb/webapp-api-client';
+import {
+  composeMockedListQueryResult,
+  composeMockedPaginatedListQueryResult,
+  composeMockedQueryResult,
+  createDeepFactory,
+  makeId,
+} from '@sb/webapp-api-client/tests/utils';
 
 import { crudDemoItemDetailsQuery } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
 import { crudDemoItemListQuery } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
@@ -41,4 +48,30 @@ export const fillCrudDemoItemListQuery = (
   return composeMockedListQueryResult(crudDemoItemListQuery, 'allCrudDemoItems', 'CrudDemoItemType', {
     data,
   });
+};
+
+export const crudDemoItemFactory = createDeepFactory<CrudDemoItemType>(() => ({
+  id: makeId(32),
+  name: 'Crud Demo Item Mock Name',
+}));
+
+export const fillCrudDemoItemPaginationListQuery = (
+  items: Array<Partial<CrudDemoItemType>> = [],
+  additionalData?: Record<string, any>,
+  variables?: Record<string, any>
+) => {
+  return composeMockedPaginatedListQueryResult(
+    crudDemoItemListQuery,
+    'allCrudDemoItems',
+    'CrudDemoItemType',
+    {
+      data: items,
+      variables: variables,
+      additionalData,
+    },
+    {
+      endCursor: 'test',
+      hasNextPage: false,
+    }
+  );
 };
