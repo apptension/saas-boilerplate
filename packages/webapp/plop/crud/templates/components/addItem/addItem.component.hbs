@@ -8,7 +8,7 @@ import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
-import { RoutesConfig } from '../../../config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
 import { {{ pascalCase name }}FormFields } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
 import {  {{ camelCase name }}ListItemFragment } from '../{{ pascalCase name }}List/{{ pascalCase name }}List.graphql';
@@ -66,7 +66,7 @@ export const Add{{ pascalCase name }} = () => {
 
       toast({ description: successMessage });
 
-      navigate(generateLocalePath(RoutesConfig.{{ pascalCase name }}.list));
+      navigate(generateLocalePath(RoutesConfig.{{ camelCase name }}.list));
     },
   });
 

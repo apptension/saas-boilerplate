@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/c
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { RoutesConfig } from '../../../config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { use{{ pascalCase name }}Form } from './{{ pascalCase name }}Form.hook';
 
 const MAX_NAME_LENGTH = 255;
@@ -82,7 +82,7 @@ export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loadin
         <div className="mt-6">
           <Link
             className="mr-4"
-            to={generateLocalePath(RoutesConfig.{{ pascalCase name }}.list)}
+            to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)}
             variant={ButtonVariant.SECONDARY}
           >
             <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }} form / Cancel button" />

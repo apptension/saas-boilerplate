@@ -12,7 +12,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
-import { Skeleton } from './skeleton';
+import { ListSkeleton } from './listSkeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
   query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {
@@ -32,7 +32,7 @@ export const crudDemoItemListQuery = gql(/* GraphQL */ `
     }
   }
 `);
-export const CRUD_ITEMS_PER_PAGE = 8;
+export const ITEMS_PER_PAGE = 8;
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
@@ -40,7 +40,7 @@ export const CrudDemoItemList = () => {
   const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery(crudDemoItemListQuery, {
     hookOptions: {
       variables: {
-        first: CRUD_ITEMS_PER_PAGE,
+        first: ITEMS_PER_PAGE,
       },
     },
     dataKey: 'allCrudDemoItems',
@@ -105,7 +105,7 @@ export const CrudDemoItemList = () => {
       </Link>
 
       {loading ? (
-        <Skeleton />
+        <ListSkeleton />
       ) : (
         <>
           {renderList()}

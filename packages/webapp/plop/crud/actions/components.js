@@ -92,4 +92,14 @@ module.exports = [
     path: `src/routes/{{ camelCase name }}/{{ camelCase name }}Form/{{ camelCase name }}Form.hook.ts`,
     templateFile: path.join(templatesPath, `itemForm/itemForm.hook.hbs`),
   },
+  {
+    type: 'add',
+    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/listSkeleton/listSkeleton.component.tsx`,
+    templateFile: path.join(templatesPath, `itemList/listSkeleton/listSkeleton.component.hbs`),
+  },
+  {
+    type: 'add',
+    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/listSkeleton/index.ts`,
+    templateFile: path.join(templatesPath, `itemList/listSkeleton/index.hbs`),
+  },
 ];
