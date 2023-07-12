@@ -11,6 +11,42 @@ type CursorsInput = Exact<{
 
 type ExtractGeneric<Type> = Type extends TypedDocumentNode<infer QueryData> ? QueryData : never;
 
+/**
+ * An usePaginatedQuery is a hook that allows you to retrieve data with ready-made logic for cursor-based bidirectional pagination.
+ * Underneath, it uses [`useQuery`](https://www.apollographql.com/docs/react/development-testing/static-typing/#usequery)
+ * function exported by `@apollo/client`.
+ *
+ * @example
+ * ```tsx showLineNumbers
+ * import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
+ * import { Pagination } from '@sb/webapp-core/components/pagination';
+ *
+ * const ITEMS_PER_PAGE = 8;
+ *
+ * const CrudDemoList = () => {
+ *   const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } =
+ *     usePaginatedQuery(crudDemoItemListQuery, {
+ *       hookOptions: {
+ *         variables: {
+ *           first: ITEMS_PER_PAGE,
+ *         },
+ *       },
+ *       dataKey: 'allCrudDemoItems',
+ *     });
+ *
+ *   return (
+ *     <Pagination
+ *       hasNext={hasNext}
+ *       hasPrevious={hasPrevious}
+ *       loadNext={loadNext}
+ *       loadPrevious={loadPrevious}
+ *     />
+ *   );
+ * };
+ * ```
+ *
+ */
+
 export const usePaginatedQuery = <T extends TypedDocumentNode>(
   query: T,
   options: {
