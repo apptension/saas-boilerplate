@@ -5,6 +5,10 @@ module.exports = {
       type: 'json',
     },
     {
+      filename: './packages/backend/package.json',
+      type: 'json',
+    },
+    {
       filename: './packages/webapp/package.json',
       type: 'json',
     },
@@ -55,6 +59,10 @@ module.exports = {
       type: 'json',
     },
     {
+      filename: './packages/internal/core/package.json',
+      type: 'json',
+    },
+    {
       filename: './packages/internal/docs/core.json',
       type: 'json',
     },
@@ -72,6 +80,18 @@ module.exports = {
     },
     {
       filename: './packages/internal/tools/package.json',
+      type: 'json',
+    },
+    {
+      filename: './packages/infra/infra-core/package.json',
+      type: 'json',
+    },
+    {
+      filename: './packages/infra/infra-functions/package.json',
+      type: 'json',
+    },
+    {
+      filename: './packages/infra/infra-shared/package.json',
       type: 'json',
     },
   ],
