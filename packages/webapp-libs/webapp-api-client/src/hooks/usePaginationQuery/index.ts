@@ -1,1 +1,1 @@
-export { usePaginationQuery } from './usePaginationQuery.hook';
+export { usePaginatedQuery } from './usePaginatedQuery.hook';

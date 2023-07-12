@@ -11,10 +11,10 @@ type CursorsInput = Exact<{
 
 type ExtractGeneric<Type> = Type extends TypedDocumentNode<infer QueryData> ? QueryData : never;
 
-export const usePaginationQuery = <T extends TypedDocumentNode>(
+export const usePaginatedQuery = <T extends TypedDocumentNode>(
   query: T,
   options: {
-    hookOptions: QueryHookOptions<ExtractGeneric<T>, CursorsInput>;
+    hookOptions?: QueryHookOptions<ExtractGeneric<T>, CursorsInput>;
     dataKey: keyof ExtractGeneric<T>;
   }
 ) => {

@@ -1,9 +1,10 @@
 import { gql } from '@sb/webapp-api-client/graphql';
-import { usePaginationQuery } from '@sb/webapp-api-client/hooks';
+import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Pagination } from '@sb/webapp-core/components/pagination';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { PlusCircle } from 'lucide-react';
@@ -11,7 +12,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
-import { Pagination } from './pagination';
 import { Skeleton } from './skeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
@@ -37,7 +37,7 @@ export const CRUD_ITEMS_PER_PAGE = 8;
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
 
-  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginationQuery(crudDemoItemListQuery, {
+  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery(crudDemoItemListQuery, {
     hookOptions: {
       variables: {
         first: CRUD_ITEMS_PER_PAGE,
