@@ -396,6 +396,11 @@ module.exports = {
                   id: 'working-with-sb/graphql/web-app/form-with-mutation',
                   label: 'Form component with mutation',
                 },
+                {
+                  type: 'doc',
+                  id: 'working-with-sb/graphql/web-app/use-paginated-query-hook',
+                  label: 'usePaginatedQuery',
+                },
                 'working-with-sb/graphql/web-app/update-schema',
                 'working-with-sb/graphql/web-app/use-fragments',
               ],

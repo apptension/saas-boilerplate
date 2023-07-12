@@ -1,0 +1,80 @@
+---
+title: How to use a usePaginatedQuery hook in web application?
+description: Create an example component structure and display it in application
+---
+
+## What is a usePaginatedQuery hook?
+
+An usePaginatedQuery is a hook that allows you to retrieve data with ready-made logic for cursor-based bidirectional pagination.
+
+The hook accpetes the query only with arguments such as $first: Int, $after: String, $last: Int, $before: String, and the query
+itself should return a pageInfo object with information such as endCursor, startCursor, hasNextPage, hasPreviousPage
+
+## Example usage
+
+### Create a query
+
+We'll use a query that already exists in SaaS Boilerplate.
+
+```ts
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const crudDemoItemListQuery = gql(/* GraphQL */ `
+  query crudDemoItemListQuery(
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+  ) {
+    allCrudDemoItems(
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+    ) {
+      edges {
+        node {
+          id
+          ...crudDemoItemListItem
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasPreviousPage
+        hasNextPage
+      }
+    }
+  }
+`);
+```
+
+### Query data in a component
+
+```tsx
+import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
+import { Pagination } from '@sb/webapp-core/components/pagination';
+
+const ITEMS_PER_PAGE = 8;
+
+const CrudDemoList = () => {
+  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } =
+    usePaginatedQuery(crudDemoItemListQuery, {
+      hookOptions: {
+        variables: {
+          first: ITEMS_PER_PAGE,
+        },
+      },
+      dataKey: 'allCrudDemoItems',
+    });
+
+  return (
+    <Pagination
+      hasNext={hasNext}
+      hasPrevious={hasPrevious}
+      loadNext={loadNext}
+      loadPrevious={loadPrevious}
+    />
+  );
+};
+```
