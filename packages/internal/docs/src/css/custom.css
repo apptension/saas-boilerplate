@@ -137,20 +137,24 @@ html[data-theme='dark'] .header-github-link:before {
   color: var(--docsearch-muted-color);
 }
 
-p a {
+a {
   color: #1634cf;
 }
 
-p a:hover {
+a:hover {
   color: #1634cf;
 }
 
-[data-theme='dark'] p a {
+[data-theme='dark'] a {
   color: #8192e4;
 }
 
-[data-theme='dark'] p a:hover {
+[data-theme='dark'] a:hover {
   color: #8192e4;
+}
+
+a.card, [data-theme='dark'] a.card {
+  color: var(--ifm-link-color);
 }
 
 .footer__copyright {
