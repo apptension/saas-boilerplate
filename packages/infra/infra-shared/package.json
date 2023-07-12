@@ -1,6 +1,6 @@
 {
   "name": "@sb/infra-shared",
-  "version": "0.0.1",
+  "version": "2.0.1",
   "type": "commonjs",
   "scripts": {
     "bootstrap": "cdk deploy sb-bootstrap",

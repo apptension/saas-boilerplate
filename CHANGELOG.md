@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/apptension/aws-boilerplate/compare/2.0.0...2.0.1) (2023-07-12)
+
+### Features
+
+- Adjust email look ([#317](https://github.com/apptension/aws-boilerplate/issues/317)) ([caeec56](https://github.com/apptension/aws-boilerplate/commit/caeec564dd60b6d5402e2c77e1b39c8d7515bd61))
+- Community links ([#315](https://github.com/apptension/aws-boilerplate/issues/315)) ([63e4156](https://github.com/apptension/aws-boilerplate/commit/63e41561f485cf3da91bd285280058fad8a2f6a0))
+- Update GitHub issue templates ([#316](https://github.com/apptension/aws-boilerplate/issues/316)) ([d40e0bd](https://github.com/apptension/aws-boilerplate/commit/d40e0bd929d49d122517a10f3ae6457dc845d8a1))
+- Update logo / favicon / icon ([#324](https://github.com/apptension/aws-boilerplate/issues/324)) ([fd02db0](https://github.com/apptension/aws-boilerplate/commit/fd02db0f646cfc7dcb812e612a26b14229fc5ead))
+
+### Bug Fixes
+
+- [#309](https://github.com/apptension/aws-boilerplate/issues/309) Fix invalid version bump skipping main package.json file ([#312](https://github.com/apptension/aws-boilerplate/issues/312)) ([8149af3](https://github.com/apptension/aws-boilerplate/commit/8149af39f31737c634bf3c6c5776bdfc43a3d003))
+- [docs] Fix invalid link color ([#336](https://github.com/apptension/aws-boilerplate/issues/336)) ([15241e2](https://github.com/apptension/aws-boilerplate/commit/15241e2c78f5a86a0b28d8807950f2a6b65d2cca))
+- Change image ([#326](https://github.com/apptension/aws-boilerplate/issues/326)) ([53a4ac7](https://github.com/apptension/aws-boilerplate/commit/53a4ac77aab43f08b09ddd89e40ee684be5cf775))
+- Fix invalid links in webapp manifest.json ([#329](https://github.com/apptension/aws-boilerplate/issues/329)) ([e04de31](https://github.com/apptension/aws-boilerplate/commit/e04de31f1fb2fc2bff9ce4ac778209092cdbc7e3))
+- Fix invalid version bump skipping some package.json files ([#337](https://github.com/apptension/aws-boilerplate/issues/337)) ([ac4c6cc](https://github.com/apptension/aws-boilerplate/commit/ac4c6cc9ac35ecb995acac4ae43695fb78741498))
+- Go back button in subscriptions page ([#327](https://github.com/apptension/aws-boilerplate/issues/327)) ([c85b239](https://github.com/apptension/aws-boilerplate/commit/c85b23921d698769001a0b1c1c3707d0fb272035))
+- lack of space in payments ([#313](https://github.com/apptension/aws-boilerplate/issues/313)) ([383673d](https://github.com/apptension/aws-boilerplate/commit/383673d5c01ef85874a0e09e71a53e5449ef9431)), closes [#303](https://github.com/apptension/aws-boilerplate/issues/303) [#303](https://github.com/apptension/aws-boilerplate/issues/303)
+- Replace Gtag with GTM in docs ([#325](https://github.com/apptension/aws-boilerplate/issues/325)) ([51828d3](https://github.com/apptension/aws-boilerplate/commit/51828d36bce2cdda74c7f61e3392eb21dbe5a8cf))
+- Update contentful package npm dependencies ([#322](https://github.com/apptension/aws-boilerplate/issues/322)) ([f23cb9d](https://github.com/apptension/aws-boilerplate/commit/f23cb9dea32c8cb499ec1ba331cc820f566f55cf))
+
 ## [2.0.0](https://github.com/apptension/aws-boilerplate/compare/2.0.0-alpha.1...2.0.0) (2023-06-30)
 
 ### ⚠ BREAKING CHANGES
