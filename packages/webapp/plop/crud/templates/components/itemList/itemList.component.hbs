@@ -16,7 +16,7 @@ import { ListSkeleton } from './listSkeleton';
 
 export const {{ pascalCase name }}ListQuery = gql(/* GraphQL */ `
   query {{ camelCase name }}ListQuery($first: Int, $after: String, $last: Int, $before: String) {
-    all{{ camelCase name }}s(first: $first, after: $after, last: $last, before: $before) {
+    all{{ pascalCase name }}s(first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
           id
