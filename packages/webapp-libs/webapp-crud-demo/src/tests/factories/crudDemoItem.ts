@@ -72,6 +72,8 @@ export const fillCrudDemoItemPaginationListQuery = (
     {
       endCursor: 'test',
       hasNextPage: false,
+      hasPreviousPage: false,
+      startCursor: 'test',
     }
   );
 };

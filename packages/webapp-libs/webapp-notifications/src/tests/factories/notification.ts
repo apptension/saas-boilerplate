@@ -28,7 +28,7 @@ export const fillNotificationsListQuery = (
       },
       additionalData,
     },
-    { endCursor: 'test', hasNextPage: false }
+    { endCursor: 'test', hasNextPage: false, hasPreviousPage: false, startCursor: 'test' }
   );
 };
 
@@ -44,6 +44,6 @@ export const fillNotificationsSubscriptionQuery = (
       data: notifications,
       additionalData,
     },
-    { endCursor: 'test', hasNextPage: false }
+    { endCursor: 'test', hasNextPage: false, hasPreviousPage: false, startCursor: 'test' }
   );
 };
