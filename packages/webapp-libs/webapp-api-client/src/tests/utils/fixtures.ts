@@ -18,7 +18,13 @@ export function makeId(length: number) {
   return result;
 }
 
-type PageInfo = { endCursor: string; hasNextPage: boolean; __typename: string };
+export type PageInfo = {
+  endCursor: string;
+  hasNextPage: boolean;
+  __typename: string;
+  startCursor: string;
+  hasPreviousPage: boolean;
+};
 
 type ComposeMockedQueryResultProps = {
   data: Record<string, any>;
@@ -196,7 +202,7 @@ export const composeMockedPaginatedListQueryResult = (
   key: string,
   typename: string,
   resultProps: ComposeMockedListQueryResultProps,
-  pageInfo: Pick<PageInfo, 'endCursor' | 'hasNextPage'>
+  pageInfo: Pick<PageInfo, 'endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor'>
 ): MockedResponse => {
   return composeMockedListQueryResult(query, key, typename, {
     ...resultProps,

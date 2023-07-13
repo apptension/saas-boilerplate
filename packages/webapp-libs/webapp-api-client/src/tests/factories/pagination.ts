@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
-import { composeMockedPaginatedListQueryResult, createDeepFactory, makeId } from '../utils';
+import { PageInfo, composeMockedPaginatedListQueryResult, createDeepFactory, makeId } from '../utils';
 import { PaginationListTestQueryQuery, PaginationListTestQueryQueryVariables } from '@sb/webapp-api-client/graphql';
 
 
@@ -32,7 +32,7 @@ export const paginationTestItemFactory = createDeepFactory<{ id: string; name: s
 
 export const fillPaginationItemListQuery = (
   items: Array<Partial<{ id: string; name: string }>> = [],
-  additionalData?: Record<string, any>,
+  pageInfo: Pick<PageInfo, 'endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor'>,
   variables?: Record<string, any>
 ) => {
   return composeMockedPaginatedListQueryResult(
@@ -42,11 +42,9 @@ export const fillPaginationItemListQuery = (
     {
       data: items,
       variables: variables,
-      additionalData,
     },
     {
-      endCursor: 'test',
-      hasNextPage: false,
+      ...pageInfo,
     }
   );
 };

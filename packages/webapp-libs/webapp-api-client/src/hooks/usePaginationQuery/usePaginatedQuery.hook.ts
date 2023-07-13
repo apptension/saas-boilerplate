@@ -65,23 +65,17 @@ export const usePaginatedQuery = <T extends TypedDocumentNode>(
   }, [data, cachedCursors.length, options.dataKey]);
 
   const loadNext = useCallback(() => {
-    if (data) {
-      const queryData = data[options.dataKey];
-      if (queryData) {
-        const { endCursor } = queryData.pageInfo;
-        if (endCursor) {
-          setCachedCursors((prev) => [...prev, endCursor]);
-          fetchMore({
-            variables: {
-              after: endCursor,
-            },
-            updateQuery: (_, { fetchMoreResult }) => {
-              return fetchMoreResult;
-            },
-          });
-        }
-      }
-    }
+    const queryData = data?.[options.dataKey];
+    const endCursor = queryData?.pageInfo.endCursor;
+    setCachedCursors((prev) => [...prev, endCursor]);
+    fetchMore({
+      variables: {
+        after: endCursor,
+      },
+      updateQuery: (_, { fetchMoreResult }) => {
+        return fetchMoreResult;
+      },
+    });
   }, [data, setCachedCursors, fetchMore, options.dataKey]);
 
   const loadPrevious = useCallback(() => {
