@@ -1,2 +1,2 @@
 export * from './useApiForm';
-export * from './usePaginationQuery';
+export * from './usePaginatedQuery';

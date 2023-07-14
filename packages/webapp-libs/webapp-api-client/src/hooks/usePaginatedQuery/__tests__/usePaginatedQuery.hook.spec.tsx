@@ -1,13 +1,10 @@
 import { MockedResponse } from '@apollo/client/testing';
 import { act } from '@testing-library/react-hooks';
 
-import {
-  fillPaginationItemListQuery,
-  paginationListTestQuery,
-  paginationTestItemFactory,
-} from '../../../tests/factories';
+import { fillPaginationItemListQuery, paginationTestItemFactory } from '../../../tests/factories';
 import { renderHook } from '../../../tests/utils/rendering';
 import { usePaginatedQuery } from '../usePaginatedQuery.hook';
+import { paginationListTestQuery } from './usePaginatedQuery.graphql';
 
 describe('usePaginationQuery: Hook', () => {
   const initDataLength = 8;
