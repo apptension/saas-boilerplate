@@ -1,10 +1,10 @@
-import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
+import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { Pagination } from '@sb/webapp-core/components/pagination';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { PlusCircle } from 'lucide-react';
@@ -12,23 +12,40 @@ import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
+import { ListSkeleton } from './listSkeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
-  query crudDemoItemListQuery {
-    allCrudDemoItems(first: 100) {
+  query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {
+    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
           id
           ...crudDemoItemListItem
         }
       }
+      pageInfo {
+        startCursor
+        endCursor
+        hasPreviousPage
+        hasNextPage
+      }
     }
   }
 `);
+export const ITEMS_PER_PAGE = 8;
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
-  const { loading, data } = useQuery(crudDemoItemListQuery);
+
+  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery(crudDemoItemListQuery, {
+    hookOptions: {
+      variables: {
+        first: ITEMS_PER_PAGE,
+      },
+    },
+    dataKey: 'allCrudDemoItems',
+  });
+
   const renderList = () => {
     if (data) {
       if (data.allCrudDemoItems && data.allCrudDemoItems.edges.length <= 0) return renderEmptyList();
@@ -88,33 +105,12 @@ export const CrudDemoItemList = () => {
       </Link>
 
       {loading ? (
-        <Card>
-          <CardContent>
-            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li:last-child]:border-none">
-              <li className="py-16">
-                <div className="flex items-center justify-between w-full min-w-15 p-4">
-                  <Skeleton className="w-48 h-4" />
-                  <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
-                    <Skeleton className="w-16 h-8" />
-                    <Skeleton className="w-16 h-8" />
-                  </div>
-                </div>
-              </li>
-
-              <li className="py-16">
-                <div className="flex items-center justify-between w-full min-w-15 p-4">
-                  <Skeleton className="w-64 h-4" />
-                  <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
-                    <Skeleton className="w-16 h-8" />
-                    <Skeleton className="w-16 h-8" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+        <ListSkeleton />
       ) : (
-        renderList()
+        <>
+          {renderList()}
+          <Pagination hasNext={hasNext} hasPrevious={hasPrevious} loadNext={loadNext} loadPrevious={loadPrevious} />
+        </>
       )}
     </PageLayout>
   );

@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
+    "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
     "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
     "\n  fragment useFavoriteDemoItem_item on ContentfulDemoItemFavoriteType {\n    id\n    item {\n      pk\n    }\n  }\n": types.UseFavoriteDemoItem_ItemFragmentDoc,
@@ -25,7 +26,7 @@ const documents = {
     "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!) {\n    crudDemoItem(id: $id) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
-    "\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
+    "\n  query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
     "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemTestQueryDocument,
     "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
@@ -99,6 +100,10 @@ export function gql(source: "\n  query commonQueryCurrentUserQuery {\n    curren
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"): (typeof documents)["\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"): (typeof documents)["\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -139,7 +144,7 @@ export function gql(source: "\n  query crudDemoItemDetailsQuery($id: ID!) {\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListQuery {\n    allCrudDemoItems(first: 100) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

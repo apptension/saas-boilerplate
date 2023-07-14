@@ -9,7 +9,7 @@ import { useToast } from '@sb/webapp-core/toast/useToast';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { RoutesConfig } from '../../../config/routes';
+import { RoutesConfig } from '../../../app/config/routes';
 import { {{ pascalCase name }}ItemForm } from '../{{ pascalCase name }}ItemForm';
 import { {{ pascalCase name }}ItemFormFields } from '../{{ pascalCase name }}ItemForm/{{ pascalCase name }}ItemForm.component';
 import { edit{{ pascalCase name }}ItemMutation, edit{{ pascalCase name }}ItemQuery } from './edit{{ pascalCase name }}Item.graphql';
@@ -39,7 +39,7 @@ export const Edit{{ pascalCase name }}Item = () => {
 
       toast({ description: successMessage });
 
-      navigate(generateLocalePath(RoutesConfig.{{ pascalCase name }}Item.list));
+      navigate(generateLocalePath(RoutesConfig.{{ camelCase name }}Item.list));
     },
   });
 
@@ -62,7 +62,7 @@ export const Edit{{ pascalCase name }}Item = () => {
         </div>
       </PageLayout>
     );
-  if (!{{ pascalCase name }}Item) return <Navigate to={generateLocalePath(RoutesConfig.{{ pascalCase name }}Item.index)} />;
+  if (!{{ pascalCase name }}Item) return <Navigate to={generateLocalePath(RoutesConfig.{{ camelCase name }}Item.index)} />;
 
   const onFormSubmit = (formData: {{ pascalCase name }}ItemFormFields) => {
     commitEdit{{ pascalCase name }}ItemMutation({ variables: { input: { id: {{ pascalCase name }}Item.id, name: formData.name } } });

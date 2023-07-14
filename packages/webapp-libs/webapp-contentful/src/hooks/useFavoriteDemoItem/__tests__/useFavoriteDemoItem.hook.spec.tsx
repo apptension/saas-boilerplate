@@ -23,6 +23,7 @@ const allItems = [...Array(3)].map((_, i) =>
 describe('useFavoriteDemoItem: Hook', () => {
   it('should trigger correct mutation', async () => {
     const mockedItems = fillUseFavouriteDemoItemListQuery(allItems);
+
     const id = 'item-1';
     const mutationData = {
       deleteFavoriteContentfulDemoItem: {
