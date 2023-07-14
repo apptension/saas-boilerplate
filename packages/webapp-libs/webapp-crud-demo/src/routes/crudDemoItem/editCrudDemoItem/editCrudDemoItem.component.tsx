@@ -26,7 +26,7 @@ export const EditCrudDemoItem = () => {
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
-    id: 'CrudDemoItem form / Success message',
+    id: 'CrudDemoItem form / EditCrudDemoItem / Success message',
     defaultMessage: '🎉 Changes saved successfully!',
   });
 

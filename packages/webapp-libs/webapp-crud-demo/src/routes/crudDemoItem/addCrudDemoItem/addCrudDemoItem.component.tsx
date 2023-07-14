@@ -33,7 +33,7 @@ export const AddCrudDemoItem = () => {
   const navigate = useNavigate();
 
   const successMessage = intl.formatMessage({
-    id: 'CrudDemoItem form / Success message',
+    id: 'CrudDemoItem form / AddCrudDemoItem / Success message',
     defaultMessage: '🎉 Item added successfully!',
   });
 

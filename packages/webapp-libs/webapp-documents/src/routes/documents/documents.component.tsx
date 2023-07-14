@@ -65,7 +65,7 @@ export const Documents = () => {
         subheader={
           <FormattedMessage
             defaultMessage="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
-            id="Finances / Stripe / Payment confirm / subheading"
+            id="Documents / subheading"
           />
         }
       />
