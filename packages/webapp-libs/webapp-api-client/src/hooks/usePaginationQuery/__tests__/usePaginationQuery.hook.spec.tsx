@@ -1,3 +1,4 @@
+import { MockedResponse } from '@apollo/client/testing';
 import { act } from '@testing-library/react-hooks';
 
 import {
@@ -9,29 +10,14 @@ import { renderHook } from '../../../tests/utils/rendering';
 import { usePaginatedQuery } from '../usePaginatedQuery.hook';
 
 describe('usePaginationQuery: Hook', () => {
-  it('should paginate and fetch data in both directions', async () => {
-    const initDataLength = 9;
-    const nextDataLength = 1;
-    const previousDataLength = 9;
+  const initDataLength = 8;
+  const initData = [...Array(initDataLength)].map((_, i) =>
+    paginationTestItemFactory({
+      id: `item-${i + 1}`,
+    })
+  );
 
-    const initData = [...Array(initDataLength)].map((_, i) =>
-      paginationTestItemFactory({
-        id: `item-${i + 1}`,
-      })
-    );
-
-    const nextData = [...Array(nextDataLength)].map((_, i) =>
-      paginationTestItemFactory({
-        id: `item-${i + 1}`,
-      })
-    );
-
-    const previousData = [...Array(previousDataLength)].map((_, i) =>
-      paginationTestItemFactory({
-        id: `item-${i + 1}`,
-      })
-    );
-
+  const init = async (mock?: MockedResponse<Record<string, any>, Record<string, any>>) => {
     const initMockedResponse = fillPaginationItemListQuery(
       initData,
       {
@@ -43,26 +29,8 @@ describe('usePaginationQuery: Hook', () => {
       { first: 8 }
     );
 
-    const nextMockedResponse = fillPaginationItemListQuery(
-      nextData,
-      {
-        startCursor: '',
-        endCursor: '',
-        hasNextPage: false,
-        hasPreviousPage: true,
-      },
-      { first: 8, after: '' }
-    );
-
-    const previousMockedResponse = fillPaginationItemListQuery(
-      previousData,
-      {
-        startCursor: '',
-        endCursor: '',
-        hasNextPage: true,
-        hasPreviousPage: false,
-      },
-      { first: 8, after: undefined }
+    const mocks = [initMockedResponse, mock].filter(
+      (x): x is MockedResponse<Record<string, any>, Record<string, any>> => x !== undefined
     );
 
     const { result, waitForApolloMocks } = renderHook(
@@ -76,29 +44,77 @@ describe('usePaginationQuery: Hook', () => {
           dataKey: 'allNotifications',
         }),
       {
-        apolloMocks: (defaultMocks) =>
-          defaultMocks.concat(initMockedResponse, nextMockedResponse, previousMockedResponse),
+        apolloMocks: (defaultMocks) => defaultMocks.concat(...mocks),
       }
     );
 
+    return { result, waitForApolloMocks };
+  };
+
+  it('should fetch page', async () => {
+    const { result, waitForApolloMocks } = await init();
     await waitForApolloMocks(1);
 
-    expect(result.current.data?.allNotifications?.edges.length).toBe(initDataLength);
+    const {
+      current: { data },
+    } = result;
+
+    const firstItem = data?.allNotifications?.edges[0]?.node;
+
+    expect(firstItem?.id).toBe('item-1');
+
+    expect(data?.allNotifications?.edges.length).toBe(initDataLength);
+  });
+
+  it('should fetch next page', async () => {
+    const nextDataLength = 4;
+    const nextData = [...Array(nextDataLength)].map((_, i) =>
+      paginationTestItemFactory({
+        id: `item-${i + 1}`,
+      })
+    );
+    const mock = fillPaginationItemListQuery(
+      nextData,
+      {
+        startCursor: '',
+        endCursor: '',
+        hasNextPage: true,
+        hasPreviousPage: false,
+      },
+      { first: 8, after: '' }
+    );
+    const { result, waitForApolloMocks } = await init(mock);
+    await waitForApolloMocks(1);
 
     await act(async () => {
       result.current.loadNext();
     });
 
-    await waitForApolloMocks(2);
+    await waitForApolloMocks();
 
     expect(result.current.data?.allNotifications?.edges.length).toBe(nextDataLength);
+  });
+
+  it('should fetch previous page', async () => {
+    const mock = fillPaginationItemListQuery(
+      initData,
+      {
+        startCursor: '',
+        endCursor: '',
+        hasNextPage: true,
+        hasPreviousPage: false,
+      },
+      { first: 8, after: undefined }
+    );
+    const { result, waitForApolloMocks } = await init(mock);
+    await waitForApolloMocks(1);
 
     await act(async () => {
       result.current.loadPrevious();
     });
 
-    await waitForApolloMocks(3);
+    await waitForApolloMocks();
 
-    expect(result.current.data?.allNotifications?.edges.length).toBe(previousDataLength);
+    expect(result.current.data?.allNotifications?.edges.length).toBe(initDataLength);
   });
 });
