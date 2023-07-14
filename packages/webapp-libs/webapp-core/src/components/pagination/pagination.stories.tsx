@@ -12,5 +12,13 @@ const meta: Meta<typeof Pagination> = {
 export default meta;
 
 export const Default: Story = {
-  args: { hasNext: false, hasPrevious: false },
+  args: { hasNext: true, hasPrevious: true },
+};
+
+export const FirstPage: Story = {
+  args: { hasNext: true, hasPrevious: false },
+};
+
+export const LastPage: Story = {
+  args: { hasNext: false, hasPrevious: true },
 };
