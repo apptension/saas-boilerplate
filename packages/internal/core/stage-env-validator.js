@@ -68,6 +68,21 @@ async function validateStageEnv() {
       desc: 'The domain will be used to generate a certificate, if not provided will be used envStage and hosted zone name',
       default: '',
     }),
+    SB_BACKEND_BASE_IMAGE: envalid.str({
+      desc: 'Base docker image to use to build Backend inside AWS CodeBuild',
+      example: 'python:3.11-slim-bullseye',
+      default: 'python:3.11-slim-bullseye',
+    }),
+    SB_WORKERS_BASE_IMAGE: envalid.str({
+      desc: 'Base docker image to use to build Workers inside AWS CodeBuild',
+      example: 'python:3.9-slim-bullseye',
+      default: 'python:3.9-slim-bullseye',
+    }),
+    SB_E2E_TESTS_BASE_IMAGE: envalid.str({
+      desc: 'Base docker image to use to build E2E Tests inside AWS CodeBuild',
+      example: 'cypress-io/cypress/included:12.3.0',
+      default: 'cypress-io/cypress/included:12.3.0',
+    }),
   });
 }
 
