@@ -61,7 +61,7 @@ name = "pypi"
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "black~=22.12",
+    "black~=23.1.0",
     "calleee~=0.4",
     "drf-yasg~=1.21",
     "factory-boy~=3.2",
@@ -113,6 +113,7 @@ dependencies = [
     "pyotp>=2.8.0",
     "openai>=0.27.2",
     "pydantic>=1.10.7",
+    "pyyaml>=6.0.0"
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}
