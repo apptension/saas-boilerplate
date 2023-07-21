@@ -89,5 +89,5 @@ def complete(request, backend, *args, **kwargs):
         redirect_name=REDIRECT_FIELD_NAME,
         request=request,
         *args,  # noqa: B026
-        **kwargs
+        **kwargs,
     )
