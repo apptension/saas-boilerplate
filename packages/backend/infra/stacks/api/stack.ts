@@ -96,7 +96,7 @@ export class ApiStack extends Stack {
         serviceName: getApiServiceName(props.envSettings),
         cluster: resources.mainCluster,
         cpu: 512,
-        memoryLimitMiB: 1024,
+        memoryLimitMiB: 2048,
         desiredCount: 1,
         taskRole,
         taskImageOptions: [
