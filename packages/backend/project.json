@@ -50,6 +50,31 @@
       },
       "dependsOn": ["compose-build-image"]
     },
+    "deploy:api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm nx cdk:deploy:api",
+          "pnpm nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
+        ],
+        "parallel": false
+      }
+    },
+    "deploy:migrations": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm nx cdk:deploy:migrations",
+          "pnpm nx run trigger-migrations-job",
+          "pnpm nx run tools:upload-service-version migrations"
+        ],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -57,23 +82,6 @@
         "color": true,
         "commands": ["nx cdk:deploy:api", "nx cdk:deploy:migrations"],
         "parallel": false
-      },
-      "configurations": {
-        "api": {
-          "commands": [
-            "pnpm nx cdk:deploy:api",
-            "pnpm nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
-          ],
-          "parallel": false
-        },
-        "migrations": {
-          "commands": [
-            "pnpm nx cdk:deploy:migrations",
-            "pnpm nx run trigger-migrations-job",
-            "pnpm nx run tools:upload-service-version migrations"
-          ],
-          "parallel": false
-        }
       }
     }
   },

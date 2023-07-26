@@ -3,18 +3,18 @@ import {
   FargateService,
   FargateTaskDefinition,
   AwsLogDriver,
-} from "aws-cdk-lib/aws-ecs";
-import { ApplicationTargetGroup } from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import { FeatureFlags } from "aws-cdk-lib";
-import * as cxapi from "aws-cdk-lib/cx-api";
-import { Construct } from "constructs";
+} from 'aws-cdk-lib/aws-ecs';
+import { ApplicationTargetGroup } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { FeatureFlags } from 'aws-cdk-lib';
+import * as cxapi from 'aws-cdk-lib/cx-api';
+import { Construct } from 'constructs';
 import {
   ApplicationMultipleTargetGroupsServiceBase,
   ApplicationMultipleTargetGroupsServiceBaseProps,
-} from "./applicationMultipleTargetGroupsFargateServiceBase";
-import { ISecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
-import { IRole } from "aws-cdk-lib/aws-iam";
-import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
+} from './applicationMultipleTargetGroupsFargateServiceBase';
+import { ISecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2';
+import { IRole } from 'aws-cdk-lib/aws-iam';
+import { ILogGroup, LogGroup } from 'aws-cdk-lib/aws-logs';
 
 /**
  * The properties for the ApplicationMultipleTargetGroupsFargateService service.
@@ -158,13 +158,13 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
 
     if (props.taskDefinition && props.taskImageOptions) {
       throw new Error(
-        "You must specify only one of TaskDefinition or TaskImageOptions."
+        'You must specify only one of TaskDefinition or TaskImageOptions.'
       );
     } else if (props.taskDefinition) {
       this.taskDefinition = props.taskDefinition;
     } else if (props.taskImageOptions) {
       const taskImageOptions = props.taskImageOptions;
-      this.taskDefinition = new FargateTaskDefinition(this, "TaskDef", {
+      this.taskDefinition = new FargateTaskDefinition(this, 'TaskDef', {
         memoryLimitMiB: props.memoryLimitMiB,
         cpu: props.cpu,
         executionRole: props.executionRole,
@@ -173,22 +173,18 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
       });
 
       for (const taskImageOptionsProps of taskImageOptions) {
-        const containerName = taskImageOptionsProps.containerName ?? "web";
+        const containerName = taskImageOptionsProps.containerName ?? 'web';
         const container = this.taskDefinition.addContainer(containerName, {
           image: taskImageOptionsProps.image,
           logging:
             taskImageOptionsProps.enableLogging === false
               ? undefined
               : taskImageOptionsProps.logDriver ||
-                this.createAWSLogDriver(this.node.id),
+                this.createAWSLogDriver(`${this.node.id}-${containerName}`),
           environment: taskImageOptionsProps.environment,
           secrets: taskImageOptionsProps.secrets,
           dockerLabels: taskImageOptionsProps.dockerLabels,
-          command: [
-            "sh",
-            "-c",
-            "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/run.sh",
-          ],
+          command: taskImageOptionsProps.command,
         });
         if (taskImageOptionsProps.containerPorts) {
           for (const containerPort of taskImageOptionsProps.containerPorts) {
@@ -199,10 +195,10 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
         }
       }
     } else {
-      throw new Error("You must specify one of: taskDefinition or image");
+      throw new Error('You must specify one of: taskDefinition or image');
     }
     if (!this.taskDefinition.defaultContainer) {
-      throw new Error("At least one essential container must be specified");
+      throw new Error('At least one essential container must be specified');
     }
     if (this.taskDefinition.defaultContainer.portMappings.length === 0) {
       this.taskDefinition.defaultContainer.addPortMappings({
@@ -225,7 +221,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
   }
 
   protected createAWSLogDriver(prefix: string): AwsLogDriver {
-    const logGroup = new LogGroup(this, "LogGroup");
+    const logGroup = new LogGroup(this, `${prefix}-LogGroup`);
     this.logGroups.push(logGroup);
     return new AwsLogDriver({
       streamPrefix: prefix,
@@ -242,7 +238,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
       ? this.internalDesiredCount
       : this.desiredCount;
 
-    return new FargateService(this, "Service", {
+    return new FargateService(this, 'Service', {
       cluster: this.cluster,
       desiredCount: desiredCount,
       taskDefinition: this.taskDefinition,

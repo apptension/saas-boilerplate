@@ -1,4 +1,4 @@
-import { App, Fn, Stack, StackProps } from 'aws-cdk-lib';
+import {App, Duration, Fn, Stack, StackProps} from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
@@ -94,14 +94,20 @@ export class ApiStack extends Stack {
       {
         securityGroup: resources.fargateContainerSecurityGroup,
         serviceName: getApiServiceName(props.envSettings),
+        healthCheckGracePeriod: Duration.minutes(2),
         cluster: resources.mainCluster,
         cpu: 512,
-        memoryLimitMiB: 2048,
+        memoryLimitMiB: 1024,
         desiredCount: 1,
         taskRole,
         taskImageOptions: [
           {
             containerName: 'backend',
+            command:  [
+              "sh",
+              "-c",
+              "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/run.sh",
+            ],
             image: ecs.ContainerImage.fromEcrRepository(
               resources.backendRepository,
               envSettings.version
