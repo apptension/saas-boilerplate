@@ -27,4 +27,4 @@ jobs:
 
       - name: Lint
         shell: bash
-        run: node_modules/.bin/nx run tools:lint
+        run: pnpm nx run tools:lint

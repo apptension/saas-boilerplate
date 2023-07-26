@@ -27,7 +27,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: node_modules/.bin/nx run webapp:build
+        run: pnpm nx run webapp:build
 
   test:
     runs-on: ubuntu-20.04
@@ -51,15 +51,15 @@ jobs:
 
       - name: "Lint"
         shell: bash
-        run: node_modules/.bin/nx run webapp:lint
+        run: pnpm nx run webapp:lint
 
       - name: "Type check"
         shell: bash
-        run: node_modules/.bin/nx run webapp:type-check
+        run: pnpm nx run webapp:type-check
 
       - name: "Test"
         shell: bash
-        run: node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+        run: pnpm nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -104,15 +104,15 @@ jobs:
 
       - name: "${{ matrix.webapp-lib-name }}: Lint"
         shell: bash
-        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:lint
+        run: pnpm nx run ${{ matrix.webapp-lib-name }}:lint
 
       - name: "${{ matrix.webapp-lib-name }}: Type check"
         shell: bash
-        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:type-check
+        run: pnpm nx run ${{ matrix.webapp-lib-name }}:type-check
 
       - name: "${{ matrix.webapp-lib-name }}: Test"
         shell: bash
-        run: node_modules/.bin/nx run ${{ matrix.webapp-lib-name }}:test --watchAll=false --maxWorkers=20% --coverage
+        run: pnpm nx run ${{ matrix.webapp-lib-name }}:test --watchAll=false --maxWorkers=20% --coverage
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master

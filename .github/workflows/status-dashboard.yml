@@ -27,8 +27,8 @@ jobs:
 
       - name: Lint
         shell: bash
-        run: node_modules/.bin/nx run status-dashboard:lint
+        run: pnpm nx run status-dashboard:lint
 
       - name: Build
         shell: bash
-        run: node_modules/.bin/nx run status-dashboard:build
+        run: pnpm nx run status-dashboard:build

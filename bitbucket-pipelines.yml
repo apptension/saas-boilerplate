@@ -66,9 +66,9 @@ definitions:
         script:
           - *initializeStep
           - *installWebappDeps
-          - node_modules/.bin/nx run webapp:lint
-          - node_modules/.bin/nx run webapp:type-check
-          - node_modules/.bin/nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp:lint
+          - pnpm nx run webapp:type-check
+          - pnpm nx run webapp:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -86,7 +86,7 @@ definitions:
         script:
           - *initializeStep
           - *installWebappDeps
-          - node_modules/.bin/nx run webapp:build
+          - pnpm nx run webapp:build
         caches:
           - pnpmwebapp
           - clis
@@ -100,9 +100,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-core...
-          - node_modules/.bin/nx run webapp-core:lint
-          - node_modules/.bin/nx run webapp-core:type-check
-          - node_modules/.bin/nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-core:lint
+          - pnpm nx run webapp-core:type-check
+          - pnpm nx run webapp-core:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -124,9 +124,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-api-client...
-          - node_modules/.bin/nx run webapp-api-client:lint
-          - node_modules/.bin/nx run webapp-api-client:type-check
-          - node_modules/.bin/nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-api-client:lint
+          - pnpm nx run webapp-api-client:type-check
+          - pnpm nx run webapp-api-client:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -148,9 +148,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-contentful...
-          - node_modules/.bin/nx run webapp-contentful:lint
-          - node_modules/.bin/nx run webapp-contentful:type-check
-          - node_modules/.bin/nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-contentful:lint
+          - pnpm nx run webapp-contentful:type-check
+          - pnpm nx run webapp-contentful:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -172,9 +172,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-crud-demo...
-          - node_modules/.bin/nx run webapp-crud-demo:lint
-          - node_modules/.bin/nx run webapp-crud-demo:type-check
-          - node_modules/.bin/nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-crud-demo:lint
+          - pnpm nx run webapp-crud-demo:type-check
+          - pnpm nx run webapp-crud-demo:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -196,9 +196,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-documents...
-          - node_modules/.bin/nx run webapp-documents:lint
-          - node_modules/.bin/nx run webapp-documents:type-check
-          - node_modules/.bin/nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-documents:lint
+          - pnpm nx run webapp-documents:type-check
+          - pnpm nx run webapp-documents:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -220,9 +220,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-notifications...
-          - node_modules/.bin/nx run webapp-notifications:lint
-          - node_modules/.bin/nx run webapp-notifications:type-check
-          - node_modules/.bin/nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-notifications:lint
+          - pnpm nx run webapp-notifications:type-check
+          - pnpm nx run webapp-notifications:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -244,9 +244,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-emails...
-          - node_modules/.bin/nx run webapp-emails:lint
-          - node_modules/.bin/nx run webapp-emails:type-check
-          - node_modules/.bin/nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-emails:lint
+          - pnpm nx run webapp-emails:type-check
+          - pnpm nx run webapp-emails:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -268,9 +268,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-finances...
-          - node_modules/.bin/nx run webapp-finances:lint
-          - node_modules/.bin/nx run webapp-finances:type-check
-          - node_modules/.bin/nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-finances:lint
+          - pnpm nx run webapp-finances:type-check
+          - pnpm nx run webapp-finances:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -292,9 +292,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=webapp-generative-ai...
-          - node_modules/.bin/nx run webapp-generative-ai:lint
-          - node_modules/.bin/nx run webapp-generative-ai:type-check
-          - node_modules/.bin/nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
+          - pnpm nx run webapp-generative-ai:lint
+          - pnpm nx run webapp-generative-ai:type-check
+          - pnpm nx run webapp-generative-ai:test --watchAll=false --maxWorkers=20% --coverage
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -317,9 +317,9 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=backend...
-          - node_modules/.bin/nx run backend:lint:js
+          - pnpm nx run backend:lint:js
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - node_modules/.bin/nx run backend:test
+          - pnpm nx run backend:test
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -347,8 +347,8 @@ definitions:
             --frozen-lockfile
             --filter=workers...
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - node_modules/.bin/nx run workers:lint
-          - node_modules/.bin/nx run workers:test
+          - pnpm nx run workers:lint
+          - pnpm nx run workers:test
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
             variables:
@@ -376,8 +376,8 @@ definitions:
             --filter=workers...
             --filter=webapp-emails...
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - node_modules/.bin/nx run webapp-emails:build-vite
-          - node_modules/.bin/nx run workers:build
+          - pnpm nx run webapp-emails:build-vite
+          - pnpm nx run workers:build
         services:
           - docker
         caches:
@@ -397,8 +397,8 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=infra-core...
-          - node_modules/.bin/nx run infra-core:lint
-          - node_modules/.bin/nx run infra-core:build
+          - pnpm nx run infra-core:lint
+          - pnpm nx run infra-core:build
         caches:
           - pnpminfracore
           - clis
@@ -412,8 +412,8 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=infra-shared...
-          - node_modules/.bin/nx run infra-shared:lint
-          - node_modules/.bin/nx run infra-shared:build
+          - pnpm nx run infra-shared:lint
+          - pnpm nx run infra-shared:build
         caches:
           - pnpminfrashared
           - clis
@@ -427,8 +427,8 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=infra-functions...
-          - node_modules/.bin/nx run infra-functions:lint
-          - node_modules/.bin/nx run infra-functions:build
+          - pnpm nx run infra-functions:lint
+          - pnpm nx run infra-functions:build
         caches:
           - pnpminfrafunctions
           - clis
@@ -447,8 +447,8 @@ definitions:
             --filter=docs...
             --filter=backend...
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - node_modules/.bin/nx run docs:lint
-          - node_modules/.bin/nx run docs:build
+          - pnpm nx run docs:lint
+          - pnpm nx run docs:build
         services:
           - docker-small
         caches:
@@ -465,8 +465,8 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=status-dashboard...
-          - node_modules/.bin/nx run status-dashboard:lint
-          - node_modules/.bin/nx run status-dashboard:build
+          - pnpm nx run status-dashboard:lint
+          - pnpm nx run status-dashboard:build
         caches:
           - pnpmstatusdashboard
           - clis
@@ -480,7 +480,7 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=tools...
-          - node_modules/.bin/nx run tools:lint
+          - pnpm nx run tools:lint
         caches:
           - pnpmtools
           - clis
