@@ -30,11 +30,11 @@ jobs:
 
       - name: Lint infra
         shell: bash
-        run: node_modules/.bin/nx run backend:lint:js
+        run: pnpm nx run backend:lint:js
 
       - name: Lint & test backend
         shell: bash
-        run: node_modules/.bin/nx run backend:test
+        run: pnpm nx run backend:test
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master

@@ -32,11 +32,11 @@ jobs:
 
       - name: Build emails renderer
         shell: bash
-        run: node_modules/.bin/nx run webapp-emails:build-vite
+        run: pnpm nx run webapp-emails:build-vite
 
       - name: Build
         shell: bash
-        run: node_modules/.bin/nx run workers:build
+        run: pnpm nx run workers:build
 
   test:
     runs-on: ubuntu-20.04
@@ -59,11 +59,11 @@ jobs:
 
       - name: Lint workers
         shell: bash
-        run: node_modules/.bin/nx run workers:lint
+        run: pnpm nx run workers:lint
 
       - name: Test workers
         shell: bash
-        run: node_modules/.bin/nx run workers:test
+        run: pnpm nx run workers:test
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master

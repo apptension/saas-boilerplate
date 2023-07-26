@@ -34,13 +34,13 @@ export HOST_UID
 USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
 up:
-	nx run --output-style=stream core:docker-compose:up
+	pnpm nx run --output-style=stream core:docker-compose:up
 
 down:
-	nx run --output-style=stream core:docker-compose:down
+	pnpm nx run --output-style=stream core:docker-compose:down
 
 serve:
-	nx run --output-style=stream core:serve
+	pnpm nx run --output-style=stream core:serve
 
 clean:
 	# remove created images

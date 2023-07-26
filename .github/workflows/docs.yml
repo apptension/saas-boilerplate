@@ -31,8 +31,8 @@ jobs:
 
       - name: Lint
         shell: bash
-        run: node_modules/.bin/nx run docs:lint
+        run: pnpm nx run docs:lint
 
       - name: Build
         shell: bash
-        run: node_modules/.bin/nx run docs:build
+        run: pnpm nx run docs:build
