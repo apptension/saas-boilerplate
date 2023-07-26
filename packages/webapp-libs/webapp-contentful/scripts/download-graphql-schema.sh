@@ -22,4 +22,4 @@ CONTENTFUL_URL="https://graphql.contentful.com/content/v1/spaces/$VITE_CONTENTFU
 rm  -f ./src/contentful/__generated/types.ts
 rm  -f ./src/contentful/__generated/hooks.ts
 
-./node_modules/.bin/rover graph introspect "$CONTENTFUL_URL" --output graphql/schema/contentful.graphql
+pnpm rover graph introspect "$CONTENTFUL_URL" --output graphql/schema/contentful.graphql
