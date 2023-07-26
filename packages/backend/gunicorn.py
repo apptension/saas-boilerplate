@@ -2,8 +2,19 @@
 import logging
 from multiprocessing import cpu_count
 
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DJANGO_DEBUG=(bool, False)
+)
+
+DEBUG = env("DJANGO_DEBUG")
+
 
 def max_workers():
+    if DEBUG:
+        return 2
     return cpu_count() * 2 + 1
 
 

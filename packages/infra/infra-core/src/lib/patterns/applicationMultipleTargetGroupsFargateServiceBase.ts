@@ -192,6 +192,8 @@ export interface ApplicationLoadBalancedTaskImageProps {
    * @default - No labels.
    */
   readonly dockerLabels?: { [key: string]: string };
+
+  readonly command?: string[];
 }
 
 /**
