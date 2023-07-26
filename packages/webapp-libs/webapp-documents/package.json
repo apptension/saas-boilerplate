@@ -1,6 +1,6 @@
 {
   "name": "@sb/webapp-documents",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "commonjs",
   "scripts": {
     "test": "jest",

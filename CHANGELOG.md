@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/apptension/aws-boilerplate/compare/2.0.1...2.0.2) (2023-07-26)
+
+### Features
+
+- Crud Demo Pagination ([#330](https://github.com/apptension/aws-boilerplate/issues/330)) ([444ff72](https://github.com/apptension/aws-boilerplate/commit/444ff726ab410b5651da25a120abfc27df389148))
+
+### Bug Fixes
+
+- Add docker base images with defaults to stage-env-validator ([#262](https://github.com/apptension/aws-boilerplate/issues/262)) ([23b343c](https://github.com/apptension/aws-boilerplate/commit/23b343cc1776032d4a95c5c35c553add9b117c31))
+- Fix API deployment issues on a small ECS task ([#349](https://github.com/apptension/aws-boilerplate/issues/349)) ([ee974e9](https://github.com/apptension/aws-boilerplate/commit/ee974e9c67ca3ab1ce6460e4ee8beebec2471c12))
+- Rerender sidebar on theme change ([#345](https://github.com/apptension/aws-boilerplate/issues/345)) ([5312cec](https://github.com/apptension/aws-boilerplate/commit/5312cec6a86b7170696cfc0cf28491da034e7711))
+- Upgrade pyyaml to version 6.0.1 to avoid cython_sources installation issue ([#342](https://github.com/apptension/aws-boilerplate/issues/342)) ([ca976c1](https://github.com/apptension/aws-boilerplate/commit/ca976c1e8458f64bd5130927c406915d4b53f52f))
+
 ### [2.0.1](https://github.com/apptension/aws-boilerplate/compare/2.0.0...2.0.1) (2023-07-12)
 
 ### Features

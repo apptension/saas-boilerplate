@@ -1,6 +1,6 @@
 {
   "name": "@sb/backend",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "cdk:deploy:api": "cdk deploy *ApiStack",
     "diff:api": "cdk diff *ApiStack",
