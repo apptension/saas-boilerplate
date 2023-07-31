@@ -130,3 +130,11 @@ variables for AWS environment. Find more about setting environment variables for
 This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
 
 :::
+
+---
+
+### `nx run extract-intl`
+
+It extracts all [`formatjs`](https://formatjs.io/) messages from the `webapp` and `webapp-libs` packages using
+[`formatjs extract`](https://formatjs.io/docs/getting-started/message-extraction/#extraction) command to
+`webapp-libs/webapp-core/src/translations/en.json` file.
