@@ -289,9 +289,8 @@ module.exports = {
       label: 'Working with SaaS Boilerplate',
 
       link: {
-        type: 'generated-index',
-        title: 'Working with SaaS Boilerplate',
-        slug: '/working-with-sb',
+        type: 'doc',
+        id: 'working-with-sb/index',
       },
       items: [
         {
