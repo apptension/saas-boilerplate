@@ -24,7 +24,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
-        "command": "/bin/bash ./scripts/docker-create-volumes.sh"
+        "command": "docker volume create --name=\"${PROJECT_NAME}-web-backend-db-data\""
       }
     },
     "docker-login": {
