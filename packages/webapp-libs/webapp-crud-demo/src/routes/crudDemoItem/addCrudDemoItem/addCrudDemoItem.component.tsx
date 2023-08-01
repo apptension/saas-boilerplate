@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, operationName } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
@@ -12,6 +12,7 @@ import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
 import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
+import { ITEMS_PER_PAGE, crudDemoItemListQuery } from '../crudDemoItemList/crudDemoItemList.component';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
   mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
@@ -38,26 +39,12 @@ export const AddCrudDemoItem = () => {
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          allCrudDemoItems(existingConnection = { edges: [] }) {
-            const node = data?.createCrudDemoItem?.crudDemoItemEdge?.node;
-            if (!node) {
-              return existingConnection;
-            }
-            const newItem = {
-              node: cache.writeFragment({
-                data: node,
-                fragment: crudDemoItemListItemFragment,
-              }),
-              __typename: 'CrudDemoItemEdge',
-            };
-            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
-          },
-        },
-      });
-    },
+    refetchQueries: () => [{
+      query: crudDemoItemListQuery,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    }],
     onCompleted: (data) => {
       const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
 
