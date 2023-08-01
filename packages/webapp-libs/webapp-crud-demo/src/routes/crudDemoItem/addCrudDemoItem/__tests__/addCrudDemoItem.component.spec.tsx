@@ -46,7 +46,7 @@ describe('AddCrudDemoItem: Component', () => {
         variables: {
           first: 8,
         },
-        data: [data, data],
+        data: [data],
       });
 
       requestMock.newData = jest.fn(() => ({
@@ -54,7 +54,7 @@ describe('AddCrudDemoItem: Component', () => {
       }));
 
       refetchMock.newData = jest.fn(() => ({
-        data: [data, data],
+        data: [data],
       }));
 
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });
