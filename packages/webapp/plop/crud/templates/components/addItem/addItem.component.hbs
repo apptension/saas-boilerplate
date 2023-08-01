@@ -11,8 +11,7 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../../app/config/routes';
 import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
 import { {{ pascalCase name }}FormFields } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
-import {  {{ camelCase name }}ListItemFragment } from '../{{ pascalCase name }}List/{{ pascalCase name }}List.graphql';
-
+import { ITEMS_PER_PAGE, {{ pascalCase name }}ListQuery } from '../{{ camelCase name }}List/{{ camelCase name }}List.component';
 
 export const add{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
   mutation add{{ pascalCase name }}Mutation($input: Create{{ pascalCase name }}MutationInput!) {
@@ -39,26 +38,12 @@ export const Add{{ pascalCase name }} = () => {
   });
 
   const [commit{{ pascalCase name }}FormMutation, { error, loading: loadingMutation }] = useMutation(add{{ pascalCase name }}Mutation, {
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          all{{ pascalCase name }}s(existingConnection = { edges: [] }) {
-            const node = data?.create{{ pascalCase name }}?.{{ pascalCase name }}Edge?.node;
-            if (!node) {
-              return existingConnection;
-            }
-            const newItem = {
-              node: cache.writeFragment({
-                data: node,
-                fragment: {{ camelCase name }}ListItemFragment,
-              }),
-              __typename: '{{ pascalCase name }}Edge',
-            };
-            return { ...existingConnection, edges: [...existingConnection.edges, newItem] };
-          },
-        },
-      });
-    },
+    refetchQueries: () => [{
+      query: {{ pascalCase name }}ListQuery,
+      variables: {
+        first: ITEMS_PER_PAGE
+      }
+    }],
     onCompleted: (data) => {
       const id = data?.create{{ pascalCase name }}?.{{ pascalCase name }}Edge?.node?.id;
 
