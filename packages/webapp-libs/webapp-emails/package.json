@@ -31,7 +31,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-polyfill-node": "^0.12.0",
     "storybook": "^7.0.23",
-    "vite": "^4.3.5",
+    "vite": "^4.3.9",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-svgr": "^2.4.0",
     "vite-tsconfig-paths": "^4.0.5"
