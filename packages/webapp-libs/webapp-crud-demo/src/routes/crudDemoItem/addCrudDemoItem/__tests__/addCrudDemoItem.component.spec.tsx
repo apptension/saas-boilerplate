@@ -5,6 +5,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { render } from '../../../../tests/utils/rendering';
+import { crudDemoItemListQuery } from '../../crudDemoItemList/crudDemoItemList.component';
 import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
 
 jest.mock('@sb/webapp-core/services/analytics');
@@ -40,15 +41,28 @@ describe('AddCrudDemoItem: Component', () => {
         variables,
         data,
       });
+
+      const refetchMock = composeMockedQueryResult(crudDemoItemListQuery, {
+        variables: {
+          first: 8,
+        },
+        data: [data],
+      });
+
       requestMock.newData = jest.fn(() => ({
         data,
       }));
 
-      render(<Component />, { apolloMocks: [commonQueryMock, requestMock] });
+      refetchMock.newData = jest.fn(() => ({
+        data: [data],
+      }));
+
+      render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });
 
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
       expect(requestMock.newData).toHaveBeenCalled();
+      expect(refetchMock.newData).toHaveBeenCalled();
     });
 
     it('should show success message', async () => {
