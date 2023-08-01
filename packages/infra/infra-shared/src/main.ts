@@ -6,7 +6,6 @@ import {
 } from '@sb/infra-core';
 
 import { GlobalStack } from './stacks/global';
-import { UsEastResourcesStack } from './stacks/usEastResources';
 import { EnvMainStack } from './stacks/main';
 import { EnvDbStack } from './stacks/db';
 import { EnvComponentsStack } from './stacks/components';
@@ -22,15 +21,6 @@ import { BootstrapStack } from './stacks/bootstrap';
   new GlobalStack(app, getGlobalStackName('GlobalStack', envSettings), {
     envSettings,
   });
-
-  new UsEastResourcesStack(
-    app,
-    getGlobalStackName('UsEastResourcesStack', envSettings),
-    {
-      envSettings,
-      env: { region: 'us-east-1' },
-    }
-  );
 
   new EnvMainStack(app, getEnvStackName('MainStack', envSettings), {
     envSettings,

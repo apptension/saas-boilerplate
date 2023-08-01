@@ -1,7 +1,7 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/Makefile.base.mk
 
-bootstrap-infra:
+npx envinfo --system --npmPackages  --binaries --browsers:
 	pnpm nx run tools:bootstrap-infra
 	pnpm nx run --output-style=stream infra-shared:bootstrap
 

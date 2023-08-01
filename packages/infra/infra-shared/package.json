@@ -4,8 +4,8 @@
   "type": "commonjs",
   "scripts": {
     "bootstrap": "cdk deploy sb-bootstrap",
-    "deploy:global": "cdk deploy *GlobalStack && cdk deploy *UsEastResourcesStack",
-    "diff:global": "cdk diff *GlobalStack && cdk diff *UsEastResourcesStack",
+    "deploy:global": "cdk deploy *GlobalStack",
+    "diff:global": "cdk diff *GlobalStack",
     "deploy:main": "cdk deploy *MainStack",
     "diff:main": "cdk diff *MainStack",
     "deploy:db": "cdk deploy *DbStack",
