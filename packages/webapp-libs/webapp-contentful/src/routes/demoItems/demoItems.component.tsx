@@ -23,7 +23,7 @@ export const DemoItems = () => {
         subheader={
           <FormattedMessage
             defaultMessage="This demo page showcases a dynamic list of items, each managed by Contentful headless CMS. The list not only presents an array of items but also demonstrates how each item can be synchronized with our application's database. This synchronization enables the integration of the application's business logic with the content managed in Contentful. You can interact with the list by clicking the star icon next to each item."
-            id="Contentful Items / List header"
+            id="Contentful Items / List subheader"
           />
         }
       />

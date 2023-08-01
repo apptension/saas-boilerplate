@@ -26,7 +26,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
-    id: 'CrudDemoItem form / Success message',
+    id: 'CrudDemoItem form / Delete CrudDemoItem / Success message',
     defaultMessage: '🎉 Item deleted successfully!',
   });
 
