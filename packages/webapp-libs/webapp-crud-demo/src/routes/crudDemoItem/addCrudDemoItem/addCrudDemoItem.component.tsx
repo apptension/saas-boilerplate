@@ -1,4 +1,4 @@
-import { useMutation, operationName } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
-import { crudDemoItemListItemFragment } from '../crudDemoItemList/crudDemoItemListItem';
 import { ITEMS_PER_PAGE, crudDemoItemListQuery } from '../crudDemoItemList/crudDemoItemList.component';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
