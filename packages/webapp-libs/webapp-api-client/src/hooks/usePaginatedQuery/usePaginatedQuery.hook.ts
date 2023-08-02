@@ -97,7 +97,7 @@ export const usePaginatedQuery = <T extends TypedDocumentNode>(
         return fetchMoreResult;
       },
     });
-  }, [data, cachedCursors, setCachedCursors, fetchMore]);
+  }, [cachedCursors, setCachedCursors, fetchMore]);
 
   return { data, loading, hasNext, hasPrevious, loadNext, loadPrevious };
 };
