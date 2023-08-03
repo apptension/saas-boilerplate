@@ -68,22 +68,17 @@ The full list with the descriptions can be found in the [features documentation]
 
 - Install [Docker](https://docs.docker.com/get-docker)
 - Install [Node.js](https://nodejs.org/en/download/) version 16.14 or above (which can be checked by running `node -v`).
-  You can use [nvm](https://github.com/nvm-sh/nvm) for managing multiple Node versions installed on a single machine.
-- Install [Python](https://www.python.org/downloads/) version 3.8 (which can be checked by running `python3 -v`). You can use [`pyenv`](https://github.com/pyenv/pyenv)
-  for managing multiple Python versions installed on a single machine.
+  You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
 - Install [pnpm](https://pnpm.io/installation) version 8.6 or above (which can be checked by running `pnpm --version`)
-- Install [nx](https://nx.dev/getting-started/intro#why-nx) version 15.4.5. After you install Node.js call
-  `npm install -g nx@15.4.5`
+- (Windows only) Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)
 
 #### Optional
 
-- Install [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
+- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 -v`) and [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
   `pdm --version`)
-  - you need this one if you want to run `pdm install` command in `packages/backend` or `packages/workers` outside
+  - You need this one if you want to run `pdm install` command in `packages/backend` or `packages/workers` outside
     docker container
-- Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) version 2
-  (which can be checked by running `aws --version`)
-  - you need this one if you want to deploy SaaS Boilerplate to AWS from your machine
+  - You can use [`pyenv`](https://github.com/pyenv/pyenv) for managing multiple Python versions installed on a single machine.
 
 ### Fresh installation
 
@@ -118,6 +113,9 @@ For the manual setup clone this repository and follow the steps in
 
 ### Run existing project
 
+> :warning: **If you are using a Windows machine**, it's mandatory to have **WSL 2** (Windows Subsystem for Linux)
+> installed on your system to run the commands for installing dependencies and running the application.
+
 #### Install dependencies
 
 The project is configured to use pnpm workspaces, which means that you can install `node_modules` of all packages in
@@ -132,7 +130,7 @@ pnpm install
 #### Start backend
 
 ```sh
-nx run core:docker-compose:up
+pnpm nx run core:docker-compose:up
 ```
 
 or a shorter version:
@@ -144,7 +142,7 @@ make up
 #### Start webapp
 
 ```sh
-nx start webapp
+pnpm nx start webapp
 ```
 
 #### Local documentation
@@ -152,7 +150,7 @@ nx start webapp
 In order to run your local documentation server execute following command:
 
 ```sh
-nx start docs
+pnpm nx start docs
 ```
 
 ## Tech stack
