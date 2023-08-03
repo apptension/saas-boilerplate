@@ -15,7 +15,7 @@ export const Layout = ({ title, text, children }: LayoutProps) => {
       <Table>
         <Tr>
           <Td>
-            <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.svg" />
+            <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.png" />
           </Td>
         </Tr>
         <Tr>
