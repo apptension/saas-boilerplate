@@ -9,14 +9,14 @@ This page contains a list of CLI commands that you can use within the `tools` pa
 
 ## Generators
 
-### `nx g @sb/tools:webapp-lib`
+### `pnpm nx g @sb/tools:webapp-lib`
 
 Generates a project structure for a new webapp library that you can import from other webapp libraries or webapp
 package.
 
 
 ```shell title="Example usage"
-nx g @sb/tools:webapp-lib --directory webapp-libs mylib
+pnpm nx g @sb/tools:webapp-lib --directory webapp-libs mylib
 ```
 
 To learn more about creating a new webapp library check out the
@@ -24,7 +24,7 @@ To learn more about creating a new webapp library check out the
 
 ## Other commands
 
-### `nx run tools:upload-version SERVICES`
+### `pnpm nx run tools:upload-version SERVICES`
 
 <RunOnCICautionPartial />
 
@@ -36,12 +36,12 @@ Arguments:
 - `SERVICES`: comma separated list of services that are deployed during environment update
 
 ```bash title="Example usage"
-nx run tools:upload-version migrations,api,workers,webapp
+pnpm nx run tools:upload-version migrations,api,workers,webapp
 ```
 
 ---
 
-### `nx run tools:upload-service-version SERVICE [ADDITIONAL_DATA]`
+### `pnpm nx run tools:upload-service-version SERVICE [ADDITIONAL_DATA]`
 
 <RunOnCICautionPartial />
 
@@ -55,5 +55,5 @@ Arguments:
 Used for example to pass the `url` data of the deployed service
 
 ```bash title="Example usage"
-nx run tools:upload-service-version workers
+pnpm nx run tools:upload-service-version workers
 ```

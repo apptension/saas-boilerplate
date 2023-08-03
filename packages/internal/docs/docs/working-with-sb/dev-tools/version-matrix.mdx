@@ -28,13 +28,13 @@ You can configure version matrix via AWS SSM Parameter Store. You can find the d
 
 Deployment of the version matrix service contains two steps. First, you need to run build command:
 ```shell
-nx run status-dashboard:build
+pnpm nx run status-dashboard:build
 ```
 
 After successful build you can run AWS deployment script:
 
 ```shell
-nx run status-dashboard:deploy
+pnpm nx run status-dashboard:deploy
 ```
 
 :::caution
@@ -47,11 +47,11 @@ This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` c
 ## Updating version on CI pipeline
 
 Application environment version and individual services versions are updated automatically on the CI/CD pipeline using
-`nx run tools:upload-version` and `nx run tools:upload-service-version` commands.
+`pnpm nx run tools:upload-version` and `pnpm nx run tools:upload-service-version` commands.
 
 :::info
 
-Find more about `nx run tools:upload-version` and `nx run tools:upload-service-version` commands in the
+Find more about `pnpm nx run tools:upload-version` and `pnpm nx run tools:upload-service-version` commands in the
 [`tools` package API Reference](../../api-reference/tools/commands).
 
 :::

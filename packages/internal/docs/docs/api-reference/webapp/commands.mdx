@@ -9,14 +9,14 @@ This page contains a list of CLI commands that you can use within the `webapp` p
 
 Start webapp development server
 
-Alias for [`nx start:app`](#nx-startapp). It starts [Vite](https://vitejs.dev/) web
-application development server along with `nx webapp:graphql:generate-types:watch`.
+Alias for [`pnpm nx start:app`](#pnpm-nx-startapp). It starts [Vite](https://vitejs.dev/) web
+application development server along with `pnpm nx webapp:graphql:generate-types:watch`.
 
 ---
 
 ### `pnpm run build`
 
-Alias for [`nx run webapp:build-vite`](#nx-run-webappbuild-vite)
+Alias for [`pnpm nx run webapp:build-vite`](#pnpm-nx-run-webappbuild-vite)
 
 ---
 
@@ -58,50 +58,50 @@ Find more about plop generator in the [devtools section](../../working-with-sb/d
 
 Run and build storybooks
 
-It runs `start-storybook` script along with [`nx run webapp-emails:vite-build`](../webapp-emails/commands#build-emails)
+It runs `start-storybook` script along with [`pnpm nx run webapp-emails:vite-build`](../webapp-emails/commands#build-emails)
 which will prebuild email templates.
 
 Storybook server will start on port `5002`.
 
 ---
 
-### `nx start:app`
+### `pnpm nx start:app`
 
 It will start [Vite](https://vitejs.dev/) web application development server along with
-[`nx webapp:graphql:generate-types:watch`](#nx-run-webappgraphqlgenerate-typeswatch).
+[`pnpm nx webapp:graphql:generate-types:watch`](#pnpm-nx-run-webappgraphqlgenerate-typeswatch).
 
 ---
 
-### `nx run webapp:graphql:download-schema`
+### `pnpm nx run webapp:graphql:download-schema`
 
 It downloads and saves GraphQL schemas from back-end API and Contentful API. This should be run after every API schema
 change and before generating TypeScript types by calling
-[`nx run webapp:graphql:generate-types`](#nx-run-webappgraphqlgenerate-types).
+[`pnpm nx run webapp:graphql:generate-types`](#pnpm-nx-run-webappgraphqlgenerate-types).
 
 You can find more about updating GraphQL schema [here](../../working-with-sb/graphql/web-app/update-schema)
 
 ---
 
-### `nx run webapp:graphql:generate-types`
+### `pnpm nx run webapp:graphql:generate-types`
 
-### `nx run webapp:graphql:generate-types:watch`
+### `pnpm nx run webapp:graphql:generate-types:watch`
 
-Alias commands for [`nx run webapp-api-client:graphql:generate-types`](../webapp-api-client/commands#nx-run-webapp-api-clientgraphqlgenerate-types) and
-[`nx run webapp-api-client:graphql:generate-types:watch`](../webapp-api-client/commands#nx-run-webapp-api-clientgraphqlgenerate-typeswatch)
+Alias commands for [`pnpm nx run webapp-api-client:graphql:generate-types`](../webapp-api-client/commands#pnpm-nx-run-webapp-api-clientgraphqlgenerate-types) and
+[`pnpm nx run webapp-api-client:graphql:generate-types:watch`](../webapp-api-client/commands#pnpm-nx-run-webapp-api-clientgraphqlgenerate-typeswatch)
 
 ---
 
-### `nx run webapp:build-vite`
+### `pnpm nx run webapp:build-vite`
 
 
-Regenerate types by calling [`nx run webapp:graphql:generate-types`](#nx-run-webappgraphqlgenerate-types) and
+Regenerate types by calling [`pnpm nx run webapp:graphql:generate-types`](#pnpm-nx-run-webappgraphqlgenerate-types) and
 builds the web application using [`vite build`](https://vitejs.dev/guide/cli.html#build) with the correct configuration.
 
 ---
 
-### `nx run webapp:build-with-env`
+### `pnpm nx run webapp:build-with-env`
 
-It is used in CI pipeline and runs `nx webapp:build-vite` inside `webapp` environment context using `chamber`.
+It is used in CI pipeline and runs `pnpm nx webapp:build-vite` inside `webapp` environment context using `chamber`.
 
 To find more about using `chamber` in the project check [How to configure environment variables on AWS?](../../aws/deploy-to-aws/create-runtime-env-vars) guide.
 
@@ -109,13 +109,13 @@ To find more about using `chamber` in the project check [How to configure enviro
 
 ### `make test`
 
-Alias command for [`nx test`](#pnpm-run-test).
+Alias command for [`pnpm nx test`](#pnpm-run-test).
 
 ---
 
 ### `make build`
 
-Alias command for [`nx build`](#nx-run-webappbuild-vite).
+Alias command for [`pnpm nx build`](#pnpm-nx-run-webappbuild-vite).
 
 ---
 
@@ -133,7 +133,7 @@ This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` c
 
 ---
 
-### `nx run extract-intl`
+### `pnpm nx run extract-intl`
 
 It extracts all [`formatjs`](https://formatjs.io/) messages from the `webapp` and `webapp-libs` packages using
 [`formatjs extract`](https://formatjs.io/docs/getting-started/message-extraction/#extraction) command to

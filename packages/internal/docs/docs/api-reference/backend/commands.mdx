@@ -8,59 +8,59 @@ import RunOnCICautionPartial from '../../shared/partials/_run-on-ci-caution.mdx'
 This page contains a list of CLI commands that you can use within the `backend` package context.
 
 
-### `nx run backend:compose-build-image`
+### `pnpm nx run backend:compose-build-image`
 
-Builds a backend Docker image by running `nx run core:docker-login` and `docker-compose build backend`.
+Builds a backend Docker image by running `pnpm nx run core:docker-login` and `docker-compose build backend`.
 
 <RunOnCICautionPartial />
 
 ---
 
 
-### `nx run backend:test`
+### `pnpm nx run backend:test`
 
 Runs tests (`scripts/run_tests.sh` script) inside Docker container using `docker-compose`.
 
 ---
 
 
-### `nx run backend:build`
+### `pnpm nx run backend:build`
 
 Runs `scripts/build.sh` script.
 
-Depends on: [`nx run backend:test`](#nx-run-backendtest)
+Depends on: [`pnpm nx run backend:test`](#pnpm-nx-run-backendtest)
 
 ---
 
 
-### `nx run backend:deploy:api`
+### `pnpm nx run backend:deploy:api`
 
-Runs `nx cdk:deploy:api` along with `nx run tools:upload-service-version api "url=https://${SB_DOMAIN_API}"`
+Runs `pnpm nx cdk:deploy:api` along with `pnpm nx run tools:upload-service-version api "url=https://${SB_DOMAIN_API}"`
 
 
 ---
 
 
-### `nx run backend:deploy:migrations`
+### `pnpm nx run backend:deploy:migrations`
 
 Runs following commands:
 ```bash
-nx cdk:deploy:migrations
-nx run trigger-migrations-job
-nx run tools:upload-service-version migrations
+pnpm nx cdk:deploy:migrations
+pnpm nx run trigger-migrations-job
+pnpm nx run tools:upload-service-version migrations
 ```
 
 ---
 
 ### `make test`
 
-Alias command for [`nx test`](#nx-run-backendtest).
+Alias command for [`pnpm nx test`](#pnpm-nx-run-backendtest).
 
 ---
 
 ### `make build`
 
-Alias command for [`nx build`](#nx-run-backendbuild).
+Alias command for [`pnpm nx build`](#pnpm-nx-run-backendbuild).
 
 ---
 
