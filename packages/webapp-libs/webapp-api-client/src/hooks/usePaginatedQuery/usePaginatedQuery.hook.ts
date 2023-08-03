@@ -60,6 +60,12 @@ export const usePaginatedQuery = <T extends TypedDocumentNode>(
   const { data, loading, fetchMore } = useQuery<ExtractGeneric<T>, CursorsInput>(query, options.hookOptions);
 
   useEffect(() => {
+    if (cachedCursors.includes(data?.[options.dataKey]?.pageInfo.endCursor)) {
+      setCachedCursors([])
+    }
+  }, [data])
+
+  useEffect(() => {
     setHasPrevious(cachedCursors.length > 0);
     setHasNext(data?.[options.dataKey]?.pageInfo.hasNextPage ?? false);
   }, [data, cachedCursors.length, options.dataKey]);
