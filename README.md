@@ -157,29 +157,29 @@ pnpm nx start docs
 
 Front-end stack:
 
-- React
-- GraphQL
-- Apollo Client
-- tailwindcss
-- shadcn/ui
-- styled-components (optional)
-- jest
-- Storybook
-- Vite
+- [React](https://github.com/facebook/react)
+- [GraphQL](https://graphql.org/)
+- [Apollo Client](https://github.com/apollographql/apollo-client)
+- [tailwindcss](https://github.com/tailwindlabs/tailwindcss)
+- [shadcn/ui](https://github.com/shadcn-ui/ui)
+- [styled-components](https://github.com/styled-components/styled-components) (optional)
+- [jest](https://github.com/jestjs/jest)
+- [Storybook](https://github.com/storybookjs/storybook)
+- [Vite](https://github.com/vitejs/vite)
 
 Back-end stack:
 
-- Python
-- Django
-- Django REST Framework
-- Graphene Django
-- dj-stripe
-- Postgres
+- [Python](https://www.python.org/)
+- [Django](https://github.com/django/django)
+- [Django REST Framework](https://github.com/encode/django-rest-framework)
+- [Graphene Django](https://github.com/graphql-python/graphene)
+- [dj-stripe](https://github.com/dj-stripe/dj-stripe/)
+- [Postgres](https://www.postgresql.org/)
 
 Infrastructure:
 
-- NX
-- AWS infrastructure written in AWS CDK
+- [NX](https://github.com/nrwl/nx)
+- AWS infrastructure written in [AWS CDK](https://github.com/aws/aws-cdk)
 - Github or Bitbucket
 
 3rd party services:
