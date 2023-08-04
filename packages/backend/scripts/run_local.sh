@@ -28,6 +28,7 @@ if (echo "$STRIPE_LIVE_SECRET_KEY" | grep -q "<CHANGE_ME>") && (echo "$STRIPE_TE
 else
     python manage.py djstripe_sync_models Product Price
     python manage.py init_subscriptions
+    python manage.py init_customers_plans
     echo "Stripe initialized"
 fi
 
