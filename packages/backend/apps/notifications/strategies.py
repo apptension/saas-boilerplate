@@ -18,5 +18,5 @@ class BaseNotificationStrategy:
 
 class InAppNotificationStrategy(BaseNotificationStrategy):
     @staticmethod
-    def send_notification(user: str, type: str, data: dict):
-        models.Notification.objects.create(user=user, type=type, data=data)
+    def send_notification(user: str, type: str, data: dict, issuer: str):
+        models.Notification.objects.create(user=user, type=type, data=data, issuer=issuer)
