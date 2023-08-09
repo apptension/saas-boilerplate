@@ -11,6 +11,11 @@ export const notificationsListContentFragment = gql(/* GraphQL */ `
           createdAt
           readAt
           type
+          issuer {
+            id
+            avatar
+            email
+          }
         }
       }
       pageInfo {

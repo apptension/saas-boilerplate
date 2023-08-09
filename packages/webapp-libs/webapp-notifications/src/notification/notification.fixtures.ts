@@ -1,4 +1,3 @@
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { pick } from 'ramda';
 
 import { notificationFactory } from '../tests/factories';
@@ -9,6 +8,5 @@ export const mockedNotificationProps: NotificationProps = {
   content: 'Lorem ipsum sit dolor amet',
   readAt: null,
   avatar: 'https://picsum.photos/24/24',
-  user: currentUserFactory(),
-  ...pick(['createdAt', 'type', 'id'], notificationFactory()),
+  ...pick(['createdAt', 'type', 'id', 'issuer'], notificationFactory()),
 };
