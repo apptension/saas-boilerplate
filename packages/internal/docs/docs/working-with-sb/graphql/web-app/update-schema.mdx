@@ -27,7 +27,7 @@ To update types in the webapp application code, two steps need to be taken:
 
     To download the GraphQL schemas, run the command:
     ```bash
-    nx run webapp:graphql:download-schema
+    pnpm nx run webapp:graphql:download-schema
     ```
     This command will introspect
     and save both schemas (main back-end API and Contentful API) to files located at
@@ -42,7 +42,7 @@ To update types in the webapp application code, two steps need to be taken:
 
     To generate the types based on the downloaded GraphQL schemas, run the following command:
     ```bash
-    nx run webapp:graphql:generate-types
+    pnpm nx run webapp:graphql:generate-types
     ```
     This command uses the [`graphql-codegen`](https://the-guild.dev/graphql/codegen) tool and a special configuration
     defined in `packages/webapp-libs/webapp-api-client/graphql/codegen.ts`.
