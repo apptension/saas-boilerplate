@@ -7,6 +7,9 @@ from common.graphql import mutations
 from . import models
 from . import serializers
 from . import services
+from apps.users.models import User
+
+from apps.users.services.users import get_user_avatar_url, get_user_from_resolver
 
 
 class HasUnreadNotificationsMixin:
@@ -17,13 +20,45 @@ class HasUnreadNotificationsMixin:
         return services.NotificationService.user_has_unread_notifications(user=info.context.user)
 
 
+class UserType(DjangoObjectType):
+    first_name = graphene.String()
+    last_name = graphene.String()
+    avatar = graphene.String()
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "first_name", "last_name")
+
+    @staticmethod
+    def resolve_first_name(parent, info):
+        return get_user_from_resolver(info).profile.first_name
+
+    @staticmethod
+    def resolve_last_name(parent, info):
+        return get_user_from_resolver(info).profile.last_name
+
+    @staticmethod
+    def resolve_avatar(parent, info):
+        return get_user_avatar_url(parent)
+
+
 class NotificationType(DjangoObjectType):
     data = GenericScalar()
+    issuer = graphene.Field(UserType)
+    user = graphene.Field(UserType)
 
     class Meta:
         model = models.Notification
         interfaces = (relay.Node,)
         fields = "__all__"
+
+    @staticmethod
+    def resolve_issuer(parent, info):
+        return parent.issuer
+
+    @staticmethod
+    def resolve_user(parent, info):
+        return parent.user
 
 
 class NotificationConnection(graphene.Connection):

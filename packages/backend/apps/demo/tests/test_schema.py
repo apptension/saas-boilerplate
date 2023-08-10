@@ -164,9 +164,8 @@ class TestCreateCrudDemoItemMutation:
         assert notification.data == {
             "id": item_global_id,
             "name": item.name,
-            "user": user.email,
-            "avatar": user.profile.avatar.thumbnail.url,
         }
+        assert notification.issuer == user
 
     def test_create_new_item_sends_notification_through_websockets(
         self, mocker, graphene_client, user_factory, graph_ql_subscription_factory, input_data
@@ -273,9 +272,8 @@ class TestUpdateCrudDemoItemMutation:
         assert notification.data == {
             "id": item_global_id,
             "name": "New item name",
-            "user": other_user.email,
-            "avatar": other_user.profile.avatar.thumbnail.url,
         }
+        assert notification.issuer == other_user
 
         assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
         assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()

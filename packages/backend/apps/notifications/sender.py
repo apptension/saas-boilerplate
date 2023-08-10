@@ -22,7 +22,7 @@ def get_enabled_strategies():
     return enabled_strategies
 
 
-def send_notification(user: str, type: str, data: dict):
+def send_notification(user: str, type: str, data: dict, issuer: str):
     for strategy in get_enabled_strategies():
         if strategy.should_send_notification(user, type):
-            strategy.send_notification(user, type, data)
+            strategy.send_notification(user, type, data, issuer)

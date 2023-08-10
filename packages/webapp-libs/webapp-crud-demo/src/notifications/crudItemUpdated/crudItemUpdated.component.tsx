@@ -8,11 +8,9 @@ import { RoutesConfig } from '../../config/routes';
 export type CrudItemUpdatedProps = NotificationType<{
   id: string;
   name: string;
-  user: string;
-  avatar: string | null;
 }>;
 
-export const CrudItemUpdated = ({ data: { id, name, user, avatar }, ...restProps }: CrudItemUpdatedProps) => {
+export const CrudItemUpdated = ({ data: { id, name }, issuer, ...restProps }: CrudItemUpdatedProps) => {
   const generateLocalePath = useGenerateLocalePath();
   const navigate = useNavigate();
 
@@ -23,8 +21,8 @@ export const CrudItemUpdated = ({ data: { id, name, user, avatar }, ...restProps
         const route = generateLocalePath(RoutesConfig.crudDemoItem.details, { id });
         navigate(route);
       }}
-      avatar={avatar}
-      title={user}
+      avatar={issuer?.avatar}
+      title={issuer?.email}
       content={
         <FormattedMessage
           defaultMessage={'CRUD item "{name}" has been updated'}

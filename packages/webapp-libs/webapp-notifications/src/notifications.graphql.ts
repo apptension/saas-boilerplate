@@ -17,6 +17,11 @@ export const notificationsListSubscription = gql(/* GraphQL */ `
           createdAt
           readAt
           data
+          issuer {
+            id
+            avatar
+            email
+          }
         }
       }
     }

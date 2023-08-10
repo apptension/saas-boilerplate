@@ -23,10 +23,13 @@ export const Default: StoryObj<typeof meta> = {
     id: 'mock-uuid',
     data: {
       id: 'data-mock-uuid',
-      user: 'example@example.com',
       name: 'Lorem ipsum',
-      avatar: 'https://picsum.photos/24/24',
     },
+    issuer: {
+      id: 'mock-user-uuid',
+      email: 'example@example.com',
+      avatar: 'https://picsum.photos/24/24',
+    }
   },
 
   decorators: [withProviders()],

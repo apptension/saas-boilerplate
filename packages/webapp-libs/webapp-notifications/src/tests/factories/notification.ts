@@ -1,5 +1,4 @@
 import { NotificationType } from '@sb/webapp-api-client';
-import { currentUserFactory } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedPaginatedListQueryResult, createFactory, makeId } from '@sb/webapp-api-client/tests/utils';
 
 import { notificationsListQuery, notificationsListSubscription } from '../../notifications.graphql';
@@ -10,7 +9,11 @@ export const notificationFactory = createFactory<NotificationType>(() => ({
   data: {},
   createdAt: new Date().toISOString(),
   readAt: null,
-  user: currentUserFactory(),
+  issuer: {
+    id: makeId(32),
+    email: 'mock@example.org',
+    avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',
+  },
 }));
 
 export const fillNotificationsListQuery = (

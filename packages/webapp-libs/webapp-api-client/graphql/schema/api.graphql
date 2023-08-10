@@ -593,11 +593,19 @@ type NotificationEdge {
 type NotificationType implements Node {
   "The ID of the object"
   id: ID!
-  user: CurrentUserType!
+  user: UserType
   type: String!
   createdAt: DateTime!
   readAt: DateTime
   data: GenericScalar
+  issuer: UserType
+}
+type UserType {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  avatar: String
 }
 type CrudDemoItemType implements Node {
   "The ID of the object"

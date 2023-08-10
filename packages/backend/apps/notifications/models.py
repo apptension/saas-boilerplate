@@ -19,6 +19,10 @@ class Notification(models.Model):
 
     data: dict = models.JSONField(default=dict)
 
+    issuer: settings.AUTH_USER_MODEL = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name="notifications_issued"
+    )
+
     objects = managers.NotificationManager()
 
     def __str__(self) -> str:
