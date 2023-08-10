@@ -48,11 +48,6 @@ services:
     links:
       - db
 
-  e2e-tests:
-    build:
-      context: .
-      dockerfile: ./packages/e2e-tests/Dockerfile
-
   stripemock:
     image: stripemock/stripe-mock:v0.103.0
     ports:
