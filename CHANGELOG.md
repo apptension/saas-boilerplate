@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/apptension/aws-boilerplate/compare/2.0.2...2.0.3) (2023-08-10)
+
+### Bug Fixes
+
+- [#293](https://github.com/apptension/aws-boilerplate/issues/293) Fix different avatars of one user in the notification widget ([#375](https://github.com/apptension/aws-boilerplate/issues/375)) ([8972594](https://github.com/apptension/aws-boilerplate/commit/897259404b8a6baabd0c67d03a5c9dda3d279858))
+- [#328](https://github.com/apptension/aws-boilerplate/issues/328) Fix sign-up returns validation error on installation without env variables ([#374](https://github.com/apptension/aws-boilerplate/issues/374)) ([9b65dd9](https://github.com/apptension/aws-boilerplate/commit/9b65dd9907a0ddc5b1c35734f04f635400979646))
+- [#353](https://github.com/apptension/aws-boilerplate/issues/353) Fix missing logo in emails ([#366](https://github.com/apptension/aws-boilerplate/issues/366)) ([a8406e3](https://github.com/apptension/aws-boilerplate/commit/a8406e3adb4523c65f8d5bdcea6fbf8b33974855))
+- [#362](https://github.com/apptension/aws-boilerplate/issues/362) Update python runtime version in workers to 3.11 ([#369](https://github.com/apptension/aws-boilerplate/issues/369)) ([6a74062](https://github.com/apptension/aws-boilerplate/commit/6a74062a8a23c0c5729bf5c1d3e7d7dc45e5c6f1))
+- `extract-intl` script not working as expected ([#339](https://github.com/apptension/aws-boilerplate/issues/339)) ([e1d8479](https://github.com/apptension/aws-boilerplate/commit/e1d847943044c74b89ee166b2228f0532d3e2937))
+- Allow running nx run webapp:graphql:download-schema if the contentful env vars are not set ([#354](https://github.com/apptension/aws-boilerplate/issues/354)) ([3347aa1](https://github.com/apptension/aws-boilerplate/commit/3347aa1cc739802a3eacc2f1bada9b9ff73a6816))
+- Clear cached cursors if current page end cursor is in cached… ([#368](https://github.com/apptension/aws-boilerplate/issues/368)) ([ad8382b](https://github.com/apptension/aws-boilerplate/commit/ad8382b900a43cb79347169405bcb305b15f1ad3)), closes [#365](https://github.com/apptension/aws-boilerplate/issues/365)
+- Fix documentation error for form-with-mutation.mdx ([#355](https://github.com/apptension/aws-boilerplate/issues/355)) ([cae7fd8](https://github.com/apptension/aws-boilerplate/commit/cae7fd809e13ae09250d8c69895947e7e7db7285))
+- Fix download-graphql-schema.sh in webapp-api-client and webapp-contentful ([#350](https://github.com/apptension/aws-boilerplate/issues/350)) ([3a8fab6](https://github.com/apptension/aws-boilerplate/commit/3a8fab6d52719902157f20c7f0a3085ecf8ef26c))
+- refetch crud item after add mutation ([#361](https://github.com/apptension/aws-boilerplate/issues/361)) ([f0c1131](https://github.com/apptension/aws-boilerplate/commit/f0c11317f8a04e9f6283cf32efb5356a0d06f93a)), closes [#351](https://github.com/apptension/aws-boilerplate/issues/351)
+- Remove unused e2e-tests container from docker-compose.yml ([#376](https://github.com/apptension/aws-boilerplate/issues/376)) ([57d9e79](https://github.com/apptension/aws-boilerplate/commit/57d9e793ae40cd0b3b895ef050e6bc4aa0a3d227))
+- Use local nx installation by running it through pnpm in all scripts and make rules ([#352](https://github.com/apptension/aws-boilerplate/issues/352)) ([e910640](https://github.com/apptension/aws-boilerplate/commit/e9106400cfdb5556ece808422fa41a857603d223))
+
 ### [2.0.2](https://github.com/apptension/aws-boilerplate/compare/2.0.1...2.0.2) (2023-07-26)
 
 ### Features
