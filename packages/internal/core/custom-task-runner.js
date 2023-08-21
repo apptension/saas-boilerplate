@@ -17,7 +17,7 @@ async function loadVersionEnv() {
   } catch {}
 }
 
-async function loadStageEnv() {
+async function loadStageEnv(shouldValidate = true) {
   if (!process.env.ENV_STAGE || process.env.ENV_STAGE === 'local') {
     return;
   }
@@ -29,11 +29,20 @@ async function loadStageEnv() {
   const parsed = dotenv.parse(Buffer.from(chamberOutput));
   dotenv.populate(process.env, parsed);
 
-  await validateStageEnv();
+  if (shouldValidate) {
+    await validateStageEnv();
+  }
 }
 
+const noValidateTasks = [
+      'tools:bootstrap-infra',
+      'infra-shared:bootstrap'
+  ]
+
 module.exports = async (...args) => {
-  await loadStageEnv();
+  const taskId = args[0]?.[0]?.id;
+  const shouldValidateEnv = !noValidateTasks.includes(taskId);
+  await loadStageEnv(shouldValidateEnv);
 
   await loadVersionEnv();
   return defaultTaskRunner(...args);
