@@ -49,7 +49,7 @@ services:
       - db
 
   stripemock:
-    image: stripemock/stripe-mock:v0.103.0
+    image: stripe/stripe-mock:v0.170.0
     ports:
       - "12111:12111"
       - "12112:12112"

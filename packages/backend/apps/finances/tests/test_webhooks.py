@@ -1,11 +1,10 @@
 import datetime
 
-from djstripe.enums import RefundStatus, RefundFailureReason
-
 import calleee
 import pytest
-
 from djstripe import models as djstripe_models
+from djstripe.enums import RefundStatus, RefundFailureReason
+
 from .utils import stripe_encode
 from .. import notifications
 
@@ -25,7 +24,7 @@ class TestCancelTrialSubscriptionOnPaymentFailure:
                     # The hardcoded ID is equal to the one returned from stripe-mock
                     # If the test fails after stripe-mock update you most likely need to change this to match their
                     # fixtures
-                    'id': 'si_IyZyeAN1KSAd6Z',
+                    'id': 'si_OQqOMhX37fUC5o',
                     'price': monthly_plan_price.id,
                 }
             ],

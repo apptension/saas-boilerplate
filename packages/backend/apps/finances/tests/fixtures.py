@@ -2,6 +2,7 @@ import pytest
 import pytest_factoryboy
 import stripe
 from django.contrib.auth import get_user_model
+from djstripe.models import Account
 
 from . import factories
 from .. import constants
@@ -86,6 +87,30 @@ def yearly_plan_price(price_factory, plan_factory):
     )
 
     return price
+
+
+@pytest.fixture(scope='function', autouse=True)
+def stripe_mock_fixture_product_default_price(price_factory):
+    """
+    stripe-mock v0.128.0 introduces "default_price" field in returned product fixture. In some cases the tests may fail,
+    if the Price object with this id does not exist in database. Adding it manually to avoid that issue. The hardcoded
+    ID may need to be changed when the Stripe-mock is updated to the newer version.
+    """
+    return price_factory(id="price_1NapVeJr3d0nrouD2gX5mHOY")
+
+
+@pytest.fixture(scope='function', autouse=True)
+def stripe_find_owner_account_monkey_patch():
+    """
+    dj-stripe v2.7.0 restored checking for owner of an Account object. Stripe-mock returns different account ID on
+    every call, what leads to infinite loop of fetching accounts from Stripe-mock. This monkey patch restores old
+    _find_owner_account functionality of the Account model.
+    """
+
+    def _find_owner_account(cls, data, api_key):
+        return None
+
+    Account._find_owner_account = classmethod(_find_owner_account)
 
 
 @pytest.fixture(scope='function', autouse=True)

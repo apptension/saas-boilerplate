@@ -261,13 +261,12 @@ dependencies = [
 
 [[package]]
 name = "dj-stripe"
-version = "2.6.3"
-requires_python = ">=3.7.12,<4.0.0"
+version = "2.8.1"
+requires_python = ">=3.8.0,<4.0.0"
 summary = "Django + Stripe made easy"
 dependencies = [
-    "django>=3.2.5",
-    "jsonfield>=3.0",
-    "stripe>=2.48.0",
+    "django>=3.2",
+    "stripe<5.0.0,>=2.48.0",
 ]
 
 [[package]]
@@ -586,15 +585,6 @@ dependencies = [
 name = "jsondiff"
 version = "2.0.0"
 summary = "Diff JSON and JSON-like structures in Python"
-
-[[package]]
-name = "jsonfield"
-version = "3.1.0"
-requires_python = ">=3.6"
-summary = "A reusable Django field that allows you to store validated JSON in your model."
-dependencies = [
-    "Django>=2.2",
-]
 
 [[package]]
 name = "jsonpatch"
@@ -1324,7 +1314,7 @@ dependencies = [
 [metadata]
 lock_version = "4.2"
 groups = ["default", "dev"]
-content_hash = "sha256:cf9ce847e6db798e36da7a5ca49c7ce6eb1c96cfb11d80bfab2394df54e828df"
+content_hash = "sha256:e692dc0dad8e5a6b7c9aaeb8e45dc5af0280549eeb6e80e7ee3071115c7e79f1"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1678,9 +1668,9 @@ content_hash = "sha256:cf9ce847e6db798e36da7a5ca49c7ce6eb1c96cfb11d80bfab2394df5
     {url = "https://files.pythonhosted.org/packages/51/6a/c3a0408646408f7283b7bc550c30a32cc791181ec4618592eec13e066ce3/Deprecated-1.2.13-py2.py3-none-any.whl", hash = "sha256:64756e3e14c8c5eea9795d93c524551432a0be75629f8f29e67ab8caf076c76d"},
     {url = "https://files.pythonhosted.org/packages/c8/d1/e412abc2a358a6b9334250629565fe12697ca1cdee4826239eddf944ddd0/Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
 ]
-"dj-stripe 2.6.3" = [
-    {url = "https://files.pythonhosted.org/packages/27/72/5fe128b53d7839e6a96125040614b1007e7cd823f0f5fb46cc600550d33e/dj_stripe-2.6.3-py3-none-any.whl", hash = "sha256:113bf47075b1232f7e634147d4d91bab54969eb902b200ceb7b04ed13b380920"},
-    {url = "https://files.pythonhosted.org/packages/f1/4f/43767e5501ef4a9e5b98cb31463abd29ba746d33fda5b8b74209b33ba568/dj_stripe-2.6.3.tar.gz", hash = "sha256:905f052a834b254329eef409f67a622a783806a8b64d9fb3debed0a69178c211"},
+"dj-stripe 2.8.1" = [
+    {url = "https://files.pythonhosted.org/packages/e2/96/5e2f62611c1e535b03a0ae537d34b7d1cb74e357dd2d9472b2c2c3595c0f/dj_stripe-2.8.1-py3-none-any.whl", hash = "sha256:607635aacf0bb99b85a0de00ceb2f3bf1087f664477baeb87641b751a6c04724"},
+    {url = "https://files.pythonhosted.org/packages/ff/aa/25769078c496c990d9a26a0ec1deb69e0adc38549c2596480d9baf190b17/dj_stripe-2.8.1.tar.gz", hash = "sha256:041f73eb9c5fbb0fd952dbd66e5fd2c8339ea34a159c27296aaf9253c8a88c77"},
 ]
 "django 4.2" = [
     {url = "https://files.pythonhosted.org/packages/9a/bb/48aa3e0850923096dff2766d21a6004d6e1a3317f0bd400ba81f586754e1/Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},
@@ -2007,10 +1997,6 @@ content_hash = "sha256:cf9ce847e6db798e36da7a5ca49c7ce6eb1c96cfb11d80bfab2394df5
 "jsondiff 2.0.0" = [
     {url = "https://files.pythonhosted.org/packages/db/15/0d33d6e8114901a7b2a56d4190e3dc1803a195495ee4f9696c630e046c9e/jsondiff-2.0.0-py3-none-any.whl", hash = "sha256:689841d66273fc88fc79f7d33f4c074774f4f214b6466e3aff0e5adaf889d1e0"},
     {url = "https://files.pythonhosted.org/packages/dd/13/2b691afe0a90fb930a32b8fc1b0fd6b5bdeaed459a32c5a58dc6654342da/jsondiff-2.0.0.tar.gz", hash = "sha256:2795844ef075ec8a2b8d385c4d59f5ea48b08e7180fce3cb2787be0db00b1fb4"},
-]
-"jsonfield 3.1.0" = [
-    {url = "https://files.pythonhosted.org/packages/10/3b/4542fd9465908380ba4321329d3cdfeb959769ec48d878dead978286b48d/jsonfield-3.1.0.tar.gz", hash = "sha256:7e4e84597de21eeaeeaaa7cc5da08c61c48a9b64d0c446b2d71255d01812887a"},
-    {url = "https://files.pythonhosted.org/packages/7c/97/3a4805532a9c1982368fd9f37b58133419e83704744b733ccab9e9827176/jsonfield-3.1.0-py3-none-any.whl", hash = "sha256:df857811587f252b97bafba42e02805e70a398a7a47870bc6358a0308dd689ed"},
 ]
 "jsonpatch 1.32" = [
     {url = "https://files.pythonhosted.org/packages/21/67/83452af2a6db7c4596d1e2ecaa841b9a900980103013b867f2865e5e1cf0/jsonpatch-1.32.tar.gz", hash = "sha256:b6ddfe6c3db30d81a96aaeceb6baf916094ffa23d7dd5fa2c13e13f8b6e600c2"},
