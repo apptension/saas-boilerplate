@@ -2,12 +2,11 @@
 
 const { spawn } = require('node:child_process');
 
-spawn('git', [
-    'describe',
-    '--tags',
-    '--first-parent',
-    '--abbrev=11',
-    '--long',
-    '--dirty',
-    '--always',
-], {stdio: 'inherit'});
+const username = process.env.DOCKER_USERNAME || '';
+const password = process.env.DOCKER_PASSWORD || '';
+
+if (username && password) {
+  spawn('docker', ['login', '-u', `"${username}"`, '-p', `"${password}"`], {
+    stdio: 'inherit',
+  });
+}

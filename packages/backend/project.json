@@ -35,7 +35,7 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["/bin/bash scripts/build.sh"],
+        "commands": ["node scripts/build.js"],
         "parallel": false
       },
       "dependsOn": ["test"]

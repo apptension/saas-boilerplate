@@ -7,6 +7,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     environment:
+      - PGUSER=backend
       - POSTGRES_USER=backend
       - POSTGRES_PASSWORD=backend
       - POSTGRES_DB=backend
