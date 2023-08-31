@@ -24,7 +24,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
-        "command": "/bin/bash ./scripts/docker-create-volumes.sh"
+        "command": "node ./scripts/docker-create-volumes.js"
       }
     },
     "docker-login": {
@@ -32,7 +32,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
-        "command": "/bin/bash ./scripts/docker-login.sh"
+        "command": "node ./scripts/docker-login.js"
       }
     },
     "docker-compose:up": {

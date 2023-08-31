@@ -99,7 +99,7 @@ export class CiEntrypoint extends Construct {
       phases: {
         build: {
           commands: [
-            'app_version=$(bash packages/internal/core/scripts/get-version.sh)',
+            'app_version=$(node packages/internal/core/scripts/get-version.js)',
             'echo "VERSION=${app_version}" >> .env',
           ],
         },

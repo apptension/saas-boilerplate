@@ -10,9 +10,9 @@ async function loadVersionEnv() {
     return;
   }
 
-  const scriptPath = path.join(__dirname, './scripts/get-version.sh');
+  const scriptPath = path.join(__dirname, './scripts/get-version.js');
   try {
-    const { stdout: version } = await exec(`bash ${scriptPath}`);
+    const { stdout: version } = await exec(`node ${scriptPath}`);
     process.env.VERSION = version.trim();
   } catch {}
 }
