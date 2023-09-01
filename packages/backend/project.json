@@ -30,6 +30,15 @@
       },
       "dependsOn": ["compose-build-image"]
     },
+    "remote-shell": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["node scripts/execute_remote.js"],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {

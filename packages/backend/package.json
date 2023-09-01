@@ -18,6 +18,7 @@
     "@aws-sdk/client-ecr": "^3.398.0",
     "@aws-sdk/client-sts": "^3.398.0",
     "@aws-sdk/client-sfn": "^3.398.0",
+    "@aws-sdk/client-ecs": "^3.398.0",
     "aws-cdk-lib": "^2.84.0",
     "constructs": "^10.1.225"
   }

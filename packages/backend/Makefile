@@ -57,5 +57,5 @@ secrets:
 	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=backend
 
 remote-shell:
-	chamber exec $(ENV_STAGE) -- ./scripts/execute_remote.sh
+	pnpm nx remote-shell
 

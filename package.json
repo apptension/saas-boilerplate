@@ -12,9 +12,14 @@
     "@apollo/client": "^3.7.9",
     "@apollo/rover": "^0.12.2",
     "@babel/preset-react": "^7.14.5",
-    "@nx/js": "16.3.2",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@nx/devkit": "16.3.2",
+    "@nx/eslint-plugin": "16.3.2",
+    "@nx/jest": "16.3.2",
+    "@nx/js": "16.3.2",
     "@nx/linter": "16.3.2",
+    "@nx/node": "16.3.2",
+    "@nx/plugin": "16.3.2",
     "@nx/react": "16.3.2",
     "@nx/web": "16.3.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
@@ -32,7 +37,6 @@
     "@types/styled-components": "5.1.26",
     "@typescript-eslint/eslint-plugin": "5.59.9",
     "@typescript-eslint/parser": "5.59.9",
-    "@graphql-typed-document-node/core": "^3.2.0",
     "babel-jest": "29.4.3",
     "babel-plugin-relay": "^14.1.0",
     "babel-plugin-styled-components": "1.10.7",
@@ -62,11 +66,7 @@
     "tsconfig-paths": "^4.1.2",
     "tslib": "^2.3.0",
     "typescript": "5.0.4",
-    "url-loader": "^4.1.1",
-    "@nx/eslint-plugin": "16.3.2",
-    "@nx/jest": "16.3.2",
-    "@nx/plugin": "16.3.2",
-    "@nx/node": "16.3.2"
+    "url-loader": "^4.1.1"
   },
   "dependencies": {
     "react": "18.2.0",
@@ -74,5 +74,10 @@
     "react-is": "18.2.0",
     "react-router-dom": "6.11.2",
     "styled-components": "5.3.6"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "nx@16.3.2": "patches/nx@16.3.2.patch"
+    }
   }
 }
