@@ -7,7 +7,7 @@
     "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
     "diff:migrations": "cdk diff *MigrationsStack",
     "lint:js": "eslint .",
-    "trigger-migrations-job": "node ./scripts/trigger_migrations_job.js"
+    "trigger-migrations-job": "node ./scripts/triggerMigrationsJob.js"
   },
   "devDependencies": {
     "@sb/core": "*",

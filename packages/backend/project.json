@@ -35,7 +35,7 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["node scripts/execute_remote.js"],
+        "commands": ["node scripts/executeRemote.js"],
         "parallel": false
       }
     },
@@ -54,7 +54,7 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["node scripts/build_docs.js"],
+        "commands": ["node scripts/buildDocs.js"],
         "parallel": false
       },
       "dependsOn": ["compose-build-image"]
