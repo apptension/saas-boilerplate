@@ -78,7 +78,7 @@ export class MigrationsStack extends Stack {
         containerOverrides: [
           {
             containerDefinition: containerDef,
-            command: ['./scripts/run_migrations.sh'],
+            command: ['./scripts/runtime/run_migrations.sh'],
           },
         ],
         integrationPattern: sf.IntegrationPattern.RUN_JOB,

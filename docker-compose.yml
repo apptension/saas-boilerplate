@@ -21,7 +21,7 @@ services:
     build:
       context: ./packages/backend
       target: backend
-    command: ["./scripts/run_local.sh"]
+    command: ["./scripts/runtime/run_local.sh"]
     ports:
       - "5001:5001"
     depends_on:

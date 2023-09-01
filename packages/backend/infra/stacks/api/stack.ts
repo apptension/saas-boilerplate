@@ -106,7 +106,7 @@ export class ApiStack extends Stack {
             command:  [
               "sh",
               "-c",
-              "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/run.sh",
+              "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/runtime/run.sh",
             ],
             image: ecs.ContainerImage.fromEcrRepository(
               resources.backendRepository,
