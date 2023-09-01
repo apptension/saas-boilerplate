@@ -54,7 +54,7 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["/bin/bash scripts/build_docs.sh"],
+        "commands": ["node scripts/build_docs.js"],
         "parallel": false
       },
       "dependsOn": ["compose-build-image"]

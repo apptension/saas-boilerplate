@@ -1,4 +1,3 @@
-const { spawn } = require('child_process');
 const { STSClient, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const {
   SFNClient,
@@ -7,38 +6,14 @@ const {
   GetExecutionHistoryCommand,
 } = require('@aws-sdk/client-sfn');
 
+const { runCommand } = require('./lib/runCommand');
+
 const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const ENV_STAGE = process.env.ENV_STAGE;
 
 const stsClient = new STSClient();
 const sfnClient = new SFNClient();
-
-function runCommand(command, args) {
-  return new Promise((resolve, reject) => {
-    const output = [];
-    const cmd = spawn(command, args);
-
-    cmd.stdout.on('data', (data) => {
-      process.stdout.write(data);
-      output.push(data.toString());
-    });
-
-    cmd.stderr.on('data', (data) => {
-      process.stdout.write(data);
-    });
-
-    cmd.on('close', (code) => {
-      if (code !== 0) {
-        reject(
-          new Error(`"${command} ${args.join(' ')}" failed with code ${code}`)
-        );
-      } else {
-        resolve(output.join(''));
-      }
-    });
-  });
-}
 
 async function poll(executionArn) {
   const timeout = 5 * 60;
@@ -91,7 +66,6 @@ async function poll(executionArn) {
     ]);
 
     console.log(`Migrations job result:\n ${JSON.stringify(finalResult)}`);
-
     if (finalResult.status !== 'SUCCEEDED') {
       process.exit(1);
     }
