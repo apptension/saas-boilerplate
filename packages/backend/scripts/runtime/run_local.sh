@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-. $(dirname "$0")/runtime/install_localstack_fixtures.sh
+. $(dirname "$0")/install_localstack_fixtures.sh
 
 echo "Install LocalStack fixture"
 
