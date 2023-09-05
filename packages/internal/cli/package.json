@@ -1,0 +1,74 @@
+{
+  "name": "@sb/cli",
+  "version": "0.0.0",
+  "description": "SaaS Boilerplate CLI",
+  "author": "Patryk Ziemkowski @pziemkowski",
+  "bin": {
+    "saas": "./bin/run"
+  },
+  "homepage": "https://github.com/apptension/saas-boilerplate",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": "apptension/saas-boilerplate",
+  "files": [
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@oclif/core": "^2.15.0",
+    "@oclif/plugin-help": "^5.2.19",
+    "@oclif/plugin-plugins": "^3.4.0",
+    "node-persist": "^3.1.3"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2.4.7",
+    "@types/chai": "^4",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.18.47",
+    "@types/ramda": "^0.29.3",
+    "@types/node-persist": "^3.1.4",
+    "chai": "^4",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4",
+    "eslint-config-oclif-typescript": "^1.0.3",
+    "mocha": "^9",
+    "oclif": "^3.14.0",
+    "shx": "^0.3.3",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2"
+  },
+  "oclif": {
+    "bin": "saas",
+    "dirname": "saas",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "hello": {
+        "description": "Say hello to the world and others"
+      }
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "npm run build && oclif manifest && oclif readme",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "bugs": "https://github.com/apptension/saas-boilerplate/issues",
+  "keywords": [
+    "oclif"
+  ],
+  "types": "dist/index.d.ts"
+}

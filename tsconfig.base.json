@@ -21,6 +21,7 @@
     "baseUrl": "./",
     "types": ["@types/gtag.js"],
     "paths": {
+      "@sb/cli": ["packages/internal/cli"],
       "@sb/infra-core": ["packages/infra/infra-core/src/index.ts"],
       "@sb/infra-shared": ["packages/infra/infra-shared/src/index.ts"],
       "@sb/tools": ["packages/internal/tools/src/index.ts"],
