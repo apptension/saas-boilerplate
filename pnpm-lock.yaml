@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  nx@16.3.2:
-    hash: ejmoyxbob3osv253yoaksd3r54
-    path: patches/nx@16.3.2.patch
-
 importers:
 
   .:
@@ -172,7 +167,7 @@ importers:
         version: 10.5.4
       nx:
         specifier: 16.3.2
-        version: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
+        version: 16.3.2
       nx-cloud:
         specifier: 16.0.5
         version: 16.0.5
@@ -348,6 +343,9 @@ importers:
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
+      envalid:
+        specifier: ^7.3.1
+        version: 7.3.1
       lookpath:
         specifier: ^1.2.2
         version: 1.2.2
@@ -11120,7 +11118,7 @@ packages:
     resolution: {integrity: sha512-2Kg7dtv6JcQagCZPSq+okceI81NqmXGGgbKWqS7sOfdmp1otxS9uiUFNXw+Pdtnw38mdRviMtSOXScntu4sUKg==}
     hasBin: true
     dependencies:
-      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
+      nx: 16.3.2
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -11187,7 +11185,7 @@ packages:
       '@nrwl/devkit': 16.3.2(nx@16.3.2)
       ejs: 3.1.8
       ignore: 5.2.4
-      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
+      nx: 16.3.2
       semver: 7.3.4
       tmp: 0.2.1
       tslib: 2.5.0
@@ -11614,7 +11612,7 @@ packages:
       ignore: 5.2.4
       minimatch: 3.0.5
       npm-run-path: 4.0.1
-      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
+      nx: 16.3.2
       open: 8.4.0
       rxjs: 7.8.0
       tmp: 0.2.1
@@ -21180,7 +21178,6 @@ packages:
     engines: {node: '>=8.12'}
     dependencies:
       tslib: 2.3.1
-    dev: true
 
   /envinfo@7.8.1:
     resolution: {integrity: sha512-/o+BXHmB7ocbHEAs6F2EnG0ogybVVUdkRunTT2glZU9XAaGmhqskrvKwqXuDfNjEO0LZKWdejEEpnq8aM0tOaw==}
@@ -29623,7 +29620,7 @@ packages:
       - debug
     dev: true
 
-  /nx@16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54):
+  /nx@16.3.2:
     resolution: {integrity: sha512-fOzCVL7qoCJAcYTJwvJ9j+PSaL791ro4AICWuLxaphZsp2jcLoav4Ev7ONPks2Wlkt8FS9bee3nqQ3w1ya36Og==}
     hasBin: true
     requiresBuild: true
@@ -29683,7 +29680,6 @@ packages:
       '@nx/nx-win32-x64-msvc': 16.3.2
     transitivePeerDependencies:
       - debug
-    patched: true
 
   /oas-kit-common@1.0.8:
     resolution: {integrity: sha512-pJTS2+T0oGIwgjGpw7sIRU8RQMcUoKCDWFLdBqKB2BNmGpbBMH2sdqAaOXUg8OzonZHU0L7vfJu1mJFEiYDWOQ==}
@@ -36247,7 +36243,6 @@ packages:
 
   /tslib@2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
-    dev: true
 
   /tslib@2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}

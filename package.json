@@ -76,10 +76,5 @@
     "react-is": "18.2.0",
     "react-router-dom": "6.11.2",
     "styled-components": "5.3.6"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "nx@16.3.2": "patches/nx@16.3.2.patch"
-    }
   }
 }

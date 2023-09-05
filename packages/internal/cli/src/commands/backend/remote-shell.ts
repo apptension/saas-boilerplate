@@ -20,7 +20,7 @@ hello world! (./src/commands/hello/world.ts)
 
   async run(): Promise<void> {
     const { projectName, envStage, awsRegion } = await initConfig(this, {
-      requireAwsCredentials: true,
+      requireAws: true,
     });
 
     if (!awsRegion) {

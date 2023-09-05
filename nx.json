@@ -3,7 +3,6 @@
   "npmScope": "sb",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@sb/core/custom-task-runner",
       "options": {
         "cacheableOperations": [
           "setup",

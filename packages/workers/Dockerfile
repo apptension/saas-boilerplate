@@ -31,7 +31,6 @@ COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/
 RUN pdm sync
 
 WORKDIR $APP_PATH
-COPY patches $APP_PATH/patches
 COPY package.json pnpm*.yaml $APP_PATH/
 COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
