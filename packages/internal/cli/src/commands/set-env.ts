@@ -1,6 +1,7 @@
 import { Args, Command } from '@oclif/core';
 
-import { getConfigStorage, getEnvStageKey } from '../config';
+import { setEnvStage } from '../config/storage';
+import { initConfig } from '../config/init';
 
 export default class SetEnv extends Command {
   static description = 'Select ENV stage';
@@ -16,15 +17,14 @@ export default class SetEnv extends Command {
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(SetEnv);
-    const storage = await getConfigStorage();
-    const envStageKey = getEnvStageKey();
-    const currentEnvStage = await storage.getItem(envStageKey);
+    const { envStage: currentEnvStage } = await initConfig(this, {});
 
     if (currentEnvStage === args.envStage) {
       this.log(`Your environment stage is already set to ${args.envStage}.`);
       return;
     }
-    await storage.setItem(envStageKey, args.envStage);
+
+    await setEnvStage(args.envStage);
     this.log(`Switched environment stage to ${args.envStage}.`);
   }
 }
