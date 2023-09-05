@@ -1,13 +1,11 @@
 import * as storage from 'node-persist';
 import * as childProcess from 'child_process';
-import { promisify } from 'util';
-import { resolve } from 'path';
+import {promisify} from 'util';
+import {resolve} from 'path';
 
 const exec = promisify(childProcess.exec);
 
-export enum ConfOptions {
-  EnvStage = 'envStage',
-}
+export const getEnvStageKey = () => `${process.ppid}-envStage`;
 
 export const getConfigStorage = async () => {
   const { stdout } = await exec('pnpm root -w');
