@@ -34,10 +34,7 @@ async function loadStageEnv(shouldValidate = true) {
   }
 }
 
-const noValidateTasks = [
-      'tools:bootstrap-infra',
-      'infra-shared:bootstrap'
-  ]
+const noValidateTasks = ['tools:bootstrap-infra', 'infra-shared:bootstrap'];
 
 module.exports = async (...args) => {
   const taskId = args[0]?.[0]?.id;

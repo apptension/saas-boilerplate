@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   nx@16.3.2:
-    hash: lgnbdjknqhsumi3fwjdxrugetq
+    hash: ejmoyxbob3osv253yoaksd3r54
     path: patches/nx@16.3.2.patch
 
 importers:
@@ -169,7 +169,7 @@ importers:
         version: 10.5.4
       nx:
         specifier: 16.3.2
-        version: 16.3.2(patch_hash=lgnbdjknqhsumi3fwjdxrugetq)
+        version: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
       nx-cloud:
         specifier: 16.0.5
         version: 16.0.5
@@ -179,6 +179,9 @@ importers:
       react-refresh:
         specifier: ^0.10.0
         version: 0.10.0
+      string-argv:
+        specifier: ^0.3.2
+        version: 0.3.2
       tailwindcss:
         specifier: ^3.3.2
         version: 3.3.2(ts-node@10.9.1)
@@ -321,6 +324,9 @@ importers:
       envalid:
         specifier: ^7.3.1
         version: 7.3.1
+      lookpath:
+        specifier: ^1.2.2
+        version: 1.2.2
 
   packages/internal/docs:
     dependencies:
@@ -10733,7 +10739,7 @@ packages:
     resolution: {integrity: sha512-2Kg7dtv6JcQagCZPSq+okceI81NqmXGGgbKWqS7sOfdmp1otxS9uiUFNXw+Pdtnw38mdRviMtSOXScntu4sUKg==}
     hasBin: true
     dependencies:
-      nx: 16.3.2(patch_hash=lgnbdjknqhsumi3fwjdxrugetq)
+      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -10800,7 +10806,7 @@ packages:
       '@nrwl/devkit': 16.3.2(nx@16.3.2)
       ejs: 3.1.8
       ignore: 5.2.4
-      nx: 16.3.2(patch_hash=lgnbdjknqhsumi3fwjdxrugetq)
+      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
       semver: 7.3.4
       tmp: 0.2.1
       tslib: 2.5.0
@@ -11227,7 +11233,7 @@ packages:
       ignore: 5.2.4
       minimatch: 3.0.5
       npm-run-path: 4.0.1
-      nx: 16.3.2(patch_hash=lgnbdjknqhsumi3fwjdxrugetq)
+      nx: 16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54)
       open: 8.4.0
       rxjs: 7.8.0
       tmp: 0.2.1
@@ -26210,6 +26216,12 @@ packages:
       uni-global: 1.0.0
     dev: true
 
+  /lookpath@1.2.2:
+    resolution: {integrity: sha512-k2Gmn8iV6qdME3ztZC2spubmQISimFOPLuQKiPaLcVdRz0IpdxrNClVepMlyTJlhodm/zG/VfbkWERm3kUIh+Q==}
+    engines: {npm: '>=6.13.4'}
+    hasBin: true
+    dev: true
+
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -27443,7 +27455,7 @@ packages:
       - debug
     dev: true
 
-  /nx@16.3.2(patch_hash=lgnbdjknqhsumi3fwjdxrugetq):
+  /nx@16.3.2(patch_hash=ejmoyxbob3osv253yoaksd3r54):
     resolution: {integrity: sha512-fOzCVL7qoCJAcYTJwvJ9j+PSaL791ro4AICWuLxaphZsp2jcLoav4Ev7ONPks2Wlkt8FS9bee3nqQ3w1ya36Og==}
     hasBin: true
     requiresBuild: true
@@ -32159,6 +32171,11 @@ packages:
 
   /string-argv@0.3.1:
     resolution: {integrity: sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==}
+    engines: {node: '>=0.6.19'}
+    dev: true
+
+  /string-argv@0.3.2:
+    resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
     dev: true
 

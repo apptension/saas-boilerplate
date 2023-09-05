@@ -60,7 +60,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": ["nx docker-compose:up", "nx run webapp:start"],
+        "commands": ["nx run core:docker-compose:up", "nx run webapp:start"],
         "parallel": false
       }
     },
@@ -69,6 +69,15 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/internal/core/**/*.ts"]
+      }
+    },
+    "set-env": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": ["node ./scripts/set-env.js {args.env}"],
+        "cwd": "packages/internal/core",
+        "parallel": false
       }
     }
   },
