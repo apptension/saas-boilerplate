@@ -127,7 +127,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
         },
-        WORKERS_BASE_IMAGE: {
+        SB_WORKERS_BASE_IMAGE: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: baseImage,
         },
@@ -238,7 +238,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
         },
-        WORKERS_BASE_IMAGE: {
+        SB_WORKERS_BASE_IMAGE: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: baseImage,
         },

@@ -6,10 +6,11 @@ const { STSClient, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 
 const { runCommand } = require('./lib/runCommand');
 
+const AWS_REGION = process.env.AWS_REGION;
 const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const VERSION = process.env.VERSION;
-const BACKEND_BASE_IMAGE = process.env.BACKEND_BASE_IMAGE;
+const BACKEND_BASE_IMAGE = process.env.SB_BACKEND_BASE_IMAGE;
 
 const stsClient = new STSClient();
 const ecrClient = new ECRClient();
@@ -20,7 +21,8 @@ const ecrClient = new ECRClient();
     const { Account: AWS_ACCOUNT_ID } = await stsClient.send(
       getCallerIdentityCommand
     );
-    const BACKEND_REPO_URI = `${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${PROJECT_NAME}-backend`;
+    const region = AWS_REGION || AWS_DEFAULT_REGION;
+    const BACKEND_REPO_URI = `${AWS_ACCOUNT_ID}.dkr.ecr.${region}.amazonaws.com/${PROJECT_NAME}-backend`;
 
     try {
       const getAuthorizationTokenCommand = new GetAuthorizationTokenCommand();
@@ -51,7 +53,7 @@ const ecrClient = new ECRClient();
         'get-login',
         '--no-include-email',
         '--region',
-        AWS_DEFAULT_REGION,
+        region,
       ]);
     }
 
@@ -61,27 +63,16 @@ const ecrClient = new ECRClient();
       console.warn(`Warning: ${error.message}`);
     }
 
-    if (BACKEND_BASE_IMAGE) {
-      await runCommand('docker', [
-        'build',
-        '--target',
-        'backend',
-        '-t',
-        `${BACKEND_REPO_URI}:${VERSION}`,
-        '--build-arg',
-        `BACKEND_BASE_IMAGE=${BACKEND_BASE_IMAGE}`,
-        '.',
-      ]);
-    } else {
-      await runCommand('docker', [
-        'build',
-        '--target',
-        'backend',
-        '-t',
-        `${BACKEND_REPO_URI}:${VERSION}`,
-        '.',
-      ]);
-    }
+    await runCommand('docker', [
+      'build',
+      '--target',
+      'backend',
+      '-t',
+      `${BACKEND_REPO_URI}:${VERSION}`,
+      '--build-arg',
+      `BACKEND_BASE_IMAGE=${BACKEND_BASE_IMAGE}`,
+      '.',
+    ]);
 
     await runCommand('docker', ['push', `${BACKEND_REPO_URI}:${VERSION}`]);
     await runCommand('docker', [
@@ -92,6 +83,6 @@ const ecrClient = new ECRClient();
     await runCommand('docker', ['push', `${BACKEND_REPO_URI}:latest`]);
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    process.exit(1)
+    process.exit(1);
   }
 })();

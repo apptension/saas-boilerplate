@@ -112,7 +112,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
             value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
           },
-          BACKEND_BASE_IMAGE: {
+          SB_BACKEND_BASE_IMAGE: {
             type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: baseImage,
           },

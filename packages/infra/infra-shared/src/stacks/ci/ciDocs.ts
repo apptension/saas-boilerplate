@@ -69,7 +69,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
       this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/docker/library/${
       props.envSettings.dockerImages.backendBaseImage
     }`;
 
@@ -109,7 +109,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
           value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
         },
-        BACKEND_BASE_IMAGE: {
+        SB_BACKEND_BASE_IMAGE: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: baseImage,
         },

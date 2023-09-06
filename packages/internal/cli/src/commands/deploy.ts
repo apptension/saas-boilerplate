@@ -4,7 +4,7 @@ import { initConfig } from '../config/init';
 import { runCommand } from '../lib/runCommand';
 
 export default class Deploy extends Command {
-  static description = 'Starts both backend and frontend';
+  static description = 'Deploy all previously built artifacts to AWS';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 

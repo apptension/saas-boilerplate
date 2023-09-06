@@ -23,12 +23,6 @@ build:
 lint:
 	pnpm nx run-many --output-style=stream --target=lint
 
-deploy-components:
-	pnpm nx run --output-style=stream infra-shared:deploy:components
-
-deploy-env-app: deploy-components
-	pnpm nx run-many --output-style=stream --target=deploy --projects=backend,workers,webapp
-
 stop-task-scheduling-executions:
 	pnpm nx run --output-style=stream workers:stop-task-scheduling-executions
 

@@ -46,7 +46,8 @@ async function loadStageEnv(
   dotenv.populate(process.env, parsed, { override: true });
 
   if (shouldValidate) {
-    await validateStageEnv();
+    const validationResult = await validateStageEnv();
+    Object.assign(process.env, validationResult);
   }
 }
 

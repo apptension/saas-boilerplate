@@ -10,8 +10,8 @@ const exec = promisify(childProcess.exec);
 
 type LoadDotenvOptions = {
   rootPath: string;
-}
-export const loadDotenv = async ({ rootPath } : LoadDotenvOptions) => {
+};
+export const loadDotenv = async ({ rootPath }: LoadDotenvOptions) => {
   dotenv.config({ path: resolve(rootPath, '.env') });
 };
 
@@ -29,7 +29,7 @@ export async function loadVersionEnv() {
 }
 
 export async function validateStageEnv() {
-  envalid.cleanEnv(process.env, {
+  return envalid.cleanEnv(process.env, {
     PROJECT_NAME: envalid.str({
       desc: 'The name of your project (best if 3-5 characters to avoid AWS names being to long)',
       example: 'saas',
