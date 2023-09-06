@@ -7,7 +7,7 @@ import { runCommand } from '../../lib/runCommand';
 export default class BackendBuild extends Command {
   static description = 'Starts all backend services';
 
-  static examples = [`$ saas backend up`];
+  static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
     const { envStage, version, awsRegion, awsAccountId } = await initConfig(

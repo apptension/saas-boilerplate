@@ -1,9 +1,6 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/Makefile.base.mk
 
-bootstrap-infra:
-	pnpm nx run tools:bootstrap-infra
-	pnpm nx run --output-style=stream infra-shared:bootstrap
 
 setup:
 	pnpm nx run-many --skip-nx-cache --target=setup --projects=core,backend,workers,webapp,e2e-tests
@@ -12,13 +9,6 @@ setup:
 # Infrastructure deployment
 #
 
-deploy-env-infra:
-	pnpm nx run --output-style=stream infra-shared:deploy:global
-	pnpm nx run --output-style=stream infra-shared:deploy:main
-	pnpm nx run --output-style=stream infra-shared:deploy:db
-	pnpm nx run --output-style=stream infra-functions:deploy
-	pnpm nx run --output-style=stream infra-shared:deploy:ci
-	pnpm nx run --output-style=stream infra-shared:deploy:components
 
 upload-version:
 	pnpm nx run --output-style=stream tools:upload-version migrations,api,workers,webapp

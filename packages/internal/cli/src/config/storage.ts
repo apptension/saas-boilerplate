@@ -21,9 +21,11 @@ export const getConfigStorage = async () => {
   return storage;
 };
 
-export const getEnvStage = async (): Promise<string> => {
+export const loadEnvStage = async (): Promise<string> => {
   const storage = await getConfigStorage();
-  return (await storage.getItem(getEnvStageKey())) ?? ENV_STAGE_LOCAL;
+  const value = (await storage.getItem(getEnvStageKey())) ?? ENV_STAGE_LOCAL;
+  process.env.ENV_STAGE = value;
+  return value;
 };
 
 export const setEnvStage = async (value: string) => {

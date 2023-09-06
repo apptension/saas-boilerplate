@@ -6,13 +6,10 @@ import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 
 export default class RemoteShell extends Command {
-  static description = 'Say hello world';
+  static description = 'Use aws execute-command to start a /bin/bash session inside a running backend task in ' +
+      'ECS cluster';
 
-  static examples = [
-    `<%= config.bin %> <%= command.id %>
-hello world! (./src/commands/hello/world.ts)
-`,
-  ];
+  static examples = [`<%= config.bin %> <%= command.id %>`];
 
   static flags = {};
 

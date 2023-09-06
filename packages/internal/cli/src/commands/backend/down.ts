@@ -7,7 +7,7 @@ import { assertDockerIsRunning } from '../../lib/docker';
 export default class BackendUp extends Command {
   static description = 'Stops all backend services';
 
-  static examples = [`$ saas backend down`];
+  static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
     await initConfig(this, { requireLocalEnvStage: true });

@@ -2,17 +2,17 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import { assertAwsVaultInstalled } from '../../lib/awsVault';
 
-export default class AwsLogin extends Command {
+export default class DeployApp extends Command {
   static description = 'Get currently selected ENV stage';
 
-  static examples = [`$ saas aws login`];
+  static examples = [`$ saas aws bootstrap`];
 
   async run(): Promise<void> {
     await initConfig(this, { requireAws: true });
-    await assertAwsVaultInstalled();
 
-    await runCommand('aws-vault', ['login']);
+    await runCommand('pnpm', ['nx', 'run', 'backend:deploy']);
+    await runCommand('pnpm', ['nx', 'run', 'workers:deploy']);
+    await runCommand('pnpm', ['nx', 'run', 'webapp:deploy']);
   }
 }

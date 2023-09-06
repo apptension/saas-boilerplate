@@ -92,6 +92,15 @@
         "commands": ["nx cdk:deploy:api", "nx cdk:deploy:migrations"],
         "parallel": false
       }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["nx diff:api", "nx diff:migrations"],
+        "parallel": false
+      }
     }
   },
   "tags": ["service"]

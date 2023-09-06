@@ -7,7 +7,7 @@ import { resolve } from 'path';
 
 import { ENV_STAGE_LOCAL, loadDotenv, loadVersionEnv } from './env';
 import { initAWS } from './aws';
-import { getEnvStage } from './storage';
+import { loadEnvStage } from './storage';
 
 const exec = promisify(childProcess.exec);
 
@@ -34,7 +34,7 @@ export const initConfig = async (
   const rootPath = await getRootPath();
   await loadDotenv({ rootPath });
   const version = await loadVersionEnv();
-  const envStage = await getEnvStage();
+  const envStage = await loadEnvStage();
   const projectName = process.env.PROJECT_NAME;
 
   if (!projectName) {

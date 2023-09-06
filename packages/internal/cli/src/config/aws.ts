@@ -41,8 +41,9 @@ async function loadStageEnv(
       Object.keys(parsed).length
     } environmental variables from SSM Parameter Store using chamber.\n`
   );
+
   // @ts-ignore
-  dotenv.populate(process.env, parsed);
+  dotenv.populate(process.env, parsed, { override: true });
 
   if (shouldValidate) {
     await validateStageEnv();

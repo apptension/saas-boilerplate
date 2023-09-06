@@ -34,11 +34,6 @@ export HOST_UID
 USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
 
-
-aws-login:
-	aws-vault login $(AWS_VAULT_PROFILE)
-
-
 secrets-editor: SERVICE_NAME?=
 secrets-editor:
 	pnpm nx run ssm-editor:compose-build-image

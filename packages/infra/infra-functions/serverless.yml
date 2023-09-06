@@ -7,7 +7,7 @@ provider:
   runtime: nodejs16.x
   versionFunctions: false
   stage: "${env:ENV_STAGE}"
-  region: "${env:AWS_DEFAULT_REGION}"
+  region: "${env:AWS_REGION, env:AWS_DEFAULT_REGION}"
   stackName: ${self:custom.conf.stackName}
   iamRoleStatements: ${self:custom.conf.iam}
   environment: ${self:custom.conf.environment}

@@ -78,6 +78,15 @@
         ],
         "parallel": false
       }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "commands": ["pnpm run cdk diff *WebAppStack"],
+        "parallel": false
+      }
     }
   },
   "tags": []
