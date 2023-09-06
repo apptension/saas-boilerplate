@@ -1,11 +1,16 @@
-import {SpawnOptionsWithoutStdio, spawn } from 'node:child_process';
+import { SpawnOptionsWithoutStdio, spawn } from 'node:child_process';
 
-export function runCommand(command: string, args: string[], options?: SpawnOptionsWithoutStdio) {
+export function runCommand(
+  command: string,
+  args: string[],
+  options?: SpawnOptionsWithoutStdio
+) {
   return new Promise<void>((resolve, reject) => {
+    console.log([command, ...args].join(' '));
     const cmd = spawn(command, args, {
       shell: process.platform === 'win32',
       stdio: 'inherit',
-      ...options
+      ...options,
     });
 
     cmd.on('close', (code) => {

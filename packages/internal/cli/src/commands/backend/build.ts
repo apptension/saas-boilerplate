@@ -5,7 +5,7 @@ import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 
 export default class BackendBuild extends Command {
-  static description = 'Starts all backend services';
+  static description = 'Build backend docker image and upload it to AWS ECR';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 

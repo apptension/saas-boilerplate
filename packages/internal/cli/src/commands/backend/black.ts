@@ -4,8 +4,8 @@ import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 import { assertDockerIsRunning } from '../../lib/docker';
 
-export default class BackendUp extends Command {
-  static description = 'Starts all backend services';
+export default class BackendBlack extends Command {
+  static description = 'Run black inside backend docker container';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
@@ -13,6 +13,16 @@ export default class BackendUp extends Command {
     await initConfig(this, { requireLocalEnvStage: true });
     await assertDockerIsRunning();
 
-    await runCommand('pnpm', ['nx', 'run', 'core:docker-compose:up']);
+    await runCommand('docker', [
+      'compose',
+      'run',
+      '--rm',
+      '-T',
+      '--no-deps',
+      'backend',
+      'black',
+      '--config=pyproject.toml',
+      '.',
+    ]);
   }
 }
