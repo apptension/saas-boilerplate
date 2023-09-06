@@ -1,15 +1,28 @@
 import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 
+import * as childProcess from 'child_process';
+import { promisify } from 'util';
+import { resolve } from 'path';
+
 import { ENV_STAGE_LOCAL, loadDotenv, loadVersionEnv } from './env';
 import { initAWS } from './aws';
 import { getEnvStage } from './storage';
+
+const exec = promisify(childProcess.exec);
 
 type InitConfigOptions = {
   requireAws?: boolean;
   validateEnvStageVariables?: boolean;
   requireLocalEnvStage?: boolean;
 };
+
+
+const getRootPath = async () => {
+  const { stdout } = await exec('pnpm root -w');
+  return  resolve(stdout, '..');
+}
+
 export const initConfig = async (
   context: Command,
   {
@@ -18,7 +31,8 @@ export const initConfig = async (
     requireLocalEnvStage = false,
   }: InitConfigOptions
 ) => {
-  await loadDotenv();
+  const rootPath = await getRootPath();
+  await loadDotenv({ rootPath });
   const version = await loadVersionEnv();
   const envStage = await getEnvStage();
   const projectName = process.env.PROJECT_NAME;
@@ -59,6 +73,7 @@ Please call \`saas set-env local\` first or open a new terminal.`
   const projectEnvName = `${projectName}-${envStage}`;
 
   return {
+    rootPath,
     projectName,
     projectEnvName,
     envStage,

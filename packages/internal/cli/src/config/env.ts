@@ -7,9 +7,12 @@ import * as envalid from 'envalid';
 export const ENV_STAGE_LOCAL = 'local';
 
 const exec = promisify(childProcess.exec);
-export const loadDotenv = async () => {
-  const { stdout } = await exec('pnpm root -w');
-  dotenv.config({ path: resolve(stdout, '..', '.env') });
+
+type LoadDotenvOptions = {
+  rootPath: string;
+}
+export const loadDotenv = async ({ rootPath } : LoadDotenvOptions) => {
+  dotenv.config({ path: resolve(rootPath, '.env') });
 };
 
 export async function loadVersionEnv() {
