@@ -17,21 +17,12 @@ upload-version:
 # Packages deployment
 #
 
-build:
-	pnpm nx run-many --output-style=stream --target=build --projects=backend,workers,webapp
-
-lint:
-	pnpm nx run-many --output-style=stream --target=lint
-
 stop-task-scheduling-executions:
 	pnpm nx run --output-style=stream workers:stop-task-scheduling-executions
 
 #
 # Helper rules
 #
-
-psql:
-	docker compose exec db psql -d'backend' -U'backend'
 
 create-repo-auth-url:
 	pnpm nx run --output-style=stream tools:create-cicd-creds

@@ -36,7 +36,7 @@
       "options": {
         "cwd": "packages/workers",
         "color": true,
-        "command": "node ./scripts/local-trigger-server.js"
+        "command": "node ./scripts/runtime/local-trigger-server.js"
       }
     },
     "deploy": {
@@ -44,7 +44,7 @@
       "options": {
         "color": true,
         "commands": [
-          "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/deploy.sh",
+          "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_deploy.sh",
           "pnpm nx run tools:upload-service-version workers"
         ],
         "parallel": false
@@ -55,7 +55,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_lint.sh"
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_lint.sh"
       },
       "dependsOn": ["compose-build-image"]
     },
@@ -63,7 +63,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_tests.sh"
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_tests.sh"
       },
       "dependsOn": ["compose-build-image"]
     },
@@ -71,7 +71,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/run_build.sh"
+        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_build.sh"
       },
       "dependsOn": ["compose-build-image"]
     }
