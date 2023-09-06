@@ -9,12 +9,6 @@ endif
 setup:
 	chmod +x ./scripts/*.sh
 
-test:
-	pnpm nx test
-
-build:
-	pnpm nx build
-
 build-docs:
 	pnpm nx build-docs
 
