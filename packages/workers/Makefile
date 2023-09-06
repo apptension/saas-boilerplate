@@ -25,10 +25,3 @@ invoke-local:
 
 shell:
 	docker-compose run --rm workers bash
-
-
-secrets: export CHAMBER_SERVICE=workers
-secrets:
-	docker-compose build ssmeditor
-	docker-compose run --rm ssmeditor
-	sls "invoke" "local" "-f" "SynchronizeContentfulContent" "-d" "{\"source\":\"backend.contentfulSync\",\"detail-type\":\"complete\",\"detail\":{\"id\":\"56f478a32bb54ff6adf91b2f19ca6c1a\",\"type\":\"complete\"}}"

@@ -11,6 +11,3 @@ build:
 
 deploy:
 	pnpm nx deploy
-
-secrets:
-	$(MAKE) -C $(PROJECT_ROOT_DIR) secrets-editor SERVICE_NAME=webapp
