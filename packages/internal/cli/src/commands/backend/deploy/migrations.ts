@@ -4,7 +4,7 @@ import { color } from '@oclif/color';
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
 
-export default class BackendDeployApi extends Command {
+export default class BackendDeployMigrations extends Command {
   static description =
     'Deploys database migrations to AWS using previously built artifact and immediately performs them';
 
@@ -20,17 +20,17 @@ export default class BackendDeployApi extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(BackendDeployApi);
+    const { flags } = await this.parse(BackendDeployMigrations);
     const { envStage, version, awsRegion, awsAccountId } = await initConfig(
       this,
       { requireAws: true }
     );
 
     this.log(`Deploying migrations:
-envStage: ${color.green(envStage)}
-version: ${color.green(version)}
-AWS account: ${color.green(awsAccountId)}
-AWS region: ${color.green(awsRegion)}
+  envStage: ${color.green(envStage)}
+  version: ${color.green(version)}
+  AWS account: ${color.green(awsAccountId)}
+  AWS region: ${color.green(awsRegion)}
 `);
 
     const verb = flags.diff ? 'diff' : 'deploy';

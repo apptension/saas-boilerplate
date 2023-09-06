@@ -16,10 +16,10 @@ export default class BackendBuild extends Command {
     );
 
     this.log(`Building backend:
-envStage: ${color.green(envStage)}
-version: ${color.green(version)}
-AWS account: ${color.green(awsAccountId)}
-AWS region: ${color.green(awsRegion)}
+  envStage: ${color.green(envStage)}
+  version: ${color.green(version)}
+  AWS account: ${color.green(awsAccountId)}
+  AWS region: ${color.green(awsRegion)}
 `);
 
     await runCommand('pnpm', ['nx', 'run', 'backend:build']);

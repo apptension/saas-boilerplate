@@ -12,15 +12,6 @@ setup:
 build-docs:
 	pnpm nx build-docs
 
-deploy-api:
-	pnpm nx deploy:api
-
-deploy-migrations:
-	pnpm nx deploy:migrations
-
-deploy:
-	pnpm nx deploy
-
 # Local CLI rules
 
 shell:

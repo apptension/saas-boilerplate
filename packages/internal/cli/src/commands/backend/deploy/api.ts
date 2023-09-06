@@ -27,10 +27,10 @@ export default class BackendDeployApi extends Command {
     );
 
     this.log(`Deploying backend:
-envStage: ${color.green(envStage)}
-version: ${color.green(version)}
-AWS account: ${color.green(awsAccountId)}
-AWS region: ${color.green(awsRegion)}
+  envStage: ${color.green(envStage)}
+  version: ${color.green(version)}
+  AWS account: ${color.green(awsAccountId)}
+  AWS region: ${color.green(awsRegion)}
 `);
 
     const verb = flags.diff ? 'diff' : 'deploy';
