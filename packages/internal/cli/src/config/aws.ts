@@ -8,6 +8,8 @@ import { lookpath } from 'lookpath';
 
 import { validateStageEnv } from './env';
 import { color } from '@oclif/color';
+import { isAwsVaultInstalled } from '../lib/awsVault';
+import { assertChamberInstalled, isChamberInstalled } from '../lib/chamber';
 
 const exec = promisify(childProcess.exec);
 
@@ -21,12 +23,7 @@ async function loadStageEnv(
   envStage: string,
   shouldValidate = true
 ) {
-  const chamberExists = await lookpath('chamber');
-  if (!chamberExists) {
-    context.error(
-      'chamber executable missing. Make sure it is installed in the system and re-run the command.'
-    );
-  }
+  await assertChamberInstalled();
 
   let chamberOutput;
   try {
@@ -56,8 +53,7 @@ export const initAWS = async (
   context: Command,
   options: LoadAWSCredentialsOptions
 ) => {
-  const awsVaultExists = await lookpath('aws-vault');
-  if (awsVaultExists) {
+  if (await isAwsVaultInstalled()) {
     const awsVaultProfile = process.env.AWS_VAULT_PROFILE;
 
     const { stdout } = await exec(`aws-vault export ${awsVaultProfile}`);

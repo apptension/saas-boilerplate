@@ -46,7 +46,7 @@ export const initConfig = async (
   if (requireLocalEnvStage && envStage !== ENV_STAGE_LOCAL) {
     context.error(
       `This command should only be run on a local environment stage.
-Please call \`saas set-env local\` first or open a new terminal.`
+Please call \`saas aws set-env local\` first or open a new terminal.`
     );
   }
 
@@ -56,7 +56,7 @@ Please call \`saas set-env local\` first or open a new terminal.`
     if (envStage === ENV_STAGE_LOCAL) {
       context.error(
         `Remote environment stage required.\nPlease call \`${color.green(
-          'saas set-env [stage-name]'
+          'saas aws set-env [stage-name]'
         )}\` first. Do not use \`local\` value.`
       );
     }

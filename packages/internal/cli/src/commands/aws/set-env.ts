@@ -1,12 +1,12 @@
 import { Args, Command } from '@oclif/core';
 
-import { setEnvStage } from '../config/storage';
-import { initConfig } from '../config/init';
+import { setEnvStage } from '../../config/storage';
+import { initConfig } from '../../config/init';
 
 export default class SetEnv extends Command {
   static description = 'Select ENV stage';
 
-  static examples = [`$ saas set-env qa`];
+  static examples = [`$ saas aws set-env qa`];
 
   static args = {
     envStage: Args.string({

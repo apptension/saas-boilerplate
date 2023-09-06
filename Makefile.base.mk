@@ -33,35 +33,7 @@ export HOST_UID
 # As such, default shell of the user has to be get the other way.
 USER_SHELL=$(shell env | grep '^SHELL=' | cut -d '=' -f 2)
 
-up:
-	pnpm nx run --output-style=stream core:docker-compose:up
 
-down:
-	pnpm nx run --output-style=stream core:docker-compose:down
-
-serve:
-	pnpm nx run --output-style=stream core:serve
-
-clean:
-	# remove created images
-	@docker-compose -p  down --remove-orphans --rmi all 2>/dev/null \
-	&& echo 'Image(s) removed.' \
-	|| echo 'Image(s) already removed.'
-
-prune:
-	# clean all that is not actively used
-	docker system prune -af
-
-
-set-env:
-ifeq ($(ENV_STAGE), local)
-	$(error Please set ENV_STAGE to other value than "local")
-endif
-ifeq (, $(shell which aws-vault))
-	$(USER_SHELL)
-else
-	aws-vault exec $(AWS_VAULT_PROFILE) -- $(USER_SHELL)
-endif
 
 aws-login:
 	aws-vault login $(AWS_VAULT_PROFILE)
