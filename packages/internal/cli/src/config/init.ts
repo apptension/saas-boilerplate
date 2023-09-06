@@ -43,7 +43,7 @@ Please call \`saas set-env local\` first or open a new terminal.`
       context.error(
         `Remote environment stage required.\nPlease call \`${color.green(
           'saas set-env [stage-name]'
-        )}\` first`
+        )}\` first. Do not use \`local\` value.`
       );
     }
 
