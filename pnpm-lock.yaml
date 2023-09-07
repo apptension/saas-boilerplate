@@ -334,6 +334,9 @@ importers:
       '@oclif/errors':
         specifier: ^1.3.6
         version: 1.3.6
+      '@oclif/plugin-autocomplete':
+        specifier: ^2.3.8
+        version: 2.3.8(@types/node@16.18.47)(typescript@5.0.4)
       '@oclif/plugin-help':
         specifier: ^5.2.19
         version: 5.2.19(@types/node@16.18.47)(typescript@5.0.4)
@@ -11684,6 +11687,21 @@ packages:
       indent-string: 4.0.0
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+    dev: false
+
+  /@oclif/plugin-autocomplete@2.3.8(@types/node@16.18.47)(typescript@5.0.4):
+    resolution: {integrity: sha512-cmRPss9OQxz8sRoaw5C/4t/Da7eBEIDJWKRsuzUSQBcPJCN3kTgjp24VTjPHT3j86197s/qkjCRct+3P0IGArg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@oclif/core': 2.15.0(@types/node@16.18.47)(typescript@5.0.4)
+      chalk: 4.1.2
+      debug: 4.3.4(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
+      - supports-color
+      - typescript
     dev: false
 
   /@oclif/plugin-help@5.2.19(@types/node@16.18.47)(typescript@5.0.4):
