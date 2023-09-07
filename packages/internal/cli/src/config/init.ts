@@ -12,16 +12,15 @@ import { loadEnvStage } from './storage';
 const exec = promisify(childProcess.exec);
 
 type InitConfigOptions = {
-  requireAws?: boolean;
+  requireAws?: boolean | 'allow-local';
   validateEnvStageVariables?: boolean;
   requireLocalEnvStage?: boolean;
 };
 
-
 const getRootPath = async () => {
   const { stdout } = await exec('pnpm root -w');
-  return  resolve(stdout, '..');
-}
+  return resolve(stdout, '..');
+};
 
 export const initConfig = async (
   context: Command,
@@ -53,7 +52,7 @@ Please call \`saas aws set-env local\` first or open a new terminal.`
   let awsAccountId: string | undefined;
   let awsRegion: string | undefined;
   if (requireAws) {
-    if (envStage === ENV_STAGE_LOCAL) {
+    if (envStage === ENV_STAGE_LOCAL && requireAws !== 'allow-local') {
       context.error(
         `Remote environment stage required.\nPlease call \`${color.green(
           'saas aws set-env [stage-name]'
@@ -61,13 +60,15 @@ Please call \`saas aws set-env local\` first or open a new terminal.`
       );
     }
 
-    const awsMetadata = await initAWS(context, {
-      envStage,
-      validateEnvStageVariables,
-    });
+    if (envStage !== ENV_STAGE_LOCAL) {
+      const awsMetadata = await initAWS(context, {
+        envStage,
+        validateEnvStageVariables,
+      });
 
-    awsAccountId = awsMetadata.awsAccountId;
-    awsRegion = awsMetadata.awsRegion;
+      awsAccountId = awsMetadata.awsAccountId;
+      awsRegion = awsMetadata.awsRegion;
+    }
   }
 
   const projectEnvName = `${projectName}-${envStage}`;

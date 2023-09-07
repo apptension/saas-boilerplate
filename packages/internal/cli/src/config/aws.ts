@@ -9,7 +9,11 @@ import { lookpath } from 'lookpath';
 import { validateStageEnv } from './env';
 import { color } from '@oclif/color';
 import { isAwsVaultInstalled } from '../lib/awsVault';
-import { assertChamberInstalled, isChamberInstalled } from '../lib/chamber';
+import {
+  assertChamberInstalled,
+  isChamberInstalled,
+  loadChamberEnv,
+} from '../lib/chamber';
 
 const exec = promisify(childProcess.exec);
 
@@ -24,26 +28,7 @@ async function loadStageEnv(
   shouldValidate = true
 ) {
   await assertChamberInstalled();
-
-  let chamberOutput;
-  try {
-    const { stdout } = await exec(`chamber export ${envStage} --format dotenv`);
-    chamberOutput = stdout;
-  } catch (err) {
-    context.error(
-      `Failed to load environmental variables from SSM Parameter Store using chamber: ${err}`
-    );
-  }
-
-  const parsed = dotenv.parse(Buffer.from(chamberOutput));
-  context.log(
-    `Loaded ${
-      Object.keys(parsed).length
-    } environmental variables from SSM Parameter Store using chamber.\n`
-  );
-
-  // @ts-ignore
-  dotenv.populate(process.env, parsed, { override: true });
+  await loadChamberEnv(context, { serviceName: envStage });
 
   if (shouldValidate) {
     const validationResult = await validateStageEnv();

@@ -1,0 +1,8 @@
+{
+  "name": "cli",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/internal/cli/src",
+  "projectType": "library",
+  "targets": {},
+  "tags": []
+}

@@ -6,7 +6,8 @@
   "scripts": {
     "aws-vault:shell": "aws-vault exec $AWS_VAULT_PROFILE -- $SHELL",
     "login:qa": "env-cmd -f .env.qa npm run aws-vault:shell",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "pnpm nx run cli:build"
   },
   "devDependencies": {
     "@apollo/client": "^3.7.9",

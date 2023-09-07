@@ -58,8 +58,23 @@
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "aws": {
+        "description": "Groups various AWS-related commands that for example allow you to switch between environment stages"
+      },
+      "db": {
+        "description": "Manage local database instance"
+      },
+      "webapp": {
+        "description": "Manage webapp package and service in AWS"
+      },
+      "backend": {
+        "description": "Manage backend package and service in AWS"
+      },
+      "workers": {
+        "description": "Manage workers package and service in AWS"
+      },
+      "infra": {
+        "description": "Configure and deploy infrastructure to AWS"
       }
     }
   },

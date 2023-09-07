@@ -3,7 +3,7 @@
   "version": "2.0.3",
   "private": true,
   "scripts": {
-    "build": "pnpm nx run build-with-env",
+    "build": "pnpm nx run build-vite",
     "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' '../webapp-libs/*/src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --out-file ../webapp-libs/webapp-core/src/translations/en.json --ignore src/tests/mocks/** --ignore ../webapp-libs/*src/tests/mocks/**",
     "lint": "pnpm run lint:js && pnpm run lint:css",
     "lint:css": "stylelint './src/**/*.ts'",
