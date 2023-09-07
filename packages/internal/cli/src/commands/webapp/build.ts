@@ -7,7 +7,7 @@ import { ENV_STAGE_LOCAL } from '../../config/env';
 import { assertChamberInstalled, loadChamberEnv } from '../../lib/chamber';
 
 export default class WebappBuild extends Command {
-  static description = 'Build webapp artifact';
+  static description = 'Build webapp artifact ready to be deployed to AWS';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 

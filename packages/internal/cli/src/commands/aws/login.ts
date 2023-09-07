@@ -7,7 +7,7 @@ import { assertAwsVaultInstalled } from '../../lib/awsVault';
 export default class AwsLogin extends Command {
   static description = 'Get currently selected ENV stage';
 
-  static examples = [`$ saas aws login`];
+  static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
     await initConfig(this, { requireAws: true });

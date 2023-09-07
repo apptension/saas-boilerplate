@@ -55,7 +55,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_lint.sh"
+        "command": "docker-compose run --rm --no-deps --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_lint.sh"
       },
       "dependsOn": ["compose-build-image"]
     },

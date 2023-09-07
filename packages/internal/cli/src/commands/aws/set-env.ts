@@ -6,7 +6,7 @@ import { initConfig } from '../../config/init';
 export default class SetEnv extends Command {
   static description = 'Select ENV stage';
 
-  static examples = [`$ saas aws set-env qa`];
+  static examples = [`$ <%= config.bin %> <%= command.id %> qa`];
 
   static args = {
     envStage: Args.string({
