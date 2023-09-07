@@ -42,7 +42,7 @@
       },
       "dependsOn": ["setup", "graphql:generate-types"]
     },
-    "build-vite": {
+    "build": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",

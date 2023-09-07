@@ -67,6 +67,9 @@
       "webapp": {
         "description": "Manage webapp package and service in AWS"
       },
+      "emails": {
+        "description": "Manage emails package"
+      },
       "backend": {
         "description": "Manage backend package and service in AWS"
       },
