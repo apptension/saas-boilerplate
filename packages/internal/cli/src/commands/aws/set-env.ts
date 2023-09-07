@@ -6,7 +6,12 @@ import { initConfig } from '../../config/init';
 export default class SetEnv extends Command {
   static description = 'Select ENV stage';
 
-  static examples = [`$ <%= config.bin %> <%= command.id %> qa`];
+  static examples = [
+    `$ <%= config.bin %> <%= command.id %> local`,
+    `$ <%= config.bin %> <%= command.id %> qa`,
+    `$ <%= config.bin %> <%= command.id %> staging`,
+    `$ <%= config.bin %> <%= command.id %> production`,
+  ];
 
   static args = {
     envStage: Args.string({
