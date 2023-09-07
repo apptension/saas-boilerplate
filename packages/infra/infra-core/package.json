@@ -3,7 +3,8 @@
   "version": "2.0.3",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc --project tsconfig.lib.json"
+    "build": "tsc --project tsconfig.lib.json",
+    "cdk": "cdk"
   },
   "devDependencies": {
     "aws-cdk": "^2.84.0",

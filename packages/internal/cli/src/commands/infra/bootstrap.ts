@@ -11,12 +11,25 @@ export default class InfraBootstrap extends Command {
   static examples = [`<%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    await initConfig(this, {
+    const { awsAccountId, awsRegion } = await initConfig(this, {
       requireAws: true,
       validateEnvStageVariables: false,
     });
 
-    await runCommand('pnpm', ['nx', 'run', 'tools:bootstrap-infra']);
+    await runCommand('pnpm', [
+      'nx',
+      'run',
+      'infra-core:cdk',
+      'bootstrap',
+      `aws://${awsAccountId}/${awsRegion}`,
+    ]);
+    await runCommand('pnpm', [
+      'nx',
+      'run',
+      'infra-core:cdk',
+      'bootstrap',
+      `aws://${awsAccountId}/us-east-1`,
+    ]);
     await runCommand('pnpm', ['nx', 'run', 'infra-shared:bootstrap']);
   }
 }

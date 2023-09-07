@@ -3,8 +3,8 @@ import { Command, Flags } from '@oclif/core';
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 
-export default class WebappDeploy extends Command {
-  static description = 'Deploys webapp to AWS using previously built artifact';
+export default class DocsDeploy extends Command {
+  static description = 'Deploys docs to AWS using previously built artifact';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
@@ -18,10 +18,10 @@ export default class WebappDeploy extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(WebappDeploy);
+    const { flags } = await this.parse(DocsDeploy);
     await initConfig(this, { requireAws: true });
 
     const verb = flags.diff ? 'diff' : 'deploy';
-    await runCommand('pnpm', ['nx', 'run', `webapp:${verb}`]);
+    await runCommand('pnpm', ['nx', 'run', `docs:${verb}`]);
   }
 }
