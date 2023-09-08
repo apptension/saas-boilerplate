@@ -2,6 +2,7 @@ import { Command, Flags } from '@oclif/core';
 
 import { initConfig } from '../config/init';
 import { runCommand } from '../lib/runCommand';
+import { dockerHubLogin } from '../lib/docker';
 
 export default class Build extends Command {
   static description = 'Build all deployable artifacts';
@@ -10,6 +11,7 @@ export default class Build extends Command {
 
   async run(): Promise<void> {
     await initConfig(this, { requireAws: true });
+    await dockerHubLogin();
 
     await runCommand('pnpm', ['nx', 'run', 'backend:build']);
     await runCommand('pnpm', ['nx', 'run', 'webapp:build']);

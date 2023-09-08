@@ -86,9 +86,9 @@ export class WebappCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              'saas webapp lint',
-              'saas webapp test --watchAll=false',
-              'saas webapp build',
+              'pnpm saas webapp lint',
+              'pnpm saas webapp test --watchAll=false',
+              'pnpm saas webapp build',
             ],
           },
         },
@@ -149,7 +149,7 @@ export class WebappCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.WEBAPP
             ),
           },
-          build: { commands: ['saas webapp deploy'] },
+          build: { commands: ['pnpm saas webapp deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

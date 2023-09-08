@@ -3,6 +3,7 @@ import { Command, Flags } from '@oclif/core';
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 import { color } from '@oclif/color';
+import {dockerHubLogin} from "../../lib/docker";
 
 export default class WorkersBuild extends Command {
   static description = 'Build workers artifact ready to be deployed to AWS';
@@ -14,6 +15,7 @@ export default class WorkersBuild extends Command {
       this,
       { requireAws: true }
     );
+    await dockerHubLogin();
 
     this.log(`Deploying backend:
   envStage: ${color.green(envStage)}

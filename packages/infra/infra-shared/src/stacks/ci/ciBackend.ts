@@ -93,7 +93,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             commands: preBuildCommands,
           },
           build: {
-            commands: ['saas backend build'],
+            commands: ['pnpm saas backend build'],
           },
         },
       }),
@@ -172,7 +172,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['saas backend deploy api'] },
+          build: { commands: ['pnpm saas backend deploy api'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -235,7 +235,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['saas backend deploy migrations'] },
+          build: { commands: ['pnpm saas backend deploy migrations'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

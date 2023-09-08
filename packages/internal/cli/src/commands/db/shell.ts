@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import { assertDockerIsRunning } from '../../lib/docker';
+import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
 
 export default class DbShell extends Command {
   static description =
@@ -20,6 +20,7 @@ export default class DbShell extends Command {
     });
 
     await assertDockerIsRunning();
+    await dockerHubLogin();
 
     await runCommand('docker', ['compose', 'exec', 'db', 'psql'], {
       env: {

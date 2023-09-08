@@ -3,6 +3,7 @@ import { color } from '@oclif/color';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
+import {dockerHubLogin} from "../../lib/docker";
 
 export default class BackendBuild extends Command {
   static description = 'Build backend docker image and upload it to AWS ECR';
@@ -14,6 +15,7 @@ export default class BackendBuild extends Command {
       this,
       { requireAws: true }
     );
+    await dockerHubLogin();
 
     this.log(`Building backend:
   envStage: ${color.green(envStage)}

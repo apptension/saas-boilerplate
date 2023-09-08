@@ -66,7 +66,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.INFRA_SHARED
             ),
           },
-          build: { commands: ['saas infra deploy components'] },
+          build: { commands: ['pnpm saas infra deploy components'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

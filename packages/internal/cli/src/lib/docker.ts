@@ -15,3 +15,11 @@ ${err}
     `);
   }
 };
+
+export const dockerHubLogin = async () => {
+  const username = process.env.DOCKER_USERNAME;
+  const password = process.env.DOCKER_PASSWORD;
+  if (username && password) {
+    await exec(`docker login -u "${username}" -p "${password}"`);
+  }
+};

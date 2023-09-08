@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../config/init';
 import { runCommand } from '../lib/runCommand';
-import { assertDockerIsRunning } from '../lib/docker';
+import {assertDockerIsRunning, dockerHubLogin} from '../lib/docker';
 
 export default class Down extends Command {
   static description = 'Starts both backend and frontend';

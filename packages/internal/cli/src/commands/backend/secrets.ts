@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 
 import { initConfig } from '../../config/init';
-import { assertDockerIsRunning } from '../../lib/docker';
+import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
 import { runSecretsEditor } from '../../lib/secretsEditor';
 
 export default class BackendSecrets extends Command {
@@ -17,6 +17,7 @@ export default class BackendSecrets extends Command {
       requireAws: true,
     });
     await assertDockerIsRunning();
+    await dockerHubLogin();
 
     this.log(`Settings secrets in AWS SSM Parameter store for:
   service: ${color.green('backend')}

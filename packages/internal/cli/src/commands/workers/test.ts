@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import { assertDockerIsRunning } from '../../lib/docker';
+import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
 
 export default class WorkersLint extends Command {
   static description = 'Run all tests inside workers docker container';
@@ -12,6 +12,7 @@ export default class WorkersLint extends Command {
   async run(): Promise<void> {
     await initConfig(this, {});
     await assertDockerIsRunning();
+    await dockerHubLogin();
 
     await runCommand('pnpm', ['nx', 'run', 'workers:test']);
   }

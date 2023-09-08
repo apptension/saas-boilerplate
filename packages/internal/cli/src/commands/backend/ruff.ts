@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import { assertDockerIsRunning } from '../../lib/docker';
+import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
 
 export default class BackendRuff extends Command {
   static description = 'Run ruff inside backend docker container';
@@ -12,6 +12,7 @@ export default class BackendRuff extends Command {
   async run(): Promise<void> {
     await initConfig(this, { requireLocalEnvStage: true });
     await assertDockerIsRunning();
+    await dockerHubLogin();
 
     await runCommand('docker', [
       'compose',
