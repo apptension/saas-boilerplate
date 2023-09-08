@@ -14,10 +14,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": [
-          "pnpm nx run core:docker-login",
-          "docker-compose build workers"
-        ],
+        "commands": ["docker-compose build workers"],
         "parallel": false
       },
       "dependsOn": ["setup"]

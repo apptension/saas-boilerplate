@@ -69,7 +69,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
       this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/docker/library/${
+    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
       props.envSettings.dockerImages.backendBaseImage
     }`;
 

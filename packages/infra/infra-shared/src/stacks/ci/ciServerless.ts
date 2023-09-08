@@ -14,7 +14,6 @@ import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
 
 interface ServerlessCiConfigProps extends EnvConstructProps {
-  name: string;
   inputArtifact: codepipeline.Artifact;
   buildStage: codepipeline.IStage;
   deployStage: codepipeline.IStage;
@@ -25,7 +24,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     super(scope, id, { envSettings: props.envSettings });
 
     const buildArtifact = codepipeline.Artifact.artifact(
-      `${props.envSettings.projectEnvName}-${props.name}`
+      `${props.envSettings.projectEnvName}-workers`
     );
 
     const buildProject = this.createBuildProject(props);
@@ -61,7 +60,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       codepipelineActions.CodeBuildActionProps
     >{
       ...actionProps,
-      actionName: `${props.envSettings.projectEnvName}-build-${props.name}`,
+      actionName: `${props.envSettings.projectEnvName}-build-workers`,
     });
   }
 
@@ -83,7 +82,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     }`;
 
     const project = new codebuild.Project(this, 'BuildProject', {
-      projectName: `${props.envSettings.projectEnvName}-build-${props.name}`,
+      projectName: `${props.envSettings.projectEnvName}-build-workers`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
@@ -95,9 +94,9 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              `saas ${props.name} lint`,
+              `saas workers lint`,
               'saas emails build',
-              `saas ${props.name} test`,
+              `saas workers test`,
             ],
           },
         },
@@ -184,7 +183,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       codepipelineActions.CodeBuildActionProps
     >{
       ...actionProps,
-      actionName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
+      actionName: `${props.envSettings.projectEnvName}-deploy-workers`,
     });
   }
 
@@ -204,7 +203,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     }`;
 
     const project = new codebuild.Project(this, 'DeployProject', {
-      projectName: `${props.envSettings.projectEnvName}-deploy-${props.name}`,
+      projectName: `${props.envSettings.projectEnvName}-deploy-workers`,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
@@ -214,7 +213,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: preBuildCommands,
           },
-          build: { commands: [`pnpm nx run ${props.name}:deploy`] },
+          build: { commands: [`saas workers deploy`] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -287,7 +286,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         actions: ['cloudformation:*'],
         resources: [
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
-          `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-${props.name}/*`,
+          `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-workers/*`,
         ],
       })
     );

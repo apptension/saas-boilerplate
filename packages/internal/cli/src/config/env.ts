@@ -17,7 +17,7 @@ export const loadDotenv = async ({ rootPath }: LoadDotenvOptions) => {
 
 export async function loadVersionEnv() {
   if (process.env.VERSION) {
-    return;
+    return process.env.VERSION;
   }
 
   const { stdout: versionRaw } = await exec(

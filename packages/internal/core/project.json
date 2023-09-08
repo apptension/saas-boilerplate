@@ -27,14 +27,6 @@
         "command": "node ./scripts/docker-create-volumes.js"
       }
     },
-    "docker-login": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/core",
-        "command": "node ./scripts/docker-login.js"
-      }
-    },
     "docker-compose:up": {
       "executor": "nx:run-commands",
       "options": {

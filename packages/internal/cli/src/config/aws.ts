@@ -4,16 +4,11 @@ import { Command } from '@oclif/core';
 import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import * as dotenv from 'dotenv';
-import { lookpath } from 'lookpath';
 
 import { validateStageEnv } from './env';
 import { color } from '@oclif/color';
 import { isAwsVaultInstalled } from '../lib/awsVault';
-import {
-  assertChamberInstalled,
-  isChamberInstalled,
-  loadChamberEnv,
-} from '../lib/chamber';
+import { assertChamberInstalled, loadChamberEnv } from '../lib/chamber';
 
 const exec = promisify(childProcess.exec);
 

@@ -65,6 +65,8 @@ const ecrClient = new ECRClient();
 
     await runCommand('docker', [
       'build',
+      '--platform',
+      'linux/amd64',
       '--target',
       'backend',
       '-t',
