@@ -81,7 +81,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: preBuildCommands,
           },
-          build: { commands: ['pnpm nx run docs:build-with-env'] },
+          build: { commands: ['saas docs build'] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -154,7 +154,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
           },
-          build: { commands: ['pnpm nx run docs:deploy'] },
+          build: { commands: ['saas docs deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

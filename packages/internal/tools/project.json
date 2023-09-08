@@ -44,14 +44,6 @@
         "passWithNoTests": true
       }
     },
-    "create-cicd-creds": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/tools",
-        "command": "ts-node --project tsconfig.lib.json ./src/create-cicd-creds"
-      }
-    },
     "upload-service-version": {
       "executor": "nx:run-commands",
       "options": {

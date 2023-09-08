@@ -93,7 +93,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             commands: preBuildCommands,
           },
           build: {
-            commands: ['pnpm nx run backend:build'],
+            commands: ['saas backend build'],
           },
         },
       }),
@@ -172,7 +172,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['pnpm nx run backend:deploy:api'] },
+          build: { commands: ['saas backend deploy api'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -235,7 +235,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['pnpm nx run backend:deploy:migrations'] },
+          build: { commands: ['saas backend deploy migrations'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

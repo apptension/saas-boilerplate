@@ -95,9 +95,9 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           },
           build: {
             commands: [
-              `pnpm nx run ${props.name}:lint`,
-              'pnpm nx run webapp-emails:build',
-              `pnpm nx run ${props.name}:test`,
+              `saas ${props.name} lint`,
+              'saas emails build',
+              `saas ${props.name} test`,
             ],
           },
         },

@@ -23,16 +23,16 @@ import CodeBlock from '@theme/CodeBlock';
 <Tabs>
   <TabItem value="macos" label="Mac OS" default>
     <CodeBlock>
-      make set-env ENV_STAGE=qa
+      saas aws est-env qa
       <br />
-      make create-repo-auth-url | pbcopy
+      saas ci create-credentials | pbcopy
     </CodeBlock>
   </TabItem>
   <TabItem value="linux" label="Linux">
     <CodeBlock>
-      make set-env ENV_STAGE=qa
+      saas aws est-env qa
       <br />
-      make create-repo-auth-url | xclip -sel clip
+      saas ci create-credentials | xclip -sel clip
     </CodeBlock>
   </TabItem>
 </Tabs>
