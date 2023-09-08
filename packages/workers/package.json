@@ -23,7 +23,7 @@
     "@sb/core": "*",
     "@sb/tools": "*",
     "esbuild": "0.16.17",
-    "serverless": "^3.33.0",
+    "serverless": "^3.34.0",
     "serverless-esbuild": "^1.37.0",
     "serverless-localstack": "^1.0.2",
     "serverless-step-functions": "^3.11.1"
