@@ -6,10 +6,12 @@ import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 3: Initialize an environment stage
 
-<ProjectName/> provides the ability to deploy various versions of your application, such as QA, staging, or
-production. You have the flexibility to determine their naming conventions and the number of environments required.
-The only exception is the `local` environment, which is a specialized preconfigured environment utilized for running
-<ProjectName/> on local machine.
+<ProjectName /> provides the ability to deploy various versions of your
+application, such as QA, staging, or production. You have the flexibility to
+determine their naming conventions and the number of environments required. The
+only exception is the `local` environment, which is a specialized preconfigured
+environment utilized for running
+<ProjectName /> on local machine.
 
 All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
 policies and preferences.
@@ -36,7 +38,7 @@ In <ProjectName/>, AWS CDK is used to define infrastructure as a code. It also n
 Before you deploy anything to AWS you need to run following initialization command:
 
 ```shell
-make bootstrap-infra
+pnpm saas infra bootstrap
 ```
 
 If you're deploying a second environment stage to the
@@ -48,7 +50,7 @@ Open a shell terminal with proper AWS credentials available. If you followed a
 [previous step](./configure-aws-credentials) you can run following command to do it:
 
 ```shell
-saas aws set-env [STAGE_NAME]
+pnpm saas aws set-env [STAGE_NAME]
 ```
 
 Let's assume your stage is named `qa` and the project is named `saas`.

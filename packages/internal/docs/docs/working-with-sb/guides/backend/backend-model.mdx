@@ -2,6 +2,7 @@
 title: How to create a new Django app and model in back-end?
 description: Create an example Django app and declare a model inside it
 ---
+
 import ProjectName from '../../../shared/components/ProjectName.component';
 
 In this guide, we will show you how to create a new Django app in the backend package using <ProjectName/>.
@@ -18,7 +19,8 @@ cd packages/backend
 Next, create a new Django app using the following command:
 
 ```shell title="packages/backend" showLineNumbers
-make create-app app_name=store
+pnpm saas backend shell
+cd apps && django-admin startapp store
 ```
 
 :::info
@@ -44,7 +46,6 @@ LOCAL_APPS = [
 
 Once you have created your app, you can start building out its functionality by adding models, views, URLs, and other components as needed.
 
-
 ## Create new model
 
 Navigate to your new app directory and create a simple Django model inside `models.py` named `Product` with two fields - id and name:
@@ -61,9 +62,10 @@ class Product(models.Model):
 
 :::info
 
-<ProjectName/> comes with the ability to use Hashid fields in your Django models.
-Hashids are a way of generating short, unique, and non-sequential ids from a given input.
-They are typically used to obfuscate database ids and make them harder to guess or predict.
+<ProjectName /> comes with the ability to use Hashid fields in your Django
+models. Hashids are a way of generating short, unique, and non-sequential ids
+from a given input. They are typically used to obfuscate database ids and make
+them harder to guess or predict.
 
 :::
 
@@ -72,13 +74,13 @@ They are typically used to obfuscate database ids and make them harder to guess 
 Next, you need to create a migration for your new model. Run the following command:
 
 ```shell title="packages/backend" showLineNumbers
-make makemigrations
+pnpm saas backend makemigrations
 ```
 
 This will create a new migration file for your app. Now, migrate your database by running the following command:
 
 ```shell title="packages/backend" showLineNumbers
-make migrate
+pnpm saas backend migrate
 ```
 
 This will create the necessary database tables for your app.
