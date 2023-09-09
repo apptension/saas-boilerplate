@@ -2,7 +2,7 @@ import { Command, Flags } from '@oclif/core';
 
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
-import {assertDockerIsRunning, dockerHubLogin} from '../../../lib/docker';
+import { assertDockerIsRunning, dockerHubLogin } from '../../../lib/docker';
 
 export default class WorkersInvokeLocal extends Command {
   static description = 'Invoke an async worker task';
@@ -28,19 +28,25 @@ export default class WorkersInvokeLocal extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(WorkersInvokeLocal);
-    await initConfig(this, { requireLocalEnvStage: true });
+    const { rootPath } = await initConfig(this, { requireLocalEnvStage: true });
     await assertDockerIsRunning();
     await dockerHubLogin();
 
-    await runCommand('docker', [
-      'compose',
-      'run',
-      '--rm',
-      '-T',
-      'workers',
-      `pnpm sls invoke local -f=${flags.function} ${
-        flags.data ? `d=${flags.data}` : ''
-      }`,
-    ]);
+    await runCommand(
+      'docker',
+      [
+        'compose',
+        'run',
+        '--rm',
+        '-T',
+        'workers',
+        `pnpm sls invoke local -f=${flags.function} ${
+          flags.data ? `d=${flags.data}` : ''
+        }`,
+      ],
+      {
+        cwd: rootPath,
+      }
+    );
   }
 }

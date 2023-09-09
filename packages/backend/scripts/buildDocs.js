@@ -1,37 +1,41 @@
 const fs = require('fs-extra');
+const path = require('path');
 
 const { runCommand } = require('./lib/runCommand');
 
-const GENERATED_BACKEND_DOCS_PATH = 'docs/generated';
-const GENERATED_BACKEND_DOCS_INTERNAL_PATH =
-  '../internal/docs/docs/api-reference/backend';
+const GENERATED_BACKEND_DOCS_PATH = path.resolve(
+  __dirname,
+  '../docs/generated'
+);
+const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
+  __dirname,
+  '../../internal/docs/docs/api-reference/backend/generated'
+);
 
 (async () => {
   try {
     // Removing docs directory
     await fs.remove(GENERATED_BACKEND_DOCS_PATH);
 
-    if (process.env.CI === 'true') {
-      process.env.COMPOSE_FILE =
-        '../../docker-compose.yml:../../docker-compose.ci.yml';
-    } else {
-      process.env.COMPOSE_FILE =
-        '../../docker-compose.yml:../../docker-compose.local.yml';
-    }
-
-    await runCommand('docker-compose', [
-      'run',
-      '--rm',
-      '-T',
-      '--no-deps',
-      'backend',
-      'sh',
-      '-c',
-      'pydoc-markdown',
-    ]);
+    await runCommand(
+      'docker-compose',
+      [
+        'run',
+        '--rm',
+        '-T',
+        '--no-deps',
+        'backend',
+        'sh',
+        '-c',
+        'pydoc-markdown',
+      ],
+      {
+        cwd: path.resolve(__dirname, '../../../'),
+      }
+    );
 
     // Removing internal docs directory
-    await fs.remove(`${GENERATED_BACKEND_DOCS_INTERNAL_PATH}/generated`);
+    await fs.remove(`${GENERATED_BACKEND_DOCS_INTERNAL_PATH}`);
 
     // Copying docs
     await fs.copy(

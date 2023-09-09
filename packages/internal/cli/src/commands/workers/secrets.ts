@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 
 import { initConfig } from '../../config/init';
-import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
+import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
 import { runSecretsEditor } from '../../lib/secretsEditor';
 
 export default class WebappSecrets extends Command {
@@ -13,9 +13,12 @@ export default class WebappSecrets extends Command {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    const { envStage, awsAccountId, awsRegion } = await initConfig(this, {
-      requireAws: true,
-    });
+    const { envStage, awsAccountId, awsRegion, rootPath } = await initConfig(
+      this,
+      {
+        requireAws: true,
+      }
+    );
     await assertDockerIsRunning();
     await dockerHubLogin();
 
@@ -26,6 +29,6 @@ export default class WebappSecrets extends Command {
   AWS region: ${color.green(awsRegion)}
 `);
 
-    await runSecretsEditor({ serviceName: 'workers' });
+    await runSecretsEditor({ serviceName: 'workers', rootPath });
   }
 }

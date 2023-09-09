@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
+import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
 
 export default class BackendMigrate extends Command {
   static description =
@@ -12,19 +12,25 @@ export default class BackendMigrate extends Command {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    await initConfig(this, { requireLocalEnvStage: true });
+    const { rootPath } = await initConfig(this, { requireLocalEnvStage: true });
     await assertDockerIsRunning();
     await dockerHubLogin();
 
-    await runCommand('docker', [
-      'compose',
-      'run',
-      '--rm',
-      '-T',
-      'backend',
-      'sh',
-      '-c',
-      'python ./manage.py migrate',
-    ]);
+    await runCommand(
+      'docker',
+      [
+        'compose',
+        'run',
+        '--rm',
+        '-T',
+        'backend',
+        'sh',
+        '-c',
+        'python ./manage.py migrate',
+      ],
+      {
+        cwd: rootPath,
+      }
+    );
   }
 }

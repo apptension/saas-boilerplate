@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
-import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
+import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
 
 export default class DbShell extends Command {
   static description =
@@ -15,7 +15,7 @@ export default class DbShell extends Command {
   static args = {};
 
   async run(): Promise<void> {
-    await initConfig(this, {
+    const { rootPath } = await initConfig(this, {
       requireLocalEnvStage: true,
     });
 
@@ -29,6 +29,7 @@ export default class DbShell extends Command {
         PGPASSWORD: 'backend',
         PGDATABASE: 'backend',
       },
+      cwd: rootPath,
     });
   }
 }

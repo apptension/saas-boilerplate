@@ -1,8 +1,8 @@
 const { spawn } = require('node:child_process');
 
-function runCommand(command, args) {
+function runCommand(command, args, options) {
   return new Promise((resolve, reject) => {
-    const cmd = spawn(command, args);
+    const cmd = spawn(command, args, options);
 
     process.stdin.pipe(cmd.stdin);
 
