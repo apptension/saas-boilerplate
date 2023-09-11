@@ -1,9 +1,11 @@
 import { Command } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
 import { assertDockerIsRunning, dockerHubLogin } from '../../../lib/docker';
 
+const tracer = trace.getTracer('backend');
 export default class BackendStripeSync extends Command {
   static description =
     'Run stripe synchronisation command inside backend docker container. Requires environmental variables with ' +
@@ -12,25 +14,30 @@ export default class BackendStripeSync extends Command {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    const { rootPath } = await initConfig(this, { requireLocalEnvStage: true });
-    await assertDockerIsRunning();
-    await dockerHubLogin();
+    return tracer.startActiveSpan('stripe-sync', async (span) => {
+      const { rootPath } = await initConfig(this, {
+        requireLocalEnvStage: true,
+      });
+      await assertDockerIsRunning();
+      await dockerHubLogin();
 
-    await runCommand(
-      'docker',
-      [
-        'compose',
-        'run',
-        '--rm',
-        '-T',
-        'backend',
-        'sh',
-        '-c',
-        'python ./manage.py djstripe_sync_models',
-      ],
-      {
-        cwd: rootPath,
-      }
-    );
+      await runCommand(
+        'docker',
+        [
+          'compose',
+          'run',
+          '--rm',
+          '-T',
+          'backend',
+          'sh',
+          '-c',
+          'python ./manage.py djstripe_sync_models',
+        ],
+        {
+          cwd: rootPath,
+        }
+      );
+      span.end();
+    });
   }
 }

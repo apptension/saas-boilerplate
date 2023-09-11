@@ -23,6 +23,14 @@
     "@oclif/plugin-help": "^5.2.19",
     "@oclif/plugin-plugins": "^3.4.0",
     "@oclif/plugin-autocomplete": "^2.3.8",
+    "@opentelemetry/sdk-node": "^0.42.0",
+    "@opentelemetry/sdk-trace-node": "^1.16.0",
+    "@opentelemetry/semantic-conventions": "^1.16.0",
+    "@opentelemetry/resources": "^1.16.0",
+    "@opentelemetry/sdk-metrics": "^1.16.0",
+    "@opentelemetry/api": "^1.5.0",
+    "@opentelemetry/sdk-trace-base": "^1.16.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.42.0",
     "@aws-sdk/client-ecr": "^3.398.0",
     "@aws-sdk/client-sts": "^3.398.0",
     "@aws-sdk/client-sfn": "^3.398.0",
@@ -56,6 +64,11 @@
     "bin": "saas",
     "dirname": "saas",
     "commands": "./dist/commands",
+    "hooks": {
+      "init": [
+        "dist/hooks/init/instrumentation.js"
+      ]
+    },
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
