@@ -63,6 +63,10 @@ module.exports = {
       type: 'json',
     },
     {
+      filename: './packages/internal/cli/package.json',
+      type: 'json',
+    },
+    {
       filename: './packages/internal/docs/core.json',
       type: 'json',
     },

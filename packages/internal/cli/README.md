@@ -18,10 +18,11 @@ oclif example Hello World CLI
 <!-- usage -->
 
 ```sh-session
+$ npm install -g @sb/cli
 $ saas COMMAND
 running command...
 $ saas (--version)
-@sb/cli/0.0.0 darwin-arm64 node-v18.15.0
+@sb/cli/2.0.3 darwin-arm64 node-v18.15.0
 $ saas --help [COMMAND]
 USAGE
   $ saas COMMAND
@@ -139,7 +140,7 @@ EXAMPLES
   $ saas aws get-env
 ```
 
-_See code: [dist/commands/aws/get-env.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/aws/get-env.js)_
+_See code: [dist/commands/aws/get-env.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/aws/get-env.js)_
 
 ## `saas aws login`
 
@@ -156,7 +157,7 @@ EXAMPLES
   $ saas aws login
 ```
 
-_See code: [dist/commands/aws/login.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/aws/login.js)_
+_See code: [dist/commands/aws/login.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/aws/login.js)_
 
 ## `saas aws set-env ENVSTAGE`
 
@@ -182,7 +183,7 @@ EXAMPLES
   $ saas aws set-env production
 ```
 
-_See code: [dist/commands/aws/set-env.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/aws/set-env.js)_
+_See code: [dist/commands/aws/set-env.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/aws/set-env.js)_
 
 ## `saas backend black`
 
@@ -199,7 +200,7 @@ EXAMPLES
   $ saas backend black
 ```
 
-_See code: [dist/commands/backend/black.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/black.js)_
+_See code: [dist/commands/backend/black.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/black.js)_
 
 ## `saas backend build`
 
@@ -216,7 +217,7 @@ EXAMPLES
   $ saas backend build
 ```
 
-_See code: [dist/commands/backend/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/build.js)_
+_See code: [dist/commands/backend/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/build.js)_
 
 ## `saas backend build-docs`
 
@@ -233,7 +234,7 @@ EXAMPLES
   $ saas backend build-docs
 ```
 
-_See code: [dist/commands/backend/build-docs.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/build-docs.js)_
+_See code: [dist/commands/backend/build-docs.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/build-docs.js)_
 
 ## `saas backend deploy api`
 
@@ -253,7 +254,7 @@ EXAMPLES
   $ saas backend deploy api
 ```
 
-_See code: [dist/commands/backend/deploy/api.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/deploy/api.js)_
+_See code: [dist/commands/backend/deploy/api.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/deploy/api.js)_
 
 ## `saas backend deploy migrations`
 
@@ -273,7 +274,7 @@ EXAMPLES
   $ saas backend deploy migrations
 ```
 
-_See code: [dist/commands/backend/deploy/migrations.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/deploy/migrations.js)_
+_See code: [dist/commands/backend/deploy/migrations.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/deploy/migrations.js)_
 
 ## `saas backend down`
 
@@ -290,7 +291,7 @@ EXAMPLES
   $ saas backend down
 ```
 
-_See code: [dist/commands/backend/down.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/down.js)_
+_See code: [dist/commands/backend/down.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/down.js)_
 
 ## `saas backend makemigrations`
 
@@ -308,7 +309,7 @@ EXAMPLES
   $ saas backend makemigrations
 ```
 
-_See code: [dist/commands/backend/makemigrations.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/makemigrations.js)_
+_See code: [dist/commands/backend/makemigrations.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/makemigrations.js)_
 
 ## `saas backend migrate`
 
@@ -326,7 +327,7 @@ EXAMPLES
   $ saas backend migrate
 ```
 
-_See code: [dist/commands/backend/migrate.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/migrate.js)_
+_See code: [dist/commands/backend/migrate.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/migrate.js)_
 
 ## `saas backend remote-shell`
 
@@ -343,7 +344,7 @@ EXAMPLES
   $ saas backend remote-shell
 ```
 
-_See code: [dist/commands/backend/remote-shell.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/remote-shell.js)_
+_See code: [dist/commands/backend/remote-shell.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/remote-shell.js)_
 
 ## `saas backend ruff`
 
@@ -360,7 +361,7 @@ EXAMPLES
   $ saas backend ruff
 ```
 
-_See code: [dist/commands/backend/ruff.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/ruff.js)_
+_See code: [dist/commands/backend/ruff.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/ruff.js)_
 
 ## `saas backend secrets`
 
@@ -378,7 +379,7 @@ EXAMPLES
   $ saas backend secrets
 ```
 
-_See code: [dist/commands/backend/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/secrets.js)_
+_See code: [dist/commands/backend/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/secrets.js)_
 
 ## `saas backend shell`
 
@@ -395,7 +396,7 @@ EXAMPLES
   $ saas backend shell
 ```
 
-_See code: [dist/commands/backend/shell.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/shell.js)_
+_See code: [dist/commands/backend/shell.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/shell.js)_
 
 ## `saas backend stripe sync`
 
@@ -413,7 +414,7 @@ EXAMPLES
   $ saas backend stripe sync
 ```
 
-_See code: [dist/commands/backend/stripe/sync.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/stripe/sync.js)_
+_See code: [dist/commands/backend/stripe/sync.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/stripe/sync.js)_
 
 ## `saas backend test`
 
@@ -430,7 +431,7 @@ EXAMPLES
   $ saas backend test
 ```
 
-_See code: [dist/commands/backend/test.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/test.js)_
+_See code: [dist/commands/backend/test.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/test.js)_
 
 ## `saas backend up`
 
@@ -447,7 +448,7 @@ EXAMPLES
   $ saas backend up
 ```
 
-_See code: [dist/commands/backend/up.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/backend/up.js)_
+_See code: [dist/commands/backend/up.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/backend/up.js)_
 
 ## `saas build`
 
@@ -464,7 +465,7 @@ EXAMPLES
   $ saas build
 ```
 
-_See code: [dist/commands/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/build.js)_
+_See code: [dist/commands/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/build.js)_
 
 ## `saas ci create-credentials`
 
@@ -482,7 +483,7 @@ EXAMPLES
   $ saas ci create-credentials
 ```
 
-_See code: [dist/commands/ci/create-credentials.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/ci/create-credentials.js)_
+_See code: [dist/commands/ci/create-credentials.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/ci/create-credentials.js)_
 
 ## `saas db shell`
 
@@ -499,7 +500,7 @@ EXAMPLES
   $ saas db shell
 ```
 
-_See code: [dist/commands/db/shell.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/db/shell.js)_
+_See code: [dist/commands/db/shell.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/db/shell.js)_
 
 ## `saas deploy`
 
@@ -519,7 +520,7 @@ EXAMPLES
   $ saas deploy
 ```
 
-_See code: [dist/commands/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/deploy.js)_
+_See code: [dist/commands/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/deploy.js)_
 
 ## `saas docs build`
 
@@ -536,7 +537,7 @@ EXAMPLES
   $ saas docs build
 ```
 
-_See code: [dist/commands/docs/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/docs/build.js)_
+_See code: [dist/commands/docs/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/docs/build.js)_
 
 ## `saas docs deploy`
 
@@ -556,7 +557,7 @@ EXAMPLES
   $ saas docs deploy
 ```
 
-_See code: [dist/commands/docs/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/docs/deploy.js)_
+_See code: [dist/commands/docs/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/docs/deploy.js)_
 
 ## `saas down`
 
@@ -573,7 +574,7 @@ EXAMPLES
   $ saas down
 ```
 
-_See code: [dist/commands/down.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/down.js)_
+_See code: [dist/commands/down.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/down.js)_
 
 ## `saas emails build`
 
@@ -590,7 +591,7 @@ EXAMPLES
   $ saas emails build
 ```
 
-_See code: [dist/commands/emails/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/emails/build.js)_
+_See code: [dist/commands/emails/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/emails/build.js)_
 
 ## `saas emails secrets`
 
@@ -608,7 +609,7 @@ EXAMPLES
   $ saas emails secrets
 ```
 
-_See code: [dist/commands/emails/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/emails/secrets.js)_
+_See code: [dist/commands/emails/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/emails/secrets.js)_
 
 ## `saas emails test`
 
@@ -625,7 +626,7 @@ EXAMPLES
   $ saas emails test
 ```
 
-_See code: [dist/commands/emails/test.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/emails/test.js)_
+_See code: [dist/commands/emails/test.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/emails/test.js)_
 
 ## `saas help [COMMANDS]`
 
@@ -662,7 +663,7 @@ EXAMPLES
   $ saas infra bootstrap
 ```
 
-_See code: [dist/commands/infra/bootstrap.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/infra/bootstrap.js)_
+_See code: [dist/commands/infra/bootstrap.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/infra/bootstrap.js)_
 
 ## `saas infra deploy [STACKNAME]`
 
@@ -685,7 +686,7 @@ EXAMPLES
   $ saas infra deploy
 ```
 
-_See code: [dist/commands/infra/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/infra/deploy.js)_
+_See code: [dist/commands/infra/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/infra/deploy.js)_
 
 ## `saas lint`
 
@@ -702,7 +703,7 @@ EXAMPLES
   $ saas lint
 ```
 
-_See code: [dist/commands/lint.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/lint.js)_
+_See code: [dist/commands/lint.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/lint.js)_
 
 ## `saas plugins`
 
@@ -965,7 +966,7 @@ EXAMPLES
   $ saas up
 ```
 
-_See code: [dist/commands/up.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/up.js)_
+_See code: [dist/commands/up.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/up.js)_
 
 ## `saas webapp build`
 
@@ -982,7 +983,7 @@ EXAMPLES
   $ saas webapp build
 ```
 
-_See code: [dist/commands/webapp/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/build.js)_
+_See code: [dist/commands/webapp/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/build.js)_
 
 ## `saas webapp deploy`
 
@@ -1002,7 +1003,7 @@ EXAMPLES
   $ saas webapp deploy
 ```
 
-_See code: [dist/commands/webapp/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/deploy.js)_
+_See code: [dist/commands/webapp/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/deploy.js)_
 
 ## `saas webapp graphql download-schema`
 
@@ -1019,7 +1020,7 @@ EXAMPLES
   $ saas webapp graphql download-schema
 ```
 
-_See code: [dist/commands/webapp/graphql/download-schema.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/graphql/download-schema.js)_
+_See code: [dist/commands/webapp/graphql/download-schema.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/graphql/download-schema.js)_
 
 ## `saas webapp lint`
 
@@ -1036,7 +1037,7 @@ EXAMPLES
   $ saas webapp lint
 ```
 
-_See code: [dist/commands/webapp/lint.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/lint.js)_
+_See code: [dist/commands/webapp/lint.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/lint.js)_
 
 ## `saas webapp secrets`
 
@@ -1054,7 +1055,7 @@ EXAMPLES
   $ saas webapp secrets
 ```
 
-_See code: [dist/commands/webapp/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/secrets.js)_
+_See code: [dist/commands/webapp/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/secrets.js)_
 
 ## `saas webapp test`
 
@@ -1074,7 +1075,7 @@ EXAMPLES
   $ saas webapp test
 ```
 
-_See code: [dist/commands/webapp/test.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/test.js)_
+_See code: [dist/commands/webapp/test.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/test.js)_
 
 ## `saas webapp up`
 
@@ -1091,7 +1092,7 @@ EXAMPLES
   $ saas webapp up
 ```
 
-_See code: [dist/commands/webapp/up.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/webapp/up.js)_
+_See code: [dist/commands/webapp/up.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/webapp/up.js)_
 
 ## `saas workers black`
 
@@ -1108,7 +1109,7 @@ EXAMPLES
   $ saas workers black
 ```
 
-_See code: [dist/commands/workers/black.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/black.js)_
+_See code: [dist/commands/workers/black.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/black.js)_
 
 ## `saas workers build`
 
@@ -1125,7 +1126,7 @@ EXAMPLES
   $ saas workers build
 ```
 
-_See code: [dist/commands/workers/build.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/build.js)_
+_See code: [dist/commands/workers/build.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/build.js)_
 
 ## `saas workers deploy`
 
@@ -1145,7 +1146,7 @@ EXAMPLES
   $ saas workers deploy
 ```
 
-_See code: [dist/commands/workers/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/deploy.js)_
+_See code: [dist/commands/workers/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/deploy.js)_
 
 ## `saas workers invoke local`
 
@@ -1166,7 +1167,7 @@ EXAMPLES
   $ saas workers invoke local
 ```
 
-_See code: [dist/commands/workers/invoke/local.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/invoke/local.js)_
+_See code: [dist/commands/workers/invoke/local.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/invoke/local.js)_
 
 ## `saas workers lint`
 
@@ -1183,7 +1184,7 @@ EXAMPLES
   $ saas workers lint
 ```
 
-_See code: [dist/commands/workers/lint.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/lint.js)_
+_See code: [dist/commands/workers/lint.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/lint.js)_
 
 ## `saas workers secrets`
 
@@ -1201,7 +1202,7 @@ EXAMPLES
   $ saas workers secrets
 ```
 
-_See code: [dist/commands/workers/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/secrets.js)_
+_See code: [dist/commands/workers/secrets.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/secrets.js)_
 
 ## `saas workers shell`
 
@@ -1218,7 +1219,7 @@ EXAMPLES
   $ saas workers shell
 ```
 
-_See code: [dist/commands/workers/shell.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/shell.js)_
+_See code: [dist/commands/workers/shell.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/shell.js)_
 
 ## `saas workers test`
 
@@ -1235,6 +1236,6 @@ EXAMPLES
   $ saas workers test
 ```
 
-_See code: [dist/commands/workers/test.js](https://github.com/apptension/saas-boilerplate/blob/v0.0.0/dist/commands/workers/test.js)_
+_See code: [dist/commands/workers/test.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/workers/test.js)_
 
 <!-- commandsstop -->
