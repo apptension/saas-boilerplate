@@ -1,10 +1,12 @@
 import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
-import {assertDockerIsRunning, dockerHubLogin} from '../../lib/docker';
+import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
 import { runSecretsEditor } from '../../lib/secretsEditor';
 
+const tracer = trace.getTracer('webapp');
 export default class WebappSecrets extends Command {
   static description =
     'Runs an ssm-editor helper tool in docker container to set runtime environmental variables of webapp service. ' +
@@ -13,19 +15,25 @@ export default class WebappSecrets extends Command {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    const { envStage, awsAccountId, awsRegion, rootPath } = await initConfig(this, {
-      requireAws: true,
-    });
-    await assertDockerIsRunning();
-    await dockerHubLogin();
+    return tracer.startActiveSpan('secrets', async (span) => {
+      const { envStage, awsAccountId, awsRegion, rootPath } = await initConfig(
+        this,
+        {
+          requireAws: true,
+        }
+      );
+      await assertDockerIsRunning();
+      await dockerHubLogin();
 
-    this.log(`Settings secrets in AWS SSM Parameter store for:
+      this.log(`Settings secrets in AWS SSM Parameter store for:
   service: ${color.green('webapp')}
   envStage: ${color.green(envStage)}
   AWS account: ${color.green(awsAccountId)}
   AWS region: ${color.green(awsRegion)}
 `);
 
-    await runSecretsEditor({ serviceName: 'webapp', rootPath });
+      await runSecretsEditor({ serviceName: 'webapp', rootPath });
+      span.end();
+    });
   }
 }

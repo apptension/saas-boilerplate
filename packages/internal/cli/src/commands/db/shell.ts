@@ -1,8 +1,11 @@
 import { Command } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
+
+const tracer = trace.getTracer('db');
 
 export default class DbShell extends Command {
   static description =
@@ -15,21 +18,24 @@ export default class DbShell extends Command {
   static args = {};
 
   async run(): Promise<void> {
-    const { rootPath } = await initConfig(this, {
-      requireLocalEnvStage: true,
-    });
+    return tracer.startActiveSpan('shell', async (span) => {
+      const { rootPath } = await initConfig(this, {
+        requireLocalEnvStage: true,
+      });
 
-    await assertDockerIsRunning();
-    await dockerHubLogin();
+      await assertDockerIsRunning();
+      await dockerHubLogin();
 
-    await runCommand('docker', ['compose', 'exec', 'db', 'psql'], {
-      env: {
-        ...process.env,
-        PGUSER: 'backend',
-        PGPASSWORD: 'backend',
-        PGDATABASE: 'backend',
-      },
-      cwd: rootPath,
+      await runCommand('docker', ['compose', 'exec', 'db', 'psql'], {
+        env: {
+          ...process.env,
+          PGUSER: 'backend',
+          PGPASSWORD: 'backend',
+          PGDATABASE: 'backend',
+        },
+        cwd: rootPath,
+      });
+      span.end();
     });
   }
 }

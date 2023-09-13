@@ -1,8 +1,10 @@
 import { Command, Flags, Args } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 
+const tracer = trace.getTracer('webapp');
 export default class WebappTest extends Command {
   static description = 'Runs all webapp tests';
 
@@ -15,14 +17,17 @@ export default class WebappTest extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(WebappTest);
-    await initConfig(this, {});
+    return tracer.startActiveSpan('test', async (span) => {
+      const { flags } = await this.parse(WebappTest);
+      await initConfig(this, {});
 
-    await runCommand('pnpm', [
-      'nx',
-      'run',
-      'webapp:test',
-      `--watchAll=${flags.watchAll}`,
-    ]);
+      await runCommand('pnpm', [
+        'nx',
+        'run',
+        'webapp:test',
+        `--watchAll=${flags.watchAll}`,
+      ]);
+      span.end();
+    });
   }
 }

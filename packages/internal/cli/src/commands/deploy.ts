@@ -1,8 +1,10 @@
 import { Command, Flags } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../config/init';
 import { runCommand } from '../lib/runCommand';
 
+const tracer = trace.getTracer('global');
 export default class Deploy extends Command {
   static description = 'Deploy all previously built artifacts to AWS';
 
@@ -18,16 +20,19 @@ export default class Deploy extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(Deploy);
-    await initConfig(this, { requireAws: true });
+    return tracer.startActiveSpan('deploy', async (span) => {
+      const { flags } = await this.parse(Deploy);
+      await initConfig(this, { requireAws: true });
 
-    const verb = flags.diff ? 'diff' : 'deploy';
-    await runCommand('pnpm', [
-      'nx',
-      'run-many',
-      '--output-style=stream',
-      `--target=${verb}`,
-      '--projects=backend,workers,webapp',
-    ]);
+      const verb = flags.diff ? 'diff' : 'deploy';
+      await runCommand('pnpm', [
+        'nx',
+        'run-many',
+        '--output-style=stream',
+        `--target=${verb}`,
+        '--projects=backend,workers,webapp',
+      ]);
+      span.end();
+    });
   }
 }

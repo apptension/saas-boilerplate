@@ -1,7 +1,10 @@
 import { Command, Flags, Args } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
+
+const tracer = trace.getTracer('infra');
 
 enum StackName {
   Global = 'global',
@@ -37,32 +40,36 @@ export default class InfraDeploy extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags, args } = await this.parse(InfraDeploy);
-    await initConfig(this, { requireAws: true });
+    return tracer.startActiveSpan('deploy', async (span) => {
+      const { flags, args } = await this.parse(InfraDeploy);
+      await initConfig(this, { requireAws: true });
 
-    const verb = flags.diff ? 'diff' : 'deploy';
+      const verb = flags.diff ? 'diff' : 'deploy';
 
-    if (!args.stackName || args.stackName === StackName.Global) {
-      await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:global`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Main) {
-      await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:main`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Db) {
-      await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:db`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Functions) {
-      await runCommand('pnpm', ['nx', 'run', `infra-functions:${verb}`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Ci) {
-      await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:ci`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Components) {
-      await runCommand('pnpm', [
-        'nx',
-        'run',
-        `infra-shared:${verb}:components`,
-      ]);
-    }
+      if (!args.stackName || args.stackName === StackName.Global) {
+        await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:global`]);
+      }
+      if (!args.stackName || args.stackName === StackName.Main) {
+        await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:main`]);
+      }
+      if (!args.stackName || args.stackName === StackName.Db) {
+        await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:db`]);
+      }
+      if (!args.stackName || args.stackName === StackName.Functions) {
+        await runCommand('pnpm', ['nx', 'run', `infra-functions:${verb}`]);
+      }
+      if (!args.stackName || args.stackName === StackName.Ci) {
+        await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:ci`]);
+      }
+      if (!args.stackName || args.stackName === StackName.Components) {
+        await runCommand('pnpm', [
+          'nx',
+          'run',
+          `infra-shared:${verb}:components`,
+        ]);
+      }
+
+      span.end();
+    });
   }
 }

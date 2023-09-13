@@ -4,6 +4,7 @@ import { Command } from '@oclif/core';
 import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import * as dotenv from 'dotenv';
+import { trace } from '@opentelemetry/api';
 
 import { validateStageEnv } from './env';
 import { color } from '@oclif/color';
@@ -11,6 +12,8 @@ import { isAwsVaultInstalled } from '../lib/awsVault';
 import { assertChamberInstalled, loadChamberEnv } from '../lib/chamber';
 
 const exec = promisify(childProcess.exec);
+
+const tracer = trace.getTracer('config:aws');
 
 type LoadAWSCredentialsOptions = {
   envStage: string;
@@ -31,11 +34,8 @@ async function loadStageEnv(
   }
 }
 
-export const initAWS = async (
-  context: Command,
-  options: LoadAWSCredentialsOptions
-) => {
-  if (await isAwsVaultInstalled()) {
+const initAWSVault = async () => {
+  return tracer.startActiveSpan('initAwsVault', async (span) => {
     const awsVaultProfile = process.env.AWS_VAULT_PROFILE;
 
     const { stdout } = await exec(`aws-vault export ${awsVaultProfile}`);
@@ -43,35 +43,52 @@ export const initAWS = async (
 
     // @ts-ignore
     dotenv.populate(process.env, credentials);
-  }
 
-  let awsAccountId;
-  try {
-    const stsClient = new STSClient();
-    const { Account } = await stsClient.send(new GetCallerIdentityCommand({}));
-    awsAccountId = Account;
-  } catch (error) {
-    context.error(
-      'No valid AWS Credentials found in environment variables. We recommend installing aws-vault to securely manage AWS profiles'
-    );
-  }
+    span.end();
+  });
+};
 
-  context.log(
-    `----------
+export const initAWS = async (
+  context: Command,
+  options: LoadAWSCredentialsOptions
+) => {
+  return tracer.startActiveSpan('initAWS', async (span) => {
+    if (await isAwsVaultInstalled()) {
+      await initAWSVault();
+    }
+
+    let awsAccountId;
+    try {
+      const stsClient = new STSClient();
+      const { Account } = await stsClient.send(
+        new GetCallerIdentityCommand({})
+      );
+      awsAccountId = Account;
+    } catch (error) {
+      context.error(
+        'No valid AWS Credentials found in environment variables. We recommend installing aws-vault to securely manage AWS profiles'
+      );
+    }
+
+    context.log(
+      `----------
 "${color.red(
-      options.envStage
-    )}" is set as a current environment stage. Live AWS session credentials are being used.
+        options.envStage
+      )}" is set as a current environment stage. Live AWS session credentials are being used.
 ----------\n`
-  );
+    );
 
-  await loadStageEnv(
-    context,
-    options.envStage,
-    options.validateEnvStageVariables
-  );
+    await loadStageEnv(
+      context,
+      options.envStage,
+      options.validateEnvStageVariables
+    );
 
-  return {
-    awsAccountId,
-    awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION,
-  };
+    span.end();
+
+    return {
+      awsAccountId,
+      awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION,
+    };
+  });
 };

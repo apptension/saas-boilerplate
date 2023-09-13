@@ -1,8 +1,11 @@
 import { Command, Flags } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
 import { assertDockerIsRunning, dockerHubLogin } from '../../../lib/docker';
+
+const tracer = trace.getTracer('workers');
 
 export default class WorkersInvokeLocal extends Command {
   static description = 'Invoke an async worker task';
@@ -27,26 +30,31 @@ export default class WorkersInvokeLocal extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(WorkersInvokeLocal);
-    const { rootPath } = await initConfig(this, { requireLocalEnvStage: true });
-    await assertDockerIsRunning();
-    await dockerHubLogin();
+    return tracer.startActiveSpan('invoke:local', async (span) => {
+      const { flags } = await this.parse(WorkersInvokeLocal);
+      const { rootPath } = await initConfig(this, {
+        requireLocalEnvStage: true,
+      });
+      await assertDockerIsRunning();
+      await dockerHubLogin();
 
-    await runCommand(
-      'docker',
-      [
-        'compose',
-        'run',
-        '--rm',
-        '-T',
-        'workers',
-        `pnpm sls invoke local -f=${flags.function} ${
-          flags.data ? `d=${flags.data}` : ''
-        }`,
-      ],
-      {
-        cwd: rootPath,
-      }
-    );
+      await runCommand(
+        'docker',
+        [
+          'compose',
+          'run',
+          '--rm',
+          '-T',
+          'workers',
+          `pnpm sls invoke local -f=${flags.function} ${
+            flags.data ? `d=${flags.data}` : ''
+          }`,
+        ],
+        {
+          cwd: rootPath,
+        }
+      );
+      span.end();
+    });
   }
 }

@@ -1,8 +1,10 @@
 import { Args, Command } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { setEnvStage } from '../../config/storage';
 import { initConfig } from '../../config/init';
 
+const tracer = trace.getTracer('aws');
 export default class SetEnv extends Command {
   static description = 'Select ENV stage';
 
@@ -21,15 +23,18 @@ export default class SetEnv extends Command {
   };
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(SetEnv);
-    const { envStage: currentEnvStage } = await initConfig(this, {});
+    return tracer.startActiveSpan('set-env', async (span) => {
+      const { args, flags } = await this.parse(SetEnv);
+      const { envStage: currentEnvStage } = await initConfig(this, {});
 
-    if (currentEnvStage === args.envStage) {
-      this.log(`Your environment stage is already set to ${args.envStage}.`);
-      return;
-    }
+      if (currentEnvStage === args.envStage) {
+        this.log(`Your environment stage is already set to ${args.envStage}.`);
+        return;
+      }
 
-    await setEnvStage(args.envStage);
-    this.log(`Switched environment stage to ${args.envStage}.`);
+      await setEnvStage(args.envStage);
+      this.log(`Switched environment stage to ${args.envStage}.`);
+      span.end();
+    });
   }
 }

@@ -1,7 +1,10 @@
 import { Command } from '@oclif/core';
+import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
+
+const tracer = trace.getTracer('infra');
 
 export default class InfraBootstrap extends Command {
   static description =
@@ -11,25 +14,28 @@ export default class InfraBootstrap extends Command {
   static examples = [`<%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    const { awsAccountId, awsRegion } = await initConfig(this, {
-      requireAws: true,
-      validateEnvStageVariables: false,
-    });
+    return tracer.startActiveSpan('bootstrap', async (span) => {
+      const { awsAccountId, awsRegion } = await initConfig(this, {
+        requireAws: true,
+        validateEnvStageVariables: false,
+      });
 
-    await runCommand('pnpm', [
-      'nx',
-      'run',
-      'infra-core:cdk',
-      'bootstrap',
-      `aws://${awsAccountId}/${awsRegion}`,
-    ]);
-    await runCommand('pnpm', [
-      'nx',
-      'run',
-      'infra-core:cdk',
-      'bootstrap',
-      `aws://${awsAccountId}/us-east-1`,
-    ]);
-    await runCommand('pnpm', ['nx', 'run', 'infra-shared:bootstrap']);
+      await runCommand('pnpm', [
+        'nx',
+        'run',
+        'infra-core:cdk',
+        'bootstrap',
+        `aws://${awsAccountId}/${awsRegion}`,
+      ]);
+      await runCommand('pnpm', [
+        'nx',
+        'run',
+        'infra-core:cdk',
+        'bootstrap',
+        `aws://${awsAccountId}/us-east-1`,
+      ]);
+      await runCommand('pnpm', ['nx', 'run', 'infra-shared:bootstrap']);
+      span.end();
+    });
   }
 }
