@@ -313,6 +313,9 @@ importers:
 
   packages/internal/cli:
     dependencies:
+      '@apptension/saas-boilerplate-telemetry':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@aws-sdk/client-cloudformation':
         specifier: ^3.398.0
         version: 3.398.0
@@ -2753,6 +2756,11 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /@apptension/saas-boilerplate-telemetry@1.0.2:
+    resolution: {integrity: sha512-rfG/JMMytPsj+oQZiYSbUvfs/+ak8IWa0IYlJJYpMhf+FOHu8QjDaV/U19WZQ+5+KnsJoIHMwhcZv79H7NyMEw==}
+    engines: {node: '>=16.14.0'}
+    dev: false
 
   /@ardatan/aggregate-error@0.0.6:
     resolution: {integrity: sha512-vyrkEHG1jrukmzTPtyWB4NLPauUw5bQeg4uhn8f+1SSynmrOcyvlb1GKQjjgoBzElLdfXCRYX8UnBlhklOHYRQ==}

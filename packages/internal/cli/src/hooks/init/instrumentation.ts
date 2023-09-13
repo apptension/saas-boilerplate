@@ -4,11 +4,12 @@ import { Resource } from '@opentelemetry/resources';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+import sbTelemetry from '@apptension/saas-boilerplate-telemetry';
 
 const traceExporter = new OTLPTraceExporter({
-  url: 'https://api.honeycomb.io/v1/traces',
+  url: sbTelemetry[0],
   headers: {
-    'x-honeycomb-team': 'Bov6DZ0zbuHIecMk0dJGVG',
+    'x-honeycomb-team': sbTelemetry[1],
   },
 });
 
