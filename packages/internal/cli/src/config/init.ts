@@ -2,26 +2,16 @@ import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 import { trace } from '@opentelemetry/api';
 
-import * as childProcess from 'child_process';
-import { promisify } from 'util';
-import { resolve } from 'path';
-
-import { ENV_STAGE_LOCAL, loadDotenv, loadVersionEnv } from './env';
+import { ENV_STAGE_LOCAL, getRootPath, loadVersionEnv } from './env';
 import { initAWS } from './aws';
 import { loadEnvStage } from './storage';
 
 const tracer = trace.getTracer('command-init');
-const exec = promisify(childProcess.exec);
 
 type InitConfigOptions = {
   requireAws?: boolean | 'allow-local';
   validateEnvStageVariables?: boolean;
   requireLocalEnvStage?: boolean;
-};
-
-const getRootPath = async () => {
-  const { stdout } = await exec('pnpm root -w');
-  return resolve(stdout, '..');
 };
 
 export const initConfig = async (
@@ -34,7 +24,6 @@ export const initConfig = async (
 ) => {
   return tracer.startActiveSpan('initConfig', async (span) => {
     const rootPath = await getRootPath();
-    await loadDotenv({ rootPath });
     const version = await loadVersionEnv();
     const envStage = await loadEnvStage();
     const projectName = process.env.PROJECT_NAME;

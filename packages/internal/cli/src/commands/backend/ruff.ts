@@ -1,41 +1,34 @@
-import { Command } from '@oclif/core';
-import { trace } from '@opentelemetry/api';
-
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
+import { BaseCommand } from '../../baseCommand';
 
-const tracer = trace.getTracer('backend');
-
-export default class BackendRuff extends Command {
+export default class BackendRuff extends BaseCommand<typeof BackendRuff> {
   static description = 'Run ruff inside backend docker container';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('ruff', async (span) => {
-      const { rootPath } = await initConfig(this, {});
-      await assertDockerIsRunning();
-      await dockerHubLogin();
+    const { rootPath } = await initConfig(this, {});
+    await assertDockerIsRunning();
+    await dockerHubLogin();
 
-      await runCommand(
-        'docker',
-        [
-          'compose',
-          'run',
-          '--rm',
-          '-T',
-          '--no-deps',
-          'backend',
-          'ruff',
-          'check',
-          '.',
-        ],
-        {
-          cwd: rootPath,
-        }
-      );
-      span.end();
-    });
+    await runCommand(
+      'docker',
+      [
+        'compose',
+        'run',
+        '--rm',
+        '-T',
+        '--no-deps',
+        'backend',
+        'ruff',
+        'check',
+        '.',
+      ],
+      {
+        cwd: rootPath,
+      }
+    );
   }
 }

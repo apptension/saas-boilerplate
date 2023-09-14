@@ -1,12 +1,13 @@
-import { Command, Flags } from '@oclif/core';
+import { Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
+import { BaseCommand } from '../../../baseCommand';
 
-const tracer = trace.getTracer('backend');
-export default class BackendDeployMigrations extends Command {
+export default class BackendDeployMigrations extends BaseCommand<
+  typeof BackendDeployMigrations
+> {
   static description =
     'Deploys database migrations to AWS using previously built artifact and immediately performs them';
 
@@ -22,23 +23,20 @@ export default class BackendDeployMigrations extends Command {
   };
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('deploy-migrations', async (span) => {
-      const { flags } = await this.parse(BackendDeployMigrations);
-      const { envStage, version, awsRegion, awsAccountId } = await initConfig(
-        this,
-        { requireAws: true }
-      );
+    const { flags } = await this.parse(BackendDeployMigrations);
+    const { envStage, version, awsRegion, awsAccountId } = await initConfig(
+      this,
+      { requireAws: true }
+    );
 
-      this.log(`Deploying migrations:
+    this.log(`Deploying migrations:
   envStage: ${color.green(envStage)}
   version: ${color.green(version)}
   AWS account: ${color.green(awsAccountId)}
   AWS region: ${color.green(awsRegion)}
 `);
 
-      const verb = flags.diff ? 'diff' : 'deploy';
-      await runCommand('pnpm', ['nx', 'run', `backend:${verb}:migrations`]);
-      span.end();
-    });
+    const verb = flags.diff ? 'diff' : 'deploy';
+    await runCommand('pnpm', ['nx', 'run', `backend:${verb}:migrations`]);
   }
 }

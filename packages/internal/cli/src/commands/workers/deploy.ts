@@ -1,14 +1,12 @@
-import { Command, Flags } from '@oclif/core';
+import { Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
 import { dockerHubLogin } from '../../lib/docker';
+import { BaseCommand } from '../../baseCommand';
 
-const tracer = trace.getTracer('workers');
-
-export default class WorkersDeploy extends Command {
+export default class WorkersDeploy extends BaseCommand<typeof WorkersDeploy> {
   static description = 'Deploys workers to AWS using previously built artifact';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
@@ -23,24 +21,21 @@ export default class WorkersDeploy extends Command {
   };
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('deploy', async (span) => {
-      const { flags } = await this.parse(WorkersDeploy);
-      const { envStage, version, awsAccountId, awsRegion } = await initConfig(
-        this,
-        { requireAws: true }
-      );
-      await dockerHubLogin();
+    const { flags } = await this.parse(WorkersDeploy);
+    const { envStage, version, awsAccountId, awsRegion } = await initConfig(
+      this,
+      { requireAws: true }
+    );
+    await dockerHubLogin();
 
-      this.log(`Deploying backend:
+    this.log(`Deploying backend:
   envStage: ${color.green(envStage)}
   version: ${color.green(version)}
   AWS account: ${color.green(awsAccountId)}
   AWS region: ${color.green(awsRegion)}
 `);
 
-      const verb = flags.diff ? 'diff' : 'deploy';
-      await runCommand('pnpm', ['nx', 'run', `workers:${verb}`]);
-      span.end();
-    });
+    const verb = flags.diff ? 'diff' : 'deploy';
+    await runCommand('pnpm', ['nx', 'run', `workers:${verb}`]);
   }
 }

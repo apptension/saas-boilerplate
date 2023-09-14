@@ -1,14 +1,11 @@
-import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 
 import { initConfig } from '../../config/init';
 import { assertDockerIsRunning, dockerHubLogin } from '../../lib/docker';
 import { runSecretsEditor } from '../../lib/secretsEditor';
-import { trace } from '@opentelemetry/api';
+import { BaseCommand } from '../../baseCommand';
 
-const tracer = trace.getTracer('backend');
-
-export default class BackendSecrets extends Command {
+export default class BackendSecrets extends BaseCommand<typeof BackendSecrets> {
   static description =
     'Runs an ssm-editor helper tool in docker container to set runtime environmental variables of backend service. ' +
     'Underneath it uses chamber to both fetch and set those variables in AWS SSM Parameter Store';
@@ -16,25 +13,22 @@ export default class BackendSecrets extends Command {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('secrets', async (span) => {
-      const { envStage, awsAccountId, awsRegion, rootPath } = await initConfig(
-        this,
-        {
-          requireAws: true,
-        }
-      );
-      await assertDockerIsRunning();
-      await dockerHubLogin();
+    const { envStage, awsAccountId, awsRegion, rootPath } = await initConfig(
+      this,
+      {
+        requireAws: true,
+      }
+    );
+    await assertDockerIsRunning();
+    await dockerHubLogin();
 
-      this.log(`Settings secrets in AWS SSM Parameter store for:
+    this.log(`Settings secrets in AWS SSM Parameter store for:
   service: ${color.green('backend')}
   envStage: ${color.green(envStage)}
   AWS account: ${color.green(awsAccountId)}
   AWS region: ${color.green(awsRegion)}
 `);
 
-      await runSecretsEditor({ serviceName: 'backend', rootPath });
-      span.end();
-    });
+    await runSecretsEditor({ serviceName: 'backend', rootPath });
   }
 }

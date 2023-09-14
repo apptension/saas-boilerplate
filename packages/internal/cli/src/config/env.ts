@@ -4,15 +4,25 @@ import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as envalid from 'envalid';
 
+export const getRootPath = () => {
+  const stdout = childProcess.execSync('pnpm root -w');
+  return resolve(stdout.toString(), '..');
+};
+
+dotenv.config({ path: resolve(getRootPath(), '.env') });
+
 export const ENV_STAGE_LOCAL = 'local';
+const IS_CI = Boolean(process.env.CI ?? false);
+
+export const SB_TELEMETRY_DISABLED =
+  IS_CI || (Boolean(process.env.SB_TELEMETRY_DISABLED) ?? false);
+export const SB_TELEMETRY_DEBUG =
+  IS_CI || (Boolean(process.env.SB_TELEMETRY_DEBUG) ?? false);
 
 const exec = promisify(childProcess.exec);
 
 type LoadDotenvOptions = {
   rootPath: string;
-};
-export const loadDotenv = async ({ rootPath }: LoadDotenvOptions) => {
-  dotenv.config({ path: resolve(rootPath, '.env') });
 };
 
 export async function loadVersionEnv() {

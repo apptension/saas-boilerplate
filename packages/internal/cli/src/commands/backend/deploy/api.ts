@@ -1,12 +1,13 @@
-import { Command, Flags } from '@oclif/core';
+import { Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import { trace } from '@opentelemetry/api';
 
 import { initConfig } from '../../../config/init';
 import { runCommand } from '../../../lib/runCommand';
+import { BaseCommand } from '../../../baseCommand';
 
-const tracer = trace.getTracer('backend');
-export default class BackendDeployApi extends Command {
+export default class BackendDeployApi extends BaseCommand<
+  typeof BackendDeployApi
+> {
   static description =
     'Deploys backend API to AWS using previously built artifact';
 
@@ -22,23 +23,20 @@ export default class BackendDeployApi extends Command {
   };
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('deploy-api', async (span) => {
-      const { flags } = await this.parse(BackendDeployApi);
-      const { envStage, version, awsRegion, awsAccountId } = await initConfig(
-        this,
-        { requireAws: true }
-      );
+    const { flags } = await this.parse(BackendDeployApi);
+    const { envStage, version, awsRegion, awsAccountId } = await initConfig(
+      this,
+      { requireAws: true }
+    );
 
-      this.log(`Deploying backend:
+    this.log(`Deploying backend:
   envStage: ${color.green(envStage)}
   version: ${color.green(version)}
   AWS account: ${color.green(awsAccountId)}
   AWS region: ${color.green(awsRegion)}
 `);
 
-      const verb = flags.diff ? 'diff' : 'deploy';
-      await runCommand('pnpm', ['nx', 'run', `backend:${verb}:api`]);
-      span.end();
-    });
+    const verb = flags.diff ? 'diff' : 'deploy';
+    await runCommand('pnpm', ['nx', 'run', `backend:${verb}:api`]);
   }
 }

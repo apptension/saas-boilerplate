@@ -6,14 +6,12 @@ import {
   CreateServiceSpecificCredentialCommand,
   IAMClient,
 } from '@aws-sdk/client-iam';
-import { Command } from '@oclif/core';
 import { trace } from '@opentelemetry/api';
 import { indexBy, prop } from 'ramda';
 import * as URL from 'url';
 
 import { initConfig } from '../../config/init';
-
-const tracer = trace.getTracer('ci');
+import { BaseCommand } from '../../baseCommand';
 
 type GetOutputsFromGlobalStackOptions = {
   stackName: string;
@@ -43,7 +41,9 @@ function createCredentials({ repoUserName }: CreateCredentialsOptions) {
   );
 }
 
-export default class CiCreateCredentials extends Command {
+export default class CiCreateCredentials extends BaseCommand<
+  typeof CiCreateCredentials
+> {
   static description =
     'Create CI/CD repository credentials. They can be used in Bitbucket, Github, Gitlab, etc ' +
     'to push code changes to CodeCommit';
@@ -53,36 +53,33 @@ export default class CiCreateCredentials extends Command {
   static flags = {};
 
   async run(): Promise<void> {
-    return tracer.startActiveSpan('create-credentials', async (span) => {
-      const { flags } = await this.parse(CiCreateCredentials);
-      const { projectName } = await initConfig(this, { requireAws: true });
+    const { flags } = await this.parse(CiCreateCredentials);
+    const { projectName } = await initConfig(this, { requireAws: true });
 
-      const globalStackOutputs = await getOutputsFromGlobalStack({
-        stackName: `${projectName}-GlobalStack`,
-      });
-      const { OutputValue: repoUserName } =
-        globalStackOutputs[`${projectName}-codeRepoUserName`] ?? {};
-      const { OutputValue: repoUrl } =
-        globalStackOutputs[`${projectName}-codeRepoCloneUrlHttp`] ?? {};
-
-      if (!repoUserName || !repoUrl) {
-        this.error('Failed to fetch repository username and URL');
-      }
-
-      const response = await createCredentials({ repoUserName });
-
-      if (!response.ServiceSpecificCredential) {
-        this.error('Failed to create service specific credentials');
-      }
-
-      const { ServicePassword: password, ServiceUserName: userName } =
-        response.ServiceSpecificCredential;
-
-      const urlParts = URL.parse(repoUrl);
-      urlParts.auth = `${userName}:${password}`;
-
-      this.log(URL.format(urlParts));
-      span.end();
+    const globalStackOutputs = await getOutputsFromGlobalStack({
+      stackName: `${projectName}-GlobalStack`,
     });
+    const { OutputValue: repoUserName } =
+      globalStackOutputs[`${projectName}-codeRepoUserName`] ?? {};
+    const { OutputValue: repoUrl } =
+      globalStackOutputs[`${projectName}-codeRepoCloneUrlHttp`] ?? {};
+
+    if (!repoUserName || !repoUrl) {
+      this.error('Failed to fetch repository username and URL');
+    }
+
+    const response = await createCredentials({ repoUserName });
+
+    if (!response.ServiceSpecificCredential) {
+      this.error('Failed to create service specific credentials');
+    }
+
+    const { ServicePassword: password, ServiceUserName: userName } =
+      response.ServiceSpecificCredential;
+
+    const urlParts = URL.parse(repoUrl);
+    urlParts.auth = `${userName}:${password}`;
+
+    this.log(URL.format(urlParts));
   }
 }
