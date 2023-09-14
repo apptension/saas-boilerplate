@@ -1,0 +1,66 @@
+---
+title: Telemetry
+---
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# SaaS Boilerplate CLI Telemetry
+The <ProjectName /> CLI is designed to offer an efficient and user-friendly experience. To help us improve the service
+for everyone, the CLI collects anonymous feature usage information, errors encountered, and other relevant performance
+metrics.
+
+## Why Do We Collect Telemetry Data?
+The primary goal of collecting telemetry data is to gain insights into how the CLI is used, understand any issues users
+might be facing, and improve the overall experience. This allows us to prioritize new features, identify bugs, and make
+the CLI more reliable and efficient for everyone.
+
+## What Data Is Collected?
+The <ProjectName /> CLI collects the following data:
+
+- Errors
+- Flags and arguments passed to the CLI commands
+- Anonymous system information, such as the operating system, version, and type
+- Feature usage statistics
+
+:::caution
+
+Please note that we do not collect personally identifiable information, sensitive data, or any metadata about your
+source code.
+
+:::
+
+## How Is the Data Collected and Processed?
+Telemetry data is collected automatically when you use the CLI. This data is then processed and aggregated for
+analytical purposes. We take care to anonymize all data so that it cannot be traced back to individual users.
+
+## How Can I Inspect Collected Data?
+You can inspect the data being collected by setting the `SB_TELEMETRY_DEBUG` environment variable to `1`.
+
+Example:
+
+```shell
+SB_TELEMETRY_DEBUG=1 pnpm saas [some-command]
+```
+
+When this environment variable is set, the CLI will display the telemetry data collected for that session.
+
+## Can I Opt-Out?
+Yes, you can opt-out of telemetry data collection. To do so, set the `SB_TELEMETRY_DISABLED` environment variable to `1`.
+
+Example:
+
+```shell
+SB_TELEMETRY_DISABLED=1 pnpm saas [some-command]
+```
+
+By setting this environment variable, the CLI will no longer collect any telemetry data.
+
+## Data Sharing and Transparency
+The telemetry data is anonymous and not traceable back to individuals. It is used solely for the purpose of improving
+the CLI experience. We are committed to transparency and may, in the future, share aggregate data insights with the
+community through public dashboards or similar means.
+
+## Questions or Concerns?
+We take your privacy seriously. If you have any questions or concerns about telemetry data collection, please feel free
+to contact our support team.
+
+Thank you for helping us make <ProjectName /> a better tool for everyone!
