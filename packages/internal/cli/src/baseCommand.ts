@@ -2,8 +2,7 @@ import { Command, Flags, Interfaces } from '@oclif/core';
 import { ExitError } from '@oclif/core/lib/errors';
 import { Span, SpanStatusCode, trace, Tracer } from '@opentelemetry/api';
 
-import { SB_TELEMETRY_DISABLED } from './config/env';
-import { traceExporter } from './config/telemetry';
+import * as telemetry from './config/telemetry';
 
 const formatAttrs = (obj: { [k: string]: string } = {}, prefix = '') => {
   return Object.fromEntries(
@@ -38,21 +37,52 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>;
     this.args = args as Args<T>;
 
-    if (!SB_TELEMETRY_DISABLED) {
+    if (telemetry.isEnabled) {
       this.printTelemetryInfo();
       this.tracer = trace.getTracer('command', this.config.version);
-
-      this.span = this.tracer.startSpan(`command.${this.ctor.id}`, {
-        attributes: {
-          ...formatAttrs(flags, 'flags'),
-          ...formatAttrs(args, 'args'),
-        },
-      });
     }
   }
 
+  async _run<T>() {
+    let err;
+    let result;
+    try {
+      // remove redirected env var to allow subsessions to run autoupdated client
+      // @ts-ignore
+      this.removeEnvVar('REDIRECTED');
+      await this.init();
+
+      if (telemetry.isEnabled && this.tracer) {
+        result = this.tracer.startActiveSpan(
+          `command.${this.ctor.id}`,
+          {
+            attributes: {
+              ...formatAttrs(this.flags, 'flags'),
+              ...formatAttrs(this.args, 'args'),
+            },
+          },
+          async (span) => {
+            this.span = span;
+            const _result = this.run();
+            span.end();
+            return _result;
+          }
+        );
+      } else {
+        result = await this.run();
+      }
+    } catch (error: any) {
+      err = error;
+      await this.catch(error);
+    } finally {
+      await this.finally(err);
+    }
+    if (result && this.jsonEnabled()) this.logJson(this.toSuccessJson(result));
+    return result;
+  }
+
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {
-    if (!SB_TELEMETRY_DISABLED) {
+    if (telemetry.isEnabled) {
       if (!(err instanceof ExitError) || err.oclif.exit !== 0) {
         this.span?.addEvent('Command error');
         this.span?.recordException(err);
@@ -63,21 +93,20 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   }
 
   protected async finally(_: Error | undefined): Promise<any> {
-    if (!SB_TELEMETRY_DISABLED) {
+    if (telemetry.isEnabled) {
       this.span?.addEvent('Command finished');
       this.span?.end();
 
       // Need to wait en event loop for the internal promise in exporter to be visible
       await new Promise((resolve) => setTimeout(() => resolve(true)));
       // wait for the exporter to send data
-      await traceExporter.forceFlush();
+      await telemetry.traceExporter.forceFlush();
     }
     return super.finally(_);
   }
 
   protected printTelemetryInfo(): void {
-    console.log({SB_TELEMETRY_DISABLED})
-    if (!SB_TELEMETRY_DISABLED) {
+    if (telemetry.isEnabled) {
       this.log(`\x1b[2m
 ------ Notice ------
 This CLI collects various anonymous events, warnings, and errors to improve the CLI tool and enhance your user experience.

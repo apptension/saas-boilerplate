@@ -4,7 +4,11 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 
+import { SB_TELEMETRY_DISABLED } from './env';
+
 const sbTelemetry = require('@apptension/saas-boilerplate-telemetry');
+
+export const isEnabled = !SB_TELEMETRY_DISABLED;
 
 export const traceExporter = new OTLPTraceExporter({
   url: sbTelemetry?.[0],
