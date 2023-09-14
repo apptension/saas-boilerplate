@@ -104,8 +104,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   }
 
   protected printTelemetryInfo(): void {
-    if (telemetry.isEnabled) {
-      this.log(`\x1b[2m
+    this.log(`\x1b[2m
 ------ Notice ------
 This CLI collects various anonymous events, warnings, and errors to improve the CLI tool and enhance your user experience.
 Read more: [Your GitHub or documentation link here]
@@ -113,6 +112,5 @@ If you want to opt out of telemetry, you can set the environment variable SB_TEL
 For example:
    export SB_TELEMETRY_DISABLED=1
     \x1b[0m`);
-    }
   }
 }
