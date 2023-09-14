@@ -53,7 +53,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
       await this.init();
 
       if (telemetry.isEnabled && this.tracer) {
-        result = this.tracer.startActiveSpan(
+        result = await this.tracer.startActiveSpan(
           `command.${this.ctor.id}`,
           {
             attributes: {
@@ -63,9 +63,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
           },
           async (span) => {
             this.span = span;
-            const _result = this.run();
-            span.end();
-            return _result;
+            return await this.run();
           }
         );
       } else {
