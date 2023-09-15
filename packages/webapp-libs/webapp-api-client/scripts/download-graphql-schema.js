@@ -22,8 +22,8 @@ function runCommand(command, args) {
 
     const apiUrl = 'http://localhost:5001/api/graphql/';
 
-    fs.remove('./src/graphql/__generated/types.ts');
-    fs.remove('./src/graphql/__generated/hooks.ts');
+    await fs.remove('./src/graphql/__generated/types.ts');
+    await fs.remove('./src/graphql/__generated/hooks.ts');
 
     await runCommand('pnpm', ['rover', 'graph', 'introspect', apiUrl, '--output', 'graphql/schema/api.graphql']);
   } catch (error) {

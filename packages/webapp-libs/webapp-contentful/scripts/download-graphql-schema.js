@@ -38,8 +38,8 @@ function runCommand(command, args) {
 
     const CONTENTFUL_URL = `https://graphql.contentful.com/content/v1/spaces/${VITE_CONTENTFUL_SPACE}/environments/${VITE_CONTENTFUL_ENV}?access_token=${VITE_CONTENTFUL_TOKEN}`;
 
-    fs.remove('./src/contentful/__generated/types.ts');
-    fs.remove('./src/contentful/__generated/hooks.ts');
+    await fs.remove('./src/contentful/__generated/types.ts');
+    await fs.remove('./src/contentful/__generated/hooks.ts');
 
     await runCommand('pnpm', [
       'rover',
