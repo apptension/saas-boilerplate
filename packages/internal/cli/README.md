@@ -1,14 +1,7 @@
-# oclif-hello-world
-
-oclif example Hello World CLI
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![CircleCI](https://circleci.com/gh/oclif/hello-world/tree/main.svg?style=shield)](https://circleci.com/gh/oclif/hello-world/tree/main)
-[![GitHub license](https://img.shields.io/github/license/oclif/hello-world)](https://github.com/oclif/hello-world/blob/main/LICENSE)
+# SaaS Boilerplate CLI
 
 <!-- toc -->
 
-- [oclif-hello-world](#oclif-hello-world)
 - [Usage](#usage)
 - [Commands](#commands)
 <!-- tocstop -->
@@ -18,7 +11,7 @@ oclif example Hello World CLI
 <!-- usage -->
 
 ```sh-session
-$ npm install -g @sb/cli
+$ pnpm i -w
 $ saas COMMAND
 running command...
 $ saas (--version)
