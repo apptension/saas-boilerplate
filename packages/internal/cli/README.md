@@ -2,6 +2,7 @@
 
 <!-- toc -->
 
+- [SaaS Boilerplate CLI](#saas-boilerplate-cli)
 - [Usage](#usage)
 - [Commands](#commands)
 <!-- tocstop -->
@@ -53,6 +54,7 @@ USAGE
 - [`saas deploy`](#saas-deploy)
 - [`saas docs build`](#saas-docs-build)
 - [`saas docs deploy`](#saas-docs-deploy)
+- [`saas docs up`](#saas-docs-up)
 - [`saas down`](#saas-down)
 - [`saas emails build`](#saas-emails-build)
 - [`saas emails secrets`](#saas-emails-secrets)
@@ -551,6 +553,23 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/docs/deploy.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/docs/deploy.js)_
+
+## `saas docs up`
+
+Starts local docusaurus server
+
+```
+USAGE
+  $ saas docs up
+
+DESCRIPTION
+  Starts local docusaurus server
+
+EXAMPLES
+  $ saas docs up
+```
+
+_See code: [dist/commands/docs/up.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/docs/up.js)_
 
 ## `saas down`
 
