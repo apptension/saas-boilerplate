@@ -4,6 +4,8 @@ import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as envalid from 'envalid';
 
+const sbTelemetry = require('@apptension/saas-boilerplate-telemetry');
+
 export const getRootPath = () => {
   const stdout = childProcess.execSync('pnpm root -w');
   return resolve(stdout.toString(), '..');
@@ -18,6 +20,10 @@ export const SB_TELEMETRY_DISABLED =
   IS_CI || (Boolean(process.env.SB_TELEMETRY_DISABLED) ?? false);
 export const SB_TELEMETRY_DEBUG =
   IS_CI || (Boolean(process.env.SB_TELEMETRY_DEBUG) ?? false);
+
+export const SB_TELEMETRY_URL = process.env.SB_TELEMETRY_URL ?? sbTelemetry[0];
+
+export const SB_TELEMETRY_KEY = process.env.SB_TELEMETRY_KEY ?? sbTelemetry[1];
 
 const exec = promisify(childProcess.exec);
 
