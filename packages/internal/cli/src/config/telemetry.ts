@@ -12,7 +12,6 @@ import {
 
 export const isEnabled = !SB_TELEMETRY_DISABLED;
 
-console.log({ SB_TELEMETRY_KEY });
 export const traceExporter = new OTLPTraceExporter({
   url: SB_TELEMETRY_URL,
   headers: {
