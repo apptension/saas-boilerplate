@@ -6,7 +6,7 @@ on:
     branches: [ '**' ]
 
 env:
-  WORKERS_BASE_IMAGE: python:3.9-slim-bullseye
+  SB_WORKERS_BASE_IMAGE: python:3.9-slim-bullseye
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Build emails renderer
         shell: bash
-        run: pnpm nx run webapp-emails:build-vite
+        run: pnpm nx run webapp-emails:build
 
       - name: Build
         shell: bash

@@ -8,6 +8,7 @@
   "scripts": {
     "build": "sls package",
     "deploy": "sls deploy",
+    "diff": "echo 'no-diff-available'",
     "remove": "sls remove"
   },
   "dependencies": {

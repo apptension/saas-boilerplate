@@ -1,6 +1,7 @@
 ---
 description: Steps required to deploy SaaS Boilerplate apps on AWS
 ---
+
 import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 6: Deploy the app
@@ -10,9 +11,8 @@ import ProjectName from '../../shared/components/ProjectName.component';
 Run the following command that will switch context to specific environment stage.
 
 ```shell
-make set-env ENV_STAGE=qa
+saas aws set-env [STAGE_NAME]
 ```
-
 
 ## Deploy application's code
 
@@ -29,7 +29,7 @@ while for single service you need to go to that specific service directory.
 Run following command to build artifacts out of code on your local machine:
 
 ```sh
-make build
+pnpm saas build
 ```
 
 ### Deploy artifacts to the newly created env
@@ -37,7 +37,7 @@ make build
 Run following command to deploy artifacts, built in previous command, to AWS:
 
 ```sh
-make deploy-env-app
+pnpm saas deploy
 ```
 
 ## Open the app

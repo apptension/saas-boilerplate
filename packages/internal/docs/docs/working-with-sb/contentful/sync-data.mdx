@@ -37,5 +37,6 @@ CONTENTFUL_ENVIRONMENT=<CHANGE_ME>
 Run following command from the root of the project:
 
 ```shell
-make -C packages/contentful deploy
+cd packages/contentful
+node scripts/run_migrations.js
 ```

@@ -19,7 +19,7 @@ export class GlobalECR extends Construct {
     const registryId = Fn.ref('AWS::AccountId');
     const region = Fn.ref('AWS::Region');
 
-    return `${registryId}.dkr.ecr.${region}.amazonaws.com/${GlobalECR.ECRPublicRepositoryPrefix}`;
+    return `${registryId}.dkr.ecr.${region}.amazonaws.com/${GlobalECR.ECRPublicRepositoryPrefix}/docker/library`;
   }
 
   static getPublicECRIamPolicyStatements() {

@@ -3,11 +3,9 @@
   "version": "2.0.3",
   "type": "commonjs",
   "scripts": {
-    "build": "pnpm nx run build-for-env",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "vite": "vite",
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {

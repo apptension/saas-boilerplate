@@ -10,6 +10,8 @@ FROM $WORKERS_BASE_IMAGE
 ENV APP_PATH=/app
 ENV SRC_CORE_PATH=packages/internal/core
 ENV DEST_CORE_PATH=$APP_PATH/$SRC_CORE_PATH
+ENV SRC_CLI_PATH=packages/internal/cli
+ENV DEST_CLI_PATH=$APP_PATH/$SRC_CLI_PATH
 ENV SRC_WORKERS_PATH=packages/workers
 ENV DEST_WORKERS_PATH=$APP_PATH/$SRC_WORKERS_PATH
 
@@ -34,7 +36,9 @@ WORKDIR $APP_PATH
 COPY package.json pnpm*.yaml $APP_PATH/
 COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
-RUN pnpm install --include-workspace-root --frozen-lockfile --filter=workers...
+COPY tsconfig* $APP_PATH/
+COPY $SRC_CLI_PATH $DEST_CLI_PATH/
+RUN pnpm install --include-workspace-root --frozen-lockfile --filter=workers... --filter=cli...
 
 COPY nx.json tsconfig* jest* babel* .eslintrc* .prettier* .eslintrc* $APP_PATH/
 COPY $SRC_CORE_PATH $DEST_CORE_PATH/

@@ -7,6 +7,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     environment:
+      - PGUSER=backend
       - POSTGRES_USER=backend
       - POSTGRES_PASSWORD=backend
       - POSTGRES_DB=backend
@@ -20,7 +21,7 @@ services:
     build:
       context: ./packages/backend
       target: backend
-    command: ["./scripts/run_local.sh"]
+    command: ["./scripts/runtime/run_local.sh"]
     ports:
       - "5001:5001"
     depends_on:

@@ -1,6 +1,7 @@
 ---
 description: Steps required to deploy SaaS Boilerplate on AWS
 ---
+
 import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 5: Create runtime environment variables
@@ -26,17 +27,31 @@ Follow the [official instructions](https://github.com/segmentio/chamber#installi
 Run the following command that will switch context to specific environment stage.
 
 ```shell
-make set-env ENV_STAGE=qa
+saas aws set-env [STAGE_NAME]
 ```
 
 ## How does it work?
 
 ### Using the CLI tool
 
-You can then set the environment variables for the service (such as `backend`) in JSON format using the following `make` rule:
+You can then set the environment variables for the service (such as `backend`) in JSON format using the CLI command
+
+Backend:
 
 ```shell
-make -C packages/<SERVICE_NAME> secrets
+pnpm saas backend secrets
+```
+
+Webapp:
+
+```shell
+pnpm saas webapp secrets
+```
+
+Workers:
+
+```shell
+pnpm saas workers secrets
 ```
 
 This will download a JSON secrets file, open it in Vim, and re-upload it when you save the file.
@@ -60,7 +75,7 @@ in order to be correctly loaded into
 import BackendEnvVars from '../../shared/partials/env-vars/_backend.mdx';
 
 ```shell
-make -C packages/backend secrets
+pnpm saas backend secrets
 ```
 
 <BackendEnvVars optional={false} />
@@ -72,7 +87,7 @@ Check the [api reference](../../api-reference/env#backend-service) for full list
 import WorkersEnvVars from '../../shared/partials/env-vars/_workers.mdx';
 
 ```shell
-make -C packages/workers secrets
+pnpm saas workers secrets
 ```
 
 <WorkersEnvVars optional={false} />
@@ -84,7 +99,7 @@ Check the [api reference](../../api-reference/env#workers-service) for full list
 import WebappEnvVars from '../../shared/partials/env-vars/_webapp.mdx';
 
 ```shell
-make -C packages/webapp secrets
+pnpm saas webapp secrets
 ```
 
 <WebappEnvVars optional={false} />

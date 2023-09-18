@@ -12,7 +12,7 @@
       },
       "configurations": {
         "download-schema": {
-          "commands": ["/bin/sh ./scripts/download-graphql-schema.sh"]
+          "commands": ["node ./scripts/download-graphql-schema.js"]
         }
       }
     }

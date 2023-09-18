@@ -42,21 +42,12 @@
       },
       "dependsOn": ["setup", "graphql:generate-types"]
     },
-    "build-vite": {
+    "build": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/webapp",
         "color": true,
         "command": "pnpm run vite -c vite.config.ts build"
-      },
-      "dependsOn": ["graphql:generate-types"]
-    },
-    "build-with-env": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/webapp",
-        "color": true,
-        "command": "pnpm nx run tools:chamber-exec webapp nx run webapp:build-vite"
       },
       "dependsOn": ["graphql:generate-types"]
     },
@@ -76,6 +67,15 @@
           "pnpm run cdk deploy *WebAppStack",
           "pnpm nx run tools:upload-service-version webapp \"url=https://${SB_DOMAIN_WEB_APP}\""
         ],
+        "parallel": false
+      }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/webapp",
+        "color": true,
+        "commands": ["pnpm run cdk diff *WebAppStack"],
         "parallel": false
       }
     }

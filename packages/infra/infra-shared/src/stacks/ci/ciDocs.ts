@@ -81,7 +81,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: preBuildCommands,
           },
-          build: { commands: ['pnpm nx run docs:build-with-env'] },
+          build: { commands: ['pnpm saas docs build'] },
         },
         cache: {
           paths: this.defaultCachePaths,
@@ -109,7 +109,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
           value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
         },
-        BACKEND_BASE_IMAGE: {
+        SB_BACKEND_BASE_IMAGE: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: baseImage,
         },
@@ -154,7 +154,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
           },
-          build: { commands: ['pnpm nx run docs:deploy'] },
+          build: { commands: ['pnpm saas docs deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

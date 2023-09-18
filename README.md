@@ -127,22 +127,22 @@ pnpm install
 
 ### Start the app
 
+Start both: backend and webapp
+
+```sh
+pnpm saas up
+```
+
 #### Start backend
 
 ```sh
-pnpm nx run core:docker-compose:up
-```
-
-or a shorter version:
-
-```sh
-make up
+pnpm saas backend up
 ```
 
 #### Start webapp
 
 ```sh
-pnpm nx start webapp
+pnpm saas webapp up
 ```
 
 #### Local documentation
@@ -150,7 +150,7 @@ pnpm nx start webapp
 In order to run your local documentation server execute following command:
 
 ```sh
-pnpm nx start docs
+pnpm saas docs up
 ```
 
 ## Tech stack

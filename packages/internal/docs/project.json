@@ -21,16 +21,6 @@
         "parallel": false
       }
     },
-    "build-with-env": {
-      "executor": "nx:run-commands",
-      "dependsOn": [],
-      "options": {
-        "cwd": "packages/internal/docs",
-        "color": true,
-        "commands": ["pnpm nx run tools:chamber-exec docs nx run docs:build"],
-        "parallel": false
-      }
-    },
     "start": {
       "executor": "nx:run-commands",
       "options": {

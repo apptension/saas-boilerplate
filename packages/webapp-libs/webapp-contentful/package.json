@@ -35,7 +35,8 @@
     "react-markdown": "^8.0.3",
     "react-router": "^6.7.0",
     "react-router-dom": "^6.7.0",
-    "styled-components": "5.3.6"
+    "styled-components": "5.3.6",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.2.1",
@@ -87,6 +88,7 @@
     "styled-components": "5.3.6",
     "ts-jest": "28.0.5",
     "@nx/react": "^16.3.2",
-    "@nx/jest": "^16.3.2"
+    "@nx/jest": "^16.3.2",
+    "fs-extra": "^11.1.1"
   }
 }

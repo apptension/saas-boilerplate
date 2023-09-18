@@ -42,7 +42,7 @@ ENV HASHID_FIELD_SALT='' \
     WORKERS_EVENT_BUS_NAME='' \
     PYTHONPATH=/pkgs/__pypackages__/3.11/lib
 
-RUN ./scripts/build_static.sh
+RUN ./scripts/runtime/build_static.sh
 
 
 FROM backend_build AS backend
@@ -50,4 +50,4 @@ COPY --from=static_files /app/static /app/static
 ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
     PATH=$PATH:/pkgs/__pypackages__/3.11/bin
 
-CMD ["./scripts/run.sh"]
+CMD ["./scripts/runtime/run.sh"]

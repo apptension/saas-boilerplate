@@ -1,0 +1,120 @@
+{
+  "name": "@sb/cli",
+  "version": "2.0.3",
+  "description": "SaaS Boilerplate CLI",
+  "author": "Patryk Ziemkowski pziemkowski@apptension.com",
+  "bin": {
+    "saas": "./bin/run"
+  },
+  "homepage": "https://github.com/apptension/saas-boilerplate",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": "apptension/saas-boilerplate",
+  "files": [
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@apptension/saas-boilerplate-telemetry": "^1.0.3",
+    "@aws-sdk/client-cloudformation": "^3.398.0",
+    "@aws-sdk/client-ecr": "^3.398.0",
+    "@aws-sdk/client-ecs": "^3.398.0",
+    "@aws-sdk/client-iam": "^3.398.0",
+    "@aws-sdk/client-sfn": "^3.398.0",
+    "@aws-sdk/client-sts": "^3.398.0",
+    "@oclif/color": "^1.0.11",
+    "@oclif/core": "^2.15.0",
+    "@oclif/errors": "^1.3.6",
+    "@oclif/plugin-autocomplete": "^2.3.8",
+    "@oclif/plugin-help": "^5.2.19",
+    "@oclif/plugin-plugins": "^3.4.0",
+    "@opentelemetry/api": "^1.5.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.42.0",
+    "@opentelemetry/resources": "^1.16.0",
+    "@opentelemetry/sdk-metrics": "^1.16.0",
+    "@opentelemetry/sdk-node": "^0.42.0",
+    "@opentelemetry/sdk-trace-base": "^1.16.0",
+    "@opentelemetry/sdk-trace-node": "^1.16.0",
+    "@opentelemetry/semantic-conventions": "^1.16.0",
+    "dotenv": "^16.3.1",
+    "envalid": "^7.3.1",
+    "lookpath": "^1.2.2",
+    "node-persist": "^3.1.3",
+    "ramda": "^0.29.0"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2.4.7",
+    "@types/chai": "^4",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.18.47",
+    "@types/node-persist": "^3.1.4",
+    "@types/ramda": "^0.29.3",
+    "chai": "^4",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4",
+    "eslint-config-oclif-typescript": "^1.0.3",
+    "mocha": "^9",
+    "oclif": "^3.14.0",
+    "shx": "^0.3.3",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2"
+  },
+  "oclif": {
+    "bin": "saas",
+    "dirname": "saas",
+    "commands": "./dist/commands",
+    "hooks": {
+      "init": [
+        "dist/hooks/init/instrumentation.js"
+      ]
+    },
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins",
+      "@oclif/plugin-autocomplete"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "aws": {
+        "description": "Groups various AWS-related commands that for example allow you to switch between environment stages"
+      },
+      "db": {
+        "description": "Manage local database instance"
+      },
+      "webapp": {
+        "description": "Manage webapp package and service in AWS"
+      },
+      "emails": {
+        "description": "Manage emails package"
+      },
+      "backend": {
+        "description": "Manage backend package and service in AWS"
+      },
+      "workers": {
+        "description": "Manage workers package and service in AWS"
+      },
+      "infra": {
+        "description": "Configure and deploy infrastructure to AWS"
+      }
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "npm run build && oclif manifest && oclif readme",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "bugs": "https://github.com/apptension/saas-boilerplate/issues",
+  "keywords": [
+    "oclif"
+  ],
+  "types": "dist/index.d.ts"
+}

@@ -41,3 +41,6 @@ __pypackages__/
 # System Files
 .DS_Store
 Thumbs.db
+
+# SaaS Boilerplate
+.saas-boilerplate

@@ -74,7 +74,6 @@ export class CiPipeline extends Construct {
     });
 
     new ServerlessCiConfig(this, 'WorkersConfig', {
-      name: 'workers',
       envSettings: props.envSettings,
       buildStage,
       deployStage,

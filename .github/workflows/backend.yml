@@ -5,7 +5,7 @@ on:
     branches: [ '**' ]
 
 env:
-  BACKEND_BASE_IMAGE: python:3.11-slim-bullseye
+  SB_BACKEND_BASE_IMAGE: python:3.11-slim-bullseye
 
 jobs:
   test:

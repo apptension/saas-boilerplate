@@ -4,6 +4,7 @@
   "devDependencies": {
     "env-cmd": "^10.1.0",
     "envalid": "^7.3.1",
-    "dotenv": "^16.1.4"
+    "dotenv": "^16.1.4",
+    "lookpath": "^1.2.2"
   }
 }

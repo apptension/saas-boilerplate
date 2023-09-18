@@ -523,6 +523,7 @@ module.exports = {
             'working-with-sb/dev-tools/sentry',
             'working-with-sb/dev-tools/ssh-into-container',
             'working-with-sb/dev-tools/plop',
+            'working-with-sb/dev-tools/telemetry',
           ],
         },
       ],

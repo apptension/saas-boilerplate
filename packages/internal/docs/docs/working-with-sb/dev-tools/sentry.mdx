@@ -24,12 +24,12 @@ Please refer to the [Sentry docs](https://docs.sentry.io/) for information on ho
 
 ## Setting up Sentry for AWS environment
 
-##### Start an AWS vault session
+##### Select proper env stage
 
-To start an AWS vault session, run the following command in the root directory of your project:
+To select proper env stage run:
 
 ```shell
-make aws-vault ENV_STAGE=<STAGE_NAME>
+pnpm saas aws set-env qa
 ```
 
 ##### Set variables in AWS
@@ -37,7 +37,7 @@ make aws-vault ENV_STAGE=<STAGE_NAME>
 To set the required variables in AWS, start the SSM editor tool by running the following command in the root directory of your project:
 
 ```shell
-make -C packages/backend secrets
+pnpm saas backend secrets
 ```
 
 Variables are set in JSON format, so add the following key:

@@ -44,22 +44,6 @@
         "passWithNoTests": true
       }
     },
-    "bootstrap-infra": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/tools",
-        "command": "/bin/bash ./scripts/cdk-bootstrap.sh"
-      }
-    },
-    "create-cicd-creds": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/tools",
-        "command": "ts-node --project tsconfig.lib.json ./src/create-cicd-creds"
-      }
-    },
     "upload-service-version": {
       "executor": "nx:run-commands",
       "options": {
@@ -74,13 +58,6 @@
         "color": true,
         "cwd": "packages/internal/tools",
         "command": "ts-node --project tsconfig.lib.json ./src/upload-version"
-      }
-    },
-    "chamber-exec": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "command": "/bin/bash ./packages/internal/tools/scripts/chamber-exec.sh"
       }
     }
   },

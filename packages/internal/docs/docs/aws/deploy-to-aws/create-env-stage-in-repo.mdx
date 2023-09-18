@@ -6,10 +6,12 @@ import ProjectName from '../../shared/components/ProjectName.component';
 
 # Step 3: Initialize an environment stage
 
-<ProjectName/> provides the ability to deploy various versions of your application, such as QA, staging, or
-production. You have the flexibility to determine their naming conventions and the number of environments required.
-The only exception is the `local` environment, which is a specialized preconfigured environment utilized for running
-<ProjectName/> on local machine.
+<ProjectName /> provides the ability to deploy various versions of your
+application, such as QA, staging, or production. You have the flexibility to
+determine their naming conventions and the number of environments required. The
+only exception is the `local` environment, which is a specialized preconfigured
+environment utilized for running
+<ProjectName /> on local machine.
 
 All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
 policies and preferences.
@@ -36,7 +38,7 @@ In <ProjectName/>, AWS CDK is used to define infrastructure as a code. It also n
 Before you deploy anything to AWS you need to run following initialization command:
 
 ```shell
-make bootstrap-infra
+pnpm saas infra bootstrap
 ```
 
 If you're deploying a second environment stage to the
@@ -48,7 +50,7 @@ Open a shell terminal with proper AWS credentials available. If you followed a
 [previous step](./configure-aws-credentials) you can run following command to do it:
 
 ```shell
-make set-env ENV_STAGE=qa
+pnpm saas aws set-env [STAGE_NAME]
 ```
 
 Let's assume your stage is named `qa` and the project is named `saas`.
@@ -59,7 +61,7 @@ Here's a list of all required env variables that you should set and a command th
 Each stage can have a different project name if you want but recommended approach is to use the same across all stages.
 
 ```shell
-chamber write qa PROJECT_NAME saas
+pnpm saas aws set-var PROJECT_NAME saas
 ```
 
 ### Configure domains
@@ -67,13 +69,13 @@ chamber write qa PROJECT_NAME saas
 For this step you'll need the hosted zone parameters that you acquired in the previous step of this guide.
 
 ```shell
-chamber write qa SB_HOSTED_ZONE_ID XYZ
-chamber write qa SB_HOSTED_ZONE_NAME example.com
-chamber write qa SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
-chamber write qa SB_DOMAIN_API api.qa.example.com
-chamber write qa SB_DOMAIN_CDN cdn.qa.example.com
-chamber write qa SB_DOMAIN_DOCS docs.qa.example.com
-chamber write qa SB_DOMAIN_WEB_APP app.qa.example.com
+pnpm saas aws set-var SB_HOSTED_ZONE_ID XYZ
+pnpm saas aws set-var SB_HOSTED_ZONE_NAME example.com
+pnpm saas aws set-var SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_API api.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_CDN cdn.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_WEB_APP app.qa.example.com
 ```
 
 :::info
@@ -89,7 +91,7 @@ It's a good idea to prevent unauthorized access to staging environments so we su
 if this isn't a production environment.
 
 ```shell
-chamber write qa SB_BASIC_AUTH username:password
+pnpm saas aws set-var SB_BASIC_AUTH username:password
 ```
 
 ### \[Optional\] Configure automatic deployment for selected branches
@@ -98,7 +100,7 @@ If you want a deployment to be stared automatically when a commit is pushed to c
 `SB_DEPLOY_BRANCHES` variable.
 
 ```shell
-chamber write qa SB_DEPLOY_BRANCHES master
+pnpm saas aws set-var SB_DEPLOY_BRANCHES master
 ```
 
 ### \[Optional\] Set tools env variables
@@ -106,11 +108,11 @@ chamber write qa SB_DEPLOY_BRANCHES master
 To configure `tools` package env variables follow the example below.
 
 ```shell
-chamber write qa SB_TOOLS_ENABLED <true/false>
-chamber write qa SB_TOOLS_BASIC_AUTH username:password
-chamber write qa SB_TOOLS_HOSTED_ZONE_ID XYZ
-chamber write qa SB_TOOLS_HOSTED_ZONE_NAME example.com
-chamber write qa SB_TOOLS_DOMAIN_VERSION_MATRIX status.example.com
+pnpm saas aws set-var SB_TOOLS_ENABLED <true/false>
+pnpm saas aws set-var SB_TOOLS_BASIC_AUTH username:password
+pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_ID XYZ
+pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_NAME example.com
+pnpm saas aws set-var SB_TOOLS_DOMAIN_VERSION_MATRIX status.example.com
 ```
 
 ## Env variable validation

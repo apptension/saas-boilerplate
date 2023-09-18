@@ -14,10 +14,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": [
-          "pnpm nx run core:docker-login",
-          "docker-compose build backend"
-        ],
+        "commands": ["docker-compose build backend"],
         "parallel": false
       },
       "dependsOn": ["setup"]
@@ -26,16 +23,25 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm -T backend ./scripts/run_tests.sh"
+        "command": "docker-compose run --rm -T backend ./scripts/runtime/run_tests.sh"
       },
       "dependsOn": ["compose-build-image"]
+    },
+    "remote-shell": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["node scripts/executeRemote.js"],
+        "parallel": false
+      }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["/bin/bash scripts/build.sh"],
+        "commands": ["node scripts/build.js"],
         "parallel": false
       },
       "dependsOn": ["test"]
@@ -45,7 +51,7 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["/bin/bash scripts/build_docs.sh"],
+        "commands": ["node scripts/buildDocs.js"],
         "parallel": false
       },
       "dependsOn": ["compose-build-image"]
@@ -81,6 +87,15 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": ["nx cdk:deploy:api", "nx cdk:deploy:migrations"],
+        "parallel": false
+      }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["nx diff:api", "nx diff:migrations"],
         "parallel": false
       }
     }

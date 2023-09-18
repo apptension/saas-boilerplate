@@ -93,7 +93,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             commands: preBuildCommands,
           },
           build: {
-            commands: ['pnpm nx run backend:build'],
+            commands: ['pnpm saas backend build'],
           },
         },
       }),
@@ -112,7 +112,7 @@ export class BackendCiConfig extends ServiceCiConfig {
             type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
             value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
           },
-          BACKEND_BASE_IMAGE: {
+          SB_BACKEND_BASE_IMAGE: {
             type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: baseImage,
           },
@@ -172,7 +172,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['pnpm nx run backend:deploy:api'] },
+          build: { commands: ['pnpm saas backend deploy api'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],
@@ -235,7 +235,7 @@ export class BackendCiConfig extends ServiceCiConfig {
               PnpmWorkspaceFilters.BACKEND
             ),
           },
-          build: { commands: ['pnpm nx run backend:deploy:migrations'] },
+          build: { commands: ['pnpm saas backend deploy migrations'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

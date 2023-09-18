@@ -7,7 +7,7 @@
     "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
     "diff:migrations": "cdk diff *MigrationsStack",
     "lint:js": "eslint .",
-    "trigger-migrations-job": "/bin/bash ./scripts/trigger_migrations_job.sh"
+    "trigger-migrations-job": "node ./scripts/triggerMigrationsJob.js"
   },
   "devDependencies": {
     "@sb/core": "*",
@@ -15,7 +15,12 @@
     "@sb/infra-shared": "*",
     "@sb/tools": "*",
     "aws-cdk": "^2.84.0",
+    "@aws-sdk/client-ecr": "^3.398.0",
+    "@aws-sdk/client-sts": "^3.398.0",
+    "@aws-sdk/client-sfn": "^3.398.0",
+    "@aws-sdk/client-ecs": "^3.398.0",
     "aws-cdk-lib": "^2.84.0",
-    "constructs": "^10.1.225"
+    "constructs": "^10.1.225",
+    "fs-extra": "^11.1.1"
   }
 }

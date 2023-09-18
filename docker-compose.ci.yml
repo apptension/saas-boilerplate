@@ -9,7 +9,7 @@ services:
       - CI=true
     build:
       args:
-        - BACKEND_BASE_IMAGE=${BACKEND_BASE_IMAGE}
+        - BACKEND_BASE_IMAGE=${SB_BACKEND_BASE_IMAGE}
 
   workers:
     volumes:
@@ -27,4 +27,4 @@ services:
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION}
     build:
       args:
-        - WORKERS_BASE_IMAGE=${WORKERS_BASE_IMAGE}
+        - WORKERS_BASE_IMAGE=${SB_WORKERS_BASE_IMAGE}

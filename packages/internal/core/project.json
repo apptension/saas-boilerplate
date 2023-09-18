@@ -24,15 +24,7 @@
       "options": {
         "color": true,
         "cwd": "packages/internal/core",
-        "command": "/bin/bash ./scripts/docker-create-volumes.sh"
-      }
-    },
-    "docker-login": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/core",
-        "command": "/bin/bash ./scripts/docker-login.sh"
+        "command": "node ./scripts/docker-create-volumes.js"
       }
     },
     "docker-compose:up": {
@@ -54,14 +46,6 @@
         "color": true,
         "parallel": false,
         "commands": ["docker-compose down"]
-      }
-    },
-    "serve": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "commands": ["nx docker-compose:up", "nx run webapp:start"],
-        "parallel": false
       }
     },
     "lint": {

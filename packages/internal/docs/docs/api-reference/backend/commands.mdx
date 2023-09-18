@@ -10,7 +10,7 @@ This page contains a list of CLI commands that you can use within the `backend` 
 
 ### `pnpm nx run backend:compose-build-image`
 
-Builds a backend Docker image by running `pnpm nx run core:docker-login` and `docker-compose build backend`.
+Builds a backend Docker image by running `docker-compose build backend`.
 
 <RunOnCICautionPartial />
 
@@ -52,70 +52,56 @@ pnpm nx run tools:upload-service-version migrations
 
 ---
 
-### `make test`
+### `pnpm saas backend test`
 
 Alias command for [`pnpm nx test`](#pnpm-nx-run-backendtest).
 
 ---
 
-### `make build`
+### `pnpm saas backend build`
 
 Alias command for [`pnpm nx build`](#pnpm-nx-run-backendbuild).
 
 ---
 
-### `make shell`
+### `pnpm saas backend shell`
 
 Runs `bash` inside backend container: `docker-compose run --rm backend bash`
 
 ---
 
-### `make create-app`
-
-Runs `django-admin startapp` inside backend container.
-
-Arguments:
-- `app_name`: the name of the app to create
-
----
-
-### `make makemigrations`
+### `pnpm saas backend makemigrations`
 
 Runs `python ./manage.py makemigrations` inside backend container.
 
 ---
 
-### `make migrate`
+### `pnpm saas backend migrate`
 
 Runs `python ./manage.py migrate` inside backend container.
 
 ---
 
-### `make flake8`
+### `pnpm saas backend ruff`
 
-Runs `flake8` inside backend container.
+Runs `ruff` inside backend container.
 
 ---
 
-### `make black`
+### `pnpm saas backend black`
 
 Runs `black` inside backend container.
 
----
-
-### `make check-migrations`
-
-Runs `python ./manage.py makemigrations --check --dry-run` inside backend container.
 
 ---
 
-### `make sync-stripe`
+### `pnpm saas backend stripe sync`
 
 Runs `python ./manage.py djstripe_sync_models` inside backend container.
 
 ---
 
-### `make secrets`
+### `pnpm saas backend secrets`
 
 It starts `secrets-editor` with the `backend` context (`SERVICE_NAME=backend`): tool that helps to set up an environment
 variables for AWS environment. Find more about setting environment variables for a service
@@ -123,18 +109,18 @@ variables for AWS environment. Find more about setting environment variables for
 
 :::caution
 
-This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
+This command should be called only after `saas aws set-env [STAGE_NAME]` command.
 
 :::
 
 ---
 
-### `make remote-shell`
+### `pnpm saas backend remote-shell`
 
 Executes shell script which connects to the ECS backend task and starts an interactive shell session inside it.
 
 :::caution
 
-This command should be called only after `make set-env ENV_STAGE=<STAGE_NAME>` command.
+This command should be called only after `saas aws set-env [STAGE_NAME]` command.
 
 :::

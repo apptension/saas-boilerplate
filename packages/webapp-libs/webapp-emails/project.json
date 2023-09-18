@@ -4,22 +4,13 @@
   "sourceRoot": "packages/webapp-libs/webapp-emails/src",
   "projectType": "library",
   "targets": {
-    "build-vite": {
+    "build": {
       "executor": "nx:run-commands",
       "defaultConfiguration": "default",
       "options": {
         "cwd": "packages/webapp-libs/webapp-emails",
         "color": true,
-        "command": "pnpm run vite -c vite.config.ts build"
-      }
-    },
-    "build-for-env": {
-      "executor": "nx:run-commands",
-      "defaultConfiguration": "default",
-      "options": {
-        "cwd": "packages/webapp-libs/webapp-emails",
-        "color": true,
-        "command": "pnpm nx run tools:chamber-exec webapp nx run webapp-emails:build-vite"
+        "command": "pnpm vite -c vite.config.ts build"
       }
     }
   },
