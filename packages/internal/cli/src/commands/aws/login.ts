@@ -4,7 +4,7 @@ import { assertAwsVaultInstalled } from '../../lib/awsVault';
 import { BaseCommand } from '../../baseCommand';
 
 export default class AwsLogin extends BaseCommand<typeof AwsLogin> {
-  static description = 'Get currently selected ENV stage';
+  static description = 'Use aws-vault to log into AWS Web Console';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 

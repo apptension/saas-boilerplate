@@ -1,8 +1,8 @@
-import {Args} from '@oclif/core';
+import { Args } from '@oclif/core';
 
-import {setEnvStage} from '../../config/storage';
-import {initConfig} from '../../config/init';
-import {BaseCommand} from '../../baseCommand';
+import { setEnvStage } from '../../config/storage';
+import { initConfig } from '../../config/init';
+import { BaseCommand } from '../../baseCommand';
 
 export default class SetEnv extends BaseCommand<typeof SetEnv> {
   static description = 'Select ENV stage';

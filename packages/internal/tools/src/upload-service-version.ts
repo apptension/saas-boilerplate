@@ -11,7 +11,7 @@ if (SB_TOOLS_ENABLED !== 'true') {
   process.exit(0);
 }
 
-if (ENV_STAGE === 'local') {
+if (!ENV_STAGE || ENV_STAGE === 'local') {
   console.log('Skipping upload-service-version for local env');
   process.exit(0);
 }

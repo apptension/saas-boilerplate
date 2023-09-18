@@ -32,7 +32,7 @@ jobs:
 
       - name: Build emails renderer
         shell: bash
-        run: pnpm nx run webapp-emails:build-vite
+        run: pnpm nx run webapp-emails:build
 
       - name: Build
         shell: bash
