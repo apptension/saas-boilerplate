@@ -9,7 +9,7 @@ let isStorageInitialized = false;
 
 const exec = promisify(childProcess.exec);
 
-export const getEnvStageKey = () => `${process.ppid}-envStage`;
+export const getEnvStageKey = () => 'envStage';
 
 export const getConfigStorage = async () => {
   if (!isStorageInitialized) {
