@@ -52,7 +52,7 @@
     "react-intl": "^6.2.1",
     "react-is": "18.2.0",
     "react-loading-skeleton": "^3.1.0",
-    "react-markdown": "^8.0.3",
+    "react-markdown": "^8.0.7",
     "react-router": "^6.7.0",
     "react-router-dom": "^6.7.0",
     "regenerator-runtime": "^0.13.11",
