@@ -47,13 +47,6 @@
         "parallel": false,
         "commands": ["docker-compose down"]
       }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/internal/core/**/*.ts"]
-      }
     }
   },
   "tags": []

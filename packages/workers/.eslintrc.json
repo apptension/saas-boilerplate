@@ -5,7 +5,8 @@
     "node_modules/**/*",
     "emails/renderer/index.umd.js",
     "__pypackages__/**/*",
-    ".serverless/**/*"
+    ".serverless/**/*",
+    "htmlcov/**/*"
   ],
   "overrides": [
     {

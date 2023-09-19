@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { ExitError } from '@oclif/core/lib/errors';
 import { Span, SpanStatusCode, trace, Tracer } from '@opentelemetry/api';
@@ -43,11 +44,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     }
   }
 
-  async _run<T>() {
+  async _run() {
     let err;
     let result;
     try {
       // remove redirected env var to allow subsessions to run autoupdated client
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       this.removeEnvVar('REDIRECTED');
       await this.init();

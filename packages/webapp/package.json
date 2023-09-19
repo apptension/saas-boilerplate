@@ -20,7 +20,7 @@
     "type-check": "tsc --noEmit --project tsconfig.app.json"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.9",
+    "@apollo/client": "^3.8.3",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
     "@nx/jest": "^16.3.2",
@@ -58,7 +58,6 @@
     "regenerator-runtime": "^0.13.11",
     "semver-compare": "^1.0.0",
     "storybook-react-router": "^1.0.8",
-    "styled-components": "5.3.6",
     "styled-theming": "2.2.0",
     "tslib": "^2.3.0",
     "ua-parser-js": "^1.0.32"
@@ -114,7 +113,6 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
     "@types/semver-compare": "^1.0.1",
-    "@types/styled-components": "^5.1.26",
     "@types/styled-theming": "^2.2.2",
     "@types/testing-library__jest-dom": "^5.14.5",
     "@types/ua-parser-js": "^0.7.36",

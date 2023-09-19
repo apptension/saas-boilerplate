@@ -33,7 +33,7 @@ export default class SetVar extends BaseCommand<typeof SetVar> {
   };
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(SetVar);
+    const { args } = await this.parse(SetVar);
     const { envStage } = await initConfig(this, {
       requireAws: true,
     });

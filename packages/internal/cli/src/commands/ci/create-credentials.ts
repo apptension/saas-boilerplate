@@ -6,7 +6,6 @@ import {
   CreateServiceSpecificCredentialCommand,
   IAMClient,
 } from '@aws-sdk/client-iam';
-import { trace } from '@opentelemetry/api';
 import { indexBy, prop } from 'ramda';
 import * as URL from 'url';
 
@@ -53,7 +52,6 @@ export default class CiCreateCredentials extends BaseCommand<
   static flags = {};
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(CiCreateCredentials);
     const { projectName } = await initConfig(this, { requireAws: true });
 
     const globalStackOutputs = await getOutputsFromGlobalStack({

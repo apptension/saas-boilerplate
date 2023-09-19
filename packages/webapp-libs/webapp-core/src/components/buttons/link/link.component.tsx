@@ -10,7 +10,6 @@ import {
 import { cn } from '../../../lib/utils';
 import { ButtonBaseProps, ButtonVariant } from '../button';
 import { buttonVariants } from '../button/button.styles';
-import { ButtonSize } from '../button/button.types';
 import { renderIcon } from '../button/button.utils';
 import { isInternalLink, isInternalNavLink } from './link.utils';
 
@@ -22,7 +21,7 @@ export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & Button
 export type LinkProps = InternalLinkProps | InternalNavLinkProps | ExternalLinkProps;
 
 export const Link = (props: LinkProps) => {
-  const { variant = ButtonVariant.LINK, size = ButtonSize.NORMAL, children, icon, className, ...linkProps } = props;
+  const { variant = ButtonVariant.LINK, children, icon, className, ...linkProps } = props;
 
   const renderInternalLink = (props: Omit<InternalLinkProps, 'children'> | Omit<InternalNavLinkProps, 'children'>) =>
     isInternalNavLink(props) ? (
