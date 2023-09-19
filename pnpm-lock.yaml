@@ -2495,8 +2495,8 @@ importers:
         specifier: ^6.4.18
         version: 6.9.0
       yaml:
-        specifier: ^2.0.0-3
-        version: 2.2.1
+        specifier: ^2.3.2
+        version: 2.3.2
     devDependencies:
       '@sb/core':
         specifier: '*'
@@ -30370,7 +30370,7 @@ packages:
       lilconfig: 2.1.0
       postcss: 8.4.23
       ts-node: 10.9.1(@types/node@18.14.2)(typescript@5.0.4)
-      yaml: 2.2.1
+      yaml: 2.3.2
     dev: true
 
   /postcss-loader@6.2.1(postcss@8.4.23)(webpack@5.85.1):
@@ -37594,8 +37594,8 @@ packages:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
 
-  /yaml@2.2.1:
-    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+  /yaml@2.3.2:
+    resolution: {integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg==}
     engines: {node: '>= 14'}
 
   /yamljs@0.3.0:
