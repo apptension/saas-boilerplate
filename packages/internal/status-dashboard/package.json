@@ -7,27 +7,27 @@
     "diff": "cdk diff *StatusDashboardStack"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "core-js": "^3.32.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
-    "@nx/webpack": "^16.3.2",
+    "@nx/react": "^16.8.1",
+    "@nx/web": "^16.8.1",
+    "@nx/webpack": "^16.8.1",
     "@sb/core": "*",
-    "@sb/tools": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
+    "@sb/tools": "*",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "aws-cdk": "^2.84.0",
-    "aws-cdk-lib": "^2.84.0",
-    "constructs": "^10.1.225",
-    "babel-plugin-styled-components": "^2.0.7",
-    "@nx/web": "^16.3.2",
-    "@nx/react": "^16.3.2"
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "aws-cdk": "^2.96.2",
+    "aws-cdk-lib": "^2.96.2",
+    "babel-plugin-styled-components": "^2.1.4",
+    "constructs": "^10.2.70"
   },
   "eslintConfig": {
     "extends": "react-app"

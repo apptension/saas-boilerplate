@@ -1,7 +1,7 @@
 import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { getLocalePath } from '@sb/webapp-core/utils/path';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { append } from 'ramda';
 import { Route, Routes, useParams } from 'react-router';
 

@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "UNLICENSED",
   "dependencies": {
-    "contentful-cli": "^2.6.26",
-    "contentful-migration": "^4.14.0",
+    "contentful-cli": "^2.8.11",
+    "contentful-migration": "^4.15.1",
     "dotenv": "^16.3.1"
   }
 }

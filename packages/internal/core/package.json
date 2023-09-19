@@ -2,9 +2,9 @@
   "name": "@sb/core",
   "version": "2.0.3",
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "env-cmd": "^10.1.0",
     "envalid": "^7.3.1",
-    "dotenv": "^16.1.4",
     "lookpath": "^1.2.2"
   }
 }

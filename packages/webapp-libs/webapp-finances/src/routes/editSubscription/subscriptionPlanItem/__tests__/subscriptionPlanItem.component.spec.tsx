@@ -8,7 +8,7 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import {

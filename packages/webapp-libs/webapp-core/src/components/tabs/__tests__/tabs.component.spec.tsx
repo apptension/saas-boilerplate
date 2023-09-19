@@ -1,6 +1,6 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs/dist';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../';

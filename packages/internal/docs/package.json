@@ -15,13 +15,13 @@
   "dependencies": {
     "@docusaurus/core": "^2.4.1",
     "@docusaurus/preset-classic": "^2.4.1",
-    "@mdx-js/react": "^1.6.21",
-    "clsx": "^1.1.1",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
-    "react-router": "^5.2.0",
+    "@mdx-js/react": "^1.6.22",
+    "clsx": "^1.2.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router": "^5.3.4",
     "react-router-config": "^5.1.1",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^2.4.1",
@@ -29,15 +29,15 @@
     "@sb/core": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
-    "@sb/webapp-core": "*",
-    "@sb/webapp-api-client": "*",
     "@sb/tools": "*",
-    "aws-cdk": "^2.84.0",
-    "aws-cdk-lib": "^2.84.0",
-    "typedoc": "^0.25.1",
-    "url-loader": "^4.1.1",
+    "@sb/webapp-api-client": "*",
+    "@sb/webapp-core": "*",
+    "aws-cdk": "^2.96.2",
+    "aws-cdk-lib": "^2.96.2",
     "docusaurus-plugin-typedoc": "^0.20.1",
+    "typedoc": "^0.25.1",
     "typedoc-plugin-markdown": "^3.16.0",
+    "url-loader": "^4.1.1",
     "webapp": "*"
   },
   "browserslist": {

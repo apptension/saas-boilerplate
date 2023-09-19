@@ -21,19 +21,19 @@ export const DemoItemListItem = ({ id, item }: DemoItemListItemProps) => {
 
   const generateLocalePath = useGenerateLocalePath();
 
+  const { alt, src } = imageProps(item?.image, {
+    size: { width: 50, height: 50 },
+    resizingBehavior: ResizingBehavior.PAD,
+  });
   return (
     <li className="flex items-center p-2">
       <Link
         className="p-8 min-w-0 w-[100%] justify-start hover:no-underline"
         to={generateLocalePath(RoutesConfig.demoItem, { id })}
       >
-        {item.image && (
+        {src && (
           <div className="bg-black p-2 inline-block rounded-md">
-            <img
-              className="object-cover rounded h-12"
-              {...imageProps(item.image, { size: { width: 50, height: 50 }, resizingBehavior: ResizingBehavior.PAD })}
-              role="presentation"
-            />
+            <img className="object-cover rounded h-12" alt={alt} src={src} role="presentation" />
           </div>
         )}
         <p className="text-lg text-muted-foreground px-4 overflow-hidden whitespace-nowrap text-ellipsis">

@@ -2,7 +2,7 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../../config/routes';

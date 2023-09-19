@@ -3,7 +3,7 @@ import { NotificationType } from '@sb/webapp-api-client';
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { times } from 'ramda';
 
 import { NotificationTypes } from '../../';
