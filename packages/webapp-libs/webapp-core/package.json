@@ -53,7 +53,7 @@
     "@storybook/client-api": "^7.0.23",
     "@storybook/client-logger": "^7.0.23",
     "@storybook/react": "^7.0.23",
-    "@storybook/react-vite": "^7.0.23",
+    "@storybook/react-vite": "^7.4.2",
     "@supercharge/strings": "^2.0.0",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -103,7 +103,7 @@
     "styled-theming": "2.2.0",
     "tailwind-merge": "^1.12.0",
     "ts-jest": "28.0.5",
-    "vite": "^4.3.5",
+    "vite": "^4.4.9",
     "@nx/js": "^16.3.2",
     "@nx/react": "^16.3.2",
     "@nx/jest": "^16.3.2"

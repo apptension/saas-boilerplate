@@ -376,7 +376,7 @@ definitions:
             --filter=workers...
             --filter=webapp-emails...
           - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
-          - pnpm nx run webapp-emails:build-vite
+          - pnpm nx run webapp-emails:build
           - pnpm nx run workers:build
         services:
           - docker

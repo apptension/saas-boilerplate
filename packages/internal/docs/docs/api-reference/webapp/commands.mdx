@@ -14,12 +14,6 @@ application development server along with `pnpm nx webapp:graphql:generate-types
 
 ---
 
-### `pnpm run build`
-
-Alias for [`pnpm nx run webapp:build-vite`](#pnpm-nx-run-webappbuild-vite)
-
----
-
 ### `pnpm run lint`
 
 Runs `eslint` and `stylelint` for the `webapp` package.
@@ -91,7 +85,7 @@ Alias commands for [`pnpm nx run webapp-api-client:graphql:generate-types`](../w
 
 ---
 
-### `pnpm nx run webapp:build-vite`
+### `pnpm nx run webapp:build`
 
 
 Regenerate types by calling [`pnpm nx run webapp:graphql:generate-types`](#pnpm-nx-run-webappgraphqlgenerate-types) and
@@ -99,23 +93,9 @@ builds the web application using [`vite build`](https://vitejs.dev/guide/cli.htm
 
 ---
 
-### `pnpm nx run webapp:build-with-env`
-
-It is used in CI pipeline and runs `pnpm nx webapp:build-vite` inside `webapp` environment context using `chamber`.
-
-To find more about using `chamber` in the project check [How to configure environment variables on AWS?](../../aws/deploy-to-aws/create-runtime-env-vars) guide.
-
----
-
 ### `saas webapp test`
 
 Alias command for [`pnpm nx test`](#pnpm-run-test).
-
----
-
-### `saas webapp build`
-
-Alias command for [`pnpm nx build`](#pnpm-nx-run-webappbuild-vite).
 
 ---
 
