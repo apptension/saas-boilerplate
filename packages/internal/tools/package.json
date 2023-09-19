@@ -9,7 +9,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "aws-sdk": "^2.708.0",
     "ramda": "^0.28.0"
   },
   "devDependencies": {

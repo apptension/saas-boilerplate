@@ -1,4 +1,4 @@
-import * as AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const ENV_STAGE = process.env.ENV_STAGE;
 const SB_TOOLS_ENABLED = process.env.SB_TOOLS_ENABLED;
@@ -18,36 +18,32 @@ if (!ENV_STAGE || ENV_STAGE === 'local') {
 
 const [serviceName, ...valuesArgv] = process.argv.slice(2);
 
-
 const values = valuesArgv.reduce((values, arg) => {
   const [label, value] = arg.split('=');
 
   return [...values, { label, value }];
 }, []);
 
-const s3 = new AWS.S3();
+const s3Client = new S3Client();
 
 function putJsonObject(bucket, key, payload) {
-  s3.putObject(
-    {
+  return s3Client.send(
+    new PutObjectCommand({
       Bucket: bucket,
       Key: key,
       CacheControl: 'no-cache',
       ACL: 'public-read',
       ContentType: 'application/json',
       Body: JSON.stringify(payload),
-    },
-    (error) => {
-      if (error) {
-        console.log(error);
-      }
-    }
+    })
   );
 }
 
-putJsonObject(VERSIONS_BUCKET, `${ENV_STAGE}-${serviceName}.json`, {
-  name: serviceName,
-  version: CURRENT_VERSION,
-  builtAt: new Date(),
-  values,
-});
+(async () => {
+  await putJsonObject(VERSIONS_BUCKET, `${ENV_STAGE}-${serviceName}.json`, {
+    name: serviceName,
+    version: CURRENT_VERSION,
+    builtAt: new Date(),
+    values,
+  });
+})();
