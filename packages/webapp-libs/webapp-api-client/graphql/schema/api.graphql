@@ -9,6 +9,13 @@ value as specified by
 [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
 """
 scalar DateTime
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
 "The `Decimal` scalar type represents a python Decimal."
 scalar Decimal
 """
@@ -23,13 +30,6 @@ GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
-"""
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
 """
 Create scalar that ignores normal serialization/deserialization, since
 that will be handled by the multipart request spec
@@ -92,7 +92,7 @@ type StripePriceType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "Whether the price can be used for new purchases."
@@ -104,7 +104,7 @@ type StripePriceType implements Node {
   "The product this price is associated with."
   product: StripeProductType!
   "The recurring components of a price such as `interval` and `usage_type`."
-  recurring: String
+  recurring: JSONString
   "Whether the price is for a one-time purchase or a recurring (subscription) purchase."
   type: DjstripePriceTypeChoices!
   "The unit amount in cents to be charged, represented as a whole integer if possible. Null if a sub-cent precision is required."
@@ -116,11 +116,13 @@ type StripePriceType implements Node {
   "A lookup key used to retrieve prices dynamically from a static string."
   lookupKey: String
   "Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`."
-  tiers: String
+  tiers: JSONString
   "Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows."
   tiersMode: DjstripePriceTiersModeChoices
   "Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`."
-  transformQuantity: String
+  transformQuantity: JSONString
+  "The default price this product is associated with."
+  products(offset: Int, before: String, after: String, first: Int, last: Int): StripeProductTypeConnection!
   pk: String
 }
 type StripeProductType implements Node {
@@ -134,11 +136,13 @@ type StripeProductType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types."
   name: String!
+  "The default price this product is associated with."
+  defaultPrice: StripePriceType
   "The type of the product. The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans."
   type: DjstripeProductTypeChoices!
   "Whether the product is currently available for purchase. Only applicable to products of `type=good`."
@@ -146,15 +150,15 @@ type StripeProductType implements Node {
   """
   A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`). Only applicable to products of `type=good`.
   """
-  attributes: String
+  attributes: JSONString
   "A short one-line description of the product, meant to be displayableto the customer. Only applicable to products of `type=good`."
   caption: String!
   "An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`."
-  deactivateOn: String
+  deactivateOn: JSONString
   "A list of up to 8 URLs of images for this product, meant to be displayable to the customer. Only applicable to products of `type=good`."
-  images: String
+  images: JSONString
   "The dimensions of this product for shipping purposes. A SKU associated with this product can override this value by having its own `package_dimensions`. Only applicable to products of `type=good`."
-  packageDimensions: String
+  packageDimensions: JSONString
   "Whether this product is a shipped good. Only applicable to products of `type=good`."
   shippable: Boolean
   "A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`."
@@ -205,7 +209,7 @@ type SubscriptionPlanType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "Whether the plan can be used for new purchases."
@@ -229,11 +233,11 @@ type SubscriptionPlanType implements Node {
   "The product whose pricing this plan determines."
   product: StripeProductType
   "Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`."
-  tiers: String
+  tiers: JSONString
   "Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows."
   tiersMode: DjstripePlanTiersModeChoices
   "Apply a transformation to the reported usage or set quantity before computing the billed price. Cannot be combined with `tiers`."
-  transformUsage: String
+  transformUsage: JSONString
   "Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period."
   trialPeriodDays: Int
   "Configures how the quantity per period should be determined, can be either `metered` or `licensed`. `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records. Defaults to `licensed`."
@@ -273,6 +277,19 @@ type StripeSubscriptionType implements Node {
   pk: String
   plan: SubscriptionPlanType
 }
+type StripeProductTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripeProductTypeEdge]!
+}
+"A Relay edge containing a `StripeProductType` and its cursor."
+type StripeProductTypeEdge {
+  "The item at the end of the edge"
+  node: StripeProductType
+  "A cursor for use in pagination"
+  cursor: String!
+}
 type SubscriptionScheduleType implements Node {
   djstripeCreated: DateTime!
   djstripeUpdated: DateTime!
@@ -284,19 +301,17 @@ type SubscriptionScheduleType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
-  "Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period."
-  billingThresholds: String
   "Time at which the subscription schedule was canceled."
   canceledAt: DateTime
   "Time at which the subscription schedule was completed."
   completedAt: DateTime
   "Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`."
-  currentPhase: String
+  currentPhase: JSONString
   "Object representing the subscription schedule's default settings."
-  defaultSettings: String
+  defaultSettings: JSONString
   "Behavior of the subscription schedule and underlying subscription when it ends."
   endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices!
   phases: [SubscriptionSchedulePhaseType]
@@ -306,9 +321,9 @@ type SubscriptionScheduleType implements Node {
   releasedSubscription: StripeSubscriptionType
   "The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`."
   status: DjstripeSubscriptionScheduleStatusChoices!
+  subscription: StripeSubscriptionType
   "The schedule associated with this subscription."
   subscriptions(offset: Int, before: String, after: String, first: Int, last: Int): StripeSubscriptionTypeConnection!
-  subscription: StripeSubscriptionType
   defaultPaymentMethod: StripePaymentMethodType
   canActivateTrial: Boolean
 }
@@ -368,7 +383,7 @@ type StripeChargeType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "Amount charged (as decimal)."
@@ -395,11 +410,11 @@ type StripeChargeType implements Node {
   "Message to user further explaining reason for charge failure if available."
   failureMessage: String!
   "Hash with information on fraud assessments for the charge."
-  fraudDetails: String
+  fraudDetails: JSONString
   "The invoice this charge is for if one exists."
   invoice: StripeInvoiceType
   "Details about whether or not the payment was accepted, and why."
-  outcome: String
+  outcome: JSONString
   "True if the charge succeeded, or was successfully authorized for later capture, False otherwise."
   paid: Boolean!
   "PaymentIntent associated with this charge, if one exists."
@@ -407,7 +422,7 @@ type StripeChargeType implements Node {
   "PaymentMethod used in this charge."
   paymentMethod: StripePaymentMethodType
   "Details about the payment method at the time of the transaction."
-  paymentMethodDetails: String
+  paymentMethodDetails: JSONString
   "The email address that the receipt for this charge was sent to."
   receiptEmail: String!
   "The transaction number that appears on email receipts sent for this charge."
@@ -417,7 +432,7 @@ type StripeChargeType implements Node {
   "Whether or not the charge has been fully refunded. If the charge is only partially refunded, this attribute will still be false."
   refunded: Boolean!
   "Shipping information for the charge"
-  shipping: String
+  shipping: JSONString
   "For card charges, use statement_descriptor_suffix instead. Otherwise, you can use this value as the complete description of a charge on your customers' statements. Must contain at least one letter, maximum 22 characters."
   statementDescriptor: String
   "Provides information about the charge that customers see on their statements. Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor. Maximum 22 characters for the concatenated descriptor."
@@ -425,7 +440,7 @@ type StripeChargeType implements Node {
   "The status of the payment."
   status: DjstripeChargeStatusChoices!
   "An optional dictionary including the account to automatically transfer to as part of a destination charge."
-  transferData: String
+  transferData: JSONString
   "A string that identifies this transaction as part of a group."
   transferGroup: String
   latestInvoice: StripeInvoiceType
@@ -442,7 +457,7 @@ type StripeInvoiceType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "The country of the business associated with this invoice, most often the business creating the invoice."
@@ -472,7 +487,7 @@ type StripeInvoiceType implements Node {
   "Three-letter ISO currency code"
   currency: String!
   "The customer's address. Until the invoice is finalized, this field will equal customer.address. Once the invoice is finalized, this field will no longer be updated."
-  customerAddress: String
+  customerAddress: JSONString
   "The customer's email. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated."
   customerEmail: String!
   "The customer's name. Until the invoice is finalized, this field will equal customer.name. Once the invoice is finalized, this field will no longer be updated."
@@ -480,13 +495,15 @@ type StripeInvoiceType implements Node {
   "The customer's phone number. Until the invoice is finalized, this field will equal customer.phone. Once the invoice is finalized, this field will no longer be updated."
   customerPhone: String!
   "The customer's shipping information. Until the invoice is finalized, this field will equal customer.shipping. Once the invoice is finalized, this field will no longer be updated."
-  customerShipping: String
+  customerShipping: JSONString
   "The customer's tax exempt status. Until the invoice is finalized, this field will equal customer.tax_exempt. Once the invoice is finalized, this field will no longer be updated."
   customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices!
   "Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings."
   defaultPaymentMethod: StripePaymentMethodType
-  "Describes the current discount applied to this subscription, if there is one. When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis."
-  discount: String
+  "Deprecated! Please use discounts instead. Describes the current discount applied to this subscription, if there is one. When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis."
+  discount: JSONString
+  "The discounts applied to the invoice. Line item discounts are applied before invoice discounts."
+  discounts: JSONString
   "The date on which payment for this invoice is due. This value will be null for invoices where billing=charge_automatically."
   dueDate: DateTime
   "Ending customer balance (in cents) after attempting to pay invoice. If the invoice has not been attempted yet, this will be null."
@@ -523,7 +540,7 @@ type StripeInvoiceType implements Node {
   statementDescriptor: String!
   "The status of the invoice, one of draft, open, paid, uncollectible, or void."
   status: DjstripeInvoiceStatusChoices
-  statusTransitions: String
+  statusTransitions: JSONString
   "The subscription that this invoice was prepared for, if any."
   subscription: StripeSubscriptionType
   "Only set for upcoming invoices that preview prorations. The time used to calculate prorations."
@@ -535,7 +552,7 @@ type StripeInvoiceType implements Node {
   "This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts. This field is inherited from the subscription's ``tax_percent`` field, but can be changed before the invoice is paid. This field defaults to null."
   taxPercent: Decimal
   "If billing_reason is set to subscription_threshold this returns more information on which threshold rules triggered the invoice."
-  thresholdReason: String
+  thresholdReason: JSONString
   total: Decimal!
   "The time at which webhooks for this invoice were successfully delivered (if the invoice had no webhooks to deliver, this will match `date`). Invoice payment is delayed until webhooks are delivered, or until all webhook delivery attempts have been exhausted."
   webhooksDeliveredAt: DateTime
@@ -776,7 +793,7 @@ type StripeSetupIntentType implements Node {
   "The datetime this object was created in stripe."
   created: DateTime
   "A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format."
-  metadata: String
+  metadata: JSONString
   "A description of this object."
   description: String
   "ID of the Connect application that created the SetupIntent."
@@ -786,13 +803,13 @@ type StripeSetupIntentType implements Node {
   "The client secret of this SetupIntent. Used for client-side retrieval using a publishable key."
   clientSecret: String!
   "The error encountered in the previous SetupIntent confirmation."
-  lastSetupError: String
+  lastSetupError: JSONString
   "If present, this property tells you what actions you need to take inorder for your customer to continue payment setup."
-  nextAction: String
+  nextAction: JSONString
   "Payment method used in this PaymentIntent."
   paymentMethod: StripePaymentMethodType
   "The list of payment method types (e.g. card) that this PaymentIntent is allowed to use."
-  paymentMethodTypes: String!
+  paymentMethodTypes: JSONString!
   "Status of this SetupIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, canceled, or succeeded."
   status: DjstripeSetupIntentStatusChoices!
   "Indicates how the payment method is intended to be used in the future."
@@ -1015,6 +1032,8 @@ enum DjstripeSubscriptionScheduleStatusChoices {
 enum DjstripePaymentMethodTypeChoices {
   "Acss Dbit"
   ACSS_DEBIT
+  "Affirm"
+  AFFIRM
   "Afterpay Clearpay"
   AFTERPAY_CLEARPAY
   "Alipay"
@@ -1025,12 +1044,16 @@ enum DjstripePaymentMethodTypeChoices {
   BACS_DEBIT
   "Bancontact"
   BANCONTACT
+  "BLIK"
+  BLIK
   "Boleto"
   BOLETO
   "Card"
   CARD
   "Card present"
   CARD_PRESENT
+  "Customer Balance"
+  CUSTOMER_BALANCE
   "EPS"
   EPS
   "FPX"
@@ -1045,14 +1068,26 @@ enum DjstripePaymentMethodTypeChoices {
   INTERAC_PRESENT
   "Klarna"
   KLARNA
+  "Konbini"
+  KONBINI
+  "Link"
+  LINK
   "OXXO"
   OXXO
   "Przelewy24"
   P24
+  "PayNow"
+  PAYNOW
+  "Pix"
+  PIX
+  "PromptPay"
+  PROMPTPAY
   "SEPA Direct Debit"
   SEPA_DEBIT
   "SOFORT"
   SOFORT
+  "ACH Direct Debit"
+  US_BANK_ACCOUNT
   "Wechat Pay"
   WECHAT_PAY
 }
@@ -1233,6 +1268,8 @@ enum DjstripeChargeFailureCodeChoices {
   URL_INVALID
 }
 enum DjstripeInvoiceBillingReasonChoices {
+  "Automatic pending invoice item invoice"
+  AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE
   "Manual"
   MANUAL
   "Subscription"

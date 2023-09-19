@@ -5,10 +5,6 @@ description: Commands within `webapp-emails` package context
 
 This page contains a list of CLI commands that you can use within the `webapp-emails` package context.
 
-### `pnpm run build`
-
-Alias for [`pnpm nx run webapp-emails:build-vite`](#pnpm-nx-webapp-emailsbuild-vite)
-
 ---
 
 ### `pnpm run lint`
@@ -35,7 +31,7 @@ Runs `jest` with `--watch` flag. Useful for development purpose.
 
 ---
 
-### `pnpm nx webapp-emails:build-vite`
+### `pnpm nx webapp-emails:build`
 
 Runs [`vite build`](https://vitejs.dev/guide/cli.html#build) with the correct configuration and builds web application.
 
@@ -43,4 +39,4 @@ Runs [`vite build`](https://vitejs.dev/guide/cli.html#build) with the correct co
 
 ### `pnpm nx run webapp-emails:build-for-env`
 
-It is used in CI pipeline and runs `pnpm nx webapp-emails:build-vite` inside `webapp` environment context using `chamber`.
+It is used in CI pipeline and runs `pnpm nx webapp-emails:build` inside `webapp` environment context using `chamber`.

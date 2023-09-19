@@ -13,8 +13,8 @@
     "diff": "nx exec -- cdk diff *DocsStack"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.4.0",
-    "@docusaurus/preset-classic": "^2.4.0",
+    "@docusaurus/core": "^2.4.1",
+    "@docusaurus/preset-classic": "^2.4.1",
     "@mdx-js/react": "^1.6.21",
     "clsx": "^1.1.1",
     "react": "^16.8.4",
@@ -24,8 +24,8 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.4.0",
-    "@docusaurus/types": "^2.4.0",
+    "@docusaurus/module-type-aliases": "^2.4.1",
+    "@docusaurus/types": "^2.4.1",
     "@sb/core": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
@@ -34,10 +34,10 @@
     "@sb/tools": "*",
     "aws-cdk": "^2.84.0",
     "aws-cdk-lib": "^2.84.0",
-    "typedoc": "^0.24.7",
+    "typedoc": "^0.25.1",
     "url-loader": "^4.1.1",
-    "docusaurus-plugin-typedoc": "^0.19.2",
-    "typedoc-plugin-markdown": "^3.15.3",
+    "docusaurus-plugin-typedoc": "^0.20.1",
+    "typedoc-plugin-markdown": "^3.16.0",
     "webapp": "*"
   },
   "browserslist": {

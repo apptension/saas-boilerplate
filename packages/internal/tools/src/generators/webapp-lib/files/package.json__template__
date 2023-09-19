@@ -53,7 +53,7 @@
     "@storybook/client-api": "^7.0.10",
     "@storybook/client-logger": "^7.0.10",
     "@storybook/react": "^7.0.10",
-    "@storybook/react-vite": "^7.0.10",
+    "@storybook/react-vite": "^7.4.2",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
