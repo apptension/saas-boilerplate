@@ -5,52 +5,54 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /**
    * The `BigInt` scalar type represents non-fractional whole numeric values.
    * `BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
    * compatible type.
    */
-  BigInt: any;
+  BigInt: { input: any; output: any; }
   /**
    * A date-time string at UTC, such as 2007-12-03T10:15:30Z,
    *     compliant with the 'date-time' format outlined in section 5.6 of
    *     the RFC 3339 profile of the ISO 8601 standard for representation
    *     of dates and times using the Gregorian calendar.
    */
-  DateTime: any;
+  DateTime: { input: any; output: any; }
   /** The `Decimal` scalar type represents a python Decimal. */
-  Decimal: any;
+  Decimal: { input: any; output: any; }
   /** The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`. */
-  Dimension: any;
+  Dimension: { input: any; output: any; }
   /**
    * The `GenericScalar` scalar type represents a generic
    * GraphQL scalar value that could be:
    * String, Boolean, Int, Float, List or Object.
    */
-  GenericScalar: any;
+  GenericScalar: { input: any; output: any; }
   /** The 'HexColor' type represents color in `rgb:ffffff` string format. */
-  HexColor: any;
+  HexColor: { input: any; output: any; }
   /**
    * Allows use of a JSON String for input / output from the GraphQL schema.
    *
    * Use of this type is *not recommended* as you lose the benefits of having a defined, static
    * schema (one of the key benefits of GraphQL).
    */
-  JSONString: any;
+  JSONString: { input: any; output: any; }
   /** The 'Quality' type represents quality as whole numeric values between `1` and `100`. */
-  Quality: any;
+  Quality: { input: any; output: any; }
   /**
    * Create scalar that ignores normal serialization/deserialization, since
    * that will be handled by the multipart request spec
    */
-  Upload: any;
+  Upload: { input: any; output: any; }
 };
 
 export type ApiMutation = {
@@ -232,10 +234,10 @@ export type ApiSubscription = {
 
 
 export type ApiSubscriptionNotificationCreatedArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
@@ -243,70 +245,70 @@ export type AppConfig = Entry & {
   __typename?: 'AppConfig';
   contentfulMetadata: ContentfulMetadata;
   linkedFrom?: Maybe<AppConfigLinkingCollections>;
-  name?: Maybe<Scalars['String']>;
-  privacyPolicy?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
+  privacyPolicy?: Maybe<Scalars['String']['output']>;
   sys: Sys;
-  termsAndConditions?: Maybe<Scalars['String']>;
+  termsAndConditions?: Maybe<Scalars['String']['output']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigLinkedFromArgs = {
-  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigNameArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigPrivacyPolicyArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigTermsAndConditionsArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AppConfigCollection = {
   __typename?: 'AppConfigCollection';
   items: Array<Maybe<AppConfig>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
-  total: Scalars['Int'];
+  limit: Scalars['Int']['output'];
+  skip: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type AppConfigFilter = {
   AND?: InputMaybe<Array<InputMaybe<AppConfigFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<AppConfigFilter>>>;
   contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
-  name?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_exists?: InputMaybe<Scalars['Boolean']>;
-  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  name_not?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  privacyPolicy?: InputMaybe<Scalars['String']>;
-  privacyPolicy_contains?: InputMaybe<Scalars['String']>;
-  privacyPolicy_exists?: InputMaybe<Scalars['Boolean']>;
-  privacyPolicy_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  privacyPolicy_not?: InputMaybe<Scalars['String']>;
-  privacyPolicy_not_contains?: InputMaybe<Scalars['String']>;
-  privacyPolicy_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  privacyPolicy?: InputMaybe<Scalars['String']['input']>;
+  privacyPolicy_contains?: InputMaybe<Scalars['String']['input']>;
+  privacyPolicy_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  privacyPolicy_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  privacyPolicy_not?: InputMaybe<Scalars['String']['input']>;
+  privacyPolicy_not_contains?: InputMaybe<Scalars['String']['input']>;
+  privacyPolicy_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   sys?: InputMaybe<SysFilter>;
-  termsAndConditions?: InputMaybe<Scalars['String']>;
-  termsAndConditions_contains?: InputMaybe<Scalars['String']>;
-  termsAndConditions_exists?: InputMaybe<Scalars['Boolean']>;
-  termsAndConditions_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  termsAndConditions_not?: InputMaybe<Scalars['String']>;
-  termsAndConditions_not_contains?: InputMaybe<Scalars['String']>;
-  termsAndConditions_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  termsAndConditions?: InputMaybe<Scalars['String']['input']>;
+  termsAndConditions_contains?: InputMaybe<Scalars['String']['input']>;
+  termsAndConditions_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  termsAndConditions_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  termsAndConditions_not?: InputMaybe<Scalars['String']['input']>;
+  termsAndConditions_not_contains?: InputMaybe<Scalars['String']['input']>;
+  termsAndConditions_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type AppConfigLinkingCollections = {
@@ -316,10 +318,10 @@ export type AppConfigLinkingCollections = {
 
 
 export type AppConfigLinkingCollectionsEntryCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum AppConfigOrder {
@@ -338,149 +340,149 @@ export enum AppConfigOrder {
 /** Represents a binary file in a space. An asset can be any file type. */
 export type Asset = {
   __typename?: 'Asset';
-  contentType?: Maybe<Scalars['String']>;
+  contentType?: Maybe<Scalars['String']['output']>;
   contentfulMetadata: ContentfulMetadata;
-  description?: Maybe<Scalars['String']>;
-  fileName?: Maybe<Scalars['String']>;
-  height?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']['output']>;
+  fileName?: Maybe<Scalars['String']['output']>;
+  height?: Maybe<Scalars['Int']['output']>;
   linkedFrom?: Maybe<AssetLinkingCollections>;
-  size?: Maybe<Scalars['Int']>;
+  size?: Maybe<Scalars['Int']['output']>;
   sys: Sys;
-  title?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  width?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+  width?: Maybe<Scalars['Int']['output']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetContentTypeArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetDescriptionArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetFileNameArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetHeightArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetLinkedFromArgs = {
-  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetSizeArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetTitleArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetUrlArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   transform?: InputMaybe<ImageTransformOptions>;
 };
 
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetWidthArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AssetCollection = {
   __typename?: 'AssetCollection';
   items: Array<Maybe<Asset>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
-  total: Scalars['Int'];
+  limit: Scalars['Int']['output'];
+  skip: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type AssetFilter = {
   AND?: InputMaybe<Array<InputMaybe<AssetFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<AssetFilter>>>;
-  contentType?: InputMaybe<Scalars['String']>;
-  contentType_contains?: InputMaybe<Scalars['String']>;
-  contentType_exists?: InputMaybe<Scalars['Boolean']>;
-  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  contentType_not?: InputMaybe<Scalars['String']>;
-  contentType_not_contains?: InputMaybe<Scalars['String']>;
-  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  contentType?: InputMaybe<Scalars['String']['input']>;
+  contentType_contains?: InputMaybe<Scalars['String']['input']>;
+  contentType_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  contentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  contentType_not?: InputMaybe<Scalars['String']['input']>;
+  contentType_not_contains?: InputMaybe<Scalars['String']['input']>;
+  contentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
-  description_exists?: InputMaybe<Scalars['Boolean']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  description_not?: InputMaybe<Scalars['String']>;
-  description_not_contains?: InputMaybe<Scalars['String']>;
-  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  fileName?: InputMaybe<Scalars['String']>;
-  fileName_contains?: InputMaybe<Scalars['String']>;
-  fileName_exists?: InputMaybe<Scalars['Boolean']>;
-  fileName_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  fileName_not?: InputMaybe<Scalars['String']>;
-  fileName_not_contains?: InputMaybe<Scalars['String']>;
-  fileName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  height?: InputMaybe<Scalars['Int']>;
-  height_exists?: InputMaybe<Scalars['Boolean']>;
-  height_gt?: InputMaybe<Scalars['Int']>;
-  height_gte?: InputMaybe<Scalars['Int']>;
-  height_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  height_lt?: InputMaybe<Scalars['Int']>;
-  height_lte?: InputMaybe<Scalars['Int']>;
-  height_not?: InputMaybe<Scalars['Int']>;
-  height_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  size?: InputMaybe<Scalars['Int']>;
-  size_exists?: InputMaybe<Scalars['Boolean']>;
-  size_gt?: InputMaybe<Scalars['Int']>;
-  size_gte?: InputMaybe<Scalars['Int']>;
-  size_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  size_lt?: InputMaybe<Scalars['Int']>;
-  size_lte?: InputMaybe<Scalars['Int']>;
-  size_not?: InputMaybe<Scalars['Int']>;
-  size_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_contains?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  fileName?: InputMaybe<Scalars['String']['input']>;
+  fileName_contains?: InputMaybe<Scalars['String']['input']>;
+  fileName_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  fileName_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  fileName_not?: InputMaybe<Scalars['String']['input']>;
+  fileName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  fileName_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  height?: InputMaybe<Scalars['Int']['input']>;
+  height_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  height_gt?: InputMaybe<Scalars['Int']['input']>;
+  height_gte?: InputMaybe<Scalars['Int']['input']>;
+  height_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  height_lt?: InputMaybe<Scalars['Int']['input']>;
+  height_lte?: InputMaybe<Scalars['Int']['input']>;
+  height_not?: InputMaybe<Scalars['Int']['input']>;
+  height_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  size?: InputMaybe<Scalars['Int']['input']>;
+  size_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  size_gt?: InputMaybe<Scalars['Int']['input']>;
+  size_gte?: InputMaybe<Scalars['Int']['input']>;
+  size_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  size_lt?: InputMaybe<Scalars['Int']['input']>;
+  size_lte?: InputMaybe<Scalars['Int']['input']>;
+  size_not?: InputMaybe<Scalars['Int']['input']>;
+  size_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   sys?: InputMaybe<SysFilter>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
-  title_exists?: InputMaybe<Scalars['Boolean']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  title_not?: InputMaybe<Scalars['String']>;
-  title_not_contains?: InputMaybe<Scalars['String']>;
-  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  url?: InputMaybe<Scalars['String']>;
-  url_contains?: InputMaybe<Scalars['String']>;
-  url_exists?: InputMaybe<Scalars['Boolean']>;
-  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  url_not?: InputMaybe<Scalars['String']>;
-  url_not_contains?: InputMaybe<Scalars['String']>;
-  url_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  width?: InputMaybe<Scalars['Int']>;
-  width_exists?: InputMaybe<Scalars['Boolean']>;
-  width_gt?: InputMaybe<Scalars['Int']>;
-  width_gte?: InputMaybe<Scalars['Int']>;
-  width_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
-  width_lt?: InputMaybe<Scalars['Int']>;
-  width_lte?: InputMaybe<Scalars['Int']>;
-  width_not?: InputMaybe<Scalars['Int']>;
-  width_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_contains?: InputMaybe<Scalars['String']['input']>;
+  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title_not?: InputMaybe<Scalars['String']['input']>;
+  title_not_contains?: InputMaybe<Scalars['String']['input']>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  url?: InputMaybe<Scalars['String']['input']>;
+  url_contains?: InputMaybe<Scalars['String']['input']>;
+  url_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  url_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  url_not?: InputMaybe<Scalars['String']['input']>;
+  url_not_contains?: InputMaybe<Scalars['String']['input']>;
+  url_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  width?: InputMaybe<Scalars['Int']['input']>;
+  width_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  width_gt?: InputMaybe<Scalars['Int']['input']>;
+  width_gte?: InputMaybe<Scalars['Int']['input']>;
+  width_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  width_lt?: InputMaybe<Scalars['Int']['input']>;
+  width_lte?: InputMaybe<Scalars['Int']['input']>;
+  width_not?: InputMaybe<Scalars['Int']['input']>;
+  width_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
 };
 
 export type AssetLinkingCollections = {
@@ -491,19 +493,19 @@ export type AssetLinkingCollections = {
 
 
 export type AssetLinkingCollectionsDemoItemCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Array<InputMaybe<AssetLinkingCollectionsDemoItemCollectionOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type AssetLinkingCollectionsEntryCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum AssetLinkingCollectionsDemoItemCollectionOrder {
@@ -543,41 +545,41 @@ export enum AssetOrder {
 }
 
 export type CancelActiveSubscriptionMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CancelActiveSubscriptionMutationPayload = {
   __typename?: 'CancelActiveSubscriptionMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   subscriptionSchedule?: Maybe<SubscriptionScheduleType>;
   subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
 };
 
 export type ChangeActiveSubscriptionMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  price: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  price: Scalars['String']['input'];
 };
 
 export type ChangeActiveSubscriptionMutationPayload = {
   __typename?: 'ChangeActiveSubscriptionMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   subscriptionSchedule?: Maybe<SubscriptionScheduleType>;
   subscriptionScheduleEdge?: Maybe<SubscriptionScheduleEdge>;
 };
 
 export type ChangePasswordMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** New password */
-  newPassword: Scalars['String'];
+  newPassword: Scalars['String']['input'];
   /** Old password */
-  oldPassword: Scalars['String'];
+  oldPassword: Scalars['String']['input'];
 };
 
 export type ChangePasswordMutationPayload = {
   __typename?: 'ChangePasswordMutationPayload';
-  access?: Maybe<Scalars['String']>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
+  access?: Maybe<Scalars['String']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  refresh?: Maybe<Scalars['String']['output']>;
 };
 
 export type ChargeConnection = {
@@ -592,21 +594,21 @@ export type ChargeConnection = {
 export type ChargeEdge = {
   __typename?: 'ChargeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripeChargeType>;
 };
 
 export type ConfirmEmailMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  token: Scalars['String'];
-  user: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  token: Scalars['String']['input'];
+  user: Scalars['String']['input'];
 };
 
 export type ConfirmEmailMutationPayload = {
   __typename?: 'ConfirmEmailMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type ContentfulDemoItemFavoriteConnection = {
@@ -621,18 +623,18 @@ export type ContentfulDemoItemFavoriteConnection = {
 export type ContentfulDemoItemFavoriteEdge = {
   __typename?: 'ContentfulDemoItemFavoriteEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<ContentfulDemoItemFavoriteType>;
 };
 
 export type ContentfulDemoItemFavoriteType = Node & {
   __typename?: 'ContentfulDemoItemFavoriteType';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   item: ContentfulDemoItemType;
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime']['output'];
   user: CurrentUserType;
 };
 
@@ -648,7 +650,7 @@ export type ContentfulDemoItemFavoriteTypeConnection = {
 export type ContentfulDemoItemFavoriteTypeEdge = {
   __typename?: 'ContentfulDemoItemFavoriteTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<ContentfulDemoItemFavoriteType>;
 };
@@ -656,20 +658,20 @@ export type ContentfulDemoItemFavoriteTypeEdge = {
 export type ContentfulDemoItemType = Node & {
   __typename?: 'ContentfulDemoItemType';
   contentfuldemoitemfavoriteSet: ContentfulDemoItemFavoriteTypeConnection;
-  fields: Scalars['JSONString'];
+  fields: Scalars['JSONString']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
-  isPublished: Scalars['Boolean'];
-  pk?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  isPublished: Scalars['Boolean']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
 };
 
 
 export type ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type ContentfulMetadata = {
@@ -679,13 +681,13 @@ export type ContentfulMetadata = {
 
 export type ContentfulMetadataFilter = {
   tags?: InputMaybe<ContentfulMetadataTagsFilter>;
-  tags_exists?: InputMaybe<Scalars['Boolean']>;
+  tags_exists?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type ContentfulMetadataTagsFilter = {
-  id_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  id_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  id_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  id_contains_all?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  id_contains_none?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  id_contains_some?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 /**
@@ -694,67 +696,67 @@ export type ContentfulMetadataTagsFilter = {
  */
 export type ContentfulTag = {
   __typename?: 'ContentfulTag';
-  id?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreateCrudDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
 };
 
 export type CreateCrudDemoItemMutationPayload = {
   __typename?: 'CreateCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
 };
 
 export type CreateDocumentDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  file?: InputMaybe<Scalars['Upload']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 };
 
 export type CreateDocumentDemoItemMutationPayload = {
   __typename?: 'CreateDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   documentDemoItem?: Maybe<DocumentDemoItemType>;
   documentDemoItemEdge?: Maybe<DocumentDemoItemEdge>;
 };
 
 export type CreateFavoriteContentfulDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  item: Scalars['String'];
-  user?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  item: Scalars['String']['input'];
+  user?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateFavoriteContentfulDemoItemMutationPayload = {
   __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
   contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
 };
 
 export type CreatePaymentIntentMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  product: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  product: Scalars['String']['input'];
 };
 
 export type CreatePaymentIntentMutationPayload = {
   __typename?: 'CreatePaymentIntentMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
 };
 
 export type CreateSetupIntentMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateSetupIntentMutationPayload = {
   __typename?: 'CreateSetupIntentMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   setupIntent?: Maybe<StripeSetupIntentType>;
 };
 
@@ -770,7 +772,7 @@ export type CrudDemoItemConnection = {
 export type CrudDemoItemEdge = {
   __typename?: 'CrudDemoItemEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<CrudDemoItemType>;
 };
@@ -779,140 +781,140 @@ export type CrudDemoItemType = Node & {
   __typename?: 'CrudDemoItemType';
   createdBy?: Maybe<CurrentUserType>;
   /** The ID of the object */
-  id: Scalars['ID'];
-  name: Scalars['String'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 /** A Relay edge containing a `CurrentUser` and its cursor. */
 export type CurrentUserEdge = {
   __typename?: 'CurrentUserEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<UserProfileType>;
 };
 
 export type CurrentUserType = {
   __typename?: 'CurrentUserType';
-  avatar?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  firstName?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  lastName?: Maybe<Scalars['String']>;
-  otpEnabled: Scalars['Boolean'];
-  otpVerified: Scalars['Boolean'];
-  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  avatar?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  firstName?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
+  otpEnabled: Scalars['Boolean']['output'];
+  otpVerified: Scalars['Boolean']['output'];
+  roles?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
 export type DeleteCrudDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeleteCrudDemoItemMutationPayload = {
   __typename?: 'DeleteCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
 export type DeleteDocumentDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeleteDocumentDemoItemMutationPayload = {
   __typename?: 'DeleteDocumentDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
 export type DeleteFavoriteContentfulDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  item?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  item?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeleteFavoriteContentfulDemoItemMutationPayload = {
   __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
 export type DeletePaymentMethodMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeletePaymentMethodMutationPayload = {
   __typename?: 'DeletePaymentMethodMutationPayload';
   activeSubscription?: Maybe<SubscriptionScheduleType>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItem = Entry & {
   __typename?: 'DemoItem';
   contentfulMetadata: ContentfulMetadata;
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
   image?: Maybe<Asset>;
   linkedFrom?: Maybe<DemoItemLinkingCollections>;
   sys: Sys;
-  title?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemDescriptionArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemImageArgs = {
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemLinkedFromArgs = {
-  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemTitleArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DemoItemCollection = {
   __typename?: 'DemoItemCollection';
   items: Array<Maybe<DemoItem>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
-  total: Scalars['Int'];
+  limit: Scalars['Int']['output'];
+  skip: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type DemoItemFilter = {
   AND?: InputMaybe<Array<InputMaybe<DemoItemFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<DemoItemFilter>>>;
   contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
-  description_exists?: InputMaybe<Scalars['Boolean']>;
-  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  description_not?: InputMaybe<Scalars['String']>;
-  description_not_contains?: InputMaybe<Scalars['String']>;
-  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  image_exists?: InputMaybe<Scalars['Boolean']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_contains?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  image_exists?: InputMaybe<Scalars['Boolean']['input']>;
   sys?: InputMaybe<SysFilter>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
-  title_exists?: InputMaybe<Scalars['Boolean']>;
-  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  title_not?: InputMaybe<Scalars['String']>;
-  title_not_contains?: InputMaybe<Scalars['String']>;
-  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_contains?: InputMaybe<Scalars['String']['input']>;
+  title_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  title_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  title_not?: InputMaybe<Scalars['String']['input']>;
+  title_not_contains?: InputMaybe<Scalars['String']['input']>;
+  title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type DemoItemLinkingCollections = {
@@ -922,10 +924,10 @@ export type DemoItemLinkingCollections = {
 
 
 export type DemoItemLinkingCollectionsEntryCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum DemoItemOrder {
@@ -942,13 +944,13 @@ export enum DemoItemOrder {
 }
 
 export type DisableOtpMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DisableOtpMutationPayload = {
   __typename?: 'DisableOTPMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export enum DjstripeChargeFailureCodeChoices {
@@ -1399,18 +1401,18 @@ export type DocumentDemoItemConnection = {
 export type DocumentDemoItemEdge = {
   __typename?: 'DocumentDemoItemEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<DocumentDemoItemType>;
 };
 
 export type DocumentDemoItemType = Node & {
   __typename?: 'DocumentDemoItemType';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['DateTime']['output'];
   createdBy?: Maybe<CurrentUserType>;
   file?: Maybe<FileFieldType>;
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
 };
 
 export type Entry = {
@@ -1421,9 +1423,9 @@ export type Entry = {
 export type EntryCollection = {
   __typename?: 'EntryCollection';
   items: Array<Maybe<Entry>>;
-  limit: Scalars['Int'];
-  skip: Scalars['Int'];
-  total: Scalars['Int'];
+  limit: Scalars['Int']['output'];
+  skip: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type EntryFilter = {
@@ -1446,30 +1448,30 @@ export enum EntryOrder {
 
 export type FileFieldType = {
   __typename?: 'FileFieldType';
-  name?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type GenerateOtpMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GenerateOtpMutationPayload = {
   __typename?: 'GenerateOTPMutationPayload';
-  base32?: Maybe<Scalars['String']>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  otpauthUrl?: Maybe<Scalars['String']>;
+  base32?: Maybe<Scalars['String']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  otpauthUrl?: Maybe<Scalars['String']['output']>;
 };
 
 export type GenerateSaasIdeasMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  keywords?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  keywords?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type GenerateSaasIdeasMutationPayload = {
   __typename?: 'GenerateSaasIdeasMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ideas?: Maybe<Array<Maybe<Scalars['String']>>>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ideas?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
 export enum ImageFormat {
@@ -1542,45 +1544,45 @@ export type ImageTransformOptions = {
    * Desired background color, used with corner radius or `PAD` resize strategy.
    *         Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
    */
-  backgroundColor?: InputMaybe<Scalars['HexColor']>;
+  backgroundColor?: InputMaybe<Scalars['HexColor']['input']>;
   /**
    * Desired corner radius in pixels.
    *         Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
    *         Defaults to `0`. Uses desired background color as padding color,
    *         unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
    */
-  cornerRadius?: InputMaybe<Scalars['Int']>;
+  cornerRadius?: InputMaybe<Scalars['Int']['input']>;
   /** Desired image format. Defaults to the original image format. */
   format?: InputMaybe<ImageFormat>;
   /** Desired height in pixels. Defaults to the original image height. */
-  height?: InputMaybe<Scalars['Dimension']>;
+  height?: InputMaybe<Scalars['Dimension']['input']>;
   /**
    * Desired quality of the image in percents.
    *         Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
    */
-  quality?: InputMaybe<Scalars['Quality']>;
+  quality?: InputMaybe<Scalars['Quality']['input']>;
   /** Desired resize focus area. Defaults to `CENTER`. */
   resizeFocus?: InputMaybe<ImageResizeFocus>;
   /** Desired resize strategy. Defaults to `FIT`. */
   resizeStrategy?: InputMaybe<ImageResizeStrategy>;
   /** Desired width in pixels. Defaults to the original image width. */
-  width?: InputMaybe<Scalars['Dimension']>;
+  width?: InputMaybe<Scalars['Dimension']['input']>;
 };
 
 export type MarkReadAllNotificationsMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type MarkReadAllNotificationsMutationPayload = {
   __typename?: 'MarkReadAllNotificationsMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 /** An object with an ID */
 export type Node = {
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
 };
 
 export type NotificationConnection = {
@@ -1595,75 +1597,75 @@ export type NotificationConnection = {
 export type NotificationEdge = {
   __typename?: 'NotificationEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<NotificationType>;
 };
 
 export type NotificationType = Node & {
   __typename?: 'NotificationType';
-  createdAt: Scalars['DateTime'];
-  data?: Maybe<Scalars['GenericScalar']>;
+  createdAt: Scalars['DateTime']['output'];
+  data?: Maybe<Scalars['GenericScalar']['output']>;
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   issuer?: Maybe<UserType>;
-  readAt?: Maybe<Scalars['DateTime']>;
-  type: Scalars['String'];
+  readAt?: Maybe<Scalars['DateTime']['output']>;
+  type: Scalars['String']['output'];
   user?: Maybe<UserType>;
 };
 
 export type ObtainTokenMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  email: Scalars['String'];
-  password: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type ObtainTokenMutationPayload = {
   __typename?: 'ObtainTokenMutationPayload';
-  access?: Maybe<Scalars['String']>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  otpAuthToken?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
+  access?: Maybe<Scalars['String']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  otpAuthToken?: Maybe<Scalars['String']['output']>;
+  refresh?: Maybe<Scalars['String']['output']>;
 };
 
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
   /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']['output']>;
   /** When paginating forwards, are there more items? */
-  hasNextPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean']['output'];
   /** When paginating backwards, are there more items? */
-  hasPreviousPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
-  startCursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 export type PasswordResetConfirmationMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** New password */
-  newPassword: Scalars['String'];
+  newPassword: Scalars['String']['input'];
   /** Token */
-  token: Scalars['String'];
-  user: Scalars['String'];
+  token: Scalars['String']['input'];
+  user: Scalars['String']['input'];
 };
 
 export type PasswordResetConfirmationMutationPayload = {
   __typename?: 'PasswordResetConfirmationMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PasswordResetMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** User e-mail */
-  email: Scalars['String'];
+  email: Scalars['String']['input'];
 };
 
 export type PasswordResetMutationPayload = {
   __typename?: 'PasswordResetMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  ok?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaymentMethodConnection = {
@@ -1678,7 +1680,7 @@ export type PaymentMethodConnection = {
 export type PaymentMethodEdge = {
   __typename?: 'PaymentMethodEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripePaymentMethodType>;
 };
@@ -1703,238 +1705,238 @@ export type Query = {
   demoItem?: Maybe<DemoItem>;
   demoItemCollection?: Maybe<DemoItemCollection>;
   entryCollection?: Maybe<EntryCollection>;
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']['output']>;
   node?: Maybe<Node>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
 };
 
 
 export type QueryAllChargesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllContentfulDemoItemFavoritesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllCrudDemoItemsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllDocumentDemoItemsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllNotificationsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllPaymentMethodsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAllSubscriptionPlansArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryAppConfigArgs = {
-  id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['String']['input'];
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 export type QueryAppConfigCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Array<InputMaybe<AppConfigOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<AppConfigFilter>;
 };
 
 
 export type QueryAssetArgs = {
-  id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['String']['input'];
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 export type QueryAssetCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Array<InputMaybe<AssetOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<AssetFilter>;
 };
 
 
 export type QueryChargeArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
 export type QueryCrudDemoItemArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryDemoItemArgs = {
-  id: Scalars['String'];
-  locale?: InputMaybe<Scalars['String']>;
-  preview?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['String']['input'];
+  locale?: InputMaybe<Scalars['String']['input']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 export type QueryDemoItemCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Array<InputMaybe<DemoItemOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<DemoItemFilter>;
 };
 
 
 export type QueryEntryCollectionArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  locale?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Array<InputMaybe<EntryOrder>>>;
-  preview?: InputMaybe<Scalars['Boolean']>;
-  skip?: InputMaybe<Scalars['Int']>;
+  preview?: InputMaybe<Scalars['Boolean']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<EntryFilter>;
 };
 
 
 export type QueryNodeArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryPaymentIntentArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type SingUpMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  email: Scalars['String'];
-  id?: InputMaybe<Scalars['String']>;
-  password: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  password: Scalars['String']['input'];
 };
 
 export type SingUpMutationPayload = {
   __typename?: 'SingUpMutationPayload';
-  access?: Maybe<Scalars['String']>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
+  access?: Maybe<Scalars['String']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  refresh?: Maybe<Scalars['String']['output']>;
 };
 
 export type StripeChargeType = Node & {
   __typename?: 'StripeChargeType';
   /** Amount charged (as decimal). */
-  amount: Scalars['Decimal'];
+  amount: Scalars['Decimal']['output'];
   /** Amount (as decimal) captured (can be less than the amount attribute on the charge if a partial capture was issued). */
-  amountCaptured?: Maybe<Scalars['Decimal']>;
+  amountCaptured?: Maybe<Scalars['Decimal']['output']>;
   /** Amount (as decimal) refunded (can be less than the amount attribute on the charge if a partial refund was issued). */
-  amountRefunded: Scalars['Decimal'];
+  amountRefunded: Scalars['Decimal']['output'];
   /** ID of the Connect application that created the charge. */
-  application: Scalars['String'];
+  application: Scalars['String']['output'];
   /** The amount (as decimal) of the application fee (if any) requested for the charge. */
-  applicationFeeAmount?: Maybe<Scalars['Decimal']>;
-  billingDetails?: Maybe<Scalars['GenericScalar']>;
+  applicationFeeAmount?: Maybe<Scalars['Decimal']['output']>;
+  billingDetails?: Maybe<Scalars['GenericScalar']['output']>;
   /** The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined. */
-  calculatedStatementDescriptor: Scalars['String'];
+  calculatedStatementDescriptor: Scalars['String']['output'];
   /** If the charge was created without capturing, this boolean represents whether or not it is still uncaptured or has since been captured. */
-  captured: Scalars['Boolean'];
+  captured: Scalars['Boolean']['output'];
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** The currency in which the charge was made. */
-  currency: Scalars['String'];
+  currency: Scalars['String']['output'];
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
   /** Whether the charge has been disputed. */
-  disputed: Scalars['Boolean'];
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  disputed: Scalars['Boolean']['output'];
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** Error code explaining reason for charge failure if available. */
   failureCode?: Maybe<DjstripeChargeFailureCodeChoices>;
   /** Message to user further explaining reason for charge failure if available. */
-  failureMessage: Scalars['String'];
+  failureMessage: Scalars['String']['output'];
   /** Hash with information on fraud assessments for the charge. */
-  fraudDetails?: Maybe<Scalars['JSONString']>;
+  fraudDetails?: Maybe<Scalars['JSONString']['output']>;
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The invoice this charge is for if one exists. */
   invoice?: Maybe<StripeInvoiceType>;
   latestInvoice?: Maybe<StripeInvoiceType>;
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** Details about whether or not the payment was accepted, and why. */
-  outcome?: Maybe<Scalars['JSONString']>;
+  outcome?: Maybe<Scalars['JSONString']['output']>;
   /** True if the charge succeeded, or was successfully authorized for later capture, False otherwise. */
-  paid: Scalars['Boolean'];
+  paid: Scalars['Boolean']['output'];
   /** PaymentIntent associated with this charge, if one exists. */
   paymentIntent?: Maybe<StripePaymentIntentType>;
   /** PaymentMethod used in this charge. */
   paymentMethod?: Maybe<StripePaymentMethodType>;
   /** Details about the payment method at the time of the transaction. */
-  paymentMethodDetails?: Maybe<Scalars['JSONString']>;
-  pk?: Maybe<Scalars['String']>;
+  paymentMethodDetails?: Maybe<Scalars['JSONString']['output']>;
+  pk?: Maybe<Scalars['String']['output']>;
   /** The email address that the receipt for this charge was sent to. */
-  receiptEmail: Scalars['String'];
+  receiptEmail: Scalars['String']['output'];
   /** The transaction number that appears on email receipts sent for this charge. */
-  receiptNumber: Scalars['String'];
+  receiptNumber: Scalars['String']['output'];
   /** This is the URL to view the receipt for this charge. The receipt is kept up-to-date to the latest state of the charge, including any refunds. If the charge is for an Invoice, the receipt will be stylized as an Invoice receipt. */
-  receiptUrl: Scalars['String'];
+  receiptUrl: Scalars['String']['output'];
   /** Whether or not the charge has been fully refunded. If the charge is only partially refunded, this attribute will still be false. */
-  refunded: Scalars['Boolean'];
+  refunded: Scalars['Boolean']['output'];
   /** Shipping information for the charge */
-  shipping?: Maybe<Scalars['JSONString']>;
+  shipping?: Maybe<Scalars['JSONString']['output']>;
   /** For card charges, use statement_descriptor_suffix instead. Otherwise, you can use this value as the complete description of a charge on your customers' statements. Must contain at least one letter, maximum 22 characters. */
-  statementDescriptor?: Maybe<Scalars['String']>;
+  statementDescriptor?: Maybe<Scalars['String']['output']>;
   /** Provides information about the charge that customers see on their statements. Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor. Maximum 22 characters for the concatenated descriptor. */
-  statementDescriptorSuffix?: Maybe<Scalars['String']>;
+  statementDescriptorSuffix?: Maybe<Scalars['String']['output']>;
   /** The status of the payment. */
   status: DjstripeChargeStatusChoices;
   /** An optional dictionary including the account to automatically transfer to as part of a destination charge. */
-  transferData?: Maybe<Scalars['JSONString']>;
+  transferData?: Maybe<Scalars['JSONString']['output']>;
   /** A string that identifies this transaction as part of a group. */
-  transferGroup?: Maybe<Scalars['String']>;
+  transferGroup?: Maybe<Scalars['String']['output']>;
 };
 
 export type StripeChargeTypeConnection = {
@@ -1949,7 +1951,7 @@ export type StripeChargeTypeConnection = {
 export type StripeChargeTypeEdge = {
   __typename?: 'StripeChargeTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripeChargeType>;
 };
@@ -1957,23 +1959,23 @@ export type StripeChargeTypeEdge = {
 export type StripeInvoiceType = Node & {
   __typename?: 'StripeInvoiceType';
   /** The country of the business associated with this invoice, most often the business creating the invoice. */
-  accountCountry: Scalars['String'];
+  accountCountry: Scalars['String']['output'];
   /** The public name of the business associated with this invoice, most often the business creating the invoice. */
-  accountName: Scalars['String'];
+  accountName: Scalars['String']['output'];
   /** Final amount due (as decimal) at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due. */
-  amountDue: Scalars['Decimal'];
+  amountDue: Scalars['Decimal']['output'];
   /** The amount, (as decimal), that was paid. */
-  amountPaid?: Maybe<Scalars['Decimal']>;
+  amountPaid?: Maybe<Scalars['Decimal']['output']>;
   /** The amount remaining, (as decimal), that is due. */
-  amountRemaining?: Maybe<Scalars['Decimal']>;
+  amountRemaining?: Maybe<Scalars['Decimal']['output']>;
   /** The fee (as decimal) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid. */
-  applicationFeeAmount?: Maybe<Scalars['Decimal']>;
+  applicationFeeAmount?: Maybe<Scalars['Decimal']['output']>;
   /** Number of payment attempts made for this invoice, from the perspective of the payment retry schedule. Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count. In other words, manual payment attempts after the first attempt do not affect the retry schedule. */
-  attemptCount: Scalars['Int'];
+  attemptCount: Scalars['Int']['output'];
   /** Whether or not an attempt has been made to pay the invoice. An invoice is not attempted until 1 hour after the ``invoice.created`` webhook, for example, so you might not want to display that invoice as unpaid to your users. */
-  attempted: Scalars['Boolean'];
+  attempted: Scalars['Boolean']['output'];
   /** Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice's state will not automatically advance without an explicit action. */
-  autoAdvance?: Maybe<Scalars['Boolean']>;
+  autoAdvance?: Maybe<Scalars['Boolean']['output']>;
   /** Indicates the reason why the invoice was created. subscription_cycle indicates an invoice created by a subscription advancing into a new period. subscription_create indicates an invoice created due to creating a subscription. subscription_update indicates an invoice created due to updating a subscription. subscription is set for all old invoices to indicate either a change to a subscription or a period advancement. manual is set for all invoices unrelated to a subscription (for example: created via the invoice editor). The upcoming value is reserved for simulated invoices per the upcoming invoice endpoint. subscription_threshold indicates an invoice created due to a billing threshold being reached. */
   billingReason?: Maybe<DjstripeInvoiceBillingReasonChoices>;
   /** The latest charge generated for this invoice, if any. */
@@ -1983,120 +1985,120 @@ export type StripeInvoiceType = Node & {
   /** When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer. When sending an invoice, Stripe will email this invoice to the customer with payment instructions. */
   collectionMethod?: Maybe<DjstripeInvoiceCollectionMethodChoices>;
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** Three-letter ISO currency code */
-  currency: Scalars['String'];
+  currency: Scalars['String']['output'];
   /** The customer's address. Until the invoice is finalized, this field will equal customer.address. Once the invoice is finalized, this field will no longer be updated. */
-  customerAddress?: Maybe<Scalars['JSONString']>;
+  customerAddress?: Maybe<Scalars['JSONString']['output']>;
   /** The customer's email. Until the invoice is finalized, this field will equal customer.email. Once the invoice is finalized, this field will no longer be updated. */
-  customerEmail: Scalars['String'];
+  customerEmail: Scalars['String']['output'];
   /** The customer's name. Until the invoice is finalized, this field will equal customer.name. Once the invoice is finalized, this field will no longer be updated. */
-  customerName: Scalars['String'];
+  customerName: Scalars['String']['output'];
   /** The customer's phone number. Until the invoice is finalized, this field will equal customer.phone. Once the invoice is finalized, this field will no longer be updated. */
-  customerPhone: Scalars['String'];
+  customerPhone: Scalars['String']['output'];
   /** The customer's shipping information. Until the invoice is finalized, this field will equal customer.shipping. Once the invoice is finalized, this field will no longer be updated. */
-  customerShipping?: Maybe<Scalars['JSONString']>;
+  customerShipping?: Maybe<Scalars['JSONString']['output']>;
   /** The customer's tax exempt status. Until the invoice is finalized, this field will equal customer.tax_exempt. Once the invoice is finalized, this field will no longer be updated. */
   customerTaxExempt: DjstripeInvoiceCustomerTaxExemptChoices;
   /** Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings. */
   defaultPaymentMethod?: Maybe<StripePaymentMethodType>;
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
   /** Deprecated! Please use discounts instead. Describes the current discount applied to this subscription, if there is one. When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis. */
-  discount?: Maybe<Scalars['JSONString']>;
+  discount?: Maybe<Scalars['JSONString']['output']>;
   /** The discounts applied to the invoice. Line item discounts are applied before invoice discounts. */
-  discounts?: Maybe<Scalars['JSONString']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  discounts?: Maybe<Scalars['JSONString']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** The date on which payment for this invoice is due. This value will be null for invoices where billing=charge_automatically. */
-  dueDate?: Maybe<Scalars['DateTime']>;
+  dueDate?: Maybe<Scalars['DateTime']['output']>;
   /** Ending customer balance (in cents) after attempting to pay invoice. If the invoice has not been attempted yet, this will be null. */
-  endingBalance?: Maybe<Scalars['BigInt']>;
+  endingBalance?: Maybe<Scalars['BigInt']['output']>;
   /** Footer displayed on the invoice. */
-  footer: Scalars['String'];
+  footer: Scalars['String']['output'];
   /** The URL for the hosted invoice page, which allows customers to view and pay an invoice. If the invoice has not been frozen yet, this will be null. */
-  hostedInvoiceUrl: Scalars['String'];
+  hostedInvoiceUrl: Scalars['String']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The link to download the PDF for the invoice. If the invoice has not been frozen yet, this will be null. */
-  invoicePdf: Scalars['String'];
+  invoicePdf: Scalars['String']['output'];
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** The time at which payment will next be attempted. */
-  nextPaymentAttempt?: Maybe<Scalars['DateTime']>;
+  nextPaymentAttempt?: Maybe<Scalars['DateTime']['output']>;
   /** A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer's unique invoice_prefix if it is specified. */
-  number: Scalars['String'];
+  number: Scalars['String']['output'];
   /** Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance. */
-  paid: Scalars['Boolean'];
+  paid: Scalars['Boolean']['output'];
   /** The PaymentIntent associated with this invoice. The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.Note that voiding an invoice will cancel the PaymentIntent */
   paymentIntent?: Maybe<StripePaymentIntentType>;
   /** End of the usage period during which invoice items were added to this invoice. */
-  periodEnd: Scalars['DateTime'];
+  periodEnd: Scalars['DateTime']['output'];
   /** Start of the usage period during which invoice items were added to this invoice. */
-  periodStart: Scalars['DateTime'];
-  pk?: Maybe<Scalars['String']>;
+  periodStart: Scalars['DateTime']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   /** Total amount (in cents) of all post-payment credit notes issued for this invoice. */
-  postPaymentCreditNotesAmount?: Maybe<Scalars['BigInt']>;
+  postPaymentCreditNotesAmount?: Maybe<Scalars['BigInt']['output']>;
   /** Total amount (in cents) of all pre-payment credit notes issued for this invoice. */
-  prePaymentCreditNotesAmount?: Maybe<Scalars['BigInt']>;
+  prePaymentCreditNotesAmount?: Maybe<Scalars['BigInt']['output']>;
   /** This is the transaction number that appears on email receipts sent for this invoice. */
-  receiptNumber?: Maybe<Scalars['String']>;
+  receiptNumber?: Maybe<Scalars['String']['output']>;
   /** Starting customer balance (in cents) before attempting to pay invoice. If the invoice has not been attempted yet, this will be the current customer balance. */
-  startingBalance: Scalars['BigInt'];
+  startingBalance: Scalars['BigInt']['output'];
   /** An arbitrary string to be displayed on your customer's credit card statement. The statement description may not include <>"' characters, and will appear on your customer's statement in capital letters. Non-ASCII characters are automatically stripped. While most banks display this information consistently, some may display it incorrectly or not at all. */
-  statementDescriptor: Scalars['String'];
+  statementDescriptor: Scalars['String']['output'];
   /** The status of the invoice, one of draft, open, paid, uncollectible, or void. */
   status?: Maybe<DjstripeInvoiceStatusChoices>;
-  statusTransitions?: Maybe<Scalars['JSONString']>;
+  statusTransitions?: Maybe<Scalars['JSONString']['output']>;
   /** The subscription that this invoice was prepared for, if any. */
   subscription?: Maybe<StripeSubscriptionType>;
   /** Only set for upcoming invoices that preview prorations. The time used to calculate prorations. */
-  subscriptionProrationDate?: Maybe<Scalars['DateTime']>;
+  subscriptionProrationDate?: Maybe<Scalars['DateTime']['output']>;
   /** Total (as decimal) of all subscriptions, invoice items, and prorations on the invoice before any discount or tax is applied. */
-  subtotal: Scalars['Decimal'];
+  subtotal: Scalars['Decimal']['output'];
   /** The amount (as decimal) of tax included in the total, calculated from ``tax_percent`` and the subtotal. If no ``tax_percent`` is defined, this value will be null. */
-  tax?: Maybe<Scalars['Decimal']>;
+  tax?: Maybe<Scalars['Decimal']['output']>;
   /** This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts. This field is inherited from the subscription's ``tax_percent`` field, but can be changed before the invoice is paid. This field defaults to null. */
-  taxPercent?: Maybe<Scalars['Decimal']>;
+  taxPercent?: Maybe<Scalars['Decimal']['output']>;
   /** If billing_reason is set to subscription_threshold this returns more information on which threshold rules triggered the invoice. */
-  thresholdReason?: Maybe<Scalars['JSONString']>;
-  total: Scalars['Decimal'];
+  thresholdReason?: Maybe<Scalars['JSONString']['output']>;
+  total: Scalars['Decimal']['output'];
   /** The time at which webhooks for this invoice were successfully delivered (if the invoice had no webhooks to deliver, this will match `date`). Invoice payment is delayed until webhooks are delivered, or until all webhook delivery attempts have been exhausted. */
-  webhooksDeliveredAt?: Maybe<Scalars['DateTime']>;
+  webhooksDeliveredAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 
 export type StripeInvoiceTypeChargesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type StripePaymentIntentType = Node & {
   __typename?: 'StripePaymentIntentType';
   /** Amount (in cents) intended to be collected by this PaymentIntent. */
-  amount: Scalars['BigInt'];
+  amount: Scalars['BigInt']['output'];
   /** The client secret of this PaymentIntent. Used for client-side retrieval using a publishable key. */
-  clientSecret: Scalars['String'];
+  clientSecret: Scalars['String']['output'];
   /** Three-letter ISO currency code */
-  currency: Scalars['String'];
+  currency: Scalars['String']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
-  pk?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
 };
 
 export type StripePaymentMethodType = Node & {
   __typename?: 'StripePaymentMethodType';
-  billingDetails?: Maybe<Scalars['GenericScalar']>;
-  card?: Maybe<Scalars['GenericScalar']>;
+  billingDetails?: Maybe<Scalars['GenericScalar']['output']>;
+  card?: Maybe<Scalars['GenericScalar']['output']>;
   /** The ID of the object */
-  id: Scalars['ID'];
-  pk?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   /** The type of the PaymentMethod. */
   type: DjstripePaymentMethodTypeChoices;
 };
@@ -2113,7 +2115,7 @@ export type StripePriceConnection = {
 export type StripePriceEdge = {
   __typename?: 'StripePriceEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripePriceType>;
 };
@@ -2121,56 +2123,56 @@ export type StripePriceEdge = {
 export type StripePriceType = Node & {
   __typename?: 'StripePriceType';
   /** Whether the price can be used for new purchases. */
-  active: Scalars['Boolean'];
+  active: Scalars['Boolean']['output'];
   /** Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes. */
   billingScheme?: Maybe<DjstripePriceBillingSchemeChoices>;
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** Three-letter ISO currency code */
-  currency: Scalars['String'];
+  currency: Scalars['String']['output'];
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A lookup key used to retrieve prices dynamically from a static string. */
-  lookupKey?: Maybe<Scalars['String']>;
+  lookupKey?: Maybe<Scalars['String']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** A brief description of the plan, hidden from customers. */
-  nickname: Scalars['String'];
-  pk?: Maybe<Scalars['String']>;
+  nickname: Scalars['String']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   /** The product this price is associated with. */
   product: StripeProductType;
   /** The default price this product is associated with. */
   products: StripeProductTypeConnection;
   /** The recurring components of a price such as `interval` and `usage_type`. */
-  recurring?: Maybe<Scalars['JSONString']>;
+  recurring?: Maybe<Scalars['JSONString']['output']>;
   /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
-  tiers?: Maybe<Scalars['JSONString']>;
+  tiers?: Maybe<Scalars['JSONString']['output']>;
   /** Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows. */
   tiersMode?: Maybe<DjstripePriceTiersModeChoices>;
   /** Apply a transformation to the reported usage or set quantity before computing the amount billed. Cannot be combined with `tiers`. */
-  transformQuantity?: Maybe<Scalars['JSONString']>;
+  transformQuantity?: Maybe<Scalars['JSONString']['output']>;
   /** Whether the price is for a one-time purchase or a recurring (subscription) purchase. */
   type: DjstripePriceTypeChoices;
   /** The unit amount in cents to be charged, represented as a whole integer if possible. Null if a sub-cent precision is required. */
-  unitAmount?: Maybe<Scalars['BigInt']>;
+  unitAmount?: Maybe<Scalars['BigInt']['output']>;
   /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
-  unitAmountDecimal?: Maybe<Scalars['Decimal']>;
+  unitAmountDecimal?: Maybe<Scalars['Decimal']['output']>;
 };
 
 
 export type StripePriceTypeProductsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type StripePriceTypeConnection = {
@@ -2185,7 +2187,7 @@ export type StripePriceTypeConnection = {
 export type StripePriceTypeEdge = {
   __typename?: 'StripePriceTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripePriceType>;
 };
@@ -2193,66 +2195,66 @@ export type StripePriceTypeEdge = {
 export type StripeProductType = Node & {
   __typename?: 'StripeProductType';
   /** Whether the product is currently available for purchase. Only applicable to products of `type=good`. */
-  active?: Maybe<Scalars['Boolean']>;
+  active?: Maybe<Scalars['Boolean']['output']>;
   /** A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`). Only applicable to products of `type=good`. */
-  attributes?: Maybe<Scalars['JSONString']>;
+  attributes?: Maybe<Scalars['JSONString']['output']>;
   /** A short one-line description of the product, meant to be displayableto the customer. Only applicable to products of `type=good`. */
-  caption: Scalars['String'];
+  caption: Scalars['String']['output'];
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** An array of connect application identifiers that cannot purchase this product. Only applicable to products of `type=good`. */
-  deactivateOn?: Maybe<Scalars['JSONString']>;
+  deactivateOn?: Maybe<Scalars['JSONString']['output']>;
   /** The default price this product is associated with. */
   defaultPrice?: Maybe<StripePriceType>;
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** A list of up to 8 URLs of images for this product, meant to be displayable to the customer. Only applicable to products of `type=good`. */
-  images?: Maybe<Scalars['JSONString']>;
+  images?: Maybe<Scalars['JSONString']['output']>;
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** The product's name, meant to be displayable to the customer. Applicable to both `service` and `good` types. */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   /** The dimensions of this product for shipping purposes. A SKU associated with this product can override this value by having its own `package_dimensions`. Only applicable to products of `type=good`. */
-  packageDimensions?: Maybe<Scalars['JSONString']>;
-  pk?: Maybe<Scalars['String']>;
+  packageDimensions?: Maybe<Scalars['JSONString']['output']>;
+  pk?: Maybe<Scalars['String']['output']>;
   /** The product whose pricing this plan determines. */
   planSet: SubscriptionPlanTypeConnection;
   /** The product this price is associated with. */
   prices: StripePriceTypeConnection;
   /** Whether this product is a shipped good. Only applicable to products of `type=good`. */
-  shippable?: Maybe<Scalars['Boolean']>;
+  shippable?: Maybe<Scalars['Boolean']['output']>;
   /** Extra information about a product which will appear on your customer's credit card statement. In the case that multiple products are billed at once, the first statement descriptor will be used. Only available on products of type=`service`. */
-  statementDescriptor: Scalars['String'];
+  statementDescriptor: Scalars['String']['output'];
   /** The type of the product. The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans. */
   type: DjstripeProductTypeChoices;
-  unitLabel: Scalars['String'];
+  unitLabel: Scalars['String']['output'];
   /** A URL of a publicly-accessible webpage for this product. Only applicable to products of `type=good`. */
-  url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 
 export type StripeProductTypePlanSetArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type StripeProductTypePricesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type StripeProductTypeConnection = {
@@ -2267,7 +2269,7 @@ export type StripeProductTypeConnection = {
 export type StripeProductTypeEdge = {
   __typename?: 'StripeProductTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripeProductType>;
 };
@@ -2275,33 +2277,33 @@ export type StripeProductTypeEdge = {
 export type StripeSetupIntentType = Node & {
   __typename?: 'StripeSetupIntentType';
   /** ID of the Connect application that created the SetupIntent. */
-  application: Scalars['String'];
+  application: Scalars['String']['output'];
   /** Reason for cancellation of this SetupIntent, one of abandoned, requested_by_customer, or duplicate */
   cancellationReason?: Maybe<DjstripeSetupIntentCancellationReasonChoices>;
   /** The client secret of this SetupIntent. Used for client-side retrieval using a publishable key. */
-  clientSecret: Scalars['String'];
+  clientSecret: Scalars['String']['output'];
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The error encountered in the previous SetupIntent confirmation. */
-  lastSetupError?: Maybe<Scalars['JSONString']>;
+  lastSetupError?: Maybe<Scalars['JSONString']['output']>;
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** If present, this property tells you what actions you need to take inorder for your customer to continue payment setup. */
-  nextAction?: Maybe<Scalars['JSONString']>;
+  nextAction?: Maybe<Scalars['JSONString']['output']>;
   /** Payment method used in this PaymentIntent. */
   paymentMethod?: Maybe<StripePaymentMethodType>;
   /** The list of payment method types (e.g. card) that this PaymentIntent is allowed to use. */
-  paymentMethodTypes: Scalars['JSONString'];
-  pk?: Maybe<Scalars['String']>;
+  paymentMethodTypes: Scalars['JSONString']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   /** Status of this SetupIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, canceled, or succeeded. */
   status: DjstripeSetupIntentStatusChoices;
   /** Indicates how the payment method is intended to be used in the future. */
@@ -2311,21 +2313,21 @@ export type StripeSetupIntentType = Node & {
 export type StripeSubscriptionType = Node & {
   __typename?: 'StripeSubscriptionType';
   /** End of the current period for which the subscription has been invoiced. At the end of this period, a new invoice will be created. */
-  currentPeriodEnd: Scalars['DateTime'];
+  currentPeriodEnd: Scalars['DateTime']['output'];
   /** Start of the current period for which the subscription has been invoiced. */
-  currentPeriodStart: Scalars['DateTime'];
+  currentPeriodStart: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
-  pk?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   plan?: Maybe<SubscriptionPlanType>;
   /** Date when the subscription was first created. The date might differ from the created date due to backdating. */
-  startDate?: Maybe<Scalars['DateTime']>;
+  startDate?: Maybe<Scalars['DateTime']['output']>;
   /** The status of this subscription. */
   status: DjstripeSubscriptionStatusChoices;
   /** If the subscription has a trial, the end of that trial. */
-  trialEnd?: Maybe<Scalars['DateTime']>;
+  trialEnd?: Maybe<Scalars['DateTime']['output']>;
   /** If the subscription has a trial, the beginning of that trial. */
-  trialStart?: Maybe<Scalars['DateTime']>;
+  trialStart?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type StripeSubscriptionTypeConnection = {
@@ -2340,7 +2342,7 @@ export type StripeSubscriptionTypeConnection = {
 export type StripeSubscriptionTypeEdge = {
   __typename?: 'StripeSubscriptionTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<StripeSubscriptionType>;
 };
@@ -2348,60 +2350,60 @@ export type StripeSubscriptionTypeEdge = {
 export type SubscriptionPlanType = Node & {
   __typename?: 'SubscriptionPlanType';
   /** Whether the plan can be used for new purchases. */
-  active: Scalars['Boolean'];
+  active: Scalars['Boolean']['output'];
   /** Specifies a usage aggregation strategy for plans of usage_type=metered. Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or max which picks the usage record with the maximum reported usage during a period. Defaults to `sum`. */
   aggregateUsage?: Maybe<DjstripePlanAggregateUsageChoices>;
   /** Amount (as decimal) to be charged on the interval specified. */
-  amount?: Maybe<Scalars['Decimal']>;
+  amount?: Maybe<Scalars['Decimal']['output']>;
   /** The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. */
-  amountDecimal?: Maybe<Scalars['Decimal']>;
+  amountDecimal?: Maybe<Scalars['Decimal']['output']>;
   /** Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in amount) will be charged per unit in quantity (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the tiers and tiers_mode attributes. */
   billingScheme?: Maybe<DjstripePlanBillingSchemeChoices>;
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** Three-letter ISO currency code */
-  currency: Scalars['String'];
+  currency: Scalars['String']['output'];
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The frequency with which a subscription should be billed. */
   interval: DjstripePlanIntervalChoices;
   /** The number of intervals (specified in the interval property) between each subscription billing. */
-  intervalCount?: Maybe<Scalars['Int']>;
+  intervalCount?: Maybe<Scalars['Int']['output']>;
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   /** A brief description of the plan, hidden from customers. */
-  nickname: Scalars['String'];
-  pk?: Maybe<Scalars['String']>;
+  nickname: Scalars['String']['output'];
+  pk?: Maybe<Scalars['String']['output']>;
   /** The product whose pricing this plan determines. */
   product?: Maybe<StripeProductType>;
   /** The plan associated with this subscription. This value will be `null` for multi-plan subscriptions */
   subscriptions: StripeSubscriptionTypeConnection;
   /** Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. */
-  tiers?: Maybe<Scalars['JSONString']>;
+  tiers?: Maybe<Scalars['JSONString']['output']>;
   /** Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows. */
   tiersMode?: Maybe<DjstripePlanTiersModeChoices>;
   /** Apply a transformation to the reported usage or set quantity before computing the billed price. Cannot be combined with `tiers`. */
-  transformUsage?: Maybe<Scalars['JSONString']>;
+  transformUsage?: Maybe<Scalars['JSONString']['output']>;
   /** Number of trial period days granted when subscribing a customer to this plan. Null if the plan has no trial period. */
-  trialPeriodDays?: Maybe<Scalars['Int']>;
+  trialPeriodDays?: Maybe<Scalars['Int']['output']>;
   /** Configures how the quantity per period should be determined, can be either `metered` or `licensed`. `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records. Defaults to `licensed`. */
   usageType: DjstripePlanUsageTypeChoices;
 };
 
 
 export type SubscriptionPlanTypeSubscriptionsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SubscriptionPlanTypeConnection = {
@@ -2416,7 +2418,7 @@ export type SubscriptionPlanTypeConnection = {
 export type SubscriptionPlanTypeEdge = {
   __typename?: 'SubscriptionPlanTypeEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<SubscriptionPlanType>;
 };
@@ -2425,7 +2427,7 @@ export type SubscriptionPlanTypeEdge = {
 export type SubscriptionScheduleEdge = {
   __typename?: 'SubscriptionScheduleEdge';
   /** A cursor for use in pagination */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node?: Maybe<SubscriptionScheduleType>;
 };
@@ -2433,47 +2435,47 @@ export type SubscriptionScheduleEdge = {
 export type SubscriptionSchedulePhaseItemType = {
   __typename?: 'SubscriptionSchedulePhaseItemType';
   price?: Maybe<StripePriceType>;
-  quantity?: Maybe<Scalars['Int']>;
+  quantity?: Maybe<Scalars['Int']['output']>;
 };
 
 export type SubscriptionSchedulePhaseType = {
   __typename?: 'SubscriptionSchedulePhaseType';
-  endDate?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['String']['output']>;
   item?: Maybe<SubscriptionSchedulePhaseItemType>;
-  startDate?: Maybe<Scalars['DateTime']>;
-  trialEnd?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['DateTime']['output']>;
+  trialEnd?: Maybe<Scalars['String']['output']>;
 };
 
 export type SubscriptionScheduleType = Node & {
   __typename?: 'SubscriptionScheduleType';
-  canActivateTrial?: Maybe<Scalars['Boolean']>;
+  canActivateTrial?: Maybe<Scalars['Boolean']['output']>;
   /** Time at which the subscription schedule was canceled. */
-  canceledAt?: Maybe<Scalars['DateTime']>;
+  canceledAt?: Maybe<Scalars['DateTime']['output']>;
   /** Time at which the subscription schedule was completed. */
-  completedAt?: Maybe<Scalars['DateTime']>;
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
   /** The datetime this object was created in stripe. */
-  created?: Maybe<Scalars['DateTime']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   /** Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`. */
-  currentPhase?: Maybe<Scalars['JSONString']>;
+  currentPhase?: Maybe<Scalars['JSONString']['output']>;
   defaultPaymentMethod?: Maybe<StripePaymentMethodType>;
   /** Object representing the subscription schedule's default settings. */
-  defaultSettings?: Maybe<Scalars['JSONString']>;
+  defaultSettings?: Maybe<Scalars['JSONString']['output']>;
   /** A description of this object. */
-  description?: Maybe<Scalars['String']>;
-  djstripeCreated: Scalars['DateTime'];
-  djstripeId: Scalars['ID'];
-  djstripeUpdated: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']['output']>;
+  djstripeCreated: Scalars['DateTime']['output'];
+  djstripeId: Scalars['ID']['output'];
+  djstripeUpdated: Scalars['DateTime']['output'];
   /** Behavior of the subscription schedule and underlying subscription when it ends. */
   endBehavior: DjstripeSubscriptionScheduleEndBehaviorChoices;
   /** The ID of the object */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation. */
-  livemode?: Maybe<Scalars['Boolean']>;
+  livemode?: Maybe<Scalars['Boolean']['output']>;
   /** A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format. */
-  metadata?: Maybe<Scalars['JSONString']>;
+  metadata?: Maybe<Scalars['JSONString']['output']>;
   phases?: Maybe<Array<Maybe<SubscriptionSchedulePhaseType>>>;
   /** Time at which the subscription schedule was released. */
-  releasedAt?: Maybe<Scalars['DateTime']>;
+  releasedAt?: Maybe<Scalars['DateTime']['output']>;
   /** The subscription once managed by this subscription schedule (if it is released). */
   releasedSubscription?: Maybe<StripeSubscriptionType>;
   /** The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`. */
@@ -2485,173 +2487,173 @@ export type SubscriptionScheduleType = Node & {
 
 
 export type SubscriptionScheduleTypeSubscriptionsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Sys = {
   __typename?: 'Sys';
-  environmentId: Scalars['String'];
-  firstPublishedAt?: Maybe<Scalars['DateTime']>;
-  id: Scalars['String'];
-  publishedAt?: Maybe<Scalars['DateTime']>;
-  publishedVersion?: Maybe<Scalars['Int']>;
-  spaceId: Scalars['String'];
+  environmentId: Scalars['String']['output'];
+  firstPublishedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
+  publishedVersion?: Maybe<Scalars['Int']['output']>;
+  spaceId: Scalars['String']['output'];
 };
 
 export type SysFilter = {
-  firstPublishedAt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_exists?: InputMaybe<Scalars['Boolean']>;
-  firstPublishedAt_gt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_gte?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  firstPublishedAt_lt?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_lte?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_not?: InputMaybe<Scalars['DateTime']>;
-  firstPublishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  id?: InputMaybe<Scalars['String']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_exists?: InputMaybe<Scalars['Boolean']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  id_not?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  publishedAt?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_exists?: InputMaybe<Scalars['Boolean']>;
-  publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_gte?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  publishedAt_lt?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_lte?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_not?: InputMaybe<Scalars['DateTime']>;
-  publishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
-  publishedVersion?: InputMaybe<Scalars['Float']>;
-  publishedVersion_exists?: InputMaybe<Scalars['Boolean']>;
-  publishedVersion_gt?: InputMaybe<Scalars['Float']>;
-  publishedVersion_gte?: InputMaybe<Scalars['Float']>;
-  publishedVersion_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
-  publishedVersion_lt?: InputMaybe<Scalars['Float']>;
-  publishedVersion_lte?: InputMaybe<Scalars['Float']>;
-  publishedVersion_not?: InputMaybe<Scalars['Float']>;
-  publishedVersion_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  firstPublishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  firstPublishedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  firstPublishedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  firstPublishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  id_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  id_not?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedAt_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  publishedAt_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_not?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
+  publishedVersion?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_exists?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedVersion_gt?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_gte?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_in?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
+  publishedVersion_lt?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_lte?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_not?: InputMaybe<Scalars['Float']['input']>;
+  publishedVersion_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
 export type UpdateCrudDemoItemMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  name: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type UpdateCrudDemoItemMutationPayload = {
   __typename?: 'UpdateCrudDemoItemMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   crudDemoItemEdge?: Maybe<CrudDemoItemEdge>;
 };
 
 export type UpdateCurrentUserMutationInput = {
-  avatar?: InputMaybe<Scalars['Upload']>;
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCurrentUserMutationPayload = {
   __typename?: 'UpdateCurrentUserMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   userProfile?: Maybe<UserProfileType>;
   userProfileEdge?: Maybe<CurrentUserEdge>;
 };
 
 export type UpdateDefaultPaymentMethodMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateDefaultPaymentMethodMutationPayload = {
   __typename?: 'UpdateDefaultPaymentMethodMutationPayload';
   activeSubscription?: Maybe<SubscriptionScheduleType>;
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   paymentMethodEdge?: Maybe<PaymentMethodEdge>;
 };
 
 export type UpdateNotificationMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  isRead?: InputMaybe<Scalars['Boolean']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  isRead?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateNotificationMutationPayload = {
   __typename?: 'UpdateNotificationMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  hasUnreadNotifications?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']['output']>;
   notification?: Maybe<NotificationType>;
   notificationEdge?: Maybe<NotificationEdge>;
 };
 
 export type UpdatePaymentIntentMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  product: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  product: Scalars['String']['input'];
 };
 
 export type UpdatePaymentIntentMutationPayload = {
   __typename?: 'UpdatePaymentIntentMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
 };
 
 export type UserProfileType = Node & {
   __typename?: 'UserProfileType';
-  firstName: Scalars['String'];
+  firstName: Scalars['String']['output'];
   /** The ID of the object */
-  id: Scalars['ID'];
-  lastName: Scalars['String'];
+  id: Scalars['ID']['output'];
+  lastName: Scalars['String']['output'];
   user: CurrentUserType;
 };
 
 export type UserType = {
   __typename?: 'UserType';
-  avatar?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  firstName?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  lastName?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  firstName?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
 };
 
 export type ValidateOtpMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  otpAuthToken?: InputMaybe<Scalars['String']>;
-  otpToken: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  otpAuthToken?: InputMaybe<Scalars['String']['input']>;
+  otpToken: Scalars['String']['input'];
 };
 
 export type ValidateOtpMutationPayload = {
   __typename?: 'ValidateOTPMutationPayload';
-  access?: Maybe<Scalars['String']>;
-  clientMutationId?: Maybe<Scalars['String']>;
-  refresh?: Maybe<Scalars['String']>;
+  access?: Maybe<Scalars['String']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  refresh?: Maybe<Scalars['String']['output']>;
 };
 
 export type VerifyOtpMutationInput = {
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  otpToken: Scalars['String'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  otpToken: Scalars['String']['input'];
 };
 
 export type VerifyOtpMutationPayload = {
   __typename?: 'VerifyOTPMutationPayload';
-  clientMutationId?: Maybe<Scalars['String']>;
-  otpVerified?: Maybe<Scalars['Boolean']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  otpVerified?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginationListTestQueryQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']>;
-  after?: InputMaybe<Scalars['String']>;
-  last?: InputMaybe<Scalars['Int']>;
-  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -2697,7 +2699,7 @@ export type UseFavoriteDemoItemListQueryQuery = { __typename?: 'Query', allConte
       ) | null } | null> } | null };
 
 export type DemoItemQueryQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
@@ -2721,17 +2723,17 @@ export type AddCrudDemoItemMutationMutationVariables = Exact<{
 export type AddCrudDemoItemMutationMutation = { __typename?: 'ApiMutation', createCrudDemoItem?: { __typename?: 'CreateCrudDemoItemMutationPayload', crudDemoItemEdge?: { __typename?: 'CrudDemoItemEdge', node?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null } | null } | null };
 
 export type CrudDemoItemDetailsQueryQueryVariables = Exact<{
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 }>;
 
 
 export type CrudDemoItemDetailsQueryQuery = { __typename?: 'Query', crudDemoItem?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null };
 
 export type CrudDemoItemListQueryQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']>;
-  after?: InputMaybe<Scalars['String']>;
-  last?: InputMaybe<Scalars['Int']>;
-  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -2766,7 +2768,7 @@ export type CrudDemoItemListItemDefaultStoryQueryQuery = { __typename?: 'Query',
   ) | null };
 
 export type EditCrudDemoItemQueryQueryVariables = Exact<{
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 }>;
 
 
@@ -2962,8 +2964,8 @@ export type NotificationMutationMutationVariables = Exact<{
 export type NotificationMutationMutation = { __typename?: 'ApiMutation', updateNotification?: { __typename?: 'UpdateNotificationMutationPayload', hasUnreadNotifications?: boolean | null, notificationEdge?: { __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, readAt?: any | null } | null } | null } | null };
 
 export type NotificationsListQueryQueryVariables = Exact<{
-  count?: InputMaybe<Scalars['Int']>;
-  cursor?: InputMaybe<Scalars['String']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
+  cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 

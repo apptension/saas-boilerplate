@@ -38,7 +38,7 @@
     "styled-components": "5.3.6"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.13.11",
+    "@graphql-codegen/cli": "^5.0.0",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
     "@storybook/addon-actions": "^7.4.2",
