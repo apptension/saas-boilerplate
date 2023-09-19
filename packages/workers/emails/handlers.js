@@ -18,16 +18,15 @@ exports.sendEmail = async function (event) {
     ...event.detail,
   });
 
-  return sesClient
-    .sendEmail({
-      Source: config.fromEmail,
-      Destination: { ToAddresses: [to] },
-      ReplyToAddresses: [config.fromEmail],
-      Message: {
-        Subject: { Charset: 'UTF-8', Data: subject },
-        Body: { Html: { Charset: 'UTF-8', Data: html } },
-      },
-    })
+  return sesClient.sendEmail({
+    Source: config.fromEmail,
+    Destination: { ToAddresses: [to] },
+    ReplyToAddresses: [config.fromEmail],
+    Message: {
+      Subject: { Charset: 'UTF-8', Data: subject },
+      Body: { Html: { Charset: 'UTF-8', Data: html } },
+    },
+  });
 };
 
 exports.sendEmailLocal = async function (event) {

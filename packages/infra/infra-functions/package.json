@@ -12,7 +12,6 @@
     "remove": "sls remove"
   },
   "dependencies": {
-    "@aws-sdk/client-codebuild": "^3.342.0",
     "glob-to-regexp": "^0.4.1"
   },
   "devDependencies": {

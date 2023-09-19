@@ -1,5 +1,6 @@
 import { GetCallerIdentityCommand, STSClient } from '@aws-sdk/client-sts';
 import { Command } from '@oclif/core';
+import { color } from '@oclif/color';
 
 import * as childProcess from 'child_process';
 import { promisify } from 'util';
@@ -7,7 +8,6 @@ import * as dotenv from 'dotenv';
 import { trace } from '@opentelemetry/api';
 
 import { validateStageEnv } from './env';
-import { color } from '@oclif/color';
 import { isAwsVaultInstalled } from '../lib/awsVault';
 import { assertChamberInstalled, loadChamberEnv } from '../lib/chamber';
 

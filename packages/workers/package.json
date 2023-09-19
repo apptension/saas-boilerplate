@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.272.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "nodemailer": "^6.4.18",
