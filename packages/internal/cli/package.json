@@ -39,17 +39,12 @@
     "ramda": "^0.29.0"
   },
   "devDependencies": {
-    "@oclif/test": "^2.4.7",
-    "@types/chai": "^4",
-    "@types/mocha": "^9.0.0",
     "@types/node": "^16.18.47",
     "@types/node-persist": "^3.1.4",
     "@types/ramda": "^0.29.3",
-    "chai": "^4",
     "eslint": "^7.32.0",
     "eslint-config-oclif": "^4",
     "eslint-config-oclif-typescript": "^1.0.3",
-    "mocha": "^9",
     "oclif": "^3.14.0",
     "shx": "^0.3.3",
     "ts-node": "^10.9.1",
@@ -98,9 +93,7 @@
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "npm run lint",
     "prepack": "npm run build && oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
   "engines": {
