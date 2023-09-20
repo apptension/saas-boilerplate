@@ -85,12 +85,3 @@ export const getActiveBreakpoint = () => {
 
   return breakpoint;
 };
-
-export const responsiveValue =
-  <Value>(defaultValue: Value, config: Partial<Record<Breakpoint, Value>> = {}) =>
-  ({ theme }: { theme: DefaultTheme }) => {
-    const matchesCurrentBreakpoint = (breakpoint: Breakpoint) =>
-      sizesOrdered.indexOf(breakpoint) <= sizesOrdered.indexOf(theme.activeBreakpoint ?? Breakpoint.MOBILE);
-    const matchingBreakpoint = reverse(sizesOrdered).find((size) => config[size] && matchesCurrentBreakpoint(size));
-    return matchingBreakpoint ? config[matchingBreakpoint] : defaultValue;
-  };

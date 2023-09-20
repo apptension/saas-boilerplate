@@ -129,9 +129,6 @@ importers:
       '@types/react-router-dom':
         specifier: 5.3.3
         version: 5.3.3
-      '@types/styled-components':
-        specifier: ^5.1.27
-        version: 5.1.27
       '@typescript-eslint/eslint-plugin':
         specifier: 5.59.9
         version: 5.59.9(@typescript-eslint/parser@5.59.9)(eslint@8.49.0)(typescript@5.0.4)
@@ -1727,7 +1724,7 @@ importers:
         version: 8.1.0
       react-intl:
         specifier: ^6.4.7
-        version: 6.4.7(react@18.2.0)(typescript@5.0.4)
+        version: 6.4.7(react@16.14.0)(typescript@5.0.4)
     devDependencies:
       '@esbuild-plugins/node-globals-polyfill':
         specifier: ^0.2.3
@@ -1740,10 +1737,10 @@ importers:
         version: 1.0.3
       '@storybook/react':
         specifier: ^7.4.2
-        version: 7.4.2(react-dom@16.14.0)(react@18.2.0)(typescript@5.0.4)
+        version: 7.4.2(react-dom@16.14.0)(react@16.14.0)(typescript@5.0.4)
       '@storybook/react-vite':
         specifier: ^7.4.2
-        version: 7.4.2(react-dom@16.14.0)(react@18.2.0)(rollup@3.29.2)(typescript@5.0.4)(vite@4.4.9)
+        version: 7.4.2(react-dom@16.14.0)(react@16.14.0)(rollup@3.29.2)(typescript@5.0.4)(vite@4.4.9)
       '@types/node':
         specifier: ^18.17.17
         version: 18.17.17
@@ -12459,14 +12456,14 @@ packages:
     resolution: {integrity: sha512-T7rAV6qQ7tBeSvgi0RuA5EU8tm1OMhU8PcCqosWGaLhMCR0VMzw1/WGKuR11g1XmzvaAm2xGgMp82nqi4G0i7A==}
     dev: true
 
-  /@storybook/react-dom-shim@7.4.2(react-dom@16.14.0)(react@18.2.0):
+  /@storybook/react-dom-shim@7.4.2(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-9Ae2As3Hf//mdFEAv58VgDbi9R5JRGne8Ai6Vspc5FZMCJIjr5kullckBi3n9uKRg2L8V7wjDRK8Cql2tEr0Yg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 18.2.0
-      react-dom: 16.14.0(react@18.2.0)
+      react: 16.14.0
+      react-dom: 16.14.0(react@16.14.0)
     dev: true
 
   /@storybook/react-dom-shim@7.4.2(react-dom@18.2.0)(react@18.2.0):
@@ -12479,7 +12476,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /@storybook/react-vite@7.4.2(react-dom@16.14.0)(react@18.2.0)(rollup@3.29.2)(typescript@5.0.4)(vite@4.4.9):
+  /@storybook/react-vite@7.4.2(react-dom@16.14.0)(react@16.14.0)(rollup@3.29.2)(typescript@5.0.4)(vite@4.4.9):
     resolution: {integrity: sha512-DIfInR1VOinI+qjrMLcVdelFTfDppZXhjbrNpXt209ZY6nPGHjvr+4FpgKh+y/ClUBmOqkMsR7/kj4rMzGL5yw==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -12490,13 +12487,13 @@ packages:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.2.1(typescript@5.0.4)(vite@4.4.9)
       '@rollup/pluginutils': 5.0.4(rollup@3.29.2)
       '@storybook/builder-vite': 7.4.2(typescript@5.0.4)(vite@4.4.9)
-      '@storybook/react': 7.4.2(react-dom@16.14.0)(react@18.2.0)(typescript@5.0.4)
+      '@storybook/react': 7.4.2(react-dom@16.14.0)(react@16.14.0)(typescript@5.0.4)
       '@vitejs/plugin-react': 3.1.0(vite@4.4.9)
       ast-types: 0.14.2
       magic-string: 0.30.3
-      react: 18.2.0
+      react: 16.14.0
       react-docgen: 6.0.0-alpha.3
-      react-dom: 16.14.0(react@18.2.0)
+      react-dom: 16.14.0(react@16.14.0)
       vite: 4.4.9(@types/node@18.17.17)(less@4.2.0)(terser@5.19.4)
     transitivePeerDependencies:
       - '@preact/preset-vite'
@@ -12535,7 +12532,7 @@ packages:
       - vite-plugin-glimmerx
     dev: true
 
-  /@storybook/react@7.4.2(react-dom@16.14.0)(react@18.2.0)(typescript@5.0.4):
+  /@storybook/react@7.4.2(react-dom@16.14.0)(react@16.14.0)(typescript@5.0.4):
     resolution: {integrity: sha512-8bAnSOpDTiE1c9pSkIKRipvqbuZP6Hu1CYaG1RXWF8AIBsjiV9+SsR919Flj1UiCmcw4BLO/ZIvIDGny4ktHhA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -12551,7 +12548,7 @@ packages:
       '@storybook/docs-tools': 7.4.2
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 7.4.2
-      '@storybook/react-dom-shim': 7.4.2(react-dom@16.14.0)(react@18.2.0)
+      '@storybook/react-dom-shim': 7.4.2(react-dom@16.14.0)(react@16.14.0)
       '@storybook/types': 7.4.2
       '@types/escodegen': 0.0.6
       '@types/estree': 0.0.51
@@ -12563,9 +12560,9 @@ packages:
       html-tags: 3.3.1
       lodash: 4.17.21
       prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 16.14.0(react@18.2.0)
-      react-element-to-jsx-string: 15.0.0(react-dom@16.14.0)(react@18.2.0)
+      react: 16.14.0
+      react-dom: 16.14.0(react@16.14.0)
+      react-element-to-jsx-string: 15.0.0(react-dom@16.14.0)(react@16.14.0)
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       typescript: 5.0.4
@@ -13939,14 +13936,6 @@ packages:
 
   /@types/stack-utils@2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/styled-components@5.1.27:
-    resolution: {integrity: sha512-oY9c1SdztRRF0QDQdwXEenfAjGN4WGUkaMpx5hvdTbYYqw01qoY2GrHi+kAR6SVofynzD6KbGoF5ITP0zh5pvg==}
-    dependencies:
-      '@types/hoist-non-react-statics': 3.3.2
-      '@types/react': 18.2.22
-      csstype: 3.1.2
     dev: true
 
   /@types/stylis@4.2.0:
@@ -30010,18 +29999,6 @@ packages:
       react: 16.14.0
       scheduler: 0.19.1
 
-  /react-dom@16.14.0(react@18.2.0):
-    resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
-    peerDependencies:
-      react: ^16.14.0
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
-      react: 18.2.0
-      scheduler: 0.19.1
-    dev: true
-
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -30043,7 +30020,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-element-to-jsx-string@15.0.0(react-dom@16.14.0)(react@18.2.0):
+  /react-element-to-jsx-string@15.0.0(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-UDg4lXB6BzlobN60P8fHWVPX3Kyw8ORrTeBtClmIlGdkOOE+GYQSFvmEU5iLLpwp/6v42DINwNcwOhOLfQ//FQ==}
     peerDependencies:
       react: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1 || ^18.0.0
@@ -30051,8 +30028,8 @@ packages:
     dependencies:
       '@base2/pretty-print-object': 1.0.1
       is-plain-object: 5.0.0
-      react: 18.2.0
-      react-dom: 16.14.0(react@18.2.0)
+      react: 16.14.0
+      react-dom: 16.14.0(react@16.14.0)
       react-is: 18.1.0
     dev: true
 
@@ -30146,6 +30123,29 @@ packages:
       react: '>=16.8.0'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /react-intl@6.4.7(react@16.14.0)(typescript@5.0.4):
+    resolution: {integrity: sha512-0hnOHAZhxTFqD1hGTxrF40qNyZJPPYiGhWIIxIz0Udz+3e3c7sdN80qlxArR+AbJ+jb5ALXZkJYH20+GPFCM0Q==}
+    peerDependencies:
+      react: ^16.6.0 || 17 || 18
+      typescript: ^4.7 || 5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@formatjs/ecma402-abstract': 1.17.2
+      '@formatjs/icu-messageformat-parser': 2.6.2
+      '@formatjs/intl': 2.9.3(typescript@5.0.4)
+      '@formatjs/intl-displaynames': 6.5.2
+      '@formatjs/intl-listformat': 7.4.2
+      '@types/hoist-non-react-statics': 3.3.2
+      '@types/react': 18.2.22
+      hoist-non-react-statics: 3.3.2
+      intl-messageformat: 10.5.3
+      react: 16.14.0
+      tslib: 2.6.2
+      typescript: 5.0.4
     dev: false
 
   /react-intl@6.4.7(react@18.2.0)(typescript@5.0.4):
