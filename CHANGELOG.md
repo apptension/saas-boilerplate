@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/apptension/aws-boilerplate/compare/2.0.3...2.1.0) (2023-09-20)
+
+### Features
+
+- Add CLI and rewrite all scripts to NodeJS in order to improve Windows support ([#386](https://github.com/apptension/aws-boilerplate/issues/386)) ([c36a5d2](https://github.com/apptension/aws-boilerplate/commit/c36a5d29e9917c960110265bdf3164ca26153c29))
+
+### Bug Fixes
+
+- Fix deadlock preventing infra bootstrapping ([#379](https://github.com/apptension/aws-boilerplate/issues/379)) ([7917fb1](https://github.com/apptension/aws-boilerplate/commit/7917fb183b2176e8fd69a497313a43c43f4ee9ce))
+
 ### [2.0.3](https://github.com/apptension/aws-boilerplate/compare/2.0.2...2.0.3) (2023-08-10)
 
 ### Bug Fixes
