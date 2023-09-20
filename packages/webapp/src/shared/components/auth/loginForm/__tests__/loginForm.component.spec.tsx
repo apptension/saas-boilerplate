@@ -66,7 +66,7 @@ describe('LoginForm: Component', () => {
     await waitForApolloMocks();
 
     expect(trackEvent).toHaveBeenCalledWith('auth', 'log-in');
-    expect(await mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(await mockNavigate).toHaveBeenCalledWith(`/en`);
   });
 
   it('should show error if required value is missing', async () => {

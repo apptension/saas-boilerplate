@@ -52,7 +52,7 @@ describe('ValidateOtpForm: Component', () => {
     await userEvent.click(submitButton);
     await waitForApolloMocks();
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(mockNavigate).toHaveBeenCalledWith(`/en`);
     expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-validate');
   });
 

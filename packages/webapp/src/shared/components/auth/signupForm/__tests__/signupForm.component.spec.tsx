@@ -68,7 +68,7 @@ describe('SignupForm: Component', () => {
 
     await waitForApolloMocks();
 
-    expect(await mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(await mockNavigate).toHaveBeenCalledWith(`/en`);
     expect(trackEvent).toHaveBeenCalledWith('auth', 'sign-up');
   });
 

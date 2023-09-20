@@ -41,12 +41,12 @@ describe('contentful / helpers / image', () => {
     });
 
     describe('with missing image url', () => {
-      it('should return empty string', () => {
+      it('should return null', () => {
         const missingImage = {
           title: 'Image title',
         };
 
-        expect(imageProps(missingImage).src).toEqual('?fm=png&q=90');
+        expect(imageProps(missingImage).src).toEqual(null);
       });
     });
 
