@@ -27,8 +27,6 @@
     "@graphql-codegen/cli": "^5.0.0",
     "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
-    "@nx/jest": "^16.8.1",
-    "@nx/react": "^16.8.1",
     "@storybook/addon-actions": "^7.4.2",
     "@storybook/addon-backgrounds": "^7.4.2",
     "@storybook/addon-docs": "^7.4.2",

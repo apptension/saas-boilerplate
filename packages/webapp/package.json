@@ -16,7 +16,6 @@
     "cdk": "cdk",
     "diff": "cdk deploy *WebAppStack",
     "vite": "vite",
-    "plop": "plop",
     "type-check": "tsc --noEmit --project tsconfig.app.json"
   },
   "dependencies": {
@@ -25,7 +24,6 @@
     "intl": "^1.2.5",
     "jest-mock": "^29.7.0",
     "lucide-react": "^0.224.0",
-    "plop": "^3.1.2",
     "qrcode": "^1.5.3",
     "ramda": "^0.28.0",
     "react-helmet-async": "^1.3.0",

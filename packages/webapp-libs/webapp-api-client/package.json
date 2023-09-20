@@ -39,8 +39,6 @@
     "@graphql-codegen/typescript-graphql-request": "^5.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-tools/merge": "^8.4.2",
-    "@nx/jest": "^16.8.1",
-    "@nx/react": "^16.8.1",
     "@storybook/react": "^7.4.2",
     "@storybook/react-vite": "^7.4.2",
     "@testing-library/dom": "^8.20.1",

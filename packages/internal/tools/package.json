@@ -15,7 +15,6 @@
     "@types/prompts": "^2.4.4",
     "@types/ramda": "^0.28.25",
     "aws-cdk": "^2.96.2",
-    "plop": "^2.7.6",
     "ts-node": "^9.1.1"
   },
   "nx": {}

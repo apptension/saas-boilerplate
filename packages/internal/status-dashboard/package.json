@@ -13,9 +13,6 @@
     "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
-    "@nx/react": "^16.8.1",
-    "@nx/web": "^16.8.1",
-    "@nx/webpack": "^16.8.1",
     "@sb/core": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",

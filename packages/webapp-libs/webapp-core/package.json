@@ -37,9 +37,6 @@
   "devDependencies": {
     "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
-    "@nx/jest": "^16.8.1",
-    "@nx/js": "^16.8.1",
-    "@nx/react": "^16.8.1",
     "@sentry/react": "^7.69.0",
     "@storybook/addon-actions": "^7.4.2",
     "@storybook/addon-backgrounds": "^7.4.2",

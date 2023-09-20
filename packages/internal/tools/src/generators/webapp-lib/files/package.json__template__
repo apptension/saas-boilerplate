@@ -35,12 +35,9 @@
     "styled-components": "5.3.6"
   },
   "devDependencies": {
-    "@apollo/rover": "^0.12.2",
     "@graphql-codegen/cli": "^2.13.11",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
-    "@nx/jest": "^15.8.6",
-    "@nx/react": "^15.8.6",
     "@storybook/addon-actions": "^7.0.10",
     "@storybook/addon-backgrounds": "^7.0.10",
     "@storybook/addon-docs": "^7.0.10",
