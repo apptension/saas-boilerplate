@@ -39,15 +39,12 @@
     "ramda": "^0.29.0"
   },
   "devDependencies": {
-    "@types/node": "^16.18.52",
     "@types/node-persist": "^3.1.4",
     "@types/ramda": "^0.29.4",
-    "eslint": "^7.32.0",
     "eslint-config-oclif": "^4.0.0",
     "eslint-config-oclif-typescript": "^1.0.3",
     "oclif": "^3.16.0",
     "shx": "^0.3.4",
-    "ts-node": "^10.9.1",
     "tslib": "^2.6.2"
   },
   "oclif": {

@@ -35,7 +35,6 @@
     "docusaurus-plugin-typedoc": "^0.20.1",
     "typedoc": "^0.25.1",
     "typedoc-plugin-markdown": "^3.16.0",
-    "url-loader": "^4.1.1",
     "webapp": "*"
   },
   "browserslist": {

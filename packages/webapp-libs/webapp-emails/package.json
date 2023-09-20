@@ -21,7 +21,6 @@
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@storybook/react": "^7.4.2",
     "@storybook/react-vite": "^7.4.2",
-    "@types/node": "^18.17.17",
     "@types/rollup-plugin-peer-deps-external": "^2.2.1",
     "@vitejs/plugin-react": "^4.0.4",
     "axios": "^0.27.2",
