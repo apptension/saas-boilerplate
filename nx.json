@@ -56,22 +56,6 @@
     "appsDir": "packages",
     "libsDir": "packages"
   },
-  "generators": {
-    "@nx/react": {
-      "application": {
-        "style": "styled-components",
-        "linter": "eslint",
-        "bundler": "webpack",
-        "babel": true
-      },
-      "component": {
-        "style": "styled-components"
-      },
-      "library": {
-        "style": "styled-components",
-        "linter": "eslint"
-      }
-    }
-  },
+  "generators": {},
   "defaultProject": "core"
 }

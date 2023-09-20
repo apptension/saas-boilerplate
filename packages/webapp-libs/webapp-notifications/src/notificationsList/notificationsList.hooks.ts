@@ -21,9 +21,9 @@ export const useMarkAllAsRead = (message: string) => {
             hasUnreadNotifications() {
               return false;
             },
-            allNotifications(connection: NotificationConnection) {
+            allNotifications(connection) {
               const readAt = new Date().toISOString();
-              connection?.edges?.forEach((edge) => {
+              (connection as NotificationConnection)?.edges?.forEach((edge) => {
                 cache.modify({
                   // @ts-ignore
                   id: edge?.node?.__ref,

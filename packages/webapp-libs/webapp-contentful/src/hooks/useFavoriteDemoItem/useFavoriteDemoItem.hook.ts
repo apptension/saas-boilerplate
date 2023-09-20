@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { ContentfulDemoItemFavoriteConnection } from '@sb/webapp-api-client';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { pipe, pluck } from 'ramda';
 import { useMemo } from 'react';
@@ -59,9 +58,10 @@ export const useHandleCreate = () => {
         }),
         __typename: 'ContentfulDemoItemFavoriteEdge',
       };
+
       cache.modify({
         fields: {
-          allContentfulDemoItemFavorites(existingConnection: ContentfulDemoItemFavoriteConnection) {
+          allContentfulDemoItemFavorites(existingConnection) {
             return { ...existingConnection, edges: [...existingConnection.edges, newEdge] };
           },
         },

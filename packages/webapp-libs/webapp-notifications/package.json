@@ -16,17 +16,12 @@
     "react-infinite-scroll-hook": "^4.1.1"
   },
   "peerDependencies": {
-    "@apollo/client": "^3.8.3",
     "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
     "ramda": "^0.28.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "react-intl": "^6.2.1",
     "react-loading-skeleton": "^3.1.0",
-    "react-markdown": "^8.0.7",
-    "react-router": "^6.7.0",
-    "react-router-dom": "^6.7.0"
+    "react-markdown": "^8.0.7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
@@ -63,13 +58,9 @@
     "jest-matcher-utils": "^29.7.0",
     "jest-watch-typeahead": "^2.2.2",
     "ramda": "^0.28.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "react-intl": "^6.4.7",
     "react-loading-skeleton": "^3.3.1",
     "react-markdown": "^8.0.7",
-    "react-router": "^6.16.0",
-    "react-router-dom": "^6.16.0",
     "storybook": "^7.4.2",
     "ts-jest": "28.0.5"
   }

@@ -1,6 +1,6 @@
 import { BaseMutationOptions, useMutation } from '@apollo/client';
 import { ApolloError } from '@apollo/client/errors';
-import { PaymentMethodConnection, StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
+import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { GraphQLError } from 'graphql';
@@ -47,7 +47,7 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
 
       cache.modify({
         fields: {
-          allPaymentMethods(existingConnection?: PaymentMethodConnection) {
+          allPaymentMethods(existingConnection) {
             return {
               ...existingConnection,
               edges: [...(existingConnection?.edges ?? []), { node: { __ref: normalizedId } }],

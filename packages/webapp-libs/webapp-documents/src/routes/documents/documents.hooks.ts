@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client';
-import { DocumentDemoItemConnection } from '@sb/webapp-api-client';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 
 import {
@@ -35,7 +34,7 @@ export const useHandleDrop = () => {
 
       cache.modify({
         fields: {
-          allDocumentDemoItems(existingConnection?: DocumentDemoItemConnection) {
+          allDocumentDemoItems(existingConnection) {
             return { ...existingConnection, edges: [...(existingConnection?.edges ?? []), newEdge] };
           },
         },
