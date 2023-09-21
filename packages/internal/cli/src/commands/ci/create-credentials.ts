@@ -6,7 +6,6 @@ import {
   CreateServiceSpecificCredentialCommand,
   IAMClient,
 } from '@aws-sdk/client-iam';
-import { trace } from '@opentelemetry/api';
 import { indexBy, prop } from 'ramda';
 import * as URL from 'url';
 
