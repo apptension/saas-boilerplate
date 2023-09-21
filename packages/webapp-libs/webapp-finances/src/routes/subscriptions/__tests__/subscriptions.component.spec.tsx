@@ -79,11 +79,11 @@ const Component = () => (
         />
       </Route>
       <Route
-        path={RoutesConfig.subscriptions.currentSubscription.getLocalePath('cancel')}
+        path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
         element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
       />
       <Route
-        path={RoutesConfig.subscriptions.currentSubscription.getLocalePath('edit')}
+        path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
         element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
       />
     </Route>
@@ -102,7 +102,7 @@ describe('Subscriptions: Component', () => {
       routerProps: currentSubscriptionTabRouterProps,
     });
 
-    expect(await screen.findByText(matchTextContent(/current plan:.*free/gi))).toBeInTheDocument();
+    expect(await screen.findByText(matchTextContent(/current plan:.*free/i))).toBeInTheDocument();
   });
 
   it('should render default payment method', async () => {
@@ -132,14 +132,14 @@ describe('Subscriptions: Component', () => {
         routerProps: currentSubscriptionTabRouterProps,
       });
 
-      expect(await screen.findByText(matchTextContent(/next renewal:.*january 01, 2099/gi))).toBeInTheDocument();
+      expect(await screen.findByText(matchTextContent(/next renewal:.*january 01, 2099/i))).toBeInTheDocument();
     });
 
     it('should not render cancellation date', async () => {
       const requestMock = resolveSubscriptionDetailsQuery();
       render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
-      expect(screen.queryByText(/expiry date:/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/expiry date:/i)).not.toBeInTheDocument();
     });
   });
 
@@ -152,14 +152,14 @@ describe('Subscriptions: Component', () => {
         routerProps: currentSubscriptionTabRouterProps,
       });
 
-      expect(await screen.findByText(matchTextContent(/expiry date:.*january 01, 2099/gi))).toBeInTheDocument();
+      expect(await screen.findByText(matchTextContent(/expiry date:.*january 01, 2099/i))).toBeInTheDocument();
     });
 
     it('should not render next renewal date', async () => {
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
       render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
-      expect(screen.queryByText(/next renewal/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/next renewal/i)).not.toBeInTheDocument();
     });
   });
 
@@ -182,7 +182,7 @@ describe('Subscriptions: Component', () => {
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
       render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
-      expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/cancel subscription/i)).not.toBeInTheDocument();
     });
 
     it('should be hidden if user is on free plan', async () => {
@@ -197,7 +197,7 @@ describe('Subscriptions: Component', () => {
       const requestMock = fillSubscriptionScheduleQueryWithPhases(phases);
       render(<Component />, { apolloMocks: append(requestMock), routerProps: currentSubscriptionTabRouterProps });
 
-      expect(screen.queryByText(/cancel subscription/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/cancel subscription/i)).not.toBeInTheDocument();
     });
 
     it('should navigate to cancel subscription screen', async () => {
@@ -225,7 +225,7 @@ describe('Subscriptions: Component', () => {
       });
       await waitForApolloMocks();
 
-      expect(screen.queryByText(/Free trial expiry date/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Free trial expiry date/i)).not.toBeInTheDocument();
     });
 
     it('should be displayed if user has trial active', async () => {
@@ -249,7 +249,7 @@ describe('Subscriptions: Component', () => {
       });
 
       expect(
-        await screen.findByText(matchTextContent(/Free trial expiry date.*january 01, 2099/gi))
+        await screen.findByText(matchTextContent(/Free trial expiry date.*january 01, 2099/i))
       ).toBeInTheDocument();
     });
   });

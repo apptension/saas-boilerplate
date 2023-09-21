@@ -10,7 +10,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/prompts": "^2.4.4",
     "jsonc-eslint-parser": "^2.3.0"
   },
   "nx": {}

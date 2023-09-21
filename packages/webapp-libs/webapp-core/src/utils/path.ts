@@ -1,15 +1,29 @@
-import { is, map } from 'ramda';
+import { mapObjIndexed } from 'ramda';
 
 export const getLocalePath = (p: string) => `/:lang/${p}`;
 
-const assignGetLocalePath =
-  <T>(paths: Partial<T>) =>
-  (route: keyof T) => {
-    if (typeof paths[route] !== 'string') {
-      throw Error('Invalid route');
-    }
-    return getLocalePath(paths[route] as string);
-  };
+type ExtractKeysWithStringValue<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
+type NestedPath<
+  T,
+  Keys extends keyof T = keyof T,
+  KeysWithStringValues = ExtractKeysWithStringValue<T>,
+> = T extends string
+  ? string
+  : {
+      [P in Keys]: NestedPath<T[P]>;
+    } & {
+      index: string;
+      getRelativeUrl: (route: KeysWithStringValues) => string;
+    };
+
+type NestedPathInput = {
+  [key: string]: string | NestedPathInput;
+} & {
+  index?: string;
+};
 
 /**
  * Helper function to define typed nested route config
@@ -60,38 +74,25 @@ const assignGetLocalePath =
  * }
  * ```
  */
-export const nestedPath = <T extends object>(root: string, nestedRoutes: T) => {
-  const absoluteUrlsMapper = (value: any) => {
-    if (is(Object, value)) {
-      return mapRoot(root, value);
-    } else {
-      return root + '/' + value;
+export const nestedPath = <T extends NestedPathInput>(root: string, nestedRoutes: T): NestedPath<T> => {
+  const paths = mapObjIndexed((value, key) => {
+    if (!value) {
+      return null;
     }
-  };
-
-  const absoluteNestedUrls = map<T, T>(absoluteUrlsMapper, nestedRoutes);
-  const paths = {
-    index: `${root}/*`,
-    ...absoluteNestedUrls,
-  };
+    if (typeof value === 'string') {
+      return `${root}/${value}`;
+    }
+    return nestedPath(root, value);
+  }, nestedRoutes);
 
   return {
+    index: `${root}/`,
     ...paths,
-    getRelativeUrl: (route: keyof T) => nestedRoutes[route],
-    getLocalePath: assignGetLocalePath<T>(paths),
-  };
-};
-
-const mapRoot = <N>(root: string, obj: N): N => {
-  const override: Partial<N> = {};
-  for (const key in obj) {
-    if (typeof obj[key] === 'string') {
-      override[key] = (root + '/' + obj[key]) as N[Extract<keyof N, string>];
-    }
-  }
-  return {
-    ...obj,
-    ...override,
-    getLocalePath: assignGetLocalePath<N>(override),
-  };
+    getRelativeUrl: (key) => {
+      if (nestedRoutes.index) {
+        return nestedRoutes[key].toString().replace(new RegExp(`^${nestedRoutes.index}`), '');
+      }
+      return nestedRoutes[key];
+    },
+  } as NestedPath<T>;
 };

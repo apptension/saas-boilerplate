@@ -6,7 +6,6 @@ import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 
-import { RoutesConfig } from '../../../../../app/config/routes';
 import { render } from '../../../../../tests/utils/rendering';
 import { validateOtpMutation } from '../../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import { ValidateOtpForm } from '../validateOtpForm.component';

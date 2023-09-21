@@ -13,17 +13,29 @@ export default class WebappTest extends BaseCommand<typeof WebappTest> {
     watchAll: Flags.string({
       default: 'false',
     }),
+    includeLibs: Flags.boolean({
+      default: false,
+    }),
   };
 
   async run(): Promise<void> {
     const { flags } = await this.parse(WebappTest);
     await initConfig(this, {});
 
-    await runCommand('pnpm', [
-      'nx',
-      'run',
-      'webapp:test',
-      `--watchAll=${flags.watchAll}`,
-    ]);
+    if (flags.includeLibs) {
+      await runCommand('pnpm', [
+        'nx',
+        'run-many',
+        '--target=test',
+        '--projects=webapp*',
+      ]);
+    } else {
+      await runCommand('pnpm', [
+        'nx',
+        'run',
+        'webapp:test',
+        `--watchAll=${flags.watchAll}`,
+      ]);
+    }
   }
 }

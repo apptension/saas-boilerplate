@@ -177,7 +177,7 @@ describe('SubscriptionPlanItem: Component', () => {
       });
       await waitForApolloMocks();
 
-      expect(screen.queryByText(/will start with a trial/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/will start with a trial/i)).not.toBeInTheDocument();
     });
   });
 });

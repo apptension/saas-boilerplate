@@ -46,7 +46,7 @@ describe('Sidebar: Component', () => {
     it('should not show link to dashboard', async () => {
       const { waitForApolloMocks } = render(<Component />);
       await waitForApolloMocks();
-      expect(screen.queryByText(/dashboard/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
     });
 
     it('should show link to privacy policy', async () => {
@@ -57,7 +57,7 @@ describe('Sidebar: Component', () => {
     it('should not show link to admin page', async () => {
       const { waitForApolloMocks } = render(<Component />);
       await waitForApolloMocks();
-      expect(screen.queryByText(/admin/gi)).not.toBeInTheDocument();
+      expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
     });
   });
 
@@ -88,7 +88,7 @@ describe('Sidebar: Component', () => {
         const apolloMocks = getApolloMocks();
         const { waitForApolloMocks } = render(<Component />, { apolloMocks });
         await waitForApolloMocks();
-        expect(screen.queryByText(/admin/gi)).not.toBeInTheDocument();
+        expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
       });
 
       describe('on desktop', () => {
