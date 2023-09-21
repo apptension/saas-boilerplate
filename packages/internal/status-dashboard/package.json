@@ -16,10 +16,7 @@
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
     "@sb/tools": "*",
-    "aws-cdk": "^2.96.2",
-    "aws-cdk-lib": "^2.96.2",
-    "babel-plugin-styled-components": "^2.1.4",
-    "constructs": "^10.2.70"
+    "babel-plugin-styled-components": "^2.1.4"
   },
   "eslintConfig": {
     "extends": "react-app"

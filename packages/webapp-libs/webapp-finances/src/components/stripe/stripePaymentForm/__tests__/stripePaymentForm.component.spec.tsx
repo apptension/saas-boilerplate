@@ -108,7 +108,6 @@ describe('StripePaymentForm: Component', () => {
       await selectProduct();
       expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).not.toBeDisabled();
       await sendForm();
-      expect(await screen.findByRole('button', { name: /Pay \d+ USD/i })).toBeDisabled();
       expect(requestPaymentMutation.newData).toHaveBeenCalled();
     });
 

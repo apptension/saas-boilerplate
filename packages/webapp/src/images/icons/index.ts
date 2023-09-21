@@ -1,7 +1,7 @@
-import FacebookImg from './facebook.svg?react';
-import GoogleImg from './google.svg?react';
-import HeaderLogoImg from './headerLogo.svg?react';
-import HeaderLogoDarkImg from './headerLogoDark.svg?react';
+import FacebookImg from './facebook.svg';
+import GoogleImg from './google.svg';
+import HeaderLogoImg from './headerLogo.svg';
+import HeaderLogoDarkImg from './headerLogoDark.svg';
 import { makeIcon } from './makeIcon';
 
 //<-- IMPORT ICON FILE -->

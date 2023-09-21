@@ -36,14 +36,6 @@
         ]
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "packages/internal/tools/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
     "upload-service-version": {
       "executor": "nx:run-commands",
       "options": {

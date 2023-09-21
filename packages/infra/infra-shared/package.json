@@ -20,9 +20,6 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "2.66.0-alpha.0",
     "@sb/core": "*",
     "@sb/infra-core": "*",
-    "aws-cdk": "^2.96.2",
-    "aws-cdk-lib": "^2.96.2",
-    "cdk-ec2-key-pair": "^3.3.2",
-    "constructs": "^10.2.70"
+    "cdk-ec2-key-pair": "^3.3.2"
   }
 }

@@ -12,7 +12,6 @@
   "devDependencies": {
     "@types/prompts": "^2.4.4",
     "@types/ramda": "^0.28.25",
-    "aws-cdk": "^2.96.2",
     "jsonc-eslint-parser": "^2.3.0"
   },
   "nx": {}

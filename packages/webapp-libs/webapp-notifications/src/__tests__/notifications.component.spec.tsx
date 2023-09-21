@@ -1,7 +1,9 @@
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { ElementType } from 'react';
 
+import { fillNotificationsSubscriptionQuery, notificationFactory } from '../tests/factories';
 import { Notifications } from '../notifications.component';
 import { NotificationTypes } from '../notifications.types';
 import { render } from '../tests/utils/rendering';
@@ -15,7 +17,20 @@ describe('Notifications: Component', () => {
   const Component = () => <Notifications templates={templates} />;
 
   it('Should show trigger button', async () => {
-    render(<Component />);
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationsSubscriptionQuery(
+        [
+          notificationFactory({
+            type: 'some_random_type_that_doesnt_exist',
+          }),
+        ],
+        { hasUnreadNotifications: true }
+      ),
+    ];
+
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+    await waitForApolloMocks();
 
     expect(await screen.findByLabelText('Open notifications')).toBeInTheDocument();
     expect(screen.queryByText('Notifications')).not.toBeInTheDocument();

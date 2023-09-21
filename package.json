@@ -4,9 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "aws-vault:shell": "aws-vault exec $AWS_VAULT_PROFILE -- $SHELL",
     "prepare": "husky install",
-    "postinstall": "pnpm nx run cli:build"
+    "postinstall": "node packages/internal/cli/scripts/build.js"
   },
   "devDependencies": {
     "@apollo/client": "^3.8.4",
@@ -47,7 +46,11 @@
     "@types/react-test-renderer": "^18.0.2",
     "@typescript-eslint/eslint-plugin": "6.7.2",
     "@typescript-eslint/parser": "6.7.2",
+    "@vitejs/plugin-react": "^4.0.4",
+    "aws-cdk": "^2.96.2",
+    "aws-cdk-lib": "^2.96.2",
     "babel-jest": "29.7.0",
+    "constructs": "^10.2.70",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.0",
@@ -92,6 +95,7 @@
     "@aws-sdk/client-sts": "^3.414.0",
     "@iconify-icons/ion": "^1.2.10",
     "@sentry/react": "^7.70.0",
+    "@supercharge/strings": "^2.0.0",
     "ramda": "^0.29.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

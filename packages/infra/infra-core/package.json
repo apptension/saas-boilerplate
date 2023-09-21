@@ -6,9 +6,5 @@
     "build": "tsc --project tsconfig.lib.json",
     "cdk": "cdk"
   },
-  "devDependencies": {
-    "aws-cdk": "^2.96.2",
-    "aws-cdk-lib": "^2.96.2",
-    "constructs": "^10.2.70"
-  }
+  "devDependencies": {}
 }

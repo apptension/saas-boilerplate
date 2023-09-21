@@ -30,8 +30,6 @@
     "@sb/tools": "*",
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
-    "aws-cdk": "^2.96.2",
-    "aws-cdk-lib": "^2.96.2",
     "docusaurus-plugin-typedoc": "^0.20.1",
     "typedoc": "^0.25.1",
     "typedoc-plugin-markdown": "^3.16.0",

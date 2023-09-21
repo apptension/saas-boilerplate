@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@iconify/react": "^4.1.1",
-    "@supercharge/strings": "^2.0.0",
     "@types/color": "^3.0.4",
     "@types/lodash.throttle": "^4.1.7",
     "@types/ramda": "^0.28.25",

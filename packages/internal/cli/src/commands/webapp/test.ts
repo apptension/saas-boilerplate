@@ -11,7 +11,7 @@ export default class WebappTest extends BaseCommand<typeof WebappTest> {
 
   static flags = {
     watchAll: Flags.string({
-      default: 'true',
+      default: 'false',
     }),
   };
 
