@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/apptension/aws-boilerplate/compare/2.1.0...2.1.1) (2023-09-21)
+
+### Features
+
+- Add OS attributes to CLI telemetry ([#393](https://github.com/apptension/aws-boilerplate/issues/393)) ([df04a75](https://github.com/apptension/aws-boilerplate/commit/df04a75918ee809dfb5d688a642b5c10ebf06a83))
+
 ## [2.1.0](https://github.com/apptension/aws-boilerplate/compare/2.0.3...2.1.0) (2023-09-20)
 
 ### Features
