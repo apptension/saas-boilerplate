@@ -15,7 +15,7 @@ module.exports = (plop) => {
         type: 'modify',
         path: iconsRegisterPath,
         pattern: /(\/\/<-- IMPORT ICON FILE -->)/g,
-        template: "import { ReactComponent as {{ pascalCase name}}Img } from './{{ camelCase name }}.svg';\n$1",
+        template: "import { ReactComponent as {{ pascalCase name}}Img } from './{{ camelCase name }}.svg?react';\n$1",
       },
       {
         type: 'modify',

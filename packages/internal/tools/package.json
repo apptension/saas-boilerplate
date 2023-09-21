@@ -8,9 +8,7 @@
     "create-env": "nx exec -skip-nx-cache=true -- plop --plopfile src/plopfile.js createEnv",
     "lint": "eslint ."
   },
-  "dependencies": {
-    "ramda": "^0.28.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/prompts": "^2.4.4",
     "@types/ramda": "^0.28.25",

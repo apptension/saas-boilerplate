@@ -17,36 +17,14 @@
     "react-click-away-listener": "^2.2.3"
   },
   "peerDependencies": {
-    "@iconify-icons/ion": "^1.2.4",
     "@iconify/react": "^4.0.0",
-    "@storybook/react": "^7.0.10",
-    "msw": "^1.0.0",
-    "ramda": "^0.28.0",
-    "react-hook-form": "^7.34.0",
-    "react-intl": "^6.2.1",
-    "react-markdown": "^8.0.7"
+    "msw": "^1.0.0"
   },
   "devDependencies": {
-    "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
-    "@storybook/addon-actions": "^7.4.2",
-    "@storybook/addon-backgrounds": "^7.4.2",
-    "@storybook/addon-docs": "^7.4.2",
-    "@storybook/addon-essentials": "^7.4.2",
-    "@storybook/addon-measure": "^7.4.2",
-    "@storybook/addon-outline": "^7.4.2",
-    "@storybook/client-api": "^7.4.2",
-    "@storybook/client-logger": "^7.4.2",
-    "@storybook/react": "^7.4.2",
-    "@storybook/react-vite": "^7.4.2",
     "@types/ramda": "^0.28.25",
     "@types/testing-library__jest-dom": "^5.14.9",
     "eslint-plugin-formatjs": "^4.10.5",
-    "lucide-react": "^0.224.0",
-    "ramda": "^0.28.0",
-    "react-hook-form": "^7.46.1",
-    "react-intl": "^6.4.7",
-    "react-markdown": "^8.0.7",
-    "storybook": "^7.4.2"
+    "lucide-react": "^0.224.0"
   }
 }

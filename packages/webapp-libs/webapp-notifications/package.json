@@ -16,33 +16,12 @@
     "react-infinite-scroll-hook": "^4.1.1"
   },
   "peerDependencies": {
-    "@iconify-icons/ion": "^1.2.4",
-    "@iconify/react": "^4.0.0",
-    "ramda": "^0.28.0",
-    "react-intl": "^6.2.1",
-    "react-loading-skeleton": "^3.1.0",
-    "react-markdown": "^8.0.7"
+    "@iconify/react": "^4.0.0"
   },
   "devDependencies": {
-    "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
-    "@storybook/addon-actions": "^7.4.2",
-    "@storybook/addon-backgrounds": "^7.4.2",
-    "@storybook/addon-docs": "^7.4.2",
-    "@storybook/addon-essentials": "^7.4.2",
-    "@storybook/addon-measure": "^7.4.2",
-    "@storybook/addon-outline": "^7.4.2",
-    "@storybook/client-api": "^7.4.2",
-    "@storybook/client-logger": "^7.4.2",
-    "@storybook/react": "^7.4.2",
-    "@storybook/react-vite": "^7.4.2",
     "@types/ramda": "^0.28.25",
     "@types/testing-library__jest-dom": "^5.14.9",
-    "eslint-plugin-formatjs": "^4.10.5",
-    "ramda": "^0.28.0",
-    "react-intl": "^6.4.7",
-    "react-loading-skeleton": "^3.3.1",
-    "react-markdown": "^8.0.7",
-    "storybook": "^7.4.2"
+    "eslint-plugin-formatjs": "^4.10.5"
   }
 }
