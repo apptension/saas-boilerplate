@@ -13,8 +13,8 @@
     "diff": "nx exec -- cdk diff *DocsStack"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.4.1",
-    "@docusaurus/preset-classic": "^2.4.1",
+    "@docusaurus/core": "^2.4.3",
+    "@docusaurus/preset-classic": "^2.4.3",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.2.1",
     "react": "^16.14.0",
@@ -22,8 +22,8 @@
     "react-router-config": "^5.1.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.4.1",
-    "@docusaurus/types": "^2.4.1",
+    "@docusaurus/module-type-aliases": "^2.4.3",
+    "@docusaurus/types": "^2.4.3",
     "@sb/core": "*",
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",

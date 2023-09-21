@@ -39,7 +39,6 @@
   },
   "devDependencies": {
     "@types/node-persist": "^3.1.4",
-    "@types/ramda": "^0.29.4",
     "eslint-config-oclif": "^4.0.0",
     "eslint-config-oclif-typescript": "^1.0.3",
     "oclif": "^3.16.0",

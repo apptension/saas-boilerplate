@@ -11,20 +11,5 @@
   "dependencies": {
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*"
-  },
-  "peerDependencies": {
-    "react-router": "^6.7.0",
-    "react-router-dom": "^6.7.0",
-    "styled-components": "5.3.6"
-  },
-  "devDependencies": {
-    "@types/ramda": "^0.28.23",
-    "@types/styled-components": "^5.1.26",
-    "@types/testing-library__jest-dom": "^5.14.5",
-    "react-router": "^6.7.0",
-    "react-router-dom": "^6.7.0",
-    "storybook": "^7.0.10",
-    "styled-components": "5.3.6",
-    "ts-jest": "28.0.5"
   }
 }
