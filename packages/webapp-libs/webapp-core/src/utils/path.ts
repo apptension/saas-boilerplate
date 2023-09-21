@@ -76,7 +76,7 @@ type NestedPathInput = {
  */
 export const nestedPath = <T extends NestedPathInput>(root: string, nestedRoutes: T): NestedPath<T> => {
   const paths = mapObjIndexed((value, key) => {
-    if (!value) {
+    if (typeof value === 'undefined') {
       return null;
     }
     if (typeof value === 'string') {
