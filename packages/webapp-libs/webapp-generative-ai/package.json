@@ -12,15 +12,5 @@
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
     "typewriter-effect": "^2.20.1"
-  },
-  "peerDependencies": {
-    "@iconify/react": "^4.0.0",
-    "msw": "^1.0.0"
-  },
-  "devDependencies": {
-    "@iconify/react": "^4.1.1",
-    "@types/ramda": "^0.28.25",
-    "@types/testing-library__jest-dom": "^5.14.9",
-    "eslint-plugin-formatjs": "^4.10.5"
   }
 }
