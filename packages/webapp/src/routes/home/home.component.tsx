@@ -19,7 +19,6 @@ type DashboardItem = {
 export const Home = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
-
   const dashboardItems: DashboardItem[] = [
     {
       title: intl.formatMessage({

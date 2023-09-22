@@ -60,9 +60,7 @@ export default defineConfig(({ mode }): UserConfig => {
       viteTsConfigPaths({
         projects: ['../../tsconfig.base.json'],
       }),
-      svgr({
-        include: '**/*.svg',
-      }),
+      svgr(),
       viteCommonjs(),
     ],
 
