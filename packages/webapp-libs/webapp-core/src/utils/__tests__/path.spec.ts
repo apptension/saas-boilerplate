@@ -14,10 +14,11 @@ describe('Utils: path', () => {
       });
 
       expect(result).toEqual({
-        index: 'root/',
+        index: 'root/*',
         step: 'root/step',
         anotherStep: 'root/another-step/:id',
         getRelativeUrl: expect.any(Function),
+        getLocalePath: expect.any(Function),
       });
     });
 
@@ -40,14 +41,16 @@ describe('Utils: path', () => {
         });
 
         expect(result).toEqual({
-          index: 'root/',
+          index: 'root/*',
           step: 'root/step',
           nestedStep: {
-            index: 'root/nested/',
+            index: 'root/nested/*',
             anotherStep: 'root/nested/another-step/:id',
             getRelativeUrl: expect.any(Function),
+            getLocalePath: expect.any(Function),
           },
           getRelativeUrl: expect.any(Function),
+          getLocalePath: expect.any(Function),
         });
       });
 
