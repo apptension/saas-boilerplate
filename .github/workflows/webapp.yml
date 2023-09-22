@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 16, 18 ]
+        node-version: [ 18, 20 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 16, 18 ]
+        node-version: [ 18, 20 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -77,7 +77,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 16, 18 ]
+        node-version: [ 18, 20 ]
         webapp-lib-name:
           - webapp-core
           - webapp-api-client

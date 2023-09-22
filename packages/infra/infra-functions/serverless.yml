@@ -4,7 +4,7 @@ frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   versionFunctions: false
   stage: "${env:ENV_STAGE}"
   region: "${env:AWS_REGION, env:AWS_DEFAULT_REGION}"
