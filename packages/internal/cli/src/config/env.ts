@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process';
-import {promisify} from 'util';
-import {resolve} from 'path';
+import { promisify } from 'util';
+import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as envalid from 'envalid';
 
@@ -34,7 +34,7 @@ export async function loadVersionEnv() {
   }
 
   const { stdout: versionRaw } = await exec(
-    'git describe --tags --first-parent --abbrev=11 --long --dirty --always'
+    'git describe --tags --first-parent --abbrev=11 --long --dirty --always',
   );
   const version = versionRaw.trim();
   process.env.VERSION = version;
