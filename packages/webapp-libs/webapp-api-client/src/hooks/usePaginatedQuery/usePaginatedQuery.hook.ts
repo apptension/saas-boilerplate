@@ -63,7 +63,7 @@ export const usePaginatedQuery = <T extends TypedDocumentNode>(
     if (cachedCursors.includes(data?.[options.dataKey]?.pageInfo.endCursor)) {
       setCachedCursors([])
     }
-  }, [data])
+  }, [data, cachedCursors, options.dataKey])
 
   useEffect(() => {
     setHasPrevious(cachedCursors.length > 0);

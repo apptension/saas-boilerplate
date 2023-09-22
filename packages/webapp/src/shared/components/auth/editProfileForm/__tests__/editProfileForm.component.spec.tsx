@@ -1,7 +1,7 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
 import { Role } from '../../../../../modules/auth/auth.types';

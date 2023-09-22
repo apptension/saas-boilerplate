@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.16.17",
-    "serverless": "^3.25.1",
-    "serverless-esbuild": "^1.37.0"
+    "serverless": "^3.35.2",
+    "serverless-esbuild": "^1.48.0"
   }
 }

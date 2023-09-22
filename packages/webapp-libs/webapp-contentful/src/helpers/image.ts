@@ -46,11 +46,14 @@ const parseOptions = (overrides: ImageOptions) => {
   });
 };
 
-const imageUrl = (image: ContentfulPlain<Asset>, options: ImageOptions = {}) => {
+const imageUrl = (image: ContentfulPlain<Asset> | null | undefined, options: ImageOptions = {}) => {
+  if (!image?.url) {
+    return null;
+  }
   return (image?.url ?? '') + '?' + parseOptions(options);
 };
 
-export const imageProps = (image: ContentfulPlain<Asset>, options: ImageOptions = {}) => ({
+export const imageProps = (image: ContentfulPlain<Asset> | null | undefined, options: ImageOptions = {}) => ({
   alt: image?.title ?? image?.description ?? '',
   src: imageUrl(image, options),
 });

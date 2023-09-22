@@ -41,6 +41,7 @@ const initAWSVault = async () => {
     const { stdout } = await exec(`aws-vault export ${awsVaultProfile}`);
     const credentials = dotenv.parse(stdout);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     dotenv.populate(process.env, credentials);
 

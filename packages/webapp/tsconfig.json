@@ -7,7 +7,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["vite/client", "@types/gtag.js"],
+    "types": ["./src/types/index.d.ts", "vite/client", "@types/gtag.js"],
     "noEmit": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,

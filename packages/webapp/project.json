@@ -51,13 +51,6 @@
       },
       "dependsOn": ["graphql:generate-types"]
     },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/webapp/**/*.{ts,tsx,js,jsx}"]
-      }
-    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {

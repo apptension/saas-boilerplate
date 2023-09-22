@@ -87,4 +87,4 @@ services:
       - BE_ENDPOINT_URL=http://backend:5001/
     volumes:
       - ./packages/internal/local-ws-server/:/app/
-      - /app/node_modules
+      - /app/node_modules/

@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
 import { render } from '../../../../tests/utils/rendering';

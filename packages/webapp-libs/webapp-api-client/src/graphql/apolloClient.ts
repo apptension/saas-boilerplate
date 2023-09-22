@@ -62,8 +62,10 @@ const handleApiErrors = (
 
   if (networkError) {
     const result = (networkError as ServerError).result;
-    if (result && result?.['code']?.code === 'token_not_valid') {
-      return callRefresh();
+    if (typeof result !== 'string') {
+      if (result && result?.['code']?.code === 'token_not_valid') {
+        return callRefresh();
+      }
     }
     IS_LOCAL_ENV && console.log(`[Network error]: ${networkError}`);
   }

@@ -34,7 +34,7 @@
         "parallel": false,
         "commands": [
           "nx run-many --target=setup",
-          "nx run-many --target=compose-build-image --projects=backend,workers",
+          "nx run-many --target=compose-build-image --projects=backend,workers,localwsserver",
           "docker-compose up --force-recreate -d backend workers"
         ]
       },
@@ -46,13 +46,6 @@
         "color": true,
         "parallel": false,
         "commands": ["docker-compose down"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/internal/core/**/*.ts"]
       }
     }
   },

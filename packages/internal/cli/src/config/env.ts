@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as envalid from 'envalid';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sbTelemetry = require('@apptension/saas-boilerplate-telemetry');
 
 export const getRootPath = () => {
@@ -27,17 +28,13 @@ export const SB_TELEMETRY_KEY = process.env.SB_TELEMETRY_KEY ?? sbTelemetry[1];
 
 const exec = promisify(childProcess.exec);
 
-type LoadDotenvOptions = {
-  rootPath: string;
-};
-
 export async function loadVersionEnv() {
   if (process.env.VERSION) {
     return process.env.VERSION;
   }
 
   const { stdout: versionRaw } = await exec(
-    'git describe --tags --first-parent --abbrev=11 --long --dirty --always'
+    'git describe --tags --first-parent --abbrev=11 --long --dirty --always',
   );
   const version = versionRaw.trim();
   process.env.VERSION = version;

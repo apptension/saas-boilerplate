@@ -2,7 +2,7 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { times } from 'ramda';
 
 import { Role } from '../../../../../modules/auth/auth.types';

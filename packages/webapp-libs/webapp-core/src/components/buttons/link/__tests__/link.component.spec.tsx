@@ -1,5 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 
 import { render } from '../../../../tests/utils/rendering';

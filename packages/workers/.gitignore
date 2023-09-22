@@ -30,3 +30,4 @@ node_modules
 
 # Coverage
 .coverage
+cov/

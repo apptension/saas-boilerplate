@@ -16,7 +16,6 @@ type CrudDemoItemProps = {
 
 export const CrudDemoItem: FC<CrudDemoItemProps> = ({ routesConfig }) => {
   const generateLocalePath = useGenerateLocalePath();
-
   return (
     <Routes>
       <Route index element={<CrudDemoItemList />} />

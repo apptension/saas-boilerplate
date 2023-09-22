@@ -6,7 +6,7 @@ import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import tailwind from 'tailwindcss';
 import { UserConfig, defineConfig, loadEnv } from 'vite';
-import svgrPlugin from 'vite-plugin-svgr';
+import svgr from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 dns.setDefaultResultOrder('verbatim');
@@ -60,7 +60,7 @@ export default defineConfig(({ mode }): UserConfig => {
       viteTsConfigPaths({
         projects: ['../../tsconfig.base.json'],
       }),
-      svgrPlugin(),
+      svgr(),
       viteCommonjs(),
     ],
 

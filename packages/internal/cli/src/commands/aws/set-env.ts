@@ -22,7 +22,7 @@ export default class SetEnv extends BaseCommand<typeof SetEnv> {
   };
 
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(SetEnv);
+    const { args } = await this.parse(SetEnv);
     const { envStage: currentEnvStage } = await initConfig(this, {});
 
     if (currentEnvStage === args.envStage) {

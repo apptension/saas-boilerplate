@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 
-import { getTrackingId, isAvailable } from '../../services/analytics';
+import * as analytics from '../../services/analytics';
 
 export const GTM = () => {
+  const isAnalyticsAvailable = analytics.isAvailable();
   useEffect(() => {
-    const trackingId = getTrackingId();
+    const trackingId = analytics.getTrackingId();
 
     const script = document.createElement('script');
     const initScript = document.createElement('script');
@@ -26,7 +27,7 @@ export const GTM = () => {
       document.body.removeChild(script);
       document.body.removeChild(initScript);
     };
-  }, [isAvailable()]);
+  }, [isAnalyticsAvailable]);
 
   return null;
 };

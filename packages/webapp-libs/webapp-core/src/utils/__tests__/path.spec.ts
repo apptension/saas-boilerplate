@@ -1,4 +1,4 @@
-import { nestedPath } from '../path';
+import { getLocalePath, nestedPath } from '../path';
 
 describe('Utils: path', () => {
   describe('nestedRoute', () => {
@@ -56,16 +56,16 @@ describe('Utils: path', () => {
 
       it('should return relative url using getRelativeUrl property', () => {
         const result = nestedPath('root', {
-          step: 'step',
           nestedStep: nestedPath('nested', {
-            anotherStep: 'another-step/:id',
-          }),
-          anotherNest: nestedPath('aaa', {
-            anotherStep: 'step/:id',
+            anotherStep: nestedPath('another-step/:id', {
+              yetAnotherStep: 'yet-another-step',
+            }),
+            anotherStep2: 'another-step-2/:id',
           }),
         });
 
-        expect(result.nestedStep.getRelativeUrl('anotherStep')).toEqual('another-step/:id');
+        expect(result.nestedStep.getRelativeUrl('anotherStep2')).toEqual('another-step-2/:id');
+        expect(result.nestedStep.anotherStep.getRelativeUrl('yetAnotherStep')).toEqual('yet-another-step');
       });
 
       it('should return locale path using getLocalePath property', () => {
@@ -76,7 +76,7 @@ describe('Utils: path', () => {
           }),
         });
 
-        expect(result.nestedStep.getLocalePath('anotherStep')).toEqual('/:lang/root/nested/another-step/:id');
+        expect(getLocalePath(result.nestedStep.anotherStep)).toEqual('/:lang/root/nested/another-step/:id');
       });
     });
   });

@@ -26,12 +26,13 @@ export const DemoItemContent: FC<DemoItemContentProps> = ({ data, routesConfig }
     }
   }, [routesConfig.notFound, generateLocalePath, navigate, item]);
 
+  const { alt, src } = imageProps(item?.image);
   return (
     <PageLayout>
       <PageHeadline hasBackButton header={item?.title} />
-      {item?.image && (
+      {src && (
         <div className="bg-black p-2 inline-block rounded-md">
-          <img className="max-w-[100%] object-cover" {...imageProps(item.image)} />
+          <img src={src} alt={alt} className="max-w-[100%] object-cover" />
         </div>
       )}
       <p className="text-base whitespace-pre-wrap">{item?.description}</p>

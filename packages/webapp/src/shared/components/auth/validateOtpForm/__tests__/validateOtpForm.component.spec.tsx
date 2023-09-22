@@ -2,11 +2,10 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 
-import { RoutesConfig } from '../../../../../app/config/routes';
 import { render } from '../../../../../tests/utils/rendering';
 import { validateOtpMutation } from '../../twoFactorAuthForm/twoFactorAuthForm.graphql';
 import { ValidateOtpForm } from '../validateOtpForm.component';
@@ -52,7 +51,7 @@ describe('ValidateOtpForm: Component', () => {
     await userEvent.click(submitButton);
     await waitForApolloMocks();
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(mockNavigate).toHaveBeenCalledWith(`/en`);
     expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-validate');
   });
 

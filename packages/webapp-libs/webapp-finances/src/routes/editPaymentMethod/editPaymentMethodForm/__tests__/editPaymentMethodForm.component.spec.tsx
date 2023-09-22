@@ -9,7 +9,7 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixt
 import { Elements } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { append, times } from 'ramda';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';

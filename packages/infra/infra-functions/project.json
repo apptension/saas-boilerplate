@@ -17,14 +17,6 @@
       "options": {
         "lintFilePatterns": ["packages/infra/infra-functions/**/*.ts"]
       }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/infra/infra-functions"],
-      "options": {
-        "jestConfig": "services/auth/jest.config.js",
-        "passWithNoTests": true
-      }
     }
   },
   "tags": ["service"]

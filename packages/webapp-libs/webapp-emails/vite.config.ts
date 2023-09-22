@@ -6,11 +6,11 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import polyfillNode from 'rollup-plugin-polyfill-node';
-import { defineConfig, loadEnv } from 'vite';
-import svgrPlugin from 'vite-plugin-svgr';
+import { UserConfig, defineConfig, loadEnv } from 'vite';
+import svgr from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig(async (props) => {
+export default defineConfig(async (props): Promise<UserConfig> => {
   const env = loadEnv(props.mode, process.cwd());
 
   // expose .env as process.env instead of import.meta since jest does not import meta yet
@@ -31,7 +31,7 @@ export default defineConfig(async (props) => {
       viteTsConfigPaths({
         projects: ['../../../tsconfig.base.json'],
       }),
-      svgrPlugin(),
+      svgr(),
       viteCommonjs(),
       peerDepsExternal(),
     ],

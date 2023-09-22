@@ -1,5 +1,5 @@
-import { BaseThemedCssFunction, css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 import { complement, isNil, reverse } from 'ramda';
+import { DefaultTheme, Interpolation, css } from 'styled-components';
 
 export enum Breakpoint {
   MOBILE = 'MOBILE',
@@ -30,7 +30,7 @@ const getWindowWidth = () => window.innerWidth;
 export const getBreakpointMediaQuery = (breakpoint: Breakpoint) => `(min-width: ${sizes[breakpoint]}px)`;
 
 export const media = (breakpoint: Breakpoint, opts: { landscape?: boolean; retina?: boolean } = {}) => {
-  return ((styleTemplate: TemplateStringsArray, ...interpolations: SimpleInterpolation[]) => {
+  return (styleTemplate: TemplateStringsArray, ...interpolations: Interpolation<any>[]) => {
     const joinQuery = (...queries: (string | null)[]) => queries.filter(complement(isNil)).join(' and ');
 
     const sizeQuery = `(min-width: ${sizes[breakpoint]}px)`;
@@ -49,7 +49,7 @@ export const media = (breakpoint: Breakpoint, opts: { landscape?: boolean; retin
         ${css(styleTemplate, ...interpolations)}
       }
     `;
-  }) as BaseThemedCssFunction<DefaultTheme>;
+  };
 };
 
 export const isMobile = () => {
@@ -85,12 +85,3 @@ export const getActiveBreakpoint = () => {
 
   return breakpoint;
 };
-
-export const responsiveValue =
-  <Value>(defaultValue: Value, config: Partial<Record<Breakpoint, Value>> = {}) =>
-  ({ theme }: { theme: DefaultTheme }) => {
-    const matchesCurrentBreakpoint = (breakpoint: Breakpoint) =>
-      sizesOrdered.indexOf(breakpoint) <= sizesOrdered.indexOf(theme.activeBreakpoint ?? Breakpoint.MOBILE);
-    const matchingBreakpoint = reverse(sizesOrdered).find((size) => config[size] && matchesCurrentBreakpoint(size));
-    return matchingBreakpoint ? config[matchingBreakpoint] : defaultValue;
-  };

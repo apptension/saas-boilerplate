@@ -2,10 +2,9 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { RoutesConfig } from '../../../../../app/config/routes';
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
 import { LoginForm } from '../loginForm.component';
@@ -66,7 +65,7 @@ describe('LoginForm: Component', () => {
     await waitForApolloMocks();
 
     expect(trackEvent).toHaveBeenCalledWith('auth', 'log-in');
-    expect(await mockNavigate).toHaveBeenCalledWith(`/en/${RoutesConfig.home}`);
+    expect(await mockNavigate).toHaveBeenCalledWith(`/en`);
   });
 
   it('should show error if required value is missing', async () => {

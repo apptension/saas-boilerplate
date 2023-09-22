@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/internal/local-ws-server",
+  "projectType": "application",
+  "sourceRoot": "packages/workers",
+  "targets": {
+    "compose-build-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "commands": ["docker-compose build localwsserver"],
+        "parallel": false
+      }
+    }
+  },
+  "tags": ["service"]
+}

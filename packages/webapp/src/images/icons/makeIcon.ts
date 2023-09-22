@@ -1,5 +1,5 @@
 import { FunctionComponent, SVGProps } from 'react';
-import styled, { css } from 'styled-components';
+import { css, styled } from 'styled-components';
 
 export type IconComponentProps = {
   color?: string;

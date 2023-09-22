@@ -1,9 +1,5 @@
 import { CLIError } from '@oclif/errors';
-import * as childProcess from 'child_process';
-import { promisify } from 'util';
 import { lookpath } from 'lookpath';
-
-const exec = promisify(childProcess.exec);
 
 export const isAwsVaultInstalled = async () => {
   return await lookpath('aws-vault');

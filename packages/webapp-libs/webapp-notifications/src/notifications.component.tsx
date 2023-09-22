@@ -47,8 +47,8 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
     return <NotificationsButtonFallback />;
   }
 
-  const onLoadMore = (cursor: string, count = NOTIFICATIONS_PER_PAGE) => {
-    fetchMore({
+  const onLoadMore = async (cursor: string, count = NOTIFICATIONS_PER_PAGE) => {
+    await fetchMore({
       variables: {
         cursor,
         count,
