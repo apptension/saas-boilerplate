@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/apptension/saas-boilerplate/compare/2.1.1...2.1.2) (2023-09-25)
+
+### Features
+
+- [#391](https://github.com/apptension/saas-boilerplate/issues/391) Update minimum node.js version to 18 ([#396](https://github.com/apptension/saas-boilerplate/issues/396)) ([3c0b8a1](https://github.com/apptension/saas-boilerplate/commit/3c0b8a1614165e5b4c2a79a17245441269dfc294))
+- Remove unsupported browser detection as it is not necessary for feat: Remove unsupported browser detection ([#401](https://github.com/apptension/saas-boilerplate/issues/401)) ([85a8b6d](https://github.com/apptension/saas-boilerplate/commit/85a8b6d3ba1ba4acbc6ee36c034463b526c921d0))
+- Update and cleanup pnpm dependencies ([#399](https://github.com/apptension/saas-boilerplate/issues/399)) ([9d2fa78](https://github.com/apptension/saas-boilerplate/commit/9d2fa78c4a375685c79d7ca1da6796d35f6c6ef5))
+
+### Bug Fixes
+
+- Fix error thrown when registering a new user when stripe is disabled ([#404](https://github.com/apptension/saas-boilerplate/issues/404)) ([ffb613e](https://github.com/apptension/saas-boilerplate/commit/ffb613e340d43cda9247d684c2f827cd4974f682))
+- Set version to 0.0.1 when git is unable to determine a version in case no tags exist in repository ([#402](https://github.com/apptension/saas-boilerplate/issues/402)) ([07cda15](https://github.com/apptension/saas-boilerplate/commit/07cda150cd82f8bfad634b789bff5fd6782e0def))
+
 ### [2.1.1](https://github.com/apptension/aws-boilerplate/compare/2.1.0...2.1.1) (2023-09-21)
 
 ### Features
