@@ -7,8 +7,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import 'regenerator-runtime/runtime';
 
 import { ApiProvider, RouterProvider, SentryProvider } from './providers';
-import { setUnsupportedClasses } from './unsupported/support';
-import { UnsupportedBrowserDetection } from './unsupported/unsupportedBrowserDetection';
 
 const render = () => {
   const App = lazy(() => import('./app.component'));
@@ -40,13 +38,6 @@ const render = () => {
 };
 
 export const initApp = async () => {
-  const detection = new UnsupportedBrowserDetection();
-
-  if (!detection.isSupported()) {
-    setUnsupportedClasses(detection.isInAppBrowser, detection.deviceType, detection.isSupported);
-    return;
-  }
-
   // Chunked polyfill for browsers without Intl support
   if (!window.Intl) {
     Promise.resolve(require('intl'))
