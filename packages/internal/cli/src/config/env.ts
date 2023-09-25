@@ -33,9 +33,16 @@ export async function loadVersionEnv() {
     return process.env.VERSION;
   }
 
-  const { stdout: versionRaw } = await exec(
-    'git describe --tags --first-parent --abbrev=11 --long --dirty --always',
-  );
+  let versionRaw = '';
+  try {
+    const { stdout } = await exec(
+      'git describe --tags --first-parent --abbrev=11 --long --dirty --always',
+    );
+    versionRaw = stdout;
+  } catch {
+    versionRaw = '0.0.1';
+  }
+
   const version = versionRaw.trim();
   process.env.VERSION = version;
   return version;
