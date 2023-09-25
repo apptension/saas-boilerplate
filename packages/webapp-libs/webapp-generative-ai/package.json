@@ -1,6 +1,6 @@
 {
   "name": "@sb/webapp-generative-ai",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "type": "commonjs",
   "scripts": {
     "test": "jest",
