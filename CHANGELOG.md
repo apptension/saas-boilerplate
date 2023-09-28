@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/apptension/saas-boilerplate/compare/2.2.0...2.2.1) (2023-09-28)
+
+### Bug Fixes
+
+- Remove command args from telemetry ([#406](https://github.com/apptension/saas-boilerplate/issues/406)) ([37df532](https://github.com/apptension/saas-boilerplate/commit/37df532ab58abb52d29fc65870422a0e6668fa83))
+
 ## [2.2.0](https://github.com/apptension/saas-boilerplate/compare/2.1.2...2.2.0) (2023-09-25)
 
 ### [2.1.2](https://github.com/apptension/saas-boilerplate/compare/2.1.1...2.1.2) (2023-09-25)
