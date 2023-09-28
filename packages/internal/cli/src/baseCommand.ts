@@ -60,7 +60,6 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
           {
             attributes: {
               ...formatAttrs(this.flags, 'flags'),
-              ...formatAttrs(this.args, 'args'),
             },
           },
           async (span) => {
