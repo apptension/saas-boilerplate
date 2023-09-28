@@ -46,7 +46,10 @@
         ],
         "parallel": false
       },
-      "dependsOn": ["compose-build-image"]
+      "dependsOn": [
+        { "projects": ["webapp-emails"], "target": "build" },
+        "compose-build-image"
+      ]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -70,7 +73,10 @@
         "color": true,
         "command": "docker-compose run --rm --entrypoint /bin/bash workers /app/packages/workers/scripts/runtime/run_build.sh"
       },
-      "dependsOn": ["compose-build-image"]
+      "dependsOn": [
+        { "projects": ["webapp-emails"], "target": "build" },
+        "compose-build-image"
+      ]
     }
   },
   "tags": ["service"]

@@ -28,7 +28,7 @@ export default class WorkersDeploy extends BaseCommand<typeof WorkersDeploy> {
     );
     await dockerHubLogin();
 
-    this.log(`Deploying backend:
+    this.log(`Deploying workers:
   envStage: ${color.green(envStage)}
   version: ${color.green(version)}
   AWS account: ${color.green(awsAccountId)}

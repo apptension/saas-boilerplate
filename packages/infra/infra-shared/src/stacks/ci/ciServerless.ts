@@ -24,7 +24,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     super(scope, id, { envSettings: props.envSettings });
 
     const buildArtifact = codepipeline.Artifact.artifact(
-      `${props.envSettings.projectEnvName}-workers`
+      `${props.envSettings.projectEnvName}-workers`,
     );
 
     const buildProject = this.createBuildProject(props);
@@ -35,8 +35,8 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           input: props.inputArtifact,
           outputs: [buildArtifact],
         },
-        props
-      )
+        props,
+      ),
     );
 
     const deployProject = this.createDeployProject(props);
@@ -47,14 +47,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           input: buildArtifact,
           runOrder: 2,
         },
-        props
-      )
+        props,
+      ),
     );
   }
 
   private createBuildAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: ServerlessCiConfigProps
+    props: ServerlessCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -71,10 +71,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
 
     const installCommands = this.getAssumeRoleCommands();
     const preBuildCommands = [
-      ...this.getWorkspaceSetupCommands(
-        PnpmWorkspaceFilters.WEBAPP_EMAILS,
-        PnpmWorkspaceFilters.WORKERS
-      ),
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.WORKERS),
       this.getECRLoginCommand(),
     ];
     const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
@@ -93,11 +90,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
             commands: preBuildCommands,
           },
           build: {
-            commands: [
-              `pnpm saas workers lint`,
-              'pnpm saas emails build',
-              `pnpm saas workers test`,
-            ],
+            commands: [`pnpm saas workers lint`, `pnpm saas workers test`],
           },
         },
         cache: {
@@ -133,19 +126,19 @@ export class ServerlessCiConfig extends ServiceCiConfig {
       },
       cache: codebuild.Cache.local(
         codebuild.LocalCacheMode.CUSTOM,
-        codebuild.LocalCacheMode.DOCKER_LAYER
+        codebuild.LocalCacheMode.DOCKER_LAYER,
       ),
     });
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => {
       dockerAssumeRole.addToPolicy(statement);
       project.addToRolePolicy(statement);
     });
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => {
       dockerAssumeRole.addToPolicy(statement);
       project.addToRolePolicy(statement);
@@ -161,7 +154,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:*'],
         resources: ['*'],
-      })
+      }),
     );
 
     project.addToRolePolicy(
@@ -169,7 +162,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         effect: iam.Effect.ALLOW,
         actions: ['sts:AssumeRole'],
         resources: [dockerAssumeRole.roleArn],
-      })
+      }),
     );
 
     return project;
@@ -177,7 +170,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
 
   private createDeployAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: ServerlessCiConfigProps
+    props: ServerlessCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -246,14 +239,14 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     });
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => {
       dockerAssumeRole.addToPolicy(statement);
       project.addToRolePolicy(statement);
     });
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => {
       dockerAssumeRole.addToPolicy(statement);
       project.addToRolePolicy(statement);
@@ -269,7 +262,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:*'],
         resources: ['*'],
-      })
+      }),
     );
 
     project.addToRolePolicy(
@@ -277,7 +270,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         effect: iam.Effect.ALLOW,
         actions: ['sts:AssumeRole'],
         resources: [dockerAssumeRole.roleArn],
-      })
+      }),
     );
 
     dockerAssumeRole.addToPolicy(
@@ -288,7 +281,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-workers/*`,
         ],
-      })
+      }),
     );
 
     dockerAssumeRole.addToPolicy(
@@ -310,7 +303,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
           'states:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;
