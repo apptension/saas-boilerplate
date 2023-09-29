@@ -85,6 +85,22 @@ certificates for CloudFront distribution and Load Balancer should be already gen
 CNAME DNS records pointing to CloudFront distribution and Load Balancer need to be manually added.
 :::
 
+### \[Optional\] Configure production domain
+
+SaaS Boilerplate creates a certificate that supports `*.[ENV_STAGE].example.com` domains, like
+`app.production.example.com`. You most likely don't want such domain and need straight up `app.example.com` for your
+production environment. Set a following variable to override the default behaviour:
+
+```
+pnpm saas aws set-var SB_CERTIFICATE_DOMAIN example.com
+```
+
+Without setting this variable you'll encounter an error during deployment
+```
+Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution: The certificate that is
+attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add.
+```
+
 ### \[Optional\] Protect the website with basic auth
 
 It's a good idea to prevent unauthorized access to staging environments so we suggest to set a basic auth password

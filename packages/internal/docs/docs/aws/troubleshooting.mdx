@@ -1,0 +1,14 @@
+
+# Troubleshooting
+
+## Deployment errors
+
+#### The certificate that is attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add.
+
+By default, SaaS Boilerplate creates certificate that supports `*.[ENV_STAGE].[HOSTED_ZONE_NAME]` domains
+(e.g. `*.production.example.com`). If you want to override this behaviour and name your domain differently
+(e.g. `example.com`) then you can override this behaviour be setting `SB_CERTIFICATE_DOMAIN` variable:
+
+```
+pnpm saas aws set-var SB_CERTIFICATE_DOMAIN example.com
+```
