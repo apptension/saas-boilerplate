@@ -208,6 +208,7 @@ module.exports = {
             'aws/architecture/cicd-architecture',
           ],
         },
+          'aws/troubleshooting'
       ],
     },
   ],
