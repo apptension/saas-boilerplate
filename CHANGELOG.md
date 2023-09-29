@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.2](https://github.com/apptension/saas-boilerplate/compare/2.2.1...2.2.2) (2023-09-29)
+
+### Bug Fixes
+
+- Enforce emails artifact build before workers build / deploy is executed to make sure emails/renderer/index.umd.js is present ([#407](https://github.com/apptension/saas-boilerplate/issues/407)) ([e5349be](https://github.com/apptension/saas-boilerplate/commit/e5349be603127f6525635f879ebc53394ec47064))
+
 ### [2.2.1](https://github.com/apptension/saas-boilerplate/compare/2.2.0...2.2.1) (2023-09-28)
 
 ### Bug Fixes
