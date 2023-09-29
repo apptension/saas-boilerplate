@@ -9,7 +9,7 @@ export default class EmailsSecrets extends BaseCommand<typeof EmailsSecrets> {
 
   async run(): Promise<void> {
     this.error(
-      'Emails package do not have their own separate secrets service. Use `saas webapp secrets` instead.'
+      'Emails package do not have their own separate secrets service. Use `saas workers secrets` instead.'
     );
   }
 }

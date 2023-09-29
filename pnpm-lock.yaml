@@ -1025,6 +1025,9 @@ importers:
       '@sb/tools':
         specifier: '*'
         version: link:../internal/tools
+      '@sb/webapp-emails':
+        specifier: '*'
+        version: link:../webapp-libs/webapp-emails
       esbuild:
         specifier: 0.16.17
         version: 0.16.17

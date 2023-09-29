@@ -18,7 +18,7 @@ export default class EmailsBuild extends BaseCommand<typeof EmailsBuild> {
     if (envStage !== ENV_STAGE_LOCAL) {
       await assertChamberInstalled();
       await loadChamberEnv(this, {
-        serviceName: `env-${projectEnvName}-webapp`,
+        serviceName: `env-${projectEnvName}-workers`,
       });
     }
 
