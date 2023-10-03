@@ -49,7 +49,7 @@ services:
       - "3005:3005"
 
   localstack:
-    image: localstack/localstack:0.11.3
+    image: localstack/localstack:2.3.0
     ports:
       - "4566:4566"
     environment:
