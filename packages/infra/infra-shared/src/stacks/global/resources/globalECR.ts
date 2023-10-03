@@ -1,6 +1,10 @@
 import { Construct } from 'constructs';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
-import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
+import {
+  EcrSync,
+  EnvConstructProps,
+  EnvironmentSettings,
+} from '@sb/infra-core';
 import { Fn } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
@@ -67,7 +71,17 @@ export class GlobalECR extends Construct {
       {
         ecrRepositoryPrefix: GlobalECR.ECRPublicRepositoryPrefix,
         upstreamRegistryUrl: GlobalECR.ECRPublicCacheRuleUpstreamRegistryUrl,
-      }
+      },
     );
+
+    new EcrSync(this, 'EcrSync', {
+      getImageTagsFunctionName: `${props.envSettings.projectName}-ecr-sync-get-image-tags`,
+      repoPrefix: 'dockerhub-mirror',
+      dockerImages: [
+        {
+          imageName: 'segment/chamber',
+        },
+      ],
+    });
   }
 }

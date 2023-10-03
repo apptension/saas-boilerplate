@@ -1,4 +1,5 @@
 import { Args, Flags } from '@oclif/core';
+import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 
 import { initConfig } from '../../config/init';
 import { runCommand } from '../../lib/runCommand';
@@ -39,12 +40,25 @@ export default class InfraDeploy extends BaseCommand<typeof InfraDeploy> {
 
   async run(): Promise<void> {
     const { flags, args } = await this.parse(InfraDeploy);
-    await initConfig(this, { requireAws: true });
+    const { projectName } = await initConfig(this, { requireAws: true });
+
+    const lambdaClient = new LambdaClient();
 
     const verb = flags.diff ? 'diff' : 'deploy';
 
     if (!args.stackName || args.stackName === StackName.Global) {
       await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:global`]);
+      if (verb === 'deploy') {
+        const functionName = `${projectName}-ecr-sync-get-image-tags`;
+        this.log(
+          `Invoking ${functionName} lambda function to trigger docker hub mirror synchronisation`,
+        );
+        await lambdaClient.send(
+          new InvokeCommand({
+            FunctionName: functionName,
+          }),
+        );
+      }
     }
     if (!args.stackName || args.stackName === StackName.Main) {
       await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:main`]);

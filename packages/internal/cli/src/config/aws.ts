@@ -8,7 +8,7 @@ import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import * as dotenv from 'dotenv';
 
-import { validateStageEnv } from './env';
+import { IS_CI, validateStageEnv } from './env';
 import { isAwsVaultInstalled } from '../lib/awsVault';
 import { assertChamberInstalled, loadChamberEnv } from '../lib/chamber';
 import { runCommand } from '../lib/runCommand';
@@ -82,11 +82,15 @@ export const loginToECR = async (
       ['login', '--username', 'AWS', '-p', password, mirrorRepoUrl],
       { silent: true },
     );
-    context.log(
-      `Successfully logged into ECR repository. Setting SB_MIRROR_REPOSITORY to ${mirrorRepoUrl}`,
-    );
 
-    process.env.SB_MIRROR_REPOSITORY = `${mirrorRepoUrl}/`;
+    process.env.SB_MIRROR_REPOSITORY = `${mirrorRepoUrl}/dockerhub-mirror/`;
+    process.env.SB_PULL_THROUGH_CACHE_REPOSITORY = `${mirrorRepoUrl}/ecr-public/docker/library/`;
+
+    context.log(
+      `Successfully logged into ECR repository.
+  SB_MIRROR_REPOSITORY=${process.env.SB_MIRROR_REPOSITORY}
+  SB_PULL_THROUGH_CACHE_REPOSITORY=${process.env.SB_PULL_THROUGH_CACHE_REPOSITORY}`,
+    );
   } catch (error) {
     context.warn('Login to ECR registry failed.');
     context.warn(error as Error);
@@ -131,7 +135,7 @@ export const initAWS = async (
 
     const awsRegion = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
 
-    if (awsAccountId && awsRegion) {
+    if (awsAccountId && awsRegion && IS_CI) {
       await loginToECR(context, {
         awsAccountId,
         awsRegion,

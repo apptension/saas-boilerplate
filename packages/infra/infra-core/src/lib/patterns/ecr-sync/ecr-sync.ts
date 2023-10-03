@@ -20,6 +20,11 @@ import { Image } from './image';
  * Properties for EcrSync
  */
 export interface EcrSyncProps {
+  /**
+   * Name of the ECR trigger function
+   *
+   */
+  readonly getImageTagsFunctionName: string;
 
   /**
    * Images from Docker Hub that should be pulled into ECR.
@@ -78,13 +83,11 @@ export class EcrSync extends Construct {
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
     });
 
-    // const isInstalledAsPackage = path.dirname(`${path.resolve(__dirname)}/..`) === 'node_modules';
-    // const entry = path.resolve(__dirname) + '/src/lambda/get-image-tags-handler' + (isInstalledAsPackage ? '.js' : '.ts');
-
     const lambaFile = `${path.resolve(__dirname)}/lambda/get-image-tags-handler`;
     const entry = lambaFile + (fs.existsSync(`${lambaFile}.ts`) ? '.ts' : '.js');
 
     const lambda = new lnjs.NodejsFunction(this, 'lambda', {
+      functionName: props.getImageTagsFunctionName,
       entry: entry,
       runtime: lmbd.Runtime.NODEJS_18_X,
       timeout: cdk.Duration.minutes(10),

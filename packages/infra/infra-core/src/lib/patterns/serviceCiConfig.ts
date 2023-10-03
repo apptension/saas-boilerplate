@@ -61,14 +61,6 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
     ];
   }
 
-  protected getECRLoginCommand() {
-    const awsRegion = Fn.ref('AWS::Region');
-    const awsAccountId = Fn.ref('AWS::AccountId');
-
-    return `aws ecr get-login-password --region ${awsRegion} \
-       | docker login --username AWS --password-stdin ${awsAccountId}.dkr.ecr.${awsRegion}.amazonaws.com`;
-  }
-
   protected getAssumeRoleCommands() {
     return [
       'TEMP_ROLE=`aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test`',

@@ -96,6 +96,7 @@
     "@aws-sdk/client-ses": "^3.414.0",
     "@aws-sdk/client-sfn": "^3.414.0",
     "@aws-sdk/client-sts": "^3.414.0",
+    "@aws-sdk/client-lambda": "^3.414.0",
     "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
     "@sentry/react": "^7.70.0",

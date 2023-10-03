@@ -22,8 +22,6 @@ declare const process: {
     SB_TOOLS_HOSTED_ZONE_NAME: string;
     SB_TOOLS_HOSTED_ZONE_ID: string;
     SB_TOOLS_DOMAIN_VERSION_MATRIX: string;
-    SB_BACKEND_BASE_IMAGE: string;
-    SB_WORKERS_BASE_IMAGE: string;
   };
 };
 
@@ -66,11 +64,6 @@ interface WebAppConfig {
   envVariables: EnvironmentVariables;
 }
 
-interface DockerImages {
-  backendBaseImage: string;
-  workersBaseImage: string;
-}
-
 export interface EnvironmentSettings {
   appBasicAuth: string | null | undefined;
   deployBranches: Array<string>;
@@ -84,7 +77,6 @@ export interface EnvironmentSettings {
   version: string;
   webAppEnvVariables: EnvironmentVariables;
   certificates: CertificatesConfig;
-  dockerImages: DockerImages;
 }
 
 interface ConfigFileContent {
@@ -99,7 +91,6 @@ export interface EnvConfigFileContent {
   domains: EnvConfigFileDomains;
   webAppConfig: WebAppConfig;
   certificates: CertificatesConfig;
-  dockerImages: DockerImages;
 }
 
 async function readConfig(): Promise<ConfigFileContent> {
@@ -146,10 +137,6 @@ async function readEnvConfig(): Promise<EnvConfigFileContent> {
       name: process.env.SB_HOSTED_ZONE_NAME ?? '',
     },
     deployBranches: process.env.SB_DEPLOY_BRANCHES?.split(',') ?? [],
-    dockerImages: {
-      backendBaseImage: process.env.SB_BACKEND_BASE_IMAGE ?? '',
-      workersBaseImage: process.env.SB_WORKERS_BASE_IMAGE ?? '',
-    },
   };
 }
 
@@ -185,6 +172,5 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
       ...(envConfig?.webAppConfig?.envVariables || {}),
     },
     certificates: envConfig.certificates,
-    dockerImages: envConfig.dockerImages,
   };
 }

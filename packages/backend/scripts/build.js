@@ -7,6 +7,7 @@ const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const VERSION = process.env.VERSION;
 const SB_MIRROR_REPOSITORY = process.env.SB_MIRROR_REPOSITORY ?? '';
+const SB_PULL_THROUGH_CACHE_REPOSITORY = process.env.SB_PULL_THROUGH_CACHE_REPOSITORY ?? '';
 
 const stsClient = new STSClient();
 
@@ -35,6 +36,8 @@ const stsClient = new STSClient();
       `${BACKEND_REPO_URI}:${VERSION}`,
       '--build-arg',
       `SB_MIRROR_REPOSITORY=${SB_MIRROR_REPOSITORY}`,
+      '--build-arg',
+      `SB_PULL_THROUGH_CACHE_REPOSITORY=${SB_PULL_THROUGH_CACHE_REPOSITORY}`,
       '.',
     ]);
 
