@@ -1,14 +1,14 @@
-ARG BACKEND_BASE_IMAGE=python:3.11-slim-bullseye
+ARG SB_MIRROR_REPOSITORY=''
 ##
 # Chamber installation stage
 ##
 
-FROM segment/chamber:2 AS chamber
+FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 
 ##
 # App build stage
 ##
-FROM $BACKEND_BASE_IMAGE AS backend_build
+FROM ${SB_MIRROR_REPOSITORY}python:3.11-slim-bullseye AS backend_build
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off

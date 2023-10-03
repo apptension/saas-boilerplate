@@ -52,6 +52,7 @@
     "aws-cdk-lib": "^2.96.2",
     "babel-jest": "29.7.0",
     "constructs": "^10.2.70",
+    "esbuild": "^0.16.17",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.0",
