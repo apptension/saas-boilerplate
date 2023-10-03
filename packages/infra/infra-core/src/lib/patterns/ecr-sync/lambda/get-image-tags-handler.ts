@@ -13,11 +13,11 @@ export interface ContainerImage {
 
 export async function handler(): Promise<void> {
 
-  const accountId = process.env.AWS_ACCOUNT_ID!;
-  const region = process.env.REGION!;
+  const accountId = process.env['AWS_ACCOUNT_ID']!;
+  const region = process.env['REGION']!;
 
-  const images: Image[] = JSON.parse(process.env.IMAGES ?? '[]');
-  const repoPrefix: string = process.env.REPO_PREFIX ?? '';
+  const images: Image[] = JSON.parse(process.env['IMAGES'] ?? '[]');
+  const repoPrefix: string = process.env['REPO_PREFIX'] ?? '';
 
   let buildTriggerFile: string = '';
 
@@ -46,7 +46,7 @@ export async function handler(): Promise<void> {
   if (buildTriggerFile === '') return;
 
   const stream = await zipToFileStream(buildTriggerFile);
-  await uploadToS3(process.env.BUCKET_NAME!, 'images.zip', stream);
+  await uploadToS3(process.env['BUCKET_NAME']!, 'images.zip', stream);
 }
 
 export async function orderTags(imageTags: ContainerImage[]) {
