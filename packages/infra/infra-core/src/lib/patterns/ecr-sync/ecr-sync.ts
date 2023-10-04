@@ -62,11 +62,13 @@ export interface EcrSyncProps {
   readonly initScript?: string;
 }
 
-/**
+const IMAGES_ARCHIVE_FILENAME = 'images.zip';
+const IMAGES_CSV_FILENAME = 'images.csv';
+
+/*
  * Construct to sync Docker images from DockerHub into ECR Repos.
  */
 export class EcrSync extends Construct {
-
   private ecrRepos: ecr.Repository[] = [];
 
   constructor(scope: Construct, id: string, props: EcrSyncProps) {
@@ -83,8 +85,11 @@ export class EcrSync extends Construct {
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
     });
 
-    const lambaFile = `${path.resolve(__dirname)}/lambda/get-image-tags-handler`;
-    const entry = lambaFile + (fs.existsSync(`${lambaFile}.ts`) ? '.ts' : '.js');
+    const lambaFile = `${path.resolve(
+      __dirname,
+    )}/lambda/get-image-tags-handler`;
+    const entry =
+      lambaFile + (fs.existsSync(`${lambaFile}.ts`) ? '.ts' : '.js');
 
     const lambda = new lnjs.NodejsFunction(this, 'lambda', {
       functionName: props.getImageTagsFunctionName,
@@ -99,6 +104,8 @@ export class EcrSync extends Construct {
         IMAGES: JSON.stringify(props.dockerImages),
         REPO_PREFIX: props.repoPrefix ?? '',
         BUCKET_NAME: artifactsBucket.bucketName,
+        IMAGES_ARCHIVE_FILENAME,
+        IMAGES_CSV_FILENAME,
       },
     });
     artifactsBucket.grantPut(lambda);
@@ -108,18 +115,22 @@ export class EcrSync extends Construct {
       schedule: props.schedule ?? evt.Schedule.rate(cdk.Duration.days(1)),
     });
 
-    props.dockerImages.forEach(element => {
-      const repoName = (props.repoPrefix) ? `${props.repoPrefix}/${element.imageName}` : element.imageName;
+    props.dockerImages.forEach((element) => {
+      const repoName = props.repoPrefix
+        ? `${props.repoPrefix}/${element.imageName}`
+        : element.imageName;
       const repo = new ecr.Repository(this, element.imageName, {
         repositoryName: repoName,
       });
       repo.grantPullPush(buildRole);
 
-      lambda.addToRolePolicy(new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['ecr:ListImages'],
-        resources: [repo.repositoryArn],
-      }));
+      lambda.addToRolePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['ecr:ListImages'],
+          resources: [repo.repositoryArn],
+        }),
+      );
 
       if (props.lifcecyleRule !== undefined) {
         repo.addLifecycleRule(props.lifcecyleRule);
@@ -133,7 +144,7 @@ export class EcrSync extends Construct {
     const triggerAction = new cpa.S3SourceAction({
       actionName: 'S3Source',
       bucket: artifactsBucket,
-      bucketKey: 'images.zip',
+      bucketKey: IMAGES_ARCHIVE_FILENAME,
       output: triggerStageArtifact,
     });
 
@@ -145,7 +156,7 @@ export class EcrSync extends Construct {
             'runtime-versions': {
               docker: 18,
             },
-            'commands': [
+            commands: [
               'aws --version',
               'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"',
               'unzip -q awscliv2.zip',
@@ -157,7 +168,7 @@ export class EcrSync extends Construct {
             commands: [
               ` set -e\n \
                 ${props.initScript || ''}\n \
-                cat images.csv\n \
+                cat ${IMAGES_CSV_FILENAME}\n \
                 while IFS=, read -r dockerImage ecrImage tag\n \
                 do\n \
                   echo "$dockerImage:$tag"\n \
@@ -165,13 +176,12 @@ export class EcrSync extends Construct {
                   docker tag $dockerImage:$tag $ecrImage:$tag\n \
                   aws ecr get-login-password | docker login --username AWS --password-stdin \${AWS_ACCOUNT_ID}.dkr.ecr.\${AWS_REGION}.amazonaws.com\n \
                   docker push $ecrImage:$tag\n \
-                done < images.csv\n`,
+                done < ${IMAGES_CSV_FILENAME}\n`,
             ],
           },
         },
       }),
       role: buildRole,
-      // cache: cb.Cache.bucket(artifactsBucket, {prefix: 'cache/'}),
       environment: {
         privileged: true,
         buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
@@ -200,7 +210,7 @@ export class EcrSync extends Construct {
    * Grant the given identity permissions to use the images in this repository
    */
   grantPull(grantee: iam.IGrantable) {
-    this.ecrRepos.forEach(element => {
+    this.ecrRepos.forEach((element) => {
       element.grantPull(grantee);
     });
   }
