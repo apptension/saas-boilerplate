@@ -9,7 +9,7 @@ export default class WorkersLint extends BaseCommand<typeof WorkersLint> {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    await initConfig(this, {});
+    await initConfig(this, { requireAws: 'allow-local' });
     await assertDockerIsRunning();
     await dockerHubLogin();
 
