@@ -168,6 +168,10 @@ export class DocsCiConfig extends ServiceCiConfig {
       }),
     );
 
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
+    );
+
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
       props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));

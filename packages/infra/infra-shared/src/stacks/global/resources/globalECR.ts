@@ -10,6 +10,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class GlobalECR extends Construct {
   static ECRPublicRepositoryPrefix = 'ecr-public';
+  static ECRDockerHubMirrorRepositoryPrefix = 'dockerhub-mirror';
   static ECRPublicCacheRuleUpstreamRegistryUrl = 'public.ecr.aws';
 
   backendRepository: ecr.Repository;
@@ -17,13 +18,6 @@ export class GlobalECR extends Construct {
 
   static getBackendRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-backend`;
-  }
-
-  static getECRPublicCacheUrl() {
-    const registryId = Fn.ref('AWS::AccountId');
-    const region = Fn.ref('AWS::Region');
-
-    return `${registryId}.dkr.ecr.${region}.amazonaws.com/${GlobalECR.ECRPublicRepositoryPrefix}/docker/library`;
   }
 
   static getPublicECRIamPolicyStatements() {
@@ -36,6 +30,7 @@ export class GlobalECR extends Construct {
         actions: ['ecr:BatchImportUpstreamImage', 'ecr:CreateRepository'],
         resources: [
           `arn:aws:ecr:${region}:${registryId}:repository/${GlobalECR.ECRPublicRepositoryPrefix}/*`,
+          `arn:aws:ecr:${region}:${registryId}:repository/${GlobalECR.ECRDockerHubMirrorRepositoryPrefix}/*`,
         ],
       }),
       new iam.PolicyStatement({

@@ -11,6 +11,7 @@ import {
 } from '@sb/infra-core';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
+import { GlobalECR } from '../global/resources/globalECR';
 
 interface WebAppCiConfigProps extends EnvConstructProps {
   inputArtifact: codepipeline.Artifact;
@@ -34,8 +35,8 @@ export class WebappCiConfig extends ServiceCiConfig {
           input: props.inputArtifact,
           outputs: [buildArtifact],
         },
-        props
-      )
+        props,
+      ),
     );
 
     const deployProject = this.createDeployProject(props);
@@ -46,14 +47,14 @@ export class WebappCiConfig extends ServiceCiConfig {
           input: buildArtifact,
           runOrder: 2,
         },
-        props
-      )
+        props,
+      ),
     );
   }
 
   private createBuildAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: WebAppCiConfigProps
+    props: WebAppCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -71,7 +72,7 @@ export class WebappCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: props.envSettings.webAppEnvVariables[k],
         },
-      }))
+      })),
     );
 
     const project = new codebuild.Project(this, 'WebAppBuildProject', {
@@ -81,7 +82,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.WEBAPP
+              PnpmWorkspaceFilters.WEBAPP,
             ),
           },
           build: {
@@ -114,12 +115,16 @@ export class WebappCiConfig extends ServiceCiConfig {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
+    );
+
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     return project;
@@ -127,7 +132,7 @@ export class WebappCiConfig extends ServiceCiConfig {
 
   private createDeployAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: WebAppCiConfigProps
+    props: WebAppCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -146,7 +151,7 @@ export class WebappCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.WEBAPP
+              PnpmWorkspaceFilters.WEBAPP,
             ),
           },
           build: { commands: ['pnpm saas webapp deploy'] },
@@ -160,12 +165,16 @@ export class WebappCiConfig extends ServiceCiConfig {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
 
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
+    );
+
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -176,7 +185,7 @@ export class WebappCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-WebAppStack/*`,
         ],
-      })
+      }),
     );
 
     project.addToRolePolicy(
@@ -192,7 +201,7 @@ export class WebappCiConfig extends ServiceCiConfig {
           'route53:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;
