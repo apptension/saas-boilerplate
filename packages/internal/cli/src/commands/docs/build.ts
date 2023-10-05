@@ -18,7 +18,7 @@ export default class DocsBuild extends BaseCommand<typeof DocsBuild> {
     if (envStage !== ENV_STAGE_LOCAL) {
       await assertChamberInstalled();
       await loadChamberEnv(this, {
-        serviceName: `env-${projectEnvName}-webapp`,
+        serviceName: `env-${projectEnvName}-docs`,
       });
     }
 
