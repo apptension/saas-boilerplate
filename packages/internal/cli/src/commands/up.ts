@@ -63,7 +63,7 @@ async function waitForBackend(
   { url, stepTime = 500, retryCount }: WaitForBackendOptions,
 ) {
   ux.action.start(
-    'Backend server is not ready yet.\n You can call `docker compose logs backend -f` ' +
+    'Backend server is not ready yet.\n You can run `docker compose logs backend -f` ' +
       'to see logs from backend container.\n Waiting',
   );
 
@@ -77,7 +77,10 @@ async function waitForBackend(
     }
   }
 
-  context.error('Timeout: Backend dev server failed to start.');
+  context.error(
+    'Timeout: Backend dev server failed to start. Run `docker compose logs backend -f` to understand why it' +
+      'happened',
+  );
 }
 
 export default class Up extends BaseCommand<typeof Up> {
