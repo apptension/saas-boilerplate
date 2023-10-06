@@ -1,6 +1,6 @@
 {
   "name": "status-dashboard",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "private": true,
   "scripts": {
     "deploy": "cdk deploy *StatusDashboardStack",

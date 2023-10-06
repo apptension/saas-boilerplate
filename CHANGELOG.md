@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/apptension/saas-boilerplate/compare/2.2.2...2.3.0) (2023-10-06)
+
+### Features
+
+- Upgrade localstack to 2.3.0 (latest) ([#412](https://github.com/apptension/saas-boilerplate/issues/412)) ([5e9e788](https://github.com/apptension/saas-boilerplate/commit/5e9e788e8dfef413e1d479887026cf039cb35281))
+
+### Bug Fixes
+
+- Invalid build environment for the docs ([#418](https://github.com/apptension/saas-boilerplate/issues/418)) ([ab0e86f](https://github.com/apptension/saas-boilerplate/commit/ab0e86f72a74ab44bc206a73db2c5a77dd39ff3b))
+
 ### [2.2.2](https://github.com/apptension/saas-boilerplate/compare/2.2.1...2.2.2) (2023-09-29)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "@sb/tools",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
