@@ -12,6 +12,7 @@ import * as lmbd from 'aws-cdk-lib/aws-lambda';
 import * as lnjs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { Construct } from 'constructs';
 
 import { Image } from './image';
@@ -172,7 +173,10 @@ export class EcrSync extends Construct {
                 while IFS=, read -r dockerImage ecrImage tag\n \
                 do\n \
                   echo "$dockerImage:$tag"\n \
+                  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD | true
                   docker pull $dockerImage:$tag\n \
+                  docker logout | true
+                  
                   docker tag $dockerImage:$tag $ecrImage:$tag\n \
                   aws ecr get-login-password | docker login --username AWS --password-stdin \${AWS_ACCOUNT_ID}.dkr.ecr.\${AWS_REGION}.amazonaws.com\n \
                   docker push $ecrImage:$tag\n \
@@ -187,6 +191,14 @@ export class EcrSync extends Construct {
         buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
         environmentVariables: {
           AWS_ACCOUNT_ID: { value: cdk.Stack.of(this).account },
+          DOCKER_USERNAME: {
+            type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+            value: 'GlobalBuildSecrets:DOCKER_USERNAME',
+          },
+          DOCKER_PASSWORD: {
+            type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
+            value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
+          },
         },
       },
     });

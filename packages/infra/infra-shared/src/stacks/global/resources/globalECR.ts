@@ -75,6 +75,7 @@ export class GlobalECR extends Construct {
       dockerImages: [
         {
           imageName: 'segment/chamber',
+          includeTags: ['^2'],
         },
       ],
     });
