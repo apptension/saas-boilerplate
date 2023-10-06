@@ -1,4 +1,4 @@
-import {App, Duration, Fn, Stack, StackProps} from 'aws-cdk-lib';
+import { App, Duration, Fn, Stack, StackProps } from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
@@ -50,13 +50,13 @@ export class ApiStack extends Stack {
 
   private createFargateService(
     resources: FargateServiceResources,
-    props: ApiStackProps
+    props: ApiStackProps,
   ) {
     const { envSettings } = props;
     const taskRole = this.createTaskRole(props);
 
     const dbSecretArn = Fn.importValue(
-      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings)
+      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings),
     );
     const domainZone = getHostedZone(this, envSettings);
 
@@ -78,15 +78,15 @@ export class ApiStack extends Stack {
         {
           listenerArn: Fn.importValue(
             MainECSCluster.getLoadBalancerHttpsListenerArnOutputExportName(
-              props.envSettings
-            )
+              props.envSettings,
+            ),
           ),
           securityGroup: resources.publicLoadBalancerSecurityGroup,
-        }
+        },
       );
     const stack = Stack.of(this);
     const webSocketApiId = Fn.importValue(
-      EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings)
+      EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings),
     );
     return new ApplicationMultipleTargetGroupsFargateService(
       this,
@@ -103,14 +103,14 @@ export class ApiStack extends Stack {
         taskImageOptions: [
           {
             containerName: 'backend',
-            command:  [
-              "sh",
-              "-c",
-              "/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/runtime/run.sh",
+            command: [
+              'sh',
+              '-c',
+              '/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./scripts/runtime/run.sh',
             ],
             image: ecs.ContainerImage.fromEcrRepository(
               resources.backendRepository,
-              envSettings.version
+              envSettings.version,
             ),
             environment: {
               PROJECT_NAME: envSettings.projectName,
@@ -121,7 +121,7 @@ export class ApiStack extends Stack {
               CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
               OTP_AUTH_ISSUER_NAME: envSettings.domains.webApp,
               WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
-                props.envSettings
+                props.envSettings,
               ),
               WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/${props.envSettings.envStage}`,
               AWS_STORAGE_BUCKET_NAME:
@@ -129,27 +129,27 @@ export class ApiStack extends Stack {
               AWS_S3_CUSTOM_DOMAIN: props.envSettings.domains.cdn,
               DB_PROXY_ENDPOINT: Fn.importValue(
                 MainDatabase.getDatabaseProxyEndpointOutputExportName(
-                  props.envSettings
-                )
+                  props.envSettings,
+                ),
               ),
               AWS_CLOUDFRONT_KEY_ID: Fn.importValue(
                 EnvComponentsStack.getCdnSigningPublicKeyIdExportName(
-                  props.envSettings
-                )
+                  props.envSettings,
+                ),
               ),
             },
             secrets: {
               DB_CONNECTION: ecs.Secret.fromSecretsManager(
-                sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn)
+                sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn),
               ),
               AWS_CLOUDFRONT_KEY: ecs.Secret.fromSecretsManager(
                 sm.Secret.fromSecretNameV2(
                   this,
                   'CloudfrontPrivateKey',
                   `${EnvComponentsStack.getCDNSigningKeyName(
-                    props.envSettings
-                  )}/private`
-                )
+                    props.envSettings,
+                  )}/private`,
+                ),
               ),
             },
           },
@@ -181,26 +181,38 @@ export class ApiStack extends Stack {
             priority: 2,
             hostHeader: envSettings.domains.api,
           },
-          {
-            protocol: ecs.Protocol.TCP,
-            containerPort: 80,
-            priority: 3,
-            hostHeader: envSettings.domains.webApp,
-          },
-          {
-            protocol: ecs.Protocol.TCP,
-            containerPort: 80,
-            priority: 4,
-            hostHeader: envSettings.domains.www,
-          },
-          {
-            protocol: ecs.Protocol.TCP,
-            containerPort: 80,
-            priority: 5,
-            hostHeader: envSettings.domains.adminPanel,
-          },
+          ...(envSettings.domains.webApp
+            ? [
+                {
+                  protocol: ecs.Protocol.TCP,
+                  containerPort: 80,
+                  priority: 3,
+                  hostHeader: envSettings.domains.webApp,
+                },
+              ]
+            : []),
+          ...(envSettings.domains.www
+            ? [
+                {
+                  protocol: ecs.Protocol.TCP,
+                  containerPort: 80,
+                  priority: 4,
+                  hostHeader: envSettings.domains.www,
+                },
+              ]
+            : []),
+          ...(envSettings.domains.adminPanel
+            ? [
+                {
+                  protocol: ecs.Protocol.TCP,
+                  containerPort: 80,
+                  priority: 5,
+                  hostHeader: envSettings.domains.adminPanel,
+                },
+              ]
+            : []),
         ],
-      }
+      },
     );
   }
 
@@ -219,7 +231,7 @@ export class ApiStack extends Stack {
     const fileUploadsBucket = s3.Bucket.fromBucketName(
       this,
       'FileUploadsBucket',
-      EnvComponentsStack.getFileUploadsBucketName(envSettings)
+      EnvComponentsStack.getFileUploadsBucketName(envSettings),
     );
     fileUploadsBucket.grantReadWrite(taskRole);
     fileUploadsBucket.grantPutAcl(taskRole);
@@ -227,7 +239,7 @@ export class ApiStack extends Stack {
     const eventBus = events.EventBus.fromEventBusName(
       this,
       'WorkersEventBus',
-      EnvComponentsStack.getWorkersEventBusName(envSettings)
+      EnvComponentsStack.getWorkersEventBusName(envSettings),
     );
     eventBus.grantPutEventsTo(taskRole);
 
@@ -240,7 +252,7 @@ export class ApiStack extends Stack {
           'xray:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
@@ -249,14 +261,14 @@ export class ApiStack extends Stack {
         resources: [
           Fn.importValue(MainKmsKey.getMainKmsOutputExportName(envSettings)),
         ],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:DescribeParameters'],
         resources: ['*'],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
@@ -265,7 +277,7 @@ export class ApiStack extends Stack {
         resources: [
           `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
         ],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
@@ -277,7 +289,7 @@ export class ApiStack extends Stack {
           'ssmmessages:OpenDataChannel',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return taskRole;

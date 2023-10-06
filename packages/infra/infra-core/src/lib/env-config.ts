@@ -122,13 +122,17 @@ async function readConfig(): Promise<ConfigFileContent> {
 }
 
 async function readEnvConfig(): Promise<EnvConfigFileContent> {
+  if (!process.env.SB_DOMAIN_API) {
+    throw new Error('SB_DOMAIN_API env variable has to be defined');
+  }
+
   return {
     webAppConfig: {
       envVariables: {},
     },
     basicAuth: process.env.SB_BASIC_AUTH,
     domains: {
-      api: process.env.SB_DOMAIN_API ?? '',
+      api: process.env.SB_DOMAIN_API,
       webApp: process.env.SB_DOMAIN_WEB_APP ?? '',
       cdn: process.env.SB_DOMAIN_CDN ?? '',
       docs: process.env.SB_DOMAIN_DOCS ?? '',
