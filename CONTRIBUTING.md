@@ -31,7 +31,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[SaaS Boilerplate Code of Conduct](https://github.com/apptension/saas-boilerplateblob/master/CODE_OF_CONDUCT.md).
+[SaaS Boilerplate Code of Conduct](https://github.com/apptension/saas-boilerplate/blob/master/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to [contributors@apptension.com](mailto:contributors@apptension.com).
 
@@ -49,13 +49,6 @@ If you then still feel the need to ask a question and need clarification, we rec
 
 We will then take care of the issue as soon as possible.
 
-<!--
-TODO:
-- add separate issue tag for questions
-- add separate channel for questions
-- link to roadmap
--->
-
 ## I Want To Contribute
 
 > ### Legal Notice <!-- omit in toc -->
@@ -72,7 +65,7 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 - Make sure that you are using the latest version.
 - Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](https://docs.demo.saas.apptoku.com/). If you are looking for support, you might want to check [this section](#i-have-a-question)).
-- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://github.com/apptension/saas-boilerplateissues?q=label%3Abug).
+- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://github.com/apptension/saas-boilerplate/issues?q=label%3Abug).
 - Also make sure to search the Internet (including Stack Overflow) to see if users outside of the GitHub community have discussed the issue.
 - Collect information about the bug:
 - Stack trace (Traceback)
@@ -100,8 +93,6 @@ Once it's filed:
 - A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
 - If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be [implemented by someone](#your-first-code-contribution).
 
-<!-- TODO: link the but report template -->
-
 ### Suggesting Enhancements
 
 This section guides you through submitting an enhancement suggestion for SaaS Boilerplate, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
@@ -127,14 +118,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/appten
 - You may want to **include screenshots and animated GIFs** which help you demonstrate the steps or point out the part which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 - **Explain why this enhancement would be useful** to most SaaS Boilerplate users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
-<!-- TODO: link issue template -->
-
 ### Your First Code Contribution
-
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
-
--->
 
 #### Fork & create a branch
 
