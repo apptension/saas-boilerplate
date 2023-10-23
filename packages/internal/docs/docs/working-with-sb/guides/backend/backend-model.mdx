@@ -34,12 +34,25 @@ Django will generate a new directory named after the app within `packages/backen
 
 :::
 
+In order to configure the newly created app, you should modify its name in the `packages/backend/apps/store/apps.py` file.
+
+```python title="packages/backend/apps/store/apps.py" showLineNumbers
+from django.apps import AppConfig
+
+
+class StoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    # highlight-next-line
+    name = 'apps.store'
+```
+
 App needs to be included in the `LOCAL_APPS` list in the `settings.py` file to make it available to the rest of your project.
 
 ```python title="packages/backend/config/settings.py" showLineNumbers
 LOCAL_APPS = [
     "apps.content",
     ...
+    # highlight-next-line
     "apps.store",
 ]
 ```
