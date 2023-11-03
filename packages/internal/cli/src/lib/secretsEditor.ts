@@ -16,7 +16,7 @@ export const runSecretsEditor = async ({
       'compose',
       'run',
       '--rm',
-      '-entrypoint /bin/bash',
+      '--entrypoint /bin/bash',
       'ssm-editor',
       `/scripts/run.sh`,
       serviceName,
