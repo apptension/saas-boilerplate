@@ -33,6 +33,7 @@ WORKDIR /app
 
 COPY . /app/
 
+RUN chmod +x /app/scripts/runtime/*.sh
 
 FROM backend_build AS static_files
 ENV HASHID_FIELD_SALT='' \
