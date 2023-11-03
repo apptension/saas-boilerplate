@@ -38,12 +38,13 @@ COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
 COPY tsconfig* $APP_PATH/
 COPY $SRC_CLI_PATH $DEST_CLI_PATH/
-RUN pnpm install --include-workspace-root --frozen-lockfile --filter=workers... --filter=cli...
 
 COPY nx.json tsconfig* jest* babel* .eslintrc* .prettier* .eslintrc* $APP_PATH/
 COPY $SRC_CORE_PATH $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH $DEST_WORKERS_PATH/
 RUN chmod +x $DEST_WORKERS_PATH/scripts/*.sh
+
+RUN pnpm install --include-workspace-root --frozen-lockfile --filter=workers... --filter=cli...
 
 ENV PYTHONPATH=/pkgs/__pypackages__/3.9/lib \
     PATH=$PATH:/pkgs/__pypackages__/3.9/bin
