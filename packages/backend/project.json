@@ -86,7 +86,11 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["nx cdk:deploy:api", "nx cdk:deploy:migrations"],
+        "commands": [
+          "nx cdk:deploy:migrations",
+          "pnpm nx run trigger-migrations-job",
+          "nx cdk:deploy:api"
+        ],
         "parallel": false
       }
     },
