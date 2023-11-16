@@ -20,7 +20,7 @@ export const initConfig = async (
     requireAws = false,
     validateEnvStageVariables = true,
     requireLocalEnvStage = false,
-  }: InitConfigOptions
+  }: InitConfigOptions,
 ) => {
   return tracer.startActiveSpan('initConfig', async (span) => {
     const rootPath = await getRootPath();
@@ -30,14 +30,14 @@ export const initConfig = async (
 
     if (!projectName) {
       context.error(
-        'PROJECT_NAME environmental variable needs to be defined. You can set it in <root>/.env file or in the system'
+        'PROJECT_NAME environmental variable needs to be defined. You can set it in <root>/.env file or in the system',
       );
     }
 
     if (requireLocalEnvStage && envStage !== ENV_STAGE_LOCAL) {
       context.error(
         `This command should only be run on a local environment stage.
-Please call \`saas aws set-env local\` first or open a new terminal.`
+Please call \`saas aws set-env local\` first or open a new terminal.`,
       );
     }
 
@@ -47,8 +47,8 @@ Please call \`saas aws set-env local\` first or open a new terminal.`
       if (envStage === ENV_STAGE_LOCAL && requireAws !== 'allow-local') {
         context.error(
           `Remote environment stage required.\nPlease call \`${color.green(
-            'saas aws set-env [stage-name]'
-          )}\` first. Do not use \`local\` value.`
+            'saas aws set-env [stage-name]',
+          )}\` first. Do not use \`local\` value.`,
         );
       }
 
@@ -61,6 +61,11 @@ Please call \`saas aws set-env local\` first or open a new terminal.`
         awsAccountId = awsMetadata.awsAccountId;
         awsRegion = awsMetadata.awsRegion;
       }
+    }
+
+    if (envStage !== ENV_STAGE_LOCAL) {
+      process.env.COMPOSE_PATH_SEPARATOR = ':';
+      process.env.COMPOSE_FILE = 'docker-compose.yml:docker-compose.ci.yml';
     }
 
     const projectEnvName = `${projectName}-${envStage}`;

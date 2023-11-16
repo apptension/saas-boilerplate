@@ -48,7 +48,7 @@ iam:
       - "arn:aws:s3:::${self:custom.projectEnvName}-file-uploads-bucket/*"
 
 environment:
-  SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN}
+  SENTRY_DSN: ${ssm:/${self:custom.ssmService}/SENTRY_DSN, ''}
   PYTHONPATH: /var/task/__pypackages__/3.9/lib
   ENVIRONMENT_NAME: ${self:provider.stage}
 
@@ -74,9 +74,9 @@ SendEmail:
 SynchronizeContentfulContent:
   environment:
     <<: *envsDb
-    CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID}
-    CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN}
-    CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT}
+    CONTENTFUL_SPACE_ID: ${ssm:/${self:custom.ssmService}/CONTENTFUL_SPACE_ID, '<CHANGE-ME>'}
+    CONTENTFUL_ACCESS_TOKEN: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ACCESS_TOKEN, '<CHANGE-ME>'}
+    CONTENTFUL_ENVIRONMENT: ${ssm:/${self:custom.ssmService}/CONTENTFUL_ENVIRONMENT, '<CHANGE-ME>'}
 
 WebSocketsHandler:
   environment:
