@@ -130,9 +130,3 @@ pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_ID XYZ
 pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_NAME example.com
 pnpm saas aws set-var SB_TOOLS_DOMAIN_VERSION_MATRIX status.example.com
 ```
-
-## Env variable validation
-
-You can look up the validator in `packages/internal/core/stage-env-validator.js`, which runs on every `nx` command that
-is executed. It will throw an error if you forget to set any required variables. Feel free to add other variables in
-there if you need.
