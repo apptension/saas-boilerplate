@@ -1,11 +1,12 @@
-ARG WORKERS_BASE_IMAGE=python:3.9-slim-bullseye
+ARG SB_MIRROR_REPOSITORY=''
+ARG SB_PULL_THROUGH_CACHE_REPOSITORY=''
 ##
 # Chamber installation stage
 ##
 
-FROM segment/chamber:2 AS chamber
+FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 
-FROM $WORKERS_BASE_IMAGE
+FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.9-slim-bullseye
 
 ENV APP_PATH=/app
 ENV SRC_CORE_PATH=packages/internal/core

@@ -3,7 +3,8 @@
   "ignorePatterns": [
     "!**/*",
     "node_modules/**/*",
-    "cdk.out/**/*"
+    "cdk.out/**/*",
+    "src/lib/patterns/ecr-sync/**/*"
   ],
   "overrides": [
     {

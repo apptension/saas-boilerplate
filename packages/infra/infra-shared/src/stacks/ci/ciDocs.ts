@@ -24,7 +24,7 @@ export class DocsCiConfig extends ServiceCiConfig {
     super(scope, id, { envSettings: props.envSettings });
 
     const buildArtifact = codepipeline.Artifact.artifact(
-      `${props.envSettings.projectEnvName}-docs`
+      `${props.envSettings.projectEnvName}-docs`,
     );
 
     const buildProject = this.createBuildProject(props);
@@ -35,8 +35,8 @@ export class DocsCiConfig extends ServiceCiConfig {
           input: props.inputArtifact,
           outputs: [buildArtifact],
         },
-        props
-      )
+        props,
+      ),
     );
 
     const deployProject = this.createDeployProject(props);
@@ -47,14 +47,14 @@ export class DocsCiConfig extends ServiceCiConfig {
           input: buildArtifact,
           runOrder: 2,
         },
-        props
-      )
+        props,
+      ),
     );
   }
 
   private createBuildAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: DocsCiConfigProps
+    props: DocsCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -67,11 +67,7 @@ export class DocsCiConfig extends ServiceCiConfig {
   private createBuildProject(props: DocsCiConfigProps) {
     const preBuildCommands = [
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
-      this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
-      props.envSettings.dockerImages.backendBaseImage
-    }`;
 
     const project = new codebuild.Project(this, 'DocsBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-docs`,
@@ -109,24 +105,20 @@ export class DocsCiConfig extends ServiceCiConfig {
           type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
           value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
         },
-        SB_BACKEND_BASE_IMAGE: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: baseImage,
-        },
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
-      project.addToRolePolicy(statement)
+      project.addToRolePolicy(statement),
     );
 
     return project;
@@ -134,7 +126,7 @@ export class DocsCiConfig extends ServiceCiConfig {
 
   private createDeployAction(
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: DocsCiConfigProps
+    props: DocsCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -173,15 +165,19 @@ export class DocsCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-DocsStack/*`,
         ],
-      })
+      }),
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
     );
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -197,7 +193,7 @@ export class DocsCiConfig extends ServiceCiConfig {
           'route53:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;

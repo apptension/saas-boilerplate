@@ -72,11 +72,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     const installCommands = this.getAssumeRoleCommands();
     const preBuildCommands = [
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.WORKERS),
-      this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
-      props.envSettings.dockerImages.workersBaseImage
-    }`;
 
     const project = new codebuild.Project(this, 'BuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-workers`,
@@ -118,10 +114,6 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         ASSUME_ROLE_ARN: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
-        },
-        SB_WORKERS_BASE_IMAGE: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: baseImage,
         },
       },
       cache: codebuild.Cache.local(
@@ -189,11 +181,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     const installCommands = this.getAssumeRoleCommands();
     const preBuildCommands = [
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.WORKERS),
-      this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
-      props.envSettings.dockerImages.workersBaseImage
-    }`;
 
     const project = new codebuild.Project(this, 'DeployProject', {
       projectName: `${props.envSettings.projectEnvName}-deploy-workers`,
@@ -229,10 +217,6 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         ASSUME_ROLE_ARN: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: dockerAssumeRole.roleArn,
-        },
-        SB_WORKERS_BASE_IMAGE: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: baseImage,
         },
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),

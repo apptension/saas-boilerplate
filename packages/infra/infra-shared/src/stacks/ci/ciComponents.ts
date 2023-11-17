@@ -20,6 +20,7 @@ import {
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { BootstrapStack } from '../bootstrap';
 import { EnvMainStack } from '../main';
+import { GlobalECR } from '../global/resources/globalECR';
 
 interface ComponentsCiConfigProps extends EnvConstructProps {
   inputArtifact: Artifact;
@@ -36,14 +37,14 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         {
           project: this.createDeployProject(props),
         },
-        props
-      )
+        props,
+      ),
     );
   }
 
   private createDeployAction(
     actionProps: Partial<CodeBuildActionProps>,
-    props: ComponentsCiConfigProps
+    props: ComponentsCiConfigProps,
   ) {
     return new CodeBuildAction(<CodeBuildActionProps>{
       ...actionProps,
@@ -63,7 +64,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.INFRA_SHARED
+              PnpmWorkspaceFilters.INFRA_SHARED,
             ),
           },
           build: { commands: ['pnpm saas infra deploy components'] },
@@ -85,15 +86,19 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ComponentsStack/*`,
         ],
-      })
+      }),
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
     );
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -111,7 +116,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
           'route53:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;

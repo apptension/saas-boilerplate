@@ -32,8 +32,8 @@ export class BackendCiConfig extends ServiceCiConfig {
         {
           project: buildProject,
         },
-        props
-      )
+        props,
+      ),
     );
 
     const apiDeployProject = this.createApiDeployProject(props);
@@ -44,8 +44,8 @@ export class BackendCiConfig extends ServiceCiConfig {
           project: apiDeployProject,
           runOrder: 2,
         },
-        props
-      )
+        props,
+      ),
     );
 
     const migrationsDeployProject = this.createMigrationsDeployProject(props);
@@ -56,15 +56,15 @@ export class BackendCiConfig extends ServiceCiConfig {
           project: migrationsDeployProject,
           runOrder: 2,
         },
-        props
-      )
+        props,
+      ),
     );
   }
 
   private createBuildAction(
     name: string,
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: BackendCiConfigProps
+    props: BackendCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -78,11 +78,7 @@ export class BackendCiConfig extends ServiceCiConfig {
   private createBuildProject(props: BackendCiConfigProps) {
     const preBuildCommands = [
       ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.BACKEND),
-      this.getECRLoginCommand(),
     ];
-    const baseImage = `${GlobalECR.getECRPublicCacheUrl()}/${
-      props.envSettings.dockerImages.backendBaseImage
-    }`;
 
     const project = new codebuild.Project(this, 'BackendBuildProject', {
       projectName: `${props.envSettings.projectEnvName}-build-backend`,
@@ -112,21 +108,17 @@ export class BackendCiConfig extends ServiceCiConfig {
             type: codebuild.BuildEnvironmentVariableType.SECRETS_MANAGER,
             value: 'GlobalBuildSecrets:DOCKER_PASSWORD',
           },
-          SB_BACKEND_BASE_IMAGE: {
-            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: baseImage,
-          },
         },
       },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.DOCKER_LAYER),
     });
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -134,11 +126,11 @@ export class BackendCiConfig extends ServiceCiConfig {
         effect: iam.Effect.ALLOW,
         actions: ['secretsmanager:*'],
         resources: ['*'],
-      })
+      }),
     );
 
     GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
-      project.addToRolePolicy(statement)
+      project.addToRolePolicy(statement),
     );
     props.backendRepository.grantPullPush(project);
 
@@ -148,7 +140,7 @@ export class BackendCiConfig extends ServiceCiConfig {
   private createDeployAction(
     name: string,
     actionProps: Partial<codepipelineActions.CodeBuildActionProps>,
-    props: BackendCiConfigProps
+    props: BackendCiConfigProps,
   ) {
     return new codepipelineActions.CodeBuildAction(<
       codepipelineActions.CodeBuildActionProps
@@ -169,7 +161,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.BACKEND
+              PnpmWorkspaceFilters.BACKEND,
             ),
           },
           build: { commands: ['pnpm saas backend deploy api'] },
@@ -191,15 +183,19 @@ export class BackendCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ApiStack/*`,
         ],
-      })
+      }),
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
     );
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -217,7 +213,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           's3:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;
@@ -232,7 +228,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         phases: {
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.BACKEND
+              PnpmWorkspaceFilters.BACKEND,
             ),
           },
           build: { commands: ['pnpm saas backend deploy migrations'] },
@@ -254,15 +250,19 @@ export class BackendCiConfig extends ServiceCiConfig {
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
           `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-MigrationsStack/*`,
         ],
-      })
+      }),
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
     );
 
     BootstrapStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     EnvMainStack.getIamPolicyStatementsForEnvParameters(
-      props.envSettings
+      props.envSettings,
     ).forEach((statement) => project.addToRolePolicy(statement));
 
     project.addToRolePolicy(
@@ -281,7 +281,7 @@ export class BackendCiConfig extends ServiceCiConfig {
           's3:*',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return project;

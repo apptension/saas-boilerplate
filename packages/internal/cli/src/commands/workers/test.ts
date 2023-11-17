@@ -9,7 +9,7 @@ export default class WorkersTest extends BaseCommand<typeof WorkersTest> {
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
   async run(): Promise<void> {
-    await initConfig(this, {});
+    await initConfig(this, { requireAws: 'allow-local' });
     await assertDockerIsRunning();
     await dockerHubLogin();
 
