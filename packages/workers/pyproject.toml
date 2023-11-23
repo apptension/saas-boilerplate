@@ -71,6 +71,10 @@ dev = [
     "pytest-cov~=4.0",
     "ruff>=0.0.261",
 ]
+
+[tool.setuptools]
+py-modules = []
+
 [project]
 name = "sb_workers"
 version = "1.0.0"
