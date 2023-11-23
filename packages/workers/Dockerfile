@@ -30,7 +30,7 @@ RUN \
 COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
-COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/.pdm.toml /pkgs/
+COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/pdm.toml packages/workers/.pdm-python /pkgs/
 RUN pdm sync
 
 WORKDIR $APP_PATH
@@ -46,8 +46,8 @@ COPY $SRC_CORE_PATH $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH $DEST_WORKERS_PATH/
 RUN chmod +x $DEST_WORKERS_PATH/scripts/*.sh
 
-ENV PYTHONPATH=/pkgs/__pypackages__/3.9/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.9/bin
+ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
+    PATH=$PATH:/pkgs/__pypackages__/3.11/bin
 
 WORKDIR $DEST_WORKERS_PATH
 
