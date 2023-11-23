@@ -75,9 +75,7 @@ dev = [
 name = "sb_workers"
 version = "1.0.0"
 description = ""
-authors = [
-    {name = "", email = ""},
-]
+
 dependencies = [
     "boto3~=1.26",
     "pyjwt~=2.6",
