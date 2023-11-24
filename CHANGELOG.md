@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/apptension/aws-boilerplate/compare/2.3.0...2.4.0) (2023-11-24)
+
+### Features
+
+- Add a waiting mechanism to `saas up` CLI command to wait for backend to start before starting web app dev server ([#420](https://github.com/apptension/aws-boilerplate/issues/420)) ([2c542ac](https://github.com/apptension/aws-boilerplate/commit/2c542ac8c31ec8e3f44e85fe8219dad351eadec2))
+- Refactor pull through cache usage and add docker mirror to AWS for segment/chamber image ([#414](https://github.com/apptension/aws-boilerplate/issues/414)) ([f530506](https://github.com/apptension/aws-boilerplate/commit/f530506afb74726fea74b69c2d8f85d3280fa0c7))
+
+### Bug Fixes
+
+- Add chmod +x for the runtime scripts in backend Dockerfile ([#432](https://github.com/apptension/aws-boilerplate/issues/432)) ([2298b90](https://github.com/apptension/aws-boilerplate/commit/2298b90c7a6cfba2b0e8feedcd527748184c78c8))
+- App deployment from local repository ([#431](https://github.com/apptension/aws-boilerplate/issues/431)) ([cf292bd](https://github.com/apptension/aws-boilerplate/commit/cf292bd6964f645417f3b6085241847044688f97))
+- HMR not working for the components outside the webapp directory ([#434](https://github.com/apptension/aws-boilerplate/issues/434)) ([9791d58](https://github.com/apptension/aws-boilerplate/commit/9791d58f2eeaf23cf3aa608d3ace22b84c78ef2c))
+- Invalid logo version ([#436](https://github.com/apptension/aws-boilerplate/issues/436)) ([f0044d4](https://github.com/apptension/aws-boilerplate/commit/f0044d480687e43debed8d0630b5691202abda37))
+- Prevent API stack from throwing error during deployment when user does not define all domains. ([#421](https://github.com/apptension/aws-boilerplate/issues/421)) ([b6ade66](https://github.com/apptension/aws-boilerplate/commit/b6ade66076cd15f7ec791447c7bd5cf488250bd7))
+- Websocket connection error on AWS env ([#435](https://github.com/apptension/aws-boilerplate/issues/435)) ([28abdcc](https://github.com/apptension/aws-boilerplate/commit/28abdcca906d022f2f443b8ff73dc796ae7bd601))
+
 ## [2.3.0](https://github.com/apptension/saas-boilerplate/compare/2.2.2...2.3.0) (2023-10-06)
 
 ### Features
