@@ -12,7 +12,7 @@
     "axios": "^1.6.2",
     "cookies": "^0.8.0",
     "fastify": "^4.24.3",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "nanoid": "^4.0.2",
     "pino-pretty": "^10.2.3",
     "ws": "^8.14.1"

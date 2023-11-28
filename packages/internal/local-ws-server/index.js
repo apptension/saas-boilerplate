@@ -1,7 +1,7 @@
 import fastify from 'fastify';
 import { WebSocketServer } from 'ws';
 import Cookies from 'cookies';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { nanoid } from 'nanoid';
 
 import { Api } from './api.js';
@@ -53,7 +53,7 @@ app.server.on('upgrade', async (request, socket, head) => {
 
 app.post('/:connectionId', async (request, reply) => {
   connectionsMap[request.params.connectionId]?.ws.send(
-    JSON.stringify(request.body)
+    JSON.stringify(request.body),
   );
   return {};
 });
