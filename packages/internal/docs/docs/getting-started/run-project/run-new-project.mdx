@@ -25,20 +25,28 @@ You can use a special CLI tool to run a new local instance of the <ProjectName/>
 <Tabs>
   <TabItem value="npm" label="npm" default>
     <CodeBlock>
-      npm init saas-boilerplate
+      npm init saas-boilerplate PATH
     </CodeBlock>
   </TabItem>
   <TabItem value="pnpm" label="pnpm">
     <CodeBlock>
-      pnpm create saas-boilerplate
+      pnpm create saas-boilerplate PATH
     </CodeBlock>
   </TabItem>
   <TabItem value="yarn" label="yarn">
     <CodeBlock>
-      yarn create saas-boilerplate
+      yarn create saas-boilerplate PATH
     </CodeBlock>
   </TabItem>
 </Tabs>
+
+:::info
+
+Where `PATH` is a directory name where to initialize project.
+
+**The init directory needs to be empty!**
+
+:::
 
 After the initialization process is complete, you will be able to start the app as described in the [Start the app](#start-the-app) section of the documentation.
 
