@@ -91,20 +91,24 @@ like to create a new project:
 **_Using `npm`:_**
 
 ```bash
-npm init saas-boilerplate
+npm init saas-boilerplate PATH
 ```
 
 **_Using `pnpm`:_**
 
 ```bash
-pnpm create saas-boilerplate
+pnpm create saas-boilerplate PATH
 ```
 
 **_Using `yarn`:_**
 
 ```bash
-yarn create saas-boilerplate
+yarn create saas-boilerplate PATH
 ```
+
+> :information_source: Where `PATH` is a directory name where to initialize project.
+>
+> :warning: **The init directory needs to be empty!**
 
 #### Manual setup
 
