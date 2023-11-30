@@ -20,7 +20,7 @@
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toast": "^1.1.5",
     "color": "^4.2.3",
-    "core-js": "^3.32.2",
+    "core-js": "^3.33.3",
     "lodash.throttle": "^4.1.1",
     "react-dropzone": "^14.2.3"
   },

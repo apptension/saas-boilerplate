@@ -7,7 +7,7 @@
     "diff": "cdk diff *StatusDashboardStack"
   },
   "dependencies": {
-    "core-js": "^3.32.2",
+    "core-js": "^3.33.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

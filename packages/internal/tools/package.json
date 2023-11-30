@@ -8,9 +8,8 @@
     "create-env": "nx exec -skip-nx-cache=true -- plop --plopfile src/plopfile.js createEnv",
     "lint": "eslint ."
   },
-  "dependencies": {},
   "devDependencies": {
-    "jsonc-eslint-parser": "^2.3.0"
+    "jsonc-eslint-parser": "^2.4.0"
   },
   "nx": {}
 }

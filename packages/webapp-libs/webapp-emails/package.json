@@ -18,7 +18,7 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@types/rollup-plugin-peer-deps-external": "^2.2.1",
+    "@types/rollup-plugin-peer-deps-external": "^2.2.4",
     "axios": "^0.27.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-polyfill-node": "^0.12.0"
