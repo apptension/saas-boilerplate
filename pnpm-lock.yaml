@@ -404,8 +404,8 @@ importers:
         specifier: ^5.2.20
         version: 5.2.20(@types/node@20.10.1)(typescript@5.3.2)
       '@oclif/plugin-plugins':
-        specifier: ^3.7.1
-        version: 3.7.1(@types/node@20.10.1)(typescript@5.3.2)
+        specifier: ^3.9.4
+        version: 3.9.4(@types/node@20.10.1)(typescript@5.3.2)
       '@opentelemetry/api':
         specifier: ^1.7.0
         version: 1.7.0
@@ -453,8 +453,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(eslint@7.32.0)(typescript@5.3.2)
       oclif:
-        specifier: ^3.16.0
-        version: 3.16.0(@types/node@20.10.1)(typescript@5.3.2)
+        specifier: ^3.17.2
+        version: 3.17.2(@types/node@20.10.1)(typescript@5.3.2)
       shx:
         specifier: ^0.3.4
         version: 0.3.4
@@ -9216,8 +9216,8 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/plugin-plugins@3.7.1(@types/node@20.10.1)(typescript@5.3.2):
-    resolution: {integrity: sha512-3YrJZ6XlAntOV2UJNme5iuE7cYx57Yg+PaMSLLkU/1AnDSIoNLlkKk1Y3AQmbd8B3aKOZtI9/bJzFXV8nmvgiw==}
+  /@oclif/plugin-plugins@3.9.4(@types/node@20.10.1)(typescript@5.3.2):
+    resolution: {integrity: sha512-JtumjspRdzJgHk1S10wu68tdlqSnyYRmSgCsmsc6AEvU+Orb0DQfrAgJEO77rPKPNo5MfnVAj0WyCDTi0JT/vw==}
     engines: {node: '>=16'}
     dependencies:
       '@oclif/core': 2.15.0(@types/node@20.10.1)(typescript@5.3.2)
@@ -9225,7 +9225,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       http-call: 5.3.0
       load-json-file: 5.3.0
-      npm: 9.6.7
+      npm: 9.8.1
       npm-run-path: 4.0.1
       semver: 7.5.4
       shelljs: 0.8.5
@@ -26398,8 +26398,8 @@ packages:
       path-key: 4.0.0
     dev: true
 
-  /npm@9.6.7:
-    resolution: {integrity: sha512-xwkU1hSZl6Qrkfw3fhxVmMfNWu0A67+aZZs5gz/LoehCeAPkVhQDB90Z2NFoPSI1KpfBWCJ6Bp28wXzv5U5/2g==}
+  /npm@9.8.1:
+    resolution: {integrity: sha512-AfDvThQzsIXhYgk9zhbk5R+lh811lKkLAeQMMhSypf1BM7zUafeIIBzMzespeuVEJ0+LvY36oRQYf7IKLzU3rw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     hasBin: true
     dev: false
@@ -26407,8 +26407,10 @@ packages:
       - '@isaacs/string-locale-compare'
       - '@npmcli/arborist'
       - '@npmcli/config'
+      - '@npmcli/fs'
       - '@npmcli/map-workspaces'
       - '@npmcli/package-json'
+      - '@npmcli/promise-spawn'
       - '@npmcli/run-script'
       - abbrev
       - archy
@@ -26459,10 +26461,10 @@ packages:
       - proc-log
       - qrcode-terminal
       - read
-      - read-package-json
-      - read-package-json-fast
       - semver
+      - sigstore
       - ssri
+      - supports-color
       - tar
       - text-table
       - tiny-relative-date
@@ -26710,8 +26712,8 @@ packages:
   /obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
-  /oclif@3.16.0(@types/node@20.10.1)(typescript@5.3.2):
-    resolution: {integrity: sha512-qbPJ9SifBDPeMnuYIyJc0+kGyXmLubJs/lOD1wjrvAiKqTWQ1xy/EFlNMgBGETCf7RQf1iSJmvf+s22ZkLc7Ow==}
+  /oclif@3.17.2(@types/node@20.10.1)(typescript@5.3.2):
+    resolution: {integrity: sha512-+vFXxgmR7dGGz+g6YiqSZu2LXVkBMaS9/rhtsLGkYw45e53CW/3kBgPRnOvxcTDM3Td9JPeBD2JWxXnPKGQW3A==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     dependencies:
