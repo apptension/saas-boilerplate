@@ -15,8 +15,8 @@
   "dependencies": {
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
-    "nodemailer": "^6.9.5",
-    "yaml": "^2.3.2"
+    "nodemailer": "^6.9.7",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@sb/core": "*",
@@ -24,7 +24,7 @@
     "@sb/webapp-emails": "*",
     "serverless": "^3.35.2",
     "serverless-esbuild": "^1.48.0",
-    "serverless-localstack": "^1.1.1",
+    "serverless-localstack": "^1.1.2",
     "serverless-step-functions": "^3.15.0"
   },
   "nx": {}
