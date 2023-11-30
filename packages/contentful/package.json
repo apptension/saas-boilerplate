@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "contentful-cli": "^2.8.27",
-    "contentful-migration": "^4.15.1",
+    "contentful-migration": "^4.17.4",
     "dotenv": "^16.3.1"
   }
 }
