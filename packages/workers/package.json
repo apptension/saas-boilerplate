@@ -22,10 +22,10 @@
     "@sb/core": "*",
     "@sb/tools": "*",
     "@sb/webapp-emails": "*",
-    "serverless": "^3.35.2",
-    "serverless-esbuild": "^1.48.0",
+    "serverless": "^3.38.0",
+    "serverless-esbuild": "^1.49.0",
     "serverless-localstack": "^1.1.2",
-    "serverless-step-functions": "^3.15.0"
+    "serverless-step-functions": "^3.17.0"
   },
   "nx": {}
 }
