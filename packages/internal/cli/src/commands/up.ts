@@ -23,7 +23,16 @@ type DockerComposePsResult = Array<{
 async function getBackendEndpoint(context: Command) {
   const expectedBackendPort = 5001;
   const { stdout: psResultStr } = await exec('docker compose ps --format=json');
-  const psResult = JSON.parse(psResultStr) as DockerComposePsResult;
+  let psResult: DockerComposePsResult;
+  try {
+    psResult = JSON.parse(psResultStr) as DockerComposePsResult;
+  } catch (e) {
+    // new docker returns JSONL instead of JSON so need to filter empty lines and parse every line separately
+    psResult = psResultStr
+      .split(/\r?\n/)
+      .filter((line) => line.trim() !== '')
+      .map((v) => JSON.parse(v)) as DockerComposePsResult;
+  }
 
   const backendContainerExists = psResult.some(
     ({ Service: service }) => service === 'backend',
