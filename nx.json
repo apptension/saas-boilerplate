@@ -1,39 +1,35 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "sb",
   "tasksRunnerOptions": {
     "default": {
-      "options": {
-        "cacheableOperations": [
-          "setup",
-          "build",
-          "lint",
-          "test",
-          "e2e",
-          "compose-build-image"
-        ]
-      }
+      "options": {}
     }
   },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true
     },
     "e2e": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
     },
     "compose-build-image": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
     },
     "setup": {
-      "inputs": ["{projectRoot}/.env", "{projectRoot}/.env.*"]
+      "inputs": ["{projectRoot}/.env", "{projectRoot}/.env.*"],
+      "cache": true
     }
   },
   "namedInputs": {

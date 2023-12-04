@@ -44,3 +44,4 @@ Thumbs.db
 
 # SaaS Boilerplate
 .saas-boilerplate
+.nx/cache
