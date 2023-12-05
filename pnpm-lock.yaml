@@ -362,11 +362,11 @@ importers:
         version: 0.4.1
     devDependencies:
       serverless:
-        specifier: ^3.38.0
-        version: 3.38.0
+        specifier: ^3.35.2
+        version: 3.35.2
       serverless-esbuild:
-        specifier: ^1.49.0
-        version: 1.49.0(esbuild@0.19.8)
+        specifier: ^1.48.0
+        version: 1.48.0(esbuild@0.19.8)
 
   packages/infra/infra-shared:
     devDependencies:
@@ -1036,17 +1036,17 @@ importers:
         specifier: '*'
         version: link:../webapp-libs/webapp-emails
       serverless:
-        specifier: ^3.38.0
-        version: 3.38.0
+        specifier: ^3.35.2
+        version: 3.35.2
       serverless-esbuild:
-        specifier: ^1.49.0
-        version: 1.49.0(esbuild@0.19.8)
+        specifier: ^1.48.0
+        version: 1.48.0(esbuild@0.19.8)
       serverless-localstack:
         specifier: ^1.1.2
         version: 1.1.2
       serverless-step-functions:
-        specifier: ^3.17.0
-        version: 3.17.0(serverless@3.38.0)
+        specifier: ^3.15.0
+        version: 3.15.0(serverless@3.35.2)
 
 packages:
 
@@ -10841,14 +10841,14 @@ packages:
       '@sentry/types': 7.84.0
     dev: false
 
-  /@serverless/dashboard-plugin@7.2.0(supports-color@8.1.1):
-    resolution: {integrity: sha512-Gqzgef+KmrX1OxJW9aubrIN6AvPrtDARMv+NegMNEe+pfkZA/IMuZiSyYUaHgARokdw2/IALOysTLgdFJIrXvA==}
+  /@serverless/dashboard-plugin@7.0.3(supports-color@8.1.1):
+    resolution: {integrity: sha512-rnVMyD4+IOFbsK4dxt541YaS0Lpia6DHXV01AFA5YnAwzVBlX4gSxx9aIQPkpx0PvB1A1S3rPgx/gfACWmdbgQ==}
     engines: {node: '>=12.0'}
     dependencies:
       '@aws-sdk/client-cloudformation': 3.462.0
       '@aws-sdk/client-sts': 3.462.0
       '@serverless/event-mocks': 1.1.1
-      '@serverless/platform-client': 4.5.1(supports-color@8.1.1)
+      '@serverless/platform-client': 4.4.0(supports-color@8.1.1)
       '@serverless/utils': 6.14.0
       child-process-ext: 3.0.2
       chokidar: 3.5.3
@@ -10863,7 +10863,7 @@ packages:
       node-fetch: 2.7.0
       open: 7.4.2
       semver: 7.5.4
-      simple-git: 3.21.0(supports-color@8.1.1)
+      simple-git: 3.19.1(supports-color@8.1.1)
       timers-ext: 0.1.7
       type: 2.7.2
       uuid: 8.3.2
@@ -10880,17 +10880,17 @@ packages:
   /@serverless/event-mocks@1.1.1:
     resolution: {integrity: sha512-YAV5V/y+XIOfd+HEVeXfPWZb8C6QLruFk9tBivoX2roQLWVq145s4uxf8D0QioCueuRzkukHUS4JIj+KVoS34A==}
     dependencies:
-      '@types/lodash': 4.14.202
+      '@types/lodash': 4.14.198
       lodash: 4.17.21
     dev: true
 
-  /@serverless/platform-client@4.5.1(supports-color@8.1.1):
-    resolution: {integrity: sha512-XltmO/029X76zi0LUFmhsnanhE2wnqH1xf+WBt5K8gumQA9LnrfwLgPxj+VA+mm6wQhy+PCp7H5SS0ZPu7F2Cw==}
+  /@serverless/platform-client@4.4.0(supports-color@8.1.1):
+    resolution: {integrity: sha512-urL7SNefRqC2EOFDcpvm8fyn/06B5yXWneKpyGw7ylGt0Qr9JHZCB9TiUeTkIpPUNz0jTvKUaJ2+M/JNEiaVIA==}
     engines: {node: '>=10.0'}
     dependencies:
       adm-zip: 0.5.10
       archiver: 5.3.2
-      axios: 1.6.2
+      axios: 0.21.4
       fast-glob: 3.3.2
       https-proxy-agent: 5.0.1(supports-color@8.1.1)
       ignore: 5.3.0
@@ -15227,6 +15227,14 @@ packages:
       tunnel: 0.0.6
     dev: true
 
+  /axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+    dependencies:
+      follow-redirects: 1.15.3
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
   /axios@0.25.0:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
@@ -15279,6 +15287,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /axobject-query@3.2.1:
     resolution: {integrity: sha512-jsyHu61e6N4Vbz/v18DHwWYKK0bSWLqn47eeDSKPB7m8tqMHF9YJ+mhIk2lVteyZrY8tnSj/jHOv4YiTCuCJgg==}
@@ -20951,7 +20960,7 @@ packages:
     dependencies:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
-      universalify: 2.0.1
+      universalify: 2.0.0
     dev: true
 
   /fs-extra@11.2.0:
@@ -20978,7 +20987,7 @@ packages:
       at-least-node: 1.0.0
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
-      universalify: 2.0.1
+      universalify: 2.0.0
 
   /fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
@@ -30449,8 +30458,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /serverless-esbuild@1.49.0(esbuild@0.19.8):
-    resolution: {integrity: sha512-qSke5DiLOEEAs/TN1dAjvPqfuPW7fEToLV+X+IDCuXGXPfuIUVQF3ck043DvdroXf+nx3tXMDzajlHz0smbH5w==}
+  /serverless-esbuild@1.48.0(esbuild@0.19.8):
+    resolution: {integrity: sha512-KHos/HBbJbH/ftsguNiX/jivj4rKHdyMg+ciMCxTqWndgJv3Wwg8POGZqSy9fr+S/b748PTwIfxYYFEiEVpXUg==}
     engines: {node: '>=14.18.0'}
     peerDependencies:
       esbuild: '>=0.8 <0.20'
@@ -30483,8 +30492,8 @@ packages:
       es6-promisify: 6.1.1
     dev: true
 
-  /serverless-step-functions@3.17.0(serverless@3.38.0):
-    resolution: {integrity: sha512-/d/++IbzzjP1ES/niWjjwZwQl20O0mCnaY9kENi8RUFDqbFoqthJYAL34zZ78JcmZm3thrlq2iYZ4zJyx8P3jw==}
+  /serverless-step-functions@3.15.0(serverless@3.35.2):
+    resolution: {integrity: sha512-DY+rVavq9AfTZFmzme7IKESHAg5JHFPtkyfpBKy+XN2OJo+L3eLXRb+w26p9Jy1ei412NUy8dK+77swY22R0uQ==}
     peerDependencies:
       serverless: ^2.32.0 || 3
     dependencies:
@@ -30494,19 +30503,19 @@ packages:
       chalk: 4.1.2
       joi: 17.10.2
       lodash: 4.17.21
-      serverless: 3.38.0
+      serverless: 3.35.2
     transitivePeerDependencies:
       - encoding
     dev: true
 
-  /serverless@3.38.0:
-    resolution: {integrity: sha512-NJE1vOn8XmQEqfU9UxmVhkUFaCRmx6FhYw/jITN863WlOt4Y3PQbj3hwQyIb5QS1ZrXFq5ojklwewUXH7xGpdA==}
+  /serverless@3.35.2:
+    resolution: {integrity: sha512-1RZ4eHl2OaGG2Rzw0l0ZD3byCk2JMCL9/+btzGQGQruuQWu9HwRZGJI7l4A2ghW3Mu6DVwLYLfceNpmEWBZoag==}
     engines: {node: '>=12.0'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@serverless/dashboard-plugin': 7.2.0(supports-color@8.1.1)
-      '@serverless/platform-client': 4.5.1(supports-color@8.1.1)
+      '@serverless/dashboard-plugin': 7.0.3(supports-color@8.1.1)
+      '@serverless/platform-client': 4.4.0(supports-color@8.1.1)
       '@serverless/utils': 6.14.0
       abort-controller: 3.0.0
       ajv: 8.12.0
@@ -30715,8 +30724,8 @@ packages:
       - supports-color
     dev: true
 
-  /simple-git@3.21.0(supports-color@8.1.1):
-    resolution: {integrity: sha512-oTzw9248AF5bDTMk9MrxsRzEzivMlY+DWH0yWS4VYpMhNLhDWnN06pCtaUyPnqv/FpsdeNmRqmZugMABHRPdDA==}
+  /simple-git@3.19.1(supports-color@8.1.1):
+    resolution: {integrity: sha512-Ck+rcjVaE1HotraRAS8u/+xgTvToTuoMkT9/l9lvuP5jftwnYUp6DwuJzsKErHgfyRk8IB8pqGHWEbM3tLgV1w==}
     dependencies:
       '@kwsites/file-exists': 1.1.1(supports-color@8.1.1)
       '@kwsites/promise-deferred': 1.1.1
@@ -33129,10 +33138,6 @@ packages:
 
   /universalify@2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
-    engines: {node: '>= 10.0.0'}
-
-  /universalify@2.0.1:
-    resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
   /unixify@1.0.0:
