@@ -1,6 +1,6 @@
 {
   "name": "@sb/infra-shared",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "type": "commonjs",
   "scripts": {
     "bootstrap": "cdk -a \"ts-node --project tsconfig.lib.json -r tsconfig-paths/register src/bootstrap.ts\" deploy sb-bootstrap",

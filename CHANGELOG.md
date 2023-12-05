@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.1](https://github.com/apptension/aws-boilerplate/compare/2.4.0...2.4.1) (2023-12-05)
+
+### Bug Fixes
+
+- Fix `pnpm saas up` command on new docker ([#438](https://github.com/apptension/aws-boilerplate/issues/438)) ([2d86519](https://github.com/apptension/aws-boilerplate/commit/2d865191f52b2023cbca76e5756ebac906cb6390))
+
 ## [2.4.0](https://github.com/apptension/aws-boilerplate/compare/2.3.0...2.4.0) (2023-11-24)
 
 ### Features

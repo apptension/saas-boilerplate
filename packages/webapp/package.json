@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
   "scripts": {
     "extract-intl": "formatjs extract 'src/**/!(*.d).(js|jsx|ts|tsx)' '../webapp-libs/*/src/**/!(*.d).(js|jsx|ts|tsx)' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --out-file ../webapp-libs/webapp-core/src/translations/en.json --ignore src/tests/mocks/** --ignore ../webapp-libs/*src/tests/mocks/**",
