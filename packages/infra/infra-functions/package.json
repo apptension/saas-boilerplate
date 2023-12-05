@@ -15,7 +15,7 @@
     "glob-to-regexp": "^0.4.1"
   },
   "devDependencies": {
-    "serverless": "^3.35.2",
+    "serverless": "^3.38.0",
     "serverless-esbuild": "^1.48.0"
   }
 }
