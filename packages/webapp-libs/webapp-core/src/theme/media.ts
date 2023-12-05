@@ -1,5 +1,5 @@
-import { complement, isNil, reverse } from 'ramda';
-import { DefaultTheme, Interpolation, css } from 'styled-components';
+import { complement, isNil } from 'ramda';
+import { Interpolation, css } from 'styled-components';
 
 export enum Breakpoint {
   MOBILE = 'MOBILE',

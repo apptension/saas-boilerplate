@@ -1,7 +1,6 @@
 import { Construct } from 'constructs';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { EnvConstructProps } from '../constructs';
-import { Fn } from 'aws-cdk-lib';
 
 export interface IServiceCiConfig {
   defaultEnvVariables: {
@@ -49,7 +48,7 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
     ...pnpmWorkspaceFilters: PnpmWorkspaceFilters[]
   ) {
     const filters = pnpmWorkspaceFilters.map(
-      (workspace) => ` --filter=${workspace}`
+      (workspace) => ` --filter=${workspace}`,
     );
 
     return [

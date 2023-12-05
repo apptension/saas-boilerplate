@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components';
+import { css, default as styled } from 'styled-components';
+
 import { fontFamily, fontWeight } from './font';
 
 export const heading1 = css`
