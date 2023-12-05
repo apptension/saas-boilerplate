@@ -11,6 +11,6 @@
   "dependencies": {
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
-    "typewriter-effect": "^2.20.1"
+    "typewriter-effect": "^2.21.0"
   }
 }

@@ -7,12 +7,14 @@ provider:
   stage: "${env:ENV_STAGE}"
   region: "${env:AWS_DEFAULT_REGION}"
   stackName: ${self:custom.conf.stackName}
-  iamRoleStatements: ${self:custom.conf.iam}
   environment: ${self:custom.conf.environment}
   apiGateway:
     websocketApiId: ${self:custom.conf.websocketApiId}
   tracing:
     lambda: true
+  iam:
+    role:
+      statements: ${self:custom.conf.iam}
 
 functions:
   ScheduleTask:
@@ -140,10 +142,10 @@ custom:
 package:
   individually: true
   excludeDevDependencies: true
-  exclude:
-    - .git/**
-    - node_modules/**
-    - aws/**
+  patterns:
+    - '!.git/**'
+    - '!node_modules/**'
+    - '!aws/**'
 
 stepFunctions:
   stateMachines:

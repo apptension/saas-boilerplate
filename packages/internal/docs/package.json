@@ -30,9 +30,9 @@
     "@sb/tools": "*",
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
-    "docusaurus-plugin-typedoc": "^0.20.1",
-    "typedoc": "^0.25.1",
-    "typedoc-plugin-markdown": "^3.16.0",
+    "docusaurus-plugin-typedoc": "^0.20.2",
+    "typedoc": "^0.25.4",
+    "typedoc-plugin-markdown": "^3.17.1",
     "webapp": "*"
   },
   "browserslist": {

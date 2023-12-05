@@ -7,6 +7,6 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-sdk": "^2.1468.0"
+    "aws-sdk": "^2.1508.0"
   }
 }
