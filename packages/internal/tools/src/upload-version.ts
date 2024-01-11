@@ -4,6 +4,12 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 
+const SB_TOOLS_ENABLED = process.env.SB_TOOLS_ENABLED;
+if (SB_TOOLS_ENABLED !== 'true') {
+  console.log('Global tools are disabled. Skipping upload-version');
+  process.exit(0);
+}
+
 const ENV_STAGE = process.env.ENV_STAGE;
 const CURRENT_VERSION = process.env.VERSION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
