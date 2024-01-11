@@ -42,7 +42,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         'api',
         {
           project: apiDeployProject,
-          runOrder: 2,
+          runOrder: 3,
         },
         props,
       ),
