@@ -1,9 +1,9 @@
-import { NetworkStatus, useQuery } from '@apollo/client';
+import { NetworkStatus, useQuery, useSubscription } from '@apollo/client';
 import { ResultOf } from '@graphql-typed-document-node/core';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
-import { ElementType, FC, useEffect } from 'react';
+import { ElementType, FC } from 'react';
 
-import { notificationsListQuery, notificationsListSubscription } from './notifications.graphql';
+import { notificationCreatedSubscription, notificationsListQuery } from './notifications.graphql';
 import { NotificationTypes } from './notifications.types';
 import { NotificationsButton, NotificationsButtonFallback } from './notificationsButton';
 import { NotificationsList, notificationsListContentFragment } from './notificationsList';
@@ -14,15 +14,11 @@ type NotificationsProps = {
 };
 
 export const Notifications: FC<NotificationsProps> = ({ templates }) => {
-  const { loading, data, fetchMore, networkStatus, subscribeToMore } = useQuery(notificationsListQuery);
-
-  useEffect(() => {
-    subscribeToMore({
-      document: notificationsListSubscription,
-      updateQuery: (
-        prev: ResultOf<typeof notificationsListContentFragment>,
-        { subscriptionData }
-      ): ResultOf<typeof notificationsListContentFragment> => ({
+  const { loading, data, fetchMore, networkStatus } = useQuery(notificationsListQuery);
+  useSubscription(notificationCreatedSubscription, {
+    onData: (options) => {
+      console.log(options.data);
+      options.client.cache.updateQuery({query: notificationsListQuery}, (prev: ResultOf<typeof notificationsListContentFragment>) => ({
         ...prev,
         allNotifications: {
           __typename: 'NotificationConnection',
@@ -34,14 +30,14 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
           ...(prev?.allNotifications ?? {}),
 
           edges: [
-            ...(subscriptionData.data?.notificationCreated?.edges ?? []),
+              {node: options.data.data},
             ...(prev.allNotifications?.edges ?? []),
           ],
         },
         hasUnreadNotifications: true,
-      }),
-    });
-  }, [subscribeToMore]);
+      }));
+    },
+  });
 
   if (loading && networkStatus === NetworkStatus.loading) {
     return <NotificationsButtonFallback />;

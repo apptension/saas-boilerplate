@@ -1,14 +1,14 @@
 import uuid
 
-from rest_framework import serializers
-from hashid_field import rest
 from django.contrib import auth as dj_auth
+from hashid_field import rest as hidrest
+from rest_framework import serializers
 
 from . import models, apigateway
 
 
 class DebugConnectionCreateSerializer(serializers.Serializer):
-    user_pk = rest.HashidSerializerCharField(source_field="users.User.id", source="user.id", write_only=True)
+    user_pk = hidrest.HashidSerializerCharField(source_field="users.User.id", source="user.id", write_only=True)
     connection_id = serializers.CharField(max_length=32, write_only=True)
 
     def validate(self, attrs):

@@ -70,12 +70,16 @@ export type ApiMutation = {
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
   deletePaymentMethod?: Maybe<DeletePaymentMethodMutationPayload>;
+  deregisterGqlSubscription?: Maybe<DeregisterGqlSubscriptionMutationPayload>;
+  deregisterWebsocketConnection?: Maybe<DeregisterWebsocketConnectionMutationPayload>;
   disableOtp?: Maybe<DisableOtpMutationPayload>;
   generateOtp?: Maybe<GenerateOtpMutationPayload>;
   generateSaasIdeas?: Maybe<GenerateSaasIdeasMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   passwordReset?: Maybe<PasswordResetMutationPayload>;
   passwordResetConfirm?: Maybe<PasswordResetConfirmationMutationPayload>;
+  registerGqlSubscription?: Maybe<RegisterGqlSubscriptionMutationPayload>;
+  registerWebsocketConnection?: Maybe<RegisterWebsocketConnectionMutationPayload>;
   signUp?: Maybe<SingUpMutationPayload>;
   tokenAuth?: Maybe<ObtainTokenMutationPayload>;
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
@@ -153,6 +157,16 @@ export type ApiMutationDeletePaymentMethodArgs = {
 };
 
 
+export type ApiMutationDeregisterGqlSubscriptionArgs = {
+  input: DeregisterGqlSubscriptionMutationInput;
+};
+
+
+export type ApiMutationDeregisterWebsocketConnectionArgs = {
+  input: DeregisterWebsocketConnectionMutationInput;
+};
+
+
 export type ApiMutationDisableOtpArgs = {
   input: DisableOtpMutationInput;
 };
@@ -180,6 +194,16 @@ export type ApiMutationPasswordResetArgs = {
 
 export type ApiMutationPasswordResetConfirmArgs = {
   input: PasswordResetConfirmationMutationInput;
+};
+
+
+export type ApiMutationRegisterGqlSubscriptionArgs = {
+  input: RegisterGqlSubscriptionMutationInput;
+};
+
+
+export type ApiMutationRegisterWebsocketConnectionArgs = {
+  input: RegisterWebsocketConnectionMutationInput;
 };
 
 
@@ -229,15 +253,7 @@ export type ApiMutationVerifyOtpArgs = {
 
 export type ApiSubscription = {
   __typename?: 'ApiSubscription';
-  notificationCreated?: Maybe<NotificationConnection>;
-};
-
-
-export type ApiSubscriptionNotificationCreatedArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  before?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  notificationCreated?: Maybe<NotificationCreatedSubscription>;
 };
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
@@ -943,6 +959,28 @@ export enum DemoItemOrder {
   TITLE_DESC = 'title_DESC'
 }
 
+export type DeregisterGqlSubscriptionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connectionId: Scalars['String']['input'];
+};
+
+export type DeregisterGqlSubscriptionMutationPayload = {
+  __typename?: 'DeregisterGqlSubscriptionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type DeregisterWebsocketConnectionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connectionId: Scalars['String']['input'];
+};
+
+export type DeregisterWebsocketConnectionMutationPayload = {
+  __typename?: 'DeregisterWebsocketConnectionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type DisableOtpMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1474,6 +1512,16 @@ export type GenerateSaasIdeasMutationPayload = {
   ideas?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
+export type GraphQlSubscriptionType = {
+  __typename?: 'GraphQLSubscriptionType';
+  connection: WebSocketConnectionType;
+  id: Scalars['ID']['output'];
+  operationName: Scalars['String']['output'];
+  query: Scalars['String']['output'];
+  relayId: Scalars['String']['output'];
+  variables: Scalars['JSONString']['output'];
+};
+
 export enum ImageFormat {
   AVIF = 'AVIF',
   /** JPG image format. */
@@ -1591,6 +1639,12 @@ export type NotificationConnection = {
   edges: Array<Maybe<NotificationEdge>>;
   /** Pagination data for this connection. */
   pageInfo: PageInfo;
+};
+
+/** Simple GraphQL subscription. */
+export type NotificationCreatedSubscription = {
+  __typename?: 'NotificationCreatedSubscription';
+  notification?: Maybe<NotificationType>;
 };
 
 /** A Relay edge containing a `Notification` and its cursor. */
@@ -1845,6 +1899,33 @@ export type QueryNodeArgs = {
 
 export type QueryPaymentIntentArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type RegisterGqlSubscriptionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connection: Scalars['String']['input'];
+  operationName: Scalars['String']['input'];
+  query: Scalars['String']['input'];
+  relayId: Scalars['String']['input'];
+  variables: Scalars['JSONString']['input'];
+};
+
+export type RegisterGqlSubscriptionMutationPayload = {
+  __typename?: 'RegisterGqlSubscriptionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  graphQLSubscription?: Maybe<GraphQlSubscriptionType>;
+};
+
+export type RegisterWebsocketConnectionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connectionId: Scalars['String']['input'];
+  user?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RegisterWebsocketConnectionMutationPayload = {
+  __typename?: 'RegisterWebsocketConnectionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  webSocketConnection?: Maybe<WebSocketConnectionType>;
 };
 
 export type SingUpMutationInput = {
@@ -2649,6 +2730,14 @@ export type VerifyOtpMutationPayload = {
   otpVerified?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type WebSocketConnectionType = {
+  __typename?: 'WebSocketConnectionType';
+  connectionId: Scalars['String']['output'];
+  graphqlsubscriptionSet: Array<GraphQlSubscriptionType>;
+  id: Scalars['ID']['output'];
+  user: CurrentUserType;
+};
+
 export type PaginationListTestQueryQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   after?: InputMaybe<Scalars['String']['input']>;
@@ -2974,10 +3063,10 @@ export type NotificationsListQueryQuery = (
   & { ' $fragmentRefs'?: { 'NotificationsListContentFragmentFragment': NotificationsListContentFragmentFragment;'NotificationsButtonContentFragment': NotificationsButtonContentFragment } }
 );
 
-export type NotificationsListSubscriptionSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type NotificationCreatedSubscriptionSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NotificationsListSubscriptionSubscription = { __typename?: 'ApiSubscription', notificationCreated?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, type: string, createdAt: any, readAt?: any | null, data?: any | null, issuer?: { __typename?: 'UserType', id: string, avatar?: string | null, email: string } | null } | null } | null> } | null };
+export type NotificationCreatedSubscriptionSubscription = { __typename?: 'ApiSubscription', notificationCreated?: { __typename?: 'NotificationCreatedSubscription', notification?: { __typename?: 'NotificationType', id: string, data?: any | null, createdAt: any, readAt?: any | null, type: string, issuer?: { __typename?: 'UserType', id: string, avatar?: string | null, email: string } | null } | null } | null };
 
 export type NotificationsButtonContentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null } & { ' $fragmentName'?: 'NotificationsButtonContentFragment' };
 
@@ -3119,7 +3208,7 @@ export const StripeAllChargesQueryDocument = {"kind":"Document","definitions":[{
 export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ideas"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
 export const NotificationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateNotificationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"notificationEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
 export const NotificationsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notificationsListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"20"}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListContentFragment"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsButtonContent"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
-export const NotificationsListSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"notificationsListSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notificationCreated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationsListSubscriptionSubscription, NotificationsListSubscriptionSubscriptionVariables>;
+export const NotificationCreatedSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"NotificationCreatedSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notificationCreated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationCreatedSubscriptionSubscription, NotificationCreatedSubscriptionSubscriptionVariables>;
 export const NotificationsListMarkAsReadMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationsListMarkAsReadMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MarkReadAllNotificationsMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"markReadAllNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<NotificationsListMarkAsReadMutationMutation, NotificationsListMarkAsReadMutationMutationVariables>;
 export const AuthConfirmUserEmailMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authConfirmUserEmailMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConfirmEmailMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"confirm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthConfirmUserEmailMutationMutation, AuthConfirmUserEmailMutationMutationVariables>;
 export const AuthChangePasswordMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authChangePasswordMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangePasswordMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]}}]} as unknown as DocumentNode<AuthChangePasswordMutationMutation, AuthChangePasswordMutationMutationVariables>;

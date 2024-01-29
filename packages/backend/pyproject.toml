@@ -115,6 +115,8 @@ dependencies = [
     "pydantic>=1.10.7",
     "pyyaml>=6.0.0",
     "gunicorn==21.2.0",
+    "channels[daphne]>=4.0.0",
+    "django-channels-graphql-ws==1.0.0rc6"
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}
