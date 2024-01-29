@@ -7,6 +7,9 @@ volumes:
 
   web_backend_staticfiles: {}
 
+  redis_cache:
+    driver: local
+
 services:
   db:
     volumes:
@@ -47,6 +50,10 @@ services:
       - mailcatcher
     ports:
       - "3005:3005"
+
+  redis:
+    volumes:
+      - redis_cache:/data
 
   localstack:
     image: localstack/localstack:2.3.0

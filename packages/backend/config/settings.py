@@ -68,12 +68,12 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = (
-    [
-        "daphne",
-    ]
-    + DJANGO_CORE_APPS
-    + THIRD_PARTY_APPS
-    + LOCAL_APPS
+        [
+            "daphne",
+        ]
+        + DJANGO_CORE_APPS
+        + THIRD_PARTY_APPS
+        + LOCAL_APPS
 )
 
 SILENCED_SYSTEM_CHECKS = []  # default django value
@@ -175,22 +175,16 @@ DATABASES = {
     },
 }
 
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
+REDIS_CONNECTION = json.loads(env("REDIS_CONNECTION"))
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
-#         'CONFIG': {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": DB_CONNECTION["dbname"],
-#             "USER": DB_CONNECTION["username"],
-#             "PASSWORD": DB_CONNECTION["password"],
-#             "HOST": DB_PROXY_ENDPOINT or DB_CONNECTION["host"],
-#             "PORT": DB_CONNECTION["port"],
-#
-#         },
-#     },
-# }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_CONNECTION],
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

@@ -41,6 +41,7 @@ ENV HASHID_FIELD_SALT='' \
     DJANGO_PARENT_HOST='' \
     DJANGO_SECRET_KEY='build' \
     DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
+    REDIS_CONNECTION='{"address":"redis://redis:6379","ssl_cert_reqs":null}' \
     WORKERS_EVENT_BUS_NAME='' \
     PYTHONPATH=/pkgs/__pypackages__/3.11/lib
 

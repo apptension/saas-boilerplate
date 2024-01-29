@@ -29,9 +29,12 @@ services:
         condition: service_started
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     links:
       - db
+      - redis
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
@@ -48,6 +51,17 @@ services:
         condition: service_healthy
     links:
       - db
+
+  redis:
+    image: redis:7.2.4-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   stripemock:
     image: stripe/stripe-mock:v0.170.0
