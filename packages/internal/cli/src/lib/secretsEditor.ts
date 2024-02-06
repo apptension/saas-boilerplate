@@ -12,13 +12,7 @@ export const runSecretsEditor = async ({
   await runCommand('pnpm', ['nx', 'run', 'ssm-editor:compose-build-image']);
   await runCommand(
     'docker',
-    [
-      'compose',
-      'run',
-      '--rm',
-      'ssm-editor',
-      serviceName,
-    ],
+    ['compose', 'run', '--rm', 'ssm-editor', serviceName],
     {
       cwd: rootPath,
     },
