@@ -5,6 +5,7 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
+import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 import { getInfraFunctionArnByName } from '../../lib/names';
 
@@ -32,9 +33,23 @@ export class CiEntrypoint extends Construct {
     this.artifactsBucket = new s3.Bucket(this, 'ArtifactsBucket', {
       versioned: true,
     });
+
+    const trail = new cloudtrail.Trail(this, 'CloudTrail');
+    trail.addS3EventSelector(
+      [
+        {
+          bucket: this.artifactsBucket,
+          objectPrefix: CiEntrypoint.getArtifactsName(props.envSettings),
+        },
+      ],
+      {
+        readWriteType: cloudtrail.ReadWriteType.WRITE_ONLY,
+      },
+    );
+
     this.codeBuildProject = this.createBuildProject(
       this.artifactsBucket,
-      props
+      props,
     );
 
     this.triggerFunction = lambda.Function.fromFunctionArn(
@@ -42,7 +57,7 @@ export class CiEntrypoint extends Construct {
       'TriggerLambda',
       getInfraFunctionArnByName(this, 'TriggerEntrypoint', {
         envSettings: props.envSettings,
-      })
+      }),
     );
     this.onDeployCommitRule = props.codeRepository.onCommit('OnDeployCommit', {
       target: new targets.LambdaFunction(this.triggerFunction),
@@ -58,7 +73,7 @@ export class CiEntrypoint extends Construct {
 
   private createBuildProject(
     artifactsBucket: s3.Bucket,
-    props: CiEntrypointProps
+    props: CiEntrypointProps,
   ) {
     return new codebuild.Project(this, 'Project', {
       projectName: props.envSettings.projectEnvName,
