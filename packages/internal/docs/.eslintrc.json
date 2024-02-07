@@ -11,7 +11,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "import/no-unresolved": [2, { "ignore": ["^@docusaurus"] }]
+        "import/no-unresolved": [2, { "ignore": ["^@docusaurus", "^@theme"] }]
       }
     },
     {
