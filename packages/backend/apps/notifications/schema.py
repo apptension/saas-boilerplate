@@ -1,13 +1,12 @@
 import channels_graphql_ws
 import graphene
+from apps.users.models import User
+from apps.users.services.users import get_user_avatar_url
 from channels.db import database_sync_to_async
+from common.graphql import mutations
 from graphene import relay
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
-
-from apps.users.models import User
-from apps.users.services.users import get_user_avatar_url
-from common.graphql import mutations
 from . import models
 from . import serializers
 from . import services
@@ -113,7 +112,7 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
 
     @staticmethod
     def subscribe(root, info):
-        return ['group42']
+        return ['global-notifications']
 
     @staticmethod
     @database_sync_to_async
@@ -126,34 +125,5 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
         return await NotificationCreatedSubscription.get_response(id=payload['id'])
 
 
-class OldNotificationCreatedSubscription(channels_graphql_ws.Subscription):
-    """Simple GraphQL subscription."""
-
-    # Leave only latest 64 messages in the server queue.
-    notification_queue_limit = 64
-
-    notification = graphene.Field(NotificationType)
-
-    @staticmethod
-    def subscribe(root, info):
-        return ['group42']
-
-    @staticmethod
-    def publish(payload, info):
-        """Called to notify the client."""
-
-        # Here `payload` contains the `payload` from the `broadcast()`
-        # invocation (see below). You can return `None` if you wish to
-        # suppress the notification to a particular client. For example,
-        # this allows to avoid notifications for the actions made by
-        # this particular client.
-
-        return NotificationCreatedSubscription()
-
-
 class Subscription(graphene.ObjectType):
     notification_created = NotificationCreatedSubscription.Field()
-
-    @staticmethod
-    def resolve_notification_created(root, info):
-        return root

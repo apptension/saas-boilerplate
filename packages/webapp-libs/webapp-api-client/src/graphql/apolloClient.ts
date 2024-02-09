@@ -111,7 +111,7 @@ const splitHttpLink = split(
 // const wsLink = new GraphQLWsLink(subscriptionClient);
 
 const wsLink = new WebSocketLink({
-  uri: ENV.SUBSCRIPTIONS_URL,
+  uri: `${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.location.host}/api/graphql/`,
   options: {
     reconnect: true,
   },

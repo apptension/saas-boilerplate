@@ -175,15 +175,25 @@ DATABASES = {
     },
 }
 
-REDIS_CONNECTION = json.loads(env("REDIS_CONNECTION"))
+REDIS_CONNECTION = env("REDIS_CONNECTION")
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [REDIS_CONNECTION],
+            "hosts": [{"address": REDIS_CONNECTION}],
         },
     },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_CONNECTION,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        }
+    }
 }
 
 # Password validation

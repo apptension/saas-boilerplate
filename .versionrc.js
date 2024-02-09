@@ -75,10 +75,6 @@ module.exports = {
       type: 'json',
     },
     {
-      filename: './packages/internal/local-ws-server/package.json',
-      type: 'json',
-    },
-    {
       filename: './packages/internal/status-dashboard/package.json',
       type: 'json',
     },
