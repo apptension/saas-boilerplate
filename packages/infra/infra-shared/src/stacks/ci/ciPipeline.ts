@@ -39,7 +39,7 @@ export class CiPipeline extends Construct {
 
   private configureEnv(pipeline: Pipeline, props: CiPipelineProps) {
     const sourceOutputArtifact = CiPipeline.getSourceOutputArtifact(
-      props.envSettings
+      props.envSettings,
     );
     const buildStage = this.selectStage(this.buildStageName, pipeline);
     const deployStage = this.selectStage(this.deployStageName, pipeline);
@@ -109,7 +109,7 @@ export class CiPipeline extends Construct {
               bucket: props.entrypointArtifactBucket,
               bucketKey: CiEntrypoint.getArtifactsName(props.envSettings),
               output: CiPipeline.getSourceOutputArtifact(props.envSettings),
-              trigger: S3Trigger.POLL,
+              trigger: S3Trigger.EVENTS,
             }),
           ],
         },

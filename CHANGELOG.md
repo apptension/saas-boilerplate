@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.2](https://github.com/apptension/aws-boilerplate/compare/2.4.1...2.4.2) (2024-02-09)
+
+### Features
+
+- [#196](https://github.com/apptension/aws-boilerplate/issues/196) Migrate polling AWS CodePipeline to use event-based change detection ([#473](https://github.com/apptension/aws-boilerplate/issues/473)) ([4c8ccc5](https://github.com/apptension/aws-boilerplate/commit/4c8ccc5b679d0c970a67d6e0b92414b1bef83251))
+
+### Bug Fixes
+
+- Freeze awscli version to 1.32.24 in backend Dockerfile ([#455](https://github.com/apptension/aws-boilerplate/issues/455)) ([54b7a25](https://github.com/apptension/aws-boilerplate/commit/54b7a25bc52c553ef7273823ef1cbc871ccf30d1))
+- Precommit hook failing on initial commit without NX graph generated ([#456](https://github.com/apptension/aws-boilerplate/issues/456)) ([9bad656](https://github.com/apptension/aws-boilerplate/commit/9bad65612c30d7fd68d3c67f4e7070d46ee5c41b))
+- saas backed secrets command unknown --entrypoint flag ([#452](https://github.com/apptension/aws-boilerplate/issues/452)) ([0b62d6f](https://github.com/apptension/aws-boilerplate/commit/0b62d6ffe0b87dbc5a06bf6ef2cfbde82e4accbb))
+
 ### [2.4.1](https://github.com/apptension/aws-boilerplate/compare/2.4.0...2.4.1) (2023-12-05)
 
 ### Bug Fixes
