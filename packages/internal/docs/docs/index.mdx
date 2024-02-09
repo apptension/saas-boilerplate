@@ -5,6 +5,8 @@ slug: /
 
 import DocCardList from '@theme/DocCardList';
 import ProjectName from './shared/components/ProjectName.component';
+import DisplayLocalUseInfo from './shared/components/DisplayLocalUseInfo.component';
+import LocalUseInfo from './shared/partials/_local-use-info.mdx'
 
 Welcome to the <ProjectName/> documentation! Our goal is to provide you with all the information you need to get up and running with the <ProjectName/> quickly and easily.
 
@@ -19,5 +21,9 @@ Our documentation is organized into five main sections:
 - [What is <ProjectName/>](/introduction): This section provides a high-level overview of the <ProjectName/> project and its architecture.
 
 - [API Reference](/api-reference): Our API reference section contains documentation on the commands used in the <ProjectName/> projects.
+
+<DisplayLocalUseInfo>
+    <LocalUseInfo />
+</DisplayLocalUseInfo>
 
 <DocCardList />

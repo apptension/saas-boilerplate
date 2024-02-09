@@ -72,6 +72,7 @@ module.exports = {
   },
   customFields: {
     projectName: 'SaaS Boilerplate',
+    displayLocalUseInfo: process.env.SB_DISPLAY_LOCAL_USE_INFO || false,
   },
   presets: [
     [
