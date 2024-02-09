@@ -1,6 +1,6 @@
 {
   "name": "local-ws-server",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "WebSocket Server for local development",
   "main": "index.js",
   "license": "MIT",
