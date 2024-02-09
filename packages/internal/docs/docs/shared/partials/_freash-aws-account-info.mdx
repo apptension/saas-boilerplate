@@ -1,0 +1,23 @@
+import ProjectName from '../components/ProjectName.component';
+
+:::info
+
+### For Users with newly created AWS accounts
+Freshly created AWS accounts come with initial limits that may be automatically increased over time based on account
+activity. These limits may disrupt some procedures outlined in this guide. You have the option to request limit
+increases from AWS support on your own, or explore alternative methods to experiment with <ProjectName/>. Below are the
+current known limitations:
+
+- **AWS SES is in Sandbox Mode by Default:** AWS Simple Email Service (SES) operates in
+[sandbox mode](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html) initially, allowing you to send
+emails only to verified email addresses and domains. Ensure you verify your test email addresses or exit sandbox mode
+before attempting to use the application.
+- **CodeBuild Limits to 1 Concurrent Build:** By default, the CodeBuild service is restricted to a single concurrent
+build. This limitation can affect the execution of CI/CD pipelines designed to minimize build times by running multiple
+CodeBuild projects simultaneously during the deployment of new application versions. As a workaround, consider manually
+deploying your application following the steps in [Step 6. Deploy the app](./run-deployment-commands) until the
+account's limits are increased.
+- **Creating AWS CloudFront Distribution in not verified account**: Your AWS account need to be verified in order to
+be able to create CloudFront Distribution that will be used for example to serve web application assets.
+
+:::
