@@ -10,4 +10,3 @@ class TenantUserRole(models.TextChoices):
     OWNER = 'owner', 'Owner'
     ADMIN = 'admin', 'Administrator'
     MEMBER = 'member', 'Member'
-

@@ -17,6 +17,8 @@ from .services.users import get_role_names
 from .services import otp as otp_services
 from .utils import generate_otp_auth_token
 
+from apps.multitenancy.models import Tenant
+
 UPLOADED_AVATAR_SIZE_LIMIT = 1 * 1024 * 1024
 
 
@@ -85,6 +87,9 @@ class UserSignupSerializer(serializers.ModelSerializer):
         notifications.AccountActivationEmail(
             user=user, data={'user_id': user.id.hashid, 'token': tokens.account_activation_token.make_token(user)}
         ).send()
+
+        # Create user signup tenant
+        Tenant.objects.get_or_create_user_sign_up_tenant(user)
 
         return {'id': user.id, 'email': user.email, 'access': str(refresh.access_token), 'refresh': str(refresh)}
 

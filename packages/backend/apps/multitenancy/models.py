@@ -15,7 +15,9 @@ class Tenant(models.Model):
     slug: str = models.SlugField(max_length=100, unique=True)
     type: str = models.CharField(choices=constants.TenantType.choices)
     created = models.DateTimeField(auto_now_add=True)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='TenantMembership', related_name='tenants', blank=True)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='TenantMembership', related_name='tenants', blank=True
+    )
 
     objects = TenantManager()
 
@@ -29,6 +31,9 @@ class Tenant(models.Model):
 
 
 class TenantMembership(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    role = models.CharField(choices=constants.TenantUserRole.choices)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="memberships")
+    role = models.CharField(choices=constants.TenantUserRole.choices, default=constants.TenantUserRole.OWNER)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="memberships")
+
+    class Meta:
+        unique_together = ('user', 'tenant')
