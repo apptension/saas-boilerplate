@@ -3,7 +3,9 @@ import graphene
 from apps.users.models import User
 from apps.users.services.users import get_user_avatar_url
 from channels.db import database_sync_to_async
+from common.acl.policies import IsAuthenticatedFullAccess
 from common.graphql import mutations
+from common.graphql.acl import permission_classes
 from graphene import relay
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
@@ -102,6 +104,7 @@ class Mutation(graphene.ObjectType):
         return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()
 
 
+@permission_classes(IsAuthenticatedFullAccess)
 class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
     """Simple GraphQL subscription."""
 
@@ -125,5 +128,6 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
         return await NotificationCreatedSubscription.get_response(id=payload['id'])
 
 
+@permission_classes(IsAuthenticatedFullAccess)
 class Subscription(graphene.ObjectType):
     notification_created = NotificationCreatedSubscription.Field()

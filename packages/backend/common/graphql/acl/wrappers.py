@@ -5,17 +5,13 @@ from typing import Type, Callable
 import graphene
 from graphene.relay.node import NodeField
 from graphene.types import Field
-from rest_framework.request import Request
 from rest_framework.exceptions import PermissionDenied
-
+from rest_framework.request import Request
 from . import types
-
 
 PERMISSION_DENIED_MESSAGE = "permission_denied"
 __wrapped_fns = threading.local()
-__wrapped_fns.value = set()
 __wrapped_field_names = threading.local()
-__wrapped_field_names.value = set()
 
 
 def check_permissions(perms: types.PermissionsClasses, request: Request, root):
@@ -26,6 +22,10 @@ def check_permissions(perms: types.PermissionsClasses, request: Request, root):
 
 
 def wraps_resolver_function(fn: Callable, perms: types.PermissionsClasses, node_resolver: bool = False) -> Callable:
+
+    if not hasattr(__wrapped_fns, 'value'):
+        __wrapped_fns.value = set()
+
     # Avoid wrapping function twice
     if fn in __wrapped_fns.value:
         return fn
@@ -60,6 +60,9 @@ def wraps_field(field: Field, perms: types.PermissionsClasses, parent_resolver=N
 
 
 def wraps_object_type(obj: Type[graphene.ObjectType], perms: types.PermissionsClasses) -> Type[graphene.ObjectType]:
+    if not hasattr(__wrapped_field_names, 'value'):
+        __wrapped_field_names.value = set()
+
     for field_name, field in obj._meta.fields.items():
         parent_resolver = getattr(obj, f"resolve_{field_name}", None)
         # for overwriting mutation's fields

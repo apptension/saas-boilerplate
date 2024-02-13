@@ -68,12 +68,12 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = (
-        [
-            "daphne",
-        ]
-        + DJANGO_CORE_APPS
-        + THIRD_PARTY_APPS
-        + LOCAL_APPS
+    [
+        "daphne",
+    ]
+    + DJANGO_CORE_APPS
+    + THIRD_PARTY_APPS
+    + LOCAL_APPS
 )
 
 SILENCED_SYSTEM_CHECKS = []  # default django value
@@ -190,9 +190,7 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_CONNECTION,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        }
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
 
