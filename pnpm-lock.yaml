@@ -1,8 +1,13 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+
+patchedDependencies:
+  nx@17.1.3:
+    hash: gccie2giwxnrau2zf7la4up2fa
+    path: patches/nx@17.1.3.patch
 
 importers:
 
@@ -272,7 +277,7 @@ importers:
         version: 14.0.1
       nx:
         specifier: 17.1.3
-        version: 17.1.3
+        version: 17.1.3(patch_hash=gccie2giwxnrau2zf7la4up2fa)
       nx-cloud:
         specifier: 16.5.2
         version: 16.5.2
@@ -8623,7 +8628,7 @@ packages:
     resolution: {integrity: sha512-9YpfEkUpVqOweqgQvMDcWApNx4jhCqBNH5IByZj302Enp3TLnQSvhuX5Dfr8hNQRQokIpEn6tW8SGTctTM5LXw==}
     hasBin: true
     dependencies:
-      nx: 17.1.3
+      nx: 17.1.3(patch_hash=gccie2giwxnrau2zf7la4up2fa)
       tslib: 2.6.2
     transitivePeerDependencies:
       - '@swc-node/register'
@@ -8699,7 +8704,7 @@ packages:
       ejs: 3.1.9
       enquirer: 2.3.6
       ignore: 5.3.0
-      nx: 17.1.3
+      nx: 17.1.3(patch_hash=gccie2giwxnrau2zf7la4up2fa)
       semver: 7.5.3
       tmp: 0.2.1
       tslib: 2.6.2
@@ -9135,7 +9140,7 @@ packages:
       '@nx/devkit': 17.1.3(nx@17.1.3)
       chalk: 4.1.2
       enquirer: 2.3.6
-      nx: 17.1.3
+      nx: 17.1.3(patch_hash=gccie2giwxnrau2zf7la4up2fa)
       tslib: 2.6.2
       yargs-parser: 21.1.1
     transitivePeerDependencies:
@@ -15241,7 +15246,7 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.22.2
+      browserslist: 4.21.10
       caniuse-lite: 1.0.30001538
       fraction.js: 4.3.6
       normalize-range: 0.1.2
@@ -26632,7 +26637,7 @@ packages:
       - debug
     dev: true
 
-  /nx@17.1.3:
+  /nx@17.1.3(patch_hash=gccie2giwxnrau2zf7la4up2fa):
     resolution: {integrity: sha512-6LYoTt01nS1d/dvvYtRs+pEAMQmUVsd2fr/a8+X1cDjWrb8wsf1O3DwlBTqKOXOazpS3eOr0Ukc9N1svbu7uXA==}
     hasBin: true
     requiresBuild: true
@@ -26694,6 +26699,7 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+    patched: true
 
   /object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}

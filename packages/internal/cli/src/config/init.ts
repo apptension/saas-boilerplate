@@ -2,7 +2,7 @@ import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 import { trace } from '@opentelemetry/api';
 
-import { ENV_STAGE_LOCAL, getRootPath, loadVersionEnv } from './env';
+import { ENV_STAGE_LOCAL, getRootPath, loadVersionEnv, loadNxEnv } from './env';
 import { initAWS } from './aws';
 import { loadEnvStage } from './storage';
 
@@ -26,6 +26,7 @@ export const initConfig = async (
     const rootPath = await getRootPath();
     const version = await loadVersionEnv();
     const envStage = await loadEnvStage();
+    loadNxEnv();
     const projectName = process.env.PROJECT_NAME;
 
     if (!projectName) {
