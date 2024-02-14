@@ -48,7 +48,7 @@ export async function loadVersionEnv() {
   return version;
 }
 
-export const loadNxEnv = () => {
+export const disableNxEnvFiles = () => {
   process.env.NX_LOAD_DOT_ENV_FILES = 'false';
 };
 
