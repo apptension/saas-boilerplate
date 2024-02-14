@@ -89,7 +89,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         ).send()
 
         # Create user signup tenant
-        Tenant.objects.get_or_create_user_sign_up_tenant(user)
+        Tenant.objects.get_or_create_user_default_tenant(user)
 
         return {'id': user.id, 'email': user.email, 'access': str(refresh.access_token), 'refresh': str(refresh)}
 

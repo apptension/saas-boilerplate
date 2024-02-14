@@ -53,7 +53,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         if not create:
             return
 
-        Tenant.objects.get_or_create_user_sign_up_tenant(self)
+        Tenant.objects.get_or_create_user_default_tenant(self)
 
     @factory.post_generation
     def admin(self, create, extracted, **kwargs):

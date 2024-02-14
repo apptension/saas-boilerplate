@@ -128,7 +128,7 @@ class TenantType(DjangoObjectType):
     @staticmethod
     def resolve_role(parent, info):
         user = get_user_from_resolver(info)
-        return parent.memberships.filter(user=user).first().role
+        return parent.user_memberships.filter(user=user).first().role
 
 
 @permission_classes(policies.AnyoneFullAccess)
@@ -180,7 +180,7 @@ class CurrentUserType(DjangoObjectType):
         user = get_user_from_resolver(info)
         tenants = user.tenants.all()
         if not len(tenants):
-            Tenant.objects.get_or_create_user_sign_up_tenant(user)
+            Tenant.objects.get_or_create_user_default_tenant(user)
         return tenants
 
 

@@ -191,7 +191,7 @@ class TestCurrentUserQuery:
         assert len(data["tenants"]) > 0
         assert data["tenants"][0]["name"] == "test@example.com"
         assert data["tenants"][0]["role"] == "owner"
-        assert data["tenants"][0]["type"] == "sign_up"
+        assert data["tenants"][0]["type"] == "default"
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(
