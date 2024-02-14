@@ -178,8 +178,10 @@ class CurrentUserType(DjangoObjectType):
     @staticmethod
     def resolve_tenants(parent, info):
         user = get_user_from_resolver(info)
-        Tenant.objects.get_or_create_user_sign_up_tenant(user)
-        return user.tenants.all()
+        tenants = user.tenants.all()
+        if not len(tenants):
+            Tenant.objects.get_or_create_user_sign_up_tenant(user)
+        return tenants
 
 
 class UserProfileType(DjangoObjectType):

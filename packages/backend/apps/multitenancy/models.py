@@ -21,13 +21,13 @@ class Tenant(models.Model):
 
     objects = TenantManager()
 
+    def __str__(self):
+        return self.name
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
 
 
 class TenantMembership(models.Model):
@@ -37,3 +37,6 @@ class TenantMembership(models.Model):
 
     class Meta:
         unique_together = ('user', 'tenant')
+
+    def __str__(self):
+        return f"{self.user.email} {self.tenant.name} {self.role}"
