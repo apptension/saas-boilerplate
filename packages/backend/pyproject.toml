@@ -116,6 +116,7 @@ dependencies = [
     "pydantic>=1.10.7",
     "pyyaml>=6.0.0",
     "gunicorn==21.2.0",
+    "uvicorn[standard]==0.27.1",
     "channels[daphne]>=4.0.0",
     "django-channels-graphql-ws==1.0.0rc6",
     "channels-redis>=4.2.0",

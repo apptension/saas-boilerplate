@@ -23,7 +23,7 @@ max_requests = 1000
 accesslog = "-"
 errorlog = "-"
 workers = max_workers()
-worker_class = "gevent"
+worker_class = "uvicorn.workers.UvicornWorker"
 
 
 class HealthCheckFilter(logging.Filter):

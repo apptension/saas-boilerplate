@@ -3,4 +3,4 @@ set -e
 
 echo Starting app server...
 
-pdm run gunicorn -c gunicorn.py config.wsgi:application
+pdm run gunicorn -c python:config.gunicorn config.asgi:application
