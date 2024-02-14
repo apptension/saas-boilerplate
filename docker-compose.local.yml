@@ -43,6 +43,7 @@ services:
       - ./packages/workers/.env
     environment:
       - AWS_ENDPOINT_URL=http://localstack:4566
+      - ENV_STAGE=${ENV_STAGE:-}
 
     depends_on:
       - db
@@ -78,8 +79,7 @@ services:
       - db
 
   mailcatcher:
-    platform: linux/amd64
-    build: ./packages/internal/mailcatcher
+    image: sj26/mailcatcher:v0.9.0
     ports:
       - "1080:1080"
       - "1025:1025"
