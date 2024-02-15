@@ -121,6 +121,10 @@ pnpm saas aws set-var SB_DEPLOY_BRANCHES master
 
 ### \[Optional\] Set tools env variables
 
+The `tools` package during CI deployment is responsible for uploading the information of the version of deployed
+application on specific environment. Then, you will be able to check currently deployed state in the
+[version matrix](../../../working-with-sb/dev-tools/version-matrix).
+
 To configure `tools` package env variables follow the example below.
 
 ```shell
@@ -130,6 +134,14 @@ pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_ID XYZ
 pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_NAME example.com
 pnpm saas aws set-var SB_TOOLS_DOMAIN_VERSION_MATRIX status.example.com
 ```
+
+:::info
+
+If you set `SB_TOOLS_ENABLED` to `true` make sure to deploy **version matrix** component before first CI pipeline run.
+
+Follow the [deployment instructions](../../../working-with-sb/dev-tools/version-matrix#deployment) for more details.
+
+:::
 
 ## Env variable validation
 
