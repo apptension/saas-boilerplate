@@ -7,8 +7,9 @@ class TenantManager(models.Manager):
     def get_or_create_user_default_tenant(self, user):
         """
         Description:
-        Retrieves or creates a default tenant for a given user to ensure that there is always at least one tenant
-        instance associated with the user.
+        Retrieves or creates a default tenant for a given user, ensuring that there is always at least one tenant
+        instance associated with them.
+
         Parameters:
         - user (User): The user for whom the tenant is retrieved or created.
 
