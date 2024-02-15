@@ -48,6 +48,10 @@ export async function loadVersionEnv() {
   return version;
 }
 
+export const disableNxEnvFiles = () => {
+  process.env.NX_LOAD_DOT_ENV_FILES = 'false';
+};
+
 export async function validateStageEnv() {
   return envalid.cleanEnv(process.env, {
     PROJECT_NAME: envalid.str({

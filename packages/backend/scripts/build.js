@@ -7,7 +7,8 @@ const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const VERSION = process.env.VERSION;
 const SB_MIRROR_REPOSITORY = process.env.SB_MIRROR_REPOSITORY ?? '';
-const SB_PULL_THROUGH_CACHE_REPOSITORY = process.env.SB_PULL_THROUGH_CACHE_REPOSITORY ?? '';
+const SB_PULL_THROUGH_CACHE_REPOSITORY =
+  process.env.SB_PULL_THROUGH_CACHE_REPOSITORY ?? '';
 
 const stsClient = new STSClient();
 
