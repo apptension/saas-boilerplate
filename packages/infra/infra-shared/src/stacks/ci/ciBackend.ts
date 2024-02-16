@@ -42,7 +42,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         'api',
         {
           project: apiDeployProject,
-          runOrder: 2,
+          runOrder: this.getRunOrder(props.deployStage, 2)
         },
         props,
       ),
@@ -54,7 +54,7 @@ export class BackendCiConfig extends ServiceCiConfig {
         'migrations',
         {
           project: migrationsDeployProject,
-          runOrder: 2,
+          runOrder: this.getRunOrder(props.deployStage, 2)
         },
         props,
       ),
@@ -72,6 +72,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       actionName: `${props.envSettings.projectEnvName}-build-${name}`,
       project: actionProps.project,
       input: props.inputArtifact,
+      runOrder: this.getRunOrder(props.buildStage)
     });
   }
 

@@ -22,6 +22,7 @@ declare const process: {
     SB_TOOLS_HOSTED_ZONE_NAME: string;
     SB_TOOLS_HOSTED_ZONE_ID: string;
     SB_TOOLS_DOMAIN_VERSION_MATRIX: string;
+    SB_CI_MODE: string;
   };
 };
 
@@ -64,6 +65,15 @@ interface WebAppConfig {
   envVariables: EnvironmentVariables;
 }
 
+export enum CI_MODE {
+  PARALLEL = 'parallel',
+  SIMPLE = 'simple',
+}
+
+interface CIConfig {
+  mode: CI_MODE;
+}
+
 export interface EnvironmentSettings {
   appBasicAuth: string | null | undefined;
   deployBranches: Array<string>;
@@ -77,11 +87,13 @@ export interface EnvironmentSettings {
   version: string;
   webAppEnvVariables: EnvironmentVariables;
   certificates: CertificatesConfig;
+  CIConfig: CIConfig;
 }
 
 interface ConfigFileContent {
   toolsConfig: ToolsConfig;
   webAppConfig: WebAppConfig;
+  CIConfig: CIConfig;
 }
 
 export interface EnvConfigFileContent {
@@ -109,6 +121,10 @@ async function readConfig(): Promise<ConfigFileContent> {
         versionMatrix: process.env.SB_TOOLS_DOMAIN_VERSION_MATRIX,
       },
     },
+    CIConfig: {
+      mode: process.env.SB_CI_MODE === CI_MODE.SIMPLE
+        ? CI_MODE.SIMPLE : CI_MODE.PARALLEL,
+    }
   };
 }
 
@@ -176,5 +192,6 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
       ...(envConfig?.webAppConfig?.envVariables || {}),
     },
     certificates: envConfig.certificates,
+    CIConfig: config.CIConfig,
   };
 }

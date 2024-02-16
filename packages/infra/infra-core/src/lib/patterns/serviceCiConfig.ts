@@ -1,6 +1,8 @@
 import { Construct } from 'constructs';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { EnvConstructProps } from '../constructs';
+import { CI_MODE } from '../env-config';
+import { IStage } from 'aws-cdk-lib/aws-codepipeline';
 
 export interface IServiceCiConfig {
   defaultEnvVariables: {
@@ -22,9 +24,11 @@ export enum PnpmWorkspaceFilters {
 export class ServiceCiConfig extends Construct implements IServiceCiConfig {
   defaultEnvVariables: { [p: string]: codebuild.BuildEnvironmentVariable };
   defaultCachePaths: string[];
+  props: EnvConstructProps;
 
   constructor(scope: Construct, id: string, props: EnvConstructProps) {
     super(scope, id);
+    this.props = props;
 
     this.defaultEnvVariables = {
       CI: {
@@ -68,5 +72,12 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
       'export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SecretAccessKey\')',
       'export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r \'.Credentials.SessionToken\')',
     ];
+  }
+
+  protected getRunOrder(stage: IStage, defaultRunOrder?: number) {
+    if (this.props.envSettings.CIConfig.mode === CI_MODE.PARALLEL) {
+      return defaultRunOrder;
+    }
+    return  stage.actions.length + 1;
   }
 }
