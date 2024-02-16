@@ -66,14 +66,14 @@ export class CiPipeline extends Construct {
       inputArtifact: sourceOutputArtifact,
     });
 
-    new DocsCiConfig(this, 'DocsConfig', {
+    new ServerlessCiConfig(this, 'WorkersConfig', {
       envSettings: props.envSettings,
       buildStage,
       deployStage,
       inputArtifact: sourceOutputArtifact,
     });
 
-    new ServerlessCiConfig(this, 'WorkersConfig', {
+    new DocsCiConfig(this, 'DocsConfig', {
       envSettings: props.envSettings,
       buildStage,
       deployStage,
