@@ -14,7 +14,10 @@ __wrapped_fns = threading.local()
 __wrapped_field_names = threading.local()
 
 
-def check_permissions(perms: types.PermissionsClasses, request: Request, root):
+def check_permissions(perms: types.PermissionsClasses, request: Request | dict, root):
+    if hasattr(request, "channels_scope"):
+        return
+
     for permission_class in perms:
         permission = permission_class()
         if not permission.has_permission(request=request, view=root):
@@ -22,7 +25,6 @@ def check_permissions(perms: types.PermissionsClasses, request: Request, root):
 
 
 def wraps_resolver_function(fn: Callable, perms: types.PermissionsClasses, node_resolver: bool = False) -> Callable:
-
     if not hasattr(__wrapped_fns, 'value'):
         __wrapped_fns.value = set()
 

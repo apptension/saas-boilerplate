@@ -7,21 +7,28 @@ export const notificationsListContentFragment = gql(/* GraphQL */ `
       edges {
         node {
           id
-          data
-          createdAt
-          readAt
-          type
-          issuer {
-            id
-            avatar
-            email
-          }
+          ...notificationsListItemFragment
         }
       }
       pageInfo {
         endCursor
         hasNextPage
       }
+    }
+  }
+`);
+
+export const notificationsListItemFragment = gql(/* GraphQL */ `
+  fragment notificationsListItemFragment on NotificationType {
+    id
+    data
+    createdAt
+    readAt
+    type
+    issuer {
+      id
+      avatar
+      email
     }
   }
 `);

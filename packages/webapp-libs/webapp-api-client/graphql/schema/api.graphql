@@ -710,10 +710,6 @@ type FileFieldType {
   name: String
 }
 type ApiMutation {
-  registerWebsocketConnection(input: RegisterWebsocketConnectionMutationInput!): RegisterWebsocketConnectionMutationPayload
-  deregisterWebsocketConnection(input: DeregisterWebsocketConnectionMutationInput!): DeregisterWebsocketConnectionMutationPayload
-  registerGqlSubscription(input: RegisterGqlSubscriptionMutationInput!): RegisterGqlSubscriptionMutationPayload
-  deregisterGqlSubscription(input: DeregisterGqlSubscriptionMutationInput!): DeregisterGqlSubscriptionMutationPayload
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -742,36 +738,6 @@ type ApiMutation {
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
   createFavoriteContentfulDemoItem(input: CreateFavoriteContentfulDemoItemMutationInput!): CreateFavoriteContentfulDemoItemMutationPayload
   deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
-}
-type RegisterWebsocketConnectionMutationPayload {
-  webSocketConnection: WebSocketConnectionType
-  clientMutationId: String
-}
-type WebSocketConnectionType {
-  id: ID!
-  user: CurrentUserType!
-  connectionId: String!
-  graphqlsubscriptionSet: [GraphQLSubscriptionType!]!
-}
-type GraphQLSubscriptionType {
-  id: ID!
-  connection: WebSocketConnectionType!
-  relayId: String!
-  operationName: String!
-  query: String!
-  variables: JSONString!
-}
-type DeregisterWebsocketConnectionMutationPayload {
-  ok: Boolean
-  clientMutationId: String
-}
-type RegisterGqlSubscriptionMutationPayload {
-  graphQLSubscription: GraphQLSubscriptionType
-  clientMutationId: String
-}
-type DeregisterGqlSubscriptionMutationPayload {
-  ok: Boolean
-  clientMutationId: String
 }
 type GenerateSaasIdeasMutationPayload {
   ideas: [String]
@@ -1384,27 +1350,6 @@ enum DjstripeSetupIntentUsageChoices {
   OFF_SESSION
   "On session"
   ON_SESSION
-}
-input RegisterWebsocketConnectionMutationInput {
-  user: String
-  connectionId: String!
-  clientMutationId: String
-}
-input DeregisterWebsocketConnectionMutationInput {
-  connectionId: String!
-  clientMutationId: String
-}
-input RegisterGqlSubscriptionMutationInput {
-  connection: String!
-  relayId: String!
-  operationName: String!
-  query: String!
-  variables: JSONString!
-  clientMutationId: String
-}
-input DeregisterGqlSubscriptionMutationInput {
-  connectionId: String!
-  clientMutationId: String
 }
 input GenerateSaasIdeasMutationInput {
   keywords: [String]

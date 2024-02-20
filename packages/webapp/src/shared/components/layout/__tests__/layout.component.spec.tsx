@@ -2,8 +2,8 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { media } from '@sb/webapp-core/theme';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import {
+  fillNotificationCreatedSubscriptionQuery,
   fillNotificationsListQuery,
-  fillNotificationsSubscriptionQuery,
   notificationFactory,
 } from '@sb/webapp-notifications/tests/factories';
 import { screen } from '@testing-library/react';
@@ -63,7 +63,7 @@ describe('Layout: Component', () => {
         const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
 
         render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
@@ -73,9 +73,7 @@ describe('Layout: Component', () => {
 
     it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
-      const apolloMocks = append(
-        fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
-      );
+      const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
       render(<Component />, { routerProps, apolloMocks });
       expect(await screen.findByTestId('content')).toBeVisible();
     });
@@ -84,7 +82,7 @@ describe('Layout: Component', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeInTheDocument();
@@ -93,7 +91,7 @@ describe('Layout: Component', () => {
       it('should show privacy menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
@@ -102,7 +100,7 @@ describe('Layout: Component', () => {
       it('should not show dashboard menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
 
         render(<Component />, { routerProps, apolloMocks });
@@ -114,7 +112,7 @@ describe('Layout: Component', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeVisible();
@@ -123,7 +121,7 @@ describe('Layout: Component', () => {
       it('should not show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks });
         await waitForApolloMocks(0);
@@ -140,9 +138,7 @@ describe('Layout: Component', () => {
               })
             ),
             fillNotificationsListQuery([], { hasUnreadNotifications: true }),
-            fillNotificationsSubscriptionQuery([notificationFactory()], {
-              hasUnreadNotifications: true,
-            }),
+            fillNotificationCreatedSubscriptionQuery(notificationFactory()),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -159,9 +155,7 @@ describe('Layout: Component', () => {
               })
             ),
             fillNotificationsListQuery([], { hasUnreadNotifications: true }),
-            fillNotificationsSubscriptionQuery([notificationFactory()], {
-              hasUnreadNotifications: true,
-            }),
+            fillNotificationCreatedSubscriptionQuery(notificationFactory()),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -180,9 +174,7 @@ describe('Layout: Component', () => {
               })
             ),
             fillNotificationsListQuery([], { hasUnreadNotifications: true }),
-            fillNotificationsSubscriptionQuery([notificationFactory()], {
-              hasUnreadNotifications: true,
-            }),
+            fillNotificationCreatedSubscriptionQuery(notificationFactory()),
           ];
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
@@ -202,7 +194,7 @@ describe('Layout: Component', () => {
     it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
       const apolloMocks = append(
-        fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+        fillNotificationCreatedSubscriptionQuery(notificationFactory())
       );
       render(<Component />, { routerProps, apolloMocks });
       expect(await screen.findByTestId('content')).toBeVisible();
@@ -213,7 +205,7 @@ describe('Layout: Component', () => {
         const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
 
         render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
@@ -225,7 +217,7 @@ describe('Layout: Component', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
 
@@ -235,7 +227,7 @@ describe('Layout: Component', () => {
       it('should show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
@@ -246,7 +238,7 @@ describe('Layout: Component', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
-          fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: true })
+          fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         render(<Component />, { routerProps, apolloMocks });
 
@@ -261,9 +253,7 @@ describe('Layout: Component', () => {
             })
           ),
           fillNotificationsListQuery([], { hasUnreadNotifications: true }),
-          fillNotificationsSubscriptionQuery([notificationFactory()], {
-            hasUnreadNotifications: true,
-          }),
+          fillNotificationCreatedSubscriptionQuery(notificationFactory()),
         ];
         const routerProps = createMockRouterProps(homeRoutePath);
         render(<Component />, { apolloMocks, routerProps });

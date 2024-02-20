@@ -17,8 +17,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 django_asgi_app = get_asgi_application()
 
-from apps.users.authentication import JSONWebTokenCookieMiddleware
-from apps.websockets.consumers import DefaultGraphqlWsConsumer
+from apps.users.authentication import JSONWebTokenCookieMiddleware  # noqa
+from apps.websockets.consumers import DefaultGraphqlWsConsumer  # noqa
 
 application = ProtocolTypeRouter(
     {

@@ -3,9 +3,9 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { ElementType } from 'react';
 
-import { fillNotificationsSubscriptionQuery, notificationFactory } from '../tests/factories';
 import { Notifications } from '../notifications.component';
 import { NotificationTypes } from '../notifications.types';
+import { fillNotificationCreatedSubscriptionQuery, notificationFactory } from '../tests/factories';
 import { render } from '../tests/utils/rendering';
 
 describe('Notifications: Component', () => {
@@ -19,13 +19,10 @@ describe('Notifications: Component', () => {
   it('Should show trigger button', async () => {
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      fillNotificationsSubscriptionQuery(
-        [
-          notificationFactory({
-            type: 'some_random_type_that_doesnt_exist',
-          }),
-        ],
-        { hasUnreadNotifications: true }
+      fillNotificationCreatedSubscriptionQuery(
+        notificationFactory({
+          type: 'some_random_type_that_doesnt_exist',
+        })
       ),
     ];
 

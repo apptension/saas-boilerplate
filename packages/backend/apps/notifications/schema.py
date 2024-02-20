@@ -104,7 +104,6 @@ class Mutation(graphene.ObjectType):
         return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()
 
 
-@permission_classes(IsAuthenticatedFullAccess)
 class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
     """Simple GraphQL subscription."""
 
@@ -115,7 +114,7 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
 
     @staticmethod
     def subscribe(root, info):
-        return ['global-notifications']
+        return [str(info.context.channels_scope['user'].id)]
 
     @staticmethod
     @database_sync_to_async

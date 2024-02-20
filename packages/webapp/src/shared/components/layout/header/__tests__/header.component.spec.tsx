@@ -2,7 +2,7 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { getLocalePath } from '@sb/webapp-core/utils';
 import {
   fillNotificationsListQuery,
-  fillNotificationsSubscriptionQuery,
+  fillNotificationCreatedSubscriptionQuery,
   notificationFactory,
 } from '@sb/webapp-notifications/tests/factories';
 import { screen } from '@testing-library/react';
@@ -16,7 +16,7 @@ import { Header } from '../header.component';
 const getApolloMocks = () => [
   fillCommonQueryWithUser(currentUserFactory()),
   fillNotificationsListQuery([], { hasUnreadNotifications: false }),
-  fillNotificationsSubscriptionQuery([notificationFactory()], { hasUnreadNotifications: false }),
+  fillNotificationCreatedSubscriptionQuery(notificationFactory()),
 ];
 
 describe('Header: Component', () => {

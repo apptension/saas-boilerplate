@@ -1,4 +1,4 @@
-import { FragmentType } from '@sb/webapp-api-client/graphql';
+import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { Separator } from '@sb/webapp-core/components/separator';
@@ -13,7 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { NotificationTypes } from '../notifications.types';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
-import { notificationsListContentFragment } from './notificationsList.graphql';
+import { notificationsListContentFragment, notificationsListItemFragment } from './notificationsList.graphql';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
 
 export type NotificationsListProps = {
@@ -93,13 +93,14 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
   return (
     <>
       {allNotifications.map((notification) => {
-        const NotificationComponent = templates[notification.type as NotificationTypes] as ElementType | undefined;
-        if (!notification.data || !NotificationComponent) {
+        const notificationData = getFragmentData(notificationsListItemFragment, notification);
+        const NotificationComponent = templates[notificationData.type as NotificationTypes] as ElementType | undefined;
+        if (!notificationData || !NotificationComponent) {
           return null;
         }
         return (
           <NotificationErrorBoundary key={notification.id}>
-            <NotificationComponent {...notification} />
+            <NotificationComponent {...notificationData} />
           </NotificationErrorBoundary>
         );
       })}
