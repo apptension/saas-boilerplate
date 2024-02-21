@@ -6,14 +6,12 @@ import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 
-import {
-  EnvConstructProps,
-  EnvironmentSettings,
-} from '@sb/infra-core';
+import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 import {
   FargateServiceResources,
   MainDatabase,
   MainKmsKey,
+  MainRedisCluster,
 } from '@sb/infra-shared';
 
 export interface MigrationsStackProps extends StackProps, EnvConstructProps {}
@@ -26,12 +24,12 @@ export class MigrationsStack extends Stack {
     const resources = new FargateServiceResources(
       this,
       'MigrationsResources',
-      props
+      props,
     );
 
     const containerName = 'migrations';
     const dbSecretArn = Fn.importValue(
-      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings)
+      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings),
     );
     const taskRole = this.createTaskRole(props);
 
@@ -42,13 +40,13 @@ export class MigrationsStack extends Stack {
         taskRole,
         cpu: 256,
         memoryLimitMiB: 512,
-      }
+      },
     );
 
     const containerDef = migrationsTaskDefinition.addContainer(containerName, {
       image: ecs.ContainerImage.fromEcrRepository(
         resources.backendRepository,
-        envSettings.version
+        envSettings.version,
       ),
       logging: this.createAWSLogDriver(this.node.id, props.envSettings),
       environment: {
@@ -56,13 +54,22 @@ export class MigrationsStack extends Stack {
         CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
         DB_PROXY_ENDPOINT: Fn.importValue(
           MainDatabase.getDatabaseProxyEndpointOutputExportName(
-            props.envSettings
-          )
+            props.envSettings,
+          ),
         ),
+        REDIS_CONNECTION: Fn.join('', [
+          'redis://',
+          Fn.importValue(
+            MainRedisCluster.getMainRedisClusterAddressExportName(
+              props.envSettings,
+            ),
+          ),
+          ':6379',
+        ]),
       },
       secrets: {
         DB_CONNECTION: ecs.Secret.fromSecretsManager(
-          sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn)
+          sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn),
         ),
       },
     });
@@ -87,11 +94,14 @@ export class MigrationsStack extends Stack {
     });
   }
 
-  protected createAWSLogDriver(prefix: string, envSettings: EnvironmentSettings): ecs.AwsLogDriver {
-    const logGroup = new logs.LogGroup(this, "TaskLogGroup", {
+  protected createAWSLogDriver(
+    prefix: string,
+    envSettings: EnvironmentSettings,
+  ): ecs.AwsLogDriver {
+    const logGroup = new logs.LogGroup(this, 'TaskLogGroup', {
       logGroupName: `${envSettings.projectEnvName}-migrations-log-group`,
-      retention: logs.RetentionDays.INFINITE
-    })
+      retention: logs.RetentionDays.INFINITE,
+    });
     return new ecs.AwsLogDriver({ streamPrefix: prefix, logGroup });
   }
 
@@ -108,17 +118,17 @@ export class MigrationsStack extends Stack {
         actions: ['kms:Get*', 'kms:Describe*', 'kms:List*', 'kms:Decrypt'],
         resources: [
           Fn.importValue(
-            MainKmsKey.getMainKmsOutputExportName(props.envSettings)
+            MainKmsKey.getMainKmsOutputExportName(props.envSettings),
           ),
         ],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:DescribeParameters'],
         resources: ['*'],
-      })
+      }),
     );
 
     taskRole.addToPolicy(
@@ -127,7 +137,7 @@ export class MigrationsStack extends Stack {
         resources: [
           `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
         ],
-      })
+      }),
     );
 
     return taskRole;

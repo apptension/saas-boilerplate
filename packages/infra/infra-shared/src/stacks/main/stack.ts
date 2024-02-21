@@ -1,4 +1,5 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 
 import { MainVpc } from './mainVpc';
@@ -6,7 +7,7 @@ import { MainECSCluster } from './mainEcsCluster';
 import { MainKmsKey } from './mainKmsKey';
 import { MainLambdaConfig } from './mainLambdaConfig';
 import { MainCertificates } from './mainCertificates';
-import * as iam from 'aws-cdk-lib/aws-iam';
+import { MainRedisCluster } from './mainRedisCluster';
 
 export interface EnvMainStackProps extends StackProps, EnvConstructProps {}
 
@@ -44,12 +45,18 @@ export class EnvMainStack extends Stack {
       envSettings,
       mainVpc: this.mainVpc,
     });
+    new MainRedisCluster(this, 'MainRedisCluster', {
+      envSettings,
+      vpc: this.mainVpc.vpc,
+      fargateContainerSecurityGroup:
+        this.mainEcsCluster.fargateContainerSecurityGroup,
+    });
   }
 
   static getIamPolicyStatementsForEnvParameters(
     envSettings: EnvironmentSettings,
     region = '*',
-    account = '*'
+    account = '*',
   ) {
     const alias = MainKmsKey.getKeyAlias(envSettings);
     return [

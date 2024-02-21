@@ -4,6 +4,7 @@ import { EnvComponentsStack } from './stacks/components';
 import { MainDatabase } from './stacks/db/mainDatabase';
 import { MainECSCluster } from './stacks/main/mainEcsCluster';
 import { MainKmsKey } from './stacks/main/mainKmsKey';
+import { MainRedisCluster } from './stacks/main/mainRedisCluster';
 import { UsEastResourcesStack } from './stacks/usEastResources';
 
 export * from './lib/names';
@@ -16,4 +17,5 @@ export {
   FargateServiceResources,
   UsEastResourcesStack,
   WebAppCloudFrontDistribution,
+  MainRedisCluster,
 };
