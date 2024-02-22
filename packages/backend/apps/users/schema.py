@@ -9,6 +9,7 @@ from common.acl import policies
 from common.graphql import mutations
 from common.graphql import ratelimit
 from common.graphql.acl.decorators import permission_classes
+from apps.multitenancy.models import Tenant
 from . import models
 from . import serializers
 from .services.users import get_user_from_resolver, get_role_names, get_user_avatar_url
@@ -113,6 +114,23 @@ class DisableOTPMutation(mutations.SerializerMutation):
         serializer_class = serializers.DisableOTPSerializer
 
 
+class TenantType(DjangoObjectType):
+    id = graphene.String()
+    name = graphene.String()
+    slug = graphene.String()
+    type = graphene.String()
+    role = graphene.String()
+
+    class Meta:
+        model = Tenant
+        fields = ("id", "name", "slug", "type", "role")
+
+    @staticmethod
+    def resolve_role(parent, info):
+        user = get_user_from_resolver(info)
+        return parent.user_memberships.filter(user=user).first().role
+
+
 @permission_classes(policies.AnyoneFullAccess)
 class AnyoneMutation(graphene.ObjectType):
     token_auth = ObtainTokenMutation.Field()
@@ -134,11 +152,12 @@ class CurrentUserType(DjangoObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
     roles = graphene.List(of_type=graphene.String)
+    tenants = graphene.List(of_type=TenantType)
     avatar = graphene.String()
 
     class Meta:
         model = models.User
-        fields = ("id", "email", "first_name", "last_name", "roles", "avatar", "otp_enabled", "otp_verified")
+        fields = ("id", "email", "first_name", "last_name", "roles", "avatar", "otp_enabled", "otp_verified", "tenants")
 
     @staticmethod
     def resolve_first_name(parent, info):
@@ -155,6 +174,14 @@ class CurrentUserType(DjangoObjectType):
     @staticmethod
     def resolve_avatar(parent, info):
         return get_user_avatar_url(get_user_from_resolver(info))
+
+    @staticmethod
+    def resolve_tenants(parent, info):
+        user = get_user_from_resolver(info)
+        tenants = user.tenants.all()
+        if not len(tenants):
+            Tenant.objects.get_or_create_user_default_tenant(user)
+        return tenants
 
 
 class UserProfileType(DjangoObjectType):

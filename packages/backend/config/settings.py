@@ -65,6 +65,7 @@ LOCAL_APPS = [
     "apps.notifications",
     "apps.websockets",
     "apps.integrations",
+    "apps.multitenancy",
 ]
 
 INSTALLED_APPS = (
