@@ -35,6 +35,12 @@ class TestSignup:
         }
     '''
 
+    @staticmethod
+    def _run_correct_sing_up_mutation(graphene_client, faker):
+        return graphene_client.mutate(
+            TestSignup.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
+        )
+
     def test_return_error_with_missing_email(self, graphene_client, faker):
         password = faker.password()
         executed = graphene_client.mutate(self.MUTATION, variable_values={'input': {'password': password}})
@@ -69,20 +75,22 @@ class TestSignup:
         assert models.User.objects.get(email=email)
 
     def test_create_user_profile_instance(self, graphene_client, faker):
-        executed = graphene_client.mutate(
-            self.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
-        )
-
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
         user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
         assert user.profile
 
     def test_add_to_user_group(self, graphene_client, faker):
-        executed = graphene_client.mutate(
-            self.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
-        )
-
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
         user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
         assert user.has_group(CommonGroups.User)
+
+    def test_add_user_signup_tenant(self, graphene_client, faker):
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
+        user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
+        assert user.tenants.count()
 
 
 class TestObtainToken:
@@ -148,6 +156,13 @@ class TestCurrentUserQuery:
                 avatar
                 otpEnabled
                 otpVerified
+                tenants {
+                  id
+                  name
+                  slug
+                  type
+                  role
+                }
               }
             }
         '''
@@ -173,6 +188,10 @@ class TestCurrentUserQuery:
         ), data["avatar"]
         assert data["otpEnabled"] == user.otp_enabled
         assert data["otpVerified"] == user.otp_verified
+        assert len(data["tenants"]) > 0
+        assert data["tenants"][0]["name"] == "test@example.com"
+        assert data["tenants"][0]["role"] == "owner"
+        assert data["tenants"][0]["type"] == "default"
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(

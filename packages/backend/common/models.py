@@ -1,3 +1,4 @@
+from django.db import models
 from django.core.files.base import ContentFile
 from io import BytesIO
 from common.graphql import exceptions as graphql_exceptions
@@ -31,3 +32,11 @@ class ImageWithThumbnailMixin:
         if self.original:
             self.make_thumbnail()
         super().save(*args, **kwargs)
+
+
+class TimestampedMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True

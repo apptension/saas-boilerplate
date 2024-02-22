@@ -7,6 +7,7 @@ from django.db import models
 
 from apps.content import models as content_models
 from common.storages import UniqueFilePathGenerator
+from common.models import TimestampedMixin
 
 User = get_user_model()
 
@@ -24,13 +25,10 @@ class CrudDemoItem(models.Model):
         self.edited_by: Optional[User] = None
 
 
-class ContentfulDemoItemFavorite(models.Model):
+class ContentfulDemoItemFavorite(TimestampedMixin, models.Model):
     id = hashid_field.HashidAutoField(primary_key=True)
     item = models.ForeignKey(content_models.DemoItem, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = [['item', 'user']]
