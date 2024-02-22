@@ -22,6 +22,7 @@ pytest_plugins = [
     'apps.notifications.tests.fixtures',
     'apps.websockets.tests.fixtures',
     'apps.integrations.tests.fixtures',
+    'apps.multitenancy.tests.fixtures',
 ]
 
 
@@ -39,6 +40,10 @@ class CustomGrapheneClient(GrapheneClient):
 
     def force_authenticate(self, user):
         self.execute_options["context_value"].user = user
+
+    def set_tenant_dependent_context(self, tenant, role):
+        self.execute_options["context_value"].tenant = tenant
+        self.execute_options["context_value"].user_role = role
 
     def set_cookies(self, cookies):
         self.execute_options["context_value"].cookies = cookies

@@ -12,7 +12,7 @@ from common.models import TimestampedMixin
 class Tenant(TimestampedMixin, models.Model):
     id: str = hashid_field.HashidAutoField(primary_key=True)
     creator: settings.AUTH_USER_MODEL = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name: str = models.CharField(max_length=100, unique=True)
+    name: str = models.CharField(max_length=100, unique=False)
     slug: str = models.SlugField(max_length=100, unique=True)
     type: str = models.CharField(choices=constants.TenantType.choices)
     members = models.ManyToManyField(
@@ -21,13 +21,26 @@ class Tenant(TimestampedMixin, models.Model):
 
     objects = TenantManager()
 
+    __original_name = None
+
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        if not self.slug or self.name != self.__original_name:
+            base_slug = slugify(self.name)
+            unique_slug = base_slug
+            counter = 1
+            while Tenant.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+
         super().save(*args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_name = self.name
 
 
 class TenantMembership(TimestampedMixin, models.Model):

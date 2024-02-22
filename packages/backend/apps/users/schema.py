@@ -10,6 +10,7 @@ from common.graphql import mutations
 from common.graphql import ratelimit
 from common.graphql.acl.decorators import permission_classes
 from apps.multitenancy.models import Tenant
+from apps.multitenancy.schema import TenantType
 from . import models
 from . import serializers
 from .services.users import get_user_from_resolver, get_role_names, get_user_avatar_url
@@ -112,23 +113,6 @@ class ValidateOTPMutation(mutations.SerializerMutation):
 class DisableOTPMutation(mutations.SerializerMutation):
     class Meta:
         serializer_class = serializers.DisableOTPSerializer
-
-
-class TenantType(DjangoObjectType):
-    id = graphene.String()
-    name = graphene.String()
-    slug = graphene.String()
-    type = graphene.String()
-    role = graphene.String()
-
-    class Meta:
-        model = Tenant
-        fields = ("id", "name", "slug", "type", "role")
-
-    @staticmethod
-    def resolve_role(parent, info):
-        user = get_user_from_resolver(info)
-        return parent.user_memberships.filter(user=user).first().role
 
 
 @permission_classes(policies.AnyoneFullAccess)
