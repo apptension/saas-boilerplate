@@ -56,6 +56,7 @@ class TenantUserRoleMiddleware(object):
     The actual retrieval of the current tenant and user role is deferred until the values are accessed. Lazy loading is
     employed to optimize performance by loading these values only when necessary.
     """
+
     def resolve(self, next, root, info, **args):
         info.context.tenant = SimpleLazyObject(lambda: get_current_tenant(args))
         info.context.user_role = SimpleLazyObject(lambda: get_current_user_role(info))

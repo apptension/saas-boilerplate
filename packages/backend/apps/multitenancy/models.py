@@ -32,6 +32,7 @@ class Tenant(TimestampedMixin, models.Model):
       not provided, it generates a slug based on the name. In case of a name collision, a counter is appended to the
       base slug to ensure uniqueness.
     """
+
     id: str = hashid_field.HashidAutoField(primary_key=True)
     creator: settings.AUTH_USER_MODEL = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name: str = models.CharField(max_length=100, unique=False)
