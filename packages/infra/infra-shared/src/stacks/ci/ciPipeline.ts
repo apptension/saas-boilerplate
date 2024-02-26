@@ -80,11 +80,13 @@ export class CiPipeline extends Construct {
       inputArtifact: sourceOutputArtifact,
     });
 
-    new UploadVersionCiConfig(this, 'UploadVersionConfig', {
-      envSettings: props.envSettings,
-      stage: deployStage,
-      inputArtifact: sourceOutputArtifact,
-    });
+    if (props.envSettings.tools.enabled) {
+      new UploadVersionCiConfig(this, 'UploadVersionConfig', {
+        envSettings: props.envSettings,
+        stage: deployStage,
+        inputArtifact: sourceOutputArtifact,
+      });
+    }
   }
 
   private selectStage(name: string, pipeline: Pipeline) {
