@@ -18,21 +18,6 @@ const IS_LOCAL_ENV = ENV.ENVIRONMENT_NAME === 'local';
 
 export const emitter = new Emitter();
 
-// export const subscriptionClient = createClient({
-//   url: ENV.SUBSCRIPTIONS_URL,
-//
-//   lazy: true,
-//   connectionAckWaitTimeout: 15000,
-//   connectionParams: () => {
-//     return {};
-//   },
-//   on: {
-//     error: async () => {
-//       await auth.refreshToken();
-//     },
-//   },
-// });
-
 const httpApiLink = createUploadLink({
   uri: apiURL('/graphql/'),
 });
@@ -108,10 +93,8 @@ const splitHttpLink = split(
   httpContentfulLink
 );
 
-// const wsLink = new GraphQLWsLink(subscriptionClient);
-
 const wsLink = new WebSocketLink({
-  uri: `${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.location.host}/api/graphql/`,
+  uri: `${window.location.protocol.startsWith('https') ? 'wss' : 'ws'}://${window.location.host}/api/graphql/`,
   options: {
     reconnect: true,
   },
