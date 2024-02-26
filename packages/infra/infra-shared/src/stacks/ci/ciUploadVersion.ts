@@ -26,7 +26,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
         {
           project: deployProject,
           input: props.inputArtifact,
-          runOrder: 3,
+          runOrder: this.getRunOrder(props.stage, 3),
         },
         props
       )

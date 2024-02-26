@@ -45,7 +45,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         {
           project: deployProject,
           input: buildArtifact,
-          runOrder: 2,
+          runOrder: this.getRunOrder(props.buildStage, 2),
         },
         props,
       ),
@@ -61,6 +61,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
     >{
       ...actionProps,
       actionName: `${props.envSettings.projectEnvName}-build-workers`,
+      runOrder: this.getRunOrder(props.deployStage),
     });
   }
 

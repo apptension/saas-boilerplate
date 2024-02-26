@@ -51,7 +51,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
       project: actionProps.project,
       actionName: `${props.envSettings.projectEnvName}-deploy-components`,
       input: props.inputArtifact,
-      runOrder: 1,
+      runOrder: this.getRunOrder(props.deployStage, 1),
     });
   }
 

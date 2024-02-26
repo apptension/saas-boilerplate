@@ -87,7 +87,7 @@ CNAME DNS records pointing to CloudFront distribution and Load Balancer need to 
 
 ### \[Optional\] Configure production domain
 
-SaaS Boilerplate creates a certificate that supports `*.[ENV_STAGE].example.com` domains, like
+<ProjectName /> creates a certificate that supports `*.[ENV_STAGE].example.com` domains, like
 `app.production.example.com`. You most likely don't want such domain and need straight up `app.example.com` for your
 production environment. Set a following variable to override the default behaviour:
 
@@ -100,6 +100,32 @@ Without setting this variable you'll encounter an error during deployment
 Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution: The certificate that is
 attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add.
 ```
+
+### [Optional] Configuring CI mode
+
+:::caution
+Deploying `<ProjectName />` on a **new AWS account** may result in reaching the AWS CodeBuild concurrent build limit.
+This is a common issue with newly created AWS accounts. To mitigate potential issues during CI builds, it is advisable
+to configure the CI mode to `simple`. For more information about potential issues with new AWS accounts, see
+[Configuring AWS Credentials for New Accounts](./configure-aws-credentials#for-users-with-newly-created-aws-accounts).
+:::
+
+Changing the CI mode affects the execution behavior of CI processes:
+- `parallel` (the default setting): Enables actions in the AWS CodePipeline stages to execute concurrently.
+- `simple`: Ensures actions in the AWS CodePipeline stages are executed sequentially, with only one CodeBuild process
+running at a time.
+
+We recommend utilizing the `parallel` mode for optimal performance and efficiency, provided that the concurrent build
+limits of AWS CodeBuild have been adjusted accordingly.
+
+```shell
+pnpm saas aws set-var SB_CI_MODE <parallel/simple>
+```
+
+:::info
+Note: If you modify the settings for an already deployed environment, it is necessary to
+[redeploy the CI stack](./deploy-infrastructure#deploy-the-infrastructure) to ensure that the changes take effect.
+:::
 
 ### \[Optional\] Protect the website with basic auth
 
