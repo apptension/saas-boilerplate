@@ -10,6 +10,7 @@ pytestmark = pytest.mark.django_db
 
 class TestTenantUserRoleMiddlewareGetCurrentTenant:
     def test_get_current_tenant_with_tenant_id(self, tenant_factory):
+        tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test Tenant")
         tenant_id = to_global_id("TenantType", str(tenant.pk))
         args = {"input": {"tenantId": tenant_id}}
@@ -17,6 +18,7 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         assert result == tenant
 
     def test_get_current_tenant_with_id_for_tenant_crud_actions(self, tenant_factory):
+        tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test Tenant")
         tenant_id = to_global_id("TenantType", str(tenant.pk))
         args = {"input": {"id": tenant_id}}
@@ -24,6 +26,7 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         assert result == tenant
 
     def test_get_current_tenant_invalid_id_type(self, tenant_factory):
+        tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test Tenant")
         invalid_id = to_global_id("InvalidType", str(tenant.pk))
         args = {"input": {"tenantId": invalid_id}}
@@ -31,13 +34,15 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         assert result is None
 
     def test_get_current_tenant_nonexistent_tenant(self, tenant_factory):
+        tenant_factory.create_batch(10)
         tenant_factory(name="Test Tenant")
         nonexistent_id = to_global_id("TenantType", "9999")
         args = {"input": {"tenantId": nonexistent_id}}
         result = get_current_tenant(args)
         assert result is None
 
-    def test_get_current_tenant_missing_tenant_id(self):
+    def test_get_current_tenant_missing_tenant_id(self, tenant_factory):
+        tenant_factory.create_batch(10)
         args = {"input": {}}
         result = get_current_tenant(args)
         assert result is None
