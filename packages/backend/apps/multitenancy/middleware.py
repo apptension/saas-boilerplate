@@ -13,7 +13,7 @@ def get_current_tenant(args):
     Returns:
     - Tenant or None: The current tenant or None if not found.
     """
-    tenant_id = args.get("input").get('tenantId')
+    tenant_id = args.get("input").get('tenant_id')
     if not tenant_id:
         # for the purpose of Tenant CRUD actions
         tenant_id = args.get("input").get('id')

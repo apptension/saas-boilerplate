@@ -25,3 +25,14 @@ def convert_models_file_field_to_file_field_type(field, registry=None):
 @get_graphene_type_from_serializer_field.register(serializers.FileField)
 def convert_serializers_file_field_to_upload(field):
     return Upload
+
+
+class TextChoicesFieldType(serializers.ChoiceField):
+    def __init__(self, choices, choices_class, **kwargs):
+        self.choices_class = choices_class
+        super().__init__(choices, **kwargs)
+
+
+@get_graphene_type_from_serializer_field.register(TextChoicesFieldType)
+def convert_serializer_field_to_enum(field):
+    return graphene.Enum.from_enum(field.choices_class)

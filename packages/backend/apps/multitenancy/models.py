@@ -3,9 +3,10 @@ import hashid_field
 from django.db import models, IntegrityError, transaction
 from django.conf import settings
 from django.utils.text import slugify
+from django.db.models import UniqueConstraint, Q
 
 from . import constants
-from .managers import TenantManager
+from .managers import TenantManager, TenantMembershipManager
 from common.models import TimestampedMixin
 
 
@@ -72,12 +73,36 @@ class Tenant(TimestampedMixin, models.Model):
 
 
 class TenantMembership(TimestampedMixin, models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tenant_memberships")
+    # User - Tenant connection fields
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tenant_memberships", null=True
+    )
     role = models.CharField(choices=constants.TenantUserRole.choices, default=constants.TenantUserRole.OWNER)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="user_memberships")
 
+    # Invitation connected fields
+    is_accepted = models.BooleanField(default=False)
+    invitation_accepted_at = models.DateTimeField(null=True)
+    invitee_email_address = models.EmailField(
+        db_collation="case_insensitive",
+        verbose_name="invitee email address",
+        max_length=255,
+        null=True,
+    )
+
+    objects = TenantMembershipManager()
+
     class Meta:
-        unique_together = ('user', 'tenant')
+        constraints = [
+            UniqueConstraint(
+                name="unique_non_null_user_and_tenant", fields=["user", "tenant"], condition=Q(user__isnull=False)
+            ),
+            UniqueConstraint(
+                name="unique_non_null_user_and_invitee_email_address",
+                fields=["invitee_email_address", "tenant"],
+                condition=Q(invitee_email_address__isnull=False),
+            ),
+        ]
 
     def __str__(self):
         return f"{self.user.email} {self.tenant.name} {self.role}"

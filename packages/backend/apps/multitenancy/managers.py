@@ -24,3 +24,14 @@ class TenantManager(models.Manager):
         new_tenant.members.add(user)
 
         return new_tenant, True
+
+
+class TenantMembershipManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_accepted=True)
+
+    def get_not_accepted(self):
+        return super().get_queryset().filter(is_accepted=False)
+
+    def get_all(self, **kwargs):
+        return super().get_queryset(**kwargs)
