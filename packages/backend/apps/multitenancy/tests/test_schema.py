@@ -1,7 +1,7 @@
 import pytest
 from graphql_relay import to_global_id
 
-from ...constants import TenantType, TenantUserRole
+from ..constants import TenantType, TenantUserRole
 
 
 pytestmark = pytest.mark.django_db
