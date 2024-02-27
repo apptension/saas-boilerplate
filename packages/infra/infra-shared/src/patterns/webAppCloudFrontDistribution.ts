@@ -36,7 +36,7 @@ export class WebAppCloudFrontDistribution extends Construct {
   constructor(
     scope: Construct,
     id: string,
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ) {
     super(scope, id);
 
@@ -44,7 +44,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
     this.distribution = this.createCloudFrontDistribution(
       staticFilesBucket,
-      props
+      props,
     );
     this.createDnsRecord(this.distribution, props);
     this.createDeployment(staticFilesBucket, this.distribution, props);
@@ -53,7 +53,7 @@ export class WebAppCloudFrontDistribution extends Construct {
   private createDeployment(
     staticFilesBucket: Bucket,
     distribution: cloudfront.Distribution,
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ) {
     new s3Deploy.BucketDeployment(this, 'DeployWebsite', {
       distribution,
@@ -76,13 +76,13 @@ export class WebAppCloudFrontDistribution extends Construct {
 
   private createCloudFrontDistribution(
     staticFilesBucket: Bucket,
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ) {
     const indexFile = '/index.html';
 
     const defaultBehavior = this.createStaticFilesSourceConfig(
       staticFilesBucket,
-      props
+      props,
     );
     let additionalBehaviors: Record<string, cloudfront.BehaviorOptions> = {};
     const apiBehaviorConfig = this.createApiProxyBehaviorConfig(props);
@@ -113,7 +113,7 @@ export class WebAppCloudFrontDistribution extends Construct {
       certificate: acm.Certificate.fromCertificateArn(
         this,
         'CloudFrontDistributionCertificate',
-        props.certificateArn
+        props.certificateArn,
       ),
       sslSupportMethod: cloudfront.SSLMethod.SNI,
     });
@@ -121,7 +121,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
   private createStaticFilesSourceConfig(
     staticFilesBucket: Bucket,
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ): cloudfront.BehaviorOptions {
     const edgeLambdas: cloudfront.EdgeLambda[] = [];
     const customHeaders: { [key: string]: string } = {};
@@ -145,11 +145,11 @@ export class WebAppCloudFrontDistribution extends Construct {
         functionVersion: lambda.Version.fromVersionArn(
           this,
           'AuthLambdaFunction',
-          authLambdaParam.getResponseField('Parameter.Value')
+          authLambdaParam.getResponseField('Parameter.Value'),
         ),
       });
       customHeaders['X-Auth-String'] = Buffer.from(props.basicAuth).toString(
-        'base64'
+        'base64',
       );
     }
 
@@ -157,13 +157,13 @@ export class WebAppCloudFrontDistribution extends Construct {
       queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
       headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
         'Authorization',
-        'CloudFront-Viewer-Country'
+        'CloudFront-Viewer-Country',
       ),
     });
 
     const originAccessIdentity = new cloudfront.OriginAccessIdentity(
       this,
-      'StaticFilesOAI'
+      'StaticFilesOAI',
     );
 
     const origin = new cfOrigins.S3Origin(staticFilesBucket, {
@@ -182,7 +182,7 @@ export class WebAppCloudFrontDistribution extends Construct {
   }
 
   private createApiProxyBehaviorConfig(
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ): Record<string, cloudfront.BehaviorOptions> | null {
     if (!props.apiDomainName) {
       return null;
@@ -194,9 +194,15 @@ export class WebAppCloudFrontDistribution extends Construct {
       {
         queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
         cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-        headerBehavior:
-          cloudfront.OriginRequestHeaderBehavior.allowList('Host'),
-      }
+        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+          'Host',
+          'Sec-WebSocket-Key',
+          'Sec-WebSocket-Version',
+          'Sec-WebSocket-Protocol',
+          'Sec-WebSocket-Accept',
+          'Sec-WebSocket-Extensions',
+        ),
+      },
     );
 
     return {
@@ -213,14 +219,14 @@ export class WebAppCloudFrontDistribution extends Construct {
   }
 
   private createWebSocketApiProxyBehaviorConfig(
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ): Record<string, cloudfront.BehaviorOptions> | null {
     if (!props.envSettings) {
       return null;
     }
     const stack = Stack.of(this);
     const webSocketApiId = Fn.importValue(
-      EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings)
+      EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings),
     );
     const cfFunction = new cloudfront.Function(this, 'Function', {
       code: cloudfront.FunctionCode.fromInline(`
@@ -238,15 +244,15 @@ export class WebAppCloudFrontDistribution extends Construct {
           `${webSocketApiId}.execute-api.${stack.region}.amazonaws.com`,
           {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-          }
+          },
         ),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy: {
           /*
-            AllViewerExceptHostHeader
-            TODO: use cloudfront.OriginRequestPolicy. after CDK version is updated
-          */
+                      AllViewerExceptHostHeader
+                      TODO: use cloudfront.OriginRequestPolicy. after CDK version is updated
+                    */
           originRequestPolicyId: 'b689b0a8-53d0-40ab-baf2-68738e2966ac',
         },
         functionAssociations: [
@@ -262,7 +268,7 @@ export class WebAppCloudFrontDistribution extends Construct {
 
   private createDnsRecord(
     distribution: cloudfront.Distribution,
-    props: WebAppCloudFrontDistributionProps
+    props: WebAppCloudFrontDistributionProps,
   ) {
     if (!props.domainZone) {
       return null;
@@ -272,7 +278,7 @@ export class WebAppCloudFrontDistribution extends Construct {
       zone: props.domainZone,
       recordName: props.domainName,
       target: route53.RecordTarget.fromAlias(
-        new route53Targets.CloudFrontTarget(distribution)
+        new route53Targets.CloudFrontTarget(distribution),
       ),
     });
   }

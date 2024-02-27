@@ -60,7 +60,9 @@ class JSONWebTokenCookieMiddleware:
 
     async def __call__(self, scope, receive, send):
         scope = dict(scope)
-        user, _ = await self.authenticate(scope)
-        scope["user"] = user
+        result = await self.authenticate(scope)
+        if result is not None:
+            user, _ = result
+            scope["user"] = user
 
         return await self.app(scope, receive, send)
