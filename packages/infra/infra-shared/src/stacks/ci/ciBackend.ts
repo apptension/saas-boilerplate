@@ -36,25 +36,25 @@ export class BackendCiConfig extends ServiceCiConfig {
       ),
     );
 
-    const apiDeployProject = this.createApiDeployProject(props);
-    props.deployStage.addAction(
-      this.createDeployAction(
-        'api',
-        {
-          project: apiDeployProject,
-          runOrder: 2,
-        },
-        props,
-      ),
-    );
-
     const migrationsDeployProject = this.createMigrationsDeployProject(props);
     props.deployStage.addAction(
       this.createDeployAction(
         'migrations',
         {
           project: migrationsDeployProject,
-          runOrder: 2,
+          runOrder: this.getRunOrder(props.deployStage, 2),
+        },
+        props,
+      ),
+    );
+
+    const apiDeployProject = this.createApiDeployProject(props);
+    props.deployStage.addAction(
+      this.createDeployAction(
+        'api',
+        {
+          project: apiDeployProject,
+          runOrder: this.getRunOrder(props.deployStage, 2),
         },
         props,
       ),
@@ -72,6 +72,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       actionName: `${props.envSettings.projectEnvName}-build-${name}`,
       project: actionProps.project,
       input: props.inputArtifact,
+      runOrder: this.getRunOrder(props.buildStage),
     });
   }
 

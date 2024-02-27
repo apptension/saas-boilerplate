@@ -45,7 +45,7 @@ export class DocsCiConfig extends ServiceCiConfig {
         {
           project: deployProject,
           input: buildArtifact,
-          runOrder: 2,
+          runOrder: this.getRunOrder(props.deployStage, 2),
         },
         props,
       ),
@@ -61,6 +61,7 @@ export class DocsCiConfig extends ServiceCiConfig {
     >{
       ...actionProps,
       actionName: `${props.envSettings.projectEnvName}-build-docs`,
+      runOrder: this.getRunOrder(props.buildStage)
     });
   }
 
