@@ -43,8 +43,7 @@
         "color": true,
         "commands": ["node scripts/build.js"],
         "parallel": false
-      },
-      "dependsOn": ["test"]
+      }
     },
     "build-docs": {
       "executor": "nx:run-commands",
@@ -62,7 +61,7 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": [
-          "pnpm nx cdk:deploy:api",
+          "pnpm cdk deploy *ApiStack",
           "pnpm nx run tools:upload-service-version api \"url=https://${SB_DOMAIN_API}\""
         ],
         "parallel": false
@@ -74,7 +73,7 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": [
-          "pnpm nx cdk:deploy:migrations",
+          "pnpm cdk deploy *MigrationsStack",
           "pnpm nx run trigger-migrations-job",
           "pnpm nx run tools:upload-service-version migrations"
         ],
@@ -87,9 +86,9 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": [
-          "nx cdk:deploy:migrations",
+          "pnpm cdk deploy *MigrationsStack",
           "pnpm nx run trigger-migrations-job",
-          "nx cdk:deploy:api"
+          "pnpm cdk deploy *ApiStack"
         ],
         "parallel": false
       }
@@ -99,7 +98,16 @@
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["nx diff:api", "nx diff:migrations"],
+        "commands": ["cdk diff *ApiStack", "cdk diff *MigrationsStack"],
+        "parallel": false
+      }
+    },
+    "trigger-migrations-job": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["node ./scripts/triggerMigrationsJob.js"],
         "parallel": false
       }
     }

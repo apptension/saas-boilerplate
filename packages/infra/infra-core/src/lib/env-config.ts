@@ -16,7 +16,6 @@ declare const process: {
     PROJECT_NAME: string;
     ENV_STAGE: string;
     VERSION: string;
-    PROJECT_ROOT_DIR: string;
     SB_TOOLS_ENABLED: string;
     SB_TOOLS_BASIC_AUTH: string;
     SB_TOOLS_HOSTED_ZONE_NAME: string;
@@ -80,7 +79,6 @@ export interface EnvironmentSettings {
   domains: EnvConfigFileDomains;
   envStage: string;
   hostedZone: EnvConfigHostedZone;
-  projectRootDir: string;
   projectName: string;
   projectEnvName: string;
   tools: ToolsConfig;
@@ -122,9 +120,11 @@ async function readConfig(): Promise<ConfigFileContent> {
       },
     },
     CIConfig: {
-      mode: process.env.SB_CI_MODE === CI_MODE.SIMPLE
-        ? CI_MODE.SIMPLE : CI_MODE.PARALLEL,
-    }
+      mode:
+        process.env.SB_CI_MODE === CI_MODE.SIMPLE
+          ? CI_MODE.SIMPLE
+          : CI_MODE.PARALLEL,
+    },
   };
 }
 
@@ -181,7 +181,6 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
     projectName,
     version,
     projectEnvName: `${projectName}-${envStage}`,
-    projectRootDir: process.env.PROJECT_ROOT_DIR,
     tools: config.toolsConfig,
     appBasicAuth: envConfig.basicAuth,
     hostedZone: envConfig.hostedZone,

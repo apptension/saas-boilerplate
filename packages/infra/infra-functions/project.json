@@ -12,6 +12,22 @@
         "command": "node_modules/.bin/sls invoke --stage $ENV_STAGE"
       }
     },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/infra/infra-functions",
+        "color": true,
+        "command": "pnpm sls package"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/infra/infra-functions",
+        "color": true,
+        "command": "pnpm sls deploy"
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {

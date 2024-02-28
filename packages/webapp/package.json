@@ -13,9 +13,6 @@
     "start": "pnpm nx start:app",
     "test": "jest",
     "test:watch": "jest --watch",
-    "cdk": "cdk",
-    "diff": "cdk deploy *WebAppStack",
-    "vite": "vite",
     "type-check": "tsc --noEmit --project tsconfig.app.json"
   },
   "dependencies": {
