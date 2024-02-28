@@ -67,6 +67,22 @@
           "packages/internal/status-dashboard/**/*.{ts,tsx,js,jsx}"
         ]
       }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/infra/infra-functions",
+        "color": true,
+        "command": "pnpm cdk deploy *StatusDashboardStack"
+      }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/infra/infra-functions",
+        "color": true,
+        "command": "pnpm cdk diff *StatusDashboardStack"
+      }
     }
   },
   "tags": []

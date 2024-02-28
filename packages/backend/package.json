@@ -2,12 +2,7 @@
   "name": "@sb/backend",
   "version": "2.4.2",
   "scripts": {
-    "cdk:deploy:api": "cdk deploy *ApiStack",
-    "diff:api": "cdk diff *ApiStack",
-    "cdk:deploy:migrations": "cdk deploy *MigrationsStack",
-    "diff:migrations": "cdk diff *MigrationsStack",
-    "lint:js": "eslint .",
-    "trigger-migrations-job": "node ./scripts/triggerMigrationsJob.js"
+    "lint:js": "eslint ."
   },
   "devDependencies": {
     "@sb/core": "*",

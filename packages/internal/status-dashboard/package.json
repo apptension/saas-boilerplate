@@ -2,10 +2,7 @@
   "name": "status-dashboard",
   "version": "2.4.2",
   "private": true,
-  "scripts": {
-    "deploy": "cdk deploy *StatusDashboardStack",
-    "diff": "cdk diff *StatusDashboardStack"
-  },
+  "scripts": {},
   "dependencies": {
     "core-js": "^3.33.3",
     "react": "^16.14.0",
