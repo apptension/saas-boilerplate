@@ -52,4 +52,4 @@ ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
 
 WORKDIR $DEST_WORKERS_PATH
 
-CMD pnpm nx serve workers
+CMD node ./scripts/runtime/local-trigger-server.js
