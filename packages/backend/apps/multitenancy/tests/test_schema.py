@@ -16,7 +16,10 @@ class TestCreateTenantMutation:
               name
               slug
               type
-              role
+              membership {
+                role
+                invitationAccepted
+              }
             }
           }
         }
@@ -29,7 +32,7 @@ class TestCreateTenantMutation:
         assert response_data["name"] == "Test"
         assert response_data["slug"] == "test"
         assert response_data["type"] == TenantType.ORGANIZATION
-        assert response_data["role"] == TenantUserRole.OWNER
+        assert response_data["membership"]["role"] == TenantUserRole.OWNER
 
     def test_create_new_tenant_with_same_name(self, graphene_client, user, tenant_factory):
         tenant_factory(name="Test", slug="test")
@@ -39,7 +42,7 @@ class TestCreateTenantMutation:
         assert response_data["name"] == "Test"
         assert response_data["slug"] == "test-1"
         assert response_data["type"] == TenantType.ORGANIZATION
-        assert response_data["role"] == TenantUserRole.OWNER
+        assert response_data["membership"]["role"] == TenantUserRole.OWNER
 
     def test_unauthenticated_user(self, graphene_client):
         executed = self.mutate(graphene_client, {"name": "Test"})
@@ -59,7 +62,10 @@ class TestUpdateTenantMutation:
               name
               slug
               type
-              role
+              membership {
+                role
+                invitationAccepted
+              }
             }
           }
         }
@@ -75,7 +81,7 @@ class TestUpdateTenantMutation:
         assert response_data["name"] == "Tenant 2"
         assert response_data["slug"] == "tenant-2"
         assert response_data["type"] == TenantType.ORGANIZATION
-        assert response_data["role"] == TenantUserRole.OWNER
+        assert response_data["membership"]["role"] == TenantUserRole.OWNER
 
     def test_user_without_membership(self, graphene_client, user, tenant_factory):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)

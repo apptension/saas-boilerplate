@@ -13,7 +13,7 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test Tenant")
         tenant_id = to_global_id("TenantType", str(tenant.pk))
-        args = {"input": {"tenantId": tenant_id}}
+        args = {"input": {"tenant_id": tenant_id}}
         result = get_current_tenant(args)
         assert result == tenant
 
@@ -29,7 +29,7 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test Tenant")
         invalid_id = to_global_id("InvalidType", str(tenant.pk))
-        args = {"input": {"tenantId": invalid_id}}
+        args = {"input": {"tenant_id": invalid_id}}
         result = get_current_tenant(args)
         assert result is None
 
@@ -37,7 +37,7 @@ class TestTenantUserRoleMiddlewareGetCurrentTenant:
         tenant_factory.create_batch(10)
         tenant_factory(name="Test Tenant")
         nonexistent_id = to_global_id("TenantType", "9999")
-        args = {"input": {"tenantId": nonexistent_id}}
+        args = {"input": {"tenant_id": nonexistent_id}}
         result = get_current_tenant(args)
         assert result is None
 

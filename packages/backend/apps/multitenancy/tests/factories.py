@@ -22,6 +22,7 @@ class TenantMembershipFactory(factory.django.DjangoModelFactory):
     role = factory.Iterator(constants.TenantUserRole.values)
     created_at = factory.Faker('date_time')
     updated_at = factory.Faker('date_time')
+    is_accepted = True
 
     class Meta:
         model = models.TenantMembership
