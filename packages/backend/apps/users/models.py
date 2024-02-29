@@ -6,6 +6,7 @@ from django.db import models
 from common.acl.helpers import CommonGroups
 from common.models import ImageWithThumbnailMixin
 from common.storages import UniqueFilePathGenerator, PublicS3Boto3StorageWithCDN
+from apps.multitenancy.models import TenantMembership
 
 
 class UserManager(BaseUserManager):
@@ -13,8 +14,9 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
+        normalized_email = self.normalize_email(email)
         user = self.model(
-            email=self.normalize_email(email),
+            email=normalized_email,
         )
         user.set_password(password)
         user_group = Group.objects.get(name=CommonGroups.User)
@@ -23,6 +25,8 @@ class UserManager(BaseUserManager):
         user.groups.add(user_group)
 
         UserProfile.objects.create(user=user)
+
+        TenantMembership.objects.associate_invitations_with_user(normalized_email, user)
 
         return user
 

@@ -33,3 +33,23 @@ class TestTenant:
             tenant.save()
         except IntegrityError as e:
             assert "not-null constraint" in str(e).lower()
+
+
+class TestTenantMembership:
+    def test_unique_non_null_user_and_tenant(self, tenant, user, tenant_membership_factory):
+        tenant_membership_factory(user=user, tenant=tenant)
+        try:
+            tenant_membership_factory(user=user, tenant=tenant)
+        except IntegrityError:
+            pass
+        else:
+            assert False, "IntegrityError not raised"
+
+    def test_unique_non_null_user_and_invitee_email_address(self, tenant, tenant_membership_factory):
+        tenant_membership_factory(invitee_email_address="user@example.com", tenant=tenant)
+        try:
+            tenant_membership_factory(invitee_email_address="user@example.com", tenant=tenant)
+        except IntegrityError:
+            pass
+        else:
+            assert False, "IntegrityError not raised"

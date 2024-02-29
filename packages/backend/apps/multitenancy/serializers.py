@@ -1,7 +1,7 @@
 from hashid_field import rest as hidrest
 from rest_framework import serializers, exceptions
 from django.contrib.auth import get_user_model
-from django.db.utils import IntegrityError
+from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
 from common.graphql.field_conversions import TextChoicesFieldType
@@ -77,8 +77,15 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
     tenant_id = serializers.CharField()
     ok = serializers.BooleanField(read_only=True)
 
+    def validate(self, attrs):
+        email = BaseUserManager.normalize_email(attrs["email"])
+        tenant = self.context["request"].tenant
+        if models.TenantMembership.objects.get_all().filter(user__email=email, tenant=tenant).exists():
+            raise serializers.ValidationError(_("Invitation already exists"))
+        return super().validate(attrs)
+
     def create(self, validated_data):
-        email = validated_data["email"]
+        email = BaseUserManager.normalize_email(validated_data["email"])
         role = validated_data["role"]
         tenant = self.context["request"].tenant
         User = get_user_model()
@@ -91,9 +98,6 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         except User.DoesNotExist:
             tenant_membership_data["invitee_email_address"] = email
 
-        try:
-            models.TenantMembership.objects.create(**tenant_membership_data)
-        except IntegrityError:
-            raise serializers.ValidationError(_("Invitation already exists"))
+        models.TenantMembership.objects.create(**tenant_membership_data)
 
         return {"ok": True, **validated_data}

@@ -35,3 +35,7 @@ class TenantMembershipManager(models.Manager):
 
     def get_all(self, **kwargs):
         return super().get_queryset(**kwargs)
+
+    def associate_invitations_with_user(self, email, user):
+        invitations = self.get_not_accepted().filter(invitee_email_address=email)
+        invitations.update(user=user)
