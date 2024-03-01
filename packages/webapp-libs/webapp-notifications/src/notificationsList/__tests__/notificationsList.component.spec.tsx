@@ -81,7 +81,7 @@ describe('NotificationsList: Component', () => {
   it('should not render wrong notifications', async () => {
     const correctNotifications = times(() => notificationFactory(), 3);
     const malformedNotification = notificationFactory({
-      data: null,
+      type: "malformed-notification",
     });
     renderWithNotifications([...correctNotifications, malformedNotification], { hasUnreadNotifications: false });
 

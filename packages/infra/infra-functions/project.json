@@ -17,7 +17,7 @@
       "options": {
         "cwd": "packages/infra/infra-functions",
         "color": true,
-        "command": "pnpm sls build"
+        "command": "pnpm sls package"
       }
     },
     "deploy": {
