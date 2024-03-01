@@ -2,7 +2,7 @@ from hashid_field import rest as hidrest
 from rest_framework import serializers
 
 from . import models
-from .constants import TenantType
+from .constants import TenantType, TenantUserRole
 from .services.membership import create_tenant_membership
 
 
@@ -13,7 +13,7 @@ class TenantSerializer(serializers.ModelSerializer):
         validated_data["creator"] = self.context['request'].user
         validated_data["type"] = TenantType.ORGANIZATION
         tenant = super().create(validated_data)
-        create_tenant_membership(user=validated_data["creator"], tenant=tenant)
+        create_tenant_membership(user=validated_data["creator"], tenant=tenant, role=TenantUserRole.OWNER)
         return tenant
 
     class Meta:

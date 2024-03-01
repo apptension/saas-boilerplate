@@ -1,6 +1,6 @@
 import hashid_field
 
-from django.db import models
+from django.db import models, IntegrityError, transaction
 from django.conf import settings
 from django.utils.text import slugify
 
@@ -44,22 +44,24 @@ class Tenant(TimestampedMixin, models.Model):
 
     objects = TenantManager()
 
-    __original_name = None
-
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        if not self.slug or self.name != self.__original_name:
-            base_slug = slugify(self.name)
-            unique_slug = base_slug
-            counter = 1
-            while Tenant.objects.filter(slug=unique_slug).exists():
-                unique_slug = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = unique_slug
+        counter = kwargs.pop("counter", 0)
 
-        super().save(*args, **kwargs)
+        if not counter:
+            self.slug = slugify(self.name)
+        else:
+            self.slug = f"{slugify(self.name)}-{counter}"
+
+        try:
+            with transaction.atomic():
+                return super().save(*args, **kwargs)
+        except IntegrityError:
+            counter += 1
+            kwargs["counter"] = counter
+            return self.save(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

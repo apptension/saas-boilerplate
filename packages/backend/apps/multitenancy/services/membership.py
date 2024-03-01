@@ -6,6 +6,6 @@ from ..constants import TenantUserRole
 User = get_user_model()
 
 
-def create_tenant_membership(user: User, tenant: Tenant, role: TenantUserRole = TenantUserRole.OWNER):
+def create_tenant_membership(user: User, tenant: Tenant, role: TenantUserRole = TenantUserRole.MEMBER):
     membership = TenantMembership.objects.create(user=user, tenant=tenant, role=role)
     return membership
