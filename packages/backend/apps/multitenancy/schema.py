@@ -9,21 +9,29 @@ from common.graphql import mutations
 from common.graphql.acl.decorators import permission_classes
 from . import models
 from . import serializers
-from . import constants
 
 
 class TenantMembershipType(DjangoObjectType):
     role = graphene.String()
     invitation_accepted = graphene.Boolean()
+    user_id = graphene.ID()
+    invitee_email_address = graphene.String()
+    username = graphene.String()
 
     class Meta:
         model = models.TenantMembership
-        fields = ("role", "invited")
+        fields = ("role", "invited", "user_id", "invitee_email_address", "username")
         interfaces = (relay.Node,)
 
     @staticmethod
     def resolve_invitation_accepted(parent, info):
         return parent.is_accepted
+
+    @staticmethod
+    def resolve_username(parent, info):
+        if parent.user:
+            return str(parent.user.profile)
+        return None
 
 
 class TenantType(DjangoObjectType):
@@ -32,10 +40,11 @@ class TenantType(DjangoObjectType):
     slug = graphene.String()
     type = graphene.String()
     membership = graphene.NonNull(of_type=TenantMembershipType)
+    user_memberships = graphene.List(of_type=TenantMembershipType)
 
     class Meta:
         model = models.Tenant
-        fields = ("id", "name", "slug", "type", "membership")
+        fields = ("id", "name", "slug", "type", "membership", "user_memberships")
         interfaces = (relay.Node,)
 
     @staticmethod
@@ -45,6 +54,11 @@ class TenantType(DjangoObjectType):
 
     def resolve_id(self, info):
         return to_global_id("TenantType", self.id)
+
+    @staticmethod
+    @permission_classes(policies.IsTenantAdminAccess)
+    def resolve_user_memberships(parent, info):
+        return parent.user_memberships.get_all().filter(tenant=parent)
 
 
 class TenantConnection(graphene.Connection):
@@ -80,6 +94,11 @@ class CreateTenantInvitationMutation(mutations.SerializerMutation):
         serializer_class = serializers.CreateTenantInvitationSerializer
 
 
+class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
+    class Meta:
+        model = models.TenantMembership
+
+
 class AcceptTenantInvitationMutation(mutations.SerializerMutation):
     ok = graphene.Boolean()
 
@@ -107,7 +126,17 @@ class DeclineTenantInvitationMutation(mutations.SerializerMutation):
 
 
 class Query(graphene.ObjectType):
-    pass
+    all_tenants = graphene.relay.ConnectionField(TenantConnection)
+    tenant = graphene.Field(TenantType, id=graphene.ID())
+
+    @staticmethod
+    def resolve_all_tenants(root, info, **kwargs):
+        return models.Tenant.objects.filter(user_memberships__user=info.context.user).all()
+
+    @staticmethod
+    def resolve_tenant(root, info, id):
+        _, pk = from_global_id(id)
+        return models.Tenant.objects.filter(pk=pk, user_memberships__user=info.context.user).first()
 
 
 @permission_classes(policies.IsTenantOwnerAccess)
@@ -115,6 +144,7 @@ class TenantOwnerMutation(graphene.ObjectType):
     update_tenant = UpdateTenantMutation.Field()
     delete_tenant = DeleteTenantMutation.Field()
     create_tenant_invitation = CreateTenantInvitationMutation.Field()
+    delete_tenant_membership = DeleteTenantMembershipMutation.Field()
 
 
 class Mutation(graphene.ObjectType):

@@ -3,6 +3,7 @@ from rest_framework import serializers, exceptions
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 
 from common.graphql.field_conversions import TextChoicesFieldType
 from . import models
@@ -80,7 +81,11 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = BaseUserManager.normalize_email(attrs["email"])
         tenant = self.context["request"].tenant
-        if models.TenantMembership.objects.get_all().filter(user__email=email, tenant=tenant).exists():
+        if (
+            models.TenantMembership.objects.get_all()
+            .filter(Q(user__email=email, tenant=tenant) | Q(invitee_email_address=email, tenant=tenant))
+            .exists()
+        ):
             raise serializers.ValidationError(_("Invitation already exists"))
         return super().validate(attrs)
 
