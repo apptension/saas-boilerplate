@@ -44,24 +44,27 @@ class Tenant(TimestampedMixin, models.Model):
 
     objects = TenantManager()
 
+    MAX_SAVE_ATTEMPTS = 10
+
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        counter = kwargs.pop("counter", 0)
-
-        if not counter:
-            self.slug = slugify(self.name)
-        else:
-            self.slug = f"{slugify(self.name)}-{counter}"
-
-        try:
-            with transaction.atomic():
-                return super().save(*args, **kwargs)
-        except IntegrityError:
-            counter += 1
-            kwargs["counter"] = counter
-            return self.save(*args, **kwargs)
+        counter = 0
+        while counter < self.MAX_SAVE_ATTEMPTS:
+            try:
+                with transaction.atomic():
+                    if not counter:
+                        self.slug = slugify(self.name)
+                    else:
+                        self.slug = f"{slugify(self.name)}-{counter}"
+                    super().save(*args, **kwargs)
+                    break
+            except IntegrityError as e:
+                if 'duplicate key' in str(e).lower():
+                    counter += 1
+                else:
+                    raise e
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
