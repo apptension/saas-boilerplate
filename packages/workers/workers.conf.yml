@@ -70,6 +70,8 @@ SendEmail:
   environment:
     FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL}
     WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL}
+    VITE_WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL}
+    VITE_EMAIL_ASSETS_URL: ${ssm:/${self:custom.ssmService}/EMAIL_ASSETS_URL}
 
 SynchronizeContentfulContent:
   environment:
