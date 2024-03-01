@@ -3,7 +3,6 @@ import { GraphQLErrors, NetworkError } from '@apollo/client/errors';
 import { FetchResult } from '@apollo/client/link/core';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
 import { ENV } from '@sb/webapp-core/config/env';
 import { ToastEmitterActions } from '@sb/webapp-core/toast';
@@ -13,6 +12,7 @@ import { Kind, OperationTypeNode } from 'graphql/language';
 import { apiURL, auth } from '../api';
 import { Emitter } from '../utils/eventEmitter';
 import { SchemaType } from './types';
+import { WebSocketLink } from './webSocketLink';
 
 const IS_LOCAL_ENV = ENV.ENVIRONMENT_NAME === 'local';
 
@@ -93,12 +93,7 @@ const splitHttpLink = split(
   httpContentfulLink
 );
 
-const wsLink = new WebSocketLink({
-  uri: `${window.location.protocol.startsWith('https') ? 'wss' : 'ws'}://${window.location.host}/api/graphql/`,
-  options: {
-    reconnect: true,
-  },
-});
+const wsLink = new WebSocketLink();
 
 const splitLink = split(
   ({ query }) => {
@@ -136,6 +131,7 @@ export const client = new ApolloClient({
 });
 
 export const invalidateApolloStore = () => {
+  wsLink.reconnect();
   client.stop();
   client.resetStore();
 };

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { invalidateApolloStore } from '@sb/webapp-api-client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -49,12 +50,13 @@ export const useLoginForm = () => {
     },
   });
 
-  const handleLogin = handleSubmit((data: LoginFormFields) => {
-    commitLoginMutation({
+  const handleLogin = handleSubmit(async (data: LoginFormFields) => {
+    await commitLoginMutation({
       variables: {
         input: data,
       },
     });
+    invalidateApolloStore();
   });
 
   return { ...form, loading, handleLogin };
