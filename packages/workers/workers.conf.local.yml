@@ -16,6 +16,8 @@ SendEmail:
     AWS_ENDPOINT_URL: "http://localstack:4566"
     FROM_EMAIL: "from@example.com"
     WEB_APP_URL: "http://localhost:3000"
+    VITE_EMAIL_ASSETS_URL: "http://localhost:3000/email-assets"
+    VITE_WEB_APP_URL: "http://localhost:3000"
 
 SynchronizeContentfulContent:
   environment:

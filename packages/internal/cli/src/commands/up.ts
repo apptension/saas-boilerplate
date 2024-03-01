@@ -102,6 +102,7 @@ export default class Up extends BaseCommand<typeof Up> {
     await assertDockerIsRunning();
     await dockerHubLogin();
 
+    await runCommand('pnpm', ['saas', 'emails', 'build']);
     await runCommand('pnpm', ['nx', 'run', 'core:docker-compose:up']);
     const backendEndpoint = await getBackendEndpoint(this);
     await waitForBackend(this, { url: backendEndpoint, retryCount: 200 });

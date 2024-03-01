@@ -1,6 +1,6 @@
 {
   "name": "@sb/webapp-api-client",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "type": "commonjs",
   "scripts": {
     "test": "jest",

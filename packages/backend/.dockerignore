@@ -1,1 +1,3 @@
 __pypackages__
+node_modules
+**/node_modules

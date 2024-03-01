@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/apptension/aws-boilerplate/compare/2.4.2...2.5.0) (2024-03-01)
+
+### Features
+
+- [#479](https://github.com/apptension/aws-boilerplate/issues/479) Introduce CI mode ([#482](https://github.com/apptension/aws-boilerplate/issues/482)) ([d4d5d04](https://github.com/apptension/aws-boilerplate/commit/d4d5d042dd848d97a2bd385afdaf8d24ae83b23b))
+
+### Bug Fixes
+
+- [#449](https://github.com/apptension/aws-boilerplate/issues/449) Ensure that docker volume is created when running docs locally ([#487](https://github.com/apptension/aws-boilerplate/issues/487)) ([224d936](https://github.com/apptension/aws-boilerplate/commit/224d9366f4ccd5e0c08d689235d0ef6601d9cc53))
+- [#458](https://github.com/apptension/aws-boilerplate/issues/458) Fix sending emails on local env and replace Mailcatcher image ([#476](https://github.com/apptension/aws-boilerplate/issues/476)) ([dc6a710](https://github.com/apptension/aws-boilerplate/commit/dc6a7107c26b0bd92863e9976753ae6003068ee7))
+- [#458](https://github.com/apptension/aws-boilerplate/issues/458) Workers docker issues ([#484](https://github.com/apptension/aws-boilerplate/issues/484)) ([652bd40](https://github.com/apptension/aws-boilerplate/commit/652bd409bb20c6cef5660126639c1d1e6a65699f))
+- [#478](https://github.com/apptension/aws-boilerplate/issues/478) Fix CI pipeline failing on version upload step when tools are disabled (status dashboard stack is not deployed) ([#481](https://github.com/apptension/aws-boilerplate/issues/481)) ([d50c53b](https://github.com/apptension/aws-boilerplate/commit/d50c53bb913e89acb1b3e7b5d140d034bd81d51d))
+- [#489](https://github.com/apptension/aws-boilerplate/issues/489) Fix missing envs in the emails, adjust env docs ([#490](https://github.com/apptension/aws-boilerplate/issues/490)) ([6d5c784](https://github.com/apptension/aws-boilerplate/commit/6d5c7843b80a6f3bd3fe0ee820123847c354704b))
+- Change SonarCloud exclusions configuration ([#486](https://github.com/apptension/aws-boilerplate/issues/486)) ([900e086](https://github.com/apptension/aws-boilerplate/commit/900e086123343ba480b58d08ebf04c06d2e3daf6))
+- Prevent NX from loading .env files when running CLI scripts. ([#477](https://github.com/apptension/aws-boilerplate/issues/477)) ([db0a868](https://github.com/apptension/aws-boilerplate/commit/db0a868605f181f7ec858f652fc82add88569a07))
+
 ### [2.4.2](https://github.com/apptension/aws-boilerplate/compare/2.4.1...2.4.2) (2024-02-09)
 
 ### Features
