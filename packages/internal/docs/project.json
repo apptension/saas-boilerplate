@@ -28,7 +28,8 @@
         "color": true,
         "commands": ["nx run backend:build-docs", "pnpm start"],
         "parallel": false
-      }
+      },
+      "dependsOn": ["core:docker-create-volumes"]
     }
   },
   "tags": []
