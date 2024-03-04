@@ -35,7 +35,7 @@ Depends on: [`pnpm nx run backend:test`](#pnpm-nx-run-backendtest)
 
 ### `pnpm nx run backend:deploy:api`
 
-Runs `pnpm nx cdk:deploy:api` along with `pnpm nx run tools:upload-service-version api "url=https://${SB_DOMAIN_API}"`
+Deploys backend API to remote and updates API service version.
 
 
 ---
@@ -43,12 +43,7 @@ Runs `pnpm nx cdk:deploy:api` along with `pnpm nx run tools:upload-service-versi
 
 ### `pnpm nx run backend:deploy:migrations`
 
-Runs following commands:
-```bash
-pnpm nx cdk:deploy:migrations
-pnpm nx run trigger-migrations-job
-pnpm nx run tools:upload-service-version migrations
-```
+Performs migrations in remote env and updates backend service version number.
 
 ---
 

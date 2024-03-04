@@ -17,7 +17,30 @@
       "options": {
         "cwd": "packages/internal/docs",
         "color": true,
-        "commands": ["nx run backend:build-docs", "pnpm run build:app"],
+        "commands": [
+          "nx run backend:build-docs",
+          "NODE_OPTIONS=\"--max-old-space-size=2048\" TYPEDOC_WATCH=false docusaurus build"
+        ],
+        "parallel": false
+      }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "options": {
+        "cwd": "packages/internal/docs",
+        "color": true,
+        "commands": ["pnpm cdk diff *DocsStack"],
+        "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "options": {
+        "cwd": "packages/internal/docs",
+        "color": true,
+        "commands": ["pnpm cdk deploy *DocsStack"],
         "parallel": false
       }
     },

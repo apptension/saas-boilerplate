@@ -16,16 +16,12 @@ export default class InfraBootstrap extends BaseCommand<typeof InfraBootstrap> {
     });
 
     await runCommand('pnpm', [
-      'nx',
-      'run',
-      'infra-core:cdk',
+      'cdk',
       'bootstrap',
       `aws://${awsAccountId}/${awsRegion}`,
     ]);
     await runCommand('pnpm', [
-      'nx',
-      'run',
-      'infra-core:cdk',
+      'cdk',
       'bootstrap',
       `aws://${awsAccountId}/us-east-1`,
     ]);
