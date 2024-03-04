@@ -19,10 +19,7 @@ class TenantSerializer(serializers.ModelSerializer):
         validated_data["type"] = TenantType.ORGANIZATION
         tenant = super().create(validated_data)
         create_tenant_membership(
-            user=validated_data["creator"],
-            tenant=tenant,
-            role=TenantUserRole.OWNER,
-            is_accepted=True
+            user=validated_data["creator"], tenant=tenant, role=TenantUserRole.OWNER, is_accepted=True
         )
         return tenant
 

@@ -39,14 +39,15 @@ def get_current_user_role(tenant, user):
     return None
 
 
-def add_tenant_id_to_context(args):
-    input = args.get("input")
-    if input:
-        tenant_id = args.get("input").get("tenant_id")
+def get_tenant_id_from_arguments(args):
+    request_input = args.get("input")
+    if request_input:
+        tenant_id = request_input.get("tenant_id")
         if not tenant_id:
             # for the purpose of Tenant CRUD actions
-            tenant_id = input.get("id")
+            tenant_id = request_input.get("id")
     else:
+        # for the purpose of queries, where is no input, just parameters
         tenant_id = args.get("id")
     if tenant_id:
         id_type, pk = from_global_id(tenant_id)
@@ -63,9 +64,10 @@ class TenantUserRoleMiddleware(object):
     The actual retrieval of the current tenant and user role is deferred until the values are accessed. Lazy loading is
     employed to optimize performance by loading these values only when necessary.
     """
+
     def resolve(self, next, root, info, **args):
         if not hasattr(info.context, "tenant_id"):
-            info.context.tenant_id = add_tenant_id_to_context(args)
+            info.context.tenant_id = get_tenant_id_from_arguments(args)
         info.context.tenant = SimpleLazyObject(lambda: get_current_tenant(info.context.tenant_id))
         info.context.user_role = SimpleLazyObject(lambda: get_current_user_role(info.context.tenant, info.context.user))
         return next(root, info, **args)

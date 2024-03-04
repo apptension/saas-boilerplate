@@ -87,7 +87,7 @@ class TenantMembership(TimestampedMixin, models.Model):
         db_collation="case_insensitive",
         verbose_name="invitee email address",
         max_length=255,
-        null=True,
+        default="",
     )
 
     objects = TenantMembershipManager()
