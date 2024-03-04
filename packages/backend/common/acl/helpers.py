@@ -1,3 +1,6 @@
+from apps.multitenancy.constants import TenantUserRole
+
+
 def make_statement(action, effect, principal, condition=None):
     statement = {
         'action': action,
@@ -47,3 +50,9 @@ class Principal:
     @staticmethod
     def group(name):
         return f'group:{name}'
+
+
+class TenantRoles:
+    Owner = [TenantUserRole.OWNER]
+    Admin = [TenantUserRole.OWNER, TenantUserRole.ADMIN]
+    Member = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER]

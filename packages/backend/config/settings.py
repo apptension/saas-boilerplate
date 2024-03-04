@@ -325,7 +325,7 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7
 GRAPHENE = {
     "SCHEMA": "config.schema.schema",
     "DEFAULT_PERMISSION_CLASSES": ("common.acl.policies.IsAuthenticatedFullAccess",),
-    "MIDDLEWARE": ["common.middleware.SentryMiddleware"],
+    "MIDDLEWARE": ["common.middleware.SentryMiddleware", "apps.multitenancy.middleware.TenantUserRoleMiddleware"],
 }
 
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
