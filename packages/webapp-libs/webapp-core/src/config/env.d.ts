@@ -2,7 +2,6 @@
 
 interface ImportMetaEnv {
   readonly VITE_BASE_API_URL: string;
-  readonly VITE_SUBSCRIPTIONS_URL: string;
   readonly VITE_ENVIRONMENT_NAME: string;
   readonly VITE_SENTRY_DSN: string;
   readonly VITE_WEB_APP_URL: string;

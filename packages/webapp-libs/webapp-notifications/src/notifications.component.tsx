@@ -1,12 +1,16 @@
-import { NetworkStatus, useQuery } from '@apollo/client';
-import { ResultOf } from '@graphql-typed-document-node/core';
+import { NetworkStatus, useQuery, useSubscription } from '@apollo/client';
+import { getFragmentData } from '@sb/webapp-api-client';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
-import { ElementType, FC, useEffect } from 'react';
+import { ElementType, FC } from 'react';
 
-import { notificationsListQuery, notificationsListSubscription } from './notifications.graphql';
+import { notificationCreatedSubscription, notificationsListQuery } from './notifications.graphql';
 import { NotificationTypes } from './notifications.types';
 import { NotificationsButton, NotificationsButtonFallback } from './notificationsButton';
-import { NotificationsList, notificationsListContentFragment } from './notificationsList';
+import {
+  NotificationsList,
+  notificationsListContentFragment,
+  notificationsListItemFragment,
+} from './notificationsList';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.constants';
 
 type NotificationsProps = {
@@ -14,34 +18,37 @@ type NotificationsProps = {
 };
 
 export const Notifications: FC<NotificationsProps> = ({ templates }) => {
-  const { loading, data, fetchMore, networkStatus, subscribeToMore } = useQuery(notificationsListQuery);
+  const { loading, data, fetchMore, networkStatus } = useQuery(notificationsListQuery);
+  useSubscription(notificationCreatedSubscription, {
+    onData: (options) => {
+      const notificationData = getFragmentData(
+        notificationsListItemFragment,
+        options.data?.data?.notificationCreated?.notification
+      );
+      options.client.cache.updateQuery({ query: notificationsListQuery }, (prev) => {
+        const prevListData = getFragmentData(notificationsListContentFragment, prev);
+        const alreadyExists = prevListData?.allNotifications?.edges?.find((edge) => {
+          const nodeData = getFragmentData(notificationsListItemFragment, edge?.node);
+          return nodeData?.id === notificationData?.id;
+        });
+        if (alreadyExists) {
+          return prev;
+        }
 
-  useEffect(() => {
-    subscribeToMore({
-      document: notificationsListSubscription,
-      updateQuery: (
-        prev: ResultOf<typeof notificationsListContentFragment>,
-        { subscriptionData }
-      ): ResultOf<typeof notificationsListContentFragment> => ({
-        ...prev,
-        allNotifications: {
-          __typename: 'NotificationConnection',
-          pageInfo: {
-            __typename: 'PageInfo',
-            endCursor: null,
-            hasNextPage: false,
+        return {
+          ...prev,
+          allNotifications: {
+            ...(prevListData?.allNotifications ?? {}),
+            edges: [
+              ...(notificationData ? [{ node: notificationData }] : []),
+              ...(prevListData?.allNotifications?.edges ?? []),
+            ],
           },
-          ...(prev?.allNotifications ?? {}),
-
-          edges: [
-            ...(subscriptionData.data?.notificationCreated?.edges ?? []),
-            ...(prev.allNotifications?.edges ?? []),
-          ],
-        },
-        hasUnreadNotifications: true,
-      }),
-    });
-  }, [subscribeToMore]);
+          hasUnreadNotifications: true,
+        };
+      });
+    },
+  });
 
   if (loading && networkStatus === NetworkStatus.loading) {
     return <NotificationsButtonFallback />;

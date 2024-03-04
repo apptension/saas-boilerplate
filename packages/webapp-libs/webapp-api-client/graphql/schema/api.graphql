@@ -926,7 +926,11 @@ type DeleteFavoriteContentfulDemoItemMutationPayload {
   clientMutationId: String
 }
 type ApiSubscription {
-  notificationCreated(before: String, after: String, first: Int, last: Int): NotificationConnection
+  notificationCreated: NotificationCreatedSubscription
+}
+"Simple GraphQL subscription."
+type NotificationCreatedSubscription {
+  notification: NotificationType
 }
 "An object with an ID"
 interface Node {

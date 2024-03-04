@@ -1,6 +1,7 @@
 from types import FunctionType
 from typing import Iterable, Type, Union, Callable
 
+import channels_graphql_ws
 import graphene
 from graphene.types import Field
 from rest_framework.permissions import BasePermission
@@ -51,6 +52,9 @@ def permission_classes(*perms: types.PermissionsClasses):
     def permission_checker(obj: types.Resolver):
         if not perms:
             return obj
+
+        if isinstance(obj, channels_graphql_ws.Subscription):
+            raise Exception('permission_checker for channels_graphql_ws.Subscription type is not supported')
 
         if isinstance(obj, FunctionType):
             return wrappers.wraps_resolver_function(fn=obj, perms=perms)

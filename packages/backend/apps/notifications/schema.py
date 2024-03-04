@@ -1,15 +1,17 @@
+import channels_graphql_ws
 import graphene
+from apps.users.models import User
+from apps.users.services.users import get_user_avatar_url
+from channels.db import database_sync_to_async
+from common.acl.policies import IsAuthenticatedFullAccess
+from common.graphql import mutations
+from common.graphql.acl import permission_classes
 from graphene import relay
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
-
-from common.graphql import mutations
 from . import models
 from . import serializers
 from . import services
-from apps.users.models import User
-
-from apps.users.services.users import get_user_avatar_url, get_user_from_resolver
 
 
 class HasUnreadNotificationsMixin:
@@ -31,11 +33,11 @@ class UserType(DjangoObjectType):
 
     @staticmethod
     def resolve_first_name(parent, info):
-        return get_user_from_resolver(info).profile.first_name
+        return parent.profile.first_name
 
     @staticmethod
     def resolve_last_name(parent, info):
-        return get_user_from_resolver(info).profile.last_name
+        return parent.profile.last_name
 
     @staticmethod
     def resolve_avatar(parent, info):
@@ -102,9 +104,29 @@ class Mutation(graphene.ObjectType):
         return models.Notification.objects.filter(user=info.context.user, read_at=None).exists()
 
 
-class Subscription(graphene.ObjectType):
-    notification_created = graphene.relay.ConnectionField(NotificationConnection)
+class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
+    """Simple GraphQL subscription."""
+
+    # Leave only latest 64 messages in the server queue.
+    notification_queue_limit = 64
+
+    notification = graphene.Field(NotificationType)
 
     @staticmethod
-    def resolve_notification_created(root, info):
-        return root
+    def subscribe(root, info):
+        return [str(info.context.channels_scope['user'].id)]
+
+    @staticmethod
+    @database_sync_to_async
+    def get_response(id: str):
+        notification = models.Notification.objects.prefetch_related('issuer', 'issuer__profile').get(id=id)
+        return NotificationCreatedSubscription(notification)
+
+    @staticmethod
+    async def publish(payload, info):
+        return await NotificationCreatedSubscription.get_response(id=payload['id'])
+
+
+@permission_classes(IsAuthenticatedFullAccess)
+class Subscription(graphene.ObjectType):
+    notification_created = NotificationCreatedSubscription.Field()

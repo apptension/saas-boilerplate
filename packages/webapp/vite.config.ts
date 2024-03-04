@@ -33,6 +33,7 @@ export default defineConfig(({ mode }): UserConfig => {
         '/api': {
           target: 'http://localhost:5001',
           changeOrigin: true,
+          ws: true
         },
         '/static/graphene_django': {
           target: 'http://localhost:5001',

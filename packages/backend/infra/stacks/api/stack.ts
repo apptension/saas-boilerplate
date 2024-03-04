@@ -15,6 +15,7 @@ import {
   MainKmsKey,
   MainDatabase,
   MainECSCluster,
+  MainRedisCluster,
   EnvComponentsStack,
   FargateServiceResources,
 } from '@sb/infra-shared';
@@ -137,6 +138,15 @@ export class ApiStack extends Stack {
                   props.envSettings,
                 ),
               ),
+              REDIS_CONNECTION: Fn.join('', [
+                'redis://',
+                Fn.importValue(
+                  MainRedisCluster.getMainRedisClusterAddressExportName(
+                    props.envSettings,
+                  ),
+                ),
+                ':6379',
+              ]),
             },
             secrets: {
               DB_CONNECTION: ecs.Secret.fromSecretsManager(

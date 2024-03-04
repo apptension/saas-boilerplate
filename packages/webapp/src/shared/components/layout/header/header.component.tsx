@@ -4,7 +4,7 @@ import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
-import { Menu, Sun , LogOut, User } from 'lucide-react';
+import { LogOut, Menu, Sun, User } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -18,7 +18,7 @@ export type HeaderProps = HTMLAttributes<HTMLElement>;
 
 export const Header = (props: HeaderProps) => {
   const intl = useIntl();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, currentUser } = useAuth();
   const { toggleTheme } = useTheme();
   const userDropdown = useOpenState(false);
   const generateLocalePath = useGenerateLocalePath();
@@ -51,7 +51,7 @@ export const Header = (props: HeaderProps) => {
 
         {isLoggedIn && (
           <>
-            <Notifications templates={notificationTemplates} />
+            <Notifications key={currentUser?.id ?? 'default'} templates={notificationTemplates} />
 
             <div className="relative ml-2 hidden md:block">
               <Popover

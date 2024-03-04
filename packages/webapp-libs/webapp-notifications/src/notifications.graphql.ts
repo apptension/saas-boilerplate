@@ -7,22 +7,11 @@ export const notificationsListQuery = gql(/* GraphQL */ `
   }
 `);
 
-export const notificationsListSubscription = gql(/* GraphQL */ `
-  subscription notificationsListSubscription {
+export const notificationCreatedSubscription = gql(/* GraphQL */ `
+  subscription NotificationCreatedSubscription {
     notificationCreated {
-      edges {
-        node {
-          id
-          type
-          createdAt
-          readAt
-          data
-          issuer {
-            id
-            avatar
-            email
-          }
-        }
+      notification {
+        ...notificationsListItemFragment
       }
     }
   }

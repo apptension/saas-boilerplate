@@ -14,6 +14,8 @@ env = environ.Env(
     DJANGO_DEBUG=(bool, False)
 )
 
+ASGI_APPLICATION = "config.asgi.application"
+
 ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="")
 
 SENTRY_DSN = env("SENTRY_DSN", default=None)
@@ -50,6 +52,8 @@ THIRD_PARTY_APPS = [
     "social_django",
     "whitenoise",
     "graphene_django",
+    'channels',
+    # 'channels_postgres',
     "aws_xray_sdk.ext.django",
 ]
 
@@ -63,7 +67,14 @@ LOCAL_APPS = [
     "apps.integrations",
 ]
 
-INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = (
+    [
+        "daphne",
+    ]
+    + DJANGO_CORE_APPS
+    + THIRD_PARTY_APPS
+    + LOCAL_APPS
+)
 
 SILENCED_SYSTEM_CHECKS = []  # default django value
 
@@ -153,6 +164,33 @@ DATABASES = {
         "PASSWORD": DB_CONNECTION["password"],
         "HOST": DB_PROXY_ENDPOINT or DB_CONNECTION["host"],
         "PORT": DB_CONNECTION["port"],
+    },
+    "channels_postgres": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_CONNECTION["dbname"],
+        "USER": DB_CONNECTION["username"],
+        "PASSWORD": DB_CONNECTION["password"],
+        "HOST": DB_PROXY_ENDPOINT or DB_CONNECTION["host"],
+        "PORT": DB_CONNECTION["port"],
+    },
+}
+
+REDIS_CONNECTION = env("REDIS_CONNECTION")
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [{"address": REDIS_CONNECTION}],
+        },
+    },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_CONNECTION,
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
 
@@ -175,7 +213,6 @@ TIME_ZONE = "UTC"
 
 USE_TZ = True
 
-
 # Storages
 # https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-STORAGES
 STORAGES = {
@@ -186,7 +223,6 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -271,7 +307,6 @@ AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
 TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
 
-
 STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY", default="sk_<CHANGE_ME>")
 STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="sk_test_<CHANGE_ME>")
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", default=False)
@@ -321,7 +356,6 @@ OTP_AUTH_ISSUER_NAME = env("OTP_AUTH_ISSUER_NAME", default="")
 OTP_AUTH_TOKEN_COOKIE = 'otp_auth_token'
 OTP_AUTH_TOKEN_LIFETIME_MINUTES = datetime.timedelta(minutes=env.int('OTP_AUTH_TOKEN_LIFETIME_MINUTES', default=5))
 OTP_VALIDATE_PATH = "/auth/validate-otp"
-
 
 OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 
