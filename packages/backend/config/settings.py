@@ -44,6 +44,8 @@ DJANGO_CORE_APPS = [
 
 THIRD_PARTY_APPS = [
     "django_extensions",
+    'django_celery_results',
+    'django_celery_beat',
     "djstripe",
     "django_hosts",
     "drf_yasg",
@@ -53,7 +55,6 @@ THIRD_PARTY_APPS = [
     "whitenoise",
     "graphene_django",
     'channels',
-    # 'channels_postgres',
     "aws_xray_sdk.ext.django",
 ]
 
@@ -68,12 +69,12 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = (
-    [
-        "daphne",
-    ]
-    + DJANGO_CORE_APPS
-    + THIRD_PARTY_APPS
-    + LOCAL_APPS
+        [
+            "daphne",
+        ]
+        + DJANGO_CORE_APPS
+        + THIRD_PARTY_APPS
+        + LOCAL_APPS
 )
 
 SILENCED_SYSTEM_CHECKS = []  # default django value
@@ -361,3 +362,9 @@ OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = f'{env("REDIS_CONNECTION")}/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 3600,
+}

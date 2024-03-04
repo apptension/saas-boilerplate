@@ -120,6 +120,10 @@ dependencies = [
     "channels[daphne]>=4.0.0",
     "django-channels-graphql-ws==1.0.0rc6",
     "channels-redis>=4.2.0",
+    "celery>=5.3.6",
+    "django-celery-results>=2.5.1",
+    "django-celery-beat>=2.6.0",
+    "flower>=2.0.1",
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}

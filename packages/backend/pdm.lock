@@ -26,6 +26,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "amqp"
+version = "5.2.0"
+requires_python = ">=3.6"
+summary = "Low-level AMQP client for Python (fork of amqplib)."
+dependencies = [
+    "vine<6.0.0,>=5.0.0",
+]
+
+[[package]]
 name = "aniso8601"
 version = "9.0.1"
 summary = "A library for parsing ISO 8601 strings."
@@ -105,6 +114,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "billiard"
+version = "4.2.0"
+requires_python = ">=3.7"
+summary = "Python multiprocessing fork with improvements and bugfixes"
+
+[[package]]
 name = "black"
 version = "23.1.0"
 requires_python = ">=3.7"
@@ -143,6 +158,23 @@ dependencies = [
 name = "calleee"
 version = "0.4.0"
 summary = "Argument matchers for unittest.mock"
+
+[[package]]
+name = "celery"
+version = "5.3.6"
+requires_python = ">=3.8"
+summary = "Distributed Task Queue."
+dependencies = [
+    "billiard<5.0,>=4.2.0",
+    "click-didyoumean>=0.3.0",
+    "click-plugins>=1.1.1",
+    "click-repl>=0.2.0",
+    "click<9.0,>=8.1.2",
+    "kombu<6.0,>=5.3.4",
+    "python-dateutil>=2.8.2",
+    "tzdata>=2022.7",
+    "vine<6.0,>=5.1.0",
+]
 
 [[package]]
 name = "certifi"
@@ -223,6 +255,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "click-didyoumean"
+version = "0.3.0"
+requires_python = ">=3.6.2,<4.0.0"
+summary = "Enables git-like *did-you-mean* feature in click"
+dependencies = [
+    "click>=7",
+]
+
+[[package]]
+name = "click-plugins"
+version = "1.1.1"
+summary = "An extension module for click to enable registering CLI commands via setuptools entry-points."
+dependencies = [
+    "click>=4.0",
+]
+
+[[package]]
+name = "click-repl"
+version = "0.3.0"
+requires_python = ">=3.6"
+summary = "REPL plugin for Click"
+dependencies = [
+    "click>=7.0",
+    "prompt-toolkit>=3.0.36",
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.5"
 requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -279,6 +338,11 @@ dependencies = [
     "nr-util<1.0.0,>=0.7.0",
     "termcolor<2.0.0,>=1.1.0",
 ]
+
+[[package]]
+name = "cron-descriptor"
+version = "1.4.3"
+summary = "A Python library that converts cron expressions into human readable strings."
 
 [[package]]
 name = "cryptography"
@@ -362,6 +426,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "django-celery-beat"
+version = "2.6.0"
+summary = "Database-backed Periodic Tasks."
+dependencies = [
+    "Django<5.1,>=2.2",
+    "celery<6.0,>=5.2.3",
+    "cron-descriptor>=1.2.32",
+    "django-timezone-field>=5.0",
+    "python-crontab>=2.3.4",
+    "tzdata",
+]
+
+[[package]]
+name = "django-celery-results"
+version = "2.5.1"
+summary = "Celery result backends for Django."
+dependencies = [
+    "Django>=3.2.18",
+    "celery<6.0,>=5.2.7",
+]
+
+[[package]]
 name = "django-channels-graphql-ws"
 version = "1.0.0rc6"
 requires_python = ">=3.8.0,<4.0.0"
@@ -429,6 +515,15 @@ requires_python = ">=3.7"
 summary = "Support for many storage backends in Django"
 dependencies = [
     "Django>=3.2",
+]
+
+[[package]]
+name = "django-timezone-field"
+version = "6.1.0"
+requires_python = ">=3.8,<4.0"
+summary = "A Django app providing DB, form, and REST framework fields for zoneinfo and pytz timezone objects."
+dependencies = [
+    "Django<6.0,>=3.2",
 ]
 
 [[package]]
@@ -545,6 +640,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "flower"
+version = "2.0.1"
+requires_python = ">=3.7"
+summary = "Celery Flower"
+dependencies = [
+    "celery>=5.0.5",
+    "humanize",
+    "prometheus-client>=0.8.0",
+    "pytz",
+    "tornado<7.0.0,>=5.0.0",
+]
+
+[[package]]
 name = "freezegun"
 version = "1.2.2"
 requires_python = ">=3.6"
@@ -652,6 +760,12 @@ requires_python = ">=3.8.0"
 summary = "A collection of framework independent HTTP protocol utils."
 
 [[package]]
+name = "humanize"
+version = "4.9.0"
+requires_python = ">=3.8"
+summary = "Python humanize utilities"
+
+[[package]]
 name = "hyperlink"
 version = "21.0.0"
 requires_python = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -756,6 +870,16 @@ version = "1.9"
 summary = "Creates JUnit XML test result documents that can be read by tools such as Jenkins"
 dependencies = [
     "six",
+]
+
+[[package]]
+name = "kombu"
+version = "5.3.5"
+requires_python = ">=3.8"
+summary = "Messaging library for Python."
+dependencies = [
+    "amqp<6.0.0,>=5.1.1",
+    "vine",
 ]
 
 [[package]]
@@ -944,11 +1068,26 @@ requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 summary = "plugin and hook calling mechanisms for python"
 
 [[package]]
+name = "prometheus-client"
+version = "0.20.0"
+requires_python = ">=3.8"
+summary = "Python client for the Prometheus monitoring system."
+
+[[package]]
 name = "promise"
 version = "2.3"
 summary = "Promises/A+ implementation for Python"
 dependencies = [
     "six",
+]
+
+[[package]]
+name = "prompt-toolkit"
+version = "3.0.43"
+requires_python = ">=3.7.0"
+summary = "Library for building powerful interactive command lines in Python"
+dependencies = [
+    "wcwidth",
 ]
 
 [[package]]
@@ -1129,6 +1268,14 @@ requires_python = ">=3.7"
 summary = "Thin-wrapper around the mock package for easier use with pytest"
 dependencies = [
     "pytest>=5.0",
+]
+
+[[package]]
+name = "python-crontab"
+version = "3.0.0"
+summary = "Python Crontab API"
+dependencies = [
+    "python-dateutil",
 ]
 
 [[package]]
@@ -1382,6 +1529,12 @@ requires_python = ">=3.7"
 summary = "A lil' TOML writer"
 
 [[package]]
+name = "tornado"
+version = "6.4"
+requires_python = ">= 3.8"
+summary = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
+
+[[package]]
 name = "tqdm"
 version = "4.65.0"
 requires_python = ">=3.7"
@@ -1497,6 +1650,12 @@ requires_python = ">=3.8.0"
 summary = "Fast implementation of asyncio event loop on top of libuv"
 
 [[package]]
+name = "vine"
+version = "5.1.0"
+requires_python = ">=3.6"
+summary = "Python promises."
+
+[[package]]
 name = "watchdog"
 version = "2.3.1"
 requires_python = ">=3.6"
@@ -1510,6 +1669,11 @@ summary = "Simple, modern and high performance file watching and code reload in 
 dependencies = [
     "anyio>=3.0.0",
 ]
+
+[[package]]
+name = "wcwidth"
+version = "0.2.13"
+summary = "Measures the displayed width of unicode strings in a terminal"
 
 [[package]]
 name = "websocket-client"
@@ -1585,7 +1749,7 @@ dependencies = [
 [metadata]
 lock_version = "4.2"
 groups = ["default", "dev"]
-content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ceb456e10"
+content_hash = "sha256:fce7e29ab9da7cbbc63e451660fc69b61613965ffec5879eca332d60a3fcc8f9"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1681,6 +1845,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/76/ac/a7305707cb852b7e16ff80eaf5692309bde30e2b1100a1fcacdc8f731d97/aiosignal-1.3.1-py3-none-any.whl", hash = "sha256:f8376fb07dd1e86a584e4fcdec80b36b7f81aac666ebc724e2c090300dd83b17"},
     {url = "https://files.pythonhosted.org/packages/ae/67/0952ed97a9793b4958e5736f6d2b346b414a2cd63e82d05940032f45b32f/aiosignal-1.3.1.tar.gz", hash = "sha256:54cd96e15e1649b75d6c87526a6ff0b6c1b0dd3459f43d9ca11d48c339b68cfc"},
 ]
+"amqp 5.2.0" = [
+    {url = "https://files.pythonhosted.org/packages/32/2c/6eb09fbdeb3c060b37bd33f8873832897a83e7a428afe01aad333fc405ec/amqp-5.2.0.tar.gz", hash = "sha256:a1ecff425ad063ad42a486c902807d1482311481c8ad95a72694b2975e75f7fd"},
+    {url = "https://files.pythonhosted.org/packages/b3/f0/8e5be5d5e0653d9e1d02b1144efa33ff7d2963dfad07049e02c0fa9b2e8d/amqp-5.2.0-py3-none-any.whl", hash = "sha256:827cb12fb0baa892aad844fd95258143bce4027fdac4fccddbc43330fd281637"},
+]
 "aniso8601 9.0.1" = [
     {url = "https://files.pythonhosted.org/packages/cb/72/be3db445b03944bfbb2b02b82d00cb2a2bcf96275c4543f14bf60fa79e12/aniso8601-9.0.1.tar.gz", hash = "sha256:72e3117667eedf66951bb2d93f4296a56b94b078a8a95905a052611fb3f1b973"},
     {url = "https://files.pythonhosted.org/packages/e3/04/e97c12dc034791d7b504860acfcdd2963fa21ae61eaca1c9d31245f812c3/aniso8601-9.0.1-py2.py3-none-any.whl", hash = "sha256:1d2b7ef82963909e93c4f24ce48d4de9e66009a21bf1c1e1c85bdd0812fe412f"},
@@ -1721,6 +1889,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/2f/0e/fa4d9d6346cafde816e6b7afff0d93fff2fbd6bf21c4b0c4392a238c086a/aws-xray-sdk-2.11.0.tar.gz", hash = "sha256:78835fc841f03e550858f18a9973eab8618f47f22d2f59edf130578fa545a867"},
     {url = "https://files.pythonhosted.org/packages/8a/c0/f78f005f819d735e60ab367ec6c469b6e7a703a11c88b59e257672b40b06/aws_xray_sdk-2.11.0-py2.py3-none-any.whl", hash = "sha256:693fa3a4c790e131fe1e20814ede415a9eeeab5c3b7c868686d3e3c696b8524d"},
 ]
+"billiard 4.2.0" = [
+    {url = "https://files.pythonhosted.org/packages/09/52/f10d74fd56e73b430c37417658158ad8386202b069b70ff97d945c3ab67a/billiard-4.2.0.tar.gz", hash = "sha256:9a3c3184cb275aa17a732f93f65b20c525d3d9f253722d26a82194803ade5a2c"},
+    {url = "https://files.pythonhosted.org/packages/50/8d/6e9fdeeab04d803abc5a715175f87e88893934d5590595eacff23ca12b07/billiard-4.2.0-py3-none-any.whl", hash = "sha256:07aa978b308f334ff8282bd4a746e681b3513db5c9a514cbdd810cbbdc19714d"},
+]
 "black 23.1.0" = [
     {url = "https://files.pythonhosted.org/packages/01/8a/065d0a59c1ebe13186b12a2fa3965a41fc1588828709995e2630004d216e/black-23.1.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8178318cb74f98bc571eef19068f6ab5613b3e59d4f47771582f04e175570ed8"},
     {url = "https://files.pythonhosted.org/packages/15/11/533355217b1cc4a6df3263048060c1527f733d4720e158de2085293112bb/black-23.1.0.tar.gz", hash = "sha256:b0bd97bea8903f5a2ba7219257a44e3f1f9d00073d6cc1add68f0beec69692ac"},
@@ -1758,6 +1930,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
 ]
 "calleee 0.4.0" = [
     {url = "https://files.pythonhosted.org/packages/cc/4d/a477e1a0c6e071b5a2901410a47621a177b9a6459afb74f03f2b20eac0ac/calleee-0.4.0.tar.gz", hash = "sha256:9d733f2b0fc5b6542420f396b4881b98997c82b9cc0cf15f9795ab18e5f0285e"},
+]
+"celery 5.3.6" = [
+    {url = "https://files.pythonhosted.org/packages/37/c2/4c8a67a4d98a6fcd55dbdd79b641f945d7f59637c3e885c4abbda3c431f6/celery-5.3.6-py3-none-any.whl", hash = "sha256:9da4ea0118d232ce97dff5ed4974587fb1c0ff5c10042eb15278487cdd27d1af"},
+    {url = "https://files.pythonhosted.org/packages/99/72/45a2d2f9b45ccc6e80e2168ce169d17bf06a98711c192d7b53d5a8accf77/celery-5.3.6.tar.gz", hash = "sha256:870cc71d737c0200c397290d730344cc991d13a057534353d124c9380267aab9"},
 ]
 "certifi 2022.6.15" = [
     {url = "https://files.pythonhosted.org/packages/cc/85/319a8a684e8ac6d87a1193090e06b6bbb302717496380e225ee10487c888/certifi-2022.6.15.tar.gz", hash = "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d"},
@@ -1849,6 +2025,18 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/59/87/84326af34517fca8c58418d148f2403df25303e02736832403587318e9e8/click-8.1.3.tar.gz", hash = "sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e"},
     {url = "https://files.pythonhosted.org/packages/c2/f1/df59e28c642d583f7dacffb1e0965d0e00b218e0186d7858ac5233dce840/click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},
 ]
+"click-didyoumean 0.3.0" = [
+    {url = "https://files.pythonhosted.org/packages/2f/a7/822fbc659be70dcb75a91fb91fec718b653326697d0e9907f4f90114b34f/click-didyoumean-0.3.0.tar.gz", hash = "sha256:f184f0d851d96b6d29297354ed981b7dd71df7ff500d82fa6d11f0856bee8035"},
+    {url = "https://files.pythonhosted.org/packages/ad/36/4599267417fc78b587b1588e0647a468c60b36c02bb723d450d050738fa8/click_didyoumean-0.3.0-py3-none-any.whl", hash = "sha256:a0713dc7a1de3f06bc0df5a9567ad19ead2d3d5689b434768a6145bff77c0667"},
+]
+"click-plugins 1.1.1" = [
+    {url = "https://files.pythonhosted.org/packages/5f/1d/45434f64ed749540af821fd7e42b8e4d23ac04b1eda7c26613288d6cd8a8/click-plugins-1.1.1.tar.gz", hash = "sha256:46ab999744a9d831159c3411bb0c79346d94a444df9a3a3742e9ed63645f264b"},
+    {url = "https://files.pythonhosted.org/packages/e9/da/824b92d9942f4e472702488857914bdd50f73021efea15b4cad9aca8ecef/click_plugins-1.1.1-py2.py3-none-any.whl", hash = "sha256:5d262006d3222f5057fd81e1623d4443e41dcda5dc815c06b442aa3c02889fc8"},
+]
+"click-repl 0.3.0" = [
+    {url = "https://files.pythonhosted.org/packages/52/40/9d857001228658f0d59e97ebd4c346fe73e138c6de1bce61dc568a57c7f8/click_repl-0.3.0-py3-none-any.whl", hash = "sha256:fb7e06deb8da8de86180a33a9da97ac316751c094c6899382da7feeeeb51b812"},
+    {url = "https://files.pythonhosted.org/packages/cb/a2/57f4ac79838cfae6912f997b4d1a64a858fb0c86d7fcaae6f7b58d267fca/click-repl-0.3.0.tar.gz", hash = "sha256:17849c23dba3d667247dc4defe1757fff98694e90fe37474f3feebb69ced26a9"},
+]
 "colorama 0.4.5" = [
     {url = "https://files.pythonhosted.org/packages/2b/65/24d033a9325ce42ccbfa3ca2d0866c7e89cc68e5b9d92ecaba9feef631df/colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
     {url = "https://files.pythonhosted.org/packages/77/8b/7550e87b2d308a1b711725dfaddc19c695f8c5fa413c640b2be01662f4e6/colorama-0.4.5-py2.py3-none-any.whl", hash = "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da"},
@@ -1922,6 +2110,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/21/d8/926bf0e57026a9c57c7ba4840a1702ce8a79b529454f224d2dc895e2b1f0/craftr_dsl-0.7.7-py3-none-any.whl", hash = "sha256:3968cb5df76fc349fc608dc564b571ba6177ffc8f19c0e325474536ea0f181de"},
     {url = "https://files.pythonhosted.org/packages/80/5c/1dca19538d42494bd441ab839b3d56ef188aa538d2ce611d65405e9de26f/craftr-dsl-0.7.7.tar.gz", hash = "sha256:004d6042b5e8c7971ee26b21e49174e173708476a52b561b0900abfd467365a3"},
 ]
+"cron-descriptor 1.4.3" = [
+    {url = "https://files.pythonhosted.org/packages/28/be/bb2c93b445fdd341ec057e0920c5b2b35c910db6f0d76dca8ea123504107/cron_descriptor-1.4.3.tar.gz", hash = "sha256:7b1a00d7d25d6ae6896c0da4457e790b98cba778398a3d48e341e5e0d33f0488"},
+    {url = "https://files.pythonhosted.org/packages/e0/18/136b0073305038d1317f3442f614a698ce686830a2810bbe7e875311e09f/cron_descriptor-1.4.3-py3-none-any.whl", hash = "sha256:a67ba21804983b1427ed7f3e1ec27ee77bf24c652b0430239c268c5ddfbf9dc0"},
+]
 "cryptography 42.0.0" = [
     {url = "https://files.pythonhosted.org/packages/06/5a/a791677f3c01d6df63e965782f7e9aee503258cef1e15c0a3702ab7c70c3/cryptography-42.0.0-cp37-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:ca20550bb590db16223eb9ccc5852335b48b8f597e2f6f0878bbfd9e7314eb17"},
     {url = "https://files.pythonhosted.org/packages/0b/54/521f8a7c29c4ddd9c5c9c64eb5c384e3460456b5e8758221acb7d43c0f4e/cryptography-42.0.0-cp39-abi3-win_amd64.whl", hash = "sha256:14e4b909373bc5bf1095311fa0f7fcabf2d1a160ca13f1e9e467be1ac4cbdf94"},
@@ -1984,6 +2176,13 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/9a/bb/48aa3e0850923096dff2766d21a6004d6e1a3317f0bd400ba81f586754e1/Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},
     {url = "https://files.pythonhosted.org/packages/d9/40/6012f98b14b64b4d3dc47b0c2f116fccbd0795ab35515d0c40dac73b81b8/Django-4.2-py3-none-any.whl", hash = "sha256:ad33ed68db9398f5dfb33282704925bce044bef4261cd4fb59e4e7f9ae505a78"},
 ]
+"django-celery-beat 2.6.0" = [
+    {url = "https://files.pythonhosted.org/packages/1b/ce/308fdad8c073051c0a1e494939d5c304b4efbbeb4bee1115495a60c139e8/django-celery-beat-2.6.0.tar.gz", hash = "sha256:f75b2d129731f1214be8383e18fae6bfeacdb55dffb2116ce849222c0106f9ad"},
+]
+"django-celery-results 2.5.1" = [
+    {url = "https://files.pythonhosted.org/packages/05/2e/aa82857354d5227922c2ae6e83e5214537d8f108184bfeea6704d0b045d8/django_celery_results-2.5.1-py3-none-any.whl", hash = "sha256:0da4cd5ecc049333e4524a23fcfc3460dfae91aa0a60f1fae4b6b2889c254e01"},
+    {url = "https://files.pythonhosted.org/packages/75/24/a13ad6a276f62385da6d83a1995ded452d173841b6e0a83a899c3b75062e/django_celery_results-2.5.1.tar.gz", hash = "sha256:3ecb7147f773f34d0381bac6246337ce4cf88a2ea7b82774ed48e518b67bb8fd"},
+]
 "django-channels-graphql-ws 1.0.0rc6" = [
     {url = "https://files.pythonhosted.org/packages/37/1e/4b85e9297d2aa6bc79c398b59db23d43ddbaefe05629dde3a964f288b1c1/django_channels_graphql_ws-1.0.0rc6-py3-none-any.whl", hash = "sha256:ebaf1ddb2527a5a5e69a368fbf28a8c978f84ce33803c1d4dde7d0265c15f77f"},
     {url = "https://files.pythonhosted.org/packages/8d/16/ef75dc90835fdc59fe68a3600cbfa37b0e80fdb97dd1caa5c2719ce75fe9/django_channels_graphql_ws-1.0.0rc6.tar.gz", hash = "sha256:36d848f404e5d616060cfc9eddb7e60a69ca54ff24ab1d8939b3d51144e747fc"},
@@ -2015,6 +2214,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
 "django-storages 1.13.2" = [
     {url = "https://files.pythonhosted.org/packages/06/ed/6eef8d009138d4c58c63026bf24e946a7e09caac77aca33ab46a5e5bc51f/django_storages-1.13.2-py3-none-any.whl", hash = "sha256:31dc5a992520be571908c4c40d55d292660ece3a55b8141462b4e719aa38eab3"},
     {url = "https://files.pythonhosted.org/packages/cb/8a/3872af7e3d61a8eb7616872549cd74f7f1090de41792a059adb7ce6854dc/django-storages-1.13.2.tar.gz", hash = "sha256:cbadd15c909ceb7247d4ffc503f12a9bec36999df8d0bef7c31e57177d512688"},
+]
+"django-timezone-field 6.1.0" = [
+    {url = "https://files.pythonhosted.org/packages/0a/a0/010458d5314492b06e29d55ac1ae0409a9e7f69ef2d690a60b2aa4787577/django_timezone_field-6.1.0-py3-none-any.whl", hash = "sha256:0095f43da716552fcc606783cfb42cb025892514f1ec660ebfa96186eb83b74c"},
+    {url = "https://files.pythonhosted.org/packages/23/f1/d8a159d87ab0fc80ccf8a54bc63dabc30ede157ed4e0a4e402327fc3e97d/django_timezone_field-6.1.0.tar.gz", hash = "sha256:d40f7059d7bae4075725d04a9dae601af9fe3c7f0119a69b0e2c6194a782f797"},
 ]
 "djangorestframework 3.14.0" = [
     {url = "https://files.pythonhosted.org/packages/8e/53/5b2a002c5ebafd60dff1e1945a7d63dee40155830997439a9ba324f0fd50/djangorestframework-3.14.0.tar.gz", hash = "sha256:579a333e6256b09489cbe0a067e66abe55c6595d8926be6b99423786334350c8"},
@@ -2057,6 +2260,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
 "faker 13.15.0" = [
     {url = "https://files.pythonhosted.org/packages/51/d2/6b87d0817c57cb1b8cf5f4582d6e43f6f702f8c99d8d4a5dc1aa143268a8/Faker-13.15.0-py3-none-any.whl", hash = "sha256:8e94a749d2f3d9b367f61eb33be6a534f0a2d305c54e912ee6618370e3278db7"},
     {url = "https://files.pythonhosted.org/packages/57/0f/86e6547c58ad55b4e087d28367f2a8e251c6dd559cf5fb27a9a659bae84b/Faker-13.15.0.tar.gz", hash = "sha256:a126fa66f54e65a67f913dcc698c9d023def7277882536bde2968fcac701bfd5"},
+]
+"flower 2.0.1" = [
+    {url = "https://files.pythonhosted.org/packages/09/a1/357f1b5d8946deafdcfdd604f51baae9de10aafa2908d0b7322597155f92/flower-2.0.1.tar.gz", hash = "sha256:5ab717b979530770c16afb48b50d2a98d23c3e9fe39851dcf6bc4d01845a02a0"},
+    {url = "https://files.pythonhosted.org/packages/a6/ff/ee2f67c0ff146ec98b5df1df637b2bc2d17beeb05df9f427a67bd7a7d79c/flower-2.0.1-py2.py3-none-any.whl", hash = "sha256:9db2c621eeefbc844c8dd88be64aef61e84e2deb29b271e02ab2b5b9f01068e2"},
 ]
 "freezegun 1.2.2" = [
     {url = "https://files.pythonhosted.org/packages/1d/97/002ac49ec52858538b4aa6f6831f83c2af562c17340bdf6043be695f39ac/freezegun-1.2.2.tar.gz", hash = "sha256:cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446"},
@@ -2324,6 +2531,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/f5/d1/53283b96ed823d5e4d89ee9aa0f29df5a1bdf67f148e061549a595d534e4/httptools-0.6.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:7a7ea483c1a4485c71cb5f38be9db078f8b0e8b4c4dc0210f531cdd2ddac1ef1"},
     {url = "https://files.pythonhosted.org/packages/f8/5d/9ad32b79b6c24524087e78aa3f0a2dfcf58c11c90e090e4593b35def8a86/httptools-0.6.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:48ed8129cd9a0d62cf4d1575fcf90fb37e3ff7d5654d3a5814eb3d55f36478c2"},
 ]
+"humanize 4.9.0" = [
+    {url = "https://files.pythonhosted.org/packages/76/21/7a0b24fae849562397efd79da58e62437243ae0fd0f6c09c6bc26225b75c/humanize-4.9.0.tar.gz", hash = "sha256:582a265c931c683a7e9b8ed9559089dea7edcf6cc95be39a3cbc2c5d5ac2bcfa"},
+    {url = "https://files.pythonhosted.org/packages/aa/2b/2ae0c789fd08d5b44e745726d08a17e6d3d7d09071d05473105edc7615f2/humanize-4.9.0-py3-none-any.whl", hash = "sha256:ce284a76d5b1377fd8836733b983bfb0b76f1aa1c090de2566fcf008d7f6ab16"},
+]
 "hyperlink 21.0.0" = [
     {url = "https://files.pythonhosted.org/packages/3a/51/1947bd81d75af87e3bb9e34593a4cf118115a8feb451ce7a69044ef1412e/hyperlink-21.0.0.tar.gz", hash = "sha256:427af957daa58bc909471c6c40f74c5450fa123dd093fc53efd2e91d2705a56b"},
     {url = "https://files.pythonhosted.org/packages/6e/aa/8caf6a0a3e62863cbb9dab27135660acba46903b703e224f14f447e57934/hyperlink-21.0.0-py2.py3-none-any.whl", hash = "sha256:e6b14c37ecb73e89c77d78cdb4c2cc8f3fb59a885c5b3f819ff4ed80f25af1b4"},
@@ -2383,6 +2594,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
 "junit-xml 1.9" = [
     {url = "https://files.pythonhosted.org/packages/2a/93/2d896b5fd3d79b4cadd8882c06650e66d003f465c9d12c488d92853dff78/junit_xml-1.9-py2.py3-none-any.whl", hash = "sha256:ec5ca1a55aefdd76d28fcc0b135251d156c7106fa979686a4b48d62b761b4732"},
     {url = "https://files.pythonhosted.org/packages/98/af/bc988c914dd1ea2bc7540ecc6a0265c2b6faccc6d9cdb82f20e2094a8229/junit-xml-1.9.tar.gz", hash = "sha256:de16a051990d4e25a3982b2dd9e89d671067548718866416faec14d9de56db9f"},
+]
+"kombu 5.3.5" = [
+    {url = "https://files.pythonhosted.org/packages/55/61/0b91085837d446570ea12f63f79463e5a74b449956b1ca9d1946a6f584c2/kombu-5.3.5.tar.gz", hash = "sha256:30e470f1a6b49c70dc6f6d13c3e4cc4e178aa6c469ceb6bcd55645385fc84b93"},
+    {url = "https://files.pythonhosted.org/packages/f7/88/daca086d72832c74a7e239558ad484644c8cda0b9ae8a690f247bf13c268/kombu-5.3.5-py3-none-any.whl", hash = "sha256:0eac1bbb464afe6fb0924b21bf79460416d25d8abc52546d4f16cad94f789488"},
 ]
 "markdown 3.4.3" = [
     {url = "https://files.pythonhosted.org/packages/9a/a1/1352b0e5a3c71a79fa9265726e2217f69df9fd4de0bcb5725cc61f62a5df/Markdown-3.4.3-py3-none-any.whl", hash = "sha256:065fd4df22da73a625f14890dd77eb8040edcbd68794bcd35943be14490608b2"},
@@ -2707,8 +2922,16 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/a0/28/85c7aa31b80d150b772fbe4a229487bc6644da9ccb7e427dd8cc60cb8a62/pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {url = "https://files.pythonhosted.org/packages/f8/04/7a8542bed4b16a65c2714bf76cf5a0b026157da7f75e87cc88774aa10b14/pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
+"prometheus-client 0.20.0" = [
+    {url = "https://files.pythonhosted.org/packages/3d/39/3be07741a33356127c4fe633768ee450422c1231c6d34b951fee1458308d/prometheus_client-0.20.0.tar.gz", hash = "sha256:287629d00b147a32dcb2be0b9df905da599b2d82f80377083ec8463309a4bb89"},
+    {url = "https://files.pythonhosted.org/packages/c7/98/745b810d822103adca2df8decd4c0bbe839ba7ad3511af3f0d09692fc0f0/prometheus_client-0.20.0-py3-none-any.whl", hash = "sha256:cde524a85bce83ca359cc837f28b8c0db5cac7aa653a588fd7e84ba061c329e7"},
+]
 "promise 2.3" = [
     {url = "https://files.pythonhosted.org/packages/cf/9c/fb5d48abfe5d791cd496e4242ebcf87a4bb2e0c3dcd6e0ae68c11426a528/promise-2.3.tar.gz", hash = "sha256:dfd18337c523ba4b6a58801c164c1904a9d4d1b1747c7d5dbf45b693a49d93d0"},
+]
+"prompt-toolkit 3.0.43" = [
+    {url = "https://files.pythonhosted.org/packages/cc/c6/25b6a3d5cd295304de1e32c9edbcf319a52e965b339629d37d42bb7126ca/prompt_toolkit-3.0.43.tar.gz", hash = "sha256:3527b7af26106cbc65a040bcc84839a3566ec1b051bb0bfe953631e704b0ff7d"},
+    {url = "https://files.pythonhosted.org/packages/ee/fd/ca7bf3869e7caa7a037e23078539467b433a4e01eebd93f77180ab927766/prompt_toolkit-3.0.43-py3-none-any.whl", hash = "sha256:a11a29cb3bf0a28a387fe5122cdb649816a957cd9261dcedf8c9f1fef33eacf6"},
 ]
 "psycopg2-binary 2.9.5" = [
     {url = "https://files.pythonhosted.org/packages/01/87/a44d28350a95edf46a495d389d0438ec4b0ecb6240c9e2493e27c06ebe63/psycopg2_binary-2.9.5-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a7e518a0911c50f60313cb9e74a169a65b5d293770db4770ebf004245f24b5c5"},
@@ -2907,6 +3130,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/91/84/c951790e199cd54ddbf1021965b62a5415b81193ebdb4f4af2659fd06a73/pytest_mock-3.10.0-py3-none-any.whl", hash = "sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b"},
     {url = "https://files.pythonhosted.org/packages/f6/2b/137a7db414aeaf3d753d415a2bc3b90aba8c5f61dff7a7a736d84b2ec60d/pytest-mock-3.10.0.tar.gz", hash = "sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f"},
 ]
+"python-crontab 3.0.0" = [
+    {url = "https://files.pythonhosted.org/packages/e9/f7/d3582cba5ba8c032c61f95ffa3599ee93ad1dc2ce48b821661171cad92be/python_crontab-3.0.0-py3-none-any.whl", hash = "sha256:6d5ba3c190ec76e4d252989a1644fcb233dbf53fbc8fceeb9febe1657b9fb1d4"},
+    {url = "https://files.pythonhosted.org/packages/fb/6f/14adf2570e83c90f3f5af1af5225a70f914ba9e7ab9d08e675c5f6887102/python-crontab-3.0.0.tar.gz", hash = "sha256:79fb7465039ddfd4fb93d072d6ee0d45c1ac8bf1597f0686ea14fd4361dba379"},
+]
 "python-dateutil 2.8.2" = [
     {url = "https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
     {url = "https://files.pythonhosted.org/packages/4c/c4/13b4776ea2d76c115c1d1b84579f3764ee6d57204f6be27119f13a61d0a9/python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -3100,6 +3327,19 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/49/05/6bf21838623186b91aedbda06248ad18f03487dc56fbc20e4db384abde6c/tomli_w-1.0.0.tar.gz", hash = "sha256:f463434305e0336248cac9c2dc8076b707d8a12d019dd349f5c1e382dd1ae1b9"},
     {url = "https://files.pythonhosted.org/packages/bb/01/1da9c66ecb20f31ed5aa5316a957e0b1a5e786a0d9689616ece4ceaf1321/tomli_w-1.0.0-py3-none-any.whl", hash = "sha256:9f2a07e8be30a0729e533ec968016807069991ae2fd921a78d42f429ae5f4463"},
 ]
+"tornado 6.4" = [
+    {url = "https://files.pythonhosted.org/packages/0e/76/aca8c8726d045c1c7b093cca3c5551e8df444ef74ba0dfd1f205da1f95db/tornado-6.4-cp38-abi3-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e43bc2e5370a6a8e413e1e1cd0c91bedc5bd62a74a532371042a18ef19e10579"},
+    {url = "https://files.pythonhosted.org/packages/25/a3/1025f561b87b3cca6f66da149ba7ce4c2bb18d7bd6b84cd5a13a274e9dd3/tornado-6.4-cp38-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:71ddfc23a0e03ef2df1c1397d859868d158c8276a0603b96cf86892bff58149f"},
+    {url = "https://files.pythonhosted.org/packages/34/7a/e7ec972db24513ea69ac7132c1a5eef62309dc978566a4afffa314417a45/tornado-6.4-cp38-abi3-macosx_10_9_x86_64.whl", hash = "sha256:27787de946a9cffd63ce5814c33f734c627a87072ec7eed71f7fc4417bb16263"},
+    {url = "https://files.pythonhosted.org/packages/4a/2e/3ba930e3af171847d610e07ae878e04fcb7e4d7822f1a2d29a27b128ea24/tornado-6.4-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:02ccefc7d8211e5a7f9e8bc3f9e5b0ad6262ba2fbb683a6443ecc804e5224ce0"},
+    {url = "https://files.pythonhosted.org/packages/62/e5/3ee2ba523a13bae5c17d1658580d13597116c1639374ca5033d58fd04724/tornado-6.4-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f7894c581ecdcf91666a0912f18ce5e757213999e183ebfc2c3fdbf4d5bd764e"},
+    {url = "https://files.pythonhosted.org/packages/66/e5/466aa544e0cbae9b0ece79cd42db257fa7bfa3197c853e3f7921b3963190/tornado-6.4-cp38-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:fd03192e287fbd0899dd8f81c6fb9cbbc69194d2074b38f384cb6fa72b80e9c2"},
+    {url = "https://files.pythonhosted.org/packages/9f/12/11d0a757bb67278d3380d41955ae98527d5ad18330b2edbdc8de222b569b/tornado-6.4-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f0251554cdd50b4b44362f73ad5ba7126fc5b2c2895cc62b14a1c2d7ea32f212"},
+    {url = "https://files.pythonhosted.org/packages/a7/07/bdda4c6dcd625cc2bc13e06a15876055cc852ec76c748ab7a025ea3804ee/tornado-6.4-cp38-abi3-win32.whl", hash = "sha256:6f8a6c77900f5ae93d8b4ae1196472d0ccc2775cc1dfdc9e7727889145c45052"},
+    {url = "https://files.pythonhosted.org/packages/af/2b/4649926f17c1634d21c584cc855b5c5021f148b934919d26932a595bc034/tornado-6.4-cp38-abi3-win_amd64.whl", hash = "sha256:10aeaa8006333433da48dec9fe417877f8bcc21f48dda8d661ae79da357b2a63"},
+    {url = "https://files.pythonhosted.org/packages/bd/a2/ea124343e3b8dd7712561fe56c4f92eda26865f5e1040b289203729186f2/tornado-6.4.tar.gz", hash = "sha256:72291fa6e6bc84e626589f1c29d90a5a6d593ef5ae68052ee2ef000dfd273dee"},
+    {url = "https://files.pythonhosted.org/packages/e2/40/bcf0af5a29a850bf5ad7f79ef51c054f99e18d9cdf4efd6eeb0df819641f/tornado-6.4-cp38-abi3-musllinux_1_1_i686.whl", hash = "sha256:88b84956273fbd73420e6d4b8d5ccbe913c65d31351b4c004ae362eba06e1f78"},
+]
 "tqdm 4.65.0" = [
     {url = "https://files.pythonhosted.org/packages/3d/78/81191f56abb7d3d56963337dbdff6aa4f55805c8afd8bad64b0a34199e9b/tqdm-4.65.0.tar.gz", hash = "sha256:1871fb68a86b8fb3b59ca4cdd3dcccbc7e6d613eeed31f4c332531977b89beb5"},
     {url = "https://files.pythonhosted.org/packages/e6/02/a2cff6306177ae6bc73bc0665065de51dfb3b9db7373e122e2735faf0d97/tqdm-4.65.0-py3-none-any.whl", hash = "sha256:c4f53a17fe37e132815abceec022631be8ffe1b9381c2e6e30aa70edc99e9671"},
@@ -3189,6 +3429,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/eb/0c/51339463da912ed34b48d470538d98a91660749b2db56902f23db9b42fdd/uvloop-0.19.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:02506dc23a5d90e04d4f65c7791e65cf44bd91b37f24cfc3ef6cf2aff05dc7ec"},
     {url = "https://files.pythonhosted.org/packages/fd/96/fdc318ffe82ae567592b213ec2fcd8ecedd927b5da068cf84d56b28c51a4/uvloop-0.19.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7010271303961c6f0fe37731004335401eb9075a12680738731e9c92ddd96ad6"},
     {url = "https://files.pythonhosted.org/packages/fe/4d/199e8c6e4a810b60cc012f9dc34fcf4df0e93d927de75ce4ed54a4d36274/uvloop-0.19.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8ca4956c9ab567d87d59d49fa3704cf29e37109ad348f2d5223c9bf761a332e7"},
+]
+"vine 5.1.0" = [
+    {url = "https://files.pythonhosted.org/packages/03/ff/7c0c86c43b3cbb927e0ccc0255cb4057ceba4799cd44ae95174ce8e8b5b2/vine-5.1.0-py3-none-any.whl", hash = "sha256:40fdf3c48b2cfe1c38a49e9ae2da6fda88e4794c810050a728bd7413811fb1dc"},
+    {url = "https://files.pythonhosted.org/packages/bd/e4/d07b5f29d283596b9727dd5275ccbceb63c44a1a82aa9e4bfd20426762ac/vine-5.1.0.tar.gz", hash = "sha256:8b62e981d35c41049211cf62a0a1242d8c1ee9bd15bb196ce38aefd6799e61e0"},
 ]
 "watchdog 2.3.1" = [
     {url = "https://files.pythonhosted.org/packages/05/72/b7d506e9a67ade08cc9f5b79f6191e8c2ef8eafcae20b8f6d1f84c65ce8d/watchdog-2.3.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:ea5d86d1bcf4a9d24610aa2f6f25492f441960cf04aed2bd9a97db439b643a7b"},
@@ -3296,6 +3540,10 @@ content_hash = "sha256:62bc5a1ce73e65a64098e42203e5d43db325fd0582a2a758f2f89b6ce
     {url = "https://files.pythonhosted.org/packages/fc/60/f94029d1beb8b544f6db6828c7ccc29aa748e6bc82d143637cecff998d5c/watchfiles-0.21.0-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:1c9198c989f47898b2c22201756f73249de3748e0fc9de44adaf54a8b259cc0c"},
     {url = "https://files.pythonhosted.org/packages/fe/a3/42686af3a089f34aba35c39abac852869661938dae7025c1a0580dfe0fbf/watchfiles-0.21.0-pp310-pypy310_pp73-macosx_11_0_arm64.whl", hash = "sha256:927c589500f9f41e370b0125c12ac9e7d3a2fd166b89e9ee2828b3dda20bfe6f"},
     {url = "https://files.pythonhosted.org/packages/ff/62/2718b99a53b19860b754d7d9e26cf66b458dcbe5a1c131a889402cb2298d/watchfiles-0.21.0-cp39-none-win32.whl", hash = "sha256:59137c0c6826bd56c710d1d2bda81553b5e6b7c84d5a676747d80caf0409ad94"},
+]
+"wcwidth 0.2.13" = [
+    {url = "https://files.pythonhosted.org/packages/6c/63/53559446a878410fc5a5974feb13d31d78d752eb18aeba59c7fef1af7598/wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"},
+    {url = "https://files.pythonhosted.org/packages/fd/84/fd2ba7aafacbad3c4201d395674fc6348826569da3c0937e75505ead3528/wcwidth-0.2.13-py2.py3-none-any.whl", hash = "sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859"},
 ]
 "websocket-client 1.3.3" = [
     {url = "https://files.pythonhosted.org/packages/0e/e7/e705ead133d21de4be752af4b3a0cb1f02514ff45bf165b3955c1ce22077/websocket-client-1.3.3.tar.gz", hash = "sha256:d58c5f284d6a9bf8379dab423259fe8f85b70d5fa5d2916d5791a84594b122b1"},
