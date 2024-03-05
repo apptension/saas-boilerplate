@@ -37,18 +37,6 @@ functions:
     memorySize: 128
     environment: ${self:custom.conf.ExecuteScheduledTask.environment}
 
-  SendEmail:
-    handler: ${self:custom.conf.SendEmail.handler}
-    timeout: 6
-    memorySize: 128
-    environment: ${self:custom.conf.SendEmail.environment}
-    events:
-      - eventBridge:
-          eventBus: "${self:custom.conf.eventBusArn}"
-          pattern:
-            source:
-              - backend.email
-
   ExportUsers:
     handler: userauth.handlers.user_data_export
     runtime: python3.11

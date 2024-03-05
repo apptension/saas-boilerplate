@@ -23,7 +23,7 @@ iam:
   - Effect: "Allow"
     Action:
       - "events:PutEvents"
-    Resource: ["${self:custom.conf.eventBusArn}"]
+    Resource: [ "${self:custom.conf.eventBusArn}" ]
   - Effect: "Allow"
     Action:
       - "execute-api:ManageConnections"
@@ -63,15 +63,7 @@ ScheduleTask:
     TASK_SCHEDULING_STATE_MACHINE_ARN: { Ref: 'TaskSchedulingStateMachineID' }
 
 ExecuteScheduledTask:
-  environment: {}
-
-SendEmail:
-  handler: emails/handlers.sendEmail
-  environment:
-    FROM_EMAIL: ${ssm:/${self:custom.ssmService}/FROM_EMAIL}
-    WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL}
-    VITE_WEB_APP_URL: ${ssm:/${self:custom.ssmService}/WEB_APP_URL}
-    VITE_EMAIL_ASSETS_URL: ${ssm:/${self:custom.ssmService}/EMAIL_ASSETS_URL}
+  environment: { }
 
 SynchronizeContentfulContent:
   environment:

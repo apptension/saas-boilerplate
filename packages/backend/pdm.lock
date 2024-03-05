@@ -509,6 +509,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "django-ses"
+version = "3.5.2"
+requires_python = ">=3.8,<4.0"
+summary = "A Django email backend for Amazon's Simple Email Service (SES)"
+dependencies = [
+    "boto3>=1.0.0",
+    "django>=2.2",
+    "pytz>=2016.10",
+]
+
+[[package]]
 name = "django-storages"
 version = "1.13.2"
 requires_python = ">=3.7"
@@ -1662,6 +1673,17 @@ requires_python = ">=3.6"
 summary = "Filesystem events monitoring"
 
 [[package]]
+name = "watchdog"
+version = "2.3.1"
+extras = ["watchmedo"]
+requires_python = ">=3.6"
+summary = "Filesystem events monitoring"
+dependencies = [
+    "PyYAML>=3.10",
+    "watchdog==2.3.1",
+]
+
+[[package]]
 name = "watchfiles"
 version = "0.21.0"
 requires_python = ">=3.8"
@@ -1749,7 +1771,7 @@ dependencies = [
 [metadata]
 lock_version = "4.2"
 groups = ["default", "dev"]
-content_hash = "sha256:fce7e29ab9da7cbbc63e451660fc69b61613965ffec5879eca332d60a3fcc8f9"
+content_hash = "sha256:10fb5d5d2704dcbd7c2e3bcc8c05fd4a38065717018742c6447e0ee84ee1297d"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -2210,6 +2232,10 @@ content_hash = "sha256:fce7e29ab9da7cbbc63e451660fc69b61613965ffec5879eca332d60a
 "django-redis 5.4.0" = [
     {url = "https://files.pythonhosted.org/packages/83/9d/2272742fdd9d0a9f0b28cd995b0539430c9467a2192e4de2cea9ea6ad38c/django-redis-5.4.0.tar.gz", hash = "sha256:6a02abaa34b0fea8bf9b707d2c363ab6adc7409950b2db93602e6cb292818c42"},
     {url = "https://files.pythonhosted.org/packages/b7/f1/63caad7c9222c26a62082f4f777de26389233b7574629996098bf6d25a4d/django_redis-5.4.0-py3-none-any.whl", hash = "sha256:ebc88df7da810732e2af9987f7f426c96204bf89319df4c6da6ca9a2942edd5b"},
+]
+"django-ses 3.5.2" = [
+    {url = "https://files.pythonhosted.org/packages/17/d0/f041ced12a9adf209763a86dd76c713483570eeddcca282d03b415ea855a/django_ses-3.5.2.tar.gz", hash = "sha256:b6d94689bc15de02a11e84f05a5bf4a7895688e570c6f07c21698094debc6ced"},
+    {url = "https://files.pythonhosted.org/packages/ff/34/78530467d595dc7eca527832d64d2f08b8aedd9e043e111548acb2380bf9/django_ses-3.5.2-py3-none-any.whl", hash = "sha256:90c68cc6ca3467893faa8499981c81ba8ff2bd3f3acb08c06423a4142d6a0fc6"},
 ]
 "django-storages 1.13.2" = [
     {url = "https://files.pythonhosted.org/packages/06/ed/6eef8d009138d4c58c63026bf24e946a7e09caac77aca33ab46a5e5bc51f/django_storages-1.13.2-py3-none-any.whl", hash = "sha256:31dc5a992520be571908c4c40d55d292660ece3a55b8141462b4e719aa38eab3"},

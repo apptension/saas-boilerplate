@@ -17,9 +17,12 @@ services:
 
   backend:
     volumes:
+      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/email/renderer:ro
       - ./packages/backend/:/app
       - ./packages/backend/docs:/app/docs
       - /app/__pypackages__
+      - /app/node_modules
+      - /app/cdk.out
       - web_backend_staticfiles:/app/static
     env_file:
       - ./packages/backend/.env
@@ -38,12 +41,15 @@ services:
       - ./packages/backend/.env
 
   celery_default:
+    command: ["./scripts/runtime/run_local_celery_worker_default.sh"]
+    volumes:
+      - ./packages/backend/:/app
+      - /app/__pypackages__
     env_file:
       - ./packages/backend/.env
 
   workers:
     volumes:
-      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/packages/workers/emails/renderer
       - ./packages/workers/:/app/packages/workers/
       - /app/packages/workers/node_modules/
       - /app/packages/workers/__pypackages__/
@@ -53,7 +59,6 @@ services:
     environment:
       - AWS_ENDPOINT_URL=http://localstack:4566
       - ENV_STAGE=${ENV_STAGE:-}
-
     depends_on:
       - db
       - mailcatcher

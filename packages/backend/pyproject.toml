@@ -124,6 +124,8 @@ dependencies = [
     "django-celery-results>=2.5.1",
     "django-celery-beat>=2.6.0",
     "flower>=2.0.1",
+    "watchdog[watchmedo]>=2.3.1",
+    "django-ses>=3.5.2",
 ]
 requires-python = "~=3.11.0"
 license = {text = "MIT"}

@@ -368,3 +368,11 @@ CELERY_BROKER_URL = f'{env("REDIS_CONNECTION")}/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     'visibility_timeout': 3600,
 }
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django_ses.SESBackend")
+EMAIL_HOST = env("EMAIL_HOST", default=None)
+EMAIL_PORT = env("EMAIL_PORT", default=None)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default=None)
+EMAIL_FROM_ADDRESS = env("EMAIL_FROM_ADDRESS", default=None)
+EMAIL_REPLY_ADDRESS = env.list("EMAIL_REPLY_ADDRESS", default=(EMAIL_FROM_ADDRESS,))
