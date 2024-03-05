@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 
 from celery import shared_task, states
@@ -64,7 +65,13 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
             capture_output=True,
             check=True,
             cwd='/app/scripts/runtime',
-            env={'DEBUG': str(settings.DEBUG)},
+            # Environmental variables are mapped manually to avoid secret values from being exposed to email renderer
+            # script that is usually maintained by non-backend developers
+            env={
+                'DEBUG': str(settings.DEBUG),
+                'VITE_EMAIL_ASSETS_URL': os.environ['VITE_EMAIL_ASSETS_URL'],
+                'VITE_WEB_APP_URL': os.environ['VITE_WEB_APP_URL'],
+            },
         )
     except subprocess.CalledProcessError as e:
         self.update_state(
