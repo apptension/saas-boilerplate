@@ -17,7 +17,7 @@ services:
 
   backend:
     volumes:
-      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/email/renderer:ro
+      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/runtime/email/renderer:ro
       - ./packages/backend/:/app
       - ./packages/backend/docs:/app/docs
       - /app/__pypackages__

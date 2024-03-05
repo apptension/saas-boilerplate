@@ -147,6 +147,8 @@ export class ApiStack extends Stack {
                 ),
                 ':6379',
               ]),
+              VITE_WEB_APP_URL: `https://${props.envSettings.domains.webApp}`,
+              VITE_EMAIL_ASSETS_URL: `https://${props.envSettings.domains.webApp}/email-assets`,
             },
             secrets: {
               DB_CONNECTION: ecs.Secret.fromSecretsManager(

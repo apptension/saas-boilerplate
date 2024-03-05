@@ -21,7 +21,6 @@
   "devDependencies": {
     "@sb/core": "*",
     "@sb/tools": "*",
-    "@sb/webapp-emails": "*",
     "serverless": "^3.38.0",
     "serverless-esbuild": "^1.48.0",
     "serverless-localstack": "^1.1.2",

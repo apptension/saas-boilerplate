@@ -10,6 +10,21 @@
         "cwd": "packages/backend"
       }
     },
+    "build-email-renderer": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["node scripts/copyEmailRenderer.js"],
+        "parallel": false
+      },
+      "dependsOn": [
+        {
+          "projects": ["webapp-emails"],
+          "target": "build"
+        }
+      ]
+    },
     "compose-build-image": {
       "executor": "nx:run-commands",
       "options": {
@@ -17,7 +32,7 @@
         "commands": ["docker-compose build backend"],
         "parallel": false
       },
-      "dependsOn": ["setup"]
+      "dependsOn": ["setup", "build-email-renderer"]
     },
     "test": {
       "executor": "nx:run-commands",
@@ -43,7 +58,8 @@
         "color": true,
         "commands": ["node scripts/build.js"],
         "parallel": false
-      }
+      },
+      "dependsOn": ["build-email-renderer"]
     },
     "build-docs": {
       "executor": "nx:run-commands",

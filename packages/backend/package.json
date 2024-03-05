@@ -9,6 +9,7 @@
     "@sb/infra-core": "*",
     "@sb/infra-shared": "*",
     "@sb/tools": "*",
+    "@sb/webapp-emails": "*",
     "fs-extra": "^11.2.0"
   }
 }

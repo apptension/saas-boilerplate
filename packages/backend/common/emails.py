@@ -1,31 +1,10 @@
-import importlib
 import json
 import subprocess
 
 from celery import shared_task, states
-from celery.exceptions import Ignore, TaskError
+from celery.exceptions import Ignore
 from django.conf import settings
-from django.core.mail import EmailMessage, send_mail
-
-module_name, package = settings.TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
-Task = getattr(importlib.import_module(module_name), package)
-
-
-class SendEmail(Task):
-    def __init__(self, name: str):
-        super().__init__(name=name, source='backend.email')
-
-    def apply(self, to: str, data, due_date=None):
-        if data is None:
-            data = {}
-
-        super().apply(
-            {
-                "to": to,
-                **data,
-            },
-            due_date,
-        )
+from django.core.mail import EmailMessage
 
 
 class BaseEmail:
@@ -65,14 +44,14 @@ class Email(BaseEmail):
             serializer.is_valid(raise_exception=True)
             send_data = serializer.data
 
-        email_task = SendEmail(self.name)
-        email_task.apply(to=self.to, data=send_data, due_date=due_date)
+        # TODO: Handle due_date
+        send_email.apply_async((self.to, self.name, send_data))
 
 
 @shared_task(bind=True)
 def send_email(self, to: str | list[str], email_type: str, email_data: dict):
     render_script = '''
-    const { renderEmail } = require('./email/renderer/index.umd.js');
+    const { renderEmail } = require('./email');
     console.log(JSON.stringify(renderEmail('%s', %s)));
     process.exit(0);
     ''' % (email_type, json.dumps(email_data))
@@ -84,10 +63,8 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
             input=bytes(render_script, 'utf-8'),
             capture_output=True,
             check=True,
-            cwd='/app/scripts',
-            env={
-                'DEBUG': str(settings.DEBUG)
-            }
+            cwd='/app/scripts/runtime',
+            env={'DEBUG': str(settings.DEBUG)},
         )
     except subprocess.CalledProcessError as e:
         self.update_state(
@@ -97,7 +74,7 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
                 'cmd': e.cmd,
                 'output': e.output,
                 'stderr': e.stderr,
-            }
+            },
         )
         raise Ignore()
 
@@ -110,7 +87,7 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
         rendered_email['html'],
         settings.EMAIL_FROM_ADDRESS,
         to,
-        reply_to=settings.EMAIL_REPLY_ADDRESS
+        reply_to=settings.EMAIL_REPLY_ADDRESS,
     )
     email.content_subtype = 'html'
     return {'sent_emails_count': email.send()}

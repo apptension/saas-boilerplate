@@ -69,12 +69,12 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = (
-        [
-            "daphne",
-        ]
-        + DJANGO_CORE_APPS
-        + THIRD_PARTY_APPS
-        + LOCAL_APPS
+    [
+        "daphne",
+    ]
+    + DJANGO_CORE_APPS
+    + THIRD_PARTY_APPS
+    + LOCAL_APPS
 )
 
 SILENCED_SYSTEM_CHECKS = []  # default django value
