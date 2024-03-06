@@ -9,6 +9,7 @@ from common.graphql.field_conversions import TextChoicesFieldType
 from . import models
 from .constants import TenantType, TenantUserRole
 from .services.membership import create_tenant_membership
+from .tokens import tenant_invitation_token
 
 
 class TenantSerializer(serializers.ModelSerializer):
@@ -31,41 +32,38 @@ class TenantSerializer(serializers.ModelSerializer):
         )
 
 
-class AcceptTenantInvitationSerializer(serializers.Serializer):
-    id = hidrest.HashidSerializerCharField(source_field="multitenancy.Tenant.id", write_only=True)
+class TenantInvitationActionSerializer(serializers.Serializer):
+    id = hidrest.HashidSerializerCharField(source_field="multitenancy.TenantMembership.id", write_only=True)
+    token = serializers.CharField(write_only=True, help_text=_("Token"))
     ok = serializers.BooleanField(read_only=True)
 
     def validate(self, attrs):
-        tenant_id = attrs["id"]
+        membership_id = attrs["id"]
         user = self.context["request"].user
-        if not models.TenantMembership.objects.get_not_accepted().filter(tenant__pk=tenant_id, user=user).exists():
+        membership = models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).first()
+
+        if not membership:
             raise exceptions.NotFound("Invitation not found.")
+
+        if not tenant_invitation_token.check_token(user.email, attrs["token"], membership):
+            raise exceptions.ValidationError(_("Malformed tenant invitation token"))
+
         return attrs
 
+
+class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
     def create(self, validated_data):
-        tenant_id = validated_data["id"]
+        membership_id = validated_data["id"]
         user = self.context["request"].user
-        models.TenantMembership.objects.get_not_accepted().filter(tenant__pk=tenant_id, user=user).update(
-            is_accepted=True
-        )
+        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(is_accepted=True)
         return {"ok": True}
 
 
-class DeclineTenantInvitationSerializer(serializers.Serializer):
-    id = hidrest.HashidSerializerCharField(source_field="multitenancy.Tenant.id", write_only=True)
-    ok = serializers.BooleanField(read_only=True)
-
-    def validate(self, attrs):
-        tenant_id = attrs["id"]
-        user = self.context["request"].user
-        if not models.TenantMembership.objects.get_not_accepted().filter(tenant__pk=tenant_id, user=user).exists():
-            raise exceptions.NotFound("Invitation not found.")
-        return attrs
-
+class DeclineTenantInvitationSerializer(TenantInvitationActionSerializer):
     def create(self, validated_data):
-        tenant_id = validated_data["id"]
+        membership_id = validated_data["id"]
         user = self.context["request"].user
-        models.TenantMembership.objects.get_not_accepted().filter(tenant__pk=tenant_id, user=user).delete()
+        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).delete()
         return {"ok": True}
 
 
@@ -100,6 +98,6 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         except User.DoesNotExist:
             tenant_membership_data["invitee_email_address"] = email
 
-        models.TenantMembership.objects.create(**tenant_membership_data)
+        create_tenant_membership(**tenant_membership_data)
 
         return {"ok": True, **validated_data}

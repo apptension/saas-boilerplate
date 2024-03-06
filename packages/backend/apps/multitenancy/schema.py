@@ -9,19 +9,40 @@ from common.graphql import mutations
 from common.graphql.acl.decorators import permission_classes
 from . import models
 from . import serializers
+from .tokens import tenant_invitation_token
 
 
 class TenantMembershipType(DjangoObjectType):
+    id = graphene.ID(required=True)
     role = graphene.String()
     invitation_accepted = graphene.Boolean()
     user_id = graphene.ID()
     invitee_email_address = graphene.String()
     username = graphene.String()
+    invitation_token = graphene.String()
 
     class Meta:
         model = models.TenantMembership
-        fields = ("role", "invited", "user_id", "invitee_email_address", "username")
+        fields = (
+            "id",
+            "role",
+            "invitationAccepted",
+            "user_id",
+            "invitee_email_address",
+            "username",
+            "invitation_token",
+        )
         interfaces = (relay.Node,)
+
+    def resolve_id(self, info):
+        return to_global_id("TenantMembershipType", self.id)
+
+    @staticmethod
+    def resolve_invitation_token(parent, info):
+        user = get_user_from_resolver(info)
+        if parent.user and user == parent.user and not parent.is_accepted:
+            return tenant_invitation_token.make_token(user.email, parent)
+        return None
 
     @staticmethod
     def resolve_invitation_accepted(parent, info):
@@ -96,6 +117,12 @@ class CreateTenantInvitationMutation(mutations.SerializerMutation):
 
 class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
     class Meta:
+        model = models.TenantMembership
+
+
+class UpdateTenantMembershipMutation(mutations.UpdateModelMutation):
+    class Meta:
+        serializer_class = serializers.TenantSerializer
         model = models.TenantMembership
 
 

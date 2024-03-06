@@ -73,6 +73,7 @@ class Tenant(TimestampedMixin, models.Model):
 
 
 class TenantMembership(TimestampedMixin, models.Model):
+    id: str = hashid_field.HashidAutoField(primary_key=True)
     # User - Tenant connection fields
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tenant_memberships", null=True
@@ -100,7 +101,7 @@ class TenantMembership(TimestampedMixin, models.Model):
             UniqueConstraint(
                 name="unique_non_null_user_and_invitee_email_address",
                 fields=["invitee_email_address", "tenant"],
-                condition=Q(invitee_email_address__isnull=False),
+                condition=~Q(invitee_email_address__exact=""),
             ),
         ]
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-from .constants import TenantType
+from .constants import TenantType, TenantUserRole
 
 
 class TenantManager(models.Manager):
@@ -21,7 +21,9 @@ class TenantManager(models.Manager):
             return default_tenant, False
 
         new_tenant = self.create(creator=user, type=TenantType.DEFAULT, name=str(user))
-        new_tenant.members.add(user)
+        new_tenant.members.add(
+            user, through_defaults={"tenant": new_tenant, "role": TenantUserRole.OWNER, "is_accepted": True}
+        )
 
         return new_tenant, True
 
