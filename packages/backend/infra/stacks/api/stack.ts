@@ -1,27 +1,18 @@
 import { App, Duration, Fn, Stack, StackProps } from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import * as elb2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as events from 'aws-cdk-lib/aws-events';
 import {
+  ApplicationMultipleTargetGroupsFargateService,
   EnvConstructProps,
   getHostedZone,
-  ApplicationMultipleTargetGroupsFargateService,
-  EnvironmentSettings,
 } from '@sb/infra-core';
-import {
-  MainKmsKey,
-  MainDatabase,
-  MainECSCluster,
-  MainRedisCluster,
-  EnvComponentsStack,
-  FargateServiceResources,
-} from '@sb/infra-shared';
+import { FargateServiceResources, MainECSCluster } from '@sb/infra-shared';
 
 import { Monitoring } from './monitoring';
 import { getApiServiceName } from './names';
+import { createBackendTaskRole } from '../lib/backendTaskRole';
+import { getBackendEnvironment } from '../lib/environment';
+import { getBackendSecrets } from '../lib/secrets';
 
 export interface ApiStackProps extends StackProps, EnvConstructProps {}
 
@@ -54,11 +45,10 @@ export class ApiStack extends Stack {
     props: ApiStackProps,
   ) {
     const { envSettings } = props;
-    const taskRole = this.createTaskRole(props);
+    const taskRole = createBackendTaskRole(this, 'ApiTaskRole', {
+      envSettings,
+    });
 
-    const dbSecretArn = Fn.importValue(
-      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings),
-    );
     const domainZone = getHostedZone(this, envSettings);
 
     const allowedHosts = [
@@ -85,10 +75,7 @@ export class ApiStack extends Stack {
           securityGroup: resources.publicLoadBalancerSecurityGroup,
         },
       );
-    const stack = Stack.of(this);
-    const webSocketApiId = Fn.importValue(
-      EnvComponentsStack.getWebSocketApiIdOutputExportName(props.envSettings),
-    );
+
     return new ApplicationMultipleTargetGroupsFargateService(
       this,
       'ApiService',
@@ -113,57 +100,12 @@ export class ApiStack extends Stack {
               resources.backendRepository,
               envSettings.version,
             ),
-            environment: {
-              PROJECT_NAME: envSettings.projectName,
-              ENVIRONMENT_NAME: envSettings.envStage,
-              CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
-              CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
-              DJANGO_ALLOWED_HOSTS: allowedHosts,
-              CSRF_TRUSTED_ORIGINS: csrfTrustedOrigins,
-              OTP_AUTH_ISSUER_NAME: envSettings.domains.webApp,
-              WORKERS_EVENT_BUS_NAME: EnvComponentsStack.getWorkersEventBusName(
-                props.envSettings,
-              ),
-              WEB_SOCKET_API_ENDPOINT_URL: `https://${webSocketApiId}.execute-api.${stack.region}.amazonaws.com/${props.envSettings.envStage}`,
-              AWS_STORAGE_BUCKET_NAME:
-                EnvComponentsStack.getFileUploadsBucketName(props.envSettings),
-              AWS_S3_CUSTOM_DOMAIN: props.envSettings.domains.cdn,
-              DB_PROXY_ENDPOINT: Fn.importValue(
-                MainDatabase.getDatabaseProxyEndpointOutputExportName(
-                  props.envSettings,
-                ),
-              ),
-              AWS_CLOUDFRONT_KEY_ID: Fn.importValue(
-                EnvComponentsStack.getCdnSigningPublicKeyIdExportName(
-                  props.envSettings,
-                ),
-              ),
-              REDIS_CONNECTION: Fn.join('', [
-                'redis://',
-                Fn.importValue(
-                  MainRedisCluster.getMainRedisClusterAddressExportName(
-                    props.envSettings,
-                  ),
-                ),
-                ':6379',
-              ]),
-              VITE_WEB_APP_URL: `https://${props.envSettings.domains.webApp}`,
-              VITE_EMAIL_ASSETS_URL: `https://${props.envSettings.domains.webApp}/email-assets`,
-            },
-            secrets: {
-              DB_CONNECTION: ecs.Secret.fromSecretsManager(
-                sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn),
-              ),
-              AWS_CLOUDFRONT_KEY: ecs.Secret.fromSecretsManager(
-                sm.Secret.fromSecretNameV2(
-                  this,
-                  'CloudfrontPrivateKey',
-                  `${EnvComponentsStack.getCDNSigningKeyName(
-                    props.envSettings,
-                  )}/private`,
-                ),
-              ),
-            },
+            environment: getBackendEnvironment(this, {
+              envSettings,
+              allowedHosts,
+              csrfTrustedOrigins,
+            }),
+            secrets: getBackendSecrets(this, { envSettings }),
           },
           {
             containerName: 'xray-daemon',
@@ -226,88 +168,5 @@ export class ApiStack extends Stack {
         ],
       },
     );
-  }
-
-  protected createTaskRole({
-    envSettings,
-  }: {
-    envSettings: EnvironmentSettings;
-  }): iam.Role {
-    const stack = Stack.of(this);
-    const chamberServiceName = this.getChamberServiceName(envSettings);
-
-    const taskRole = new iam.Role(this, 'ApiTaskRole', {
-      assumedBy: new iam.ServicePrincipal('ecs-tasks'),
-    });
-
-    const fileUploadsBucket = s3.Bucket.fromBucketName(
-      this,
-      'FileUploadsBucket',
-      EnvComponentsStack.getFileUploadsBucketName(envSettings),
-    );
-    fileUploadsBucket.grantReadWrite(taskRole);
-    fileUploadsBucket.grantPutAcl(taskRole);
-
-    const eventBus = events.EventBus.fromEventBusName(
-      this,
-      'WorkersEventBus',
-      EnvComponentsStack.getWorkersEventBusName(envSettings),
-    );
-    eventBus.grantPutEventsTo(taskRole);
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: [
-          'cloudformation:DescribeStacks',
-          'apigateway:*',
-          'execute-api:*',
-          'xray:*',
-        ],
-        resources: ['*'],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['kms:Get*', 'kms:Describe*', 'kms:List*', 'kms:Decrypt'],
-        resources: [
-          Fn.importValue(MainKmsKey.getMainKmsOutputExportName(envSettings)),
-        ],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['ssm:DescribeParameters'],
-        resources: ['*'],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['ssm:GetParameters*'],
-        resources: [
-          `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
-        ],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: [
-          'ssmmessages:CreateControlChannel',
-          'ssmmessages:CreateDataChannel',
-          'ssmmessages:OpenControlChannel',
-          'ssmmessages:OpenDataChannel',
-        ],
-        resources: ['*'],
-      }),
-    );
-
-    return taskRole;
-  }
-
-  protected getChamberServiceName(envSettings: EnvironmentSettings) {
-    return `env-${envSettings.projectEnvName}-backend`;
   }
 }

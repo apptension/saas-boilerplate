@@ -1,18 +1,14 @@
-import { App, Duration, Fn, Stack, StackProps } from 'aws-cdk-lib';
+import { App, Duration, Stack, StackProps } from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as sfTasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as sf from 'aws-cdk-lib/aws-stepfunctions';
-import * as sm from 'aws-cdk-lib/aws-secretsmanager';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
-import {
-  FargateServiceResources,
-  MainDatabase,
-  MainKmsKey,
-  MainRedisCluster,
-} from '@sb/infra-shared';
+import { FargateServiceResources } from '@sb/infra-shared';
+import { getBackendSecrets } from '../lib/secrets';
+import { getBackendEnvironment } from '../lib/environment';
+import { createBackendTaskRole } from '../lib/backendTaskRole';
 
 export interface MigrationsStackProps extends StackProps, EnvConstructProps {}
 
@@ -28,10 +24,9 @@ export class MigrationsStack extends Stack {
     );
 
     const containerName = 'migrations';
-    const dbSecretArn = Fn.importValue(
-      MainDatabase.getDatabaseSecretArnOutputExportName(envSettings),
-    );
-    const taskRole = this.createTaskRole(props);
+    const taskRole = createBackendTaskRole(this, 'MigrationsTaskRole', {
+      envSettings,
+    });
 
     const migrationsTaskDefinition = new ecs.FargateTaskDefinition(
       this,
@@ -49,29 +44,10 @@ export class MigrationsStack extends Stack {
         envSettings.version,
       ),
       logging: this.createAWSLogDriver(this.node.id, props.envSettings),
-      environment: {
-        CHAMBER_SERVICE_NAME: this.getChamberServiceName(envSettings),
-        CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
-        DB_PROXY_ENDPOINT: Fn.importValue(
-          MainDatabase.getDatabaseProxyEndpointOutputExportName(
-            props.envSettings,
-          ),
-        ),
-        REDIS_CONNECTION: Fn.join('', [
-          'redis://',
-          Fn.importValue(
-            MainRedisCluster.getMainRedisClusterAddressExportName(
-              props.envSettings,
-            ),
-          ),
-          ':6379',
-        ]),
-      },
-      secrets: {
-        DB_CONNECTION: ecs.Secret.fromSecretsManager(
-          sm.Secret.fromSecretCompleteArn(this, 'DbSecret', dbSecretArn),
-        ),
-      },
+      environment: getBackendEnvironment(this, {
+        envSettings,
+      }),
+      secrets: getBackendSecrets(this, { envSettings }),
     });
 
     new sf.StateMachine(this, 'MigrationsStateMachine', {
@@ -103,47 +79,5 @@ export class MigrationsStack extends Stack {
       retention: logs.RetentionDays.INFINITE,
     });
     return new ecs.AwsLogDriver({ streamPrefix: prefix, logGroup });
-  }
-
-  protected createTaskRole(props: MigrationsStackProps): iam.Role {
-    const stack = Stack.of(this);
-    const chamberServiceName = this.getChamberServiceName(props.envSettings);
-
-    const taskRole = new iam.Role(this, 'MigrationsTaskRole', {
-      assumedBy: new iam.ServicePrincipal('ecs-tasks'),
-    });
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['kms:Get*', 'kms:Describe*', 'kms:List*', 'kms:Decrypt'],
-        resources: [
-          Fn.importValue(
-            MainKmsKey.getMainKmsOutputExportName(props.envSettings),
-          ),
-        ],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['ssm:DescribeParameters'],
-        resources: ['*'],
-      }),
-    );
-
-    taskRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['ssm:GetParameters*'],
-        resources: [
-          `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
-        ],
-      }),
-    );
-
-    return taskRole;
-  }
-
-  protected getChamberServiceName(envSettings: EnvironmentSettings) {
-    return `env-${envSettings.projectEnvName}-backend`;
   }
 }
