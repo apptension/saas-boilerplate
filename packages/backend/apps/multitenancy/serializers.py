@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
+from django.utils import timezone
 
 from common.graphql.field_conversions import TextChoicesFieldType
 from . import models
@@ -65,7 +66,9 @@ class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
     def create(self, validated_data):
         membership_id = validated_data["id"]
         user = self.context["request"].user
-        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(is_accepted=True)
+        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(
+            is_accepted=True, invitation_accepted_at=timezone.now()
+        )
         return {"ok": True}
 
 

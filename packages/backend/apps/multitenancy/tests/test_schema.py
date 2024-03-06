@@ -289,7 +289,9 @@ class TestAcceptTenantInvitationMutation:
         )
         response_data = executed["data"]["acceptTenantInvitation"]
         assert response_data["ok"] is True
-        assert TenantMembership.objects.filter(tenant=tenant, user=user).count() == 1
+        membership = TenantMembership.objects.filter(tenant=tenant, user=user).first()
+        assert membership.is_accepted
+        assert membership.invitation_accepted_at
         check_token.assert_called_once()
 
     def test_accept_invitation_by_invitee_wrong_token(
