@@ -33,6 +33,12 @@ class TenantSerializer(serializers.ModelSerializer):
 
 
 class TenantInvitationActionSerializer(serializers.Serializer):
+    """
+    Parent serializer for Accept and Decline serializers.
+
+    It validates if invitation exists and if token is correct before proceeding with invitation action.
+    """
+
     id = hidrest.HashidSerializerCharField(source_field="multitenancy.TenantMembership.id", write_only=True)
     token = serializers.CharField(write_only=True, help_text=_("Token"))
     ok = serializers.BooleanField(read_only=True)
@@ -52,6 +58,10 @@ class TenantInvitationActionSerializer(serializers.Serializer):
 
 
 class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
+    """
+    Updates not accepted invitation membership object to be accepted one.
+    """
+
     def create(self, validated_data):
         membership_id = validated_data["id"]
         user = self.context["request"].user
@@ -60,6 +70,10 @@ class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
 
 
 class DeclineTenantInvitationSerializer(TenantInvitationActionSerializer):
+    """
+    Removes membership object if user decides to decline invitation.
+    """
+
     def create(self, validated_data):
         membership_id = validated_data["id"]
         user = self.context["request"].user
@@ -68,6 +82,14 @@ class DeclineTenantInvitationSerializer(TenantInvitationActionSerializer):
 
 
 class CreateTenantInvitationSerializer(serializers.Serializer):
+    """
+    Serializer for creating a not-yet-accepted membership invitation.
+
+    This serializer is designed to handle the creation of a membership invitation within a tenant.
+    It validates the input data, ensuring that the connection between the specified user or invitee email
+    and the tenant does not already exist. If the connection is valid, it creates a new not accepted membership object.
+    """
+
     email = serializers.EmailField(required=True)
     role = TextChoicesFieldType(choices=TenantUserRole.choices, choices_class=TenantUserRole)
     tenant_id = serializers.CharField()

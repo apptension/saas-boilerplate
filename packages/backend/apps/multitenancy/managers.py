@@ -30,14 +30,29 @@ class TenantManager(models.Manager):
 
 class TenantMembershipManager(models.Manager):
     def get_queryset(self):
+        """
+        Overrides the default get_queryset function to exclude invitations from the queryset.
+        """
         return super().get_queryset().filter(is_accepted=True)
 
     def get_not_accepted(self):
+        """
+        Retrieves not accepted tenant invitations.
+        """
         return super().get_queryset().filter(is_accepted=False)
 
     def get_all(self, **kwargs):
+        """
+        Retrieves all tenants memberships.
+        """
         return super().get_queryset(**kwargs)
 
     def associate_invitations_with_user(self, email, user):
+        """
+        Associates not accepted tenant invitations with a user.
+
+        This method finds not accepted tenant invitations with the specified email address
+        and associates them with the provided user.
+        """
         invitations = self.get_not_accepted().filter(invitee_email_address=email)
         invitations.update(user=user)

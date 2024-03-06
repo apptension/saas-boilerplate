@@ -5,13 +5,13 @@ from .models import Tenant, TenantMembership
 
 def get_current_tenant(tenant_id):
     """
-    Retrieves the current tenant based on the GraphQL arguments.
+    Retrieve the current tenant based on the provided tenant ID.
 
     Args:
-    - args (dict): Dictionary containing GraphQL arguments.
+        tenant_id (str): The global ID of the tenant.
 
     Returns:
-    - Tenant or None: The current tenant or None if not found.
+        Tenant or None: The retrieved tenant or None if not found.
     """
     try:
         return Tenant.objects.get(pk=tenant_id)
@@ -21,13 +21,14 @@ def get_current_tenant(tenant_id):
 
 def get_current_user_role(tenant, user):
     """
-    Retrieves the current user's role within the current tenant.
+    Retrieve the user role within the specified tenant.
 
     Args:
-    - info (GraphQL ResolveInfo): Contains information about the GraphQL execution.
+        tenant (Tenant): The current tenant.
+        user (User): The user for whom the role is to be retrieved.
 
     Returns:
-    - str or None: The user's role or None if not found.
+        str or None: The user role or None if not found or invalid conditions.
     """
     if user and user.is_authenticated and tenant:
         try:
@@ -40,6 +41,15 @@ def get_current_user_role(tenant, user):
 
 
 def get_tenant_id_from_arguments(args):
+    """
+    Extract the tenant ID from GraphQL arguments.
+
+    Args:
+        args (dict): GraphQL arguments.
+
+    Returns:
+        str or None: The extracted tenant ID or None if not found.
+    """
     request_input = args.get("input")
     if request_input:
         tenant_id = request_input.get("tenant_id")

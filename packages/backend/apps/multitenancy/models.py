@@ -73,6 +73,24 @@ class Tenant(TimestampedMixin, models.Model):
 
 
 class TenantMembership(TimestampedMixin, models.Model):
+    """
+    Represents the membership of a user in a tenant. As well accepted as not accepted (invitations).
+
+    Fields:
+    - id: A unique identifier for the membership.
+    - user: The user associated with the membership.
+    - role: The role of the user in the tenant. Can be owner, admin or member.
+    - tenant: The tenant to which the user belongs.
+    - is_accepted: Indicates whether the membership invitation is accepted.
+    - invitation_accepted_at: Timestamp when the invitation was accepted.
+    - invitee_email_address: The email address of the invited user if not connected to an existing user.
+
+    Constraints:
+    - unique_non_null_user_and_tenant: Ensures the uniqueness of non-null user and tenant combinations.
+    - unique_non_null_user_and_invitee_email_address: Ensures the uniqueness of non-null user and invitee email address
+      combinations.
+    """
+
     id: str = hashid_field.HashidAutoField(primary_key=True)
     # User - Tenant connection fields
     user = models.ForeignKey(
