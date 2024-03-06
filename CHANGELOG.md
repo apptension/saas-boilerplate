@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/apptension/aws-boilerplate/compare/2.5.0...2.6.0) (2024-03-06)
+
+### Features
+
+- Rewrite GraphQL subscriptions to Django Channels and use Load Balancer to handle websocket connections ([#488](https://github.com/apptension/aws-boilerplate/issues/488)) ([e13baf4](https://github.com/apptension/aws-boilerplate/commit/e13baf45b9c6e863425bdd7cac79e5f8a878ab49))
+
+### Bug Fixes
+
+- Move scripts from package.json to project.json to avoid issues with env variables passing ([#491](https://github.com/apptension/aws-boilerplate/issues/491)) ([6067b41](https://github.com/apptension/aws-boilerplate/commit/6067b41415b2656fe84b2d7f76e821c2b2b2cf60))
+
 ## [2.5.0](https://github.com/apptension/aws-boilerplate/compare/2.4.2...2.5.0) (2024-03-01)
 
 ### Features
