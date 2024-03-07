@@ -1,8 +1,10 @@
+from graphql_relay import to_global_id
 from django.contrib.auth import get_user_model
 
 from ..models import Tenant, TenantMembership
 from ..constants import TenantUserRole
 from ..tokens import tenant_invitation_token
+from ..notifications import TenantInvitationEmail
 
 User = get_user_model()
 
@@ -18,11 +20,12 @@ def create_tenant_membership(
         user=user, tenant=tenant, role=role, invitee_email_address=invitee_email_address, is_accepted=is_accepted
     )
     if not is_accepted:
-        # TODO: Change printing token below to email notification
-        print(  # noqa
-            tenant_invitation_token.make_token(
-                user_email=invitee_email_address if invitee_email_address else user.email, tenant_membership=membership
-            )
+        token = tenant_invitation_token.make_token(
+            user_email=invitee_email_address if invitee_email_address else user.email, tenant_membership=membership
         )
+        TenantInvitationEmail(
+            to=user.email if user else invitee_email_address,
+            data={'tenant_membership_id': to_global_id("TenantMembershipType", membership.id), 'token': token},
+        ).send()
 
     return membership
