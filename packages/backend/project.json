@@ -96,6 +96,18 @@
         "parallel": false
       }
     },
+    "deploy:celery": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm cdk deploy *CeleryStack",
+          "pnpm nx run tools:upload-service-version celery"
+        ],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -104,17 +116,36 @@
         "commands": [
           "pnpm cdk deploy *MigrationsStack",
           "pnpm nx run trigger-migrations-job",
-          "pnpm cdk deploy *ApiStack"
+          "pnpm cdk deploy *ApiStack",
+          "pnpm cdk deploy *CeleryStack"
         ],
         "parallel": false
       }
     },
-    "diff": {
+    "diff:api": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["cdk diff *ApiStack", "cdk diff *MigrationsStack"],
+        "commands": ["cdk diff *ApiStack"],
+        "parallel": false
+      }
+    },
+    "diff:migrations": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["cdk diff *MigrationsStack"],
+        "parallel": false
+      }
+    },
+    "diff:celery": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["cdk diff *CeleryStack"],
         "parallel": false
       }
     },
