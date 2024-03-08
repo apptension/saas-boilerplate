@@ -9,7 +9,15 @@ from apps.multitenancy import schema as multitenancy_schema
 from common.graphql.utils import graphql_query, graphql_mutation, graphql_subscription
 
 schema = graphene.Schema(
-    query=graphql_query([demo_schema.Query, notifications_schema.Query, users_schema.Query, finances_schema.Query]),
+    query=graphql_query(
+        [
+            demo_schema.Query,
+            notifications_schema.Query,
+            users_schema.Query,
+            finances_schema.Query,
+            multitenancy_schema.Query,
+        ]
+    ),
     mutation=graphql_mutation(
         [
             demo_schema.Mutation,

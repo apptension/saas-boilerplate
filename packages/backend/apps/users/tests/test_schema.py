@@ -10,6 +10,7 @@ from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 from .. import models, tokens
 from ..utils import generate_otp_auth_token
+from apps.multitenancy.constants import TenantType
 
 pytestmark = pytest.mark.django_db
 
@@ -161,7 +162,10 @@ class TestCurrentUserQuery:
                   name
                   slug
                   type
-                  role
+                  membership{
+                    role
+                    invitationToken
+                  }
                 }
               }
             }
@@ -190,8 +194,46 @@ class TestCurrentUserQuery:
         assert data["otpVerified"] == user.otp_verified
         assert len(data["tenants"]) > 0
         assert data["tenants"][0]["name"] == "test@example.com"
-        assert data["tenants"][0]["role"] == "owner"
+        assert data["tenants"][0]["membership"]["role"] == "owner"
         assert data["tenants"][0]["type"] == "default"
+        assert data["tenants"][0]["membership"]["invitationToken"] is None
+
+    def test_response_data_invitation_token_active_invitation(
+        self, graphene_client, user_factory, tenant_factory, tenant_membership_factory
+    ):
+        query = '''
+            query {
+              currentUser {
+                tenants {
+                  type
+                  membership{
+                    id
+                    role
+                    invitationAccepted
+                    invitationToken
+                  }
+                }
+              }
+            }
+        '''
+        user = user_factory(
+            has_avatar=True,
+            email="test@example.com",
+            profile__first_name="Grzegorz",
+            profile__last_name="Brzęczyszczykiewicz",
+            groups=[CommonGroups.User, CommonGroups.Admin],
+        )
+        tenant = tenant_factory(type=TenantType.ORGANIZATION)
+        tenant_membership_factory(is_accepted=False, user=user, tenant=tenant)
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.query(query)
+        data = executed["data"]["currentUser"]
+        for tenant in data["tenants"]:
+            if tenant["type"] == "default":
+                assert tenant["membership"]["invitationToken"] is None
+            else:
+                assert tenant["membership"]["invitationToken"] is not None
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(
