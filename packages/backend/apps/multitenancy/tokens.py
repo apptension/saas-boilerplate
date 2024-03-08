@@ -27,7 +27,7 @@ class TenantInvitationTokenGenerator(PasswordResetTokenGenerator):
 
     def make_token(self, user_email, tenant_membership):
         """
-        Return a token that can be used once to do a password reset
+        Return a token that can be used once to make action on tenant invitation
         for the given user.
         """
         return self._make_token_with_timestamp(
@@ -46,7 +46,7 @@ class TenantInvitationTokenGenerator(PasswordResetTokenGenerator):
 
     def check_token(self, user_email, token, tenant_membership):
         """
-        Check that a password reset token is correct for a given user.
+        Check that a tenant invitation token is correct for a given user.
         """
         if not (user_email and token):
             return False

@@ -2,7 +2,7 @@ import pytest
 from graphql_relay import to_global_id
 from unittest.mock import Mock
 
-from ..middleware import get_current_tenant, get_current_user_role, get_tenant_id_from_arguments
+from ..middleware import get_current_tenant, get_current_user_role, TenantUserRoleMiddleware
 
 
 pytestmark = pytest.mark.django_db
@@ -11,27 +11,27 @@ pytestmark = pytest.mark.django_db
 class TestGetTenantIdFromArguments:
     def test_get_tenant_id_from_arguments_with_input(self, tenant):
         args = {"input": {"tenant_id": to_global_id("TenantType", tenant.id)}}
-        result = get_tenant_id_from_arguments(args)
+        result = TenantUserRoleMiddleware._get_tenant_id_from_arguments(args)
         assert result == tenant.id
 
     def test_get_tenant_id_from_arguments_without_input(self, tenant):
         args = {"id": to_global_id("TenantType", tenant.id)}
-        result = get_tenant_id_from_arguments(args)
+        result = TenantUserRoleMiddleware._get_tenant_id_from_arguments(args)
         assert result == tenant.id
 
     def test_get_tenant_id_from_arguments_invalid_id_type(self):
         args = {"input": {"tenant_id": "InvalidType:123"}}
-        result = get_tenant_id_from_arguments(args)
+        result = TenantUserRoleMiddleware._get_tenant_id_from_arguments(args)
         assert result is None
 
     def test_get_tenant_id_from_arguments_no_tenant_id(self):
         args = {"input": {"other_field": "value"}}
-        result = get_tenant_id_from_arguments(args)
+        result = TenantUserRoleMiddleware._get_tenant_id_from_arguments(args)
         assert result is None
 
     def test_get_tenant_id_from_arguments_no_args(self):
         args = {}
-        result = get_tenant_id_from_arguments(args)
+        result = TenantUserRoleMiddleware._get_tenant_id_from_arguments(args)
         assert result is None
 
 

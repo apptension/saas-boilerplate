@@ -40,32 +40,6 @@ def get_current_user_role(tenant, user):
     return None
 
 
-def get_tenant_id_from_arguments(args):
-    """
-    Extract the tenant ID from GraphQL arguments.
-
-    Args:
-        args (dict): GraphQL arguments.
-
-    Returns:
-        str or None: The extracted tenant ID or None if not found.
-    """
-    request_input = args.get("input")
-    if request_input:
-        tenant_id = request_input.get("tenant_id")
-        if not tenant_id:
-            # for the purpose of Tenant CRUD actions
-            tenant_id = request_input.get("id")
-    else:
-        # for the purpose of queries, where is no input, just parameters
-        tenant_id = args.get("id")
-    if tenant_id:
-        id_type, pk = from_global_id(tenant_id)
-        if id_type == "TenantType":
-            return pk
-    return None
-
-
 class TenantUserRoleMiddleware(object):
     """
     Middleware for resolving the current tenant and user role lazily.
@@ -75,9 +49,30 @@ class TenantUserRoleMiddleware(object):
     employed to optimize performance by loading these values only when necessary.
     """
 
+    @staticmethod
+    def _get_tenant_id_from_arguments(args):
+        """
+        Extract the tenant ID from GraphQL arguments.
+
+        Args:
+            args (dict): GraphQL arguments.
+
+        Returns:
+            str or None: The extracted tenant ID or None if not found.
+        """
+        request_input = args.get("input")
+
+        tenant_id = request_input.get("tenant_id") or request_input.get("id") if request_input else args.get("id")
+
+        if tenant_id:
+            id_type, pk = from_global_id(tenant_id)
+            if id_type == "TenantType":
+                return pk
+        return None
+
     def resolve(self, next, root, info, **args):
         if not hasattr(info.context, "tenant_id"):
-            info.context.tenant_id = get_tenant_id_from_arguments(args)
+            info.context.tenant_id = self._get_tenant_id_from_arguments(args)
         info.context.tenant = SimpleLazyObject(lambda: get_current_tenant(info.context.tenant_id))
         info.context.user_role = SimpleLazyObject(lambda: get_current_user_role(info.context.tenant, info.context.user))
         return next(root, info, **args)
