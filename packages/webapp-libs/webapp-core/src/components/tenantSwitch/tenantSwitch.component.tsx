@@ -2,8 +2,9 @@ import { TenantType } from '@sb/webapp-api-client/constants';
 import { TenantListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { useTenants } from '@sb/webapp-api-client/hooks/useTenants/useTenants.hook';
 import { useCurrentTenant } from '@sb/webapp-api-client/providers';
-import { ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown, Plus, Settings } from 'lucide-react';
 import { groupBy, head, prop } from 'ramda';
+import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../config/routes';
@@ -18,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../dropdownMenu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../tooltip';
 
 export const TenantSwitch = () => {
   const { data: currentTenant } = useCurrentTenant();
@@ -36,40 +38,57 @@ export const TenantSwitch = () => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          {currentTenant?.name} <ChevronDown className="ml-2 mr--2" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Personal account</DropdownMenuLabel>
-        <DropdownMenuCheckboxItem
-          checked={personalTenant?.id === currentTenant?.id}
-          onClick={handleTenantChange(personalTenant)}
-        >
-          {personalTenant?.name}
-        </DropdownMenuCheckboxItem>
-        {organizationTenants.length && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Organizations</DropdownMenuLabel>
-          </>
-        )}
-        {organizationTenants.map((tenant) => (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            {currentTenant?.name} <ChevronDown className="ml-2 mr--2" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>
+            <FormattedMessage defaultMessage="Personal account" id="TenantSwitch / Personal account" />
+          </DropdownMenuLabel>
           <DropdownMenuCheckboxItem
-            checked={tenant?.id === currentTenant?.id}
-            key={tenant?.id}
-            onClick={handleTenantChange(tenant)}
+            checked={personalTenant?.id === currentTenant?.id}
+            onClick={handleTenantChange(personalTenant)}
           >
-            {tenant?.name}
+            {personalTenant?.name}
           </DropdownMenuCheckboxItem>
-        ))}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Plus className="mr-1" size="16" /> Create new tenant
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {organizationTenants.length && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>
+                <FormattedMessage defaultMessage="Organizations" id="TenantSwitch / Organizations" />
+              </DropdownMenuLabel>
+            </>
+          )}
+          {organizationTenants.map((tenant) => (
+            <DropdownMenuCheckboxItem
+              checked={tenant?.id === currentTenant?.id}
+              key={tenant?.id}
+              onClick={handleTenantChange(tenant)}
+            >
+              {tenant?.name}
+            </DropdownMenuCheckboxItem>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Plus className="mr-1" size="16" />{' '}
+            <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new tenant" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Tooltip delayDuration={200}>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <Settings size="20" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <FormattedMessage defaultMessage="Organization settings" id="TenantSwitch / Organization settings" />
+        </TooltipContent>
+      </Tooltip>
+    </>
   );
 };

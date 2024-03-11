@@ -1,4 +1,5 @@
 import { CurrentTenant } from '@sb/webapp-api-client/providers';
+import { TooltipProvider } from '@sb/webapp-core/components/tooltip';
 import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
@@ -43,9 +44,11 @@ export const ValidRoutesProviders = () => {
 
         <ResponsiveThemeProvider>
           <CurrentTenant>
-            <Layout>
-              <Outlet />
-            </Layout>
+            <TooltipProvider>
+              <Layout>
+                <Outlet />
+              </Layout>
+            </TooltipProvider>
           </CurrentTenant>
         </ResponsiveThemeProvider>
 
