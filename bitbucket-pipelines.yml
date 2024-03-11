@@ -21,6 +21,7 @@ definitions:
     pnpmwebappemails: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappfinances: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmwebappgenerativeai: $BITBUCKET_CLONE_DIR/.pnpm-store
+    pnpmwebapptenants: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpmworkers: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfracore: $BITBUCKET_CLONE_DIR/.pnpm-store
     pnpminfrashared: $BITBUCKET_CLONE_DIR/.pnpm-store
@@ -306,6 +307,30 @@ definitions:
           - pnpmwebappgenerativeai
           - clis
           - sonar
+    - step: &webappTenantsTest
+        name: 'webapp-tenants: Lint & test'
+        image: atlassian/default-image:4
+        size: 2x
+        script:
+          - *initializeStep
+          - pnpm install
+            --include-workspace-root
+            --frozen-lockfile
+            --filter=webapp-tenants...
+          - pnpm nx run webapp-tenants:lint
+          - pnpm nx run webapp-tenants:type-check
+          - pnpm nx run webapp-tenants:test --watchAll=false --maxWorkers=20% --coverage
+          - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+            variables:
+              SONAR_ORGANIZATION: ${SONAR_ORGANIZATION}
+              SONAR_WEBAPP_TENANTS_PROJECT_KEY: ${SONAR_WEBAPP_TENANTS_PROJECT_KEY}
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.projectBaseDir=packages/webapp-libs/webapp-tenants'
+        caches:
+          - pnpmwebapptenants
+          - clis
+          - sonar
     - step: &backendBuildAndTest
         name: 'backend: Build image & run tests'
         image: atlassian/default-image:4
@@ -501,6 +526,7 @@ pipelines:
         - step: *webappEmailsTest
         - step: *webappFinancesTest
         - step: *webappGenAiTest
+        - step: *webappTenantsTest
 
         - step: *backendBuildAndTest
 
@@ -531,6 +557,7 @@ pipelines:
         - step: *webappEmailsTest
         - step: *webappFinancesTest
         - step: *webappGenAiTest
+        - step: *webappTenantsTest
 
         - step: *backendBuildAndTest
 
