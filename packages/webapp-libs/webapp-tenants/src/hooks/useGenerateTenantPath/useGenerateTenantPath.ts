@@ -1,9 +1,9 @@
-import { useCurrentTenant } from '@sb/webapp-api-client/providers/currentTenant/currentTenant.hook';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { getTenantPath } from '@sb/webapp-core/utils/path';
 import { useCallback } from 'react';
 import { generatePath } from 'react-router-dom';
 
-import { useGenerateLocalePath } from '../../hooks';
-import { getTenantPath } from '../../utils/path';
+import { useCurrentTenant } from '../../providers/currentTenant/currentTenant.hook';
 
 /**
  * A hook that returns a function you can use to generate a path that includes proper tenant and locale code.

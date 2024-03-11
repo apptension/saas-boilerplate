@@ -1,10 +1,10 @@
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
-import { TenantSwitch } from '@sb/webapp-core/components/tenantSwitch';
 import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
+import { TenantSwitch } from '@sb/webapp-tenants/components/tenantSwitch';
 import { LogOut, Menu, Sun, User } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sb/webapp-api-client": "*",
-    "@sb/webapp-core": "*"
+    "@sb/webapp-core": "*",
+    "lucide-react": "^0.224.0"
   }
 }

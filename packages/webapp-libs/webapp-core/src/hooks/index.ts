@@ -1,6 +1,5 @@
 export * from './useGenerateAbsoluteLocalePath';
 export * from './useGenerateLocalePath';
-export * from './useGenerateTenantPath';
 export * from './useLocales';
 export * from './useLocale';
 export * from './useWindowListener';

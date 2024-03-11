@@ -1,4 +1,4 @@
-import { gql } from '../../graphql';
+import { gql } from '@sb/webapp-api-client/graphql';
 
 /**
  * @category graphql

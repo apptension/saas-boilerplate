@@ -1008,6 +1008,9 @@ importers:
       '@sb/webapp-core':
         specifier: '*'
         version: link:../webapp-core
+      lucide-react:
+        specifier: ^0.224.0
+        version: 0.224.0(react@18.2.0)
 
   packages/workers:
     dependencies:

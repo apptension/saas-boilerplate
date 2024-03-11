@@ -1,9 +1,9 @@
-import { CurrentTenant } from '@sb/webapp-api-client/providers';
 import { TooltipProvider } from '@sb/webapp-core/components/tooltip';
 import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
 import { Toaster } from '@sb/webapp-core/toast';
+import { CurrentTenant } from '@sb/webapp-tenants/providers';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';

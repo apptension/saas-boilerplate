@@ -1,15 +1,6 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { TenantListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
-import { useTenants } from '@sb/webapp-api-client/hooks/useTenants/useTenants.hook';
-import { useCurrentTenant } from '@sb/webapp-api-client/providers';
-import { ChevronDown, Plus, Settings } from 'lucide-react';
-import { groupBy, head, prop } from 'ramda';
-import { FormattedMessage } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
-
-import { RoutesConfig } from '../../config/routes';
-import { useGenerateTenantPath } from '../../hooks';
-import { Button } from '../buttons';
+import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,8 +9,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../dropdownMenu';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../tooltip';
+} from '@sb/webapp-core/components/dropdownMenu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/tooltip';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { ChevronDown, Plus, Settings } from 'lucide-react';
+import { groupBy, head, prop } from 'ramda';
+import { FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
+
+import { useGenerateTenantPath } from '../../hooks';
+import { useTenants } from '../../hooks/useTenants/useTenants.hook';
+import { useCurrentTenant } from '../../providers';
 
 export const TenantSwitch = () => {
   const { data: currentTenant } = useCurrentTenant();

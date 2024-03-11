@@ -1,9 +1,9 @@
+import { TenantType } from '@sb/webapp-api-client/constants';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { prop } from 'ramda';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { TenantType } from '../../constants';
 import { useTenants } from '../../hooks/useTenants/useTenants.hook';
 import currentTenantContext from './currentTenant.context';
 import { CURRENT_TENANT_STORAGE_KEY, CurrentTenantProviderProps } from './currentTenant.types';

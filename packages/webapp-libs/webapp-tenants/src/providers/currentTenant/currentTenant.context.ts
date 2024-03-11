@@ -1,6 +1,5 @@
+import { TenantListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import React from 'react';
-
-import { TenantListItemFragmentFragment } from '../../graphql';
 
 type CurrentTenantContext = {
   data: TenantListItemFragmentFragment | null;
