@@ -1,10 +1,12 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { reportError } from '@sb/webapp-core/utils/reportError';
+import { prop } from 'ramda';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useCommonQuery } from '../../providers';
+import { TenantType } from '../../constants';
+import { useTenants } from '../../hooks/useTenants/useTenants.hook';
 import currentTenantContext from './currentTenant.context';
-import { tenantListItemFragment } from './currentTenant.graphql';
-import { getFragmentData } from '@sb/webapp-api-client/graphql';
+import { CURRENT_TENANT_STORAGE_KEY, CurrentTenantProviderProps } from './currentTenant.types';
 
 export type TenantPathParams = {
   tenantId: string;
@@ -17,22 +19,40 @@ export type TenantPathParams = {
  *
  * @category Component
  */
-export const CurrentTenant = ({ children }: PropsWithChildren) => {
+export const CurrentTenant = ({ children, storageKey = CURRENT_TENANT_STORAGE_KEY }: CurrentTenantProviderProps) => {
   const params = useParams<TenantPathParams>();
-  const { tenantId } = params;
+  let { tenantId } = params;
 
-  const { data: commonQueryData } = useCommonQuery();
-  const tenantsRaw = commonQueryData?.allTenants?.edges || [];
-  const tenants = tenantsRaw.map((t) => getFragmentData(tenantListItemFragment, t?.node));
+  const tenants = useTenants();
+
+  if (!tenantId) {
+    const localId = localStorage.getItem(storageKey);
+    if (
+      localId &&
+      tenants
+        .map(prop<string>('id'))
+        .filter((id) => !!id)
+        .includes(localId)
+    ) {
+      tenantId = localId;
+    }
+  }
 
   let currentTenant = tenants.find((t) => t?.id === tenantId);
   if (!currentTenant) {
     // select first default
-    // todo: introduce default type as a const/enum
-    currentTenant = tenants.find((t) => t?.type === 'default');
+    currentTenant = tenants.find((t) => t?.type === TenantType.PERSONAL);
 
     if (!currentTenant && tenants.length > 0) {
       currentTenant = tenants[0];
+    }
+  }
+
+  if (currentTenant) {
+    try {
+      localStorage.setItem(storageKey, currentTenant.id);
+    } catch (e) {
+      reportError(e);
     }
   }
 

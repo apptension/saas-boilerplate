@@ -22,7 +22,7 @@ import { Role } from '../modules/auth/auth.types';
 import { Admin } from '../routes/admin';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import ValidateOtp from '../routes/auth/validateOtp';
-import { AnonymousRoute, AuthRoute, TenantRoute } from '../shared/components/routes';
+import { AnonymousRoute, AuthRoute } from '../shared/components/routes';
 import { ConfirmEmail, Home, Login, Logout, NotFound, Profile, Signup } from './asyncComponents';
 import { LANG_PREFIX, RoutesConfig, TENANT_PREFIX } from './config/routes';
 import { ValidRoutesProviders } from './providers';
@@ -42,7 +42,7 @@ export const App = () => {
           <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-        <Route path={TENANT_PREFIX} element={<TenantRoute />}>
+        <Route path={TENANT_PREFIX} element={<AuthRoute />}>
           <Route index element={<Home />} />
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute />}>

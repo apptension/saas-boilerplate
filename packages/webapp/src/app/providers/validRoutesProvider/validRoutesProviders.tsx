@@ -1,3 +1,4 @@
+import { CurrentTenant } from '@sb/webapp-api-client/providers';
 import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
@@ -41,9 +42,11 @@ export const ValidRoutesProviders = () => {
         </FormattedMessage>
 
         <ResponsiveThemeProvider>
-          <Layout>
-            <Outlet />
-          </Layout>
+          <CurrentTenant>
+            <Layout>
+              <Outlet />
+            </Layout>
+          </CurrentTenant>
         </ResponsiveThemeProvider>
 
         <Toaster />

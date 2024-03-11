@@ -1,5 +1,6 @@
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
+import { TenantSwitch } from '@sb/webapp-core/components/tenantSwitch';
 import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
@@ -42,6 +43,8 @@ export const Header = (props: HeaderProps) => {
             <Menu />
           </div>
         )}
+
+        {isLoggedIn && <TenantSwitch />}
 
         <div className="flex-1"></div>
 
