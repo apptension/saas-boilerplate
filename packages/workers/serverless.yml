@@ -66,36 +66,6 @@ functions:
             source:
               - backend.contentfulSync
 
-  WebSocketsConnectHandler:
-    handler: websockets.handlers.connect.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $connect
-
-  WebSocketsMessageHandler:
-    handler: websockets.handlers.message.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $default
-
-  WebSocketsDisconnectHandler:
-    handler: websockets.handlers.disconnect.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $disconnect
-
 plugins:
   - serverless-step-functions
   - serverless-esbuild

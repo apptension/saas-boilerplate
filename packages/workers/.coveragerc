@@ -6,4 +6,4 @@ branch = true
 source = .
 
 [report]
-include = content/*, dao/*, scheduler/*, settings/*, userauth/*, utils/*, websockets/*
+include = content/*, dao/*, scheduler/*, settings/*, userauth/*, utils/*

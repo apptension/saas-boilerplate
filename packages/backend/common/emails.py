@@ -55,7 +55,10 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
     const { renderEmail } = require('./email');
     console.log(JSON.stringify(renderEmail('%s', %s)));
     process.exit(0);
-    ''' % (email_type, json.dumps(email_data))
+    ''' % (
+        email_type,
+        json.dumps(email_data),
+    )
 
     try:
         node_process = subprocess.run(
