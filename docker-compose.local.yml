@@ -71,7 +71,7 @@ services:
 
   flower:
     image: '${PROJECT_NAME}/backend'
-    command: ['./scripts/runtime/run_celery_flower.sh']
+    command: ['./scripts/runtime/run_local_celery_flower.sh']
     env_file:
       - ./packages/backend/.env
     ports:

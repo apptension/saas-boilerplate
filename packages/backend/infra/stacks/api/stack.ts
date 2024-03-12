@@ -76,7 +76,8 @@ export class ApiStack extends Stack {
         },
       );
 
-    return new ApplicationMultipleTargetGroupsFargateService(
+      const healthCheckPath = '/lbcheck';
+      return new ApplicationMultipleTargetGroupsFargateService(
       this,
       'ApiService',
       {
@@ -134,6 +135,7 @@ export class ApiStack extends Stack {
             containerPort: 80,
             priority: 2,
             hostHeader: envSettings.domains.api,
+            healthCheckPath,
           },
           ...(envSettings.domains.webApp
             ? [
@@ -142,6 +144,7 @@ export class ApiStack extends Stack {
                   containerPort: 80,
                   priority: 3,
                   hostHeader: envSettings.domains.webApp,
+                  healthCheckPath,
                 },
               ]
             : []),
@@ -152,6 +155,7 @@ export class ApiStack extends Stack {
                   containerPort: 80,
                   priority: 4,
                   hostHeader: envSettings.domains.www,
+                  healthCheckPath,
                 },
               ]
             : []),
@@ -162,6 +166,7 @@ export class ApiStack extends Stack {
                   containerPort: 80,
                   priority: 5,
                   hostHeader: envSettings.domains.adminPanel,
+                  healthCheckPath,
                 },
               ]
             : []),
