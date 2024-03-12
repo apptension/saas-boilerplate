@@ -1,15 +1,15 @@
-import { CurrentUserType, TenantConnection } from '../../graphql';
+import { CurrentUserType, TenantConnection, TenantType } from '../../graphql';
 import { commonQueryCurrentUserQuery } from '../../providers/commonQuery';
 import { composeMockedQueryResult, mapRelayEdges } from '../../tests/utils';
 
-const defaultTenants = {
-  edges: mapRelayEdges([], 'TenantEdge').edges,
-};
-
 export const fillCommonQueryWithUser = (
   currentUser: CurrentUserType | null = null,
-  tenants: Partial<TenantConnection> = defaultTenants
+  tenants: Partial<TenantType>[] = []
 ) => {
+  const allTenants: Partial<TenantConnection> = {
+    edges: mapRelayEdges(tenants, 'TenantEdge').edges,
+  };
+
   return composeMockedQueryResult(commonQueryCurrentUserQuery, {
     data: {
       currentUser: currentUser
@@ -18,7 +18,7 @@ export const fillCommonQueryWithUser = (
             ...currentUser,
           }
         : null,
-      ...(tenants !== null ? { allTenants: tenants } : {}),
+      ...(tenants !== null ? { allTenants } : {}),
     },
   });
 };

@@ -1,5 +1,4 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { mapRelayEdges } from '@sb/webapp-api-client/tests/utils';
 
 import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { tenantFactory } from '../../../tests/factories/tenant';
@@ -7,12 +6,7 @@ import { renderHook } from '../../../tests/utils/rendering';
 import { useTenantRoleAccessCheck } from '../useTenantRoleAccessCheck.hook';
 
 const render = ({ role, allowedRoles }: { role: TenantRole; allowedRoles: TenantRole | TenantRole[] }) => {
-  const tenants = mapRelayEdges([tenantFactory({ membership: { role } })], 'TenantEdge');
-  const apolloMocks = [
-    fillCommonQueryWithUser(currentUserFactory(), {
-      edges: tenants.edges,
-    }),
-  ];
+  const apolloMocks = [fillCommonQueryWithUser(currentUserFactory(), [tenantFactory({ membership: { role } })])];
   return renderHook(() => useTenantRoleAccessCheck(allowedRoles), {
     apolloMocks,
   });
