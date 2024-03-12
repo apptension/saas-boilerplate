@@ -193,6 +193,12 @@ export class CeleryStack extends Stack {
         memoryLimitMiB: 512,
         desiredCount: 1,
         taskRole: this.taskRole,
+        capacityProviderStrategies: [
+          {
+            capacityProvider: 'FARGATE_SPOT',
+            weight: 1,
+          },
+        ],
         taskImageOptions: [
           {
             containerName: 'flower',
