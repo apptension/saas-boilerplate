@@ -1,12 +1,15 @@
-**Required** variables:
+##### Required backend vars
 
-| Name                     | Description                                                                   | Example                             |
-|--------------------------|-------------------------------------------------------------------------------|-------------------------------------|
-| `DJANGO_DEBUG`           | [docs](https://docs.djangoproject.com/en/4.2/ref/settings/#std:setting-DEBUG) | `True`                              |
-| `DJANGO_SECRET_KEY`      | [docs](https://docs.djangoproject.com/en/4.2/ref/settings/#secret-key)        | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I`  |
-| `HASHID_FIELD_SALT`      | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)      | `t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U` |
-| `ADMIN_EMAIL`            | Will be used to create first super admin user                                 | `admin@exmaple.com`                 |
-| `ADMIN_DEFAULT_PASSWORD` | Will be used to create first super admin user                                 | `AvPZpabgj9Z8`                      |
+You will not be able to deploy backend service without setting following variables:
+
+| Name                     | Description                                                                                                                                                                                                                                                                                                                                                                         | Example                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `DJANGO_DEBUG`           | [docs](https://docs.djangoproject.com/en/4.2/ref/settings/#std:setting-DEBUG)                                                                                                                                                                                                                                                                                                       | `True`                              |
+| `DJANGO_SECRET_KEY`      | [docs](https://docs.djangoproject.com/en/4.2/ref/settings/#secret-key)                                                                                                                                                                                                                                                                                                              | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I`  |
+| `HASHID_FIELD_SALT`      | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                                                                                                                                                                                                                                                                            | `t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U` |
+| `ADMIN_EMAIL`            | Will be used to create first super admin user                                                                                                                                                                                                                                                                                                                                       | `admin@exmaple.com`                 |
+| `ADMIN_DEFAULT_PASSWORD` | Will be used to create first super admin user                                                                                                                                                                                                                                                                                                                                       | `AvPZpabgj9Z8`                      |
+| `FLOWER_BASIC_AUTH`      | Will be used to enable HTTP Basic authentication for flower (Celery monitoring). Alternatively you can configure OAuth2 by setting `FLOWER_AUTH_PROVIDER`, `FLOWER_AUTH`, `FLOWER_OAUTH2_KEY`, `FLOWER_OAUTH2_SECRET`, `FLOWER_OAUTH2_REDIRECT_URI` env vars. Check out [official flower docs](https://flower.readthedocs.io/en/latest/auth.html#google-oauth) for more information | `user1:password1,user2:password2`   |
 
 import OptionalVars from './_backend_optional.mdx';
 

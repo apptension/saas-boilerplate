@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 export const ENV = {
-  BASE_API_URL: process.env.VITE_BASE_API_URL ?? '',
+  BASE_API_URL: process.env.VITE_BASE_API_URL ?? '/api',
   ENVIRONMENT_NAME: process.env.VITE_ENVIRONMENT_NAME,
   SENTRY_DSN: process.env.VITE_SENTRY_DSN,
   WEB_APP_URL: process.env.VITE_WEB_APP_URL ?? '',

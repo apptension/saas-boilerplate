@@ -1,0 +1,68 @@
+---
+title: How to run an async job in AWS Lambda from backend?
+description: Trigger an execution of an asynchronous job in AWS Lambda from the backend of your SaaS application
+---
+import ProjectName from '../../shared/components/ProjectName.component';
+
+In the <ProjectName/>, asynchronous jobs, executed in AWS Lambda are represented as tasks.
+These tasks are defined as classes that inherit from a `LambdaTask` class provided by the <ProjectName/>.
+The `LambdaTask` class provides a framework for defining tasks that can be executed asynchronously.
+
+When a task is executed, it is passed to an AWS Lambda function as an event through Amazon EventBridge.
+The AWS Lambda function then processes the event and executes the task asynchronously.
+
+:::info
+If you're not familiar with AWS Lambda, here's the official documentation: ["What is AWS Lambda?"](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
+:::
+
+#### Invoking tasks
+
+Running asynchronous tasks from the backend is made easy with the `LambdaTask` class. It is a utility class that allows
+you to define and run asynchronous tasks in a clean and organized way.
+
+```python showLineNumbers
+import importlib
+from django.conf import settings
+
+module_name, package = settings.LAMBDA_TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
+LambdaTask = getattr(importlib.import_module(module_name), package)
+
+
+class ExampleTask(LambdaTask):
+    def __init__(self):
+        super().__init__(name="example_task", source='backend.example_task')
+```
+
+:::info
+`LambdaTask` uses the `boto3` library to interact with the Amazon EventBridge service.
+When a particular task is invoked, it generates an event entry that is sent to the EventBridge service using the
+`put_events` method of the `boto3` client. [Learn more about Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html).
+:::
+
+The `importlib` module provides tools for dynamically importing Python modules at runtime.
+The code then uses the imported modules to dynamically import a task handler module specified in the Django project's settings.
+The `LAMBDA_TASKS_BASE_HANDLER` setting is a string that specifies the module and class name of the base task handler.
+The `getattr()` function is used to get the `Task` class from the dynamically imported module.
+
+The `ExampleTask` class is then defined as a subclass of `LambdaTask`.
+The `__init__` method of `ExampleTask` is used to set up the task.
+It sets up the basic properties of the task, such as its name and source.
+The `name` and `source` parameters can be used to identify the task to run within the serverless application.
+
+:::tip
+Make sure to check ["How to create a new Lambda workers module?"](./create-workers-module) to learn how to register and configure your lambda
+task handlers.
+:::
+
+Next, to invoke this task you can simply do:
+
+```python showLineNumbers
+data = {
+    # ...
+}
+task = ExampleTask()
+task.apply(data=data)
+```
+
+The `apply()` method is responsible for executing the task.
+It takes the `data` parameter and performs the necessary actions to complete the task.
