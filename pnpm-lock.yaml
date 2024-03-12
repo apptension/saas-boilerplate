@@ -93,8 +93,8 @@ importers:
         version: 6.0.8(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@apollo/client':
-        specifier: ^3.8.8
-        version: 3.8.8(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
+        specifier: ^3.9.6
+        version: 3.9.6(@types/react@18.2.24)(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
       '@apollo/rover':
         specifier: ^0.19.1
         version: 0.19.1
@@ -646,6 +646,9 @@ importers:
       '@sb/webapp-notifications':
         specifier: '*'
         version: link:../webapp-libs/webapp-notifications
+      '@sb/webapp-tenants':
+        specifier: '*'
+        version: link:../webapp-libs/webapp-tenants
       '@storybook/addon-essentials':
         specifier: ^7.6.1
         version: 7.6.1(@types/react-dom@18.2.9)(@types/react@18.2.24)(react-dom@18.2.0)(react@18.2.0)
@@ -723,7 +726,7 @@ importers:
         version: link:../webapp-core
       apollo-upload-client:
         specifier: ^17.0.0
-        version: 17.0.0(@apollo/client@3.8.8)(graphql@16.8.1)
+        version: 17.0.0(@apollo/client@3.9.6)(graphql@16.8.1)
       axios:
         specifier: ^0.27.2
         version: 0.27.2
@@ -757,7 +760,7 @@ importers:
         version: 9.0.1(graphql@16.8.1)
       '@types/apollo-upload-client':
         specifier: ^17.0.5
-        version: 17.0.5(graphql-ws@5.14.2)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
+        version: 17.0.5(@types/react@18.2.24)(graphql-ws@5.14.2)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -1008,6 +1011,9 @@ importers:
       '@sb/webapp-core':
         specifier: '*'
         version: link:../webapp-core
+      '@sb/webapp-notifications':
+        specifier: '*'
+        version: link:../webapp-notifications
       lucide-react:
         specifier: ^0.224.0
         version: 0.224.0(react@18.2.0)
@@ -1216,10 +1222,10 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.20
 
-  /@apollo/client@3.8.8(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0):
-    resolution: {integrity: sha512-omjd9ryGDkadZrKW6l5ktUAdS4SNaFOccYQ4ZST0HLW83y8kQaSZOCTNlpkoBUK8cv6qP8+AxOKwLm2ho8qQ+Q==}
+  /@apollo/client@3.9.6(@types/react@18.2.24)(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0):
+    resolution: {integrity: sha512-+zpddcnZ4G2VZ0xIEnvIHFsLqeopNOnWuE2ZVbRuetLLpj/biLPNN719B/iofdd1/iHRclKfv0XaAmX6PBhYKA==}
     peerDependencies:
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -1235,6 +1241,7 @@ packages:
         optional: true
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
+      '@wry/caches': 1.0.1
       '@wry/equality': 0.5.6
       '@wry/trie': 0.5.0
       graphql: 16.8.1
@@ -1245,12 +1252,15 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+      rehackt: 0.0.6(@types/react@18.2.24)(react@18.2.0)
       response-iterator: 0.2.6
       subscriptions-transport-ws: 0.11.0(graphql@16.8.1)
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.6.2
       zen-observable-ts: 1.2.5
+    transitivePeerDependencies:
+      - '@types/react'
 
   /@apollo/rover@0.19.1:
     resolution: {integrity: sha512-bWsV25qXTWabJuufuMBxB3Aw5+F89N+XyUTPmH16qgKlIHJGizTAyWzl8InRkDnEdxK9MRx7BZMQVAfXlr+hug==}
@@ -13258,13 +13268,14 @@ packages:
       minimatch: 9.0.3
     dev: true
 
-  /@types/apollo-upload-client@17.0.5(graphql-ws@5.14.2)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0):
+  /@types/apollo-upload-client@17.0.5(@types/react@18.2.24)(graphql-ws@5.14.2)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0):
     resolution: {integrity: sha512-rPKHaE4QNd06LNtBgz6hfntVO+pOQMS2yTcynrzBPg9+a/nbtJ2gus5KgzRp2rqfzmnKEc/sRGjLen/9Ot0Z2A==}
     dependencies:
-      '@apollo/client': 3.8.8(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
+      '@apollo/client': 3.9.6(@types/react@18.2.24)(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
       '@types/extract-files': 8.1.1
       graphql: 16.8.1
     transitivePeerDependencies:
+      - '@types/react'
       - graphql-ws
       - react
       - react-dom
@@ -14948,14 +14959,14 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  /apollo-upload-client@17.0.0(@apollo/client@3.8.8)(graphql@16.8.1):
+  /apollo-upload-client@17.0.0(@apollo/client@3.9.6)(graphql@16.8.1):
     resolution: {integrity: sha512-pue33bWVbdlXAGFPkgz53TTmxVMrKeQr0mdRcftNY+PoHIdbGZD0hoaXHvO6OePJAkFz7OiCFUf98p1G/9+Ykw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >= 16.0.0}
     peerDependencies:
       '@apollo/client': ^3.0.0
       graphql: 14 - 16
     dependencies:
-      '@apollo/client': 3.8.8(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
+      '@apollo/client': 3.9.6(@types/react@18.2.24)(graphql-ws@5.14.2)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)(subscriptions-transport-ws@0.11.0)
       extract-files: 11.0.0
       graphql: 16.8.1
     dev: false
@@ -30070,6 +30081,20 @@ packages:
     hasBin: true
     dependencies:
       jsesc: 0.5.0
+
+  /rehackt@0.0.6(@types/react@18.2.24)(react@18.2.0):
+    resolution: {integrity: sha512-l3WEzkt4ntlEc/IB3/mF6SRgNHA6zfQR7BlGOgBTOmx7IJJXojDASav+NsgXHFjHn+6RmwqsGPFgZpabWpeOdw==}
+    peerDependencies:
+      '@types/react': '*'
+      react: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.24
+      react: 18.2.0
 
   /relateurl@0.2.7:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}

@@ -11,7 +11,7 @@ import { useCurrentTenant } from '../../providers/currentTenant/currentTenant.ho
  *
  * @example
  * ```tsx showLineNumbers
- * import { useGenerateTenantPath } from '@sb/webapp-core/hooks';
+ * import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
  * import { Link } from 'react-router-dom';
  *
  * const Example = () => {

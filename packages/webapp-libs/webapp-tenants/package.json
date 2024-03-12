@@ -11,6 +11,7 @@
   "dependencies": {
     "@sb/webapp-api-client": "*",
     "@sb/webapp-core": "*",
+    "@sb/webapp-notifications": "*",
     "lucide-react": "^0.224.0"
   }
 }
