@@ -8,7 +8,9 @@ import { renderHook } from '../../../tests/utils/rendering';
 
 const render = () => {
   const apolloMocks = [
-    fillCommonQueryWithUser(currentUserFactory(), [tenantFactory({ membership: { role: TenantRole.MEMBER } })]),
+    fillCommonQueryWithUser(
+      currentUserFactory({ tenants: [tenantFactory({ membership: { role: TenantRole.MEMBER } })] })
+    ),
   ];
   return renderHook(() => useGenerateTenantPath(), {
     apolloMocks,

@@ -23,12 +23,8 @@ export const commonQueryCurrentUserQuery = gql(/* GraphQL */ `
   query commonQueryCurrentUserQuery {
     currentUser {
       ...commonQueryCurrentUserFragment
-    }
-    allTenants {
-      edges {
-        node {
-          ...tenantListItemFragment
-        }
+      tenants {
+        ...tenantListItemFragment
       }
     }
   }

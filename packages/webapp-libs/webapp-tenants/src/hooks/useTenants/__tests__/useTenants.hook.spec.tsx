@@ -8,7 +8,7 @@ import { renderHook } from '../../../tests/utils/rendering';
 import { useTenants } from '../useTenants.hook';
 
 const render = ({ tenants }: { tenants: TenantType[] }) => {
-  const apolloMocks = [fillCommonQueryWithUser(currentUserFactory(), tenants)];
+  const apolloMocks = [fillCommonQueryWithUser(currentUserFactory({ tenants }))];
   return renderHook(() => useTenants(), {
     apolloMocks,
   });

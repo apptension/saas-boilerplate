@@ -11,4 +11,18 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
   avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',
   otpEnabled: false,
   otpVerified: false,
+  tenants: [
+    {
+      id: makeId(32),
+      name: 'Tenant Name',
+      type: 'default',
+      __typename: 'TenantType',
+      membership: {
+        id: makeId(32),
+        invitationAccepted: true,
+        role: 'owner',
+        __typename: 'TenantMembershipType',
+      },
+    },
+  ],
 }));

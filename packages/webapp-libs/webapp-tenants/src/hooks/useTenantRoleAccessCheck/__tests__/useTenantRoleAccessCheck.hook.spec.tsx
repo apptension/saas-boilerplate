@@ -6,7 +6,9 @@ import { renderHook } from '../../../tests/utils/rendering';
 import { useTenantRoleAccessCheck } from '../useTenantRoleAccessCheck.hook';
 
 const render = ({ role, allowedRoles }: { role: TenantRole; allowedRoles: TenantRole | TenantRole[] }) => {
-  const apolloMocks = [fillCommonQueryWithUser(currentUserFactory(), [tenantFactory({ membership: { role } })])];
+  const apolloMocks = [
+    fillCommonQueryWithUser(currentUserFactory({ tenants: [tenantFactory({ membership: { role } })] })),
+  ];
   return renderHook(() => useTenantRoleAccessCheck(allowedRoles), {
     apolloMocks,
   });
