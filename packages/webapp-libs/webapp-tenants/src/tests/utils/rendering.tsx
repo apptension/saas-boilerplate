@@ -1,20 +1,24 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
 import * as corePath from '@sb/webapp-core/utils/path';
 import { RenderOptions, render, renderHook } from '@testing-library/react';
-import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
+import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
+import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { CurrentTenant } from '../../providers';
 
-export type WrapperProps = apiUtils.WrapperProps;
+export type WrapperProps = apiUtils.WrapperProps & {
+  TenantWrapper?: ComponentType<PropsWithChildren>;
+};
 
 /**
  * Component that wraps `children` with `CurrentTenant`
  * @param children
+ * @param TenantWrapper
  * @constructor
  */
-export function TenantsTestProviders({ children }: WrapperProps) {
-  return <CurrentTenant>{children}</CurrentTenant>;
+export function TenantsTestProviders({ children, TenantWrapper = CurrentTenant }: WrapperProps) {
+  return <TenantWrapper>{children}</TenantWrapper>;
 }
 
 export function getWrapper(
@@ -67,7 +71,7 @@ export { customRender as render, customRenderHook as renderHook };
 export const createMockRouterProps = (pathName: string, params?: Record<string, any>): MemoryRouterProps => {
   return {
     initialEntries: [
-      generatePath(corePath.getLocalePath(pathName), {
+      generatePath(corePath.getLocalePath(corePath.getTenantPath(pathName)), {
         lang: 'en',
         ...(params ?? {}),
       }),
@@ -77,3 +81,19 @@ export const createMockRouterProps = (pathName: string, params?: Record<string, 
 
 export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
+
+const CurrentTenantRouteElement = () => (
+  <CurrentTenant>
+    <Outlet />
+  </CurrentTenant>
+);
+
+export const CurrentTenantRouteWrapper = ({ children }: PropsWithChildren) => {
+  return (
+    <Routes>
+      <Route element={<CurrentTenantRouteElement />}>
+        <Route path="/:lang?/:tenantId?/*" element={children} />
+      </Route>
+    </Routes>
+  );
+};

@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 
+import { TooltipProvider } from '../../components/tooltip';
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
 import { LocalesProvider, ResponsiveThemeProvider } from '../../providers';
 import { ToastProvider, Toaster } from '../../toast';
@@ -37,12 +38,14 @@ export function CoreTestProviders({ children, routerProps, intlMessages, intlLoc
         <ResponsiveThemeProvider>
           <LocalesProvider>
             <ToastProvider>
-              <IntlProvider locale={intlLocale} messages={intlMessages}>
-                <>
-                  {children}
-                  <Toaster />
-                </>
-              </IntlProvider>
+              <TooltipProvider>
+                <IntlProvider locale={intlLocale} messages={intlMessages}>
+                  <>
+                    {children}
+                    <Toaster />
+                  </>
+                </IntlProvider>
+              </TooltipProvider>
             </ToastProvider>
           </LocalesProvider>
         </ResponsiveThemeProvider>
@@ -82,7 +85,7 @@ export function getWrapper(
 export type CustomRenderOptions<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 > = RenderOptions<Q, Container, BaseElement> & WrapperProps;
 
 /**
@@ -95,7 +98,7 @@ export type CustomRenderOptions<
 function customRender<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 >(
   ui: ReactElement,
   options: CustomRenderOptions<Q, Container, BaseElement> = {}
