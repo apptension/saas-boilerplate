@@ -1,1 +1,1 @@
-export { useGenerateTenantPath } from './useGenerateTenantPath';
+export { useGenerateTenantPath } from './useGenerateTenantPath.hook';

@@ -25,7 +25,6 @@ export const TenantSwitch = () => {
   const { data: currentTenant } = useCurrentTenant();
   const tenants = useTenants();
   const navigate = useNavigate();
-  // const generateLocalePath = useGenerateLocalePath();
   const generateTenantPath = useGenerateTenantPath();
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
