@@ -13,6 +13,7 @@ from config.schema import schema
 from storages.backends.s3boto3 import S3Boto3Storage
 
 pytest_plugins = [
+    'celery.contrib.pytest',
     'tests.aws_fixtures',
     'common.tests.fixtures',
     'apps.users.tests.fixtures',

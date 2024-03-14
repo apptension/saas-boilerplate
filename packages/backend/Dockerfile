@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates j
 
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-  && apt-get install -y nodejs
+  && apt-get --no-install-recommends install -y nodejs
 
 COPY --from=chamber /chamber /bin/chamber
 
