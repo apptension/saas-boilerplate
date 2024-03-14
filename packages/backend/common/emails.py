@@ -72,8 +72,8 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict):
             # script that is usually maintained by non-backend developers
             env={
                 'DEBUG': str(settings.DEBUG),
-                'VITE_EMAIL_ASSETS_URL': os.environ['VITE_EMAIL_ASSETS_URL'],
-                'VITE_WEB_APP_URL': os.environ['VITE_WEB_APP_URL'],
+                'VITE_EMAIL_ASSETS_URL': os.environ.get('VITE_EMAIL_ASSETS_URL', ''),
+                'VITE_WEB_APP_URL': os.environ.get('VITE_WEB_APP_URL', ''),
             },
         )
     except subprocess.CalledProcessError as e:
