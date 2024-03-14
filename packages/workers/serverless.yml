@@ -68,7 +68,6 @@ functions:
 
 plugins:
   - serverless-step-functions
-  - serverless-esbuild
   - serverless-localstack
 
 custom:
@@ -79,8 +78,6 @@ custom:
     useStaticCache: false
 
   ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
-
-  esbuild: ${self:custom.conf.esbuild}
 
   conf: ${file(./${self:custom.confFile.${self:provider.stage}})}
   confFile:

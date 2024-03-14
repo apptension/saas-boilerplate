@@ -27,13 +27,5 @@ ExportUsers:
 
 vpc: { }
 
-esbuild:
-  bundle: true
-  minify: false
-  target: [ 'es2020' ]
-  sourcemap: false
-  sourcesContent: false
-  define: { 'require.resolve': undefined }
-
 websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }
 eventBusArn: "arn:aws:events:::event-bus/${self:custom.projectEnvName}-workers"

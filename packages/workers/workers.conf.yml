@@ -93,13 +93,5 @@ vpc:
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetOneId"
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetTwoId"
 
-esbuild:
-  bundle: true
-  minify: true
-  target: [ 'es2020' ]
-  sourcemap: true
-  sourcesContent: false
-  define: { 'require.resolve': undefined }
-
 websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }
 eventBusArn: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:custom.projectEnvName}-workers"
