@@ -157,8 +157,11 @@ class Query(graphene.ObjectType):
     tenant = graphene.Field(TenantType, id=graphene.ID())
 
     @staticmethod
+    @permission_classes(policies.AnyoneFullAccess)
     def resolve_all_tenants(root, info, **kwargs):
-        return models.Tenant.objects.filter(user_memberships__user=info.context.user).all()
+        if info.context.user.is_authenticated:
+            return models.Tenant.objects.filter(user_memberships__user=info.context.user).all()
+        return []
 
     @staticmethod
     def resolve_tenant(root, info, id):

@@ -511,7 +511,8 @@ class TestAllTenantsQuery:
         }
         """
         executed = graphene_client.query(query)
-        assert executed["errors"][0]["message"] == "permission_denied"
+        executed_tenants = executed["data"]["allTenants"]["edges"]
+        assert executed_tenants == []
 
 
 class TestTenantQuery:
