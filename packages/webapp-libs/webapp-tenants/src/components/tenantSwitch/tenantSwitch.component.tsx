@@ -54,7 +54,7 @@ export const TenantSwitch = () => {
           >
             {personalTenant?.name}
           </DropdownMenuCheckboxItem>
-          {organizationTenants.length && (
+          {organizationTenants.length > 0 && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel>
