@@ -11,3 +11,5 @@ docs/
 # Coverage
 .coverage
 coverage.xml
+
+scripts/runtime/email/renderer/*

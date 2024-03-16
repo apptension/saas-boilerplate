@@ -1,0 +1,10 @@
+##### Backend vars required when you want to use Stripe
+
+If you plan to use Stripe integration you have to define following variables:
+
+| Name                      | Description                                                                                             | Example                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `STRIPE_TEST_SECRET_KEY`  | Use this one for Stripe test mode. [docs](https://stripe.com/docs/keys)                                 | `sk_test_4dEFRCLCgCb`   |
+| `STRIPE_LIVE_SECRET_KEY`  | Use this one for Stripe live mode. [docs](https://stripe.com/docs/keys)                                 | `sk_4dEFRCLCgCbMy6O4FX` |
+| `DJSTRIPE_WEBHOOK_SECRET` | [docs](https://stripe.com/docs/webhooks/best-practices#endpoint-secrets)                                | `whsec_12345`           |
+| `STRIPE_LIVE_MODE`        | (bool) Set `true` or `false` to toggle between `live` and `test` Stripe mode. By default set to `False` | `true`                  |

@@ -2,6 +2,7 @@ import datetime
 
 import calleee
 import pytest
+from unittest.mock import patch
 from djstripe import models as djstripe_models
 from djstripe.enums import RefundStatus, RefundFailureReason
 
@@ -77,7 +78,8 @@ class TestSubscriptionScheduleRelease:
 
 
 class TestSendSubscriptionErrorEmail:
-    def test_send_email_on_invoice_payment_failed(self, webhook_event_factory, subscription, task_apply):
+    @patch('common.emails.send_email')
+    def test_send_email_on_invoice_payment_failed(self, send_email, webhook_event_factory, subscription):
         webhook_event = webhook_event_factory(
             type='invoice.payment_failed',
             data={
@@ -91,9 +93,12 @@ class TestSendSubscriptionErrorEmail:
 
         webhook_event.invoke_webhook_handlers()
 
-        task_apply.assert_email_sent(notifications.SubscriptionErrorEmail, subscription.customer.subscriber.email)
+        send_email.apply_async.assert_called_with(
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+        )
 
-    def test_send_email_on_invoice_payment_required(self, webhook_event_factory, subscription, task_apply):
+    @patch('common.emails.send_email')
+    def test_send_email_on_invoice_payment_required(self, send_email, webhook_event_factory, subscription):
         webhook_event = webhook_event_factory(
             type='invoice.payment_action_required',
             data={
@@ -107,11 +112,14 @@ class TestSendSubscriptionErrorEmail:
 
         webhook_event.invoke_webhook_handlers()
 
-        task_apply.assert_email_sent(notifications.SubscriptionErrorEmail, subscription.customer.subscriber.email)
+        send_email.apply_async.assert_called_with(
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+        )
 
 
 class TestSendTrialExpiresSoonEmail:
-    def test_previously_trialing_subscription_is_canceled(self, webhook_event_factory, customer, task_apply):
+    @patch('common.emails.send_email')
+    def test_previously_trialing_subscription_is_canceled(self, send_email, webhook_event_factory, customer):
         webhook_event = webhook_event_factory(
             type='customer.subscription.trial_will_end',
             data={'object': {'object': 'subscription', 'customer': customer.id, 'trial_end': 1617103425}},
@@ -119,8 +127,12 @@ class TestSendTrialExpiresSoonEmail:
 
         webhook_event.invoke_webhook_handlers()
 
-        task_apply.assert_email_sent(
-            notifications.TrialExpiresSoonEmail, customer.subscriber.email, {'expiry_date': '2021-03-30T11:23:45Z'}
+        send_email.apply_async.assert_called_with(
+            (
+                customer.subscriber.email,
+                notifications.TrialExpiresSoonEmail.name,
+                {'expiry_date': '2021-03-30T11:23:45Z'},
+            )
         )
 
 

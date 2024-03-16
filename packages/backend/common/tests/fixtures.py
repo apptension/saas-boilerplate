@@ -5,8 +5,8 @@ from django.conf import settings
 
 
 @pytest.fixture(autouse=True)
-def task_apply(mocker):
-    spy = mocker.patch("common.tasks.Task._apply")
+def lambda_task_apply(mocker):
+    spy = mocker.patch("common.tasks.LambdaTask._apply")
 
     def assert_task_applied(
         source: str,
@@ -34,17 +34,6 @@ def task_apply(mocker):
 
         raise AssertionError("Task apply not found")
 
-    def assert_email_sent(email_class, to, data=None):
-        if data is None:
-            data = {}
-
-        assert_task_applied(
-            source="backend.email",
-            detail_type=email_class.name,
-            data={"type": email_class.name, "to": to, **data},
-        )
-
     spy.assert_task_applied = assert_task_applied
-    spy.assert_email_sent = assert_email_sent
 
     return spy

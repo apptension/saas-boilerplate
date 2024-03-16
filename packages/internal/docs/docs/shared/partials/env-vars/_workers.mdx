@@ -1,12 +1,11 @@
-**Required** variables:
+##### Required workers vars
 
-| Name             | Description                                                                                                                         | Example                                          |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| FROM_EMAIL       | Email used in `From` email field                                                                                                    | `admin@exmaple.com`                              |
-| HASHID_SALT      | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                            | `t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U`              |
-| JWT_SECRET       | Secret used to decode JWT used in subscriptions. The value needs to be the same as `DJANGO_SECRET_KEY` backend environment variable |                                                  |
-| WEB_APP_URL      |                                                                                                                                     | `https://app.demo.saas.apptoku.com`              |
-| EMAIL_ASSETS_URL | Absolute URL to email assets. By default it's `${WEB_APP_URL}/email-assets`                                                         | `https://app.demo.saas.apptoku.com/email-assets` |
+You will not be able to deploy workers service without setting following variables:
+
+| Name        | Description                                                                                                                         | Example                             |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| HASHID_SALT | [docs](https://github.com/nshafer/django-hashid-field#hashid_field_salt)                                                            | `t5$^r\*xsMRXn1xjzhRSl8I5Hb3BUW$4U` |
+| JWT_SECRET  | Secret used to decode JWT used in subscriptions. The value needs to be the same as `DJANGO_SECRET_KEY` backend environment variable |                                     |
 
 import OptionalVars from './_workers_optional.mdx';
 

@@ -3,6 +3,7 @@ version: "3.4"
 services:
   backend:
     volumes:
+      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/email/renderer:ro
       - ./packages/backend/cov:/app/cov
       - ./packages/backend/docs:/app/docs
     environment:
@@ -14,7 +15,6 @@ services:
 
   workers:
     volumes:
-      - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/packages/workers/emails/renderer
       - ./packages/workers/cov:/app/packages/workers/cov
     environment:
       - CI=true
