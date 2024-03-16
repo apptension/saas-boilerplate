@@ -8,7 +8,7 @@ import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import * as dotenv from 'dotenv';
 
-import { IS_CI, validateStageEnv } from './env';
+import { validateStageEnv } from './env';
 import { isAwsVaultInstalled } from '../lib/awsVault';
 import { assertChamberInstalled, loadChamberEnv } from '../lib/chamber';
 import { runCommand } from '../lib/runCommand';
@@ -133,8 +133,7 @@ export const initAWS = async (
     );
 
     const awsRegion = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
-
-    if (awsAccountId && awsRegion && IS_CI) {
+    if (awsAccountId && awsRegion) {
       await loginToECR(context, {
         awsAccountId,
         awsRegion,

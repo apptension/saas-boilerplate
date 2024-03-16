@@ -1,11 +1,9 @@
 import { App } from 'aws-cdk-lib';
-import {
-  loadEnvSettings,
-  getEnvStackName,
-} from '@sb/infra-core';
+import { getEnvStackName, loadEnvSettings } from '@sb/infra-core';
 
 import { ApiStack } from './stacks/api';
 import { MigrationsStack } from './stacks/migrations';
+import { CeleryStack } from './stacks/celeryWorkers';
 
 (async () => {
   const envSettings = await loadEnvSettings();
@@ -16,6 +14,10 @@ import { MigrationsStack } from './stacks/migrations';
   });
 
   new MigrationsStack(app, getEnvStackName('MigrationsStack', envSettings), {
+    envSettings,
+  });
+
+  new CeleryStack(app, getEnvStackName('CeleryStack', envSettings), {
     envSettings,
   });
 })();

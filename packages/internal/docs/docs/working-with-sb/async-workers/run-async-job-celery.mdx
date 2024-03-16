@@ -1,0 +1,29 @@
+---
+title: How to run an async job in Celery from backend?
+description: Trigger an execution of an asynchronous job in Celery task queue from the backend of your SaaS application
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+In the <ProjectName/> Celery task queue is preconfigured and enabled by default, using Redis as message broker.
+
+:::info
+If you're not familiar with Celery, here's the official documentation: ["What is Celery?"](https://docs.celeryq.dev/en/stable/)
+:::
+
+#### Invoking tasks
+
+Running Celery asynchronous tasks from the backend is pretty straightforward and it's best that you refer to the
+official docs, but here's a very basic example:
+
+```python showLineNumbers
+from celery import shared_task
+
+@shared_task()
+def example_task(arg1: str, arg2: dict):
+    pass
+```
+
+```python showLineNumbers
+example_task.apply_async(('arg1-value', { 'arg2-field': 'arg2-field-value' }))
+```

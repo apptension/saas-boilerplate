@@ -257,6 +257,9 @@ export interface ApplicationTargetProps {
    * @default No path condition
    */
   readonly pathPattern?: string;
+
+
+  readonly healthCheckPath: string;
 }
 
 /**
@@ -443,6 +446,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     interface GroupedTarget {
       target: { protocol?: Protocol; containerPort: number };
       hosts: ApplicationTargetProps[];
+      healthCheckPath: string;
     }
 
     const groupedTargets: { [id: string]: GroupedTarget } = {};
@@ -455,6 +459,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
             containerPort: targetProps.containerPort,
           },
           hosts: [],
+          healthCheckPath: targetProps.healthCheckPath,
         };
       }
       groupedTargets[key].hosts.push(targetProps);
@@ -467,7 +472,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
           vpc: service.cluster.vpc,
           port: groupedTarget.target.containerPort,
           healthCheck: {
-            path: '/lbcheck',
+            path: groupedTarget.healthCheckPath,
             protocol: ELBProtocol.HTTP,
             interval: Duration.seconds(6),
             timeout: Duration.seconds(5),

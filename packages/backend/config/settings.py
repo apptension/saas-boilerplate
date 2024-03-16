@@ -44,6 +44,8 @@ DJANGO_CORE_APPS = [
 
 THIRD_PARTY_APPS = [
     "django_extensions",
+    'django_celery_results',
+    'django_celery_beat',
     "djstripe",
     "django_hosts",
     "drf_yasg",
@@ -53,7 +55,6 @@ THIRD_PARTY_APPS = [
     "whitenoise",
     "graphene_django",
     'channels',
-    # 'channels_postgres',
     "aws_xray_sdk.ext.django",
 ]
 
@@ -306,8 +307,8 @@ WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 
 AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 
-TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
-TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
+LAMBDA_TASKS_BASE_HANDLER = env("LAMBDA_TASKS_BASE_HANDLER", default="common.tasks.LambdaTask")
+LAMBDA_TASKS_LOCAL_URL = env("LAMBDA_TASKS_LOCAL_URL", default=None)
 
 STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY", default="sk_<CHANGE_ME>")
 STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="sk_test_<CHANGE_ME>")
@@ -373,3 +374,17 @@ UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=1
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
 
 TENANT_INVITATION_TIMEOUT = env("TENANT_INVITATION_TIMEOUT", default=60 * 60 * 24 * 14)
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = f'{env("REDIS_CONNECTION")}/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 3600,
+}
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django_ses.SESBackend")
+EMAIL_HOST = env("EMAIL_HOST", default=None)
+EMAIL_PORT = env("EMAIL_PORT", default=None)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default=None)
+EMAIL_FROM_ADDRESS = env("EMAIL_FROM_ADDRESS", default=None)
+EMAIL_REPLY_ADDRESS = env.list("EMAIL_REPLY_ADDRESS", default=(EMAIL_FROM_ADDRESS,))

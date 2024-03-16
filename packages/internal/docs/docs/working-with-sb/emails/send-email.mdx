@@ -1,23 +1,32 @@
 ---
 title: How to send an email from backend?
-description: Send emails programmatically using Django and async workers
+description: Send emails programmatically using Django and Celery async workers
 ---
 
 In the SaaS Boilerplate, you can send emails from the backend by creating a new class that subclasses the `Email` class.
 The `Email` class is a base class that provides common functionality for sending emails.
 
 :::caution
-This guide assumes that you are already familiar with async workers and Django REST Framework (DRF) serializers.
+This guide assumes that you are already familiar with Celery async workers and Django REST Framework (DRF) serializers.
 If you are not familiar with these concepts, we recommend that you read the following articles:
+
 - ["Working with serializers"](../graphql/backend/working-with-serializers)
-- ["How to create a new workers module?"](../async-workers/create-workers-module)
-- ["How to run an async job from backend?"](../async-workers/run-async-job)
+- ["How to run a Celery async job from backend?"](../async-workers/run-async-job-celery)
 :::
+
+## Configure env variables
+
+First you need to configure environmental variables of a [backend services](../../api-reference/env#backend-service) to be able to dispatch any emails.
+
+import BackendEmailEnvVars from '../../shared/partials/env-vars/_backend_email.mdx';
+
+<BackendEmailEnvVars />
 
 ## Email Serializer
 
 In the SaaS Boilerplate, email data is serialized using the Django REST Framework serializers.
-Serializers define how data should be converted to and from JSON format, making it easy to transmit data over the [Amazon EventBridge API](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html).
+Serializers define how data should be converted to and from JSON format, making it easy to transmit data over Redis
+broker to Celery task runner.
 
 Here's an example of an email serializer used in the SaaS Boilerplate:
 

@@ -66,6 +66,7 @@ export class MainECSCluster extends Construct {
     return new ecs.Cluster(this, 'Cluster', {
       vpc: props.vpc,
       clusterName: MainECSCluster.getClusterName(props.envSettings),
+      enableFargateCapacityProviders: true,
     });
   }
 

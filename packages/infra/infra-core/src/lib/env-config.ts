@@ -7,6 +7,7 @@ declare const process: {
     SB_DOMAIN_DOCS: string;
     SB_DOMAIN_WWW: string;
     SB_DOMAIN_ADMIN_PANEL: string;
+    SB_DOMAIN_FLOWER: string;
     SB_CLOUDFRONT_CERTIFICATE_ARN: string;
     SB_CERTIFICATE_DOMAIN: string;
     SB_LOAD_BALANCER_CERTIFICATE_ARN: string;
@@ -37,6 +38,7 @@ interface EnvConfigFileDomains {
   docs: string;
   www: string;
   cdn: string;
+  flower: string;
 }
 
 interface ToolsDomains {
@@ -128,10 +130,14 @@ async function readConfig(): Promise<ConfigFileContent> {
   };
 }
 
-async function readEnvConfig(): Promise<EnvConfigFileContent> {
+async function readEnvConfig(envStage: string): Promise<EnvConfigFileContent> {
   if (!process.env.SB_DOMAIN_API) {
     throw new Error('SB_DOMAIN_API env variable has to be defined');
   }
+
+  const hostedZoneName = process.env.SB_HOSTED_ZONE_NAME ?? '';
+  const certDomain = process.env.SB_CERTIFICATE_DOMAIN;
+  const defaultDomain = certDomain ?? `${envStage}.${hostedZoneName}`;
 
   return {
     webAppConfig: {
@@ -139,22 +145,23 @@ async function readEnvConfig(): Promise<EnvConfigFileContent> {
     },
     basicAuth: process.env.SB_BASIC_AUTH,
     domains: {
-      api: process.env.SB_DOMAIN_API,
-      webApp: process.env.SB_DOMAIN_WEB_APP ?? '',
-      cdn: process.env.SB_DOMAIN_CDN ?? '',
-      docs: process.env.SB_DOMAIN_DOCS ?? '',
-      www: process.env.SB_DOMAIN_WWW ?? '',
-      adminPanel: process.env.SB_DOMAIN_ADMIN_PANEL ?? '',
+      api: process.env.SB_DOMAIN_API ?? `api.${defaultDomain}`,
+      webApp: process.env.SB_DOMAIN_WEB_APP ?? `app.${defaultDomain}`,
+      cdn: process.env.SB_DOMAIN_CDN ?? `cdn.${defaultDomain}`,
+      docs: process.env.SB_DOMAIN_DOCS ?? `docs.${defaultDomain}`,
+      www: process.env.SB_DOMAIN_WWW ?? `www.${defaultDomain}`,
+      adminPanel: process.env.SB_DOMAIN_ADMIN_PANEL ?? `admin.${defaultDomain}`,
+      flower: process.env.SB_DOMAIN_FLOWER ?? `flower.${defaultDomain}`,
     },
     certificates: {
       cloudfrontCertificateArn: process.env.SB_CLOUDFRONT_CERTIFICATE_ARN ?? '',
-      domain: process.env.SB_CERTIFICATE_DOMAIN ?? '',
+      domain: certDomain ?? '',
       loadBalancerCertificateArn:
         process.env.SB_LOAD_BALANCER_CERTIFICATE_ARN ?? '',
     },
     hostedZone: {
       id: process.env.SB_HOSTED_ZONE_ID ?? '',
-      name: process.env.SB_HOSTED_ZONE_NAME ?? '',
+      name: hostedZoneName,
     },
     deployBranches: process.env.SB_DEPLOY_BRANCHES?.split(',') ?? [],
   };
@@ -174,7 +181,7 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
   }
 
   const config = await readConfig();
-  const envConfig = await readEnvConfig();
+  const envConfig = await readEnvConfig(envStage);
 
   return {
     envStage,

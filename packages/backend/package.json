@@ -9,6 +9,7 @@
     "@sb/infra-core": "workspace:*",
     "@sb/infra-shared": "workspace:*",
     "@sb/tools": "workspace:*",
+    "@sb/webapp-emails": "workspace:*",
     "fs-extra": "^11.2.0"
   }
 }

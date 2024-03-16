@@ -120,6 +120,12 @@ dependencies = [
     "channels-redis>=4.2.0",
     "django-channels-graphql-ws @ https://github.com/apptension/DjangoChannelsGraphqlWs/archive/refs/tags/v1.0.0rc7.tar.gz",
     "gunicorn==22.0.0",
+    "celery>=5.3.6",
+    "django-celery-results>=2.5.1",
+    "django-celery-beat>=2.6.0",
+    "flower>=2.0.1",
+    "watchdog[watchmedo]>=2.3.1",
+    "django-ses>=3.5.2",
 ]
 requires-python = "~=3.11.1"
 license = {text = "MIT"}
