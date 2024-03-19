@@ -12,6 +12,7 @@ import {
 } from '@sb/webapp-core/components/dropdownMenu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/tooltip';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { ChevronDown, Plus, Settings } from 'lucide-react';
 import { groupBy, head, prop } from 'ramda';
 import { FormattedMessage } from 'react-intl';
@@ -26,6 +27,7 @@ export const TenantSwitch = () => {
   const tenants = useTenants();
   const navigate = useNavigate();
   const generateTenantPath = useGenerateTenantPath();
+  const generateLocalePath = useGenerateLocalePath();
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
   const personalTenant = head(tenantsGrouped[TenantType.PERSONAL]);
@@ -34,6 +36,10 @@ export const TenantSwitch = () => {
   const handleTenantChange = (tenant?: TenantListItemFragmentFragment | null) => () => {
     if (!tenant) return;
     navigate(generateTenantPath(RoutesConfig.home, { tenantId: tenant.id }));
+  };
+
+  const handleNewTenantClick = () => {
+    navigate(generateLocalePath(RoutesConfig.addTenant));
   };
 
   return (
@@ -72,7 +78,7 @@ export const TenantSwitch = () => {
             </DropdownMenuCheckboxItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleNewTenantClick}>
             <Plus className="mr-1" size="16" />{' '}
             <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new tenant" />
           </DropdownMenuItem>
