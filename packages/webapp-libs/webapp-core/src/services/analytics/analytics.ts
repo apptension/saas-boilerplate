@@ -18,6 +18,7 @@ type ActionMap = {
   subscription: 'change-plan' | 'cancel' | 'add-payment-method' | 'edit-payment-method';
   profile: 'avatar-update' | 'personal-data-update' | 'password-update' | 'setup-2fa' | 'disable-2fa';
   document: 'upload' | 'delete';
+  tenant: 'add' | 'edit' | 'delete';
 };
 
 export const isAvailable = () => Boolean(ENV.GOOGLE_ANALYTICS_TRACKING_ID);
