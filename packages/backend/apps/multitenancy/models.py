@@ -68,6 +68,10 @@ class Tenant(TimestampedMixin, models.Model):
                     raise e
 
     @property
+    def email(self):
+        return self.creator.email
+
+    @property
     def owners_count(self):
         """
         Calculate the total number of tenant owners for this tenant.

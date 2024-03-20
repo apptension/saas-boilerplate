@@ -11,7 +11,7 @@ from graphql_relay import to_global_id, from_global_id, offset_to_cursor
 from rest_framework.generics import get_object_or_404
 from stripe.error import InvalidRequestError
 
-from common.acl.policies import AnyoneFullAccess
+from common.acl.policies import AnyoneFullAccess, IsTenantOwnerAccess
 from common.graphql import mutations
 from common.graphql.acl import permission_classes
 from . import constants
@@ -189,26 +189,26 @@ class ChargeConnection(graphene.Connection):
         node = StripeChargeType
 
 
-class ChangeActiveSubscriptionMutation(mutations.UpdateModelMutation):
+class ChangeActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
-        serializer_class = serializers.UserSubscriptionScheduleSerializer
+        serializer_class = serializers.TenantSubscriptionScheduleSerializer
         edge_class = SubscriptionScheduleConnection.Edge
         require_id_field = False
 
     @classmethod
     def get_object(cls, model_class, root, info, **input):
-        return subscriptions.get_schedule(user=info.context.user)
+        return subscriptions.get_schedule(tenant=info.context.tenant)
 
 
-class CancelActiveSubscriptionMutation(mutations.UpdateModelMutation):
+class CancelActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
-        serializer_class = serializers.CancelUserActiveSubscriptionSerializer
+        serializer_class = serializers.CancelTenantActiveSubscriptionSerializer
         edge_class = SubscriptionScheduleConnection.Edge
         require_id_field = False
 
     @classmethod
     def get_object(cls, model_class, root, info, **input):
-        return subscriptions.get_schedule(user=info.context.user)
+        return subscriptions.get_schedule(tenant=info.context.tenant)
 
 
 class PaymentMethodConnection(graphene.Connection):
@@ -218,8 +218,8 @@ class PaymentMethodConnection(graphene.Connection):
 
 class PaymentMethodGetObjectMixin:
     @classmethod
-    def get_payment_method(cls, id, user):
-        filter_kwargs = {"id": id, "customer__subscriber": user}
+    def get_payment_method(cls, id, tenant):
+        filter_kwargs = {"id": id, "customer__subscriber": tenant}
         queryset = djstripe_models.PaymentMethod.objects.filter(**filter_kwargs)
         if not queryset.exists():
             try:
@@ -250,6 +250,7 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
 
     class Input:
         id = graphene.String()
+        tenant_id = graphene.String()
 
     class Meta:
         serializer_class = serializers.UpdateDefaultPaymentMethodSerializer
@@ -259,21 +260,21 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
 
     @classmethod
     def get_object(cls, model_class, info, *args, **kwargs):
-        return cls.get_payment_method(kwargs["id"], info.context.user)
+        return cls.get_payment_method(kwargs["id"], info.context.tenant)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
         super().mutate_and_get_payload(root, info, **input)
         return UpdateDefaultPaymentMethodMutation(
-            active_subscription=subscriptions.get_schedule(user=info.context.user),
+            active_subscription=subscriptions.get_schedule(tenant=info.context.tenant),
             payment_method_edge=SubscriptionScheduleConnection.Edge(
                 cursor=offset_to_cursor(0),
-                node=cls.get_payment_method(input["id"], info.context.user),
+                node=cls.get_payment_method(input["id"], info.context.tenant),
             ),
         )
 
 
-class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteModelMutation):
+class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteTenantDependentModelMutation):
     active_subscription = graphene.Field(SubscriptionScheduleType)
 
     class Meta:
@@ -282,33 +283,33 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteM
     @classmethod
     @transaction.atomic
     def mutate_and_get_payload(cls, root, info, id):
-        obj = cls.get_payment_method(id, info.context.user)
+        obj = cls.get_payment_method(id, info.context.tenant)
         pk = obj.pk
         customers.remove_payment_method(payment_method=obj)
         obj.delete()
         return cls(
-            active_subscription=subscriptions.get_schedule(user=info.context.user),
+            active_subscription=subscriptions.get_schedule(tenant=info.context.tenant),
             deleted_ids=[to_global_id("StripePaymentMethodType", str(pk))],
         )
 
 
-class CreatePaymentIntentMutation(mutations.CreateModelMutation):
+class CreatePaymentIntentMutation(mutations.CreateTenantDependentModelMutation):
     class Meta:
         model = djstripe_models.PaymentIntent
         serializer_class = serializers.PaymentIntentSerializer
 
 
-class UpdatePaymentIntentMutation(mutations.UpdateModelMutation):
+class UpdatePaymentIntentMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
         model = djstripe_models.PaymentIntent
         serializer_class = serializers.PaymentIntentSerializer
 
     @classmethod
     def get_queryset(cls, model_class, root, info, **input):
-        return djstripe_models.PaymentIntent.objects.filter(customer__subscriber=info.context.user)
+        return djstripe_models.PaymentIntent.objects.filter(customer__subscriber=info.context.tenant)
 
 
-class CreateSetupIntentMutation(mutations.CreateModelMutation):
+class CreateSetupIntentMutation(mutations.CreateTenantDependentModelMutation):
     class Meta:
         model = djstripe_models.SetupIntent
         serializer_class = serializers.SetupIntentSerializer
@@ -316,11 +317,11 @@ class CreateSetupIntentMutation(mutations.CreateModelMutation):
 
 class Query(graphene.ObjectType):
     all_subscription_plans = graphene.relay.ConnectionField(StripePriceConnection)
-    active_subscription = graphene.Field(SubscriptionScheduleType)
-    all_payment_methods = graphene.relay.ConnectionField(PaymentMethodConnection)
-    all_charges = graphene.relay.ConnectionField(ChargeConnection)
-    charge = graphene.Field(StripeChargeType, id=graphene.ID())
-    payment_intent = graphene.Field(StripePaymentIntentType, id=graphene.ID())
+    active_subscription = graphene.Field(SubscriptionScheduleType, tenant_id=graphene.ID())
+    all_payment_methods = graphene.relay.ConnectionField(PaymentMethodConnection, tenant_id=graphene.ID())
+    all_charges = graphene.relay.ConnectionField(ChargeConnection, tenant_id=graphene.ID())
+    charge = graphene.Field(StripeChargeType, id=graphene.ID(), tenant_id=graphene.ID())
+    payment_intent = graphene.Field(StripePaymentIntentType, id=graphene.ID(), tenant_id=graphene.ID())
 
     @staticmethod
     @permission_classes(AnyoneFullAccess)
@@ -335,30 +336,36 @@ class Query(graphene.ObjectType):
         )
 
     @staticmethod
+    @permission_classes(IsTenantOwnerAccess)
     def resolve_active_subscription(root, info):
-        return subscriptions.get_schedule(user=info.context.user)
+        return subscriptions.get_schedule(tenant=info.context.tenant)
 
     @staticmethod
+    @permission_classes(IsTenantOwnerAccess)
     def resolve_all_payment_methods(root, info, **kwargs):
-        return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.user)
+        return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.tenant)
 
     @staticmethod
+    @permission_classes(IsTenantOwnerAccess)
     def resolve_all_charges(root, info, **kwargs):
-        customer, _ = djstripe_models.Customer.get_or_create(info.context.user)
+        customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")
 
     @staticmethod
+    @permission_classes(IsTenantOwnerAccess)
     def resolve_charge(root, info, id):
         _, pk = from_global_id(id)
-        customer, _ = djstripe_models.Customer.get_or_create(info.context.user)
+        customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
     @staticmethod
+    @permission_classes(IsTenantOwnerAccess)
     def resolve_payment_intent(root, info, id):
         _, pk = from_global_id(id)
-        return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.user, pk=pk)
+        return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.tenant, pk=pk)
 
 
+@permission_classes(IsTenantOwnerAccess)
 class Mutation(graphene.ObjectType):
     change_active_subscription = ChangeActiveSubscriptionMutation.Field()
     cancel_active_subscription = CancelActiveSubscriptionMutation.Field()

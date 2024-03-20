@@ -627,3 +627,29 @@ class DeleteModelMutation(ClientIDMutation):
         obj = cls.get_object(id)
         obj.delete()
         return cls(deleted_ids=[id])
+
+
+class DeleteTenantDependentModelMutation(DeleteModelMutation):
+    class Meta:
+        abstract = True
+
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String()
+
+
+class UpdateTenantDependentModelMutation(UpdateModelMutation):
+    class Meta:
+        abstract = True
+
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String()
+
+
+class CreateTenantDependentModelMutation(CreateModelMutation):
+    class Meta:
+        abstract = True
+
+    class Input:
+        tenant_id = graphene.String()
