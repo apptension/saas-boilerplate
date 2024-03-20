@@ -18,6 +18,7 @@ import { groupBy, head, prop } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import { RoutesConfig as TenantRoutesConfig } from '../../config/routes';
 import { useGenerateTenantPath } from '../../hooks';
 import { useTenants } from '../../hooks/useTenants/useTenants.hook';
 import { useCurrentTenant } from '../../providers';
@@ -40,6 +41,10 @@ export const TenantSwitch = () => {
 
   const handleNewTenantClick = () => {
     navigate(generateLocalePath(RoutesConfig.addTenant));
+  };
+
+  const handleTenantSettingsClick = () => {
+    navigate(generateTenantPath(TenantRoutesConfig.tenant.settings.members));
   };
 
   return (
@@ -86,7 +91,7 @@ export const TenantSwitch = () => {
       </DropdownMenu>
       <Tooltip delayDuration={200}>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handleTenantSettingsClick}>
             <Settings size="20" />
           </Button>
         </TooltipTrigger>

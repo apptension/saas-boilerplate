@@ -63,6 +63,7 @@ const documents = {
     "\n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          ...notificationsListItemFragment\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.NotificationsListContentFragmentFragmentDoc,
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
+    "\n  query tenantMembersListQuery($id: ID!) {\n    tenant(id: $id) {\n      userMemberships {\n        id\n        role\n        invitationAccepted\n        userId\n        username\n        inviteeEmailAddress\n      }\n    }\n  }\n": types.TenantMembersListQueryDocument,
     "\n  fragment tenantListItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      role\n      invitationAccepted\n    }\n  }\n": types.TenantListItemFragmentFragmentDoc,
     "\n  fragment tenantFragment on TenantType {\n    id\n    name\n    slug\n    membership {\n      role\n      invitationAccepted\n    }\n  }\n": types.TenantFragmentFragmentDoc,
     "\n  query currentTenantQuery($id: ID!) {\n    tenant(id: $id) {\n      ...tenantFragment\n    }\n  }\n": types.CurrentTenantQueryDocument,
@@ -294,6 +295,10 @@ export function gql(source: "\n  fragment notificationsListItemFragment on Notif
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query tenantMembersListQuery($id: ID!) {\n    tenant(id: $id) {\n      userMemberships {\n        id\n        role\n        invitationAccepted\n        userId\n        username\n        inviteeEmailAddress\n      }\n    }\n  }\n"): (typeof documents)["\n  query tenantMembersListQuery($id: ID!) {\n    tenant(id: $id) {\n      userMemberships {\n        id\n        role\n        invitationAccepted\n        userId\n        username\n        inviteeEmailAddress\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
