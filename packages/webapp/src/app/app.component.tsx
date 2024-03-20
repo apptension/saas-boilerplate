@@ -15,7 +15,7 @@ import {
   TransactionsHistoryContent,
 } from '@sb/webapp-finances/routes';
 import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
-import { AddTenantForm } from '@sb/webapp-tenants/routes';
+import { AddTenantForm, TenantGeneralSettings, TenantMembers, TenantSettings } from '@sb/webapp-tenants/routes';
 import { IntlProvider } from 'react-intl';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
@@ -45,6 +45,10 @@ export const App = () => {
         </Route>
         <Route path={TENANT_PREFIX} element={<AuthRoute />}>
           <Route index element={<Home />} />
+          <Route element={<TenantSettings />}>
+            <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
+            <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+          </Route>
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute />}>
           <Route path={RoutesConfig.profile} element={<Profile />} />
