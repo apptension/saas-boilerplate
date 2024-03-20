@@ -3,7 +3,7 @@ from graphene import relay
 from graphql_relay import to_global_id, from_global_id
 from graphene_django import DjangoObjectType
 
-from apps.users.services.users import get_user_from_resolver
+from apps.users.services.users import get_user_from_resolver, get_user_avatar_url
 from common.acl import policies
 from common.graphql import mutations
 from common.graphql.acl.decorators import permission_classes
@@ -18,8 +18,11 @@ class TenantMembershipType(DjangoObjectType):
     invitation_accepted = graphene.Boolean()
     user_id = graphene.ID()
     invitee_email_address = graphene.String()
-    username = graphene.String()
     invitation_token = graphene.String()
+    first_name = graphene.String()
+    last_name = graphene.String()
+    user_email = graphene.String()
+    avatar = graphene.String()
 
     class Meta:
         model = models.TenantMembership
@@ -29,8 +32,11 @@ class TenantMembershipType(DjangoObjectType):
             "invitationAccepted",
             "user_id",
             "invitee_email_address",
-            "username",
             "invitation_token",
+            "first_name",
+            "last_name",
+            "user_email",
+            "avatar",
         )
         interfaces = (relay.Node,)
 
@@ -49,10 +55,20 @@ class TenantMembershipType(DjangoObjectType):
         return parent.is_accepted
 
     @staticmethod
-    def resolve_username(parent, info):
-        if parent.user:
-            return str(parent.user.profile)
-        return None
+    def resolve_first_name(parent, info):
+        return parent.user.profile.first_name if parent.user else None
+
+    @staticmethod
+    def resolve_last_name(parent, info):
+        return parent.user.profile.last_name if parent.user else None
+
+    @staticmethod
+    def resolve_user_email(parent, info):
+        return parent.user.email if parent.user else None
+
+    @staticmethod
+    def resolve_avatar(parent, info):
+        return get_user_avatar_url(parent.user) if parent.user else None
 
 
 class TenantType(DjangoObjectType):

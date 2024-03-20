@@ -1,4 +1,5 @@
 import pytest
+import os
 from graphql_relay import to_global_id
 
 from ..constants import TenantType, TenantUserRole
@@ -407,7 +408,7 @@ class TestDeclineTenantInvitationMutation:
 
 
 class TestAllTenantsQuery:
-    def test_all_tenants_query(self, mocker, graphene_client, user, tenant_factory, tenant_membership_factory):
+    def test_all_tenants_query(self, mocker, graphene_client, user_factory, tenant_factory, tenant_membership_factory):
         query = """
         query getAllTenants {
             allTenants {
@@ -423,7 +424,10 @@ class TestAllTenantsQuery:
                             invitationAccepted
                             userId
                             inviteeEmailAddress
-                            username
+                            firstName
+                            lastName
+                            avatar
+                            userEmail
                             invitationToken
                         }
                         userMemberships {
@@ -432,7 +436,10 @@ class TestAllTenantsQuery:
                             invitationAccepted
                             userId
                             inviteeEmailAddress
-                            username
+                            firstName
+                            lastName
+                            avatar
+                            userEmail
                             invitationToken
                         }
                     }
@@ -440,6 +447,7 @@ class TestAllTenantsQuery:
             }
         }
         """
+        user = user_factory(has_avatar=True)
         tenant_factory.create_batch(10)
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
@@ -478,7 +486,13 @@ class TestAllTenantsQuery:
             assert executed_tenant["node"]["membership"]["role"] == memberships[idx].role
             assert executed_tenant["node"]["membership"]["invitationAccepted"] == memberships[idx].is_accepted
             assert executed_tenant["node"]["membership"]["userId"] == user.id
-            assert executed_tenant["node"]["membership"]["username"] == str(user.profile)
+            assert executed_tenant["node"]["membership"]["firstName"] == user.profile.first_name
+            assert executed_tenant["node"]["membership"]["lastName"] == user.profile.last_name
+            assert executed_tenant["node"]["membership"]["userEmail"] == user.email
+            assert (
+                os.path.split(executed_tenant["node"]["membership"]["avatar"])[1]
+                == os.path.split(user.profile.avatar.thumbnail.name)[1]
+            )
             if memberships[idx].is_accepted:
                 assert executed_tenant["node"]["membership"]["invitationToken"] is None
             else:
@@ -502,7 +516,10 @@ class TestAllTenantsQuery:
                             invitationAccepted
                             userId
                             inviteeEmailAddress
-                            username
+                            firstName
+                            lastName
+                            avatar
+                            userEmail
                             invitationToken
                         }
                     }
@@ -516,7 +533,7 @@ class TestAllTenantsQuery:
 
 
 class TestTenantQuery:
-    def test_tenant_query(self, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory):
+    def test_tenant_query(self, graphene_client, user_factory, tenant_factory, tenant_membership_factory):
         query = """
         query getTenant($id: ID!) {
           tenant(id: $id) {
@@ -530,7 +547,10 @@ class TestTenantQuery:
               invitationAccepted
               userId
               inviteeEmailAddress
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
               invitationToken
             }
             userMemberships {
@@ -540,11 +560,15 @@ class TestTenantQuery:
               userId
               inviteeEmailAddress
               invitationToken
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
             }
           }
         }
         """
+        user = user_factory(has_avatar=True)
         tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test tenant", type=TenantType.ORGANIZATION)
         membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.OWNER, user=user)
@@ -569,11 +593,17 @@ class TestTenantQuery:
         assert executed_tenant["membership"]["role"] == membership.role
         assert executed_tenant["membership"]["invitationAccepted"] == membership.is_accepted
         assert executed_tenant["membership"]["userId"] == user.id
-        assert executed_tenant["membership"]["username"] == str(user.profile)
+        assert executed_tenant["membership"]["firstName"] == user.profile.first_name
+        assert executed_tenant["membership"]["lastName"] == user.profile.last_name
+        assert executed_tenant["membership"]["userEmail"] == user.email
+        assert (
+            os.path.split(executed_tenant["membership"]["avatar"])[1]
+            == os.path.split(user.profile.avatar.thumbnail.name)[1]
+        )
         assert executed_tenant["membership"]["invitationToken"] is None
 
     def test_tenant_query_user_with_invitation(
-        self, mocker, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory
+        self, mocker, graphene_client, user_factory, tenant_factory, tenant_membership_factory
     ):
         query = """
         query getTenant($id: ID!) {
@@ -588,7 +618,10 @@ class TestTenantQuery:
               invitationAccepted
               userId
               inviteeEmailAddress
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
               invitationToken
             }
             userMemberships {
@@ -598,11 +631,15 @@ class TestTenantQuery:
               userId
               inviteeEmailAddress
               invitationToken
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
             }
           }
         }
         """
+        user = user_factory(has_avatar=True)
         tenant_factory.create_batch(10)
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
@@ -625,7 +662,13 @@ class TestTenantQuery:
         assert executed_tenant["membership"]["role"] == membership.role
         assert executed_tenant["membership"]["invitationAccepted"] == membership.is_accepted
         assert executed_tenant["membership"]["userId"] == user.id
-        assert executed_tenant["membership"]["username"] == str(user.profile)
+        assert executed_tenant["membership"]["firstName"] == user.profile.first_name
+        assert executed_tenant["membership"]["lastName"] == user.profile.last_name
+        assert executed_tenant["membership"]["userEmail"] == user.email
+        assert (
+            os.path.split(executed_tenant["membership"]["avatar"])[1]
+            == os.path.split(user.profile.avatar.thumbnail.name)[1]
+        )
         assert executed_tenant["membership"]["invitationToken"] == "token"
         # No permissions for userMemberships for not accepted invitation
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -647,7 +690,10 @@ class TestTenantQuery:
               invitationAccepted
               userId
               inviteeEmailAddress
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
               invitationToken
             }
             userMemberships {
@@ -657,7 +703,10 @@ class TestTenantQuery:
               userId
               inviteeEmailAddress
               invitationToken
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
             }
           }
         }
@@ -688,7 +737,10 @@ class TestTenantQuery:
               invitationAccepted
               userId
               inviteeEmailAddress
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
               invitationToken
             }
             userMemberships {
@@ -698,7 +750,10 @@ class TestTenantQuery:
               userId
               inviteeEmailAddress
               invitationToken
-              username
+              firstName
+              lastName
+              avatar
+              userEmail
             }
           }
         }
