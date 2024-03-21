@@ -206,6 +206,23 @@ class TestCreateTenantInvitationMutation:
         assert response_data["tenantId"] == to_global_id("TenantType", tenant.id)
         make_token.assert_called_once()
 
+    def test_create_default_tenant_invitation_by_owner(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.DEFAULT)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "email": "test@example.com",
+                "role": TenantUserRole.ADMIN.upper(),
+            },
+        )
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+
     def test_create_tenant_invitation_by_admin(self, graphene_client, user, tenant_factory, tenant_membership_factory):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.ADMIN)
@@ -258,6 +275,376 @@ class TestCreateTenantInvitationMutation:
                 "tenantId": to_global_id("TenantType", tenant.id),
                 "email": "test@example.com",
                 "role": TenantUserRole.ADMIN.upper(),
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    @classmethod
+    def mutate(cls, graphene_client, data):
+        return graphene_client.mutate(cls.MUTATION, variable_values={'input': data})
+
+
+class TestDeleteTenantMembershipMutation:
+    MUTATION = '''
+    mutation DeleteTenantMembership($input: DeleteTenantMembershipMutationInput!) {
+      deleteTenantMembership(input: $input) {
+        deletedIds
+      }
+    }
+    '''
+
+    def test_delete_tenant_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["data"]["deleteTenantMembership"]["deletedIds"][0] == to_global_id(
+            "TenantMembershipType", tenant_membership.id
+        )
+
+    def test_delete_own_tenant_membership_by_member(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["data"]["deleteTenantMembership"]["deletedIds"][0] == to_global_id(
+            "TenantMembershipType", tenant_membership.id
+        )
+
+    def test_delete_own_tenant_membership_by_admin(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.ADMIN)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["data"]["deleteTenantMembership"]["deletedIds"][0] == to_global_id(
+            "TenantMembershipType", tenant_membership.id
+        )
+
+    def test_delete_tenant_membership_with_invalid_id(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", "InvalidID"),
+            },
+        )
+        assert executed["errors"][0]["message"] == "No TenantMembership matches the given query."
+
+    def test_delete_default_tenant_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.DEFAULT)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+
+    def test_delete_organization_tenant_membership_last_owner(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+
+    def test_delete_tenant_membership_with_different_tenant_id(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership_factory(tenant=tenant_2, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant_2, role=TenantUserRole.MEMBER)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "No TenantMembership matches the given query."
+
+    def test_delete_tenant_membership_by_member(
+        self, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user_factory(), role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_delete_tenant_membership_by_admin(
+        self, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.ADMIN)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user_factory(), role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_delete_tenant_membership_by_not_a_member(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_delete_tenant_membership_by_unauthorized(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    @classmethod
+    def mutate(cls, graphene_client, data):
+        return graphene_client.mutate(cls.MUTATION, variable_values={'input': data})
+
+
+class TestUpdateTenantMembershipMutation:
+    MUTATION = '''
+    mutation UpdateTenantMembership($input: UpdateTenantMembershipMutationInput!) {
+      updateTenantMembership(input: $input) {
+        tenantMembership {
+          id
+          role
+        }
+      }
+    }
+    '''
+
+    def test_update_tenant_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        data = executed["data"]["updateTenantMembership"]["tenantMembership"]
+        assert data["id"] == to_global_id("TenantMembershipType", tenant_membership.id)
+        assert data["role"] == TenantUserRole.ADMIN
+
+    def test_update_own_tenant_membership_by_member(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_update_own_tenant_membership_by_admin(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.ADMIN)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "MEMBER",
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_update_tenant_membership_with_invalid_id(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", "InvalidID"),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "No TenantMembership matches the given query."
+
+    def test_update_default_tenant_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.DEFAULT)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+
+    def test_update_organization_tenant_membership_last_owner(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
+
+    def test_update_tenant_membership_with_different_tenant_id(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership_factory(tenant=tenant_2, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant_2, role=TenantUserRole.MEMBER)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "No TenantMembership matches the given query."
+
+    def test_update_tenant_membership_by_not_a_member(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_update_tenant_membership_by_unauthorized(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
             },
         )
         assert executed["errors"][0]["message"] == "permission_denied"

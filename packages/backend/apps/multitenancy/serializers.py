@@ -101,6 +101,8 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = BaseUserManager.normalize_email(attrs["email"])
         tenant = self.context["request"].tenant
+        if tenant.type == TenantType.DEFAULT:
+            raise serializers.ValidationError(_("Invitation for personal tenant cannot be created."))
         if (
             models.TenantMembership.objects.get_all()
             .filter(Q(user__email=email, tenant=tenant) | Q(invitee_email_address=email, tenant=tenant))
@@ -126,3 +128,33 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         create_tenant_membership(**tenant_membership_data)
 
         return {"ok": True, **validated_data}
+
+
+class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
+    """
+    Serializer for update a tenant membership.
+
+    This serializer is designed to handle the update of a membership within a tenant.
+    """
+
+    id = hidrest.HashidSerializerCharField(source_field="multitenancy.TenantMembership.id", write_only=True)
+    role = TextChoicesFieldType(choices=TenantUserRole.choices, choices_class=TenantUserRole)
+
+    def validate(self, attrs):
+        tenant = self.context["request"].tenant
+        actual_value = models.TenantMembership.objects.get(pk=attrs["id"])
+        if (
+            actual_value
+            and actual_value.role == TenantUserRole.OWNER
+            and attrs["role"] != TenantUserRole.OWNER
+            and tenant.owners_count == 1
+        ):
+            raise exceptions.ValidationError("There must be at least one owner in the Tenant.")
+        return super().validate(attrs)
+
+    class Meta:
+        model = models.TenantMembership
+        fields = (
+            "id",
+            "role",
+        )
