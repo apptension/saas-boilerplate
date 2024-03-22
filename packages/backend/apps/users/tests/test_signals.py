@@ -5,14 +5,17 @@ pytestmark = pytest.mark.django_db
 
 
 class TestUserPostSaveSignal:
+    # NOTE: TenantFactory triggers UserFactory which generates default tenant for user. Mocks are called twice.
     def test_signal_is_not_raising_exception_on_auth_error(self, tenant_factory, mocker):
         mock = mocker.patch("apps.finances.services.subscriptions.initialize_tenant", side_effect=AuthenticationError())
         sentry_mock = mocker.patch("apps.finances.signals.logger.error")
 
-        tenant_factory.create()
+        tenant = tenant_factory.create()
 
-        mock.assert_called_once()
-        sentry_mock.assert_called_once()
+        _, last_call_kwargs = mock.call_args_list[-1]
+
+        assert last_call_kwargs == {"tenant": tenant}
+        assert sentry_mock.call_count == 2
 
     def test_reraise_stripe_error(self, tenant_factory, totp_mock, mocker):
         initial_error = Exception

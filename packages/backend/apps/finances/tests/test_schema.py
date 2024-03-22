@@ -6,6 +6,8 @@ from graphql_relay import to_global_id, from_global_id
 from apps.finances.tests.utils import stripe_encode
 from django.utils import timezone
 
+from apps.multitenancy.constants import TenantUserRole
+
 pytestmark = pytest.mark.django_db
 
 
@@ -114,20 +116,57 @@ class TestActiveSubscriptionQuery:
                 },
             }
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_trial_fields_in_response_when_customer_already_activated_trial(
-        self, graphene_client, subscription_schedule_factory, monthly_plan_price
+    def test_return_error_for_admin_user(
+        self,
+        graphene_client,
+        subscription_schedule_factory,
+        monthly_plan_price,
+        user_factory,
+        tenant_membership_factory,
     ):
         subscription_schedule = subscription_schedule_factory(
             phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
         )
         customer = subscription_schedule.customer
-        graphene_client.force_authenticate(customer.subscriber)
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_trial_fields_in_response_when_customer_already_activated_trial(
+        self,
+        graphene_client,
+        subscription_schedule_factory,
+        monthly_plan_price,
+        user_factory,
+        tenant_membership_factory,
+    ):
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
+        )
+        customer = subscription_schedule.customer
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
 
@@ -136,9 +175,13 @@ class TestActiveSubscriptionQuery:
         assert executed['data']['activeSubscription']['subscription']['trialEnd']
         assert not executed['data']['activeSubscription']['canActivateTrial']
 
-    def test_trial_fields_in_response_when_user_never_activated_it(self, graphene_client, subscription_schedule):
-        user = subscription_schedule.customer.subscriber
+    def test_trial_fields_in_response_when_user_never_activated_it(
+        self, graphene_client, subscription_schedule, user_factory, tenant_membership_factory
+    ):
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
 
@@ -146,9 +189,13 @@ class TestActiveSubscriptionQuery:
         assert not response_phase['trialEnd']
         assert executed['data']['activeSubscription']['canActivateTrial']
 
-    def test_return_active_subscription_data(self, graphene_client, subscription_schedule):
-        user = subscription_schedule.customer.subscriber
+    def test_return_active_subscription_data(
+        self, graphene_client, subscription_schedule, user_factory, tenant_membership_factory
+    ):
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
 
@@ -187,11 +234,42 @@ class TestChangeActiveSubscriptionMutation:
         }
     '''
 
-    def test_change_active_subscription(self, graphene_client, subscription_schedule, monthly_plan_price):
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
+    def test_change_active_subscription_by_admin(
+        self, graphene_client, subscription_schedule, monthly_plan_price, user_factory, tenant_membership_factory
+    ):
         input_data = {'price': monthly_plan_price.id}
-        user = subscription_schedule.customer.subscriber
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
 
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+
+        executed = graphene_client.mutate(
+            self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_change_active_subscription(
+        self, graphene_client, subscription_schedule, monthly_plan_price, user_factory, tenant_membership_factory
+    ):
+        input_data = {'price': monthly_plan_price.id}
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
             variable_values={'input': input_data},
@@ -201,15 +279,24 @@ class TestChangeActiveSubscriptionMutation:
         assert "errors" not in executed
 
     def test_change_when_user_has_no_payment_method_but_can_activate_trial(
-        self, graphene_client, customer_factory, subscription_schedule_factory, free_plan_price, monthly_plan_price
+        self,
+        graphene_client,
+        customer_factory,
+        subscription_schedule_factory,
+        free_plan_price,
+        monthly_plan_price,
+        user_factory,
+        tenant_membership_factory,
     ):
         input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
-        user = customer.subscriber
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
             variable_values={'input': input_data},
@@ -219,17 +306,25 @@ class TestChangeActiveSubscriptionMutation:
         assert "errors" not in executed
 
     def test_return_error_on_change_if_customer_has_no_payment_method(
-        self, graphene_client, customer_factory, monthly_plan_price, subscription_schedule_factory
+        self,
+        graphene_client,
+        customer_factory,
+        monthly_plan_price,
+        subscription_schedule_factory,
+        user_factory,
+        tenant_membership_factory,
     ):
         input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
-        user = customer.subscriber
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         subscription_schedule_factory(
             customer=customer, phases=[{'items': [{'price': monthly_plan_price.id}], 'trial_completed': True}]
         )
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
 
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CHANGE_ACTIVE_SUBSCRIPTION_MUTATION,
             variable_values={'input': input_data},
@@ -254,6 +349,12 @@ class TestCancelActiveSubscriptionMutation:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
@@ -263,8 +364,13 @@ class TestCancelActiveSubscriptionMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_error_if_customer_has_no_paid_subscription(self, graphene_client, subscription_schedule):
-        graphene_client.force_authenticate(subscription_schedule.customer.subscriber)
+    def test_return_error_if_customer_has_no_paid_subscription(
+        self, graphene_client, subscription_schedule, user_factory, tenant_membership_factory
+    ):
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
@@ -278,11 +384,47 @@ class TestCancelActiveSubscriptionMutation:
             {'message': 'Customer has no paid subscription to cancel', 'code': 'no_paid_subscription'}
         ]
 
-    def test_cancel_trialing_subscription(self, graphene_client, subscription_schedule_factory, monthly_plan_price):
+    def test_cancel_trialing_subscription_by_admin(
+        self,
+        graphene_client,
+        subscription_schedule_factory,
+        monthly_plan_price,
+        user_factory,
+        tenant_membership_factory,
+    ):
         subscription_schedule = subscription_schedule_factory(
             phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
         )
-        graphene_client.force_authenticate(subscription_schedule.customer.subscriber)
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+
+        executed = graphene_client.mutate(
+            self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_cancel_trialing_subscription(
+        self,
+        graphene_client,
+        subscription_schedule_factory,
+        monthly_plan_price,
+        user_factory,
+        tenant_membership_factory,
+    ):
+        subscription_schedule = subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}]
+        )
+        tenant = subscription_schedule.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
@@ -306,17 +448,45 @@ class TestAllPaymentMethodsQuery:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_only_customer_payment_methods(self, graphene_client, customer, payment_method_factory):
+    def test_return_only_customer_payment_methods_by_admin(
+        self, graphene_client, customer, payment_method_factory, user_factory, tenant_membership_factory
+    ):
+        payment_method_factory(customer=customer)
+        payment_method_factory()
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_only_customer_payment_methods(
+        self, graphene_client, customer, payment_method_factory, user_factory, tenant_membership_factory
+    ):
         payment_method = payment_method_factory(customer=customer)
         other_customer_payment_method = payment_method_factory()
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
 
         assert executed["data"]
@@ -343,6 +513,12 @@ class TestUpdateDefaultPaymentMethodMutation:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
@@ -352,12 +528,17 @@ class TestUpdateDefaultPaymentMethodMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_fetch_unknown_payment_method_from_stripe(self, graphene_client, stripe_request, payment_method_factory):
+    def test_fetch_unknown_payment_method_from_stripe(
+        self, graphene_client, stripe_request, payment_method_factory, user_factory, tenant_membership_factory
+    ):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
         input_data = {"id": other_users_pm.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
             variable_values={'input': input_data},
@@ -369,11 +550,36 @@ class TestUpdateDefaultPaymentMethodMutation:
             'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
         )
 
-    def test_set_default_payment_method(self, graphene_client, payment_method_factory, customer, stripe_request):
+    def test_set_default_payment_method_by_admin(
+        self, graphene_client, payment_method_factory, customer, user_factory, tenant_membership_factory
+    ):
         payment_method = payment_method_factory(customer=customer)
         input_data = {"id": payment_method.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
 
-        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.mutate(
+            self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_set_default_payment_method(
+        self, graphene_client, payment_method_factory, customer, stripe_request, user_factory, tenant_membership_factory
+    ):
+        payment_method = payment_method_factory(customer=customer)
+        input_data = {"id": payment_method.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
             variable_values={'input': input_data},
@@ -401,12 +607,23 @@ class TestDeletePaymentMethodMutation:
         }
     '''
 
-    def test_return_error_for_other_users_payment_method(self, graphene_client, stripe_request, payment_method_factory):
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
+    def test_return_error_for_other_users_payment_method(
+        self, graphene_client, stripe_request, payment_method_factory, user_factory, tenant_membership_factory
+    ):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
         input_data = {"id": other_users_pm.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(payment_method.customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
             variable_values={'input': input_data},
@@ -418,12 +635,36 @@ class TestDeletePaymentMethodMutation:
             'get', calleee.EndsWith(f'/payment_methods/{other_users_pm.id}'), calleee.Any(), None
         )
 
-    def test_detach_payment_method(self, graphene_client, stripe_request, payment_method):
+    def test_detach_payment_method_by_admin(
+        self, graphene_client, payment_method, user_factory, tenant_membership_factory
+    ):
+        input_data = {"id": payment_method.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.mutate(
+            self.DELETE_PAYMENT_METHOD_MUTATION,
+            variable_values={'input': input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_detach_payment_method(
+        self, graphene_client, stripe_request, payment_method, user_factory, tenant_membership_factory
+    ):
         customer = payment_method.customer
         payment_method_global_id = to_global_id('StripePaymentMethodType', str(payment_method.djstripe_id))
         input_data = {"id": payment_method.id}
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
             variable_values={'input': input_data},
@@ -440,15 +681,18 @@ class TestDeletePaymentMethodMutation:
         )
 
     def test_set_default_payment_method_to_next_one(
-        self, graphene_client, stripe_request, customer, payment_method_factory
+        self, graphene_client, stripe_request, customer, payment_method_factory, user_factory, tenant_membership_factory
     ):
         payment_method = payment_method_factory(customer=customer)
         input_data = {"id": payment_method.id}
         customer.default_payment_method = payment_method
         customer.save()
         other_payment_method = payment_method_factory(customer=customer)
+        tenant = payment_method.customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.DELETE_PAYMENT_METHOD_MUTATION,
             variable_values={'input': input_data},
@@ -484,17 +728,43 @@ class TestAllChargesQuery:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.query(self.ALL_CHARGES_QUERY)
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_only_customer_charges(self, graphene_client, customer, charge_factory):
+    def test_return_only_customer_charges_by_admin(
+        self, graphene_client, customer, user_factory, tenant_membership_factory
+    ):
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_only_customer_charges(
+        self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory
+    ):
         other_customer_charge = charge_factory()
         regular_charge = charge_factory(customer=customer)
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.ALL_CHARGES_QUERY)
 
         assert executed["data"]
@@ -506,12 +776,17 @@ class TestAllChargesQuery:
         assert regular_charge.id in charge_ids
         assert other_customer_charge.id not in charge_ids
 
-    def test_return_charges_ordered_by_creation_date_descending(self, graphene_client, customer, charge_factory):
+    def test_return_charges_ordered_by_creation_date_descending(
+        self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory
+    ):
         old_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=1))
         oldest_charge = charge_factory(customer=customer, created=timezone.now() - timedelta(days=2))
         new_charge = charge_factory(customer=customer, created=timezone.now())
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.ALL_CHARGES_QUERY)
 
         assert executed["data"]
@@ -543,6 +818,12 @@ class TestChargeQuery:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client, customer, charge_factory):
         charge = charge_factory(customer=customer)
 
@@ -552,12 +833,33 @@ class TestChargeQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_charge(self, graphene_client, customer, charge_factory):
+    def test_return_charge_by_admin(
+        self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory
+    ):
         charge = charge_factory(customer=customer)
         charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
         variable_values = {"id": charge_global_id}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_charge(self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory):
+        charge = charge_factory(customer=customer)
+        charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
+        variable_values = {"id": charge_global_id}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
 
         assert executed["data"]
@@ -600,6 +902,12 @@ class TestPaymentIntentQuery:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client, customer, payment_intent_factory):
         payment_intent = payment_intent_factory(customer=customer)
 
@@ -609,23 +917,51 @@ class TestPaymentIntentQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_error_if_not_users_payment_intent(self, graphene_client, customer, payment_intent_factory):
+    def test_return_error_if_not_users_payment_intent(
+        self, graphene_client, customer, payment_intent_factory, user_factory, tenant_membership_factory
+    ):
         payment_intent = payment_intent_factory()
         payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
         variable_values = {"id": payment_intent_global_id}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "PaymentIntent matching query does not exist."
 
-    def test_return_payment_intent(self, graphene_client, customer, payment_intent_factory):
+    def test_return_payment_intent_by_admin(
+        self, graphene_client, customer, payment_intent_factory, user_factory, tenant_membership_factory
+    ):
         payment_intent = payment_intent_factory(customer=customer)
         payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
         variable_values = {"id": payment_intent_global_id}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_return_payment_intent(
+        self, graphene_client, customer, payment_intent_factory, user_factory, tenant_membership_factory
+    ):
+        payment_intent = payment_intent_factory(customer=customer)
+        payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
+        variable_values = {"id": payment_intent_global_id}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
 
         assert executed["data"]
@@ -652,6 +988,12 @@ class TestCreatePaymentIntentMutation:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         input_data = {"product": "A"}
 
@@ -663,8 +1005,15 @@ class TestCreatePaymentIntentMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_error_if_product_is_not_passed(self, graphene_client, user):
+    def test_return_error_if_product_is_not_passed(
+        self, graphene_client, user_factory, tenant, tenant_membership_factory
+    ):
         input_data = {}
+
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
@@ -677,10 +1026,15 @@ class TestCreatePaymentIntentMutation:
             "Variable '$input' got invalid value {}; Field 'product' of required type 'String!' was not provided."
         )
 
-    def test_return_error_if_product_does_not_exist(self, graphene_client, user):
+    def test_return_error_if_product_does_not_exist(
+        self, graphene_client, user_factory, tenant, tenant_membership_factory
+    ):
         input_data = {"product": "A"}
 
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
             variable_values={'input': input_data},
@@ -691,10 +1045,30 @@ class TestCreatePaymentIntentMutation:
         assert error["path"] == ["createPaymentIntent"]
         assert error["extensions"]["product"] == [{'message': '"A" is not a valid choice.', 'code': 'invalid_choice'}]
 
-    def test_creates_payment_intent(self, graphene_client, user):
+    def test_creates_payment_intent_by_admin(self, graphene_client, user_factory, tenant, tenant_membership_factory):
         input_data = {"product": "5"}
 
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_creates_payment_intent(self, graphene_client, user_factory, tenant, tenant_membership_factory):
+        input_data = {"product": "5"}
+
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
             variable_values={'input': input_data},
@@ -726,6 +1100,12 @@ class TestUpdatePaymentIntentMutation:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client, payment_intent_factory):
         payment_intent = payment_intent_factory(amount=50)
         input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
@@ -738,11 +1118,16 @@ class TestUpdatePaymentIntentMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_error_if_product_belongs_to_other_user(self, graphene_client, payment_intent_factory, customer):
+    def test_return_error_if_product_belongs_to_other_user(
+        self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
+    ):
         payment_intent = payment_intent_factory(amount=50)
         input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
             variable_values={'input': input_data},
@@ -751,11 +1136,36 @@ class TestUpdatePaymentIntentMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "No PaymentIntent matches the given query."
 
-    def test_update_payment_intent_amount(self, graphene_client, payment_intent_factory, customer):
+    def test_update_payment_intent_amount_by_admin(
+        self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
+    ):
         payment_intent = payment_intent_factory(amount=50, customer=customer)
         input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
 
-        graphene_client.force_authenticate(customer.subscriber)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.mutate(
+            self.UPDATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_update_payment_intent_amount(
+        self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
+    ):
+        payment_intent = payment_intent_factory(amount=50, customer=customer)
+        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        tenant = customer.subscriber
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
             variable_values={'input': input_data},
@@ -781,6 +1191,12 @@ class TestCreateSetupIntentMutation:
         }
     '''
 
+    @staticmethod
+    def _get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory, role=TenantUserRole.OWNER):
+        user = user_factory()
+        tenant_membership_factory(tenant=tenant, role=role, user=user)
+        return user
+
     def test_return_error_for_unauthorized_user(self, graphene_client):
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
@@ -790,8 +1206,26 @@ class TestCreateSetupIntentMutation:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_creates_payment_intent(self, graphene_client, user):
+    def test_creates_payment_intent_by_admin(self, graphene_client, user_factory, tenant, tenant_membership_factory):
+        user = self._get_user_from_customer_tenant(
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+        )
+
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        executed = graphene_client.mutate(
+            self.CREATE_PAYMENT_INTENT_MUTATION,
+            variable_values={'input': {}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_creates_payment_intent(self, graphene_client, user_factory, tenant, tenant_membership_factory):
+        user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
             variable_values={'input': {}},

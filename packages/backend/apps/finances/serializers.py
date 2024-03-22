@@ -32,7 +32,7 @@ class PaymentIntentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
 
-        (customer, _) = djstripe_models.Customer.get_or_create(request.user)  # Change to tenant
+        (customer, _) = djstripe_models.Customer.get_or_create(request.tenant)
         amount = int(validated_data['product']) * 100
         payment_intent_response = djstripe_models.PaymentIntent._api_create(
             amount=amount,
@@ -78,7 +78,7 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
 
 class UpdateDefaultPaymentMethodSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
-        customer, _ = djstripe_models.Customer.get_or_create(self.context['request'].user)  # Change to tenant
+        customer, _ = djstripe_models.Customer.get_or_create(self.context['request'].tenant)
         customers.set_default_payment_method(customer=customer, payment_method=instance)
         return instance
 

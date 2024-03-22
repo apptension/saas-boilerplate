@@ -8,12 +8,14 @@ pytestmark = pytest.mark.django_db
 
 
 class TestInitCustomerCommand:
+    # NOTE: TenantFactory triggers UserFactory which generates default tenant for user. Mocks are called twice.
     @factory.django.mute_signals(signals.post_save)
-    def test_command_run_for_users_without_customer(self, stripe_customer_factory, tenant_factory, mocker):
+    def test_command_run_for_users_without_customer(self, tenant_factory, mocker):
         mock = mocker.patch("apps.finances.services.subscriptions.initialize_tenant")
         tenant = tenant_factory.create()
-        stripe_customer_factory.create()
 
         Command().handle()
 
-        mock.assert_called_once_with(tenant=tenant)
+        _, last_call_kwargs = mock.call_args_list[-1]
+
+        assert last_call_kwargs == {"tenant": tenant}
