@@ -20,6 +20,7 @@ class Tenant(TimestampedMixin, models.Model):
     - name: The name of the tenant.
     - slug: A URL-friendly version of the name.
     - type: The type of the tenant.
+    - billing_email: Address used for billing purposes and it is provided to Stripe
     - members: Many-to-many relationship with users through TenantMembership.
 
     Methods:
@@ -41,6 +42,13 @@ class Tenant(TimestampedMixin, models.Model):
     type: str = models.CharField(choices=constants.TenantType.choices)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through='TenantMembership', related_name='tenants', blank=True
+    )
+    billing_email = models.EmailField(
+        db_collation="case_insensitive",
+        verbose_name="billing email address",
+        max_length=255,
+        unique=False,
+        blank=True,
     )
 
     objects = TenantManager()
@@ -69,7 +77,7 @@ class Tenant(TimestampedMixin, models.Model):
 
     @property
     def email(self):
-        return self.creator.email
+        return self.billing_email if self.billing_email else self.creator.email
 
     @property
     def owners_count(self):

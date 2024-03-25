@@ -9,6 +9,7 @@ class TenantFactory(factory.django.DjangoModelFactory):
     type = factory.Iterator(constants.TenantType.values)
     name = factory.Faker('pystr')
     slug = factory.Faker('pystr')
+    billing_email = factory.Faker('email')
     created_at = factory.Faker('date_time')
     updated_at = factory.Faker('date_time')
 

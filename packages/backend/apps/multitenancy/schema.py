@@ -80,12 +80,13 @@ class TenantType(DjangoObjectType):
     name = graphene.String()
     slug = graphene.String()
     type = graphene.String()
+    billing_email = graphene.String()
     membership = graphene.NonNull(of_type=TenantMembershipType)
     user_memberships = graphene.List(of_type=TenantMembershipType)
 
     class Meta:
         model = models.Tenant
-        fields = ("id", "name", "slug", "type", "membership", "user_memberships")
+        fields = ("id", "name", "slug", "billing_email", "type", "membership", "user_memberships")
         interfaces = (relay.Node,)
 
     @staticmethod
