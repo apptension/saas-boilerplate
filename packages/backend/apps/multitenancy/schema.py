@@ -2,14 +2,18 @@ import graphene
 from graphene import relay
 from graphql_relay import to_global_id, from_global_id
 from graphene_django import DjangoObjectType
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 
-from apps.users.services.users import get_user_from_resolver
+from apps.users.services.users import get_user_from_resolver, get_user_avatar_url
 from common.acl import policies
-from common.graphql import mutations
+from common.graphql import mutations, exceptions
 from common.graphql.acl.decorators import permission_classes
+from common.graphql.acl.wrappers import PERMISSION_DENIED_MESSAGE
 from . import models
 from . import serializers
 from .tokens import tenant_invitation_token
+from .constants import TenantUserRole
 
 
 class TenantMembershipType(DjangoObjectType):
@@ -18,8 +22,11 @@ class TenantMembershipType(DjangoObjectType):
     invitation_accepted = graphene.Boolean()
     user_id = graphene.ID()
     invitee_email_address = graphene.String()
-    username = graphene.String()
     invitation_token = graphene.String()
+    first_name = graphene.String()
+    last_name = graphene.String()
+    user_email = graphene.String()
+    avatar = graphene.String()
 
     class Meta:
         model = models.TenantMembership
@@ -29,8 +36,11 @@ class TenantMembershipType(DjangoObjectType):
             "invitationAccepted",
             "user_id",
             "invitee_email_address",
-            "username",
             "invitation_token",
+            "first_name",
+            "last_name",
+            "user_email",
+            "avatar",
         )
         interfaces = (relay.Node,)
 
@@ -49,10 +59,20 @@ class TenantMembershipType(DjangoObjectType):
         return parent.is_accepted
 
     @staticmethod
-    def resolve_username(parent, info):
-        if parent.user:
-            return str(parent.user.profile)
-        return None
+    def resolve_first_name(parent, info):
+        return parent.user.profile.first_name if parent.user else None
+
+    @staticmethod
+    def resolve_last_name(parent, info):
+        return parent.user.profile.last_name if parent.user else None
+
+    @staticmethod
+    def resolve_user_email(parent, info):
+        return parent.user.email if parent.user else None
+
+    @staticmethod
+    def resolve_avatar(parent, info):
+        return get_user_avatar_url(parent.user) if parent.user else None
 
 
 class TenantType(DjangoObjectType):
@@ -116,14 +136,56 @@ class CreateTenantInvitationMutation(mutations.SerializerMutation):
 
 
 class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String()
+
     class Meta:
         model = models.TenantMembership
+
+    @classmethod
+    def get_object(cls, id, tenant, **kwargs):
+        model = cls._meta.model
+        _, pk = from_global_id(id)
+        return get_object_or_404(model, pk=pk, tenant=tenant)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, id, **kwargs):
+        obj = cls.get_object(id, info.context.tenant)
+        user = info.context.user
+        user_role = info.context.user_role
+
+        if user_role is not TenantUserRole.OWNER and obj.user != user:
+            raise PermissionDenied(PERMISSION_DENIED_MESSAGE)
+
+        if obj.role == TenantUserRole.OWNER and info.context.tenant.owners_count == 1:
+            raise exceptions.GraphQlValidationError("There must be at least one owner in the Tenant.")
+
+        obj.delete()
+        return cls(deleted_ids=[id])
 
 
 class UpdateTenantMembershipMutation(mutations.UpdateModelMutation):
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String()
+
     class Meta:
-        serializer_class = serializers.TenantSerializer
-        model = models.TenantMembership
+        serializer_class = serializers.UpdateTenantMembershipSerializer
+        edge_class = TenantConnection.Edge
+        convert_choices_to_enum = True
+
+    @classmethod
+    def get_object(cls, model_class, root, info, **input):
+        return get_object_or_404(
+            cls.get_queryset(model_class, root, info, **input), pk=input["id"], tenant=info.context.tenant
+        )
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "id" in input:
+            _, input["id"] = from_global_id(input["id"])
+        return super().mutate_and_get_payload(root, info, **input)
 
 
 class AcceptTenantInvitationMutation(mutations.SerializerMutation):
@@ -174,10 +236,11 @@ class TenantOwnerMutation(graphene.ObjectType):
     update_tenant = UpdateTenantMutation.Field()
     delete_tenant = DeleteTenantMutation.Field()
     create_tenant_invitation = CreateTenantInvitationMutation.Field()
-    delete_tenant_membership = DeleteTenantMembershipMutation.Field()
+    update_tenant_membership = UpdateTenantMembershipMutation.Field()
 
 
 class Mutation(graphene.ObjectType):
     create_tenant = CreateTenantMutation.Field()
     accept_tenant_invitation = AcceptTenantInvitationMutation.Field()
     decline_tenant_invitation = DeclineTenantInvitationMutation.Field()
+    delete_tenant_membership = DeleteTenantMembershipMutation.Field()
