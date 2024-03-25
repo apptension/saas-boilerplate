@@ -1,5 +1,4 @@
 import { fireEvent, screen } from '@testing-library/react';
-import React from 'react';
 
 import {
   DropdownMenu,
@@ -15,29 +14,13 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '../';
+import { MockPointerEvent } from '../../../tests/mocks/pointerEvent';
 import { render } from '../../../tests/utils/rendering';
 
 const triggerText = 'Trigger';
 const labelText = 'Label';
 const submenuTriggerText = 'Sub menu trigger';
 const submenuItemText = 'Submenu item';
-
-// JSDOM doesn't implement PointerEvent so we need to mock our own implementation
-// Default to mouse left click interaction
-// https://github.com/radix-ui/primitives/issues/1207
-// https://github.com/jsdom/jsdom/pull/2666
-class MockPointerEvent extends Event {
-  button: number;
-  ctrlKey: boolean;
-  pointerType: string;
-
-  constructor(type: string, props: PointerEventInit) {
-    super(type, props);
-    this.button = props.button || 0;
-    this.ctrlKey = props.ctrlKey || false;
-    this.pointerType = props.pointerType || 'mouse';
-  }
-}
 
 const oldPointerEvent = window.PointerEvent;
 
@@ -70,7 +53,6 @@ const Component = () => (
 
 describe('DropdownMenu', () => {
   beforeEach(() => {
-    console.log('beforeEach');
     window.PointerEvent = MockPointerEvent as any;
   });
 
