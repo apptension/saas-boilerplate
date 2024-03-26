@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { TenantMembersList } from '../../../components/tenantMembersList';
 import { RoutesConfig } from '../../../config/routes';
 import { useGenerateTenantPath } from '../../../hooks';
+import { InvitationForm } from './invitationForm';
 
 export const TenantMembers = () => {
   const generateTenantPath = useGenerateTenantPath();
@@ -18,6 +19,7 @@ export const TenantMembers = () => {
             <FormattedMessage defaultMessage="View and manage organization members" id="Tenant Members / Subheader" />
           }
         />
+        <InvitationForm />
         <TenantMembersList />
       </div>
     </TabsContent>

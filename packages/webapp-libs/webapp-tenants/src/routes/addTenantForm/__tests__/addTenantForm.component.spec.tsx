@@ -1,3 +1,4 @@
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeField } from '@sb/webapp-api-client/constants';
 import { commonQueryCurrentUserQuery } from '@sb/webapp-api-client/providers';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
@@ -6,7 +7,6 @@ import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { membershipFactory, tenantFactory } from '../../../tests/factories/tenant';
 import { render } from '../../../tests/utils/rendering';
 import { AddTenantForm, addTenantMutation } from '../addTenantForm.component';
@@ -55,7 +55,7 @@ describe('AddTenantForm: Component', () => {
               id: '1',
               name: variables.input.name,
               type: TenantTypeField.ORGANIZATION,
-              membership: membershipFactory({ role: TenantRole.OWNER }),
+              membership: membershipFactory({ role: TenantUserRole.OWNER }),
             }),
           ],
         },

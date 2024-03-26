@@ -97,8 +97,11 @@ type TenantMembershipType implements Node {
   inviteeEmailAddress: String
   invitationAccepted: Boolean
   userId: ID
-  username: String
   invitationToken: String
+  firstName: String
+  lastName: String
+  userEmail: String
+  avatar: String
 }
 type StripePriceConnection {
   "Pagination data for this connection."
@@ -746,10 +749,11 @@ type ApiMutation {
   updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
-  deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
+  updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
   createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
   acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
   declineTenantInvitation(input: DeclineTenantInvitationMutationInput!): DeclineTenantInvitationMutationPayload
+  deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -795,8 +799,9 @@ type CreateTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
-type DeleteTenantMembershipMutationPayload {
-  deletedIds: [ID]
+type UpdateTenantMembershipMutationPayload {
+  tenantMembership: TenantMembershipType
+  tenantMembershipEdge: TenantEdge
   clientMutationId: String
 }
 type CreateTenantMutationPayload {
@@ -810,6 +815,10 @@ type AcceptTenantInvitationMutationPayload {
 }
 type DeclineTenantInvitationMutationPayload {
   ok: Boolean
+  clientMutationId: String
+}
+type DeleteTenantMembershipMutationPayload {
+  deletedIds: [ID]
   clientMutationId: String
 }
 type GenerateSaasIdeasMutationPayload {
@@ -1444,8 +1453,10 @@ input CreateTenantInvitationMutationInput {
   tenantId: String!
   clientMutationId: String
 }
-input DeleteTenantMembershipMutationInput {
-  id: String
+input UpdateTenantMembershipMutationInput {
+  id: ID!
+  tenantId: String
+  role: TenantUserRole!
   clientMutationId: String
 }
 input CreateTenantMutationInput {
@@ -1462,6 +1473,11 @@ input DeclineTenantInvitationMutationInput {
   id: String!
   "Token"
   token: String!
+  clientMutationId: String
+}
+input DeleteTenantMembershipMutationInput {
+  id: String
+  tenantId: String
   clientMutationId: String
 }
 input GenerateSaasIdeasMutationInput {

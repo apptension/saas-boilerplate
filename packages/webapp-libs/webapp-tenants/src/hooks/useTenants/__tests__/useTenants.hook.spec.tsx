@@ -1,8 +1,7 @@
-import { TenantType } from '@sb/webapp-api-client';
+import { TenantType, TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { tenantFactory } from '../../../tests/factories/tenant';
 import { renderHook } from '../../../tests/utils/rendering';
 import { useTenants } from '../useTenants.hook';
@@ -25,7 +24,7 @@ describe('useTenants: Hook', () => {
   });
   describe('user is member of single tenant', () => {
     it('should return single tenant', async () => {
-      const tenants = [tenantFactory({ membership: { role: TenantRole.OWNER } })];
+      const tenants = [tenantFactory({ membership: { role: TenantUserRole.OWNER } })];
       const { result, waitForApolloMocks } = render({ tenants });
       await waitForApolloMocks();
       expect(result.current.length).toEqual(tenants.length);
@@ -37,8 +36,8 @@ describe('useTenants: Hook', () => {
   describe('user is member of two tenants', () => {
     it('should return two tenants', async () => {
       const tenants = [
-        tenantFactory({ membership: { role: TenantRole.OWNER } }),
-        tenantFactory({ membership: { role: TenantRole.MEMBER }, type: TenantTypeType.ORGANIZATION }),
+        tenantFactory({ membership: { role: TenantUserRole.OWNER } }),
+        tenantFactory({ membership: { role: TenantUserRole.MEMBER }, type: TenantTypeType.ORGANIZATION }),
       ];
 
       const { result, waitForApolloMocks } = render({ tenants });

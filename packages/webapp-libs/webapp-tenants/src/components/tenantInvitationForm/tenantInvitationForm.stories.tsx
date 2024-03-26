@@ -1,6 +1,6 @@
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { TenantRole } from '../../modules/auth/tenantRole.types';
 import { withProviders } from '../../utils/storybook';
 import { TenantInvitationForm, TenantInvitationFormProps } from './tenantInvitationForm.component';
 
@@ -19,7 +19,7 @@ export const WithInitialData: StoryObj<typeof meta> = {
   args: {
     initialData: {
       email: 'example@email.com',
-      role: TenantRole.MEMBER,
+      role: TenantUserRole.MEMBER,
     },
   },
 

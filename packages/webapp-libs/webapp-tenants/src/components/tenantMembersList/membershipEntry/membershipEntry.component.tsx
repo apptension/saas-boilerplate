@@ -1,4 +1,4 @@
-import { TenantMembershipType } from '@sb/webapp-api-client';
+import { TenantMembershipType, TenantUserRole } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -13,12 +13,11 @@ import {
 } from '@sb/webapp-core/components/dropdownMenu';
 import { TableCell, TableRow } from '@sb/webapp-core/components/table';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
-import { indexBy, prop } from 'ramda';
+import { indexBy, prop, trim } from 'ramda';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useTenantRoles } from '../../../hooks/useTenantRoles';
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 
 export type MembershipEntryProps = {
   className?: string;
@@ -28,7 +27,7 @@ export type MembershipEntryProps = {
 export const MembershipEntry = ({ membership, className }: MembershipEntryProps) => {
   const { getRoleTranslation } = useTenantRoles();
 
-  const roles = [TenantRole.OWNER, TenantRole.ADMIN, TenantRole.MEMBER];
+  const roles = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER];
   const roleChangeCallbacks = useMemo(() => {
     const mapper = roles.map((role) => ({
       role,
@@ -37,10 +36,11 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
     return indexBy(prop('role'), mapper);
   }, [roles, membership.id]);
 
+  const name = trim([membership.firstName, membership.lastName].map((s) => trim(s ?? '')).join(' '));
   return (
     <TableRow className={className}>
-      <TableCell>{membership.username}</TableCell>
-      <TableCell>{getRoleTranslation(membership.role as TenantRole)}</TableCell>
+      <TableCell>{name || membership.userEmail || membership.inviteeEmailAddress}</TableCell>
+      <TableCell>{getRoleTranslation(membership.role?.toUpperCase() as TenantUserRole)}</TableCell>
       <TableCell>
         {membership.invitationAccepted ? (
           <div className="flex items-center">
@@ -66,7 +66,9 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
               <FormattedMessage id="Tenant Membersip Entry / Actions" defaultMessage="Actions" />
             </DropdownMenuLabel>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Change role</DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger>
+                <FormattedMessage id="Tenant Membersip Entry / Change role" defaultMessage="Change role" />
+              </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
                   {roles
