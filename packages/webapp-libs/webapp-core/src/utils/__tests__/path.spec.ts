@@ -19,6 +19,7 @@ describe('Utils: path', () => {
         anotherStep: 'root/another-step/:id',
         getRelativeUrl: expect.any(Function),
         getLocalePath: expect.any(Function),
+        getTenantPath: expect.any(Function),
       });
     });
 
@@ -48,9 +49,11 @@ describe('Utils: path', () => {
             anotherStep: 'root/nested/another-step/:id',
             getRelativeUrl: expect.any(Function),
             getLocalePath: expect.any(Function),
+            getTenantPath: expect.any(Function),
           },
           getRelativeUrl: expect.any(Function),
           getLocalePath: expect.any(Function),
+          getTenantPath: expect.any(Function),
         });
       });
 
