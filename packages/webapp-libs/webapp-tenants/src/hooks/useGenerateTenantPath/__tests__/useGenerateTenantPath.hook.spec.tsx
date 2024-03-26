@@ -1,15 +1,15 @@
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 
 import { useGenerateTenantPath } from '../';
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { tenantFactory } from '../../../tests/factories/tenant';
 import { renderHook } from '../../../tests/utils/rendering';
 
 const render = () => {
   const apolloMocks = [
     fillCommonQueryWithUser(
-      currentUserFactory({ tenants: [tenantFactory({ membership: { role: TenantRole.MEMBER } })] })
+      currentUserFactory({ tenants: [tenantFactory({ membership: { role: TenantUserRole.MEMBER } })] })
     ),
   ];
   return renderHook(() => useGenerateTenantPath(), {

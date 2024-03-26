@@ -19,6 +19,7 @@ type Query {
   appConfig(id: String!, preview: Boolean, locale: String): AppConfig
   appConfigCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AppConfigFilter, order: [AppConfigOrder]): AppConfigCollection
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
+  _node(id: ID!, preview: Boolean, locale: String): _Node
 }
 "Represents a binary file in a space. An asset can be any file type."
 type Asset {
@@ -55,7 +56,7 @@ type ContentfulTag {
 }
 type AssetLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, order: [AssetLinkingCollectionsDemoItemCollectionOrder]): DemoItemCollection
+  demoItemCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): DemoItemCollection
 }
 type EntryCollection {
   total: Int!
@@ -108,6 +109,9 @@ type AppConfigCollection {
 interface Entry {
   sys: Sys!
   contentfulMetadata: ContentfulMetadata!
+}
+interface _Node {
+  _id: ID!
 }
 enum ImageResizeStrategy {
   "Resizes the image to fit into the specified dimensions."
@@ -170,18 +174,6 @@ enum ImageFormat {
   "WebP image format."
   WEBP
   AVIF
-}
-enum AssetLinkingCollectionsDemoItemCollectionOrder {
-  title_ASC
-  title_DESC
-  sys_id_ASC
-  sys_id_DESC
-  sys_publishedAt_ASC
-  sys_publishedAt_DESC
-  sys_firstPublishedAt_ASC
-  sys_firstPublishedAt_DESC
-  sys_publishedVersion_ASC
-  sys_publishedVersion_DESC
 }
 enum AssetOrder {
   url_ASC

@@ -7,9 +7,12 @@ export const tenantMembersListQuery = gql(/* GraphQL */ `
         id
         role
         invitationAccepted
-        userId
-        username
         inviteeEmailAddress
+        userId
+        firstName
+        lastName
+        userEmail
+        avatar
       }
     }
   }

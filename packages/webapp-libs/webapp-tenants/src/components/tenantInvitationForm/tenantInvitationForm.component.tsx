@@ -1,4 +1,5 @@
 import { ApolloError } from '@apollo/client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import {
@@ -19,12 +20,11 @@ import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTenantRoles } from '../../hooks/useTenantRoles';
-import { TenantRole } from '../../modules/auth/tenantRole.types';
 import { useTenantInvitationForm } from './tenantInvitationForm.hook';
 
 export type TenantInvitationFormFields = {
   email: string;
-  role: TenantRole;
+  role: TenantUserRole;
 };
 
 export type TenantInvitationFormProps = {
@@ -57,7 +57,9 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
   return (
     <Card className="max-w-2xl">
       <CardHeader>
-        <CardTitle>Invite new member</CardTitle>
+        <CardTitle>
+          <FormattedMessage defaultMessage="Invite new member" id="Tenant invitation form / Invite new member" />
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -117,7 +119,7 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {[TenantRole.MEMBER, TenantRole.ADMIN, TenantRole.OWNER].map((role) => (
+                            {[TenantUserRole.MEMBER, TenantUserRole.ADMIN, TenantUserRole.OWNER].map((role) => (
                               <SelectItem value={role} key={role}>
                                 {getRoleTranslation(role)}
                               </SelectItem>

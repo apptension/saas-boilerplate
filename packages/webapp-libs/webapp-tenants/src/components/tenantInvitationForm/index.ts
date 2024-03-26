@@ -1,1 +1,1 @@
-export { TenantInvitationForm } from './tenantInvitationForm.component';
+export { TenantInvitationForm, type TenantInvitationFormFields } from './tenantInvitationForm.component';

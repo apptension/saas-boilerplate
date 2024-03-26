@@ -1,9 +1,9 @@
 import { ApolloError } from '@apollo/client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
 
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { render } from '../../../tests/utils/rendering';
 import { TenantInvitationForm, TenantInvitationFormProps } from '../tenantInvitationForm.component';
 
@@ -11,7 +11,7 @@ describe('TenantInvitationForm: Component', () => {
   const defaultProps: TenantInvitationFormProps = {
     initialData: {
       email: 'admin@example.com',
-      role: TenantRole.MEMBER,
+      role: TenantUserRole.MEMBER,
     },
     onSubmit: jest.fn(),
     loading: false,
@@ -40,7 +40,7 @@ describe('TenantInvitationForm: Component', () => {
       await userEvent.click(screen.getByDisplayValue(/Member/i));
       await userEvent.click(screen.getByRole('button', { name: /invite/i }));
 
-      expect(onSubmit).toHaveBeenCalledWith({ email: emailValue, role: TenantRole.MEMBER });
+      expect(onSubmit).toHaveBeenCalledWith({ email: emailValue, role: TenantUserRole.MEMBER });
     });
   });
 

@@ -1,8 +1,9 @@
-import { TenantRole } from '../../modules/auth/tenantRole.types';
+import { TenantUserRole } from '@sb/webapp-api-client';
+
 import { useCurrentTenant } from '../../providers';
 
 export const useTenantRoleAccessCheck = (
-  allowedRole: TenantRole | TenantRole[] = [TenantRole.OWNER, TenantRole.ADMIN, TenantRole.MEMBER]
+  allowedRole: TenantUserRole | TenantUserRole[] = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER]
 ) => {
   const { data: currentTenant } = useCurrentTenant();
   const userRole = currentTenant?.membership.role;
