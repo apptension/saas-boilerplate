@@ -67,6 +67,14 @@ class Tenant(TimestampedMixin, models.Model):
                 else:
                     raise e
 
+    @property
+    def owners_count(self):
+        """
+        Calculate the total number of tenant owners for this tenant.
+        Returns the count of tenant owners.
+        """
+        return self.members.filter(tenant_memberships__role=constants.TenantUserRole.OWNER).count()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__original_name = self.name

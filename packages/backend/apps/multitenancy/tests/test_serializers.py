@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock
 
 from ..models import TenantMembership
-from ..constants import TenantUserRole
+from ..constants import TenantUserRole, TenantType
 from ..serializers import CreateTenantInvitationSerializer
 
 
@@ -15,7 +15,7 @@ class TestCreateTenantInvitationSerializer:
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
         )
 
-        tenant = tenant_factory(name="Test Tenant")
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
 
         data = {
             "email": user.email,
@@ -39,7 +39,7 @@ class TestCreateTenantInvitationSerializer:
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
         )
-        tenant = tenant_factory(name="Test Tenant")
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
 
         data = {
             "email": "new_user@example.com",
@@ -64,8 +64,20 @@ class TestCreateTenantInvitationSerializer:
         )
         make_token.assert_called_once()
 
+    def test_create_invitation_for_default_tenant_new_user(self, tenant_factory):
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.DEFAULT)
+
+        data = {
+            "email": "new_user@example.com",
+            "role": TenantUserRole.MEMBER,
+            "tenant_id": str(tenant.id),
+        }
+        serializer = CreateTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant)})
+        assert not serializer.is_valid()
+        assert "Invitation for personal tenant cannot be created." in serializer.errors['non_field_errors'][0]
+
     def test_create_invitation_existing_user_duplicate(self, user, tenant_factory):
-        tenant = tenant_factory(name="Test Tenant")
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
         TenantMembership.objects.create(user=user, tenant=tenant, role=TenantUserRole.ADMIN)
 
         data = {
