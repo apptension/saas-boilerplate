@@ -194,7 +194,7 @@ class TestCurrentUserQuery:
         assert data["otpVerified"] == user.otp_verified
         assert len(data["tenants"]) > 0
         assert data["tenants"][0]["name"] == "test@example.com"
-        assert data["tenants"][0]["membership"]["role"] == "owner"
+        assert data["tenants"][0]["membership"]["role"] == "OWNER"
         assert data["tenants"][0]["type"] == "default"
         assert data["tenants"][0]["membership"]["invitationToken"] is None
 

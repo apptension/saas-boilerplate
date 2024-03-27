@@ -18,7 +18,6 @@ from .constants import TenantUserRole
 
 class TenantMembershipType(DjangoObjectType):
     id = graphene.ID(required=True)
-    role = graphene.String()
     invitation_accepted = graphene.Boolean()
     user_id = graphene.ID()
     invitee_email_address = graphene.String()
