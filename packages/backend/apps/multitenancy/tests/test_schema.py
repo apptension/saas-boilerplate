@@ -18,6 +18,7 @@ class TestCreateTenantMutation:
               name
               slug
               type
+              billingEmail
               membership {
                 role
                 invitationAccepted
@@ -29,11 +30,12 @@ class TestCreateTenantMutation:
 
     def test_create_new_tenant(self, graphene_client, user):
         graphene_client.force_authenticate(user)
-        executed = self.mutate(graphene_client, {"name": "Test"})
+        executed = self.mutate(graphene_client, {"name": "Test", "billingEmail": "test@example.com"})
         response_data = executed["data"]["createTenant"]["tenant"]
         assert response_data["name"] == "Test"
         assert response_data["slug"] == "test"
         assert response_data["type"] == TenantType.ORGANIZATION
+        assert response_data["billingEmail"] == "test@example.com"
         assert response_data["membership"]["role"] == TenantUserRole.OWNER
 
     def test_create_new_tenant_with_same_name(self, graphene_client, user, tenant_factory):
@@ -64,6 +66,7 @@ class TestUpdateTenantMutation:
               name
               slug
               type
+              billingEmail
               membership {
                 role
                 invitationAccepted
@@ -78,11 +81,15 @@ class TestUpdateTenantMutation:
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
-        executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id), "name": "Tenant 2"})
+        executed = self.mutate(
+            graphene_client,
+            {"id": to_global_id("TenantType", tenant.id), "name": "Tenant 2", "billingEmail": "test@example.com"},
+        )
         response_data = executed["data"]["updateTenant"]["tenant"]
         assert response_data["name"] == "Tenant 2"
         assert response_data["slug"] == "tenant-2"
         assert response_data["type"] == TenantType.ORGANIZATION
+        assert response_data["billingEmail"] == "test@example.com"
         assert response_data["membership"]["role"] == TenantUserRole.OWNER
 
     def test_user_without_membership(self, graphene_client, user, tenant_factory):

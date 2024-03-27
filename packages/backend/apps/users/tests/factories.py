@@ -9,6 +9,7 @@ from djstripe.models import Customer
 
 from common.acl.helpers import CommonGroups
 from apps.multitenancy.models import Tenant
+from apps.multitenancy.tests.factories import TenantFactory
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
@@ -106,4 +107,4 @@ class StripeCustomerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Customer
 
-    subscriber = factory.SubFactory(UserFactory, profile=None)
+    subscriber = factory.SubFactory(TenantFactory)

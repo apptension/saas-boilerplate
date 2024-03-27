@@ -26,7 +26,7 @@ pytest_factoryboy.register(factories.RefundFactory)
 
 @pytest.fixture(autouse=True)
 def mock_init_user(mocker):
-    mocker.patch('apps.finances.services.subscriptions.initialize_user')
+    mocker.patch('apps.finances.services.subscriptions.initialize_tenant')
 
 
 @pytest.fixture(scope='function', autouse=True)

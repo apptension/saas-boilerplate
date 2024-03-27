@@ -62,7 +62,11 @@ class TenantUserRoleMiddleware(object):
         """
         request_input = args.get("input")
 
-        tenant_id = request_input.get("tenant_id") or request_input.get("id") if request_input else args.get("id")
+        tenant_id = (
+            request_input.get("tenant_id") or request_input.get("id")
+            if request_input
+            else args.get("tenant_id") or args.get("id")
+        )
 
         if tenant_id:
             id_type, pk = from_global_id(tenant_id)

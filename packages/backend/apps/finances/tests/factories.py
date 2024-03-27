@@ -6,7 +6,7 @@ import pytz
 from django.utils import timezone
 from djstripe import models as djstripe_models, enums
 
-from apps.users.tests import factories as user_factories
+from apps.multitenancy.tests import factories as multitenancy_factories
 from .. import models, constants
 
 
@@ -19,7 +19,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     livemode = False
     currency = 'usd'
     tax_exempt = enums.CustomerTaxExempt.none
-    subscriber = factory.SubFactory(user_factories.UserFactory)
+    subscriber = factory.SubFactory(multitenancy_factories.TenantFactory)
     email = factory.LazyAttribute(lambda obj: obj.subscriber.email)
 
 

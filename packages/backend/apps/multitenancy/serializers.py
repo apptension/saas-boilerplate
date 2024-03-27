@@ -27,10 +27,7 @@ class TenantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Tenant
-        fields = (
-            "id",
-            "name",
-        )
+        fields = ("id", "name", "billing_email")
 
 
 class TenantInvitationActionSerializer(serializers.Serializer):
