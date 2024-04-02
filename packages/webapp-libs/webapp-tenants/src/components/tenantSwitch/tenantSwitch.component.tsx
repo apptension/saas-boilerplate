@@ -1,5 +1,5 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { TenantListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
+import { CommonQueryTenantItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/tooltip';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { ChevronDown, Plus, Settings } from 'lucide-react';
+import { ChevronDown, Plus, Settings, UserPlus } from 'lucide-react';
 import { groupBy, head, prop } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -32,11 +32,19 @@ export const TenantSwitch = () => {
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
   const personalTenant = head(tenantsGrouped[TenantType.PERSONAL]);
-  const organizationTenants = tenantsGrouped[TenantType.ORGANIZATION] ?? [];
+  const organizationTenants = groupBy(
+    (tenant) => (tenant?.membership?.invitationAccepted ? 'organizations' : 'invitations'),
+    tenantsGrouped[TenantType.ORGANIZATION] ?? []
+  );
 
-  const handleTenantChange = (tenant?: TenantListItemFragmentFragment | null) => () => {
+  const handleTenantChange = (tenant?: CommonQueryTenantItemFragmentFragment | null) => () => {
     if (!tenant) return;
     navigate(generateTenantPath(RoutesConfig.home, { tenantId: tenant.id }));
+  };
+
+  const handleInvitationClick = (tenant?: CommonQueryTenantItemFragmentFragment | null) => () => {
+    if (!tenant) return;
+    // navigate(generateTenantPath(RoutesConfig.home, { tenantId: tenant.id }));
   };
 
   const handleNewTenantClick = () => {
@@ -45,6 +53,21 @@ export const TenantSwitch = () => {
 
   const handleTenantSettingsClick = () => {
     navigate(generateTenantPath(TenantRoutesConfig.tenant.settings.members));
+  };
+
+  const handleLastInvitationClick = () => {};
+
+  const renderPendingInvitationBadge = () => {
+    return (
+      <Button color="primary" size="sm" onClick={handleLastInvitationClick}>
+        <UserPlus className="mr-2" size="16" />
+        <FormattedMessage
+          defaultMessage="{invitationsCount, plural, =1 {# invitation} other {# invitations}}"
+          id="TenantSwitch / Invitations Badge"
+          values={{ invitationsCount: organizationTenants?.invitations?.length }}
+        />
+      </Button>
+    );
   };
 
   return (
@@ -65,7 +88,7 @@ export const TenantSwitch = () => {
           >
             {personalTenant?.name}
           </DropdownMenuCheckboxItem>
-          {organizationTenants.length > 0 && (
+          {organizationTenants?.organizations?.length > 0 && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel>
@@ -73,7 +96,7 @@ export const TenantSwitch = () => {
               </DropdownMenuLabel>
             </>
           )}
-          {organizationTenants.map((tenant) => (
+          {organizationTenants?.organizations?.map((tenant) => (
             <DropdownMenuCheckboxItem
               checked={tenant?.id === currentTenant?.id}
               key={tenant?.id}
@@ -81,6 +104,19 @@ export const TenantSwitch = () => {
             >
               {tenant?.name}
             </DropdownMenuCheckboxItem>
+          ))}
+          {organizationTenants?.invitations?.length > 0 && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>
+                <FormattedMessage defaultMessage="Invitations" id="TenantSwitch / Invitations" />
+              </DropdownMenuLabel>
+            </>
+          )}
+          {organizationTenants?.invitations?.map((invitation) => (
+            <DropdownMenuItem key={invitation?.id} onClick={handleInvitationClick(invitation)}>
+              <UserPlus className="mr-2" size="16" /> {invitation?.name}
+            </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleNewTenantClick}>
@@ -99,6 +135,7 @@ export const TenantSwitch = () => {
           <FormattedMessage defaultMessage="Organization settings" id="TenantSwitch / Organization settings" />
         </TooltipContent>
       </Tooltip>
+      {organizationTenants?.invitations?.length > 0 && renderPendingInvitationBadge()}
     </>
   );
 };

@@ -1,8 +1,8 @@
-import { TenantListItemFragmentFragment } from '@sb/webapp-api-client/graphql';
+import { CommonQueryTenantItemFragmentFragment } from '@sb/webapp-api-client/graphql';
 import React from 'react';
 
 type CurrentTenantContext = {
-  data: TenantListItemFragmentFragment | null;
+  data: CommonQueryTenantItemFragmentFragment | null;
 };
 
 export default React.createContext<CurrentTenantContext>({
