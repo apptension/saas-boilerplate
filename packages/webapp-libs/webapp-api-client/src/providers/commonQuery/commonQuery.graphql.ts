@@ -25,6 +25,7 @@ export const commonQueryTenantItemFragment = gql(/* GraphQL */ `
     name
     type
     membership {
+      id
       role
       invitationAccepted
       invitationToken

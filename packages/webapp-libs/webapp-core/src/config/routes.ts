@@ -14,4 +14,5 @@ export const RoutesConfig = {
     confirm: 'confirm/:user/:token',
   }),
   addTenant: 'add-tenant',
+  tenantInvitation: 'tenant-invitation/:token',
 };

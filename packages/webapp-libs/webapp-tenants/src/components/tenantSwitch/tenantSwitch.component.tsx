@@ -19,8 +19,7 @@ import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig as TenantRoutesConfig } from '../../config/routes';
-import { useGenerateTenantPath } from '../../hooks';
-import { useTenants } from '../../hooks/useTenants/useTenants.hook';
+import { useGenerateTenantPath, useTenants } from '../../hooks';
 import { useCurrentTenant } from '../../providers';
 
 export const TenantSwitch = () => {
@@ -43,8 +42,9 @@ export const TenantSwitch = () => {
   };
 
   const handleInvitationClick = (tenant?: CommonQueryTenantItemFragmentFragment | null) => () => {
-    if (!tenant) return;
-    // navigate(generateTenantPath(RoutesConfig.home, { tenantId: tenant.id }));
+    const token = tenant?.membership?.invitationToken;
+    if (!token) return;
+    navigate(generateLocalePath(RoutesConfig.tenantInvitation, { token }));
   };
 
   const handleNewTenantClick = () => {
@@ -55,7 +55,9 @@ export const TenantSwitch = () => {
     navigate(generateTenantPath(TenantRoutesConfig.tenant.settings.members));
   };
 
-  const handleLastInvitationClick = () => {};
+  const handleLastInvitationClick = () => {
+    handleInvitationClick(organizationTenants?.invitations?.[0])();
+  };
 
   const renderPendingInvitationBadge = () => {
     return (

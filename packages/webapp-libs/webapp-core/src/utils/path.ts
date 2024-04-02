@@ -3,6 +3,8 @@ import { is, map } from 'ramda';
 export const getLocalePath = (p: string) => `/:lang/${p}`;
 export const getTenantPath = (p: string) => `/:tenantId/${p}`;
 
+const removeInitialSlash = (str: string): string => (str.startsWith('/') ? str.slice(1) : str);
+
 const assignLocalePathFn =
   <T>(fn: (p: string) => string, paths: Partial<T>) =>
   (route: keyof T) => {
@@ -12,7 +14,7 @@ const assignLocalePathFn =
     return fn(paths[route] as string);
   };
 
-const getTenantPathHelper = (p: string) => getLocalePath(getTenantPath(p));
+export const getTenantPathHelper = (p: string) => getLocalePath(removeInitialSlash(getTenantPath(p)));
 
 /**
  * Helper function to define typed nested route config

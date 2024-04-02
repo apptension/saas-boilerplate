@@ -20,6 +20,7 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
       membership: {
         id: makeId(32),
         invitationAccepted: true,
+        invitationToken: makeId(32),
         role: 'owner',
         __typename: 'TenantMembershipType',
       },

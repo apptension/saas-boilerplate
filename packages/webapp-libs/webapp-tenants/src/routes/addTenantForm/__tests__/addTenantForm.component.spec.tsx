@@ -46,19 +46,20 @@ describe('AddTenantForm: Component', () => {
         data,
       });
 
+      const currentUserRefetchData = {
+        ...user,
+        tenants: [
+          ...user.tenants!,
+          tenantFactory({
+            id: '1',
+            name: variables.input.name,
+            type: TenantTypeField.ORGANIZATION,
+            membership: membershipFactory({ role: TenantUserRole.OWNER }),
+          }),
+        ],
+      };
       const refetchMock = composeMockedQueryResult(commonQueryCurrentUserQuery, {
-        data: {
-          ...user,
-          tenants: [
-            ...user.tenants!,
-            tenantFactory({
-              id: '1',
-              name: variables.input.name,
-              type: TenantTypeField.ORGANIZATION,
-              membership: membershipFactory({ role: TenantUserRole.OWNER }),
-            }),
-          ],
-        },
+        data: currentUserRefetchData,
       });
 
       requestMock.newData = jest.fn(() => ({
@@ -66,7 +67,9 @@ describe('AddTenantForm: Component', () => {
       }));
 
       refetchMock.newData = jest.fn(() => ({
-        data: [data],
+        data: {
+          currentUser: currentUserRefetchData,
+        },
       }));
 
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });

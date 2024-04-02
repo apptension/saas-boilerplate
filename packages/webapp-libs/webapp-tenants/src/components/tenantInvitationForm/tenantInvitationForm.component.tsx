@@ -19,7 +19,7 @@ import {
 import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useTenantRoles } from '../../hooks/useTenantRoles';
+import { useTenantRoles } from '../../hooks';
 import { useTenantInvitationForm } from './tenantInvitationForm.hook';
 
 export type TenantInvitationFormFields = {

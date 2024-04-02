@@ -5,6 +5,7 @@ import { createDeepFactory, makeId } from '@sb/webapp-api-client/tests/utils';
 export const membershipFactory = createDeepFactory<TenantMembershipType>(() => ({
   id: makeId(32),
   invitationAccepted: true,
+  invitationToken: makeId(32),
   role: TenantUserRole.MEMBER,
   __typename: 'TenantMembershipType',
 }));

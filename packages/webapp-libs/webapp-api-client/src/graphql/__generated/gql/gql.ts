@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
-    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
+    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n      tenants {\n        ...commonQueryTenantItemFragment\n      }\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
     "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
@@ -68,6 +68,8 @@ const documents = {
     "\n  fragment tenantFragment on TenantType {\n    id\n    name\n    slug\n    membership {\n      role\n      invitationAccepted\n    }\n  }\n": types.TenantFragmentFragmentDoc,
     "\n  query currentTenantQuery($id: ID!) {\n    tenant(id: $id) {\n      ...tenantFragment\n    }\n  }\n": types.CurrentTenantQueryDocument,
     "\n  mutation addTenantMutation($input: CreateTenantMutationInput!) {\n    createTenant(input: $input) {\n      tenantEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddTenantMutationDocument,
+    "\n  mutation acceptTenantInvitationMutation($input: AcceptTenantInvitationMutationInput!) {\n    acceptTenantInvitation(input: $input) {\n      ok\n    }\n  }\n": types.AcceptTenantInvitationMutationDocument,
+    "\n  mutation declineTenantInvitationMutation($input: DeclineTenantInvitationMutationInput!) {\n    declineTenantInvitation(input: $input) {\n      ok\n    }\n  }\n": types.DeclineTenantInvitationMutationDocument,
     "\n  mutation createTenantInvitationMutation($input: CreateTenantInvitationMutationInput!) {\n    createTenantInvitation(input: $input) {\n      email\n      role\n    }\n  }\n": types.CreateTenantInvitationMutationDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
     "\n  mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {\n    changePassword(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthChangePasswordMutationDocument,
@@ -107,7 +109,7 @@ export function gql(source: "\n  fragment commonQueryCurrentUserFragment on Curr
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"];
+export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -316,6 +318,14 @@ export function gql(source: "\n  query currentTenantQuery($id: ID!) {\n    tenan
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation addTenantMutation($input: CreateTenantMutationInput!) {\n    createTenant(input: $input) {\n      tenantEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation addTenantMutation($input: CreateTenantMutationInput!) {\n    createTenant(input: $input) {\n      tenantEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation acceptTenantInvitationMutation($input: AcceptTenantInvitationMutationInput!) {\n    acceptTenantInvitation(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation acceptTenantInvitationMutation($input: AcceptTenantInvitationMutationInput!) {\n    acceptTenantInvitation(input: $input) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation declineTenantInvitationMutation($input: DeclineTenantInvitationMutationInput!) {\n    declineTenantInvitation(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation declineTenantInvitationMutation($input: DeclineTenantInvitationMutationInput!) {\n    declineTenantInvitation(input: $input) {\n      ok\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
