@@ -1,12 +1,12 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { reportError } from '@sb/webapp-core/utils/reportError';
 import { prop } from 'ramda';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useTenants } from '../../hooks/useTenants/useTenants.hook';
 import currentTenantContext from './currentTenantProvider.context';
-import { CURRENT_TENANT_STORAGE_KEY, CurrentTenantProviderProps } from './currentTenantProvider.types';
+import { setCurrentTenantStorageState, store } from './currentTenantProvider.storage';
+import { CurrentTenantProviderProps } from './currentTenantProvider.types';
 
 export type TenantPathParams = {
   tenantId: string;
@@ -19,26 +19,22 @@ export type TenantPathParams = {
  *
  * @category Component
  */
-export const CurrentTenantProvider = ({
-  children,
-  storageKey = CURRENT_TENANT_STORAGE_KEY,
-}: CurrentTenantProviderProps) => {
+export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) => {
   const params = useParams<TenantPathParams>();
   let { tenantId } = params;
 
   const tenants = useTenants();
+  const storedTenantId = useSyncExternalStore(store.subscribe, store.getSnapshot);
 
-  if (!tenantId) {
-    const localId = localStorage.getItem(storageKey);
-    if (
-      localId &&
-      tenants
-        .map(prop<string>('id'))
-        .filter((id) => !!id)
-        .includes(localId)
-    ) {
-      tenantId = localId;
-    }
+  if (
+    !tenantId &&
+    storedTenantId &&
+    tenants
+      .map(prop<string>('id'))
+      .filter((id) => !!id)
+      .includes(storedTenantId)
+  ) {
+    tenantId = storedTenantId;
   }
 
   let currentTenant = tenants.find((t) => t?.id === tenantId);
@@ -51,13 +47,11 @@ export const CurrentTenantProvider = ({
     }
   }
 
-  if (currentTenant) {
-    try {
-      localStorage.setItem(storageKey, currentTenant.id);
-    } catch (e) {
-      reportError(e);
+  useEffect(() => {
+    if (currentTenant) {
+      setCurrentTenantStorageState(currentTenant.id);
     }
-  }
+  }, [currentTenant?.id]);
 
   const value = useMemo(() => ({ data: currentTenant || null }), [currentTenant?.id, currentTenant?.membership?.role]);
 
