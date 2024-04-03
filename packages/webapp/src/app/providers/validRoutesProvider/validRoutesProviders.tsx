@@ -3,7 +3,7 @@ import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
 import { Toaster } from '@sb/webapp-core/toast';
-import { CurrentTenant } from '@sb/webapp-tenants/providers';
+import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, IntlProvider } from 'react-intl';
@@ -43,13 +43,13 @@ export const ValidRoutesProviders = () => {
         </FormattedMessage>
 
         <ResponsiveThemeProvider>
-          <CurrentTenant>
+          <CurrentTenantProvider>
             <TooltipProvider>
               <Layout>
                 <Outlet />
               </Layout>
             </TooltipProvider>
-          </CurrentTenant>
+          </CurrentTenantProvider>
         </ResponsiveThemeProvider>
 
         <Toaster />

@@ -5,7 +5,7 @@ import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } fr
 import { MemoryRouterProps, generatePath } from 'react-router';
 import { Outlet, Route, Routes } from 'react-router-dom';
 
-import { CurrentTenant } from '../../providers';
+import { CurrentTenantProvider } from '../../providers';
 
 export type WrapperProps = apiUtils.WrapperProps & {
   TenantWrapper?: ComponentType<PropsWithChildren>;
@@ -17,7 +17,7 @@ export type WrapperProps = apiUtils.WrapperProps & {
  * @param TenantWrapper
  * @constructor
  */
-export function TenantsTestProviders({ children, TenantWrapper = CurrentTenant }: WrapperProps) {
+export function TenantsTestProviders({ children, TenantWrapper = CurrentTenantProvider }: WrapperProps) {
   return <TenantWrapper>{children}</TenantWrapper>;
 }
 
@@ -83,9 +83,9 @@ export const PLACEHOLDER_TEST_ID = 'content';
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
 const CurrentTenantRouteElement = () => (
-  <CurrentTenant>
+  <CurrentTenantProvider>
     <Outlet />
-  </CurrentTenant>
+  </CurrentTenantProvider>
 );
 
 export const CurrentTenantRouteWrapper = ({ children }: PropsWithChildren) => {

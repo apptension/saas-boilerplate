@@ -1,1 +1,1 @@
-export * from './currentTenant';
+export * from './currentTenantProvider';

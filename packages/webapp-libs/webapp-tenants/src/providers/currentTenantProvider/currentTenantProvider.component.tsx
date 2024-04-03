@@ -5,8 +5,8 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useTenants } from '../../hooks/useTenants/useTenants.hook';
-import currentTenantContext from './currentTenant.context';
-import { CURRENT_TENANT_STORAGE_KEY, CurrentTenantProviderProps } from './currentTenant.types';
+import currentTenantContext from './currentTenantProvider.context';
+import { CURRENT_TENANT_STORAGE_KEY, CurrentTenantProviderProps } from './currentTenantProvider.types';
 
 export type TenantPathParams = {
   tenantId: string;
@@ -19,7 +19,10 @@ export type TenantPathParams = {
  *
  * @category Component
  */
-export const CurrentTenant = ({ children, storageKey = CURRENT_TENANT_STORAGE_KEY }: CurrentTenantProviderProps) => {
+export const CurrentTenantProvider = ({
+  children,
+  storageKey = CURRENT_TENANT_STORAGE_KEY,
+}: CurrentTenantProviderProps) => {
   const params = useParams<TenantPathParams>();
   let { tenantId } = params;
 

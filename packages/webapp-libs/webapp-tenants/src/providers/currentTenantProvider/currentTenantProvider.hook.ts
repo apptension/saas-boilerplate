@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import currentTenantContext from './currentTenant.context';
+import currentTenantContext from './currentTenantProvider.context';
 
 /**
  * @category hook
