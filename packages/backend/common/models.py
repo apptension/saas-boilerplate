@@ -40,3 +40,21 @@ class TimestampedMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class TenantDependentModelMixin(models.Model):
+    """
+    A mixin class for models that are dependent on a specific tenant.
+    """
+
+    tenant = models.ForeignKey(
+        to="multitenancy.Tenant",
+        on_delete=models.CASCADE,
+        related_name="%(class)s_set",
+        verbose_name="Tenant",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        abstract = True

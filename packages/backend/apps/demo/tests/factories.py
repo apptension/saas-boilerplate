@@ -4,10 +4,12 @@ from .. import models
 
 from apps.users.tests import factories as user_factories
 from apps.content.tests import factories as content_factories
+from apps.multitenancy.tests import factories as multitenancy_factories
 
 
 class CrudDemoItemFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('pystr')
+    tenant = factory.SubFactory(multitenancy_factories.TenantFactory)
 
     class Meta:
         model = models.CrudDemoItem

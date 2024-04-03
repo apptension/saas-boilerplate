@@ -1,5 +1,6 @@
 from django.db import migrations
 from django.utils.text import slugify
+from django.apps.registry import apps as global_apps
 
 from ..constants import TenantType, TenantUserRole
 
@@ -30,7 +31,7 @@ def move_user_to_tenant(apps, schema_editor):
 
 
 def revert_move_user_to_tenant(apps, schema_editor):
-    Customer = apps.get_model('djstripe', 'Customer')
+    Customer = global_apps.get_model('djstripe', 'Customer')
     Tenant = apps.get_model('multitenancy', 'Tenant')
     connection = schema_editor.connection
 
@@ -49,6 +50,7 @@ def revert_move_user_to_tenant(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ('multitenancy', '0003_alter_tenantmembership_unique_together_and_more'),
+        ('djstripe', '0012_2_8'),
     ]
 
     operations = [
