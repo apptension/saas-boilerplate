@@ -115,12 +115,6 @@ class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
     class Meta:
         model = models.CrudDemoItem
 
-    @classmethod
-    def mutate_and_get_payload(cls, root, info, **input):
-        if "tenant_id" in input:
-            _, input["tenant_id"] = from_global_id(input["tenant_id"])
-        return super().mutate_and_get_payload(root, info, **input)
-
 
 class Query(graphene.ObjectType):
     crud_demo_item = graphene.Field(CrudDemoItemType, id=graphene.ID(), tenant_id=graphene.ID())
