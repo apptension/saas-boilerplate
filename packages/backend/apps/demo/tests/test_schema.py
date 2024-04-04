@@ -223,9 +223,10 @@ class TestCreateCrudDemoItemMutation:
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_create_new_item_sends_notification(self, graphene_client, user_factory, tenant, tenant_membership_factory):
-        user = user_factory(has_avatar=True)
-        admin = user_factory(admin=True)
+        owner = user_factory()
+        tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
 
+        user = user_factory(has_avatar=True)
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
@@ -241,7 +242,7 @@ class TestCreateCrudDemoItemMutation:
         assert Notification.objects.count() == 1
         notification = Notification.objects.first()
         assert notification.type == constants.Notification.CRUD_ITEM_CREATED.value
-        assert notification.user == admin
+        assert notification.user == owner
         assert notification.data == {
             "id": item_global_id,
             "name": item.name,
@@ -332,8 +333,10 @@ class TestUpdateCrudDemoItemMutation:
     ):
         user = user_factory(has_avatar=True)
         other_user = user_factory(has_avatar=True)
-        admins = user_factory.create_batch(2, admin=True)
-        crud_demo_item = crud_demo_item_factory(created_by=user)
+        owners = user_factory.create_batch(2)
+        for owner in owners:
+            tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
+        crud_demo_item = crud_demo_item_factory(created_by=user, tenant=tenant)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
         input_data = input_data_factory(crud_demo_item)
         tenant_membership_factory(tenant=tenant, user=other_user, role=TenantUserRole.MEMBER)
@@ -353,8 +356,8 @@ class TestUpdateCrudDemoItemMutation:
         }
         assert notification.issuer == other_user
 
-        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
-        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
         self,
@@ -366,8 +369,10 @@ class TestUpdateCrudDemoItemMutation:
         tenant_membership_factory,
     ):
         user = user_factory()
-        crud_demo_item = crud_demo_item_factory(created_by=user)
-        admins = user_factory.create_batch(2, admin=True)
+        crud_demo_item = crud_demo_item_factory(created_by=user, tenant=tenant)
+        owners = user_factory.create_batch(2)
+        for owner in owners:
+            tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
         input_data = input_data_factory(crud_demo_item)
 
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
@@ -379,8 +384,8 @@ class TestUpdateCrudDemoItemMutation:
         )
 
         assert Notification.objects.count() == 2
-        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
-        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
 
 class TestDeleteCrudDemoItemMutation:

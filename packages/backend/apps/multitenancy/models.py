@@ -87,6 +87,13 @@ class Tenant(TimestampedMixin, models.Model):
         """
         return self.members.filter(tenant_memberships__role=constants.TenantUserRole.OWNER).count()
 
+    @property
+    def owners(self):
+        """
+        Returns the list of Users with an owner role.
+        """
+        return self.members.filter(tenant_memberships__role=constants.TenantUserRole.OWNER).all()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__original_name = self.name
