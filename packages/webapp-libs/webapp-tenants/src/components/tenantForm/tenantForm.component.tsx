@@ -28,6 +28,7 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
     form: {
       register,
       formState: { errors },
+      control,
     },
     form,
     genericError,
@@ -39,7 +40,7 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
     <Form {...form}>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
         <FormField
-          control={form.control}
+          control={control}
           name="name"
           render={({ field }) => (
             <FormItem>
