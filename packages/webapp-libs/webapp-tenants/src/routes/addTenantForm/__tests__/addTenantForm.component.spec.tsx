@@ -13,7 +13,7 @@ import { AddTenantForm, addTenantMutation } from '../addTenantForm.component';
 
 jest.mock('@sb/webapp-core/services/analytics');
 
-describe('AddCrudDemoItem: Component', () => {
+describe('AddTenantForm: Component', () => {
   const Component = () => <AddTenantForm />;
 
   it('should display empty form', async () => {
