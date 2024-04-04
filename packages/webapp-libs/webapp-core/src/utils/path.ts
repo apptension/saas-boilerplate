@@ -1,6 +1,7 @@
 import { is, map } from 'ramda';
 
 export const getLocalePath = (p: string) => `/:lang/${p}`;
+export const getTenantPath = (p: string) => `/:tenantId/${p}`;
 
 const assignGetLocalePath =
   <T>(paths: Partial<T>) =>

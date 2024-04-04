@@ -24,7 +24,7 @@ import { PasswordReset } from '../routes/auth/passwordReset';
 import ValidateOtp from '../routes/auth/validateOtp';
 import { AnonymousRoute, AuthRoute } from '../shared/components/routes';
 import { ConfirmEmail, Home, Login, Logout, NotFound, Profile, Signup } from './asyncComponents';
-import { LANG_PREFIX, RoutesConfig } from './config/routes';
+import { LANG_PREFIX, RoutesConfig, TENANT_PREFIX } from './config/routes';
 import { ValidRoutesProviders } from './providers';
 
 export const App = () => {
@@ -42,8 +42,10 @@ export const App = () => {
           <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-        <Route path={LANG_PREFIX} element={<AuthRoute />}>
+        <Route path={TENANT_PREFIX} element={<AuthRoute />}>
           <Route index element={<Home />} />
+        </Route>
+        <Route path={LANG_PREFIX} element={<AuthRoute />}>
           <Route path={RoutesConfig.profile} element={<Profile />} />
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
           <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />

@@ -6,6 +6,7 @@ import { RoutesConfig as FinancesRoutesConfig } from '@sb/webapp-finances/config
 import { RoutesConfig as GenerativeAIRoutesConfig } from '@sb/webapp-generative-ai/config/routes';
 
 export const LANG_PREFIX = `/:lang?/*`;
+export const TENANT_PREFIX = `/:lang?/:tenantId?/*`;
 
 export const RoutesConfig = {
   ...CoreRoutesConfig,

@@ -4,7 +4,8 @@
     "outDir": "../../../dist/out-tsc",
     "module": "commonjs",
     "types": ["jest", "node", "@types/gtag.js"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
   },
   "include": ["jest.config.ts", "src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.d.ts"]
 }

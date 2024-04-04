@@ -4,6 +4,7 @@ import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
+import { TenantSwitch } from '@sb/webapp-tenants/components/tenantSwitch';
 import { LogOut, Menu, Sun, User } from 'lucide-react';
 import { HTMLAttributes, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -42,6 +43,8 @@ export const Header = (props: HeaderProps) => {
             <Menu />
           </div>
         )}
+
+        {isLoggedIn && <TenantSwitch />}
 
         <div className="flex-1"></div>
 
