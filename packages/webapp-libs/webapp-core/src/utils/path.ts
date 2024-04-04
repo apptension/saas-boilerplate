@@ -9,7 +9,7 @@ const assignLocalePathFn =
     if (typeof paths[route] !== 'string') {
       throw Error('Invalid route');
     }
-    return getLocalePath(paths[route] as string);
+    return fn(paths[route] as string);
   };
 
 const getTenantPathHelper = (p: string) => getLocalePath(getTenantPath(p));
