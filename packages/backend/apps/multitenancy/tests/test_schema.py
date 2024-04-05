@@ -2,7 +2,8 @@ import pytest
 import os
 from graphql_relay import to_global_id
 
-from ..constants import TenantType, TenantUserRole
+from apps.notifications.models import Notification
+from ..constants import TenantType, TenantUserRole, Notification as NotificationConstant
 from ..models import TenantMembership
 
 
@@ -189,7 +190,7 @@ class TestCreateTenantInvitationMutation:
     '''
 
     def test_create_tenant_invitation_by_owner(
-        self, mocker, graphene_client, user, tenant_factory, tenant_membership_factory
+        self, mocker, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory
     ):
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
@@ -198,20 +199,27 @@ class TestCreateTenantInvitationMutation:
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        invited_user = user_factory()
         executed = self.mutate(
             graphene_client,
             {
                 "tenantId": to_global_id("TenantType", tenant.id),
-                "email": "test@example.com",
-                "role": TenantUserRole.ADMIN.upper(),
+                "email": invited_user.email,
+                "role": TenantUserRole.ADMIN,
             },
         )
         response_data = executed["data"]["createTenantInvitation"]
         assert response_data["ok"] is True
-        assert response_data["email"] == "test@example.com"
-        assert response_data["role"] == TenantUserRole.ADMIN.upper()
+        assert response_data["email"] == invited_user.email
+        assert response_data["role"] == TenantUserRole.ADMIN
         assert response_data["tenantId"] == to_global_id("TenantType", tenant.id)
         make_token.assert_called_once()
+
+        assert Notification.objects.count() == 1
+        notification = Notification.objects.first()
+        assert notification.type == NotificationConstant.TENANT_INVITATION_CREATED.value
+        assert notification.user == invited_user
+        assert notification.issuer == user
 
     def test_create_default_tenant_invitation_by_owner(
         self, graphene_client, user, tenant_factory, tenant_membership_factory
@@ -689,6 +697,12 @@ class TestAcceptTenantInvitationMutation:
         assert membership.invitation_accepted_at
         check_token.assert_called_once()
 
+        assert Notification.objects.count() == 1
+        notification = Notification.objects.first()
+        assert notification.type == NotificationConstant.TENANT_INVITATION_ACCEPTED.value
+        assert notification.user == membership.creator
+        assert notification.issuer == user
+
     def test_accept_invitation_by_invitee_wrong_token(
         self, mocker, graphene_client, user, tenant_factory, tenant_membership_factory
     ):
@@ -757,6 +771,12 @@ class TestDeclineTenantInvitationMutation:
         assert response_data["ok"] is True
         assert not TenantMembership.objects.filter(tenant=tenant, user=user).exists()
         check_token.assert_called_once()
+
+        assert Notification.objects.count() == 1
+        notification = Notification.objects.first()
+        assert notification.type == NotificationConstant.TENANT_INVITATION_DECLINED.value
+        assert notification.user == membership.creator
+        assert notification.issuer == user
 
     def test_decline_invitation_by_invitee_wrong_token(
         self, mocker, graphene_client, user, tenant_factory, tenant_membership_factory

@@ -41,7 +41,11 @@ class Tenant(TimestampedMixin, models.Model):
     slug: str = models.SlugField(max_length=100, unique=True)
     type: str = models.CharField(choices=constants.TenantType.choices)
     members = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, through='TenantMembership', related_name='tenants', blank=True
+        settings.AUTH_USER_MODEL,
+        through='TenantMembership',
+        related_name='tenants',
+        blank=True,
+        through_fields=('tenant', 'user'),
     )
     billing_email = models.EmailField(
         db_collation="case_insensitive",
@@ -122,6 +126,9 @@ class TenantMembership(TimestampedMixin, models.Model):
     # User - Tenant connection fields
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tenant_memberships", null=True
+    )
+    creator: settings.AUTH_USER_MODEL = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="created_tenant_memberships"
     )
     role = models.CharField(choices=constants.TenantUserRole.choices, default=constants.TenantUserRole.OWNER)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="user_memberships")

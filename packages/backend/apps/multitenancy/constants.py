@@ -1,3 +1,4 @@
+from enum import Enum
 from django.db import models
 
 
@@ -16,3 +17,9 @@ class TenantUserRole(models.TextChoices):
     OWNER = "OWNER", "Owner"
     ADMIN = "ADMIN", "Administrator"
     MEMBER = "MEMBER", "Member"
+
+
+class Notification(Enum):
+    TENANT_INVITATION_CREATED = "TENANT_INVITATION_CREATED"
+    TENANT_INVITATION_ACCEPTED = "TENANT_INVITATION_ACCEPTED"
+    TENANT_INVITATION_DECLINED = "TENANT_INVITATION_DECLINED"

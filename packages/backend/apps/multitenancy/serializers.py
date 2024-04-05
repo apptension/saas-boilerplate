@@ -5,9 +5,10 @@ from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.utils import timezone
+from graphql_relay import to_global_id
 
 from common.graphql.field_conversions import TextChoicesFieldType
-from . import models
+from . import models, notifications
 from .constants import TenantType, TenantUserRole
 from .services.membership import create_tenant_membership
 from .tokens import tenant_invitation_token
@@ -63,9 +64,14 @@ class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
     def create(self, validated_data):
         membership_id = validated_data["id"]
         user = self.context["request"].user
-        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(
-            is_accepted=True, invitation_accepted_at=timezone.now()
-        )
+        membership = models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).first()
+        if membership:
+            models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(
+                is_accepted=True, invitation_accepted_at=timezone.now()
+            )
+            notifications.send_accepted_tenant_invitation_notification(
+                membership, to_global_id("TenantMembershipType", membership_id)
+            )
         return {"ok": True}
 
 
@@ -77,7 +83,12 @@ class DeclineTenantInvitationSerializer(TenantInvitationActionSerializer):
     def create(self, validated_data):
         membership_id = validated_data["id"]
         user = self.context["request"].user
-        models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).delete()
+        membership = models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).first()
+        if membership:
+            membership.delete()
+            notifications.send_declined_tenant_invitation_notification(
+                membership, to_global_id("TenantMembershipType", membership_id)
+            )
         return {"ok": True}
 
 
@@ -116,6 +127,7 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         tenant_membership_data = {
             "role": role,
             "tenant": tenant,
+            "creator": self.context["request"].user,
         }
         try:
             tenant_membership_data["user"] = User.objects.get(email=email)
