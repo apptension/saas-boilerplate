@@ -88,7 +88,7 @@ export const TenantInvitation = () => {
   if (!tenant) {
     redirectPath = generateLocalePath(RoutesConfig.home);
   } else if (tenant.membership?.invitationAccepted) {
-    redirectPath = generateTenantPath(RoutesConfig.home, { tenantId: tenant.id! });
+    redirectPath = generateTenantPath(RoutesConfig.home, { tenantId: tenant.id });
   }
 
   useEffect(() => {

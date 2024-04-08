@@ -585,6 +585,8 @@ export enum AssetOrder {
 
 export type CancelActiveSubscriptionMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CancelActiveSubscriptionMutationPayload = {
@@ -596,7 +598,9 @@ export type CancelActiveSubscriptionMutationPayload = {
 
 export type ChangeActiveSubscriptionMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
   price: Scalars['String']['input'];
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ChangeActiveSubscriptionMutationPayload = {
@@ -781,6 +785,7 @@ export type CreateFavoriteContentfulDemoItemMutationPayload = {
 export type CreatePaymentIntentMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   product: Scalars['String']['input'];
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreatePaymentIntentMutationPayload = {
@@ -791,6 +796,7 @@ export type CreatePaymentIntentMutationPayload = {
 
 export type CreateSetupIntentMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateSetupIntentMutationPayload = {
@@ -816,6 +822,7 @@ export type CreateTenantInvitationMutationPayload = {
 };
 
 export type CreateTenantMutationInput = {
+  billingEmail?: InputMaybe<Scalars['String']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
@@ -923,6 +930,7 @@ export type DeleteFavoriteContentfulDemoItemMutationPayload = {
 export type DeletePaymentMethodMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeletePaymentMethodMutationPayload = {
@@ -1683,6 +1691,15 @@ export type MarkReadAllNotificationsMutationPayload = {
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export enum MultitenancyTenantMembershipRoleChoices {
+  /** Administrator */
+  ADMIN = 'ADMIN',
+  /** Member */
+  MEMBER = 'MEMBER',
+  /** Owner */
+  OWNER = 'OWNER'
+}
+
 /** An object with an ID */
 export type Node = {
   /** The ID of the object */
@@ -1831,11 +1848,17 @@ export type Query_NodeArgs = {
 };
 
 
+export type QueryActiveSubscriptionArgs = {
+  tenantId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
 export type QueryAllChargesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -1876,6 +1899,7 @@ export type QueryAllPaymentMethodsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -1931,6 +1955,7 @@ export type QueryAssetCollectionArgs = {
 
 export type QueryChargeArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
+  tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -1973,6 +1998,7 @@ export type QueryNodeArgs = {
 
 export type QueryPaymentIntentArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
+  tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -2700,13 +2726,14 @@ export type TenantMembershipType = Node & {
   invitationToken?: Maybe<Scalars['String']['output']>;
   inviteeEmailAddress?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
-  role?: Maybe<Scalars['String']['output']>;
+  role: MultitenancyTenantMembershipRoleChoices;
   userEmail?: Maybe<Scalars['String']['output']>;
   userId?: Maybe<Scalars['ID']['output']>;
 };
 
 export type TenantType = Node & {
   __typename?: 'TenantType';
+  billingEmail?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   membership: TenantMembershipType;
   name?: Maybe<Scalars['String']['output']>;
@@ -2752,6 +2779,7 @@ export type UpdateCurrentUserMutationPayload = {
 export type UpdateDefaultPaymentMethodMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateDefaultPaymentMethodMutationPayload = {
@@ -2779,6 +2807,7 @@ export type UpdatePaymentIntentMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   product: Scalars['String']['input'];
+  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdatePaymentIntentMutationPayload = {
@@ -2802,6 +2831,7 @@ export type UpdateTenantMembershipMutationPayload = {
 };
 
 export type UpdateTenantMutationInput = {
+  billingEmail?: InputMaybe<Scalars['String']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
@@ -2872,7 +2902,7 @@ export type PaginationListTestQueryQuery = { __typename?: 'Query', allNotificati
 
 export type CommonQueryCurrentUserFragmentFragment = { __typename?: 'CurrentUserType', id: string, email: string, firstName?: string | null, lastName?: string | null, roles?: Array<string | null> | null, avatar?: string | null, otpVerified: boolean, otpEnabled: boolean } & { ' $fragmentName'?: 'CommonQueryCurrentUserFragmentFragment' };
 
-export type CommonQueryTenantItemFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, type?: string | null, membership: { __typename?: 'TenantMembershipType', id: string, role?: string | null, invitationAccepted?: boolean | null, invitationToken?: string | null } } & { ' $fragmentName'?: 'CommonQueryTenantItemFragmentFragment' };
+export type CommonQueryTenantItemFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, type?: string | null, membership: { __typename?: 'TenantMembershipType', id: string, role: MultitenancyTenantMembershipRoleChoices, invitationAccepted?: boolean | null, invitationToken?: string | null } } & { ' $fragmentName'?: 'CommonQueryTenantItemFragmentFragment' };
 
 export type CommonQueryCurrentUserQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3219,9 +3249,9 @@ export type TenantMembersListQueryQueryVariables = Exact<{
 }>;
 
 
-export type TenantMembersListQueryQuery = { __typename?: 'Query', tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role?: string | null, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null } | null> | null } | null };
+export type TenantMembersListQueryQuery = { __typename?: 'Query', tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role: MultitenancyTenantMembershipRoleChoices, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null } | null> | null } | null };
 
-export type TenantFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, slug?: string | null, membership: { __typename?: 'TenantMembershipType', role?: string | null, invitationAccepted?: boolean | null } } & { ' $fragmentName'?: 'TenantFragmentFragment' };
+export type TenantFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, slug?: string | null, membership: { __typename?: 'TenantMembershipType', role: MultitenancyTenantMembershipRoleChoices, invitationAccepted?: boolean | null } } & { ' $fragmentName'?: 'TenantFragmentFragment' };
 
 export type CurrentTenantQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];

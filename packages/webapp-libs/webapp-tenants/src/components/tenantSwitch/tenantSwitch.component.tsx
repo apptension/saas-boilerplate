@@ -66,7 +66,7 @@ export const TenantSwitch = () => {
         <FormattedMessage
           defaultMessage="{invitationsCount, plural, =1 {# invitation} other {# invitations}}"
           id="TenantSwitch / Invitations Badge"
-          values={{ invitationsCount: organizationTenants?.invitations?.length }}
+          values={{ invitationsCount: organizationTenants?.invitations?.length ?? 0 }}
         />
       </Button>
     );

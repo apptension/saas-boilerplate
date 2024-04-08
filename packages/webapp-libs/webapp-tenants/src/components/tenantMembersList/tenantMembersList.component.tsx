@@ -11,10 +11,12 @@ export const TenantMembersList = () => {
   const { data } = useQuery(tenantMembersListQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      id: currentTenant!.id,
+      id: currentTenant?.id ?? '',
     },
+    skip: !currentTenant,
   });
 
+  const memberships = data?.tenant?.userMemberships?.filter((membership) => !!membership) ?? [];
   return (
     <Table>
       <TableHeader>
@@ -34,7 +36,7 @@ export const TenantMembersList = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data?.tenant?.userMemberships?.map((membership) => (
+        {memberships.map((membership) => (
           <MembershipEntry membership={membership!} key={membership!.id} />
         ))}
       </TableBody>

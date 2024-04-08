@@ -72,7 +72,7 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
                   {roles
-                    .filter((role) => role !== membership.role)
+                    .filter((role) => role !== (membership.role?.toUpperCase() as TenantUserRole))
                     .map((role) => (
                       <DropdownMenuItem onClick={roleChangeCallbacks[role].callback} key={role}>
                         {getRoleTranslation(role)}

@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
@@ -20,18 +19,15 @@ import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTenantRoles } from '../../hooks';
-import { useTenantInvitationForm } from './tenantInvitationForm.hook';
+import { UseTenantInvitationFormHookProps, useTenantInvitationForm } from './tenantInvitationForm.hook';
 
 export type TenantInvitationFormFields = {
   email: string;
   role: TenantUserRole;
 };
 
-export type TenantInvitationFormProps = {
-  initialData?: TenantInvitationFormFields | null;
-  onSubmit: (formData: TenantInvitationFormFields) => void;
+export type TenantInvitationFormProps = UseTenantInvitationFormHookProps & {
   loading: boolean;
-  error?: ApolloError;
 };
 
 export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: TenantInvitationFormProps) => {
