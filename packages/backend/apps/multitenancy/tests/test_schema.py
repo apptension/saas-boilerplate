@@ -1069,7 +1069,7 @@ class TestTenantQuery:
         make_token.assert_called_once()
 
     def test_tenant_query_user_without_membership(
-        self, graphene_client, user, user_factory, tenant_factory, tenant_membership_factory
+        self, graphene_client, user_factory, tenant_factory, tenant_membership_factory
     ):
         query = """
         query getTenant($id: ID!) {
@@ -1108,6 +1108,7 @@ class TestTenantQuery:
         tenant_factory.create_batch(10)
         tenant = tenant_factory(name="Test tenant", type=TenantType.ORGANIZATION)
         tenant_users = user_factory.create_batch(5)
+        user = user_factory()
         for tenant_user in tenant_users:
             tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER, user=tenant_user)
         graphene_client.force_authenticate(user)

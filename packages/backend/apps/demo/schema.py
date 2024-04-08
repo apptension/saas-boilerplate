@@ -2,10 +2,12 @@ import graphene
 from django.shortcuts import get_object_or_404
 from graphene import relay
 from graphene_django import DjangoObjectType
-from graphql_relay import to_global_id
+from graphql_relay import to_global_id, from_global_id
 
 from apps.content import models as content_models
 from common.graphql import mutations
+from common.acl.policies import IsTenantMemberAccess
+from common.graphql.acl import permission_classes
 from . import models, serializers
 
 
@@ -42,7 +44,7 @@ class ContentfulDemoItemFavoriteConnection(graphene.Connection):
         node = ContentfulDemoItemFavoriteType
 
 
-class CreateCrudDemoItemMutation(mutations.CreateModelMutation):
+class CreateCrudDemoItemMutation(mutations.CreateTenantDependentModelMutation):
     class Meta:
         serializer_class = serializers.CrudDemoItemSerializer
         edge_class = CrudDemoItemConnection.Edge
@@ -103,26 +105,28 @@ class DeleteDocumentDemoItemMutation(mutations.DeleteModelMutation):
         return cls(deleted_ids=[id])
 
 
-class UpdateCrudDemoItemMutation(mutations.UpdateModelMutation):
+class UpdateCrudDemoItemMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
         serializer_class = serializers.CrudDemoItemSerializer
         edge_class = CrudDemoItemConnection.Edge
 
 
-class DeleteCrudDemoItemMutation(mutations.DeleteModelMutation):
+class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
     class Meta:
         model = models.CrudDemoItem
 
 
 class Query(graphene.ObjectType):
-    crud_demo_item = graphene.relay.Node.Field(CrudDemoItemType)
-    all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection)
+    crud_demo_item = graphene.Field(CrudDemoItemType, id=graphene.ID(), tenant_id=graphene.ID())
+    all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection, tenant_id=graphene.ID())
     all_contentful_demo_item_favorites = graphene.relay.ConnectionField(ContentfulDemoItemFavoriteConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 
     @staticmethod
-    def resolve_all_crud_demo_items(root, info, **kwargs):
-        return models.CrudDemoItem.objects.all()
+    @permission_classes(IsTenantMemberAccess)
+    def resolve_all_crud_demo_items(root, info, tenant_id, **kwargs):
+        _, pk = from_global_id(tenant_id)
+        return models.CrudDemoItem.objects.filter(tenant_id=pk).all()
 
     @staticmethod
     def resolve_all_contentful_demo_item_favorites(root, info, **kwargs):
@@ -132,11 +136,22 @@ class Query(graphene.ObjectType):
     def resolve_all_document_demo_items(root, info, **kwargs):
         return info.context.user.documents.all()
 
+    @staticmethod
+    @permission_classes(IsTenantMemberAccess)
+    def resolve_crud_demo_item(root, info, id, tenant_id, **kwargs):
+        _, pk = from_global_id(id)
+        _, tenant_pk = from_global_id(tenant_id)
+        return models.CrudDemoItem.objects.filter(pk=pk, tenant=tenant_pk).first()
 
-class Mutation(graphene.ObjectType):
+
+@permission_classes(IsTenantMemberAccess)
+class TenantMemberMutation(graphene.ObjectType):
     create_crud_demo_item = CreateCrudDemoItemMutation.Field()
     update_crud_demo_item = UpdateCrudDemoItemMutation.Field()
     delete_crud_demo_item = DeleteCrudDemoItemMutation.Field()
+
+
+class Mutation(graphene.ObjectType):
     create_document_demo_item = CreateDocumentDemoItemMutation.Field()
     delete_document_demo_item = DeleteDocumentDemoItemMutation.Field()
     create_favorite_contentful_demo_item = CreateFavoriteContentfulDemoItemMutation.Field()

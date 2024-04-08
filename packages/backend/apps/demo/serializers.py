@@ -9,6 +9,7 @@ from . import models
 
 class CrudDemoItemSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="users.User.id", read_only=True)
+    tenant_id = hidrest.HashidSerializerCharField()
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def update(self, instance, validated_data):
@@ -17,7 +18,7 @@ class CrudDemoItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.CrudDemoItem
-        fields = ('id', 'name', 'created_by')
+        fields = ('id', 'tenant_id', 'name', 'created_by')
 
 
 class DocumentDemoItemSerializer(serializers.ModelSerializer):

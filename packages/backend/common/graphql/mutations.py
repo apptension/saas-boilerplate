@@ -615,7 +615,7 @@ class DeleteModelMutation(ClientIDMutation):
         return get_object_or_404(model, pk=pk, **kwargs)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, id):
+    def mutate_and_get_payload(cls, root, info, id, **kwargs):
         """
         Perform a mutation to delete a model instance
 
@@ -637,6 +637,12 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
         id = graphene.String()
         tenant_id = graphene.String()
 
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)
+
 
 class UpdateTenantDependentModelMutation(UpdateModelMutation):
     class Meta:
@@ -646,6 +652,12 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
         id = graphene.String()
         tenant_id = graphene.String()
 
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)
+
 
 class CreateTenantDependentModelMutation(CreateModelMutation):
     class Meta:
@@ -653,3 +665,9 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
 
     class Input:
         tenant_id = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)
