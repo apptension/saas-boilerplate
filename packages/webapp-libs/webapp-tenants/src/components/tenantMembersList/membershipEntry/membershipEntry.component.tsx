@@ -70,7 +70,7 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0" role="button">
               <GripHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -79,7 +79,7 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
               <FormattedMessage id="Tenant Membersip Entry / Actions" defaultMessage="Actions" />
             </DropdownMenuLabel>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger role="button">
                 <FormattedMessage id="Tenant Membersip Entry / Change role" defaultMessage="Change role" />
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -87,7 +87,7 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
                   {roles
                     .filter((role) => role !== (membership.role?.toUpperCase() as TenantUserRole))
                     .map((role) => (
-                      <DropdownMenuItem onClick={roleChangeCallbacks?.[role].callback} key={role}>
+                      <DropdownMenuItem role="button" onClick={roleChangeCallbacks?.[role].callback} key={role}>
                         {getRoleTranslation(role)}
                       </DropdownMenuItem>
                     ))}
