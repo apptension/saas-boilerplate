@@ -243,8 +243,8 @@ class TestChangeActiveSubscriptionMutation:
     def test_change_active_subscription_by_admin(
         self, graphene_client, subscription_schedule, monthly_plan_price, user_factory, tenant_membership_factory
     ):
-        input_data = {'price': monthly_plan_price.id}
         tenant = subscription_schedule.customer.subscriber
+        input_data = {'price': monthly_plan_price.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -263,8 +263,8 @@ class TestChangeActiveSubscriptionMutation:
     def test_change_active_subscription(
         self, graphene_client, subscription_schedule, monthly_plan_price, user_factory, tenant_membership_factory
     ):
-        input_data = {'price': monthly_plan_price.id}
         tenant = subscription_schedule.customer.subscriber
+        input_data = {'price': monthly_plan_price.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -288,9 +288,9 @@ class TestChangeActiveSubscriptionMutation:
         user_factory,
         tenant_membership_factory,
     ):
-        input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
         tenant = customer.subscriber
+        input_data = {'price': monthly_plan_price.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         subscription_schedule_factory(customer=customer, phases=[{'items': [{'price': free_plan_price.id}]}])
         djstripe_models.PaymentMethod.objects.filter(customer=customer).delete()
@@ -314,9 +314,9 @@ class TestChangeActiveSubscriptionMutation:
         user_factory,
         tenant_membership_factory,
     ):
-        input_data = {'price': monthly_plan_price.id}
         customer = customer_factory(default_payment_method=None)
         tenant = customer.subscriber
+        input_data = {'price': monthly_plan_price.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
         subscription_schedule_factory(
             customer=customer, phases=[{'items': [{'price': monthly_plan_price.id}], 'trial_completed': True}]
@@ -355,10 +355,10 @@ class TestCancelActiveSubscriptionMutation:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed["errors"]
@@ -374,7 +374,7 @@ class TestCancelActiveSubscriptionMutation:
 
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert len(executed["errors"]) == 1
@@ -404,7 +404,7 @@ class TestCancelActiveSubscriptionMutation:
 
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed["errors"]
@@ -428,7 +428,7 @@ class TestCancelActiveSubscriptionMutation:
 
         executed = graphene_client.mutate(
             self.CANCEL_ACTIVE_SUBSCRIPTION_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed['data']
@@ -519,10 +519,10 @@ class TestUpdateDefaultPaymentMethodMutation:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
         executed = graphene_client.mutate(
             self.UPDATE_DEFAULT_PAYMENT_METHOD_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed["errors"]
@@ -533,8 +533,8 @@ class TestUpdateDefaultPaymentMethodMutation:
     ):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        input_data = {"id": other_users_pm.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": other_users_pm.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -554,8 +554,8 @@ class TestUpdateDefaultPaymentMethodMutation:
         self, graphene_client, payment_method_factory, customer, user_factory, tenant_membership_factory
     ):
         payment_method = payment_method_factory(customer=customer)
-        input_data = {"id": payment_method.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": payment_method.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -574,8 +574,8 @@ class TestUpdateDefaultPaymentMethodMutation:
         self, graphene_client, payment_method_factory, customer, stripe_request, user_factory, tenant_membership_factory
     ):
         payment_method = payment_method_factory(customer=customer)
-        input_data = {"id": payment_method.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": payment_method.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -618,8 +618,8 @@ class TestDeletePaymentMethodMutation:
     ):
         other_users_pm = payment_method_factory()
         payment_method = payment_method_factory()
-        input_data = {"id": other_users_pm.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": other_users_pm.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -638,8 +638,8 @@ class TestDeletePaymentMethodMutation:
     def test_detach_payment_method_by_admin(
         self, graphene_client, payment_method, user_factory, tenant_membership_factory
     ):
-        input_data = {"id": payment_method.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": payment_method.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -659,8 +659,8 @@ class TestDeletePaymentMethodMutation:
     ):
         customer = payment_method.customer
         payment_method_global_id = to_global_id('StripePaymentMethodType', str(payment_method.djstripe_id))
-        input_data = {"id": payment_method.id}
         tenant = payment_method.customer.subscriber
+        input_data = {"id": payment_method.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -684,11 +684,11 @@ class TestDeletePaymentMethodMutation:
         self, graphene_client, stripe_request, customer, payment_method_factory, user_factory, tenant_membership_factory
     ):
         payment_method = payment_method_factory(customer=customer)
-        input_data = {"id": payment_method.id}
         customer.default_payment_method = payment_method
         customer.save()
         other_payment_method = payment_method_factory(customer=customer)
         tenant = payment_method.customer.subscriber
+        input_data = {"id": payment_method.id, "tenantId": to_global_id("TenantType", tenant.pk)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -994,8 +994,8 @@ class TestCreatePaymentIntentMutation:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
-        input_data = {"product": "A"}
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
+        input_data = {"product": "A", "tenantId": to_global_id("TenantType", tenant.pk)}
 
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
@@ -1008,7 +1008,7 @@ class TestCreatePaymentIntentMutation:
     def test_return_error_if_product_is_not_passed(
         self, graphene_client, user_factory, tenant, tenant_membership_factory
     ):
-        input_data = {}
+        input_data = {"tenantId": to_global_id("TenantType", tenant.pk)}
 
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
@@ -1022,14 +1022,12 @@ class TestCreatePaymentIntentMutation:
         )
 
         assert executed["errors"]
-        assert executed["errors"][0]["message"] == (
-            "Variable '$input' got invalid value {}; Field 'product' of required type 'String!' was not provided."
-        )
+        assert "Field 'product' of required type 'String!' was not provided." in executed["errors"][0]["message"]
 
     def test_return_error_if_product_does_not_exist(
         self, graphene_client, user_factory, tenant, tenant_membership_factory
     ):
-        input_data = {"product": "A"}
+        input_data = {"product": "A", "tenantId": to_global_id("TenantType", tenant.pk)}
 
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
@@ -1046,7 +1044,7 @@ class TestCreatePaymentIntentMutation:
         assert error["extensions"]["product"] == [{'message': '"A" is not a valid choice.', 'code': 'invalid_choice'}]
 
     def test_creates_payment_intent_by_admin(self, graphene_client, user_factory, tenant, tenant_membership_factory):
-        input_data = {"product": "5"}
+        input_data = {"product": "5", "tenantId": to_global_id("TenantType", tenant.pk)}
 
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
@@ -1063,7 +1061,7 @@ class TestCreatePaymentIntentMutation:
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_creates_payment_intent(self, graphene_client, user_factory, tenant, tenant_membership_factory):
-        input_data = {"product": "5"}
+        input_data = {"product": "5", "tenantId": to_global_id("TenantType", tenant.pk)}
 
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
@@ -1106,9 +1104,13 @@ class TestUpdatePaymentIntentMutation:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client, payment_intent_factory):
+    def test_return_error_for_unauthorized_user(self, graphene_client, payment_intent_factory, tenant):
         payment_intent = payment_intent_factory(amount=50)
-        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
+        input_data = {
+            "id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)),
+            "product": "10",
+            "tenantId": to_global_id("TenantType", tenant.pk),
+        }
 
         executed = graphene_client.mutate(
             self.UPDATE_PAYMENT_INTENT_MUTATION,
@@ -1122,8 +1124,12 @@ class TestUpdatePaymentIntentMutation:
         self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
     ):
         payment_intent = payment_intent_factory(amount=50)
-        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
         tenant = customer.subscriber
+        input_data = {
+            "id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)),
+            "product": "10",
+            "tenantId": to_global_id("TenantType", tenant.pk),
+        }
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -1140,8 +1146,12 @@ class TestUpdatePaymentIntentMutation:
         self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
     ):
         payment_intent = payment_intent_factory(amount=50, customer=customer)
-        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
         tenant = customer.subscriber
+        input_data = {
+            "id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)),
+            "product": "10",
+            "tenantId": to_global_id("TenantType", tenant.pk),
+        }
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -1160,8 +1170,12 @@ class TestUpdatePaymentIntentMutation:
         self, graphene_client, payment_intent_factory, customer, user_factory, tenant_membership_factory
     ):
         payment_intent = payment_intent_factory(amount=50, customer=customer)
-        input_data = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)), "product": "10"}
         tenant = customer.subscriber
+        input_data = {
+            "id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)),
+            "product": "10",
+            "tenantId": to_global_id("TenantType", tenant.pk),
+        }
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -1197,10 +1211,10 @@ class TestCreateSetupIntentMutation:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed["errors"]
@@ -1215,7 +1229,7 @@ class TestCreateSetupIntentMutation:
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed["errors"]
@@ -1228,7 +1242,7 @@ class TestCreateSetupIntentMutation:
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = graphene_client.mutate(
             self.CREATE_PAYMENT_INTENT_MUTATION,
-            variable_values={'input': {}},
+            variable_values={'input': {"tenantId": to_global_id("TenantType", tenant.pk)}},
         )
 
         assert executed['data']['createSetupIntent']

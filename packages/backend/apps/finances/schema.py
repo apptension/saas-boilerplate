@@ -250,7 +250,7 @@ class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.
 
     class Input:
         id = graphene.String()
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     class Meta:
         serializer_class = serializers.UpdateDefaultPaymentMethodSerializer
@@ -280,9 +280,15 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteT
     class Meta:
         model = djstripe_models.PaymentMethod
 
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String(required=True)
+
     @classmethod
     @transaction.atomic
-    def mutate_and_get_payload(cls, root, info, id):
+    def mutate_and_get_payload(cls, root, info, id, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
         obj = cls.get_payment_method(id, info.context.tenant)
         pk = obj.pk
         customers.remove_payment_method(payment_method=obj)
