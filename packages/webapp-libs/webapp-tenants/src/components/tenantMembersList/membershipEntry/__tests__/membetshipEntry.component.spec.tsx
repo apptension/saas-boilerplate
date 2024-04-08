@@ -4,9 +4,9 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { render } from '../../../tests/utils/rendering';
-import { MembershipEntry } from './membershipEntry.component';
-import { updateTenantMembershipMutation } from './membershipEntry.graphql';
+import { render } from '../../../../tests/utils/rendering';
+import { MembershipEntry } from '../membershipEntry.component';
+import { updateTenantMembershipMutation } from '../membershipEntry.graphql';
 import { membershipFactory, tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 
