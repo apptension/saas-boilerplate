@@ -1,3 +1,4 @@
+import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeField } from '@sb/webapp-api-client/constants';
 import { commonQueryCurrentUserQuery } from '@sb/webapp-api-client/providers';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
@@ -6,7 +7,6 @@ import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { TenantRole } from '../../../modules/auth/tenantRole.types';
 import { membershipFactory, tenantFactory } from '../../../tests/factories/tenant';
 import { render } from '../../../tests/utils/rendering';
 import { AddTenantForm, addTenantMutation } from '../addTenantForm.component';
@@ -46,19 +46,20 @@ describe('AddTenantForm: Component', () => {
         data,
       });
 
+      const currentUserRefetchData = {
+        ...user,
+        tenants: [
+          ...(user.tenants ?? []),
+          tenantFactory({
+            id: '1',
+            name: variables.input.name,
+            type: TenantTypeField.ORGANIZATION,
+            membership: membershipFactory({ role: MultitenancyTenantMembershipRoleChoices.OWNER }),
+          }),
+        ],
+      };
       const refetchMock = composeMockedQueryResult(commonQueryCurrentUserQuery, {
-        data: {
-          ...user,
-          tenants: [
-            ...user.tenants!,
-            tenantFactory({
-              id: '1',
-              name: variables.input.name,
-              type: TenantTypeField.ORGANIZATION,
-              membership: membershipFactory({ role: TenantRole.OWNER }),
-            }),
-          ],
-        },
+        data: currentUserRefetchData,
       });
 
       requestMock.newData = jest.fn(() => ({
@@ -66,7 +67,9 @@ describe('AddTenantForm: Component', () => {
       }));
 
       refetchMock.newData = jest.fn(() => ({
-        data: [data],
+        data: {
+          currentUser: currentUserRefetchData,
+        },
       }));
 
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });

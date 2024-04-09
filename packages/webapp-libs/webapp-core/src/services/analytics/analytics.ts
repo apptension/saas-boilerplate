@@ -19,6 +19,7 @@ type ActionMap = {
   profile: 'avatar-update' | 'personal-data-update' | 'password-update' | 'setup-2fa' | 'disable-2fa';
   document: 'upload' | 'delete';
   tenant: 'add' | 'edit' | 'delete';
+  tenantInvitation: 'invite' | 'accept' | 'decline';
 };
 
 export const isAvailable = () => Boolean(ENV.GOOGLE_ANALYTICS_TRACKING_ID);

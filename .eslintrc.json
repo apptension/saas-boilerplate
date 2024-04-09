@@ -18,7 +18,8 @@
               "@sb/webapp-documents/**",
               "@sb/webapp-finances/**",
               "@sb/webapp-generative-ai/**",
-              "@sb/webapp-notifications/**"
+              "@sb/webapp-notifications/**",
+              "@sb/webapp-tenants/**"
             ],
             "depConstraints": [
               {

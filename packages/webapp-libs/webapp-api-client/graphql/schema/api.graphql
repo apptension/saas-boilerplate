@@ -39,11 +39,11 @@ type Query {
   allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
   tenant(id: ID): TenantType
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
-  activeSubscription: SubscriptionScheduleType
-  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
-  allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
-  charge(id: ID): StripeChargeType
-  paymentIntent(id: ID): StripePaymentIntentType
+  activeSubscription(tenantId: ID): SubscriptionScheduleType
+  allPaymentMethods(tenantId: ID, before: String, after: String, first: Int, last: Int): PaymentMethodConnection
+  allCharges(tenantId: ID, before: String, after: String, first: Int, last: Int): ChargeConnection
+  charge(id: ID, tenantId: ID): StripeChargeType
+  paymentIntent(id: ID, tenantId: ID): StripePaymentIntentType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
@@ -88,17 +88,21 @@ type TenantType implements Node {
   name: String
   slug: String
   type: String
+  billingEmail: String
   userMemberships: [TenantMembershipType]
   membership: TenantMembershipType!
 }
 type TenantMembershipType implements Node {
   id: ID!
-  role: String
+  role: MultitenancyTenantMembershipRoleChoices!
   inviteeEmailAddress: String
   invitationAccepted: Boolean
   userId: ID
-  username: String
   invitationToken: String
+  firstName: String
+  lastName: String
+  userEmail: String
+  avatar: String
 }
 type StripePriceConnection {
   "Pagination data for this connection."
@@ -746,10 +750,11 @@ type ApiMutation {
   updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
-  deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
+  updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
   createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
   acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
   declineTenantInvitation(input: DeclineTenantInvitationMutationInput!): DeclineTenantInvitationMutationPayload
+  deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -795,8 +800,9 @@ type CreateTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
-type DeleteTenantMembershipMutationPayload {
-  deletedIds: [ID]
+type UpdateTenantMembershipMutationPayload {
+  tenantMembership: TenantMembershipType
+  tenantMembershipEdge: TenantEdge
   clientMutationId: String
 }
 type CreateTenantMutationPayload {
@@ -810,6 +816,10 @@ type AcceptTenantInvitationMutationPayload {
 }
 type DeclineTenantInvitationMutationPayload {
   ok: Boolean
+  clientMutationId: String
+}
+type DeleteTenantMembershipMutationPayload {
+  deletedIds: [ID]
   clientMutationId: String
 }
 type GenerateSaasIdeasMutationPayload {
@@ -1009,6 +1019,14 @@ type NotificationCreatedSubscription {
 interface Node {
   "The ID of the object"
   id: ID!
+}
+enum MultitenancyTenantMembershipRoleChoices {
+  "Owner"
+  OWNER
+  "Administrator"
+  ADMIN
+  "Member"
+  MEMBER
 }
 enum DjstripeProductTypeChoices {
   "Good"
@@ -1431,6 +1449,7 @@ enum DjstripeSetupIntentUsageChoices {
 }
 input UpdateTenantMutationInput {
   name: String!
+  billingEmail: String
   id: ID!
   clientMutationId: String
 }
@@ -1444,12 +1463,15 @@ input CreateTenantInvitationMutationInput {
   tenantId: String!
   clientMutationId: String
 }
-input DeleteTenantMembershipMutationInput {
-  id: String
+input UpdateTenantMembershipMutationInput {
+  id: ID!
+  tenantId: String
+  role: TenantUserRole!
   clientMutationId: String
 }
 input CreateTenantMutationInput {
   name: String!
+  billingEmail: String
   clientMutationId: String
 }
 input AcceptTenantInvitationMutationInput {
@@ -1464,35 +1486,49 @@ input DeclineTenantInvitationMutationInput {
   token: String!
   clientMutationId: String
 }
+input DeleteTenantMembershipMutationInput {
+  id: String
+  tenantId: String
+  clientMutationId: String
+}
 input GenerateSaasIdeasMutationInput {
   keywords: [String]
   clientMutationId: String
 }
 input ChangeActiveSubscriptionMutationInput {
+  id: String
+  tenantId: String
   price: String!
   clientMutationId: String
 }
 input CancelActiveSubscriptionMutationInput {
+  id: String
+  tenantId: String
   clientMutationId: String
 }
 input UpdateDefaultPaymentMethodMutationInput {
   id: String
+  tenantId: String
   clientMutationId: String
 }
 input DeletePaymentMethodMutationInput {
   id: String
+  tenantId: String
   clientMutationId: String
 }
 input CreatePaymentIntentMutationInput {
+  tenantId: String
   product: String!
   clientMutationId: String
 }
 input UpdatePaymentIntentMutationInput {
-  product: String!
   id: ID!
+  tenantId: String
+  product: String!
   clientMutationId: String
 }
 input CreateSetupIntentMutationInput {
+  tenantId: String
   clientMutationId: String
 }
 input ChangePasswordMutationInput {
