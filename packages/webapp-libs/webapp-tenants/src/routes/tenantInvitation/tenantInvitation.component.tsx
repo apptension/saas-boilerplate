@@ -97,7 +97,7 @@ export const TenantInvitation = () => {
     }
   }, [redirectPath]);
 
-  if (redirectPath) {
+  if (!tenant || redirectPath) {
     return null;
   }
 
@@ -116,7 +116,7 @@ export const TenantInvitation = () => {
             <FormattedMessage
               defaultMessage="You are invited to join the organization: {organizationName}"
               id="Tenant Invitation / Invitation message"
-              values={{ organizationName: tenant?.name }}
+              values={{ organizationName: tenant.name }}
             />
           </div>
           <div className="flex justify-start gap-2 mt-4">

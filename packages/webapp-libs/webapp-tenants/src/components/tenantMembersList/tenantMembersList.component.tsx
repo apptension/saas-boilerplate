@@ -36,9 +36,7 @@ export const TenantMembersList = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {memberships.map((membership) => (
-          <MembershipEntry membership={membership!} key={membership!.id} />
-        ))}
+        {memberships.map((membership) => membership && <MembershipEntry membership={membership} key={membership.id} />)}
       </TableBody>
     </Table>
   );
