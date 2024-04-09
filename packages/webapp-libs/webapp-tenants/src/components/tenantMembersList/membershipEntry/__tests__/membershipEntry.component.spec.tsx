@@ -1,4 +1,4 @@
-import { TenantUserRole } from '@sb/webapp-api-client';
+import { MultitenancyTenantMembershipRoleChoices, TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
@@ -14,7 +14,7 @@ describe('MembershipEntry: Component', () => {
     const mockedId = '1';
     const tenantId = '2';
     const membership = membershipFactory({
-      role: TenantUserRole.ADMIN,
+      role: MultitenancyTenantMembershipRoleChoices.ADMIN,
       id: mockedId,
     });
     const user = currentUserFactory({
@@ -47,7 +47,9 @@ describe('MembershipEntry: Component', () => {
       data,
     }));
 
-    render(<MembershipEntry membership={membership} />, { apolloMocks: [commonQueryMock, requestMock] });
+    render(<MembershipEntry membership={membership} />, {
+      apolloMocks: [commonQueryMock, requestMock],
+    });
 
     await userEvent.click(await screen.findByRole('button'));
     await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
