@@ -6,10 +6,11 @@ import { userEvent } from '@testing-library/user-event';
 
 import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
 import { render } from '../../../../tests/utils/rendering';
-import { MembershipEntry } from '../membershipEntry.component';
+import { MembershipEntry, MembershipEntryProps } from '../membershipEntry.component';
 import { updateTenantMembershipMutation } from '../membershipEntry.graphql';
 
 describe('MembershipEntry: Component', () => {
+  const Component = (props: MembershipEntryProps) => <MembershipEntry {...props} />;
   it('should commit update mutation', async () => {
     const mockedId = '1';
     const tenantId = '2';
@@ -47,7 +48,9 @@ describe('MembershipEntry: Component', () => {
       data,
     }));
 
-    render(<MembershipEntry membership={membership} />, {
+    const refetch = jest.fn();
+
+    render(<Component membership={membership} onAfterUpdate={refetch} />, {
       apolloMocks: [commonQueryMock, requestMock],
     });
 
@@ -55,6 +58,7 @@ describe('MembershipEntry: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
     await userEvent.click(screen.getByRole('button', { name: /Member/i }));
     expect(requestMock.newData).toHaveBeenCalled();
+    expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('🎉 The user role was updated successfully!');
   });

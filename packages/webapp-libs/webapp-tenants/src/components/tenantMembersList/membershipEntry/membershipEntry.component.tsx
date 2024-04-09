@@ -27,10 +27,10 @@ import { updateTenantMembershipMutation } from './membershipEntry.graphql';
 export type MembershipEntryProps = {
   className?: string;
   membership: TenantMembershipType;
-  refetch?: () => void;
+  onAfterUpdate?: () => void;
 };
 
-export const MembershipEntry = ({ membership, className, refetch }: MembershipEntryProps) => {
+export const MembershipEntry = ({ membership, className, onAfterUpdate }: MembershipEntryProps) => {
   const { data: currentTenant } = useCurrentTenant();
   const { toast } = useToast();
   const { getRoleTranslation } = useTenantRoles();
@@ -41,10 +41,18 @@ export const MembershipEntry = ({ membership, className, refetch }: MembershipEn
     defaultMessage: '🎉 The user role was updated successfully!',
   });
 
+  const failMessage = intl.formatMessage({
+    id: 'Membership Entry / UpdateRole / Fail message',
+    defaultMessage: 'Unable to change the user role.',
+  });
+
   const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
     onCompleted: () => {
-      refetch?.();
+      onAfterUpdate?.();
       toast({ description: successMessage });
+    },
+    onError: () => {
+      toast({ description: failMessage, variant: 'destructive' });
     },
   });
 

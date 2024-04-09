@@ -38,7 +38,7 @@ export const TenantMembersList = () => {
       <TableBody>
         {memberships.map(
           (membership) =>
-            membership && <MembershipEntry membership={membership} key={membership.id} refetch={refetch} />
+            membership && <MembershipEntry membership={membership} key={membership.id} onAfterUpdate={refetch} />
         )}
       </TableBody>
     </Table>
