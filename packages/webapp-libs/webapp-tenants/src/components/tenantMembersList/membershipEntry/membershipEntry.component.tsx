@@ -12,11 +12,13 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/dropdownMenu';
+import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/skeleton';
 import { TableCell, TableRow } from '@sb/webapp-core/components/table';
+import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
 import { indexBy, prop, trim } from 'ramda';
 import { useMemo } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTenantRoles } from '../../../hooks/useTenantRoles';
 import { useCurrentTenant } from '../../../providers';
@@ -25,12 +27,26 @@ import { updateTenantMembershipMutation } from './membershipEntry.graphql';
 export type MembershipEntryProps = {
   className?: string;
   membership: TenantMembershipType;
+  refetch?: () => void;
 };
 
-export const MembershipEntry = ({ membership, className }: MembershipEntryProps) => {
+export const MembershipEntry = ({ membership, className, refetch }: MembershipEntryProps) => {
   const { data: currentTenant } = useCurrentTenant();
+  const { toast } = useToast();
   const { getRoleTranslation } = useTenantRoles();
-  const [commitUpdateMutation] = useMutation(updateTenantMembershipMutation);
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    id: 'Membership Entry / UpdateRole / Success message',
+    defaultMessage: '🎉 The user role was updated successfully!',
+  });
+
+  const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
+    onCompleted: () => {
+      refetch?.();
+      toast({ description: successMessage });
+    },
+  });
 
   const roles = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER];
   const roleChangeCallbacks = useMemo(() => {
@@ -53,7 +69,14 @@ export const MembershipEntry = ({ membership, className }: MembershipEntryProps)
   return (
     <TableRow className={className}>
       <TableCell>{name || membership.userEmail || membership.inviteeEmailAddress}</TableCell>
-      <TableCell>{getRoleTranslation(membership.role?.toUpperCase() as TenantUserRole)}</TableCell>
+
+      <TableCell>
+        {loading ? (
+          <SkeletonComponent className="h-6 w-12" />
+        ) : (
+          getRoleTranslation(membership.role?.toUpperCase() as TenantUserRole)
+        )}
+      </TableCell>
       <TableCell>
         {membership.invitationAccepted ? (
           <div className="flex items-center">

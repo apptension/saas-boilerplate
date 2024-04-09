@@ -8,7 +8,7 @@ import { tenantMembersListQuery } from './tenantMembersList.graphql';
 
 export const TenantMembersList = () => {
   const { data: currentTenant } = useCurrentTenant();
-  const { data } = useQuery(tenantMembersListQuery, {
+  const { data, refetch } = useQuery(tenantMembersListQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
       id: currentTenant?.id ?? '',
@@ -36,7 +36,10 @@ export const TenantMembersList = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {memberships.map((membership) => membership && <MembershipEntry membership={membership} key={membership.id} />)}
+        {memberships.map(
+          (membership) =>
+            membership && <MembershipEntry membership={membership} key={membership.id} refetch={refetch} />
+        )}
       </TableBody>
     </Table>
   );
