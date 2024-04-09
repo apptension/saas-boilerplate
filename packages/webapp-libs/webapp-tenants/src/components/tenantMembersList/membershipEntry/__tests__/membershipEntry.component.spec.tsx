@@ -53,5 +53,7 @@ describe('MembershipEntry: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
     await userEvent.click(screen.getByRole('button', { name: /Member/i }));
     expect(requestMock.newData).toHaveBeenCalled();
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('🎉 The user role was updated successfully!');
   });
 });
