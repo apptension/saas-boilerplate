@@ -4,17 +4,13 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
+import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
 import { render } from '../../../../tests/utils/rendering';
 import { MembershipEntry } from '../membershipEntry.component';
 import { updateTenantMembershipMutation } from '../membershipEntry.graphql';
-import { membershipFactory, tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 
 describe('MembershipEntry: Component', () => {
   it('should commit update mutation', async () => {
-    jest.mock('react-router-dom', () => ({
-      useParams: jest.fn().mockReturnValue({ tenantId: '2' }),
-    }));
     const mockedId = '1';
     const tenantId = '2';
     const membership = membershipFactory({
@@ -51,12 +47,7 @@ describe('MembershipEntry: Component', () => {
       data,
     }));
 
-    render(
-      <CurrentTenantProvider>
-        <MembershipEntry membership={membership} />
-      </CurrentTenantProvider>,
-      { apolloMocks: [commonQueryMock, requestMock] }
-    );
+    render(<MembershipEntry membership={membership} />, { apolloMocks: [commonQueryMock, requestMock] });
 
     await userEvent.click(await screen.findByRole('button'));
     await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
