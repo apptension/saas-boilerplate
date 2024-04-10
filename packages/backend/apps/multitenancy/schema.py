@@ -155,7 +155,7 @@ class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
         user = info.context.user
         user_role = info.context.user_role
 
-        if user_role is not TenantUserRole.OWNER and obj.user != user:
+        if user_role != TenantUserRole.OWNER and obj.user != user:
             raise PermissionDenied(PERMISSION_DENIED_MESSAGE)
 
         if obj.role == TenantUserRole.OWNER and info.context.tenant.owners_count == 1:

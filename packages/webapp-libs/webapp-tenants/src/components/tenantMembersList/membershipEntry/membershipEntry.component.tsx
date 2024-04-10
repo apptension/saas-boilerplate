@@ -22,7 +22,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTenantRoles } from '../../../hooks/useTenantRoles';
 import { useCurrentTenant } from '../../../providers';
-import { updateTenantMembershipMutation } from './membershipEntry.graphql';
+import { deleteTenantMembershipMutation, updateTenantMembershipMutation } from './membershipEntry.graphql';
 
 export type MembershipEntryProps = {
   className?: string;
@@ -36,23 +36,43 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
   const { getRoleTranslation } = useTenantRoles();
   const intl = useIntl();
 
-  const successMessage = intl.formatMessage({
+  const updateSuccessMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateRole / Success message',
     defaultMessage: '🎉 The user role was updated successfully!',
   });
 
-  const failMessage = intl.formatMessage({
+  const updateFailMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateRole / Fail message',
     defaultMessage: 'Unable to change the user role.',
+  });
+
+  const deleteSuccessMessage = intl.formatMessage({
+    id: 'Membership Entry / DeleteMembership / Success message',
+    defaultMessage: '🎉 User was deleted successfully!',
+  });
+
+  const deleteFailMessage = intl.formatMessage({
+    id: 'Membership Entry / DeleteMembership / Fail message',
+    defaultMessage: 'Unable to delete the user.',
   });
 
   const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
     onCompleted: () => {
       onAfterUpdate?.();
-      toast({ description: successMessage });
+      toast({ description: updateSuccessMessage });
     },
     onError: () => {
-      toast({ description: failMessage, variant: 'destructive' });
+      toast({ description: updateFailMessage, variant: 'destructive' });
+    },
+  });
+
+  const [commitDeleteMutation] = useMutation(deleteTenantMembershipMutation, {
+    onCompleted: () => {
+      onAfterUpdate?.();
+      toast({ description: deleteSuccessMessage });
+    },
+    onError: () => {
+      toast({ description: deleteFailMessage, variant: 'destructive' });
     },
   });
 
@@ -72,6 +92,19 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
     return indexBy(prop('role'), mapper);
   }, [roles, membership.id]);
+
+  const deleteMembership = () => {
+    if (!currentTenant) return;
+
+    commitDeleteMutation({
+      variables: {
+        input: {
+          id: membership.id,
+          tenantId: currentTenant.id,
+        },
+      },
+    });
+  };
 
   const name = trim([membership.firstName, membership.lastName].map((s) => trim(s ?? '')).join(' '));
   return (
@@ -125,7 +158,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-            <DropdownMenuItem>
+            <DropdownMenuItem role="button" onClick={deleteMembership}>
               <FormattedMessage id="Tenant Membersip Entry / Delete" defaultMessage="Delete" />
             </DropdownMenuItem>
           </DropdownMenuContent>
