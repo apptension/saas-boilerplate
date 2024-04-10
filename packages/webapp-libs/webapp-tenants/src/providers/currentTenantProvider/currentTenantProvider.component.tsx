@@ -53,7 +53,10 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
     }
   }, [currentTenant?.id]);
 
-  const value = useMemo(() => ({ data: currentTenant || null }), [currentTenant?.id, currentTenant?.membership?.role]);
+  const value = useMemo(
+    () => ({ data: currentTenant || null }),
+    [currentTenant?.id, currentTenant?.membership?.role, currentTenant?.name]
+  );
 
   return <currentTenantContext.Provider value={value}>{children}</currentTenantContext.Provider>;
 };
