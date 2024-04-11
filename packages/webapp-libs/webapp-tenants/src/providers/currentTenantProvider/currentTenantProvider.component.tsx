@@ -1,4 +1,6 @@
+import { CurrentUserType } from '@sb/webapp-api-client';
 import { TenantType } from '@sb/webapp-api-client/constants';
+import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { prop } from 'ramda';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useTenants } from '../../hooks/useTenants/useTenants.hook';
 import currentTenantContext from './currentTenantProvider.context';
 import { setCurrentTenantStorageState, store } from './currentTenantProvider.storage';
-import { CurrentTenantProviderProps } from './currentTenantProvider.types';
+import { CurrentTenantProviderProps, CurrentTenantStorageState } from './currentTenantProvider.types';
 
 export type TenantPathParams = {
   tenantId: string;
@@ -22,9 +24,20 @@ export type TenantPathParams = {
 export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) => {
   const params = useParams<TenantPathParams>();
   let { tenantId } = params;
+  const { data } = useCommonQuery();
+  const userId = (data?.currentUser as CurrentUserType)?.id;
 
   const tenants = useTenants();
-  const storedTenantId = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  // const storedTenantId = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const storedState = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  let storedTenantId, parsedStoredState: CurrentTenantStorageState;
+  try {
+    parsedStoredState = JSON.parse(storedState);
+    storedTenantId = parsedStoredState?.[userId] ?? null;
+  } catch (e) {
+    parsedStoredState = {};
+    storedTenantId = null;
+  }
 
   if (
     !tenantId &&
@@ -37,7 +50,7 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
     tenantId = storedTenantId;
   }
 
-  let currentTenant = tenants.find((t) => t?.id === tenantId);
+  let currentTenant = tenants.filter((t) => t?.membership.invitationAccepted).find((t) => t?.id === tenantId);
   if (!currentTenant) {
     // select first default
     currentTenant = tenants.find((t) => t?.type === TenantType.PERSONAL);
@@ -49,7 +62,8 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
 
   useEffect(() => {
     if (currentTenant) {
-      setCurrentTenantStorageState(currentTenant.id);
+      parsedStoredState[userId] = currentTenant.id;
+      setCurrentTenantStorageState(parsedStoredState);
     }
   }, [currentTenant?.id]);
 
