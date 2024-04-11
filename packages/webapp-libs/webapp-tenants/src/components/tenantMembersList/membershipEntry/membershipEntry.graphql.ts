@@ -9,3 +9,12 @@ export const updateTenantMembershipMutation = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const deleteTenantMembershipMutation = gql(/* GraphQL */ `
+  mutation deleteTenantMembershipMutation($input: DeleteTenantMembershipMutationInput!) {
+    deleteTenantMembership(input: $input) {
+      deletedIds
+      clientMutationId
+    }
+  }
+`);
