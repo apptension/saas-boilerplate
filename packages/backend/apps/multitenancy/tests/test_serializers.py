@@ -10,10 +10,11 @@ pytestmark = pytest.mark.django_db
 
 
 class TestCreateTenantInvitationSerializer:
-    def test_create_invitation_existing_user(self, mocker, user, tenant_factory):
+    def test_create_invitation_existing_user(self, mocker, user, user_factory, tenant_factory):
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
         )
+        creator = user_factory()
 
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
 
@@ -22,7 +23,7 @@ class TestCreateTenantInvitationSerializer:
             "role": TenantUserRole.ADMIN,
             "tenant_id": str(tenant.id),
         }
-        serializer = CreateTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant)})
+        serializer = CreateTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
         assert serializer.is_valid()
 
         result = serializer.create(serializer.validated_data)
@@ -35,10 +36,11 @@ class TestCreateTenantInvitationSerializer:
         )
         make_token.assert_called_once()
 
-    def test_create_invitation_new_user(self, mocker, user, tenant_factory):
+    def test_create_invitation_new_user(self, mocker, user_factory, tenant_factory):
         make_token = mocker.patch(
             "apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token"
         )
+        creator = user_factory()
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
 
         data = {
@@ -46,7 +48,7 @@ class TestCreateTenantInvitationSerializer:
             "role": TenantUserRole.MEMBER,
             "tenant_id": str(tenant.id),
         }
-        serializer = CreateTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant)})
+        serializer = CreateTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
         assert serializer.is_valid()
 
         result = serializer.create(serializer.validated_data)

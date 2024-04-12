@@ -138,7 +138,7 @@ class CreateTenantInvitationMutation(mutations.SerializerMutation):
 class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
     class Input:
         id = graphene.String()
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     class Meta:
         model = models.TenantMembership
@@ -168,7 +168,7 @@ class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
 class UpdateTenantMembershipMutation(mutations.UpdateModelMutation):
     class Input:
         id = graphene.String()
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     class Meta:
         serializer_class = serializers.UpdateTenantMembershipSerializer

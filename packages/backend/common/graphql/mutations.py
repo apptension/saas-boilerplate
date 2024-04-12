@@ -635,7 +635,7 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
 
     class Input:
         id = graphene.String()
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
@@ -650,7 +650,7 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
 
     class Input:
         id = graphene.String()
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
@@ -664,7 +664,7 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
         abstract = True
 
     class Input:
-        tenant_id = graphene.String()
+        tenant_id = graphene.String(required=True)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
