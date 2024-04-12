@@ -1,3 +1,4 @@
+import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
 import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
@@ -15,6 +16,7 @@ import {
   TransactionsHistoryContent,
 } from '@sb/webapp-finances/routes';
 import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
+import { TenantAuthRoute } from '@sb/webapp-tenants/components/routes/tenantAuthRoute';
 import {
   AddTenantForm,
   TenantGeneralSettings,
@@ -51,9 +53,20 @@ export const App = () => {
         </Route>
         <Route path={TENANT_PREFIX} element={<AuthRoute />}>
           <Route index element={<Home />} />
-          <Route element={<TenantSettings />}>
-            <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
-            <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+          <Route
+            element={
+              <TenantAuthRoute
+                allowedRoles={[
+                  MultitenancyTenantMembershipRoleChoices.ADMIN,
+                  MultitenancyTenantMembershipRoleChoices.OWNER,
+                ]}
+              />
+            }
+          >
+            <Route element={<TenantSettings />}>
+              <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
+              <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+            </Route>
           </Route>
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute />}>
