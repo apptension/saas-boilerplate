@@ -147,7 +147,7 @@ class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
     def get_object(cls, id, tenant, **kwargs):
         model = cls._meta.model
         _, pk = from_global_id(id)
-        return get_object_or_404(model, pk=pk, tenant=tenant)
+        return get_object_or_404(model.objects.get_all(), pk=pk, tenant=tenant)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, id, **kwargs):
@@ -177,9 +177,7 @@ class UpdateTenantMembershipMutation(mutations.UpdateModelMutation):
 
     @classmethod
     def get_object(cls, model_class, root, info, **input):
-        return get_object_or_404(
-            cls.get_queryset(model_class, root, info, **input), pk=input["id"], tenant=info.context.tenant
-        )
+        return get_object_or_404(model_class.objects.get_all(), pk=input["id"], tenant=info.context.tenant)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):

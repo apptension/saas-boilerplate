@@ -151,7 +151,7 @@ class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         tenant = self.context["request"].tenant
-        actual_value = models.TenantMembership.objects.get(pk=attrs["id"])
+        actual_value = models.TenantMembership.objects.get_all().filter(pk=attrs["id"]).first()
         if (
             actual_value
             and actual_value.role == TenantUserRole.OWNER
