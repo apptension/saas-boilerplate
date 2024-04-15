@@ -1,6 +1,6 @@
-import { CurrentUserType } from '@sb/webapp-api-client';
+import { getFragmentData } from '@sb/webapp-api-client';
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { useCommonQuery } from '@sb/webapp-api-client/providers';
+import { commonQueryCurrentUserFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
 import { prop } from 'ramda';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useParams } from 'react-router-dom';
@@ -25,15 +25,15 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
   const params = useParams<TenantPathParams>();
   let { tenantId } = params;
   const { data } = useCommonQuery();
-  const userId = (data?.currentUser as CurrentUserType)?.id;
+  const profile = getFragmentData(commonQueryCurrentUserFragment, data?.currentUser);
+  const userId = profile?.id;
 
   const tenants = useTenants();
-  // const storedTenantId = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const storedState = useSyncExternalStore(store.subscribe, store.getSnapshot);
   let storedTenantId, parsedStoredState: CurrentTenantStorageState;
   try {
     parsedStoredState = JSON.parse(storedState);
-    storedTenantId = parsedStoredState?.[userId] ?? null;
+    storedTenantId = userId ? parsedStoredState?.[userId] ?? null : null;
   } catch (e) {
     parsedStoredState = {};
     storedTenantId = null;
@@ -61,11 +61,11 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
   }
 
   useEffect(() => {
-    if (currentTenant) {
+    if (currentTenant && userId) {
       parsedStoredState[userId] = currentTenant.id;
       setCurrentTenantStorageState(parsedStoredState);
     }
-  }, [currentTenant?.id]);
+  }, [currentTenant?.id, userId]);
 
   const value = useMemo(
     () => ({ data: currentTenant || null }),
