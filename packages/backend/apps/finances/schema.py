@@ -343,7 +343,7 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     @permission_classes(IsTenantOwnerAccess)
-    def resolve_active_subscription(root, info):
+    def resolve_active_subscription(root, info, **kwargs):
         return subscriptions.get_schedule(tenant=info.context.tenant)
 
     @staticmethod
@@ -359,14 +359,14 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     @permission_classes(IsTenantOwnerAccess)
-    def resolve_charge(root, info, id):
+    def resolve_charge(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
     @staticmethod
     @permission_classes(IsTenantOwnerAccess)
-    def resolve_payment_intent(root, info, id):
+    def resolve_payment_intent(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.tenant, pk=pk)
 

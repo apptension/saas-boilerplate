@@ -46,8 +46,8 @@ class TestAllSubscriptionPlansQuery:
 
 class TestActiveSubscriptionQuery:
     ACTIVE_SUBSCRIPTION_QUERY = '''
-        query  {
-          activeSubscription {
+        query($tenantId: ID) {
+          activeSubscription(tenantId: $tenantId) {
             subscription {
               pk
               status
@@ -122,8 +122,10 @@ class TestActiveSubscriptionQuery:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
-        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
+        executed = graphene_client.query(
+            self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -146,7 +148,9 @@ class TestActiveSubscriptionQuery:
         )
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
-        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+        executed = graphene_client.query(
+            self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -168,7 +172,9 @@ class TestActiveSubscriptionQuery:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
-        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+        executed = graphene_client.query(
+            self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed['data']['activeSubscription']['phases'][0]['trialEnd']
         assert executed['data']['activeSubscription']['subscription']['trialStart']
@@ -183,7 +189,9 @@ class TestActiveSubscriptionQuery:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
-        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+        executed = graphene_client.query(
+            self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         response_phase = executed['data']['activeSubscription']['phases'][0]
         assert not response_phase['trialEnd']
@@ -197,7 +205,10 @@ class TestActiveSubscriptionQuery:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
 
-        executed = graphene_client.query(self.ACTIVE_SUBSCRIPTION_QUERY)
+        executed = graphene_client.query(
+            self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
+        print(executed)
 
         self.assert_response(executed['data']['activeSubscription'], subscription_schedule)
 
@@ -437,8 +448,8 @@ class TestCancelActiveSubscriptionMutation:
 
 class TestAllPaymentMethodsQuery:
     ALL_PAYMENT_METHODS_QUERY = '''
-        query  {
-          allPaymentMethods {
+        query($tenantId: ID)  {
+          allPaymentMethods(tenantId: $tenantId) {
             edges {
               node {
                 pk
@@ -454,8 +465,10 @@ class TestAllPaymentMethodsQuery:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
-        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
+        executed = graphene_client.query(
+            self.ALL_PAYMENT_METHODS_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -472,7 +485,9 @@ class TestAllPaymentMethodsQuery:
 
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
-        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+        executed = graphene_client.query(
+            self.ALL_PAYMENT_METHODS_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -487,7 +502,9 @@ class TestAllPaymentMethodsQuery:
 
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
-        executed = graphene_client.query(self.ALL_PAYMENT_METHODS_QUERY)
+        executed = graphene_client.query(
+            self.ALL_PAYMENT_METHODS_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["data"]
         assert executed["data"]["allPaymentMethods"]
@@ -717,8 +734,8 @@ class TestDeletePaymentMethodMutation:
 
 class TestAllChargesQuery:
     ALL_CHARGES_QUERY = '''
-        query  {
-          allCharges {
+        query($tenantId: ID)  {
+          allCharges(tenantId: $tenantId) {
             edges {
               node {
                 pk
@@ -734,8 +751,10 @@ class TestAllChargesQuery:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client):
-        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+    def test_return_error_for_unauthorized_user(self, graphene_client, tenant):
+        executed = graphene_client.query(
+            self.ALL_CHARGES_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -750,7 +769,9 @@ class TestAllChargesQuery:
 
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
-        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+        executed = graphene_client.query(
+            self.ALL_CHARGES_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
@@ -765,7 +786,9 @@ class TestAllChargesQuery:
 
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
-        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+        executed = graphene_client.query(
+            self.ALL_CHARGES_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["data"]
         assert executed["data"]["allCharges"]
@@ -787,7 +810,9 @@ class TestAllChargesQuery:
 
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
-        executed = graphene_client.query(self.ALL_CHARGES_QUERY)
+        executed = graphene_client.query(
+            self.ALL_CHARGES_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
+        )
 
         assert executed["data"]
         assert executed["data"]["allCharges"]
@@ -800,8 +825,8 @@ class TestAllChargesQuery:
 
 class TestChargeQuery:
     CHARGE_QUERY = '''
-        query getCharge($id: ID!) {
-          charge(id: $id) {
+        query getCharge($id: ID!, $tenantId: ID) {
+          charge(id: $id, tenantId: $tenantId) {
             id
             amount
             billingDetails
@@ -824,10 +849,13 @@ class TestChargeQuery:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client, customer, charge_factory):
+    def test_return_error_for_unauthorized_user(self, graphene_client, customer, charge_factory, tenant):
         charge = charge_factory(customer=customer)
 
-        variable_values = {"id": to_global_id('StripeChargeType', str(charge.pk))}
+        variable_values = {
+            "id": to_global_id('StripeChargeType', str(charge.pk)),
+            "tenantId": to_global_id("TenantType", tenant.id),
+        }
         executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
 
         assert executed["errors"]
@@ -838,8 +866,8 @@ class TestChargeQuery:
     ):
         charge = charge_factory(customer=customer)
         charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
-        variable_values = {"id": charge_global_id}
         tenant = customer.subscriber
+        variable_values = {"id": charge_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -854,8 +882,8 @@ class TestChargeQuery:
     def test_return_charge(self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory):
         charge = charge_factory(customer=customer)
         charge_global_id = to_global_id('StripeChargeType', str(charge.pk))
-        variable_values = {"id": charge_global_id}
         tenant = customer.subscriber
+        variable_values = {"id": charge_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -892,8 +920,8 @@ class TestChargeQuery:
 
 class TestPaymentIntentQuery:
     PAYMENT_INTENT_QUERY = '''
-        query getPaymentIntent($id: ID!) {
-          paymentIntent(id: $id) {
+        query getPaymentIntent($id: ID!, $tenantId: ID) {
+          paymentIntent(id: $id, tenantId: $tenantId) {
             id
             amount
             currency
@@ -908,10 +936,13 @@ class TestPaymentIntentQuery:
         tenant_membership_factory(tenant=tenant, role=role, user=user)
         return user
 
-    def test_return_error_for_unauthorized_user(self, graphene_client, customer, payment_intent_factory):
+    def test_return_error_for_unauthorized_user(self, graphene_client, customer, payment_intent_factory, tenant):
         payment_intent = payment_intent_factory(customer=customer)
 
-        variable_values = {"id": to_global_id('StripePaymentIntentType', str(payment_intent.pk))}
+        variable_values = {
+            "id": to_global_id('StripePaymentIntentType', str(payment_intent.pk)),
+            "tenantId": to_global_id("TenantType", tenant.id),
+        }
         executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
 
         assert executed["errors"]
@@ -922,8 +953,8 @@ class TestPaymentIntentQuery:
     ):
         payment_intent = payment_intent_factory()
         payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
-        variable_values = {"id": payment_intent_global_id}
         tenant = customer.subscriber
+        variable_values = {"id": payment_intent_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
@@ -938,8 +969,8 @@ class TestPaymentIntentQuery:
     ):
         payment_intent = payment_intent_factory(customer=customer)
         payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
-        variable_values = {"id": payment_intent_global_id}
         tenant = customer.subscriber
+        variable_values = {"id": payment_intent_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(
             tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
         )
@@ -956,8 +987,8 @@ class TestPaymentIntentQuery:
     ):
         payment_intent = payment_intent_factory(customer=customer)
         payment_intent_global_id = to_global_id('StripePaymentIntentType', str(payment_intent.pk))
-        variable_values = {"id": payment_intent_global_id}
         tenant = customer.subscriber
+        variable_values = {"id": payment_intent_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(tenant, user_factory, tenant_membership_factory)
 
         graphene_client.force_authenticate(user)
