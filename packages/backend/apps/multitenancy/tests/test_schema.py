@@ -361,6 +361,25 @@ class TestDeleteTenantMembershipMutation:
             "TenantMembershipType", tenant_membership.id
         )
 
+    def test_delete_tenant_membership_not_accepted(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=False)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+            },
+        )
+        assert executed["data"]["deleteTenantMembership"]["deletedIds"][0] == to_global_id(
+            "TenantMembershipType", tenant_membership.id
+        )
+
     def test_delete_tenant_membership_with_invalid_id(
         self, graphene_client, user, tenant_factory, tenant_membership_factory
     ):
@@ -523,6 +542,27 @@ class TestUpdateTenantMembershipMutation:
                 "role": "ADMIN",
             },
         )
+        data = executed["data"]["updateTenantMembership"]["tenantMembership"]
+        assert data["id"] == to_global_id("TenantMembershipType", tenant_membership.id)
+        assert data["role"] == TenantUserRole.ADMIN
+
+    def test_update_tenant_membership_not_accepted(
+        self, graphene_client, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        tenant_membership = tenant_membership_factory(tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=False)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(
+            graphene_client,
+            {
+                "tenantId": to_global_id("TenantType", tenant.id),
+                "id": to_global_id("TenantMembershipType", tenant_membership.id),
+                "role": "ADMIN",
+            },
+        )
+        print(executed)
         data = executed["data"]["updateTenantMembership"]["tenantMembership"]
         assert data["id"] == to_global_id("TenantMembershipType", tenant_membership.id)
         assert data["role"] == TenantUserRole.ADMIN
