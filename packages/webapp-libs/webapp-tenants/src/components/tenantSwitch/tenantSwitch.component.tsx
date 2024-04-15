@@ -1,5 +1,8 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { CommonQueryTenantItemFragmentFragment } from '@sb/webapp-api-client/graphql';
+import {
+  CommonQueryTenantItemFragmentFragment,
+  MultitenancyTenantMembershipRoleChoices,
+} from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -19,7 +22,7 @@ import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig as TenantRoutesConfig } from '../../config/routes';
-import { useGenerateTenantPath, useTenants } from '../../hooks';
+import { useGenerateTenantPath, useTenantRoleAccessCheck, useTenants } from '../../hooks';
 import { useCurrentTenant } from '../../providers';
 
 export const TenantSwitch = () => {
@@ -28,6 +31,10 @@ export const TenantSwitch = () => {
   const navigate = useNavigate();
   const generateTenantPath = useGenerateTenantPath();
   const generateLocalePath = useGenerateLocalePath();
+  const { isAllowed: hasAccessToTenantSettings } = useTenantRoleAccessCheck([
+    MultitenancyTenantMembershipRoleChoices.OWNER,
+    MultitenancyTenantMembershipRoleChoices.ADMIN,
+  ]);
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
   const personalTenant = head(tenantsGrouped[TenantType.PERSONAL]);
@@ -71,6 +78,19 @@ export const TenantSwitch = () => {
       </Button>
     );
   };
+
+  const renderTenantSettings = () => (
+    <Tooltip delayDuration={200}>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="icon" onClick={handleTenantSettingsClick} data-testid="tenant-settings-btn">
+          <Settings size="20" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <FormattedMessage defaultMessage="Organization settings" id="TenantSwitch / Organization settings" />
+      </TooltipContent>
+    </Tooltip>
+  );
 
   return (
     <>
@@ -127,16 +147,7 @@ export const TenantSwitch = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Tooltip delayDuration={200}>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" onClick={handleTenantSettingsClick}>
-            <Settings size="20" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <FormattedMessage defaultMessage="Organization settings" id="TenantSwitch / Organization settings" />
-        </TooltipContent>
-      </Tooltip>
+      {hasAccessToTenantSettings && renderTenantSettings()}
       {organizationTenants?.invitations?.length > 0 && renderPendingInvitationBadge()}
     </>
   );

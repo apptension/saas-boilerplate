@@ -1,6 +1,6 @@
 import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
 
-import { useCurrentTenant } from '../../providers';
+import { useCurrentTenantRole } from '../useCurrentTenantRole';
 
 export const useTenantRoleAccessCheck = (
   allowedRole: MultitenancyTenantMembershipRoleChoices | MultitenancyTenantMembershipRoleChoices[] = [
@@ -9,8 +9,7 @@ export const useTenantRoleAccessCheck = (
     MultitenancyTenantMembershipRoleChoices.MEMBER,
   ]
 ) => {
-  const { data: currentTenant } = useCurrentTenant();
-  const userRole = currentTenant?.membership.role;
+  const userRole = useCurrentTenantRole();
   const allowedRolesArray = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
   return {
     isAllowed: allowedRolesArray.some((role) => role === userRole),
