@@ -30,6 +30,8 @@ import { SubscriptionPlanItem, SubscriptionPlanItemProps } from '../subscription
 
 const defaultPaymentPlan = [paymentMethodFactory()];
 
+const tenantId = 'tenantId';
+
 describe('SubscriptionPlanItem: Component', () => {
   const defaultProps: Pick<SubscriptionPlanItemProps, 'onSelect'> = { onSelect: () => jest.fn() };
 
@@ -127,7 +129,6 @@ describe('SubscriptionPlanItem: Component', () => {
 
     describe('next billing plan is same as the clicked one', () => {
       it('should not call onSelect', async () => {
-        const tenantId = 'tenantId';
         const tenantMock = fillCommonQueryWithUser(
           currentUserFactory({
             tenants: [
@@ -171,7 +172,6 @@ describe('SubscriptionPlanItem: Component', () => {
 
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [

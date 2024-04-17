@@ -81,10 +81,11 @@ const Component = () => {
   );
 };
 
+const tenantId = 'tenantId';
+
 describe('EditSubscription: Component', () => {
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [
@@ -124,7 +125,6 @@ describe('EditSubscription: Component', () => {
 
   describe('plan fails to update', () => {
     it('should show error message', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [

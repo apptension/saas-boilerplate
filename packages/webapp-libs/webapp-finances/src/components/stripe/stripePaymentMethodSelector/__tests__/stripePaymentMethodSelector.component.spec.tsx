@@ -40,12 +40,14 @@ const paymentMethods = [
   paymentMethodFactory({ billingDetails: { name: 'First Owner' }, card: { last4: '1234' } }),
   paymentMethodFactory({ billingDetails: { name: 'Second Owner' }, card: { last4: '9999' } }),
 ];
+
 const phases = [subscriptionPhaseFactory()];
+
+const tenantId = 'tenantId';
 
 describe('StripePaymentMethodSelector: Component', () => {
   describe('there are payment methods available already', () => {
     it('should list possible payment methods', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [
@@ -65,7 +67,6 @@ describe('StripePaymentMethodSelector: Component', () => {
     });
 
     it('should show add new method button', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [

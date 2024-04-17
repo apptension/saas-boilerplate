@@ -8,7 +8,6 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
@@ -24,18 +23,15 @@ const Component = ({ tenantId, ...props }: Partial<StripePaymentMethodInfoProps>
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);
   const firstPaymentMethod = paymentMethods?.[0];
 
-  return (
-    <CurrentTenantProvider>
-      <StripePaymentMethodInfo {...props} method={firstPaymentMethod} />
-    </CurrentTenantProvider>
-  );
+  return <StripePaymentMethodInfo {...props} method={firstPaymentMethod} />;
 };
+
+const tenantId = 'tenantId';
 
 describe('StripePaymentMethodInfo: Component', () => {
   const paymentMethods = [paymentMethodFactory()];
 
   it('should render all info', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -53,7 +49,6 @@ describe('StripePaymentMethodInfo: Component', () => {
 
   describe('method is not specified', () => {
     it('should render "None" string', async () => {
-      const tenantId = 'tenantId';
       const requestMock = fillSubscriptionScheduleQuery(subscriptionFactory());
 
       render(<Component tenantId={tenantId} />, { apolloMocks: append(requestMock) });

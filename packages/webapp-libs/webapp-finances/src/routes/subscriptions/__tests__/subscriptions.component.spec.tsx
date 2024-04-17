@@ -114,9 +114,10 @@ const Component = () => (
 const currentSubscriptionTabPath = RoutesConfig.subscriptions.index;
 const currentSubscriptionTabRouterProps = createMockRouterProps(currentSubscriptionTabPath);
 
+const tenantId = 'tenantId';
+
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
-    const tenantId = 'tenantId';
     const requestMock = resolveSubscriptionDetailsQuery();
 
     const tenantMock = fillCommonQueryWithUser(
@@ -138,7 +139,6 @@ describe('Subscriptions: Component', () => {
   });
 
   it('should render default payment method', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -167,7 +167,6 @@ describe('Subscriptions: Component', () => {
 
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
-      const tenantId = 'tenantId';
       const requestMock = resolveSubscriptionDetailsQuery();
 
       const tenantMock = fillCommonQueryWithUser(
@@ -198,7 +197,6 @@ describe('Subscriptions: Component', () => {
 
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
-      const tenantId = 'tenantId';
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
 
       const tenantMock = fillCommonQueryWithUser(
@@ -281,7 +279,6 @@ describe('Subscriptions: Component', () => {
 
   describe('trial section', () => {
     it('shouldnt be displayed if user has no trial active', async () => {
-      const tenantId = 'tenantId';
       const requestMock = resolveSubscriptionDetailsQuery(tenantId);
 
       const tenantMock = fillCommonQueryWithUser(
@@ -304,7 +301,6 @@ describe('Subscriptions: Component', () => {
     });
 
     it('should be displayed if user has trial active', async () => {
-      const tenantId = 'tenantId';
       const activeSubscription = subscriptionFactory({
         subscription: {
           trialEnd: new Date('Jan 1, 2099 GMT').toISOString(),

@@ -46,6 +46,8 @@ const mutationData = {
   },
 };
 
+const tenantId = 'tenantId';
+
 describe('StripePaymentForm: Component', () => {
   beforeEach(() => {
     mockConfirmPayment.mockClear();
@@ -70,7 +72,6 @@ describe('StripePaymentForm: Component', () => {
   const sendForm = async () => userEvent.click(await screen.findByRole('button', { name: /Pay \d+ USD/i }));
 
   it('should render without errors', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -100,7 +101,6 @@ describe('StripePaymentForm: Component', () => {
 
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
-      const tenantId = 'tenantId';
       const mutationVariables = {
         input: {
           product: '5',
@@ -144,7 +144,6 @@ describe('StripePaymentForm: Component', () => {
     });
 
     it('should call confirm payment and onSuccess', async () => {
-      const tenantId = 'tenantId';
       const mutationVariables = {
         input: {
           product: '5',
@@ -191,7 +190,6 @@ describe('StripePaymentForm: Component', () => {
 
   describe('when something goes wrong', () => {
     it('should show error message if creating payment intent throws error', async () => {
-      const tenantId = 'tenantId';
       const mutationVariables = {
         input: {
           product: '5',
@@ -232,7 +230,6 @@ describe('StripePaymentForm: Component', () => {
     });
 
     it('should show error message if confirm payment return error', async () => {
-      const tenantId = 'tenantId';
       const mutationVariables = {
         input: {
           product: '5',

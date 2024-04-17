@@ -94,6 +94,8 @@ jest.mock('@stripe/react-stripe-js', () => ({
   ),
 }));
 
+const tenantId = 'tenantId';
+
 describe('EditPaymentMethodForm: Component', () => {
   const defaultProps = {
     onSuccess: () => null,
@@ -139,7 +141,6 @@ describe('EditPaymentMethodForm: Component', () => {
   };
 
   it('should render without errors', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -163,7 +164,6 @@ describe('EditPaymentMethodForm: Component', () => {
   });
 
   it('should set default card if selected other already added card', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -216,7 +216,6 @@ describe('EditPaymentMethodForm: Component', () => {
   });
 
   it('should call create setup intent if added new card', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [

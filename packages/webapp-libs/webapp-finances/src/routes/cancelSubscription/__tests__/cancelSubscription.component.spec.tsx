@@ -91,9 +91,10 @@ const Component = () => {
   );
 };
 
+const tenantId = 'tenantId';
+
 describe('CancelSubscription: Component', () => {
   it('should render current plan details', async () => {
-    const tenantId = 'tenantId';
     const tenantMock = fillCommonQueryWithUser(
       currentUserFactory({
         tenants: [
@@ -120,7 +121,6 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [
@@ -150,7 +150,6 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes successfully', () => {
     it('should show success message and redirect to subscriptions page', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [
@@ -179,7 +178,6 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
-      const tenantId = 'tenantId';
       const tenantMock = fillCommonQueryWithUser(
         currentUserFactory({
           tenants: [
