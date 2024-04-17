@@ -16,6 +16,9 @@ from .tokens import tenant_invitation_token
 from .constants import TenantUserRole
 
 
+TenantUserRoleType = graphene.Enum.from_enum(TenantUserRole)
+
+
 class TenantMembershipType(DjangoObjectType):
     id = graphene.ID(required=True)
     invitation_accepted = graphene.Boolean()
@@ -26,13 +29,14 @@ class TenantMembershipType(DjangoObjectType):
     last_name = graphene.String()
     user_email = graphene.String()
     avatar = graphene.String()
+    role = TenantUserRoleType()
 
     class Meta:
         model = models.TenantMembership
         fields = (
             "id",
             "role",
-            "invitationAccepted",
+            "invitation_accepted",
             "user_id",
             "invitee_email_address",
             "invitation_token",
