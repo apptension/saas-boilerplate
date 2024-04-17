@@ -6,6 +6,7 @@ import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { ChevronLeft, Trash2 } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { Control, PathValue, useController } from 'react-hook-form';
@@ -35,8 +36,13 @@ export const StripePaymentMethodSelector = <T extends PaymentFormFields>({
   defaultSavedPaymentMethodId,
   control,
 }: StripePaymentMethodSelectorProps<T>) => {
+  const { data: currentTenant } = useCurrentTenant();
   const { data, loading } = useQuery(stripeSubscriptionQuery, {
     fetchPolicy: 'cache-and-network',
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant?.id,
   });
 
   if (loading) {

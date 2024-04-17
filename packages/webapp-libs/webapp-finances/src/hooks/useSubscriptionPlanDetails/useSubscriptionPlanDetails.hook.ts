@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { ResultOf } from '@graphql-typed-document-node/core';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { times } from 'ramda';
 import { useIntl } from 'react-intl';
 
@@ -56,7 +57,18 @@ export const useSubscriptionPlanDetails = (plan?: ResultOf<typeof SUBSRIPTION_PR
 };
 
 export const useActiveSubscriptionQueryLoader = (): ActiveSubscriptionDetailsContextType => {
-  const { data } = useQuery(stripeSubscriptionQuery, { nextFetchPolicy: 'cache-and-network' });
+  const { data: currentTenant } = useCurrentTenant();
 
-  return { allPaymentMethods: data?.allPaymentMethods, activeSubscription: data?.activeSubscription };
+  const { data } = useQuery(stripeSubscriptionQuery, {
+    nextFetchPolicy: 'cache-and-network',
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant?.id,
+  });
+
+  return {
+    allPaymentMethods: data?.allPaymentMethods,
+    activeSubscription: data?.activeSubscription,
+  };
 };

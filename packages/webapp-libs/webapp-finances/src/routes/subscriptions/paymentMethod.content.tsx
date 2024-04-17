@@ -6,6 +6,7 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { TabsContent } from '@sb/webapp-core/components/tabs';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
@@ -17,8 +18,15 @@ const PaymentMethodContent = () => {
   const generateLocalePath = useGenerateLocalePath();
 
   const { allPaymentMethods } = useActiveSubscriptionDetails();
+  const { data: currentTenant } = useCurrentTenant();
 
-  const { data } = useQuery(subscriptionActivePlanDetailsQuery);
+  const { data } = useQuery(subscriptionActivePlanDetailsQuery, {
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant?.id,
+  });
+
   const activeSubscription = getFragmentData(subscriptionActiveSubscriptionFragment, data?.activeSubscription);
 
   const paymentMethods = mapConnection((plan) => plan, allPaymentMethods);

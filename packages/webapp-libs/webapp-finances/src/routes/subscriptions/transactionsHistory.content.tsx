@@ -3,14 +3,21 @@ import { Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { TabsContent } from '@sb/webapp-core/components/tabs';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../config/routes';
 import { stripeAllChargesQuery } from './subscriptions.graphql';
 
 const TransactionsHistoryContent = () => {
+  const { data: currentTenant } = useCurrentTenant();
   const generateLocalePath = useGenerateLocalePath();
-  const { data } = useQuery(stripeAllChargesQuery);
+  const { data } = useQuery(stripeAllChargesQuery, {
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant,
+  });
 
   const length = data?.allCharges?.edges?.length ?? 0;
 

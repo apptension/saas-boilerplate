@@ -13,7 +13,8 @@ import { subscriptionPlansAllQuery } from '../../routes/editSubscription/subscri
 
 export const fillSubscriptionScheduleQuery = (
   subscription: Partial<Subscription>,
-  paymentMethods?: StripePaymentMethod[]
+  paymentMethods?: StripePaymentMethod[],
+  tenantId = 'tenantId'
 ) => {
   const defaultPaymentMethod = subscription.defaultPaymentMethod || ({} as StripePaymentMethod);
   if (!paymentMethods) {
@@ -25,12 +26,14 @@ export const fillSubscriptionScheduleQuery = (
       activeSubscription: { ...subscription, __typename: 'SubscriptionScheduleType' },
       allPaymentMethods: mapRelayEdges(paymentMethods, 'StripePaymentMethodType'),
     },
+    variables: { tenantId },
   });
 };
 
 export const fillSubscriptionScheduleQueryWithPhases = (
   phases: SubscriptionPhase[],
-  paymentMethods?: StripePaymentMethod[]
+  paymentMethods?: StripePaymentMethod[],
+  tenantId = 'tenantId'
 ) => {
   return fillSubscriptionScheduleQuery(
     subscriptionFactory({
@@ -40,7 +43,8 @@ export const fillSubscriptionScheduleQueryWithPhases = (
       }),
       phases,
     }),
-    paymentMethods
+    paymentMethods,
+    tenantId
   );
 };
 
@@ -51,14 +55,16 @@ export const fillSubscriptionPlansAllQuery = (data: SubscriptionPlan[] = []) => 
 };
 
 // Apollo Mocks
-export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[]) =>
+export const fillAllPaymentsMethodsQuery = (data: Partial<Subscription>[], tenantId = 'tenantId') =>
   composeMockedListQueryResult(stripeSubscriptionQuery, 'allPaymentMethods', 'StripePaymentMethodType', {
     data,
+    variables: { tenantId },
   });
 
-export const fillActivePlanDetailsQuery = (data: Partial<Subscription>) =>
+export const fillActivePlanDetailsQuery = (data: Partial<Subscription>, tenantId = 'tenantId') =>
   composeMockedQueryResult(subscriptionActivePlanDetailsQuery, {
     data: {
       activeSubscription: data,
     },
+    variables: { tenantId },
   });

@@ -1,12 +1,16 @@
 import { useQuery } from '@apollo/client';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
 import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
   paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
@@ -48,11 +52,13 @@ describe('SubscriptionPlanItem: Component', () => {
 
   const Wrapper = (props: Partial<SubscriptionPlanItemProps>) => {
     return (
-      <Routes>
-        <Route element={<ActiveSubscriptionContext />}>
-          <Route index element={<Component {...props} />} />
-        </Route>
-      </Routes>
+      <CurrentTenantProvider>
+        <Routes>
+          <Route element={<ActiveSubscriptionContext />}>
+            <Route index element={<Component {...props} />} />
+          </Route>
+        </Routes>
+      </CurrentTenantProvider>
     );
   };
 
@@ -121,12 +127,22 @@ describe('SubscriptionPlanItem: Component', () => {
 
     describe('next billing plan is same as the clicked one', () => {
       it('should not call onSelect', async () => {
+        const tenantId = 'tenantId';
+        const tenantMock = fillCommonQueryWithUser(
+          currentUserFactory({
+            tenants: [
+              tenantFactory({
+                id: tenantId,
+              }),
+            ],
+          })
+        );
         const onSelect = jest.fn();
         const requestMock = fillSubscriptionScheduleQuery(subscriptionWithMonthlyPlan);
         const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
 
         const { waitForApolloMocks } = render(<Wrapper onSelect={onSelect} />, {
-          apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestPlansMock),
+          apolloMocks: [requestMock, requestPlansMock, tenantMock],
         });
         await waitForApolloMocks();
 
@@ -155,12 +171,22 @@ describe('SubscriptionPlanItem: Component', () => {
 
   describe('trial is eligible', () => {
     it('should show trial info', async () => {
+      const tenantId = 'tenantId';
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const activableTrialSubscription = subscriptionFactory({ canActivateTrial: true });
-      const requestSubscriptionMock = fillSubscriptionScheduleQuery(activableTrialSubscription);
+      const requestSubscriptionMock = fillSubscriptionScheduleQuery(activableTrialSubscription, undefined, tenantId);
       const requestPlansMock = fillSubscriptionPlansAllQuery([monthlyPlan]);
 
       const { waitForApolloMocks } = render(<Wrapper />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionMock, requestPlansMock),
+        apolloMocks: [requestSubscriptionMock, requestPlansMock, tenantMock],
       });
       await waitForApolloMocks();
       expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();

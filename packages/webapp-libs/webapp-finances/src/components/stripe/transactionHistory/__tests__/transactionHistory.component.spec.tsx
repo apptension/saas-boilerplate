@@ -1,12 +1,23 @@
 import { Subscription } from '@sb/webapp-api-client/api/subscription/types';
-import { paymentMethodFactory, transactionHistoryEntryFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  paymentMethodFactory,
+  transactionHistoryEntryFactory,
+} from '@sb/webapp-api-client/tests/factories';
+import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 
 import { fillAllPaymentsMethodsQuery, fillAllStripeChargesQuery } from '../../../../tests/factories';
 import { render } from '../../../../tests/utils/rendering';
 import { TransactionHistory } from '../transactionHistory.component';
 
-const Component = () => <TransactionHistory />;
+const Component = () => (
+  <CurrentTenantProvider>
+    <TransactionHistory />
+  </CurrentTenantProvider>
+);
 
 describe('TransactionHistory: Component', () => {
   const paymentMethods = [
@@ -28,10 +39,20 @@ describe('TransactionHistory: Component', () => {
   ];
 
   it('should render all items', async () => {
-    const requestChargesMock = fillAllStripeChargesQuery(transactionHistory);
-    const requestPaymentsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[]);
+    const tenantId = 'tenantId';
+    const tenantMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
+    const requestChargesMock = fillAllStripeChargesQuery(transactionHistory, tenantId);
+    const requestPaymentsMock = fillAllPaymentsMethodsQuery(paymentMethods as Partial<Subscription>[], tenantId);
     render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestChargesMock, requestPaymentsMock),
+      apolloMocks: [requestChargesMock, requestPaymentsMock, tenantMock],
     });
 
     expect(await screen.findByText('Owner 1 Visa **** 1234')).toBeInTheDocument();

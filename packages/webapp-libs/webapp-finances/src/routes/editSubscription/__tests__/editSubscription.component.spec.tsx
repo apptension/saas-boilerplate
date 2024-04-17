@@ -1,8 +1,16 @@
+import { SubscriptionChangeActiveSubscriptionMutationMutationVariables } from '@sb/webapp-api-client';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
-import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  subscriptionPhaseFactory,
+  subscriptionPlanFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
@@ -23,7 +31,9 @@ const mockMonthlyPlan = subscriptionPlanFactory({
 });
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
 
-const mockMutationVariables = { input: { price: 'plan_monthly' } };
+const mockMutationVariables: SubscriptionChangeActiveSubscriptionMutationMutationVariables = {
+  input: { price: 'plan_monthly' },
+};
 
 const mockMutationData = {
   changeActiveSubscription: {
@@ -47,11 +57,12 @@ const phases = [
   }),
 ];
 
-const fillCurrentSubscriptionQuery = () => fillSubscriptionScheduleQueryWithPhases(phases);
-const fillChangeSubscriptionMutation = (errors?: GraphQLError[]) =>
+const fillCurrentSubscriptionQuery = (tenantId = 'tenantId') =>
+  fillSubscriptionScheduleQueryWithPhases(phases, undefined, tenantId);
+const fillChangeSubscriptionMutation = (errors?: GraphQLError[], variables = mockMutationVariables) =>
   composeMockedQueryResult(subscriptionChangeActiveMutation, {
     data: mockMutationData,
-    variables: mockMutationVariables,
+    variables,
     errors,
   });
 
@@ -59,26 +70,40 @@ const placeholder = 'Subscriptions placeholder';
 
 const Component = () => {
   return (
-    <Routes>
-      <Route path="/en" element={<ActiveSubscriptionContext />}>
-        <Route index element={<EditSubscription />} />
-        <Route path="/en/subscriptions" element={<span>{placeholder}</span>} />
-      </Route>
-    </Routes>
+    <CurrentTenantProvider>
+      <Routes>
+        <Route path="/en" element={<ActiveSubscriptionContext />}>
+          <Route index element={<EditSubscription />} />
+          <Route path="/en/subscriptions" element={<span>{placeholder}</span>} />
+        </Route>
+      </Routes>
+    </CurrentTenantProvider>
   );
 };
 
 describe('EditSubscription: Component', () => {
   describe('plan is changed sucessfully', () => {
     it('should show success message and redirect to my subscription page', async () => {
-      const requestMock = fillCurrentSubscriptionQuery();
+      const tenantId = 'tenantId';
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+      const requestMock = fillCurrentSubscriptionQuery(tenantId);
       const requestPlansMock = fillSubscriptionPlansAllQuery([mockMonthlyPlan, mockYearlyPlan]);
-      const requestMockMutation = fillChangeSubscriptionMutation();
+      const requestMockMutation = fillChangeSubscriptionMutation(undefined, {
+        input: { price: 'plan_monthly', tenantId },
+      });
 
       const routerProps = createMockRouterProps(CoreRoutesConfig.home);
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
+        apolloMocks: [tenantMock, requestMock, requestMockMutation, requestPlansMock],
       });
 
       await userEvent.click(await screen.findByText(/monthly/i));
@@ -99,15 +124,27 @@ describe('EditSubscription: Component', () => {
 
   describe('plan fails to update', () => {
     it('should show error message', async () => {
-      const requestMock = fillCurrentSubscriptionQuery();
+      const tenantId = 'tenantId';
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+      const requestMock = fillCurrentSubscriptionQuery(tenantId);
       const errorMessage = 'Missing payment method';
       const requestPlansMock = fillSubscriptionPlansAllQuery([mockMonthlyPlan]);
-      const requestMockMutation = fillChangeSubscriptionMutation([new GraphQLError(errorMessage)]);
+      const requestMockMutation = fillChangeSubscriptionMutation([new GraphQLError(errorMessage)], {
+        input: { price: 'plan_monthly', tenantId },
+      });
 
       const routerProps = createMockRouterProps(CoreRoutesConfig.home);
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMock) => defaultMock.concat(requestMock, requestMockMutation, requestPlansMock),
+        apolloMocks: [requestMock, requestMockMutation, requestPlansMock, tenantMock],
       });
 
       await userEvent.click(await screen.findByText(/monthly/i));

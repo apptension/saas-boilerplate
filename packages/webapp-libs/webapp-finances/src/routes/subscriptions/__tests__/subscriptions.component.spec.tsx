@@ -1,5 +1,7 @@
 import { SubscriptionPlanName, Subscription as SubscriptionType } from '@sb/webapp-api-client/api/subscription/types';
 import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
   paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
@@ -7,6 +9,8 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
 import { getLocalePath } from '@sb/webapp-core/utils';
+import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { append } from 'ramda';
@@ -33,30 +37,41 @@ const defaultActivePlan = {
   },
 };
 
-const resolveSubscriptionDetailsQuery = () => {
-  return fillSubscriptionScheduleQueryWithPhases([
-    subscriptionPhaseFactory({
-      endDate: new Date('Jan 1, 2099 GMT').toISOString(),
-      item: { price: { product: { name: SubscriptionPlanName.FREE } } },
-    }),
-  ]);
+const resolveSubscriptionDetailsQuery = (tenantId = 'tenantId') => {
+  return fillSubscriptionScheduleQueryWithPhases(
+    [
+      subscriptionPhaseFactory({
+        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
+      }),
+    ],
+    undefined,
+    tenantId
+  );
 };
 
-const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = () => {
-  return fillSubscriptionScheduleQueryWithPhases([
-    subscriptionPhaseFactory({
-      endDate: new Date('Jan 1, 2099 GMT').toISOString(),
-      item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
-    }),
-    subscriptionPhaseFactory({
-      startDate: new Date('Jan 1, 2099 GMT').toISOString(),
-      item: { price: { product: { name: SubscriptionPlanName.FREE } } },
-    }),
-  ]);
+const resolveSubscriptionDetailsQueryWithSubscriptionCanceled = (tenantId = 'tenantId') => {
+  return fillSubscriptionScheduleQueryWithPhases(
+    [
+      subscriptionPhaseFactory({
+        endDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
+      }),
+      subscriptionPhaseFactory({
+        startDate: new Date('Jan 1, 2099 GMT').toISOString(),
+        item: { price: { product: { name: SubscriptionPlanName.FREE } } },
+      }),
+    ],
+    undefined,
+    tenantId
+  );
 };
 
-const resolveActiveSubscriptionMocks = (subscription = defaultActivePlan as SubscriptionType) => {
-  const activePlanMock = fillActivePlanDetailsQuery(subscription);
+const resolveActiveSubscriptionMocks = (
+  tenantId = 'tenantId',
+  subscription = defaultActivePlan as SubscriptionType
+) => {
+  const activePlanMock = fillActivePlanDetailsQuery(subscription, tenantId);
   const stripeChargesMock = fillAllStripeChargesQuery();
   return [activePlanMock, stripeChargesMock];
 };
@@ -65,29 +80,35 @@ const CANCEL_PLACEHOLDER_ID = 'cancel';
 const EDIT_PLACEHOLDER_ID = 'edit';
 
 const Component = () => (
-  <Routes>
-    <Route element={<ActiveSubscriptionContext />}>
-      <Route element={<Subscriptions />}>
-        <Route index path={getLocalePath(RoutesConfig.subscriptions.index)} element={<CurrentSubscriptionContent />} />
+  <CurrentTenantProvider>
+    <Routes>
+      <Route element={<ActiveSubscriptionContext />}>
+        <Route element={<Subscriptions />}>
+          <Route
+            index
+            path={getLocalePath(RoutesConfig.subscriptions.index)}
+            element={<CurrentSubscriptionContent />}
+          />
+          <Route
+            path={getLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}
+            element={<PaymentMethodContent />}
+          />
+          <Route
+            path={getLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}
+            element={<TransactionsHistoryContent />}
+          />
+        </Route>
         <Route
-          path={getLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}
-          element={<PaymentMethodContent />}
+          path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
+          element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
         />
         <Route
-          path={getLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}
-          element={<TransactionsHistoryContent />}
+          path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
+          element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
         />
       </Route>
-      <Route
-        path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
-        element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
-      />
-      <Route
-        path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
-        element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
-      />
-    </Route>
-  </Routes>
+    </Routes>
+  </CurrentTenantProvider>
 );
 
 const currentSubscriptionTabPath = RoutesConfig.subscriptions.index;
@@ -95,10 +116,21 @@ const currentSubscriptionTabRouterProps = createMockRouterProps(currentSubscript
 
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
+    const tenantId = 'tenantId';
     const requestMock = resolveSubscriptionDetailsQuery();
 
+    const tenantMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
+
     render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+      apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
       routerProps: currentSubscriptionTabRouterProps,
     });
 
@@ -106,13 +138,23 @@ describe('Subscriptions: Component', () => {
   });
 
   it('should render default payment method', async () => {
+    const tenantId = 'tenantId';
+    const tenantMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
     const subscription = subscriptionFactory({
       defaultPaymentMethod: paymentMethodsMock[0],
     });
-    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscription, paymentMethodsMock);
+    const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscription, paymentMethodsMock, tenantId);
 
     const { waitForApolloMocks } = render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock),
+      apolloMocks: [requestSubscriptionScheduleMock, tenantMock],
       routerProps: currentSubscriptionTabRouterProps,
     });
 
@@ -125,10 +167,21 @@ describe('Subscriptions: Component', () => {
 
   describe('subscription is active', () => {
     it('should render next renewal date', async () => {
+      const tenantId = 'tenantId';
       const requestMock = resolveSubscriptionDetailsQuery();
 
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+
       render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
 
@@ -145,10 +198,21 @@ describe('Subscriptions: Component', () => {
 
   describe('subscription is canceled', () => {
     it('should render cancellation date', async () => {
+      const tenantId = 'tenantId';
       const requestMock = resolveSubscriptionDetailsQueryWithSubscriptionCanceled();
 
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+
       render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
 
@@ -217,18 +281,30 @@ describe('Subscriptions: Component', () => {
 
   describe('trial section', () => {
     it('shouldnt be displayed if user has no trial active', async () => {
-      const requestMock = resolveSubscriptionDetailsQuery();
+      const tenantId = 'tenantId';
+      const requestMock = resolveSubscriptionDetailsQuery(tenantId);
+
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
 
       const { waitForApolloMocks } = render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
-      await waitForApolloMocks();
+      await waitForApolloMocks(1);
 
       expect(screen.queryByText(/Free trial expiry date/i)).not.toBeInTheDocument();
     });
 
     it('should be displayed if user has trial active', async () => {
+      const tenantId = 'tenantId';
       const activeSubscription = subscriptionFactory({
         subscription: {
           trialEnd: new Date('Jan 1, 2099 GMT').toISOString(),
@@ -241,10 +317,20 @@ describe('Subscriptions: Component', () => {
         ],
       });
 
-      const requestMock = fillSubscriptionScheduleQuery(activeSubscription);
+      const requestMock = fillSubscriptionScheduleQuery(activeSubscription, undefined, tenantId);
+
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
 
       render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
 

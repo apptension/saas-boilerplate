@@ -37,8 +37,8 @@ export const subscriptionActiveFragment = gql(/* GraphQL */ `
 `);
 
 export const subscriptionActivePlanDetailsQuery = gql(/* GraphQL */ `
-  query subscriptionActivePlanDetailsQuery_ {
-    activeSubscription {
+  query subscriptionActivePlanDetailsQuery_($tenantId: ID!) {
+    activeSubscription(tenantId: $tenantId) {
       ...subscriptionActiveSubscriptionFragment
       id
     }
