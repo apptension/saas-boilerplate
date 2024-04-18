@@ -9,7 +9,6 @@ import {
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -68,20 +67,18 @@ const fillChangeSubscriptionMutation = (errors?: GraphQLError[], variables = moc
 
 const placeholder = 'Subscriptions placeholder';
 
+const tenantId = 'tenantId';
+
 const Component = () => {
   return (
-    <CurrentTenantProvider>
-      <Routes>
-        <Route path="/en" element={<ActiveSubscriptionContext />}>
-          <Route index element={<EditSubscription />} />
-          <Route path="/en/subscriptions" element={<span>{placeholder}</span>} />
-        </Route>
-      </Routes>
-    </CurrentTenantProvider>
+    <Routes>
+      <Route path="/en" element={<ActiveSubscriptionContext />}>
+        <Route index element={<EditSubscription />} />
+        <Route path={`/en/${tenantId}/subscriptions`} element={<span>{placeholder}</span>} />
+      </Route>
+    </Routes>
   );
 };
-
-const tenantId = 'tenantId';
 
 describe('EditSubscription: Component', () => {
   describe('plan is changed sucessfully', () => {

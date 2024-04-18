@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ export const useEditSubscription = () => {
   const intl = useIntl();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
   const { data: currentTenant } = useCurrentTenant();
 
   const successMessage = intl.formatMessage({
@@ -34,7 +34,7 @@ export const useEditSubscription = () => {
       trackEvent('subscription', 'change-plan');
 
       toast({ description: successMessage });
-      navigate(generateLocalePath(RoutesConfig.subscriptions.index));
+      navigate(generateTenantPath(RoutesConfig.subscriptions.index));
     },
   });
 

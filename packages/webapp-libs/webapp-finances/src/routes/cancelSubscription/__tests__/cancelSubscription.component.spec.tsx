@@ -8,8 +8,7 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { getLocalePath } from '@sb/webapp-core/utils';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { getTenantPath } from '@sb/webapp-core/utils';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -81,13 +80,11 @@ const routePath = RoutesConfig.subscriptions.currentSubscription.cancel;
 
 const Component = () => {
   return (
-    <CurrentTenantProvider>
-      <Routes>
-        <Route element={<ActiveSubscriptionContext />}>
-          <Route path={getLocalePath(routePath)} element={<CancelSubscription />} />
-        </Route>
-      </Routes>
-    </CurrentTenantProvider>
+    <Routes>
+      <Route element={<ActiveSubscriptionContext />}>
+        <Route path={getTenantPath(routePath)} element={<CancelSubscription />} />
+      </Route>
+    </Routes>
   );
 };
 

@@ -316,7 +316,6 @@ DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
 
 def tenant_request_callback(request):
-    from apps.multitenancy.models import Tenant # Import models here to avoid an →``AppRegistryNotReady`` exception
     return request.tenant
 
 

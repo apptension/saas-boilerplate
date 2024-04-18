@@ -7,7 +7,6 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
@@ -60,11 +59,9 @@ describe('StripePaymentForm: Component', () => {
   };
 
   const Component = (props: Partial<StripePaymentFormProps>) => (
-    <CurrentTenantProvider>
-      <Elements stripe={null}>
-        <StripePaymentForm {...defaultProps} {...props} />
-      </Elements>
-    </CurrentTenantProvider>
+    <Elements stripe={null}>
+      <StripePaymentForm {...defaultProps} {...props} />
+    </Elements>
   );
 
   const selectProduct = async (value = TestProduct.A) =>

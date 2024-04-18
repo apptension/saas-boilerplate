@@ -5,7 +5,6 @@ import {
   paymentMethodFactory,
   transactionHistoryEntryFactory,
 } from '@sb/webapp-api-client/tests/factories';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 
@@ -13,11 +12,7 @@ import { fillAllPaymentsMethodsQuery, fillAllStripeChargesQuery } from '../../..
 import { render } from '../../../../tests/utils/rendering';
 import { TransactionHistory } from '../transactionHistory.component';
 
-const Component = () => (
-  <CurrentTenantProvider>
-    <TransactionHistory />
-  </CurrentTenantProvider>
-);
+const Component = () => <TransactionHistory />;
 
 describe('TransactionHistory: Component', () => {
   const paymentMethods = [

@@ -8,8 +8,7 @@ import {
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
-import { getLocalePath } from '@sb/webapp-core/utils';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
+import { getTenantPath, getTenantPathHelper } from '@sb/webapp-core/utils';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -80,41 +79,40 @@ const CANCEL_PLACEHOLDER_ID = 'cancel';
 const EDIT_PLACEHOLDER_ID = 'edit';
 
 const Component = () => (
-  <CurrentTenantProvider>
-    <Routes>
-      <Route element={<ActiveSubscriptionContext />}>
-        <Route element={<Subscriptions />}>
-          <Route
-            index
-            path={getLocalePath(RoutesConfig.subscriptions.index)}
-            element={<CurrentSubscriptionContent />}
-          />
-          <Route
-            path={getLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}
-            element={<PaymentMethodContent />}
-          />
-          <Route
-            path={getLocalePath(RoutesConfig.subscriptions.transactionHistory.index)}
-            element={<TransactionsHistoryContent />}
-          />
-        </Route>
+  <Routes>
+    <Route element={<ActiveSubscriptionContext />}>
+      <Route element={<Subscriptions />}>
         <Route
-          path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
-          element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
+          index
+          path={getTenantPathHelper(RoutesConfig.subscriptions.index)}
+          element={<CurrentSubscriptionContent />}
         />
         <Route
-          path={getLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
-          element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
+          path={getTenantPathHelper(RoutesConfig.subscriptions.paymentMethods.index)}
+          element={<PaymentMethodContent />}
+        />
+        <Route
+          path={getTenantPathHelper(RoutesConfig.subscriptions.transactionHistory.index)}
+          element={<TransactionsHistoryContent />}
         />
       </Route>
-    </Routes>
-  </CurrentTenantProvider>
+      <Route
+        path={getTenantPathHelper(RoutesConfig.subscriptions.currentSubscription.cancel)}
+        element={<span data-testid={CANCEL_PLACEHOLDER_ID} />}
+      />
+      <Route
+        path={getTenantPathHelper(RoutesConfig.subscriptions.currentSubscription.edit)}
+        element={<span data-testid={EDIT_PLACEHOLDER_ID} />}
+      />
+    </Route>
+  </Routes>
 );
 
-const currentSubscriptionTabPath = RoutesConfig.subscriptions.index;
-const currentSubscriptionTabRouterProps = createMockRouterProps(currentSubscriptionTabPath);
-
 const tenantId = 'tenantId';
+const currentSubscriptionTabPath = RoutesConfig.subscriptions.index;
+const currentSubscriptionTabRouterProps = createMockRouterProps(getTenantPath(currentSubscriptionTabPath), {
+  tenantId,
+});
 
 describe('Subscriptions: Component', () => {
   it('should render current subscription plan', async () => {
@@ -227,10 +225,19 @@ describe('Subscriptions: Component', () => {
 
   describe('edit subscription button', () => {
     it('should navigate to change plan screen', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const requestMock = resolveSubscriptionDetailsQuery();
 
       render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
 
@@ -263,12 +270,21 @@ describe('Subscriptions: Component', () => {
     });
 
     it('should navigate to cancel subscription screen', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const activeSubscription = subscriptionFactory();
 
       const requestMock = fillSubscriptionScheduleQuery(activeSubscription);
 
       render(<Component />, {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, resolveActiveSubscriptionMocks()),
+        apolloMocks: [tenantMock, requestMock, ...resolveActiveSubscriptionMocks(tenantId)],
         routerProps: currentSubscriptionTabRouterProps,
       });
 

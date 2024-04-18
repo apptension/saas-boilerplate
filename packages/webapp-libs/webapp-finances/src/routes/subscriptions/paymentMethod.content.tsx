@@ -4,8 +4,8 @@ import { Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { TabsContent } from '@sb/webapp-core/components/tabs';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage } from 'react-intl';
 
@@ -15,7 +15,7 @@ import { RoutesConfig } from '../../config/routes';
 import { subscriptionActivePlanDetailsQuery, subscriptionActiveSubscriptionFragment } from '../../hooks';
 
 const PaymentMethodContent = () => {
-  const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
 
   const { allPaymentMethods } = useActiveSubscriptionDetails();
   const { data: currentTenant } = useCurrentTenant();
@@ -60,7 +60,7 @@ const PaymentMethodContent = () => {
   );
 
   return (
-    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.index)}>
+    <TabsContent value={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.index)}>
       <div className="space-y-6 pt-4">
         <PageHeadline
           header={<FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />}
@@ -76,7 +76,7 @@ const PaymentMethodContent = () => {
           <div className="space-y-3">
             {defaultMethod && renderCardDetails()}
             {paymentMethods.length === 0 && renderEmptyList()}
-            <Link to={generateLocalePath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
+            <Link to={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
               {paymentMethods.length ? (
                 <FormattedMessage
                   defaultMessage="Edit payment methods"

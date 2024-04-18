@@ -9,7 +9,6 @@ import {
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -54,13 +53,11 @@ describe('SubscriptionPlanItem: Component', () => {
 
   const Wrapper = (props: Partial<SubscriptionPlanItemProps>) => {
     return (
-      <CurrentTenantProvider>
-        <Routes>
-          <Route element={<ActiveSubscriptionContext />}>
-            <Route index element={<Component {...props} />} />
-          </Route>
-        </Routes>
-      </CurrentTenantProvider>
+      <Routes>
+        <Route element={<ActiveSubscriptionContext />}>
+          <Route index element={<Component {...props} />} />
+        </Route>
+      </Routes>
     );
   };
 

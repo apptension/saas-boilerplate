@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/compon
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { TabsContent } from '@sb/webapp-core/components/tabs';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { AlarmClock, ArrowRightToLine, CalendarClock, StepForward } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
@@ -12,7 +12,7 @@ import { RoutesConfig } from '../../config/routes';
 import { useActiveSubscriptionDetailsData } from '../../hooks';
 
 const SubscriptionsContent = () => {
-  const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
 
   const { activeSubscription } = useActiveSubscriptionDetails();
 
@@ -27,7 +27,7 @@ const SubscriptionsContent = () => {
   } = useActiveSubscriptionDetailsData(activeSubscription);
 
   return (
-    <TabsContent value={generateLocalePath(RoutesConfig.subscriptions.index)}>
+    <TabsContent value={generateTenantPath(RoutesConfig.subscriptions.index)}>
       <div className="space-y-6 pt-4">
         <PageHeadline
           header={
@@ -112,7 +112,7 @@ const SubscriptionsContent = () => {
           </Card>
           <div className="flex flex-col sm:flex-row gap-6">
             <Link
-              to={generateLocalePath(RoutesConfig.subscriptions.currentSubscription.edit)}
+              to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.edit)}
               variant={ButtonVariant.PRIMARY}
             >
               <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
@@ -120,7 +120,7 @@ const SubscriptionsContent = () => {
 
             {activeSubscriptionPlan && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
               <Link
-                to={generateLocalePath(RoutesConfig.subscriptions.currentSubscription.cancel)}
+                to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.cancel)}
                 variant={ButtonVariant.SECONDARY}
               >
                 <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />

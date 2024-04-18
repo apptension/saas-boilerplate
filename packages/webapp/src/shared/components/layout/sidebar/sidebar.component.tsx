@@ -5,6 +5,7 @@ import { Separator } from '@sb/webapp-core/components/separator';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { media } from '@sb/webapp-core/theme';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { X } from 'lucide-react';
 import { HTMLAttributes, useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -18,8 +19,11 @@ import { LayoutContext } from '../layout.context';
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
   const { setSideMenuOpen, isSideMenuOpen } = useContext(LayoutContext);
-  const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
+  const { matches: isDesktop } = useMediaQuery({
+    above: media.Breakpoint.TABLET,
+  });
 
   const closeSidebar = useCallback(() => setSideMenuOpen(false), [setSideMenuOpen]);
 
@@ -66,7 +70,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           <div className="flex grow flex-col gap-y-7 overflow-auto px-6">
             <div className="flex h-16 items-center">
               <Link
-                to={generateLocalePath(RoutesConfig.home)}
+                to={generateTenantPath(RoutesConfig.home)}
                 aria-label={intl.formatMessage({
                   id: 'Header / Home link aria label',
                   defaultMessage: 'Go back home',
@@ -81,9 +85,10 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateLocalePath(RoutesConfig.home)}
+                  to={generateTenantPath(RoutesConfig.home)}
                   onClick={closeSidebar}
                   navLink
+                  end
                 >
                   <FormattedMessage defaultMessage="Dashboard" id="Home / dashboard link" />
                 </Link>
@@ -92,7 +97,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateLocalePath(RoutesConfig.finances.paymentConfirm)}
+                  to={generateTenantPath(RoutesConfig.finances.paymentConfirm)}
                   onClick={closeSidebar}
                   navLink
                 >
@@ -103,7 +108,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateLocalePath(RoutesConfig.subscriptions.index)}
+                  to={generateTenantPath(RoutesConfig.subscriptions.index)}
                   onClick={closeSidebar}
                   navLink
                 >

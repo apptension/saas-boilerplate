@@ -8,7 +8,6 @@ import {
   subscriptionPlanFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Elements } from '@stripe/react-stripe-js';
 import { StripeElementChangeEvent } from '@stripe/stripe-js';
@@ -101,20 +100,18 @@ describe('EditPaymentMethodForm: Component', () => {
     onSuccess: () => null,
   };
   const Component = (props: Partial<EditPaymentMethodFormProps>) => (
-    <CurrentTenantProvider>
-      <Routes>
-        <Route element={<ActiveSubscriptionContext />}>
-          <Route
-            index
-            element={
-              <Elements stripe={null}>
-                <EditPaymentMethodForm {...defaultProps} {...props} />
-              </Elements>
-            }
-          />
-        </Route>
-      </Routes>
-    </CurrentTenantProvider>
+    <Routes>
+      <Route element={<ActiveSubscriptionContext />}>
+        <Route
+          index
+          element={
+            <Elements stripe={null}>
+              <EditPaymentMethodForm {...defaultProps} {...props} />
+            </Elements>
+          }
+        />
+      </Route>
+    </Routes>
   );
 
   const submitForm = async () => {
