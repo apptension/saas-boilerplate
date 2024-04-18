@@ -3,6 +3,7 @@ import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { reportError } from '@sb/webapp-core/utils/reportError';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ export const useCancelSubscription = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
+  const { data: currentTenant } = useCurrentTenant();
 
   const successMessage = intl.formatMessage({
     defaultMessage: 'You will be moved to free plan with the next billing period',
@@ -32,9 +34,13 @@ export const useCancelSubscription = () => {
   });
 
   const handleCancel = () => {
+    if (!currentTenant) return;
+
     commitCancelActiveSubscriptionMutation({
       variables: {
-        input: {},
+        input: {
+          tenantId: currentTenant.id,
+        },
       },
     });
   };

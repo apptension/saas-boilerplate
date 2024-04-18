@@ -68,14 +68,7 @@ export const App = () => {
               <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
             </Route>
           </Route>
-        </Route>
-        <Route path={LANG_PREFIX} element={<AuthRoute />}>
-          <Route path={RoutesConfig.profile} element={<Profile />} />
-          <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
-          <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
-          <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
-          <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
-          <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
+
           <Route element={<ActiveSubscriptionContext />}>
             <Route element={<Subscriptions />}>
               <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
@@ -91,6 +84,14 @@ export const App = () => {
           </Route>
           <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
           <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
+        </Route>
+        <Route path={LANG_PREFIX} element={<AuthRoute />}>
+          <Route path={RoutesConfig.profile} element={<Profile />} />
+          <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
+          <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
+          <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
+          <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
+          <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
           <Route path="*" element={<NotFound />} />

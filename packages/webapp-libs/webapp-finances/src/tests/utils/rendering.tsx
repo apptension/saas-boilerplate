@@ -1,25 +1,23 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
 import * as corePath from '@sb/webapp-core/utils/path';
+import * as tenantsUtils from '@sb/webapp-tenants/tests/utils/rendering';
 import { RenderOptions, render, renderHook } from '@testing-library/react';
-import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
+import { ComponentType, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
 
 export type WrapperProps = apiUtils.WrapperProps;
 
-export function getWrapper(
-  WrapperComponent: ComponentClass<apiUtils.ApiTestProvidersProps> | FC<apiUtils.ApiTestProvidersProps>,
-  wrapperProps: WrapperProps
-): {
+export function getWrapper(wrapperProps: WrapperProps): {
   wrapper: ComponentType<apiUtils.WrapperProps>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
-  return apiUtils.getWrapper(apiUtils.ApiTestProviders, wrapperProps);
+  return tenantsUtils.getWrapper(tenantsUtils.TenantsTestProviders, wrapperProps);
 }
 
 export type CustomRenderOptions = RenderOptions & WrapperProps;
 
 function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
-  const { wrapper, waitForApolloMocks } = getWrapper(apiUtils.ApiTestProviders, options);
+  const { wrapper, waitForApolloMocks } = getWrapper(options);
 
   return {
     ...render(ui, {
@@ -31,7 +29,7 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
 }
 
 function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, options: CustomRenderOptions = {}) {
-  const { wrapper, waitForApolloMocks } = getWrapper(apiUtils.ApiTestProviders, options);
+  const { wrapper, waitForApolloMocks } = getWrapper(options);
 
   return {
     ...renderHook(hook, {

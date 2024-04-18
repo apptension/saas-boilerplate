@@ -1,8 +1,8 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const stripeAllChargesQuery = gql(/* GraphQL */ `
-  query stripeAllChargesQuery {
-    allCharges {
+  query stripeAllChargesQuery($tenantId: ID!) {
+    allCharges(tenantId: $tenantId) {
       edges {
         node {
           id
