@@ -7,7 +7,6 @@ import {
 } from '@sb/webapp-api-client/tests/factories';
 import { Form } from '@sb/webapp-core/components/forms';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
-import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
@@ -28,11 +27,9 @@ const StripePaymentMethodSelectorWithControls = () => {
 
 const Component = () => {
   return (
-    <CurrentTenantProvider>
-      <Elements stripe={null}>
-        <StripePaymentMethodSelectorWithControls />
-      </Elements>
-    </CurrentTenantProvider>
+    <Elements stripe={null}>
+      <StripePaymentMethodSelectorWithControls />
+    </Elements>
   );
 };
 
