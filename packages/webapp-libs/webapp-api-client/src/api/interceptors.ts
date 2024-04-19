@@ -7,7 +7,7 @@ import { ApiClientEvents, PendingRequest } from './types';
 
 let pendingRequests: PendingRequest[] = [];
 
-function delayRequest(request: AxiosRequestConfig) {
+function delayRequest(request?: AxiosRequestConfig) {
   return new Promise((resolve, reject) => {
     pendingRequests.push({
       request,
@@ -30,13 +30,14 @@ export const createRefreshTokenInterceptor = (props?: CreateRefreshTokenIntercep
       return Promise.reject(error);
     }
 
-    if (error.config.url === AUTH_URL.REFRESH_TOKEN) {
+    if (error.config?.url === AUTH_URL.REFRESH_TOKEN) {
       return Promise.reject(error);
     }
 
     try {
       const isRequestQueueEmpty = pendingRequests.length === 0;
       const requestPromise = delayRequest(error.config);
+
       if (isRequestQueueEmpty) {
         await refreshToken();
         await Promise.all(

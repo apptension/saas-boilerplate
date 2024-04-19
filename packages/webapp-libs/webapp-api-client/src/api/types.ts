@@ -12,7 +12,7 @@ export type FieldErrors = FieldError[];
 export type FormSubmitError<T = unknown> = { [key in keyof T | 'nonFieldErrors']?: FieldErrors };
 
 export type PendingRequest = {
-  request: AxiosRequestConfig;
+  request?: AxiosRequestConfig;
   resolve(value: any): void;
   reject(value: any): void;
 };
