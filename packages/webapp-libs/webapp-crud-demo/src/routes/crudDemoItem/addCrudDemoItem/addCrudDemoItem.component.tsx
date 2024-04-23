@@ -62,7 +62,7 @@ export const AddCrudDemoItem = () => {
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
     if (!currentTenant) return;
-    console.log(currentTenant.id);
+
     commitCrudDemoItemFormMutation({
       variables: {
         input: { name: formData.name, tenantId: currentTenant?.id },

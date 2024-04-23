@@ -1,5 +1,6 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
 import * as corePath from '@sb/webapp-core/utils/path';
+import * as tenantsUtils from '@sb/webapp-tenants/tests/utils/rendering';
 import { RenderOptions, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
@@ -13,7 +14,7 @@ export function getWrapper(
   wrapper: ComponentType<apiUtils.WrapperProps>;
   waitForApolloMocks: (mockIndex?: number) => Promise<void>;
 } {
-  return apiUtils.getWrapper(apiUtils.ApiTestProviders, wrapperProps);
+  return tenantsUtils.getWrapper(tenantsUtils.TenantsTestProviders, wrapperProps);
 }
 
 export type CustomRenderOptions = RenderOptions & WrapperProps;
