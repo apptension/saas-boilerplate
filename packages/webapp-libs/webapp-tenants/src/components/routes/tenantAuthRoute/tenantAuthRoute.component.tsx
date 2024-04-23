@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Navigate, Outlet } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useTenantRoleAccessCheck } from '../../../hooks';
 
 export type TenantAuthRouteProps = {
-  allowedRoles?: MultitenancyTenantMembershipRoleChoices | MultitenancyTenantMembershipRoleChoices[];
+  allowedRoles?: TenantUserRole | TenantUserRole[];
 };
 
 /**
@@ -26,11 +26,7 @@ export type TenantAuthRouteProps = {
  * ```
  */
 export const TenantAuthRoute = ({
-  allowedRoles = [
-    MultitenancyTenantMembershipRoleChoices.MEMBER,
-    MultitenancyTenantMembershipRoleChoices.ADMIN,
-    MultitenancyTenantMembershipRoleChoices.OWNER,
-  ],
+  allowedRoles = [TenantUserRole.MEMBER, TenantUserRole.ADMIN, TenantUserRole.OWNER],
 }: TenantAuthRouteProps) => {
   const { isAllowed } = useTenantRoleAccessCheck(allowedRoles);
   const generateLocalePath = useGenerateLocalePath();

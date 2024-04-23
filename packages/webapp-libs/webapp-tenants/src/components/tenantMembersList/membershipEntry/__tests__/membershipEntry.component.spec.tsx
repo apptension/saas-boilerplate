@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices, TenantUserRole } from '@sb/webapp-api-client';
+import { TenantUserRole, TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
@@ -14,11 +14,11 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
   const mockedMembershipId = '1';
   const mockedTenantId = '2';
   const membership = membershipFactory({
-    role: MultitenancyTenantMembershipRoleChoices.ADMIN,
+    role: TenantUserRole.ADMIN,
     id: mockedMembershipId,
   });
   const user = currentUserFactory({
-    roles: [MultitenancyTenantMembershipRoleChoices.ADMIN],
+    roles: [TenantUserRole.ADMIN],
     tenants: [
       tenantFactory({
         name: 'name',

@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices, Role } from '@sb/webapp-api-client';
+import { Role, TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
@@ -28,10 +28,10 @@ describe('TenantAuthRoute: Component', () => {
   const tenants = [
     tenantFactory({
       type: TenantType.PERSONAL,
-      membership: { role: MultitenancyTenantMembershipRoleChoices.OWNER },
+      membership: { role: TenantUserRole.OWNER },
     }),
     tenantFactory({
-      membership: { role: MultitenancyTenantMembershipRoleChoices.ADMIN },
+      membership: { role: TenantUserRole.ADMIN },
     }),
   ];
   const currentUser = currentUserFactory({
@@ -51,7 +51,7 @@ describe('TenantAuthRoute: Component', () => {
     it('should render content', async () => {
       const apolloMocks = [fillCommonQueryWithUser(currentUser)];
       const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: tenants[1].id });
-      render(<Component allowedRoles={MultitenancyTenantMembershipRoleChoices.ADMIN} />, {
+      render(<Component allowedRoles={TenantUserRole.ADMIN} />, {
         apolloMocks,
         routerProps,
         TenantWrapper,
@@ -64,7 +64,7 @@ describe('TenantAuthRoute: Component', () => {
     it('should redirect to not found page', async () => {
       const apolloMocks = [fillCommonQueryWithUser(currentUser)];
       const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: tenants[1].id });
-      render(<Component allowedRoles={MultitenancyTenantMembershipRoleChoices.OWNER} />, {
+      render(<Component allowedRoles={TenantUserRole.OWNER} />, {
         apolloMocks,
         routerProps,
         TenantWrapper,
