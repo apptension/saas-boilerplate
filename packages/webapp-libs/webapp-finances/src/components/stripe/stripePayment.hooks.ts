@@ -106,12 +106,13 @@ export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptio
   const updateOrCreatePaymentIntent = async (
     product: TestProduct
   ): Promise<{ errors?: readonly GraphQLError[]; paymentIntent?: StripePaymentIntentType | null }> => {
+    if (!currentTenant) return {};
     if (!paymentIntent) {
       const { data, errors } = await commitCreatePaymentIntentMutation({
         variables: {
           input: {
             product,
-            tenantId: currentTenant?.id,
+            tenantId: currentTenant.id,
           },
         },
       });
@@ -127,7 +128,7 @@ export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptio
         input: {
           product,
           id: paymentIntent.id,
-          tenantId: currentTenant?.id,
+          tenantId: currentTenant.id,
         },
       },
     });

@@ -1,4 +1,4 @@
-import { TenantUserRole, TenantUserRole } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';

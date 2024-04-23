@@ -8,6 +8,7 @@ import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -20,6 +21,7 @@ export type CrudDemoItemListItemProps = {
 };
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
+  const { data: currentTenant } = useCurrentTenant();
   const generateLocalePath = useGenerateLocalePath();
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const { toast } = useToast();
@@ -49,9 +51,10 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (!currentTenant) return;
     commitDeleteMutation({
       variables: {
-        input: { id: data.id },
+        input: { id: data.id, tenantId: currentTenant.id },
       },
     });
   };
