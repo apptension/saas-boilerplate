@@ -1,5 +1,5 @@
 import { ApiTestProviders } from '@sb/webapp-api-client/tests/utils/rendering';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { Route, Routes } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import { ActiveSubscriptionContext } from '../components/activeSubscriptionConte
 import { stripePromise } from '../services/stripe';
 import { WrapperProps, getWrapper } from '../tests/utils/rendering';
 
-export const withActiveSubscriptionContext = (StoryComponent: Story) => {
+export const withActiveSubscriptionContext = (StoryComponent: StoryFn) => {
   return (
     <Routes>
       <Route element={<ActiveSubscriptionContext />}>
@@ -25,7 +25,7 @@ export const withActiveSubscriptionContext = (StoryComponent: Story) => {
 };
 
 export function withProviders(wrapperProps: WrapperProps = {}) {
-  return (StoryComponent: Story) => {
+  return (StoryComponent: StoryFn) => {
     const { wrapper: WrapperComponent } = getWrapper(ApiTestProviders, wrapperProps) as any;
 
     return (
