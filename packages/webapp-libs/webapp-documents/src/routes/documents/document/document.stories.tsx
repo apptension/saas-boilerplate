@@ -33,7 +33,7 @@ const meta: Meta<typeof Document> = {
   argTypes: {
     item: {
       control: {
-        type: null,
+        type: undefined,
       },
     },
   },
