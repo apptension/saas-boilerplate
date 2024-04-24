@@ -3,7 +3,7 @@ import { gql } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { getLocalePath } from '@sb/webapp-core/utils';
+import { getTenantPathHelper } from '@sb/webapp-core/utils';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -47,8 +47,8 @@ describe('CrudDemoItemListItem: Component', () => {
     return (
       <Routes>
         <Route path="/" element={<CrudDemoItemListItem item={data.item} />} />
-        <Route path={getLocalePath(RoutesConfig.crudDemoItem.details)} element={<DetailsRouteMock />} />
-        <Route path={getLocalePath(RoutesConfig.crudDemoItem.edit)} element={<EditRouteMock />} />
+        <Route path={getTenantPathHelper(RoutesConfig.crudDemoItem.details)} element={<DetailsRouteMock />} />
+        <Route path={getTenantPathHelper(RoutesConfig.crudDemoItem.edit)} element={<EditRouteMock />} />
       </Routes>
     );
   };

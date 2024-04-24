@@ -4,11 +4,12 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Separator } from '@sb/webapp-core/components/separator';
 import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { useParams } from 'react-router';
 
 export const crudDemoItemDetailsQuery = gql(/* GraphQL */ `
-  query crudDemoItemDetailsQuery($id: ID!) {
-    crudDemoItem(id: $id) {
+  query crudDemoItemDetailsQuery($id: ID!, $tenantId: ID!) {
+    crudDemoItem(id: $id, tenantId: $tenantId) {
       id
       name
     }
@@ -20,11 +21,14 @@ export const CrudDemoItemDetails = () => {
     id: string;
   };
   const { id } = useParams<keyof Params>() as Params;
+  const { data: currentTenant } = useCurrentTenant();
 
   const { loading, data } = useQuery(crudDemoItemDetailsQuery, {
     variables: {
       id,
+      tenantId: currentTenant?.id || '',
     },
+    skip: !currentTenant,
   });
 
   if (loading) {

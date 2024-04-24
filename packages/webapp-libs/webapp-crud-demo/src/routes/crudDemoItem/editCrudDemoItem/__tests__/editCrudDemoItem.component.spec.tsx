@@ -28,7 +28,9 @@ describe('EditCrudDemoItem: Component', () => {
     name: oldName,
     __typename: 'CrudDemoItemType',
   };
-  const queryVariables = { id: defaultItemId };
+  const queryVariables = { id: defaultItemId, tenantId };
+
+  const mutationVariables = { input: { id: defaultItemId, name: newName, tenantId } };
 
   const mutationData = {
     updateCrudDemoItem: { crudDemoItem: { id: defaultItemId, name: newName, __typename: 'CrudDemoItemType' } },
@@ -45,12 +47,21 @@ describe('EditCrudDemoItem: Component', () => {
   );
 
   it('should display prefilled form', async () => {
+    const commonQueryMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
     const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
 
     render(<Component />, {
       routerProps,
-      apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock),
+      apolloMocks: [commonQueryMock, queryMock],
     });
 
     expect(await screen.findByDisplayValue(oldName)).toBeInTheDocument();
@@ -71,7 +82,7 @@ describe('EditCrudDemoItem: Component', () => {
 
       const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
-        variables: { input: { id: defaultItemId, name: newName, tenantId } },
+        variables: mutationVariables,
         data: mutationData,
       });
 
@@ -105,7 +116,7 @@ describe('EditCrudDemoItem: Component', () => {
       const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
       const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
-        variables: { input: { id: defaultItemId, name: newName, tenantId } },
+        variables: mutationVariables,
         data: mutationData,
       });
 

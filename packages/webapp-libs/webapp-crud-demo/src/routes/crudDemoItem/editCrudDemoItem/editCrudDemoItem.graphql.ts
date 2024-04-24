@@ -1,8 +1,8 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const editCrudDemoItemQuery = gql(/* GraphQL */ `
-  query editCrudDemoItemQuery($id: ID!) {
-    crudDemoItem(id: $id) {
+  query editCrudDemoItemQuery($id: ID!, $tenantId: ID!) {
+    crudDemoItem(id: $id, tenantId: $tenantId) {
       id
       name
     }

@@ -21,7 +21,10 @@ export const EditCrudDemoItem = () => {
   const { data: currentTenant } = useCurrentTenant();
   const navigate = useNavigate();
   const { id } = useParams<Params>();
-  const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id: id ?? '' } });
+  const { data, loading } = useQuery(editCrudDemoItemQuery, {
+    variables: { id: id ?? '', tenantId: currentTenant?.id ?? '' },
+    skip: !currentTenant,
+  });
   const crudDemoItem = data?.crudDemoItem;
 
   const { toast } = useToast();
