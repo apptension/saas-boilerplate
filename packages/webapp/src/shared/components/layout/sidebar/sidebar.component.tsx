@@ -119,7 +119,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateTenantPath(RoutesConfig.saasIdeas)}
+                  to={generateLocalePath(RoutesConfig.saasIdeas)}
                   onClick={closeSidebar}
                   navLink
                 >
@@ -130,7 +130,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateTenantPath(RoutesConfig.demoItems)}
+                  to={generateLocalePath(RoutesConfig.demoItems)}
                   onClick={closeSidebar}
                   navLink
                 >
@@ -141,7 +141,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               <RoleAccess>
                 <Link
                   className={menuItemClassName}
-                  to={generateTenantPath(RoutesConfig.documents)}
+                  to={generateLocalePath(RoutesConfig.documents)}
                   onClick={closeSidebar}
                   navLink
                 >
