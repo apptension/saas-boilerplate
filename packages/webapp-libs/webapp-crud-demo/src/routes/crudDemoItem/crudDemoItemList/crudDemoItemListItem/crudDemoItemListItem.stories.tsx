@@ -13,7 +13,7 @@ const meta: Meta = {
   argTypes: {
     item: {
       control: {
-        type: null,
+        type: undefined,
       },
     },
   },
