@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult, makeId } from '@sb/webapp-api-client/tests/utils';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
@@ -12,7 +12,7 @@ describe('TenantMembersList: Component', () => {
   const Component = () => <TenantMembersList />;
 
   it('should render list of memberships', async () => {
-    const currentUserMembership = membershipFactory({ role: MultitenancyTenantMembershipRoleChoices.OWNER });
+    const currentUserMembership = membershipFactory({ role: TenantUserRole.OWNER });
     const tenant = tenantFactory({ membership: currentUserMembership });
     const user = currentUserFactory({ tenants: [tenant] });
     const commonQueryMock = fillCommonQueryWithUser(user);
@@ -26,7 +26,7 @@ describe('TenantMembersList: Component', () => {
       tenant: {
         userMemberships: [
           membershipFactory({
-            role: MultitenancyTenantMembershipRoleChoices.OWNER,
+            role: TenantUserRole.OWNER,
             inviteeEmailAddress: null,
             userId: user.id,
             firstName: user.firstName,
@@ -35,7 +35,7 @@ describe('TenantMembersList: Component', () => {
             avatar: null,
           }),
           membershipFactory({
-            role: MultitenancyTenantMembershipRoleChoices.ADMIN,
+            role: TenantUserRole.ADMIN,
             inviteeEmailAddress: null,
             userId: makeId(32),
             firstName: 'Firstname 1',
@@ -44,7 +44,7 @@ describe('TenantMembersList: Component', () => {
             avatar: null,
           }),
           membershipFactory({
-            role: MultitenancyTenantMembershipRoleChoices.MEMBER,
+            role: TenantUserRole.MEMBER,
             invitationAccepted: false,
             inviteeEmailAddress: 'example@example.com',
             userId: makeId(32),

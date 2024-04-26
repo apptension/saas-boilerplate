@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
 import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
@@ -53,16 +53,7 @@ export const App = () => {
         </Route>
         <Route path={TENANT_PREFIX} element={<AuthRoute />}>
           <Route index element={<Home />} />
-          <Route
-            element={
-              <TenantAuthRoute
-                allowedRoles={[
-                  MultitenancyTenantMembershipRoleChoices.ADMIN,
-                  MultitenancyTenantMembershipRoleChoices.OWNER,
-                ]}
-              />
-            }
-          >
+          <Route element={<TenantAuthRoute allowedRoles={[TenantUserRole.ADMIN, TenantUserRole.OWNER]} />}>
             <Route element={<TenantSettings />}>
               <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
               <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
@@ -84,16 +75,16 @@ export const App = () => {
           </Route>
           <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
           <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
-        </Route>
-        <Route path={LANG_PREFIX} element={<AuthRoute />}>
-          <Route path={RoutesConfig.profile} element={<Profile />} />
-          <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
-          <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
           <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.documents} element={<Documents />} />
           <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
+        </Route>
+        <Route path={LANG_PREFIX} element={<AuthRoute />}>
+          <Route path={RoutesConfig.profile} element={<Profile />} />
+          <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
+          <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path={LANG_PREFIX} element={<AuthRoute allowedRoles={Role.ADMIN} />}>

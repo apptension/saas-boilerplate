@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices, TenantType } from '@sb/webapp-api-client';
+import { TenantType, TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
@@ -32,7 +32,7 @@ describe('useCurrentTenantRole: Hook', () => {
   });
   describe('user is member of single tenant', () => {
     it('should return OWNER role', async () => {
-      const role = MultitenancyTenantMembershipRoleChoices.OWNER;
+      const role = TenantUserRole.OWNER;
       const tenants = [tenantFactory({ membership: { role } })];
       const { result, waitForApolloMocks } = render({ tenants });
       await waitForApolloMocks();
@@ -42,10 +42,10 @@ describe('useCurrentTenantRole: Hook', () => {
 
   describe('user is member of two tenants', () => {
     const tenants = [
-      tenantFactory({ membership: { role: MultitenancyTenantMembershipRoleChoices.OWNER } }),
+      tenantFactory({ membership: { role: TenantUserRole.OWNER } }),
       tenantFactory({
         id: 'fake-tenant-id',
-        membership: { role: MultitenancyTenantMembershipRoleChoices.MEMBER },
+        membership: { role: TenantUserRole.MEMBER },
         type: TenantTypeType.ORGANIZATION,
       }),
     ];
@@ -53,7 +53,7 @@ describe('useCurrentTenantRole: Hook', () => {
     it('should return the proper role for the owned tenant', async () => {
       const { result, waitForApolloMocks } = render({ tenants });
       await waitForApolloMocks();
-      expect(result.current).toEqual(MultitenancyTenantMembershipRoleChoices.OWNER);
+      expect(result.current).toEqual(TenantUserRole.OWNER);
     });
 
     it('should return the proper role for the second tenant', async () => {
@@ -63,7 +63,7 @@ describe('useCurrentTenantRole: Hook', () => {
       const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: tenants[1].id });
       const { result, waitForApolloMocks } = render({ tenants }, { routerProps });
       await waitForApolloMocks();
-      expect(result.current).toEqual(MultitenancyTenantMembershipRoleChoices.MEMBER);
+      expect(result.current).toEqual(TenantUserRole.MEMBER);
     });
   });
 });

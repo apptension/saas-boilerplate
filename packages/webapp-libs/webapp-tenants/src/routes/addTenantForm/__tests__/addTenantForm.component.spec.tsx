@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeField } from '@sb/webapp-api-client/constants';
 import { commonQueryCurrentUserQuery } from '@sb/webapp-api-client/providers';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
@@ -54,7 +54,7 @@ describe('AddTenantForm: Component', () => {
             id: '1',
             name: variables.input.name,
             type: TenantTypeField.ORGANIZATION,
-            membership: membershipFactory({ role: MultitenancyTenantMembershipRoleChoices.OWNER }),
+            membership: membershipFactory({ role: TenantUserRole.OWNER }),
           }),
         ],
       };

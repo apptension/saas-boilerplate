@@ -47,11 +47,8 @@ type Query {
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
-  crudDemoItem(
-    "The ID of the object"
-    id: ID!
-  ): CrudDemoItemType
-  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  crudDemoItem(id: ID, tenantId: ID): CrudDemoItemType
+  allCrudDemoItems(tenantId: ID, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
   allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
   allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
   node(
@@ -94,7 +91,7 @@ type TenantType implements Node {
 }
 type TenantMembershipType implements Node {
   id: ID!
-  role: MultitenancyTenantMembershipRoleChoices!
+  role: TenantUserRole
   inviteeEmailAddress: String
   invitationAccepted: Boolean
   userId: ID
@@ -662,6 +659,7 @@ type UserType {
   avatar: String
 }
 type CrudDemoItemType implements Node {
+  tenant: TenantType
   "The ID of the object"
   id: ID!
   name: String!
@@ -1020,12 +1018,9 @@ interface Node {
   "The ID of the object"
   id: ID!
 }
-enum MultitenancyTenantMembershipRoleChoices {
-  "Owner"
+enum TenantUserRole {
   OWNER
-  "Administrator"
   ADMIN
-  "Member"
   MEMBER
 }
 enum DjstripeProductTypeChoices {
@@ -1414,11 +1409,6 @@ enum DjstripeChargeStatusChoices {
   "Succeeded"
   SUCCEEDED
 }
-enum TenantUserRole {
-  OWNER
-  ADMIN
-  MEMBER
-}
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"
   ABANDONED
@@ -1465,7 +1455,7 @@ input CreateTenantInvitationMutationInput {
 }
 input UpdateTenantMembershipMutationInput {
   id: ID!
-  tenantId: String
+  tenantId: String!
   role: TenantUserRole!
   clientMutationId: String
 }
@@ -1488,7 +1478,7 @@ input DeclineTenantInvitationMutationInput {
 }
 input DeleteTenantMembershipMutationInput {
   id: String
-  tenantId: String
+  tenantId: String!
   clientMutationId: String
 }
 input GenerateSaasIdeasMutationInput {
@@ -1497,38 +1487,38 @@ input GenerateSaasIdeasMutationInput {
 }
 input ChangeActiveSubscriptionMutationInput {
   id: String
-  tenantId: String
+  tenantId: String!
   price: String!
   clientMutationId: String
 }
 input CancelActiveSubscriptionMutationInput {
   id: String
-  tenantId: String
+  tenantId: String!
   clientMutationId: String
 }
 input UpdateDefaultPaymentMethodMutationInput {
   id: String
-  tenantId: String
+  tenantId: String!
   clientMutationId: String
 }
 input DeletePaymentMethodMutationInput {
   id: String
-  tenantId: String
+  tenantId: String!
   clientMutationId: String
 }
 input CreatePaymentIntentMutationInput {
-  tenantId: String
+  tenantId: String!
   product: String!
   clientMutationId: String
 }
 input UpdatePaymentIntentMutationInput {
   id: ID!
-  tenantId: String
+  tenantId: String!
   product: String!
   clientMutationId: String
 }
 input CreateSetupIntentMutationInput {
-  tenantId: String
+  tenantId: String!
   clientMutationId: String
 }
 input ChangePasswordMutationInput {
@@ -1597,18 +1587,21 @@ input MarkReadAllNotificationsMutationInput {
   clientMutationId: String
 }
 input CreateCrudDemoItemMutationInput {
+  tenantId: String!
   name: String!
   createdBy: String
   clientMutationId: String
 }
 input UpdateCrudDemoItemMutationInput {
+  id: ID!
+  tenantId: String!
   name: String!
   createdBy: String
-  id: ID!
   clientMutationId: String
 }
 input DeleteCrudDemoItemMutationInput {
   id: String
+  tenantId: String!
   clientMutationId: String
 }
 input CreateDocumentDemoItemMutationInput {

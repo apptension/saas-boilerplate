@@ -1,4 +1,4 @@
-import { MultitenancyTenantMembershipRoleChoices } from '@sb/webapp-api-client';
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
@@ -39,10 +39,10 @@ export const Default: StoryObj = {
         fillCommonQueryWithUser(
           currentUserFactory({
             tenants: [
-              tenantFactory({ membership: { role: MultitenancyTenantMembershipRoleChoices.OWNER } }),
+              tenantFactory({ membership: { role: TenantUserRole.OWNER } }),
               tenantFactory({
                 membership: {
-                  role: MultitenancyTenantMembershipRoleChoices.MEMBER,
+                  role: TenantUserRole.MEMBER,
                   invitationAccepted: false,
                   invitationToken,
                 },

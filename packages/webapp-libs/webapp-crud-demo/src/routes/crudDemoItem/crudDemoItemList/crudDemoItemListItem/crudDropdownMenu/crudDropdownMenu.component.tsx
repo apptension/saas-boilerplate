@@ -3,8 +3,8 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -19,7 +19,7 @@ export type CrudDropdownMenuProps = {
 
 export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: CrudDropdownMenuProps) => {
   const intl = useIntl();
-  const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
 
   return (
     <Popover>
@@ -42,7 +42,7 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
         <div className="flex flex-col">
           <ButtonLink
             variant={ButtonVariant.GHOST}
-            to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
+            to={generateTenantPath(RoutesConfig.crudDemoItem.edit, { id: itemId })}
             icon={<Icon size={14} icon={editIcon} />}
             className="justify-start mb-2"
           >

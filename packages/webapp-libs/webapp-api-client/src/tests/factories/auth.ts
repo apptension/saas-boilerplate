@@ -1,5 +1,5 @@
 import { Role } from '../../api/auth';
-import { CurrentUserType, MultitenancyTenantMembershipRoleChoices } from '../../graphql';
+import { CurrentUserType, TenantUserRole } from '../../graphql';
 import { createFactory, makeId } from '../utils';
 
 export const currentUserFactory = createFactory<CurrentUserType>(() => ({
@@ -21,7 +21,7 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
         id: makeId(32),
         invitationAccepted: true,
         invitationToken: makeId(32),
-        role: MultitenancyTenantMembershipRoleChoices.OWNER,
+        role: TenantUserRole.OWNER,
         __typename: 'TenantMembershipType',
       },
     },

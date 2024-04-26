@@ -1,8 +1,5 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import {
-  CommonQueryTenantItemFragmentFragment,
-  MultitenancyTenantMembershipRoleChoices,
-} from '@sb/webapp-api-client/graphql';
+import { CommonQueryTenantItemFragmentFragment, TenantUserRole } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -32,8 +29,8 @@ export const TenantSwitch = () => {
   const generateTenantPath = useGenerateTenantPath();
   const generateLocalePath = useGenerateLocalePath();
   const { isAllowed: hasAccessToTenantSettings } = useTenantRoleAccessCheck([
-    MultitenancyTenantMembershipRoleChoices.OWNER,
-    MultitenancyTenantMembershipRoleChoices.ADMIN,
+    TenantUserRole.OWNER,
+    TenantUserRole.ADMIN,
   ]);
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
