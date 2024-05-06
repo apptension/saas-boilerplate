@@ -1,6 +1,7 @@
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
+import { RoutesConfig as FinancesRoutesConfig } from '@sb/webapp-finances/config/routes';
 import { FormattedMessage } from 'react-intl';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
@@ -27,6 +28,11 @@ export const TenantSettings = () => {
           <Link to={generateTenantPath(RoutesConfig.tenant.settings.general)} replace>
             <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.general)}>
               <FormattedMessage defaultMessage="General" id="Tenant settings / General" />
+            </TabsTrigger>
+          </Link>
+          <Link to={generateTenantPath(FinancesRoutesConfig.subscriptions.index)}>
+            <TabsTrigger value={generateTenantPath(FinancesRoutesConfig.subscriptions.index)}>
+              <FormattedMessage defaultMessage="Subscription" id="Tenant settings / Subscription" />
             </TabsTrigger>
           </Link>
         </TabsList>

@@ -17,11 +17,11 @@ export const Subscriptions = () => {
   return (
     <PageLayout>
       <PageHeadline
-        header={<FormattedMessage defaultMessage="My subscription" id="My subscription / Header" />}
+        header={<FormattedMessage defaultMessage="Subscription plan" id="Tenant subscription plan / Header" />}
         subheader={
           <FormattedMessage
             defaultMessage="An example of a subscription management page powered by Stripe. You can select a subscription plan, add a payment method, and view payment history."
-            id="My subscription / Subheading"
+            id="Tenant subscription plan / Subheading"
           />
         }
       />
