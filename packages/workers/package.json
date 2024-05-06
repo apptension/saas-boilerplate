@@ -19,9 +19,9 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@sb/core": "*",
-    "@sb/tools": "*",
-    "@sb/webapp-emails": "*",
+    "@sb/core": "workspace:*",
+    "@sb/tools": "workspace:*",
+    "@sb/webapp-emails": "workspace:*",
     "serverless": "^3.38.0",
     "serverless-esbuild": "^1.48.0",
     "serverless-localstack": "^1.1.2",

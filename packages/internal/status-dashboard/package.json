@@ -10,10 +10,10 @@
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
-    "@sb/core": "*",
-    "@sb/infra-core": "*",
-    "@sb/infra-shared": "*",
-    "@sb/tools": "*",
+    "@sb/core": "workspace:*",
+    "@sb/infra-core": "workspace:*",
+    "@sb/infra-shared": "workspace:*",
+    "@sb/tools": "workspace:*",
     "babel-plugin-styled-components": "^2.1.4"
   },
   "eslintConfig": {
