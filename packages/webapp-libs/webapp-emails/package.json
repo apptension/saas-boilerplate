@@ -9,9 +9,9 @@
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@sb/webapp-api-client": "*",
-    "@sb/webapp-core": "*",
-    "@sb/webapp-finances": "*",
+    "@sb/webapp-api-client": "workspace:*",
+    "@sb/webapp-core": "workspace:*",
+    "@sb/webapp-finances": "workspace:*",
     "juice": "^8.1.0"
   },
   "devDependencies": {

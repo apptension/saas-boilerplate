@@ -9,8 +9,8 @@
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@sb/webapp-api-client": "*",
-    "@sb/webapp-core": "*",
+    "@sb/webapp-api-client": "workspace:*",
+    "@sb/webapp-core": "workspace:*",
     "lucide-react": "^0.224.0",
     "react-click-away-listener": "^2.2.3",
     "react-infinite-scroll-hook": "^4.1.1"

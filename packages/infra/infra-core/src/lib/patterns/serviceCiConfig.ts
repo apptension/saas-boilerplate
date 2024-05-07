@@ -57,7 +57,7 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
 
     return [
       'go install github.com/segmentio/chamber/v2@latest',
-      'npm i -g pnpm@^8.6.1',
+      'npm i -g pnpm@^9.0.6',
       `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile`.concat(...filters),
@@ -78,6 +78,6 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
     if (this.props.envSettings.CIConfig.mode === CI_MODE.PARALLEL) {
       return defaultRunOrder;
     }
-    return  stage.actions.length + 1;
+    return stage.actions.length + 1;
   }
 }

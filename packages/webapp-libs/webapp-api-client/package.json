@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@sb/webapp-core": "*",
+    "@sb/webapp-core": "workspace:*",
     "apollo-upload-client": "^17.0.0",
     "axios": "^0.28.0",
     "axios-case-converter": "^0.9.0",

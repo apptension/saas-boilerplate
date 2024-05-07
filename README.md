@@ -69,7 +69,7 @@ The full list with the descriptions can be found in the [features documentation]
 - Install [Docker](https://docs.docker.com/get-docker)
 - Install [Node.js](https://nodejs.org/en/download/) version 18 or above (which can be checked by running `node -v`).
   You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
-- Install [pnpm](https://pnpm.io/installation) version 8.6 or above (which can be checked by running `pnpm --version`)
+- Install [pnpm](https://pnpm.io/installation) version 9 or above (which can be checked by running `pnpm --version`)
 - (Windows only) Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)
 
 #### Optional

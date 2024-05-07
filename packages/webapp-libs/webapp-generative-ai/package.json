@@ -9,8 +9,8 @@
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@sb/webapp-api-client": "*",
-    "@sb/webapp-core": "*",
+    "@sb/webapp-api-client": "workspace:*",
+    "@sb/webapp-core": "workspace:*",
     "typewriter-effect": "^2.21.0"
   }
 }
