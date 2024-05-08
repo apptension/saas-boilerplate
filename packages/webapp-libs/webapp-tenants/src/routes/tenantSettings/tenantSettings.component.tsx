@@ -29,6 +29,11 @@ export const TenantSettings = () => {
               <FormattedMessage defaultMessage="General" id="Tenant settings / General" />
             </TabsTrigger>
           </Link>
+          <Link to={generateTenantPath(RoutesConfig.tenant.settings.danger)} replace>
+            <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.danger)}>
+              <FormattedMessage defaultMessage="Danger" id="Tenant settings / Danger" />
+            </TabsTrigger>
+          </Link>
         </TabsList>
 
         <Outlet />

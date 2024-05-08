@@ -4,4 +4,5 @@ export const AddTenantForm = asyncComponent(() => import('./addTenantForm'));
 export const TenantSettings = asyncComponent(() => import('./tenantSettings'));
 export const TenantMembers = asyncComponent(() => import('./tenantSettings/tenantMembers'));
 export const TenantGeneralSettings = asyncComponent(() => import('./tenantSettings/tenantGeneralSettings'));
+export const TenantDangerSettings = asyncComponent(() => import('./tenantSettings/tenantDangerSettings'));
 export const TenantInvitation = asyncComponent(() => import('./tenantInvitation'));

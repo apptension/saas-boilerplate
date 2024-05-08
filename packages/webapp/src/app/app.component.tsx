@@ -19,6 +19,7 @@ import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
 import { TenantAuthRoute } from '@sb/webapp-tenants/components/routes/tenantAuthRoute';
 import {
   AddTenantForm,
+  TenantDangerSettings,
   TenantGeneralSettings,
   TenantInvitation,
   TenantMembers,
@@ -57,6 +58,7 @@ export const App = () => {
             <Route element={<TenantSettings />}>
               <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
               <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+              <Route path={RoutesConfig.tenant.settings.danger} element={<TenantDangerSettings />} />
             </Route>
           </Route>
 
