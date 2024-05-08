@@ -24,12 +24,12 @@ export const TenantDangerSettings = () => {
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
-    id: 'Tenant form / RemoveTenant / Success message',
+    id: 'Tenant form / Delete Tenant / Success message',
     defaultMessage: '🎉 Tenant removed successfully!',
   });
 
   const failMessage = intl.formatMessage({
-    id: 'Membership Entry / RemoveTenant / Fail message',
+    id: 'Membership Entry / Delete Tenant / Fail message',
     defaultMessage: 'Unable to remove the tenant.',
   });
 

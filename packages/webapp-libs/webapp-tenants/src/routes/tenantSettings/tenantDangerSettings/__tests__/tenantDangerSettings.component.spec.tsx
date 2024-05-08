@@ -8,7 +8,7 @@ import { RoutesConfig } from '../../../../config/routes';
 import { tenantFactory } from '../../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { TenantDangerSettings } from '../tenantDangerSettings.component';
-import { removeTenantMutation } from '../tenantDangerSettings.graphql';
+import { deleteTenantMutation } from '../tenantDangerSettings.graphql';
 
 describe('TenantDangerSettings: Component', () => {
   const Component = () => <TenantDangerSettings />;
@@ -34,7 +34,7 @@ describe('TenantDangerSettings: Component', () => {
       },
     };
 
-    const requestMock = composeMockedQueryResult(removeTenantMutation, {
+    const requestMock = composeMockedQueryResult(deleteTenantMutation, {
       variables,
       data,
     });
