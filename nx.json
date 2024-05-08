@@ -53,5 +53,6 @@
     "libsDir": "packages"
   },
   "generators": {},
-  "defaultProject": "core"
+  "defaultProject": "core",
+  "useInferencePlugins": false
 }
