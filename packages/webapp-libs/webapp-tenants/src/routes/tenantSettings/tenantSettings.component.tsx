@@ -6,10 +6,14 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 
 import { RoutesConfig } from '../../config/routes';
 import { useGenerateTenantPath } from '../../hooks';
+import { useCurrentTenant } from '../../providers';
 
 export const TenantSettings = () => {
   const location = useLocation();
   const generateTenantPath = useGenerateTenantPath();
+  const { data: currentTenant } = useCurrentTenant();
+
+  const isOrganizationType = currentTenant?.type === 'organization'
 
   return (
     <PageLayout>
@@ -29,11 +33,13 @@ export const TenantSettings = () => {
               <FormattedMessage defaultMessage="General" id="Tenant settings / General" />
             </TabsTrigger>
           </Link>
-          <Link to={generateTenantPath(RoutesConfig.tenant.settings.danger)} replace>
-            <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.danger)}>
-              <FormattedMessage defaultMessage="Danger" id="Tenant settings / Danger" />
-            </TabsTrigger>
-          </Link>
+          {isOrganizationType &&
+            <Link to={generateTenantPath(RoutesConfig.tenant.settings.danger)} replace>
+              <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.danger)}>
+                <FormattedMessage defaultMessage="Danger" id="Tenant settings / Danger" />
+              </TabsTrigger>
+            </Link>
+          }
         </TabsList>
 
         <Outlet />

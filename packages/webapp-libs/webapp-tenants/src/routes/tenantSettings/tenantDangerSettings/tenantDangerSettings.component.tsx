@@ -4,10 +4,10 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast';
 import { FormattedMessage, useIntl } from 'react-intl';
-
 import { useNavigate } from 'react-router';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
+
 import { useCurrentTenant } from '../../../providers';
 import { TenantRemoveForm } from '../../../components/tenantRemoveForm';
 import { deleteTenantMutation } from './tenantDangerSettings.graphql';
