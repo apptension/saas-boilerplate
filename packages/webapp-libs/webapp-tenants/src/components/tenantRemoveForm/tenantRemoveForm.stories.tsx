@@ -23,14 +23,14 @@ export const Default: StoryObj<TenantRemoveFormProps> = {
   decorators: [withProviders({})],
 };
 
-export const Error: StoryObj<TenantRemoveFormProps> = {
+export const ErrorState: StoryObj<TenantRemoveFormProps> = {
   args: {
     error: new ApolloError({ graphQLErrors: [new GraphQLError('Something went wrong')] })
   },
   decorators: [withProviders({})],
 };
 
-export const Loading: StoryObj<TenantRemoveFormProps> = {
+export const LoadingState: StoryObj<TenantRemoveFormProps> = {
   args: {
     loading: true
   },
