@@ -29,10 +29,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["packages/infra/infra-functions/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": ["service"]

@@ -61,12 +61,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/internal/status-dashboard/**/*.{ts,tsx,js,jsx}"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "deploy": {
       "executor": "nx:run-commands",

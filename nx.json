@@ -19,16 +19,16 @@
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "cache": true
     },
-    "e2e": {
-      "inputs": ["default", "^production"],
-      "cache": true
-    },
     "compose-build-image": {
       "inputs": ["default", "^production"],
       "cache": true
     },
     "setup": {
       "inputs": ["{projectRoot}/.env", "{projectRoot}/.env.*"],
+      "cache": true
+    },
+    "@nx/eslint:lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
       "cache": true
     }
   },
