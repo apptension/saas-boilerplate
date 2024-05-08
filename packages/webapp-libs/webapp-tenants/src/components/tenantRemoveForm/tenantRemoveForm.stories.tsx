@@ -8,7 +8,7 @@ const Template: StoryFn<TenantRemoveFormProps> = (args: TenantRemoveFormProps) =
 };
 
 const meta: Meta = {
-  title: 'Tenants / TenantForm',
+  title: 'Tenants / TenantRemoveForm',
   component: Template,
 };
 
