@@ -8,12 +8,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { TenantForm } from '../../../components/tenantForm';
 import { TenantFormFields } from '../../../components/tenantForm/tenantForm.component';
 import { useCurrentTenant } from '../../../providers';
+import { TenantDangerZone } from '../../../components/tenantDangerZone';
 import { updateTenantMutation } from './tenantGeneralSettings.graphql';
 
 export const TenantGeneralSettings = () => {
   const { data: currentTenant } = useCurrentTenant();
   const { reload: reloadCommonQuery } = useCommonQuery();
-
   const { toast } = useToast();
   const intl = useIntl();
 
@@ -26,6 +26,7 @@ export const TenantGeneralSettings = () => {
     id: 'Membership Entry / UpdateTenant / Fail message',
     defaultMessage: 'Unable to change the tenant data.',
   });
+
 
   const [commitUpdateMutation, { loading, error }] = useMutation(updateTenantMutation, {
     onCompleted: (data) => {
@@ -69,6 +70,8 @@ export const TenantGeneralSettings = () => {
         onSubmit={onFormSubmit}
         initialData={currentTenant?.name ? { name: currentTenant.name } : undefined}
       />
+
+      <TenantDangerZone />
     </div>
   );
 };
