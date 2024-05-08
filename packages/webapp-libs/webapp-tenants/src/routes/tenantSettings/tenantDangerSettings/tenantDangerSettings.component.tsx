@@ -37,6 +37,7 @@ export const TenantDangerSettings = () => {
 
   const [commitRemoveMutation, { loading, error }] = useMutation(removeTenantMutation, {
     onCompleted: (data) => {
+      console.log({ data })
       const id = data.deleteTenant?.deletedIds?.[0]?.toString()
       reloadCommonQuery();
       trackEvent('tenant', 'delete', id);

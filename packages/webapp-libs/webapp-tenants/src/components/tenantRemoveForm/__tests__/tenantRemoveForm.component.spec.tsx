@@ -6,7 +6,7 @@ import { GraphQLError } from 'graphql/error/GraphQLError';
 import { render } from '../../../tests/utils/rendering';
 import { TenantRemoveForm, TenantRemoveFormProps } from '../tenantRemoveForm.component';
 
-describe('TenantForm: Component', () => {
+describe('TenantRemoveForm: Component', () => {
   const defaultProps: TenantRemoveFormProps = {
     onSubmit: jest.fn(),
     loading: false,
@@ -19,12 +19,10 @@ describe('TenantForm: Component', () => {
       const onSubmit = jest.fn();
       render(<Component onSubmit={onSubmit} />);
 
-      const nameField = await screen.findByPlaceholderText(/name/i);
-      await userEvent.clear(nameField);
-      await userEvent.type(nameField, 'new tenant name');
-      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+      const button = await screen.findByRole('button', { name: /remove organisation/i })
+      await userEvent.click(button);
 
-      expect(onSubmit).toHaveBeenCalledWith({ name: 'new tenant name' });
+      expect(onSubmit).toHaveBeenCalled();
     });
   });
 

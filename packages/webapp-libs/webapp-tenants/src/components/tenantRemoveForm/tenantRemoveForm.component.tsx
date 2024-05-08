@@ -21,7 +21,7 @@ export const TenantRemoveForm = ({ onSubmit, error, loading }: TenantRemoveFormP
       </Button>
 
 
-      {!!error && <p className="text-red-500">{error.message}</p>}
+      {!!error && <p className="text-red-500">{error.graphQLErrors[0]?.message}</p>}
     </div>
   )
 
