@@ -5,11 +5,11 @@ import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Button } from '@sb/webapp-core/components/buttons';
 import { useNavigate } from 'react-router';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useCurrentTenant } from '../../../providers';
+import { TenantRemoveForm } from '../../../components/tenantRemoveForm';
 import { removeTenantMutation } from './tenantDangerSettings.graphql';
 
 
@@ -66,16 +66,13 @@ export const TenantDangerSettings = () => {
         header={<FormattedMessage defaultMessage="Danger" id="Tenant Danger Settings / Header" />}
         subheader={
           <FormattedMessage
-            defaultMessage="Manage organization Danger settings"
+            defaultMessage="Manage organization danger settings"
             id="Tenant Danger Settings / Danger subheader"
           />
         }
       />
 
-      <Button disabled={loading} onClick={onRemoveSubmit} >
-        <FormattedMessage defaultMessage="Remove organisation" id="Tenant Danger Settings / Remove tenant button" />
-      </Button>
-      {error && <span className="absolute text-red-500">{error.message}</span>}
+      <TenantRemoveForm onSubmit={onRemoveSubmit} loading={loading} error={error} />
     </div>
   );
 };
