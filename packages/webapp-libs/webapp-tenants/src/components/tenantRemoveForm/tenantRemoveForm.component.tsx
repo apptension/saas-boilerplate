@@ -15,12 +15,15 @@ export type TenantRemoveFormProps = {
 
 export const TenantRemoveForm = ({ onSubmit, error, loading }: TenantRemoveFormProps) => {
   return (
-    <div className="mt-6">
+    <div>
       <Button onClick={onSubmit} disabled={loading} variant="destructive" >
         <FormattedMessage defaultMessage="Remove organisation" id="Tenant Danger Settings / Remove tenant button" />
       </Button>
-      {error && <span className="absolute text-red-500">{error.message}</span>}
-    </div>
 
-  );
+
+      {!!error && <p className="text-red-500">{error.message}</p>}
+    </div>
+  )
+
+
 };

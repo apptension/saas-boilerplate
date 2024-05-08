@@ -1,10 +1,14 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
+import { action } from '@storybook/addon-actions'
 
+import { ApolloError } from '@apollo/client';
 import { withProviders } from '../../utils/storybook';
 import { TenantRemoveForm, TenantRemoveFormProps } from './tenantRemoveForm.component';
 
 const Template: StoryFn<TenantRemoveFormProps> = (args: TenantRemoveFormProps) => {
-  return <TenantRemoveForm {...args} />;
+  return <TenantRemoveForm {...args}
+    onSubmit={action('Remove tenant')}
+  />;
 };
 
 const meta: Meta = {
@@ -14,16 +18,16 @@ const meta: Meta = {
 
 export default meta;
 
-export const WithInitialData: StoryObj<typeof meta> = {
+export const Error: StoryObj<TenantRemoveFormProps> = {
   args: {
-    initialData: {
-      name: 'initial name',
-    },
+    error: { message: "Error message" } as ApolloError
   },
-
   decorators: [withProviders({})],
 };
 
-export const WithoutData: StoryObj<typeof meta> = {
+export const Loading: StoryObj<TenantRemoveFormProps> = {
+  args: {
+    loading: true
+  },
   decorators: [withProviders({})],
 };
