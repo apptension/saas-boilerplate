@@ -10,7 +10,7 @@ import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useCurrentTenant } from '../../../providers';
 import { TenantRemoveForm } from '../../../components/tenantRemoveForm';
-import { removeTenantMutation } from './tenantDangerSettings.graphql';
+import { deleteTenantMutation } from './tenantDangerSettings.graphql';
 
 
 export const TenantDangerSettings = () => {
@@ -35,7 +35,7 @@ export const TenantDangerSettings = () => {
 
 
 
-  const [commitRemoveMutation, { loading, error }] = useMutation(removeTenantMutation, {
+  const [commitRemoveMutation, { loading, error }] = useMutation(deleteTenantMutation, {
     onCompleted: (data) => {
       console.log({ data })
       const id = data.deleteTenant?.deletedIds?.[0]?.toString()

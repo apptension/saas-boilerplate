@@ -72,8 +72,8 @@ const documents = {
     "\n  mutation addTenantMutation($input: CreateTenantMutationInput!) {\n    createTenant(input: $input) {\n      tenantEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddTenantMutationDocument,
     "\n  mutation acceptTenantInvitationMutation($input: AcceptTenantInvitationMutationInput!) {\n    acceptTenantInvitation(input: $input) {\n      ok\n    }\n  }\n": types.AcceptTenantInvitationMutationDocument,
     "\n  mutation declineTenantInvitationMutation($input: DeclineTenantInvitationMutationInput!) {\n    declineTenantInvitation(input: $input) {\n      ok\n    }\n  }\n": types.DeclineTenantInvitationMutationDocument,
+    "\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMutationDocument,
     "\n  mutation updateTenantMutation($input: UpdateTenantMutationInput!) {\n    updateTenant(input: $input) {\n      tenant {\n        id\n        name\n      }\n    }\n  }\n": types.UpdateTenantMutationDocument,
-    "\n  mutation removeTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.RemoveTenantMutationDocument,
     "\n  mutation createTenantInvitationMutation($input: CreateTenantInvitationMutationInput!) {\n    createTenantInvitation(input: $input) {\n      email\n      role\n    }\n  }\n": types.CreateTenantInvitationMutationDocument,
     "\n  mutation authConfirmUserEmailMutation($input: ConfirmEmailMutationInput!) {\n    confirm(input: $input) {\n      ok\n    }\n  }\n": types.AuthConfirmUserEmailMutationDocument,
     "\n  mutation authChangePasswordMutation($input: ChangePasswordMutationInput!) {\n    changePassword(input: $input) {\n      access\n      refresh\n    }\n  }\n": types.AuthChangePasswordMutationDocument,
@@ -341,11 +341,11 @@ export function gql(source: "\n  mutation declineTenantInvitationMutation($input
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation updateTenantMutation($input: UpdateTenantMutationInput!) {\n    updateTenant(input: $input) {\n      tenant {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMutation($input: UpdateTenantMutationInput!) {\n    updateTenant(input: $input) {\n      tenant {\n        id\n        name\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n"): (typeof documents)["\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation removeTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n"): (typeof documents)["\n  mutation removeTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n"];
+export function gql(source: "\n  mutation updateTenantMutation($input: UpdateTenantMutationInput!) {\n    updateTenant(input: $input) {\n      tenant {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMutation($input: UpdateTenantMutationInput!) {\n    updateTenant(input: $input) {\n      tenant {\n        id\n        name\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
