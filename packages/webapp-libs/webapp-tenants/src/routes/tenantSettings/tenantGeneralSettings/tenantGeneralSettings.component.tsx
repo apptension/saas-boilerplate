@@ -5,10 +5,10 @@ import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { TenantDangerZone } from '../../../components/tenantDangerZone';
 import { TenantForm } from '../../../components/tenantForm';
 import { TenantFormFields } from '../../../components/tenantForm/tenantForm.component';
 import { useCurrentTenant } from '../../../providers';
-import { TenantDangerZone } from '../../../components/tenantDangerZone';
 import { updateTenantMutation } from './tenantGeneralSettings.graphql';
 
 export const TenantGeneralSettings = () => {
@@ -27,6 +27,7 @@ export const TenantGeneralSettings = () => {
     defaultMessage: 'Unable to change the tenant data.',
   });
 
+  const isOrganizationType = currentTenant?.type === 'organization';
 
   const [commitUpdateMutation, { loading, error }] = useMutation(updateTenantMutation, {
     onCompleted: (data) => {
@@ -71,7 +72,7 @@ export const TenantGeneralSettings = () => {
         initialData={currentTenant?.name ? { name: currentTenant.name } : undefined}
       />
 
-      <TenantDangerZone />
+      {isOrganizationType && <TenantDangerZone />}
     </div>
   );
 };

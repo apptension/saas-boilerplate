@@ -1,84 +1,50 @@
-import { useMutation } from '@apollo/client';
-import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { Button } from '@sb/webapp-core/components/buttons';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { useToast } from '@sb/webapp-core/toast';
+import alertCircle from '@iconify-icons/ion/alert-circle-outline';
+import { TenantUserRole } from '@sb/webapp-api-client';
+import { Icon } from '@sb/webapp-core/components/icons';
+import { H3 } from '@sb/webapp-core/components/typography';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router';
-import { RoutesConfig } from '@sb/webapp-core/config/routes';
 
 import { useCurrentTenant } from '../../providers';
-import { deleteTenantMutation } from './tenantDangerZone.graphql';
-
-
-
+import { TenantDeleteAlert } from '../tenantDeleteAlert';
+import { DangerZoneItem } from './dangerZoneItem';
+import { useTenantDelete } from './tenantDangerZone.hook';
 
 export const TenantDangerZone = () => {
   const { data: currentTenant } = useCurrentTenant();
-  const { reload: reloadCommonQuery } = useCommonQuery();
-  const navigate = useNavigate()
-  const { toast } = useToast();
   const intl = useIntl();
 
-  const generateLocalePath = useGenerateLocalePath()
+  const isOwner = currentTenant?.membership.role === TenantUserRole.OWNER;
 
-  const successDeleteMessage = intl.formatMessage({
-    id: 'Tenant form / DeleteTenant / Success message',
-    defaultMessage: '🎉 Tenant deleted successfully!',
-  });
-
-  const failDeleteMessage = intl.formatMessage({
-    id: 'Membership Entry / DeleteTenant / Fail message',
-    defaultMessage: 'Unable to delete the tenant.',
-  });
-
-  const [commitRemoveMutation, { loading, error }] = useMutation(deleteTenantMutation, {
-    onCompleted: (data) => {
-      const id = data.deleteTenant?.deletedIds?.[0]?.toString()
-      reloadCommonQuery();
-      trackEvent('tenant', 'delete', id);
-      toast({ description: successDeleteMessage });
-      navigate(generateLocalePath(RoutesConfig.home), { replace: true })
-    },
-    onError: () => {
-      toast({ description: failDeleteMessage, variant: 'destructive' });
-    },
-  });
-
-  const onDeleteSubmit = () => {
-    if (!currentTenant) return;
-
-    commitRemoveMutation({
-      variables: {
-        input: {
-          id: currentTenant.id
-        }
-      }
-    })
-  }
+  const { deleteTenant, loading } = useTenantDelete();
 
   return (
     <div className="space-y-6 pt-4 mt-2">
-      <PageHeadline
-        header={<FormattedMessage defaultMessage="Danger" id="Tenant General Settings / Header / Danger" />}
-        subheader={
-          <FormattedMessage
-            defaultMessage="View and manage organization danger settings"
-            id="Tenant General Settings / Danger subheader"
-          />
-        }
-      />
-      <Button onClick={onDeleteSubmit} disabled={loading} variant="destructive" >
-        <FormattedMessage defaultMessage="Remove organisation" id="Tenant Danger Settings / Remove tenant button" />
-      </Button>
+      <div className="flex gap-2 items-center">
+        <Icon className="text-red-500" icon={alertCircle} />
+        <H3 className="text-lg font-medium text-red-500">
+          <FormattedMessage defaultMessage="Danger Zone" id="Tenant General Settings / Danger Zone / Header" />
+        </H3>
+      </div>
 
-
-
-      {!!error && <p className="text-red-500">{error.graphQLErrors[0]?.message}</p>}
+      <div className="p-4 border-red-500 border-2 rounded-md">
+        <DangerZoneItem
+          title={intl.formatMessage({
+            defaultMessage: 'Delete this organization',
+            id: 'Tenant General Settings / Danger Zone / Delete title',
+          })}
+          subtitle={
+            isOwner
+              ? undefined
+              : intl.formatMessage({
+                  defaultMessage: 'Only members with the Owner role can delete organization',
+                  id: 'Tenant General Settings / Danger Zone / Delete owner role subtitle',
+                })
+          }
+          disabled={!isOwner}
+        >
+          <TenantDeleteAlert onContinue={deleteTenant} disabled={!isOwner || loading} />
+        </DangerZoneItem>
+      </div>
     </div>
-  )
-
-
+  );
 };

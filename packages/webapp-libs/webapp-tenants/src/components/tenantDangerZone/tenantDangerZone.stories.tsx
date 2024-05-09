@@ -1,4 +1,6 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
+
+import { withProviders } from '../../utils/storybook';
 import { TenantDangerZone } from './tenantDangerZone.component';
 
 const Template: StoryFn = () => {
@@ -11,3 +13,8 @@ const meta: Meta = {
 };
 
 export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [withProviders({})],
+};
