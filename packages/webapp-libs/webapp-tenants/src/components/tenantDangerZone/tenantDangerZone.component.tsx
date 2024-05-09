@@ -1,18 +1,15 @@
 import dangerIcon from '@iconify-icons/ion/alert-circle-outline';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { H3 } from '@sb/webapp-core/components/typography';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { H3, Paragraph } from '@sb/webapp-core/components/typography';
+import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';
 import { TenantDeleteAlert } from '../tenantDeleteAlert';
-import { DangerZoneItem } from './dangerZoneItem';
 import { useTenantDelete } from './tenantDangerZone.hook';
 
 export const TenantDangerZone = () => {
   const { data: currentTenant } = useCurrentTenant();
-  const intl = useIntl();
-
   const isOwner = currentTenant?.membership.role === TenantUserRole.OWNER;
 
   const { deleteTenant, loading } = useTenantDelete();
@@ -27,23 +24,25 @@ export const TenantDangerZone = () => {
       </div>
 
       <div className="p-4 border-red-500 border-2 rounded-md">
-        <DangerZoneItem
-          title={intl.formatMessage({
-            defaultMessage: 'Delete this organization',
-            id: 'Tenant General Settings / Danger Zone / Delete title',
-          })}
-          subtitle={
-            isOwner
-              ? undefined
-              : intl.formatMessage({
-                  defaultMessage: 'Only members with the Owner role can delete organization',
-                  id: 'Tenant General Settings / Danger Zone / Delete owner role subtitle',
-                })
-          }
-          disabled={!isOwner}
-        >
+        <div className="flex justify-between">
+          <span>
+            <FormattedMessage
+              defaultMessage="Delete this organization"
+              id="Tenant General Settings / Danger Zone / Delete title"
+            />
+
+            <Paragraph className="text-sm text-slate-400">
+              {isOwner ? undefined : (
+                <FormattedMessage
+                  defaultMessage="Only members with the Owner role can delete organization"
+                  id="Tenant General Settings / Danger Zone / Delete owner role subtitle"
+                />
+              )}
+            </Paragraph>
+          </span>
+
           <TenantDeleteAlert onContinue={deleteTenant} disabled={!isOwner || loading} />
-        </DangerZoneItem>
+        </div>
       </div>
     </div>
   );
