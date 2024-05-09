@@ -10,7 +10,6 @@ import {
   AlertDialogTrigger,
 } from '@sb/webapp-core/components/alertDialog';
 import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
-import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage } from 'react-intl';
 
 export type TenantDeleteAlertProps = {
@@ -21,7 +20,7 @@ export type TenantDeleteAlertProps = {
 export const TenantDeleteAlert = ({ onContinue, disabled }: TenantDeleteAlertProps) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger disabled={disabled} className={cn(buttonVariants({ variant: 'destructive' }))}>
+      <AlertDialogTrigger disabled={disabled} className={buttonVariants({ variant: 'destructive' })}>
         <FormattedMessage
           defaultMessage="Remove organisation"
           id="Tenant General Settings / Danger Zone / Alert / Tenant Delete Button"
@@ -49,7 +48,7 @@ export const TenantDeleteAlert = ({ onContinue, disabled }: TenantDeleteAlertPro
               id="Tenant Danger Settings / Danger Zone / Alert / Tenant Delete Cancel"
             />
           </AlertDialogCancel>
-          <AlertDialogAction onClick={onContinue} className={cn(buttonVariants({ variant: 'destructive' }))}>
+          <AlertDialogAction onClick={onContinue} className={buttonVariants({ variant: 'destructive' })}>
             <FormattedMessage
               defaultMessage="Continue"
               id="Tenant Danger Settings / Danger Zone / Alert / Tenant Delete Continue"
