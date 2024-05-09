@@ -2,25 +2,14 @@ import { Button } from '@sb/webapp-core/components/buttons';
 import { Paragraph } from '@sb/webapp-core/components/typography';
 import { ReactElement } from 'react';
 
-type ButtonProps = {
-  onClick: () => void;
-  buttonText: string;
-  children?: never;
-};
-
-type CustomButton = {
-  children: ReactElement;
-  onClick?: never;
-  buttonText?: never;
-};
-
-type RestProps = ButtonProps | CustomButton;
-
 export type DangerZoneItemProps = {
   title: string;
   subtitle?: string;
   disabled?: boolean;
-} & RestProps;
+  onClick?: () => void;
+  buttonText?: string;
+  children?: ReactElement;
+};
 
 export const DangerZoneItem = ({
   title,

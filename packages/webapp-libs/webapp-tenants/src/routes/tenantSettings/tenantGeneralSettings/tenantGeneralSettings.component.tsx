@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TenantType } from '@sb/webapp-api-client/constants';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -27,7 +28,7 @@ export const TenantGeneralSettings = () => {
     defaultMessage: 'Unable to change the tenant data.',
   });
 
-  const isOrganizationType = currentTenant?.type === 'organization';
+  const isOrganizationType = currentTenant?.type === TenantType.ORGANIZATION;
 
   const [commitUpdateMutation, { loading, error }] = useMutation(updateTenantMutation, {
     onCompleted: (data) => {

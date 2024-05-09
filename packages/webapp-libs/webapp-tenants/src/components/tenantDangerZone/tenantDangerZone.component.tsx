@@ -1,4 +1,4 @@
-import alertCircle from '@iconify-icons/ion/alert-circle-outline';
+import dangerIcon from '@iconify-icons/ion/alert-circle-outline';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { H3 } from '@sb/webapp-core/components/typography';
@@ -20,7 +20,7 @@ export const TenantDangerZone = () => {
   return (
     <div className="space-y-6 pt-4 mt-2">
       <div className="flex gap-2 items-center">
-        <Icon className="text-red-500" icon={alertCircle} />
+        <Icon className="text-red-500" icon={dangerIcon} />
         <H3 className="text-lg font-medium text-red-500">
           <FormattedMessage defaultMessage="Danger Zone" id="Tenant General Settings / Danger Zone / Header" />
         </H3>
