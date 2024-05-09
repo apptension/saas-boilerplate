@@ -1,3 +1,4 @@
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/alert';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
@@ -5,6 +6,7 @@ import { Separator } from '@sb/webapp-core/components/separator';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { media } from '@sb/webapp-core/theme';
+import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { X } from 'lucide-react';
 import { HTMLAttributes, useCallback, useContext } from 'react';
@@ -94,7 +96,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 </Link>
               </RoleAccess>
 
-              <RoleAccess>
+              <TenantRoleAccess allowedRoles={[TenantUserRole.OWNER, TenantUserRole.ADMIN]}>
                 <Link
                   className={menuItemClassName}
                   to={generateTenantPath(RoutesConfig.finances.paymentConfirm)}
@@ -103,9 +105,9 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 >
                   <FormattedMessage defaultMessage="Payments" id="Home / payments link" />
                 </Link>
-              </RoleAccess>
+              </TenantRoleAccess>
 
-              <RoleAccess>
+              <TenantRoleAccess allowedRoles={[TenantUserRole.OWNER, TenantUserRole.ADMIN]}>
                 <Link
                   className={menuItemClassName}
                   to={generateTenantPath(RoutesConfig.subscriptions.index)}
@@ -114,7 +116,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 >
                   <FormattedMessage defaultMessage="Subscriptions" id="Home / subscriptions link" />
                 </Link>
-              </RoleAccess>
+              </TenantRoleAccess>
 
               <RoleAccess>
                 <Link
@@ -170,6 +172,17 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   <FormattedMessage defaultMessage="Admin" id="Home / admin link" />
                 </Link>
               </RoleAccess>
+
+              <TenantRoleAccess allowedRoles={[TenantUserRole.OWNER, TenantUserRole.ADMIN]}>
+                <Link
+                  className={menuItemClassName}
+                  to={generateTenantPath(RoutesConfig.tenant.settings.members)}
+                  onClick={closeSidebar}
+                  navLink
+                >
+                  <FormattedMessage defaultMessage="Organization settings" id="Home / organization settings" />
+                </Link>
+              </TenantRoleAccess>
 
               <p className="my-2 ml-2 mt-4 text-sm text-muted-foreground">
                 <FormattedMessage defaultMessage="Static pages" id="Sidebar / static pages" />

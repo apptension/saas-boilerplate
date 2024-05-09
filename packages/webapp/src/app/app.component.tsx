@@ -58,23 +58,22 @@ export const App = () => {
               <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
               <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
             </Route>
-          </Route>
-
-          <Route element={<ActiveSubscriptionContext />}>
-            <Route element={<Subscriptions />}>
-              <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
-              <Route path={RoutesConfig.subscriptions.paymentMethods.index} element={<PaymentMethodContent />} />
-              <Route
-                path={RoutesConfig.subscriptions.transactionHistory.index}
-                element={<TransactionsHistoryContent />}
-              />
+            <Route element={<ActiveSubscriptionContext />}>
+              <Route element={<Subscriptions />}>
+                <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
+                <Route path={RoutesConfig.subscriptions.paymentMethods.index} element={<PaymentMethodContent />} />
+                <Route
+                  path={RoutesConfig.subscriptions.transactionHistory.index}
+                  element={<TransactionsHistoryContent />}
+                />
+              </Route>
+              <Route path={RoutesConfig.subscriptions.currentSubscription.edit} element={<EditSubscription />} />
+              <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
+              <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
             </Route>
-            <Route path={RoutesConfig.subscriptions.currentSubscription.edit} element={<EditSubscription />} />
-            <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
-            <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
+            <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
+            <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
           </Route>
-          <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
-          <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
           <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
           <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
           <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
