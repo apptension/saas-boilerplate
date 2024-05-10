@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
     "@typescript-eslint/scope-manager": "5.62.0",
-    "@vitejs/plugin-react": "^4.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "aws-cdk": "^2.111.0",
     "aws-cdk-lib": "^2.111.0",
     "babel-jest": "29.7.0",
@@ -81,10 +81,10 @@
     "tsconfig-paths": "^4.2.0",
     "tslib": "^2.6.2",
     "typescript": "5.4.5",
-    "vite": "^4.5.0",
+    "vite": "^5.2.11",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-svgr": "^3.3.0",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "dependencies": {
     "@aws-sdk/client-cloudformation": "^3.462.0",
