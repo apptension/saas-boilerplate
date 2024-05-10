@@ -630,6 +630,13 @@ class DeleteModelMutation(ClientIDMutation):
 
 
 class DeleteTenantDependentModelMutation(DeleteModelMutation):
+    """
+    `DeleteTenantDependentModelMutation` is a mutation class that inherits from
+    [`DeleteModelMutation`](#deletemodelmutation).
+    It is used to delete an object of a specified model from the database which is dependent on tenant.
+    It implements `tenant_id` field in input.
+    """
+
     class Meta:
         abstract = True
 
@@ -645,6 +652,13 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
 
 
 class UpdateTenantDependentModelMutation(UpdateModelMutation):
+    """
+    `UpdateTenantDependentModelMutation` is a mutation class that inherits from
+    [`UpdateModelMutation`](#updatemodelmutation).
+    It is used to update an object of a specified model in the database which is dependent on tenant.
+    It implements `tenant_id` field in input.
+    """
+
     class Meta:
         abstract = True
 
@@ -660,6 +674,13 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
 
 
 class CreateTenantDependentModelMutation(CreateModelMutation):
+    """
+    `CreateTenantDependentModelMutation` is a Relay mutation class that inherits from
+    [`CreateModelMutation`](#createmodelmutation).
+     It is used to create a new object of a specified model in the database which is dependent on tenant.
+     It implements `tenant_id` field in input.
+    """
+
     class Meta:
         abstract = True
 

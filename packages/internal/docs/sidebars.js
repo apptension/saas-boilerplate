@@ -238,6 +238,7 @@ module.exports = {
             'introduction/features/emails',
             'introduction/features/notifications',
             'introduction/features/openai',
+            'introduction/features/multi-tenancy',
             'introduction/features/payments',
             'introduction/features/iac',
             'introduction/features/cicd',

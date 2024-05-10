@@ -3,22 +3,28 @@ title: Payments and subscriptions
 description: Integration with Stripe
 ---
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import ProjectName from '../../shared/components/ProjectName.component';
 
-SaaS Boilerplate provides a payments and subscriptions functionality out of the box based on the integration with
-Stripe. This functionality is divided into two parts: **[payments](#payments)** and
-**[subscription management](#subscription-management)**.
+
+<ProjectName/> provides a payments and subscriptions functionality seamlessly integrated with Stripe.
+This feature empowers tenants to handle financial transactions and manage subscription plans directly within the application.
+This functionality is divided into two parts:
+
+- **[payments](#payments)**
+- **[subscription management](#subscription-management)**
+
 
 ### Payments
 
-The payments functionality allows users to define payment methods (including multiple cards) that are stored in the
-Stripe merchant account. Users can edit and update their payment methods at any time.
+The payments functionality enables tenants to define and manage payment methods securely stored in their Stripe merchant account.
+Tenant owners can add, edit, or remove payment methods, including multiple cards, to facilitate seamless transactions.
 
 <p align="center">
   <img src={useBaseUrl("img/features/payments/card-form.png")} alt="Payment method form" />
 </p>
 
-The payment form allows users to make transactions with a defined amount of USD, using an already added payment method
-or adding a new card for one time charge. Successful transactions are added to the transaction history list.
+Tenants can initiate transactions using the payment form, specifying the amount in USD and selecting a stored payment
+method or adding a new card for one-time charges. Successful transactions are recorded in the transaction history for reference.
 
 <p align="center">
   <img src={useBaseUrl("img/features/payments/payment-form.png")} alt="Payment form" />
@@ -27,7 +33,7 @@ or adding a new card for one time charge. Successful transactions are added to t
 
 ### Subscription management
 
-The subscription management functionality allows users to select one of the three pre-defined plans in the Stripe admin
+The subscription management functionality allows tenant owners to select one of the three pre-defined plans in the Stripe admin
 panel: Free, Monthly, and Yearly. The selected plan is automatically registered as an active subscription in the system
 and can be used in the business logic of the application. The system supports changing and canceling subscriptions
 based on the rules defined by the application administrator in Stripe.
@@ -47,7 +53,7 @@ or if you need to adjust it to meet the specific needs of your application, plea
 ----
 
 Having Stripe payments integrated from the start of a SaaS project offers several advantages. First, it allows for a
-seamless user experience, as users can easily subscribe to paid plans and make payments without leaving the application.
+seamless user experience, as tenants can easily subscribe to paid plans and make payments without leaving the application.
 Second, it allows for better financial tracking and reporting, as all payment information is stored in the Stripe
 merchant account. Finally, it provides a scalable payment solution that can grow with the application, as Stripe
 supports a wide range of payment methods and currencies.

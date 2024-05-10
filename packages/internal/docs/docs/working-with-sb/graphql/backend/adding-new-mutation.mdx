@@ -168,6 +168,17 @@ See the API Reference for:
 
 :::
 
+:::info
+
+For tenant dependent models there are prepared Mutation classes with already defined `tenant_id` field in input. You can
+see usage example in CRUD module. Here is API Reference for above, all are inherited from base `ModelMutation` classes:
+- [CreateTenantDependentModelMutation](../../../api-reference/backend/generated/common/graphql/mutations#createtenantdependentmodelmutation)
+- [UpdateTenantDependentModelMutation](../../../api-reference/backend/generated/common/graphql/mutations#updatetenantdependentmodelmutation)
+- [DeleteTenantDependentModelMutation](../../../api-reference/backend/generated/common/graphql/mutations#deletetenantdependentmodelmutation)
+
+
+:::
+
 ### Create mutation fields in schema
 
 Last but not least we need to connect our mutations to the GraphQL schema!

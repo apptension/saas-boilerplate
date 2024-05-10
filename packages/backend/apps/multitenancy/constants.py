@@ -14,6 +14,13 @@ class TenantType(models.TextChoices):
 
 
 class TenantUserRole(models.TextChoices):
+    """
+    Predefined tenant user roles:
+    - OWNER
+    - ADMIN
+    - MEMBER
+    """
+
     OWNER = "OWNER", "Owner"
     ADMIN = "ADMIN", "Administrator"
     MEMBER = "MEMBER", "Member"
