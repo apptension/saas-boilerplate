@@ -7,10 +7,12 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "types": ["@testing-library/jest-dom"],
+    "noFallthroughCasesInSwitch": true,
+    "jsx": "react-jsx"
   },
   "files": [],
-  "include": [],
+  "include": ["./src/**/**.*"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

@@ -1,7 +1,6 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import React from 'react';
 
 import { Popover, PopoverContent, PopoverTrigger } from '../';
 import { render } from '../../../tests/utils/rendering';

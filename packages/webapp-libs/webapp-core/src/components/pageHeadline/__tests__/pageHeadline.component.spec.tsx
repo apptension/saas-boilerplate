@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
 
 import { PageHeadline, PageHeadlineProps } from '../';
 import { render } from '../../../tests/utils/rendering';
@@ -14,7 +13,7 @@ describe('PageHeadline', () => {
   it('Should render page headline with header', async () => {
     render(<Component data-testid="testid" className="h-12" />);
 
-    expect(await screen.getByTestId('testid').className).toContain('h-12');
+    expect(screen.getByTestId('testid').className).toContain('h-12');
     expect(screen.getByText(header)).toBeInTheDocument();
   });
 
