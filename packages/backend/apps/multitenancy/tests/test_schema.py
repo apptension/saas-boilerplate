@@ -135,14 +135,52 @@ class TestDeleteTenantMutation:
         }
     '''
 
-    def test_delete_tenant(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+    def test_delete_tenant(
+        self,
+        graphene_client,
+        user,
+        tenant_factory,
+        tenant_membership_factory,
+        subscription_schedule_factory,
+        monthly_plan_price,
+    ):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_id = tenant.id
         tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        subscription_schedule_factory(
+            phases=[{'items': [{'price': monthly_plan_price.id}], 'trialing': True}], customer__subscriber=tenant
+        )
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id)})
         response_data = executed["data"]["deleteTenant"]["deletedIds"]
-        assert response_data[0] == to_global_id("TenantType", tenant.id)
+        assert response_data[0] == to_global_id("TenantType", tenant_id)
+
+    def test_delete_tenant_with_free_plan(
+        self,
+        graphene_client,
+        user,
+        tenant_factory,
+        tenant_membership_factory,
+        subscription_schedule_factory,
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_id = tenant.id
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        subscription_schedule_factory(phases=None, customer__subscriber=tenant)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id)})
+        response_data = executed["data"]["deleteTenant"]["deletedIds"]
+        assert response_data[0] == to_global_id("TenantType", tenant_id)
+
+    def test_delete_default_tenant(self, graphene_client, user, tenant_factory, tenant_membership_factory):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.DEFAULT)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id)})
+        assert executed["errors"][0]["message"] == "GraphQlValidationError"
 
     def test_user_without_membership(self, graphene_client, user, tenant_factory):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
