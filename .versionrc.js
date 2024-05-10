@@ -96,4 +96,15 @@ module.exports = {
     },
   ],
   tagPrefix: '',
+  types: [
+    { type: 'feat', section: 'Features' },
+    { type: 'fix', section: 'Bug Fixes' },
+    { type: 'deps', section: 'Dependencies' },
+    { type: 'chore', hidden: true },
+    { type: 'docs', hidden: true },
+    { type: 'style', hidden: true },
+    { type: 'refactor', hidden: true },
+    { type: 'perf', hidden: true },
+    { type: 'test', hidden: true },
+  ],
 };
