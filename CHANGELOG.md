@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.1](https://github.com/apptension/saas-boilerplate/compare/2.6.0...2.6.1) (2024-05-10)
+
+### Bug Fixes
+
+- [#508](https://github.com/apptension/saas-boilerplate/issues/508) Remove AWS_ENDPOINT_URL from backend/.env.shared to fix migration job fails to trigger on local deploy ([#510](https://github.com/apptension/saas-boilerplate/issues/510)) ([2042659](https://github.com/apptension/saas-boilerplate/commit/2042659b33a371e84410410c5b178ace2e9f7c8e))
+- Remove warning in tests from MSW unhandled requests ([#501](https://github.com/apptension/saas-boilerplate/issues/501)) ([7766ccb](https://github.com/apptension/saas-boilerplate/commit/7766ccb4a289c7e99c2f59c54f9e451a37806807))
+- Update pnpm to 9.0.6, use workspace protocol (workspace:) instead of `link-workspace-packages` which is now by default set to `false` ([#538](https://github.com/apptension/saas-boilerplate/issues/538)) ([02d3022](https://github.com/apptension/saas-boilerplate/commit/02d3022e32e8fd6e965b6369a7af6279874ecfe8))
+
 ## [2.6.0](https://github.com/apptension/aws-boilerplate/compare/2.5.0...2.6.0) (2024-03-06)
 
 ### Features

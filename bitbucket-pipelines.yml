@@ -34,7 +34,7 @@ definitions:
   scripts:
     initializeStep: &initializeStep cp .env.test .env
       && corepack enable
-      && corepack prepare pnpm@8.6.1 --activate
+      && corepack prepare pnpm@9.0.6 --activate
       && export PNPM_HOME="/root/.local/share/pnpm"
       && export PATH="$PNPM_HOME:$PATH"
 
