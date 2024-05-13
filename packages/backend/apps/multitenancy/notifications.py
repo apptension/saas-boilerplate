@@ -36,7 +36,7 @@ def send_accepted_tenant_invitation_notification(tenant_membership: models.Tenan
             data={
                 "id": membership_id,
                 "name": str(tenant_membership.user.profile) or str(tenant_membership.user),
-                "tenant": str(tenant_membership.tenant),
+                "tenant_name": str(tenant_membership.tenant),
             },
             issuer=tenant_membership.user,
         )
@@ -50,7 +50,7 @@ def send_declined_tenant_invitation_notification(tenant_membership: models.Tenan
             data={
                 "id": membership_id,
                 "name": str(tenant_membership.user.profile) or str(tenant_membership.user),
-                "tenant": str(tenant_membership.tenant),
+                "tenant_name": str(tenant_membership.tenant),
             },
             issuer=tenant_membership.user,
         )
