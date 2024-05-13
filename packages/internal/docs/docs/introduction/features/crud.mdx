@@ -2,6 +2,7 @@
 title: CRUD model generator
 ---
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import ProjectName from '../../shared/components/ProjectName.component';
 
 CRUD (Create, Read, Update, Delete) is a standard set of database operations that are commonly used in web applications.
 These operations allow developers to interact with the database and perform basic functions such as creating, reading,
@@ -10,9 +11,10 @@ starting point for developers to build upon.
 
 ### CRUD Example Items
 
-SaaS Boilerplate comes with a built-in example CRUD module under the `CRUD Example Items` tab in the application. This
+<ProjectName/> comes with a built-in example CRUD module under the `CRUD Example Items` tab in the application. This
 module contains a list of created items that are stored in the database and loaded through the GraphQL backend API.
-Users can create, update, and delete items from the list.
+CRUD module in <ProjectName/> is tenant dependent. It means that CRUD Example Items are connected with tenant and
+shared between tenant members who can create, update, and delete them from the list.
 
 <p align="center">
   <img src={useBaseUrl("img/features/crud/list.png")} alt="Items list" />
