@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../';
 import { render } from '../../../tests/utils/rendering';
