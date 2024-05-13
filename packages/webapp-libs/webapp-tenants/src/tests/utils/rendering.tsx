@@ -1,6 +1,7 @@
 import * as apiUtils from '@sb/webapp-api-client/tests/utils/rendering';
 import * as corePath from '@sb/webapp-core/utils/path';
-import { RenderOptions, render, renderHook } from '@testing-library/react';
+import { Queries, queries } from '@testing-library/dom';
+import { RenderOptions, RenderResult, render, renderHook } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { MemoryRouterProps, generatePath } from 'react-router';
 import { Outlet, Route, Routes } from 'react-router-dom';
@@ -12,7 +13,7 @@ export type WrapperProps = apiUtils.WrapperProps & {
 };
 
 /**
- * Component that wraps `children` with `CurrentTenant`
+ * Component that wraps `children` with [`CurrentTenantProvider`](./providers#currenttenantprovider)
  * @param children
  * @param TenantWrapper
  * @constructor
@@ -21,6 +22,7 @@ export function TenantsTestProviders({ children, TenantWrapper = CurrentTenantPr
   return <TenantWrapper>{children}</TenantWrapper>;
 }
 
+/** @ignore */
 export function getWrapper(
   WrapperComponent: ComponentClass<WrapperProps> | FC<WrapperProps>,
   wrapperProps: WrapperProps
@@ -40,9 +42,28 @@ export function getWrapper(
   };
 }
 
-export type CustomRenderOptions = RenderOptions & WrapperProps;
+export type CustomRenderOptions<
+  Q extends Queries = typeof queries,
+  Container extends Element | DocumentFragment = HTMLElement,
+  BaseElement extends Element | DocumentFragment = Container,
+> = RenderOptions<Q, Container, BaseElement> & WrapperProps;
 
-function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
+/**
+ * Method that extends [`render`](https://testing-library.com/docs/react-testing-library/api#render) method from
+ * `@testing-library/react` package. It composes a wrapper using [`TenantsTestProviders`](#tenantstestproviders)
+ * component.
+ *
+ * @param ui
+ * @param options
+ */
+function customRender<
+  Q extends Queries = typeof queries,
+  Container extends Element | DocumentFragment = HTMLElement,
+  BaseElement extends Element | DocumentFragment = Container,
+>(
+  ui: ReactElement,
+  options: CustomRenderOptions<Q, Container, BaseElement> = {}
+): RenderResult<Q, Container, BaseElement> & { waitForApolloMocks: apiUtils.WaitForApolloMocks } {
   const { wrapper, waitForApolloMocks } = getWrapper(TenantsTestProviders, options);
 
   return {
@@ -54,6 +75,14 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
   };
 }
 
+/**
+ * Method that extends [`renderHook`](https://testing-library.com/docs/react-testing-library/api#renderhook) method from
+ * `@testing-library/react` package. It composes a wrapper using [`TenantsTestProviders`](#tenantstestproviders)
+ * component.
+ *
+ * @param hook
+ * @param options
+ */
 function customRenderHook<Result, Props>(hook: (initialProps: Props) => Result, options: CustomRenderOptions = {}) {
   const { wrapper, waitForApolloMocks } = getWrapper(TenantsTestProviders, options);
 
@@ -79,15 +108,19 @@ export const createMockRouterProps = (pathName: string, params?: Record<string, 
   };
 };
 
+/** @ignore */
 export const PLACEHOLDER_TEST_ID = 'content';
+/** @ignore */
 export const PLACEHOLDER_CONTENT = <span data-testid="content">content</span>;
 
+/** @ignore */
 const CurrentTenantRouteElement = () => (
   <CurrentTenantProvider>
     <Outlet />
   </CurrentTenantProvider>
 );
 
+/** @ignore */
 export const CurrentTenantRouteWrapper = ({ children }: PropsWithChildren) => {
   return (
     <Routes>

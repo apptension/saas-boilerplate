@@ -127,6 +127,21 @@ module.exports = {
     [
       'docusaurus-plugin-typedoc',
       {
+        id: 'typedoc-webapp-tenants',
+        entryPoints: [
+          '../../webapp-libs/webapp-tenants/src/hooks/index.ts',
+          '../../webapp-libs/webapp-tenants/src/providers/index.ts',
+          '../../webapp-libs/webapp-tenants/src/tests/utils/rendering.tsx',
+        ],
+        tsconfig: '../../webapp-libs/webapp-tenants/tsconfig.lib.json',
+        out: 'api-reference/webapp-tenants/generated',
+        readme: 'none',
+        watch: process.env.TYPEDOC_WATCH,
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
         id: 'typedoc-webapp',
         entryPoints: [
           '../../webapp/src/app/providers/index.ts',
