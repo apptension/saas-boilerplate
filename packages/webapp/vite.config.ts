@@ -33,7 +33,7 @@ export default defineConfig(({ mode }): UserConfig => {
         '/api': {
           target: 'http://localhost:5001',
           changeOrigin: true,
-          ws: true
+          ws: true,
         },
         '/static/graphene_django': {
           target: 'http://localhost:5001',
@@ -61,7 +61,11 @@ export default defineConfig(({ mode }): UserConfig => {
       viteTsConfigPaths({
         projects: ['../../tsconfig.base.json'],
       }),
-      svgr(),
+      svgr({
+        svgrOptions: { icon: true },
+        include: ['**/*.svg', '**/*.svg?react'],
+        exclude: [],
+      }),
       viteCommonjs(),
     ],
 
