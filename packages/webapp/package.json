@@ -43,7 +43,7 @@
     "@sb/webapp-notifications": "workspace:*",
     "@storybook/addon-essentials": "^8.0.9",
     "@storybook/addon-measure": "^8.0.9",
-    "@storybook/addon-styling": "^1.3.7",
+    "@storybook/addon-themes": "^8.0.10",
     "@storybook/cli": "^8.0.9",
     "@storybook/client-api": "^7.6.17",
     "@storybook/client-logger": "^8.0.9",

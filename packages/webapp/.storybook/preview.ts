@@ -1,4 +1,4 @@
-import { withThemeByClassName } from '@storybook/addon-styling';
+import { withThemeByClassName } from '@storybook/addon-themes';
 import { Preview } from '@storybook/react';
 import * as jest from 'jest-mock';
 
