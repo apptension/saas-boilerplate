@@ -3,7 +3,7 @@ import { RenderOptions, RenderResult, render, renderHook } from '@testing-librar
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
-import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { MemoryRouter, MemoryRouterProps } from 'react-router';
 
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
 import { LocalesProvider, ResponsiveThemeProvider } from '../../providers';
@@ -82,7 +82,7 @@ export function getWrapper(
 export type CustomRenderOptions<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 > = RenderOptions<Q, Container, BaseElement> & WrapperProps;
 
 /**
@@ -95,7 +95,7 @@ export type CustomRenderOptions<
 function customRender<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 >(
   ui: ReactElement,
   options: CustomRenderOptions<Q, Container, BaseElement> = {}
