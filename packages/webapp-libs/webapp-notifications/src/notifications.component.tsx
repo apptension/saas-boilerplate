@@ -27,7 +27,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
         options.data?.data?.notificationCreated?.notification
       );
 
-      if (notificationData?.type) events[notificationData?.type as NotificationTypes]?.();
+      if (notificationData) events[notificationData.type as NotificationTypes]?.();
 
       options.client.cache.updateQuery({ query: notificationsListQuery }, (prev) => {
         const prevListData = getFragmentData(notificationsListContentFragment, prev);
