@@ -17,7 +17,7 @@ describe('Notifications: Component', () => {
     [NotificationTypes.CRUD_ITEM_CREATED]: () => <>CRUD_ITEM_CREATED</>,
     [NotificationTypes.CRUD_ITEM_UPDATED]: () => <>CRUD_ITEM_UPDATED</>,
     [NotificationTypes.TENANT_INVITATION_CREATED]: () => <>TENANT_INVITATION_CREATED</>,
-    [NotificationTypes.TENANT_INVITATION_ACCEPTED]: () => <div data-testid="tenantId">TENANT_INVITATION_ACCEPTED</div>,
+    [NotificationTypes.TENANT_INVITATION_ACCEPTED]: () => <>TENANT_INVITATION_ACCEPTED</>,
     [NotificationTypes.TENANT_INVITATION_DECLINED]: () => <>TENANT_INVITATION_DECLINED</>,
   };
 
@@ -85,6 +85,6 @@ describe('Notifications: Component', () => {
     await waitForApolloMocks();
 
     await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
-    expect(await screen.findAllByTestId('tenantId')).toHaveLength(1);
+    expect(await screen.findByText('TENANT_INVITATION_ACCEPTED')).toBeInTheDocument();
   });
 });
