@@ -1,4 +1,3 @@
-import pytz
 from django.conf import settings
 from django.contrib import messages
 from django.utils import timezone
@@ -136,7 +135,7 @@ class SubscriptionSchedulePhaseItemSerializer(serializers.Serializer):
 
 class StripeTimestampField(serializers.DateTimeField):
     def to_representation(self, value):
-        return super().to_representation(timezone.datetime.fromtimestamp(value, tz=pytz.UTC))
+        return super().to_representation(timezone.datetime.fromtimestamp(value, tz=timezone.utc))
 
 
 class SubscriptionSchedulePhaseSerializer(serializers.Serializer):

@@ -1,10 +1,9 @@
 import json
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 import boto3
-import pytz
 import requests
 from django.conf import settings
 
@@ -60,7 +59,7 @@ class Task:
 class TaskLocalInvoke(Task):
     def apply(self, data: dict, due_date: datetime = None):
         if due_date is None:
-            due_date = datetime.now(tz=pytz.utc)
+            due_date = datetime.now(tz=timezone.utc)
 
         entry = self.get_entry(data)
         response = requests.post(
