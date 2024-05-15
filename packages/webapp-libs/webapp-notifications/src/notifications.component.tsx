@@ -15,7 +15,7 @@ import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.co
 
 export type NotificationsProps = {
   templates: Record<NotificationTypes, ElementType>;
-  events: Partial<Record<NotificationTypes, () => Promise<void> | undefined>>;
+  events: Partial<Record<NotificationTypes, () => void | undefined>>;
 };
 
 export const Notifications: FC<NotificationsProps> = ({ templates, events }) => {

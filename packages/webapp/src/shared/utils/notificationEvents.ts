@@ -1,7 +1,7 @@
 import { NotificationTypes } from '@sb/webapp-notifications';
 
 type GetEventsProps = {
-  reloadCommonQuery: () => Promise<void>;
+  reloadCommonQuery: () => void;
 };
 
 const getNotificationEvents = ({ reloadCommonQuery }: GetEventsProps) => ({
