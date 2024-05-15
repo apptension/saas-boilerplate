@@ -42,6 +42,6 @@ export const fillNotificationsListQuery = (
 
 export const fillNotificationCreatedSubscriptionQuery = (notification: NotificationType) => {
   return composeMockedQueryResult(notificationCreatedSubscription, {
-    data: notification,
+    data: { notificationCreated: { notification } },
   });
 };

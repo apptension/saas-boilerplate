@@ -13,7 +13,7 @@ import {
 } from './notificationsList';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.constants';
 
-type NotificationsProps = {
+export type NotificationsProps = {
   templates: Record<NotificationTypes, ElementType>;
   events: Partial<Record<NotificationTypes, () => Promise<void> | undefined>>;
 };

@@ -4,12 +4,12 @@ import { CommonQueryCurrentUserQueryQuery } from '../../graphql';
 
 type CommonDataContext = {
   data: CommonQueryCurrentUserQueryQuery | null;
-  reload: () => Promise<void>;
+  reload: () => void;
 };
 
 export default React.createContext<CommonDataContext>({
   data: null,
-  reload: async () => {
+  reload: () => {
     return;
   },
 });

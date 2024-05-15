@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { ElementType } from 'react';
 
-import { Notifications } from '../notifications.component';
+import { Notifications, NotificationsProps } from '../notifications.component';
 import { NotificationTypes } from '../notifications.types';
 import { fillNotificationCreatedSubscriptionQuery, notificationFactory } from '../tests/factories';
 import { render } from '../tests/utils/rendering';
@@ -17,7 +17,9 @@ describe('Notifications: Component', () => {
     [NotificationTypes.TENANT_INVITATION_DECLINED]: () => <>TENANT_INVITATION_DECLINED</>,
   };
 
-  const Component = () => <Notifications templates={templates} />;
+  const Component = ({ events = {} }: { events?: NotificationsProps['events'] }) => (
+    <Notifications templates={templates} events={events} />
+  );
 
   it('Should show trigger button', async () => {
     const apolloMocks = [
@@ -41,5 +43,27 @@ describe('Notifications: Component', () => {
 
     await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
     expect(await screen.findByText('Notifications')).toBeInTheDocument();
+  });
+
+  it('Should call notification event', async () => {
+    const notificationType = NotificationTypes.TENANT_INVITATION_CREATED;
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationCreatedSubscriptionQuery(
+        notificationFactory({
+          type: notificationType,
+        })
+      ),
+    ];
+
+    const mockEvent = jest.fn();
+    const events = { [notificationType]: mockEvent };
+
+    const { waitForApolloMocks } = render(<Component events={events} />, { apolloMocks });
+
+    await waitForApolloMocks();
+
+    expect(mockEvent).toHaveBeenCalled();
   });
 });
