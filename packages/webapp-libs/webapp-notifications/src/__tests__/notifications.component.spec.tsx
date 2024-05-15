@@ -5,7 +5,11 @@ import { ElementType } from 'react';
 
 import { Notifications, NotificationsProps } from '../notifications.component';
 import { NotificationTypes } from '../notifications.types';
-import { fillNotificationCreatedSubscriptionQuery, notificationFactory } from '../tests/factories';
+import {
+  fillNotificationCreatedSubscriptionQuery,
+  fillNotificationsListQuery,
+  notificationFactory,
+} from '../tests/factories';
 import { render } from '../tests/utils/rendering';
 
 describe('Notifications: Component', () => {
@@ -13,7 +17,7 @@ describe('Notifications: Component', () => {
     [NotificationTypes.CRUD_ITEM_CREATED]: () => <>CRUD_ITEM_CREATED</>,
     [NotificationTypes.CRUD_ITEM_UPDATED]: () => <>CRUD_ITEM_UPDATED</>,
     [NotificationTypes.TENANT_INVITATION_CREATED]: () => <>TENANT_INVITATION_CREATED</>,
-    [NotificationTypes.TENANT_INVITATION_ACCEPTED]: () => <>TENANT_INVITATION_ACCEPTED</>,
+    [NotificationTypes.TENANT_INVITATION_ACCEPTED]: () => <div data-testid="tenantId">TENANT_INVITATION_ACCEPTED</div>,
     [NotificationTypes.TENANT_INVITATION_DECLINED]: () => <>TENANT_INVITATION_DECLINED</>,
   };
 
@@ -66,24 +70,21 @@ describe('Notifications: Component', () => {
     expect(mockEvent).toHaveBeenCalled();
   });
 
-  it('Should not call notification event if there is no proper type', async () => {
-    const notificationType = NotificationTypes.TENANT_INVITATION_CREATED;
+  it('Should ignore existing notification from Subscription', async () => {
+    const notification = notificationFactory({
+      type: NotificationTypes.TENANT_INVITATION_ACCEPTED,
+    });
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      fillNotificationCreatedSubscriptionQuery(
-        notificationFactory({
-          type: 'some_random_type_that_doesnt_exist',
-        })
-      ),
+      fillNotificationsListQuery([notification]),
+      fillNotificationCreatedSubscriptionQuery(notification),
     ];
 
-    const mockEvent = jest.fn();
-    const events = { [notificationType]: mockEvent };
-
-    const { waitForApolloMocks } = render(<Component events={events} />, { apolloMocks });
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks });
     await waitForApolloMocks();
 
-    expect(mockEvent).not.toHaveBeenCalled();
+    await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
+    expect(await screen.findAllByTestId('tenantId')).toHaveLength(1);
   });
 });
