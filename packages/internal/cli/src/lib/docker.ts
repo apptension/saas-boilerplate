@@ -1,7 +1,9 @@
-import { CLIError } from '@oclif/errors';
+import { Errors } from '@oclif/core';
 import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import { trace } from '@opentelemetry/api';
+
+const { CLIError } = Errors;
 
 const tracer = trace.getTracer('docker');
 const exec = promisify(childProcess.exec);
