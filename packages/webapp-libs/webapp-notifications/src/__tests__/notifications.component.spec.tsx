@@ -45,7 +45,7 @@ describe('Notifications: Component', () => {
     expect(await screen.findByText('Notifications')).toBeInTheDocument();
   });
 
-  it('Should call notification event', async () => {
+  it('Should call notification event for proper type', async () => {
     const notificationType = NotificationTypes.TENANT_INVITATION_CREATED;
 
     const apolloMocks = [
@@ -61,9 +61,29 @@ describe('Notifications: Component', () => {
     const events = { [notificationType]: mockEvent };
 
     const { waitForApolloMocks } = render(<Component events={events} />, { apolloMocks });
-
     await waitForApolloMocks();
 
     expect(mockEvent).toHaveBeenCalled();
+  });
+
+  it('Should not call notification event if there is no proper type', async () => {
+    const notificationType = NotificationTypes.TENANT_INVITATION_CREATED;
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationCreatedSubscriptionQuery(
+        notificationFactory({
+          type: 'some_random_type_that_doesnt_exist',
+        })
+      ),
+    ];
+
+    const mockEvent = jest.fn();
+    const events = { [notificationType]: mockEvent };
+
+    const { waitForApolloMocks } = render(<Component events={events} />, { apolloMocks });
+    await waitForApolloMocks();
+
+    expect(mockEvent).not.toHaveBeenCalled();
   });
 });
