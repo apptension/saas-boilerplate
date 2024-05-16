@@ -13,11 +13,12 @@ import {
 } from './notificationsList';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList/notificationsList.constants';
 
-type NotificationsProps = {
+export type NotificationsProps = {
   templates: Record<NotificationTypes, ElementType>;
+  events: Partial<Record<NotificationTypes, () => void | undefined>>;
 };
 
-export const Notifications: FC<NotificationsProps> = ({ templates }) => {
+export const Notifications: FC<NotificationsProps> = ({ templates, events }) => {
   const { loading, data, fetchMore, networkStatus } = useQuery(notificationsListQuery);
   useSubscription(notificationCreatedSubscription, {
     onData: (options) => {
@@ -25,6 +26,9 @@ export const Notifications: FC<NotificationsProps> = ({ templates }) => {
         notificationsListItemFragment,
         options.data?.data?.notificationCreated?.notification
       );
+
+      if (notificationData) events[notificationData.type as NotificationTypes]?.();
+
       options.client.cache.updateQuery({ query: notificationsListQuery }, (prev) => {
         const prevListData = getFragmentData(notificationsListContentFragment, prev);
         const alreadyExists = prevListData?.allNotifications?.edges?.find((edge) => {

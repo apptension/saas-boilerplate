@@ -28,6 +28,9 @@ describe('NotificationsList: Component', () => {
         templates={{
           [NotificationTypes.CRUD_ITEM_CREATED]: NotificationMock,
           [NotificationTypes.CRUD_ITEM_UPDATED]: NotificationMock,
+          [NotificationTypes.TENANT_INVITATION_CREATED]: NotificationMock,
+          [NotificationTypes.TENANT_INVITATION_ACCEPTED]: NotificationMock,
+          [NotificationTypes.TENANT_INVITATION_DECLINED]: NotificationMock,
         }}
         onLoadMore={() => null}
         loading={loading}
