@@ -12,8 +12,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import notificationTemplates from '../../../constants/notificationTemplates';
+import getNotificationEvents from '../../../events/notificationEvents';
 import { useAuth } from '../../../hooks';
-import getNotificationEvents from '../../../utils/notificationEvents';
 import { Avatar } from '../../avatar';
 import { LayoutContext } from '../layout.context';
 
