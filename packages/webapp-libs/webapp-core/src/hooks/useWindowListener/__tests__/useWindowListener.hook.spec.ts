@@ -1,6 +1,6 @@
 import { empty } from 'ramda';
 import throttle from 'lodash.throttle';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useWindowListener } from '../useWindowListener.hook';
 import { UnknownObject } from '../../../utils/types';
 

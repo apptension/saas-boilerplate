@@ -9,6 +9,7 @@ export default {
   moduleNameMapper: {
     'react-markdown': '<rootDir>/node_modules/react-markdown/react-markdown.min.js',
     '^!!raw-loader!.*': 'jest-raw-loader',
+    '\\.svg\\?react$': '<rootDir>/src/tests/svgMock.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],

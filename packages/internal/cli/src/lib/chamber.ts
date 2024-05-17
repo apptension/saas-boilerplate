@@ -1,9 +1,10 @@
-import { CLIError } from '@oclif/errors';
 import * as childProcess from 'child_process';
 import { promisify } from 'util';
 import { lookpath } from 'lookpath';
-import { Command } from '@oclif/core';
+import { Command, Errors } from '@oclif/core';
 import * as dotenv from 'dotenv';
+
+const { CLIError } = Errors;
 
 const exec = promisify(childProcess.exec);
 
@@ -24,19 +25,19 @@ type LoadChamberEnvOptions = {
 };
 export async function loadChamberEnv(
   context: Command,
-  { serviceName }: LoadChamberEnvOptions
+  { serviceName }: LoadChamberEnvOptions,
 ) {
   await assertChamberInstalled();
 
   let chamberOutput;
   try {
     const { stdout } = await exec(
-      `chamber export ${serviceName} --format dotenv`
+      `chamber export ${serviceName} --format dotenv`,
     );
     chamberOutput = stdout;
   } catch (err) {
     context.error(
-      `Failed to load environmental variables from SSM Parameter Store using chamber: ${err}`
+      `Failed to load environmental variables from SSM Parameter Store using chamber: ${err}`,
     );
   }
 
@@ -44,7 +45,7 @@ export async function loadChamberEnv(
   context.log(
     `Loaded environmental variables from SSM Parameter Store using chamber:
   service (prefix): ${serviceName}
-  count: ${Object.keys(parsed).length}\n`
+  count: ${Object.keys(parsed).length}\n`,
   );
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -1,5 +1,7 @@
-import { CLIError } from '@oclif/errors';
+import { Errors } from '@oclif/core';
 import { lookpath } from 'lookpath';
+
+const { CLIError } = Errors;
 
 export const isAwsVaultInstalled = async () => {
   return await lookpath('aws-vault');
