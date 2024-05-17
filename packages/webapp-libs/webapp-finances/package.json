@@ -17,6 +17,6 @@
     "react-click-away-listener": "^2.2.3"
   },
   "devDependencies": {
-    "lucide-react": "^0.224.0"
+    "lucide-react": "^0.378.0"
   }
 }
