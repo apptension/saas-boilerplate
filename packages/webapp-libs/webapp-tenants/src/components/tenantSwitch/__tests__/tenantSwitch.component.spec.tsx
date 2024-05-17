@@ -55,7 +55,7 @@ describe('TenantSwitch: Component', () => {
   });
 
   it('should render correct tenant name when param in url', async () => {
-    const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: tenants[1].id });
+    const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: organizationTenant.id });
     render(<Component />, { apolloMocks: getApolloMocks(), routerProps, TenantWrapper });
 
     expect(await screen.findByText(organizationTenantName)).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('TenantSwitch: Component', () => {
 
     await userEvent.click(invitationTenantButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en/${tenants[1].id}`);
+    expect(mockNavigate).toHaveBeenCalledWith(`/en/${organizationTenant.id}`);
   });
 
   it('should handle create new tenant click', async () => {
@@ -124,7 +124,7 @@ describe('TenantSwitch: Component', () => {
     const settingsButton = await screen.findByTestId('tenant-settings-btn');
     await userEvent.click(settingsButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en/${tenants[0].id}/tenant/settings/members`);
+    expect(mockNavigate).toHaveBeenCalledWith(`/en/${personalTenant.id}/tenant/settings/members`);
   });
 
   it('should handle invitation pending badge click', async () => {
