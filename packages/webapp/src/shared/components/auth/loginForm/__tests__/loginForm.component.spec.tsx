@@ -65,7 +65,6 @@ describe('LoginForm: Component', () => {
     await waitForApolloMocks();
 
     expect(trackEvent).toHaveBeenCalledWith('auth', 'log-in');
-    expect(await mockNavigate).toHaveBeenCalledWith(`/en`);
   });
 
   it('should show error if required value is missing', async () => {
@@ -76,7 +75,6 @@ describe('LoginForm: Component', () => {
     await clickLoginButton();
 
     expect(await screen.findByText('Password is required')).toBeInTheDocument();
-    expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show generic form error if action throws error', async () => {

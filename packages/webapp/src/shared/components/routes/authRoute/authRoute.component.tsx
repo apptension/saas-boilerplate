@@ -1,9 +1,10 @@
-import { useGenerateLocalePath, useLocale } from '@sb/webapp-core/hooks';
-import { Navigate, Outlet, createSearchParams, useLocation } from 'react-router-dom';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { Navigate, Outlet } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
 import { useAuth, useRoleAccessCheck } from '../../../hooks';
+import { useGenerateRedirectSearchParams } from './authRoute.hook';
 
 export type AuthRouteProps = {
   allowedRoles?: Role | Role[];
@@ -28,17 +29,9 @@ export type AuthRouteProps = {
 export const AuthRoute = ({ allowedRoles = [Role.ADMIN, Role.USER] }: AuthRouteProps) => {
   const { isLoggedIn } = useAuth();
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
+
+  const generateRedirectSearchParams = useGenerateRedirectSearchParams();
   const generateLocalePath = useGenerateLocalePath();
-
-  const location = useLocation();
-  const locale = useLocale();
-
-  const generateRedirectSearchParams = () => {
-    const re = new RegExp(`/${locale}/?`);
-    const pathnameWithoutLocale = location.pathname.replace(re, '');
-    const redirect = generateLocalePath(pathnameWithoutLocale);
-    return pathnameWithoutLocale ? createSearchParams({ redirect }).toString() : undefined;
-  };
 
   if (!isAllowed) {
     if (isLoggedIn) return <Navigate to={generateLocalePath(RoutesConfig.notFound)} />;

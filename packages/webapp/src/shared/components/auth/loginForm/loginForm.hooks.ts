@@ -5,7 +5,7 @@ import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { authSinginMutation } from './loginForm.graphql';
@@ -16,6 +16,7 @@ export const useLoginForm = () => {
   const navigate = useNavigate();
   const generateLocalePath = useGenerateLocalePath();
   const { reload: reloadCommonQuery } = useCommonQuery();
+  const { search } = useLocation();
 
   const form = useApiForm<LoginFormFields>({
     errorMessages: {
@@ -36,7 +37,10 @@ export const useLoginForm = () => {
   const [commitLoginMutation, { loading }] = useMutation(authSinginMutation, {
     onCompleted: ({ tokenAuth }) => {
       if (tokenAuth?.otpAuthToken) {
-        return navigate(generateLocalePath(RoutesConfig.validateOtp));
+        return navigate({
+          pathname: generateLocalePath(RoutesConfig.validateOtp),
+          search: search ?? undefined,
+        });
       }
 
       reloadCommonQuery();

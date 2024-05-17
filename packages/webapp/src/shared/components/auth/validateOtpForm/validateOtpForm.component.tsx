@@ -4,12 +4,9 @@ import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, ButtonSize } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { H3, Small } from '@sb/webapp-core/components/typography';
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
 
-import { RoutesConfig } from '../../../../app/config/routes';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
 
 export type ValidateOtpFormFields = {
@@ -18,9 +15,7 @@ export type ValidateOtpFormFields = {
 
 export const ValidateOtpForm = () => {
   const intl = useIntl();
-  const navigate = useNavigate();
   const form = useApiForm<ValidateOtpFormFields>();
-  const generateLocalePath = useGenerateLocalePath();
   const {
     handleSubmit,
     hasGenericErrorOnly,
@@ -43,7 +38,6 @@ export const ValidateOtpForm = () => {
     const { data } = await commitValidateOtpMutation({ variables: { input: { otpToken: values.token } } });
     if (data?.validateOtp?.access) {
       reloadCommonQuery();
-      navigate(generateLocalePath(RoutesConfig.home));
     }
   };
 
