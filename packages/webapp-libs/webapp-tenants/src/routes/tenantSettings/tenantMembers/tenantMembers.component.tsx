@@ -37,7 +37,12 @@ export const TenantMembers = () => {
         />
         {isPersonal ? (
           <Alert className="py-8" data-testid="tenant-members-alert">
-            <Paragraph className="pb-4">If you wish to invite people, you need to create an organization.</Paragraph>
+            <Paragraph className="pb-4">
+              <FormattedMessage
+                defaultMessage="If you wish to invite people, you need to create an organization."
+                id="Tenant Members / Alert"
+              />
+            </Paragraph>
             <Button
               data-testid="tenant-members-create-button"
               color="primary"
