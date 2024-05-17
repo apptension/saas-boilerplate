@@ -65,7 +65,7 @@ export const TenantSwitch = () => {
 
   const renderPendingInvitationBadge = () => {
     return (
-      <Button color="primary" size="sm" onClick={handleLastInvitationClick}>
+      <Button data-testid="tenant-invitation-pending-btn" color="primary" size="sm" onClick={handleLastInvitationClick}>
         <UserPlus className="mr-2" size="16" />
         <FormattedMessage
           defaultMessage="{invitationsCount, plural, =1 {# invitation} other {# invitations}}"
