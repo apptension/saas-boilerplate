@@ -15,7 +15,7 @@ describe('TenantDeleteAlert: Component', () => {
   it('should render alert when button is clicked', async () => {
     render(<Component />);
 
-    const button = await screen.findByRole('button', { name: /remove organisation/i });
+    const button = await screen.findByRole('button', { name: /remove organization/i });
     await userEvent.click(button);
 
     expect(await screen.findByText('Are you absolutely sure?')).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe('TenantDeleteAlert: Component', () => {
     const onContinueMock = jest.fn();
     render(<Component onContinue={onContinueMock} />);
 
-    const button = await screen.findByRole('button', { name: /remove organisation/i });
+    const button = await screen.findByRole('button', { name: /remove organization/i });
     await userEvent.click(button);
 
     const continueButton = await screen.findByRole('button', { name: /continue/i });
@@ -39,7 +39,7 @@ describe('TenantDeleteAlert: Component', () => {
     const onContinueMock = jest.fn();
     render(<Component onContinue={onContinueMock} />);
 
-    const button = await screen.findByRole('button', { name: /remove organisation/i });
+    const button = await screen.findByRole('button', { name: /remove organization/i });
     await userEvent.click(button);
 
     const continueButton = await screen.findByRole('button', { name: /cancel/i });

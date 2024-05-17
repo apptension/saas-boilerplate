@@ -140,7 +140,7 @@ export const TenantSwitch = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleNewTenantClick}>
             <Plus className="mr-1" size="16" />{' '}
-            <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new tenant" />
+            <FormattedMessage defaultMessage="Create new organization" id="TenantSwitch / Create new organization" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
