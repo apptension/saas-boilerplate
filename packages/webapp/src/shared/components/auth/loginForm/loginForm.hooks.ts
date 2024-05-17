@@ -42,8 +42,6 @@ export const useLoginForm = () => {
       reloadCommonQuery();
 
       trackEvent('auth', 'log-in');
-
-      navigate(generateLocalePath(RoutesConfig.home));
     },
     onError: (error) => {
       setApolloGraphQLResponseErrors(error.graphQLErrors);

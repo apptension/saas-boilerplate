@@ -1,5 +1,5 @@
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { Navigate, Outlet } from 'react-router-dom';
+import { useGenerateLocalePath, useLocale } from '@sb/webapp-core/hooks';
+import { Navigate, Outlet, createSearchParams, useLocation } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
@@ -29,8 +29,28 @@ export const AuthRoute = ({ allowedRoles = [Role.ADMIN, Role.USER] }: AuthRouteP
   const { isLoggedIn } = useAuth();
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
   const generateLocalePath = useGenerateLocalePath();
-  const fallbackUrl = isLoggedIn ? generateLocalePath(RoutesConfig.notFound) : generateLocalePath(RoutesConfig.login);
 
-  if (!isAllowed) return <Navigate to={fallbackUrl} />;
+  const location = useLocation();
+  const locale = useLocale();
+
+  const generateRedirectSearchParams = () => {
+    const re = new RegExp(`/${locale}/?`);
+    const pathnameWithoutLocale = location.pathname.replace(re, '');
+    const redirect = generateLocalePath(pathnameWithoutLocale);
+    return pathnameWithoutLocale ? createSearchParams({ redirect }).toString() : undefined;
+  };
+
+  if (!isAllowed) {
+    if (isLoggedIn) return <Navigate to={generateLocalePath(RoutesConfig.notFound)} />;
+
+    return (
+      <Navigate
+        to={{
+          pathname: generateLocalePath(RoutesConfig.login),
+          search: generateRedirectSearchParams(),
+        }}
+      />
+    );
+  }
   return <Outlet />;
 };

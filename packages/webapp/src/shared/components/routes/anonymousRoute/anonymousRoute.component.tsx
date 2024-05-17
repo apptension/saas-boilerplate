@@ -1,5 +1,5 @@
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useSearchParams } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { useAuth } from '../../../hooks';
@@ -21,6 +21,8 @@ import { useAuth } from '../../../hooks';
 export const AnonymousRoute = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { isLoggedIn } = useAuth();
+  const [search] = useSearchParams();
+  const redirect = search.get('redirect');
 
-  return isLoggedIn ? <Navigate to={generateLocalePath(RoutesConfig.home)} /> : <Outlet />;
+  return isLoggedIn ? <Navigate to={redirect ?? generateLocalePath(RoutesConfig.home)} /> : <Outlet />;
 };
