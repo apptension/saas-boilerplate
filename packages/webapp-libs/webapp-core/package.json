@@ -34,6 +34,6 @@
     "lucide-react": "^0.224.0",
     "mockdate": "^3.0.5",
     "resize-observer-polyfill": "^1.5.1",
-    "tailwind-merge": "^1.14.0"
+    "tailwind-merge": "^2.3.0"
   }
 }
