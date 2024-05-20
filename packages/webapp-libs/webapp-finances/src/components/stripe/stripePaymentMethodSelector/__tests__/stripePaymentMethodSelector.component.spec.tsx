@@ -1,10 +1,15 @@
 import { useApiForm } from '@sb/webapp-api-client/hooks';
-import { paymentMethodFactory, subscriptionPhaseFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  paymentMethodFactory,
+  subscriptionPhaseFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { Form } from '@sb/webapp-core/components/forms';
 import { matchTextContent } from '@sb/webapp-core/tests/utils/match';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
-import { append } from 'ramda';
 
 import { StripePaymentMethodSelector } from '../';
 import { fillSubscriptionScheduleQueryWithPhases } from '../../../../tests/factories';
@@ -32,13 +37,25 @@ const paymentMethods = [
   paymentMethodFactory({ billingDetails: { name: 'First Owner' }, card: { last4: '1234' } }),
   paymentMethodFactory({ billingDetails: { name: 'Second Owner' }, card: { last4: '9999' } }),
 ];
+
 const phases = [subscriptionPhaseFactory()];
+
+const tenantId = 'tenantId';
 
 describe('StripePaymentMethodSelector: Component', () => {
   describe('there are payment methods available already', () => {
     it('should list possible payment methods', async () => {
-      const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
-      const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+      const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods, tenantId);
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks: [tenantMock, requestMock] });
 
       await waitForApolloMocks();
 
@@ -47,8 +64,17 @@ describe('StripePaymentMethodSelector: Component', () => {
     });
 
     it('should show add new method button', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods);
-      const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks: [tenantMock, requestMock] });
 
       await waitForApolloMocks();
 

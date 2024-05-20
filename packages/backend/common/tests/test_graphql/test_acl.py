@@ -158,39 +158,39 @@ class TestPermissionClassesForQueryField:
 
 
 class TestPermissionClassesForMutationField:
-    def test_global_policy(self, graphene_client):
+    def test_global_policy(self, graphene_client, tenant):
         Mutation = self.create_mutation()
         schema = create_mutation_schema(Mutation)
         graphene_client.schema = schema
 
-        executed = self.call_mutation(graphene_client)
+        executed = self.call_mutation(graphene_client, tenant)
 
         assert executed["errors"][0]["message"] == "permission_denied", executed
 
-    def test_override_global_policy(self, graphene_client, user):
+    def test_override_global_policy(self, graphene_client, user, tenant):
         Mutation = self.create_mutation(mutation_policies=(policies.AdminFullAccess,))
         schema = create_mutation_schema(Mutation)
         graphene_client.schema = schema
         graphene_client.force_authenticate(user)
 
-        executed = self.call_mutation(graphene_client)
+        executed = self.call_mutation(graphene_client, tenant)
 
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_global_policy_by_authenticated_user(self, graphene_client, user):
+    def test_global_policy_by_authenticated_user(self, graphene_client, user, tenant):
         Mutation = self.create_mutation()
         schema = create_mutation_schema(Mutation)
         graphene_client.schema = schema
         graphene_client.force_authenticate(user)
 
-        executed = self.call_mutation(graphene_client)
+        executed = self.call_mutation(graphene_client, tenant)
 
         assert executed['data']['createCrudDemoItem']
         assert executed['data']['createCrudDemoItem']['crudDemoItem']
         assert executed['data']['createCrudDemoItem']['crudDemoItem']['name'] == 'Item name'
 
     @staticmethod
-    def call_mutation(client):
+    def call_mutation(client, tenant):
         return client.mutate(
             """
             mutation ($input: TestCreateCrudDemoItemMutationInput!){
@@ -202,7 +202,7 @@ class TestPermissionClassesForMutationField:
               }
             }
         """,
-            variable_values={"input": {'name': 'Item name'}},
+            variable_values={"input": {'name': 'Item name', "tenantId": to_global_id("TenantType", tenant.id)}},
         )
 
     @staticmethod
@@ -217,7 +217,7 @@ class TestPermissionClassesForMutationField:
             class Meta:
                 node = TestCrudDemoItemType
 
-        class TestCreateCrudDemoItemMutation(mutations.CreateModelMutation):
+        class TestCreateCrudDemoItemMutation(mutations.CreateTenantDependentModelMutation):
             class Meta:
                 serializer_class = serializers.CrudDemoItemSerializer
                 edge_class = TestCrudDemoItemConnection.Edge

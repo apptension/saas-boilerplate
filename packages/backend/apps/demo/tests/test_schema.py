@@ -6,19 +6,26 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from graphene_file_upload.django.testing import file_graphql_query
 from graphql_relay import to_global_id, from_global_id
 from .. import models, constants
+from apps.multitenancy.constants import TenantType, TenantUserRole
 
 pytestmark = pytest.mark.django_db
 
 
 class TestAllCrudDemoItemsQuery:
-    def test_returns_all_items(self, graphene_client, crud_demo_item_factory, user):
-        items = crud_demo_item_factory.create_batch(3)
-
+    def test_returns_all_items(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        accessible_items = crud_demo_item_factory.create_batch(3, tenant=tenant)
+        crud_demo_item_factory.create_batch(3, tenant=tenant_2)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         graphene_client.force_authenticate(user)
         executed = graphene_client.query(
             """
-            query  {
-              allCrudDemoItems {
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId) {
                 edges {
                   node {
                     id
@@ -27,7 +34,8 @@ class TestAllCrudDemoItemsQuery:
                 }
               }
             }
-        """
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
         )
 
         assert executed == {
@@ -40,52 +48,80 @@ class TestAllCrudDemoItemsQuery:
                                 "name": item.name,
                             }
                         }
-                        for item in items
+                        for item in accessible_items
                     ]
                 }
             }
         }
 
+    def test_returns_all_items_without_membership(self, graphene_client, crud_demo_item_factory, tenant_factory, user):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
+        crud_demo_item_factory.create_batch(3, tenant=tenant)
+        crud_demo_item_factory.create_batch(3, tenant=tenant_2)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
 
 class TestCrudDemoItemQuery:
     CRUD_DEMO_ITEM_QUERY = """
-        query($id: ID!)  {
-          crudDemoItem(id: $id) {
+        query($id: ID!, $tenantId: ID)  {
+          crudDemoItem(id: $id, tenantId: $tenantId) {
             id
             name
           }
         }
     """
 
-    def test_return_error_for_not_authorized_user(self, graphene_client, crud_demo_item):
+    def test_return_error_for_not_authorized_user(self, graphene_client, crud_demo_item, tenant):
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
 
         executed = graphene_client.query(
             self.CRUD_DEMO_ITEM_QUERY,
-            variable_values={"id": item_global_id},
+            variable_values={"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)},
         )
 
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_none_if_item_does_not_exist(self, graphene_client, user):
+    def test_return_none_if_item_does_not_exist(self, graphene_client, user, tenant):
         item_global_id = to_global_id("CrudDemoItemType", "invalid-id")
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.query(
             self.CRUD_DEMO_ITEM_QUERY,
-            variable_values={"id": item_global_id},
+            variable_values={"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)},
         )
 
         assert executed["data"] == {"crudDemoItem": None}
 
-    def test_return_item(self, graphene_client, crud_demo_item, user):
+    def test_return_item(self, graphene_client, crud_demo_item_factory, user, tenant, tenant_membership_factory):
+        crud_demo_item = crud_demo_item_factory(tenant=tenant)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
 
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(
             self.CRUD_DEMO_ITEM_QUERY,
-            variable_values={"id": item_global_id},
+            variable_values={"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)},
         )
 
         assert executed == {
@@ -97,6 +133,36 @@ class TestCrudDemoItemQuery:
             }
         }
 
+    def test_tenant_no_membership(self, graphene_client, crud_demo_item_factory, user, tenant):
+        crud_demo_item = crud_demo_item_factory(tenant=tenant)
+        item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = graphene_client.query(
+            self.CRUD_DEMO_ITEM_QUERY,
+            variable_values={"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_wrong_tenant_id(
+        self, graphene_client, crud_demo_item_factory, user, tenant_factory, tenant_membership_factory
+    ):
+        tenant = tenant_factory()
+        tenant_second = tenant_factory()
+        crud_demo_item = crud_demo_item_factory(tenant=tenant_second)
+        item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = graphene_client.query(
+            self.CRUD_DEMO_ITEM_QUERY,
+            variable_values={"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed["data"] == {"crudDemoItem": None}
+
 
 class TestCreateCrudDemoItemMutation:
     CREATE_MUTATION = """
@@ -105,6 +171,9 @@ class TestCreateCrudDemoItemMutation:
             crudDemoItem {
               id
               name
+              tenant {
+                id
+              }
             }
           }
         }
@@ -122,35 +191,48 @@ class TestCreateCrudDemoItemMutation:
         }
     """
 
-    @pytest.fixture
-    def input_data(self) -> dict:
-        return {"name": "Item name"}
-
-    def test_create_new_item(self, graphene_client, user, input_data):
+    def test_create_new_item(self, graphene_client, user, tenant, tenant_membership_factory):
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.mutate(
             self.CREATE_MUTATION,
-            variable_values={"input": input_data},
+            variable_values={"input": {"name": "Item name", "tenantId": to_global_id("TenantType", tenant.id)}},
         )
 
         assert executed["data"]["createCrudDemoItem"]
         assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]
-        assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]["name"] == input_data["name"]
+        assert executed["data"]["createCrudDemoItem"]["crudDemoItem"]["name"] == "Item name"
 
         item_global_id = executed["data"]["createCrudDemoItem"]["crudDemoItem"]["id"]
         _, pk = from_global_id(item_global_id)
         item = models.CrudDemoItem.objects.get(pk=pk)
 
-        assert item.name == input_data["name"]
+        assert item.name == "Item name"
+        assert item.tenant == tenant
 
-    def test_create_new_item_sends_notification(self, graphene_client, user_factory, input_data):
-        user = user_factory(has_avatar=True)
-        admin = user_factory(admin=True)
-
+    def test_create_new_item_without_membership(self, graphene_client, user, tenant):
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
         executed = graphene_client.mutate(
             self.CREATE_MUTATION,
-            variable_values={"input": input_data},
+            variable_values={"input": {"name": "Item name", "tenantId": to_global_id("TenantType", tenant.id)}},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
+    def test_create_new_item_sends_notification(self, graphene_client, user_factory, tenant, tenant_membership_factory):
+        owner = user_factory()
+        tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
+
+        user = user_factory(has_avatar=True)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = graphene_client.mutate(
+            self.CREATE_MUTATION,
+            variable_values={"input": {"name": "Item name", "tenantId": to_global_id("TenantType", tenant.id)}},
         )
 
         item_global_id = executed["data"]["createCrudDemoItem"]["crudDemoItem"]["id"]
@@ -160,7 +242,7 @@ class TestCreateCrudDemoItemMutation:
         assert Notification.objects.count() == 1
         notification = Notification.objects.first()
         assert notification.type == constants.Notification.CRUD_ITEM_CREATED.value
-        assert notification.user == admin
+        assert notification.user == owner
         assert notification.data == {
             "id": item_global_id,
             "name": item.name,
@@ -175,6 +257,9 @@ class TestUpdateCrudDemoItemMutation:
             crudDemoItem {
               id
               name
+              tenant {
+                id
+              }
             }
           }
         }
@@ -194,18 +279,22 @@ class TestUpdateCrudDemoItemMutation:
 
     @pytest.fixture
     def input_data_factory(self):
-        def _factory(crud_demo_item, name="New item name") -> dict:
+        def _factory(crud_demo_item, name="New item name", tenant_id=None) -> dict:
             return {
                 "id": to_global_id("CrudDemoItemType", str(crud_demo_item.id)),
                 "name": name,
+                "tenantId": tenant_id or to_global_id("TenantType", crud_demo_item.tenant_id),
             }
 
         return _factory
 
-    def test_update_existing_item(self, graphene_client, crud_demo_item, user, input_data_factory):
+    def test_update_existing_item(
+        self, graphene_client, crud_demo_item, user, tenant_membership_factory, tenant, input_data_factory
+    ):
         input_data = input_data_factory(crud_demo_item)
-
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={"input": input_data},
@@ -216,19 +305,43 @@ class TestUpdateCrudDemoItemMutation:
         assert executed["data"]["updateCrudDemoItem"]
         assert executed["data"]["updateCrudDemoItem"]["crudDemoItem"]
         assert executed["data"]["updateCrudDemoItem"]["crudDemoItem"]["name"] == input_data["name"]
+        assert from_global_id(executed["data"]["updateCrudDemoItem"]["crudDemoItem"]["tenant"]["id"])[1] == tenant.id
         assert crud_demo_item.name == input_data["name"]
 
+    def test_update_existing_item_without_membership(
+        self, graphene_client, user, tenant, crud_demo_item, input_data_factory
+    ):
+        input_data = input_data_factory(crud_demo_item)
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
+        executed = graphene_client.mutate(
+            self.UPDATE_MUTATION,
+            variable_values={"input": input_data},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "permission_denied"
+
     def test_update_existing_item_sends_notification_to_admins_and_creator(
-        self, graphene_client, crud_demo_item_factory, user_factory, input_data_factory
+        self,
+        graphene_client,
+        crud_demo_item_factory,
+        user_factory,
+        input_data_factory,
+        tenant_membership_factory,
+        tenant,
     ):
         user = user_factory(has_avatar=True)
         other_user = user_factory(has_avatar=True)
-        admins = user_factory.create_batch(2, admin=True)
-        crud_demo_item = crud_demo_item_factory(created_by=user)
+        owners = user_factory.create_batch(2)
+        for owner in owners:
+            tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
+        crud_demo_item = crud_demo_item_factory(created_by=user, tenant=tenant)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
         input_data = input_data_factory(crud_demo_item)
-
+        tenant_membership_factory(tenant=tenant, user=other_user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(other_user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={"input": input_data},
@@ -243,26 +356,36 @@ class TestUpdateCrudDemoItemMutation:
         }
         assert notification.issuer == other_user
 
-        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
-        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
     def test_update_existing_item_sends_notification_to_admins_skipping_creator_if_he_is_the_one_updating(
-        self, graphene_client, crud_demo_item_factory, user_factory, input_data_factory
+        self,
+        graphene_client,
+        crud_demo_item_factory,
+        user_factory,
+        input_data_factory,
+        tenant,
+        tenant_membership_factory,
     ):
         user = user_factory()
-        crud_demo_item = crud_demo_item_factory(created_by=user)
-        admins = user_factory.create_batch(2, admin=True)
+        crud_demo_item = crud_demo_item_factory(created_by=user, tenant=tenant)
+        owners = user_factory.create_batch(2)
+        for owner in owners:
+            tenant_membership_factory(tenant=tenant, user=owner, role=TenantUserRole.OWNER)
         input_data = input_data_factory(crud_demo_item)
 
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         graphene_client.mutate(
             self.UPDATE_MUTATION,
             variable_values={"input": input_data},
         )
 
         assert Notification.objects.count() == 2
-        assert Notification.objects.filter(user=admins[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
-        assert Notification.objects.filter(user=admins[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[0], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
+        assert Notification.objects.filter(user=owners[1], type=constants.Notification.CRUD_ITEM_UPDATED.value).exists()
 
 
 class TestDeleteCrudDemoItemMutation:
@@ -274,24 +397,47 @@ class TestDeleteCrudDemoItemMutation:
         }
     """
 
-    def test_deleting_item(self, graphene_client, crud_demo_item, user):
+    def test_deleting_item(self, graphene_client, crud_demo_item, user, tenant_membership_factory):
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+        tenant = crud_demo_item.tenant
+
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
         graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
 
         executed = graphene_client.mutate(
             self.DELETE_MUTATION,
-            variable_values={"input": {"id": item_global_id}},
+            variable_values={"input": {"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)}},
         )
 
         assert executed == {"data": {"deleteCrudDemoItem": {"deletedIds": [item_global_id]}}}
         assert not models.CrudDemoItem.objects.filter(id=crud_demo_item.id).exists()
 
-    def test_deleting_item_by_not_authorized_user(self, graphene_client, crud_demo_item):
+    def test_deleting_item_without_membership(self, graphene_client, crud_demo_item, user):
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+        tenant = crud_demo_item.tenant
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, None)
 
         executed = graphene_client.mutate(
             self.DELETE_MUTATION,
-            variable_values={"input": {"id": item_global_id}},
+            variable_values={"input": {"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)}},
+        )
+
+        assert len(executed["errors"]) == 1
+        assert executed["errors"][0]["message"] == "permission_denied"
+        assert executed["errors"][0]["path"] == ["deleteCrudDemoItem"]
+        assert executed["data"] == {"deleteCrudDemoItem": None}
+        assert models.CrudDemoItem.objects.filter(id=crud_demo_item.id).exists()
+
+    def test_deleting_item_by_not_authorized_user(self, graphene_client, crud_demo_item):
+        item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))
+        tenant = crud_demo_item.tenant
+
+        executed = graphene_client.mutate(
+            self.DELETE_MUTATION,
+            variable_values={"input": {"id": item_global_id, "tenantId": to_global_id("TenantType", tenant.id)}},
         )
 
         assert len(executed["errors"]) == 1

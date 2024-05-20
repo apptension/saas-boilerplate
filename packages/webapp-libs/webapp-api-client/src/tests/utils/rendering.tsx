@@ -100,7 +100,7 @@ export function getWrapper(
 export type CustomRenderOptions<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 > = RenderOptions<Q, Container, BaseElement> & WrapperProps;
 
 /**
@@ -114,7 +114,7 @@ export type CustomRenderOptions<
 function customRender<
   Q extends Queries = typeof queries,
   Container extends Element | DocumentFragment = HTMLElement,
-  BaseElement extends Element | DocumentFragment = Container
+  BaseElement extends Element | DocumentFragment = Container,
 >(
   ui: ReactElement,
   options: CustomRenderOptions<Q, Container, BaseElement> = {}

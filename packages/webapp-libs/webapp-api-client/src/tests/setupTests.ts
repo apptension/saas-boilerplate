@@ -13,4 +13,3 @@ afterAll(() => server.close());
 
 // @ts-ignore
 axios.defaults.adapter = require('axios/lib/adapters/http');
-

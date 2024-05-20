@@ -9,6 +9,7 @@ jest.mock('@iconify-icons/ion/star', () => IconMock);
 jest.mock('@iconify-icons/ion/document-text-outline', () => IconMock);
 jest.mock('@iconify-icons/ion/star-outline', () => IconMock);
 jest.mock('@iconify-icons/ion/camera-outline', () => IconMock);
+jest.mock('@iconify-icons/ion/alert-circle-outline', () => IconMock);
 jest.mock('@iconify-icons/ion/mail-outline', () => IconMock);
 jest.mock('@iconify-icons/ion/mail-unread-outline', () => IconMock);
 jest.mock('@iconify-icons/ion/mail-open-outline', () => IconMock);

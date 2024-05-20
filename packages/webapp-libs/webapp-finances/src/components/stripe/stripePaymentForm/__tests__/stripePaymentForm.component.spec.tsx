@@ -1,7 +1,13 @@
 import { Subscription } from '@sb/webapp-api-client/api/subscription/types';
-import { paymentMethodFactory, subscriptionFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  paymentMethodFactory,
+  subscriptionFactory,
+} from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Elements } from '@stripe/react-stripe-js';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -25,11 +31,6 @@ jest.mock('../../stripePayment.stripe.hook', () => {
 
 jest.mock('@sb/webapp-core/services/analytics');
 
-const mutationVariables = {
-  input: {
-    product: '5',
-  },
-};
 const mutationData = {
   createPaymentIntent: {
     paymentIntent: {
@@ -43,6 +44,8 @@ const mutationData = {
     __typename: 'CreatePaymentIntentMutationPayload',
   },
 };
+
+const tenantId = 'tenantId';
 
 describe('StripePaymentForm: Component', () => {
   beforeEach(() => {
@@ -66,30 +69,57 @@ describe('StripePaymentForm: Component', () => {
   const sendForm = async () => userEvent.click(await screen.findByRole('button', { name: /Pay \d+ USD/i }));
 
   it('should render without errors', async () => {
-    const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+    const tenantMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
+    const requestMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[], tenantId);
     const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(
       subscriptionFactory({
         defaultPaymentMethod: allPaymentsMock[0],
       }),
-      allPaymentsMock
+      allPaymentsMock,
+      tenantId
     );
 
     const { waitForApolloMocks } = render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(requestSubscriptionScheduleMock, requestMock),
+      apolloMocks: [requestSubscriptionScheduleMock, requestMock, tenantMock],
     });
 
-    await waitForApolloMocks(1);
+    await waitForApolloMocks();
 
     expect(await screen.findAllByRole('radio')).toHaveLength(allPaymentsMock.length + Object.keys(TestProduct).length);
   });
 
   describe('action completes successfully', () => {
     it('should call create payment intent mutation', async () => {
-      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
+      const mutationVariables = {
+        input: {
+          product: '5',
+          tenantId,
+        },
+      };
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
+      const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[], tenantId);
       const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(
         subscriptionFactory({
           defaultPaymentMethod: allPaymentsMock[0],
-        })
+        }),
+        undefined,
+        tenantId
       );
       const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
         variables: mutationVariables,
@@ -101,8 +131,7 @@ describe('StripePaymentForm: Component', () => {
       }));
 
       render(<Component />, {
-        apolloMocks: (defaultProps) =>
-          defaultProps.concat(requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation),
+        apolloMocks: [requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation, tenantMock],
       });
 
       await selectProduct();
@@ -112,6 +141,21 @@ describe('StripePaymentForm: Component', () => {
     });
 
     it('should call confirm payment and onSuccess', async () => {
+      const mutationVariables = {
+        input: {
+          product: '5',
+          tenantId,
+        },
+      };
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory());
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
       const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
@@ -123,8 +167,7 @@ describe('StripePaymentForm: Component', () => {
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        apolloMocks: (defaultProps) =>
-          defaultProps.concat(requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation),
+        apolloMocks: [requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation, tenantMock],
       });
 
       await selectProduct();
@@ -144,6 +187,21 @@ describe('StripePaymentForm: Component', () => {
 
   describe('when something goes wrong', () => {
     it('should show error message if creating payment intent throws error', async () => {
+      const mutationVariables = {
+        input: {
+          product: '5',
+          tenantId,
+        },
+      };
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const errorMessage = 'Something went wrong';
       const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory());
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
@@ -155,8 +213,7 @@ describe('StripePaymentForm: Component', () => {
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        apolloMocks: (defaultProps) =>
-          defaultProps.concat(requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation),
+        apolloMocks: [requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation, tenantMock],
       });
 
       await selectProduct();
@@ -170,6 +227,21 @@ describe('StripePaymentForm: Component', () => {
     });
 
     it('should show error message if confirm payment return error', async () => {
+      const mutationVariables = {
+        input: {
+          product: '5',
+          tenantId,
+        },
+      };
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const requestSubscriptionScheduleMock = fillSubscriptionScheduleQuery(subscriptionFactory());
       const requestAllPaymentsMock = fillAllPaymentsMethodsQuery(allPaymentsMock as Partial<Subscription>[]);
       const requestPaymentMutation = composeMockedQueryResult(stripeCreatePaymentIntentMutation, {
@@ -181,8 +253,7 @@ describe('StripePaymentForm: Component', () => {
       const onSuccess = jest.fn();
 
       const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
-        apolloMocks: (defaultProps) =>
-          defaultProps.concat(requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation),
+        apolloMocks: [requestSubscriptionScheduleMock, requestAllPaymentsMock, requestPaymentMutation, tenantMock],
       });
 
       await selectProduct();

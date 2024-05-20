@@ -1,4 +1,4 @@
-import { gql } from '@sb/webapp-api-client/graphql';
+import { CrudDemoItemListQueryQuery, gql } from '@sb/webapp-api-client/graphql';
 import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
@@ -7,6 +7,7 @@ import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Pagination } from '@sb/webapp-core/components/pagination';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
@@ -15,8 +16,8 @@ import { CrudDemoItemListItem } from './crudDemoItemListItem';
 import { ListSkeleton } from './listSkeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
-  query crudDemoItemListQuery($first: Int, $after: String, $last: Int, $before: String) {
-    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {
+  query crudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
+    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
           id
@@ -36,12 +37,19 @@ export const ITEMS_PER_PAGE = 8;
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
+  const { data: currentTenant } = useCurrentTenant();
 
-  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery(crudDemoItemListQuery, {
+  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery<
+    CrudDemoItemListQueryQuery,
+    { tenantId: string },
+    typeof crudDemoItemListQuery
+  >(crudDemoItemListQuery, {
     hookOptions: {
       variables: {
         first: ITEMS_PER_PAGE,
+        tenantId: currentTenant?.id ?? '',
       },
+      skip: !currentTenant,
     },
     dataKey: 'allCrudDemoItems',
   });

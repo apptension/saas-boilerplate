@@ -65,6 +65,7 @@ LOCAL_APPS = [
     "apps.notifications",
     "apps.websockets",
     "apps.integrations",
+    "apps.multitenancy",
 ]
 
 INSTALLED_APPS = (
@@ -312,6 +313,14 @@ STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="sk_test_<CHANGE_
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", default=False)
 DJSTRIPE_WEBHOOK_SECRET = env("DJSTRIPE_WEBHOOK_SECRET", default="")
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+
+
+def tenant_request_callback(request):
+    return request.tenant
+
+
+DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = tenant_request_callback
+DJSTRIPE_SUBSCRIBER_MODEL = "multitenancy.Tenant"
 # Disable stripe checks for keys on django application start
 STRIPE_CHECKS_ENABLED = env.bool("STRIPE_CHECKS_ENABLED", default=True)
 if not STRIPE_CHECKS_ENABLED:
@@ -324,7 +333,7 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7
 GRAPHENE = {
     "SCHEMA": "config.schema.schema",
     "DEFAULT_PERMISSION_CLASSES": ("common.acl.policies.IsAuthenticatedFullAccess",),
-    "MIDDLEWARE": ["common.middleware.SentryMiddleware"],
+    "MIDDLEWARE": ["common.middleware.SentryMiddleware", "apps.multitenancy.middleware.TenantUserRoleMiddleware"],
 }
 
 NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
@@ -361,3 +370,5 @@ OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
+
+TENANT_INVITATION_TIMEOUT = env("TENANT_INVITATION_TIMEOUT", default=60 * 60 * 24 * 14)

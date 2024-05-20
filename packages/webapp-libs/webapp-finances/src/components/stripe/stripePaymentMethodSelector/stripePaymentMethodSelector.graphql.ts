@@ -1,8 +1,8 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const stripeSubscriptionQuery = gql(/* GraphQL */ `
-  query stripeSubscriptionQuery {
-    allPaymentMethods(first: 100) {
+  query stripeSubscriptionQuery($tenantId: ID!) {
+    allPaymentMethods(tenantId: $tenantId, first: 100) {
       edges {
         node {
           id
@@ -21,7 +21,7 @@ export const stripeSubscriptionQuery = gql(/* GraphQL */ `
       }
     }
 
-    activeSubscription {
+    activeSubscription(tenantId: $tenantId) {
       ...subscriptionActiveSubscriptionFragment
       id
       __typename

@@ -41,6 +41,7 @@
     "@sb/webapp-finances": "workspace:*",
     "@sb/webapp-generative-ai": "workspace:*",
     "@sb/webapp-notifications": "workspace:*",
+    "@sb/webapp-tenants": "workspace:*",
     "@storybook/addon-essentials": "^8.0.9",
     "@storybook/addon-measure": "^8.0.9",
     "@storybook/addon-themes": "^8.0.10",

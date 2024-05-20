@@ -1,4 +1,10 @@
-import { paymentMethodFactory, transactionHistoryEntryFactory } from '@sb/webapp-api-client/tests/factories';
+import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
+  paymentMethodFactory,
+  transactionHistoryEntryFactory,
+} from '@sb/webapp-api-client/tests/factories';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { fillAllStripeChargesQuery } from '../../../tests/factories';
@@ -33,7 +39,17 @@ const meta: Meta = {
             }),
           }),
         ];
-        return defaultMocks.concat([fillAllStripeChargesQuery(data)]);
+        const tenantId = 'tenantId';
+        const tenantMock = fillCommonQueryWithUser(
+          currentUserFactory({
+            tenants: [
+              tenantFactory({
+                id: tenantId,
+              }),
+            ],
+          })
+        );
+        return [tenantMock, fillAllStripeChargesQuery(data, tenantId)];
       },
     }),
   ],

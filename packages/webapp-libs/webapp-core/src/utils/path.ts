@@ -1,15 +1,20 @@
 import { is, map } from 'ramda';
 
 export const getLocalePath = (p: string) => `/:lang/${p}`;
+export const getTenantPath = (p: string) => `/:tenantId/${p}`;
 
-const assignGetLocalePath =
-  <T>(paths: Partial<T>) =>
+const removeInitialSlash = (str: string): string => (str.startsWith('/') ? str.slice(1) : str);
+
+const assignLocalePathFn =
+  <T>(fn: (p: string) => string, paths: Partial<T>) =>
   (route: keyof T) => {
     if (typeof paths[route] !== 'string') {
       throw Error('Invalid route');
     }
-    return getLocalePath(paths[route] as string);
+    return fn(paths[route] as string);
   };
+
+export const getTenantPathHelper = (p: string) => getLocalePath(removeInitialSlash(getTenantPath(p)));
 
 /**
  * Helper function to define typed nested route config
@@ -78,7 +83,8 @@ export const nestedPath = <T extends object>(root: string, nestedRoutes: T) => {
   return {
     ...paths,
     getRelativeUrl: (route: keyof T) => nestedRoutes[route],
-    getLocalePath: assignGetLocalePath<T>(paths),
+    getLocalePath: assignLocalePathFn<T>(getLocalePath, paths),
+    getTenantPath: assignLocalePathFn<T>(getTenantPathHelper, paths),
   };
 };
 
@@ -92,6 +98,7 @@ const mapRoot = <N>(root: string, obj: N): N => {
   return {
     ...obj,
     ...override,
-    getLocalePath: assignGetLocalePath<N>(override),
+    getLocalePath: assignLocalePathFn<N>(getLocalePath, override),
+    getTenantPath: assignLocalePathFn<N>(getTenantPathHelper, override),
   };
 };

@@ -13,6 +13,7 @@ import { StripePaymentMethodInfo, StripePaymentMethodInfoProps } from './stripeP
 const Template: StoryFn<StripePaymentMethodInfoProps> = (args: StripePaymentMethodInfoProps) => {
   const { data } = useQuery(stripeSubscriptionQuery, {
     nextFetchPolicy: 'cache-and-network',
+    variables: { tenantId: 'tenantId' },
   });
 
   const paymentMethods = mapConnection((plan) => plan, data?.allPaymentMethods);

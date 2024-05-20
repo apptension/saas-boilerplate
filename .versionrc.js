@@ -49,6 +49,10 @@ module.exports = {
       filename: './packages/webapp-libs/webapp-notifications/package.json',
       type: 'json',
     },
+    {
+      filename: './packages/webapp-libs/webapp-tenants/package.json',
+      type: 'json',
+    },
 
     {
       filename: './packages/workers/package.json',

@@ -6,6 +6,7 @@ import { Skeleton } from '@sb/webapp-core/components/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
@@ -17,9 +18,13 @@ import { editCrudDemoItemMutation, editCrudDemoItemQuery } from './editCrudDemoI
 type Params = { id: string };
 
 export const EditCrudDemoItem = () => {
+  const { data: currentTenant } = useCurrentTenant();
   const navigate = useNavigate();
   const { id } = useParams<Params>();
-  const { data, loading } = useQuery(editCrudDemoItemQuery, { variables: { id: id ?? '' } });
+  const { data, loading } = useQuery(editCrudDemoItemQuery, {
+    variables: { id: id ?? '', tenantId: currentTenant?.id ?? '' },
+    skip: !id || !currentTenant,
+  });
   const crudDemoItem = data?.crudDemoItem;
 
   const { toast } = useToast();
@@ -65,7 +70,10 @@ export const EditCrudDemoItem = () => {
   if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
-    commitEditCrudDemoItemMutation({ variables: { input: { id: crudDemoItem.id, name: formData.name } } });
+    if (!currentTenant) return;
+    commitEditCrudDemoItemMutation({
+      variables: { input: { tenantId: currentTenant.id, id: crudDemoItem.id, name: formData.name } },
+    });
   };
   return (
     <PageLayout>

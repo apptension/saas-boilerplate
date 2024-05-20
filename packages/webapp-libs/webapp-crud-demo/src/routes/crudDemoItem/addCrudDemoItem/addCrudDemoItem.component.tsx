@@ -5,6 +5,7 @@ import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 
@@ -31,6 +32,7 @@ export const AddCrudDemoItem = () => {
   const { toast } = useToast();
   const intl = useIntl();
   const navigate = useNavigate();
+  const { data: currentTenant } = useCurrentTenant();
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / AddCrudDemoItem / Success message',
@@ -38,12 +40,15 @@ export const AddCrudDemoItem = () => {
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
-    refetchQueries: () => [{
-      query: crudDemoItemListQuery,
-      variables: {
-        first: ITEMS_PER_PAGE
-      }
-    }],
+    refetchQueries: () => [
+      {
+        query: crudDemoItemListQuery,
+        variables: {
+          first: ITEMS_PER_PAGE,
+          tenantId: currentTenant?.id,
+        },
+      },
+    ],
     onCompleted: (data) => {
       const id = data?.createCrudDemoItem?.crudDemoItemEdge?.node?.id;
 
@@ -56,9 +61,11 @@ export const AddCrudDemoItem = () => {
   });
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
+    if (!currentTenant) return;
+
     commitCrudDemoItemFormMutation({
       variables: {
-        input: { name: formData.name },
+        input: { name: formData.name, tenantId: currentTenant?.id },
       },
     });
   };

@@ -10,6 +10,7 @@ from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, BlacklistedToken, AccessToken
 from .. import models, tokens
 from ..utils import generate_otp_auth_token
+from apps.multitenancy.constants import TenantType
 
 pytestmark = pytest.mark.django_db
 
@@ -34,6 +35,12 @@ class TestSignup:
           }
         }
     '''
+
+    @staticmethod
+    def _run_correct_sing_up_mutation(graphene_client, faker):
+        return graphene_client.mutate(
+            TestSignup.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
+        )
 
     def test_return_error_with_missing_email(self, graphene_client, faker):
         password = faker.password()
@@ -69,20 +76,22 @@ class TestSignup:
         assert models.User.objects.get(email=email)
 
     def test_create_user_profile_instance(self, graphene_client, faker):
-        executed = graphene_client.mutate(
-            self.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
-        )
-
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
         user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
         assert user.profile
 
     def test_add_to_user_group(self, graphene_client, faker):
-        executed = graphene_client.mutate(
-            self.MUTATION, variable_values={'input': {'email': faker.email(), 'password': faker.password()}}
-        )
-
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
         user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
         assert user.has_group(CommonGroups.User)
+
+    def test_add_user_signup_tenant(self, graphene_client, faker):
+        executed = TestSignup._run_correct_sing_up_mutation(graphene_client, faker)
+        user = models.User.objects.get(id=executed['data']['signUp']["id"])
+
+        assert user.tenants.count()
 
 
 class TestObtainToken:
@@ -148,6 +157,16 @@ class TestCurrentUserQuery:
                 avatar
                 otpEnabled
                 otpVerified
+                tenants {
+                  id
+                  name
+                  slug
+                  type
+                  membership{
+                    role
+                    invitationToken
+                  }
+                }
               }
             }
         '''
@@ -173,6 +192,48 @@ class TestCurrentUserQuery:
         ), data["avatar"]
         assert data["otpEnabled"] == user.otp_enabled
         assert data["otpVerified"] == user.otp_verified
+        assert len(data["tenants"]) > 0
+        assert data["tenants"][0]["name"] == "test@example.com"
+        assert data["tenants"][0]["membership"]["role"] == "OWNER"
+        assert data["tenants"][0]["type"] == "default"
+        assert data["tenants"][0]["membership"]["invitationToken"] is None
+
+    def test_response_data_invitation_token_active_invitation(
+        self, graphene_client, user_factory, tenant_factory, tenant_membership_factory
+    ):
+        query = '''
+            query {
+              currentUser {
+                tenants {
+                  type
+                  membership{
+                    id
+                    role
+                    invitationAccepted
+                    invitationToken
+                  }
+                }
+              }
+            }
+        '''
+        user = user_factory(
+            has_avatar=True,
+            email="test@example.com",
+            profile__first_name="Grzegorz",
+            profile__last_name="Brzęczyszczykiewicz",
+            groups=[CommonGroups.User, CommonGroups.Admin],
+        )
+        tenant = tenant_factory(type=TenantType.ORGANIZATION)
+        tenant_membership_factory(is_accepted=False, user=user, tenant=tenant)
+        graphene_client.force_authenticate(user)
+
+        executed = graphene_client.query(query)
+        data = executed["data"]["currentUser"]
+        for tenant in data["tenants"]:
+            if tenant["type"] == "default":
+                assert tenant["membership"]["invitationToken"] is None
+            else:
+                assert tenant["membership"]["invitationToken"] is not None
 
     def test_not_authenticated(self, graphene_client):
         executed = graphene_client.query(

@@ -1,16 +1,18 @@
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import {
+  currentUserFactory,
+  fillCommonQueryWithUser,
   paymentMethodFactory,
   subscriptionFactory,
   subscriptionPhaseFactory,
 } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { getLocalePath } from '@sb/webapp-core/utils';
+import { getTenantPath } from '@sb/webapp-core/utils';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql';
-import { append } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 
 import { ActiveSubscriptionContext } from '../../../components/activeSubscriptionContext';
@@ -22,7 +24,7 @@ import { subscriptionCancelMutation } from '../cancelSubscription.graphql';
 
 jest.mock('@sb/webapp-core/services/analytics');
 
-const fillSubscriptionScheduleQueryWithPhases = (phases: any) => {
+const fillSubscriptionScheduleQueryWithPhases = (phases: any, tenantId = 'tenantId') => {
   return fillSubscriptionScheduleQuery(
     subscriptionFactory({
       defaultPaymentMethod: paymentMethodFactory({
@@ -30,18 +32,23 @@ const fillSubscriptionScheduleQueryWithPhases = (phases: any) => {
         card: { last4: '1234' },
       }),
       phases,
-    })
+    }),
+    undefined,
+    tenantId
   );
 };
 
-const resolveSubscriptionDetailsQuery = () => {
-  return fillSubscriptionScheduleQueryWithPhases([
-    subscriptionPhaseFactory({
-      endDate: '2020-10-10',
-      item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
-    }),
-    subscriptionPhaseFactory({ startDate: '2020-10-10' }),
-  ]);
+const resolveSubscriptionDetailsQuery = (tenantId = 'tenantId') => {
+  return fillSubscriptionScheduleQueryWithPhases(
+    [
+      subscriptionPhaseFactory({
+        endDate: '2020-10-10',
+        item: { price: { product: { name: SubscriptionPlanName.MONTHLY } } },
+      }),
+      subscriptionPhaseFactory({ startDate: '2020-10-10' }),
+    ],
+    tenantId
+  );
 };
 
 const mutationData = {
@@ -61,9 +68,9 @@ const mutationData = {
 
 const mutationVariables = { input: {} };
 
-const resolveSubscriptionCancelMutation = (errors?: GraphQLError[]) => {
+const resolveSubscriptionCancelMutation = (errors?: GraphQLError[], variables = mutationVariables) => {
   return composeMockedQueryResult(subscriptionCancelMutation, {
-    variables: mutationVariables,
+    variables,
     data: mutationData,
     errors,
   });
@@ -75,19 +82,30 @@ const Component = () => {
   return (
     <Routes>
       <Route element={<ActiveSubscriptionContext />}>
-        <Route path={getLocalePath(routePath)} element={<CancelSubscription />} />
+        <Route path={getTenantPath(routePath)} element={<CancelSubscription />} />
       </Route>
     </Routes>
   );
 };
 
+const tenantId = 'tenantId';
+
 describe('CancelSubscription: Component', () => {
   it('should render current plan details', async () => {
+    const tenantMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
     const routerProps = createMockRouterProps(routePath);
-    const requestMock = resolveSubscriptionDetailsQuery();
+    const requestMock = resolveSubscriptionDetailsQuery(tenantId);
     const { waitForApolloMocks } = render(<Component />, {
       routerProps,
-      apolloMocks: append(requestMock),
+      apolloMocks: [tenantMock, requestMock],
     });
 
     await waitForApolloMocks(0);
@@ -100,16 +118,25 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel button is clicked', () => {
     it('should trigger cancelSubscription action', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const routerProps = createMockRouterProps(routePath);
-      const requestMock = resolveSubscriptionDetailsQuery();
-      const requestCancelMock = resolveSubscriptionCancelMutation();
+      const requestMock = resolveSubscriptionDetailsQuery(tenantId);
+      const requestCancelMock = resolveSubscriptionCancelMutation(undefined, { input: { tenantId } });
       requestCancelMock.newData = jest.fn(() => ({
         data: mutationData,
       }));
 
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+        apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
@@ -120,13 +147,22 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes successfully', () => {
     it('should show success message and redirect to subscriptions page', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const routerProps = createMockRouterProps(routePath);
-      const requestMock = resolveSubscriptionDetailsQuery();
-      const requestCancelMock = resolveSubscriptionCancelMutation();
+      const requestMock = resolveSubscriptionDetailsQuery(tenantId);
+      const requestCancelMock = resolveSubscriptionCancelMutation(undefined, { input: { tenantId } });
 
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+        apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
@@ -139,14 +175,23 @@ describe('CancelSubscription: Component', () => {
 
   describe('cancel completes with error', () => {
     it('shouldnt show success message and redirect to subscriptions page', async () => {
+      const tenantMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const errors = [new GraphQLError('Bad Error')];
       const routerProps = createMockRouterProps(routePath);
-      const requestMock = resolveSubscriptionDetailsQuery();
-      const requestCancelMock = resolveSubscriptionCancelMutation(errors);
+      const requestMock = resolveSubscriptionDetailsQuery(tenantId);
+      const requestCancelMock = resolveSubscriptionCancelMutation(errors, { input: { tenantId } });
 
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock, requestCancelMock),
+        apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));

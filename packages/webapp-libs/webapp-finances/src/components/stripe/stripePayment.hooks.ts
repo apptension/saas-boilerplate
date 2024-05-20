@@ -3,6 +3,7 @@ import { ApolloError } from '@apollo/client/errors';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { GraphQLError } from 'graphql';
 import { useState } from 'react';
 
@@ -24,6 +25,7 @@ interface UseStripePaymentMethodsProps {
 }
 
 export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMethodsProps = {}) => {
+  const { data: currentTenant } = useCurrentTenant();
   const [commitDeletePaymentMethodMutation] = useMutation(stripeDeletePaymentMethodMutation, {
     update(cache, { data }) {
       const deletedId = data?.deletePaymentMethod?.deletedIds?.[0];
@@ -59,11 +61,19 @@ export const useStripePaymentMethods = ({ onUpdateSuccess }: UseStripePaymentMet
   });
 
   const deletePaymentMethod = async (id: string) => {
-    return await commitDeletePaymentMethodMutation({ variables: { input: { id } } });
+    if (!currentTenant) return;
+
+    return await commitDeletePaymentMethodMutation({
+      variables: { input: { id, tenantId: currentTenant.id } },
+    });
   };
 
   const updateDefaultPaymentMethod = async (id: string) => {
-    return await commitUpdateDefaultPaymentMethodMutation({ variables: { input: { id } } });
+    if (!currentTenant) return;
+
+    return await commitUpdateDefaultPaymentMethodMutation({
+      variables: { input: { id, tenantId: currentTenant.id } },
+    });
   };
 
   return { deletePaymentMethod, updateDefaultPaymentMethod };
@@ -74,6 +84,7 @@ interface StripePaymentFormFields extends PaymentFormFields {
 }
 
 export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptions?: BaseMutationOptions) => void) => {
+  const { data: currentTenant } = useCurrentTenant();
   const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntentType | undefined | null>(null);
 
   const [commitCreatePaymentIntentMutation, { loading: createLoading }] = useMutation(
@@ -95,11 +106,13 @@ export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptio
   const updateOrCreatePaymentIntent = async (
     product: TestProduct
   ): Promise<{ errors?: readonly GraphQLError[]; paymentIntent?: StripePaymentIntentType | null }> => {
+    if (!currentTenant) return {};
     if (!paymentIntent) {
       const { data, errors } = await commitCreatePaymentIntentMutation({
         variables: {
           input: {
             product,
+            tenantId: currentTenant.id,
           },
         },
       });
@@ -115,6 +128,7 @@ export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptio
         input: {
           product,
           id: paymentIntent.id,
+          tenantId: currentTenant.id,
         },
       },
     });
