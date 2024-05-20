@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "intl": "^1.2.5",
-    "lucide-react": "^0.279.0",
+    "lucide-react": "^0.378.0",
     "qrcode": "^1.5.3",
     "react": "18.3.1",
     "react-dom": "18.3.1"
