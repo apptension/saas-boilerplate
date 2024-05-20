@@ -50,7 +50,7 @@ export const TenantMembers = () => {
               onClick={handleLastInvitationClick}
             >
               <Plus className="mr-1" size="16" />{' '}
-              <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new tenant" />
+              <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new organization" />
             </Button>
           </Alert>
         ) : (

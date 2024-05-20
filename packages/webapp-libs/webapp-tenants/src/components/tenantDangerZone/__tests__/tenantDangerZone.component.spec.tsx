@@ -46,7 +46,7 @@ describe('TenantDangerSettings: Component', () => {
     render(<Component />, { apolloMocks: [commonQueryMock], routerProps });
 
     expect(await screen.findByText('Delete this organization')).toBeInTheDocument();
-    expect(screen.getByText('Remove organisation')).toBeInTheDocument();
+    expect(screen.getByText('Remove organization')).toBeInTheDocument();
   });
 
   it('should render delete organization subtitle about permissions', async () => {
@@ -64,7 +64,7 @@ describe('TenantDangerSettings: Component', () => {
 
     render(<Component />, { apolloMocks: [commonQueryMock], routerProps });
 
-    const button = await screen.findByRole('button', { name: /remove organisation/i });
+    const button = await screen.findByRole('button', { name: /remove organization/i });
     expect(button).toBeInTheDocument();
     expect(screen.getByText('Only members with the Owner role can delete organization')).toBeInTheDocument();
   });
@@ -113,7 +113,7 @@ describe('TenantDangerSettings: Component', () => {
     const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: '1' });
     render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock], routerProps });
 
-    const button = await screen.findByRole('button', { name: /remove organisation/i });
+    const button = await screen.findByRole('button', { name: /remove organization/i });
     await userEvent.click(button);
 
     const continueButton = await screen.findByRole('button', { name: /continue/i });

@@ -62,7 +62,7 @@ describe('TenantSwitch: Component', () => {
     expect(screen.queryByTestId('tenant-settings-btn')).not.toBeInTheDocument();
   });
 
-  it('should not render organisation and invitation labels if only personal tenant', async () => {
+  it('should not render organization and invitation labels if only personal tenant', async () => {
     render(<Component />, {
       apolloMocks: [fillCommonQueryWithUser(currentUserFactory({ tenants: [personalTenant] }))],
     });
@@ -112,7 +112,7 @@ describe('TenantSwitch: Component', () => {
     const currentTenantButton = await screen.findByText(personalTenantName);
     await userEvent.click(currentTenantButton);
 
-    const newTenantButton = await screen.findByText(/create new tenant/i);
+    const newTenantButton = await screen.findByText(/create new organization/i);
     await userEvent.click(newTenantButton);
 
     expect(mockNavigate).toHaveBeenCalledWith(`/en/add-tenant`);

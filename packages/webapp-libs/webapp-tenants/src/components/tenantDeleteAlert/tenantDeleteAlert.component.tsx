@@ -22,7 +22,7 @@ export const TenantDeleteAlert = ({ onContinue, disabled }: TenantDeleteAlertPro
     <AlertDialog>
       <AlertDialogTrigger disabled={disabled} className={buttonVariants({ variant: 'destructive' })}>
         <FormattedMessage
-          defaultMessage="Remove organisation"
+          defaultMessage="Remove organization"
           id="Tenant General Settings / Danger Zone / Alert / Tenant Delete Button"
         />
       </AlertDialogTrigger>
