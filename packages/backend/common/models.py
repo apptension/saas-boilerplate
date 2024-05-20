@@ -1,3 +1,4 @@
+from django.db import models
 from django.core.files.base import ContentFile
 from io import BytesIO
 from common.graphql import exceptions as graphql_exceptions
@@ -31,3 +32,29 @@ class ImageWithThumbnailMixin:
         if self.original:
             self.make_thumbnail()
         super().save(*args, **kwargs)
+
+
+class TimestampedMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class TenantDependentModelMixin(models.Model):
+    """
+    A mixin class for models that are dependent on a specific tenant.
+    """
+
+    tenant = models.ForeignKey(
+        to="multitenancy.Tenant",
+        on_delete=models.CASCADE,
+        related_name="%(class)s_set",
+        verbose_name="Tenant",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        abstract = True

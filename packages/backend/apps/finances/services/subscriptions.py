@@ -5,7 +5,7 @@ from .. import models, constants
 from ..exceptions import UserOrCustomerNotDefined, SubscriptionAndPriceDefinedTogether, SubscriptionOrPriceNotDefined
 
 
-def initialize_user(user):
+def initialize_tenant(tenant):
     """
     Primary purpose for separating this code into its own function is the ability to mock it during tests so we utilise
     a schedule created by factories instead of relying on stripe-mock response
@@ -14,12 +14,12 @@ def initialize_user(user):
     :return:
     """
     price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
-    create_schedule(user=user, price=price)
+    create_schedule(tenant=tenant, price=price)
 
 
-def get_schedule(user=None, customer=None):
-    if user:
-        customer, _ = djstripe_models.Customer.get_or_create(user)
+def get_schedule(tenant=None, customer=None):
+    if tenant:
+        customer, _ = djstripe_models.Customer.get_or_create(tenant)
     if customer is None:
         raise UserOrCustomerNotDefined("Either user or customer must be defined")
 
@@ -27,15 +27,15 @@ def get_schedule(user=None, customer=None):
 
 
 def create_schedule(
-    subscription: djstripe_models.Subscription = None, price: djstripe_models.Price = None, user=None, customer=None
+    subscription: djstripe_models.Subscription = None, price: djstripe_models.Price = None, tenant=None, customer=None
 ):
     if subscription and price:
         raise SubscriptionAndPriceDefinedTogether("Subscription and price can't be defined together")
 
     subscription_schedule_stripe_instance = None
     if price:
-        if user:
-            customer, _ = djstripe_models.Customer.get_or_create(user)
+        if tenant:
+            customer, _ = djstripe_models.Customer.get_or_create(tenant)
         if customer is None:
             raise UserOrCustomerNotDefined("Either user or customer must be defined")
 

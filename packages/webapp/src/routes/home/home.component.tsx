@@ -4,6 +4,7 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { H4, Paragraph } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { AlertCircle, ArrowUpRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -19,6 +20,8 @@ type DashboardItem = {
 export const Home = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
+  const generateTenantPath = useGenerateTenantPath();
+
   const dashboardItems: DashboardItem[] = [
     {
       title: intl.formatMessage({
@@ -29,7 +32,7 @@ export const Home = () => {
         defaultMessage: 'Example of single payment form.',
         id: 'Home / Payments / Subtitle',
       }),
-      link: generateLocalePath(RoutesConfig.finances.paymentConfirm),
+      link: generateTenantPath(RoutesConfig.finances.paymentConfirm),
     },
     {
       title: intl.formatMessage({
@@ -40,7 +43,7 @@ export const Home = () => {
         defaultMessage: 'Example of subscription management.',
         id: 'Home / Subscriptions / Subtitle',
       }),
-      link: generateLocalePath(RoutesConfig.subscriptions.currentSubscription.index),
+      link: generateTenantPath(RoutesConfig.subscriptions.currentSubscription.index),
     },
     {
       title: intl.formatMessage({

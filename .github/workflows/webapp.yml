@@ -88,6 +88,7 @@ jobs:
           - webapp-emails
           - webapp-finances
           - webapp-generative-ai
+          - webapp-tenants
     steps:
       - uses: actions/checkout@v3
         with:
@@ -130,5 +131,6 @@ jobs:
           SONAR_WEBAPP_FINANCES_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_FINANCES_PROJECT_KEY }}
           SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_GENERATIVE_AI_PROJECT_KEY }}
           SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_NOTIFICATIONS_PROJECT_KEY }}
+          SONAR_WEBAPP_TENANTS_PROJECT_KEY: ${{ vars.SONAR_WEBAPP_TENANTS_PROJECT_KEY }}
         with:
             projectBaseDir: "packages/webapp-libs/${{ matrix.webapp-lib-name }}"

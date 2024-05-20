@@ -36,20 +36,19 @@ that will be handled by the multipart request spec
 """
 scalar Upload
 type Query {
+  allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
+  tenant(id: ID): TenantType
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
-  activeSubscription: SubscriptionScheduleType
-  allPaymentMethods(before: String, after: String, first: Int, last: Int): PaymentMethodConnection
-  allCharges(before: String, after: String, first: Int, last: Int): ChargeConnection
-  charge(id: ID): StripeChargeType
-  paymentIntent(id: ID): StripePaymentIntentType
+  activeSubscription(tenantId: ID): SubscriptionScheduleType
+  allPaymentMethods(tenantId: ID, before: String, after: String, first: Int, last: Int): PaymentMethodConnection
+  allCharges(tenantId: ID, before: String, after: String, first: Int, last: Int): ChargeConnection
+  charge(id: ID, tenantId: ID): StripeChargeType
+  paymentIntent(id: ID, tenantId: ID): StripePaymentIntentType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
-  crudDemoItem(
-    "The ID of the object"
-    id: ID!
-  ): CrudDemoItemType
-  allCrudDemoItems(before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  crudDemoItem(id: ID, tenantId: ID): CrudDemoItemType
+  allCrudDemoItems(tenantId: ID, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
   allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
   allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
   node(
@@ -57,11 +56,11 @@ type Query {
     id: ID!
   ): Node
 }
-type StripePriceConnection {
+type TenantConnection {
   "Pagination data for this connection."
   pageInfo: PageInfo!
   "Contains the nodes in this connection."
-  edges: [StripePriceEdge]!
+  edges: [TenantEdge]!
 }
 "The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."
 type PageInfo {
@@ -73,6 +72,40 @@ type PageInfo {
   startCursor: String
   "When paginating forwards, the cursor to continue."
   endCursor: String
+}
+"A Relay edge containing a `Tenant` and its cursor."
+type TenantEdge {
+  "The item at the end of the edge"
+  node: TenantType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+type TenantType implements Node {
+  id: ID!
+  name: String
+  slug: String
+  type: String
+  billingEmail: String
+  userMemberships: [TenantMembershipType]
+  membership: TenantMembershipType!
+}
+type TenantMembershipType implements Node {
+  id: ID!
+  role: TenantUserRole
+  inviteeEmailAddress: String
+  invitationAccepted: Boolean
+  userId: ID
+  invitationToken: String
+  firstName: String
+  lastName: String
+  userEmail: String
+  avatar: String
+}
+type StripePriceConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [StripePriceEdge]!
 }
 "A Relay edge containing a `StripePrice` and its cursor."
 type StripePriceEdge {
@@ -589,6 +622,7 @@ type CurrentUserType {
   email: String!
   otpEnabled: Boolean!
   otpVerified: Boolean!
+  tenants: [TenantType]
   firstName: String
   lastName: String
   roles: [String]
@@ -625,6 +659,7 @@ type UserType {
   avatar: String
 }
 type CrudDemoItemType implements Node {
+  tenant: TenantType
   "The ID of the object"
   id: ID!
   name: String!
@@ -657,12 +692,12 @@ type ContentfulDemoItemFavoriteEdge {
   cursor: String!
 }
 type ContentfulDemoItemFavoriteType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
   "The ID of the object"
   id: ID!
   item: ContentfulDemoItemType!
   user: CurrentUserType!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 type ContentfulDemoItemType implements Node {
   "The ID of the object"
@@ -710,6 +745,14 @@ type FileFieldType {
   name: String
 }
 type ApiMutation {
+  updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
+  deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
+  createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
+  updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
+  createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
+  acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
+  declineTenantInvitation(input: DeclineTenantInvitationMutationInput!): DeclineTenantInvitationMutationPayload
+  deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -738,6 +781,44 @@ type ApiMutation {
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
   createFavoriteContentfulDemoItem(input: CreateFavoriteContentfulDemoItemMutationInput!): CreateFavoriteContentfulDemoItemMutationPayload
   deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
+}
+type UpdateTenantMutationPayload {
+  tenant: TenantType
+  tenantEdge: TenantEdge
+  clientMutationId: String
+}
+type DeleteTenantMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+type CreateTenantInvitationMutationPayload {
+  email: String
+  role: TenantUserRole
+  tenantId: String
+  ok: Boolean
+  clientMutationId: String
+}
+type UpdateTenantMembershipMutationPayload {
+  tenantMembership: TenantMembershipType
+  tenantMembershipEdge: TenantEdge
+  clientMutationId: String
+}
+type CreateTenantMutationPayload {
+  tenant: TenantType
+  tenantEdge: TenantEdge
+  clientMutationId: String
+}
+type AcceptTenantInvitationMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
+type DeclineTenantInvitationMutationPayload {
+  ok: Boolean
+  clientMutationId: String
+}
+type DeleteTenantMembershipMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
 }
 type GenerateSaasIdeasMutationPayload {
   ideas: [String]
@@ -936,6 +1017,11 @@ type NotificationCreatedSubscription {
 interface Node {
   "The ID of the object"
   id: ID!
+}
+enum TenantUserRole {
+  OWNER
+  ADMIN
+  MEMBER
 }
 enum DjstripeProductTypeChoices {
   "Good"
@@ -1351,35 +1437,88 @@ enum DjstripeSetupIntentUsageChoices {
   "On session"
   ON_SESSION
 }
+input UpdateTenantMutationInput {
+  name: String!
+  billingEmail: String
+  id: ID!
+  clientMutationId: String
+}
+input DeleteTenantMutationInput {
+  id: String
+  clientMutationId: String
+}
+input CreateTenantInvitationMutationInput {
+  email: String!
+  role: TenantUserRole!
+  tenantId: String!
+  clientMutationId: String
+}
+input UpdateTenantMembershipMutationInput {
+  id: ID!
+  tenantId: String!
+  role: TenantUserRole!
+  clientMutationId: String
+}
+input CreateTenantMutationInput {
+  name: String!
+  billingEmail: String
+  clientMutationId: String
+}
+input AcceptTenantInvitationMutationInput {
+  id: String!
+  "Token"
+  token: String!
+  clientMutationId: String
+}
+input DeclineTenantInvitationMutationInput {
+  id: String!
+  "Token"
+  token: String!
+  clientMutationId: String
+}
+input DeleteTenantMembershipMutationInput {
+  id: String
+  tenantId: String!
+  clientMutationId: String
+}
 input GenerateSaasIdeasMutationInput {
   keywords: [String]
   clientMutationId: String
 }
 input ChangeActiveSubscriptionMutationInput {
+  id: String
+  tenantId: String!
   price: String!
   clientMutationId: String
 }
 input CancelActiveSubscriptionMutationInput {
+  id: String
+  tenantId: String!
   clientMutationId: String
 }
 input UpdateDefaultPaymentMethodMutationInput {
   id: String
+  tenantId: String!
   clientMutationId: String
 }
 input DeletePaymentMethodMutationInput {
   id: String
+  tenantId: String!
   clientMutationId: String
 }
 input CreatePaymentIntentMutationInput {
+  tenantId: String!
   product: String!
   clientMutationId: String
 }
 input UpdatePaymentIntentMutationInput {
-  product: String!
   id: ID!
+  tenantId: String!
+  product: String!
   clientMutationId: String
 }
 input CreateSetupIntentMutationInput {
+  tenantId: String!
   clientMutationId: String
 }
 input ChangePasswordMutationInput {
@@ -1448,18 +1587,21 @@ input MarkReadAllNotificationsMutationInput {
   clientMutationId: String
 }
 input CreateCrudDemoItemMutationInput {
+  tenantId: String!
   name: String!
   createdBy: String
   clientMutationId: String
 }
 input UpdateCrudDemoItemMutationInput {
+  id: ID!
+  tenantId: String!
   name: String!
   createdBy: String
-  id: ID!
   clientMutationId: String
 }
 input DeleteCrudDemoItemMutationInput {
   id: String
+  tenantId: String!
   clientMutationId: String
 }
 input CreateDocumentDemoItemMutationInput {

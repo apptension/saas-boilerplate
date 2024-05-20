@@ -3,15 +3,15 @@ import { screen } from '@testing-library/react';
 
 import { Role } from '../../../../modules/auth/auth.types';
 import { PLACEHOLDER_CONTENT, PLACEHOLDER_TEST_ID, render } from '../../../../tests/utils/rendering';
-import { RoleAccess, RoleAccessProps } from '../roleAccess.component';
+import { RoleAccess, TenantRoleAccessProps } from '../roleAccess.component';
 
 describe('RoleAccess: Component', () => {
-  const defaultProps: RoleAccessProps = {
+  const defaultProps: TenantRoleAccessProps = {
     allowedRoles: [Role.ADMIN],
     children: PLACEHOLDER_CONTENT,
   };
 
-  const Component = (props: Partial<RoleAccessProps>) => <RoleAccess {...defaultProps} {...props} />;
+  const Component = (props: Partial<TenantRoleAccessProps>) => <RoleAccess {...defaultProps} {...props} />;
 
   it('should render children if user has allowed role', async () => {
     const apolloMocks = [fillCommonQueryWithUser(currentUserFactory({ roles: [Role.ADMIN] }))];

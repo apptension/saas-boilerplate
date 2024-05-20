@@ -1,13 +1,21 @@
 import { useQuery } from '@apollo/client';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/table';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage } from 'react-intl';
 
 import { stripeAllChargesQuery } from '../../../routes/subscriptions/subscriptions.graphql';
 import { TransactionHistoryEntry } from './transactionHistoryEntry';
 
 export const TransactionHistory = () => {
-  const { data } = useQuery(stripeAllChargesQuery, { fetchPolicy: 'cache-and-network' });
+  const { data: currentTenant } = useCurrentTenant();
+  const { data } = useQuery(stripeAllChargesQuery, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant,
+  });
 
   return (
     <Table>
@@ -28,9 +36,12 @@ export const TransactionHistory = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {mapConnection((entry) => {
-          return <TransactionHistoryEntry key={entry.id} entry={entry} />;
-        }, data?.allCharges)}
+        {mapConnection(
+          (entry) => {
+            return <TransactionHistoryEntry key={entry.id} entry={entry} />;
+          },
+          data?.allCharges
+        )}
       </TableBody>
     </Table>
   );

@@ -1,15 +1,13 @@
-import { QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
+import { NoInfer, QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
-import { Exact, InputMaybe } from '@sb/webapp-api-client/graphql';
+import { InputMaybe } from '@sb/webapp-api-client/graphql';
 
-type CursorsInput = Exact<{
+type CursorsInput = {
   first?: InputMaybe<number> | undefined;
   after?: InputMaybe<string> | undefined;
   last?: InputMaybe<number> | undefined;
   before?: InputMaybe<string> | undefined;
-}>;
-
-type ExtractGeneric<Type> = Type extends TypedDocumentNode<infer QueryData> ? QueryData : never;
+};
 
 /**
  * An usePaginatedQuery is a hook that allows you to retrieve data with ready-made logic for cursor-based bidirectional pagination.
@@ -47,23 +45,27 @@ type ExtractGeneric<Type> = Type extends TypedDocumentNode<infer QueryData> ? Qu
  *
  */
 
-export const usePaginatedQuery = <T extends TypedDocumentNode>(
+export const usePaginatedQuery = <
+  A extends { [key: string]: any },
+  B extends { [key: string]: any },
+  T extends TypedDocumentNode<Partial<A>, NoInfer<CursorsInput & B>>,
+>(
   query: T,
   options: {
-    hookOptions?: QueryHookOptions<ExtractGeneric<T>, CursorsInput>;
-    dataKey: keyof ExtractGeneric<T>;
+    hookOptions?: QueryHookOptions<A, CursorsInput & B>;
+    dataKey: keyof A;
   }
 ) => {
   const [cachedCursors, setCachedCursors] = useState<Array<string>>([]);
   const [hasPrevious, setHasPrevious] = useState<boolean>(false);
   const [hasNext, setHasNext] = useState<boolean>(false);
-  const { data, loading, fetchMore } = useQuery<ExtractGeneric<T>, CursorsInput>(query, options.hookOptions);
+  const { data, loading, fetchMore } = useQuery<A, CursorsInput & B>(query, options.hookOptions);
 
   useEffect(() => {
     if (cachedCursors.includes(data?.[options.dataKey]?.pageInfo.endCursor)) {
-      setCachedCursors([])
+      setCachedCursors([]);
     }
-  }, [data, cachedCursors, options.dataKey])
+  }, [data, cachedCursors, options.dataKey]);
 
   useEffect(() => {
     setHasPrevious(cachedCursors.length > 0);

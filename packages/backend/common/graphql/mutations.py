@@ -615,7 +615,7 @@ class DeleteModelMutation(ClientIDMutation):
         return get_object_or_404(model, pk=pk, **kwargs)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, id):
+    def mutate_and_get_payload(cls, root, info, id, **kwargs):
         """
         Perform a mutation to delete a model instance
 
@@ -627,3 +627,68 @@ class DeleteModelMutation(ClientIDMutation):
         obj = cls.get_object(id)
         obj.delete()
         return cls(deleted_ids=[id])
+
+
+class DeleteTenantDependentModelMutation(DeleteModelMutation):
+    """
+    `DeleteTenantDependentModelMutation` is a mutation class that inherits from
+    [`DeleteModelMutation`](#deletemodelmutation).
+    It is used to delete an object of a specified model from the database which is dependent on tenant.
+    It implements `tenant_id` field in input.
+    """
+
+    class Meta:
+        abstract = True
+
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String(required=True)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)
+
+
+class UpdateTenantDependentModelMutation(UpdateModelMutation):
+    """
+    `UpdateTenantDependentModelMutation` is a mutation class that inherits from
+    [`UpdateModelMutation`](#updatemodelmutation).
+    It is used to update an object of a specified model in the database which is dependent on tenant.
+    It implements `tenant_id` field in input.
+    """
+
+    class Meta:
+        abstract = True
+
+    class Input:
+        id = graphene.String()
+        tenant_id = graphene.String(required=True)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)
+
+
+class CreateTenantDependentModelMutation(CreateModelMutation):
+    """
+    `CreateTenantDependentModelMutation` is a Relay mutation class that inherits from
+    [`CreateModelMutation`](#createmodelmutation).
+     It is used to create a new object of a specified model in the database which is dependent on tenant.
+     It implements `tenant_id` field in input.
+    """
+
+    class Meta:
+        abstract = True
+
+    class Input:
+        tenant_id = graphene.String(required=True)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "tenant_id" in input:
+            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        return super().mutate_and_get_payload(root, info, **input)

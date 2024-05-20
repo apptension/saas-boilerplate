@@ -8,6 +8,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from djstripe.models import Customer
 
 from common.acl.helpers import CommonGroups
+from apps.multitenancy.models import Tenant
+from apps.multitenancy.tests.factories import TenantFactory
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
@@ -46,6 +48,13 @@ class UserFactory(factory.django.DjangoModelFactory):
 
         group_names = extracted or [CommonGroups.User]
         self.groups.add(*[Group.objects.get_or_create(name=group_name)[0] for group_name in group_names])
+
+    @factory.post_generation
+    def sign_up_tenant(self, create: bool, extracted: Optional[List[str]], **kwargs):
+        if not create:
+            return
+
+        Tenant.objects.get_or_create_user_default_tenant(self)
 
     @factory.post_generation
     def admin(self, create, extracted, **kwargs):
@@ -98,4 +107,4 @@ class StripeCustomerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Customer
 
-    subscriber = factory.SubFactory(UserFactory, profile=None)
+    subscriber = factory.SubFactory(TenantFactory)

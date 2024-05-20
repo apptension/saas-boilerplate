@@ -4,10 +4,12 @@ import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -20,7 +22,8 @@ export type CrudDemoItemListItemProps = {
 };
 
 export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
-  const generateLocalePath = useGenerateLocalePath();
+  const { data: currentTenant } = useCurrentTenant();
+  const generateTenantPath = useGenerateTenantPath();
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const { toast } = useToast();
   const intl = useIntl();
@@ -49,9 +52,10 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (!currentTenant) return;
     commitDeleteMutation({
       variables: {
-        input: { id: data.id },
+        input: { id: data.id, tenantId: currentTenant.id },
       },
     });
   };
@@ -61,7 +65,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       <Link
         variant={ButtonVariant.GHOST}
         className="border"
-        to={generateLocalePath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
+        to={generateTenantPath(RoutesConfig.crudDemoItem.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
@@ -87,7 +91,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-secondary hover:text-secondary-foreground dark:hover:text-slate-100">
         <Link
           className="border-input transition-colors group-hover:dark:text-slate-100 hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer"
-          to={generateLocalePath(RoutesConfig.crudDemoItem.details, { id: data.id })}
+          to={generateTenantPath(RoutesConfig.crudDemoItem.details, { id: data.id })}
         >
           <p className="dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis">
             {data.name}

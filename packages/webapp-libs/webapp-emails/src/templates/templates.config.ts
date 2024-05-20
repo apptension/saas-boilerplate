@@ -6,6 +6,7 @@ import * as TrialExpiresSoon from './trialExpiresSoon';
 import * as UserExport from './userExport';
 import * as UserExportAdmin from './userExportAdmin';
 
+import * as TenantInvitation from './tenantInvitation';
 //<-- INJECT EMAIL TEMPLATE IMPORT -->
 
 export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {
@@ -15,5 +16,6 @@ export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {
   [EmailTemplateType.TRIAL_EXPIRES_SOON]: TrialExpiresSoon,
   [EmailTemplateType.USER_EXPORT]: UserExport,
   [EmailTemplateType.USER_EXPORT_ADMIN]: UserExportAdmin,
+  [EmailTemplateType.TENANT_INVITATION]: TenantInvitation,
   //<-- INJECT EMAIL TEMPLATE -->
 };

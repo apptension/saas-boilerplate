@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { StripePaymentMethodType } from '@sb/webapp-api-client/api/stripe/paymentMethod';
 import { StripeSetupIntentFragmentFragment } from '@sb/webapp-api-client/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { GraphQLError } from 'graphql';
 
@@ -13,14 +14,19 @@ interface UseStripeSetupIntentProps {
 }
 
 export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupIntentProps) => {
+  const { data: currentTenant } = useCurrentTenant();
   const [commitCreateSetupIntentMutation, { data }] = useMutation(stripeCreateSetupIntentMutation, {
     onCompleted: (data) => onSuccess(data.createSetupIntent?.setupIntent as StripeSetupIntentFragmentFragment),
     onError: (error) => onError(error.graphQLErrors),
   });
 
   const createSetupIntent = async () => {
+    if (!currentTenant) return;
+
     if (!data?.createSetupIntent?.setupIntent) {
-      await commitCreateSetupIntentMutation({ variables: { input: {} } });
+      await commitCreateSetupIntentMutation({
+        variables: { input: { tenantId: currentTenant.id } },
+      });
     }
   };
 

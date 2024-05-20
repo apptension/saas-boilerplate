@@ -1,6 +1,8 @@
+import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { getLocalePath } from '@sb/webapp-core/utils';
+import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
@@ -13,6 +15,8 @@ import { editCrudDemoItemMutation } from '../editCrudDemoItem.graphql';
 
 jest.mock('@sb/webapp-core/services/analytics');
 
+const tenantId = 'tenantId';
+
 describe('EditCrudDemoItem: Component', () => {
   const defaultItemId = 'test-id';
   const oldName = 'old item';
@@ -24,9 +28,10 @@ describe('EditCrudDemoItem: Component', () => {
     name: oldName,
     __typename: 'CrudDemoItemType',
   };
-  const queryVariables = { id: defaultItemId };
+  const queryVariables = { id: defaultItemId, tenantId };
 
-  const mutationVariables = { input: { id: defaultItemId, name: newName } };
+  const mutationVariables = { input: { id: defaultItemId, name: newName, tenantId } };
+
   const mutationData = {
     updateCrudDemoItem: { crudDemoItem: { id: defaultItemId, name: newName, __typename: 'CrudDemoItemType' } },
   };
@@ -42,12 +47,21 @@ describe('EditCrudDemoItem: Component', () => {
   );
 
   it('should display prefilled form', async () => {
+    const commonQueryMock = fillCommonQueryWithUser(
+      currentUserFactory({
+        tenants: [
+          tenantFactory({
+            id: tenantId,
+          }),
+        ],
+      })
+    );
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
     const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
 
     render(<Component />, {
       routerProps,
-      apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock),
+      apolloMocks: [commonQueryMock, queryMock],
     });
 
     expect(await screen.findByDisplayValue(oldName)).toBeInTheDocument();
@@ -55,6 +69,15 @@ describe('EditCrudDemoItem: Component', () => {
 
   describe('action completes successfully', () => {
     it('should commit mutation', async () => {
+      const commonQueryMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
 
       const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
@@ -69,7 +92,7 @@ describe('EditCrudDemoItem: Component', () => {
 
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock, requestMock),
+        apolloMocks: [commonQueryMock, queryMock, requestMock],
       });
 
       const nameField = await screen.findByPlaceholderText(/name/i);
@@ -81,6 +104,15 @@ describe('EditCrudDemoItem: Component', () => {
     });
 
     it('should show success message', async () => {
+      const commonQueryMock = fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      );
       const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.edit, { id: defaultItemId });
       const queryMock = fillEditCrudDemoItemQuery(queryData, queryVariables);
       const requestMock = composeMockedQueryResult(editCrudDemoItemMutation, {
@@ -90,7 +122,7 @@ describe('EditCrudDemoItem: Component', () => {
 
       render(<Component />, {
         routerProps,
-        apolloMocks: (defaultMocks) => defaultMocks.concat(queryMock, requestMock),
+        apolloMocks: [commonQueryMock, queryMock, requestMock],
       });
 
       const nameField = await screen.findByPlaceholderText(/name/i);

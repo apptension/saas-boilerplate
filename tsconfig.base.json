@@ -64,7 +64,11 @@
       ],
       "@sb/webapp-notifications/*": [
         "packages/webapp-libs/webapp-notifications/src/*"
-      ]
+      ],
+      "@sb/webapp-tenants": [
+        "packages/webapp-libs/webapp-tenants/src/index.ts"
+      ],
+      "@sb/webapp-tenants/*": ["packages/webapp-libs/webapp-tenants/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,38 @@
+---
+title: Multitenancy
+description: Managing multiple tenants within a single account
+---
+import ProjectName from '../../shared/components/ProjectName.component';
+
+The multitenancy feature in <ProjectName/> enables users to create and manage multiple tenants within their account.
+Each tenant operates autonomously, with its own settings, members, and resources.
+
+### Default Tenant
+
+Upon account creation, users are provided with a default tenant. This serves as the primary unit for their activities,
+enabling immediate engagement without additional setup.
+
+### Tenant Creation
+
+Users can create additional tenants as needed, allowing them to manage multiple projects or entities within the same
+account.
+
+### Membership Roles
+
+The multitenancy feature introduces three distinct roles for members within each tenant:
+
+- **Owner**: Owners have full control and authority over the tenant. They can manage settings, invite new members,
+assign roles, and oversee tenant activities.
+- **Admin**: Admins assist owners in managing the tenant. They possess similar privileges to owners but may have
+limitations on certain administrative actions.
+- **Member**: Members are regular users within the tenant, contributing to projects and collaborating with teammates.
+
+:::note
+These roles are set up by default in the <ProjectName/>. Developers can customize these roles or add their own
+configuration to suit the specific needs of their application.
+:::
+
+### Invitation System
+
+Owners can invite new members to join their tenant, controlling access and ensuring secure collaboration. Invited
+members receive notifications and can accept or decline invitations.
