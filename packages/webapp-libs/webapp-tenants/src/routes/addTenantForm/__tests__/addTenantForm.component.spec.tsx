@@ -82,7 +82,7 @@ describe('AddTenantForm: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('tenant', 'add', '1');
-      expect(toast).toHaveTextContent('🎉 Tenant added successfully!');
+      expect(toast).toHaveTextContent('🎉 Organization added successfully!');
     });
   });
 });

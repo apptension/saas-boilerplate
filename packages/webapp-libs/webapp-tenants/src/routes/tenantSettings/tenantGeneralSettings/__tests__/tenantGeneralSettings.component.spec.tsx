@@ -75,6 +75,6 @@ describe('TenantGeneralSettings: Component', () => {
     expect(requestMock.newData).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
 
-    expect(toast).toHaveTextContent('🎉 Tenant updated successfully!');
+    expect(toast).toHaveTextContent('🎉 Organization updated successfully!');
   });
 });

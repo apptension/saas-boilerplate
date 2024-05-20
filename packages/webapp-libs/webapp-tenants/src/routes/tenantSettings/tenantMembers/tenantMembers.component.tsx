@@ -22,7 +22,7 @@ export const TenantMembers = () => {
   const navigate = useNavigate();
   const isPersonal = useCurrentTenant().data?.type === TenantType.PERSONAL;
 
-  const handleLastInvitationClick = () => {
+  const handleNewTenantClick = () => {
     navigate(generateLocalePath(RootRoutesConfig.addTenant));
   };
 
@@ -43,12 +43,7 @@ export const TenantMembers = () => {
                 id="Tenant Members / Alert"
               />
             </Paragraph>
-            <Button
-              data-testid="tenant-members-create-button"
-              color="primary"
-              size="sm"
-              onClick={handleLastInvitationClick}
-            >
+            <Button data-testid="tenant-members-create-button" color="primary" size="sm" onClick={handleNewTenantClick}>
               <Plus className="mr-1" size="16" />{' '}
               <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new organization" />
             </Button>

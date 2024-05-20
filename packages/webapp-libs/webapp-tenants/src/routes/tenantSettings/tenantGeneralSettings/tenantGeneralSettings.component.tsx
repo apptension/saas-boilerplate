@@ -20,12 +20,12 @@ export const TenantGeneralSettings = () => {
 
   const successMessage = intl.formatMessage({
     id: 'Tenant form / UpdateTenant / Success message',
-    defaultMessage: '🎉 Tenant updated successfully!',
+    defaultMessage: '🎉 Organization updated successfully!',
   });
 
   const failMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateTenant / Fail message',
-    defaultMessage: 'Unable to change the tenant data.',
+    defaultMessage: 'Unable to change the organization data.',
   });
 
   const isOrganizationType = currentTenant?.type === TenantType.ORGANIZATION;

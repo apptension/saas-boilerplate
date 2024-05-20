@@ -35,7 +35,7 @@ export const AddTenantForm = () => {
 
   const successMessage = intl.formatMessage({
     id: 'Tenant form / AddTenant / Success message',
-    defaultMessage: '🎉 Tenant added successfully!',
+    defaultMessage: '🎉 Organization added successfully!',
   });
 
   const [commitTenantFormMutation, { error, loading: loadingMutation }] = useMutation(addTenantMutation, {

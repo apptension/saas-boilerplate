@@ -21,12 +21,12 @@ export const useTenantDelete = () => {
 
   const successDeleteMessage = intl.formatMessage({
     id: 'Tenant form / DeleteTenant / Success message',
-    defaultMessage: '🎉 Tenant deleted successfully!',
+    defaultMessage: '🎉 Organization deleted successfully!',
   });
 
   const failDeleteMessage = intl.formatMessage({
     id: 'Membership Entry / DeleteTenant / Fail message',
-    defaultMessage: 'Unable to delete the tenant.',
+    defaultMessage: 'Unable to delete the organization.',
   });
 
   const [commitRemoveMutation, { loading }] = useMutation(deleteTenantMutation, {

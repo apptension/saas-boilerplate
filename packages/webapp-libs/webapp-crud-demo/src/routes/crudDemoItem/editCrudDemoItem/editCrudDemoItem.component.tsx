@@ -23,7 +23,7 @@ export const EditCrudDemoItem = () => {
   const { id } = useParams<Params>();
   const { data, loading } = useQuery(editCrudDemoItemQuery, {
     variables: { id: id ?? '', tenantId: currentTenant?.id ?? '' },
-    skip: !currentTenant,
+    skip: !id || !currentTenant,
   });
   const crudDemoItem = data?.crudDemoItem;
 
