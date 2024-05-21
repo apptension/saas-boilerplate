@@ -31,7 +31,7 @@ describe('ValidateOtpForm: Component', () => {
     mockNavigate.mockReset();
   });
 
-  it('should redirect after successful validation', async () => {
+  it('should call trackEvent after successful validation', async () => {
     const token = '331553';
     const requestMock = composeMockedQueryResult(validateOtpMutation, {
       variables: { input: { otpToken: token } },
@@ -51,7 +51,6 @@ describe('ValidateOtpForm: Component', () => {
     await userEvent.click(submitButton);
     await waitForApolloMocks();
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/en`);
     expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-validate');
   });
 

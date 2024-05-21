@@ -14,6 +14,7 @@ describe('AnonymousRoute: Component', () => {
       </Route>
       <Route path="/en/" element={<span />} />
       <Route path="/en/home" element={<span data-testid="home-content" />} />
+      <Route path="/en/profile" element={<span data-testid="profile-content" />} />
     </Routes>
   );
 
@@ -38,6 +39,25 @@ describe('AnonymousRoute: Component', () => {
       await waitForApolloMocks(0);
       expect(screen.queryByTestId('content')).not.toBeInTheDocument();
       expect(screen.queryByTestId('home-content')).not.toBeInTheDocument();
+    });
+
+    it('should redirect to redirectUrl', async () => {
+      const mockSearch = 'en/profile';
+      const spy = jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => mockSearch);
+
+      const apolloMocks = [
+        fillCommonQueryWithUser(
+          currentUserFactory({
+            roles: [Role.ADMIN],
+          })
+        ),
+      ];
+
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+      await waitForApolloMocks(0);
+      expect(screen.queryByTestId('content')).not.toBeInTheDocument();
+      expect(screen.getByTestId('profile-content')).toBeInTheDocument();
+      spy.mockClear();
     });
   });
 });

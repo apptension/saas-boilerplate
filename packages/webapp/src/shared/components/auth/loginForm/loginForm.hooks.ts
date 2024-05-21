@@ -39,7 +39,7 @@ export const useLoginForm = () => {
       if (tokenAuth?.otpAuthToken) {
         return navigate({
           pathname: generateLocalePath(RoutesConfig.validateOtp),
-          search: search ?? undefined,
+          search: search || undefined,
         });
       }
 

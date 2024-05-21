@@ -12,11 +12,13 @@ import { authSinginMutation } from '../loginForm.graphql';
 
 jest.mock('@sb/webapp-core/services/analytics');
 
+const mockSearch = '?redirect=%2Fen%2Fprofile';
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual<NodeModule>('react-router-dom'),
     useNavigate: () => mockNavigate,
+    useLocation: () => ({ search: mockSearch }),
   };
 });
 const Component = () => <LoginForm />;
@@ -34,12 +36,40 @@ describe('LoginForm: Component', () => {
 
   const getEmailInput = async () => await screen.findByLabelText(/email/i);
   const getPasswordInput = async () => await screen.findByLabelText(/password/i);
-  const clickLoginButton = async () => userEvent.click(await screen.findByRole('button', { name: /log in/i }));
+  const clickLoginButton = async () => await userEvent.click(await screen.findByRole('button', { name: /log in/i }));
   const user = currentUserFactory({
     firstName: 'Jack',
     lastName: 'White',
     email: 'jack.white@mail.com',
+
     roles: [Role.USER],
+  });
+
+  it('should redirect with searchParams if otp available', async () => {
+    const refreshQueryMock = fillCommonQueryWithUser(user);
+    const requestMock = composeMockedQueryResult(authSinginMutation, {
+      variables: mockCredentials,
+      data: {
+        tokenAuth: {
+          access: 'access-token',
+          refresh: 'refresh-token',
+          otpAuthToken: 'otpAuthToken',
+        },
+      },
+    });
+
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: [requestMock, refreshQueryMock],
+    });
+    await waitForApolloMocks();
+
+    await userEvent.type(await getEmailInput(), mockCredentials.input.email);
+    await userEvent.type(await getPasswordInput(), mockCredentials.input.password);
+
+    await clickLoginButton();
+
+    expect(trackEvent).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith({ pathname: '/en/auth/validate-otp', search: mockSearch });
   });
 
   it('should call login action when submitted', async () => {
