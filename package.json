@@ -99,7 +99,7 @@
     "@aws-sdk/client-sts": "^3.577.0",
     "@iconify-icons/ion": "^1.2.10",
     "@iconify/react": "^4.1.1",
-    "@sentry/react": "^7.84.0",
+    "@sentry/react": "^8.2.1",
     "@supercharge/strings": "^2.0.0",
     "ramda": "^0.28.0",
     "react": "18.3.1",
