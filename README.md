@@ -53,6 +53,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
 - [Notifications](https://docs.demo.saas.apptoku.com/introduction/features/notifications)
 - [Emails](https://docs.demo.saas.apptoku.com/introduction/features/emails)
 - [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/introduction/features/payments)
+- [Multi-tenancy](https://docs.demo.saas.apptoku.com/introduction/features/multi-tenancy)
 - [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/introduction/features/cicd)
 - [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/introduction/features/cms)
 - [Admin panel](https://docs.demo.saas.apptoku.com/introduction/features/admin)
