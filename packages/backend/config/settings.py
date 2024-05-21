@@ -4,6 +4,11 @@ import os
 
 import environ
 
+from django.db import connections, OperationalError, ProgrammingError
+from django.core.cache.backends.base import InvalidCacheBackendError
+from django.core.cache import cache
+from redis.exceptions import ConnectionError
+
 from . import monitoring
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -319,8 +324,53 @@ def tenant_request_callback(request):
     return request.tenant
 
 
+def check_migrations():
+    """Check if specific migrations have been applied for change in DJSTRIPE_SUBSCRIBER_MODEL."""
+    connection = connections['default']
+    try:
+        with connection.cursor() as cursor:
+            # Check for djstripe '0001_initial' migration
+            cursor.execute(
+                """
+                SELECT 1 FROM django_migrations
+                WHERE app = 'djstripe' AND name = '0001_initial'
+            """
+            )
+            djstripe_applied = cursor.fetchone() is not None
+
+            # Check for multitenancy '0001_initial' migration
+            cursor.execute(
+                """
+                SELECT 1 FROM django_migrations
+                WHERE app = 'multitenancy' AND name = '0001_initial'
+            """
+            )
+            multitenancy_applied = cursor.fetchone() is not None
+
+        return djstripe_applied and multitenancy_applied
+    except (OperationalError, ProgrammingError):
+        return False
+
+
+# If redis is connected check for DJSTRIPE_SUBSCRIBER_MODEL
+try:
+    subscriber_model = cache.get('DJSTRIPE_SUBSCRIBER_MODEL')
+except (InvalidCacheBackendError, ConnectionError):
+    subscriber_model = AUTH_USER_MODEL
+
+# Code below is for resolving djstripe migration dependency issue caused by setting up DJSTRIPE_SUBSCRIBER_MODEL.
+if not subscriber_model:
+    # In case that cache is not set yet, check if migrations already passed. If so, set Tenant as a subscriber model.
+    if check_migrations():
+        DJSTRIPE_SUBSCRIBER_MODEL = 'multitenancy.Tenant'
+        cache.set('DJSTRIPE_SUBSCRIBER_MODEL', DJSTRIPE_SUBSCRIBER_MODEL)
+    else:
+        DJSTRIPE_SUBSCRIBER_MODEL = AUTH_USER_MODEL
+else:
+    DJSTRIPE_SUBSCRIBER_MODEL = subscriber_model
+
+
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = tenant_request_callback
-DJSTRIPE_SUBSCRIBER_MODEL = "multitenancy.Tenant"
 # Disable stripe checks for keys on django application start
 STRIPE_CHECKS_ENABLED = env.bool("STRIPE_CHECKS_ENABLED", default=True)
 if not STRIPE_CHECKS_ENABLED:
