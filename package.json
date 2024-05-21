@@ -28,7 +28,7 @@
     "@storybook/addon-actions": "^8.0.9",
     "@storybook/react": "^8.0.9",
     "@svgr/webpack": "^8.1.0",
-    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.13",
     "@testing-library/dom": "10.1.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "15.0.7",
@@ -73,8 +73,8 @@
     "nx-cloud": "18.0.1",
     "plop": "^4.0.1",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.7",
-    "tailwindcss": "^3.3.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
@@ -111,7 +111,7 @@
     "react-markdown": "^8.0.7",
     "react-router": "^6.16.0",
     "react-router-dom": "6.16.0",
-    "regenerator-runtime": "^0.14.0",
+    "regenerator-runtime": "^0.14.1",
     "styled-components": "6.1.11"
   },
   "pnpm": {
