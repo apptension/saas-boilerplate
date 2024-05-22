@@ -1,1 +1,3 @@
-export { Layout } from './layout.component';
+import Layout from './layout.component';
+
+export { Layout };

@@ -1,7 +1,9 @@
+import { Body, Container, Font, Head, Heading, Html, Section, Tailwind, Text } from '@react-email/components';
+import { ENV } from '@sb/webapp-core/config/env';
+import { fontFamily, fontWeight, size } from '@sb/webapp-core/theme';
 import { ReactNode } from 'react';
 
 import { Image } from '../image';
-import { Container, Table, Td, Text, Title, Tr } from './layout.styles';
 
 export type LayoutProps = {
   title: ReactNode;
@@ -9,27 +11,61 @@ export type LayoutProps = {
   children?: ReactNode;
 };
 
-export const Layout = ({ title, text, children }: LayoutProps) => {
+const localUrl = `http://localhost:3000/email-assets`;
+
+export default function Layout({ title = 'title', text = 'text', children = 'children' }: LayoutProps) {
   return (
-    <Container>
-      <Table>
-        <Tr>
-          <Td>
-            <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.png" />
-          </Td>
-        </Tr>
-        <Tr>
-          <Title>{title}</Title>
-        </Tr>
+    <Html>
+      <Head>
+        <Font
+          fontFamily={fontFamily.primary}
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${ENV.EMAIL_ASSETS_URL ?? localUrl}/Inter-Regular.woff`,
+            format: 'woff',
+          }}
+          fontWeight={fontWeight.regular}
+          fontStyle="normal"
+        />
 
-        <Tr>
-          <Text>{text}</Text>
-        </Tr>
+        <Font
+          fontFamily={fontFamily.primary}
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${ENV.EMAIL_ASSETS_URL ?? localUrl}/Inter-SemiBold.woff`,
+            format: 'woff',
+          }}
+          fontWeight={fontWeight.bold}
+          fontStyle="normal"
+        />
+      </Head>
+      <Tailwind
+        config={{
+          theme: {
+            extend: {
+              fontFamily: {
+                customFont: [fontFamily.primary],
+              },
+            },
+          },
+        }}
+      >
+        <Body className="bg-white my-auto mx-auto font-sans px-2">
+          <Container
+            className={`border border-solid border-[#eaeaea] rounded mx-auto p-[20px] max-w-[548px] py-[${size.sizeUnits(5)}]`}
+          >
+            <Image src="logo.png" width={256} className="mt-0 mx-auto" />
 
-        <Tr>
-          <Td>{children}</Td>
-        </Tr>
-      </Table>
-    </Container>
+            <Heading className="text-black text-[24px] text-center p-0 my-[30px] mx-0 font-customFont font-bold">
+              {title}
+            </Heading>
+
+            <Text className="text-black text-[14px] leading-[24px] text-center font-customFont">{text}</Text>
+
+            <Section className={`flex justify-center `}> {children}</Section>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
   );
-};
+}
