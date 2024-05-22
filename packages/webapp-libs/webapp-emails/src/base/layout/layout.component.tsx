@@ -13,7 +13,7 @@ export type LayoutProps = {
 
 const localUrl = `http://localhost:3000/email-assets`;
 
-export default function Layout({ title = 'title', text = 'text', children = 'children' }: LayoutProps) {
+export default function Layout({ title, text, children }: LayoutProps) {
   return (
     <Html>
       <Head>
