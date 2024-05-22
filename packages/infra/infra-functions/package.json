@@ -1,6 +1,6 @@
 {
   "name": "@sb/infra-functions",
-  "version": "2.6.1",
+  "version": "3.0.0",
   "description": "",
   "main": "handler.js",
   "author": "",

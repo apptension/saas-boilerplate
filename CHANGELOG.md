@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/apptension/saas-boilerplate/compare/2.6.1...3.0.0) (2024-05-22)
+
+### ⚠ BREAKING CHANGES
+
+- Important migration instructions
+
+Before running the multi-tenancy migrations on your existing codebase or database, it is crucial to follow these steps to avoid any issues:
+
+1. Remove or comment `DJSTRIPE_SUBSCRIBER_MODEL` setting
+2. Run the migrations
+3. Revert the change: After the migrations have successfully completed, revert the change by uncommenting or re-adding the `DJSTRIPE_SUBSCRIBER_MODEL` setting.
+
+### Features
+
+- [#382](https://github.com/apptension/saas-boilerplate/issues/382) Multi-tenancy / Add support for multiple tenants ([#561](https://github.com/apptension/saas-boilerplate/issues/561)) ([e6c6dc3](https://github.com/apptension/saas-boilerplate/commit/e6c6dc39f0e96b3bb596f6b5dfae137938b37b1b))
+- Add `deps:` type to conventional-changelog ([#545](https://github.com/apptension/saas-boilerplate/issues/545)) ([8e7e982](https://github.com/apptension/saas-boilerplate/commit/8e7e982ef8246d9fcb05f82a2e96e983544c626e))
+
+### Bug Fixes
+
+- Create default tenant for newly created social users ([#572](https://github.com/apptension/saas-boilerplate/issues/572)) ([d42bb44](https://github.com/apptension/saas-boilerplate/commit/d42bb445e1208d2ea15ba16919937685c156c259))
+- Missing \*.spec.tsx pattern in multiple tsconfig.spec.json files ([#557](https://github.com/apptension/saas-boilerplate/issues/557)) ([9dfcd51](https://github.com/apptension/saas-boilerplate/commit/9dfcd51fa3cdde3cb6e0becdcdff9a67793d8f49))
+
+### Dependencies
+
+- [@testing-library](https://github.com/testing-library) update ([#563](https://github.com/apptension/saas-boilerplate/issues/563)) ([569fcee](https://github.com/apptension/saas-boilerplate/commit/569fcee66a7aafd77ba1352d89a304f4ca0f445a))
+- deprecated packages ([#552](https://github.com/apptension/saas-boilerplate/issues/552)) ([b83fe6f](https://github.com/apptension/saas-boilerplate/commit/b83fe6f349fb462aa1ec6f51699e373888b5ffbd))
+- root package bulk update (low impact) ([#565](https://github.com/apptension/saas-boilerplate/issues/565)) ([282bd5d](https://github.com/apptension/saas-boilerplate/commit/282bd5d8ea36074fb667f8516b3e6d60e2d6abb6))
+- Update aws libs ([#566](https://github.com/apptension/saas-boilerplate/issues/566)) ([0597933](https://github.com/apptension/saas-boilerplate/commit/05979330b3b15ada8ae02ae8d740ad5a4205215a))
+- Update nx to 19.0.1 ([#546](https://github.com/apptension/saas-boilerplate/issues/546)) ([063a891](https://github.com/apptension/saas-boilerplate/commit/063a891a25e17d5ed8da271004826f0ac57febc6))
+- Update sentry/react ([#569](https://github.com/apptension/saas-boilerplate/issues/569)) ([fadfdbf](https://github.com/apptension/saas-boilerplate/commit/fadfdbf8cd5aa80b62619712741515d1d9777d15))
+- Update vite to 5.2.x ([#551](https://github.com/apptension/saas-boilerplate/issues/551)) ([fc029f5](https://github.com/apptension/saas-boilerplate/commit/fc029f56d60e68e1b51583e268527639619e658b))
+- webapp-core package updates ([#559](https://github.com/apptension/saas-boilerplate/issues/559)) ([1e2837e](https://github.com/apptension/saas-boilerplate/commit/1e2837e7189c345bd1d785666eb665d89088cf4a))
+
 ### [2.6.1](https://github.com/apptension/saas-boilerplate/compare/2.6.0...2.6.1) (2024-05-10)
 
 ### Bug Fixes
