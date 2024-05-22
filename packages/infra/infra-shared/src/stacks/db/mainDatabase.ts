@@ -14,13 +14,13 @@ export class MainDatabase extends Construct {
   private instance: rds.DatabaseInstance;
 
   static getDatabaseSecretArnOutputExportName(
-    envSettings: EnvironmentSettings
+    envSettings: EnvironmentSettings,
   ) {
     return `${envSettings.projectEnvName}-databaseSecretArn`;
   }
 
   static getDatabaseProxyEndpointOutputExportName(
-    envSettings: EnvironmentSettings
+    envSettings: EnvironmentSettings,
   ) {
     return `${envSettings.projectEnvName}-databaseProxyEndpoint`;
   }
@@ -61,21 +61,18 @@ export class MainDatabase extends Construct {
 
   private createDbInstance(
     props: MainDatabaseProps,
-    securityGroup: ec2.SecurityGroup
+    securityGroup: ec2.SecurityGroup,
   ) {
     const instance = new rds.DatabaseInstance(this, 'Instance', {
       instanceIdentifier: MainDatabase.getInstanceIdentifier(props.envSettings),
       vpc: props.vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.of('14.7', '14', {
-          s3Import: true,
-          s3Export: true,
-        }),
+        version: rds.PostgresEngineVersion.VER_16_1,
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,
-        ec2.InstanceSize.MICRO
+        ec2.InstanceSize.MICRO,
       ),
       databaseName: 'main',
       securityGroups: [securityGroup],
@@ -87,7 +84,7 @@ export class MainDatabase extends Construct {
     if (instance.secret) {
       new CfnOutput(this, 'SecretOutput', {
         exportName: MainDatabase.getDatabaseSecretArnOutputExportName(
-          props.envSettings
+          props.envSettings,
         ),
         value: instance.secret.secretArn,
       });
@@ -99,7 +96,7 @@ export class MainDatabase extends Construct {
   private createRdsProxy(
     instance: rds.DatabaseInstance,
     props: MainDatabaseProps,
-    securityGroup: ec2.SecurityGroup
+    securityGroup: ec2.SecurityGroup,
   ) {
     const proxy = instance.addProxy('proxy', {
       dbProxyName: MainDatabase.getProxyName(props.envSettings),
@@ -113,7 +110,7 @@ export class MainDatabase extends Construct {
 
     new CfnOutput(this, 'DbProxyEndpoint', {
       exportName: MainDatabase.getDatabaseProxyEndpointOutputExportName(
-        props.envSettings
+        props.envSettings,
       ),
       value: proxy.endpoint,
     });
