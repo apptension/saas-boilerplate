@@ -1,6 +1,6 @@
 import { Body, Container, Font, Head, Heading, Html, Section, Tailwind, Text } from '@react-email/components';
 import { ENV } from '@sb/webapp-core/config/env';
-import { fontFamily, fontWeight, size } from '@sb/webapp-core/theme';
+import { fontFamily, fontWeight } from '@sb/webapp-core/theme';
 import { ReactNode } from 'react';
 
 import { Image } from '../image';
@@ -44,23 +44,21 @@ export default function Layout({ title = 'title', text = 'text', children = 'chi
           theme: {
             extend: {
               fontFamily: {
-                customFont: [fontFamily.primary],
+                custom: [fontFamily.primary],
               },
             },
           },
         }}
       >
-        <Body className="bg-white my-auto mx-auto font-sans px-2">
-          <Container
-            className={`border border-solid border-[#eaeaea] rounded mx-auto p-[20px] max-w-[548px] py-[${size.sizeUnits(5)}]`}
-          >
+        <Body className="bg-white my-auto mx-auto font-sans p-8">
+          <Container className="border border-solid border-[#eaeaea] rounded mx-auto max-w-[548px] p-10">
             <Image src="logo.png" width={256} className="mt-0 mx-auto" />
 
-            <Heading className="text-black text-[24px] text-center p-0 my-[30px] mx-0 font-customFont font-bold">
+            <Heading className="text-black text-[24px] text-center p-0 my-[30px] mx-0 font-custom font-bold">
               {title}
             </Heading>
 
-            <Text className="text-black text-[14px] leading-[24px] text-center font-customFont">{text}</Text>
+            <Text className="text-black text-[14px] leading-[24px] text-center font-custom">{text}</Text>
 
             <Section className={`flex justify-center `}> {children}</Section>
           </Container>

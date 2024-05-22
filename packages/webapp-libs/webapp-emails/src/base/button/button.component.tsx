@@ -11,7 +11,7 @@ export const Button = (props: ButtonProps) => {
   const hrefUrl = isExternalLink ? props.linkTo : `${ENV.PUBLIC_URL}${props.linkTo}`;
 
   return (
-    <ButtonComponent href={hrefUrl} className="bg-black text-white rounded font-customFont text-sm p-2">
+    <ButtonComponent href={hrefUrl} className="bg-black text-white rounded font-custom text-sm p-2">
       {props.children}
     </ButtonComponent>
   );
