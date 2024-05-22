@@ -4,7 +4,10 @@ import { EmailTemplateType } from '../src/types';
 
 const data: UserExportAdminProps = {
   to: 'user@example.com',
-  data: [{ export_url: 'https://localhost:3000', email: 'email@example.com' }],
+  data: [
+    { export_url: 'https://localhost:3000', email: 'email@example.com' },
+    { export_url: 'https://localhost:3000', email: 'email@example.com' },
+  ],
 };
 
 function Email() {
