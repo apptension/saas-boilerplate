@@ -6,11 +6,10 @@ import * as Sentry from '@sentry/react';
 
 export const reportError = (error: any): void => {
   if (process.env['NODE_ENV'] !== 'test') {
-    console.error(error); //eslint-disable-line
+    console.error(error);
   }
 
   if (!error?.response) {
-    // eslint-disable-next-line import/namespace
     Sentry.captureException(error);
   }
 };
