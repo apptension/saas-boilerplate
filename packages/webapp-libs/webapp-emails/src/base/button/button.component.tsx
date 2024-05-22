@@ -1,5 +1,6 @@
 import { Button as ButtonComponent } from '@react-email/components';
 import { ENV } from '@sb/webapp-core/config/env';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { HTMLAttributes } from 'react';
 
 export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {
@@ -11,7 +12,10 @@ export const Button = (props: ButtonProps) => {
   const hrefUrl = isExternalLink ? props.linkTo : `${ENV.PUBLIC_URL}${props.linkTo}`;
 
   return (
-    <ButtonComponent href={hrefUrl} className="bg-black text-white rounded font-custom text-sm p-2">
+    <ButtonComponent
+      href={hrefUrl}
+      className={cn('bg-black text-white rounded font-custom text-sm p-2', props.className)}
+    >
       {props.children}
     </ButtonComponent>
   );
