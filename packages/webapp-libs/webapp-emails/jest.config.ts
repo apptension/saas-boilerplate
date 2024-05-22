@@ -16,5 +16,6 @@ export default {
   coverageReporters: ['lcov'],
   coveragePathIgnorePatterns: ['/node_modules/', '.*.svg'],
   setupFilesAfterEnv: ['./src/tests/setupTests.ts'],
+  setupFiles: ['./jest.polyfills.js'],
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
