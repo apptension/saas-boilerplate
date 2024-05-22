@@ -2,10 +2,17 @@
 title: Multitenancy
 description: Managing multiple tenants within a single account
 ---
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import ProjectName from '../../shared/components/ProjectName.component';
+
 
 The multitenancy feature in <ProjectName/> enables users to create and manage multiple tenants within their account.
 Each tenant operates autonomously, with its own settings, members, and resources.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/multi-tenancy/multi-tenancy1.png")} alt="Organization switch" />
+  <img src={useBaseUrl("img/features/multi-tenancy/multi-tenancy2.png")} alt="Organization settings" />
+</p>
 
 ### Default Tenant
 
@@ -36,3 +43,7 @@ configuration to suit the specific needs of their application.
 
 Owners can invite new members to join their tenant, controlling access and ensuring secure collaboration. Invited
 members receive notifications and can accept or decline invitations.
+
+<p align="center">
+  <img src={useBaseUrl("img/features/multi-tenancy/multi-tenancy3.png")} alt="Organization members" />
+</p>
