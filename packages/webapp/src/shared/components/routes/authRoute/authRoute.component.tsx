@@ -4,6 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { RoutesConfig } from '../../../../app/config/routes';
 import { Role } from '../../../../modules/auth/auth.types';
 import { useAuth, useRoleAccessCheck } from '../../../hooks';
+import { useGenerateRedirectSearchParams } from './authRoute.hook';
 
 export type AuthRouteProps = {
   allowedRoles?: Role | Role[];
@@ -28,9 +29,21 @@ export type AuthRouteProps = {
 export const AuthRoute = ({ allowedRoles = [Role.ADMIN, Role.USER] }: AuthRouteProps) => {
   const { isLoggedIn } = useAuth();
   const { isAllowed } = useRoleAccessCheck(allowedRoles);
-  const generateLocalePath = useGenerateLocalePath();
-  const fallbackUrl = isLoggedIn ? generateLocalePath(RoutesConfig.notFound) : generateLocalePath(RoutesConfig.login);
 
-  if (!isAllowed) return <Navigate to={fallbackUrl} />;
+  const generateRedirectSearchParams = useGenerateRedirectSearchParams();
+  const generateLocalePath = useGenerateLocalePath();
+
+  if (!isAllowed) {
+    if (isLoggedIn) return <Navigate to={generateLocalePath(RoutesConfig.notFound)} />;
+
+    return (
+      <Navigate
+        to={{
+          pathname: generateLocalePath(RoutesConfig.login),
+          search: generateRedirectSearchParams(),
+        }}
+      />
+    );
+  }
   return <Outlet />;
 };

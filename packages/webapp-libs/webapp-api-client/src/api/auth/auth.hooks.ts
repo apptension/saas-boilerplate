@@ -5,8 +5,8 @@ import { useCallback } from 'react';
 import { apiURL } from '../helpers';
 import { OAuthProvider } from './auth.types';
 
-export const getOauthUrl = (provider: OAuthProvider, locale?: string) =>
-  apiURL(`/auth/social/login/${provider}?next=${encodeURIComponent(window.location.origin)}&locale=${locale ?? 'en'}`);
+export const getOauthUrl = (provider: OAuthProvider, locale = 'en') =>
+  apiURL(`/auth/social/login/${provider}?next=${encodeURIComponent(window.location.href)}&locale=${locale}`);
 
 export const useOAuthLogin = () => {
   const {
