@@ -62,9 +62,11 @@ export const usePaginatedQuery = <
   const { data, loading, fetchMore } = useQuery<A, CursorsInput & B>(query, options.hookOptions);
 
   useEffect(() => {
-    if (cachedCursors.includes(data?.[options.dataKey]?.pageInfo.endCursor)) {
-      setCachedCursors([]);
-    }
+    const currentEndCursor = data?.[options.dataKey]?.pageInfo.endCursor;
+    if (!currentEndCursor) return;
+
+    const isFirstEndCursor = cachedCursors.indexOf(currentEndCursor) === 0;
+    if (isFirstEndCursor) setCachedCursors([]);
   }, [data, cachedCursors, options.dataKey]);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export const usePaginatedQuery = <
   const loadNext = useCallback(() => {
     const queryData = data?.[options.dataKey];
     const endCursor = queryData?.pageInfo.endCursor;
-    setCachedCursors((prev) => [...prev, endCursor]);
+
     fetchMore({
       variables: {
         after: endCursor,
@@ -83,12 +85,13 @@ export const usePaginatedQuery = <
       updateQuery: (_, { fetchMoreResult }) => {
         return fetchMoreResult;
       },
+    }).then(() => {
+      setCachedCursors((prev) => [...prev, endCursor]);
     });
   }, [data, setCachedCursors, fetchMore, options.dataKey]);
 
   const loadPrevious = useCallback(() => {
     const newCachedCursors = cachedCursors.slice(0, -1);
-    setCachedCursors(newCachedCursors);
     const lastEndCursor = newCachedCursors.length > 0 ? newCachedCursors[newCachedCursors.length - 1] : undefined;
 
     fetchMore({
@@ -98,6 +101,8 @@ export const usePaginatedQuery = <
       updateQuery: (_, { fetchMoreResult }) => {
         return fetchMoreResult;
       },
+    }).then(() => {
+      setCachedCursors(newCachedCursors);
     });
   }, [cachedCursors, setCachedCursors, fetchMore]);
 
