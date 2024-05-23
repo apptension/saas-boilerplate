@@ -17,7 +17,7 @@
         "cwd": "packages/internal/core",
         "command": "pnpm nx docker-create-volumes"
       },
-      "dependsOn": ["setup-env"]
+      "dependsOn": ["setup-env", "docker-create-volumes"]
     },
     "docker-create-volumes": {
       "executor": "nx:run-commands",
