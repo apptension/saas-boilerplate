@@ -20,7 +20,7 @@ export const Template = ({ data }: UserExportAdminProps) => {
         />
       }
     >
-      <Container className="w-screen">
+      <Container className="w-screen text-left">
         {data.map((row, index) => (
           <Section>
             <Row key={row.email} className="">

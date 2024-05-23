@@ -32,7 +32,7 @@ export const Template = ({ data }: UserExportProps) => {
         <FormattedMessage defaultMessage="Download" id="Email /  User Export / Download" />
       </Button>
 
-      <Text className="font-custom">
+      <Text className="font-custom text-left">
         <FormattedMessage
           defaultMessage="{br}If you have any questions or concerns about your data, please do not hesitate to contact us.
 {br}{br}

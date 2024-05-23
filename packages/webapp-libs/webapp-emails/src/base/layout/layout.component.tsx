@@ -60,7 +60,7 @@ export default function Layout({ title, text, children }: LayoutProps) {
 
             <Text className="text-black text-[14px] leading-[24px] text-center font-custom">{text}</Text>
 
-            <Section className={`flex justify-center `}> {children}</Section>
+            <Section className="text-center">{children}</Section>
           </Container>
         </Body>
       </Tailwind>
