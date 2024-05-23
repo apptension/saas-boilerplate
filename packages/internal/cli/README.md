@@ -59,6 +59,7 @@ USAGE
 - [`saas emails build`](#saas-emails-build)
 - [`saas emails secrets`](#saas-emails-secrets)
 - [`saas emails test`](#saas-emails-test)
+- [`saas emails preview`](#saas-emails-preview)
 - [`saas help [COMMANDS]`](#saas-help-commands)
 - [`saas infra bootstrap`](#saas-infra-bootstrap)
 - [`saas infra deploy [STACKNAME]`](#saas-infra-deploy-stackname)
@@ -639,6 +640,23 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/emails/test.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/emails/test.js)_
+
+## `saas emails preview`
+
+Runs emails preview. To be able to see assets, please run `saas up` first.
+
+```
+USAGE
+  $ saas emails preview
+
+DESCRIPTION
+  Runs emails preview. Runs emails preview. To be able to see assets, please run `saas up` first.
+
+EXAMPLES
+  $ saas emails preview
+```
+
+_See code: [dist/commands/emails/preview.js](https://github.com/apptension/saas-boilerplate/blob/v2.0.3/dist/commands/emails/preview.js)_
 
 ## `saas help [COMMANDS]`
 

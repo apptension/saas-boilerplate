@@ -7,7 +7,7 @@
     "test:watch": "jest --watch",
     "lint": "eslint .",
     "type-check": "tsc --noEmit --project tsconfig.lib.json",
-    "dev": "email dev -p 1081"
+    "preview": "email dev -p 1081"
   },
   "dependencies": {
     "@react-email/components": "0.0.18",
