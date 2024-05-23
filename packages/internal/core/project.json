@@ -10,6 +10,14 @@
         "cwd": "./"
       }
     },
+    "docker-create-volumes": {
+      "executor": "nx:run-commands",
+      "options": {
+        "color": true,
+        "cwd": "packages/internal/core",
+        "command": "node ./scripts/docker-create-volumes.js"
+      }
+    },
     "setup": {
       "executor": "nx:run-commands",
       "options": {
@@ -19,14 +27,7 @@
       },
       "dependsOn": ["setup-env", "docker-create-volumes"]
     },
-    "docker-create-volumes": {
-      "executor": "nx:run-commands",
-      "options": {
-        "color": true,
-        "cwd": "packages/internal/core",
-        "command": "node ./scripts/docker-create-volumes.js"
-      }
-    },
+
     "docker-compose:up": {
       "executor": "nx:run-commands",
       "options": {
