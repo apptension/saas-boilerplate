@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-crud-demo',
   preset: '../../../jest.preset.js',
