@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-emails',
   preset: '../../../jest.preset.js',
