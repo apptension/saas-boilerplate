@@ -8,7 +8,7 @@
     "lint:css": "stylelint './src/**/*.ts'",
     "lint:js": "eslint .",
     "verify": "node ./scripts/verify.js",
-    "storybook": "pnpm nx run webapp-emails:build && /bin/bash scripts/start-storybook.sh",
+    "storybook": "/bin/bash scripts/start-storybook.sh",
     "build-storybook": "storybook build",
     "start": "pnpm nx start:app",
     "test": "jest",
