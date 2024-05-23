@@ -15,7 +15,7 @@ export const Button = (props: ButtonProps) => {
     <ButtonComponent
       href={hrefUrl}
       className={cn('bg-black text-white rounded font-custom text-sm p-2', props.className)}
-      data-testId="button-testId"
+      data-testid="button-testId"
     >
       {props.children}
     </ButtonComponent>
