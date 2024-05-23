@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-contentful',
   preset: '../../../jest.preset.js',
