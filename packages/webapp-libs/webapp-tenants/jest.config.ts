@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-tenants',
   preset: '../../../jest.preset.js',
