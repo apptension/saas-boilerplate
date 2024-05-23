@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { ExitError } from '@oclif/core/lib/errors';
 import { Span, SpanStatusCode, trace, Tracer } from '@opentelemetry/api';
@@ -9,7 +8,7 @@ const formatAttrs = (obj: { [k: string]: string } = {}, prefix = '') => {
   return Object.fromEntries(
     Object.keys(obj).map((key: string) => {
       return [[prefix, key].join('.'), obj[key]];
-    })
+    }),
   );
 };
 
@@ -49,7 +48,6 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     let result;
     try {
       // remove redirected env var to allow subsessions to run autoupdated client
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       this.removeEnvVar('REDIRECTED');
       await this.init();
@@ -65,7 +63,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
           async (span) => {
             this.span = span;
             return await this.run();
-          }
+          },
         );
       } else {
         result = await this.run();

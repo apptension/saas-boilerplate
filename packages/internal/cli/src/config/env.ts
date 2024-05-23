@@ -4,7 +4,6 @@ import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as envalid from 'envalid';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sbTelemetry = require('@apptension/saas-boilerplate-telemetry');
 
 export const getRootPath = () => {
