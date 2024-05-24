@@ -77,9 +77,9 @@ export const usePaginatedQuery = <
       fetchMore({
         updateQuery: (_, { fetchMoreResult }) => fetchMoreResult,
       });
-    }
+    };
 
-    return setCacheToFirstPage
+    return setCacheToFirstPage;
   }, [fetchMore]);
 
   const loadNext = useCallback(() => {
