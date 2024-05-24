@@ -1,0 +1,17 @@
+import { buildEmail } from '../src/email';
+import { {{ pascalCase name }}Props } from '../src/templates/{{ camelCase name }}';
+import { EmailTemplateType } from '../src/types';
+
+const data: {{ pascalCase name }}Props = {
+  to: 'user@example.com',
+};
+
+function Email() {
+  return buildEmail({
+    name: EmailTemplateType.{{ constantCase name }},
+    lang: 'en',
+    data,
+  }).template;
+}
+
+export default Email;

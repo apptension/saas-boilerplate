@@ -3,7 +3,8 @@ const path = require('path');
 const templatesPath = path.join(__dirname, 'templates');
 
 module.exports = (plop) => {
-  const emailsNamespace = '../webapp-libs/webapp-emails/src';
+  const rootEmailsNamespace = '../webapp-libs/webapp-emails'
+  const emailsNamespace = `${rootEmailsNamespace}/src`;
   const templates = path.join(emailsNamespace, 'templates', '{{ camelCase name }}');
 
   plop.setGenerator('email', {
@@ -18,6 +19,11 @@ module.exports = (plop) => {
     actions: [
       {
         type: 'add',
+        path: `${rootEmailsNamespace}/emails/{{ camelCase name }}.tsx`,
+        templateFile: path.join(templatesPath, 'preview.hbs'),
+      },
+      {
+        type: 'add',
         path: `${templates}/index.ts`,
         templateFile: path.join(templatesPath, 'index.hbs'),
       },
@@ -25,11 +31,6 @@ module.exports = (plop) => {
         type: 'add',
         path: `${templates}/{{ camelCase name }}.component.tsx`,
         templateFile: path.join(templatesPath, 'component.hbs'),
-      },
-      {
-        type: 'add',
-        path: `${templates}/{{ camelCase name }}.stories.tsx`,
-        templateFile: path.join(templatesPath, 'stories.hbs'),
       },
       {
         type: 'modify',
