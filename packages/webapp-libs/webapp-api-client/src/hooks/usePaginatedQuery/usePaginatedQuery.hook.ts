@@ -63,8 +63,6 @@ export const usePaginatedQuery = <
 
   useEffect(() => {
     const currentEndCursor = data?.[options.dataKey]?.pageInfo.endCursor;
-    if (!currentEndCursor) return;
-
     const isFirstEndCursor = cachedCursors.indexOf(currentEndCursor) === 0;
     if (isFirstEndCursor) setCachedCursors([]);
   }, [data, cachedCursors, options.dataKey]);
@@ -73,6 +71,16 @@ export const usePaginatedQuery = <
     setHasPrevious(cachedCursors.length > 0);
     setHasNext(data?.[options.dataKey]?.pageInfo.hasNextPage ?? false);
   }, [data, cachedCursors.length, options.dataKey]);
+
+  useEffect(() => {
+    const setCacheToFirstPage = () => {
+      fetchMore({
+        updateQuery: (_, { fetchMoreResult }) => fetchMoreResult,
+      });
+    }
+
+    return setCacheToFirstPage
+  }, [fetchMore]);
 
   const loadNext = useCallback(() => {
     const queryData = data?.[options.dataKey];
