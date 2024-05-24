@@ -4,10 +4,10 @@ import { ComponentPropsWithoutRef } from 'react';
 
 export type ImageProps = ComponentPropsWithoutRef<'img'>;
 
-const localUrl = `http://localhost:3000/email-assets`;
+const baseURL = ENV.EMAIL_ASSETS_URL || `/static`;
 
 export const Image = (props: ImageProps) => {
-  return <Img alt="" {...props} src={`${ENV.EMAIL_ASSETS_URL || localUrl}/${props.src}`} />;
+  return <Img alt="" {...props} src={`${baseURL}/${props.src}`} />;
 };
 
 Image.defaultProps = {

@@ -1,6 +1,6 @@
-import { buildEmail } from '../src/email';
-import { UserExportProps } from '../src/templates/userExport';
-import { EmailTemplateType } from '../src/types';
+import { buildEmail } from '../email';
+import { UserExportProps } from '../templates/userExport';
+import { EmailTemplateType } from '../types';
 
 const data: UserExportProps = {
   to: 'user@example.com',

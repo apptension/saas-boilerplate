@@ -1,6 +1,6 @@
-import { buildEmail } from '../src/email';
-import { PasswordResetProps } from '../src/templates/passwordReset';
-import { EmailTemplateType } from '../src/types';
+import { buildEmail } from '../email';
+import { PasswordResetProps } from '../templates/passwordReset';
+import { EmailTemplateType } from '../types';
 
 const data: PasswordResetProps = { to: 'user@example.com', token: 'token', userId: 'userId' };
 

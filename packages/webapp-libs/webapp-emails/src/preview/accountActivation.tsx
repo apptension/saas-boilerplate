@@ -1,6 +1,6 @@
-import { buildEmail } from '../src/email';
-import { AccountActivationProps } from '../src/templates/accountActivation';
-import { EmailTemplateType } from '../src/types';
+import { buildEmail } from '../email';
+import { AccountActivationProps } from '../templates/accountActivation';
+import { EmailTemplateType } from '../types';
 
 const data: AccountActivationProps = { to: 'user@example.com', token: 'token', userId: 'userId' };
 

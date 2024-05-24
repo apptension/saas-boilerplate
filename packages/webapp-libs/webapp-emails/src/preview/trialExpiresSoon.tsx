@@ -1,6 +1,6 @@
-import { buildEmail } from '../src/email';
-import { TrialExpiresSoonProps } from '../src/templates/trialExpiresSoon';
-import { EmailTemplateType } from '../src/types';
+import { buildEmail } from '../email';
+import { TrialExpiresSoonProps } from '../templates/trialExpiresSoon';
+import { EmailTemplateType } from '../types';
 
 const data: TrialExpiresSoonProps = { to: 'user@example.com', expiryDate: new Date().toISOString() };
 

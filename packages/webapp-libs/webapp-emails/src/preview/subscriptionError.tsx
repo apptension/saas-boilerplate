@@ -1,5 +1,5 @@
-import { buildEmail } from '../src/email';
-import { EmailTemplateType } from '../src/types';
+import { buildEmail } from '../email';
+import { EmailTemplateType } from '../types';
 
 function Email() {
   return buildEmail({

@@ -11,7 +11,7 @@ export type LayoutProps = {
   children?: ReactNode;
 };
 
-const localUrl = `http://localhost:3000/email-assets`;
+const baseURL = ENV.EMAIL_ASSETS_URL || `/static`;
 
 export default function Layout({ title, text, children }: LayoutProps) {
   return (
@@ -21,7 +21,7 @@ export default function Layout({ title, text, children }: LayoutProps) {
           fontFamily={fontFamily.primary}
           fallbackFontFamily="Verdana"
           webFont={{
-            url: `${ENV.EMAIL_ASSETS_URL ?? localUrl}/Inter-Regular.woff`,
+            url: `${baseURL}/Inter-Regular.woff`,
             format: 'woff',
           }}
           fontWeight={fontWeight.regular}
@@ -32,7 +32,7 @@ export default function Layout({ title, text, children }: LayoutProps) {
           fontFamily={fontFamily.primary}
           fallbackFontFamily="Verdana"
           webFont={{
-            url: `${ENV.EMAIL_ASSETS_URL ?? localUrl}/Inter-SemiBold.woff`,
+            url: `${baseURL}/Inter-SemiBold.woff`,
             format: 'woff',
           }}
           fontWeight={fontWeight.bold}
