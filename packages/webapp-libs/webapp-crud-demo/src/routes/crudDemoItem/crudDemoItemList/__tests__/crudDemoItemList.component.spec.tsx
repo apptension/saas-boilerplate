@@ -41,6 +41,7 @@ describe('CrudDemoItemList: Component', () => {
         })
       ),
       fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
     ];
     render(<Component />, { routerProps, apolloMocks });
 
@@ -50,7 +51,19 @@ describe('CrudDemoItemList: Component', () => {
 
   it('should render link to add new item form', async () => {
     const routerProps = createMockRouterProps(RoutesConfig.crudDemoItem.list);
-    const apolloMocks = [fillCommonQueryWithUser(), fillCrudDemoItemPaginationListQuery(allItems, {}, { first: 8 })];
+    const apolloMocks = [
+      fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [
+            tenantFactory({
+              id: tenantId,
+            }),
+          ],
+        })
+      ),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+    ];
 
     render(<Component />, { routerProps, apolloMocks });
 
