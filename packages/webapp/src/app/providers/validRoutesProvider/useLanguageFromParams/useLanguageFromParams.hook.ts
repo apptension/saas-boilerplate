@@ -7,5 +7,5 @@ export const useLanguageFromParams = () => {
 
   useEffect(() => {
     setLanguage(lang);
-  }, [lang, setLanguage]);
+  }, []);
 };

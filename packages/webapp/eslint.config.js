@@ -1,8 +1,8 @@
-import webappCoreConfig from '@sb/webapp-core/eslint.config.mjs';
+const webappCoreConfig = require('@sb/webapp-core/eslint.config.js');
 
-import rootConfig from '../../eslint.config.js';
+const rootConfig = require('../../eslint.config.js');
 
-export default [
+module.exports = [
   ...rootConfig,
   ...webappCoreConfig,
   {

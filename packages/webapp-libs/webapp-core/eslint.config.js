@@ -1,16 +1,16 @@
-import { fixupPluginRules } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
-import nxReactPlugin from '@nx/react';
-import formatjsPlugin from 'eslint-plugin-formatjs';
-import reactPlugin from 'eslint-plugin-react';
-import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import testingLibraryPlugin from 'eslint-plugin-testing-library';
+const { fixupPluginRules } = require('@eslint/compat');
+const { FlatCompat } = require('@eslint/eslintrc');
+const nxReactPlugin = require('@nx/react');
+const formatjsPlugin = require('eslint-plugin-formatjs');
+const reactPlugin = require('eslint-plugin-react');
+const reactHooksPlugin = require('eslint-plugin-react-hooks');
+const testingLibraryPlugin = require('eslint-plugin-testing-library');
 
-import rootConfig from '../../../eslint.config.js';
+const rootConfig = require('../../../eslint.config.js');
 
 const compat = new FlatCompat();
 
-export default [
+module.exports = [
   ...rootConfig,
   {
     plugins: {
@@ -20,12 +20,13 @@ export default [
   {
     ignores: ['!**/*', 'node_modules/**/*'],
     plugins: {
-      'react-hooks': reactHooksPlugin,
+      'react-hooks': fixupPluginRules(reactHooksPlugin),
       formatjs: fixupPluginRules(formatjsPlugin),
       'testing-library': testingLibraryPlugin,
-      react: reactPlugin,
+      react: fixupPluginRules(reactPlugin),
     },
     rules: {
+      ...reactHooksPlugin.configs.recommended.rules,
       'formatjs/no-offset': 'error',
       'react/jsx-curly-brace-presence': 'error',
     },
