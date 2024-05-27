@@ -9,14 +9,6 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx'],
-    rules: {},
-  },
-  {
-    files: ['**/*.js', '**/*.jsx'],
-    rules: {},
-  },
-  {
     ignores: [
       'node_modules/**/*',
       'build/**/*',

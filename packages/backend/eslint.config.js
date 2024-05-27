@@ -8,16 +8,7 @@ module.exports = [
       'node_modules/**/*',
       'cdk.out/**/*',
       '__pypackages__/**/*',
-      'apps/finances/static/djstripe/jquery.modal.min.js',
+      'apps/finances/static/djstripe/*',
     ],
-  },
-
-  {
-    files: ['**/*.ts', '**/*.tsx'],
-    rules: {},
-  },
-  {
-    files: ['**/*.js', '**/*.jsx'],
-    rules: {},
   },
 ];

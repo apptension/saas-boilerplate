@@ -12,13 +12,4 @@ module.exports = [
       'htmlcov/**/*',
     ],
   },
-
-  {
-    files: ['**/*.ts', '**/*.tsx'],
-    rules: {},
-  },
-  {
-    files: ['**/*.js', '**/*.jsx'],
-    rules: {},
-  },
 ];
