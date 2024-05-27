@@ -643,14 +643,14 @@ _See code: [dist/commands/emails/test.js](https://github.com/apptension/saas-boi
 
 ## `saas emails preview`
 
-Runs emails preview. To be able to see assets, please run `saas up` first.
+Runs emails preview. To be able to see assets, please insert them inside of `webapp-emails/src/preview/static` folder.
 
 ```
 USAGE
   $ saas emails preview
 
 DESCRIPTION
-  Runs emails preview. Runs emails preview. To be able to see assets, please run `saas up` first.
+  Runs emails preview. To be able to see assets, please insert them inside of `webapp-emails/src/preview/static` folder.
 
 EXAMPLES
   $ saas emails preview
