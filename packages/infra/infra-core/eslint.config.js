@@ -12,9 +12,9 @@ module.exports = [
   },
   {
     ignores: [
-      '**/node_modules/**/*',
-      '**/cdk.out/**/*',
-      '**/src/lib/patterns/ecr-sync/**/*',
+      'node_modules/**/*',
+      'cdk.out/**/*',
+      'src/lib/patterns/ecr-sync/**/*',
     ],
   },
 ];

@@ -18,10 +18,10 @@ module.exports = [
   },
   {
     ignores: [
-      '**/node_modules/**/*',
-      '**/build/**/*',
+      'node_modules/**/*',
+      'build/**/*',
       '**/.docusaurus/**/*',
-      '**/cdk.out/**/*',
+      'cdk.out/**/*',
     ],
   },
 ];
