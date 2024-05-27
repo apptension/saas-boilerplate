@@ -605,14 +605,14 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2(esbuild@0.20.2)
       '@formatjs/cli':
-        specifier: ^6.2.4
-        version: 6.2.4
+        specifier: ^6.2.12
+        version: 6.2.12
       '@formatjs/intl-getcanonicallocales':
         specifier: ^2.3.0
         version: 2.3.0
       '@formatjs/intl-pluralrules':
-        specifier: ^5.2.10
-        version: 5.2.10
+        specifier: ^5.2.14
+        version: 5.2.14
       '@originjs/vite-plugin-commonjs':
         specifier: ^1.0.3
         version: 1.0.3
@@ -4202,13 +4202,34 @@ packages:
   '@floating-ui/utils@0.1.6':
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
 
-  '@formatjs/cli@6.2.4':
-    resolution: {integrity: sha512-g1o9O143F5TGB55skib3fKbyjifPa9YoDcX9L07hVJocRKngCcu4JhKViyUSN55KGcN2ttfBomM+wihN6wtBSQ==}
+  '@formatjs/cli@6.2.12':
+    resolution: {integrity: sha512-bt1NEgkeYN8N9zWcpsPu3fZ57vv+biA+NtIQBlyOZnCp1bcvh+vNTXvmwF4C5qxqDtCylpOIb3yi3Ktgp4v0JQ==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
-      vue: ^3.3.4
+      '@glimmer/env': ^0.1.7
+      '@glimmer/reference': ^0.91.1 || ^0.92.0
+      '@glimmer/syntax': ^0.92.0
+      '@glimmer/validator': ^0.92.0
+      '@vue/compiler-core': ^3.4.0
+      content-tag: ^2.0.1
+      ember-template-recast: ^6.1.4
+      vue: ^3.4.0
     peerDependenciesMeta:
+      '@glimmer/env':
+        optional: true
+      '@glimmer/reference':
+        optional: true
+      '@glimmer/syntax':
+        optional: true
+      '@glimmer/validator':
+        optional: true
+      '@vue/compiler-core':
+        optional: true
+      content-tag:
+        optional: true
+      ember-template-recast:
+        optional: true
       vue:
         optional: true
 
@@ -4248,8 +4269,8 @@ packages:
   '@formatjs/intl-localematcher@0.5.4':
     resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
 
-  '@formatjs/intl-pluralrules@5.2.10':
-    resolution: {integrity: sha512-wfJypePrbOByaZVPP1moLXHgS9LeAvi9coP95XZX7ySVrwdDGPnxz9Pw+o7J1o8AjLxjiqGrvAi74key5zzIjQ==}
+  '@formatjs/intl-pluralrules@5.2.14':
+    resolution: {integrity: sha512-l6Ev7aOGXJSh5EPDEqzsbyufdCCKXZk993QXRQebLsB0TXRhIyF4alqjdMEatLwIigK/Mka8kiVIOLeFP5Cj9Q==}
 
   '@formatjs/intl@2.9.9':
     resolution: {integrity: sha512-JI3CNgL2Zdg5lv9ncT2sYKqbAj2RGrCbdzaCckIxMPxn4QuHuOVvYUGmBAXVusBmfG/0sxLmMrnwnBioz+QKdA==}
@@ -22230,7 +22251,7 @@ snapshots:
   '@babel/preset-react@7.24.1(@babel/core@7.22.20)':
     dependencies:
       '@babel/core': 7.22.20
-      '@babel/helper-plugin-utils': 7.24.5
+      '@babel/helper-plugin-utils': 7.24.0
       '@babel/helper-validator-option': 7.23.5
       '@babel/plugin-transform-react-display-name': 7.24.1(@babel/core@7.22.20)
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.22.20)
@@ -22240,7 +22261,7 @@ snapshots:
   '@babel/preset-react@7.24.1(@babel/core@7.24.4)':
     dependencies:
       '@babel/core': 7.24.4
-      '@babel/helper-plugin-utils': 7.24.5
+      '@babel/helper-plugin-utils': 7.24.0
       '@babel/helper-validator-option': 7.23.5
       '@babel/plugin-transform-react-display-name': 7.24.1(@babel/core@7.24.4)
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.24.4)
@@ -23552,7 +23573,7 @@ snapshots:
 
   '@floating-ui/utils@0.1.6': {}
 
-  '@formatjs/cli@6.2.4': {}
+  '@formatjs/cli@6.2.12': {}
 
   '@formatjs/ecma402-abstract@1.18.0':
     dependencies:
@@ -23614,10 +23635,10 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  '@formatjs/intl-pluralrules@5.2.10':
+  '@formatjs/intl-pluralrules@5.2.14':
     dependencies:
-      '@formatjs/ecma402-abstract': 1.18.0
-      '@formatjs/intl-localematcher': 0.5.2
+      '@formatjs/ecma402-abstract': 2.0.0
+      '@formatjs/intl-localematcher': 0.5.4
       tslib: 2.6.2
 
   '@formatjs/intl@2.9.9(typescript@5.4.5)':
@@ -34367,7 +34388,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   is-map@2.0.3: {}
 
@@ -34484,7 +34505,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   is-weakmap@2.0.2: {}
 
@@ -35643,7 +35664,7 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   lower-case@2.0.2:
     dependencies:
@@ -39495,7 +39516,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   sprintf-js@1.0.3: {}
 
@@ -40009,7 +40030,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   symbol-observable@1.2.0: {}
 
@@ -40714,7 +40735,7 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.5.3
 
   upper-case@2.0.2:
     dependencies:
