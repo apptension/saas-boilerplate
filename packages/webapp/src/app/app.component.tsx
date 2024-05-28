@@ -44,53 +44,56 @@ export const App = () => {
       <Route element={<ValidRoutesProviders />}>
         <Route path={LANG_PREFIX}>
           <Route path={RoutesConfig.logout} element={<Logout />} />
-        </Route>
-        <Route path={LANG_PREFIX} element={<AnonymousRoute />}>
-          <Route path={RoutesConfig.signup} element={<Signup />} />
-          <Route path={RoutesConfig.login} element={<Login />} />
-          <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-        <Route path={TENANT_PREFIX} element={<AuthRoute />}>
-          <Route index element={<Home />} />
-          <Route element={<TenantAuthRoute allowedRoles={[TenantUserRole.ADMIN, TenantUserRole.OWNER]} />}>
-            <Route element={<TenantSettings />}>
-              <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
-              <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
-            </Route>
-            <Route element={<ActiveSubscriptionContext />}>
-              <Route element={<Subscriptions />}>
-                <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
-                <Route path={RoutesConfig.subscriptions.paymentMethods.index} element={<PaymentMethodContent />} />
-                <Route
-                  path={RoutesConfig.subscriptions.transactionHistory.index}
-                  element={<TransactionsHistoryContent />}
-                />
-              </Route>
-              <Route path={RoutesConfig.subscriptions.currentSubscription.edit} element={<EditSubscription />} />
-              <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
-              <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
-            </Route>
-            <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
-            <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
-          </Route>
-          <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
-          <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
-          <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
-          <Route path={RoutesConfig.documents} element={<Documents />} />
-          <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
-        </Route>
-        <Route path={LANG_PREFIX} element={<AuthRoute />}>
-          <Route path={RoutesConfig.profile} element={<Profile />} />
-          <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
-          <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-        <Route path={LANG_PREFIX} element={<AuthRoute allowedRoles={Role.ADMIN} />}>
-          <Route path={RoutesConfig.admin} element={<Admin />} />
-        </Route>
 
-        <Route path={LANG_PREFIX}>
+          <Route element={<AnonymousRoute />}>
+            <Route path={RoutesConfig.signup} element={<Signup />} />
+            <Route path={RoutesConfig.login} element={<Login />} />
+            <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+
+          <Route path={TENANT_PREFIX} element={<AuthRoute />}>
+            <Route index element={<Home />} />
+            <Route element={<TenantAuthRoute allowedRoles={[TenantUserRole.ADMIN, TenantUserRole.OWNER]} />}>
+              <Route element={<TenantSettings />}>
+                <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
+                <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+              </Route>
+              <Route element={<ActiveSubscriptionContext />}>
+                <Route element={<Subscriptions />}>
+                  <Route index path={RoutesConfig.subscriptions.index} element={<CurrentSubscriptionContent />} />
+                  <Route path={RoutesConfig.subscriptions.paymentMethods.index} element={<PaymentMethodContent />} />
+                  <Route
+                    path={RoutesConfig.subscriptions.transactionHistory.index}
+                    element={<TransactionsHistoryContent />}
+                  />
+                </Route>
+                <Route path={RoutesConfig.subscriptions.currentSubscription.edit} element={<EditSubscription />} />
+                <Route path={RoutesConfig.subscriptions.currentSubscription.cancel} element={<CancelSubscription />} />
+                <Route path={RoutesConfig.subscriptions.paymentMethods.edit} element={<EditPaymentMethod />} />
+              </Route>
+              <Route path={RoutesConfig.finances.paymentConfirm} element={<PaymentConfirm />} />
+              <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
+            </Route>
+            <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
+            <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
+            <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
+            <Route path={RoutesConfig.documents} element={<Documents />} />
+            <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
+          </Route>
+
+          <Route element={<AuthRoute />}>
+            <Route path={RoutesConfig.profile} element={<Profile />} />
+            <Route path={RoutesConfig.addTenant} element={<AddTenantForm />} />
+            <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+          
+          <Route element={<AuthRoute allowedRoles={Role.ADMIN} />}>
+            <Route path={RoutesConfig.admin} element={<Admin />} />
+          </Route>
+
+
           <Route path={RoutesConfig.confirmEmail} element={<ConfirmEmail />} />
           <Route path={RoutesConfig.privacyPolicy} element={<PrivacyPolicy />} />
           <Route path={RoutesConfig.termsAndConditions} element={<TermsAndConditions />} />
