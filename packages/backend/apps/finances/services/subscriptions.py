@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 from djstripe import models as djstripe_models, enums as djstripe_enums
 
@@ -66,7 +68,7 @@ def get_valid_schedule_phases(schedule: djstripe_models.SubscriptionSchedule):
     return [
         phase
         for phase in schedule.phases
-        if timezone.datetime.fromtimestamp(phase['end_date'], tz=timezone.utc) > timezone.now()
+        if timezone.datetime.fromtimestamp(phase['end_date'], tz=datetime.timezone.utc) > timezone.now()
     ]
 
 
@@ -89,5 +91,5 @@ def is_current_schedule_phase_trialing(schedule: djstripe_models.SubscriptionSch
     if not current_phase['trial_end']:
         return False
 
-    trial_end = timezone.datetime.fromtimestamp(current_phase['trial_end'], tz=timezone.utc)
+    trial_end = timezone.datetime.fromtimestamp(current_phase['trial_end'], tz=datetime.timezone.utc)
     return trial_end > timezone.now()

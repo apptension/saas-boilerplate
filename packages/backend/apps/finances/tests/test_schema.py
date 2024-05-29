@@ -175,6 +175,7 @@ class TestActiveSubscriptionQuery:
         executed = graphene_client.query(
             self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
         )
+        print(executed)
 
         assert executed['data']['activeSubscription']['phases'][0]['trialEnd']
         assert executed['data']['activeSubscription']['subscription']['trialStart']
