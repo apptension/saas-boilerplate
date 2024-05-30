@@ -7,7 +7,7 @@ import { RoutesConfig as GenerativeAIRoutesConfig } from '@sb/webapp-generative-
 import { RoutesConfig as TenantsRoutesConfig } from '@sb/webapp-tenants/config/routes';
 
 export const LANG_PREFIX = `/:lang?/*`;
-export const TENANT_PREFIX = `/:lang?/:tenantId?/*`;
+export const TENANT_PREFIX = `:tenantId?/*`;
 
 export const RoutesConfig = {
   ...CoreRoutesConfig,
