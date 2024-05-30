@@ -1,5 +1,6 @@
 import { MockedResponse } from '@apollo/client/testing';
-import { act } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
+import { act } from 'react';
 
 import { fillPaginationItemListQuery, paginationTestItemFactory } from '../../../tests/factories';
 import { renderHook } from '../../../tests/utils/rendering';
@@ -25,10 +26,9 @@ describe('usePaginationQuery: Hook', () => {
       },
       { first: 8 }
     );
+    const useEffectCleanMock = initMockedResponse;
 
-    const mocks = [initMockedResponse, mock].filter(
-      (x): x is MockedResponse<Record<string, any>, Record<string, any>> => x !== undefined
-    );
+    const mocks = mock ? [initMockedResponse, mock, useEffectCleanMock] : [initMockedResponse, useEffectCleanMock];
 
     const { result, waitForApolloMocks } = renderHook(
       () =>
@@ -61,6 +61,7 @@ describe('usePaginationQuery: Hook', () => {
     expect(firstItem?.id).toBe('item-1');
 
     expect(data?.allNotifications?.edges.length).toBe(initDataLength);
+    await waitForApolloMocks();
   });
 
   it('should fetch next page', async () => {
@@ -87,9 +88,9 @@ describe('usePaginationQuery: Hook', () => {
       result.current.loadNext();
     });
 
-    await waitForApolloMocks();
+    await waitForApolloMocks(1);
 
-    expect(result.current.data?.allNotifications?.edges.length).toBe(nextDataLength);
+    await waitFor(() => expect(result.current.data?.allNotifications?.edges.length).toBe(nextDataLength));
   });
 
   it('should fetch previous page', async () => {
@@ -110,7 +111,7 @@ describe('usePaginationQuery: Hook', () => {
       result.current.loadPrevious();
     });
 
-    await waitForApolloMocks();
+    await waitForApolloMocks(1);
 
     expect(result.current.data?.allNotifications?.edges.length).toBe(initDataLength);
   });
