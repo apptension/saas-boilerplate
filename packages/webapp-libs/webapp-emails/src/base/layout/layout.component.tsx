@@ -1,7 +1,9 @@
+import { Body, Container, Font, Head, Heading, Html, Section, Tailwind, Text } from '@react-email/components';
+import { ENV } from '@sb/webapp-core/config/env';
+import { fontFamily, fontWeight } from '@sb/webapp-core/theme';
 import { ReactNode } from 'react';
 
 import { Image } from '../image';
-import { Container, Table, Td, Text, Title, Tr } from './layout.styles';
 
 export type LayoutProps = {
   title: ReactNode;
@@ -9,27 +11,59 @@ export type LayoutProps = {
   children?: ReactNode;
 };
 
-export const Layout = ({ title, text, children }: LayoutProps) => {
+const baseURL = ENV.EMAIL_ASSETS_URL || `/static`;
+
+export default function Layout({ title, text, children }: LayoutProps) {
   return (
-    <Container>
-      <Table>
-        <Tr>
-          <Td>
-            <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.png" />
-          </Td>
-        </Tr>
-        <Tr>
-          <Title>{title}</Title>
-        </Tr>
+    <Html>
+      <Head>
+        <Font
+          fontFamily={fontFamily.primary}
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${baseURL}/Inter-Regular.woff`,
+            format: 'woff',
+          }}
+          fontWeight={fontWeight.regular}
+          fontStyle="normal"
+        />
 
-        <Tr>
-          <Text>{text}</Text>
-        </Tr>
+        <Font
+          fontFamily={fontFamily.primary}
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${baseURL}/Inter-SemiBold.woff`,
+            format: 'woff',
+          }}
+          fontWeight={fontWeight.bold}
+          fontStyle="normal"
+        />
+      </Head>
+      <Tailwind
+        config={{
+          theme: {
+            extend: {
+              fontFamily: {
+                custom: [fontFamily.primary],
+              },
+            },
+          },
+        }}
+      >
+        <Body className="bg-white my-auto mx-auto font-sans p-8">
+          <Container className="border border-solid border-[#eaeaea] rounded mx-auto max-w-[548px] p-10">
+            <Image src="logo.png" width={256} className="mt-0 mx-auto" />
 
-        <Tr>
-          <Td>{children}</Td>
-        </Tr>
-      </Table>
-    </Container>
+            <Heading className="text-black text-[24px] text-center p-0 my-[30px] mx-0 font-custom font-bold">
+              {title}
+            </Heading>
+
+            <Text className="text-black text-[14px] leading-[24px] text-center font-custom">{text}</Text>
+
+            <Section className="text-center">{children}</Section>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
   );
-};
+}

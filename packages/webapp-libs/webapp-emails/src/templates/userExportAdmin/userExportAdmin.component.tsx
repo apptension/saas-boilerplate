@@ -1,3 +1,4 @@
+import { Column, Container, Hr, Row, Section, Text } from '@react-email/components';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Layout } from '../../base';
@@ -19,20 +20,24 @@ export const Template = ({ data }: UserExportAdminProps) => {
         />
       }
     >
-      <table style={{ width: '100%' }}>
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.email}>
-              <td>{row.email}</td>
-              <td>
+      <Container className="w-screen text-left">
+        {data.map((row, index) => (
+          <Section>
+            <Row key={row.email} className="">
+              <Column className="w-full">
+                <Text className="font-custom">{row.email}</Text>
+              </Column>
+
+              <Column>
                 <Button linkTo={row.export_url}>
                   <FormattedMessage defaultMessage="Download" id="Email / User Export Admin / Download" />
                 </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </Column>
+            </Row>
+            {index + 1 < data.length && <Hr className="m-0" />}
+          </Section>
+        ))}
+      </Container>
     </Layout>
   );
 };

@@ -1,9 +1,9 @@
+import { Text } from '@react-email/components';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
 import { ExportedUserDataResult } from '../userExportAdmin';
-import { Text } from './userExport.styles';
 
 export type UserExportProps = EmailComponentProps & {
   data: ExportedUserDataResult;
@@ -14,7 +14,7 @@ export const Template = ({ data }: UserExportProps) => {
     <Layout
       title={<FormattedMessage defaultMessage="Exported user data" id="Email / User Export / Title" />}
       text={
-        <Text>
+        <Text className="font-custom">
           <FormattedMessage
             defaultMessage="Dear User,{br}{br}
   We have received your request to export your personal data, in accordance with GDPR regulations. We have processed your request and your data has been compiled into a package that is now available for download.
@@ -32,7 +32,7 @@ export const Template = ({ data }: UserExportProps) => {
         <FormattedMessage defaultMessage="Download" id="Email /  User Export / Download" />
       </Button>
 
-      <Text>
+      <Text className="font-custom text-left">
         <FormattedMessage
           defaultMessage="{br}If you have any questions or concerns about your data, please do not hesitate to contact us.
 {br}{br}

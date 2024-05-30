@@ -1,12 +1,13 @@
+import { Img } from '@react-email/components';
 import { ENV } from '@sb/webapp-core/config/env';
-import { HTMLAttributes } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 
-export type ImageProps = HTMLAttributes<HTMLImageElement> & {
-  src: string;
-};
+export type ImageProps = ComponentPropsWithoutRef<'img'>;
+
+const baseURL = ENV.EMAIL_ASSETS_URL || `/static`;
 
 export const Image = (props: ImageProps) => {
-  return <img alt="" {...props} src={`${ENV.EMAIL_ASSETS_URL}/${props.src}`} />;
+  return <Img alt="" {...props} src={`${baseURL}/${props.src}`} />;
 };
 
 Image.defaultProps = {

@@ -6,13 +6,18 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit --project tsconfig.lib.json"
+    "type-check": "tsc --noEmit --project tsconfig.lib.json",
+    "preview": "email dev --dir src/preview  -p 1081 "
   },
   "dependencies": {
+    "@react-email/components": "0.0.18",
+    "@react-email/font": "0.0.6",
+    "@react-email/tailwind": "0.0.17",
     "@sb/webapp-api-client": "workspace:*",
     "@sb/webapp-core": "workspace:*",
     "@sb/webapp-finances": "workspace:*",
-    "juice": "^8.1.0"
+    "juice": "^8.1.0",
+    "react-email": "2.1.3"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
