@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: '<%= projectName %>',
   preset: '<%= offsetFromRoot %>jest.preset.js',

@@ -48,7 +48,6 @@ export async function loadChamberEnv(
   count: ${Object.keys(parsed).length}\n`,
   );
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   dotenv.populate(process.env, parsed, { override: true });
 }

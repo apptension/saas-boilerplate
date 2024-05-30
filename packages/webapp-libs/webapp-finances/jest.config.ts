@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-finances',
   preset: '../../../jest.preset.js',

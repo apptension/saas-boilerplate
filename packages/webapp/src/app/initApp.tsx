@@ -12,7 +12,6 @@ const render = () => {
   const App = lazy(() => import('./app.component'));
 
   const container = document.getElementById('root');
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const root = createRoot(container!);
 
   root.render(

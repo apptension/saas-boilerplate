@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'webapp-generative-ai',
   preset: '../../../jest.preset.js',
