@@ -166,5 +166,7 @@ a.card, [data-theme='dark'] a.card {
 }
 
 aside > div:first-child  {
-    height: unset;
+  height: unset;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
