@@ -1,13 +1,8 @@
 {
   "ignoreFiles": ["src/shared/components/**/index.ts", "src/shared/hooks/**/index.ts"],
-  "processors": ["stylelint-processor-styled-components"],
-  "extends": [
-    "stylelint-config-recommended-scss",
-    "stylelint-config-styled-components"
-  ],
-  "customSyntax": "postcss-scss",
+  "extends": ["stylelint-config-standard"],
+  "customSyntax": "postcss-styled-syntax",
   "rules": {
-    "no-extra-semicolons": null,
     "property-no-vendor-prefix": [
       true,
       {
