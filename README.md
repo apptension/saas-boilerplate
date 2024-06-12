@@ -75,7 +75,7 @@ The full list with the descriptions can be found in the [features documentation]
 
 #### Optional
 
-- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 -v`) and [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
+- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 --version`) and [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
   `pdm --version`)
   - You need this one if you want to run `pdm install` command in `packages/backend` or `packages/workers` outside
     docker container
