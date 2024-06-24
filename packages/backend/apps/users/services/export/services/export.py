@@ -3,12 +3,13 @@ import io
 import json
 import zipfile
 from typing import Union
+from django.conf import settings
 
 import boto3
 from ..protocols import UserDataExportable, UserFilesExportable
 from ..constants import ExportUserArchiveRootPaths
 from ....models import User
-
+from utils import hashid
 
 
 class CrudDemoItemDataExport(UserDataExportable):
@@ -16,13 +17,21 @@ class CrudDemoItemDataExport(UserDataExportable):
 
     @classmethod
     def export(cls, user: User) -> list[str]:
-        return [cls.schema_class.from_orm(item).json() for item in user.cruddemoitem_set]
+        return [
+            json.dumps(
+                {
+                    "id": hashid.encode(item.id),
+                    "name": item.name,
+                }
+            )
+            for item in user.cruddemoitem_set.all()
+        ]
 
 
 class DocumentDemoItemFileExport(UserFilesExportable):
     @classmethod
     def export(cls, user: User) -> list[str]:
-        return [document.file for document in user.documents]
+        return [document.file.name for document in user.documents.all()]
 
 
 class UserDataExport(UserDataExportable):
@@ -31,7 +40,21 @@ class UserDataExport(UserDataExportable):
 
     @classmethod
     def export(cls, user: User) -> Union[str, list[str]]:
-        return cls.schema_class.from_orm(user).json()
+        user_data = {
+            "id": hashid.encode(user.id),
+            "profile": {
+                "id": user.profile.id,
+                "first_name": user.profile.first_name,
+                "last_name": user.profile.last_name,
+            },
+            "email": user.email,
+            "is_superuser": user.is_superuser,
+            "is_active": user.is_active,
+            "is_confirmed": user.is_confirmed,
+            "created": user.created.isoformat(),
+        }
+
+        return json.dumps(user_data)
 
 
 class ExportUserArchive:
@@ -80,7 +103,7 @@ class ExportUserArchive:
 
             for file_path in user_files:
                 with io.BytesIO() as buffer:
-                    s3.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, file_path, buffer)
+                    s3.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, file_path.name, buffer)
                     zf.writestr(f"{self._user_id}/{file_path}", buffer.getvalue())
 
         return archive_filename

@@ -37,20 +37,6 @@ functions:
     memorySize: 128
     environment: ${self:custom.conf.ExecuteScheduledTask.environment}
 
-  ExportUsers:
-    handler: userauth.handlers.user_data_export
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.ExportUsers.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - eventBridge:
-          eventBus: "${self:custom.conf.eventBusArn}"
-          pattern:
-            source:
-              - backend.export_user
-
   SynchronizeContentfulContent:
     handler: content.handlers.synchronize_content
     runtime: python3.11

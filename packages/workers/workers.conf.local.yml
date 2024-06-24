@@ -20,11 +20,6 @@ SynchronizeContentfulContent:
 WebSocketsHandler:
   environment: [ ]
 
-ExportUsers:
-  environment:
-    AWS_ENDPOINT_URL: "http://localstack:4566"
-    AWS_EXPORTS_STORAGE_BUCKET_NAME: "exports-bucket"
-
 vpc: { }
 
 websocketApiId: { Fn::ImportValue: "${self:custom.projectEnvName}-webSocketApiId" }

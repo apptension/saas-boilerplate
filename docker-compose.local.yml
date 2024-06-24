@@ -47,6 +47,10 @@ services:
       - /app/__pypackages__
     env_file:
       - ./packages/backend/.env
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=eu-west-1
 
   workers:
     volumes:

@@ -59,6 +59,18 @@ export class BackendCiConfig extends ServiceCiConfig {
         props,
       ),
     );
+
+    const celeryDeployProject = this.createCeleryWorkersDeployProject(props);
+    props.deployStage.addAction(
+      this.createDeployAction(
+        'celery-workers',
+        {
+          project: celeryDeployProject,
+          runOrder: this.getRunOrder(props.deployStage, 2),
+        },
+        props,
+      ),
+    );
   }
 
   private createBuildAction(
@@ -279,6 +291,71 @@ export class BackendCiConfig extends ServiceCiConfig {
           'logs:*',
           'route53:*',
           'stepfunctions:*',
+          's3:*',
+        ],
+        resources: ['*'],
+      }),
+    );
+
+    return project;
+  }
+
+  private createCeleryWorkersDeployProject(props: BackendCiConfigProps) {
+    const stack = Stack.of(this);
+    const project = new codebuild.Project(this, 'CeleryWorkersDeployProject', {
+      projectName: `${props.envSettings.projectEnvName}-deploy-celery-workers`,
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          pre_build: {
+            commands: this.getWorkspaceSetupCommands(
+              PnpmWorkspaceFilters.BACKEND,
+            ),
+          },
+          build: { commands: ['pnpm saas backend deploy celery'] },
+        },
+        cache: {
+          paths: [...this.defaultCachePaths],
+        },
+      }),
+      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
+      environmentVariables: { ...this.defaultEnvVariables },
+      cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
+    });
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['cloudformation:*'],
+        resources: [
+          `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/CDKToolkit/*`,
+          `arn:aws:cloudformation:${stack.region}:${stack.account}:stack/${props.envSettings.projectEnvName}-ApiStack/*`,
+        ],
+      }),
+    );
+
+    GlobalECR.getPublicECRIamPolicyStatements().forEach((statement) =>
+      project.addToRolePolicy(statement),
+    );
+
+    BootstrapStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings,
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    EnvMainStack.getIamPolicyStatementsForEnvParameters(
+      props.envSettings,
+    ).forEach((statement) => project.addToRolePolicy(statement));
+
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'iam:*',
+          'sts:*',
+          'ec2:*',
+          'ecs:*',
+          'application-autoscaling:*',
+          'logs:*',
           's3:*',
         ],
         resources: ['*'],

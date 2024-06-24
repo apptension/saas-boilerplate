@@ -87,5 +87,17 @@ export function createBackendTaskRole(
     }),
   );
 
+  taskRole.addToPolicy(
+    new iam.PolicyStatement({
+      actions: [
+        'ses:SendEmail',
+        'ses:SendRawEmail',
+        'ses:GetAccount',
+        'ses:GetSendQuota',
+      ],
+      resources: ['*'],
+    }),
+  );
+
   return taskRole;
 }

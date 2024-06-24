@@ -1,11 +1,18 @@
-from common.emails import get_send_email_event
-from userauth.constants import UserEmails
-from userauth.types import ExportedUserData
+from common import emails
+from . import email_serializers
+from . import constants
 
 
-def get_user_export_email_event(to: str, data: ExportedUserData):
-    return get_send_email_event(detail_type=UserEmails.USER_EXPORT.value, data={"to": to, "data": data})
+class DataExportEmail(emails.Email):
+    def __init__(self, to: str, data: dict):
+        super().__init__(to=to, data=data)
 
 
-def get_admin_export_email_event(to: str, data: list[ExportedUserData]):
-    return get_send_email_event(detail_type=UserEmails.USER_EXPORT_ADMIN.value, data={"to": to, "data": data})
+class UserDataExportEmail(DataExportEmail):
+    name = constants.UserEmails.USER_EXPORT
+    serializer_class = email_serializers.UserDataExportEmailSerializer
+
+
+class AdminDataExportEmail(DataExportEmail):
+    name = constants.UserEmails.USER_EXPORT_ADMIN
+    serializer_class = email_serializers.AdminDataExportEmailSerializer
