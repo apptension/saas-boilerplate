@@ -1,7 +1,7 @@
 import importlib
 
 from django.conf import settings
-from celery import shared_task, states
+from celery import shared_task
 from .services.export.services import user as user_services
 
 module_name, package = settings.LAMBDA_TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
