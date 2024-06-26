@@ -41,11 +41,13 @@ RUN chmod +x /app/scripts/runtime/*.sh
 
 FROM backend_build AS static_files
 ENV HASHID_FIELD_SALT='' \
+    HASHID_SALT='' \
     DJANGO_PARENT_HOST='' \
     DJANGO_SECRET_KEY='build' \
     DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
     REDIS_CONNECTION=redis://redis:6379 \
     WORKERS_EVENT_BUS_NAME='' \
+    AWS_EXPORTS_STORAGE_BUCKET_NAME='' \
     PYTHONPATH=/pkgs/__pypackages__/3.11/lib
 
 RUN ./scripts/runtime/build_static.sh

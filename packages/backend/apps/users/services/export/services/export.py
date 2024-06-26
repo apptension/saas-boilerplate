@@ -3,12 +3,14 @@ import io
 import json
 import zipfile
 from typing import Union
+from django.core import serializers
+from django.conf import settings
 
 import boto3
 from ..protocols import UserDataExportable, UserFilesExportable
 from ..constants import ExportUserArchiveRootPaths
 from ....models import User
-
+from utils import hashid
 
 
 class CrudDemoItemDataExport(UserDataExportable):
@@ -16,13 +18,13 @@ class CrudDemoItemDataExport(UserDataExportable):
 
     @classmethod
     def export(cls, user: User) -> list[str]:
-        return [cls.schema_class.from_orm(item).json() for item in user.cruddemoitem_set]
+        return serializers.serialize('json', user.cruddemoitem_set.all())
 
 
 class DocumentDemoItemFileExport(UserFilesExportable):
     @classmethod
     def export(cls, user: User) -> list[str]:
-        return [document.file for document in user.documents]
+        return [document.file.name for document in user.documents.all()]
 
 
 class UserDataExport(UserDataExportable):
@@ -31,7 +33,7 @@ class UserDataExport(UserDataExportable):
 
     @classmethod
     def export(cls, user: User) -> Union[str, list[str]]:
-        return cls.schema_class.from_orm(user).json()
+        return serializers.serialize('json', [user])
 
 
 class ExportUserArchive:

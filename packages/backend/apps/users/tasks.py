@@ -14,5 +14,5 @@ class ExportUserData(LambdaTask):
 
 
 @shared_task(bind=True)
-def export_user_data(user_ids, admin_email):
+def export_user_data(self, user_ids, admin_email):
     user_services.process_user_data_export(user_ids=user_ids, admin_email=admin_email)
