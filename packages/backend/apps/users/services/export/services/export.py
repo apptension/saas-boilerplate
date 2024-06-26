@@ -18,10 +18,12 @@ class CrudDemoItemDataExport(UserDataExportable):
     @classmethod
     def export(cls, user: User) -> list[str]:
         return [
-            json.dumps({
-                "id": hashid.encode(item.id),
-                "name": item.name,
-            })
+            json.dumps(
+                {
+                    "id": hashid.encode(item.id),
+                    "name": item.name,
+                }
+            )
             for item in user.cruddemoitem_set.all()
         ]
 

@@ -15,4 +15,3 @@ class UserType(OrmBase):
     is_active: bool
     is_confirmed: bool
     created: datetime.datetime
-

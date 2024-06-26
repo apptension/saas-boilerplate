@@ -19,10 +19,7 @@ class CrudDemoItemFactory(factory.django.DjangoModelFactory):
 class DocumentDemoItemFactory(factory.django.DjangoModelFactory):
     created_by = factory.SubFactory(user_factories.UserFactory)
     file = factory.LazyAttribute(
-        lambda _: ContentFile(
-            factory.django.ImageField()._make_data({'width': 1024, 'height': 768}),
-            name='test.jpg'
-        )
+        lambda _: ContentFile(factory.django.ImageField()._make_data({'width': 1024, 'height': 768}), name='test.jpg')
     )
 
     class Meta:
