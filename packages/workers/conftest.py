@@ -9,10 +9,8 @@ import settings
 from dao.db import connection
 from dao.db.models import Base
 from dao.db.session import db_session as db_session_ctx
-from userauth import factories as ua_factories
 from demo import factories as demo_factories
 
-register(ua_factories.UserFactory)
 register(demo_factories.CrudDemoItemFactory)
 register(demo_factories.DocumentDemoItemFactory)
 
