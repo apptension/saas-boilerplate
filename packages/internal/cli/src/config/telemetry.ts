@@ -28,7 +28,7 @@ export const provider = new NodeTracerProvider({
       [SemanticResourceAttributes.OS_TYPE]: os.type(),
       [SemanticResourceAttributes.OS_DESCRIPTION]: os.release(),
       [SemanticResourceAttributes.OS_VERSION]: os.version(),
-    })
+    }),
   ),
 });
 

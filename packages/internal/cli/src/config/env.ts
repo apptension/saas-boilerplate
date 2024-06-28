@@ -17,9 +17,9 @@ export const ENV_STAGE_LOCAL = 'local';
 export const IS_CI = Boolean(process.env.CI ?? false);
 
 export const SB_TELEMETRY_DISABLED =
-  IS_CI || (Boolean(process.env.SB_TELEMETRY_DISABLED) ?? false);
+  IS_CI || process.env.SB_TELEMETRY_DISABLED == '1';
 export const SB_TELEMETRY_DEBUG =
-  IS_CI || (Boolean(process.env.SB_TELEMETRY_DEBUG) ?? false);
+  IS_CI || process.env.SB_TELEMETRY_DEBUG == '1';
 
 export const SB_TELEMETRY_URL = process.env.SB_TELEMETRY_URL ?? sbTelemetry[0];
 
