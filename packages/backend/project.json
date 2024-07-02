@@ -10,6 +10,21 @@
         "cwd": "packages/backend"
       }
     },
+    "build-email-renderer": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["node scripts/copyEmailRenderer.js"],
+        "parallel": false
+      },
+      "dependsOn": [
+        {
+          "projects": ["webapp-emails"],
+          "target": "build"
+        }
+      ]
+    },
     "compose-build-image": {
       "executor": "nx:run-commands",
       "options": {
@@ -17,7 +32,7 @@
         "commands": ["docker-compose build backend"],
         "parallel": false
       },
-      "dependsOn": ["setup"]
+      "dependsOn": ["setup", "build-email-renderer"]
     },
     "test": {
       "executor": "nx:run-commands",
@@ -43,7 +58,8 @@
         "color": true,
         "commands": ["node scripts/build.js"],
         "parallel": false
-      }
+      },
+      "dependsOn": ["build-email-renderer"]
     },
     "build-docs": {
       "executor": "nx:run-commands",
@@ -80,6 +96,18 @@
         "parallel": false
       }
     },
+    "deploy:celery": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm cdk deploy *CeleryStack",
+          "pnpm nx run tools:upload-service-version celery"
+        ],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -88,17 +116,36 @@
         "commands": [
           "pnpm cdk deploy *MigrationsStack",
           "pnpm nx run trigger-migrations-job",
-          "pnpm cdk deploy *ApiStack"
+          "pnpm cdk deploy *ApiStack",
+          "pnpm cdk deploy *CeleryStack"
         ],
         "parallel": false
       }
     },
-    "diff": {
+    "diff:api": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/backend",
         "color": true,
-        "commands": ["cdk diff *ApiStack", "cdk diff *MigrationsStack"],
+        "commands": ["cdk diff *ApiStack"],
+        "parallel": false
+      }
+    },
+    "diff:migrations": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["cdk diff *MigrationsStack"],
+        "parallel": false
+      }
+    },
+    "diff:celery": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["cdk diff *CeleryStack"],
         "parallel": false
       }
     },

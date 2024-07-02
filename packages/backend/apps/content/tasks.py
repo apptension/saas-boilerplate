@@ -5,11 +5,11 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-module_name, package = settings.TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
-Task = getattr(importlib.import_module(module_name), package)
+module_name, package = settings.LAMBDA_TASKS_BASE_HANDLER.rsplit(".", maxsplit=1)
+LambdaTask = getattr(importlib.import_module(module_name), package)
 
 
-class ContentfulSync(Task):
+class ContentfulSync(LambdaTask):
     def __init__(self, name: str):
         super().__init__(name=name, source='backend.contentfulSync')
 

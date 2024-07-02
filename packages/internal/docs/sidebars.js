@@ -517,7 +517,9 @@ module.exports = {
             slug: '/working-with-sb/async-workers',
           },
           items: [
-            'working-with-sb/async-workers/run-async-job',
+            'working-with-sb/async-workers/run-async-job-celery',
+            'working-with-sb/async-workers/debug-async-job-celery',
+            'working-with-sb/async-workers/run-async-job-lambda',
             'working-with-sb/async-workers/create-workers-module',
           ],
         },

@@ -23,7 +23,7 @@
     "@sb/tools": "workspace:*",
     "@sb/webapp-emails": "workspace:*",
     "serverless": "^3.38.0",
-    "serverless-esbuild": "^1.48.0",
+    "serverless-esbuild": "^1.52.1",
     "serverless-localstack": "^1.1.2",
     "serverless-step-functions": "^3.18.0"
   },

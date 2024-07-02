@@ -15,11 +15,14 @@ ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off
 
 
-RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq \
+RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq curl \
   && update-ca-certificates \
   && pip install --upgrade pip \
   && pip install --no-cache-dir setuptools pdm~=2.5.2 awscli==1.32.24
 
+
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get --no-install-recommends install -y nodejs
 
 COPY --from=chamber /chamber /bin/chamber
 
@@ -38,11 +41,13 @@ RUN chmod +x /app/scripts/runtime/*.sh
 
 FROM backend_build AS static_files
 ENV HASHID_FIELD_SALT='' \
+    HASHID_SALT='' \
     DJANGO_PARENT_HOST='' \
     DJANGO_SECRET_KEY='build' \
     DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
     REDIS_CONNECTION=redis://redis:6379 \
     WORKERS_EVENT_BUS_NAME='' \
+    AWS_EXPORTS_STORAGE_BUCKET_NAME='' \
     PYTHONPATH=/pkgs/__pypackages__/3.11/lib
 
 RUN ./scripts/runtime/build_static.sh

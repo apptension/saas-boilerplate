@@ -21,6 +21,7 @@ services:
     build:
       context: ./packages/backend
       target: backend
+    image: "${PROJECT_NAME}/backend"
     command: ["./scripts/runtime/run_local.sh"]
     ports:
       - "5001:5001"
@@ -41,6 +42,22 @@ services:
       - AWS_DEFAULT_REGION=eu-west-1
     stdin_open: true
     tty: true
+
+  celery_beat:
+    image: '${PROJECT_NAME}/backend'
+    command: ["./scripts/runtime/run_celery_beat.sh"]
+    restart: always
+    depends_on:
+      backend:
+        condition: service_started
+
+  celery_default:
+    image: '${PROJECT_NAME}/backend'
+    command: ["./scripts/runtime/run_celery_worker_default.sh"]
+    restart: always
+    depends_on:
+      backend:
+        condition: service_started
 
   workers:
     build:

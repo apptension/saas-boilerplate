@@ -1,5 +1,4 @@
 import datetime
-from typing import TypedDict
 
 from common.types import OrmBase
 
@@ -16,8 +15,3 @@ class UserType(OrmBase):
     is_active: bool
     is_confirmed: bool
     created: datetime.datetime
-
-
-class ExportedUserData(TypedDict):
-    email: str
-    export_url: str

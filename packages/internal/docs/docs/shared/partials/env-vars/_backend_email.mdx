@@ -1,0 +1,21 @@
+##### Backend vars required for sending e-mail messages
+
+If you want e-mail sending feature to work you need to at least set following variables:
+
+| Name                 | Description                                            | Example |
+| -------------------- | ------------------------------------------------------ | ------- |
+| `EMAIL_FROM_ADDRESS` | An e-mail address visible to end-users as "from" field | `from@example.org`  |
+
+##### Optional vars for sending e-mail messages
+
+You can set following variables to further configure e-mail sending feature:
+
+| Name                    | Description                                                                                                                                                               | Example                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `VITE_EMAIL_ASSETS_URL` | Absolute URL to email assets. By default it's `${SB_DOMAIN_WEB_APP}/email-assets`                                                                                         | `https://app.demo.saas.apptoku.com/email-assets` |
+| `EMAIL_BACKEND`         | The backend to use for sending emails. For the list of available backends see [Email backends](https://docs.djangoproject.com/en/5.0/topics/email/#topic-email-backends). | `django_ses.SESBackend`                          |
+| `EMAIL_HOST`            | Address of smtp host (make sure you set `EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend` to use                                                                | `mailcatcher`                                    |
+| `EMAIL_PORT`            | Port of smtp host                                                                                                                                                         | `1025`                                           |
+| `EMAIL_HOST_USER`       | Username used for smtp authentication                                                                                                                                     | `user`                                           |
+| `EMAIL_HOST_PASSWORD`   | Password used for smtp authentication                                                                                                                                     | `password`                                       |
+| `EMAIL_REPLY_ADDRESS`   | An e-mail address used when user replies to an e-mail dispatched by the system                                                                                            | `smtp`                                           |

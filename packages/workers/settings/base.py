@@ -8,7 +8,6 @@ env = Env()
 AWS_ENDPOINT_URL = env('AWS_ENDPOINT_URL', None)
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', None)
 SMTP_HOST = env('SMTP_HOST', None)
-EMAIL_ENABLED = env.bool('EMAIL_ENABLED', default=True)
 
 secrets_manager_client = boto3.client('secretsmanager', endpoint_url=AWS_ENDPOINT_URL)
 
@@ -36,8 +35,6 @@ else:
     if DB_CONNECTION and DB_PROXY_ENDPOINT:
         DB_CONNECTION["host"] = DB_PROXY_ENDPOINT
         DB_CONNECTION["engine"] = "postgresql"
-
-FROM_EMAIL = env('FROM_EMAIL', None)
 
 WEB_APP_URL = env('WEB_APP_URL', None)
 
