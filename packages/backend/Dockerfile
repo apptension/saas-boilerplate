@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates j
   && pip install --no-cache-dir setuptools pdm~=2.5.2 awscli==1.32.24
 
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get --no-install-recommends install -y nodejs
 
 COPY --from=chamber /chamber /bin/chamber
