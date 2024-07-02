@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/apptension/saas-boilerplate/compare/3.0.0...3.0.1) (2024-07-02)
+
+### Features
+
+- add redirection to previous page after login ([#560](https://github.com/apptension/saas-boilerplate/issues/560)) ([423afdc](https://github.com/apptension/saas-boilerplate/commit/423afdc385e46e82eb05fcd50f630b4af67e4c53))
+
+### Bug Fixes
+
+- [#443](https://github.com/apptension/saas-boilerplate/issues/443) Fix pagination issues ([#577](https://github.com/apptension/saas-boilerplate/issues/577)) ([e1963fd](https://github.com/apptension/saas-boilerplate/commit/e1963fd1eed89176065ee8e420e9509f30aa957c))
+- [#587](https://github.com/apptension/saas-boilerplate/issues/587) Fix CLI telemetry opt-out ([#589](https://github.com/apptension/saas-boilerplate/issues/589)) ([29675d9](https://github.com/apptension/saas-boilerplate/commit/29675d9c6ced954f6939171ff3ce4053d9d9e69e))
+- docker volume recreate ([#576](https://github.com/apptension/saas-boilerplate/issues/576)) ([80110fe](https://github.com/apptension/saas-boilerplate/commit/80110fe7fb8be58abf525906bdda3d72d11407e5))
+
+### Dependencies
+
+- [#568](https://github.com/apptension/saas-boilerplate/issues/568) Update Postgres version to 16.1 ([#573](https://github.com/apptension/saas-boilerplate/issues/573)) ([04c6757](https://github.com/apptension/saas-boilerplate/commit/04c6757aad304a0829397293cec573e6a34677f4))
+- Update eslint to 9.3.0 ([#578](https://github.com/apptension/saas-boilerplate/issues/578)) ([b610ad3](https://github.com/apptension/saas-boilerplate/commit/b610ad3aaf7ec219adf2ad895947b39d1ccf0d4e))
+- Update webapp package ([#583](https://github.com/apptension/saas-boilerplate/issues/583)) ([bd60f8d](https://github.com/apptension/saas-boilerplate/commit/bd60f8dc505437830dfc62d05bff59cbc0de9557))
+- Upgrade django to version 5 ([#582](https://github.com/apptension/saas-boilerplate/issues/582)) ([4665d3f](https://github.com/apptension/saas-boilerplate/commit/4665d3fcc53590869bb9fca47f6fd95cf3341ada))
+
 ## [3.0.0](https://github.com/apptension/saas-boilerplate/compare/2.6.1...3.0.0) (2024-05-22)
 
 ### ⚠ BREAKING CHANGES
