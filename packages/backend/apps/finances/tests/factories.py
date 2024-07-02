@@ -2,7 +2,6 @@ import datetime
 import uuid
 
 import factory
-import pytz
 from django.utils import timezone
 from djstripe import models as djstripe_models, enums
 
@@ -230,15 +229,15 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
     class Params:
         trialing = factory.Trait(
             status=enums.SubscriptionStatus.trialing,
-            trial_start=datetime.datetime.now(tz=pytz.UTC),
-            trial_end=datetime.datetime.now(tz=pytz.UTC) + datetime.timedelta(30),
+            trial_start=datetime.datetime.now(tz=datetime.timezone.utc),
+            trial_end=datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(30),
         )
 
         trial_completed = factory.Trait(
             status=enums.SubscriptionStatus.trialing,
-            current_period_start=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(2),
-            trial_start=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(2),
-            trial_end=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(1),
+            current_period_start=datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(2),
+            trial_start=datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(2),
+            trial_end=datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(1),
         )
 
 
@@ -256,7 +255,7 @@ class SubscriptionScheduleFactory(factory.django.DjangoModelFactory):
     @factory.post_generation
     def phases(self, create, extracted, **kwargs):
         def unix_time(dt):
-            epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.UTC)
+            epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=datetime.timezone.utc)
             return int((dt - epoch).total_seconds())
 
         if not create:
