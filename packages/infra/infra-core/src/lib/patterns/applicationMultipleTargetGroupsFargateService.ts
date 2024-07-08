@@ -3,6 +3,7 @@ import {
   FargateService,
   FargateTaskDefinition,
   AwsLogDriver,
+  CapacityProviderStrategy,
 } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationTargetGroup } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { FeatureFlags } from 'aws-cdk-lib';
@@ -112,6 +113,8 @@ export interface ApplicationMultipleTargetGroupsFargateServiceProps
    * @default - Automatically generated name.
    */
   readonly family?: string;
+
+  readonly capacityProviderStrategies?: CapacityProviderStrategy[];
 }
 
 /**
@@ -149,7 +152,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
   constructor(
     scope: Construct,
     id: string,
-    props: ApplicationMultipleTargetGroupsFargateServiceProps
+    props: ApplicationMultipleTargetGroupsFargateServiceProps,
   ) {
     super(scope, id, props);
 
@@ -158,7 +161,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
 
     if (props.taskDefinition && props.taskImageOptions) {
       throw new Error(
-        'You must specify only one of TaskDefinition or TaskImageOptions.'
+        'You must specify only one of TaskDefinition or TaskImageOptions.',
       );
     } else if (props.taskDefinition) {
       this.taskDefinition = props.taskDefinition;
@@ -210,12 +213,12 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
     if (props.targetGroups) {
       this.addPortMappingForTargets(
         this.taskDefinition.defaultContainer,
-        props.targetGroups
+        props.targetGroups,
       );
       this.targetGroup = this.registerECSTargets(
         this.service,
         this.taskDefinition.defaultContainer,
-        props.targetGroups
+        props.targetGroups,
       );
     }
   }
@@ -230,10 +233,10 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
   }
 
   private createFargateService(
-    props: ApplicationMultipleTargetGroupsFargateServiceProps
+    props: ApplicationMultipleTargetGroupsFargateServiceProps,
   ): FargateService {
     const desiredCount = FeatureFlags.of(this).isEnabled(
-      cxapi.ECS_REMOVE_DEFAULT_DESIRED_COUNT
+      cxapi.ECS_REMOVE_DEFAULT_DESIRED_COUNT,
     )
       ? this.internalDesiredCount
       : this.desiredCount;
@@ -254,6 +257,7 @@ export class ApplicationMultipleTargetGroupsFargateService extends ApplicationMu
       }),
       platformVersion: props.platformVersion,
       enableExecuteCommand: true,
+      capacityProviderStrategies: props.capacityProviderStrategies,
     });
   }
 }

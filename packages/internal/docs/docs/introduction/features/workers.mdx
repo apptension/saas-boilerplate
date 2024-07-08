@@ -16,9 +16,11 @@ There are several use cases for async jobs in web applications. Some common exam
 
 ### Async Workers in the SaaS Boilerplate
 
-The SaaS Boilerplate includes “async workers” feature that uses AWS Lambda functions and the Serverless Framework to
-manage asynchronous jobs. The Serverless Framework provides a set of tools and abstractions that simplify the process of
-deploying and managing serverless applications.
+The SaaS Boilerplate includes two types of “async workers” to manage asynchronous jobs:
+- Celery workers, being the default one. It is a task queue, which major selling point is its great compatibility with
+Django.
+- AWS Lambda functions with help of the Serverless Framework. The Serverless Framework provides a set of tools and
+abstractions that simplify the process of deploying and managing serverless applications.
 
 Tasks can be scheduled or started from the backend application part. This makes it easy to schedule tasks to run at
 specific times, such as sending out email notifications at a specific time of day.

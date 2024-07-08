@@ -44,6 +44,8 @@ DJANGO_CORE_APPS = [
 
 THIRD_PARTY_APPS = [
     "django_extensions",
+    'django_celery_results',
+    'django_celery_beat',
     "djstripe",
     "django_hosts",
     "drf_yasg",
@@ -53,7 +55,6 @@ THIRD_PARTY_APPS = [
     "whitenoise",
     "graphene_django",
     'channels',
-    # 'channels_postgres',
     "aws_xray_sdk.ext.django",
 ]
 
@@ -305,9 +306,10 @@ USER_NOTIFICATION_IMPL = "config.notifications.stdout"
 WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 
 AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
+AWS_REGION = env("AWS_REGION", default=None)
 
-TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
-TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
+LAMBDA_TASKS_BASE_HANDLER = env("LAMBDA_TASKS_BASE_HANDLER", default="common.tasks.LambdaTask")
+LAMBDA_TASKS_LOCAL_URL = env("LAMBDA_TASKS_LOCAL_URL", default=None)
 
 STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY", default="sk_<CHANGE_ME>")
 STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="sk_test_<CHANGE_ME>")
@@ -344,11 +346,13 @@ SHELL_PLUS_IMPORTS = ["from config.schema import schema"]
 WEB_SOCKET_API_ENDPOINT_URL = env("WEB_SOCKET_API_ENDPOINT_URL", default="")
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default=None)
+AWS_EXPORTS_STORAGE_BUCKET_NAME = env("AWS_EXPORTS_STORAGE_BUCKET_NAME", default=None)
 AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL
 AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
 AWS_QUERYSTRING_EXPIRE = env("AWS_QUERYSTRING_EXPIRE", default=60 * 60 * 24)
 AWS_CLOUDFRONT_KEY = os.environ.get('AWS_CLOUDFRONT_KEY', '').encode('ascii')
 AWS_CLOUDFRONT_KEY_ID = os.environ.get('AWS_CLOUDFRONT_KEY_ID', None)
+USER_DATA_EXPORT_EXPIRY_SECONDS = env.int("USER_DATA_EXPORT_EXPIRY_SECONDS", 172800)  # 2 days default
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -373,3 +377,22 @@ UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=1
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
 
 TENANT_INVITATION_TIMEOUT = env("TENANT_INVITATION_TIMEOUT", default=60 * 60 * 24 * 14)
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = f'{env("REDIS_CONNECTION")}/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 3600,
+}
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django_ses.SESBackend")
+EMAIL_HOST = env("EMAIL_HOST", default=None)
+EMAIL_PORT = env("EMAIL_PORT", default=None)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default=None)
+EMAIL_FROM_ADDRESS = env("EMAIL_FROM_ADDRESS", default=None)
+EMAIL_REPLY_ADDRESS = env.list("EMAIL_REPLY_ADDRESS", default=(EMAIL_FROM_ADDRESS,))
+
+AWS_SES_REGION_NAME = env("AWS_SES_REGION_NAME", default=AWS_REGION)
+
+# If you want to use the SESv2 client
+USE_SES_V2 = True

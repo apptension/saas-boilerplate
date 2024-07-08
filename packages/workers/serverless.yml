@@ -37,32 +37,6 @@ functions:
     memorySize: 128
     environment: ${self:custom.conf.ExecuteScheduledTask.environment}
 
-  SendEmail:
-    handler: ${self:custom.conf.SendEmail.handler}
-    timeout: 6
-    memorySize: 128
-    environment: ${self:custom.conf.SendEmail.environment}
-    events:
-      - eventBridge:
-          eventBus: "${self:custom.conf.eventBusArn}"
-          pattern:
-            source:
-              - backend.email
-
-  ExportUsers:
-    handler: userauth.handlers.user_data_export
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.ExportUsers.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - eventBridge:
-          eventBus: "${self:custom.conf.eventBusArn}"
-          pattern:
-            source:
-              - backend.export_user
-
   SynchronizeContentfulContent:
     handler: content.handlers.synchronize_content
     runtime: python3.11
@@ -78,39 +52,8 @@ functions:
             source:
               - backend.contentfulSync
 
-  WebSocketsConnectHandler:
-    handler: websockets.handlers.connect.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $connect
-
-  WebSocketsMessageHandler:
-    handler: websockets.handlers.message.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $default
-
-  WebSocketsDisconnectHandler:
-    handler: websockets.handlers.disconnect.handle
-    runtime: python3.11
-    timeout: 30
-    memorySize: 256
-    environment: ${self:custom.conf.WebSocketsHandler.environment}
-    vpc: ${self:custom.conf.vpc}
-    events:
-      - websocket: $disconnect
-
 plugins:
   - serverless-step-functions
-  - serverless-esbuild
   - serverless-localstack
 
 custom:
@@ -121,8 +64,6 @@ custom:
     useStaticCache: false
 
   ssmService: env-${env:PROJECT_NAME}-${self:provider.stage}-workers
-
-  esbuild: ${self:custom.conf.esbuild}
 
   conf: ${file(./${self:custom.confFile.${self:provider.stage}})}
   confFile:

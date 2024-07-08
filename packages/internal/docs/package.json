@@ -27,10 +27,12 @@
     "@sb/tools": "workspace:*",
     "@sb/webapp-api-client": "workspace:*",
     "@sb/webapp-core": "workspace:*",
+    "@sb/webapp-tenants": "workspace:*",
+    "@sb/webapp-contentful": "workspace:*",
     "docusaurus-plugin-typedoc": "^0.22.0",
     "typedoc": "^0.25.13",
     "typedoc-plugin-markdown": "^3.17.1",
-    "webapp": "*"
+    "webapp": "workspace:*"
   },
   "browserslist": {
     "production": [

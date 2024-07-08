@@ -1,10 +1,12 @@
-**Optional** variables (in order to use contentful or stripe services):
+import WebappContentful from './_webapp_contentful.mdx';
 
-| Name                              | Description                             |
-|-----------------------------------|-----------------------------------------|
-| VITE_CONTENTFUL_SPACE             | Contentful Space ID                     |
-| VITE_CONTENTFUL_TOKEN             | Contentful API access token             |
-| VITE_CONTENTFUL_ENV               | Contentful environment name             |
-| VITE_STRIPE_PUBLISHABLE_KEY       | Stripe Publishable key                  |
-| VITE_SENTRY_DSN                   | [Sentry](https://sentry.io/) client key |
-| VITE_GOOGLE_ANALYTICS_TRACKING_ID | Google Analytics 4 GTM ID               |
+<WebappContentful />
+
+##### Other optional web app variables
+
+| Name                              | Description                                                               |
+| --------------------------------- | ------------------------------------------------------------------------- | ------ |
+| VITE_BASE_API_URL                 | Path to access backend API. Set if you want to override default behaviour | `/api` |
+| VITE_STRIPE_PUBLISHABLE_KEY       | Stripe Publishable key                                                    |
+| VITE_SENTRY_DSN                   | [Sentry](https://sentry.io/) client key                                   |
+| VITE_GOOGLE_ANALYTICS_TRACKING_ID | Google Analytics 4 GTM ID                                                 |

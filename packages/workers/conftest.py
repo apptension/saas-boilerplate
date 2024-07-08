@@ -2,20 +2,15 @@ from uuid import UUID
 
 import boto3
 import pytest
-from moto import mock_ses, mock_s3
+from moto import mock_ses
 from pytest_factoryboy import register
 
 import settings
 from dao.db import connection
 from dao.db.models import Base
 from dao.db.session import db_session as db_session_ctx
-from userauth import factories as ua_factories
-from websockets import factories as ws_factories
 from demo import factories as demo_factories
 
-register(ua_factories.UserFactory)
-register(ws_factories.WebSocketConnectionFactory)
-register(ws_factories.GraphQLSubscriptionFactory)
 register(demo_factories.CrudDemoItemFactory)
 register(demo_factories.DocumentDemoItemFactory)
 
@@ -36,14 +31,6 @@ def ses_client():
         client = boto3.client("ses")
         client.verify_email_identity(EmailAddress=settings.FROM_EMAIL)
         yield client
-
-
-@pytest.fixture
-def s3_exports_bucket():
-    with mock_s3():
-        s3 = boto3.client("s3", region_name='us-east-1', endpoint_url=settings.AWS_S3_ENDPOINT_URL)
-        s3.create_bucket(Bucket=settings.AWS_EXPORTS_STORAGE_BUCKET_NAME)
-        yield
 
 
 @pytest.fixture

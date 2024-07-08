@@ -59,7 +59,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               class="flex items-center"
             >
               <svg
-                class="mr-2 w-4 h-4"
+                class="lucide lucide-user-check mr-2 w-4 h-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -98,7 +98,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               type="button"
             >
               <svg
-                class="h-4 w-4"
+                class="lucide lucide-grip-horizontal h-4 w-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -163,7 +163,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               class="flex items-center"
             >
               <svg
-                class="mr-2 w-4 h-4"
+                class="lucide lucide-user-check mr-2 w-4 h-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -202,7 +202,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               type="button"
             >
               <svg
-                class="h-4 w-4"
+                class="lucide lucide-grip-horizontal h-4 w-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -267,7 +267,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               class="flex items-center"
             >
               <svg
-                class="mr-2 w-4 h-4"
+                class="lucide lucide-hourglass mr-2 w-4 h-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -307,7 +307,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               type="button"
             >
               <svg
-                class="h-4 w-4"
+                class="lucide lucide-grip-horizontal h-4 w-4"
                 fill="none"
                 height="24"
                 stroke="currentColor"

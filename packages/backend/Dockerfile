@@ -15,11 +15,14 @@ ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off
 
 
-RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq \
+RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq curl \
   && update-ca-certificates \
   && pip install --upgrade pip \
   && pip install --no-cache-dir setuptools pdm~=2.5.2 awscli==1.32.24
 
+
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get --no-install-recommends install -y nodejs
 
 COPY --from=chamber /chamber /bin/chamber
 
