@@ -11,11 +11,11 @@ export interface IServiceCiConfig {
 }
 
 export enum PnpmWorkspaceFilters {
-  BACKEND = 'backend',
-  INFRA_SHARED = 'infra-shared',
-  DOCS = 'docs',
-  WEBAPP_EMAILS = 'webapp-emails',
-  WORKERS = 'workers',
+  BACKEND = 'backend...',
+  INFRA_SHARED = 'infra-shared...',
+  DOCS = 'docs...',
+  WEBAPP_EMAILS = 'webapp-emails...',
+  WORKERS = 'workers...',
   CORE = 'core',
   TOOLS = 'tools',
   WEBAPP = 'webapp...',
@@ -57,7 +57,7 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
 
     return [
       'go install github.com/segmentio/chamber/v2@latest',
-      'npm i -g pnpm@^9.0.6',
+      'npm i -g pnpm@~9.5.0',
       `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile`.concat(...filters),
