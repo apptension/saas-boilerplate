@@ -368,6 +368,9 @@ importers:
       aws-sdk:
         specifier: ^2.1624.0
         version: 2.1624.0
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
 
   packages/infra/infra-functions:
     dependencies:

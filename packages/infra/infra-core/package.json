@@ -6,6 +6,7 @@
     "build": "tsc --project tsconfig.lib.json"
   },
   "devDependencies": {
-    "aws-sdk": "^2.1624.0"
+    "aws-sdk": "^2.1624.0",
+    "jszip": "^3.10.1"
   }
 }
