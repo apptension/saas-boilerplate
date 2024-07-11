@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/apptension/saas-boilerplate/compare/3.0.1...4.0.0) (2024-07-11)
+
+### ⚠ BREAKING CHANGES
+
+- #493 Add Celery workers to the stack
+
+### Features
+
+- [#493](https://github.com/apptension/saas-boilerplate/issues/493) Add Celery workers to the stack ([4121ece](https://github.com/apptension/saas-boilerplate/commit/4121eceb20976d945f0258271031d2b1a90bb99c))
+- Move user export task on celery ([c04fc07](https://github.com/apptension/saas-boilerplate/commit/c04fc0793d978c6cf402fea5d8359af3642717cd))
+- Move user export task on celery ([3d91c35](https://github.com/apptension/saas-boilerplate/commit/3d91c3520654645e54ea6442266df508a1e3ec24))
+
+### Bug Fixes
+
+- Fix broken builds on pnpm ^9.5.0 ([#602](https://github.com/apptension/saas-boilerplate/issues/602)) ([57e5f6c](https://github.com/apptension/saas-boilerplate/commit/57e5f6cbf0ea84d2708837281475f72b843e942a))
+
 ### [3.0.1](https://github.com/apptension/saas-boilerplate/compare/3.0.0...3.0.1) (2024-07-02)
 
 ### Features

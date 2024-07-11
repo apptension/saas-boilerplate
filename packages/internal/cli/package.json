@@ -1,6 +1,6 @@
 {
   "name": "@sb/cli",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "SaaS Boilerplate CLI",
   "author": "Patryk Ziemkowski pziemkowski@apptension.com",
   "bin": {
