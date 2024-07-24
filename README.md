@@ -52,6 +52,27 @@ and seamlessly transition from setup to innovation.
 This boilerplate includes plenty of ready to use features that you can adjust to you needs:
 </summary> <br />
 
+<div style="margin-bottom: 10px;">
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth" align="left">
+    <img src="./.github/images/features/auth.png" alt="Authentication and authorization" align="left" style="width: 49%;" />
+  </a>
+
+  <h3><a href="https://docs.demo.saas.apptoku.com/introduction/features/auth">Authentication and authorization</a></h3>
+  <p style="padding-left: 10px;">
+    <ul>
+      <li>User registration and login, including Facebook and Google OAuth</li>
+      <li>Basic user data like name, surname, and user role for authorization</li>
+      <li>User email address verification via a transactional email</li>
+      <li>Password change and password recovery within the app flow</li>
+      <li>User management panel in Django admin</li>
+      <li>Two-factor authentication</li>
+    </ul>
+  </p>
+
+</div>
+
+&nbsp;
+
 <div align="center" style="margin-bottom: 10px;">
   <div style="display: flex; align-items: flex-start; justify-content: space-between;">
     <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth" style="width: 49%;">
