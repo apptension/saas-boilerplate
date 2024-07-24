@@ -35,6 +35,8 @@ export function getBackendEnvironment(
       EnvComponentsStack.getWorkersEventBusName(envSettings),
     AWS_STORAGE_BUCKET_NAME:
       EnvComponentsStack.getFileUploadsBucketName(envSettings),
+    AWS_EXPORTS_STORAGE_BUCKET_NAME:
+      EnvComponentsStack.getExportsBucketName(envSettings),
     AWS_S3_CUSTOM_DOMAIN: envSettings.domains.cdn,
     DB_PROXY_ENDPOINT: Fn.importValue(
       MainDatabase.getDatabaseProxyEndpointOutputExportName(envSettings),

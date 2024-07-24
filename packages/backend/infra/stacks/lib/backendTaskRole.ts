@@ -31,6 +31,14 @@ export function createBackendTaskRole(
   fileUploadsBucket.grantReadWrite(taskRole);
   fileUploadsBucket.grantPutAcl(taskRole);
 
+  const exportsBucket = s3.Bucket.fromBucketName(
+    scope,
+    'ExportsBucket',
+    EnvComponentsStack.getExportsBucketName(envSettings),
+  );
+  exportsBucket.grantReadWrite(taskRole);
+  exportsBucket.grantPutAcl(taskRole);
+
   const eventBus = events.EventBus.fromEventBusName(
     scope,
     'WorkersEventBus',
