@@ -45,7 +45,7 @@ export const TenantMembers = () => {
             </Paragraph>
             <Button data-testid="tenant-members-create-button" color="primary" size="sm" onClick={handleNewTenantClick}>
               <Plus className="mr-1" size="16" />{' '}
-              <FormattedMessage defaultMessage="Create new tenant" id="TenantSwitch / Create new organization" />
+              <FormattedMessage defaultMessage="Create new organization" id="TenantSwitch / Create new organization" />
             </Button>
           </Alert>
         ) : (

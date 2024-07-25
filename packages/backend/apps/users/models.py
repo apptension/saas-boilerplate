@@ -101,4 +101,5 @@ class UserProfile(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name if full_name else self.user.email
