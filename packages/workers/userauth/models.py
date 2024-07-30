@@ -23,6 +23,9 @@ class User(models.Base):
     cruddemoitem_set: Mapped[List["CrudDemoItem"]] = relationship(back_populates="created_by")
     documents: Mapped[List["DocumentDemoItem"]] = relationship(back_populates="created_by")
 
+    def __str__(self):
+        return self.email
+
 
 class UserProfile(models.Base):
     __tablename__ = "users_userprofile"
@@ -34,3 +37,7 @@ class UserProfile(models.Base):
 
     first_name = Column("first_name", String)
     last_name = Column("last_name", String)
+
+    def __str__(self):
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name if full_name else self.user.email

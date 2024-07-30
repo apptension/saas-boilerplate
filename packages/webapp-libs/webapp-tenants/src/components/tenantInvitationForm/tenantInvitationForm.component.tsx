@@ -84,7 +84,7 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                           id: 'Tenant invitation form / Email label',
                         })}
                         placeholder={intl.formatMessage({
-                          defaultMessage: 'Name',
+                          defaultMessage: 'Email',
                           id: 'Tenant invitation form / Email placeholder',
                         })}
                         error={errors.email?.message}
