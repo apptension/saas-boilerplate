@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate">
+  <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate powered by Apptension">
 </p>
 
 <h1 align="center">Build SaaS products faster in React, Django and AWS.</h1>
