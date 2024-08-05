@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate">
+  <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate powered by Apptension">
 </p>
 
 <h1 align="center">Build SaaS products faster in React, Django and AWS.</h1>
 <h2 align="center">A complete SaaS starter kit based on a battle-tested stack with out-of-the-box features every SaaS should have</h2>
 
-<p align="center">
+<h4 align="center">
   <a href="https://github.com/apptension/saas-boilerplate">
     <img src="https://img.shields.io/github/v/release/apptension/saas-boilerplate?style=for-the-badge" alt="Version">
   </a>
@@ -21,7 +21,7 @@
   <a href="https://discord.apptension.com">
     <img src="https://img.shields.io/discord/1122849885335597088?style=for-the-badge&logo=discord" alt="Chat with us on Discord">
   </a>
-</p>
+</h4>
 
 ---
 
@@ -44,24 +44,6 @@ environments representing different stages in your pipeline.
 Say goodbye to weeks of setup and coding. Our proven stack and ready-to-use features empower you to jumpstart your
 project and prioritize building your product's intellectual property. Unlock your SaaS potential faster than ever before
 and seamlessly transition from setup to innovation.
-
-## Features
-
-This boilerplate includes plenty of ready to use features that you can adjust to you needs:
-
-- [Authentication and authorization](https://docs.demo.saas.apptoku.com/introduction/features/auth)
-- [Notifications](https://docs.demo.saas.apptoku.com/introduction/features/notifications)
-- [Emails](https://docs.demo.saas.apptoku.com/introduction/features/emails)
-- [Payments and subscriptions (Stripe integration)](https://docs.demo.saas.apptoku.com/introduction/features/payments)
-- [Multi-tenancy](https://docs.demo.saas.apptoku.com/introduction/features/multi-tenancy)
-- [Infrastructure as a Code (AWS)](https://docs.demo.saas.apptoku.com/introduction/features/iac) with [pre-configured CI/CD](https://docs.demo.saas.apptoku.com/introduction/features/cicd)
-- [CMS integration (Contentful)](https://docs.demo.saas.apptoku.com/introduction/features/cms)
-- [Admin panel](https://docs.demo.saas.apptoku.com/introduction/features/admin)
-- [CRUD generators](https://docs.demo.saas.apptoku.com/introduction/features/crud)
-
-... and more
-
-The full list with the descriptions can be found in the [features documentation](https://docs.demo.saas.apptoku.com/).
 
 ## Getting started
 
@@ -157,6 +139,123 @@ In order to run your local documentation server execute following command:
 ```sh
 pnpm saas docs up
 ```
+
+## Features
+
+<details open>
+<summary>
+This boilerplate includes plenty of ready to use features that you can adjust to you needs:
+</summary> <br />
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth">
+    <img src="./.github/images/features/auth.png" alt="Authentication and authorization" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth">Authentication and authorization</a>
+    </summary><br/>
+    <ul>
+      <li>User registration and login, including Facebook and Google OAuth</li>
+      <li>Basic user data like name, surname, and user role for authorization</li>
+      <li>User email address verification via a transactional email</li>
+      <li>Password change and password recovery within the app flow</li>
+      <li>User management panel in Django admin</li>
+      <li>Two-factor authentication</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/emails">
+    <img src="./.github/images/features/emails.png" alt="Emails" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/emails">Emails</a>
+    </summary><br/>
+    <ul>
+      <li>A set of ready-to-send transactional emails (new user verification, password recovery, subscription renewals, errors, etc.)</li>
+      <li>Ability to schedule emails at a given time</li>
+      <li>Sending test emails directly from a Storybook</li>
+      <li>Internationalization support out of the box</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments">
+    <img src="./.github/images/features/payments.png" alt="Payments" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments">Payments</a>
+    </summary><br/>
+    <ul>
+      <li>Integration with Stripe services and its dashboard</li>
+      <li>No customer payment method data is stored locally</li>
+      <li>Support for multiple payment methods and their management (storing for future use and removal)</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments#subscription-management">
+    <img src="./.github/images/features/subscriptions.png" alt="Subscriptions" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments#subscription-management">Subscriptions</a>
+    </summary><br/>
+    <ul>
+      <li>Ability to charge users immediately or to set up recurring payments</li>
+      <li>Subscription plans support and ability to freely modify current plans</li>
+      <li>Free trial subscription plan, a grace period for credit card issues</li>
+      <li>Superadmin panel enables customer management (i.e. refunds) without the Stripe dashboard</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/multi-tenancy">
+    <img src="./.github/images/features/multitenancy.png" alt="Multi-tenancy" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/multi-tenancy">Multi-tenancy</a>
+    </summary><br/>
+    <ul>
+      <li>Start immediately with a default tenant provided upon account creation</li>
+      <li>Add new tenants as needed to manage multiple entities within a single account</li>
+      <li>Utilize three default roles ”Owner, Admin, and Member” to control tenant activities and collaboration</li>
+      <li>Securely invite and manage new members within each tenant</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/cms">
+    <img src="./.github/images/features/cms.png" alt="CMS integration (Contentful)" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/cms">CMS integration &#40;Contentful&#41;</a>
+    </summary><br/>
+    <ul>
+      <li>Integration with Contentful service</li>
+      <li>Example content model (image, title, and description)</li>
+      <li>Ready to use CMS with a free plan</li>
+    </ul>
+  </details>
+
+---
+
+</details>
+
+... and more
+
+The full list with the descriptions can be found in the [features documentation](https://docs.demo.saas.apptoku.com/introduction/features/).
 
 ## Tech stack
 
