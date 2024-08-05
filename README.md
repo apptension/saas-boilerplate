@@ -150,6 +150,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth">
     <img src="./.github/images/features/auth.png" alt="Authentication and authorization" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
@@ -168,6 +169,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/emails">
     <img src="./.github/images/features/emails.png" alt="Emails" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
@@ -184,6 +186,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments">
     <img src="./.github/images/features/payments.png" alt="Payments" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
@@ -199,6 +202,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/payments#subscription-management">
     <img src="./.github/images/features/subscriptions.png" alt="Subscriptions" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
@@ -215,6 +219,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/multi-tenancy">
     <img src="./.github/images/features/multitenancy.png" alt="Multi-tenancy" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
@@ -231,6 +236,7 @@ This boilerplate includes plenty of ready to use features that you can adjust to
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/cms">
     <img src="./.github/images/features/cms.png" alt="CMS integration (Contentful)" />
   </a>
+  <br /><br />
   
   <details open>
     <summary>
