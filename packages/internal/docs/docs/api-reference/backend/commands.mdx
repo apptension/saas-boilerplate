@@ -10,7 +10,7 @@ This page contains a list of CLI commands that you can use within the `backend` 
 
 ### `pnpm nx run backend:compose-build-image`
 
-Builds a backend Docker image by running `docker-compose build backend`.
+Builds a backend Docker image by running `docker compose build backend`.
 
 <RunOnCICautionPartial />
 
@@ -19,7 +19,7 @@ Builds a backend Docker image by running `docker-compose build backend`.
 
 ### `pnpm nx run backend:test`
 
-Runs tests (`scripts/run_tests.sh` script) inside Docker container using `docker-compose`.
+Runs tests (`scripts/run_tests.sh` script) inside Docker container using `docker compose`.
 
 ---
 
@@ -61,7 +61,7 @@ Alias command for [`pnpm nx build`](#pnpm-nx-run-backendbuild).
 
 ### `pnpm saas backend shell`
 
-Runs `bash` inside backend container: `docker-compose run --rm backend bash`
+Runs `bash` inside backend container: `docker compose run --rm backend bash`
 
 ---
 

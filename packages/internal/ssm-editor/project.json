@@ -16,7 +16,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose build ssm-editor"
+        "command": "docker compose build ssm-editor"
       }
     }
   },
