@@ -29,7 +29,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "commands": ["docker-compose build backend"],
+        "commands": ["docker compose build backend"],
         "parallel": false
       },
       "dependsOn": ["setup", "build-email-renderer"]
@@ -38,7 +38,7 @@
       "executor": "nx:run-commands",
       "options": {
         "color": true,
-        "command": "docker-compose run --rm -T backend ./scripts/runtime/run_tests.sh"
+        "command": "docker compose run --rm -T backend ./scripts/runtime/run_tests.sh"
       },
       "dependsOn": ["compose-build-image"]
     },

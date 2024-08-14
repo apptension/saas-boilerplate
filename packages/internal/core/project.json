@@ -36,7 +36,7 @@
         "commands": [
           "nx run-many --target=setup",
           "nx run-many --target=compose-build-image --projects=backend,workers",
-          "docker-compose up --force-recreate -d backend workers celery_default celery_beat"
+          "docker compose up --force-recreate -d backend workers celery_default celery_beat"
         ]
       },
       "dependsOn": ["setup"]
@@ -46,7 +46,7 @@
       "options": {
         "color": true,
         "parallel": false,
-        "commands": ["docker-compose down"]
+        "commands": ["docker compose down"]
       }
     }
   },

@@ -5,11 +5,11 @@ const { runCommand } = require('./lib/runCommand');
 
 const GENERATED_BACKEND_DOCS_PATH = path.resolve(
   __dirname,
-  '../docs/generated'
+  '../docs/generated',
 );
 const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
   __dirname,
-  '../../internal/docs/docs/api-reference/backend/generated'
+  '../../internal/docs/docs/api-reference/backend/generated',
 );
 
 (async () => {
@@ -18,8 +18,9 @@ const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
     await fs.remove(GENERATED_BACKEND_DOCS_PATH);
 
     await runCommand(
-      'docker-compose',
+      'docker',
       [
+        'compose',
         'run',
         '--rm',
         '-T',
@@ -31,7 +32,7 @@ const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
       ],
       {
         cwd: path.resolve(__dirname, '../../../'),
-      }
+      },
     );
 
     // Removing internal docs directory
@@ -40,7 +41,7 @@ const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
     // Copying docs
     await fs.copy(
       GENERATED_BACKEND_DOCS_PATH,
-      GENERATED_BACKEND_DOCS_INTERNAL_PATH
+      GENERATED_BACKEND_DOCS_INTERNAL_PATH,
     );
   } catch (error) {
     console.error(`Error: ${error.message}`);
