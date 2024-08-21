@@ -15,6 +15,6 @@ export const toastReducer = (state: ToastState, { type, payload }: ToastActionTy
         toasts: state.toasts.filter(({ id }) => id !== payload),
       };
     default:
-      return assertUnreachable(type, 'Cannot resolve locales reducer action type');
+      return assertUnreachable(type, 'Cannot resolve toast reducer action type');
   }
 };
