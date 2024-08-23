@@ -3,6 +3,7 @@ import { aws_events_targets as targets } from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import { BuildEnvironmentVariableType } from 'aws-cdk-lib/aws-codebuild';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
@@ -79,8 +80,8 @@ export class CiEntrypoint extends Construct {
       projectName: props.envSettings.projectEnvName,
       description: `Run this project to deploy ${props.envSettings.envStage} environment`,
       buildSpec: this.createBuildSpec(),
-      cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
-      source: codebuild.Source.codeCommit({ repository: props.codeRepository }),
+      // cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
+      // source: codebuild.Source.codeCommit({ repository: props.codeRepository }),
       artifacts: codebuild.Artifacts.s3({
         identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
         bucket: artifactsBucket,
@@ -104,6 +105,21 @@ export class CiEntrypoint extends Construct {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
           value: props.envSettings.envStage,
         },
+        GIT_SSH_PRIVATE_KEY: {
+          type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          // value: props.envSettings.sshSecretArn,
+          value:
+            'arn:aws:secretsmanager:eu-west-1:875448711596:secret:SB_CI_GIT_SSH_PRIVATE_KEY-53EnPE',
+        },
+        GIT_CLONE_URL: {
+          type: BuildEnvironmentVariableType.PARAMETER_STORE,
+          // value: props.envSettings.codeCommitCloneUrl,
+          value: '/ci/GIT_CLONE_URL',
+        },
+        GIT_CLONE_REFERENCE: {
+          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: 'master',
+        },
       },
     });
   }
@@ -111,11 +127,29 @@ export class CiEntrypoint extends Construct {
   private createBuildSpec() {
     return codebuild.BuildSpec.fromObject({
       version: '0.2',
+      env: {
+        'exported-variables': ['GIT_COMMIT_ID', 'GIT_COMMIT_MSG'],
+      },
       phases: {
         build: {
           commands: [
+            'echo "=======================Start-Deployment-Entrypoint============================="',
+            'echo "Saving the SSH Private Key"',
+            'echo "$GIT_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa',
+            'echo "Setting SSH config profile"',
+            'cat > ~/.ssh/config <<EOF\nHost *\n  AddKeysToAgent yes\n  StrictHostKeyChecking no\n  IdentityFile ~/.ssh/id_rsa\nEOF',
+            'chmod 600 ~/.ssh/id_rsa',
+            'echo "Cloning the repository $GitUrl on branch $Branch"',
+            'git clone --single-branch --depth=50 --tags --branch $GIT_CLONE_REFERENCE $GIT_CLONE_URL .',
+            'ls -alh',
+            'export GIT_COMMIT_ID=$(git rev-parse --short HEAD)',
+            'echo $GIT_COMMIT_ID',
+            'COMMIT_MSG=$(git log --pretty="format:%Creset%s" --no-merges -1)',
+            'export GIT_COMMIT_MSG="${COMMIT_MSG}"',
+            'echo $GIT_COMMIT_MSG',
             'app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)',
             'echo "VERSION=${app_version}" >> .env',
+            'echo "=======================End-Deployment-Entrypoint============================="',
           ],
         },
       },

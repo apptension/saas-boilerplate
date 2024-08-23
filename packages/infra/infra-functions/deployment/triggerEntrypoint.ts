@@ -6,7 +6,7 @@ export const handler = async (event) => {
 
   const codebuild = new CodeBuild({ region: process.env.AWS_DEFAULT_REGION });
   const branches = process.env.DEPLOY_BRANCHES?.split(',') ?? [];
-  const projectName = process.env.PROJECT_NAME;
+  const projectName = process.env.PROJECT_ENV_NAME;
   if (!projectName) {
     throw 'Invalid project name';
   }

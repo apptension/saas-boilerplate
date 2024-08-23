@@ -8,9 +8,11 @@ iam:
       - "${self:custom.conf.entrypointCodeBuildProjectArn}"
 
 environment:
-  PROJECT_NAME: ${self:custom.projectEnvName}
+  PROJECT_ENV_NAME: ${self:custom.projectEnvName}
+  PROJECT_NAME: ${env:PROJECT_NAME}
   ENVIRONMENT_NAME: ${self:provider.stage}
   DEPLOY_BRANCHES: ${env:SB_DEPLOY_BRANCHES}
+  WEBHOOK_SECRET: ${env:SB_WEBHOOK_SECRET}
 
 vpc:
   securityGroupIds:
@@ -19,7 +21,6 @@ vpc:
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetOneId"
     - Fn::ImportValue: "${self:custom.projectEnvName}-privateSubnetTwoId"
 
-migrationsStateMachineArn: arn:aws:states:${aws:region}:${aws:accountId}:stateMachine:${env:PROJECT_NAME}-${env:ENV_STAGE}-migrations
 entrypointCodeBuildProjectArn: arn:aws:codebuild:${aws:region}:${aws:accountId}:project/${self:custom.projectEnvName}
 
 esbuild:

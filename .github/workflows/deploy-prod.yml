@@ -1,0 +1,22 @@
+name: "Deploy to production"
+
+concurrency: Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: 'true'
+
+      - uses: ./.github/workflows/actions/deploy
+        with:
+          environment-name: 'prod'
+          trigger-url: '${{ vars.SB_DEPLOY_TRIGGER_URL }}'
+          trigger-secret: '${{ secrets.SB_DEPLOY_TRIGGER_SECRET }}'

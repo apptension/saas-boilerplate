@@ -1,0 +1,35 @@
+name: "Deploy environment"
+description: "Trigger deployment of the specified environment"
+
+inputs:
+  environment-name:
+    required: true
+    default: "production"
+  trigger-url:
+    required: true
+  trigger-secret:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: 'true'
+
+    - name: Call Deploy Trigger Endpoint
+      shell: bash
+      run: |
+        response=$(curl -s -w "%{http_code}" -o response_body.txt -X POST "${{ inputs.trigger-url }}?secret=$(echo -n '${{ inputs.trigger-secret }}' | jq -sRr @uri)" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "referenceName": "'"${GITHUB_REF_NAME}"'",
+          "deployTarget": "'"${{ inputs.environment-name }}"'"
+        }')
+        status_code=$(tail -n1 <<< "$response")
+        if [ "$status_code" -ne 200 ]; then
+          echo "Deployment trigger failed with status code $status_code"
+          cat response_body.txt
+          exit 1
+        fi

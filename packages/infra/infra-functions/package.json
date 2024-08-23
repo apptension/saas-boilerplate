@@ -10,9 +10,11 @@
     "remove": "sls remove"
   },
   "dependencies": {
+    "aws-lambda": "^1.0.7",
     "glob-to-regexp": "^0.4.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.143",
     "serverless": "^3.38.0",
     "serverless-esbuild": "^1.48.0"
   }
