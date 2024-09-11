@@ -1,40 +1,59 @@
 import { CodeBuild } from '@aws-sdk/client-codebuild';
-import globToRegExp from 'glob-to-regexp';
+import { APIGatewayEvent } from 'aws-lambda';
 
-export const handler = async (event) => {
+// Function that is called from the GH action
+export const handler = async (event: APIGatewayEvent) => {
   console.log('Start trigger entrypoint', { event });
 
   const codebuild = new CodeBuild({ region: process.env.AWS_DEFAULT_REGION });
-  const branches = process.env.DEPLOY_BRANCHES?.split(',') ?? [];
-  const projectName = process.env.PROJECT_ENV_NAME;
-  if (!projectName) {
-    throw 'Invalid project name';
-  }
-  const {
-    detail: { referenceName },
-  } = event;
-  // check if referenceName is in branches
-  const filteredBranches = branches
-    .map((branch) => ({
-      branch,
-      regex: globToRegExp(branch, { globstar: true }),
-    }))
-    .filter((pattern) => pattern.regex.test(referenceName));
+  const projectName = process.env.PROJECT_NAME;
+  const webhookSecret = process.env.WEBHOOK_SECRET || '';
 
-  if (filteredBranches.length > 0) {
-    console.log('Trigger deploy:', referenceName, filteredBranches[0]);
-    await codebuild
-      .startBuild({
-        projectName,
-        sourceVersion: referenceName,
-      })
-      .then((response) => {
-        console.log('Codebuild started!', response);
-      })
-      .catch((error) => {
-        console.log('Run codebuild error', error);
-      });
+  const { queryStringParameters, body } = event;
+
+  if (!projectName || !webhookSecret) {
+    throw new Error('Invalid environment configuration name');
   }
 
-  return { event, branches, filteredBranches };
+  if (webhookSecret && queryStringParameters?.secret !== webhookSecret) {
+    throw new Error('Invalid secret');
+  }
+
+  let referenceName: string, deployTarget: string;
+
+  try {
+    const payload = JSON.parse(body || '');
+    referenceName = payload?.referenceName;
+    deployTarget = payload?.deployTarget;
+  } catch (error) {
+    throw new Error('Invalid payload');
+  }
+
+  if (!referenceName) {
+    throw new Error('Invalid reference name');
+  }
+
+  const codebuildProjectName = `${projectName}-${deployTarget}`;
+  console.log('Trigger deploy:', codebuildProjectName, referenceName);
+  await codebuild
+    .startBuild({
+      projectName: codebuildProjectName,
+      environmentVariablesOverride: [
+        {
+          name: 'GIT_CLONE_REFERENCE',
+          value: referenceName,
+        },
+      ],
+    })
+    .then((response) => {
+      console.log('Codebuild started!', response);
+    })
+    .catch((error) => {
+      console.log('Run codebuild error', error);
+    });
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ codebuildProjectName, referenceName }),
+  };
 };

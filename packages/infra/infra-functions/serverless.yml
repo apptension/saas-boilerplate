@@ -15,8 +15,6 @@ provider:
 functions:
   TriggerEntrypoint:
     handler: deployment/triggerEntrypoint.handler
-  TriggerEntrypointNew:
-    handler: deployment/triggerEntrypointNew.handler
     events:
       - http:
           path: trigger-deployment

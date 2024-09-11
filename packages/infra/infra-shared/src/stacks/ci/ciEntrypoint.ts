@@ -1,14 +1,11 @@
 import { Construct } from 'constructs';
-import { aws_events_targets as targets } from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { BuildEnvironmentVariableType } from 'aws-cdk-lib/aws-codebuild';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as events from 'aws-cdk-lib/aws-events';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
-import { getInfraFunctionArnByName } from '../../lib/names';
 
 export interface CiEntrypointProps extends EnvConstructProps {
   codeRepository: codecommit.IRepository;
@@ -17,8 +14,6 @@ export interface CiEntrypointProps extends EnvConstructProps {
 export class CiEntrypoint extends Construct {
   public artifactsBucket: s3.Bucket;
   private readonly codeBuildProject: codebuild.Project;
-  private readonly triggerFunction: lambda.IFunction;
-  private readonly onDeployCommitRule: events.Rule;
 
   static getArtifactsIdentifier(envSettings: EnvironmentSettings) {
     return `${envSettings.projectEnvName}-entrypoint`;
@@ -52,36 +47,23 @@ export class CiEntrypoint extends Construct {
       this.artifactsBucket,
       props,
     );
-
-    this.triggerFunction = lambda.Function.fromFunctionArn(
-      this,
-      'TriggerLambda',
-      getInfraFunctionArnByName(this, 'TriggerEntrypoint', {
-        envSettings: props.envSettings,
-      }),
-    );
-    this.onDeployCommitRule = props.codeRepository.onCommit('OnDeployCommit', {
-      target: new targets.LambdaFunction(this.triggerFunction),
-    });
-    // add permissions resource-based permissions to imported lambda
-    new lambda.CfnPermission(this, 'AllowOnDeployCommit', {
-      action: 'lambda:InvokeFunction',
-      functionName: this.triggerFunction.functionName,
-      principal: 'events.amazonaws.com',
-      sourceArn: this.onDeployCommitRule.ruleArn,
-    });
   }
 
   private createBuildProject(
     artifactsBucket: s3.Bucket,
     props: CiEntrypointProps,
   ) {
+    const SSHPrivateKey = secretsmanager.Secret.fromSecretNameV2(
+      this,
+      'SSHPrivateKeySecret',
+      'SB_CI_GIT_SSH_PRIVATE_KEY',
+    );
+
     return new codebuild.Project(this, 'Project', {
       projectName: props.envSettings.projectEnvName,
       description: `Run this project to deploy ${props.envSettings.envStage} environment`,
       buildSpec: this.createBuildSpec(),
       // cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
-      // source: codebuild.Source.codeCommit({ repository: props.codeRepository }),
       artifacts: codebuild.Artifacts.s3({
         identifier: CiEntrypoint.getArtifactsIdentifier(props.envSettings),
         bucket: artifactsBucket,
@@ -107,13 +89,10 @@ export class CiEntrypoint extends Construct {
         },
         GIT_SSH_PRIVATE_KEY: {
           type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-          // value: props.envSettings.sshSecretArn,
-          value:
-            'arn:aws:secretsmanager:eu-west-1:875448711596:secret:SB_CI_GIT_SSH_PRIVATE_KEY-53EnPE',
+          value: SSHPrivateKey.secretArn,
         },
         GIT_CLONE_URL: {
           type: BuildEnvironmentVariableType.PARAMETER_STORE,
-          // value: props.envSettings.codeCommitCloneUrl,
           value: '/ci/GIT_CLONE_URL',
         },
         GIT_CLONE_REFERENCE: {
