@@ -51,14 +51,25 @@ definitions:
       --filter=webapp...
 
   steps:
-    - step: &codecommitPush
-        name: Push code to CodeCommit
+    - step: &deploy-current-branch
+        name: Deploy environment
+        trigger: manual
         clone:
           depth: full
         script:
-          - git remote add codecommit "$CODE_COMMIT_REPO"
-          - git push --force -u codecommit "$BITBUCKET_BRANCH"
-          - git push codecommit --tags --force
+          - |
+            response=$(curl -s -w "%{http_code}" -o response_body.txt -X POST "${SB_DEPLOY_TRIGGER_URL}?secret=$(echo -n '${SB_DEPLOY_TRIGGER_SECRET}' | jq -sRr @uri)" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "referenceName": "'"${BITBUCKET_COMMIT}"'",
+              "deployTarget": "'"${BITBUCKET_DEPLOYMENT_ENVIRONMENT}"'"
+            }')
+            status_code=$(tail -n1 <<< "$response")
+            if [ "$status_code" -ne 200 ]; then
+              echo "Deployment trigger failed with status code $status_code"
+              cat response_body.txt
+              exit 1
+            fi
 
     - step: &webappTest
         name: 'webapp: Lint & test'
@@ -544,7 +555,14 @@ pipelines:
   branches:
     master:
       - parallel:
-        - step: *codecommitPush
+        - step:
+            <<: *deploy-current-branch
+            name: Deploy to Production env
+            deployment: production
+        - step:
+            <<: *deploy-current-branch
+            name: Deploy to QA env
+            deployment: qa
 
         - step: *webappTest
         - step: *webappBuild
@@ -571,7 +589,3 @@ pipelines:
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
         - step: *internalToolsBuild
-        - step:
-            name: Delete unused branches from CodeCommit
-            script:
-              - /bin/bash packages/internal/tools/scripts/clean-codebuild-branches.sh
