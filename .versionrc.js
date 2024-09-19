@@ -91,10 +91,6 @@ module.exports = {
       type: 'json',
     },
     {
-      filename: './packages/infra/infra-functions/package.json',
-      type: 'json',
-    },
-    {
       filename: './packages/infra/infra-shared/package.json',
       type: 'json',
     },

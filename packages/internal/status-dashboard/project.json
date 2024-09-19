@@ -71,7 +71,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/infra/infra-functions",
+        "cwd": "packages/internal/status-dashboard",
         "color": true,
         "command": "pnpm cdk deploy *StatusDashboardStack"
       }
@@ -79,7 +79,7 @@
     "diff": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/infra/infra-functions",
+        "cwd": "packages/internal/status-dashboard",
         "color": true,
         "command": "pnpm cdk diff *StatusDashboardStack"
       }

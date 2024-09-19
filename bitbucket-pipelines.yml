@@ -454,21 +454,6 @@ definitions:
           - pnpminfrashared
           - clis
 
-    - step: &infraFunctionsBuild
-        name: 'infra/infra-functions: Lint & build'
-        image: atlassian/default-image:4
-        script:
-          - *initializeStep
-          - pnpm install
-            --include-workspace-root
-            --frozen-lockfile
-            --filter=infra-functions...
-          - pnpm nx run infra-functions:lint
-          - pnpm nx run infra-functions:build
-        caches:
-          - pnpminfrafunctions
-          - clis
-
     # Internal steps
 
     - step: &internalDocsBuild
