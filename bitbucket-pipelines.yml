@@ -58,18 +58,11 @@ definitions:
           depth: full
         script:
           - |
-            response=$(curl -s -w "%{http_code}" -o response_body.txt -X POST "${SB_DEPLOY_TRIGGER_URL}?secret=$(echo -n '${SB_DEPLOY_TRIGGER_SECRET}' | jq -sRr @uri)" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "referenceName": "'"${BITBUCKET_COMMIT}"'",
-              "deployTarget": "'"${BITBUCKET_DEPLOYMENT_ENVIRONMENT}"'"
-            }')
-            status_code=$(tail -n1 <<< "$response")
-            if [ "$status_code" -ne 200 ]; then
-              echo "Deployment trigger failed with status code $status_code"
-              cat response_body.txt
-              exit 1
-            fi
+            app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+            echo "VERSION=${app_version}" >> .env
+            artifact_name="${SB_DEPLOY_ENVIRONMENT_NAME}-entrypoint"
+            zip -r -q "${artifact_name}.zip" .
+            aws s3 cp "${artifact_name}.zip" "s3://${{ inputs.artifacts-s3-bucket }}/${artifact_name}"
 
     - step: &webappTest
         name: 'webapp: Lint & test'
@@ -509,8 +502,6 @@ definitions:
 pipelines:
   default:
     - parallel:
-        - step: *codecommitPush
-
         - step: *webappTest
         - step: *webappBuild
         - step: *webappCoreTest
@@ -531,7 +522,6 @@ pipelines:
 
         - step: *infraCoreBuild
         - step: *infraSharedBuild
-        - step: *infraFunctionsBuild
 
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
@@ -569,7 +559,6 @@ pipelines:
 
         - step: *infraCoreBuild
         - step: *infraSharedBuild
-        - step: *infraFunctionsBuild
 
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
