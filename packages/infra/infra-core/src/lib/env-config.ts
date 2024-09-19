@@ -13,7 +13,6 @@ declare const process: {
     SB_LOAD_BALANCER_CERTIFICATE_ARN: string;
     SB_HOSTED_ZONE_ID: string;
     SB_HOSTED_ZONE_NAME: string;
-    SB_DEPLOY_BRANCHES: string;
     PROJECT_NAME: string;
     ENV_STAGE: string;
     VERSION: string;
@@ -77,7 +76,6 @@ interface CIConfig {
 
 export interface EnvironmentSettings {
   appBasicAuth: string | null | undefined;
-  deployBranches: Array<string>;
   domains: EnvConfigFileDomains;
   envStage: string;
   hostedZone: EnvConfigHostedZone;
@@ -97,7 +95,6 @@ interface ConfigFileContent {
 }
 
 export interface EnvConfigFileContent {
-  deployBranches: Array<string>;
   hostedZone: EnvConfigHostedZone;
   basicAuth: string | null | undefined;
   domains: EnvConfigFileDomains;
@@ -163,7 +160,6 @@ async function readEnvConfig(envStage: string): Promise<EnvConfigFileContent> {
       id: process.env.SB_HOSTED_ZONE_ID ?? '',
       name: hostedZoneName,
     },
-    deployBranches: process.env.SB_DEPLOY_BRANCHES?.split(',') ?? [],
   };
 }
 
@@ -192,7 +188,6 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
     appBasicAuth: envConfig.basicAuth,
     hostedZone: envConfig.hostedZone,
     domains: envConfig.domains,
-    deployBranches: envConfig.deployBranches,
     webAppEnvVariables: {
       ...(config?.webAppConfig?.envVariables || {}),
       ...(envConfig?.webAppConfig?.envVariables || {}),
