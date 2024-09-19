@@ -2,6 +2,7 @@ import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { CfnOutput } from 'aws-cdk-lib';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
 import { GlobalResources } from '../global/resources';
 
@@ -43,5 +44,10 @@ export class CiEntrypoint extends Construct {
         readWriteType: cloudtrail.ReadWriteType.WRITE_ONLY,
       },
     );
+
+    new CfnOutput(this, 'ArtifactsBucketName', {
+      exportName: `${props.envSettings.projectEnvName}-artifactsBucketName`,
+      value: this.artifactsBucket.bucketName,
+    });
   }
 }
