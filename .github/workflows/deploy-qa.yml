@@ -3,8 +3,6 @@ name: "Deploy to QA"
 concurrency: QA
 
 on:
-  push:
-    branches: ['master', 'feat/661-remove-code-commit']
   workflow_dispatch:
 
 jobs:
