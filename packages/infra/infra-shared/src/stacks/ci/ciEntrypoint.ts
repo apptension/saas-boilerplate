@@ -1,15 +1,14 @@
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { BuildEnvironmentVariableType } from 'aws-cdk-lib/aws-codebuild';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
+import { GlobalResources } from '../global/resources';
 
-export interface CiEntrypointProps extends EnvConstructProps {
-  codeRepository: codecommit.IRepository;
-}
+export interface CiEntrypointProps extends EnvConstructProps {}
 
 export class CiEntrypoint extends Construct {
   public artifactsBucket: s3.Bucket;
@@ -23,12 +22,23 @@ export class CiEntrypoint extends Construct {
     return `${envSettings.projectEnvName}-entrypoint`;
   }
 
+  private retrieveExternalCIUser() {
+    return iam.User.fromUserName(
+      this,
+      'ExternalCiUser',
+      GlobalResources.getExternalCIUserName(),
+    );
+  }
+
   constructor(scope: Construct, id: string, props: CiEntrypointProps) {
     super(scope, id);
 
     this.artifactsBucket = new s3.Bucket(this, 'ArtifactsBucket', {
       versioned: true,
     });
+
+    const externalCiUser = this.retrieveExternalCIUser();
+    this.artifactsBucket.grantWrite(externalCiUser);
 
     const trail = new cloudtrail.Trail(this, 'CloudTrail');
     trail.addS3EventSelector(

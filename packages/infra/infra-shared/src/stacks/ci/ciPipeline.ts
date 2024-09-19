@@ -19,7 +19,6 @@ import { DocsCiConfig } from './ciDocs';
 export interface CiPipelineProps extends EnvConstructProps {
   entrypointArtifactBucket: Bucket;
   backendRepository: ecr.IRepository;
-  codeRepository: cc.IRepository;
 }
 
 export class CiPipeline extends Construct {

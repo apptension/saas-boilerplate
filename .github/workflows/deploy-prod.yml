@@ -18,5 +18,4 @@ jobs:
       - uses: ./.github/workflows/actions/deploy
         with:
           environment-name: 'prod'
-          trigger-url: '${{ vars.SB_DEPLOY_TRIGGER_URL }}'
-          trigger-secret: '${{ secrets.SB_DEPLOY_TRIGGER_SECRET }}'
+          artifacts-s3-bucket: '${{ secrets.SB_CI_ARTIFACTS_BUCKET }}'
