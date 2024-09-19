@@ -5,9 +5,7 @@ inputs:
   environment-name:
     required: true
     default: "production"
-  trigger-url:
-    required: true
-  trigger-secret:
+  artifacts-s3-bucket:
     required: true
 
 runs:
@@ -18,18 +16,20 @@ runs:
         fetch-depth: 0
         fetch-tags: 'true'
 
-    - name: Call Deploy Trigger Endpoint
+    - name: Set VERSION in environment
       shell: bash
       run: |
-        response=$(curl -s -w "%{http_code}" -o response_body.txt -X POST "${{ inputs.trigger-url }}?secret=$(echo -n '${{ inputs.trigger-secret }}' | jq -sRr @uri)" \
-        -H "Content-Type: application/json" \
-        -d '{
-          "referenceName": "'"${GITHUB_REF_NAME}"'",
-          "deployTarget": "'"${{ inputs.environment-name }}"'"
-        }')
-        status_code=$(tail -n1 <<< "$response")
-        if [ "$status_code" -ne 200 ]; then
-          echo "Deployment trigger failed with status code $status_code"
-          cat response_body.txt
-          exit 1
-        fi
+        app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+        echo "VERSION=${app_version}" >> .env
+
+    - name: Zip artifact
+      shell: bash
+      run: |
+        artifact_name="${{ inputs.environment-name }}-entrypoint.zip"
+        zip -r $artifact_name .
+
+    - name: Send artifact to S3
+      shell: bash
+      run: |
+        artifact_name="${{ inputs.environment-name }}-entrypoint.zip"
+        aws s3 cp $artifact_name "s3://${{ inputs.artifacts-s3-bucket }}/${artifact_name}"
