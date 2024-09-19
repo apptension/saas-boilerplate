@@ -57,12 +57,14 @@ definitions:
         clone:
           depth: full
         script:
+          - *setupAwsCli
+          - sudo apt-get install zip
           - |
             app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
             echo "VERSION=${app_version}" >> .env
             artifact_name="${SB_DEPLOY_ENVIRONMENT_NAME}-entrypoint"
             zip -r -q "${artifact_name}.zip" .
-            aws s3 cp "${artifact_name}.zip" "s3://${{ inputs.artifacts-s3-bucket }}/${artifact_name}"
+            aws s3 cp "${artifact_name}.zip" "s3://${SB_CI_ARTIFACTS_BUCKET}/${artifact_name}"
 
     - step: &webappTest
         name: 'webapp: Lint & test'
@@ -530,15 +532,6 @@ pipelines:
   branches:
     master:
       - parallel:
-        - step:
-            <<: *deploy-current-branch
-            name: Deploy to Production env
-            deployment: production
-        - step:
-            <<: *deploy-current-branch
-            name: Deploy to QA env
-            deployment: qa
-
         - step: *webappTest
         - step: *webappBuild
         - step: *webappCoreTest
@@ -563,3 +556,12 @@ pipelines:
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
         - step: *internalToolsBuild
+
+      - step:
+          <<: *deploy-current-branch
+          name: Deploy to Production env
+          deployment: production
+      - step:
+          <<: *deploy-current-branch
+          name: Deploy to QA env
+          deployment: qa
