@@ -1,20 +1,18 @@
 # Trigger CI/CD deployment manually
 
-You can also trigger a deployment manually using AWS Console!
+You can also trigger a deployment manually using GitHub Actions.
 
-1. Navigate to `CodeBuild` service.
+### Run GitHub Actions manually
 
-2. Find the entrypoint project named `<PROJECT_NAME>-<ENV_STAGE_NAME>` (e.g. `mypro-qa`) and navigate to it by pressing
-   its name.
+If you have [GitHub Actions configured](./auto-deploy) in your repository, you can trigger a deployment manually.
 
-3. Press the "Start build with overrides" button.
+1. Go to the GitHub repository and navigate to the "Actions" tab.
 
-4. Select the source branch and optionally a commit ID.
+2. Select `Deploy to {ENVIRONMENT}` workflow.
 
-5. Submit by pressing "Start build" button.
-
-6. The Pipeline should start in a few seconds.
+3. Press the "Run workflow" button.
 
 :::info
-You can also build and deploy apps from your local device. [Read more](../deploy-to-aws/run-deployment-commands#deploy-applications-code)
+Learn how to run GitHub Actions manually from the
+[documentation](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow).
 :::

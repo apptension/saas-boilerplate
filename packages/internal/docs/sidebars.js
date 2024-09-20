@@ -193,8 +193,8 @@ module.exports = {
             id: 'aws/cicd/index',
           },
           items: [
-            'aws/cicd/trigger-cicd-manually',
             'aws/cicd/auto-deploy',
+            'aws/cicd/trigger-cicd-manually',
             'aws/cicd/configure-cicd-notifications',
             'aws/cicd/setup-docker-hub',
           ],
