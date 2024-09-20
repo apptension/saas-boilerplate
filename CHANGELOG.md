@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/apptension/saas-boilerplate/compare/4.0.0...4.1.0) (2024-09-20)
+
+### Features
+
+- [#611](https://github.com/apptension/saas-boilerplate/issues/611) Remove AWS CodeCommit from stack ([#619](https://github.com/apptension/saas-boilerplate/issues/619)) ([751bb99](https://github.com/apptension/saas-boilerplate/commit/751bb99a9e7fc6111130991d1775e5142004863e))
+
+### Bug Fixes
+
+- [#601](https://github.com/apptension/saas-boilerplate/issues/601) Fix copy inconsistency ([#609](https://github.com/apptension/saas-boilerplate/issues/609)) ([d34eab4](https://github.com/apptension/saas-boilerplate/commit/d34eab413f3be03ceb6ac7843b7c3c363562b282))
+- [#604](https://github.com/apptension/saas-boilerplate/issues/604) Fix user export ([#606](https://github.com/apptension/saas-boilerplate/issues/606)) ([8725584](https://github.com/apptension/saas-boilerplate/commit/8725584e0cb9dcf9b8255b597a5c72a1f1096bdc))
+- Change `docker-compose` calls to `docker compose` ([#613](https://github.com/apptension/saas-boilerplate/issues/613)) ([26e3cf5](https://github.com/apptension/saas-boilerplate/commit/26e3cf558a1b58514dd29cab18ed6be0c7a0d155))
+- Fix invalid docs formatting ([#614](https://github.com/apptension/saas-boilerplate/issues/614)) ([cf0e826](https://github.com/apptension/saas-boilerplate/commit/cf0e8262398d8f26509d413217c72a4c694c8907))
+
 ## [4.0.0](https://github.com/apptension/saas-boilerplate/compare/3.0.1...4.0.0) (2024-07-11)
 
 ### ⚠ BREAKING CHANGES
