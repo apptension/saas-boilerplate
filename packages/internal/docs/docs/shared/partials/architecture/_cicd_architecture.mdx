@@ -1,4 +1,5 @@
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import ImgThemed from '../../components/ImgThemed.component';
 
 ## CI/CD architecture diagram
 
@@ -9,5 +10,5 @@ The deployment pipeline is configured to start automatically after each code pus
 CodeCommit repository created by the CI/CD CDK stack. Each environment can have a different branch configuration.
 
 <p align="center">
-  <img src={useBaseUrl("img/cicd-diagram-v3.png")} alt="CI/CD Diagram" />
+  <ImgThemed srcDark={useBaseUrl("img/cicd-diagram-v4-dark.png")} src={useBaseUrl("img/cicd-diagram-v4.png")} alt="CI/CD Diagram" />
 </p>
