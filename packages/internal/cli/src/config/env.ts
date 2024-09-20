@@ -93,11 +93,6 @@ export async function validateStageEnv() {
       desc: 'A domain used to static assets delivery',
       example: 'cdn.example.com',
     }),
-    SB_DEPLOY_BRANCHES: envalid.str({
-      default: '',
-      desc: 'A comma separated list of branches that will trigger automatic deployment of the environment',
-      example: 'master,main',
-    }),
     SB_BASIC_AUTH: envalid.str({
       default: '',
       desc: 'Username and password separated by colon (":") used to protect website form unauthorized access',

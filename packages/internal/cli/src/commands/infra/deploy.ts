@@ -9,7 +9,6 @@ enum StackName {
   Global = 'global',
   Main = 'main',
   Db = 'db',
-  Functions = 'functions',
   Ci = 'ci',
   Components = 'components',
 }
@@ -65,9 +64,6 @@ export default class InfraDeploy extends BaseCommand<typeof InfraDeploy> {
     }
     if (!args.stackName || args.stackName === StackName.Db) {
       await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:db`]);
-    }
-    if (!args.stackName || args.stackName === StackName.Functions) {
-      await runCommand('pnpm', ['nx', 'run', `infra-functions:${verb}`]);
     }
     if (!args.stackName || args.stackName === StackName.Ci) {
       await runCommand('pnpm', ['nx', 'run', `infra-shared:${verb}:ci`]);

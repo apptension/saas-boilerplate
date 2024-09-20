@@ -2,50 +2,30 @@
 title: Configure Automatic Deployments
 ---
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
-Each deployed environment comes with a preconfigured CI/CD implemented with AWS CodeCommit, AWS CodeBuild,
-and AWS CodePipeline. The general idea of the deployment is for the user to push the code to a `master` branch of the
-CodeCommit repository created by the Ci CDK Stack.
+Each deployed environment comes with a preconfigured CI/CD pipeline using AWS S3 bucket, AWS CodeBuild, and AWS
+CodePipeline. The general idea of the deployment is for the user to upload zipped code artifact to the S3 bucket,
+triggering CodeBuild and CodePipeline to execute the deployment. Artifacts are prepared by the CI pipeline
+(GitHub Actions or Bitbucket Pipelines).
 
 ## Automatically synchronize external repository
 
-### Get authenticated repository URL
+### Get artifacts bucket name
 
-AWS Boilerplate generates a user for you that has minimal permissions required for pushing code to the CodeCommit
-repository. In order to implement a synchronization logic we need to get a repository URL and credentials of the user.
-You can create both using a following command:
+SaaS Boilerplate generates a user for you that has minimal permissions required for uploading code artifact to the S3
+bucket. In order to implement a synchronization logic we need to get a bucket name and credentials of the user.
+To get the bucket name use the following command:
+```shell
+pnpm saas ci get-artifacts-bucket
+```
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import CodeBlock from '@theme/CodeBlock';
+Alternatively, you can find the bucket name in the AWS console under the source of the AWS CodePipeline of the
+environment.
 
-<Tabs>
-  <TabItem value="macos" label="Mac OS" default>
-    <CodeBlock>
-      saas aws est-env qa
-      <br />
-      saas ci create-credentials | pbcopy
-    </CodeBlock>
-  </TabItem>
-  <TabItem value="linux" label="Linux">
-    <CodeBlock>
-      saas aws est-env qa
-      <br />
-      saas ci create-credentials | xclip -sel clip
-    </CodeBlock>
-  </TabItem>
-</Tabs>
+### Get authentication credentials for CI AWS user
 
-The result will be copied to your clipboard. Make sure you save it in some secure place. You can only create two such
-URLs so if something goes wrong just open `external-ci` user's page in AWS IAM's web panel and delete appropriate key.
-
-### Get authentication credentials for ECR repository
-
-All CI pipeline builds are running within a docker image; some services, such as web app, utilise a base image that
-contain preinstalled packages to speed up the whole process. Such base images automatically update on every
-push to a `master` branch, so they are up to date with your code, and you don't have to really do anything besides
-providing access to pull them!
+In order to upload the code artifact to the S3 bucket, the CI pipeline needs to authenticate with AWS. SaaS Boilerplate
+generates a `external-ci` user for you that has minimal permissions required for uploading code artifact to the S3
+bucket. To get the credentials of the user follow these steps:
 
 1. Open `IAM` service in web console.
 
@@ -61,11 +41,9 @@ providing access to pull them!
 
 1. Open `Settings` page of your repository.
 
-2. Go to `Secrets` subpage.
+2. Go to `Security` > `Secrets and variables` > `Actions` subpage.
 
-3. Create following secrets:
-
-   - `CODE_COMMIT_REPO` – [authenticated repository URL](#get-authenticated-repository-url)
+3. Create following secrets under `Repository secrets`:
 
    - `AWS_ACCESS_KEY_ID` – [external-ci](#get-authentication-credentials-for-ecr-repository) user access key id
 
@@ -73,22 +51,37 @@ providing access to pull them!
 
    - `AWS_DEFAULT_REGION` – set to a region to which your system is deployed
 
-4. Test by pushing some code to your Github repository. After couple of seconds the code should be synchronized in CodeCommit.
+4. Go to `Code and automation` > `Environments` subpage under repository settings. Add you environment and select it.
+
+    :::info
+    You can learn more about environments on GitHub [here](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment).
+    :::
+
+5. Create following secrets under `Environment secrets`:
+
+   - `SB_CI_ARTIFACTS_BUCKET` – [artifacts bucket name](#get-artifacts-bucket-name)
+
+6. Create following secrets under `Environment variables`:
+
+   - `SB_DEPLOY_STAGE` – set to the name of the environment
+
+7. Edit the `.github/workflows/deploy-*.yml` files to match your environments.
+
+    :::info
+    Learn more about deployments using GitHub Actions [here](https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions).
+    :::
 
 ### Configure Bitbucket
 
 1. Open `Repository Settings` page of your repository.
 
-2. Go to `Pipeline / Settings` sub-page.
+2. Go to `Pipelines` > `Settings` sub-page.
 
 3. Enable Bitbucket Pipelines.
 
-4. Go to `Pipeline / Repository variables` sub-page.
+4. Go to `Pipelines` > `Repository variables` sub-page.
 
 5. Create following variables:
-
-   - `CODE_COMMIT_REPO` – set value to
-     [authenticated repository URL](#get-authenticated-repository-url)
 
    - `AWS_ACCESS_KEY_ID` – `external-ci` user access key id
 
@@ -96,10 +89,18 @@ providing access to pull them!
 
    - `AWS_DEFAULT_REGION` – set to a region to which your system is deployed
 
-6. Test by pushing some code to your BitBucket repository. After couple of seconds the code should be synchronized in CodeCommit.
+    :::info
+    Learn more about repository variables on Bitbucket [here](https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/#Repository-variables).
+    :::
 
-## Trigger deployment automatically
+6. Go to `Pipelines` > `Deployments` sub-page. And configure your deployment environment.
 
-If you want a branch to be deployed automatically for every pushed commit the only thing you need to do is to name this branch
-in your environment configuration file using `SB_DEPLOY_BRANCHES` environment variable. Check out the
-[environment docs](/api-reference/env-files#envenv-id) for more details.
+    :::info
+    Learn more about deployments on Bitbucket [here](https://support.atlassian.com/bitbucket-cloud/docs/deployments/).
+    :::
+
+7. Create following variables for the environment:
+
+   - `SB_CI_ARTIFACTS_BUCKET` – [artifacts bucket name](#get-artifacts-bucket-name)
+
+   - `SB_DEPLOY_ENVIRONMENT_NAME` - set to the name of the full project environment name (`saas-qa` for example)

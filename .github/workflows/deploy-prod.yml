@@ -1,0 +1,25 @@
+name: "Deploy to production"
+
+concurrency: Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: 'true'
+
+      - uses: ./.github/workflows/actions/deploy
+        with:
+          environment-name: 'saas-prod'
+          artifacts-s3-bucket: '${{ secrets.SB_CI_ARTIFACTS_BUCKET }}'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}

@@ -7,8 +7,6 @@ import { MainKmsKey } from './stacks/main/mainKmsKey';
 import { MainRedisCluster } from './stacks/main/mainRedisCluster';
 import { UsEastResourcesStack } from './stacks/usEastResources';
 
-export * from './lib/names';
-
 export {
   MainKmsKey,
   MainDatabase,

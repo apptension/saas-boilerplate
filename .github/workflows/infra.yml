@@ -14,7 +14,6 @@ jobs:
         infra-lib-name:
           - infra-core
           - infra-shared
-          - infra-functions
     steps:
       - uses: actions/checkout@v3
         with:

@@ -20,6 +20,7 @@ const tracer = trace.getTracer('config:aws');
 type LoadAWSCredentialsOptions = {
   envStage: string;
   validateEnvStageVariables: boolean;
+  skipERCLogin?: boolean;
 };
 
 async function loadStageEnv(
@@ -132,8 +133,10 @@ export const initAWS = async (
       options.validateEnvStageVariables,
     );
 
+    const { skipERCLogin = false } = options;
+
     const awsRegion = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
-    if (awsAccountId && awsRegion) {
+    if (awsAccountId && awsRegion && !skipERCLogin) {
       await loginToECR(context, {
         awsAccountId,
         awsRegion,

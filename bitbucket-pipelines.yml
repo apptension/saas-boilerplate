@@ -51,14 +51,20 @@ definitions:
       --filter=webapp...
 
   steps:
-    - step: &codecommitPush
-        name: Push code to CodeCommit
+    - step: &deploy-current-branch
+        name: Deploy environment
+        trigger: manual
         clone:
           depth: full
         script:
-          - git remote add codecommit "$CODE_COMMIT_REPO"
-          - git push --force -u codecommit "$BITBUCKET_BRANCH"
-          - git push codecommit --tags --force
+          - *setupAwsCli
+          - sudo apt-get install zip
+          - |
+            app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+            echo "VERSION=${app_version}" >> .env
+            artifact_name="${SB_DEPLOY_ENVIRONMENT_NAME}-entrypoint"
+            zip -r -q "${artifact_name}.zip" .
+            aws s3 cp "${artifact_name}.zip" "s3://${SB_CI_ARTIFACTS_BUCKET}/${artifact_name}"
 
     - step: &webappTest
         name: 'webapp: Lint & test'
@@ -443,21 +449,6 @@ definitions:
           - pnpminfrashared
           - clis
 
-    - step: &infraFunctionsBuild
-        name: 'infra/infra-functions: Lint & build'
-        image: atlassian/default-image:4
-        script:
-          - *initializeStep
-          - pnpm install
-            --include-workspace-root
-            --frozen-lockfile
-            --filter=infra-functions...
-          - pnpm nx run infra-functions:lint
-          - pnpm nx run infra-functions:build
-        caches:
-          - pnpminfrafunctions
-          - clis
-
     # Internal steps
 
     - step: &internalDocsBuild
@@ -513,8 +504,6 @@ definitions:
 pipelines:
   default:
     - parallel:
-        - step: *codecommitPush
-
         - step: *webappTest
         - step: *webappBuild
         - step: *webappCoreTest
@@ -535,7 +524,6 @@ pipelines:
 
         - step: *infraCoreBuild
         - step: *infraSharedBuild
-        - step: *infraFunctionsBuild
 
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
@@ -544,8 +532,6 @@ pipelines:
   branches:
     master:
       - parallel:
-        - step: *codecommitPush
-
         - step: *webappTest
         - step: *webappBuild
         - step: *webappCoreTest
@@ -566,12 +552,16 @@ pipelines:
 
         - step: *infraCoreBuild
         - step: *infraSharedBuild
-        - step: *infraFunctionsBuild
 
         - step: *internalDocsBuild
         - step: *internalStatusDashboardBuild
         - step: *internalToolsBuild
-        - step:
-            name: Delete unused branches from CodeCommit
-            script:
-              - /bin/bash packages/internal/tools/scripts/clean-codebuild-branches.sh
+
+      - step:
+          <<: *deploy-current-branch
+          name: Deploy to Production env
+          deployment: production
+      - step:
+          <<: *deploy-current-branch
+          name: Deploy to QA env
+          deployment: qa

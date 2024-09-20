@@ -1,0 +1,35 @@
+name: "Deploy environment"
+description: "Trigger deployment of the specified environment"
+
+inputs:
+  environment-name:
+    required: true
+    default: "production"
+  artifacts-s3-bucket:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: 'true'
+
+    - name: Set VERSION in environment
+      shell: bash
+      run: |
+        app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
+        echo "VERSION=${app_version}" >> .env
+
+    - name: Zip artifact
+      shell: bash
+      run: |
+        artifact_name="${{ inputs.environment-name }}-entrypoint.zip"
+        zip -r -q $artifact_name .
+
+    - name: Send artifact to S3
+      shell: bash
+      run: |
+        artifact_name="${{ inputs.environment-name }}-entrypoint"
+        aws s3 cp "${artifact_name}.zip" "s3://${{ inputs.artifacts-s3-bucket }}/${artifact_name}"
