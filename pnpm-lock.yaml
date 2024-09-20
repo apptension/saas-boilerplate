@@ -483,6 +483,9 @@ importers:
       '@docusaurus/preset-classic':
         specifier: ^3.2.1
         version: 3.2.1(@algolia/client-search@4.23.3)(@types/react@18.3.3)(esbuild@0.21.3)(eslint@9.3.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(search-insights@2.14.0)(typescript@5.4.5)
+      '@docusaurus/theme-common':
+        specifier: 3.2.1
+        version: 3.2.1(@docusaurus/types@3.2.1(esbuild@0.21.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(esbuild@0.21.3)(eslint@9.3.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)
       '@mdx-js/react':
         specifier: ^3.0.1
         version: 3.0.1(@types/react@18.3.3)(react@18.2.0)
@@ -22854,7 +22857,7 @@ snapshots:
       jiti: 1.21.0
       js-yaml: 4.1.0
       lodash: 4.17.21
-      micromatch: 4.0.5
+      micromatch: 4.0.7
       prompts: 2.4.2
       resolve-pathname: 3.0.0
       shelljs: 0.8.5
@@ -23635,7 +23638,7 @@ snapshots:
     dependencies:
       graphql: 16.8.1
       lodash.sortby: 4.7.0
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   '@graphql-tools/executor-graphql-ws@1.1.0(graphql@16.8.1)':
     dependencies:
@@ -23765,12 +23768,12 @@ snapshots:
   '@graphql-tools/optimize@1.4.0(graphql@16.8.1)':
     dependencies:
       graphql: 16.8.1
-      tslib: 2.4.1
+      tslib: 2.6.2
 
   '@graphql-tools/optimize@2.0.0(graphql@16.8.1)':
     dependencies:
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   '@graphql-tools/prisma-loader@8.0.1(@types/node@20.12.12)(encoding@0.1.13)(graphql@16.8.1)':
     dependencies:
@@ -23805,7 +23808,7 @@ snapshots:
       '@ardatan/relay-compiler': 12.0.0(encoding@0.1.13)(graphql@16.8.1)
       '@graphql-tools/utils': 9.2.1(graphql@16.8.1)
       graphql: 16.8.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -23815,7 +23818,7 @@ snapshots:
       '@ardatan/relay-compiler': 12.0.0(encoding@0.1.13)(graphql@16.8.1)
       '@graphql-tools/utils': 10.0.6(graphql@16.8.1)
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -23868,13 +23871,13 @@ snapshots:
   '@graphql-tools/utils@8.13.1(graphql@16.8.1)':
     dependencies:
       graphql: 16.8.1
-      tslib: 2.4.1
+      tslib: 2.6.2
 
   '@graphql-tools/utils@9.2.1(graphql@16.8.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       graphql: 16.8.1
-      tslib: 2.4.1
+      tslib: 2.6.2
 
   '@graphql-tools/wrap@10.0.1(graphql@16.8.1)':
     dependencies:
@@ -26958,7 +26961,7 @@ snapshots:
       get-npm-tarball-url: 2.1.0
       giget: 1.2.3
       globby: 14.0.1
-      jscodeshift: 0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.6))
+      jscodeshift: 0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.5))
       leven: 3.1.0
       ora: 5.4.1
       prettier: 3.2.5
@@ -27007,7 +27010,7 @@ snapshots:
       '@types/cross-spawn': 6.0.6
       cross-spawn: 7.0.3
       globby: 14.0.1
-      jscodeshift: 0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.6))
+      jscodeshift: 0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.5))
       lodash: 4.17.21
       prettier: 3.2.5
       recast: 0.23.7
@@ -34038,7 +34041,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   is-map@2.0.3: {}
 
@@ -34152,7 +34155,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   is-weakmap@2.0.2: {}
 
@@ -34670,7 +34673,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jscodeshift@0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.6)):
+  jscodeshift@0.15.2(@babel/preset-env@7.24.6(@babel/core@7.24.5)):
     dependencies:
       '@babel/core': 7.24.6
       '@babel/parser': 7.24.6
@@ -35306,7 +35309,7 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   lower-case@2.0.2:
     dependencies:
@@ -39068,7 +39071,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   sprintf-js@1.0.3: {}
 
@@ -39564,7 +39567,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   symbol-observable@1.2.0: {}
 
@@ -40249,7 +40252,7 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.2
 
   upper-case@2.0.2:
     dependencies:
