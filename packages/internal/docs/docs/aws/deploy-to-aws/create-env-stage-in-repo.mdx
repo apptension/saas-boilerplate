@@ -137,15 +137,6 @@ if this isn't a production environment.
 pnpm saas aws set-var SB_BASIC_AUTH username:password
 ```
 
-### \[Optional\] Configure automatic deployment for selected branches
-
-If you want a deployment to be stared automatically when a commit is pushed to certain branch you can list them in the
-`SB_DEPLOY_BRANCHES` variable.
-
-```shell
-pnpm saas aws set-var SB_DEPLOY_BRANCHES master
-```
-
 ### \[Optional\] Set tools env variables
 
 The `tools` package during CI deployment is responsible for uploading the information of the version of deployed
