@@ -2,7 +2,12 @@ import { Command } from '@oclif/core';
 import { color } from '@oclif/color';
 import { trace } from '@opentelemetry/api';
 
-import { ENV_STAGE_LOCAL, getRootPath, loadVersionEnv, disableNxEnvFiles } from './env';
+import {
+  ENV_STAGE_LOCAL,
+  getRootPath,
+  loadVersionEnv,
+  disableNxEnvFiles,
+} from './env';
 import { initAWS } from './aws';
 import { loadEnvStage } from './storage';
 
@@ -12,6 +17,7 @@ type InitConfigOptions = {
   requireAws?: boolean | 'allow-local';
   validateEnvStageVariables?: boolean;
   requireLocalEnvStage?: boolean;
+  skipERCLogin?: boolean;
 };
 
 export const initConfig = async (
@@ -20,6 +26,7 @@ export const initConfig = async (
     requireAws = false,
     validateEnvStageVariables = true,
     requireLocalEnvStage = false,
+    skipERCLogin = false,
   }: InitConfigOptions,
 ) => {
   return tracer.startActiveSpan('initConfig', async (span) => {
@@ -57,6 +64,7 @@ Please call \`saas aws set-env local\` first or open a new terminal.`,
         const awsMetadata = await initAWS(context, {
           envStage,
           validateEnvStageVariables,
+          skipERCLogin,
         });
 
         awsAccountId = awsMetadata.awsAccountId;

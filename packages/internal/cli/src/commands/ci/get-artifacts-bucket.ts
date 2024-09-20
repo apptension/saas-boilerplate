@@ -7,12 +7,10 @@ import { indexBy, prop } from 'ramda';
 import { initConfig } from '../../config/init';
 import { BaseCommand } from '../../baseCommand';
 
-type GetOutputsFromGlobalStackOptions = {
+type GetOutputsFromStackOptions = {
   stackName: string;
 };
-async function getOutputsFromGlobalStack({
-  stackName,
-}: GetOutputsFromGlobalStackOptions) {
+async function getOutputsFromStack({ stackName }: GetOutputsFromStackOptions) {
   const client = new CloudFormationClient();
   const describeStackResult = await client.send(
     new DescribeStacksCommand({ StackName: stackName }),
@@ -34,9 +32,10 @@ export default class CiGetArtifactsBucket extends BaseCommand<
   async run(): Promise<void> {
     const { projectEnvName } = await initConfig(this, {
       requireAws: true,
+      skipERCLogin: true,
     });
 
-    const globalStackOutputs = await getOutputsFromGlobalStack({
+    const globalStackOutputs = await getOutputsFromStack({
       stackName: `${projectEnvName}-CiStack`,
     });
     const { OutputValue: artifactsBucketName } =
@@ -46,6 +45,6 @@ export default class CiGetArtifactsBucket extends BaseCommand<
       this.error('Failed to fetch bucket name');
     }
 
-    this.log(artifactsBucketName);
+    this.log(`Bucket name: ${artifactsBucketName}`);
   }
 }
