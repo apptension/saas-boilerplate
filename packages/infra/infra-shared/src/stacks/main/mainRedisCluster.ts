@@ -34,7 +34,7 @@ export class MainRedisCluster extends Construct {
       engine: 'redis',
       cacheNodeType: 'cache.t2.micro',
       numCacheNodes: 1,
-      cacheSubnetGroupName: subnetGroup.cacheSubnetGroupName,
+      cacheSubnetGroupName: subnetGroup.ref,
       vpcSecurityGroupIds: [securityGroup.securityGroupId],
     });
 
