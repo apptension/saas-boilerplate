@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/apptension/saas-boilerplate/compare/4.1.0...4.1.1) (2024-09-27)
+
+### Bug Fixes
+
+- [#621](https://github.com/apptension/saas-boilerplate/issues/621) Redis cache deployment issue ([#622](https://github.com/apptension/saas-boilerplate/issues/622)) ([73115ee](https://github.com/apptension/saas-boilerplate/commit/73115ee76da730fe57640e39998a0d5f1090f86f))
+
 ## [4.1.0](https://github.com/apptension/saas-boilerplate/compare/4.0.0...4.1.0) (2024-09-20)
 
 ### Features
