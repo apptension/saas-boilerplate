@@ -4,7 +4,7 @@ clone:
 definitions:
   services:
     docker:
-      memory: 7128
+      memory: 3072
     docker-small:
       type: docker
       memory: 1024
@@ -45,6 +45,14 @@ definitions:
       && unzip -qq "${AWS_CLI_DEST_PATH}"
       && /bin/bash ./aws/install
       && aws --version
+
+    setupDockerCompose:
+      &setupDockerCompose |
+        apt-get update && apt-get install -y curl
+        mkdir -p ~/.docker/cli-plugins
+        curl -SL https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+        chmod +x ~/.docker/cli-plugins/docker-compose
+
     installWebappDeps: &installWebappDeps pnpm install
       --include-workspace-root
       --frozen-lockfile
@@ -344,6 +352,7 @@ definitions:
         script:
           - *initializeStep
           - *setupAwsCli
+          - *setupDockerCompose
           - pnpm install
             --include-workspace-root
             --frozen-lockfile
@@ -373,6 +382,7 @@ definitions:
         script:
           - *initializeStep
           - *setupAwsCli
+          - *setupDockerCompose
           - pnpm install
             --include-workspace-root
             --frozen-lockfile
@@ -401,6 +411,7 @@ definitions:
         script:
           - *initializeStep
           - *setupAwsCli
+          - *setupDockerCompose
           - pnpm install
             --include-workspace-root
             --frozen-lockfile
@@ -457,6 +468,7 @@ definitions:
         script:
           - *initializeStep
           - *setupAwsCli
+          - *setupDockerCompose
           - pnpm install
             --include-workspace-root
             --frozen-lockfile
