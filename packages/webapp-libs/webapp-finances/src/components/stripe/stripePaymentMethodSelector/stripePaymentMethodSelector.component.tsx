@@ -3,7 +3,7 @@ import { StripeSubscriptionQueryQuery } from '@sb/webapp-api-client';
 import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
 import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
-import { Separator } from '@sb/webapp-core/components/separator';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';

@@ -1,8 +1,8 @@
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
-import { Separator } from '@sb/webapp-core/components/separator';
 import { H4 } from '@sb/webapp-core/components/typography';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { CheckCheck } from 'lucide-react';
 import { isEmpty } from 'ramda';

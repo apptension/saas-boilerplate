@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 
 import { render } from '../../../tests/utils/rendering';
-import { Separator } from '../separator.component';
+import { Separator } from '../separator';
 
-describe('Separator: Component', () => {
+describe('UI/Separator: Component', () => {
   it('should render', async () => {
     render(<Separator />);
 

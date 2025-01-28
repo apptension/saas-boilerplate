@@ -1,6 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { Separator } from './separator.component';
+import { Separator } from '../separator';
 
 const Template: StoryFn = () => {
   return (
@@ -11,7 +11,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Separator',
+  title: 'Core / UI / Separator',
   component: Template,
 };
 
