@@ -10,11 +10,11 @@
     "cssVariables": true
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "@sb/webapp-core/components",
+    "utils": "@sb/webapp-core/lib/utils",
+    "ui": "@sb/webapp-core/components/ui",
+    "lib": "@sb/webapp-core/lib",
+    "hooks": "@sb/webapp-core/hooks"
   },
   "iconLibrary": "lucide"
 }

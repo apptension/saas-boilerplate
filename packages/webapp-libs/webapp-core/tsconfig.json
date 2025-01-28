@@ -7,10 +7,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "@/*": ["packages/webapp-libs/webapp-core/src/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "files": [],
   "include": [],

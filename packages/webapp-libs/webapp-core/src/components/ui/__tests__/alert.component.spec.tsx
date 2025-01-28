@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 
-import { Alert, AlertDescription, AlertTitle } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Alert, AlertDescription, AlertTitle } from '../alert';
 
-describe('Alert: Component', () => {
+describe('UI/Alert: Component', () => {
   const title = 'Title';
   const content = 'Content';
 

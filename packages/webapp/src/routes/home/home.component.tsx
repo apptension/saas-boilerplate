@@ -1,8 +1,8 @@
-import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/alert';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { H4, Paragraph } from '@sb/webapp-core/components/typography';
+import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/ui/alert';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { AlertCircle, ArrowUpRight } from 'lucide-react';
