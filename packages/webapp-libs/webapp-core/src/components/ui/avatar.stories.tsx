@@ -1,8 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { Avatar } from './avatar.component';
-import { AvatarFallback } from './avatarFallback';
-import { AvatarImage } from './avatarImage';
+import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 
 const Template: StoryFn = () => {
   return (
@@ -16,7 +14,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Avatar',
+  title: 'Core / UI / Avatar',
   component: Template,
 };
 

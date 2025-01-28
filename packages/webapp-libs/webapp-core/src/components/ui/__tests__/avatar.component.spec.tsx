@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Avatar, AvatarFallback, AvatarImage } from '../avatar';
 
-describe('Avatar: Component', () => {
+describe('UI/Avatar: Component', () => {
   it('should render fallback', async () => {
     render(
       <Avatar>
