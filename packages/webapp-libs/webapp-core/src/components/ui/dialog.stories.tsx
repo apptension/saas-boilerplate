@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Dialog } from './dialog.component';
+import { Dialog } from './dialog';
 
 type Story = StoryObj<typeof Dialog>;
 
 const meta: Meta<typeof Dialog> = {
-  title: 'Core/Dialog',
+  title: 'Core/UI/Dialog',
   component: Dialog,
 };
 
