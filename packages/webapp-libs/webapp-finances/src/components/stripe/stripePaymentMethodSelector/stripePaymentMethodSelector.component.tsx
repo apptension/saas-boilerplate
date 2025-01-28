@@ -4,7 +4,7 @@ import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
 import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { RadioGroup } from '@sb/webapp-core/components/forms/radioGroup';
 import { Separator } from '@sb/webapp-core/components/separator';
-import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { ChevronLeft, Trash2 } from 'lucide-react';

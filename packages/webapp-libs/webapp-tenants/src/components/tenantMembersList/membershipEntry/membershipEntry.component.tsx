@@ -12,8 +12,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/dropdownMenu';
-import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/skeleton';
 import { TableCell, TableRow } from '@sb/webapp-core/components/table';
+import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/skeleton';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
 import { indexBy, prop, trim } from 'ramda';

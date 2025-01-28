@@ -1,6 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { Skeleton } from './skeleton.component';
+import { Skeleton } from './skeleton';
 
 const Template: StoryFn = () => {
   return (
@@ -11,7 +11,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Skeleton',
+  title: 'Core/UI/Skeleton',
   component: Template,
 };
 
