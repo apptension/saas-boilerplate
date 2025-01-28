@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../card';
 
-describe('Cards: Component', () => {
+describe('UI/Card: Component', () => {
   const content = 'content';
   const header = 'header';
   const footer = 'footer';

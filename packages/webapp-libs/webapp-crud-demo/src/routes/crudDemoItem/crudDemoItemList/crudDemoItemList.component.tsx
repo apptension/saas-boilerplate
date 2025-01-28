@@ -1,10 +1,10 @@
 import { CrudDemoItemListQueryQuery, gql } from '@sb/webapp-api-client/graphql';
 import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Pagination } from '@sb/webapp-core/components/pagination';
+import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';

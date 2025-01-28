@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Link } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { TabsContent } from '@sb/webapp-core/components/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';

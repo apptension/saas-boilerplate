@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@sb/webapp-core/components/cards';
+import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
 import { Skeleton as SkeletonElement } from '@sb/webapp-core/components/ui/skeleton';
 
 export const ListSkeleton = () => {
