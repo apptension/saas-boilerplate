@@ -1,10 +1,13 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { DropdownMenu, DropdownMenuTrigger } from './dropdownMenu.component';
-import { DropdownMenuContent } from './dropdownMenuContent';
-import { DropdownMenuItem } from './dropdownMenuItem';
-import { DropdownMenuLabel } from './dropdownMenuLabel';
-import { DropdownMenuSeparator } from './dropdownMenuSeparator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../dropdown-menu';
 
 const Template: StoryFn = () => {
   return (
@@ -25,7 +28,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Dropdown Menu',
+  title: 'Core / UI / Dropdown Menu',
   component: Template,
 };
 

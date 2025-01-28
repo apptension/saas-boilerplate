@@ -1,5 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 
+import { MockPointerEvent } from '../../../tests/mocks/pointerEvent';
+import { render } from '../../../tests/utils/rendering';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +15,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '../';
-import { MockPointerEvent } from '../../../tests/mocks/pointerEvent';
-import { render } from '../../../tests/utils/rendering';
+} from '../dropdown-menu';
 
 const triggerText = 'Trigger';
 const labelText = 'Label';
@@ -51,7 +51,7 @@ const Component = () => (
   </DropdownMenu>
 );
 
-describe('DropdownMenu', () => {
+describe('UI/DropdownMenu', () => {
   beforeEach(() => {
     window.PointerEvent = MockPointerEvent as any;
   });
