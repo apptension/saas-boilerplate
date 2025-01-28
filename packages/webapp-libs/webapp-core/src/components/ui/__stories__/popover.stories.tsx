@@ -2,8 +2,8 @@ import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
-import { Button } from '../buttons';
-import { Popover } from './popover.component';
+import { Button } from '../../buttons';
+import { Popover } from '../popover';
 
 const Template: StoryFn = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +26,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Popover',
+  title: 'Core / UI / Popover',
   component: Template,
 };
 

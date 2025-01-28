@@ -2,10 +2,10 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { Popover, PopoverContent, PopoverTrigger } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
-describe('Popover: component', () => {
+describe('UI/Popover: component', () => {
   const Component = (props: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root>) => (
     <Popover {...props}>
       <PopoverTrigger>Trigger</PopoverTrigger>
