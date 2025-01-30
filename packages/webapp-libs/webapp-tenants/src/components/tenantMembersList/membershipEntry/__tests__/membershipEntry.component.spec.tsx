@@ -61,11 +61,11 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
 describe('MembershipEntry: Component', () => {
   const Component = (props: MembershipEntryProps) => <MembershipEntry {...props} />;
   it('should commit update mutation', async () => {
-    const { membership, commonQueryMock, requestMock, refetch } = prepareMocks(updateTenantMembershipMutation, {
+    const { membership, commonQueryMock, requestMock } = prepareMocks(updateTenantMembershipMutation, {
       role: TenantUserRole.MEMBER,
     });
 
-    render(<Component membership={membership} onAfterUpdate={refetch} />, {
+    render(<Component membership={membership} />, {
       apolloMocks: [commonQueryMock, requestMock],
     });
 
@@ -73,7 +73,6 @@ describe('MembershipEntry: Component', () => {
     await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
     await userEvent.click(screen.getByRole('button', { name: /Member/i }));
     expect(requestMock.newData).toHaveBeenCalled();
-    expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('🎉 The user role was updated successfully!');
   });

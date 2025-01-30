@@ -4,7 +4,7 @@ export const updateTenantMembershipMutation = gql(/* GraphQL */ `
   mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {
     updateTenantMembership(input: $input) {
       tenantMembership {
-        id
+        ...commonQueryMembershipFragment
       }
     }
   }

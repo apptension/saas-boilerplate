@@ -17,6 +17,7 @@ export const TenantMembersList = () => {
   });
 
   const memberships = data?.tenant?.userMemberships?.filter((membership) => !!membership) ?? [];
+
   return (
     <Table>
       <TableHeader>

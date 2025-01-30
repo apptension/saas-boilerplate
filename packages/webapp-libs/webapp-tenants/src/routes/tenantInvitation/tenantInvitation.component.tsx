@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { useCommonQuery } from '@sb/webapp-api-client/providers';
+import { getFragmentData } from '@sb/webapp-api-client';
+import { commonQueryMembershipFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
@@ -39,7 +40,11 @@ export const TenantInvitation = () => {
     defaultMessage: '🎉 Invitation declined!',
   });
 
-  const tenant = tenants.find((t) => t?.membership?.invitationToken === token);
+  const tenant = tenants.find(
+    (t) => getFragmentData(commonQueryMembershipFragment, t?.membership)?.invitationToken === token
+  );
+  const tenantMembership = getFragmentData(commonQueryMembershipFragment, tenant?.membership);
+  const tenantMembershipId = tenantMembership?.id || '';
 
   const [commitAcceptMutation, { loading: acceptLoading }] = useMutation(acceptTenantInvitationMutation, {
     onCompleted: () => {
@@ -56,7 +61,7 @@ export const TenantInvitation = () => {
       variables: {
         input: {
           token,
-          id: tenant.membership.id,
+          id: tenantMembershipId,
         },
       },
     });
@@ -77,7 +82,7 @@ export const TenantInvitation = () => {
       variables: {
         input: {
           token,
-          id: tenant.membership.id,
+          id: tenantMembershipId,
         },
       },
     });
@@ -87,7 +92,7 @@ export const TenantInvitation = () => {
 
   if (!tenant) {
     redirectPath = generateLocalePath(RoutesConfig.home);
-  } else if (tenant.membership?.invitationAccepted) {
+  } else if (tenantMembership?.invitationAccepted) {
     redirectPath = generateTenantPath(RoutesConfig.home, { tenantId: tenant.id });
   }
 

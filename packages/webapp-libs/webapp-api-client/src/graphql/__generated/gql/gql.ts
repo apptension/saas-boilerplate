@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 import * as types from './graphql';
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
@@ -15,7 +15,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
-    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
+    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
+    "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n": types.CommonQueryMembershipFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n      tenants {\n        ...commonQueryTenantItemFragment\n      }\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
     "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
@@ -65,7 +66,7 @@ const documents = {
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
     "\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMutationDocument,
-    "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n": types.UpdateTenantMembershipMutationDocument,
+    "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n": types.UpdateTenantMembershipMutationDocument,
     "\n  mutation deleteTenantMembershipMutation($input: DeleteTenantMembershipMutationInput!) {\n    deleteTenantMembership(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMembershipMutationDocument,
     "\n  query tenantMembersListQuery($id: ID!) {\n    tenant(id: $id) {\n      userMemberships {\n        id\n        role\n        invitationAccepted\n        inviteeEmailAddress\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n      }\n    }\n  }\n": types.TenantMembersListQueryDocument,
     "\n  fragment tenantFragment on TenantType {\n    id\n    name\n    slug\n    membership {\n      role\n      invitationAccepted\n    }\n  }\n": types.TenantFragmentFragmentDoc,
@@ -113,7 +114,11 @@ export function gql(source: "\n  fragment commonQueryCurrentUserFragment on Curr
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"];
+export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n"): (typeof documents)["\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -313,7 +318,7 @@ export function gql(source: "\n  mutation deleteTenantMutation($input: DeleteTen
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

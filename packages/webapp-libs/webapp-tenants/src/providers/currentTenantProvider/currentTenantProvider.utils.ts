@@ -1,5 +1,6 @@
-import { CommonQueryTenantItemFragmentFragment } from '@sb/webapp-api-client';
+import { CommonQueryTenantItemFragmentFragment, getFragmentData } from '@sb/webapp-api-client';
 import { TenantType } from '@sb/webapp-api-client/constants';
+import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { prop } from 'ramda';
 
 export const parseStoredState = (storedState: string, userId = '') => {
@@ -39,7 +40,9 @@ export const getCurrentTenant = (
 ) => {
   const tenantId = getTenantId(paramsTenantId, storedTenantId, tenants);
 
-  const currentTenant = tenants.find((t) => t?.id === tenantId && t.membership.invitationAccepted);
+  const currentTenant = tenants.find(
+    (t) => t?.id === tenantId && getFragmentData(commonQueryMembershipFragment, t.membership)?.invitationAccepted
+  );
   if (currentTenant) return currentTenant;
 
   const firstDefaultTenant = tenants.find((t) => t?.type === TenantType.PERSONAL);
