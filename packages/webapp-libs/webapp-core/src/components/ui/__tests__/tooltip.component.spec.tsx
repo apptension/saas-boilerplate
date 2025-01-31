@@ -1,8 +1,8 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { Tooltip, TooltipContent, TooltipTrigger } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../tooltip';
 
 const triggerText = 'Trigger';
 const contentText = 'Content';
@@ -14,7 +14,7 @@ const Component = () => (
   </Tooltip>
 );
 
-describe('Tooltip', () => {
+describe('UI/Tooltip', () => {
   it('should render Trigger element', async () => {
     render(<Component />);
     expect(screen.getByText(triggerText)).toBeInTheDocument();

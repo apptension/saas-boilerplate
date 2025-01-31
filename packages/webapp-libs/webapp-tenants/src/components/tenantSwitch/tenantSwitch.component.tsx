@@ -1,7 +1,6 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { CommonQueryTenantItemFragmentFragment, TenantUserRole } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/tooltip';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -11,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { ChevronDown, Plus, Settings, UserPlus } from 'lucide-react';

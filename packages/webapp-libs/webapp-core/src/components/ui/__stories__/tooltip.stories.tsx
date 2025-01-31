@@ -1,7 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { Tooltip, TooltipProvider, TooltipTrigger } from './tooltip.component';
-import { TooltipContent } from './tooltipContent';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip';
 
 const Template: StoryFn = () => {
   return (
