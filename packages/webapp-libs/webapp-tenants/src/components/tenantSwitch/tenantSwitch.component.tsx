@@ -97,8 +97,9 @@ export const TenantSwitch = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
-            {currentTenant?.name} <ChevronDown className="ml-2 mr--2" />
+          <Button variant="outline" className="overflow-hidden">
+            <div className="overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full">{currentTenant?.name}</div>
+            <ChevronDown className="ml-2 mr--2" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

@@ -47,7 +47,7 @@ export const Home = () => {
         defaultMessage: 'Example of subscription management.',
         id: 'Home / Subscriptions / Subtitle',
       }),
-      link: generateTenantPath(RoutesConfig.subscriptions.currentSubscription.index),
+      link: generateTenantPath(RoutesConfig.subscriptions.index),
       roleAccess: [TenantUserRole.OWNER, TenantUserRole.ADMIN],
     },
     {
