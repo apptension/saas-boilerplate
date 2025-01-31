@@ -1,7 +1,7 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Link } from '@sb/webapp-core/components/buttons';
-import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
 import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/ui/alert';
+import { buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';

@@ -8,8 +8,8 @@ import {
 } from 'react-router-dom';
 
 import { cn } from '../../../lib/utils';
+import { buttonVariants } from '../../ui/button';
 import { ButtonBaseProps, ButtonVariant } from '../button';
-import { buttonVariants } from '../button/button.styles';
 import { renderIcon } from '../button/button.utils';
 import { isInternalLink, isInternalNavLink } from './link.utils';
 
