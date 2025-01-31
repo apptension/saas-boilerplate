@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { TenantMembershipType, TenantUserRole } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { TableCell, TableRow } from '@sb/webapp-core/components/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/ui/dropdown-menu';
 import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/skeleton';
+import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
 import { indexBy, prop, trim } from 'ramda';

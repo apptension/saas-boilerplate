@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../table';
 
 type Story = StoryObj<typeof Table>;
 
 const meta: Meta<typeof Table> = {
-  title: 'Core/Table',
+  title: 'Core/UI/Table',
   component: Table,
 };
 

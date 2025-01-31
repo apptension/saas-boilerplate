@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../table';
 
-describe('Table: component', () => {
+describe('UI/Table: component', () => {
   const captionContent = 'Caption content';
   const headerContent = 'Header content';
   const cellContent = 'Cell content';
