@@ -35,22 +35,14 @@ export const CrudDemoItemDetails = () => {
     id: 'CrudDemoItem / CrudDemoItemDetails / ErrorMessage',
     defaultMessage: 'Failed to load item details',
   });
-  const notFoundMessage = intl.formatMessage({
-    id: 'CrudDemoItem / CrudDemoItemDetails / NotFoundMessage',
-    defaultMessage: 'The requested item does not exist',
-  });
 
   const { loading, data } = useQuery(crudDemoItemDetailsQuery, {
     variables: {
       id,
       tenantId: currentTenant?.id || '',
     },
-    onError: (error) => {
-      if (error.message.includes('No CrudDemoItem matches the given query')) {
-        toast({ description: notFoundMessage, variant: 'destructive' });
-      } else {
-        toast({ description: errorMessage, variant: 'destructive' });
-      }
+    onError: () => {
+      toast({ description: errorMessage, variant: 'destructive' });
       navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },
     skip: !currentTenant,
