@@ -13,6 +13,7 @@
     "@babel/preset-react": "^7.24.1",
     "@eslint/compat": "^1.0.1",
     "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "^9.19.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@nx/devkit": "19.0.1",
@@ -70,6 +71,7 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-matcher-utils": "^29.7.0",
     "jest-watch-typeahead": "^2.2.2",
+    "jsonc-eslint-parser": "^2.4.0",
     "lint-staged": "^15.2.2",
     "nx": "19.0.1",
     "nx-cloud": "18.0.1",
@@ -115,10 +117,5 @@
     "react-router-dom": "6.16.0",
     "regenerator-runtime": "^0.14.1",
     "styled-components": "6.1.11"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "nx@19.0.1": "patches/nx@19.0.1.patch"
-    }
   }
 }
