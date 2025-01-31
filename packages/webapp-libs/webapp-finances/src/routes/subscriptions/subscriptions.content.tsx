@@ -1,8 +1,8 @@
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
-import { TabsContent } from '@sb/webapp-core/components/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { AlarmClock, ArrowRightToLine, CalendarClock, StepForward } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';

@@ -1,6 +1,6 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { Tabs } from '@sb/webapp-core/components/tabs';
+import { Tabs } from '@sb/webapp-core/components/ui/tabs';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 

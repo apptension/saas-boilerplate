@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
-import { TabsContent } from '@sb/webapp-core/components/tabs';
+import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage } from 'react-intl';

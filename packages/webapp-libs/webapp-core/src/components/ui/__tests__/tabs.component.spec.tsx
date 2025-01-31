@@ -2,10 +2,10 @@ import * as TabsPrimitive from '@radix-ui/react-tabs/dist';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../';
 import { render } from '../../../tests/utils/rendering';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../tabs';
 
-describe('Tabs: component', () => {
+describe('UI/Tabs: component', () => {
   const firstTabContent = 'First tab content.';
   const secondTabContent = 'Second tab content.';
 
