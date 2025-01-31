@@ -1,7 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { RadioGroup } from './radioGroup.component';
-import { RadioGroupItem } from './radioGroupItem';
+import { RadioGroup, RadioGroupItem } from '../radio-group';
 
 const Template: StoryFn = () => {
   return (
@@ -17,7 +16,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Forms / Radio',
+  title: 'Core / UI / Forms / Radio',
   component: Template,
 };
 

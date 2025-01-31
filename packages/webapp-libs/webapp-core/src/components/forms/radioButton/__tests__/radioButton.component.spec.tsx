@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import { render } from '../../../../tests/utils/rendering';
 import { Form, FormField } from '../../../forms';
-import { RadioGroup } from '../../../forms/radioGroup';
+import { RadioGroup } from '../../../ui/radio-group';
 import { RadioButton, RadioButtonProps } from '../radioButton.component';
 
 type FormValues = {
