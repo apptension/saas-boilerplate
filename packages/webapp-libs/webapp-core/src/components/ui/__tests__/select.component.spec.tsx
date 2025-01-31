@@ -1,8 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../';
-import { MockPointerEvent } from '../../../../tests/mocks/pointerEvent';
-import { render } from '../../../../tests/utils/rendering';
+import { MockPointerEvent } from '../../../tests/mocks/pointerEvent';
+import { render } from '../../../tests/utils/rendering';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
 
 const placeholderText = 'Select';
 const option1Text = 'Option 1';
@@ -23,7 +23,7 @@ const Component = () => (
   </Select>
 );
 
-describe('Select', () => {
+describe('UI/Select', () => {
   beforeEach(() => {
     window.PointerEvent = MockPointerEvent as any;
   });

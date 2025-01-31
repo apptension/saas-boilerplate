@@ -3,7 +3,7 @@
 exports[`TenantMembersList: Component should render list of memberships 1`] = `
 <div>
   <div
-    class="w-full overflow-auto"
+    class="relative w-full overflow-auto"
   >
     <table
       class="w-full caption-bottom text-sm"
@@ -12,25 +12,25 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
         class="[&_tr]:border-b"
       >
         <tr
-          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
         >
           <th
-            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
+            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
           >
             Username
           </th>
           <th
-            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
+            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
           >
             Role
           </th>
           <th
-            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
+            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
           >
             Invitation accepted
           </th>
           <th
-            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
+            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
           >
             Actions
           </th>
@@ -40,7 +40,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
         class="[&_tr:last-child]:border-0"
       >
         <tr
-          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
@@ -144,7 +144,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
           </td>
         </tr>
         <tr
-          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
@@ -248,7 +248,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
           </td>
         </tr>
         <tr
-          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"

@@ -1,9 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { Select, SelectValue } from './select.component';
-import { SelectContent } from './selectContent';
-import { SelectItem } from './selectItem';
-import { SelectTrigger } from './selectTrigger';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
 
 const Template: StoryFn = () => {
   return (
@@ -23,7 +20,7 @@ const Template: StoryFn = () => {
 };
 
 const meta: Meta = {
-  title: 'Core / Forms / Select',
+  title: 'Core / UI / Forms / Select',
   component: Template,
 };
 
