@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@sb/webapp-core/components/alertDialog';
+} from '@sb/webapp-core/components/ui/alert-dialog';
 import { buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { FormattedMessage } from 'react-intl';
 

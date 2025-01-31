@@ -10,12 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './';
+} from '../alert-dialog';
 
 type Story = StoryObj<typeof AlertDialog>;
 
 const meta: Meta<typeof AlertDialog> = {
-  title: 'Core/AlertDialog',
+  title: 'Core/UI/AlertDialog',
   component: AlertDialog,
 };
 

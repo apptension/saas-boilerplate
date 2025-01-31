@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
+import { render } from '../../../tests/utils/rendering';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../';
-import { render } from '../../../tests/utils/rendering';
+} from '../alert-dialog';
 
 const triggerText = 'Open';
 const titleText = 'Title';
@@ -36,7 +36,7 @@ const Component = () => (
   </AlertDialog>
 );
 
-describe('AlertDialog: Component', () => {
+describe('UI / AlertDialog: Component', () => {
   it('should render trigger only when not pressed', async () => {
     render(<Component />);
 
