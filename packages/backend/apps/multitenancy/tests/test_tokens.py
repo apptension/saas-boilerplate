@@ -38,7 +38,10 @@ class TestTenantInvitationTokenGenerator:
         token = tenant_invitation_token.make_token(user.email, tenant_membership)
 
         # Tamper with the token
-        tampered_token = token.replace(token[0], token[2])
+        replace = token[2]
+        if replace == token[0]:
+            replace = '2' if token[0] == '1' else '1'
+        tampered_token = token.replace(token[0], replace)
 
         assert not tenant_invitation_token.check_token(user.email, tampered_token, tenant_membership)
 
