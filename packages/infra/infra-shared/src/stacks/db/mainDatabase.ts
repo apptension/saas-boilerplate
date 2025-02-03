@@ -68,7 +68,7 @@ export class MainDatabase extends Construct {
       vpc: props.vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.VER_16_1,
+        version: rds.PostgresEngineVersion.VER_17_2,
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,
