@@ -1,10 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webapp-api-client';
-import {
-  commonQueryMembershipFragment,
-  commonQueryTenantItemFragment,
-  useCommonQuery,
-} from '@sb/webapp-api-client/providers';
+import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -39,20 +35,13 @@ export type MembershipEntryProps = {
 
 export const MembershipEntry = ({ membership, className, onAfterUpdate }: MembershipEntryProps) => {
   const { data: currentTenant } = useCurrentTenant();
-  const { data: commonData } = useCommonQuery();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { getRoleTranslation } = useTenantRoles();
   const intl = useIntl();
   const generateTenantPath = useGenerateTenantPath();
-  const currentUserTenant = getFragmentData(
-    commonQueryTenantItemFragment,
-    commonData?.currentUser?.tenants?.find(
-      (tenant) => getFragmentData(commonQueryTenantItemFragment, tenant)?.id === currentTenant?.id
-    )
-  );
   const isCurrentUserMembership =
-    getFragmentData(commonQueryMembershipFragment, currentUserTenant?.membership)?.id === membership?.id;
+    getFragmentData(commonQueryMembershipFragment, currentTenant?.membership)?.id === membership?.id;
 
   const updateSuccessMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateRole / Success message',
@@ -93,7 +82,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
     },
   });
 
-  const roles = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER];
+  const roles = useMemo(() => [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER], []);
   const roleChangeCallbacks = useMemo(() => {
     if (!currentTenant) return;
 

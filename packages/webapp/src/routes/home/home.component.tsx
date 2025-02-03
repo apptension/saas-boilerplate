@@ -5,7 +5,8 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { H4, Paragraph } from '@sb/webapp-core/components/typography';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { useCurrentTenantRole, useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { AlertCircle, ArrowUpRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -23,7 +24,6 @@ export const Home = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const generateTenantPath = useGenerateTenantPath();
-  const userRole = useCurrentTenantRole();
 
   const dashboardItems: DashboardItem[] = [
     {
@@ -96,19 +96,17 @@ export const Home = () => {
     },
   ];
 
-  const renderItem = (item: DashboardItem, key: number) => {
-    if (item.roleAccess && userRole && !item.roleAccess.includes(userRole)) return null;
-
-    return (
-      <Link navLink to={item.link} className="group relative bg-background p-6" key={key}>
+  const renderItem = (item: DashboardItem, key: number) => (
+    <TenantRoleAccess allowedRoles={item.roleAccess} key={key}>
+      <Link navLink to={item.link} className="group relative bg-background p-6">
         <ArrowUpRight className="absolute right-4 top-4 h-8 w-8 text-muted group-hover:text-muted-foreground" />
         <H4 className="pr-8">{item.title}</H4>
         <Paragraph firstChildMargin={false} className="mt-1 text-sm text-muted-foreground">
           {item.subtitle}
         </Paragraph>
       </Link>
-    );
-  };
+    </TenantRoleAccess>
+  );
 
   return (
     <PageLayout className="lg:max-w-4xl">
