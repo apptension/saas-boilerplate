@@ -5,7 +5,7 @@ export const ENV = {
   ENVIRONMENT_NAME: process.env.VITE_ENVIRONMENT_NAME,
   SENTRY_DSN: process.env.VITE_SENTRY_DSN,
   WEB_APP_URL: process.env.VITE_WEB_APP_URL ?? '',
-  EMAIL_ASSETS_URL: process.env.VITE_EMAIL_ASSETS_URL ?? '',
+  EMAIL_ASSETS_URL: process.env.VITE_EMAIL_ASSETS_URL ?? '/email-assets',
   PUBLIC_URL: process.env.PUBLIC_URL,
   CONTENTFUL_SPACE: process.env.VITE_CONTENTFUL_SPACE,
   CONTENTFUL_ENV: process.env.VITE_CONTENTFUL_ENV,

@@ -1,4 +1,4 @@
-import { Avatar as AvatarContainer, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/avatar';
+import { Avatar as AvatarContainer, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/ui/avatar';
 import { isNil } from 'ramda';
 import { HTMLAttributes } from 'react';
 import { useIntl } from 'react-intl';

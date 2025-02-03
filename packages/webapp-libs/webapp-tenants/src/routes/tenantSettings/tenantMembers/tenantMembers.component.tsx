@@ -1,8 +1,8 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { Alert } from '@sb/webapp-core/components/alert';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
-import { TabsContent } from '@sb/webapp-core/components/tabs';
+import { Alert } from '@sb/webapp-core/components/ui/alert';
+import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { RoutesConfig as RootRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Paragraph } from '@sb/webapp-core/theme/typography';

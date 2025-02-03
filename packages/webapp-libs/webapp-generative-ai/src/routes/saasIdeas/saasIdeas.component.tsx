@@ -4,7 +4,7 @@ import { Button } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';

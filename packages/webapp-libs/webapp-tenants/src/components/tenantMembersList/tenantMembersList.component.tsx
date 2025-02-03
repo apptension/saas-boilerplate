@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/table';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/ui/table';
 import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';

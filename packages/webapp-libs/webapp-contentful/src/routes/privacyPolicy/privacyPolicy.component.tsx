@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { SchemaType } from '@sb/webapp-api-client';
-import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/alert';
 import { MarkdownPage } from '@sb/webapp-core/components/markdownPage';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 import { configContentfulAppQuery } from '../../config/config.graphql';

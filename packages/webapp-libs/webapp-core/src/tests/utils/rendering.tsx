@@ -5,7 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 
-import { TooltipProvider } from '../../components/tooltip';
+import { TooltipProvider } from '../../components/ui/tooltip';
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
 import { LocalesProvider, ResponsiveThemeProvider } from '../../providers';
 import { ToastProvider, Toaster } from '../../toast';

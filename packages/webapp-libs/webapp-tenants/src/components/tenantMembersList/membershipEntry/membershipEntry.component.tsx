@@ -12,9 +12,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@sb/webapp-core/components/dropdownMenu';
-import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/skeleton';
-import { TableCell, TableRow } from '@sb/webapp-core/components/table';
+} from '@sb/webapp-core/components/ui/dropdown-menu';
+import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/skeleton';
+import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';

@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@sb/webapp-core/components/forms';
-import { RadioGroup, RadioGroupItem } from '@sb/webapp-core/components/forms/radioGroup';
+import { RadioGroup, RadioGroupItem } from '@sb/webapp-core/components/ui/radio-group';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 
