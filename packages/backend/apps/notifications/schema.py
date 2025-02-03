@@ -119,7 +119,9 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
     @staticmethod
     @database_sync_to_async
     def get_response(id: str):
-        notification = models.Notification.objects.prefetch_related('issuer', 'issuer__profile').get(id=id)
+        notification = models.Notification.objects.prefetch_related(
+            'issuer', 'issuer__profile', 'issuer__profile__avatar'
+        ).get(id=id)
         return NotificationCreatedSubscription(notification)
 
     @staticmethod
