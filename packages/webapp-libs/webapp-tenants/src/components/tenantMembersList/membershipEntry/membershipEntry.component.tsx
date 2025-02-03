@@ -133,7 +133,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
         )}
       </TableCell>
       <TableCell>
-        <DropdownMenu modal={false}>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0" role="button">
               <GripHorizontal className="h-4 w-4" />

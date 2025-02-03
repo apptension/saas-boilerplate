@@ -82,6 +82,7 @@ describe('Documents: Component', () => {
       apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock),
     });
     fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
+    fireEvent.click(screen.getByText(/continue/i));
 
     expect(deleteMutationMock.newData).toHaveBeenCalled();
     await waitFor(() => expect(trackEvent).toHaveBeenCalledWith('document', 'delete', id));

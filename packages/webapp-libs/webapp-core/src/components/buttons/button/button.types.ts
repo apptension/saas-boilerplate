@@ -11,7 +11,6 @@ export interface ButtonTheme extends DefaultTheme {
 export enum ButtonVariant {
   PRIMARY = 'default',
   SECONDARY = 'secondary',
-  DESTRUCTIVE = 'destructive',
   GHOST = 'ghost',
   ROUND = 'ROUND',
   LINK = 'link',
