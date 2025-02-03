@@ -1,6 +1,6 @@
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/ui/popover';
 import { useGenerateLocalePath, useOpenState } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { cn } from '@sb/webapp-core/lib/utils';

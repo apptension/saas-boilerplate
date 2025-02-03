@@ -9,8 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@sb/webapp-core/components/dropdownMenu';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/tooltip';
+} from '@sb/webapp-core/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { ChevronDown, Plus, Settings, UserPlus } from 'lucide-react';

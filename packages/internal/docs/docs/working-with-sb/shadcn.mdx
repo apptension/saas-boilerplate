@@ -1,0 +1,67 @@
+---
+title: Shadcn/ui components
+description: This guide will show you how to work and import Shadcn/ui components in your project.
+---
+
+import ProjectName from '../shared/components/ProjectName.component';
+
+# Shadcn/ui Components
+
+[Shadcn/ui](https://ui.shadcn.com/) is a collection of re-usable components built using
+[Radix UI](https://www.radix-ui.com/) and [Tailwind CSS](https://tailwindcss.com/).
+In <ProjectName />, these components are centrally managed in the `webapp-core` package under the `components/ui`
+directory.
+
+## Using Existing Components
+
+All shadcn/ui components are available in the `webapp-core` package. You can import them directly in your components
+like this:
+
+```tsx
+import { Button } from '@sb/webapp-core/components/ui/button';
+```
+
+## Adding New Components
+
+To add a new component from the shadcn/ui library, follow these steps:
+
+1. Navigate to the webapp-core package:
+
+   ```bash
+   cd packages/webapp-core
+   ```
+
+2. Use the shadcn CLI to add the desired component:
+
+   :::warning
+   You must use version 2.1.6 of the CLI as newer versions have compatibility issues with alias resolution
+   ([see GitHub issue](https://github.com/shadcn-ui/ui/issues/6048)):
+
+   ```tsx
+   pnpm dlx shadcn@2.1.6 add {component_name}
+   ```
+
+   :::
+
+   For example, to add the calendar component:
+
+   ```bash
+   pnpm dlx shadcn@2.1.6 add calendar
+   ```
+
+3. The component will be automatically added to the `components/ui` directory in the `webapp-core` package.
+
+4. You can now import and use the component in any part of your application:
+   ```tsx
+   import { Calendar } from '@sb/webapp-core/components/ui/calendar';
+   ```
+
+## Component Customization
+
+All components can be customized using Tailwind CSS classes. For detailed information about component customization and
+available props, refer to the [official shadcn/ui documentation](https://ui.shadcn.com/docs).
+
+## Available Components
+
+To see all available components and their usage examples, visit the
+[shadcn/ui components page](https://ui.shadcn.com/docs/components/accordion).

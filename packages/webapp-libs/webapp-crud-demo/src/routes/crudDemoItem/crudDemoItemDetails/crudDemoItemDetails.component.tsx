@@ -2,8 +2,8 @@ import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Separator } from '@sb/webapp-core/components/separator';
-import { Skeleton } from '@sb/webapp-core/components/skeleton';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { useParams } from 'react-router';
 

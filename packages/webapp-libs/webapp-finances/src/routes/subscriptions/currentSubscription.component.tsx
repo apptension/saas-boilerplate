@@ -1,6 +1,6 @@
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { FormattedMessage } from 'react-intl';
 import { Link, Outlet, useLocation } from 'react-router-dom';

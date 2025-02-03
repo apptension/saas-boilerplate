@@ -1,6 +1,5 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import {
   Form,
   FormControl,
@@ -9,12 +8,9 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from '@sb/webapp-core/components/forms';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@sb/webapp-core/components/ui/select';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 

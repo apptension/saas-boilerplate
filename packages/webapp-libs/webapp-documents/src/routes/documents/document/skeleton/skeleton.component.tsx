@@ -1,4 +1,4 @@
-import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/skeleton';
+import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/skeleton';
 
 export const Skeleton = () => {
   return (
