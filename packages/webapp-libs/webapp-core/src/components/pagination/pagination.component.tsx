@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FC } from 'react';
-import { Button } from '@sb/webapp-core/components/buttons';
+
+import { Button } from '../buttons';
 
 export type PaginationProps = {
   hasPrevious: boolean;

@@ -1,7 +1,7 @@
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime/formattedDate';
-import { TableCell, TableRow } from '@sb/webapp-core/components/table';
+import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { useIntl } from 'react-intl';
 
 import { useSubscriptionPlanDisplayName } from '../../../../hooks/useSubscriptionPlanDetails/useSubscriptionPlanDetails.hook';

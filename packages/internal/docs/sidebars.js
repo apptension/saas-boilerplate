@@ -370,6 +370,11 @@ module.exports = {
           items: ['working-with-sb/project-structure/create-web-lib'],
         },
         {
+          type: 'doc',
+          id: 'working-with-sb/shadcn',
+          label: 'Shadcn/ui integration',
+        },
+        {
           type: 'category',
           label: 'Working with GraphQL',
           link: {

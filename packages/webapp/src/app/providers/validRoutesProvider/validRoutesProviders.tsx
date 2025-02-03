@@ -1,4 +1,4 @@
-import { TooltipProvider } from '@sb/webapp-core/components/tooltip';
+import { TooltipProvider } from '@sb/webapp-core/components/ui/tooltip';
 import { translationMessages } from '@sb/webapp-core/config/i18n';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';

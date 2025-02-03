@@ -8,8 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@sb/webapp-core/components/alertDialog';
-import { buttonVariants } from '@sb/webapp-core/components/buttons/button/button.styles';
+} from '@sb/webapp-core/components/ui/alert-dialog';
+import { buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { FormattedMessage } from 'react-intl';
 
 export type TenantDeleteAlertProps = {

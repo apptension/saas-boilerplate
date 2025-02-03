@@ -1,6 +1,6 @@
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/ui/tabs';
 import { RoutesConfig as FinancesRoutesConfig } from '@sb/webapp-finances/config/routes';
 import { FormattedMessage } from 'react-intl';
 import { Link, Outlet, useLocation } from 'react-router-dom';

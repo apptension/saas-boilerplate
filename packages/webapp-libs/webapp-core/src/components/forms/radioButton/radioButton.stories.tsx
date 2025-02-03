@@ -2,7 +2,7 @@ import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { useForm } from 'react-hook-form';
 
 import { Form, FormControl, FormField, FormItem } from '..';
-import { RadioGroup } from '../radioGroup';
+import { RadioGroup } from '../../ui/radio-group';
 import { RadioButton } from './radioButton.component';
 
 type Story = StoryObj<typeof RadioButton>;

@@ -2,7 +2,7 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { Button, Link as ButtonLink, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/ui/popover';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { MouseEvent } from 'react';

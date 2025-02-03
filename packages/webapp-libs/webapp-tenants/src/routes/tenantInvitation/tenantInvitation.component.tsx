@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/cards';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';

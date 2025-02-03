@@ -3,10 +3,10 @@ import { ReactNode } from 'react';
 import ReactDropzone, { DropzoneProps as ReactDropzoneProps } from 'react-dropzone';
 import { FormattedMessage } from 'react-intl';
 
+import { cn } from '../../../lib/utils';
+import { useToast } from '../../../toast';
 import { useGenerateErrorMessages } from './dropzone.hooks';
 import { ErrorMessagesRecord } from './dropzone.types';
-import { useToast } from '@sb/webapp-core/toast/useToast';
-import { cn } from '@sb/webapp-core/lib/utils';
 
 export type DropzoneProps = ReactDropzoneProps & {
   label?: ReactNode;

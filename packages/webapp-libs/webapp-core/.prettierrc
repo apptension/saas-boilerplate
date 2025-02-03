@@ -8,6 +8,7 @@
     "^(path|dns|fs)/?",
     "<THIRD_PARTY_MODULES>",
     "^(__generated__|__generated|@types|app|contexts|emails|fonts|images|mocks|modules|routes|shared|tests|theme|translations)/?",
+    "^@sb\/webapp-core/?",
     "^[./]"
   ],
   "importOrderSeparation": true,

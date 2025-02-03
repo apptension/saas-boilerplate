@@ -1,6 +1,6 @@
 import { NetworkStatus, useQuery, useSubscription } from '@apollo/client';
 import { getFragmentData } from '@sb/webapp-api-client';
-import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/ui/popover';
 import { ElementType, FC } from 'react';
 
 import { notificationCreatedSubscription, notificationsListQuery } from './notifications.graphql';

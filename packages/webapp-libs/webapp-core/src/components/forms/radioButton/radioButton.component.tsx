@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { FormControl, FormItem, FormLabel } from '..';
 import { cn } from '../../../lib/utils';
-import { RadioGroupItem } from '../radioGroup';
+import { RadioGroupItem } from '../../ui/radio-group';
 import { radioButtonVariants } from './radioButton.styles';
 
 export type RadioButtonProps = ComponentPropsWithoutRef<typeof RadioGroupItem> &
