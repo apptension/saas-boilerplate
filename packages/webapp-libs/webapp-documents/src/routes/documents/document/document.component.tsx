@@ -1,5 +1,6 @@
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { RelativeDate } from '@sb/webapp-core/components/dateTime';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { File, Trash2 } from 'lucide-react';
@@ -36,19 +37,29 @@ export const Document = ({ item }: DocumentProps) => {
         </a>
         <RelativeDate className="text-xs text-muted-foreground" date={new Date(createdAt as string)} />
       </div>
-      <Button
-        variant="ghost"
-        className="px-1"
-        onClick={() => {
-          handleDelete(id).catch(reportError);
-        }}
-        aria-label={intl.formatMessage({
+      <ConfirmDialog
+        onContinue={() => handleDelete(id).catch(reportError)}
+        variant="destructive"
+        title={intl.formatMessage({
           defaultMessage: 'Delete',
-          id: 'Documents / Document / Delete button',
+          id: 'Documents / Document / Confirm Dialog / Title',
+        })}
+        description={intl.formatMessage({
+          id: 'Documents / Document / Confirm Dialog / Description',
+          defaultMessage: 'Are you sure you want to delete this document?',
         })}
       >
-        <Trash2 size={20} />
-      </Button>
+        <Button
+          variant="ghost"
+          className="px-1"
+          aria-label={intl.formatMessage({
+            defaultMessage: 'Delete',
+            id: 'Documents / Document / Delete button',
+          })}
+        >
+          <Trash2 size={20} />
+        </Button>
+      </ConfirmDialog>
     </li>
   );
 };

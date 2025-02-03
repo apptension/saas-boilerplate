@@ -1,5 +1,5 @@
 const path = require('path');
-const Str = require('@supercharge/strings');
+const { Str } = require('@supercharge/strings');
 const { complement, isEmpty } = require('ramda');
 
 const templatesPath = path.join(__dirname, 'templates');

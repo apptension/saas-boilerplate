@@ -3,6 +3,7 @@ import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -50,8 +51,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
 
   const data = getFragmentData(crudDemoItemListItemFragment, item);
 
-  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleDelete = () => {
     if (!currentTenant) return;
     commitDeleteMutation({
       variables: {
@@ -70,15 +70,26 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
       >
         <FormattedMessage id="CrudDemoItem list / Edit link" defaultMessage="Edit" />
       </Link>
-      <Button
-        variant={ButtonVariant.GHOST}
-        onClick={handleDelete}
-        className="border"
-        disabled={loading}
-        icon={<Icon size={14} icon={deleteIcon} />}
+      <ConfirmDialog
+        onContinue={handleDelete}
+        title={<FormattedMessage id="CrudDemoItem list / Confirm dialog / Title" defaultMessage="Delete CRUD item" />}
+        variant="destructive"
+        description={
+          <FormattedMessage
+            id="CrudDemoItem list / Confirm dialog / Description"
+            defaultMessage="Are you sure you want to continue?"
+          />
+        }
       >
-        <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
-      </Button>
+        <Button
+          variant={ButtonVariant.GHOST}
+          className="border"
+          disabled={loading}
+          icon={<Icon size={14} icon={deleteIcon} />}
+        >
+          <FormattedMessage id="CrudDemoItem list / Delete button" defaultMessage="Delete" />
+        </Button>
+      </ConfirmDialog>
     </div>
   );
 
