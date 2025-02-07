@@ -1,11 +1,12 @@
 import dangerIcon from '@iconify-icons/ion/alert-circle-outline';
 import { TenantUserRole } from '@sb/webapp-api-client';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { Icon } from '@sb/webapp-core/components/icons';
 import { H3, Paragraph } from '@sb/webapp-core/components/typography';
+import { Button, buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';
-import { TenantDeleteAlert } from '../tenantDeleteAlert';
 import { useTenantDelete } from './tenantDangerZone.hook';
 
 export const TenantDangerZone = () => {
@@ -41,7 +42,29 @@ export const TenantDangerZone = () => {
             </Paragraph>
           </span>
 
-          <TenantDeleteAlert onContinue={deleteTenant} disabled={!isOwner || loading} />
+          <ConfirmDialog
+            onContinue={deleteTenant}
+            variant="destructive"
+            title={
+              <FormattedMessage
+                defaultMessage="Are you absolutely sure?"
+                id="Tenant General Settings / Danger Zone / Confirm Dialog / Tenant Delete Button"
+              />
+            }
+            description={
+              <FormattedMessage
+                defaultMessage="This action cannot be undone. This will permanently delete your organization from our servers."
+                id="Tenant Danger Settings / Danger Zone / Confirm Dialog / Tenant Delete Description"
+              />
+            }
+          >
+            <Button disabled={!isOwner || loading} className={buttonVariants({ variant: 'destructive' })}>
+              <FormattedMessage
+                defaultMessage="Remove organization"
+                id="Tenant General Settings / Danger Zone / Tenant Delete Button"
+              />
+            </Button>
+          </ConfirmDialog>
         </div>
       </div>
     </div>
