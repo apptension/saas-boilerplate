@@ -1,9 +1,9 @@
 import { CrudDemoItemListQueryQuery, gql } from '@sb/webapp-api-client/graphql';
-import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
+import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Pagination } from '@sb/webapp-core/components/pagination';
+import { TableFooter } from '@sb/webapp-core/components/table/tableFooter';
 import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
@@ -16,7 +16,7 @@ import { CrudDemoItemListItem } from './crudDemoItemListItem';
 import { ListSkeleton } from './listSkeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
-  query crudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
+  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
     allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
@@ -24,35 +24,61 @@ export const crudDemoItemListQuery = gql(/* GraphQL */ `
           ...crudDemoItemListItem
         }
       }
-      pageInfo {
-        startCursor
-        endCursor
-        hasPreviousPage
-        hasNextPage
+      pageCursors {
+        around {
+          cursor
+          isCurrent
+          page
+        }
+        first {
+          cursor
+          isCurrent
+          page
+        }
+        last {
+          cursor
+          isCurrent
+          page
+        }
+        next {
+          cursor
+          isCurrent
+          page
+        }
+        previous {
+          cursor
+          isCurrent
+          page
+        }
       }
     }
   }
 `);
-export const ITEMS_PER_PAGE = 8;
+
+type CrudDemoItemListSearchParams = {
+  cursor?: string;
+  pageSize?: string;
+};
 
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { data: currentTenant } = useCurrentTenant();
 
-  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery<
+  const { data, loading, pageSize, onPageClick, handlePageSizeChange } = usePagedPaginatedQuery<
     CrudDemoItemListQueryQuery,
-    { tenantId: string },
+    { tenantId: string } & Omit<CrudDemoItemListSearchParams, 'cursor'>,
+    CrudDemoItemListSearchParams,
     typeof crudDemoItemListQuery
   >(crudDemoItemListQuery, {
     hookOptions: {
       variables: {
-        first: ITEMS_PER_PAGE,
         tenantId: currentTenant?.id ?? '',
       },
       skip: !currentTenant,
     },
     dataKey: 'allCrudDemoItems',
   });
+  const pageCursors = data?.allCrudDemoItems?.pageCursors || {};
 
   const renderList = () => {
     if (data) {
@@ -117,7 +143,18 @@ export const CrudDemoItemList = () => {
       ) : (
         <>
           {renderList()}
-          <Pagination hasNext={hasNext} hasPrevious={hasPrevious} loadNext={loadNext} loadPrevious={loadPrevious} />
+          <TableFooter
+            pageSize={pageSize}
+            pagination={{
+              around: pageCursors?.around,
+              first: pageCursors?.first,
+              last: pageCursors?.last,
+              next: pageCursors?.next,
+              previous: pageCursors?.previous,
+              onPageClick: onPageClick,
+            }}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </>
       )}
     </PageLayout>
