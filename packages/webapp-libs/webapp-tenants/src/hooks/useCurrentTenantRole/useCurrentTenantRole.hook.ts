@@ -1,4 +1,4 @@
-import { useCurrentTenant } from '../../providers';
+import { useCurrentTenantMembership } from '../../hooks';
 
 /**
  * Hook that retrieves the user's role of the current tenant.
@@ -10,8 +10,8 @@ import { useCurrentTenant } from '../../providers';
  *
  */
 export const useCurrentTenantRole = () => {
-  const currentTenant = useCurrentTenant();
-  const membership = currentTenant?.data?.membership;
-  if (!membership?.invitationAccepted) return null;
-  return membership?.role ?? null;
+  const { currentMembership } = useCurrentTenantMembership();
+
+  if (!currentMembership?.invitationAccepted) return null;
+  return currentMembership?.role ?? null;
 };

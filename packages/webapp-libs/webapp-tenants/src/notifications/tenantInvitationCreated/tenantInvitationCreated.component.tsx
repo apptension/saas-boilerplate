@@ -1,3 +1,5 @@
+import { getFragmentData } from '@sb/webapp-api-client';
+import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { Notification, NotificationType } from '@sb/webapp-notifications';
@@ -22,9 +24,11 @@ export const TenantInvitationCreated = ({
   const tenants = useTenants();
 
   const handleInvitationClick = () => {
-    const tenant = tenants.find((tenant) => tenant?.membership?.id === id);
+    const tenant = tenants.find(
+      (tenant) => getFragmentData(commonQueryMembershipFragment, tenant?.membership)?.id === id
+    );
 
-    const token = tenant?.membership.invitationToken;
+    const token = getFragmentData(commonQueryMembershipFragment, tenant?.membership)?.invitationToken;
     if (!token) return;
 
     navigate(generateLocalePath(RoutesConfig.tenantInvitation, { token }));
