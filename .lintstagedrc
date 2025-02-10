@@ -1,4 +1,5 @@
 {
   "*.{ts,tsx}": "eslint --fix",
-  "*.{json,md,html}": "prettier --write"
+  "*.{json,md,html}": "prettier --write",
+  "!packages/backend/templates/**": []
 }
