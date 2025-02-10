@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webapp-api-client';
 import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,7 @@ import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
 import { indexBy, prop, trim } from 'ramda';
-import { useMemo } from 'react';
+import { MouseEvent, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -177,9 +178,23 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-            <DropdownMenuItem role="button" onClick={deleteMembership}>
-              <FormattedMessage id="Tenant Membersip Entry / Delete" defaultMessage="Delete" />
-            </DropdownMenuItem>
+            <ConfirmDialog
+              onContinue={deleteMembership}
+              title={
+                <FormattedMessage id="Tenant Membersip Entry / Confirm Dialog / Delete Title" defaultMessage="Delete" />
+              }
+              description={
+                <FormattedMessage
+                  id="Tenant Membersip Entry / Confirm Dialog / Delete Description"
+                  defaultMessage="Are you sure you want to delete this member?"
+                />
+              }
+              variant="destructive"
+            >
+              <DropdownMenuItem>
+                <FormattedMessage id="Tenant Membersip Entry / Delete" defaultMessage="Delete" />
+              </DropdownMenuItem>
+            </ConfirmDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

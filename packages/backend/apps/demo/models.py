@@ -46,3 +46,7 @@ class DocumentDemoItem(models.Model):
 
     def __str__(self) -> str:
         return str(self.id)
+
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super().delete(*args, **kwargs)

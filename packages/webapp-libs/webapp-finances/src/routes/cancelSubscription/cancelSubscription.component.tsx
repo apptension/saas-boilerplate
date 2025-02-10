@@ -1,4 +1,5 @@
 import { Button } from '@sb/webapp-core/components/buttons';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
@@ -51,9 +52,26 @@ export const CancelSubscription = () => {
         </Paragraph>
       )}
 
-      <Button className="w-fit" onClick={handleCancel}>
-        <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
-      </Button>
+      <ConfirmDialog
+        title={
+          <FormattedMessage
+            defaultMessage="Cancel subscription"
+            id="Cancel subscription / Confirm Dialog / Cancel Title"
+          />
+        }
+        description={
+          <FormattedMessage
+            id="Cancel subscription / Confirm Dialog / Cancel Description"
+            defaultMessage="Are you sure you want to cancel your subscription?"
+          />
+        }
+        onContinue={handleCancel}
+        variant="destructive"
+      >
+        <Button className="w-fit">
+          <FormattedMessage defaultMessage="Cancel subscription" id="Cancel subscription / Button label" />
+        </Button>
+      </ConfirmDialog>
     </PageLayout>
   );
 };

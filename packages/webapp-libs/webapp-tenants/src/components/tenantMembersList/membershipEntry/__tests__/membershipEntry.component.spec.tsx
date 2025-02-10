@@ -85,7 +85,8 @@ describe('MembershipEntry: Component', () => {
     });
 
     await userEvent.click(await screen.findByRole('button'));
-    await userEvent.click(screen.getByRole('button', { name: /Delete/i }));
+    await userEvent.click(screen.getByText(/Delete/i));
+    await userEvent.click(screen.getByText(/Continue/i));
     expect(requestMock.newData).toHaveBeenCalled();
     expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');

@@ -19,7 +19,7 @@ class TestOpenAIClientGetSaasIdeas:
         create_mock.assert_called_once_with(
             **{
                 'max_tokens': 200,
-                'model': 'text-davinci-003',
+                'model': 'gpt-3.5-turbo-instruct',
                 'prompt': 'Get me 3-5 fitness, ai saas ideas',
                 'temperature': 0.5,
             }

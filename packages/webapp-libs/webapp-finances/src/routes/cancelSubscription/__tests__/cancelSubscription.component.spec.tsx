@@ -140,6 +140,7 @@ describe('CancelSubscription: Component', () => {
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
+      await userEvent.click(await screen.findByText(/continue/i));
 
       expect(requestCancelMock.newData).toHaveBeenCalled();
     });
@@ -166,6 +167,7 @@ describe('CancelSubscription: Component', () => {
       });
 
       await userEvent.click(await screen.findByText(/cancel subscription/i));
+      await userEvent.click(await screen.findByText(/continue/i));
 
       const toast = await screen.findByTestId('toast-1');
       expect(toast).toHaveTextContent('You will be moved to free plan with the next billing period');
