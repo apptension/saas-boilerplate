@@ -133,6 +133,20 @@ class TestCrudDemoItemQuery:
             }
         }
 
+    def test_return_404_for_non_existent_item(self, graphene_client, user, tenant, tenant_membership_factory):
+        non_existent_item_id = to_global_id("CrudDemoItemType", "non-existent-id")
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.MEMBER)
+
+        graphene_client.force_authenticate(user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
+        executed = graphene_client.query(
+            self.CRUD_DEMO_ITEM_QUERY,
+            variable_values={"id": non_existent_item_id, "tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "No CrudDemoItem matches the given query."
+
     def test_tenant_no_membership(self, graphene_client, crud_demo_item_factory, user, tenant):
         crud_demo_item = crud_demo_item_factory(tenant=tenant)
         item_global_id = to_global_id("CrudDemoItemType", str(crud_demo_item.id))

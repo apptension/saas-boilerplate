@@ -141,7 +141,7 @@ class Query(graphene.ObjectType):
     def resolve_crud_demo_item(root, info, id, tenant_id, **kwargs):
         _, pk = from_global_id(id)
         _, tenant_pk = from_global_id(tenant_id)
-        return models.CrudDemoItem.objects.filter(pk=pk, tenant=tenant_pk).first()
+        return get_object_or_404(models.CrudDemoItem, pk=pk, tenant=tenant_pk)
 
 
 @permission_classes(IsTenantMemberAccess)
