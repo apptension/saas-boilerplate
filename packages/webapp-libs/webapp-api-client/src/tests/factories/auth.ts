@@ -27,7 +27,7 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
         firstName: 'MembershipFirstName',
         lastName: 'MembershipLastName',
         userEmail: 'membership@example.org',
-        avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/316.jpg',
+        avatar: 'https://example.com/avatar.jpg',
         __typename: 'TenantMembershipType',
       },
     },
