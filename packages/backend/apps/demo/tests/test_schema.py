@@ -25,7 +25,7 @@ class TestAllCrudDemoItemsQuery:
         executed = graphene_client.query(
             """
             query($tenantId: ID!)  {
-              allCrudDemoItems(tenantId: $tenantId) {
+              allCrudDemoItems(tenantId: $tenantId, first: 10) {
                 edges {
                   node {
                     id
@@ -53,6 +53,153 @@ class TestAllCrudDemoItemsQuery:
                 }
             }
         }
+
+    def test_returns_all_items_paginated(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(50, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, first: 10) {
+                pageCursors {
+                    around {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                    first {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                    last {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                    next {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                    previous {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                }
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        pagination_info = executed['data']['allCrudDemoItems']['pageCursors']
+        assert len(pagination_info['around']) == 5
+        assert pagination_info['around'][0]['isCurrent']
+        assert pagination_info['around'][0]['page'] == 1
+        assert not pagination_info['around'][1]['isCurrent']
+        assert pagination_info['around'][1]['page'] == 2
+        assert not pagination_info['around'][2]['isCurrent']
+        assert pagination_info['around'][2]['page'] == 3
+        assert not pagination_info['next']['isCurrent']
+        assert pagination_info['next']['page'] == 2
+
+    def test_returns_all_items_paginated_page_two(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(50, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        first_page = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, first: 10) {
+                pageCursors {
+                    next {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                }
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        executed = graphene_client.query(
+            f"""
+            query($tenantId: ID!) {{
+                allCrudDemoItems(tenantId: $tenantId, first: 10, after: "{first_page['data']['allCrudDemoItems']['pageCursors']['next']['cursor']}" ) {{
+                  pageCursors {{
+                    around {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    first {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    last {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    next {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    previous {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                }}
+                edges {{
+                  node {{
+                    id
+                    name
+                  }}
+                }}
+              }}
+            }}
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        pagination_info = executed['data']['allCrudDemoItems']['pageCursors']
+        assert len(pagination_info['around']) == 5
+        assert not pagination_info['around'][0]['isCurrent']
+        assert pagination_info['around'][0]['page'] == 1
+        assert pagination_info['around'][1]['isCurrent']
+        assert pagination_info['around'][1]['page'] == 2
+        assert not pagination_info['around'][2]['isCurrent']
+        assert pagination_info['around'][2]['page'] == 3
+        assert not pagination_info['next']['isCurrent']
+        assert pagination_info['next']['page'] == 3
+        assert not pagination_info['previous']['isCurrent']
+        assert pagination_info['previous']['page'] == 1
 
     def test_returns_all_items_without_membership(self, graphene_client, crud_demo_item_factory, tenant_factory, user):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
