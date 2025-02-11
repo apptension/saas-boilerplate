@@ -191,4 +191,50 @@ describe('usePagedPaginatedQuery: Hook', () => {
       expect(result.current.toolbarSearchParams).not.toHaveProperty('pageSize');
     });
   });
+
+  it('should handle direct loadCursor call', async () => {
+    const nextPageData = [...Array(10)].map((_, i) =>
+      paginationTestItemFactory({
+        id: `item-${i + 11}`,
+      })
+    );
+
+    const nextPageCursors = {
+      around: [
+        { cursor: 'page-1', isCurrent: false, page: 1 },
+        { cursor: 'page-2', isCurrent: true, page: 2 },
+      ],
+      first: null,
+      last: null,
+      next: null,
+      previous: {
+        cursor: 'page-1',
+        isCurrent: false,
+        page: 1,
+      },
+    };
+
+    const nextPageMock = fillPagedPaginationItemListQuery(nextPageData, nextPageCursors, {
+      first: 10,
+      after: 'direct-cursor',
+    });
+
+    const { result } = await init(nextPageMock);
+
+    result.current.loadCursor('direct-cursor');
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges[0]?.node.id).toBe('item-11');
+    });
+  });
+
+  it('should handle invalid page size gracefully', async () => {
+    const { result } = await init();
+
+    await act(async () => {
+      result.current.onSearchChangeWithCursorClear({ pageSize: '999' });
+    });
+
+    expect(result.current.pageSize).toBe(10);
+  });
 });
