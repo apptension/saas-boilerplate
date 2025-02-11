@@ -115,7 +115,7 @@ export const usePagedPaginatedQuery = <
       }
       nextPage?.cursor && !nextPage.isCurrent && nextPage?.cursor !== cursor && onPageClick(nextPage.cursor);
     }
-  }, [data, options.dataKey, onPageClick, loading]);
+  }, [data, options.dataKey, onPageClick, loading, cursor]);
 
   return {
     data,

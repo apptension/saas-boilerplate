@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n": types.PagedPaginationListTestQueryDocument,
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
@@ -102,6 +103,10 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
