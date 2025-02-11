@@ -201,6 +201,143 @@ class TestAllCrudDemoItemsQuery:
         assert not pagination_info['previous']['isCurrent']
         assert pagination_info['previous']['page'] == 1
 
+    def test_returns_all_items_paginated_last_page(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(55, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        first_page = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, first: 10) {
+                pageCursors {
+                    last {
+                        cursor
+                        isCurrent
+                        page
+                    }
+                }
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        executed = graphene_client.query(
+            f"""
+            query($tenantId: ID!) {{
+                allCrudDemoItems(tenantId: $tenantId, first: 10, after: "{first_page['data']['allCrudDemoItems']['pageCursors']['last']['cursor']}" ) {{
+                  pageCursors {{
+                    around {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    first {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    last {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    next {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                    previous {{
+                        cursor
+                        isCurrent
+                        page
+                    }}
+                }}
+                edges {{
+                  node {{
+                    id
+                    name
+                  }}
+                }}
+              }}
+            }}
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        pagination_info = executed['data']['allCrudDemoItems']['pageCursors']
+        assert len(executed['data']['allCrudDemoItems']['edges']) == 5
+        assert len(pagination_info['around']) == 4
+        assert not pagination_info['around'][0]['isCurrent']
+        assert pagination_info['around'][0]['page'] == 3
+        assert not pagination_info['around'][1]['isCurrent']
+        assert pagination_info['around'][1]['page'] == 4
+        assert not pagination_info['around'][2]['isCurrent']
+        assert pagination_info['around'][2]['page'] == 5
+        assert pagination_info['around'][3]['isCurrent']
+        assert pagination_info['around'][3]['page'] == 6
+        assert not pagination_info['next']
+        assert not pagination_info['previous']['isCurrent']
+        assert pagination_info['previous']['page'] == 5
+
+    def test_returns_all_items_pagination_error(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(55, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, first: 10, last:10) {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "cursor-based pagination cannot be forwards AND backwards"
+
+    def test_returns_all_items_pagination_error_2(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(55, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, last:10) {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed["errors"]
+        assert executed["errors"][0]["message"] == "when paging backwards, a 'before' argument is required"
+
     def test_returns_all_items_without_membership(self, graphene_client, crud_demo_item_factory, tenant_factory, user):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
         tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
