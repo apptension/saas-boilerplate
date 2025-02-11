@@ -15,7 +15,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
     })
   );
 
-  const init = async (mock?: MockedResponse<Record<string, any>, Record<string, any>>) => {
+  const init = async (mocks?: MockedResponse<Record<string, any>, Record<string, any>>[]) => {
     const pageCursors = {
       around: [
         { cursor: 'page-1', isCurrent: true, page: 1 },
@@ -34,7 +34,9 @@ describe('usePagedPaginatedQuery: Hook', () => {
     const initMockedResponse = fillPagedPaginationItemListQuery(initData, pageCursors, { first: 10 });
     const useEffectCleanMock = initMockedResponse;
 
-    const mocks = mock ? [initMockedResponse, mock, useEffectCleanMock] : [initMockedResponse, useEffectCleanMock];
+    const allMocks = mocks
+      ? [initMockedResponse, ...mocks, useEffectCleanMock]
+      : [initMockedResponse, useEffectCleanMock];
 
     const { result, waitForApolloMocks } = renderHook(
       () =>
@@ -47,7 +49,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
           dataKey: 'allCrudDemoItems',
         }),
       {
-        apolloMocks: (defaultMocks) => defaultMocks.concat(...mocks),
+        apolloMocks: (defaultMocks) => defaultMocks.concat(...allMocks),
       }
     );
 
@@ -114,7 +116,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
       after: 'next-cursor',
     });
 
-    const { result } = await init(nextPageMock);
+    const { result } = await init([nextPageMock]);
 
     result.current.onPageClick('next-cursor');
 
@@ -171,7 +173,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
       }
     );
 
-    const { result } = await init(searchParamsMock);
+    const { result } = await init([searchParamsMock]);
 
     result.current.onSearchChangeWithCursorClear({
       search: 'test',
@@ -219,7 +221,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
       after: 'direct-cursor',
     });
 
-    const { result } = await init(nextPageMock);
+    const { result } = await init([nextPageMock]);
 
     result.current.loadCursor('direct-cursor');
 
@@ -236,5 +238,140 @@ describe('usePagedPaginatedQuery: Hook', () => {
     });
 
     expect(result.current.pageSize).toBe(10);
+  });
+
+  it('should not auto-navigate when current page has data', async () => {
+    const { result } = await init();
+    const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toHaveLength(10);
+      expect(onPageClickSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not auto-navigate when current cursor matches the target cursor', async () => {
+    const emptyPageMock = fillPagedPaginationItemListQuery(
+      [],
+      {
+        around: [{ cursor: 'same-cursor', isCurrent: true, page: 1 }],
+        first: null,
+        last: null,
+        next: null,
+        previous: {
+          cursor: 'same-cursor',
+          isCurrent: false,
+          page: 1,
+        },
+      },
+      {
+        first: 10,
+        after: 'same-cursor',
+      }
+    );
+
+    const initialMock = fillPagedPaginationItemListQuery(
+      initData,
+      {
+        around: [{ cursor: 'same-cursor', isCurrent: true, page: 1 }],
+        first: null,
+        last: null,
+        next: {
+          cursor: 'same-cursor',
+          isCurrent: false,
+          page: 2,
+        },
+        previous: null,
+      },
+      {
+        first: 10,
+      }
+    );
+
+    const { result } = await init([initialMock, emptyPageMock]);
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toBeDefined();
+    });
+
+    const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
+
+    await act(async () => {
+      result.current.onPageClick('same-cursor');
+    });
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toBeDefined();
+      expect(onPageClickSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should not auto-navigate when target page is current', async () => {
+    const emptyPageMock = fillPagedPaginationItemListQuery(
+      [],
+      {
+        around: [{ cursor: 'page-1', isCurrent: false, page: 1 }],
+        first: null,
+        last: null,
+        next: null,
+        previous: {
+          cursor: 'prev-cursor',
+          isCurrent: true,
+          page: 1,
+        },
+      },
+      {
+        first: 10,
+        after: 'next-cursor',
+      }
+    );
+
+    const { result } = await init([emptyPageMock]);
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toBeDefined();
+    });
+
+    const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
+
+    await act(async () => {
+      result.current.onPageClick('next-cursor');
+    });
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toHaveLength(0);
+      expect(result.current.data?.allCrudDemoItems?.pageCursors?.previous?.isCurrent).toBe(true);
+      expect(onPageClickSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should not auto-navigate when no valid target page is available', async () => {
+    const emptyPageMock = fillPagedPaginationItemListQuery(
+      [],
+      {
+        around: [],
+        first: null,
+        last: null,
+        next: null,
+        previous: null,
+      },
+      {
+        first: 10,
+        after: 'next-cursor',
+      }
+    );
+
+    const { result } = await init([emptyPageMock]);
+
+    const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
+
+    await act(async () => {
+      result.current.onPageClick('next-cursor');
+    });
+
+    await waitFor(() => {
+      expect(result.current.data?.allCrudDemoItems?.edges).toHaveLength(0);
+      expect(onPageClickSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });
