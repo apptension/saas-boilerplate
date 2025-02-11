@@ -1,8 +1,8 @@
-import { PAGE_SIZE_OPTIONS } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { FormattedMessage } from 'react-intl';
 
 import { PagedPagination, PagedPaginationProps } from '../../pagedPagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import { PAGE_SIZE_OPTIONS } from '../table.constants';
 
 export interface TableFooterProps {
   pagination: PagedPaginationProps;

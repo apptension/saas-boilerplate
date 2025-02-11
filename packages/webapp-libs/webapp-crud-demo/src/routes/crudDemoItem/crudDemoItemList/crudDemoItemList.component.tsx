@@ -3,7 +3,7 @@ import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPagi
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { TableFooter } from '@sb/webapp-core/components/table/tableFooter';
+import { TableFooter } from '@sb/webapp-core/components/table';
 import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';

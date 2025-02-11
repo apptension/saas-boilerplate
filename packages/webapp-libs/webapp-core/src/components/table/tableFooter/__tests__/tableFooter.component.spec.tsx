@@ -1,8 +1,8 @@
-import { PAGE_SIZE_OPTIONS } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { render } from '../../../../tests/utils/rendering';
+import { PAGE_SIZE_OPTIONS } from '../../table.constants';
 import { TableFooter, TableFooterProps } from '../tableFooter.component';
 
 describe('TableFooter: Component', () => {

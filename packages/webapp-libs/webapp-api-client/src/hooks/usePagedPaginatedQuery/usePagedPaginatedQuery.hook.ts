@@ -1,4 +1,5 @@
 import { NoInfer, QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
+import { PAGE_SIZE_OPTIONS } from '@sb/webapp-core/components/table';
 import { flatten, omit, pick } from 'ramda';
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -13,8 +14,6 @@ type CursorsInput = {
 };
 
 export const DEFAULT_PAGE_SIZE = 10;
-
-export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100, 200];
 
 export const filterPageSize = (pageSize?: string) => {
   const pz = pageSize ? parseInt(pageSize, 10) : DEFAULT_PAGE_SIZE;
