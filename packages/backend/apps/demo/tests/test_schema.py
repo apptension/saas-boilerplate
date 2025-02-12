@@ -54,6 +54,175 @@ class TestAllCrudDemoItemsQuery:
             }
         }
 
+    def test_returns_all_items_filtered_by_name(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        crud_demo_item_factory.create_batch(30, tenant=tenant)
+        accessible_items = crud_demo_item_factory.create_batch(3, tenant=tenant, name="Item 1")
+        crud_demo_item_factory.create_batch(3, tenant=tenant_2)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, name: "Item 1") {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        assert executed == {
+            "data": {
+                "allCrudDemoItems": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": to_global_id("CrudDemoItemType", str(item.id)),
+                                "name": item.name,
+                            }
+                        }
+                        for item in accessible_items
+                    ]
+                }
+            }
+        }
+
+    def test_returns_all_items_filtered_by_created_by(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        accessible_items = crud_demo_item_factory.create_batch(3, tenant=tenant, created_by=user)
+        crud_demo_item_factory.create_batch(3, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(tenantId: $tenantId, createdBy: "%s") {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """
+            % to_global_id("UserType", user.id),
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+
+        assert executed == {
+            "data": {
+                "allCrudDemoItems": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": to_global_id("CrudDemoItemType", str(item.id)),
+                                "name": item.name,
+                            }
+                        }
+                        for item in accessible_items
+                    ]
+                }
+            }
+        }
+
+    def test_returns_all_items_filtered_by_created_at(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        accessible_items = crud_demo_item_factory.create_batch(3, tenant=tenant, created_by=user)
+        for accessible_item in accessible_items:
+            accessible_item.created_at = "2022-01-01T00:00:00Z"
+            accessible_item.save()
+        crud_demo_item_factory.create_batch(3, tenant=tenant)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(
+                    tenantId: $tenantId, createdAtFrom: "2021-01-01T00:00:00Z", createdAtTo: "2023-01-01T00:00:00Z") { 
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed == {
+            "data": {
+                "allCrudDemoItems": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": to_global_id("CrudDemoItemType", str(item.id)),
+                                "name": item.name,
+                            }
+                        }
+                        for item in accessible_items
+                    ]
+                }
+            }
+        }
+
+    def test_returns_all_items_order_by(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        accessible_items = crud_demo_item_factory.create_batch(3, tenant=tenant, created_by=user)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!)  {
+              allCrudDemoItems(
+                    tenantId: $tenantId, orderBy: "-createdAt") { 
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+        """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id)},
+        )
+        assert executed == {
+            "data": {
+                "allCrudDemoItems": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": to_global_id("CrudDemoItemType", str(item.id)),
+                                "name": item.name,
+                            }
+                        }
+                        for item in reversed(accessible_items)
+                    ]
+                }
+            }
+        }
+
     def test_returns_all_items_without_membership(self, graphene_client, crud_demo_item_factory, tenant_factory, user):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
         tenant_2 = tenant_factory(name="Tenant 2", type=TenantType.ORGANIZATION)

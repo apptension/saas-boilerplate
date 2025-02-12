@@ -480,6 +480,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "django-filter"
+version = "24.3"
+requires_python = ">=3.8"
+summary = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+dependencies = [
+    "Django>=4.2",
+]
+
+[[package]]
 name = "django-hashid-field"
 version = "3.3.7"
 summary = "A Hashids obfuscated Django Model Field"
@@ -1773,7 +1782,7 @@ dependencies = [
 [metadata]
 lock_version = "4.2"
 groups = ["default", "dev"]
-content_hash = "sha256:f3ba3b5a438393bd3984ff912003f5209f22f3fd75b6aed932383e54172c3ca4"
+content_hash = "sha256:f450d5cc5b3c12684fad86f56663b8505901ea6a74045dd1084eb1b34e9d0cc2"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -2217,6 +2226,10 @@ content_hash = "sha256:f3ba3b5a438393bd3984ff912003f5209f22f3fd75b6aed932383e541
 "django-extensions 3.2.1" = [
     {url = "https://files.pythonhosted.org/packages/00/a8/36d25c69589a44680e49f8b1886f65379829af4464384bd10a205c93532a/django_extensions-3.2.1-py3-none-any.whl", hash = "sha256:421464be390289513f86cb5e18eb43e5dc1de8b4c27ba9faa3b91261b0d67e09"},
     {url = "https://files.pythonhosted.org/packages/43/aa/94ea07a87d52f484a562e701ee7af8dee4a43f3260b10d500d178ecbfcc7/django-extensions-3.2.1.tar.gz", hash = "sha256:2a4f4d757be2563cd1ff7cfdf2e57468f5f931cc88b23cf82ca75717aae504a4"},
+]
+"django-filter 24.3" = [
+    {url = "https://files.pythonhosted.org/packages/09/b1/92f1c30b47c1ebf510c35a2ccad9448f73437e5891bbd2b4febe357cc3de/django_filter-24.3-py3-none-any.whl", hash = "sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64"},
+    {url = "https://files.pythonhosted.org/packages/50/bc/dc19ae39c235332926dd0efe0951f663fa1a9fc6be8430737ff7fd566b20/django_filter-24.3.tar.gz", hash = "sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3"},
 ]
 "django-hashid-field 3.3.7" = [
     {url = "https://files.pythonhosted.org/packages/17/35/f1ab101fa83618e3f36d887c44b4cd4bc650600b9ec5fe5d2cfc2a77fce4/django_hashid_field-3.3.7-py3-none-any.whl", hash = "sha256:7f09f78c72ad35e9544cd8e667870245cdf1754db2a7351935b833cc113462ea"},
@@ -3151,7 +3164,6 @@ content_hash = "sha256:f3ba3b5a438393bd3984ff912003f5209f22f3fd75b6aed932383e541
     {url = "https://files.pythonhosted.org/packages/c3/76/1ccba9a1d11a0dd614b31f7160709fe05530ff2823a0ce441063430ad56f/pytest-faker-2.0.0.tar.gz", hash = "sha256:6b37bb89d94f96552bfa51f8e8b89d32addded8ddb58a331488299ef0137d9b6"},
 ]
 "pytest-freezer 0.4.6" = [
-    {url = "https://files.pythonhosted.org/packages/8e/1c/b2fc7216e8185f9185e46a6f7293d131641c7781353c37e1e2f05c232500/pytest_freezer-0.4.6.tar.gz", hash = "sha256:8e88cd571d3ba10dd9e0cc09897eb01c32a37bef5ca4ff7c4ea8598c91aa6d96"},
     {url = "https://files.pythonhosted.org/packages/b9/1e/ed615b4285443b47694a3cf1579e451c85dda71d2e58cfffcf21b7410870/pytest_freezer-0.4.6-py3-none-any.whl", hash = "sha256:ca549c30a7e12bc7b242978b6fa0bb91e73cd1bd7d5b2bb658f0f9d7f1694cac"},
 ]
 "pytest-mock 3.10.0" = [

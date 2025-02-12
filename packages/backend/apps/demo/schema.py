@@ -2,18 +2,20 @@ import graphene
 from django.shortcuts import get_object_or_404
 from graphene import relay
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphql_relay import to_global_id, from_global_id
 
 from apps.content import models as content_models
 from common.graphql import mutations
 from common.acl.policies import IsTenantMemberAccess
 from common.graphql.acl import permission_classes
-from . import models, serializers
+from . import models, serializers, filters
 
 
 class CrudDemoItemType(DjangoObjectType):
     class Meta:
         model = models.CrudDemoItem
+        filterset_class = filters.CrudDemoItemFilter
         interfaces = (relay.Node,)
         fields = "__all__"
 
@@ -118,7 +120,7 @@ class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
 
 class Query(graphene.ObjectType):
     crud_demo_item = graphene.Field(CrudDemoItemType, id=graphene.ID(), tenant_id=graphene.ID())
-    all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection, tenant_id=graphene.ID())
+    all_crud_demo_items = DjangoFilterConnectionField(CrudDemoItemType, tenant_id=graphene.ID())
     all_contentful_demo_item_favorites = graphene.relay.ConnectionField(ContentfulDemoItemFavoriteConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 

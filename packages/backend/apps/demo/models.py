@@ -12,7 +12,7 @@ from common.models import TimestampedMixin, TenantDependentModelMixin
 User = get_user_model()
 
 
-class CrudDemoItem(TenantDependentModelMixin, models.Model):
+class CrudDemoItem(TimestampedMixin, TenantDependentModelMixin, models.Model):
     id = hashid_field.HashidAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
