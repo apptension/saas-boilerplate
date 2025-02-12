@@ -1,6 +1,13 @@
-import { PageInfo, composeMockedPaginatedListQueryResult, createDeepFactory, makeId } from '../utils';
-import { paginationListTestQuery } from '@sb/webapp-api-client/hooks/usePaginatedQuery/__tests__/usePaginatedQuery.graphql';
-
+import { pagedPaginationListTestQuery } from '../../hooks/usePagedPaginatedQuery/__tests__/usePagedPaginatedQuery.graphql';
+import { paginationListTestQuery } from '../../hooks/usePaginatedQuery/__tests__/usePaginatedQuery.graphql';
+import {
+  PageInfo,
+  composeMockedPagesPaginatedListQueryResult,
+  composeMockedPaginatedListQueryResult,
+  createDeepFactory,
+  makeId,
+} from '../utils';
+import { PageCursors } from '../../graphql';
 
 export const paginationTestItemFactory = createDeepFactory<{ id: string; name: string }>(() => ({
   id: makeId(32),
@@ -23,5 +30,22 @@ export const fillPaginationItemListQuery = (
     {
       ...pageInfo,
     }
+  );
+};
+
+export const fillPagedPaginationItemListQuery = (
+  items: Array<Partial<{ id: string; name: string }>> = [],
+  pageCursors: PageCursors,
+  variables?: Record<string, any>
+) => {
+  return composeMockedPagesPaginatedListQueryResult(
+    pagedPaginationListTestQuery,
+    'allCrudDemoItems',
+    'CrudDemoItemType',
+    {
+      data: items,
+      variables: variables,
+    },
+    pageCursors
   );
 };

@@ -2,6 +2,8 @@ import { MockedResponse } from '@apollo/client/testing';
 import { GraphQLError } from 'graphql/error';
 import { DocumentNode } from 'graphql/language';
 
+import { PageCursors } from '../../graphql';
+
 /**
  * Generates a random ID string of the specified length.
  *
@@ -210,5 +212,38 @@ export const composeMockedPaginatedListQueryResult = (
       __typename: 'PageInfo',
       ...pageInfo,
     },
+  });
+};
+
+/**
+ * Helper function that composes a mocked pages paginated list query result. It is using
+ * [`composeMockedListQueryResult`](#composemockedlistqueryresult) function and adds additional `pageCursors` object to the
+ * result.
+ *
+ * @param query - The GraphQL query document.
+ * @param key - The key for the main data object.
+ * @param typename - The typename of the nodes in the list.
+ * @param resultProps - Props for composing a mocked list query result.
+ * @param pageCursors - PageCursors object for pagination.
+ * @returns The composed mocked pages paginated list query result.
+ */
+export const composeMockedPagesPaginatedListQueryResult = (
+  query: DocumentNode,
+  key: string,
+  typename: string,
+  resultProps: ComposeMockedListQueryResultProps,
+  pageCursors: PageCursors
+): MockedResponse => {
+  const composedData = {
+    [key]: {
+      ...mapRelayEdges(resultProps.data, typename, resultProps.pageInfo),
+      pageCursors,
+    },
+    ...resultProps.additionalData,
+  } as Record<string, any>;
+
+  return composeMockedQueryResult(query, {
+    variables: resultProps.variables,
+    data: composedData,
   });
 };

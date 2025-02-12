@@ -1,10 +1,10 @@
-import { gql } from '@sb/webapp-api-client/graphql';
+import { CrudDemoItemListQueryQuery, getFragmentData, gql, pageCursorsFragment } from '@sb/webapp-api-client/graphql';
 import { usePaginatedQuery } from '@sb/webapp-api-client/hooks';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent } from '@sb/webapp-core/components/cards';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Pagination } from '@sb/webapp-core/components/pagination';
+import { TableFooter } from '@sb/webapp-core/components/table';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { PlusCircle } from 'lucide-react';
@@ -23,29 +23,34 @@ export const {{ pascalCase name }}ListQuery = gql(/* GraphQL */ `
           ...{{ camelCase name }}ListItem
         }
       }
-      pageInfo {
-        startCursor
-        endCursor
-        hasPreviousPage
-        hasNextPage
+      pageCursors {
+        ...pageCursorsFragment
       }
     }
   }
 `);
 
-export const ITEMS_PER_PAGE = 8;
+type {{ pascalCase name }}ListSearchParams = {
+  cursor?: string;
+  pageSize?: string;
+};
 
 export const {{ pascalCase name }}List = () => {
   const generateLocalePath = useGenerateLocalePath();
 
-  const { data, loading, hasNext, hasPrevious, loadNext, loadPrevious } = usePaginatedQuery({{ pascalCase name }}ListQuery, {
+  const { data, loading, pageSize, onPageClick, handlePageSizeChange } = usePagedPaginatedQuery<
+    {{ pascalCase name }}ListQueryQuery,
+    { tenantId: string } & Omit<{{ pascalCase name }}ListSearchParams, 'cursor'>,
+    {{ pascalCase name }}ListSearchParams,
+    typeof {{ pascalCase name }}ListQuery
+    >({{ pascalCase name }}ListQuery, {
     hookOptions: {
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
+      variables: {},
+      skip: !currentTenant,
     },
-    dataKey: '{{ pascalCase name }}ListItem',
+    dataKey: 'all{{ pascalCase name }}s',
   });
+  const pageCursors = getFragmentData(pageCursorsFragment, data?.allCrudDemoItems?.pageCursors);
 
   const renderList = () => {
     if (data) {
@@ -110,7 +115,18 @@ export const {{ pascalCase name }}List = () => {
       ) : (
         <>
           {renderList()}
-          <Pagination hasNext={hasNext} hasPrevious={hasPrevious} loadNext={loadNext} loadPrevious={loadPrevious} />
+          <TableFooter
+            pageSize={pageSize}
+            pagination={{
+              around: pageCursors?.around,
+              first: pageCursors?.first,
+              last: pageCursors?.last,
+              next: pageCursors?.next,
+              previous: pageCursors?.previous,
+              onPageClick: onPageClick,
+           }}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </>
       )}
     </PageLayout>

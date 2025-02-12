@@ -8,6 +8,7 @@ from apps.content import models as content_models
 from common.graphql import mutations
 from common.acl.policies import IsTenantMemberAccess
 from common.graphql.acl import permission_classes
+from common.graphql.pagination.fields import UIPagedConnection, UIPagedConnectionField
 from . import models, serializers
 
 
@@ -16,6 +17,7 @@ class CrudDemoItemType(DjangoObjectType):
         model = models.CrudDemoItem
         interfaces = (relay.Node,)
         fields = "__all__"
+        connection_class = UIPagedConnection
 
 
 class ContentfulDemoItemFavoriteType(DjangoObjectType):
@@ -34,7 +36,7 @@ class ContentfulDemoItemType(DjangoObjectType):
         fields = "__all__"
 
 
-class CrudDemoItemConnection(graphene.Connection):
+class CrudDemoItemConnection(UIPagedConnection):
     class Meta:
         node = CrudDemoItemType
 
@@ -118,7 +120,7 @@ class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
 
 class Query(graphene.ObjectType):
     crud_demo_item = graphene.Field(CrudDemoItemType, id=graphene.ID(), tenant_id=graphene.ID())
-    all_crud_demo_items = graphene.relay.ConnectionField(CrudDemoItemConnection, tenant_id=graphene.ID())
+    all_crud_demo_items = UIPagedConnectionField(CrudDemoItemConnection, tenant_id=graphene.ID())
     all_contentful_demo_item_favorites = graphene.relay.ConnectionField(ContentfulDemoItemFavoriteConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 

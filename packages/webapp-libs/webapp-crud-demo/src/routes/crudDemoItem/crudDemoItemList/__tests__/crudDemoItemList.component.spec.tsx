@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
@@ -6,9 +7,9 @@ import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../config/routes';
+import { crudDemoItemFactory, fillCrudDemoItemPaginationListQuery } from '../../../../tests/factories';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
-import { crudDemoItemFactory, fillCrudDemoItemPaginationListQuery } from '@sb/webapp-crud-demo/tests/factories';
 
 describe('CrudDemoItemList: Component', () => {
   const Component = () => (
@@ -40,8 +41,8 @@ describe('CrudDemoItemList: Component', () => {
           ],
         })
       ),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
     ];
     render(<Component />, { routerProps, apolloMocks });
 

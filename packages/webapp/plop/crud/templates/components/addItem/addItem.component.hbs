@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
+import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -11,7 +12,7 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../../app/config/routes';
 import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
 import { {{ pascalCase name }}FormFields } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
-import { ITEMS_PER_PAGE, {{ pascalCase name }}ListQuery } from '../{{ camelCase name }}List/{{ camelCase name }}List.component';
+import { {{ pascalCase name }}ListQuery } from '../{{ camelCase name }}List/{{ camelCase name }}List.component';
 
 export const add{{ pascalCase name }}Mutation = gql(/* GraphQL */ `
   mutation add{{ pascalCase name }}Mutation($input: Create{{ pascalCase name }}MutationInput!) {
@@ -41,7 +42,7 @@ export const Add{{ pascalCase name }} = () => {
     refetchQueries: () => [{
       query: {{ pascalCase name }}ListQuery,
       variables: {
-        first: ITEMS_PER_PAGE
+        first: DEFAULT_PAGE_SIZE,
       }
     }],
     onCompleted: (data) => {

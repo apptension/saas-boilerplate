@@ -670,6 +670,7 @@ type CrudDemoItemConnection {
   pageInfo: PageInfo!
   "Contains the nodes in this connection."
   edges: [CrudDemoItemEdge]!
+  pageCursors: PageCursors
 }
 "A Relay edge containing a `CrudDemoItem` and its cursor."
 type CrudDemoItemEdge {
@@ -677,6 +678,18 @@ type CrudDemoItemEdge {
   node: CrudDemoItemType
   "A cursor for use in pagination"
   cursor: String!
+}
+type PageCursors {
+  around: [PageCursor]
+  first: PageCursor
+  last: PageCursor
+  next: PageCursor
+  previous: PageCursor
+}
+type PageCursor {
+  cursor: String
+  isCurrent: Boolean
+  page: Int
 }
 type ContentfulDemoItemFavoriteConnection {
   "Pagination data for this connection."
@@ -746,6 +759,7 @@ type FileFieldType {
 }
 type ApiMutation {
   updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
+  "Mutation to delete a tenant from the system."
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
   updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
@@ -787,6 +801,7 @@ type UpdateTenantMutationPayload {
   tenantEdge: TenantEdge
   clientMutationId: String
 }
+"Mutation to delete a tenant from the system."
 type DeleteTenantMutationPayload {
   deletedIds: [ID]
   clientMutationId: String
@@ -1018,6 +1033,14 @@ interface Node {
   "The ID of the object"
   id: ID!
 }
+"""
+
+    Predefined tenant user roles:
+    - OWNER
+    - ADMIN
+    - MEMBER
+    
+"""
 enum TenantUserRole {
   OWNER
   ADMIN
