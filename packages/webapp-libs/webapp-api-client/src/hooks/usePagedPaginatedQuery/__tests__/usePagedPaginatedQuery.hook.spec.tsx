@@ -59,7 +59,6 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
   it('should fetch initial page with correct data and pagination info', async () => {
     const { result } = await init();
-    console.log('result', result);
 
     expect(result.current.loading).toBe(false);
     expect(result.current.data?.allCrudDemoItems?.edges).toHaveLength(initDataLength);

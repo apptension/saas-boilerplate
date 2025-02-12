@@ -1,4 +1,4 @@
-import { CrudDemoItemListQueryQuery, gql } from '@sb/webapp-api-client/graphql';
+import { CrudDemoItemListQueryQuery, getFragmentData, gql, pageCursorsFragment } from '@sb/webapp-api-client/graphql';
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
@@ -25,31 +25,7 @@ export const crudDemoItemListQuery = gql(/* GraphQL */ `
         }
       }
       pageCursors {
-        around {
-          cursor
-          isCurrent
-          page
-        }
-        first {
-          cursor
-          isCurrent
-          page
-        }
-        last {
-          cursor
-          isCurrent
-          page
-        }
-        next {
-          cursor
-          isCurrent
-          page
-        }
-        previous {
-          cursor
-          isCurrent
-          page
-        }
+        ...pageCursorsFragment
       }
     }
   }
@@ -78,7 +54,7 @@ export const CrudDemoItemList = () => {
     },
     dataKey: 'allCrudDemoItems',
   });
-  const pageCursors = data?.allCrudDemoItems?.pageCursors || {};
+  const pageCursors = getFragmentData(pageCursorsFragment, data?.allCrudDemoItems?.pageCursors);
 
   const renderList = () => {
     if (data) {
