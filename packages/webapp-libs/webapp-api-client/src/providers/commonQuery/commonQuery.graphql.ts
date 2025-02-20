@@ -25,11 +25,26 @@ export const commonQueryTenantItemFragment = gql(/* GraphQL */ `
     name
     type
     membership {
-      id
-      role
-      invitationAccepted
-      invitationToken
+      ...commonQueryMembershipFragment
     }
+  }
+`);
+
+/**
+ * @category graphql
+ */
+export const commonQueryMembershipFragment = gql(/* GraphQL */ `
+  fragment commonQueryMembershipFragment on TenantMembershipType {
+    id
+    role
+    invitationAccepted
+    inviteeEmailAddress
+    invitationToken
+    userId
+    firstName
+    lastName
+    userEmail
+    avatar
   }
 `);
 

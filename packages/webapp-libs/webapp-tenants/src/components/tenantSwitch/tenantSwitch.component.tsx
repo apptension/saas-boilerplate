@@ -1,5 +1,6 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
-import { CommonQueryTenantItemFragmentFragment, TenantUserRole } from '@sb/webapp-api-client/graphql';
+import { CommonQueryTenantItemFragmentFragment, TenantUserRole, getFragmentData } from '@sb/webapp-api-client/graphql';
+import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import {
   DropdownMenu,
@@ -36,7 +37,10 @@ export const TenantSwitch = () => {
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
   const personalTenant = head(tenantsGrouped[TenantType.PERSONAL]);
   const organizationTenants = groupBy(
-    (tenant) => (tenant?.membership?.invitationAccepted ? 'organizations' : 'invitations'),
+    (tenant) =>
+      getFragmentData(commonQueryMembershipFragment, tenant?.membership)?.invitationAccepted
+        ? 'organizations'
+        : 'invitations',
     tenantsGrouped[TenantType.ORGANIZATION] ?? []
   );
 
@@ -46,7 +50,7 @@ export const TenantSwitch = () => {
   };
 
   const handleInvitationClick = (tenant?: CommonQueryTenantItemFragmentFragment | null) => () => {
-    const token = tenant?.membership?.invitationToken;
+    const token = getFragmentData(commonQueryMembershipFragment, tenant?.membership)?.invitationToken;
     if (!token) return;
     navigate(generateLocalePath(RoutesConfig.tenantInvitation, { token }));
   };

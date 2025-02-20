@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TenantMembershipType, TenantUserRole } from '@sb/webapp-api-client';
+import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webapp-api-client';
+import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import {
@@ -15,13 +16,15 @@ import {
 } from '@sb/webapp-core/components/ui/dropdown-menu';
 import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/skeleton';
 import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
 import { indexBy, prop, trim } from 'ramda';
 import { MouseEvent, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
-import { useTenantRoles } from '../../../hooks/useTenantRoles';
+import { useGenerateTenantPath, useTenantRoles } from '../../../hooks';
 import { useCurrentTenant } from '../../../providers';
 import { deleteTenantMembershipMutation, updateTenantMembershipMutation } from './membershipEntry.graphql';
 
@@ -33,9 +36,13 @@ export type MembershipEntryProps = {
 
 export const MembershipEntry = ({ membership, className, onAfterUpdate }: MembershipEntryProps) => {
   const { data: currentTenant } = useCurrentTenant();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { getRoleTranslation } = useTenantRoles();
   const intl = useIntl();
+  const generateTenantPath = useGenerateTenantPath();
+  const isCurrentUserMembership =
+    getFragmentData(commonQueryMembershipFragment, currentTenant?.membership)?.id === membership?.id;
 
   const updateSuccessMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateRole / Success message',
@@ -59,7 +66,6 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
     onCompleted: () => {
-      onAfterUpdate?.();
       toast({ description: updateSuccessMessage });
     },
     onError: () => {
@@ -69,30 +75,43 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const [commitDeleteMutation] = useMutation(deleteTenantMembershipMutation, {
     onCompleted: () => {
-      onAfterUpdate?.();
       toast({ description: deleteSuccessMessage });
+      onAfterUpdate?.();
     },
     onError: () => {
       toast({ description: deleteFailMessage, variant: 'destructive' });
     },
   });
 
-  const roles = [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER];
+  const roles = useMemo(() => [TenantUserRole.OWNER, TenantUserRole.ADMIN, TenantUserRole.MEMBER], []);
   const roleChangeCallbacks = useMemo(() => {
     if (!currentTenant) return;
 
     const mapper = roles.map((role) => ({
       role,
-      callback: () =>
+      callback: () => {
+        if (role === TenantUserRole.MEMBER && isCurrentUserMembership) {
+          navigate(generateTenantPath(RoutesConfig.home, { tenantId: currentTenant?.id || '' }));
+        }
+
         commitUpdateMutation({
           variables: {
             input: { id: membership.id, tenantId: currentTenant.id, role },
           },
-        }),
+        });
+      },
     }));
 
     return indexBy(prop('role'), mapper);
-  }, [roles, membership.id]);
+  }, [
+    currentTenant,
+    roles,
+    isCurrentUserMembership,
+    membership.id,
+    commitUpdateMutation,
+    navigate,
+    generateTenantPath,
+  ]);
 
   const deleteMembership = () => {
     if (!currentTenant) return;
