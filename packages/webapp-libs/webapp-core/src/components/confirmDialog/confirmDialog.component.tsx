@@ -10,7 +10,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog';
@@ -44,6 +43,9 @@ export const ConfirmDialog = ({
   };
   const handleCancel = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+
       setOpen(false);
       onCancel?.(e);
     },
@@ -51,6 +53,9 @@ export const ConfirmDialog = ({
   );
   const handleContinue = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+
       setOpen(false);
       onContinue(e);
     },

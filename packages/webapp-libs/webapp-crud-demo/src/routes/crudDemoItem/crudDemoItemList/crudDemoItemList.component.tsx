@@ -1,18 +1,25 @@
-import { CrudDemoItemListQueryQuery, getFragmentData, gql, pageCursorsFragment } from '@sb/webapp-api-client/graphql';
+import {
+  CrudDemoItemListItemFragment,
+  CrudDemoItemListQueryQuery,
+  getFragmentData,
+  gql,
+  pageCursorsFragment,
+} from '@sb/webapp-api-client/graphql';
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { TableFooter } from '@sb/webapp-core/components/table';
-import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
+import { DataTable, Row } from '@sb/webapp-core/components/table/dataTable';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { PlusCircle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
-import { CrudDemoItemListItem } from './crudDemoItemListItem';
+import { columns } from './columns';
 import { ListSkeleton } from './listSkeleton';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
@@ -39,6 +46,8 @@ type CrudDemoItemListSearchParams = {
 export const CrudDemoItemList = () => {
   const generateLocalePath = useGenerateLocalePath();
   const { data: currentTenant } = useCurrentTenant();
+  const generateTenantPath = useGenerateTenantPath();
+  const navigate = useNavigate();
 
   const { data, loading, pageSize, onPageClick, handlePageSizeChange } = usePagedPaginatedQuery<
     CrudDemoItemListQueryQuery,
@@ -55,43 +64,9 @@ export const CrudDemoItemList = () => {
     dataKey: 'allCrudDemoItems',
   });
   const pageCursors = getFragmentData(pageCursorsFragment, data?.allCrudDemoItems?.pageCursors);
-
-  const renderList = () => {
-    if (data) {
-      if (data.allCrudDemoItems && data.allCrudDemoItems.edges.length <= 0) return renderEmptyList();
-
-      return (
-        <Card className="mt-4">
-          <CardContent>
-            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li:last-child]:border-none">
-              {mapConnection(
-                (node) => (
-                  <CrudDemoItemListItem item={node} key={node.id} />
-                ),
-                data.allCrudDemoItems
-              )}
-            </ul>
-          </CardContent>
-        </Card>
-      );
-    }
-    return null;
-  };
-
-  const renderEmptyList = () => {
-    return (
-      <Card className="mt-4">
-        <CardContent>
-          <ul className="flex items-center justify-center w-full mt-4 rounded [&>li]:border-b [&>li]:border-slate-200 [&>li:last-child]:border-none">
-            <li className="py-16">
-              <h3 className="text-muted-foreground">
-                <FormattedMessage id="CrudDemoItemList / Headline" defaultMessage="Empty list" />
-              </h3>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-    );
+  const dataList = data?.allCrudDemoItems?.edges.map((edge) => edge?.node as CrudDemoItemListItemFragment) || [];
+  const handleRowClick = (row: Row<CrudDemoItemListItemFragment>) => {
+    navigate(generateTenantPath(RoutesConfig.crudDemoItem.details, { id: row.getValue('id') }));
   };
 
   return (
@@ -118,7 +93,7 @@ export const CrudDemoItemList = () => {
         <ListSkeleton />
       ) : (
         <>
-          {renderList()}
+          <DataTable data={dataList} columns={columns} onRowClick={handleRowClick} />
           <TableFooter
             pageSize={pageSize}
             pagination={{
