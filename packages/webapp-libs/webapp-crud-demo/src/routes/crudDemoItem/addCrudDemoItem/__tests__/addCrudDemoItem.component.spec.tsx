@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -56,7 +57,7 @@ describe('AddCrudDemoItem: Component', () => {
       const refetchMock = composeMockedQueryResult(crudDemoItemListQuery, {
         variables: {
           tenantId,
-          first: 8,
+          first: DEFAULT_PAGE_SIZE,
         },
         data: [data],
       });
