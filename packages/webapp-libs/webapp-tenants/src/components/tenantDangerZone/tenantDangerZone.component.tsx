@@ -6,12 +6,12 @@ import { H3, Paragraph } from '@sb/webapp-core/components/typography';
 import { Button, buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { FormattedMessage } from 'react-intl';
 
-import { useCurrentTenant } from '../../providers';
+import { useCurrentTenantMembership } from '../../hooks';
 import { useTenantDelete } from './tenantDangerZone.hook';
 
 export const TenantDangerZone = () => {
-  const { data: currentTenant } = useCurrentTenant();
-  const isOwner = currentTenant?.membership.role === TenantUserRole.OWNER;
+  const { currentMembership } = useCurrentTenantMembership();
+  const isOwner = currentMembership?.role === TenantUserRole.OWNER;
 
   const { deleteTenant, loading } = useTenantDelete();
 

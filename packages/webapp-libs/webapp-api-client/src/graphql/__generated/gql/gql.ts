@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 import * as types from './graphql';
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
@@ -13,9 +13,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  fragment pageCursorsFragment on PageCursors {\n    around {\n      cursor\n      isCurrent\n      page\n    }\n    first {\n      cursor\n      isCurrent\n      page\n    }\n    last {\n      cursor\n      isCurrent\n      page\n    }\n    next {\n      cursor\n      isCurrent\n      page\n    }\n    previous {\n      cursor\n      isCurrent\n      page\n    }\n  }\n": types.PageCursorsFragmentFragmentDoc,
+    "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n": types.PagedPaginationListTestQueryDocument,
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
     "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
-    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
+    "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
+    "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n": types.CommonQueryMembershipFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n      tenants {\n        ...commonQueryTenantItemFragment\n      }\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
     "\n  query configContentfulAppConfigQuery {\n    appConfigCollection(limit: 1) {\n      items {\n        name\n        privacyPolicy\n        termsAndConditions\n      }\n    }\n  }\n": types.ConfigContentfulAppConfigQueryDocument,
     "\n  mutation useFavoriteDemoItemListCreateMutation($input: CreateFavoriteContentfulDemoItemMutationInput!) {\n    createFavoriteContentfulDemoItem(input: $input) {\n      contentfulDemoItemFavoriteEdge {\n        node {\n          id\n          item {\n            pk\n          }\n        }\n      }\n    }\n  }\n": types.UseFavoriteDemoItemListCreateMutationDocument,
@@ -27,7 +30,7 @@ const documents = {
     "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!, $tenantId: ID!) {\n    crudDemoItem(id: $id, tenantId: $tenantId) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
-    "\n  query crudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
+    "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
     "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemTestQueryDocument,
     "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
     "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
@@ -65,7 +68,7 @@ const documents = {
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
     "\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMutationDocument,
-    "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n": types.UpdateTenantMembershipMutationDocument,
+    "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n": types.UpdateTenantMembershipMutationDocument,
     "\n  mutation deleteTenantMembershipMutation($input: DeleteTenantMembershipMutationInput!) {\n    deleteTenantMembership(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMembershipMutationDocument,
     "\n  query tenantMembersListQuery($id: ID!) {\n    tenant(id: $id) {\n      userMemberships {\n        id\n        role\n        invitationAccepted\n        inviteeEmailAddress\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n      }\n    }\n  }\n": types.TenantMembersListQueryDocument,
     "\n  fragment tenantFragment on TenantType {\n    id\n    name\n    slug\n    membership {\n      role\n      invitationAccepted\n    }\n  }\n": types.TenantFragmentFragmentDoc,
@@ -105,6 +108,14 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  fragment pageCursorsFragment on PageCursors {\n    around {\n      cursor\n      isCurrent\n      page\n    }\n    first {\n      cursor\n      isCurrent\n      page\n    }\n    last {\n      cursor\n      isCurrent\n      page\n    }\n    next {\n      cursor\n      isCurrent\n      page\n    }\n    previous {\n      cursor\n      isCurrent\n      page\n    }\n  }\n"): (typeof documents)["\n  fragment pageCursorsFragment on PageCursors {\n    around {\n      cursor\n      isCurrent\n      page\n    }\n    first {\n      cursor\n      isCurrent\n      page\n    }\n    last {\n      cursor\n      isCurrent\n      page\n    }\n    next {\n      cursor\n      isCurrent\n      page\n    }\n    previous {\n      cursor\n      isCurrent\n      page\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"): (typeof documents)["\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -113,7 +124,11 @@ export function gql(source: "\n  fragment commonQueryCurrentUserFragment on Curr
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      id\n      role\n      invitationAccepted\n      invitationToken\n    }\n  }\n"];
+export function gql(source: "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n"): (typeof documents)["\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n"): (typeof documents)["\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -161,7 +176,7 @@ export function gql(source: "\n  query crudDemoItemDetailsQuery($id: ID!, $tenan
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query crudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -313,7 +328,7 @@ export function gql(source: "\n  mutation deleteTenantMutation($input: DeleteTen
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        id\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

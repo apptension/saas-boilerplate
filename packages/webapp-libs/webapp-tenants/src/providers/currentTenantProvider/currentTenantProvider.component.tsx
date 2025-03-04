@@ -1,5 +1,9 @@
 import { getFragmentData } from '@sb/webapp-api-client';
-import { commonQueryCurrentUserFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
+import {
+  commonQueryCurrentUserFragment,
+  commonQueryMembershipFragment,
+  useCommonQuery,
+} from '@sb/webapp-api-client/providers';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -32,6 +36,7 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
   const { parsedStoredState, storedTenantId } = parseStoredState(storedState, userId);
 
   const currentTenant = getCurrentTenant(params.tenantId, storedTenantId, tenants);
+  const currentMembership = getFragmentData(commonQueryMembershipFragment, currentTenant?.membership);
 
   useEffect(() => {
     if (currentTenant && userId) {
@@ -42,7 +47,7 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
 
   const value = useMemo(
     () => ({ data: currentTenant || null }),
-    [currentTenant?.id, currentTenant?.membership?.role, currentTenant?.name]
+    [currentTenant?.id, currentMembership?.role, currentTenant?.name]
   );
 
   return <currentTenantContext.Provider value={value}>{children}</currentTenantContext.Provider>;
