@@ -2,6 +2,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.scope import add_global_event_processor
+from rest_framework_simplejwt.exceptions import InvalidToken
 
 ignore_logger('graphql.execution.utils')
 
@@ -20,4 +21,5 @@ def init(dsn, environment_name, traces_sample_rate):
         traces_sample_rate=traces_sample_rate,
         send_default_pii=True,
         environment=environment_name,
+        ignore_errors=[InvalidToken],
     )
