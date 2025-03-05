@@ -1,8 +1,15 @@
 import { gql } from '@sb/webapp-api-client';
 
 export const crudDemoItemListQuery = gql(/* GraphQL */ `
-  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
-    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
+  query CrudDemoItemListQuery(
+    $tenantId: ID!
+    $search: String
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+  ) {
+    allCrudDemoItems(tenantId: $tenantId, search: $search, first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
           id

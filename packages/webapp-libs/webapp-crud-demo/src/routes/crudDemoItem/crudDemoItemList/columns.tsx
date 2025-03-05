@@ -1,5 +1,5 @@
 import { CrudDemoItemListItemFragment, CurrentUserType, TenantType } from '@sb/webapp-api-client';
-import { ColumnDef, DataTableColumnHeader } from '@sb/webapp-core/components/table/dataTable';
+import { ColumnDef, DataTableColumnHeader } from '@sb/webapp-core/components/table';
 import { FormattedMessage } from 'react-intl';
 
 import { CrudDemoItemListRowActions } from './crudDemoItemListRowActions';
