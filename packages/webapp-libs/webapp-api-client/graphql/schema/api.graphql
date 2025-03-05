@@ -48,7 +48,7 @@ type Query {
   hasUnreadNotifications: Boolean
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
   crudDemoItem(id: ID, tenantId: ID): CrudDemoItemType
-  allCrudDemoItems(tenantId: ID, search: String, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
+  allCrudDemoItems(tenantId: ID, search: String, sort: CrudDemoItemSort, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
   allContentfulDemoItemFavorites(before: String, after: String, first: Int, last: Int): ContentfulDemoItemFavoriteConnection
   allDocumentDemoItems(before: String, after: String, first: Int, last: Int): DocumentDemoItemConnection
   node(
@@ -1431,6 +1431,10 @@ enum DjstripeChargeStatusChoices {
   PENDING
   "Succeeded"
   SUCCEEDED
+}
+enum CrudDemoItemSort {
+  NAME_ASC
+  NAME_DESC
 }
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"

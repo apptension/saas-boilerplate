@@ -16,7 +16,7 @@ export const columns: ColumnDef<CrudDemoItemListItemFragment>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">{row.getValue('id')}</span>
+          <span className="max-w-[200px] text-ellipsis truncate font-medium">{row.getValue('id')}</span>
         </div>
       );
     },
@@ -39,7 +39,7 @@ export const columns: ColumnDef<CrudDemoItemListItemFragment>[] = [
       );
     },
     enableHiding: false,
-    enableSorting: false,
+    enableSorting: true,
   },
   {
     accessorKey: 'createdBy',

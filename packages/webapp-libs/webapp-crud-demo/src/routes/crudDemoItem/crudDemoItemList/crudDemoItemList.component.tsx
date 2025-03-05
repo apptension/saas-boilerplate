@@ -1,6 +1,7 @@
 import {
   CrudDemoItemListItemFragment,
   CrudDemoItemListQueryQuery,
+  CrudDemoItemSort,
   getFragmentData,
   gql,
   pageCursorsFragment,
@@ -11,14 +12,14 @@ import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import {
   DataTable,
+  OnChangeFn,
   Row,
-  TABLE_FILTER_TYPES,
+  SortingState,
   TableFooter,
   TableToolbar,
   TableToolbarConfig,
 } from '@sb/webapp-core/components/table';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { crudDemoItemListQuery } from '@sb/webapp-crud-demo/routes/crudDemoItem/crudDemoItemList/crudDemoItemList.graphql';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { PlusCircle } from 'lucide-react';
@@ -28,10 +29,12 @@ import { useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
 import { columns } from './columns';
+import { crudDemoItemListQuery } from './crudDemoItemList.graphql';
 import { ListSkeleton } from './listSkeleton';
 
 type CrudDemoItemListSearchParams = {
   search?: string;
+  sort?: CrudDemoItemSort;
   cursor?: string;
   pageSize?: string;
 };
@@ -41,7 +44,7 @@ export const CrudDemoItemList = () => {
   const { data: currentTenant } = useCurrentTenant();
   const generateTenantPath = useGenerateTenantPath();
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
   const toolbarConfig: TableToolbarConfig = {
     enableSearch: true,
   };
@@ -65,6 +68,7 @@ export const CrudDemoItemList = () => {
     hookOptions: {
       variables: {
         tenantId: currentTenant?.id ?? '',
+        sort: sorting[0]?.desc && sorting[0]?.id === 'name' ? CrudDemoItemSort.NAME_DESC : CrudDemoItemSort.NAME_ASC,
       },
       skip: !currentTenant,
     },
@@ -77,6 +81,9 @@ export const CrudDemoItemList = () => {
   const dataList = data?.allCrudDemoItems?.edges.map((edge) => edge?.node as CrudDemoItemListItemFragment) || [];
   const handleRowClick = (row: Row<CrudDemoItemListItemFragment>) => {
     navigate(generateTenantPath(RoutesConfig.crudDemoItem.details, { id: row.getValue('id') }));
+  };
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting(typeof updater === 'function' ? updater(sorting) : updater);
   };
 
   return (
@@ -109,7 +116,13 @@ export const CrudDemoItemList = () => {
             values={toolbarSearchParams}
             config={toolbarConfig}
           />
-          <DataTable data={dataList} columns={columns} onRowClick={handleRowClick} />
+          <DataTable
+            data={dataList}
+            columns={columns}
+            onRowClick={handleRowClick}
+            onSortingChange={handleSortingChange}
+            sorting={sorting}
+          />
           <TableFooter
             pageSize={pageSize}
             pagination={{

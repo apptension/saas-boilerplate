@@ -5,4 +5,4 @@ export { TableFooter } from './tableFooter';
 export { TableToolbar } from './tableToolbar';
 export type { TableToolbarConfig } from './tableToolbar';
 export { TABLE_FILTER_TYPES } from './table.types';
-export type { ColumnDef, Row } from '@tanstack/react-table';
+export type { ColumnDef, Row, SortingState, OnChangeFn } from '@tanstack/react-table';

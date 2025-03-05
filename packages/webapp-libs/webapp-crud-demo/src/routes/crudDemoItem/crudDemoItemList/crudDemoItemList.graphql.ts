@@ -4,12 +4,21 @@ export const crudDemoItemListQuery = gql(/* GraphQL */ `
   query CrudDemoItemListQuery(
     $tenantId: ID!
     $search: String
+    $sort: CrudDemoItemSort
     $first: Int
     $after: String
     $last: Int
     $before: String
   ) {
-    allCrudDemoItems(tenantId: $tenantId, search: $search, first: $first, after: $after, last: $last, before: $before) {
+    allCrudDemoItems(
+      tenantId: $tenantId
+      search: $search
+      sort: $sort
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+    ) {
       edges {
         node {
           id
