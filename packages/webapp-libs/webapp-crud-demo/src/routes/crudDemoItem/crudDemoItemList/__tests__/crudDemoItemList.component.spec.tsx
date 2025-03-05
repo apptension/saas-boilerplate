@@ -23,6 +23,13 @@ describe('CrudDemoItemList: Component', () => {
     crudDemoItemFactory({
       id: `item-${i + 1}`,
       name: `${i + 1} item`,
+      createdBy: {
+        firstName: `firstName${i + 1}}`,
+        lastName: `lastName${i + 1}}`,
+      },
+      tenant: {
+        name: `tenantName${i + 1}}`,
+      },
     })
   );
 

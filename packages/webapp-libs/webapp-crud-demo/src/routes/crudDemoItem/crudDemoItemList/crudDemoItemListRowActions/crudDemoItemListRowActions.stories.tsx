@@ -16,12 +16,6 @@ const Template: StoryFn<CrudDemoItemListRowActionsProps> = (args) => {
 export const Default: StoryObj<CrudDemoItemListRowActionsProps> = {
   render: Template,
   args: {
-    row: {
-      id: 'test-id',
-      original: {
-        id: 'test-id',
-        name: 'Test Item',
-      },
-    } as any,
+    id: 'id',
   },
 };

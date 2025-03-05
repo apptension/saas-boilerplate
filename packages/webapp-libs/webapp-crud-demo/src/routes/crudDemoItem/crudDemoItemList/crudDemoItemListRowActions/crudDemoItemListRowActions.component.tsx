@@ -110,7 +110,7 @@ export function CrudDemoItemListRowActions({ id }: CrudDemoItemListRowActionsPro
             description={deleteConfirmationDescription}
             continueLabel={intl.formatMessage({
               id: 'CrudDemoItemListRowActions / Delete CrudDemoItem / Button',
-              defaultMessage: 'Delete',
+              defaultMessage: 'Delete item',
             })}
           >
             <Button variant={ButtonVariant.GHOST} className="m-0 h-8 w-full justify-start py-1 pl-2">
