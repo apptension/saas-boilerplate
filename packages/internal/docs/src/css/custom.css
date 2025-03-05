@@ -164,3 +164,9 @@ a.card, [data-theme='dark'] a.card {
 .footer__copyright a {
   color: white;
 }
+
+aside > div:first-child  {
+  height: unset;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
