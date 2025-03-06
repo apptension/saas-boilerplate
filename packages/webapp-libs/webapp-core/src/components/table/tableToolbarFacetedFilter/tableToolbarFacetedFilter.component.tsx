@@ -36,7 +36,11 @@ export const TableToolbarFacetedFilter = ({ config, value, onChange }: TableTool
     return (
       <>
         <Separator orientation="vertical" className="mx-2 h-4" />
-        {checked ? <Check className="text-primary size-4" /> : <X className="text-primary size-4" />}
+        {checked ? (
+          <Check className="text-primary size-4" data-testid="checked" />
+        ) : (
+          <X className="text-primary size-4" data-testid="not-checked" />
+        )}
       </>
     );
   };

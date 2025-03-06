@@ -15,6 +15,7 @@ import {
   OnChangeFn,
   Row,
   SortingState,
+  TABLE_FILTER_TYPES,
   TableFooter,
   TableToolbar,
   TableToolbarConfig,
@@ -56,7 +57,6 @@ export const CrudDemoItemList = () => {
     onPageClick,
     handlePageSizeChange,
     toolbarSearchParams,
-    searchParams,
     onSearchReset,
     onSearchChangeWithCursorClear,
   } = usePagedPaginatedQuery<
@@ -73,7 +73,7 @@ export const CrudDemoItemList = () => {
       skip: !currentTenant,
     },
     transformVariables: (params) => ({
-      search: params.search as string,
+      search: params?.search as string,
     }),
     dataKey: 'allCrudDemoItems',
   });
@@ -106,37 +106,32 @@ export const CrudDemoItemList = () => {
         <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
       </Link>
 
-      {loading ? (
-        <ListSkeleton />
-      ) : (
-        <>
-          <TableToolbar
-            onUpdate={onSearchChangeWithCursorClear}
-            onReset={onSearchReset}
-            values={toolbarSearchParams}
-            config={toolbarConfig}
-          />
-          <DataTable
-            data={dataList}
-            columns={columns}
-            onRowClick={handleRowClick}
-            onSortingChange={handleSortingChange}
-            sorting={sorting}
-          />
-          <TableFooter
-            pageSize={pageSize}
-            pagination={{
-              around: pageCursors?.around,
-              first: pageCursors?.first,
-              last: pageCursors?.last,
-              next: pageCursors?.next,
-              previous: pageCursors?.previous,
-              onPageClick: onPageClick,
-            }}
-            onPageSizeChange={handlePageSizeChange}
-          />
-        </>
-      )}
+      <TableToolbar
+        onUpdate={onSearchChangeWithCursorClear}
+        onReset={onSearchReset}
+        values={toolbarSearchParams}
+        config={toolbarConfig}
+      />
+      <DataTable
+        data={dataList}
+        columns={columns}
+        onRowClick={handleRowClick}
+        onSortingChange={handleSortingChange}
+        sorting={sorting}
+        isLoading={loading}
+      />
+      <TableFooter
+        pageSize={pageSize}
+        pagination={{
+          around: pageCursors?.around,
+          first: pageCursors?.first,
+          last: pageCursors?.last,
+          next: pageCursors?.next,
+          previous: pageCursors?.previous,
+          onPageClick: onPageClick,
+        }}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </PageLayout>
   );
 };

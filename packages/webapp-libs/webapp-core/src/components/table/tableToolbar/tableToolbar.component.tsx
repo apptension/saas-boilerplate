@@ -29,7 +29,7 @@ export const TableToolbar = <T extends TableToolbarValues>({
 }: TableToolbarProps<T>) => {
   const intl = useIntl();
 
-  const { enableSearch = true, filters, enableDatePicker = false } = config;
+  const { enableSearch = true, filters } = config;
   const [search, setSearch] = useState(values?.search || '');
 
   useEffect(() => {

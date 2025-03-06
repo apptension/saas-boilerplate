@@ -8,7 +8,7 @@ import {
 } from '@sb/webapp-api-client/tests/utils';
 
 import { crudDemoItemDetailsQuery } from '../../routes/crudDemoItem/crudDemoItemDetails/crudDemoItemDetails.component';
-import { crudDemoItemListQuery } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.component';
+import { crudDemoItemListQuery } from '../../routes/crudDemoItem/crudDemoItemList/crudDemoItemList.graphql';
 import { editCrudDemoItemQuery } from '../../routes/crudDemoItem/editCrudDemoItem/editCrudDemoItem.graphql';
 
 export const fillCrudDemoItemDetailsQuery = (
