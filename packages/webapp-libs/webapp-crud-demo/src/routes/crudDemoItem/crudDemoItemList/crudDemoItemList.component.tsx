@@ -3,7 +3,6 @@ import {
   CrudDemoItemListQueryQuery,
   CrudDemoItemSort,
   getFragmentData,
-  gql,
   pageCursorsFragment,
 } from '@sb/webapp-api-client/graphql';
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
@@ -15,7 +14,6 @@ import {
   OnChangeFn,
   Row,
   SortingState,
-  TABLE_FILTER_TYPES,
   TableFooter,
   TableToolbar,
   TableToolbarConfig,
@@ -31,7 +29,6 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../../config/routes';
 import { columns } from './columns';
 import { crudDemoItemListQuery } from './crudDemoItemList.graphql';
-import { ListSkeleton } from './listSkeleton';
 
 type CrudDemoItemListSearchParams = {
   search?: string;
