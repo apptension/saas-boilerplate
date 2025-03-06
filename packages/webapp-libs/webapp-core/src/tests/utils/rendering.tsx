@@ -3,7 +3,7 @@ import { RenderOptions, RenderResult, render, renderHook } from '@testing-librar
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
-import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { MemoryRouter, MemoryRouterProps } from 'react-router';
 
 import { TooltipProvider } from '../../components/ui/tooltip';
 import { DEFAULT_LOCALE, Locale, TranslationMessages, translationMessages } from '../../config/i18n';
@@ -33,7 +33,7 @@ export type CoreTestProvidersProps = PropsWithChildren<{
  */
 export function CoreTestProviders({ children, routerProps, intlMessages, intlLocale }: CoreTestProvidersProps) {
   return (
-    <MemoryRouter {...routerProps}>
+    <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }} {...routerProps}>
       <HelmetProvider>
         <ResponsiveThemeProvider>
           <LocalesProvider>
