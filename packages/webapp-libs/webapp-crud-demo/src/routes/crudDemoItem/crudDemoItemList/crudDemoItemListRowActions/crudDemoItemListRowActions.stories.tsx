@@ -1,8 +1,7 @@
-import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { withProviders } from '@sb/webapp-crud-demo/utils/storybook';
-import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
+import { withProviders } from '../../../../utils/storybook';
 import { CrudDemoItemListRowActions, CrudDemoItemListRowActionsProps } from './crudDemoItemListRowActions.component';
 
 const meta: Meta = {
