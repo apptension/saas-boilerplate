@@ -4,9 +4,8 @@ import { filter, isEmpty } from 'ramda';
 import { ChangeEvent, HTMLAttributes, useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Button } from '@sb/webapp-core/components/buttons';
-import { cn } from '@sb/webapp-core/lib/utils';
-
+import { Button } from '../../../components/buttons';
+import { cn } from '../../../lib/utils';
 import { FilterValue } from '../table.types';
 import { TableToolbarFacetedFilter } from '../tableToolbarFacetedFilter';
 import { TableToolbarConfig, TableToolbarValues } from './tableToolbar.types';
@@ -36,6 +35,7 @@ export const TableToolbar = <T extends TableToolbarValues>({
     setSearch(values?.search || '');
   }, [values?.search]);
 
+   
   const handleUpdateParamsDebounced = useCallback(debounce(onUpdate, 800), [onUpdate]);
 
   const handleParamChange = useCallback(

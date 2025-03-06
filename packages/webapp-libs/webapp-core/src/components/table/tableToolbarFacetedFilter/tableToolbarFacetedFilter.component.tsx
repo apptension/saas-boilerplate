@@ -2,8 +2,9 @@ import { Check, PlusCircle, X } from 'lucide-react';
 import { cond, equals } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 
-import { Button } from '@sb/webapp-core/components/buttons';
-import { Badge } from '@sb/webapp-core/components/ui/badge';
+import { cn } from '../../../lib/utils';
+import { Button } from '../../buttons';
+import { Badge } from '../../ui/badge';
 import {
   Command,
   CommandEmpty,
@@ -12,12 +13,10 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@sb/webapp-core/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/ui/popover';
-import { Separator } from '@sb/webapp-core/components/ui/separator';
-import { Switch } from '@sb/webapp-core/components/ui/switch';
-import { cn } from '@sb/webapp-core/lib/utils';
-
+} from '../../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { Separator } from '../../ui/separator';
+import { Switch } from '../../ui/switch';
 import { FilterValue, TABLE_FILTER_TYPES } from '../table.types';
 import { TableToolbarFilterConfig } from '../tableToolbar/tableToolbar.types';
 

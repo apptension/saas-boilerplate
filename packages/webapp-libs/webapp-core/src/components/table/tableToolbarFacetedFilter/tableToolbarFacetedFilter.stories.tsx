@@ -12,7 +12,7 @@ const meta: Meta<typeof TableToolbarFacetedFilter> = {
 
 export default meta;
 
-export const Boolean: Story = {
+export const BooleanType: Story = {
   args: {
     value: 'true',
     config: {
@@ -28,7 +28,7 @@ export const Boolean: Story = {
   },
 };
 
-export const Select: Story = {
+export const SelectType: Story = {
   args: {
     value: ['option1'],
     config: {
