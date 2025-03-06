@@ -1,3 +1,4 @@
+import { CrudDemoItemSort } from '@sb/webapp-api-client';
 import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
@@ -23,6 +24,13 @@ describe('CrudDemoItemList: Component', () => {
     crudDemoItemFactory({
       id: `item-${i + 1}`,
       name: `${i + 1} item`,
+      createdBy: {
+        firstName: `firstName${i + 1}`,
+        lastName: `lastName${i + 1}`,
+      },
+      tenant: {
+        name: `tenantName${i + 1}`,
+      },
     })
   );
 
@@ -41,8 +49,11 @@ describe('CrudDemoItemList: Component', () => {
           ],
         })
       ),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
+      fillCrudDemoItemPaginationListQuery(
+        allItems,
+        {},
+        { tenantId, first: DEFAULT_PAGE_SIZE, sort: CrudDemoItemSort.NAME_ASC }
+      ),
     ];
     render(<Component />, { routerProps, apolloMocks });
 
@@ -62,8 +73,11 @@ describe('CrudDemoItemList: Component', () => {
           ],
         })
       ),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+      fillCrudDemoItemPaginationListQuery(
+        allItems,
+        {},
+        { tenantId, first: DEFAULT_PAGE_SIZE, sort: CrudDemoItemSort.NAME_ASC }
+      ),
     ];
 
     render(<Component />, { routerProps, apolloMocks });

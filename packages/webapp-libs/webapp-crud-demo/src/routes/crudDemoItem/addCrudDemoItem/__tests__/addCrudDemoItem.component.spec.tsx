@@ -7,7 +7,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { render } from '../../../../tests/utils/rendering';
-import { crudDemoItemListQuery } from '../../crudDemoItemList/crudDemoItemList.component';
+import { crudDemoItemListQuery } from '../../crudDemoItemList/crudDemoItemList.graphql';
 import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
 
 jest.mock('@sb/webapp-core/services/analytics');

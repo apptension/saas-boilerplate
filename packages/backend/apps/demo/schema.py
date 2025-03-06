@@ -118,17 +118,29 @@ class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
         model = models.CrudDemoItem
 
 
+class CrudDemoItemSort(graphene.Enum):
+    NAME_ASC = "name"
+    NAME_DESC = "-name"
+
+
 class Query(graphene.ObjectType):
     crud_demo_item = graphene.Field(CrudDemoItemType, id=graphene.ID(), tenant_id=graphene.ID())
-    all_crud_demo_items = UIPagedConnectionField(CrudDemoItemConnection, tenant_id=graphene.ID())
+    all_crud_demo_items = UIPagedConnectionField(
+        CrudDemoItemConnection, tenant_id=graphene.ID(), search=graphene.String(), sort=CrudDemoItemSort()
+    )
     all_contentful_demo_item_favorites = graphene.relay.ConnectionField(ContentfulDemoItemFavoriteConnection)
     all_document_demo_items = graphene.relay.ConnectionField(DocumentDemoItemConnection)
 
     @staticmethod
     @permission_classes(IsTenantMemberAccess)
-    def resolve_all_crud_demo_items(root, info, tenant_id, **kwargs):
+    def resolve_all_crud_demo_items(root, info, tenant_id, search=None, sort=None, **kwargs):
         _, pk = from_global_id(tenant_id)
-        return models.CrudDemoItem.objects.filter(tenant_id=pk).all()
+        queryset = models.CrudDemoItem.objects.filter(tenant_id=pk)
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        if sort:
+            queryset = queryset.order_by(sort.value)
+        return queryset.all()
 
     @staticmethod
     def resolve_all_contentful_demo_item_favorites(root, info, **kwargs):

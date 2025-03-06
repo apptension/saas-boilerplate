@@ -30,11 +30,9 @@ const documents = {
     "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!, $tenantId: ID!) {\n    crudDemoItem(id: $id, tenantId: $tenantId) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
-    "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
-    "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemTestQueryDocument,
+    "\n  query CrudDemoItemListQuery(\n    $tenantId: ID!\n    $search: String\n    $sort: CrudDemoItemSort\n    $first: Int\n    $after: String\n    $last: Int\n    $before: String\n  ) {\n    allCrudDemoItems(\n      tenantId: $tenantId\n      search: $search\n      sort: $sort\n      first: $first\n      after: $after\n      last: $last\n      before: $before\n    ) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
+    "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n    createdBy {\n      firstName\n      lastName\n    }\n    tenant {\n      name\n    }\n  }\n": types.CrudDemoItemListItemFragmentDoc,
     "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n": types.CrudDemoItemListItemDeleteMutationDocument,
-    "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n": types.CrudDemoItemListItemFragmentDoc,
-    "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n": types.CrudDemoItemListItemDefaultStoryQueryDocument,
     "\n  query editCrudDemoItemQuery($id: ID!, $tenantId: ID!) {\n    crudDemoItem(id: $id, tenantId: $tenantId) {\n      id\n      name\n    }\n  }\n": types.EditCrudDemoItemQueryDocument,
     "\n  mutation editCrudDemoItemContentMutation($input: UpdateCrudDemoItemMutationInput!) {\n    updateCrudDemoItem(input: $input) {\n      crudDemoItem {\n        id\n        name\n      }\n    }\n  }\n": types.EditCrudDemoItemContentMutationDocument,
     "\n  fragment documentListItem on DocumentDemoItemType {\n    id\n    file {\n      url\n      name\n    }\n    createdAt\n  }\n": types.DocumentListItemFragmentDoc,
@@ -176,23 +174,15 @@ export function gql(source: "\n  query crudDemoItemDetailsQuery($id: ID!, $tenan
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query CrudDemoItemListQuery(\n    $tenantId: ID!\n    $search: String\n    $sort: CrudDemoItemSort\n    $first: Int\n    $after: String\n    $last: Int\n    $before: String\n  ) {\n    allCrudDemoItems(\n      tenantId: $tenantId\n      search: $search\n      sort: $sort\n      first: $first\n      after: $after\n      last: $last\n      before: $before\n    ) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query CrudDemoItemListQuery(\n    $tenantId: ID!\n    $search: String\n    $sort: CrudDemoItemSort\n    $first: Int\n    $after: String\n    $last: Int\n    $before: String\n  ) {\n    allCrudDemoItems(\n      tenantId: $tenantId\n      search: $search\n      sort: $sort\n      first: $first\n      after: $after\n      last: $last\n      before: $before\n    ) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListItemTestQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"];
+export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n    createdBy {\n      firstName\n      lastName\n    }\n    tenant {\n      name\n    }\n  }\n"): (typeof documents)["\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n    createdBy {\n      firstName\n      lastName\n    }\n    tenant {\n      name\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation crudDemoItemListItemDeleteMutation($input: DeleteCrudDemoItemMutationInput!) {\n    deleteCrudDemoItem(input: $input) {\n      deletedIds\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"): (typeof documents)["\n  fragment crudDemoItemListItem on CrudDemoItemType {\n    id\n    name\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"): (typeof documents)["\n  query crudDemoItemListItemDefaultStoryQuery {\n    item: crudDemoItem(id: \"test-id\") {\n      ...crudDemoItemListItem\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
