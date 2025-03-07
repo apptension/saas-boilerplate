@@ -25,6 +25,8 @@ export const SignupForm = () => {
   } = useSignupForm({
     defaultValues: {
       acceptTerms: false,
+      email: '',
+      password: '',
     },
   });
 
