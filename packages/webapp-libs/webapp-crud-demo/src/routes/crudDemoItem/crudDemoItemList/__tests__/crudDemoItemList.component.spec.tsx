@@ -42,7 +42,6 @@ describe('CrudDemoItemList: Component', () => {
         })
       ),
       fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
     ];
     render(<Component />, { routerProps, apolloMocks });
 
@@ -62,8 +61,7 @@ describe('CrudDemoItemList: Component', () => {
           ],
         })
       ),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
-      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: 8 }),
+      fillCrudDemoItemPaginationListQuery(allItems, {}, { tenantId, first: DEFAULT_PAGE_SIZE }),
     ];
 
     render(<Component />, { routerProps, apolloMocks });

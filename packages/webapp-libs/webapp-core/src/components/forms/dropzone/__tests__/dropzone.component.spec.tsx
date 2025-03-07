@@ -1,4 +1,5 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { render } from '../../../../tests/utils/rendering';
 import { Dropzone, DropzoneProps } from '../dropzone.component';
@@ -10,9 +11,7 @@ describe('Dropzone: Component', () => {
   const Component = (props: Partial<DropzoneProps>) => <Dropzone {...defaultProps} {...props} />;
 
   const fireInputChange = async (files: File[]) => {
-    fireEvent.change(await screen.findByTestId('file-input'), {
-      target: { files },
-    });
+    await userEvent.upload(await screen.findByTestId('file-input'), files);
   };
 
   const file = new File(['content'], 'file.png', { type: 'image/png' });
@@ -23,7 +22,7 @@ describe('Dropzone: Component', () => {
 
     render(<Component onDrop={onDrop} />);
 
-    fireInputChange([file]);
+    await fireInputChange([file]);
 
     const input = await screen.findByTestId('file-input');
     await waitFor(() => expect(input.val));
@@ -37,7 +36,7 @@ describe('Dropzone: Component', () => {
 
     render(<Component onDrop={onDrop} maxFiles={1} />);
 
-    fireInputChange([file, secondFile]);
+    await fireInputChange([file, secondFile]);
 
     const input = await screen.findByTestId('file-input');
     await waitFor(() => expect(input.val));

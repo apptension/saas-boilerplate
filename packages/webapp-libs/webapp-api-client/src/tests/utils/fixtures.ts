@@ -83,6 +83,7 @@ export function composeMockedQueryResult<T extends DocumentNode>(
 type ComposeMockedListQueryResultProps = ComposeMockedQueryResultProps & {
   data: Array<any>;
   pageInfo?: PageInfo;
+  pageCursors?: PageCursors;
   additionalData?: Record<string, any>;
 };
 
@@ -98,12 +99,14 @@ const defaultPageInfo = {
  * @param data - The array of data to map.
  * @param typename - The typename of the nodes in the edges.
  * @param pageInfo - Optional PageInfo object.
+ * @param pageCursors - Optional PageCursors object.
  * @returns The mapped Relay-style edges object.
  */
-export const mapRelayEdges = (data: Array<any>, typename: string, pageInfo?: PageInfo) => {
+export const mapRelayEdges = (data: Array<any>, typename: string, pageInfo?: PageInfo, pageCursors?: PageCursors) => {
   return {
     edges: data.map((obj) => ({ node: { __typename: typename, ...obj }, cursor: defaultPageInfo.endCursor })),
     pageInfo: pageInfo || defaultPageInfo,
+    pageCursors: pageCursors || {},
   };
 };
 

@@ -28,6 +28,7 @@ const getApolloMocks = () => [
   fillDemoItemsAllQuery(mockedItems),
   fillUseFavouriteDemoItemListQuery([
     {
+      id: 'id',
       item: { pk: 'item-1' },
     },
   ]),

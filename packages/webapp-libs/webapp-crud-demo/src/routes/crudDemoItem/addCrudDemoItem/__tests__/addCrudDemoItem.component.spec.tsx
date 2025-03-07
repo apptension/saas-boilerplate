@@ -6,6 +6,7 @@ import { tenantFactory } from '@sb/webapp-tenants/tests/factories/tenant';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
+import { crudDemoItemFactory, fillCrudDemoItemPaginationListQuery } from '../../../../tests/factories';
 import { render } from '../../../../tests/utils/rendering';
 import { crudDemoItemListQuery } from '../../crudDemoItemList/crudDemoItemList.component';
 import { AddCrudDemoItem, addCrudDemoItemMutation } from '../addCrudDemoItem.component';
@@ -49,6 +50,12 @@ describe('AddCrudDemoItem: Component', () => {
           },
         },
       };
+      const refetchData = {
+        allCrudDemoItems: {
+          edges: [{ node: crudDemoItemFactory() }],
+          pageCursors: {},
+        },
+      };
       const requestMock = composeMockedQueryResult(addCrudDemoItemMutation, {
         variables,
         data,
@@ -59,7 +66,7 @@ describe('AddCrudDemoItem: Component', () => {
           tenantId,
           first: DEFAULT_PAGE_SIZE,
         },
-        data: [data],
+        data: refetchData,
       });
 
       requestMock.newData = jest.fn(() => ({
@@ -67,7 +74,7 @@ describe('AddCrudDemoItem: Component', () => {
       }));
 
       refetchMock.newData = jest.fn(() => ({
-        data: [data],
+        data: refetchData,
       }));
 
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });
@@ -105,9 +112,14 @@ describe('AddCrudDemoItem: Component', () => {
         variables,
         data,
       });
+      const refetchMock = fillCrudDemoItemPaginationListQuery(
+        [crudDemoItemFactory()],
+        {},
+        { tenantId, first: DEFAULT_PAGE_SIZE }
+      );
 
       render(<Component />, {
-        apolloMocks: [commonQueryMock, requestMock],
+        apolloMocks: [commonQueryMock, requestMock, refetchMock],
       });
 
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');

@@ -78,11 +78,14 @@ const resolveSubscriptionCancelMutation = (errors?: GraphQLError[], variables = 
 
 const routePath = RoutesConfig.subscriptions.currentSubscription.cancel;
 
+const MockSubscriptions = () => <span>Mocked Subscriptions</span>;
+
 const Component = () => {
   return (
     <Routes>
       <Route element={<ActiveSubscriptionContext />}>
         <Route path={getTenantPath(routePath)} element={<CancelSubscription />} />
+        <Route path={getTenantPath(RoutesConfig.subscriptions.index)} element={<MockSubscriptions />} />
       </Route>
     </Routes>
   );

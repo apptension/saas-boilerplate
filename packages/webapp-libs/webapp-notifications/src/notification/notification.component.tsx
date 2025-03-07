@@ -61,7 +61,7 @@ export const Notification = ({
       }}
     >
       {hasAvatar ? (
-        <img src={avatar} alt="" className="mr-3 rounded-full w-10 h-10 object-cover" />
+        <img src={avatar} alt="" className="mr-3 rounded-full w-10 h-10 object-cover" role="img" />
       ) : (
         <div className="flex items-center justify-center p-3 h-10 w-10 dark:bg-muted-foreground bg-slate-300 rounded-full mr-3">
           <Bell />

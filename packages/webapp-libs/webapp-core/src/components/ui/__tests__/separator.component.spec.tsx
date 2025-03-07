@@ -5,7 +5,7 @@ import { Separator } from '../separator';
 
 describe('UI/Separator: Component', () => {
   it('should render', async () => {
-    render(<Separator data-testId="Separator" />);
+    render(<Separator data-testid="Separator" />);
 
     expect(screen.getByTestId('Separator')).toBeDefined();
   });

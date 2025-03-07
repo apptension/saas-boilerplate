@@ -144,6 +144,14 @@ describe('CrudDemoItemListItem: Component', () => {
           input: { id: item.id, tenantId },
         },
       }),
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
+        data: {
+          item: {
+            ...item,
+            __typename: 'CrudDemoItemType',
+          },
+        },
+      }),
     ];
 
     render(<Component />, { apolloMocks });
@@ -184,6 +192,14 @@ describe('CrudDemoItemListItem: Component', () => {
         },
         variables: {
           input: { id: item.id, tenantId },
+        },
+      }),
+      composeMockedQueryResult(crudDemoItemListItemTestQuery, {
+        data: {
+          item: {
+            ...item,
+            __typename: 'CrudDemoItemType',
+          },
         },
       }),
     ];

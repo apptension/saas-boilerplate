@@ -39,10 +39,12 @@ describe('EditCrudDemoItem: Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  const ListMock = () => <span>CrudDemoItem list page mock</span>;
 
   const Component = () => (
     <Routes>
       <Route path={routePath} element={<EditCrudDemoItem />} />
+      <Route path={getLocalePath(RoutesConfig.crudDemoItem.list)} element={<ListMock />} />
     </Routes>
   );
 
