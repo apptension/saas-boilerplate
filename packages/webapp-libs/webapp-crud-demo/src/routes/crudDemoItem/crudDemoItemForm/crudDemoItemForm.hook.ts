@@ -8,7 +8,7 @@ type UseCrudDemoItemFormProps = Omit<CrudDemoItemFormProps, 'loading'>;
 export const useCrudDemoItemForm = ({ error, onSubmit, initialData }: UseCrudDemoItemFormProps) => {
   const form = useApiForm<CrudDemoItemFormFields>({
     defaultValues: {
-      name: initialData?.name,
+      name: initialData?.name || '',
     },
   });
 

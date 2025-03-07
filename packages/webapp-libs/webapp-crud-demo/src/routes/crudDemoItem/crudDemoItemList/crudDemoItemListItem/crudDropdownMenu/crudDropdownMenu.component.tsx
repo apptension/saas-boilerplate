@@ -23,7 +23,7 @@ export const CrudDropdownMenu = ({ itemId, className, handleDelete, loading }: C
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           variant="ghost"
           className="flex flex-col"
