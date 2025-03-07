@@ -8,7 +8,7 @@ type UseTenantFormProps = Omit<TenantFormProps, 'loading'>;
 export const useTenantForm = ({ error, onSubmit, initialData }: UseTenantFormProps) => {
   const form = useApiForm<TenantFormFields>({
     defaultValues: {
-      name: initialData?.name || '',
+      name: initialData?.name ?? '',
     },
   });
 
