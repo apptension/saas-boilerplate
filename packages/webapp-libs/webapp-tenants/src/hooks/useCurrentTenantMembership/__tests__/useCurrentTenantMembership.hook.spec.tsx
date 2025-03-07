@@ -2,6 +2,7 @@ import { TenantType } from '@sb/webapp-api-client';
 import { TenantType as TenantTypeType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { omit } from 'ramda';
 import { useParams } from 'react-router-dom';
 
 import { tenantFactory } from '../../../tests/factories/tenant';
@@ -35,7 +36,7 @@ describe('useCurrentTenantMembership: Hook', () => {
       const tenants = [tenantFactory()];
       const { result, waitForApolloMocks } = render({ tenants });
       await waitForApolloMocks();
-      expect(result.current).toEqual({ currentMembership: tenants[0].membership });
+      expect(result.current).toEqual({ currentMembership: omit(['__typename'], tenants[0].membership) });
     });
   });
 
@@ -51,7 +52,7 @@ describe('useCurrentTenantMembership: Hook', () => {
     it('should return the membership for the owned tenant', async () => {
       const { result, waitForApolloMocks } = render({ tenants });
       await waitForApolloMocks();
-      expect(result.current).toEqual({ currentMembership: tenants[0].membership });
+      expect(result.current).toEqual({ currentMembership: omit(['__typename'], tenants[0].membership) });
     });
 
     it('should return the membership for the second tenant', async () => {
@@ -61,7 +62,7 @@ describe('useCurrentTenantMembership: Hook', () => {
       const routerProps = createMockRouterProps(RoutesConfig.home, { tenantId: tenants[1].id });
       const { result, waitForApolloMocks } = render({ tenants }, { routerProps });
       await waitForApolloMocks();
-      expect(result.current).toEqual({ currentMembership: tenants[1].membership });
+      expect(result.current).toEqual({ currentMembership: omit(['__typename'], tenants[1].membership) });
     });
   });
 });

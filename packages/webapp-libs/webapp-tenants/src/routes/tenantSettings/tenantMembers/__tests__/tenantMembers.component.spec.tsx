@@ -1,11 +1,14 @@
+import { TenantUserRole } from '@sb/webapp-api-client';
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult, makeId } from '@sb/webapp-api-client/tests/utils';
 import { Tabs } from '@sb/webapp-core/components/ui/tabs';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
+import { tenantMembersListQuery } from '../../../../components/tenantMembersList/tenantMembersList.graphql';
 import { RoutesConfig } from '../../../../config/routes';
-import { tenantFactory } from '../../../../tests/factories/tenant';
+import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { TenantMembers } from '../tenantMembers.component';
 
@@ -55,8 +58,32 @@ describe('TenantMembers: Component', () => {
   it('should render members with invitation form', async () => {
     const tenant = tenantFactory({ id: tenantId, type: TenantType.ORGANIZATION });
     const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId });
+    const listQueryVariables = {
+      id: tenant.id,
+    };
 
-    const apolloMocks = [fillCommonQueryWithUser(currentUserFactory({ tenants: [tenant] }))];
+    const listQueryData = {
+      tenant: {
+        userMemberships: [
+          membershipFactory({
+            role: TenantUserRole.ADMIN,
+            inviteeEmailAddress: null,
+            userId: makeId(32),
+            firstName: 'Firstname 1',
+            lastName: 'Firstname 1',
+            userEmail: null,
+            avatar: null,
+          }),
+        ],
+      },
+    };
+
+    const requestListMock = composeMockedQueryResult(tenantMembersListQuery, {
+      variables: listQueryVariables,
+      data: listQueryData,
+    });
+
+    const apolloMocks = [fillCommonQueryWithUser(currentUserFactory({ tenants: [tenant] })), requestListMock];
 
     render(<Component />, { apolloMocks, routerProps });
 

@@ -13,7 +13,7 @@ export type UseTenantInvitationFormHookProps = {
 export const useTenantInvitationForm = ({ error, onSubmit, initialData }: UseTenantInvitationFormHookProps) => {
   const form = useApiForm<TenantInvitationFormFields>({
     defaultValues: {
-      email: initialData?.email,
+      email: initialData?.email || '',
       role: initialData?.role,
     },
   });

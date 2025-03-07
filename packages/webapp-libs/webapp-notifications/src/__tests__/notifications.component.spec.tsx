@@ -26,13 +26,13 @@ describe('Notifications: Component', () => {
   );
 
   it('Should show trigger button', async () => {
+    const notification = notificationFactory({
+      type: 'some_random_type_that_doesnt_exist',
+    });
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      fillNotificationCreatedSubscriptionQuery(
-        notificationFactory({
-          type: 'some_random_type_that_doesnt_exist',
-        })
-      ),
+      fillNotificationsListQuery([notification], { hasUnreadNotifications: true }),
+      fillNotificationCreatedSubscriptionQuery(notification),
     ];
 
     const { waitForApolloMocks } = render(<Component />, { apolloMocks });
@@ -43,7 +43,17 @@ describe('Notifications: Component', () => {
   });
 
   it('Should open notifications center', async () => {
-    render(<Component />);
+    const notification = notificationFactory({
+      type: NotificationTypes.TENANT_INVITATION_ACCEPTED,
+    });
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationsListQuery([notification], { hasUnreadNotifications: true }),
+      fillNotificationCreatedSubscriptionQuery(notification),
+    ];
+
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+    await waitForApolloMocks();
 
     await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
     expect(await screen.findByText('Notifications')).toBeInTheDocument();
@@ -51,14 +61,14 @@ describe('Notifications: Component', () => {
 
   it('Should call notification event for proper type', async () => {
     const notificationType = NotificationTypes.TENANT_INVITATION_CREATED;
+    const notification = notificationFactory({
+      type: NotificationTypes.TENANT_INVITATION_CREATED,
+    });
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      fillNotificationCreatedSubscriptionQuery(
-        notificationFactory({
-          type: notificationType,
-        })
-      ),
+      fillNotificationsListQuery([notification], { hasUnreadNotifications: true }),
+      fillNotificationCreatedSubscriptionQuery(notification),
     ];
 
     const mockEvent = jest.fn();
@@ -77,7 +87,7 @@ describe('Notifications: Component', () => {
 
     const apolloMocks = [
       fillCommonQueryWithUser(),
-      fillNotificationsListQuery([notification]),
+      fillNotificationsListQuery([notification], { hasUnreadNotifications: true }),
       fillNotificationCreatedSubscriptionQuery(notification),
     ];
 
