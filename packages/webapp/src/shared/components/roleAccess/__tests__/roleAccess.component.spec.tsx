@@ -11,11 +11,7 @@ describe('RoleAccess: Component', () => {
     children: PLACEHOLDER_CONTENT,
   };
 
-  const Component = (props: Partial<RoleAccessProps>) => (
-    <RoleAccess {...defaultProps} {...props}>
-      children
-    </RoleAccess>
-  );
+  const Component = (props: Partial<RoleAccessProps>) => <RoleAccess {...defaultProps} {...props} />;
 
   it('should render children if user has allowed role', async () => {
     const apolloMocks = [fillCommonQueryWithUser(currentUserFactory({ roles: [Role.ADMIN] }))];
