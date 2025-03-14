@@ -363,6 +363,170 @@ class TestAllCrudDemoItemsQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
+    def test_returns_items_sorted_by_name_asc(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        item3 = crud_demo_item_factory(name="Zebra", tenant=tenant)
+        item1 = crud_demo_item_factory(name="Ant", tenant=tenant)
+        item2 = crud_demo_item_factory(name="Bear", tenant=tenant)
+
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!, $sort: CrudDemoItemSort)  {
+              allCrudDemoItems(tenantId: $tenantId, sort: $sort, first: 10) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id), "sort": "NAME_ASC"},
+        )
+
+        edges = executed["data"]["allCrudDemoItems"]["edges"]
+        assert len(edges) == 3
+        assert edges[0]["node"]["name"] == item1.name
+        assert edges[1]["node"]["name"] == item2.name
+        assert edges[2]["node"]["name"] == item3.name
+
+    def test_returns_items_sorted_by_name_desc(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        item3 = crud_demo_item_factory(name="Zebra", tenant=tenant)
+        item1 = crud_demo_item_factory(name="Ant", tenant=tenant)
+        item2 = crud_demo_item_factory(name="Bear", tenant=tenant)
+
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!, $sort: CrudDemoItemSort!)  {
+              allCrudDemoItems(tenantId: $tenantId, sort: $sort, first: 10) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id), "sort": "NAME_DESC"},
+        )
+
+        edges = executed["data"]["allCrudDemoItems"]["edges"]
+        assert len(edges) == 3
+        assert edges[0]["node"]["name"] == item3.name
+        assert edges[1]["node"]["name"] == item2.name
+        assert edges[2]["node"]["name"] == item1.name
+
+    def test_returns_filtered_items_by_search(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        item1 = crud_demo_item_factory(name="Apple Pie", tenant=tenant)
+        item2 = crud_demo_item_factory(name="Apple Juice", tenant=tenant)
+        crud_demo_item_factory(name="Orange Juice", tenant=tenant)
+
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!, $search: String!)  {
+              allCrudDemoItems(tenantId: $tenantId, search: $search, first: 10) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id), "search": "Apple"},
+        )
+
+        edges = executed["data"]["allCrudDemoItems"]["edges"]
+        assert len(edges) == 2
+        returned_names = [edge["node"]["name"] for edge in edges]
+        assert item1.name in returned_names
+        assert item2.name in returned_names
+
+    def test_returns_filtered_items_case_insensitive(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        item1 = crud_demo_item_factory(name="Apple Pie", tenant=tenant)
+        item2 = crud_demo_item_factory(name="APPLE Juice", tenant=tenant)
+        crud_demo_item_factory(name="Orange Juice", tenant=tenant)
+
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!, $search: String!)  {
+              allCrudDemoItems(tenantId: $tenantId, search: $search, first: 10) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id), "search": "apple"},
+        )
+
+        edges = executed["data"]["allCrudDemoItems"]["edges"]
+        assert len(edges) == 2
+        returned_names = [edge["node"]["name"] for edge in edges]
+        assert item1.name in returned_names
+        assert item2.name in returned_names
+
+    def test_combines_search_and_sort(
+        self, graphene_client, crud_demo_item_factory, tenant_factory, tenant_membership_factory, user
+    ):
+        tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
+        tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        item2 = crud_demo_item_factory(name="Apple Juice", tenant=tenant)
+        item1 = crud_demo_item_factory(name="Apple Banana", tenant=tenant)
+        crud_demo_item_factory(name="Orange Juice", tenant=tenant)
+
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
+        graphene_client.force_authenticate(user)
+        executed = graphene_client.query(
+            """
+            query($tenantId: ID!, $search: String!, $sort: CrudDemoItemSort!)  {
+              allCrudDemoItems(tenantId: $tenantId, search: $search, sort: $sort, first: 10) {
+                edges {
+                  node {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            """,
+            variable_values={"tenantId": to_global_id("TenantType", tenant.id), "search": "Apple", "sort": "NAME_ASC"},
+        )
+
+        edges = executed["data"]["allCrudDemoItems"]["edges"]
+        assert len(edges) == 2
+        assert edges[0]["node"]["name"] == item1.name
+        assert edges[1]["node"]["name"] == item2.name
+
 
 class TestCrudDemoItemQuery:
     CRUD_DEMO_ITEM_QUERY = """

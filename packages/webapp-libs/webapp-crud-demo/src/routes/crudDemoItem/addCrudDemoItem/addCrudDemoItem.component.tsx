@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router';
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
 import { CrudDemoItemFormFields } from '../crudDemoItemForm/crudDemoItemForm.component';
-import { crudDemoItemListQuery } from '../crudDemoItemList/crudDemoItemList.component';
+import { crudDemoItemListQuery } from '../crudDemoItemList/crudDemoItemList.graphql';
 
 export const addCrudDemoItemMutation = gql(/* GraphQL */ `
   mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {
