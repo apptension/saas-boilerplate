@@ -14,23 +14,22 @@ describe('usePagedPaginatedQuery: Hook', () => {
       id: `item-${i + 1}`,
     })
   );
+  const pageCursors = {
+    around: [
+      { cursor: 'page-1', isCurrent: true, page: 1 },
+      { cursor: 'page-2', isCurrent: false, page: 2 },
+    ],
+    first: null,
+    last: null,
+    next: {
+      cursor: 'next-cursor',
+      isCurrent: false,
+      page: 2,
+    },
+    previous: null,
+  };
 
   const init = async (mocks?: MockedResponse<Record<string, any>, Record<string, any>>[]) => {
-    const pageCursors = {
-      around: [
-        { cursor: 'page-1', isCurrent: true, page: 1 },
-        { cursor: 'page-2', isCurrent: false, page: 2 },
-      ],
-      first: null,
-      last: null,
-      next: {
-        cursor: 'next-cursor',
-        isCurrent: false,
-        page: 2,
-      },
-      previous: null,
-    };
-
     const initMockedResponse = fillPagedPaginationItemListQuery(initData, pageCursors, { first: 10 });
     const useEffectCleanMock = initMockedResponse;
 
@@ -73,7 +72,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
   });
 
   it('should handle page size correctly', async () => {
-    const { result } = await init();
+    const { result } = await init([fillPagedPaginationItemListQuery(initData, pageCursors, { first: 25 })]);
 
     expect(result.current.pageSize).toBe(10);
 
@@ -117,7 +116,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const { result } = await init([nextPageMock]);
 
-    result.current.onPageClick('next-cursor');
+    act(() => result.current.onPageClick('next-cursor'));
 
     await waitFor(() => {
       expect(result.current.data?.allCrudDemoItems?.edges[0]?.node.id).toBe('item-11');
@@ -128,7 +127,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
   it('should handle search params changes', async () => {
     const { result } = await init();
 
-    result.current.onSearchChangeWithCursorClear({ search: 'test-query', pageSize: '10' });
+    act(() => result.current.onSearchChangeWithCursorClear({ search: 'test-query', pageSize: '10' }));
 
     await waitFor(() => {
       expect(result.current.searchParams).toEqual(
@@ -144,9 +143,8 @@ describe('usePagedPaginatedQuery: Hook', () => {
   it('should handle search reset', async () => {
     const { result } = await init();
 
-    result.current.onSearchChangeWithCursorClear({ search: 'test-query', pageSize: '25' });
-
-    await act(async () => {
+    act(() => {
+      result.current.onSearchChangeWithCursorClear({ search: 'test-query', pageSize: '25' });
       result.current.onSearchReset();
     });
 
@@ -174,11 +172,13 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const { result } = await init([searchParamsMock]);
 
-    result.current.onSearchChangeWithCursorClear({
-      search: 'test',
-      filter: 'active',
-      pageSize: '10',
-      sortBy: 'name',
+    act(() => {
+      result.current.onSearchChangeWithCursorClear({
+        search: 'test',
+        filter: 'active',
+        pageSize: '10',
+        sortBy: 'name',
+      });
     });
 
     await waitFor(() => {
@@ -222,7 +222,9 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const { result } = await init([nextPageMock]);
 
-    result.current.loadCursor('direct-cursor');
+    act(() => {
+      result.current.loadCursor('direct-cursor');
+    });
 
     await waitFor(() => {
       expect(result.current.data?.allCrudDemoItems?.edges[0]?.node.id).toBe('item-11');
@@ -232,7 +234,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
   it('should handle invalid page size gracefully', async () => {
     const { result } = await init();
 
-    await act(async () => {
+    act(() => {
       result.current.onSearchChangeWithCursorClear({ pageSize: '999' });
     });
 
@@ -295,7 +297,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
 
-    await act(async () => {
+    act(() => {
       result.current.onPageClick('same-cursor');
     });
 
@@ -333,7 +335,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
 
-    await act(async () => {
+    act(() => {
       result.current.onPageClick('next-cursor');
     });
 
@@ -364,7 +366,7 @@ describe('usePagedPaginatedQuery: Hook', () => {
 
     const onPageClickSpy = jest.spyOn(result.current, 'onPageClick');
 
-    await act(async () => {
+    act(() => {
       result.current.onPageClick('next-cursor');
     });
 

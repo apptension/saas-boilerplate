@@ -144,7 +144,7 @@ describe('DemoItemListItem: Component', () => {
       it('should call create mutation', async () => {
         const itemsMock = mockItemsResponse();
         const { waitForApolloMocks } = render(<Component id={id} />, {
-          apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock, createFavoriteItemMockResponse),
+          apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock, createFavoriteItemMockResponse, itemsMock),
         });
         await waitForApolloMocks(1);
         const checkbox = await screen.findByLabelText(/is favorite/i);

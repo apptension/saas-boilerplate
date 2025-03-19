@@ -77,9 +77,10 @@ describe('Documents: Component', () => {
     }));
 
     const mockRequest = fillDocumentsListQuery([generatedDoc]);
+    const newMockRequest = fillDocumentsListQuery([]);
 
     render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock, newMockRequest),
     });
     fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
     fireEvent.click(screen.getByText(/continue/i));

@@ -3,7 +3,7 @@ import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Paragraph, ParagraphBold } from '@sb/webapp-core/components/typography';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
@@ -35,20 +35,20 @@ export const CancelSubscription = () => {
 
       <Paragraph className="flex flex-row">
         <FormattedMessage defaultMessage="Active plan: " id="Cancel subscription / Active plan" />
-        <ParagraphBold className="ml-1">{activeSubscriptionPlan?.name}</ParagraphBold>
+        <b className="ml-1">{activeSubscriptionPlan?.name}</b>
       </Paragraph>
 
       <Paragraph className="flex flex-row mt-0">
         <FormattedMessage defaultMessage="Active plan price:" id="Cancel subscription / Active plan price" />
-        <ParagraphBold className="ml-1">{activeSubscriptionPlan?.price} USD</ParagraphBold>
+        <b className="ml-1">{activeSubscriptionPlan?.price} USD</b>
       </Paragraph>
 
       {activeSubscriptionRenewalDate && (
         <Paragraph className="flex flex-row">
           <FormattedMessage defaultMessage="Next renewal / expiry: " id="Cancel subscription / Next renewal" />
-          <ParagraphBold className="ml-1">
+          <b className="ml-1">
             <FormattedDate value={activeSubscriptionRenewalDate} />
-          </ParagraphBold>
+          </b>
         </Paragraph>
       )}
 

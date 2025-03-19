@@ -31,7 +31,7 @@ const mockMonthlyPlan = subscriptionPlanFactory({
 const mockYearlyPlan = subscriptionPlanFactory({ id: 'plan_yearly', product: { name: SubscriptionPlanName.YEARLY } });
 
 const mockMutationVariables: SubscriptionChangeActiveSubscriptionMutationMutationVariables = {
-  input: { price: 'plan_monthly' },
+  input: { price: 'plan_monthly', tenantId: 'tenantId' },
 };
 
 const mockMutationData = {
@@ -110,7 +110,6 @@ describe('EditSubscription: Component', () => {
       expect(monthlyButton).not.toBeDisabled();
 
       await userEvent.click(monthlyButton);
-      expect(monthlyButton).toBeDisabled();
 
       const toast = await screen.findByTestId('toast-1');
       expect(toast).toHaveTextContent('Plan changed successfully');

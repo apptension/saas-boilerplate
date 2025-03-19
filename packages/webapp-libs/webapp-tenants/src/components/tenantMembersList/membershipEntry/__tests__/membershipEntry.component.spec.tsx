@@ -1,6 +1,7 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { Table, TableBody } from '@sb/webapp-core/components/ui/table';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { DocumentNode } from 'graphql';
@@ -10,7 +11,11 @@ import { render } from '../../../../tests/utils/rendering';
 import { MembershipEntry, MembershipEntryProps } from '../membershipEntry.component';
 import { deleteTenantMembershipMutation, updateTenantMembershipMutation } from '../membershipEntry.graphql';
 
-const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, any> = {}) => {
+const prepareMocks = <T extends DocumentNode>(
+  query: T,
+  input: Record<string, any> = {},
+  data: Record<string, any> = {}
+) => {
   const mockedMembershipId = '1';
   const mockedTenantId = '2';
   const membership = membershipFactory({
@@ -27,11 +32,6 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
     ],
   });
   const commonQueryMock = fillCommonQueryWithUser(user);
-  const data = {
-    tenantMembership: {
-      id: mockedMembershipId,
-    },
-  };
   const variables = {
     input: {
       id: mockedMembershipId,
@@ -39,6 +39,7 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
       ...input,
     },
   };
+
   const requestMock = composeMockedQueryResult(query, {
     variables,
     data,
@@ -59,11 +60,27 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
 };
 
 describe('MembershipEntry: Component', () => {
-  const Component = (props: MembershipEntryProps) => <MembershipEntry {...props} />;
+  const Component = (props: MembershipEntryProps) => (
+    <Table>
+      <TableBody>
+        <MembershipEntry {...props} />
+      </TableBody>
+    </Table>
+  );
   it('should commit update mutation', async () => {
-    const { membership, commonQueryMock, requestMock } = prepareMocks(updateTenantMembershipMutation, {
-      role: TenantUserRole.MEMBER,
-    });
+    const { membership, commonQueryMock, requestMock } = prepareMocks(
+      updateTenantMembershipMutation,
+      {
+        role: TenantUserRole.MEMBER,
+      },
+      {
+        updateTenantMembership: {
+          tenantMembership: {
+            id: '1',
+          },
+        },
+      }
+    );
 
     render(<Component membership={membership} />, {
       apolloMocks: [commonQueryMock, requestMock],
@@ -78,7 +95,16 @@ describe('MembershipEntry: Component', () => {
   });
 
   it('should commit delete mutation', async () => {
-    const { membership, commonQueryMock, requestMock, refetch } = prepareMocks(deleteTenantMembershipMutation);
+    const { membership, commonQueryMock, requestMock, refetch } = prepareMocks(
+      deleteTenantMembershipMutation,
+      {},
+      {
+        deleteTenantMembership: {
+          deletedIds: ['1'],
+          clientMutationId: '1',
+        },
+      }
+    );
 
     render(<Component membership={membership} onAfterUpdate={refetch} />, {
       apolloMocks: [commonQueryMock, requestMock],

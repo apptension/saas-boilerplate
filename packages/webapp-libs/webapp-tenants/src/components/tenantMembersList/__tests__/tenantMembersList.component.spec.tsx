@@ -6,7 +6,7 @@ import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { membershipFactory, tenantFactory } from '../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { TenantMembersList } from '../tenantMembersList.component';
-import { tenantMembersListQuery } from '@sb/webapp-tenants/components/tenantMembersList/tenantMembersList.graphql';
+import { tenantMembersListQuery } from '../tenantMembersList.graphql';
 
 describe('TenantMembersList: Component', () => {
   const Component = () => <TenantMembersList />;

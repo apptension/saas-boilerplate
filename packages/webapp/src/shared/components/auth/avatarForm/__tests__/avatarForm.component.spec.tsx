@@ -64,7 +64,7 @@ describe('AvatarForm: Component', () => {
     await waitForApolloMocks();
 
     await waitFor(async () => {
-      const image = await screen.findByAltText('user avatar');
+      const image = (await screen.findByAltText('user avatar')) as HTMLImageElement;
       expect(image.src).toContain(avatarUrl);
     });
 

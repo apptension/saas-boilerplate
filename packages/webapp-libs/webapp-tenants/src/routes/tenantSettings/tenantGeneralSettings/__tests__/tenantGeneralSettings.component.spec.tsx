@@ -30,7 +30,7 @@ describe('TenantGeneralSettings: Component', () => {
     };
 
     const data = {
-      createTenant: {
+      updateTenant: {
         tenant: variables.input,
       },
     };

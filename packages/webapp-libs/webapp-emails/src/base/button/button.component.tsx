@@ -7,13 +7,13 @@ export type ButtonProps = HTMLAttributes<HTMLAnchorElement> & {
   linkTo: string;
 };
 
-export const Button = (props: ButtonProps) => {
-  const isExternalLink = props.linkTo.startsWith('http');
-  const hrefUrl = isExternalLink ? props.linkTo : `${ENV.PUBLIC_URL}${props.linkTo}`;
+export const Button = ({ linkTo, children, ...restProps }: ButtonProps) => {
+  const isExternalLink = linkTo.startsWith('http');
+  const hrefUrl = isExternalLink ? linkTo : `${ENV.PUBLIC_URL}${linkTo}`;
 
   return (
-    <Container {...props} href={hrefUrl}>
-      {props.children}
+    <Container {...restProps} href={hrefUrl}>
+      {children}
     </Container>
   );
 };

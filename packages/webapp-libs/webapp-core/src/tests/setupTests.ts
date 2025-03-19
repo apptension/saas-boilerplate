@@ -1,3 +1,4 @@
+import { loadDevMessages, loadErrorMessages } from '@apollo/client/dev';
 import '@testing-library/jest-dom';
 import 'core-js/stable';
 import 'isomorphic-fetch';
@@ -8,6 +9,9 @@ import 'regenerator-runtime/runtime';
 import { ENV } from '../config/env';
 import './mocks/icons';
 import './mocks/reactIntl';
+
+loadDevMessages();
+loadErrorMessages();
 
 MockDate.set('2020-11-22');
 

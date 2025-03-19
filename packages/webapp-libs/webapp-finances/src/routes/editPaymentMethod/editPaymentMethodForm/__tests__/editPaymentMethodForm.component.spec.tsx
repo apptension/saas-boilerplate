@@ -14,7 +14,7 @@ import { StripeElementChangeEvent } from '@stripe/stripe-js';
 import { fireEvent, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { times } from 'ramda';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { ActiveSubscriptionContext } from '../../../../components/activeSubscriptionContext';
@@ -26,72 +26,66 @@ import { stripeCreateSetupIntentMutation } from '../editPaymentMethodForm.graphq
 
 jest.mock('@sb/webapp-core/services/analytics');
 
-jest.mock('@stripe/react-stripe-js', () => ({
-  ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),
-  CardCvcElement: ({
-    options,
-    onChange,
-    ...rest
-  }: {
-    options: React.HTMLProps<HTMLInputElement>;
-    onChange: (data: StripeElementChangeEvent) => void;
-  }) => (
-    <input
-      {...rest}
-      onChange={(e) => {
-        const data: StripeElementChangeEvent = {
-          elementType: 'cardCvc',
-          empty: false,
-          complete: true,
-          error: undefined,
-        };
-        onChange(data);
-      }}
-    />
-  ),
-  CardExpiryElement: ({
-    options,
-    onChange,
-    ...rest
-  }: {
-    options: React.HTMLProps<HTMLInputElement>;
-    onChange: (data: StripeElementChangeEvent) => void;
-  }) => (
-    <input
-      {...rest}
-      onChange={(e) => {
-        const data: StripeElementChangeEvent = {
-          elementType: 'cardExpiry',
-          empty: false,
-          complete: true,
-          error: undefined,
-        };
-        onChange(data);
-      }}
-    />
-  ),
-  CardNumberElement: ({
-    options,
-    onChange,
-    ...rest
-  }: {
-    options: React.HTMLProps<HTMLInputElement>;
-    onChange: (data: StripeElementChangeEvent) => void;
-  }) => (
-    <input
-      {...rest}
-      onChange={(e) => {
-        const data: StripeElementChangeEvent = {
-          elementType: 'cardNumber',
-          empty: false,
-          complete: true,
-          error: undefined,
-        };
-        onChange(data);
-      }}
-    />
-  ),
-}));
+jest.mock('@stripe/react-stripe-js', () => {
+  const React = require('react');
+  return {
+    ...jest.requireActual<NodeModule>('@stripe/react-stripe-js'),
+    CardCvcElement: React.forwardRef((props: {
+      options: React.HTMLProps<HTMLInputElement>;
+      onChange: (data: StripeElementChangeEvent) => void;
+      [key: string]: any;
+    }, ref: React.Ref<HTMLInputElement>) => (
+      <input
+        ref={ref}
+        {...props}
+        onChange={(e) => {
+          props.onChange({
+            elementType: 'cardCvc',
+            empty: false,
+            complete: true,
+            error: undefined,
+          });
+        }}
+      />
+    )),
+    CardExpiryElement: React.forwardRef((props: {
+      options: React.HTMLProps<HTMLInputElement>;
+      onChange: (data: StripeElementChangeEvent) => void;
+      [key: string]: any;
+    }, ref: React.Ref<HTMLInputElement>) => (
+      <input
+        ref={ref}
+        {...props}
+        onChange={(e) => {
+          props.onChange({
+            elementType: 'cardExpiry',
+            empty: false,
+            complete: true,
+            error: undefined,
+          });
+        }}
+      />
+    )),
+    CardNumberElement: React.forwardRef((props: {
+      options: React.HTMLProps<HTMLInputElement>;
+      onChange: (data: StripeElementChangeEvent) => void;
+      [key: string]: any;
+    }, ref: React.Ref<HTMLInputElement>) => (
+      <input
+        ref={ref}
+        {...props}
+        onChange={(e) => {
+          props.onChange({
+            elementType: 'cardNumber',
+            empty: false,
+            complete: true,
+            error: undefined,
+          });
+        }}
+      />
+    )),
+  };
+});
 
 const tenantId = 'tenantId';
 

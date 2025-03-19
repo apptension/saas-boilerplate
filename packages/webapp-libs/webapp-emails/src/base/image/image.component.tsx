@@ -8,7 +8,3 @@ export type ImageProps = HTMLAttributes<HTMLImageElement> & {
 export const Image = (props: ImageProps) => {
   return <img alt="" {...props} src={`${ENV.EMAIL_ASSETS_URL}/${props.src}`} />;
 };
-
-Image.defaultProps = {
-  alt: '',
-};

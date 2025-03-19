@@ -30,6 +30,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
       if (notificationData) events[notificationData.type as NotificationTypes]?.();
 
       options.client.cache.updateQuery({ query: notificationsListQuery }, (prev) => {
+        if (!prev) return null;
         const prevListData = getFragmentData(notificationsListContentFragment, prev);
         const alreadyExists = prevListData?.allNotifications?.edges?.find((edge) => {
           const nodeData = getFragmentData(notificationsListItemFragment, edge?.node);

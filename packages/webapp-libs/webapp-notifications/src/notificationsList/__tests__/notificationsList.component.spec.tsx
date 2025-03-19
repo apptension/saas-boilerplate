@@ -6,15 +6,12 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { times } from 'ramda';
 
-
-
 import { NotificationTypes } from '../../';
 import { notificationsListQuery } from '../../notifications.graphql';
 import { fillNotificationsListQuery, notificationFactory } from '../../tests/factories';
 import { render } from '../../tests/utils/rendering';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 import { notificationsListMarkAsReadMutation } from '../notificationsList.graphql';
-
 
 const NotificationMock = ({ type }: NotificationType) => {
   return <span>notification-mock: {type}</span>;
@@ -84,7 +81,7 @@ describe('NotificationsList: Component', () => {
   it('should not render wrong notifications', async () => {
     const correctNotifications = times(() => notificationFactory(), 3);
     const malformedNotification = notificationFactory({
-      type: "malformed-notification",
+      type: 'malformed-notification',
     });
     renderWithNotifications([...correctNotifications, malformedNotification], { hasUnreadNotifications: false });
 
@@ -98,9 +95,10 @@ describe('NotificationsList: Component', () => {
         input: {},
       },
     });
+    const mocks = [fillNotificationsListQuery([], { hasUnreadNotifications: true }), mutationMock];
 
     const { waitForApolloMocks } = render(<Component />, {
-      apolloMocks: (defaultMocks) => defaultMocks.concat(mutationMock),
+      apolloMocks: (defaultMocks) => defaultMocks.concat(mocks),
     });
 
     await waitForApolloMocks(0);
