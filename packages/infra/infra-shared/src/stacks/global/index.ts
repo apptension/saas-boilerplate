@@ -1,1 +1,0 @@
-export { GlobalStack } from './stack';
