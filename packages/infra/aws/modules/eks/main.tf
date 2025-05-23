@@ -95,4 +95,57 @@ resource "aws_eks_node_group" "main" {
   ]
 
   tags = var.tags
-} 
+}
+
+resource "helm_release" "aws_load_balancer_controller" {
+  name       = "aws-load-balancer-controller"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+  version    = "1.4.1"  # Use the latest version
+
+  set {
+    name  = "clusterName"
+    value = var.cluster_name
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"  # We're creating the service account with Terraform
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "region"
+    value = data.aws_region.current.name
+  }
+
+  set {
+    name  = "vpcId"
+    value = var.vpc_id
+  }
+
+  depends_on = [
+    aws_eks_cluster.main,
+    kubernetes_service_account.load_balancer_controller
+  ]
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
+  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+
+  tags = var.tags
+
+  depends_on = [aws_eks_cluster.main]
+}
+
+# Get OIDC provider
+data "aws_iam_openid_connect_provider" "eks" {
+  url = "https://${aws_iam_openid_connect_provider.eks.url}"
+}

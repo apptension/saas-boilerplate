@@ -1,0 +1,42 @@
+# nginx-second-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-second-deployment
+  labels:
+    app: nginx-second
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-second
+  template:
+    metadata:
+      labels:
+        app: nginx-second
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-second-service
+spec:
+  type: ClusterIP  # Changed from LoadBalancer to ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx-second

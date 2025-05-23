@@ -39,4 +39,5 @@ variable "tags" {
   default     = {}
 }
 
+data "aws_region" "current" {}
 

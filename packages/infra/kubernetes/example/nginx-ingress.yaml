@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/actions.nginx1: >
+      {"type":"forward","forwardConfig":{"targetGroups":[{"serviceName":"nginx-service","servicePort":"80"}]}}
+    alb.ingress.kubernetes.io/conditions.nginx1: >
+      [{"field":"path-pattern","pathPatternConfig":{"values":["/nginx1/*"]}}]
+    alb.ingress.kubernetes.io/actions.nginx2: >
+      {"type":"forward","forwardConfig":{"targetGroups":[{"serviceName":"nginx-second-service","servicePort":"80"}]}}
+    alb.ingress.kubernetes.io/conditions.nginx2: >
+      [{"field":"path-pattern","pathPatternConfig":{"values":["/nginx2/*"]}}]
+    alb.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /nginx1(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+      - path: /nginx2(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-second-service
+            port:
+              number: 80
