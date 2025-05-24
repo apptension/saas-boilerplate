@@ -14,6 +14,12 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_cidr" {
+  description = "CIDR block of the VPC"
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for RDS subnet group"
   type        = list(string)
@@ -22,7 +28,7 @@ variable "private_subnet_ids" {
 variable "instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3.micro"
+  default     = "db.t4g.micro"
 }
 
 variable "allocated_storage" {
@@ -53,14 +59,14 @@ variable "database_username" {
   type        = string
 }
 
-variable "database_password" {
-  description = "Password for the master DB user"
-  type        = string
-  sensitive   = true
-}
-
 variable "backup_retention_period" {
   description = "Number of days to retain backups"
   type        = number
   default     = 7
+}
+
+variable "production_ready" {
+  description = "Whether the RDS instance is production ready"
+  type        = bool
+  default     = false
 }

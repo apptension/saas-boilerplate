@@ -11,17 +11,21 @@ terraform {
 provider "aws" {
 }
 
-module "qa_rds" {
-  source = "./modules/rds"
+locals {
+  environment_name = "qa"
+}
 
-  environment           = var.environment_name
+module "qa_rds" {
+  source = "../../modules/rds"
+
+  environment           = local.environment_name
   vpc_id               = data.terraform_remote_state.shared.outputs.vpc_id
+  vpc_cidr             = data.terraform_remote_state.shared.outputs.vpc_cidr
   private_subnet_ids   = data.terraform_remote_state.shared.outputs.private_subnet_ids
 
-  identifier = "saas-${var.environment_name}-main-db"
+  identifier = "saas-${local.environment_name}-main-db"
   database_username = "postgres"
-  database_password = var.db_password  # Store this in a secure way
-  instance_class = var.database_instance_class
+  instance_class = "db.t4g.micro"
 
   tags = data.terraform_remote_state.shared.outputs.application_tags
 }
@@ -29,6 +33,6 @@ module "qa_rds" {
 data "terraform_remote_state" "shared" {
   backend = "local"
   config = {
-    path = "../terraform.tfstate"
+    path = "../../terraform.tfstate"
   }
 }

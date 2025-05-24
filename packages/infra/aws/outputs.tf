@@ -8,6 +8,11 @@ output "vpc_id" {
   value       = module.vpc.vpc_id
 }
 
+output "vpc_cidr" {
+  description = "CIDR block of the VPC"
+  value       = module.vpc.vpc_cidr
+}
+
 output "public_subnet_ids" {
   description = "List of public subnet IDs"
   value       = module.vpc.public_subnet_ids
