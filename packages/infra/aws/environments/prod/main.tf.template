@@ -8,9 +8,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "saas-boilerplate-a402874e-tfstate"
+    bucket         = "__S3_BUCKET_NAME__"
     key            = "prod/terraform.tfstate"
-    dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
+    dynamodb_table = "__DYNAMODB_TABLE_NAME__"
     encrypt        = true
   }
 }
@@ -38,9 +38,9 @@ module "prod_rds" {
 data "terraform_remote_state" "global" {
   backend = "s3"
   config = {
-    bucket         = "saas-boilerplate-a402874e-tfstate"
+    bucket         = "__S3_BUCKET_NAME__"
     key            = "global/terraform.tfstate"
-    dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
+    dynamodb_table = "__DYNAMODB_TABLE_NAME__"
     encrypt        = true
   }
 }

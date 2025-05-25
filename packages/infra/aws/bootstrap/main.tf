@@ -1,7 +1,7 @@
 locals {
   project_hash = substr(md5(var.project_name), 0, 8)
-  s3_bucket_name = "saas-tfstate-${local.project_hash}"
-  dynamodb_table_name = "saas-tfstate-locks-${local.project_hash}"
+  s3_bucket_name = "${var.project_name}-${local.project_hash}-tfstate"
+  dynamodb_table_name = "${var.project_name}-${local.project_hash}-tfstate-locks"
 }
 
 resource "aws_s3_bucket" "tfstate" {

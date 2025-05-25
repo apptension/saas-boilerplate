@@ -8,18 +8,18 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "saas-boilerplate-a402874e-tfstate"
-    key            = "prod/terraform.tfstate"
+    bucket         = "__S3_BUCKET_NAME__"
+    key            = "qa/terraform.tfstate"
     dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
     encrypt        = true
   }
 }
 
 locals {
-  environment_name = "prod"
+  environment_name = "qa"
 }
 
-module "prod_rds" {
+module "qa_rds" {
   source = "../../modules/rds"
 
   environment           = local.environment_name
@@ -29,8 +29,7 @@ module "prod_rds" {
 
   identifier = "saas-${local.environment_name}-main-db"
   database_username = "postgres"
-  instance_class = "db.t4g.medium"
-  production_ready = true
+  instance_class = "db.t4g.micro"
 
   tags = data.terraform_remote_state.global.outputs.application_tags
 }
@@ -38,9 +37,9 @@ module "prod_rds" {
 data "terraform_remote_state" "global" {
   backend = "s3"
   config = {
-    bucket         = "saas-boilerplate-a402874e-tfstate"
+    bucket         = "__S3_BUCKET_NAME__"
     key            = "global/terraform.tfstate"
-    dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
+    dynamodb_table = "__DYNAMODB_TABLE_NAME__"
     encrypt        = true
   }
 }
