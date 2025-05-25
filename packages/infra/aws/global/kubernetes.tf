@@ -1,5 +1,5 @@
 module "eks" {
-  source = "./modules/eks"
+  source = "../modules/eks"
   vpc_id = module.vpc.vpc_id
   subnet_ids = concat(module.vpc.private_subnet_ids, module.vpc.public_subnet_ids)
   cluster_name = "saas-application"

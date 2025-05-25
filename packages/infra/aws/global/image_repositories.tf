@@ -21,7 +21,7 @@ locals {
 }
 
 module "ecr_private_repositories" {
-  source = "./modules/ecr"
+  source = "../modules/ecr"
   for_each = local.private_ecr_repos
 
   name                 = each.value.name
@@ -38,7 +38,7 @@ resource "aws_ecr_pull_through_cache_rule" "this" {
 }
 
 module "ecr_public_repositories" {
-  source = "./modules/ecr"
+  source = "../modules/ecr"
   for_each = local.public_ecr_repos
 
   name                 = "${aws_ecr_pull_through_cache_rule.this.ecr_repository_prefix}/${each.value.name}"
