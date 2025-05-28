@@ -16,4 +16,9 @@ output "cluster_certificate_authority_data" {
 output "node_groups" {
   description = "Map of EKS node groups"
   value       = aws_eks_node_group.main
-} 
+}
+
+output "hosted_zone_id" {
+  description = "The ID of the Route53 hosted zone"
+  value       = aws_route53_zone.main.zone_id
+}

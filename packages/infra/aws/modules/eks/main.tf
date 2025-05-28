@@ -23,6 +23,7 @@ resource "aws_eks_node_group" "main" {
   node_group_name = "${var.cluster_name}-${each.key}"
   node_role_arn   = aws_iam_role.eks_node_group.arn
   subnet_ids      = var.subnet_ids
+  capacity_type   = var.capacity_type
 
   scaling_config {
     desired_size = each.value.desired_size
@@ -33,10 +34,11 @@ resource "aws_eks_node_group" "main" {
   instance_types = each.value.instance_types
 
   depends_on = [
+    aws_eks_cluster.main,
     aws_iam_role_policy_attachment.eks_worker_node_policy,
     aws_iam_role_policy_attachment.eks_cni_policy,
     aws_iam_role_policy_attachment.eks_container_registry_readonly
   ]
 
   tags = var.tags
-} 
+}

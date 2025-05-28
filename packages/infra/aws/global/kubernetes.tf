@@ -12,9 +12,9 @@ module "eks" {
       max_size = 3
     }
   }
-  environment = "shared"
+  environment = "global"
   tags = merge(
     module.application.tags, {
-    Environment = "shared"
+    Environment = "global"
   })
 }

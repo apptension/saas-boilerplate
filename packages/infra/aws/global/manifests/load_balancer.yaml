@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    external-dns.alpha.kubernetes.io/hostname: app.k8s.saas.apptoku.com
+    alb.ingress.kubernetes.io/group.name: "main-alb-group"
+spec:
+  ingressClassName: alb
+  rules:
+  - host: app.k8s.saas.apptoku.com
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    external-dns.alpha.kubernetes.io/hostname: argocd.k8s.saas.apptoku.com
+    alb.ingress.kubernetes.io/group.name: "main-alb-group"
+spec:
+  ingressClassName: alb
+  rules:
+  - host: argocd.k8s.saas.apptoku.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443

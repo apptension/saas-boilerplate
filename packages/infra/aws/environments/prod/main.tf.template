@@ -40,7 +40,6 @@ data "terraform_remote_state" "global" {
   config = {
     bucket         = "__S3_BUCKET_NAME__"
     key            = "global/terraform.tfstate"
-    dynamodb_table = "__DYNAMODB_TABLE_NAME__"
     encrypt        = true
   }
 }

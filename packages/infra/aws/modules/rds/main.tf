@@ -95,7 +95,7 @@ resource "aws_db_instance" "main" {
 }
 
 resource "aws_secretsmanager_secret" "rds" {
-  name = "rds-${var.environment}-credentials"
+  name = "rds-${var.environment}-credentials-${substr(md5(aws_db_instance.main.id), 0, 8)}"
   description = "RDS credentials and connection info for ${var.environment} database"
 
   tags = merge(var.tags, {

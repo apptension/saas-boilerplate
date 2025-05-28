@@ -15,7 +15,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "saas-boilerplate-a402874e-tfstate"
+    bucket         = "saas-boilerplate-${var.hash}-tfstate"
     key            = "global/terraform.tfstate"
     dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
     encrypt        = true

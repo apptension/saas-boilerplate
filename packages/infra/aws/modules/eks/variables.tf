@@ -28,6 +28,12 @@ variable "node_groups" {
   }))
 }
 
+variable "capacity_type" {
+  description = "Capacity type for the EKS node groups"
+  type        = string
+  default     = "SPOT"
+}
+
 variable "environment" {
   description = "Environment name"
   type        = string
@@ -37,6 +43,12 @@ variable "tags" {
   description = "Application tag"
   type        = map(string)
   default     = {}
+}
+
+variable "hosted_zone_name" {
+  description = "Name of the Route53 hosted zone"
+  type        = string
+  default     = "k8s.saas.apptoku.com"
 }
 
 data "aws_region" "current" {}

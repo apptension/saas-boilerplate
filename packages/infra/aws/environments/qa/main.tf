@@ -15,23 +15,14 @@ terraform {
   }
 }
 
-locals {
-  environment_name = "qa"
-}
 
-module "qa_rds" {
-  source = "../../modules/rds"
-
-  environment           = local.environment_name
-  vpc_id               = data.terraform_remote_state.global.outputs.vpc_id
-  vpc_cidr             = data.terraform_remote_state.global.outputs.vpc_cidr
-  private_subnet_ids   = data.terraform_remote_state.global.outputs.private_subnet_ids
-
-  identifier = "saas-${local.environment_name}-main-db"
-  database_username = "postgres"
-  instance_class = "db.t4g.micro"
-
-  tags = data.terraform_remote_state.global.outputs.application_tags
+module "environment" {
+  source = "../environment"
+  environment_name = local.environment_name
+  vpc_id = var.vpc_id
+  vpc_cidr = var.vpc_cidr
+  private_subnet_ids = var.private_subnet_ids
+  tags = local.tags
 }
 
 data "terraform_remote_state" "global" {
@@ -39,7 +30,6 @@ data "terraform_remote_state" "global" {
   config = {
     bucket         = "saas-boilerplate-a402874e-tfstate"
     key            = "global/terraform.tfstate"
-    dynamodb_table = "saas-boilerplate-a402874e-tfstate-locks"
     encrypt        = true
   }
 }
