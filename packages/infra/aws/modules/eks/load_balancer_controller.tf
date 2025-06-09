@@ -174,7 +174,9 @@ resource "aws_iam_policy" "load_balancer_controller" {
           "elasticloadbalancing:CreateListener",
           "elasticloadbalancing:DeleteListener",
           "elasticloadbalancing:CreateRule",
-          "elasticloadbalancing:DeleteRule"
+          "elasticloadbalancing:DeleteRule",
+          "elasticloadbalancing:SetRulePriorities",
+          "elasticloadbalancing:ModifyRule"
         ]
         Resource = "*"
       },
