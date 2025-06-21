@@ -38,7 +38,7 @@ class Email(BaseEmail):
             self.data = {}
 
     def send(self, due_date=None):
-        send_data = None
+        send_data = {}
 
         serializer = self.get_serializer(data=self.data)
         if serializer:
