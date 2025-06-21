@@ -94,7 +94,7 @@ class TestSendSubscriptionErrorEmail:
         webhook_event.invoke_webhook_handlers()
 
         send_email.apply_async.assert_called_with(
-            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, {})
         )
 
     @patch('common.emails.send_email')
@@ -113,7 +113,7 @@ class TestSendSubscriptionErrorEmail:
         webhook_event.invoke_webhook_handlers()
 
         send_email.apply_async.assert_called_with(
-            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, {})
         )
 
 
