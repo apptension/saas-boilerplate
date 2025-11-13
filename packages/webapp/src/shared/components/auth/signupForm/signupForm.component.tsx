@@ -132,7 +132,7 @@ export const SignupForm = () => {
           control={form.control}
           name="acceptTerms"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -148,8 +148,8 @@ export const SignupForm = () => {
                   })}
                 />
               </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel className="text-sm font-normal cursor-pointer">
+              <div className="space-y-1.5 leading-none">
+                <FormLabel className="cursor-pointer font-normal !mt-0">
                   {intl.formatMessage(
                     {
                       defaultMessage: 'I agree to the {termsLink} and {policyLink}',
@@ -157,7 +157,7 @@ export const SignupForm = () => {
                     },
                     {
                       termsLink: (
-                        <Button variant="link" className="h-auto p-0 text-xs underline" asChild>
+                        <Button variant="link" className="h-auto p-0 text-sm underline inline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / T&C link"
@@ -167,7 +167,7 @@ export const SignupForm = () => {
                         </Button>
                       ),
                       policyLink: (
-                        <Button variant="link" className="h-auto p-0 text-xs underline" asChild>
+                        <Button variant="link" className="h-auto p-0 text-sm underline inline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / Privacy policy link"

@@ -1,5 +1,5 @@
 import { useOAuthLogin } from '@sb/webapp-api-client/api/auth';
-import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Button } from '@sb/webapp-core/components/ui/button';
 import { HTMLAttributes } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -23,11 +23,12 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
   return (
     <div className="flex w-full flex-col gap-4" {...props}>
       <Button
-        className="flex gap-1"
-        icon={<FacebookIcon />}
-        variant={ButtonVariant.SECONDARY}
+        variant="outline"
+        size="lg"
+        className="w-full"
         onClick={handleFacebookLogin}
       >
+        <FacebookIcon size={20} className="h-5 w-5" />
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
         ) : (
@@ -36,11 +37,12 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
       </Button>
 
       <Button
-        className="flex gap-1"
-        icon={<GoogleIcon />}
-        variant={ButtonVariant.SECONDARY}
+        variant="outline"
+        size="lg"
+        className="w-full"
         onClick={handleGoogleLogin}
       >
+        <GoogleIcon size={20} className="h-5 w-5" />
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Google" id="Auth / Login / Google login button" />
         ) : (
