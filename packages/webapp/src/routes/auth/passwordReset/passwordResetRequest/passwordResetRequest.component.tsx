@@ -6,6 +6,8 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { AuthLogo } from '../../../../shared/components/auth/authLogo';
+import { FloatingThemeToggle } from '../../../../shared/components/auth/floatingThemeToggle';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
 
 export const PasswordResetRequest = () => {
@@ -15,16 +17,21 @@ export const PasswordResetRequest = () => {
   const handleSubmit = useCallback(() => setIsSubmitted(true), []);
 
   return (
-    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl font-semibold tracking-tight">
-            {isSubmitted ? (
-              <FormattedMessage defaultMessage="Check your email" id="Auth / reset password / request sent heading" />
-            ) : (
-              <FormattedMessage defaultMessage="Reset your password" id="Auth / reset password / heading" />
-            )}
-          </CardTitle>
+    <>
+      <FloatingThemeToggle />
+      <div className="container flex min-h-screen items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
+              <AuthLogo />
+            </div>
+            <CardTitle className="text-3xl font-semibold tracking-tight">
+              {isSubmitted ? (
+                <FormattedMessage defaultMessage="Check your email" id="Auth / reset password / request sent heading" />
+              ) : (
+                <FormattedMessage defaultMessage="Reset your password" id="Auth / reset password / heading" />
+              )}
+            </CardTitle>
           <CardDescription>
             {isSubmitted ? (
               <FormattedMessage
@@ -52,5 +59,6 @@ export const PasswordResetRequest = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

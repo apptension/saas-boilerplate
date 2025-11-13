@@ -6,6 +6,8 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
+import { AuthLogo } from '../../../shared/components/auth/authLogo';
+import { FloatingThemeToggle } from '../../../shared/components/auth/floatingThemeToggle';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
 import { SocialLoginButtons } from '../../../shared/components/auth/socialLoginButtons';
 import { SignupButtonsVariant } from '../../../shared/components/auth/socialLoginButtons/socialLoginButtons.component';
@@ -14,12 +16,17 @@ export const Login = () => {
   const generateLocalePath = useGenerateLocalePath();
 
   return (
-    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl font-semibold tracking-tight">
-            <FormattedMessage defaultMessage="Welcome back" id="Auth / Login / heading" />
-          </CardTitle>
+    <>
+      <FloatingThemeToggle />
+      <div className="container flex min-h-screen items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
+              <AuthLogo />
+            </div>
+            <CardTitle className="text-3xl font-semibold tracking-tight">
+              <FormattedMessage defaultMessage="Welcome back" id="Auth / Login / heading" />
+            </CardTitle>
           <CardDescription>
             <FormattedMessage defaultMessage="Sign in to your account to continue" id="Auth / Login / description" />
           </CardDescription>
@@ -67,5 +74,6 @@ export const Login = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

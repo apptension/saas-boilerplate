@@ -20,6 +20,11 @@ export const Layout = ({ children }: LayoutProps) => {
     [pathname]
   );
 
+  const isAuthRoute = useMemo(
+    () => !NO_NAVIGATION_ROUTES.every((path) => isNil(matchPath({ path }, pathname))),
+    [pathname]
+  );
+
   const value = useMemo(
     () => ({ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }),
     [shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen]
@@ -28,8 +33,8 @@ export const Layout = ({ children }: LayoutProps) => {
   return (
     <LayoutContext.Provider value={value}>
       <div className={shouldDisplaySidebar ? 'lg:pl-72' : undefined}>
-        <Header />
-        <main className="py-10">{children}</main>
+        {!isAuthRoute && <Header />}
+        <main className={isAuthRoute ? undefined : 'py-10'}>{children}</main>
       </div>
       {shouldDisplaySidebar && <Sidebar />}
     </LayoutContext.Provider>

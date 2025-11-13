@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { AuthLogo } from '../authLogo';
+import { FloatingThemeToggle } from '../floatingThemeToggle';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
 
 export type ValidateOtpFormFields = {
@@ -48,15 +50,20 @@ export const ValidateOtpForm = () => {
   };
 
   return (
-    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-3xl font-semibold tracking-tight">
-            <FormattedMessage
-              defaultMessage="Two-Factor Authentication"
-              id="Auth / Validate OTP / Heading"
-            />
-          </CardTitle>
+    <>
+      <FloatingThemeToggle />
+      <div className="container flex min-h-screen items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
+              <AuthLogo />
+            </div>
+            <CardTitle className="text-3xl font-semibold tracking-tight">
+              <FormattedMessage
+                defaultMessage="Two-Factor Authentication"
+                id="Auth / Validate OTP / Heading"
+              />
+            </CardTitle>
           <CardDescription>
             <FormattedMessage
               defaultMessage="Enter the 6-digit code from your authenticator app to complete sign in."
@@ -130,5 +137,6 @@ export const ValidateOtpForm = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
