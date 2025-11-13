@@ -38,11 +38,11 @@ describe('SignupForm: Component', () => {
     mockNavigate.mockReset();
   });
 
-  const getEmailInput = () => screen.findByLabelText(/email/i);
-  const getPasswordInput = () => screen.getByLabelText(/password/i);
-  const getAcceptField = () => screen.getByLabelText(/accept/i);
+  const getEmailInput = () => screen.findByLabelText(/email address/i);
+  const getPasswordInput = () => screen.getByLabelText(/^password$/i);
+  const getAcceptField = () => screen.getByLabelText(/i agree to the/i);
 
-  const clickSignupButton = () => userEvent.click(screen.getByRole('button', { name: /sign up/i }));
+  const clickSignupButton = () => userEvent.click(screen.getByRole('button', { name: /create account/i }));
 
   it('should call signup mutation when submitted', async () => {
     const requestMock = composeMockedQueryResult(authSingupMutation, {
@@ -84,7 +84,7 @@ describe('SignupForm: Component', () => {
 
     await clickSignupButton();
 
-    expect(await screen.findByText('Password is required')).toBeInTheDocument();
+    expect(await screen.findByText(/please enter a password/i)).toBeInTheDocument();
     expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
@@ -101,7 +101,7 @@ describe('SignupForm: Component', () => {
 
     await clickSignupButton();
 
-    expect(await screen.findByText('You need to accept terms and conditions')).toBeInTheDocument();
+    expect(await screen.findByText(/you must accept the terms and conditions to continue/i)).toBeInTheDocument();
     expect(await mockNavigate).not.toHaveBeenCalled();
   });
 

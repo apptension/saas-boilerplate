@@ -10,6 +10,9 @@ const Template: StoryFn = () => {
 export default {
   title: 'Routes/Auth/PasswordResetRequest',
   component: PasswordResetRequest,
+  parameters: {
+    layout: 'fullscreen',
+  },
 };
 
 export const Default = {

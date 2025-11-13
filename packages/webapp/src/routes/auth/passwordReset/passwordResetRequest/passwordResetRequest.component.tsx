@@ -1,8 +1,9 @@
-import { Link } from '@sb/webapp-core/components/buttons';
-import { H3, Small } from '@sb/webapp-core/components/typography';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { PasswordResetRequestForm } from '../../../../shared/components/auth/passwordResetRequestForm';
@@ -14,36 +15,42 @@ export const PasswordResetRequest = () => {
   const handleSubmit = useCallback(() => setIsSubmitted(true), []);
 
   return (
-    <div className="m-auto flex max-w-xs flex-col items-center justify-center gap-6 2xl:mt-32">
-      <H3>
-        {isSubmitted ? (
-          <FormattedMessage defaultMessage="Done!" id="Auth / reset password / request sent heading" />
-        ) : (
-          <FormattedMessage defaultMessage="Forgot password?" id="Auth / reset password / heading" />
-        )}
-      </H3>
+    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-3xl font-semibold tracking-tight">
+            {isSubmitted ? (
+              <FormattedMessage defaultMessage="Check your email" id="Auth / reset password / request sent heading" />
+            ) : (
+              <FormattedMessage defaultMessage="Reset your password" id="Auth / reset password / heading" />
+            )}
+          </CardTitle>
+          <CardDescription>
+            {isSubmitted ? (
+              <FormattedMessage
+                defaultMessage="We've sent a password reset link to your email address. Please check your inbox and follow the instructions."
+                id="Auth / Reset password / request sent description"
+              />
+            ) : (
+              <FormattedMessage
+                defaultMessage="Enter your email address and we'll send you a link to reset your password."
+                id="Auth / Reset password / description"
+              />
+            )}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {!isSubmitted && <PasswordResetRequestForm onSubmitted={handleSubmit} />}
 
-      <Small>
-        {isSubmitted ? (
-          <FormattedMessage
-            defaultMessage="We’ve sent a link to the given email address. You should receive it soon."
-            id="Auth / Reset password / request sent description"
-          />
-        ) : (
-          <FormattedMessage
-            defaultMessage="Write down your email and we will send you link to reset your password."
-            id="Auth / Reset password / description"
-          />
-        )}
-      </Small>
-
-      <PasswordResetRequestForm onSubmitted={handleSubmit} />
-
-      <div className="flex w-full flex-row justify-center">
-        <Link to={generateLocalePath(RoutesConfig.login)}>
-          <FormattedMessage defaultMessage="Go back to log in" id="Auth / Reset password / login link" />
-        </Link>
-      </div>
+          <div className="flex w-full flex-row justify-center text-sm">
+            <Button variant="link" className="h-auto p-0 text-sm" asChild>
+              <Link to={generateLocalePath(RoutesConfig.login)}>
+                <FormattedMessage defaultMessage="Back to sign in" id="Auth / Reset password / login link" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

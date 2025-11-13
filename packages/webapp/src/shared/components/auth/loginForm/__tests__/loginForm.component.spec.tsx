@@ -34,9 +34,9 @@ describe('LoginForm: Component', () => {
     },
   };
 
-  const getEmailInput = async () => await screen.findByLabelText(/email/i);
-  const getPasswordInput = async () => await screen.findByLabelText(/password/i);
-  const clickLoginButton = async () => await userEvent.click(await screen.findByRole('button', { name: /log in/i }));
+  const getEmailInput = async () => await screen.findByLabelText(/email address/i);
+  const getPasswordInput = async () => await screen.findByLabelText(/^password$/i);
+  const clickLoginButton = async () => await userEvent.click(await screen.findByRole('button', { name: /sign in/i }));
   const user = currentUserFactory({
     firstName: 'Jack',
     lastName: 'White',
@@ -104,7 +104,7 @@ describe('LoginForm: Component', () => {
 
     await clickLoginButton();
 
-    expect(await screen.findByText('Password is required')).toBeInTheDocument();
+    expect(await screen.findByText(/please enter your password/i)).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {

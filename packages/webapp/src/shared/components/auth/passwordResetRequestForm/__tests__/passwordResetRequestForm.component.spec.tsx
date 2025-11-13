@@ -21,11 +21,11 @@ describe('PasswordResetRequestForm: Component', () => {
   };
 
   const fillForm = async (emailValue = email) => {
-    await userEvent.type(await screen.findByLabelText(/email/i), emailValue);
+    await userEvent.type(await screen.findByLabelText(/email address/i), emailValue);
   };
 
   const sendForm = async () => {
-    await userEvent.click(await screen.findByRole('button', { name: /send the link/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /send reset link/i }));
   };
 
   it('should show resend button if action completes successfully', async () => {
@@ -44,7 +44,7 @@ describe('PasswordResetRequestForm: Component', () => {
     await sendForm();
 
     await waitFor(() => {
-      expect(screen.getByText(/send the link again/i)).toBeInTheDocument();
+      expect(screen.getByText(/resend reset link/i)).toBeInTheDocument();
     });
 
     expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password');
@@ -56,7 +56,7 @@ describe('PasswordResetRequestForm: Component', () => {
     await sendForm();
 
     await waitFor(() => {
-      expect(screen.getByText('Email is required')).toBeInTheDocument();
+      expect(screen.getByText(/please enter your email address/i)).toBeInTheDocument();
     });
   });
 

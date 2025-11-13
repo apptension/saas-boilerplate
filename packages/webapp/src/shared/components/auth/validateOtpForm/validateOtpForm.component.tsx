@@ -1,9 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { Button, ButtonSize } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
-import { H3, Small } from '@sb/webapp-core/components/typography';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Input } from '@sb/webapp-core/components/ui/input';
+import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -15,7 +17,11 @@ export type ValidateOtpFormFields = {
 
 export const ValidateOtpForm = () => {
   const intl = useIntl();
-  const form = useApiForm<ValidateOtpFormFields>();
+  const form = useApiForm<ValidateOtpFormFields>({
+    defaultValues: {
+      token: '',
+    },
+  });
   const {
     handleSubmit,
     hasGenericErrorOnly,
@@ -23,11 +29,11 @@ export const ValidateOtpForm = () => {
     setApolloGraphQLResponseErrors,
     form: {
       register,
-      formState: { errors },
     },
   } = form;
   const { reload: reloadCommonQuery } = useCommonQuery();
-  const [commitValidateOtpMutation] = useMutation(validateOtpMutation, {
+  
+  const [commitValidateOtpMutation, { loading }] = useMutation(validateOtpMutation, {
     onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
     onCompleted: () => {
       trackEvent('auth', 'otp-validate');
@@ -42,46 +48,87 @@ export const ValidateOtpForm = () => {
   };
 
   return (
-    <div className="m-auto flex max-w-sm flex-col items-center justify-center text-center align-middle lg:mt-32">
-      <H3 className="mb-8">
-        <FormattedMessage
-          defaultMessage="Please enter the authentication code from your OTP provider app to sign in."
-          id="Auth / Validate OTP / Enter code from app"
-        />
-      </H3>
+    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-3xl font-semibold tracking-tight">
+            <FormattedMessage
+              defaultMessage="Two-Factor Authentication"
+              id="Auth / Validate OTP / Heading"
+            />
+          </CardTitle>
+          <CardDescription>
+            <FormattedMessage
+              defaultMessage="Enter the 6-digit code from your authenticator app to complete sign in."
+              id="Auth / Validate OTP / Enter code from app"
+            />
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Form {...form.form}>
+            <form className="flex w-full flex-col gap-6" onSubmit={handleSubmit(handleFormSubmit)}>
+              <FormField
+                control={form.form.control}
+                name="token"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <FormattedMessage
+                        defaultMessage="Authentication Code"
+                        id="Auth / Validate OTP / Code label"
+                      />
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        {...register('token', {
+                          required: {
+                            value: true,
+                            message: intl.formatMessage({
+                              defaultMessage: 'Please enter the authentication code',
+                              id: 'Auth / Validate OTP / Auth code required',
+                            }),
+                          },
+                          minLength: {
+                            value: 6,
+                            message: intl.formatMessage({
+                              defaultMessage: 'The code must be 6 digits',
+                              id: 'Auth / Validate OTP / Password too short',
+                            }),
+                          },
+                        })}
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                        placeholder="000000"
+                        maxLength={6}
+                        autoFocus
+                        autoComplete="one-time-code"
+                        disabled={loading}
+                        className="text-center text-2xl tracking-widest"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-      <form className="flex w-full max-w-xs flex-col gap-6" onSubmit={handleSubmit(handleFormSubmit)}>
-        <Input
-          {...register('token', {
-            required: {
-              value: true,
-              message: intl.formatMessage({
-                defaultMessage: 'The authentication code is required',
-                id: 'Auth / Validate OTP / Auth code required',
-              }),
-            },
-            minLength: {
-              value: 6,
-              message: intl.formatMessage({
-                defaultMessage: 'The authentication code must be 6 characters long.',
-                id: 'Auth / Validate OTP / Password too short',
-              }),
-            },
-          })}
-          pattern="[0-9]*"
-          placeholder="Authentication Code"
-          maxLength={6}
-          autoFocus
-          error={errors.token?.message}
-          autoComplete="off"
-        />
+              {hasGenericErrorOnly && (
+                <Alert variant="destructive">
+                  <AlertDescription>{genericError}</AlertDescription>
+                </Alert>
+              )}
 
-        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
-
-        <Button type="submit" size={ButtonSize.NORMAL} className="mt-2">
-          <FormattedMessage defaultMessage="Submit" id="Auth / Validate OTP / Submit button" />
-        </Button>
-      </form>
+              <Button type="submit" disabled={loading} className="w-full" size="lg">
+                {loading ? (
+                  <FormattedMessage defaultMessage="Verifying..." id="Auth / Validate OTP / Submit button loading" />
+                ) : (
+                  <FormattedMessage defaultMessage="Verify code" id="Auth / Validate OTP / Submit button" />
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import { Button } from '@sb/webapp-core/components/buttons';
-import { Input } from '@sb/webapp-core/components/forms';
-import { Small } from '@sb/webapp-core/components/typography';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Input } from '@sb/webapp-core/components/ui/input';
+import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { emailPattern } from '../../../constants';
@@ -10,10 +11,7 @@ export const LoginForm = () => {
   const intl = useIntl();
 
   const {
-    form: {
-      register,
-      formState: { errors },
-    },
+    form,
     hasGenericErrorOnly,
     genericError,
     loading,
@@ -21,65 +19,105 @@ export const LoginForm = () => {
   } = useLoginForm();
 
   return (
-    <form noValidate className="flex w-full flex-col gap-6" onSubmit={handleLogin}>
-      <Input
-        {...register('email', {
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'Email is required',
-              id: 'Auth / Login / Email required',
-            }),
-          },
-          pattern: {
-            value: emailPattern,
-            message: intl.formatMessage({
-              defaultMessage: 'Email format is invalid',
-              id: 'Auth / Login / Email format error',
-            }),
-          },
-        })}
-        type="email"
-        required
-        label={intl.formatMessage({
-          defaultMessage: 'Email',
-          id: 'Auth / Login / Email label',
-        })}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'Write your email here...',
-          id: 'Auth / Login / Email placeholder',
-        })}
-        error={errors.email?.message}
-      />
+    <Form {...form}>
+      <form noValidate className="flex w-full flex-col gap-6" onSubmit={handleLogin}>
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {intl.formatMessage({
+                  defaultMessage: 'Email address',
+                  id: 'Auth / Login / Email label',
+                })}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...form.register('email', {
+                    required: {
+                      value: true,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Please enter your email address',
+                        id: 'Auth / Login / Email required',
+                      }),
+                    },
+                    pattern: {
+                      value: emailPattern,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Please enter a valid email address',
+                        id: 'Auth / Login / Email format error',
+                      }),
+                    },
+                  })}
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'name@example.com',
+                    id: 'Auth / Login / Email placeholder',
+                  })}
+                  disabled={loading}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <Input
-        {...register('password', {
-          required: {
-            value: true,
-            message: intl.formatMessage({
-              defaultMessage: 'Password is required',
-              id: 'Auth / Login / Password required',
-            }),
-          },
-        })}
-        type="password"
-        required
-        label={intl.formatMessage({
-          defaultMessage: 'Password',
-          id: 'Auth / Login / Password label',
-        })}
-        placeholder={intl.formatMessage({
-          defaultMessage: 'Write your password here...',
-          id: 'Auth / Login / Password placeholder',
-        })}
-        error={errors.password?.message}
-      />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {intl.formatMessage({
+                  defaultMessage: 'Password',
+                  id: 'Auth / Login / Password label',
+                })}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  {...form.register('password', {
+                    required: {
+                      value: true,
+                      message: intl.formatMessage({
+                        defaultMessage: 'Please enter your password',
+                        id: 'Auth / Login / Password required',
+                      }),
+                    },
+                  })}
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Enter your password',
+                    id: 'Auth / Login / Password placeholder',
+                  })}
+                  disabled={loading}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+        {hasGenericErrorOnly && (
+          <Alert variant="destructive">
+            <AlertDescription>{genericError}</AlertDescription>
+          </Alert>
+        )}
 
-      <Button disabled={loading} type="submit">
-        <FormattedMessage defaultMessage="Log in" id="Auth / login button" />
-      </Button>
-    </form>
+        <Button disabled={loading} type="submit" className="w-full" size="lg">
+          {loading ? (
+            <FormattedMessage defaultMessage="Signing in..." id="Auth / login button loading" />
+          ) : (
+            <FormattedMessage defaultMessage="Sign in" id="Auth / login button" />
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 };

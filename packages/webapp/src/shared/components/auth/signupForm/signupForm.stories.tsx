@@ -10,6 +10,9 @@ const Template: StoryFn = () => {
 export default {
   title: 'Shared/Auth/SignupForm',
   component: SignupForm,
+  parameters: {
+    layout: 'centered',
+  },
 };
 
 export const Default = {

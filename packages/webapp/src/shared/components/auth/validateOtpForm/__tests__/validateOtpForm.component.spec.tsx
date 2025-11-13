@@ -44,8 +44,8 @@ describe('ValidateOtpForm: Component', () => {
       apolloMocks: (mocks) => mocks.concat(requestMock, refreshQueryMock),
     });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Submit/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByRole('button', { name: /verify code/i });
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);
@@ -69,8 +69,8 @@ describe('ValidateOtpForm: Component', () => {
 
     const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Submit/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByRole('button', { name: /verify code/i });
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);

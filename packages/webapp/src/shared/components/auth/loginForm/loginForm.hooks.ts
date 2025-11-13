@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { emailPattern } from '../../../constants';
 import { authSinginMutation } from './loginForm.graphql';
 import { LoginFormFields } from './loginForm.types';
 
@@ -30,6 +31,10 @@ export const useLoginForm = () => {
           id: 'Login form / error / authentication failed',
         }),
       },
+    },
+    defaultValues: {
+      email: '',
+      password: '',
     },
   });
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;

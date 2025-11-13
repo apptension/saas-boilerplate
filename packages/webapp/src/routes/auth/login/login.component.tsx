@@ -1,7 +1,9 @@
-import { Link } from '@sb/webapp-core/components/buttons';
-import { H3, Small } from '@sb/webapp-core/components/typography';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../app/config/routes';
 import { LoginForm } from '../../../shared/components/auth/loginForm';
@@ -12,28 +14,58 @@ export const Login = () => {
   const generateLocalePath = useGenerateLocalePath();
 
   return (
-    <div className="m-auto flex max-w-xs flex-col items-center justify-center 2xl:mt-32">
-      <H3 className="mb-8">
-        <FormattedMessage defaultMessage="Log in" id="Auth / Login / heading" />
-      </H3>
+    <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-3xl font-semibold tracking-tight">
+            <FormattedMessage defaultMessage="Welcome back" id="Auth / Login / heading" />
+          </CardTitle>
+          <CardDescription>
+            <FormattedMessage defaultMessage="Sign in to your account to continue" id="Auth / Login / description" />
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <SocialLoginButtons variant={SignupButtonsVariant.LOGIN} />
 
-      <SocialLoginButtons variant={SignupButtonsVariant.LOGIN} />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                <FormattedMessage defaultMessage="Or continue with email" id="Auth / Login / or" />
+              </span>
+            </div>
+          </div>
 
-      <Small className="my-4">
-        <FormattedMessage defaultMessage="or" id="Auth / Login / or" />
-      </Small>
+          <LoginForm />
 
-      <LoginForm />
-
-      <div className="mt-8 flex w-full flex-row justify-between">
-        <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
-          <FormattedMessage defaultMessage="Forgot password?" id="Auth / login / reset password link" />
-        </Link>
-
-        <Link to={generateLocalePath(RoutesConfig.signup)}>
-          <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
-        </Link>
-      </div>
+          <div className="flex flex-col gap-2 text-center text-sm">
+            <div className="flex flex-row items-center justify-center gap-4">
+              <Button variant="link" className="h-auto p-0 text-sm" asChild>
+                <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
+                  <FormattedMessage defaultMessage="Forgot your password?" id="Auth / login / reset password link" />
+                </Link>
+              </Button>
+            </div>
+            <div className="text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Don't have an account? {signupLink}"
+                id="Auth / Login / signup prompt"
+                values={{
+                  signupLink: (
+                    <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
+                      <Link to={generateLocalePath(RoutesConfig.signup)}>
+                        <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
+                      </Link>
+                    </Button>
+                  ),
+                }}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
