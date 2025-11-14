@@ -72,7 +72,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
       <PopoverTrigger data-testid="notifications-trigger-testid" asChild>
         <NotificationsButton queryResult={data} />
       </PopoverTrigger>
-      <PopoverContent className="md:w-96 w-72" align="end" side="bottom" sideOffset={15}>
+      <PopoverContent className="w-[350px] p-0" align="end" side="bottom" sideOffset={8}>
         <NotificationsList templates={templates} queryResult={data} loading={loading} onLoadMore={onLoadMore} />
       </PopoverContent>
     </Popover>

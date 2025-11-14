@@ -13,6 +13,7 @@ export type LayoutProps = {
 
 export const Layout = ({ children }: LayoutProps) => {
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { pathname } = useLocation();
 
   const shouldDisplaySidebar = useMemo(
@@ -25,14 +26,28 @@ export const Layout = ({ children }: LayoutProps) => {
     [pathname]
   );
 
-  const value = useMemo(
-    () => ({ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }),
-    [shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen]
+  const toggleSidebar = useMemo(
+    () => () => setSidebarCollapsed((prev) => !prev),
+    []
   );
+
+  const value = useMemo(
+    () => ({
+      isSidebarAvailable: shouldDisplaySidebar,
+      isSideMenuOpen,
+      setSideMenuOpen,
+      isSidebarCollapsed,
+      setSidebarCollapsed,
+      toggleSidebar,
+    }),
+    [shouldDisplaySidebar, isSideMenuOpen, isSidebarCollapsed, toggleSidebar]
+  );
+
+  const sidebarWidth = isSidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72';
 
   return (
     <LayoutContext.Provider value={value}>
-      <div className={shouldDisplaySidebar ? 'lg:pl-72' : undefined}>
+      <div className={shouldDisplaySidebar ? sidebarWidth : undefined}>
         {!isAuthRoute && <Header />}
         <main className={isAuthRoute ? undefined : 'py-10'}>{children}</main>
       </div>

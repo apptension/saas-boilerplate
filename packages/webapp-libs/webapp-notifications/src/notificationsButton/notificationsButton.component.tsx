@@ -33,7 +33,8 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
     return (
       <Button
         variant="ghost"
-        className="h-10 w-10 rounded-full px-0"
+        size="icon"
+        className="relative h-9 w-9"
         data-unread={hasUnreadNotifications}
         aria-label={intl.formatMessage({
           defaultMessage: 'Open notifications',
@@ -42,7 +43,14 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
         {...props}
         ref={ref}
       >
-        {hasUnreadNotifications ? <BellDot className="[&>circle]:stroke-red-500" /> : <Bell />}
+        {hasUnreadNotifications ? (
+          <>
+            <BellDot className="h-5 w-5 [&>circle]:stroke-destructive" />
+            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />
+          </>
+        ) : (
+          <Bell className="h-5 w-5" />
+        )}
       </Button>
     );
   }

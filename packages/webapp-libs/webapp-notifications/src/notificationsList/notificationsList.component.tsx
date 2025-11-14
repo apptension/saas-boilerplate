@@ -34,14 +34,14 @@ export const NotificationsList = (props: NotificationsListProps) => {
   );
 
   return (
-    <div className="z-50 flex flex-col">
-      <div className="flex flex-row items-center justify-between">
-        <H4 className="text-base">
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between px-4 pt-4">
+        <H4 className="text-base font-semibold">
           <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
         </H4>
         <Button
           icon={<CheckCheck size={16} />}
-          className="mx-0 text-xs text-muted-foreground"
+          className="h-8 text-xs"
           variant={ButtonVariant.GHOST}
           onClick={markAllAsRead}
         >
@@ -51,12 +51,13 @@ export const NotificationsList = (props: NotificationsListProps) => {
           />
         </Button>
       </div>
-      <Separator orientation="horizontal" className="my-2" />
-      <div className="grid-cols-1 w-full overflow-y-auto max-h-96">
+      <Separator className="mt-3" />
+      <div className="max-h-[400px] overflow-y-auto">
         {props.loading ? (
-          <div className="flex w-full flex-col gap-4">
-            <Skeleton className="h-16" data-testid="Skeleton" />
-            <Skeleton className="h-16" data-testid="Skeleton" />
+          <div className="flex flex-col gap-2 p-4">
+            <Skeleton className="h-20" data-testid="Skeleton" />
+            <Skeleton className="h-20" data-testid="Skeleton" />
+            <Skeleton className="h-20" data-testid="Skeleton" />
           </div>
         ) : (
           <Content {...props} />
@@ -84,14 +85,16 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
 
   if (isEmpty(allNotifications)) {
     return (
-      <EmptyState>
-        <FormattedMessage defaultMessage="No notifications" id="Notifications / Notifications List / Empty state" />
-      </EmptyState>
+      <div className="flex flex-col items-center justify-center py-12 px-4">
+        <EmptyState>
+          <FormattedMessage defaultMessage="No notifications" id="Notifications / Notifications List / Empty state" />
+        </EmptyState>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="flex flex-col">
       {allNotifications.map((notification) => {
         const notificationData = getFragmentData(notificationsListItemFragment, notification);
         const NotificationComponent = templates[notificationData.type as NotificationTypes] as ElementType | undefined;
@@ -105,11 +108,11 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
         );
       })}
       {(hasNext || loading) && (
-        <div ref={scrollSensorRef} className="flex w-full flex-col gap-4">
-          <Skeleton className="h-16" />
-          <Skeleton className="h-16" />
+        <div ref={scrollSensorRef} className="flex flex-col gap-2 p-4">
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
         </div>
       )}
-    </>
+    </div>
   );
 };
