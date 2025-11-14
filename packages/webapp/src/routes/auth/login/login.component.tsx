@@ -27,53 +27,53 @@ export const Login = () => {
             <CardTitle className="text-3xl font-semibold tracking-tight">
               <FormattedMessage defaultMessage="Welcome back" id="Auth / Login / heading" />
             </CardTitle>
-          <CardDescription>
-            <FormattedMessage defaultMessage="Sign in to your account to continue" id="Auth / Login / description" />
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <SocialLoginButtons variant={SignupButtonsVariant.LOGIN} />
+            <CardDescription>
+              <FormattedMessage defaultMessage="Sign in to your account to continue" id="Auth / Login / description" />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <SocialLoginButtons variant={SignupButtonsVariant.LOGIN} />
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  <FormattedMessage defaultMessage="Or continue with email" id="Auth / Login / or" />
+                </span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                <FormattedMessage defaultMessage="Or continue with email" id="Auth / Login / or" />
-              </span>
-            </div>
-          </div>
 
-          <LoginForm />
+            <LoginForm />
 
-          <div className="flex flex-col gap-2 text-center text-sm">
-            <div className="flex flex-row items-center justify-center gap-4">
-              <Button variant="link" className="h-auto p-0 text-sm" asChild>
-                <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
-                  <FormattedMessage defaultMessage="Forgot your password?" id="Auth / login / reset password link" />
-                </Link>
-              </Button>
+            <div className="flex flex-col gap-2 text-center text-sm">
+              <div className="flex flex-row items-center justify-center gap-4">
+                <Button variant="link" className="h-auto p-0 text-sm" asChild>
+                  <Link to={generateLocalePath(RoutesConfig.passwordReset.index)}>
+                    <FormattedMessage defaultMessage="Forgot your password?" id="Auth / login / reset password link" />
+                  </Link>
+                </Button>
+              </div>
+              <div className="text-muted-foreground">
+                <FormattedMessage
+                  defaultMessage="Don't have an account? {signupLink}"
+                  id="Auth / Login / signup prompt"
+                  values={{
+                    signupLink: (
+                      <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
+                        <Link to={generateLocalePath(RoutesConfig.signup)}>
+                          <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
+                        </Link>
+                      </Button>
+                    ),
+                  }}
+                />
+              </div>
             </div>
-            <div className="text-muted-foreground">
-              <FormattedMessage
-                defaultMessage="Don't have an account? {signupLink}"
-                id="Auth / Login / signup prompt"
-                values={{
-                  signupLink: (
-                    <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
-                      <Link to={generateLocalePath(RoutesConfig.signup)}>
-                        <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
-                      </Link>
-                    </Button>
-                  ),
-                }}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

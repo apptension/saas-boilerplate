@@ -4,7 +4,6 @@ import GoogleImg from './google.svg?react';
 import HeaderLogoImg from './headerLogo.svg?react';
 import HeaderLogoDarkImg from './headerLogoDark.svg?react';
 import LogoImg from './logo.svg?react';
-
 import { makeIcon } from './makeIcon';
 
 //<-- IMPORT ICON FILE -->

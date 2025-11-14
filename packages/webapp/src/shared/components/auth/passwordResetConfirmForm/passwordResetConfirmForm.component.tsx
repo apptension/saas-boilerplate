@@ -1,7 +1,7 @@
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
+import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Input } from '@sb/webapp-core/components/ui/input';
-import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { usePasswordResetConfirmForm } from './passwordResetConfirmForm.hooks';
@@ -15,10 +15,7 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const intl = useIntl();
 
   const {
-    form: {
-      register,
-      getValues,
-    },
+    form: { register, getValues },
     form,
     genericError,
     hasGenericErrorOnly,
@@ -127,7 +124,10 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
 
         <Button type="submit" disabled={loading} className="w-full" size="lg">
           {loading ? (
-            <FormattedMessage defaultMessage="Updating password..." id="Auth / Reset password confirm / Submit button loading" />
+            <FormattedMessage
+              defaultMessage="Updating password..."
+              id="Auth / Reset password confirm / Submit button loading"
+            />
           ) : (
             <FormattedMessage defaultMessage="Update password" id="Auth / Reset password confirm / Submit button" />
           )}

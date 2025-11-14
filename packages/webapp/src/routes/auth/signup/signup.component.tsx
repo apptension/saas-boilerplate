@@ -27,44 +27,47 @@ export const Signup = () => {
             <CardTitle className="text-3xl font-semibold tracking-tight">
               <FormattedMessage defaultMessage="Create your account" id="Auth / Signup / heading" />
             </CardTitle>
-          <CardDescription>
-            <FormattedMessage defaultMessage="Get started with your free account today" id="Auth / Signup / description" />
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Get started with your free account today"
+                id="Auth / Signup / description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  <FormattedMessage defaultMessage="Or continue with email" id="Auth / Signup / or" />
+                </span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                <FormattedMessage defaultMessage="Or continue with email" id="Auth / Signup / or" />
-              </span>
+
+            <SignupForm />
+
+            <div className="text-center text-sm text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Already have an account? {loginLink}"
+                id="Auth / Signup / login prompt"
+                values={{
+                  loginLink: (
+                    <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
+                      <Link to={generateLocalePath(RoutesConfig.login)}>
+                        <FormattedMessage defaultMessage="Sign in" id="Auth / Signup / login link" />
+                      </Link>
+                    </Button>
+                  ),
+                }}
+              />
             </div>
-          </div>
-
-          <SignupForm />
-
-          <div className="text-center text-sm text-muted-foreground">
-            <FormattedMessage
-              defaultMessage="Already have an account? {loginLink}"
-              id="Auth / Signup / login prompt"
-              values={{
-                loginLink: (
-                  <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
-                    <Link to={generateLocalePath(RoutesConfig.login)}>
-                      <FormattedMessage defaultMessage="Sign in" id="Auth / Signup / login link" />
-                    </Link>
-                  </Button>
-                ),
-              }}
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

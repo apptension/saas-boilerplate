@@ -43,26 +43,26 @@ export const PasswordResetConfirm = () => {
             <CardTitle className="text-3xl font-semibold tracking-tight">
               <FormattedMessage defaultMessage="Create new password" id="Auth / Confirm reset password / heading" />
             </CardTitle>
-          <CardDescription>
-            <FormattedMessage
-              defaultMessage="Please enter your new password below. Make sure it's strong and secure."
-              id="Auth / Confirm reset password / description"
-            />
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <PasswordResetConfirmForm user={params.user} token={params.token} />
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Please enter your new password below. Make sure it's strong and secure."
+                id="Auth / Confirm reset password / description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <PasswordResetConfirmForm user={params.user} token={params.token} />
 
-          <div className="flex w-full flex-row justify-center text-sm">
-            <Button variant="link" className="h-auto p-0 text-sm" asChild>
-              <Link to={generateLocalePath(RoutesConfig.login)}>
-                <FormattedMessage defaultMessage="Back to sign in" id="Auth / Confirm reset password / login link" />
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+            <div className="flex w-full flex-row justify-center text-sm">
+              <Button variant="link" className="h-auto p-0 text-sm" asChild>
+                <Link to={generateLocalePath(RoutesConfig.login)}>
+                  <FormattedMessage defaultMessage="Back to sign in" id="Auth / Confirm reset password / login link" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

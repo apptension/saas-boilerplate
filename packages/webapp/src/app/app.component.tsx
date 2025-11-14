@@ -88,11 +88,10 @@ export const App = () => {
             <Route path={RoutesConfig.tenantInvitation} element={<TenantInvitation />} />
             <Route path="*" element={<NotFound />} />
           </Route>
-          
+
           <Route element={<AuthRoute allowedRoles={Role.ADMIN} />}>
             <Route path={RoutesConfig.admin} element={<Admin />} />
           </Route>
-
 
           <Route path={RoutesConfig.confirmEmail} element={<ConfirmEmail />} />
           <Route path={RoutesConfig.privacyPolicy} element={<PrivacyPolicy />} />

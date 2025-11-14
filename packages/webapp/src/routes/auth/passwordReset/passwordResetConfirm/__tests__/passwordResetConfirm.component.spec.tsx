@@ -33,11 +33,11 @@ describe('PasswordResetConfirm: Component', () => {
 
   const fillForm = async (newPassword: string) => {
     await userEvent.type(await screen.findByLabelText(/^new password$/i), newPassword);
-    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
+    await userEvent.type(screen.getByLabelText(/^confirm new password$/i), newPassword);
   };
 
   const sendForm = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
+    await userEvent.click(screen.getByRole('button', { name: /update password/i }));
   };
 
   describe('token is valid', () => {

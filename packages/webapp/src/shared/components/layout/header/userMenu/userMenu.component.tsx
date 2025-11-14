@@ -13,6 +13,8 @@ import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Notifications } from '@sb/webapp-notifications';
+import { Link as ButtonLink } from '@sb/webapp-core/components/buttons';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Moon, Sun, User, LogOut } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -22,8 +24,6 @@ import notificationTemplates from '../../../../constants/notificationTemplates';
 import getNotificationEvents from '../../../../events/notificationEvents';
 import { useAuth } from '../../../../hooks';
 import { Avatar } from '../../../avatar';
-import { Link as ButtonLink } from '@sb/webapp-core/components/buttons';
-import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 
 export type UserMenuProps = HTMLAttributes<HTMLDivElement>;
 

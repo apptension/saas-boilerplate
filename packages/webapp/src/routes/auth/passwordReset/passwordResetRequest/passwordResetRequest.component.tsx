@@ -32,33 +32,33 @@ export const PasswordResetRequest = () => {
                 <FormattedMessage defaultMessage="Reset your password" id="Auth / reset password / heading" />
               )}
             </CardTitle>
-          <CardDescription>
-            {isSubmitted ? (
-              <FormattedMessage
-                defaultMessage="We've sent a password reset link to your email address. Please check your inbox and follow the instructions."
-                id="Auth / Reset password / request sent description"
-              />
-            ) : (
-              <FormattedMessage
-                defaultMessage="Enter your email address and we'll send you a link to reset your password."
-                id="Auth / Reset password / description"
-              />
-            )}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {!isSubmitted && <PasswordResetRequestForm onSubmitted={handleSubmit} />}
+            <CardDescription>
+              {isSubmitted ? (
+                <FormattedMessage
+                  defaultMessage="We've sent a password reset link to your email address. Please check your inbox and follow the instructions."
+                  id="Auth / Reset password / request sent description"
+                />
+              ) : (
+                <FormattedMessage
+                  defaultMessage="Enter your email address and we'll send you a link to reset your password."
+                  id="Auth / Reset password / description"
+                />
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {!isSubmitted && <PasswordResetRequestForm onSubmitted={handleSubmit} />}
 
-          <div className="flex w-full flex-row justify-center text-sm">
-            <Button variant="link" className="h-auto p-0 text-sm" asChild>
-              <Link to={generateLocalePath(RoutesConfig.login)}>
-                <FormattedMessage defaultMessage="Back to sign in" id="Auth / Reset password / login link" />
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+            <div className="flex w-full flex-row justify-center text-sm">
+              <Button variant="link" className="h-auto p-0 text-sm" asChild>
+                <Link to={generateLocalePath(RoutesConfig.login)}>
+                  <FormattedMessage defaultMessage="Back to sign in" id="Auth / Reset password / login link" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

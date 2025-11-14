@@ -27,7 +27,8 @@ describe('Notification: Component', () => {
     const onClick = jest.fn();
     render(<Component onClick={onClick} />);
 
-    const container = await screen.findByRole('link');
+    const buttons = await screen.findAllByRole('button');
+    const container = buttons[0]; // The main notification container
     fireEvent.click(container);
 
     expect(onClick).toBeCalledTimes(1);

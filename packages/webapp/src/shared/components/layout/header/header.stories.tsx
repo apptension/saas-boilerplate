@@ -33,7 +33,6 @@ const Template: StoryFn<{ isLoggedIn?: boolean }> = ({ isLoggedIn = false }) => 
 
 const meta: Meta<typeof Template> = {
   title: 'Shared/Layout/Header',
-  component: Header,
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { isLoggedIn = false } }: any) => {

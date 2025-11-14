@@ -28,7 +28,6 @@ const Template: StoryFn<{ isLoggedIn?: boolean; isCollapsed?: boolean }> = ({ is
 
 const meta: Meta<typeof Template> = {
   title: 'Shared/Layout/Sidebar',
-  component: Sidebar,
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { isLoggedIn = true } }: any) => {

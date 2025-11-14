@@ -1,7 +1,8 @@
-import { LogoIcon } from '../../../../images/icons';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
 import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { useEffect, useRef } from 'react';
+
+import { LogoIcon } from '../../../../images/icons';
 
 export const AuthLogo = () => {
   const { theme } = useTheme();
@@ -21,7 +22,7 @@ export const AuthLogo = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-[150px] my-4">
+    <div ref={containerRef} className="my-4 w-[150px]">
       <LogoIcon
         color={logoColor}
         style={{ width: '100%', height: 'auto', maxWidth: '100%' }}
@@ -31,4 +32,3 @@ export const AuthLogo = () => {
     </div>
   );
 };
-
