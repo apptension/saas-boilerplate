@@ -26,8 +26,8 @@ export const SubscriptionPlanItem = ({
   const { name, price, features, isFree } = useSubscriptionPlanDetails(data);
   const { isTrialEligible, activeSubscriptionIsCancelled, activeSubscriptionPlan, nextSubscriptionPlanDetails } =
     useActiveSubscriptionDetailsData(activeSubscription);
-  const isActive = activeSubscriptionPlan.name === name && !activeSubscriptionIsCancelled;
-  const isScheduledForNextPeriod = nextSubscriptionPlanDetails.name === name;
+  const isActive = activeSubscriptionPlan?.name === name && !activeSubscriptionIsCancelled;
+  const isScheduledForNextPeriod = nextSubscriptionPlanDetails?.name === name;
 
   const handleSelect = () => onSelect(data?.pk ?? null);
 
@@ -45,10 +45,15 @@ export const SubscriptionPlanItem = ({
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <span className="text-3xl">${price}</span>
-          <span>
+          <span className="text-3xl font-semibold">${price?.toFixed(2) || '0.00'}</span>
+          <span className="text-muted-foreground">
             {' '}
-            / <FormattedMessage defaultMessage="month" id="Change plan item / month" values={{ price }} />
+            /{' '}
+            {name?.toLowerCase().includes('yearly') ? (
+              <FormattedMessage defaultMessage="year" id="Change plan item / year" />
+            ) : (
+              <FormattedMessage defaultMessage="month" id="Change plan item / month" />
+            )}
           </span>
         </div>
         <Button onClick={handleSelect} disabled={isScheduledForNextPeriod || isFree || loading}>

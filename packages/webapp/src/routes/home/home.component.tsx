@@ -180,10 +180,10 @@ export const Home = () => {
         </div>
 
         {/* Info Alert */}
-        <Alert variant="info" className="border-primary/20 bg-primary/5">
-          <AlertCircle className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-base font-semibold">Heads up!</AlertTitle>
-          <AlertDescription className="mt-2 space-y-3 text-sm">
+        <Alert variant="info" className="border-blue-700/20 bg-blue-50 dark:bg-blue-950/20">
+          <AlertCircle className="h-4 w-4 text-blue-700" />
+          <AlertTitle className="text-base font-semibold text-blue-900 dark:text-blue-100">Heads up!</AlertTitle>
+          <AlertDescription className="mt-2 space-y-3 text-sm text-blue-800 dark:text-blue-200">
             <p>
               Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate.
               Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each

@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client';
 import { getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Link } from '@sb/webapp-core/components/buttons';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { CreditCard } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
@@ -51,7 +51,7 @@ const PaymentMethodContent = () => {
   );
 
   const renderEmptyList = () => (
-    <div className="mt-1 text-muted-foreground text-sm">
+    <div className="text-muted-foreground text-sm">
       <FormattedMessage
         defaultMessage="You don't have any payment method added."
         id="My subscription / No credit card"
@@ -61,36 +61,40 @@ const PaymentMethodContent = () => {
 
   return (
     <TabsContent value={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.index)}>
-      <div className="space-y-6 pt-4">
-        <PageHeadline
-          header={<FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />}
-          subheader={
-            <FormattedMessage
-              defaultMessage="Manage your payment methods in application"
-              id="My subscription / Payment methods subheader"
-            />
-          }
-        />
-
-        <div>
-          <div className="space-y-3">
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Payment methods" id="My subscription / Payment methods header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Manage your payment methods in application"
+                id="My subscription / Payment methods subheader"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {defaultMethod && renderCardDetails()}
             {paymentMethods.length === 0 && renderEmptyList()}
-            <Link to={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
-              {paymentMethods.length ? (
-                <FormattedMessage
-                  defaultMessage="Edit payment methods"
-                  id="My subscription / Edit payment method button"
-                />
-              ) : (
-                <FormattedMessage
-                  defaultMessage="Add payment methods"
-                  id="My subscription / Add payment method button"
-                />
-              )}
-            </Link>
-          </div>
-        </div>
+            <div>
+              <Link to={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
+                {paymentMethods.length ? (
+                  <FormattedMessage
+                    defaultMessage="Edit payment methods"
+                    id="My subscription / Edit payment method button"
+                  />
+                ) : (
+                  <FormattedMessage
+                    defaultMessage="Add payment methods"
+                    id="My subscription / Add payment method button"
+                  />
+                )}
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </TabsContent>
   );

@@ -1,9 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { Link } from '@sb/webapp-core/components/buttons';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { History } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../config/routes';
@@ -23,28 +24,34 @@ const TransactionsHistoryContent = () => {
 
   return (
     <TabsContent value={generateTenantPath(RoutesConfig.subscriptions.transactionHistory.index)}>
-      <div className="space-y-6 pt-4">
-        <PageHeadline
-          header={<FormattedMessage defaultMessage="History" id="My subscription / History header" />}
-          subheader={
-            <FormattedMessage defaultMessage="View transaction history" id="My subscription / History subheader" />
-          }
-        />
-
-        {!length ? (
-          <div className="mt-1 text-muted-foreground text-sm">
-            <FormattedMessage
-              defaultMessage="You don't have any history to show"
-              id="My subscription / No transaction history"
-            />
-          </div>
-        ) : (
-          <div>
-            <Link to={generateTenantPath(RoutesConfig.subscriptions.transactionHistory.history)} variant="default">
-              <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
-            </Link>
-          </div>
-        )}
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              <FormattedMessage defaultMessage="History" id="My subscription / History header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage defaultMessage="View transaction history" id="My subscription / History subheader" />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!length ? (
+              <div className="text-muted-foreground text-sm">
+                <FormattedMessage
+                  defaultMessage="You don't have any history to show"
+                  id="My subscription / No transaction history"
+                />
+              </div>
+            ) : (
+              <div>
+                <Link to={generateTenantPath(RoutesConfig.subscriptions.transactionHistory.history)} variant="default">
+                  <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </TabsContent>
   );
