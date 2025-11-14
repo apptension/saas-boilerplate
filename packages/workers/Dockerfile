@@ -24,7 +24,7 @@ RUN \
   apt-get update && \
   apt-get install -yqq nodejs && \
   pip install -U pip~=23.0.1 && pip install "urllib3<2" pdm~=2.5.2 && \
-  npm i -g npm@^8 pnpm@~9.5.0 && \
+  npm i -g npm@^8 pnpm@~10.13.1 && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=chamber /chamber /bin/chamber

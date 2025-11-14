@@ -116,6 +116,11 @@
     "regenerator-runtime": "^0.14.1",
     "styled-components": "6.1.11"
   },
+  "packageManager": "pnpm@10.13.1",
+  "engines": {
+    "node": ">=20.4.0 <21.0.0",
+    "pnpm": ">=10.13.1"
+  },
   "pnpm": {
     "patchedDependencies": {
       "nx@19.0.1": "patches/nx@19.0.1.patch"

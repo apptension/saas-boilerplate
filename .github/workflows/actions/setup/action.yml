@@ -1,15 +1,15 @@
-name: "Initialize"
-description: ""
+name: 'Initialize'
+description: ''
 inputs:
   node-version:
     required: true
     default: 20
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - uses: pnpm/action-setup@v2
       with:
-        version: 9.5.x
+        version: 10.13.1
 
     - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v3
