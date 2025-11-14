@@ -15,7 +15,9 @@ import { CodegenConfig } from '@graphql-codegen/cli';
 import { mergeDeepWithKey, reduce } from 'ramda';
 
 const webappLibsPath = path.resolve(__dirname, '../..');
-const webappLibs = fs.readdirSync(webappLibsPath).filter((dirName) => dirName !== 'webapp-api-client');
+const webappLibs = fs
+  .readdirSync(webappLibsPath)
+  .filter((dirName) => dirName !== 'webapp-api-client');
 const codegenConfigs = webappLibs
   .map((dirName) => path.resolve(webappLibsPath, dirName, 'graphql/codegen.ts'))
   .filter((codegenConfigPath) => fs.existsSync(codegenConfigPath))
@@ -56,7 +58,13 @@ const config: CodegenConfig = {
       },
 
       preset: 'client',
-      plugins: [],
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+      ],
       presetConfig: {
         gqlTagName: 'gql',
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
@@ -75,10 +83,10 @@ const combinedConfigs = reduce(
         return a;
       },
       acc,
-      elem
+      elem,
     ),
   config,
-  codegenConfigs
+  codegenConfigs,
 );
 
 export default combinedConfigs;
