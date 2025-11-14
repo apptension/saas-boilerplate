@@ -35,7 +35,7 @@ export const TenantSwitch = () => {
   ]);
 
   const tenantsGrouped = groupBy(prop<string>('type'), tenants);
-  const personalTenant = head(tenantsGrouped[TenantType.PERSONAL]);
+  const personalTenant = head(tenantsGrouped[TenantType.PERSONAL] ?? []);
   const organizationTenants = groupBy(
     (tenant) =>
       getFragmentData(commonQueryMembershipFragment, tenant?.membership)?.invitationAccepted

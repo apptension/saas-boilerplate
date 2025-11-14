@@ -6,6 +6,35 @@ The SaaS Boilerplate provides an admin feature that allows developers to manage 
 using the [Django admin site](https://docs.djangoproject.com/en/4.2/ref/contrib/admin/). The admin feature is designed
 to provide a quick, model-centric interface that allows developers to manage data and perform custom admin actions.
 
+### Accessing the Admin Panel
+
+#### Local Development
+
+The admin panel is accessible at `http://admin.localhost:5001` when running the backend services locally.
+
+#### Default Credentials
+
+When you first set up the project, a default superuser account is automatically created during the initial database migration. The credentials are configured via environment variables:
+
+- **Email**: Set via `ADMIN_EMAIL` environment variable (default: `admin@example.com`)
+- **Password**: Set via `ADMIN_DEFAULT_PASSWORD` environment variable (default: `AvPZpabgj9Z8`)
+
+:::info
+
+The default superuser is created automatically during the initial migration (`0001_initial.py`) if both `ADMIN_EMAIL` and `ADMIN_DEFAULT_PASSWORD` environment variables are set. You can configure these values in your `.env` file located in `packages/backend/.env`.
+
+:::
+
+:::caution
+
+**Security Note**: The default password (`AvPZpabgj9Z8`) is only intended for local development. For production environments, you should:
+
+1. Set a strong, unique password in your environment variables
+2. Change the password immediately after first login
+3. Never commit credentials to version control
+
+:::
+
 ### Using the Django Admin Site
 
 The SaaS Boilerplate uses the Django admin site to provide a user-friendly interface for managing data. The Django admin
@@ -16,6 +45,6 @@ models to provide a quick, model-centric interface.
 ### Access to Custom Admin Actions
 
 The SaaS Boilerplate admin panel provides access to custom admin actions that allow developers to perform specific tasks
-related to their application. For example, it’s possible to export user data using a custom admin action. The custom
+related to their application. For example, it's possible to export user data using a custom admin action. The custom
 admin action can be added to the admin site using the built-in admin action interface, which makes it easy to add custom
 functionality to the admin site.
