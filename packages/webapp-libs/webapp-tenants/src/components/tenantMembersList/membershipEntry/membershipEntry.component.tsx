@@ -132,13 +132,14 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
   const displayName = name || membership.userEmail || membership.inviteeEmailAddress;
   const email = membership.userEmail || membership.inviteeEmailAddress;
   const avatarInitial = membership.firstName?.[0]?.toUpperCase() || membership.userEmail?.[0]?.toUpperCase() || 'U';
+  const avatarSrc = membership.avatar && membership.avatar !== null ? membership.avatar : undefined;
 
   return (
     <TableRow className={className}>
       <TableCell>
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={isNil(membership.avatar) ? undefined : membership.avatar} alt={displayName} />
+            <AvatarImage src={avatarSrc} alt={displayName || ''} />
             <AvatarFallback className="text-xs">{avatarInitial}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
