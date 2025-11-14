@@ -164,34 +164,40 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
             :
           </Paragraph>
         </div>
-        <form className="relative" onSubmit={handleSubmit(submitHandler)}>
-          <Input
-            {...register('token', {
-              required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'The authentication code is required',
-                  id: 'Auth / Validate OTP / Auth code required',
-                }),
-              },
-              minLength: {
-                value: 6,
-                message: intl.formatMessage({
-                  defaultMessage: 'The authentication code must be 6 characters long.',
-                  id: 'Auth / Validate OTP / Password too short',
-                }),
-              },
-            })}
-            pattern="[0-9]*"
-            placeholder="Authentication Code"
-            maxLength={6}
-            autoFocus
-            error={errors.token?.message}
-            autoComplete="off"
-            className="mb-8 mt-4 w-48"
-          />
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitHandler)}>
+          <div className="mt-4">
+            <Input
+              {...register('token', {
+                required: {
+                  value: true,
+                  message: intl.formatMessage({
+                    defaultMessage: 'The authentication code is required',
+                    id: 'Auth / Validate OTP / Auth code required',
+                  }),
+                },
+                minLength: {
+                  value: 6,
+                  message: intl.formatMessage({
+                    defaultMessage: 'The authentication code must be 6 characters long.',
+                    id: 'Auth / Validate OTP / Password too short',
+                  }),
+                },
+              })}
+              pattern="[0-9]*"
+              placeholder="Authentication Code"
+              maxLength={6}
+              autoFocus
+              error={errors.token?.message}
+              autoComplete="off"
+              className="w-48"
+            />
+          </div>
 
-          {hasGenericErrorOnly ? <Small className="absolute top-11 text-red-500">{genericError}</Small> : null}
+          {hasGenericErrorOnly && (
+            <div className="text-sm text-destructive">
+              <Small>{genericError}</Small>
+            </div>
+          )}
 
           <div className="flex flex-row gap-4">
             <Button type="button" variant={ButtonVariant.SECONDARY} onClick={closeModal}>

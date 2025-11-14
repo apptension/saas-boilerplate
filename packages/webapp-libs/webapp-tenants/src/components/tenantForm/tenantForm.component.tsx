@@ -78,14 +78,18 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
           )}
         />
 
-        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
-        <div className="mt-6">
-          <Link className="mr-4" to={generateLocalePath(RoutesConfig.home)} variant={ButtonVariant.SECONDARY}>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Link to={generateLocalePath(RoutesConfig.home)} variant={ButtonVariant.SECONDARY} className="w-full sm:w-fit">
             <FormattedMessage defaultMessage="Cancel" id="Tenant form / Cancel button" />
           </Link>
 
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="w-full sm:w-fit">
             <FormattedMessage defaultMessage="Save changes" id="Tenant form / Submit button" />
           </Button>
         </div>

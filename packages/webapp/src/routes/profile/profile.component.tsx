@@ -1,7 +1,10 @@
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
-import { FormattedMessage } from 'react-intl';
+import { User, Lock, Shield, Mail, UserCircle } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AvatarForm } from '../../shared/components/auth/avatarForm';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
@@ -10,97 +13,148 @@ import { TwoFactorAuthForm } from '../../shared/components/auth/twoFactorAuthFor
 import { useAuth } from '../../shared/hooks';
 
 export const Profile = () => {
+  const intl = useIntl();
   const { currentUser } = useAuth();
 
   return (
     <PageLayout>
-      <PageHeadline
-        header={<FormattedMessage defaultMessage="User profile" id="Auth / Profile details / Header" />}
-        subheader={
-          <FormattedMessage
-            defaultMessage="Here you can find more information about your account and edit it"
-            id="Auth / Profile details / Label"
-          />
-        }
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: 'Profile Settings',
+          id: 'Profile / page title',
+        })}
       />
 
-      <div className="flex flex-row gap-3">
-        <AvatarForm />
-
-        <div>
-          <Paragraph>
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <User className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage defaultMessage="User profile" id="Auth / Profile details / Header" />
+            </h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
             <FormattedMessage
-              defaultMessage="Name: {firstName} {lastName}"
-              id="Auth / Profile details / Name label"
-              values={{ firstName: currentUser?.firstName, lastName: currentUser?.lastName }}
-            />
-          </Paragraph>
-
-          <Paragraph firstChildMargin={false}>
-            <FormattedMessage
-              defaultMessage="Email: {email}"
-              id="Auth / Profile details / Email label"
-              values={{ email: currentUser?.email }}
-            />
-          </Paragraph>
-
-          <Paragraph firstChildMargin={false}>
-            <FormattedMessage
-              defaultMessage="Roles: {roles}"
-              id="Auth / Profile details / Roles label"
-              values={{ roles: currentUser?.roles?.join(',') }}
+              defaultMessage="Here you can find more information about your account and edit it"
+              id="Auth / Profile details / Label"
             />
           </Paragraph>
         </div>
-      </div>
 
-      <div className="flex w-full flex-col gap-y-6">
-        <PageHeadline
-          header={
-            <FormattedMessage defaultMessage="Personal data" id="Auth / Profile details / Personal data header" />
-          }
-          subheader={
-            <FormattedMessage
-              defaultMessage="Update your account details"
-              id="Auth / Profile details / Personal data label"
-            />
-          }
-        />
-        <EditProfileForm />
-      </div>
+        {/* Profile Overview Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserCircle className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Profile Overview" id="Profile / Overview / Title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage defaultMessage="Your account information" id="Profile / Overview / Description" />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+              <div className="flex-shrink-0">
+                <AvatarForm />
+              </div>
+              <div className="flex-1 space-y-4">
+                <div className="space-y-1">
+                  <div className="text-sm font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="Name" id="Profile / Name / Label" />
+                  </div>
+                  <Paragraph className="text-base">
+                    {currentUser?.firstName} {currentUser?.lastName}
+                  </Paragraph>
+                </div>
+                <Separator />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                    <Mail className="h-4 w-4" />
+                    <FormattedMessage defaultMessage="Email" id="Profile / Email / Label" />
+                  </div>
+                  <Paragraph className="text-base">{currentUser?.email}</Paragraph>
+                </div>
+                <Separator />
+                <div className="space-y-1">
+                  <div className="text-sm font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="Roles" id="Profile / Roles / Label" />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {currentUser?.roles?.map((role) => (
+                      <span
+                        key={role}
+                        className="inline-flex items-center rounded-md bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-      <div className="flex w-full flex-col gap-y-6">
-        <PageHeadline
-          header={
-            <FormattedMessage defaultMessage="Change password" id="Auth / Profile details / Change password header" />
-          }
-          subheader={
-            <FormattedMessage
-              defaultMessage="Update your password"
-              id="Auth / Profile details / Change password label"
-            />
-          }
-        />
-        <ChangePasswordForm />
-      </div>
+        {/* Personal Data Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Personal data" id="Auth / Profile details / Personal data header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Update your account details"
+                id="Auth / Profile details / Personal data label"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <EditProfileForm />
+          </CardContent>
+        </Card>
 
-      <div className="flex w-full flex-col gap-y-6">
-        <PageHeadline
-          header={
-            <FormattedMessage
-              defaultMessage="Two-factor Authentication"
-              id="Auth / Profile details / Two-factor Authentication header"
-            />
-          }
-          subheader={
-            <FormattedMessage
-              defaultMessage="Enable 2FA on your account"
-              id="Auth / Profile details / Two-factor Authentication label"
-            />
-          }
-        />
+        {/* Change Password Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Change password" id="Auth / Profile details / Change password header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Update your password"
+                id="Auth / Profile details / Change password label"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChangePasswordForm />
+          </CardContent>
+        </Card>
 
-        <TwoFactorAuthForm isEnabled={currentUser?.otpEnabled} />
+        {/* Two-Factor Authentication Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              <FormattedMessage
+                defaultMessage="Two-factor Authentication"
+                id="Auth / Profile details / Two-factor Authentication header"
+              />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Enable 2FA on your account"
+                id="Auth / Profile details / Two-factor Authentication label"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TwoFactorAuthForm isEnabled={currentUser?.otpEnabled} />
+          </CardContent>
+        </Card>
       </div>
     </PageLayout>
   );

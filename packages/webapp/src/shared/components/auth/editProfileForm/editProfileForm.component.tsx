@@ -26,49 +26,59 @@ export const EditProfileForm = () => {
       <form
         noValidate
         onSubmit={handleUpdate}
-        className={cn('flex max-w-xs flex-row flex-wrap items-end justify-center gap-4 md:max-w-full md:justify-start')}
+        className="flex w-full flex-col gap-6"
       >
-        <div className="flex w-full flex-row flex-wrap gap-4">
-          <Input
-            {...register('firstName', {
-              maxLength: {
-                value: FIRST_NAME_MAX_LENGTH,
-                message: intl.formatMessage({
-                  defaultMessage: 'First name is too long',
-                  id: 'Auth / Update profile/ First name max length error',
-                }),
-              },
-            })}
-            label={intl.formatMessage({
-              defaultMessage: 'First name',
-              id: 'Auth / Update profile / First name label',
-            })}
-            error={errors.firstName?.message}
-          />
+        <div className="flex w-full flex-col gap-6 sm:flex-row">
+          <div className="flex-1">
+            <Input
+              {...register('firstName', {
+                maxLength: {
+                  value: FIRST_NAME_MAX_LENGTH,
+                  message: intl.formatMessage({
+                    defaultMessage: 'First name is too long',
+                    id: 'Auth / Update profile/ First name max length error',
+                  }),
+                },
+              })}
+              label={intl.formatMessage({
+                defaultMessage: 'First name',
+                id: 'Auth / Update profile / First name label',
+              })}
+              error={errors.firstName?.message}
+            />
+          </div>
 
-          <Input
-            {...register('lastName', {
-              maxLength: {
-                value: LAST_NAME_MAX_LENGTH,
-                message: intl.formatMessage({
-                  defaultMessage: 'Last name is too long',
-                  id: 'Auth / Update profile/ Last name max length error',
-                }),
-              },
-            })}
-            label={intl.formatMessage({
-              defaultMessage: 'Last name',
-              id: 'Auth / Update profile / Last name label',
-            })}
-            error={errors.lastName?.message}
-          />
+          <div className="flex-1">
+            <Input
+              {...register('lastName', {
+                maxLength: {
+                  value: LAST_NAME_MAX_LENGTH,
+                  message: intl.formatMessage({
+                    defaultMessage: 'Last name is too long',
+                    id: 'Auth / Update profile/ Last name max length error',
+                  }),
+                },
+              })}
+              label={intl.formatMessage({
+                defaultMessage: 'Last name',
+                id: 'Auth / Update profile / Last name label',
+              })}
+              error={errors.lastName?.message}
+            />
+          </div>
         </div>
 
-        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <Small>{genericError}</Small>
+          </div>
+        )}
 
-        <Button type="submit" disabled={loading} className="w-full md:w-fit">
-          <FormattedMessage defaultMessage="Update personal data" id="Auth / Update profile/ Submit button" />
-        </Button>
+        <div>
+          <Button type="submit" disabled={loading} className="w-full sm:w-fit">
+            <FormattedMessage defaultMessage="Update personal data" id="Auth / Update profile/ Submit button" />
+          </Button>
+        </div>
       </form>
     </div>
   );

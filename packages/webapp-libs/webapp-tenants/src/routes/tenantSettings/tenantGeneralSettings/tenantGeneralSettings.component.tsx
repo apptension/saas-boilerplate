@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast';
+import { Settings } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TenantDangerZone } from '../../../components/tenantDangerZone';
@@ -56,24 +57,39 @@ export const TenantGeneralSettings = () => {
   };
 
   return (
-    <div className="space-y-6 pt-4 mt-2">
-      <PageHeadline
-        header={<FormattedMessage defaultMessage="General" id="Tenant General Settings / Header" />}
-        subheader={
-          <FormattedMessage
-            defaultMessage="View and manage organization general settings"
-            id="Tenant General Settings / General subheader"
+    <div className="space-y-6">
+      {/* General Settings Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            <FormattedMessage defaultMessage="General" id="Tenant General Settings / Header" />
+          </CardTitle>
+          <CardDescription>
+            <FormattedMessage
+              defaultMessage="View and manage organization general settings"
+              id="Tenant General Settings / General subheader"
+            />
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <TenantForm
+            loading={loading}
+            error={error}
+            onSubmit={onFormSubmit}
+            initialData={currentTenant?.name ? { name: currentTenant.name } : undefined}
           />
-        }
-      />
-      <TenantForm
-        loading={loading}
-        error={error}
-        onSubmit={onFormSubmit}
-        initialData={currentTenant?.name ? { name: currentTenant.name } : undefined}
-      />
+        </CardContent>
+      </Card>
 
-      {isOrganizationType && <TenantDangerZone />}
+      {/* Danger Zone Card */}
+      {isOrganizationType && (
+        <Card>
+          <CardContent className="pt-6">
+            <TenantDangerZone />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

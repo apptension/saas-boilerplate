@@ -47,7 +47,7 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
   } = useTenantInvitationForm({ initialData, onSubmit, error });
 
   return (
-    <Card className="max-w-2xl">
+    <Card>
       <CardHeader>
         <CardTitle>
           <FormattedMessage defaultMessage="Invite new member" id="Tenant invitation form / Invite new member" />
@@ -55,14 +55,18 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          {hasGenericErrorOnly && <span className="text-red-500">{genericError}</span>}
-          <form className="flex flex-col" onSubmit={handleFormSubmit}>
-            <div className="flex flex-row items-start gap-4">
+          <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
+            {hasGenericErrorOnly && (
+              <div className="text-sm text-destructive">
+                <span>{genericError}</span>
+              </div>
+            )}
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="basis-1/2">
+                  <FormItem className="flex-1">
                     <FormControl>
                       <Input
                         {...field}
@@ -94,33 +98,34 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                 control={form.control}
                 name="role"
                 render={({ field, fieldState }) => (
-                  <FormItem className="basis-1/2">
-                    <div className="relative">
-                      <FormLabel>
-                        <p
-                          className={cn(`order-first mb-1 text-xs`, {
-                            'text-red-500': !!fieldState.error,
-                          })}
-                        >
-                          <FormattedMessage defaultMessage="Role:" id="Tenant invitation form / Role label" />
-                        </p>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder={rolePlaceholder} />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {[TenantUserRole.MEMBER, TenantUserRole.ADMIN, TenantUserRole.OWNER].map((role) => (
-                              <SelectItem value={role} key={role}>
-                                {getRoleTranslation(role)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormLabel>
-                      <FormMessage className="absolute top-[calc(100%+4px)] m-0 text-xs leading-3" />
-                    </div>
+                  <FormItem className="flex-1">
+                    <FormLabel>
+                      <p
+                        className={cn(`mb-1.5 text-sm font-medium`, {
+                          'text-destructive': !!fieldState.error,
+                          'text-foreground': !fieldState.error,
+                        })}
+                      >
+                        <FormattedMessage defaultMessage="Role:" id="Tenant invitation form / Role label" />
+                      </p>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className={cn({
+                            'border-destructive': !!fieldState.error,
+                          })}>
+                            <SelectValue placeholder={rolePlaceholder} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {[TenantUserRole.MEMBER, TenantUserRole.ADMIN, TenantUserRole.OWNER].map((role) => (
+                            <SelectItem value={role} key={role}>
+                              {getRoleTranslation(role)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormLabel>
+                    <FormMessage />
                   </FormItem>
                 )}
                 rules={{
@@ -135,8 +140,8 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
               />
             </div>
 
-            <div className="mt-6">
-              <Button type="submit" disabled={loading}>
+            <div>
+              <Button type="submit" disabled={loading} className="w-full sm:w-fit">
                 <FormattedMessage defaultMessage="Invite" id="Tenant invitation form / Submit button" />
               </Button>
             </div>

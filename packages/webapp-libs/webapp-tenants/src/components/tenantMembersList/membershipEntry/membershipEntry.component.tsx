@@ -3,6 +3,7 @@ import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webap
 import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +20,8 @@ import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useToast } from '@sb/webapp-core/toast';
 import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
-import { indexBy, prop, trim } from 'ramda';
-import { MouseEvent, useMemo } from 'react';
+import { indexBy, isNil, prop, trim } from 'ramda';
+import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -127,9 +128,33 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
   };
 
   const name = trim([membership.firstName, membership.lastName].map((s) => trim(s ?? '')).join(' '));
+  const hasName = !!name;
+  const displayName = name || membership.userEmail || membership.inviteeEmailAddress;
+  const email = membership.userEmail || membership.inviteeEmailAddress;
+  const avatarInitial = membership.firstName?.[0]?.toUpperCase() || membership.userEmail?.[0]?.toUpperCase() || 'U';
+
   return (
     <TableRow className={className}>
-      <TableCell>{name || membership.userEmail || membership.inviteeEmailAddress}</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={isNil(membership.avatar) ? undefined : membership.avatar} alt={displayName} />
+            <AvatarFallback className="text-xs">{avatarInitial}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            {hasName ? (
+              <>
+                <span className="font-medium">{displayName}</span>
+                {email && (
+                  <span className="text-xs text-muted-foreground">{email}</span>
+                )}
+              </>
+            ) : (
+              <span className="text-muted-foreground">{displayName}</span>
+            )}
+          </div>
+        </div>
+      </TableCell>
 
       <TableCell>
         {loading ? (

@@ -1,9 +1,8 @@
-import dangerIcon from '@iconify-icons/ion/alert-circle-outline';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
-import { Icon } from '@sb/webapp-core/components/icons';
-import { H3, Paragraph } from '@sb/webapp-core/components/typography';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Button, buttonVariants } from '@sb/webapp-core/components/ui/button';
+import { AlertTriangle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenantMembership } from '../../hooks';
@@ -16,31 +15,39 @@ export const TenantDangerZone = () => {
   const { deleteTenant, loading } = useTenantDelete();
 
   return (
-    <div className="space-y-6 pt-4 mt-2">
+    <div className="space-y-6">
       <div className="flex gap-2 items-center">
-        <Icon className="text-red-500" icon={dangerIcon} />
-        <H3 className="text-lg font-medium text-red-500">
+        <AlertTriangle className="h-5 w-5 text-destructive" />
+        <h3 className="text-lg font-semibold text-destructive">
           <FormattedMessage defaultMessage="Danger Zone" id="Tenant General Settings / Danger Zone / Header" />
-        </H3>
+        </h3>
       </div>
 
-      <div className="p-4 border-red-500 border-2 rounded-md">
-        <div className="flex justify-between">
-          <span>
-            <FormattedMessage
-              defaultMessage="Delete this organization"
-              id="Tenant General Settings / Danger Zone / Delete title"
-            />
-
-            <Paragraph className="text-sm text-slate-400">
-              {isOwner ? undefined : (
+      <div className="rounded-lg border-2 border-destructive/50 bg-destructive/5 p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <div className="font-semibold text-foreground">
+              <FormattedMessage
+                defaultMessage="Delete this organization"
+                id="Tenant General Settings / Danger Zone / Delete title"
+              />
+            </div>
+            {!isOwner ? (
+              <Paragraph className="text-sm text-muted-foreground">
                 <FormattedMessage
                   defaultMessage="Only members with the Owner role can delete organization"
                   id="Tenant General Settings / Danger Zone / Delete owner role subtitle"
                 />
-              )}
-            </Paragraph>
-          </span>
+              </Paragraph>
+            ) : (
+              <Paragraph className="text-sm text-muted-foreground">
+                <FormattedMessage
+                  defaultMessage="Once you delete an organization, there is no going back. Please be certain."
+                  id="Tenant General Settings / Danger Zone / Delete warning"
+                />
+              </Paragraph>
+            )}
+          </div>
 
           <ConfirmDialog
             onContinue={deleteTenant}
@@ -60,7 +67,7 @@ export const TenantDangerZone = () => {
           >
             <Button disabled={!isOwner || loading} className={buttonVariants({ variant: 'destructive' })}>
               <FormattedMessage
-                defaultMessage="Remove organization"
+                defaultMessage="Delete organization"
                 id="Tenant General Settings / Danger Zone / Tenant Delete Button"
               />
             </Button>

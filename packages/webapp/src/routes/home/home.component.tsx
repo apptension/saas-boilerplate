@@ -1,13 +1,14 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Link } from '@sb/webapp-core/components/buttons';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { H4, Paragraph } from '@sb/webapp-core/components/typography';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Alert, AlertDescription, AlertTitle } from '@sb/webapp-core/components/ui/alert';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { AlertCircle, ArrowUpRight } from 'lucide-react';
+import { AlertCircle, ArrowUpRight, BookOpen, Github, Sparkles } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -98,18 +99,24 @@ export const Home = () => {
 
   const renderItem = (item: DashboardItem, key: number) => (
     <TenantRoleAccess allowedRoles={item.roleAccess} key={key}>
-      <Link navLink to={item.link} className="group relative bg-background p-6">
-        <ArrowUpRight className="absolute right-4 top-4 h-8 w-8 text-muted group-hover:text-muted-foreground" />
-        <H4 className="pr-8">{item.title}</H4>
-        <Paragraph firstChildMargin={false} className="mt-1 text-sm text-muted-foreground">
-          {item.subtitle}
-        </Paragraph>
+      <Link navLink to={item.link} className="group block h-full">
+        <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-lg font-semibold">{item.title}</CardTitle>
+              <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-sm leading-relaxed">{item.subtitle}</CardDescription>
+          </CardContent>
+        </Card>
       </Link>
     </TenantRoleAccess>
   );
 
   return (
-    <PageLayout className="lg:max-w-4xl">
+    <PageLayout>
       <Helmet
         title={intl.formatMessage({
           defaultMessage: 'Homepage',
@@ -117,51 +124,82 @@ export const Home = () => {
         })}
       />
 
-      <PageHeadline
-        header={<FormattedMessage defaultMessage="Dashboard" id="Home / header" />}
-        subheader={
-          <FormattedMessage
-            defaultMessage="Welcome! You're viewing your personal application dashboard example."
-            id="Home / subheading"
-          />
-        }
-      />
-
-      <Alert variant="info">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription className="space-y-4">
-          <div>
-            Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate.
-            Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each
-            module to best fit your application's needs.
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage defaultMessage="Dashboard" id="Home / header" />
+            </h1>
           </div>
-          <div>
-            <strong>For further assistance:</strong>
-            <ol>
-              <li>
-                <a
-                  target="_blank"
-                  className="underline"
-                  href="https://github.com/apptension/saas-boilerplate"
-                  rel="noreferrer"
-                >
-                  Visit our GitHub repository
-                </a>
-              </li>
-              <li>
-                <a target="_blank" className="underline" href="https://docs.demo.saas.apptoku.com/" rel="noreferrer">
-                  Check out the SB Documentation
-                </a>
-              </li>
-            </ol>
-          </div>
-          <div>Remember, the SaaS Boilerplate is your starting point - make it your own!</div>
-        </AlertDescription>
-      </Alert>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage
+              defaultMessage="Welcome! You're viewing your personal application dashboard example."
+              id="Home / subheading"
+            />
+          </Paragraph>
+        </div>
 
-      <div className="grid w-full grid-cols-1 gap-[1px] bg-muted md:grid-cols-2">
-        {dashboardItems.map((item, key) => renderItem(item, key))}
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant="outline"
+            size="lg"
+            asChild
+            className="gap-2"
+          >
+            <a
+              href="https://github.com/apptension/saas-boilerplate"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center"
+            >
+              <Github className="h-4 w-4" />
+              <span>GitHub Repository</span>
+              <ArrowUpRight className="h-3 w-3" />
+            </a>
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            asChild
+            className="gap-2"
+          >
+            <a
+              href="https://docs.demo.saas.apptoku.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Documentation</span>
+              <ArrowUpRight className="h-3 w-3" />
+            </a>
+          </Button>
+        </div>
+
+        {/* Info Alert */}
+        <Alert variant="info" className="border-primary/20 bg-primary/5">
+          <AlertCircle className="h-4 w-4 text-primary" />
+          <AlertTitle className="text-base font-semibold">Heads up!</AlertTitle>
+          <AlertDescription className="mt-2 space-y-3 text-sm">
+            <p>
+              Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate.
+              Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each
+              module to best fit your application's needs.
+            </p>
+            <p className="font-medium">Remember, the SaaS Boilerplate is your starting point - make it your own!</p>
+          </AlertDescription>
+        </Alert>
+
+        {/* Features Grid */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold tracking-tight">Available Features</h2>
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {dashboardItems.map((item, key) => renderItem(item, key))}
+          </div>
+        </div>
       </div>
     </PageLayout>
   );

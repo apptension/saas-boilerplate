@@ -26,7 +26,7 @@ export const ChangePasswordForm = () => {
       <form
         noValidate
         onSubmit={handleChangePassword}
-        className={cn('flex max-w-xs flex-row flex-wrap items-end justify-center gap-4 md:max-w-full md:justify-start')}
+        className="flex w-full flex-col gap-6"
       >
         <div className="w-full">
           <Input
@@ -48,76 +48,81 @@ export const ChangePasswordForm = () => {
           />
         </div>
 
-        <div
-          className={cn(
-            { 'gap-8': !!errors.newPassword, 'gap-4': !errors.newPassword },
-            'flex w-full flex-row flex-wrap'
-          )}
-        >
-          <Input
-            {...register('newPassword', {
-              required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'New password is required',
-                  id: 'Auth / Change password / Password required',
-                }),
-              },
-              minLength: {
-                value: 8,
-                message: intl.formatMessage({
-                  defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                  id: 'Auth / Change password / Password too short',
-                }),
-              },
-            })}
-            type="password"
-            label={intl.formatMessage({
-              defaultMessage: 'New password',
-              id: 'Auth / Change password / New password label',
-            })}
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Minimum 8 characters',
-              id: 'Auth / Change password / New password placeholder',
-            })}
-            error={errors.newPassword?.message}
-          />
+        <div className="flex w-full flex-col gap-6 sm:flex-row">
+          <div className="flex-1">
+            <Input
+              {...register('newPassword', {
+                required: {
+                  value: true,
+                  message: intl.formatMessage({
+                    defaultMessage: 'New password is required',
+                    id: 'Auth / Change password / Password required',
+                  }),
+                },
+                minLength: {
+                  value: 8,
+                  message: intl.formatMessage({
+                    defaultMessage: 'Password is too short. It must contain at least 8 characters.',
+                    id: 'Auth / Change password / Password too short',
+                  }),
+                },
+              })}
+              type="password"
+              label={intl.formatMessage({
+                defaultMessage: 'New password',
+                id: 'Auth / Change password / New password label',
+              })}
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Minimum 8 characters',
+                id: 'Auth / Change password / New password placeholder',
+              })}
+              error={errors.newPassword?.message}
+            />
+          </div>
 
-          <Input
-            {...register('confirmNewPassword', {
-              validate: {
-                required: (value) =>
-                  value?.length > 0 ||
-                  intl.formatMessage({
-                    defaultMessage: 'Confirm password is required',
-                    id: 'Auth / Change password / Confirm password required',
-                  }),
-                mustMatch: (value) =>
-                  getValues().newPassword === value ||
-                  intl.formatMessage({
-                    defaultMessage: 'Passwords must match',
-                    id: 'Auth / Change password / Password must match',
-                  }),
-              },
-            })}
-            type="password"
-            label={intl.formatMessage({
-              defaultMessage: 'Confirm new password',
-              id: 'Auth / Change password / Confirm new password label',
-            })}
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Minimum 8 characters',
-              id: 'Auth / Change password / Confirm new password placeholder',
-            })}
-            error={errors.confirmNewPassword?.message}
-          />
+          <div className="flex-1">
+            <Input
+              {...register('confirmNewPassword', {
+                validate: {
+                  required: (value) =>
+                    value?.length > 0 ||
+                    intl.formatMessage({
+                      defaultMessage: 'Confirm password is required',
+                      id: 'Auth / Change password / Confirm password required',
+                    }),
+                  mustMatch: (value) =>
+                    getValues().newPassword === value ||
+                    intl.formatMessage({
+                      defaultMessage: 'Passwords must match',
+                      id: 'Auth / Change password / Password must match',
+                    }),
+                },
+              })}
+              type="password"
+              label={intl.formatMessage({
+                defaultMessage: 'Confirm new password',
+                id: 'Auth / Change password / Confirm new password label',
+              })}
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Minimum 8 characters',
+                id: 'Auth / Change password / Confirm new password placeholder',
+              })}
+              error={errors.confirmNewPassword?.message}
+            />
+          </div>
         </div>
 
-        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <Small>{genericError}</Small>
+          </div>
+        )}
 
-        <Button disabled={loading} type="submit" className={cn({ 'mt-4': !!errors.newPassword }, 'w-full md:w-fit')}>
-          <FormattedMessage defaultMessage="Change password" id="Auth / Change password / Submit button" />
-        </Button>
+        <div>
+          <Button disabled={loading} type="submit" className="w-full sm:w-fit">
+            <FormattedMessage defaultMessage="Change password" id="Auth / Change password / Submit button" />
+          </Button>
+        </div>
       </form>
     </div>
   );

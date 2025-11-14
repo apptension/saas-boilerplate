@@ -23,7 +23,7 @@ export const TenantMembersList = () => {
       <TableHeader>
         <TableRow>
           <TableHead>
-            <FormattedMessage defaultMessage="Username" id="Tenant members list / Username" />
+            <FormattedMessage defaultMessage="Name & surname" id="Tenant members list / Name & surname" />
           </TableHead>
           <TableHead>
             <FormattedMessage defaultMessage="Role" id="Tenant members list / Role" />
