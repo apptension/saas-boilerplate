@@ -81,7 +81,7 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
       <DropdownMenuContent align={collapsed ? 'end' : 'start'} className={cn(collapsed ? 'w-56' : 'w-[var(--radix-dropdown-menu-trigger-width)]')}>
-        <DropdownMenuLabel>
+        {/* <DropdownMenuLabel>
           <FormattedMessage defaultMessage="Personal account" id="TenantSwitch / Personal account" />
         </DropdownMenuLabel>
         <DropdownMenuCheckboxItem
@@ -91,10 +91,9 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
         >
           <User className="h-4 w-4" />
           {personalTenant?.name}
-        </DropdownMenuCheckboxItem>
+        </DropdownMenuCheckboxItem> */}
         {organizationTenants?.organizations?.length > 0 && (
           <>
-            <DropdownMenuSeparator />
             <DropdownMenuLabel>
               <FormattedMessage defaultMessage="Organizations" id="TenantSwitch / Organizations" />
             </DropdownMenuLabel>

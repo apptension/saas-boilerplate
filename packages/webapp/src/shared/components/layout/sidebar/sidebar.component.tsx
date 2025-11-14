@@ -143,6 +143,21 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
     },
   ];
 
+  const staticPageItems = [
+    {
+      path: RoutesConfig.privacyPolicy,
+      label: intl.formatMessage({ defaultMessage: 'Privacy policy', id: 'Home / privacy policy link' }),
+      icon: FileText,
+      generatePath: () => generateLocalePath(RoutesConfig.privacyPolicy),
+    },
+    {
+      path: RoutesConfig.termsAndConditions,
+      label: intl.formatMessage({ defaultMessage: 'Terms and conditions', id: 'Home / t&c link' }),
+      icon: FileText,
+      generatePath: () => generateLocalePath(RoutesConfig.termsAndConditions),
+    },
+  ];
+
   const renderMenuItem = (item: typeof menuItems[0]) => {
     const Icon = item.icon;
     const active = isActive(item.path);
@@ -286,7 +301,41 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           {/* Menu items */}
           <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
             <div className="flex flex-col gap-1">
-              {menuItems.map(renderMenuItem)}
+              {isLoggedIn && menuItems.map(renderMenuItem)}
+              {staticPageItems.length > 0 && (
+                <>
+                  <div className="my-2 border-t" />
+                  <p className={cn('px-3 py-2 text-xs font-medium text-muted-foreground', {
+                    'hidden': isSidebarCollapsed && isDesktop,
+                  })}>
+                    <FormattedMessage defaultMessage="Static pages" id="Sidebar / static pages" />
+                  </p>
+                  {staticPageItems.map((item) => {
+                    const Icon = item.icon;
+                    const active = isActive(item.path);
+                    const content = (
+                      <Link
+                        to={item.generatePath()}
+                        onClick={closeSidebar}
+                        navLink
+                        className={menuItemClassName({ isActive: active })}
+                      >
+                        <Icon className="h-5 w-5 shrink-0" />
+                        {(!isSidebarCollapsed || !isDesktop) && <span className="truncate">{item.label}</span>}
+                      </Link>
+                    );
+
+                    return isSidebarCollapsed && isDesktop ? (
+                      <Tooltip key={item.path} delayDuration={200}>
+                        <TooltipTrigger asChild>{content}</TooltipTrigger>
+                        <TooltipContent side="right">{item.label}</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <div key={item.path}>{content}</div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </nav>
 

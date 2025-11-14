@@ -118,14 +118,15 @@ describe('Layout: Component', () => {
         expect(await screen.findByLabelText(/open menu/i)).toBeVisible();
       });
 
-      it('should not show menu links', async () => {
+      it('should not show menu links initially', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
         const apolloMocks = append(
           fillNotificationCreatedSubscriptionQuery(notificationFactory())
         );
         const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks });
         await waitForApolloMocks(0);
-        expect(screen.getByLabelText(/close menu/i).classList).toContain('opacity-0');
+        // Sidebar should be closed initially on mobile
+        expect(screen.queryByLabelText(/close menu/i)).not.toBeInTheDocument();
       });
 
       describe('user opens the menu', () => {
@@ -160,9 +161,10 @@ describe('Layout: Component', () => {
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
           const closeBtn = screen.getByLabelText(/close menu/i);
-          expect(closeBtn.classList).not.toContain('opacity-0');
+          expect(closeBtn).toBeInTheDocument();
           await userEvent.click(screen.getByText(/privacy policy/i));
-          expect(closeBtn.classList).toContain('opacity-0');
+          // Menu should close after clicking link
+          expect(screen.queryByLabelText(/close menu/i)).not.toBeInTheDocument();
         });
 
         it('should close the menu when close icon is clicked', async () => {
@@ -179,8 +181,10 @@ describe('Layout: Component', () => {
           render(<Component />, { apolloMocks, routerProps });
           await userEvent.click(await screen.findByLabelText(/open menu/i));
           const closeBtn = screen.getByLabelText(/close menu/i);
+          expect(closeBtn).toBeInTheDocument();
           await userEvent.click(closeBtn);
-          expect(closeBtn.classList).toContain('opacity-0');
+          // Menu should close after clicking close button
+          expect(screen.queryByLabelText(/close menu/i)).not.toBeInTheDocument();
         });
       });
     });

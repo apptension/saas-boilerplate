@@ -35,7 +35,16 @@ const getApolloMocks = (role: Role = Role.USER) => [
 
 describe('Sidebar: Component', () => {
   const Component = () => (
-    <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+    <LayoutContext.Provider
+      value={{
+        isSidebarAvailable: true,
+        isSideMenuOpen: true,
+        isSidebarCollapsed: false,
+        setSideMenuOpen: () => null,
+        setSidebarCollapsed: () => null,
+        toggleSidebar: () => null,
+      }}
+    >
       <Routes>
         <Route path="/" element={<Sidebar />} />
         <Route path={getLocalePath(RoutesConfig.home)} element={<span>Home mock route</span>} />
@@ -92,27 +101,12 @@ describe('Sidebar: Component', () => {
       });
 
       describe('on desktop', () => {
-        it('should not show profile and logout link', async () => {
+        it('should not show profile and logout link in sidebar', async () => {
           const apolloMocks = getApolloMocks();
           const { waitForApolloMocks } = render(<Component />, { apolloMocks });
           await waitForApolloMocks();
           expect(screen.queryByText(/profile/i)).not.toBeInTheDocument();
           expect(screen.queryByText(/logout/i)).not.toBeInTheDocument();
-        });
-      });
-
-      describe('on mobile', () => {
-        beforeEach(() => {
-          mockedUseMediaQuery.mockImplementation(() => ({
-            matches: false,
-          }));
-        });
-        it('should show profile and logout link', async () => {
-          const apolloMocks = getApolloMocks();
-          const { waitForApolloMocks } = render(<Component />, { apolloMocks });
-          await waitForApolloMocks();
-          expect(await screen.findByText(/profile/i)).toBeInTheDocument();
-          expect(await screen.findByText(/logout/i)).toBeInTheDocument();
         });
       });
     });

@@ -1,21 +1,47 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { action } from '@storybook/addon-actions';
+import {
+  fillNotificationsListQuery,
+  fillNotificationCreatedSubscriptionQuery,
+  notificationFactory,
+} from '@sb/webapp-notifications/tests/factories';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
+import { useMemo } from 'react';
 
 import { withProviders } from '../../../utils/storybook';
+import { LayoutContext } from '../layout.context';
 import { Header } from './header.component';
 
-const Template: StoryFn = ({ isLoggedIn, ...args }) => {
-  return <Header {...args} />;
+const Template: StoryFn<{ isLoggedIn?: boolean }> = ({ isLoggedIn = false }) => {
+  const value = useMemo(
+    () => ({
+      isSidebarAvailable: true,
+      isSideMenuOpen: false,
+      isSidebarCollapsed: false,
+      setSideMenuOpen: () => null,
+      setSidebarCollapsed: () => null,
+      toggleSidebar: () => null,
+    }),
+    []
+  );
+
+  return (
+    <LayoutContext.Provider value={value}>
+      <Header />
+    </LayoutContext.Provider>
+  );
 };
 
-const meta: Meta = {
+const meta: Meta<typeof Template> = {
   title: 'Shared/Layout/Header',
   component: Header,
   decorators: [
     withProviders({
       apolloMocks: (defaultMocks, { args: { isLoggedIn = false } }: any) => {
-        return [fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null)];
+        return [
+          fillCommonQueryWithUser(isLoggedIn ? currentUserFactory() : null),
+          fillNotificationsListQuery([], { hasUnreadNotifications: false }),
+          fillNotificationCreatedSubscriptionQuery(notificationFactory()),
+        ];
       },
     }),
   ],
@@ -30,5 +56,5 @@ export const LoggedOut: StoryObj<typeof meta> = {
 
 export const LoggedIn: StoryObj<typeof meta> = {
   render: Template,
-  args: { isLoggedIn: true, onClick: action('Menu open') },
+  args: { isLoggedIn: true },
 };

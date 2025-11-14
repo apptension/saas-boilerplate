@@ -44,10 +44,7 @@ const Content = React.forwardRef<HTMLButtonElement, ContentProps>(
         ref={ref}
       >
         {hasUnreadNotifications ? (
-          <>
-            <BellDot className="h-5 w-5 [&>circle]:stroke-destructive" />
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />
-          </>
+          <BellDot className="h-5 w-5 [&>circle]:stroke-destructive" />
         ) : (
           <Bell className="h-5 w-5" />
         )}

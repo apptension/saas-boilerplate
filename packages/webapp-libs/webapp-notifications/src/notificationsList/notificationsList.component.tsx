@@ -35,12 +35,12 @@ export const NotificationsList = (props: NotificationsListProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 pt-4">
+      <div className="flex items-center justify-between border-b px-4 py-3">
         <H4 className="text-base font-semibold">
           <FormattedMessage defaultMessage="Notifications" id="Notifications / Notifications List / Title" />
         </H4>
         <Button
-          icon={<CheckCheck size={16} />}
+          icon={<CheckCheck size={14} />}
           className="h-8 text-xs"
           variant={ButtonVariant.GHOST}
           onClick={markAllAsRead}
@@ -51,13 +51,12 @@ export const NotificationsList = (props: NotificationsListProps) => {
           />
         </Button>
       </div>
-      <Separator className="mt-3" />
       <div className="max-h-[400px] overflow-y-auto">
         {props.loading ? (
-          <div className="flex flex-col gap-2 p-4">
-            <Skeleton className="h-20" data-testid="Skeleton" />
-            <Skeleton className="h-20" data-testid="Skeleton" />
-            <Skeleton className="h-20" data-testid="Skeleton" />
+          <div className="flex flex-col gap-0 p-2">
+            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
+            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
+            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
           </div>
         ) : (
           <Content {...props} />
