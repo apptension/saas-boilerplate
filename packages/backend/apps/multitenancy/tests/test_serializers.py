@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from ..models import TenantMembership
 from ..constants import TenantUserRole, TenantType
-from ..serializers import CreateTenantInvitationSerializer
+from ..serializers import CreateTenantInvitationSerializer, AcceptTenantInvitationSerializer
 
 
 pytestmark = pytest.mark.django_db
@@ -91,3 +91,31 @@ class TestCreateTenantInvitationSerializer:
 
         assert not serializer.is_valid()
         assert 'Invitation already exists' in serializer.errors['non_field_errors'][0]
+
+
+class TestAcceptTenantInvitationSerializer:
+    def test_accept_invitation_auto_sets_timestamp(self, mocker, user, tenant_factory):
+        """Test that accepting invitation uses model save() which auto-sets invitation_accepted_at"""
+        # Create a pending membership
+        tenant = tenant_factory(type=TenantType.ORGANIZATION)
+        membership = TenantMembership.objects.create(
+            user=user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=False
+        )
+
+        # Mock the token check
+        mocker.patch("apps.multitenancy.serializers.tenant_invitation_token.check_token", return_value=True)
+        mocker.patch("apps.multitenancy.serializers.notifications.send_accepted_tenant_invitation_notification")
+
+        # Accept the invitation
+        data = {"id": str(membership.id), "token": "valid_token"}
+        serializer = AcceptTenantInvitationSerializer(data=data, context={"request": Mock(user=user)})
+        assert serializer.is_valid()
+
+        result = serializer.create(serializer.validated_data)
+
+        # Verify
+        assert result["ok"]
+        membership.refresh_from_db()
+        assert membership.is_accepted is True
+        # The key test: invitation_accepted_at should be auto-set by model's save()
+        assert membership.invitation_accepted_at is not None

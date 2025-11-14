@@ -1,22 +1,22 @@
 import graphene
-from graphene import relay
-from graphql_relay import to_global_id, from_global_id
-from graphene_django import DjangoObjectType
 from django.shortcuts import get_object_or_404
+from graphene import relay
+from graphene_django import DjangoObjectType
+from graphql_relay import from_global_id, to_global_id
 from rest_framework.exceptions import PermissionDenied
 
-from apps.users.services.users import get_user_from_resolver, get_user_avatar_url
+from apps.finances.serializers import CancelTenantActiveSubscriptionSerializer
+from apps.finances.services import subscriptions
+from apps.users.services.users import get_user_avatar_url, get_user_from_resolver
 from common.acl import policies
-from common.graphql import mutations, exceptions
+from common.graphql import exceptions, mutations
 from common.graphql.acl.decorators import permission_classes
 from common.graphql.acl.wrappers import PERMISSION_DENIED_MESSAGE
-from apps.finances.services import subscriptions
-from apps.finances.serializers import CancelTenantActiveSubscriptionSerializer
-from . import models
-from . import serializers
-from .tokens import tenant_invitation_token
-from .constants import TenantUserRole, TenantType as ConstantsTenantType
 
+from . import models, serializers
+from .constants import TenantType as ConstantsTenantType
+from .constants import TenantUserRole
+from .tokens import tenant_invitation_token
 
 TenantUserRoleType = graphene.Enum.from_enum(TenantUserRole)
 
@@ -24,6 +24,7 @@ TenantUserRoleType = graphene.Enum.from_enum(TenantUserRole)
 class TenantMembershipType(DjangoObjectType):
     id = graphene.ID(required=True)
     invitation_accepted = graphene.Boolean()
+    invitation_accepted_at = graphene.DateTime()
     user_id = graphene.ID()
     invitee_email_address = graphene.String()
     invitation_token = graphene.String()
@@ -39,6 +40,7 @@ class TenantMembershipType(DjangoObjectType):
             "id",
             "role",
             "invitation_accepted",
+            "invitation_accepted_at",
             "user_id",
             "invitee_email_address",
             "invitation_token",
@@ -78,6 +80,10 @@ class TenantMembershipType(DjangoObjectType):
     @staticmethod
     def resolve_avatar(parent, info):
         return get_user_avatar_url(parent.user) if parent.user else None
+
+    @staticmethod
+    def resolve_invitation_accepted_at(parent, info):
+        return parent.invitation_accepted_at
 
 
 class TenantType(DjangoObjectType):

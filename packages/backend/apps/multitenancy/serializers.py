@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from django.utils import timezone
 from graphql_relay import to_global_id
 
 from common.graphql.field_conversions import TextChoicesFieldType
@@ -66,9 +65,9 @@ class AcceptTenantInvitationSerializer(TenantInvitationActionSerializer):
         user = self.context["request"].user
         membership = models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).first()
         if membership:
-            models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, user=user).update(
-                is_accepted=True, invitation_accepted_at=timezone.now()
-            )
+            # Use model save() to ensure save() logic runs (auto-sets invitation_accepted_at)
+            membership.is_accepted = True
+            membership.save()
             notifications.send_accepted_tenant_invitation_notification(
                 membership, to_global_id("TenantMembershipType", membership_id)
             )

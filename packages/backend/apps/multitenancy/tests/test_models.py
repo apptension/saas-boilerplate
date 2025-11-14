@@ -53,3 +53,70 @@ class TestTenantMembership:
             pass
         else:
             assert False, "IntegrityError not raised"
+
+    def test_save_auto_sets_invitation_accepted_at(self, tenant_membership_factory):
+        """Test that saving accepted membership auto-sets timestamp"""
+        membership = tenant_membership_factory(is_accepted=False, invitation_accepted_at=None)
+        assert membership.invitation_accepted_at is None
+
+        membership.is_accepted = True
+        membership.save()
+
+        assert membership.invitation_accepted_at is not None
+
+    def test_save_clears_invitation_accepted_at_when_not_accepted(self, tenant_membership_factory):
+        """Test that saving unaccepted membership clears timestamp"""
+        from django.utils import timezone
+
+        membership = tenant_membership_factory(is_accepted=True, invitation_accepted_at=timezone.now())
+
+        membership.is_accepted = False
+        membership.save()
+
+        assert membership.invitation_accepted_at is None
+
+    def test_save_doesnt_override_existing_invitation_accepted_at(self, tenant_membership_factory):
+        """Test that save doesn't override existing accepted timestamp"""
+        from django.utils import timezone
+
+        original_time = timezone.now()
+        membership = tenant_membership_factory(is_accepted=True, invitation_accepted_at=original_time)
+
+        # Save again without changes
+        membership.save()
+
+        # Should keep original timestamp
+        assert membership.invitation_accepted_at == original_time
+
+    def test_model_str_with_user(self, tenant_membership_factory):
+        """Test __str__ method with user"""
+        membership = tenant_membership_factory(is_accepted=True)
+        result = str(membership)
+
+        assert membership.user.email in result
+        assert membership.tenant.name in result
+        assert membership.role in result
+
+    def test_model_str_without_user(self, tenant_membership_factory):
+        """Test __str__ method without user (pending invitation)"""
+        membership = tenant_membership_factory(user=None, is_accepted=False, invitee_email_address="test@example.com")
+        result = str(membership)
+
+        assert "test@example.com" in result
+        assert "pending" in result
+        assert membership.tenant.name in result
+
+    def test_clean_raises_error_for_invalid_state(self, tenant_membership_factory):
+        """Test clean method validates data consistency"""
+        from django.core.exceptions import ValidationError
+        from django.utils import timezone
+
+        membership = tenant_membership_factory(is_accepted=False, invitation_accepted_at=None)
+
+        # Manually set invalid state (pending with accepted date)
+        membership.is_accepted = False
+        membership.invitation_accepted_at = timezone.now()
+
+        # Should raise ValidationError
+        with pytest.raises(ValidationError):
+            membership.clean()
