@@ -1,3 +1,4 @@
 {
-  "eslint.validate": ["json"]
+  "eslint.validate": ["json"],
+  "i18n-ally.localesPaths": []
 }
